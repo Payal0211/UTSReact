@@ -7,7 +7,8 @@ import {
   AutoComplete,
   Modal,
   Radio,
-  Tooltip
+  Tooltip,
+  Select
 } from "antd";
 import {
   ClientHRURL,
@@ -39,6 +40,7 @@ import { UserAccountRole } from "constants/application";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
+import plusSkill from 'assets/svg/plusSkill.svg';
 import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import DOMPurify from "dompurify";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
@@ -198,6 +200,23 @@ const HRFields = ({
       secondaryInterviewer: [],
     },
   });
+  const compensationOptions = [
+    { value: "Performance Bonuses", label: "Performance Bonuses" },
+    { value: "Stock Options (ESOPs/ESPPs)", label: "Stock Options (ESOPs/ESPPs)" },
+    { value: "Incentives / Variable Pay", label: "Incentives / Variable Pay" },
+    { value: "Profit Sharing", label: "Profit Sharing" },
+    { value: "Signing Bonus", label: "Signing Bonus"},
+    { value: "Retention Bonus", label: "Retention Bonus" },
+    {value:"Overtime Pay", label:"Overtime Pay"},
+    {value:"Allowances (e.g. Travel, Housing, Medical, Education, WFH)", label:"Allowances (e.g. Travel, Housing, Medical, Education, WFH)"},
+    {value:"Restricted Stock Units (RSUs)", label:"Restricted Stock Units (RSUs)"},
+  ];
+
+  const industryOptions = [
+    { value: "Service", label: "Service" },
+    {value:"Product", label:"Product"},
+    {value:"Manufacturing", label:"Manufacturing"},
+  ]
 
   const [timeZoneList,setTimezoneList] = useState([]);
 
@@ -218,6 +237,9 @@ const HRFields = ({
   const [isProfileView,setIsProfileView] = useState(false)
   const [isPostaJob,setIsPostaJob] = useState(false)
   const [isVettedProfile,setIsVettedProfile] = useState(true)
+  const [peopleManagemantexp, setHasPeopleManagementExp] = useState(null)
+  const [CompensationValues, setCompensationValues] = useState([]);
+  const [specificIndustry, setSpecificIndustry] = useState([]);
   /* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -1350,6 +1372,12 @@ const HRFields = ({
       hrFormDetails.PayPerType =  userCompanyTypeID
       hrFormDetails.IsConfidentialBudget = isBudgetConfidential
       hrFormDetails.IsFresherAllowed = isFreshersAllowed
+      hrFormDetails.industryType= specificIndustry?.join('^')
+      hrFormDetails.compensationOption = CompensationValues?.join('^')
+      hrFormDetails.hasPeopleManagementExp = peopleManagemantexp !== null ? peopleManagemantexp === 1 ? true : false : null
+      hrFormDetails.prerequisites = watch('parametersHighlight') ?? ''
+      hrFormDetails.HRIndustryType = specificIndustry?.join('^')
+      hrFormDetails.StringSeparator = "^"
       
       if(userCompanyTypeID === 2){
         if(!isPostaJob && !isProfileView){
@@ -1390,6 +1418,7 @@ const HRFields = ({
         }
       }
       hrFormDetails.ParsingType = getParsingType(isHaveJD,parseType)
+      hrFormDetails.JDDescription = getParsingType(isHaveJD,parseType) === 'CopyPaste' ?  getHRdetails?.salesHiringRequest_Details?.JobDescription : null
       
 
       if(type !== SubmitType.SAVE_AS_DRAFT){
@@ -1478,6 +1507,7 @@ const HRFields = ({
       setIsSavedLoading(false);
     },
     [
+      getHRdetails,
       addHRResponse,
       contactID,
       getContactAndSaleID?.contactID,
@@ -1502,7 +1532,8 @@ const HRFields = ({
       isProfileView,
       isVettedProfile,
       isFreshersAllowed,
-      isHaveJD,parseType,getUploadFileData,textCopyPastData
+      isHaveJD,parseType,getUploadFileData,textCopyPastData,
+      CompensationValues,peopleManagemantexp,specificIndustry
     ]
   );
 
@@ -2280,7 +2311,7 @@ const HRFields = ({
                       label={"Sales Person"}
                       defaultValue={
                         salesPersionNameFromEmail?.length > 0 ? salesPersionNameFromEmail 
-                          : "Select sales Persons"
+                          : "Select Sales Persons"
                       }
                       options={salesPerson && salesPerson}
                       name="salesPerson"
@@ -3050,6 +3081,52 @@ const HRFields = ({
             </div>
 
             <div className={HRFieldStyle.row}>
+            <div className={HRFieldStyle.colMd12}>
+            {/* <HRSelectField
+									// isControlled={true}
+									// controlledValue={controlledGoodToHave}
+									// setControlledValue={setControlledGoodToHave}
+									// mode="multiple"
+									mode="tags"
+									setValue={setValue}
+									register={register}
+									label={'Compensation options'}
+									placeholder="Type skills"
+									// onChange={setSelectGoodToHaveItems}
+									options={compensationOptions}
+									// setOptions={setSkillMemo}
+									name="compensationOptions"
+									// isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+									// required
+									// errorMsg={'Please select Compensation options.'}
+								/> */}
+                <div className={HRFieldStyle.labelForSelect}>Compensation options</div>
+                 <Select
+                    mode="tags"
+                    style={{ width: "100%" }}
+                    value={CompensationValues}
+                    options={compensationOptions}
+                    onChange={(values, _) => setCompensationValues(values)}
+                    placeholder="Select Compensation"
+                    tokenSeparators={[","]}
+                  />
+            </div>
+            <ul className={HRFieldStyle.selectFieldBox}>
+            {compensationOptions?.map(option => (
+                      !CompensationValues?.some(val => val === option.value) && (
+                        <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
+                          <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
+                        </li>
+                      )
+                    ))}
+										{/* {compensationOptions?.map((skill) => (																	
+											<li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+										))}	 */}
+									</ul>
+            </div>
+            
+
+            <div className={HRFieldStyle.row}>
             <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
@@ -3570,6 +3647,105 @@ const HRFields = ({
           </form>
         </div>
         <Divider />
+
+        <div className={HRFieldStyle.partOne}>
+          <div className={HRFieldStyle.hrFieldLeftPane}>
+            <h3>Enhance Talent Matchmaking</h3>
+            <p>This information will not be visible to
+                the talents or on job board, but will be used
+                by the system/internal team to find more
+                accurate match for this HR/Job.</p>
+           
+          
+          </div>
+
+          <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
+          <div className={HRFieldStyle.row}>
+            <div className={HRFieldStyle.colMd12}>
+            {/* <HRSelectField
+									// isControlled={true}
+									// controlledValue={controlledGoodToHave}
+									// setControlledValue={setControlledGoodToHave}
+									// mode="multiple"
+									mode="tags"
+									setValue={setValue}
+									register={register}
+									label={'Specify the industry from which the client needs talents'}
+									placeholder="Type skills"
+									// onChange={setSelectGoodToHaveItems}
+									options={[]}
+									// setOptions={setSkillMemo}
+									name="compensationOptions"
+									// isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+									// required
+									// errorMsg={'Please select Compensation options.'}
+								/> */}
+                 <div className={HRFieldStyle.labelForSelect}>Specify the industry from which the client needs talents</div>
+                 <Select
+                    mode="tags"
+                    style={{ width: "100%" }}
+                    value={specificIndustry}
+                      onChange={(values, _) => setSpecificIndustry(values)}
+                    options={industryOptions}
+                    placeholder="Select Industry"
+                    tokenSeparators={[","]}
+                  />
+                  <ul className={HRFieldStyle.selectFieldBox}>
+            {industryOptions?.map(option => (
+                      !specificIndustry?.some(val => val === option.value) && (
+                        <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setSpecificIndustry([...specificIndustry, option?.value])}>
+                          <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
+                        </li>
+                      )
+                    ))}
+										{/* {compensationOptions?.map((skill) => (																	
+											<li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+										))}	 */}
+									</ul>
+            </div>
+            
+            </div>
+
+            <div className={HRFieldStyle.colMd12}>
+<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+                Does the client reauire a talent with people management exoerience?
+							{/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
+								*
+							</span> */}
+						</label>
+						<Radio.Group
+           
+							// defaultValue={'client'}
+							// className={allengagementReplceTalentStyles.radioGroup}
+							onChange={e=> {setHasPeopleManagementExp(e.target.value)}}
+							value={peopleManagemantexp}
+							>
+							<Radio value={1}>Yes</Radio>
+							<Radio value={0}>No</Radio>
+						</Radio.Group>
+							</div>
+</div>
+
+<div className={HRFieldStyle.colMd12}>
+                  <div className={HRFieldStyle.formGroup}>
+                    <HRInputField
+                      register={register}
+                      errors={errors}
+                      isTextArea={true}
+                      rows={4}
+                      label="Highlight any key parameters or things to consider for finding the best match talents"
+                      name="parametersHighlight"
+                      type={InputType.Text}
+                      placeholder="Ex: Need male candidates only, need candidates who have worked on enterprise softwares, need candidates
+who have worked in scaled start ups."
+                      // required={watch("availability")?.value === "Part Time"}
+                    
+                    />
+                  </div>
+                </div>
+          </form>
+        </div>
         {/* <AddInterviewer
 				errors={errors}
 				append={append}

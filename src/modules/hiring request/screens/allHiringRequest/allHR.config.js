@@ -6,6 +6,7 @@ import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 import { ReactComponent as CloseHR } from "assets/svg/power.svg";
 import { ReactComponent as FocusedRole } from "assets/svg/FocusRole.svg";
 import { Tooltip, message, Checkbox } from "antd";
+import eyeIcon from 'assets/svg/eye.svg'
 import moment from "moment";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { HTTPStatusCode } from "constants/network";
@@ -23,7 +24,10 @@ export const allHRConfig = {
     setLoading,
     handleDemoCloneCheckboxChange,
     selectedCheckboxes,    
-    showCloneHRToDemoAccount
+    showCloneHRToDemoAccount,
+    setIsPreviewModal,
+    setpreviewIDs,
+    getPreviewPostData
   ) => {
     return [
       {
@@ -34,6 +38,20 @@ export const allHRConfig = {
         width: "2%",
         render: (val) => {
           return val ? <FocusedRole /> : null;
+        },
+      },
+
+      {
+        title: " ",
+        dataIndex: "isHRFocused",
+        key: "isHRFocused",
+        align: "center",
+        width: "2%",
+        render: (val,result) => {
+          return <Tooltip title="Preview/Edit HR" placement="right" >  
+               <img src={eyeIcon} alt='info' style={{cursor:'pointer'}} width="22" height="22" onClick={()=>{setIsPreviewModal(true);setpreviewIDs({hrID:result?.HRID,companyID: result?.companyID});getPreviewPostData(result?.HRID,result.HR_ID,result?.companyID)}}  />	
+
+      </Tooltip> ;
         },
       },
 
@@ -667,6 +685,7 @@ export const allHRConfig = {
                 fontSize: "14px",
                 cursor: "pointer",
                 padding: "7px",
+                whiteSpace: "nowrap",
               }}
               onClick={() => talentDtailOpen(values)}
             >

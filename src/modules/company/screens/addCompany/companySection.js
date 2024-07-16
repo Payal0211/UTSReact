@@ -9,6 +9,7 @@ import { Avatar, Skeleton } from "antd";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
+import spinGif from "assets/gif/RefreshLoader.gif";
 import ReactQuill from "react-quill";
 
 function CompanySection({
@@ -215,7 +216,8 @@ function CompanySection({
           setDisableSubmit(false);
           setIsViewCompanyurl(false);
           if (companyID === "0") {
-            setShowFetchAIButton(true);
+            // setShowFetchAIButton(true);
+            getDetailsForAutoFetchAI(watch("companyURL"))
           }
         }
         if (result.statusCode === HTTPStatusCode.BAD_REQUEST) {
@@ -324,6 +326,12 @@ function CompanySection({
                       </div>
                     </div>
                   </div>
+
+                 {loadingCompanyDetails && <div className={AddNewClientStyle.colMd12}>
+                     <p style={{ fontWeight: "bold", color: "green" }}>
+                        Fetching  Company Logo From AI ... <img src={spinGif} alt="loadgif"  width={16} />
+                     </p>
+                  </div>} 
                 </div>
 
                 <div className={AddNewClientStyle.row}>
@@ -367,7 +375,7 @@ function CompanySection({
                   </div>
 
                   <div className={AddNewClientStyle.colMd6}>
-                    {loadingCompanyDetails ? (
+                    {/* {loadingCompanyDetails ? (
                       <>
                         <Skeleton active />
 
@@ -375,7 +383,7 @@ function CompanySection({
                           Fetching Company Details From AI ...
                         </p>
                       </>
-                    ) : (
+                    ) : ( */}
                       <>
                         <HRInputField
                           register={register}
@@ -405,7 +413,7 @@ function CompanySection({
                             justifyContent: "flex-start",
                           }}
                         >
-                          {showFetchATButton && (
+                          {/* {showFetchATButton && (
                             <div>
                               <button
                                 className={AddNewClientStyle.btnPrimary}
@@ -420,7 +428,7 @@ function CompanySection({
                                 X-Ray Search.
                               </p>
                             </div>
-                          )}
+                          )} */}
                           {isViewCompanyurl && watch("companyName") && (
                             <button
                               className={AddNewClientStyle.btnPrimary}
@@ -431,7 +439,7 @@ function CompanySection({
                           )}
                         </div>
                       </>
-                    )}
+                    {/* )} */}
                   </div>
                 </div>
 

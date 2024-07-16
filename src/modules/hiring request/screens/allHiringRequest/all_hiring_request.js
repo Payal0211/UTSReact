@@ -45,6 +45,8 @@ import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
 import CloseHRModal from "../../components/closeHRModal/closeHRModal";
 import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
+import PreviewHRModal from "./previewHR/previewHRModal";
+import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -100,6 +102,15 @@ const AllHiringRequestScreen = () => {
   const [endDate, setEndDate] = useState(null);
   const [HRTypesList,setHRTypesList] = useState([])
   const [selectedHRTypes, setSelectedHRTypes] = useState([]);
+
+  const [ isPreviewModal, setIsPreviewModal ] = useState(false);
+  const [ previewIDs, setpreviewIDs ] = useState();
+  const [jobPreview, setJobPreview] = useState();
+  const [allData,setAllData] = useState(null);
+  const [hrIdforPreview, setHrIdforPreview] = useState("");
+  const [hrNumber, sethrNumber] = useState("");
+  const [ispreviewLoading,setIspreviewLoading] = useState(false)
+
 
   // UTS-7517: Code for clone HR in demo acccount starts
 
@@ -250,6 +261,28 @@ const AllHiringRequestScreen = () => {
   };
   const miscData = UserSessionManagementController.getUserMiscellaneousData();
 
+  const getPreviewPostData = async (hrId, hrNumber,companyId) => {
+    setHrIdforPreview(hrId);
+    setIspreviewLoading(true);
+    let data = {};
+    console.log('userData',userData)
+    // data.contactId = 810;
+    data.companyId= companyId;
+    data.hrId = hrId;
+ 
+    let res = await allCompanyRequestDAO.getHrPreviewDetailsDAO(data);
+
+    console.log('res pre',res)
+    if (res.statusCode === 200) {
+      let details = res?.responseBody;
+      const previewData = { ...details.JobPreview, hrNumber: hrNumber, HRID: hrId};
+      sethrNumber(hrNumber);
+      setJobPreview(previewData);
+      setAllData(details);
+    }
+    setIspreviewLoading(false);
+  };
+
   const tableColumnsMemo = useMemo(
     () =>
       allHRConfig.tableConfig(
@@ -265,7 +298,10 @@ const AllHiringRequestScreen = () => {
         setLoading,
         handleDemoCloneCheckboxChange, 
         selectedCheckboxes,       
-        showCloneHRToDemoAccount
+        showCloneHRToDemoAccount,
+        setIsPreviewModal,
+        setpreviewIDs,
+        getPreviewPostData
       ),
     [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
@@ -596,7 +632,10 @@ const AllHiringRequestScreen = () => {
             miscData?.loggedInUserTypeID === UserAccountRole.SALES ||
             miscData?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ||
             miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
-            miscData?.loggedInUserTypeID === UserAccountRole.MARKETING) && (
+            miscData?.loggedInUserTypeID === UserAccountRole.MARKETING ||
+            miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+            miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS 
+          ) && (
             <HROperator
             title={"Add New HR"}
               // title={
@@ -633,7 +672,9 @@ const AllHiringRequestScreen = () => {
                       UserAccountRole.TALENTOPS ||
                     miscData?.loggedInUserTypeID ===
                       UserAccountRole.OPS_TEAM_MANAGER || miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
-                    miscData?.loggedInUserTypeID === UserAccountRole.MARKETING
+                    miscData?.loggedInUserTypeID === UserAccountRole.MARKETING ||
+                    miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+                    miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS
                   ? [
                       {
                         label: "Add New HR",
@@ -961,6 +1002,19 @@ const AllHiringRequestScreen = () => {
           />
         </Modal>
       )}
+
+      <PreviewHRModal 
+        setChangeStatus={()=>{}}
+        setViewPosition={setIsPreviewModal}
+        ViewPosition={isPreviewModal}
+        setJobPreview={setJobPreview}
+        allData={allData}
+        jobPreview={jobPreview}
+        hrIdforPreview={hrIdforPreview}
+        hrNumber={hrNumber}
+        ispreviewLoading={ispreviewLoading}
+        previewIDs={previewIDs}
+      />
     {/* </WithLoader> */}
     </div>
   );

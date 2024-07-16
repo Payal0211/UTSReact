@@ -189,6 +189,17 @@
     align-items: center;
 }
 
+.labelForSelect {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
 .uploadedJDWrap {
     margin: 0 0 32px;
 }
@@ -259,6 +270,37 @@ cursor: default;
 
 [class*="ant-select-dropdown"] [class*="ant-space-item"] [class*="ant-btn-round"] [class*=".anticon"] + span{
     margin-left: 6px;
+}
+
+.selectFieldBox{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    list-style: none;
+    padding: 0;
+}
+.selectFieldBox:empty{
+    display: none;
+}
+
+.selectFieldBox li span{
+    color:#232323;
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 69px;
+    height: 27px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    background: var(--tabs-grey, rgba(186, 186, 186, 0.20));
+    gap: 8px;
+    cursor: pointer;
 }
 
 @media screen and (max-width: 1440px) {

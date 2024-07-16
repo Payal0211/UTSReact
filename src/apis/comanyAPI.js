@@ -117,5 +117,36 @@ export const CompanyAPI = {
 			return errorDebug(error, 'CompanyAPI.validateClientCompanyRequest');
 		}
 	},
+	gethrPreviewDetails:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			CompanysAPI.PREVIEW +  `?companyId=${payload.companyId}&hrId=${payload.hrId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'CompanyAPI.gethrPreviewDetails');
+		}
+	},
+	updateHrPreviewDetails:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			CompanysAPI.HR_UPDATE_PREVIEW ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'CompanyAPI.updateHrPreviewDetails');
+		}
+	},
 }
 

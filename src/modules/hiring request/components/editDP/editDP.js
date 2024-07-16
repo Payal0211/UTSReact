@@ -46,8 +46,10 @@ const EditDPRate = ({ onCancel
 
     // watch values and change DP amount
     useEffect(() => { 
-        let DPAMOUNT =  ((watchExpectedCTC *  12) * watchDPpercentage) / 100 
-        setValue('dpAmount', DPAMOUNT.toFixed(2))
+        // let DPAMOUNT =  ((watchExpectedCTC *  12) * watchDPpercentage) / 100 
+        let calAmount = (watchExpectedCTC * watchDPpercentage) / 100
+        // let DPAMOUNT =  +watchExpectedCTC + +calAmount
+        setValue('dpAmount', calAmount.toFixed(2))
     },[watchExpectedCTC,watchDPpercentage, setValue])
 
     const saveDPRatehandler = async (data) => {
@@ -97,7 +99,7 @@ const EditDPRate = ({ onCancel
                             validationSchema={{
                                 required: 'please enter Talent Current CTC.',
                             }}
-                            label="Talent Current CTC"
+                            label="Talent Current CTC Annum"
                             name="currentCTC"
                             type={InputType.NUMBER}
                             placeholder="Enter Amount"
@@ -116,7 +118,7 @@ const EditDPRate = ({ onCancel
                             validationSchema={{
                                 required: 'please enter Talent Expected CTC.',
                             }}
-                            label="Talent Expected CTC Monthly"
+                            label="Talent Expected CTC Annum"
                             name="expectedCTC"
                             type={InputType.NUMBER}
                             placeholder="Enter Amount"
@@ -157,7 +159,7 @@ const EditDPRate = ({ onCancel
                                     }
                                   },
                             }}
-                            label="DP One time Amount"
+                            label="Uplers Fees (in Amount Annually)"
                             name="dpAmount"
                             type={InputType.NUMBER}
                             placeholder="Enter Amount"
