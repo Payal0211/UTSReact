@@ -46,7 +46,7 @@ function PreviewHRModal({
   previewIDs
 }) {
   const isCloseJob = localStorage.getItem("isCloseJob");
-  const jobActiveTab = localStorage.getItem("jobActiveTab");
+  const getcompanyID = jobPreview?.hrTypeId === 1 ? 1 : jobPreview?.hrTypeId === 4 ? 2 : 1
   const userData = getDataFromLocalStorage();
   const [error, setError] = useState({});
   const [iseditRoleName, setiseditRoleName] = useState(false);
@@ -236,7 +236,7 @@ function PreviewHRModal({
     let calculatedToBudget = 0;
     let calculateFromBudget = 0;
 
-    if (userData?.CompanyTypeId === 1) {
+    if (getcompanyID === 1) {
       if (jobPreview?.hiringTypePricingId === 1 || jobPreview?.hiringTypePricingId === 2) {
         let fees = 35;
         setUplersFees(fees);
@@ -952,20 +952,21 @@ function PreviewHRModal({
           type: "success",
           content: "Duration Updated",
         });
+
         setJobPreview((prev) => ({
           ...prev,
           ...{
             contractDuration: editDuration.contractDuration ? editDuration.contractDuration : null,
             employmentType: editDuration.employmentType,
             hiringTypePricingId: editDuration.hiringTypePricingId,
-            payrollTypeId: editDuration.payrollTypeId,
-            payrollType: editDuration.payrollType,
-            payrollPartnerName: editDuration.payrollPartnerName,
+            // payrollTypeId: editDuration.payrollTypeId,
+            // payrollType: editDuration.payrollType,
+            // payrollPartnerName: editDuration.payrollPartnerName,
             isHiringLimited: editDuration.employmentType === 'Temporary' ? 'Temporary' : editDuration.employmentType === 'Permanent' ? 'Permanent' : null,
             toolTipMessage: result?.responseBody?.details?.toolTipMessage ? result?.responseBody?.details?.toolTipMessage : editDuration?.toolTipMessage,
-            hrCost: result?.responseBody?.details?.hrCost,
-            budgetFrom: result?.responseBody?.details?.budgetFrom,
-            budgetTo: result?.responseBody?.details?.budgetTo
+            // hrCost: result?.responseBody?.details?.hrCost,
+            // budgetFrom: result?.responseBody?.details?.budgetFrom,
+            // budgetTo: result?.responseBody?.details?.budgetTo
           },
         }));
         setIsLoading(false);
@@ -1125,10 +1126,11 @@ function PreviewHRModal({
   const getTimeZoneValues = async () => {
     let response = await MasterDAO.getTimeZoneRequestDAO();
     let _list = [];
-    if (response?.responseBody?.details) {
+
+    if (response?.responseBody) {
       for (let val of response?.responseBody) {
         let obj = {};
-        obj.label = val.timeZoneTitle;
+        obj.label = val.value;
         obj.value = val.id;
         _list.push(obj);
       }
@@ -1388,7 +1390,6 @@ function PreviewHRModal({
   };
 
   useEffect(() => {
-    // Remove jobActiveTab==2 condtion
     if (editDuration.employmentType) {
       GetHiringTypePricing(editDuration.employmentType);
     }
@@ -1460,12 +1461,8 @@ function PreviewHRModal({
                             {hrNumber && <span className="boxInnerInfo">({hrNumber})</span>}
 
                             <span className="editNewIcon"
-                              onClick={() => {
-                                if (jobActiveTab === "2") {
-                                  setiseditRoleName(false);
-                                } else {
+                              onClick={() => {                              
                                   setiseditRoleName(true);
-                                }
                                 seteditRoleName(jobPreview?.roleName);
                               }}
                             ><img src={EditnewIcon} /></span>
@@ -1542,11 +1539,7 @@ function PreviewHRModal({
 
                             <span className="editNewIcon"
                               onClick={() => {
-                                if (jobActiveTab === "2") {
-                                  setisEditBudget(false)
-                                } else {
-                                  setisEditBudget(true);
-                                }
+                                setisEditBudget(true);
                                 setEditBudget({
                                   ...editBudget,
                                   currency: jobPreview?.currency,
@@ -1578,7 +1571,7 @@ function PreviewHRModal({
                               onClick={() => {
                                 setisEditDuration(true);
                                 setError({});
-                                let _empType = userData?.CompanyTypeId == 2 ?
+                                let _empType = getcompanyID == 2 ?
                                   jobPreview.employmentType === 'Part Time' ? jobPreview.employmentType : jobPreview?.isHiringLimited === 'Temporary' ? 'Temporary' : jobPreview?.isHiringLimited === 'Permanent' ? 'Permanent' : ''
                                   : jobPreview.employmentType
                                 seteditDuration({
@@ -1601,11 +1594,7 @@ function PreviewHRModal({
 
                             <span className="editNewIcon"
                               onClick={() => {
-                                if (jobActiveTab === "2") {
-                                  setisEditNoticePeriod(false);
-                                } else {
-                                  setisEditNoticePeriod(true);
-                                }
+                                setisEditNoticePeriod(true);
                                 setEditNoticePeriod({
                                   ...editNoticePeriod,
                                   howsoon: jobPreview?.howSoon,
@@ -1622,12 +1611,8 @@ function PreviewHRModal({
 
                             <span className="editNewIcon"
                               onClick={() => {
-                                if (jobActiveTab === "2") {
-                                  setisEditLocation(false);
-                                } else {
                                   setisEditLocation(true);
                                   getcountryData();
-                                }
                                 setEditLocation({
                                   ...editLocation,
                                   workingModeId: jobPreview?.workingModeId,
@@ -1648,11 +1633,7 @@ function PreviewHRModal({
 
                             <span className="editNewIcon"
                               onClick={() => {
-                                if (jobActiveTab === "2") {
-                                  setisEditExp(false);
-                                } else {
                                   setisEditExp(true);
-                                }
                                 setIsExpDisabled(false);
                                 seteditExp(jobPreview?.experienceYears);
                                 setIsFreshersAllowed(jobPreview?.isFresherAllowed)
@@ -1673,11 +1654,7 @@ function PreviewHRModal({
 
                               <span className="editNewIcon"
                                 onClick={() => {
-                                  if (jobActiveTab === "2") {
-                                    setisEditShift(false);
-                                  } else {
                                     setisEditShift(true);
-                                  }
                                   setEditShift({
                                     timeZone: jobPreview?.timeZone,
                                     timeZoneFromTime: jobPreview?.timeZoneFromTime,
@@ -1883,6 +1860,25 @@ function PreviewHRModal({
                                   }} />
                                 </div>
                               )}
+                            </div>
+
+                            <div className="mt-3">
+                            <h6>Compensation options
+                                <span className="editNewIcon"  onClick={() => {
+                                    setisCompensationOptionOpen(true);
+                                    setCompensationValues(jobPreview?.compensationOption ? jobPreview?.compensationOption?.split("^") : []);
+                                  }} ><img src={EditnewIcon} /></span>
+                                </h6>
+                                <div className="company-benefits">
+                                  <ul>
+                                    {(!jobPreview?.compensationOption || jobPreview?.compensationOption?.length == 0) ? "NA" :
+                                      jobPreview?.compensationOption?.split("^")?.map((val, index) => {
+                                        return (
+                                          <li key={index}><span>{val}</span></li>
+                                        )
+                                      })}
+                                  </ul>
+                                </div>
                             </div>
                           </div>
                         </div>
@@ -2608,23 +2604,7 @@ function PreviewHRModal({
                       <h2 className="formFields-box-title">Enhance Candidate Matchmaking <span className="boxInnerInfo">
                         This information will not be visible to the candidates or on job board, but will be used by the system/internal team to find more accurate match for this HR/Job.</span></h2>
                       <div className="vitalInformationContent">
-                        <h6>Compensation options
-
-                        <span className="editNewIcon"  onClick={() => {
-                            setisCompensationOptionOpen(true);
-                            setCompensationValues(jobPreview?.compensationOption ? jobPreview?.compensationOption?.split("^") : []);
-                          }} ><img src={EditnewIcon} /></span>
-                        </h6>
-                        <div className="company-benefits">
-                          <ul>
-                            {(!jobPreview?.compensationOption || jobPreview?.compensationOption?.length == 0) ? "NA" :
-                              jobPreview?.compensationOption?.split("^")?.map((val, index) => {
-                                return (
-                                  <li key={index}><span>{val}</span></li>
-                                )
-                              })}
-                          </ul>
-                        </div>
+                       
                         <h6>Industry from which candidates are neededs
                           <span className="editNewIcon" onClick={() => {
                             setisIndustryCandidatesOpen(true);
@@ -3015,10 +2995,10 @@ function PreviewHRModal({
 
                 {editBudget?.budgetType === 3 ?
                   <label>
-                    Change {jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `Salary` : `Total`} Budget <span>*</span>
+                    Change {jobPreview?.hiringTypePricingId === 3 || getcompanyID == 2 ? `Salary` : `Total`} Budget <span>*</span>
                   </label> :
                   <label>
-                    Change {jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `Salary` : `Total`} Budget ({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})? <span>*</span>
+                    Change {jobPreview?.hiringTypePricingId === 3 || getcompanyID == 2 ? `Salary` : `Total`} Budget ({jobPreview?.hiringTypePricingId === 3 || getcompanyID == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})? <span>*</span>
                   </label>}
 
 
@@ -3126,7 +3106,7 @@ function PreviewHRModal({
                                 }
                               }}
                             />
-                            <span>({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})</span>
+                            <span>({jobPreview?.hiringTypePricingId === 3 || getcompanyID == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})</span>
                           </div>
                         )}
                       {error.budgetFrom && (
@@ -3161,7 +3141,7 @@ function PreviewHRModal({
                               }
                             }}
                           />
-                          <span>({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})</span>
+                          <span>({jobPreview?.hiringTypePricingId === 3 || getcompanyID == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})</span>
                         </div>
                       )}
                       {error.budgetTo && (
@@ -3188,7 +3168,7 @@ function PreviewHRModal({
                   ><span style={{ fontWeight: 400 }} >Keep the Salary Confidential</span></Checkbox>
                 </div>
 
-                {userData?.CompanyTypeId === 1 &&
+                {getcompanyID === 1 &&
 
                   (jobPreview?.hiringTypePricingId === 3 ?
                     (editBudget?.budgetType == 1 && editBudget?.budgetFrom > 0)
@@ -3271,9 +3251,9 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {userData?.CompanyTypeId === 1 ?
+          {getcompanyID === 1 ?
             <div className="row">
-              <div className="col-12">
+              {/* <div className="col-12">
                 <div className="form-group">
                   <label>
                     Change engagement model
@@ -3298,8 +3278,8 @@ function PreviewHRModal({
                     }}
                   />
                 </div>
-              </div>
-              {editDuration?.hiringTypePricingId == 1 &&
+              </div> */}
+              {editDuration?.hiringTypePricingId === 1 &&
                 <div className="col-12">
                   <div className="form-group">
                     <label>
@@ -3329,9 +3309,9 @@ function PreviewHRModal({
                     )}
                   </div>
                 </div>}
-
-              {editDuration?.hiringTypePricingId == 3 &&
-                <div className="form-group RadioShowSelect mt-3 col-6">
+{console.log('edit dur',editDuration)}
+              {editDuration?.hiringTypePricingId === 3 &&
+                <div className="form-group RadioShowSelect mt-3 col-6 mb-3">
                   <label>Who will manage the Payroll<span>*</span></label>
                   <Select
                     className='customSelect'
@@ -3349,7 +3329,7 @@ function PreviewHRModal({
                 <div className="col-12">
                   <div className="form-group mb-0">
                     <label>Enter Payroll Partner's Name<span>*</span></label>
-                    <input class="form-control col-6" type="text" placeholder="Enter name" value={editDuration.payrollPartnerName}
+                    <input class="form-control col-6 payrolePartnerName" type="text" placeholder="Enter name" value={editDuration.payrollPartnerName}
                       onChange={(e) => seteditDuration({ ...editDuration, payrollPartnerName: e.target.value })}
                     />
                   </div>
