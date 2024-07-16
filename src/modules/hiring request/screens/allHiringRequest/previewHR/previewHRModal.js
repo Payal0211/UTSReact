@@ -1864,22 +1864,21 @@ function PreviewHRModal({
 
                             <div className="mt-3">
                             <h6>Compensation options
-
-<span className="editNewIcon"  onClick={() => {
-    setisCompensationOptionOpen(true);
-    setCompensationValues(jobPreview?.compensationOption ? jobPreview?.compensationOption?.split("^") : []);
-  }} ><img src={EditnewIcon} /></span>
-</h6>
-<div className="company-benefits">
-  <ul>
-    {(!jobPreview?.compensationOption || jobPreview?.compensationOption?.length == 0) ? "NA" :
-      jobPreview?.compensationOption?.split("^")?.map((val, index) => {
-        return (
-          <li key={index}><span>{val}</span></li>
-        )
-      })}
-  </ul>
-</div>
+                                <span className="editNewIcon"  onClick={() => {
+                                    setisCompensationOptionOpen(true);
+                                    setCompensationValues(jobPreview?.compensationOption ? jobPreview?.compensationOption?.split("^") : []);
+                                  }} ><img src={EditnewIcon} /></span>
+                                </h6>
+                                <div className="company-benefits">
+                                  <ul>
+                                    {(!jobPreview?.compensationOption || jobPreview?.compensationOption?.length == 0) ? "NA" :
+                                      jobPreview?.compensationOption?.split("^")?.map((val, index) => {
+                                        return (
+                                          <li key={index}><span>{val}</span></li>
+                                        )
+                                      })}
+                                  </ul>
+                                </div>
                             </div>
                           </div>
                         </div>
