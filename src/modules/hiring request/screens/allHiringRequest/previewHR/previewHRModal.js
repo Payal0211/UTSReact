@@ -1861,6 +1861,26 @@ function PreviewHRModal({
                                 </div>
                               )}
                             </div>
+
+                            <div className="mt-3">
+                            <h6>Compensation options
+
+<span className="editNewIcon"  onClick={() => {
+    setisCompensationOptionOpen(true);
+    setCompensationValues(jobPreview?.compensationOption ? jobPreview?.compensationOption?.split("^") : []);
+  }} ><img src={EditnewIcon} /></span>
+</h6>
+<div className="company-benefits">
+  <ul>
+    {(!jobPreview?.compensationOption || jobPreview?.compensationOption?.length == 0) ? "NA" :
+      jobPreview?.compensationOption?.split("^")?.map((val, index) => {
+        return (
+          <li key={index}><span>{val}</span></li>
+        )
+      })}
+  </ul>
+</div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -2585,23 +2605,7 @@ function PreviewHRModal({
                       <h2 className="formFields-box-title">Enhance Candidate Matchmaking <span className="boxInnerInfo">
                         This information will not be visible to the candidates or on job board, but will be used by the system/internal team to find more accurate match for this HR/Job.</span></h2>
                       <div className="vitalInformationContent">
-                        <h6>Compensation options
-
-                        <span className="editNewIcon"  onClick={() => {
-                            setisCompensationOptionOpen(true);
-                            setCompensationValues(jobPreview?.compensationOption ? jobPreview?.compensationOption?.split("^") : []);
-                          }} ><img src={EditnewIcon} /></span>
-                        </h6>
-                        <div className="company-benefits">
-                          <ul>
-                            {(!jobPreview?.compensationOption || jobPreview?.compensationOption?.length == 0) ? "NA" :
-                              jobPreview?.compensationOption?.split("^")?.map((val, index) => {
-                                return (
-                                  <li key={index}><span>{val}</span></li>
-                                )
-                              })}
-                          </ul>
-                        </div>
+                       
                         <h6>Industry from which candidates are neededs
                           <span className="editNewIcon" onClick={() => {
                             setisIndustryCandidatesOpen(true);
@@ -3308,7 +3312,7 @@ function PreviewHRModal({
                 </div>}
 {console.log('edit dur',editDuration)}
               {editDuration?.hiringTypePricingId === 3 &&
-                <div className="form-group RadioShowSelect mt-3 col-6">
+                <div className="form-group RadioShowSelect mt-3 col-6 mb-3">
                   <label>Who will manage the Payroll<span>*</span></label>
                   <Select
                     className='customSelect'
@@ -3326,7 +3330,7 @@ function PreviewHRModal({
                 <div className="col-12">
                   <div className="form-group mb-0">
                     <label>Enter Payroll Partner's Name<span>*</span></label>
-                    <input class="form-control col-6" type="text" placeholder="Enter name" value={editDuration.payrollPartnerName}
+                    <input class="form-control col-6 payrolePartnerName" type="text" placeholder="Enter name" value={editDuration.payrollPartnerName}
                       onChange={(e) => seteditDuration({ ...editDuration, payrollPartnerName: e.target.value })}
                     />
                   </div>
