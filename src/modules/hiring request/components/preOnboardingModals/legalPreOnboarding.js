@@ -337,10 +337,10 @@ export default function LegalPreOnboarding({
       talent_FirstMonth: d.firstMonth,
       softwareToolsRequired: d.softwareToolsRequired,
       devicesPoliciesOption: !talentDeteils?.IsHRTypeDP
-        ? d.devicePolicy.value
+        ? d?.devicePolicy?.value
         : "",
       talentDeviceDetails: !talentDeteils?.IsHRTypeDP
-        ? d.devicePolicy.id === 1
+        ? d?.devicePolicy?.id === 1
           ? d.standerdSpecifications
           : ""
         : "",
@@ -351,49 +351,49 @@ export default function LegalPreOnboarding({
       // "proceedWithClient_LeavePolicyLink": d.leavePolicie.id === 1 ? d.policyLink : '', // link from text box
       // "leavePolicyFileName":d.leavePolicie.id === 2 ? getUploadFileData : '', // file name
       proceedWithClient_LeavePolicyLink: !talentDeteils?.IsHRTypeDP
-        ? d.leavePolicie.id === 2
+        ? d?.leavePolicie?.id === 2
           ? d.policyLink
             ? d.policyLink
             : ""
           : ""
         : "", // link from text box
       leavePolicyFileName: !talentDeteils?.IsHRTypeDP
-        ? d.leavePolicie.id === 2
+        ? d?.leavePolicie?.id === 2
           ? getUploadFileData
             ? getUploadFileData
             : ""
           : ""
         : "", // file name
       hdnRadioDevicesPolicies: !talentDeteils?.IsHRTypeDP
-        ? d.devicePolicy.value
+        ? d?.devicePolicy?.value
         : "",
       device_Radio_Option: !talentDeteils?.IsHRTypeDP
-        ? d.devicePolicy.id === 2
-          ? deviceMasters.filter((item) => item.id === d.deviceType.id)[0]
+        ? d?.devicePolicy?.id === 2
+          ? deviceMasters?.filter((item) => item.id === d.deviceType.id)[0]
               .deviceName
           : ""
         : "", // device name
       deviceID: !talentDeteils?.IsHRTypeDP
-        ? d.devicePolicy.id === 2
-          ? d.deviceType.id
+        ? d?.devicePolicy?.id === 2
+          ? d?.deviceType?.id
           : 0
         : 0, //device id
       client_DeviceDescription: !talentDeteils?.IsHRTypeDP
-        ? d.devicePolicy.id === 2 && d.deviceType.id === 3
-          ? d.otherDevice
+        ? d?.devicePolicy?.id === 2 && d?.deviceType?.id === 3
+          ? d?.otherDevice
           : ""
         : "",
       totalCost: !talentDeteils?.IsHRTypeDP
-        ? d.devicePolicy.id === 2
+        ? d?.devicePolicy?.id === 2
           ? deviceMasters.filter((item) => item.id === d.deviceType.id)[0]
               .deviceCost
           : 0
         : 0, //deviceCost
       radio_LeavePolicies: !talentDeteils?.IsHRTypeDP
-        ? d.leavePolicie.value
+        ? d?.leavePolicie?.value
         : "",
       leavePolicyPasteLinkName: !talentDeteils?.IsHRTypeDP
-        ? d.leavePolicie.id === 2
+        ? d?.leavePolicie?.id === 2
           ? d.policyLink
             ? d.policyLink
             : ""
@@ -411,17 +411,18 @@ export default function LegalPreOnboarding({
             : d.engagementreplacement.id,
       },
     };
+debugger
+    console.log(payload,">>",talentDeteils);
+    // let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
 
-    let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
-
-    //   console.log("res",payload)
-    if (result?.statusCode === HTTPStatusCode.OK) {
-      // EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
-      setIsLoading(false);
-      setShowAMModal(false);
-      callAPI(HRID);
-    }
-    setShowAMModal(false);
+    // //   console.log("res",payload)
+    // if (result?.statusCode === HTTPStatusCode.OK) {
+    //   // EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
+    //   setIsLoading(false);
+    //   setShowAMModal(false);
+    //   callAPI(HRID);
+    // }
+    // setShowAMModal(false);
     setIsLoading(false);
   };
 

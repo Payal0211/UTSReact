@@ -1348,6 +1348,21 @@ const TalentList = ({
 																setAMFlags(Flags)
 																break;
 															}
+															case TalentOnboardStatus.RELEASE_OFFER_DETAILS: {
+																// let onboardID = item.OnBoardId
+																// navigate(`/onboard/edit/${onboardID}`)
+																// window.scrollTo(0, 0)
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'Contract Details',
+																	forTalent: true,
+																	actionType: 'ContractDetails',
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}
 															case TalentOnboardStatus.LEGAL: {
 																// let onboardID = item.OnBoardId
 																// navigate(`/onboard/edit/${onboardID}`)

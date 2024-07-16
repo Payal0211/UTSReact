@@ -42,6 +42,7 @@ import UploadModal from "shared/components/uploadModal/uploadModal";
 import { ReactComponent as ClientTeamMemberSVG } from 'assets/svg/clientTeammember.svg';
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
 import { ReactComponent as AboutCompanySVG } from 'assets/svg/aboutCompany.svg';
+import ReactQuill from "react-quill";
 
 export default function BeforePreOnboarding({
   talentDeteils,
@@ -152,6 +153,9 @@ export default function BeforePreOnboarding({
   const [reportingTo, setReportingTo] = useState([]);
   const [controlledBuddy, setControlledBuddy] = useState('Please Select');
   const [buddy, setBuddy] = useState([]);
+  const [assignAM,setAssignAM] = useState();
+  const [controlledAssignAM, setControlledAssignAM] = useState([]);
+
 
   const getStartEndTimeHandler = useCallback(async () => {
     const durationTypes = await MasterDAO.getStartEndTimeDAO();
@@ -179,10 +183,11 @@ export default function BeforePreOnboarding({
     const response = await MasterDAO.getYesNoOptionRequestDAO();
     setReportingTo(response && response?.responseBody?.details);
 }, []);
-const getBuddyHandler = useCallback(async () => {
-    const response = await MasterDAO.getBuddyRequestDAO();
-    setBuddy(response && response?.responseBody?.details);
-}, []);
+
+  const getBuddyHandler = useCallback(async () => {
+      const response = await MasterDAO.getBuddyRequestDAO();
+      setBuddy(response && response?.responseBody?.details);
+  }, []);
 
   const getStateData = async () =>{
     const res = await OnboardDAO.getStateListDAO();
@@ -243,7 +248,8 @@ const getBuddyHandler = useCallback(async () => {
   const fatchpreOnBoardInfo = useCallback(
     async (req) => {
       let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);
-      if (result?.statusCode === HTTPStatusCode.OK) {
+      if (result?.statusCode === HTTPStatusCode.OK) {        
+        setAssignAM(result?.responseBody?.details?.assignAM)
         setReplacementEngHr(result.responseBody.details?.replacementEngAndHR);
         setIsTransparentPricing(
           result.responseBody.details?.isTransparentPricing
@@ -327,6 +333,16 @@ const getBuddyHandler = useCallback(async () => {
           setValue("currentCTC", preOnboardDetail?.currentCTC);
         preOnboardDetail?.nrPercentage &&
           setValue("nrPercent", preOnboardDetail?.nrPercentage);
+
+        let data = amUsers.find((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.amUserID);
+        setValue("amSalesPersonID", {
+          id: data?.id,
+          value: data?.value,
+        });
+        setControlledAssignAM({
+          id: data?.id,
+          value: data?.value,
+        });
 
         let { drpLeadTypes, drpLeadUsers } = result.responseBody.details;
         setDealowner(
@@ -475,83 +491,84 @@ const calcelMember = () =>{
   memberUnregister('linkedinLink')
 }
 
-  // const handleComplete = useCallback(
-  //   async (d) => {
-  //     setIsLoading(true);
-  //     let payload = {
-  //       hR_ID: HRID,
-  //       companyID: preOnboardingDetailsForAMAssignment?.companyID,
-  //       deal_Owner: d?.dealOwner?.value, //Update
-  //       deal_Source: d?.dealSource?.value, //Update
-  //       onboard_ID: talentDeteils?.OnBoardId,
-  //       engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
-  //       assignAM: preONBoardingData.assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
-  //       talentID: talentDeteils?.TalentID,
-  //       talentShiftStartTime: d.shiftStartTime?.value, //Update
-  //       talentShiftEndTime: d.shiftEndTime?.value, //Update
-  //       payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-  //         ? 0
-  //         : parseFloat(d.payRate), // pass as null if DP HR  // send numeric value //Update
-  //       // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-  //       //   ? null
-  //       //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
-  //       billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-  //         ? null
-  //         : parseFloat(d.billRate), //,
-  //       netPaymentDays: parseInt(d.netTerm.value), //Update
-  //       nrMargin: !preOnboardingDetailsForAMAssignment?.isHRTypeDP
-  //         ? d.nrPercent
-  //         : null,
-  //       isReplacement: engagementReplacement?.replacementData,
-  //       talentReplacement: {
-  //         onboardId: talentDeteils?.OnBoardId,
-  //         lastWorkingDay: addLatter === false ? d.lwd : "",
-  //         replacementInitiatedby: loggedInUserID.toString(),
-  //         engHRReplacement:
-  //           addLatter === true || d.engagementreplacement === undefined
-  //             ? ""
-  //             : d.engagementreplacement.id,
-  //       },
-  //     };
+  const handleComplete = useCallback(
+    async (d) => {
+      setIsLoading(true);
+      let payload = {
+        hR_ID: HRID,
+        companyID: preOnboardingDetailsForAMAssignment?.companyID,
+        deal_Owner: d?.dealOwner?.value, //Update
+        deal_Source: d?.dealSource?.value, //Update
+        onboard_ID: talentDeteils?.OnBoardId,
+        engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
+        assignAM: preONBoardingData.assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
+        talentID: talentDeteils?.TalentID,
+        talentShiftStartTime: d.shiftStartTime?.value, //Update
+        talentShiftEndTime: d.shiftEndTime?.value, //Update
+        payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
+          ? 0
+          : parseFloat(d.payRate), // pass as null if DP HR  // send numeric value //Update
+        // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
+        //   ? null
+        //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
+        billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
+          ? null
+          : parseFloat(d.billRate), //,
+        netPaymentDays: parseInt(d.netTerm.value), //Update
+        nrMargin: !preOnboardingDetailsForAMAssignment?.isHRTypeDP
+          ? d.nrPercent
+          : null,
+        isReplacement: engagementReplacement?.replacementData,
+        talentReplacement: {
+          onboardId: talentDeteils?.OnBoardId,
+          lastWorkingDay: addLatter === false ? d.lwd : "",
+          replacementInitiatedby: loggedInUserID.toString(),
+          engHRReplacement:
+            addLatter === true || d.engagementreplacement === undefined
+              ? ""
+              : d.engagementreplacement.id,
+        },
+      };
 
-  //     let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
-  //     if (result?.statusCode === HTTPStatusCode.OK) {
-  //       if (result?.responseBody.details.IsAMAssigned) {
-  //         EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
-  //       }
+      let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
+      if (result?.statusCode === HTTPStatusCode.OK) {
+        if (result?.responseBody.details.IsAMAssigned) {
+          EnableNextTab(talentDeteils, HRID, "Legal");
+        }
 
-  //       // callAPI(HRID)
-  //       setMessage(result?.responseBody.details);
-  //       setIsLoading(false);
-  //       setEditBillRate(false);
-  //       setEditPayRate(false);
-  //       setEditNetTerm(false);
+        // callAPI(HRID)
+        setMessage(result?.responseBody.details);
+        setIsLoading(false);
+        setEditBillRate(false);
+        setEditPayRate(false);
+        setEditNetTerm(false);
 
-  //       let req = {
-  //         OnboardID: talentDeteils?.OnBoardId,
-  //         HRID: HRID,
-  //         // actionName: actionType ? actionType : "GotoOnboard",
-  //       };
-  //       fatchpreOnBoardInfo(req);
-  //     }
-  //     setIsLoading(false);
-  //   },
-  //   [
-  //     talentDeteils,
-  //     HRID,
-  //     preONBoardingData,
-  //     preOnboardingDetailsForAMAssignment,
-  //     EnableNextTab,
-  //     actionType,
-  //     editPayRate,
-  //     engagementReplacement?.replacementData,
-  //     addLatter,
-  //   ]
-  // );
+        let req = {
+          OnboardID: talentDeteils?.OnBoardId,
+          HRID: HRID,
+          // actionName: actionType ? actionType : "GotoOnboard",
+        };
+        fatchpreOnBoardInfo(req);
+      }
+      setIsLoading(false);
+    },
+    [
+      talentDeteils,
+      HRID,
+      preONBoardingData,
+      preOnboardingDetailsForAMAssignment,
+      EnableNextTab,
+      actionType,
+      editPayRate,
+      engagementReplacement?.replacementData,
+      addLatter,
+    ]
+  );
 
-  const handleComplete = () =>{
-    EnableNextTab(talentDeteils, HRID, "Legal");
-  }
+  // const handleComplete = () =>{
+  //   console.log(talentDeteils,"talentDeteils");
+  //   EnableNextTab(talentDeteils, HRID, "Legal");
+  // }
   const disabledDate = (current) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -736,20 +753,9 @@ const calcelMember = () =>{
                 <div className={HRDetailStyle.onboardingDetailText}>
                   <span>Discovery Call Link</span>
                   { preONBoardingData?.preOnboardingDetailsForAMAssignment
-                        ?.discovery_Link ?<a
-                    target="_blank"
-                    href={
-                      preONBoardingData?.preOnboardingDetailsForAMAssignment
-                        ?.discovery_Link
-                    }
-                    rel="noreferrer"
-                    className={HRDetailStyle.onboardingTextUnderline}
-                  >
-                    {
-                      preONBoardingData?.preOnboardingDetailsForAMAssignment
-                        ?.discovery_Link
-                    }
-                  </a>:"NA"}
+                        ?.discovery_Link ?
+                        <a target="_blank"  href={preONBoardingData?.preOnboardingDetailsForAMAssignment ?.discovery_Link} rel="noreferrer" className={HRDetailStyle.onboardingTextUnderline}>
+                          {preONBoardingData?.preOnboardingDetailsForAMAssignment?.discovery_Link}</a>:"NA"}
                 </div>
                 <div className={HRDetailStyle.onboardingDetailText}>
                   <span>Job Description</span>
@@ -881,26 +887,28 @@ const calcelMember = () =>{
                   <div className={HRDetailStyle.onboardingCurrentText}>
                     <span>Do you want to assign an AM?</span>
                     <span>
-                      <Radio.Group>
+                      <Radio.Group name="assignAM" value={assignAM} onChange={(e) => setAssignAM(e.target.value)}>
                         <Radio value={true}>Yes</Radio>
                         <Radio value={false}>No</Radio>
                       </Radio.Group>
                     </span>
                   </div>
+                {assignAM ?  <>
                   <HRSelectField
-                    // isControlled={true}
+                    isControlled={true}
+                    controlledValue={controlledAssignAM}
+                    setControlledValue={setControlledAssignAM}
                     mode="id/value"
                     setValue={setValue}
                     register={register}
                     label={"Select AM"}
                     defaultValue={"Select AM"}
-                    name="selectAM"
+                    name="amSalesPersonID"
                     options={amUsers && amUsers}
                     isError={errors["selectAM"] && errors["selectAM"]}
                     required
                     errorMsg={"Please select AM"}
                   />
-
                   <div className={HRDetailStyle.onboardingCurrentText}>
                     <span>
                       Following HRs will be assigned to the selected AM
@@ -958,6 +966,10 @@ const calcelMember = () =>{
                       No HR Found for Handover
                     </h3>
                   )}
+                  </> : <span>All the current HRs will not be assigned to any AMs</span>}
+                 
+
+                  
                 </div>
               </div>
             </div>
@@ -1013,10 +1025,10 @@ const calcelMember = () =>{
                       <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.formGroup}`}>
                         {/* <ClockIconSVG /> */}
                         <HRSelectField
-                    controlledValue={controlledFromTimeValue}
-                    setControlledValue={val=> {setControlledFromTimeValue(val);
-                      let index = getStartEndTimes.findIndex(item=> item.value === val)
-                      if(index >= getStartEndTimes.length -18){         
+                        controlledValue={controlledFromTimeValue}
+                        setControlledValue={val=> {setControlledFromTimeValue(val);
+                        let index = getStartEndTimes.findIndex(item=> item.value === val)
+                        if(index >= getStartEndTimes.length -18){         
                           let newInd =   index - (getStartEndTimes.length -18)
                           let endtime = getStartEndTimes[newInd]
                           setControlledEndTimeValue(
@@ -1050,13 +1062,15 @@ const calcelMember = () =>{
                     isError={errors["shiftStartTime"] && errors["shiftStartTime"]}
                     required={true}
                     disabled={isTabDisabled}
-                    errorMsg={errors["shiftStartTime"] ? errors["shiftStartTime"].message.length > 0 ? errors["fromTime"].message : "Please select from time." : "Please select from time."}
+                    errorMsg={errors["shiftStartTime"] ?
+                       errors["shiftStartTime"].message.length > 0 ?
+                        errors["fromTime"].message : "Please select from time." : "Please select from time."}
                   />
-                        {errors.shiftStartTime && (
+                        {/* {errors.shiftStartTime && (
                           <div className={HRDetailStyle.error}>
                             Please enter start time
                           </div>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>
@@ -1088,11 +1102,11 @@ const calcelMember = () =>{
                     required={true}
                     errorMsg={"Please select end time."}
                   />
-                        {errors.shiftEndTime && (
+                        {/* {errors.shiftEndTime && (
                           <div className={HRDetailStyle.error}>
                             Please enter end time
                           </div>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>
@@ -1110,8 +1124,8 @@ const calcelMember = () =>{
                         required: "please select Payment Net Term.",
                         min: 1,
                       }}
-                      isError={errors["netTerm"] && errors["netTerm"]}
-                      errorMsg={"Please select Payment Net Term"}
+                      // isError={errors["netTerm"] && errors["netTerm"]}
+                      // errorMsg={"please select Payment Net Term"}
                       required
                     />
                     ) : (
@@ -1126,8 +1140,8 @@ const calcelMember = () =>{
                           required: "please select Payment Net Term.",
                           min: 1,
                         }}
-                        isError={errors["netTerm"] && errors["netTerm"]}
-                        errorMsg={"Please select Payment Net Term"}
+                        // isError={errors["netTerm"] && errors["netTerm"]}
+                        // errorMsg={"Please select Payment Net Term"}
                         required
                         disabled
                         trailingIcon={
@@ -1343,7 +1357,7 @@ const calcelMember = () =>{
                         register={register}
                         label={"Mode of  Working"}
                         defaultValue={"Select Mode of  Working"}
-                        name="modeOfWorking"
+                        name="modeOFWorkingID"
                         options={workingMode && workingMode}
                         isError={errors["modeOfWorking"] && errors["modeOfWorking"]}
                         required
@@ -1354,7 +1368,7 @@ const calcelMember = () =>{
                         register={register}
                         errors={errors}
                         label="Mode of  Working"
-                        name="modeOfWorking"
+                        name="modeOFWorkingID"
                         type={InputType.TEXT}
                         placeholder="Mode of  Working"
                         validationSchema={{
@@ -1391,8 +1405,8 @@ const calcelMember = () =>{
                         required: "please enter City.",
                         min: 1,
                       }}
-                      isError={errors["city"] && errors["city"]}
-                      errorMsg={"Please enter City"}
+                      // isError={errors["city"] && errors["city"]}
+                      // errorMsg={"Please enter City"}
                       required
                     />
                     ) : (
@@ -1407,8 +1421,8 @@ const calcelMember = () =>{
                           required: "please enter City.",
                           min: 1,
                         }}
-                        isError={errors["city"] && errors["city"]}
-                        errorMsg={"Please enter City"}
+                        // isError={errors["city"] && errors["city"]}
+                        // errorMsg={"Please enter City"}
                         required
                         disabled
                         trailingIcon={
@@ -1433,7 +1447,7 @@ const calcelMember = () =>{
                         register={register}
                         label={"State"}
                         defaultValue={"Select State"}
-                        name="state"
+                        name="stateID"
                         options={stateList && stateList}
                         isError={errors["state"] && errors["state"]}
                         required
@@ -1444,7 +1458,7 @@ const calcelMember = () =>{
                         register={register}
                         errors={errors}
                         label="State"
-                        name="state"
+                        name="stateID"
                         type={InputType.TEXT}
                         placeholder="State"
                         validationSchema={{
@@ -1474,7 +1488,7 @@ const calcelMember = () =>{
                      register={register}
                      errors={errors}
                      label="Talent’s Designation"
-                     name="designation"
+                     name="talent_Designation"
                      type={InputType.TEXT}
                      placeholder="Talent’s Designation"
                      validationSchema={{
@@ -1491,7 +1505,7 @@ const calcelMember = () =>{
                         register={register}
                         errors={errors}
                         label="Talent’s Designation"
-                        name="designation"
+                        name="talent_Designation"
                         type={InputType.TEXT}
                         placeholder="Talent’s Designation"
                         validationSchema={{
@@ -1525,8 +1539,8 @@ const calcelMember = () =>{
               </div>
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
-                  <div className={HRDetailStyle.colMd12}>
-                    <HRInputField
+                  {/* <div className={HRDetailStyle.colMd12}> */}
+                    {/* <HRInputField
                       isTextArea={true}
                       errors={errors}
                       className="TextAreaCustom"
@@ -1540,8 +1554,24 @@ const calcelMember = () =>{
                         required: "please enter a bit about company culture.",
                       }}
                       disabled={isTabDisabled}
+                    /> */}
+                     <ReactQuill
+                      register={register}
+                      setValue={setValue}
+                      theme="snow"
+                      className="heightSize"
+                      value={
+                         watch("aboutCompany") ? watch("aboutCompany") :""
+                      }
+                      name="aboutCompany"
+                      onChange={(val) => setValue("aboutCompany", val)}
                     />
-                  </div>
+                    {/* {aboutCompanyError && (
+                      <p className={AddNewClientStyle.error}>
+                        *Please enter About company
+                      </p>
+                    )} */}
+                  {/* </div> */}
                   <div className={HRDetailStyle.colMd12}>
                     <HRInputField
                       isTextArea={true}
@@ -2238,8 +2268,8 @@ const calcelMember = () =>{
         <button
           type="submit"
           className={HRDetailStyle.btnPrimary}
-          // onClick={handleSubmit(handleComplete)}
-          onClick={handleComplete}
+          onClick={handleSubmit(handleComplete)}
+          // onClick={handleComplete}
           disabled={isTabDisabled ? isTabDisabled : isLoading}
         >
           {/* {preONBoardingData?.dynamicOnBoardCTA?.gotoOnboard

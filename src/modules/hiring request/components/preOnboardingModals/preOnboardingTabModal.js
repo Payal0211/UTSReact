@@ -1,20 +1,9 @@
 import React, { useState, useEffect , useCallback} from "react";
 import {  Modal, Tabs } from 'antd';
 import HRDetailStyle from '../../screens/hrdetail/hrdetail.module.css';
-import { OnboardDAO } from 'core/onboard/onboardDAO';
-import { HTTPStatusCode } from 'constants/network';
-
 import { ReactComponent as AssignCurrectSVG } from 'assets/svg/assignCurrentRight.svg';
-
-
 import BeforePreOnboarding from "./beforePreOnboarding";
-import DuringPreOnboarding from "./duringPreOnboarding";
-import CompleteLegal from "./completeLegal";
-import BeforeKickOff from "./beforeKickOff";
-import AfterKickOff from "./afterKickOff";
 import LegalPreOnboarding from "./legalPreOnboarding";
-
-
 
 export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFlags,callAPI}) {
     const [talentDeteils, setTalentDetais] = useState({})
