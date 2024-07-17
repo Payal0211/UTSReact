@@ -118,7 +118,7 @@ const UserList = () => {
 							<input
 								type={InputType.TEXT}
 								className={allUserStyles.searchInput}
-								placeholder="Search User Name, Email, Employee ID"
+								placeholder="Search User Name, Email, Employee ID, Geo"
 								onChange={(e) => {
 									setSearchText(e.target.value)
 									setDebouncedSearch(
