@@ -155,6 +155,8 @@ export default function BeforePreOnboarding({
   const [buddy, setBuddy] = useState([]);
   const [assignAM,setAssignAM] = useState();
   const [controlledAssignAM, setControlledAssignAM] = useState([]);
+  const [controlledState, setControlledState] = useState([]);
+  const [controlledIMOW, setControlledMOW] = useState([]);
 
 
   const getStartEndTimeHandler = useCallback(async () => {
@@ -300,7 +302,7 @@ export default function BeforePreOnboarding({
           ).toDate()
         );
         setValue(
-          "modeOfWorking",
+          "modeOFWorkingID",
             result.responseBody.details?.replacementDetail?.modeOfWork
         );
         setValue(
@@ -308,11 +310,11 @@ export default function BeforePreOnboarding({
             result.responseBody.details?.replacementDetail?.cityName
         );
         setValue(
-          "state",
+          "stateID",
             result.responseBody.details?.replacementDetail?.stateID
         );
         setValue(
-          "designation",
+          "talent_Designation",
             result.responseBody.details?.replacementDetail?.talent_Designation
         );
         setValue('aboutCompany',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.company_Description)
@@ -342,6 +344,26 @@ export default function BeforePreOnboarding({
         setControlledAssignAM({
           id: data?.id,
           value: data?.value,
+        });
+
+        let modeOfWorking = workingMode.find((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.modeOfWork);
+        setValue("modeOFWorkingID", {
+          id: modeOfWorking?.id,
+          value: modeOfWorking?.value,
+        });
+        setControlledMOW({
+          id: modeOfWorking?.id,
+          value: modeOfWorking?.value,
+        });
+
+        let _state = stateList.find((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.stateID);
+        setValue("stateID", {
+          id: _state?.id,
+          value: _state?.value,
+        });
+        setControlledState({
+          id: _state?.id,
+          value: _state?.value,
         });
 
         let { drpLeadTypes, drpLeadUsers } = result.responseBody.details;
@@ -493,6 +515,7 @@ const calcelMember = () =>{
 
   const handleComplete = useCallback(
     async (d) => {
+      console.log(d,"sdasadasdasdasdsada");
       setIsLoading(true);
       let payload = {
         hR_ID: HRID,
@@ -508,6 +531,9 @@ const calcelMember = () =>{
         payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
           ? 0
           : parseFloat(d.payRate), // pass as null if DP HR  // send numeric value //Update
+        modeOFWorkingID: d?.modeOFWorkingID,
+        city:d?.city,
+        talent_Designation: d?.talent_Designation,
         // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
         //   ? null
         //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
@@ -528,6 +554,14 @@ const calcelMember = () =>{
               ? ""
               : d.engagementreplacement.id,
         },
+        teamMembers:[{
+          name: d.name,
+          designation: d.designation,
+          reportingTo: d.reportingTo,
+          linkedin: d.linkedin,
+          email: d.email,
+          buddy: d.buddy
+        }],
       };
 
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
@@ -1220,21 +1254,21 @@ const calcelMember = () =>{
                               ?.currencySign
                           }
                           disabled
-                          // trailingIcon={
-                          //  !isTabDisabled && <EditFieldSVG
-                          //     width="16"
-                          //     height="16"
-                          //     onClick={() => {
-                          //       setEditBillRate(true);
-                          //       setValue(
-                          //         "billRate",
-                          //         extractNumberFromString(watch("billRate"))
-                          //       );
-                          //     }}
-                          //   />
-                          // }
                           trailingIcon={
-                            <div>{`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}</div>
+                            <div className={HRDetailStyle.infotextWrapper}>
+                              {`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                           {!isTabDisabled && <EditFieldSVG
+                              width="16"
+                              height="16"
+                              onClick={() => {
+                                setEditBillRate(true);
+                                setValue(
+                                  "billRate",
+                                  extractNumberFromString(watch("billRate"))
+                                );
+                              }}
+                            />}
+                            </div>
                           }
                         />
                       )}
@@ -1351,7 +1385,9 @@ const calcelMember = () =>{
                   <div className={HRDetailStyle.modalFormCol}>
                     {editMOF ? (
                       <HRSelectField
-                        // isControlled={true}
+                        controlledValue={controlledIMOW}
+                        setControlledValue={setControlledMOW}
+                        isControlled={true}
                         mode="id/value"
                         setValue={setValue}
                         register={register}
@@ -1370,7 +1406,7 @@ const calcelMember = () =>{
                         label="Mode of  Working"
                         name="modeOFWorkingID"
                         type={InputType.TEXT}
-                        placeholder="Mode of  Working"
+                        placeholder="Mode of Working"
                         validationSchema={{
                           required: "please select Mode of  Working.",
                           min: 1,
@@ -1441,7 +1477,9 @@ const calcelMember = () =>{
                   <div className={HRDetailStyle.modalFormCol}>
                     {editState ? (
                       <HRSelectField
-                        // isControlled={true}
+                        isControlled={true}
+                        controlledValue={controlledState}
+                        setControlledValue={setControlledState}
                         mode="id/value"
                         setValue={setValue}
                         register={register}
@@ -1539,8 +1577,8 @@ const calcelMember = () =>{
               </div>
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
-                  {/* <div className={HRDetailStyle.colMd12}> */}
-                    {/* <HRInputField
+                  <div className={HRDetailStyle.colMd12}>
+                    <HRInputField
                       isTextArea={true}
                       errors={errors}
                       className="TextAreaCustom"
@@ -1554,24 +1592,8 @@ const calcelMember = () =>{
                         required: "please enter a bit about company culture.",
                       }}
                       disabled={isTabDisabled}
-                    /> */}
-                     <ReactQuill
-                      register={register}
-                      setValue={setValue}
-                      theme="snow"
-                      className="heightSize"
-                      value={
-                         watch("aboutCompany") ? watch("aboutCompany") :""
-                      }
-                      name="aboutCompany"
-                      onChange={(val) => setValue("aboutCompany", val)}
                     />
-                    {/* {aboutCompanyError && (
-                      <p className={AddNewClientStyle.error}>
-                        *Please enter About company
-                      </p>
-                    )} */}
-                  {/* </div> */}
+                  </div>
                   <div className={HRDetailStyle.colMd12}>
                     <HRInputField
                       isTextArea={true}
@@ -1928,10 +1950,10 @@ const calcelMember = () =>{
                         placeholder="Weekly"
                         // value="Weekly during the first 2 weeks | Fortnightly for the next 2 months | Monthly / Quarterly feedback thereafter"
                         disabled
-                        required
-                        validationSchema={{
-                          required: "please enter Feedback Process.",
-                        }}
+                        // required
+                        // validationSchema={{
+                        //   required: "please enter Feedback Process.",
+                        // }}
                         // trailingIcon= {<EditFieldSVG width="16" height="16" />}
                       />
                     </div>
@@ -1996,7 +2018,7 @@ const calcelMember = () =>{
                                 }}
                                 // required
                                 label="Name"
-                                name="memberName"
+                                name="name"
                                 type={InputType.TEXT}
                                 placeholder="Enter Name"
                             />
@@ -2010,7 +2032,7 @@ const calcelMember = () =>{
                                     required: 'please enter the designation .',
                                 }}
                                 label="Designation"
-                                name="memberDesignation"
+                                name="designation"
                                 type={InputType.TEXT}
                                 placeholder="Enter Designation"
                             />
@@ -2056,7 +2078,7 @@ const calcelMember = () =>{
                                 //     required: 'please enter the Link.',
                                 // }}
                                 label="Linkedin"
-                                name="linkedinLink"
+                                name="linkedin"
                                 type={InputType.TEXT}
                                 placeholder="Enter Link"
                             />
@@ -2070,7 +2092,7 @@ const calcelMember = () =>{
                                     required: 'please enter the Email.',
                                 }}
                                 label="Email"
-                                name="memberEmail"
+                                name="email"
                                 type={InputType.TEXT}
                                 placeholder="Enter Email"
                             />
@@ -2098,9 +2120,9 @@ const calcelMember = () =>{
 									label={'Buddy'}
 									defaultValue={'Select Buddy'}
 									options={buddy}
-									name="memberBuddy"
+									name="buddy"
 									isError={
-										memberErrors['memberBuddy'] && memberErrors['memberBuddy']
+										memberErrors['buddy'] && memberErrors['buddy']
 									}
 									// required
 									errorMsg={'Please select buddy'}
