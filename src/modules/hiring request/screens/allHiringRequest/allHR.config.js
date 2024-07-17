@@ -120,7 +120,9 @@ export const allHRConfig = {
                     />
                   </a>
                 </Tooltip>
-              ) : LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 && result?.isDisplayReopenOrCloseIcon === true ? (
+              ) : 
+              // LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 &&
+               result?.isDisplayReopenOrCloseIcon === true ? (
                 <Tooltip placement="bottom" title={"Reopen HR"}>
                   <a href="javascript:void(0);">
                     <ReopenHR
@@ -173,9 +175,9 @@ export const allHRConfig = {
         width: "3%",
         align: "center",
         render: (text, result) => {
-          if (LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10) {
-            return;
-          }
+          // if (LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10) {
+          //   return;
+          // }
           return (
             <>
               <Tooltip placement="bottom" title={"Clone HR"}>

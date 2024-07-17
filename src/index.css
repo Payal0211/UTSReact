@@ -143,6 +143,10 @@ input[type="file"] {
   justify-content: center !important;
 }
 
+.ant-pagination-options-size-changer{
+display:none !important
+}
+
 .ant-pagination-item a {
   padding: 0;
 }

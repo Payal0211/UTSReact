@@ -32,7 +32,8 @@ export const downloadToExcel = (response, name) => {
 		XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 		//let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
 		//XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
-		XLSX.writeFile(workbook, name ? name : "DataSheet" + ".xlsx");
+		let fileName = name ? name + ".xlsx" : "DataSheet.xlsx"
+		XLSX.writeFile(workbook, fileName);
 	} catch (error) {
 		errorDebug(error, '--Convert to excel---');
 	}
