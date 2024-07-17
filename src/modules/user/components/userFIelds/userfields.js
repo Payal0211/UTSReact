@@ -72,7 +72,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [levelTypeEdit, setLevelEdit] = useState('Select');
 	const [teamTypeEdit, setTeamTypeEdit] = useState();
 	const [reportTypeEdit, setReportTypeEdit] = useState('Select');
-	const [getGEOType, setGEOType] = useState('');
+	const [getGEOType, setGEOType] = useState('Select');
 	const [specificGeo, setSpecificGEO] = useState('Select');
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -398,7 +398,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			unregister('geo');
 			unregister('team');
 			setLevelEdit('Select');
-			setGEOType('');
+			setGEOType('Select');
 			setSpecificGEO('Select');
 			setReportTypeEdit('Select');
 			setTeamTypeEdit();
@@ -412,7 +412,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			setTeamTypeEdit();
 			setReportTypeEdit('Select');
 			setLevelEdit('Select');
-			setGEOType('');
+			setGEOType('Select');
 			setSpecificGEO('Select');
 			resetField('team');
 			resetField('level');
@@ -428,7 +428,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			resetField('geoSpecific', { keepError: false });
 			resetField('geo', { keepError: false });
 			// resetField("team");
-			setGEOType('');
+			setGEOType('Select');
 			setSpecificGEO('Select');
 			setReportTypeEdit('Select');
 			resetField('level');
@@ -449,7 +449,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			resetField('geo', { keepError: false });
 			setReportTypeEdit('Select');
 			// setLevelEdit("Select");
-			setGEOType('');
+			setGEOType('Select');
 			setSpecificGEO('Select');
 			resetField('team');
 		}
@@ -460,7 +460,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			resetField('geo');
 			setReportTypeEdit('Select');
 			// setLevelEdit("Select");
-			setGEOType('');
+			setGEOType('Select');
 			setSpecificGEO('Select');
 		}
 	}, [watchTeamName]);
@@ -468,9 +468,9 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	useEffect(() => {
 		if (watchGEOSpecific?.value === 'Select') {
 			resetField('geo');
-			setGEOType('');
+			setGEOType('Select');
 		} else if (watchGEOSpecific?.value === 'No') {
-			setGEOType('');
+			setGEOType('Select');
 			resetField('geo');
 		}
 	}, [watchGEOSpecific]);
@@ -507,7 +507,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 	useEffect(() => {
 		setModifiedGEO([]);
-		watchGEO?.map(({ id }) => setModifiedGEO((prev) => [...prev, id]));
+		// watchGEO?.map(({ id }) => setModifiedGEO((prev) => [...prev, id]));
+		setModifiedGEO((pev)=>[...pev,watchGEO?.id])
 	}, [watchGEO]);
 
 	useEffect(() => {
@@ -1062,15 +1063,27 @@ const UsersFields = ({ id, setLoading, loading }) => {
 										watchDepartMentName?.value !== 'Administration' && (
 											<div className={UserFieldStyle.colMd6}>
 												<div className={UserFieldStyle.mb50}>
-													<HRSelectField
+													{/* <HRSelectField
 														isControlled={true}
 														controlledValue={getGEOType}
 														setControlledValue={setGEOType}
-														mode="multiple"
+														mode="id/value"
 														setValue={setValue}
 														register={register}
 														label={'Geo'}
 														placeholder="Please Select"
+														options={GEO && GEO}
+														name="geo"
+													/> */}
+													<HRSelectField
+														controlledValue={getGEOType}
+														setControlledValue={setGEOType}
+														isControlled={true}
+														mode="id/value"
+														setValue={setValue}
+														register={register}
+														label={'Geo'}
+														defaultValue={'Select'}
 														options={GEO && GEO}
 														name="geo"
 													/>
