@@ -6,6 +6,10 @@ const AllHiringRequest = React.lazy(() =>
 	import('modules/hiring request/screens/allHiringRequest/all_hiring_request'),
 );
 
+const UnassignedHRs = React.lazy(() =>
+	import('modules/hiring request/screens/allHiringRequest/unassigned_hr'),
+);
+
 function MainHRTabs() {
     const [title, setTitle] = useState('All Hiring Requests');
   return (
@@ -20,13 +24,13 @@ function MainHRTabs() {
         {
             label: 'All Hiring Requests',
             key: 'All Hiring Requests',
-            children: <AllHiringRequest />
+            children:title === "All Hiring Requests" && <AllHiringRequest />
             
         },
         {
             label: 'Unassigned HRs',
             key: 'Unassigned HRs',
-            children:<></>
+            children:title === "Unassigned HRs" && <UnassignedHRs/>
            
         },
     ]}
