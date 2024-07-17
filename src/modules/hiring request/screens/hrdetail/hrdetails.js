@@ -336,7 +336,9 @@ const togglePriority = useCallback(
 							</div>
 						)}
 						{/** ----Clone HR */}
-						{userData?.LoggedInUserTypeID === 5 || userData?.LoggedInUserTypeID === 10 ? null : apiData?.dynamicCTA?.CloneHR &&  (
+						{
+						// userData?.LoggedInUserTypeID === 5 || userData?.LoggedInUserTypeID === 10 ? null : 
+						apiData?.dynamicCTA?.CloneHR &&  (
 							<CloneHR
 								updatedSplitter={updatedSplitter}
 								cloneHR={apiData?.dynamicCTA?.CloneHR}

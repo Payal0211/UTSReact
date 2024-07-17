@@ -156,6 +156,15 @@ export const userConfig = {
 					);
 				},
 			},
+			{
+				title: 'GEO',
+				dataIndex: 'geo',
+				key: 'geo',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
 		];
 	},
 	userFilterListConfig: () => {
