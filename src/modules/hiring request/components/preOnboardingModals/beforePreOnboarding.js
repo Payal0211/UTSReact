@@ -516,7 +516,7 @@ const calcelMember = () =>{
   const handleComplete = useCallback(
     async (d) => {
       console.log(d,"sdasadasdasdasdsada");
-      setIsLoading(true);
+      // setIsLoading(true);
       let payload = {
         hR_ID: HRID,
         companyID: preOnboardingDetailsForAMAssignment?.companyID,
@@ -524,16 +524,18 @@ const calcelMember = () =>{
         deal_Source: d?.dealSource?.value, //Update
         onboard_ID: talentDeteils?.OnBoardId,
         engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
-        assignAM: preONBoardingData.assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
+        assignAM: assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
+        amSalesPersonID:d.amSalesPersonID?.id,
         talentID: talentDeteils?.TalentID,
         talentShiftStartTime: d.shiftStartTime?.value, //Update
         talentShiftEndTime: d.shiftEndTime?.value, //Update
         payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
           ? 0
           : parseFloat(d.payRate), // pass as null if DP HR  // send numeric value //Update
-        modeOFWorkingID: d?.modeOFWorkingID,
+        modeOFWorkingID: d?.modeOFWorkingID?.id,
         city:d?.city,
         talent_Designation: d?.talent_Designation,
+        stateID:d?.stateID?.id,
         // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
         //   ? null
         //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
@@ -557,34 +559,36 @@ const calcelMember = () =>{
         teamMembers:[{
           name: d.name,
           designation: d.designation,
-          reportingTo: d.reportingTo,
+          reportingTo: d.reportingTo?.id,
           linkedin: d.linkedin,
           email: d.email,
-          buddy: d.buddy
+          buddy: d.buddy?.id
         }],
       };
 
-      let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
-      if (result?.statusCode === HTTPStatusCode.OK) {
-        if (result?.responseBody.details.IsAMAssigned) {
-          EnableNextTab(talentDeteils, HRID, "Legal");
-        }
+      console.log(payload,"payloadpayloadpayload");
 
-        // callAPI(HRID)
-        setMessage(result?.responseBody.details);
-        setIsLoading(false);
-        setEditBillRate(false);
-        setEditPayRate(false);
-        setEditNetTerm(false);
+      // let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
+      // if (result?.statusCode === HTTPStatusCode.OK) {
+      //   if (result?.responseBody.details.IsAMAssigned) {
+      //     EnableNextTab(talentDeteils, HRID, "Legal");
+      //   }
 
-        let req = {
-          OnboardID: talentDeteils?.OnBoardId,
-          HRID: HRID,
-          // actionName: actionType ? actionType : "GotoOnboard",
-        };
-        fatchpreOnBoardInfo(req);
-      }
-      setIsLoading(false);
+      //   // callAPI(HRID)
+      //   setMessage(result?.responseBody.details);
+      //   setIsLoading(false);
+      //   setEditBillRate(false);
+      //   setEditPayRate(false);
+      //   setEditNetTerm(false);
+
+      //   let req = {
+      //     OnboardID: talentDeteils?.OnBoardId,
+      //     HRID: HRID,
+      //     // actionName: actionType ? actionType : "GotoOnboard",
+      //   };
+      //   fatchpreOnBoardInfo(req);
+      // }
+      // setIsLoading(false);
     },
     [
       talentDeteils,
@@ -596,6 +600,7 @@ const calcelMember = () =>{
       editPayRate,
       engagementReplacement?.replacementData,
       addLatter,
+      assignAM
     ]
   );
 
@@ -1411,6 +1416,7 @@ const calcelMember = () =>{
                           required: "please select Mode of  Working.",
                           min: 1,
                         }}
+                        value={watch('modeOFWorkingID')?.value ? watch('modeOFWorkingID')?.value : ""}
                         isError={errors["modeOfWorking"] && errors["modeOfWorking"]}
                         errorMsg={"Please select Mode of  Working"}
                         required
@@ -1503,6 +1509,7 @@ const calcelMember = () =>{
                           required: "please select State.",
                           min: 1,
                         }}
+                        value={watch('State')?.value ? watch('State')?.value : ""}
                         isError={errors["state"] && errors["state"]}
                         errorMsg={"Please select State"}
                         required
