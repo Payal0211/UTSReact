@@ -48,8 +48,8 @@ const EditDPRate = ({ onCancel
     useEffect(() => { 
         // let DPAMOUNT =  ((watchExpectedCTC *  12) * watchDPpercentage) / 100 
         let calAmount = (watchExpectedCTC * watchDPpercentage) / 100
-        let DPAMOUNT =  +watchExpectedCTC + +calAmount
-        setValue('dpAmount', DPAMOUNT.toFixed(2))
+        // let DPAMOUNT =  +watchExpectedCTC + +calAmount
+        setValue('dpAmount', calAmount.toFixed(2))
     },[watchExpectedCTC,watchDPpercentage, setValue])
 
     const saveDPRatehandler = async (data) => {
@@ -159,7 +159,7 @@ const EditDPRate = ({ onCancel
                                     }
                                   },
                             }}
-                            label="DP One time Amount"
+                            label="Uplers Fees (in Amount Annually)"
                             name="dpAmount"
                             type={InputType.NUMBER}
                             placeholder="Enter Amount"
