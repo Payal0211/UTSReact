@@ -54,7 +54,7 @@ const HiringFiltersLazyComponent = React.lazy(() =>
 );
 
 
-let defaaultFilterState = {  pagesize: 100,
+let defaaultFilterState = {  pagesize: 20,
 	pagenum: 1,
 	sortdatafield: "CreatedDateTime",
 	sortorder: "desc",
@@ -554,7 +554,7 @@ const AllHiringRequestScreen = () => {
     setIsShowDirectHRChecked(false);
     setSelectedHRTypes([])
     setPageIndex(1);
-    setPageSize(100);
+    setPageSize(20);
   }, [
     // handleHRRequest,
     setAppliedFilters,
