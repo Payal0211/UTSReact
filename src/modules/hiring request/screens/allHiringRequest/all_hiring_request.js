@@ -571,7 +571,7 @@ const AllHiringRequestScreen = () => {
       <div className={allHRStyles.addnewHR}>
       {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
       <LogoLoader visible={isLoading} />
-        <div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
+        <div className={allHRStyles.hiringRequest}></div>
         <div className={allHRStyles.btn_wrap}>
         {showCloneHRToDemoAccount && <button
         style={{marginRight:'15px'}}
