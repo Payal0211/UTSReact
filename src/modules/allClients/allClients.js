@@ -48,7 +48,7 @@ function AllClients() {
     const pageSizeOptions = [20,100, 200, 300, 500, 1000,5000];
     const [tableFilteredState, setTableFilteredState] = useState({       
         pagenumber:1,
-        totalrecord:100,
+        totalrecord:20,
         filterFields_Client:{
             companyStatus: "",
             geo: "",
@@ -259,13 +259,13 @@ const updateSpaceIDForClientFun = async () =>{
 		setAppliedFilters(new Map());
 		setCheckedState(new Map());
 		setFilteredTagLength(0);
-        setPageSize(100);
+        setPageSize(20);
         setPageIndex(1);
         setDebouncedSearch(search);
         setDebouncedSearchSourceCategory(SearchSourceCategory)
 		setTableFilteredState({       
             pagenumber:1,
-            totalrecord:100,
+            totalrecord:20,
             filterFields_Client:{
                 RatingFrom :0,
                 RatingTo :10,
