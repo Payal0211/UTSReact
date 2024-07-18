@@ -8,20 +8,23 @@ import LegalPreOnboarding from "./legalPreOnboarding";
 export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFlags,callAPI}) {
     const [talentDeteils, setTalentDetais] = useState({})
     const [HRID, setHRID] = useState('')
-    
-
+    const [
+        preOnboardingDetailsForAMAssignment,
+        setPreOnboardingDetailsForAMAssignment,
+      ] = useState({});
     const [items, setItems] = useState([])
     const [activeKey , setActiveKey] = useState('Before Pre-Onboarding')
     const [actionType,setActionType] = useState('AMAssignment')
-    const [message, setMessage] = useState({})
-
-
+    const [message, setMessage] = useState({})    
     const EnableNextTab = useCallback((talentDeteil,HRID, tabLabel) =>{
         const tabList = [
             {
                 label: 'Contract Details',
                 key: 'Contract Details',
-                children: <BeforePreOnboarding  talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType} setMessage={setMessage}/>,
+                children: <BeforePreOnboarding 
+                preOnboardingDetailsForAMAssignment={preOnboardingDetailsForAMAssignment} 
+                setPreOnboardingDetailsForAMAssignment={setPreOnboardingDetailsForAMAssignment} 
+             talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType} setMessage={setMessage}/>,
             },
             {
                 label: 'Legal',
@@ -59,8 +62,6 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
        setActiveKey(tabLabel)
     },[actionType,setShowAMModal,callAPI])
 
-   
-  
     // create tabs based on flags
     useEffect(() =>{
         if(AMFlags?.tabLabel){
@@ -69,7 +70,10 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
                 {
                     label: 'Contract Details',
                     key: 'Contract Details',
-                    children: <BeforePreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
+                    children: <BeforePreOnboarding  
+                    preOnboardingDetailsForAMAssignment={preOnboardingDetailsForAMAssignment} 
+                setPreOnboardingDetailsForAMAssignment={setPreOnboardingDetailsForAMAssignment}
+                    talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
                 },
                 {
                     label: 'Legal',
@@ -114,8 +118,7 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[AMFlags])
-
-  return (
+    return (
     <Modal
     transitionName=""
     className="assignAMModal"
@@ -138,7 +141,7 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
         </div>}
         
 
-        <div className={HRDetailStyle.modalLabel}>Confirm contract details</div>
+        <div className={HRDetailStyle.modalLabel}>{preOnboardingDetailsForAMAssignment?.pageTitle}</div>
         <div className={HRDetailStyle.modalLabelMsg}>Kindly provide the required information</div>
 
         {/* HTML Code Starts for Modal - Before Pre-Onboarding */}

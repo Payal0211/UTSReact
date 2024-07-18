@@ -45,8 +45,10 @@ import { ReactComponent as AboutCompanySVG } from 'assets/svg/aboutCompany.svg';
 import ReactQuill from "react-quill";
 
 export default function BeforePreOnboarding({
+  preOnboardingDetailsForAMAssignment,
+  setPreOnboardingDetailsForAMAssignment,
   talentDeteils,
-  HRID,
+  HRID,  
   setShowAMModal,
   callAPI,
   EnableNextTab,
@@ -85,10 +87,7 @@ export default function BeforePreOnboarding({
   const [controlledReportingTo, setControlledReportingTo] = useState('Please Select');
 
   const [preONBoardingData, setPreONBoardingData] = useState({});
-  const [
-    preOnboardingDetailsForAMAssignment,
-    setPreOnboardingDetailsForAMAssignment,
-  ] = useState({});
+
   const [dealSource, setDealSource] = useState([]);
   const [dealOwner, setDealowner] = useState([]);
   const [netTerms, setNetTerms] = useState([]);
@@ -250,7 +249,7 @@ export default function BeforePreOnboarding({
   const fatchpreOnBoardInfo = useCallback(
     async (req) => {
       let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);
-      if (result?.statusCode === HTTPStatusCode.OK) {        
+      if (result?.statusCode === HTTPStatusCode.OK) {       
         setAssignAM(result?.responseBody?.details?.assignAM)
         setReplacementEngHr(result.responseBody.details?.replacementEngAndHR);
         setIsTransparentPricing(
@@ -482,14 +481,13 @@ export default function BeforePreOnboarding({
   ]);
 
   const saveMember = (d) =>{
-    // console.log("member data", d, watch('reportingTo'), watch('memberBuddy'))
     let newMember = {
-    "name": d.memberName,
-    "designation": d.memberDesignation,
-    "reportingTo": watch('reportingTo')? watch('reportingTo').value : '',
-    "linkedin": d.linkedinLink,
-    "email": d.memberEmail,
-    "buddy": watch('memberBuddy') ? watch('memberBuddy').value : ''
+    "name": d.name,
+    "designation": d.designation,
+    "reportingTo": watch('reportingTo') ? watch('reportingTo').value : '',
+    "linkedin": d.linkedin,
+    "email": d.email,
+    "buddy": watch('buddy') ? watch('buddy').value : ''
   }
 
   setAddMoreTeamMember(false)
@@ -515,80 +513,138 @@ const calcelMember = () =>{
 
   const handleComplete = useCallback(
     async (d) => {
-      console.log(d,"sdasadasdasdasdsada");
-      // setIsLoading(true);
-      let payload = {
-        hR_ID: HRID,
-        companyID: preOnboardingDetailsForAMAssignment?.companyID,
-        deal_Owner: d?.dealOwner?.value, //Update
-        deal_Source: d?.dealSource?.value, //Update
-        onboard_ID: talentDeteils?.OnBoardId,
-        engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
-        assignAM: assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
-        amSalesPersonID:d.amSalesPersonID?.id,
-        talentID: talentDeteils?.TalentID,
-        talentShiftStartTime: d.shiftStartTime?.value, //Update
-        talentShiftEndTime: d.shiftEndTime?.value, //Update
-        payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-          ? 0
-          : parseFloat(d.payRate), // pass as null if DP HR  // send numeric value //Update
-        modeOFWorkingID: d?.modeOFWorkingID?.id,
-        city:d?.city,
-        talent_Designation: d?.talent_Designation,
-        stateID:d?.stateID?.id,
-        // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-        //   ? null
-        //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
-        billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-          ? null
-          : parseFloat(d.billRate), //,
-        netPaymentDays: parseInt(d.netTerm.value), //Update
-        nrMargin: !preOnboardingDetailsForAMAssignment?.isHRTypeDP
-          ? d.nrPercent
-          : null,
-        isReplacement: engagementReplacement?.replacementData,
-        talentReplacement: {
-          onboardId: talentDeteils?.OnBoardId,
-          lastWorkingDay: addLatter === false ? d.lwd : "",
-          replacementInitiatedby: loggedInUserID.toString(),
-          engHRReplacement:
-            addLatter === true || d.engagementreplacement === undefined
-              ? ""
-              : d.engagementreplacement.id,
+      let _payload = {
+        "hR_ID": HRID,
+        "companyID": preOnboardingDetailsForAMAssignment?.companyID,
+        "deal_Owner": d?.dealOwner?.value,
+        "deal_Source": d?.dealSource?.value,
+        "lead_Type": null,
+        "industry_Type": null,
+        "onboard_ID":talentDeteils?.OnBoardId,
+        "engagemenID": preOnboardingDetailsForAMAssignment?.engagemenID,
+        "assignAM": assignAM,
+        "talentID":talentDeteils?.TalentID,
+        "talentShiftStartTime":d.shiftStartTime?.value,
+        "talentShiftEndTime": d.shiftEndTime?.value,
+        "payRate":preOnboardingDetailsForAMAssignment?.isHRTypeDP ? 0 : parseFloat(d.payRate),
+        "billRate": preOnboardingDetailsForAMAssignment?.isHRTypeDP ? null : parseFloat(d.billRate),
+        "netPaymentDays": parseInt(d.netTerm),
+        "nrMargin": !preOnboardingDetailsForAMAssignment?.isHRTypeDP ? d.nrPercent : null,
+        "modeOFWorkingID": d?.modeOFWorkingID?.id,
+        "city": d?.city,
+        "stateID": d?.stateID?.id,
+        "talent_Designation": d?.talent_Designation,
+        "amSalesPersonID": d.amSalesPersonID?.id,
+        "isReplacement": engagementReplacement?.replacementData,
+        "talentReplacement": {
+          "onboardId": talentDeteils?.OnBoardId,
+          "replacementID": 0,
+          "hiringRequestID": HRID,
+          "talentId": talentDeteils?.TalentID,
+          "lastWorkingDay": addLatter === false ? d.lwd : null,
+          "lastWorkingDateOption": 0,
+          "noticeperiod": 0,
+          "replacementStage": d.replaceStage?.value,
+          "reasonforReplacement": d.replaceStage?.value,
+          "replacementInitiatedby": loggedInUserID.toString(),
+          "replacementHandledByID": null,
+          "engagementReplacementOnBoardID": 0,
+          "replacementTalentId": null,
+          "engHRReplacement": addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id
         },
-        teamMembers:[{
-          name: d.name,
-          designation: d.designation,
-          reportingTo: d.reportingTo?.id,
-          linkedin: d.linkedin,
-          email: d.email,
-          buddy: d.buddy?.id
-        }],
-      };
+        "updateClientOnBoardingDetails": {
+          "hR_ID": HRID,
+          "companyID": preOnboardingDetailsForAMAssignment?.companyID,
+          "signingAuthorityName": null,
+          "signingAuthorityEmail": null,
+          "contractDuration": d.contractDuration,
+          "onBoardID": talentDeteils?.OnBoardId,
+          "about_Company_desc": d?.aboutCompany,
+          "talent_FirstWeek": d?.firstWeek,
+          "talent_FirstMonth": d?.firstMonth,
+          "softwareToolsRequired": d?.softwareToolsRequired,
+          "devicesPoliciesOption": !talentDeteils?.IsHRTypeDP ? d.devicePolicy.value : "",
+          "talentDeviceDetails": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 1 ? d.standerdSpecifications : '' : "",
+          // "additionalCostPerMonth_RDPSecurity": 0,
+          // "isRecurring": true,
+          // "proceedWithUplers_LeavePolicyOption": null,
+          // "proceedWithClient_LeavePolicyOption": null,
+          "proceedWithClient_LeavePolicyLink": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "" ,
+          "leavePolicyFileName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" ,
+          "exit_Policy": d?.exitPolicy,
+          "hdnRadioDevicesPolicies": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.value : "",
+          "device_Radio_Option": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '' : "",
+          "deviceID": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ? d.deviceType.id : 0 : 0,
+          "client_DeviceDescription": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' :"" ,
+          "totalCost": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,
+          "radio_LeavePolicies": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.value : "",
+          "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
+          "teamMembers": clientTeamMembers
+        }
+      }
+      // let payload = {
+      //   hR_ID: HRID,
+      //   companyID: preOnboardingDetailsForAMAssignment?.companyID,
+      //   deal_Owner: d?.dealOwner?.value, //Update
+      //   deal_Source: d?.dealSource?.value, //Update
+      //   onboard_ID: talentDeteils?.OnBoardId,
+      //   engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
+      //   assignAM: assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
+      //   amSalesPersonID:d.amSalesPersonID?.id,
+      //   talentID: talentDeteils?.TalentID,      
+      //   talentShiftStartTime: d.shiftStartTime?.value, //Update
+      //   talentShiftEndTime: d.shiftEndTime?.value, //Update
+      //   payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
+      //     ? 0
+      //     : parseFloat(d.payRate), // pass as null if DP HR  // send numeric value //Update
+      //   modeOFWorkingID: d?.modeOFWorkingID?.id,
+      //   city:d?.city,
+      //   talent_Designation: d?.talent_Designation,
+      //   stateID:d?.stateID?.id,
+      //   // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
+      //   //   ? null
+      //   //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
+      //   billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
+      //     ? null
+      //     : parseFloat(d.billRate), //,
+      //   netPaymentDays: parseInt(d.netTerm), //Update
+      //   nrMargin: !preOnboardingDetailsForAMAssignment?.isHRTypeDP
+      //     ? d.nrPercent
+      //     : null,
+      //   isReplacement: engagementReplacement?.replacementData,
+      //   talentReplacement: {
+      //     onboardId: talentDeteils?.OnBoardId,
+      //     lastWorkingDay: addLatter === false ? d.lwd : "",
+      //     replacementInitiatedby: loggedInUserID.toString(),
+      //     engHRReplacement:
+      //       addLatter === true || d.engagementreplacement === undefined
+      //         ? ""
+      //         : d.engagementreplacement.id,
+      //   },
+      //   teamMembers:clientTeamMembers,
+      // };
 
-      console.log(payload,"payloadpayloadpayload");
+      let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
+      if (result?.statusCode === HTTPStatusCode.OK) {
+        // if (result?.responseBody.details.IsAMAssigned) {
+        //   EnableNextTab(talentDeteils, HRID, "Legal");
+        // }
 
-      // let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
-      // if (result?.statusCode === HTTPStatusCode.OK) {
-      //   if (result?.responseBody.details.IsAMAssigned) {
-      //     EnableNextTab(talentDeteils, HRID, "Legal");
-      //   }
-
-      //   // callAPI(HRID)
-      //   setMessage(result?.responseBody.details);
-      //   setIsLoading(false);
-      //   setEditBillRate(false);
-      //   setEditPayRate(false);
-      //   setEditNetTerm(false);
-
-      //   let req = {
-      //     OnboardID: talentDeteils?.OnBoardId,
-      //     HRID: HRID,
-      //     // actionName: actionType ? actionType : "GotoOnboard",
-      //   };
-      //   fatchpreOnBoardInfo(req);
-      // }
-      // setIsLoading(false);
+        // callAPI(HRID)
+        setMessage(result?.responseBody.details);
+        setIsLoading(false);
+        setEditBillRate(false);
+        setEditPayRate(false);
+        setEditNetTerm(false);
+        setShowAMModal(false);
+        // let req = {
+        //   OnboardID: talentDeteils?.OnBoardId,
+        //   HRID: HRID,
+        //   // actionName: actionType ? actionType : "GotoOnboard",
+        // };
+        // fatchpreOnBoardInfo(req);
+      }
+      setIsLoading(false);
     },
     [
       talentDeteils,
@@ -710,7 +766,7 @@ const calcelMember = () =>{
         {isLoading ? (
           <Skeleton />
         ) : (
-          <>
+          <>           
             <div className={HRDetailStyle.onboardingProcesBox}>
               <div className={HRDetailStyle.onboardingProcessLeft}>
                 <div>
@@ -932,7 +988,8 @@ const calcelMember = () =>{
                       </Radio.Group>
                     </span>
                   </div>
-                {assignAM ?  <>
+                {assignAM ?  
+                <>
                   <HRSelectField
                     isControlled={true}
                     controlledValue={controlledAssignAM}
@@ -1005,10 +1062,7 @@ const calcelMember = () =>{
                       No HR Found for Handover
                     </h3>
                   )}
-                  </> : <span>All the current HRs will not be assigned to any AMs</span>}
-                 
-
-                  
+                  </> : <span>All the current HRs will not be assigned to any AMs</span>}                                  
                 </div>
               </div>
             </div>
@@ -1380,10 +1434,10 @@ const calcelMember = () =>{
                   <div className={HRDetailStyle.onboardingDetailText}>
                     <span>Uplers Fees</span>
                     <span className={HRDetailStyle.onboardingTextBold}>
-                      {/* {preOnboardingDetailsForAMAssignment?.talentRole
+                      {preOnboardingDetailsForAMAssignment?.talentRole
                         ? preOnboardingDetailsForAMAssignment?.talentRole
-                        : "NA"} */}
-                      35 %
+                        : "NA"}
+                      {/* 35 % */}
                     </span>
                   </div>
 
@@ -2134,15 +2188,15 @@ const calcelMember = () =>{
 									// required
 									errorMsg={'Please select buddy'}
 								/>
-                        </div>
+                </div>
 
-                        {/* <div className={HRDetailStyle.modalFormCol}>
-                            <div className={HRDetailStyle.modalBtnWrap}>
-                                <button type="submit" className={HRDetailStyle.btnPrimary} onClick={memberHandleSubmit(saveMember)}>Save</button>
-                                <button className={HRDetailStyle.btnPrimaryOutline} onClick={()=> calcelMember()}>Cancel</button>
-                            </div>
-                        </div> */}
-                    </div>		
+                <div className={HRDetailStyle.modalFormCol}>
+                        <div className={HRDetailStyle.modalBtnWrap}>
+                            <button type="submit" className={HRDetailStyle.btnPrimary} onClick={memberHandleSubmit(saveMember)}>Save</button>
+                            <button className={HRDetailStyle.btnPrimaryOutline} onClick={()=> calcelMember()}>Cancel</button>
+                        </div>
+                    </div>
+                </div>		
                 </div> }
                		
 
