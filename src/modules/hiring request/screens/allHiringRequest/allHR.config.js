@@ -918,6 +918,7 @@ export const unassignedHRsConfig = {
 				title: 'Assigned POC',
 				dataIndex: 'assignedPOC',
 				key: 'assignedPOC',
+        width: "260px",
 				render: (data, param) => {	
  					return <ControlledTitleComp text={data} values={param} />
 					// return (
@@ -935,14 +936,15 @@ export const unassignedHRsConfig = {
         dataIndex: "Date",
         key: "Date",
         align: "left",
-        width: "8%",
+        // width: "8%",
+        width: "130px",
       },
       {
         title: "HR ID",
         dataIndex: "HR_ID",
         key: "HR_ID",
         align: "left",
-        width: "10%",
+        width: "190px",
         render: (text, result) => (
           <Link
             target="_blank"
@@ -958,7 +960,8 @@ export const unassignedHRsConfig = {
         title: "TR",
         dataIndex: "TR",
         key: "TR",
-        width: "4%",
+        // width: "4%",
+        width: "70px",
         align: "left",
       },
       {
@@ -966,14 +969,14 @@ export const unassignedHRsConfig = {
         dataIndex: "Position",
         key: "position",
         align: "left",
-        width: "50px",
+        // width: "50px",
       },
       {
         title: "Company",
         dataIndex: "Company",
         key: "company",
         align: "left",
-        width: "40px",
+        // width: "240px",
         // render: (text) => {
         // 	return (
         // 		<a
@@ -993,14 +996,14 @@ export const unassignedHRsConfig = {
         dataIndex: "companyModel",
         key: "companyModel",
         align: "left",
-        width: "30px",
+        width: "150px",
       },
       {
         title: "HR Type",
         dataIndex: "hrTypeName",
         key: "hrTypeName",
         align: "left",
-        width: "30px",
+        width: "160px",
       },
       // {
       //   title: "HR Status",

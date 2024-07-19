@@ -878,7 +878,7 @@ const AllHiringRequestScreen = () => {
        * ------------ Table Starts-----------
        * @Table Part
        */}
-      <div className={allHRStyles.tableDetails}>
+      <div className={`${allHRStyles.tableDetails} ${allHRStyles.hiringRequestTable}`}>
         {isLoading ? (
           <TableSkeleton />
         ) : (

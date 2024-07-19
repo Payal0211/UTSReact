@@ -1,3 +1,32 @@
+.hiringRequestWrap {
+    padding: 32px 40px 24px;
+}
+
+.hiringRequestWrap .hiringRequestContainer{
+    padding: 0;
+}
+
+.hiringRequestWrap [class*="hiringRequestTab"] > [class*="ant-tabs-nav"]{
+    margin-bottom: 24px;
+}
+
+.hiringRequestWrap [class*="hiringRequestTab"] [class*="ant-tabs-content"] > [class*="ant-tabs-switch-leave"]{
+    display: none;
+}
+
+.hiringRequestWrap [class*="hiringRequestTab"] [class*="ant-tabs-content"] > [class*="ant-tabs-tabpane-active"]{
+    position: relative;
+    display: block;
+}
+
+.hiringRequestWrap .mt0{
+    margin-top: 0 !important;
+}
+
+.hiringRequestTable [class*="ant-table-body"]{
+    max-height: calc(100vh - 485px) !important;
+}
+
 .hiringRequestContainer {
     padding: 24px 40px;
 }
@@ -330,13 +359,47 @@
     width: 180px;
 }
 
+.tableDetails [class^="tblEditBox"]{
+    align-items: center;
+    display: flex;
+}
+
+.tableDetails [class^="tblEditBox"] svg{
+    width: 20px;
+    min-width: 20px;
+}
+.tableDetails [class^="tblEditBox"] > [class^="ant-select"]{
+    width: 160px;
+    max-width: 160px;
+}
+.tableDetails [class^="tblEditBox"] [class^="ant-select"] [class^="ant-select-selector"]{
+    padding-top: 9px;
+    padding-bottom: 9px;
+    height: 40px;
+}
+
+.tableDetails [class^="tblEditBox"] [class^="ant-select"] [class^="ant-select-selector"] [class^="ant-select-selection-search-input"]{
+    height: 38px;
+}
 
 /* Responsive css start */
-
 @media only screen and (max-width: 1440px) {
+    .hiringRequestWrap {
+        padding: 22px 24px 16px;
+    }
+
+    .hiringRequestWrap [class*="hiringRequestTab"] > [class*="ant-tabs-nav"]{
+        margin-bottom: 16px;
+    }
+    
     .hiringRequestContainer {
         padding: 16px 24px;
     }
+
+    .hiringRequestTable [class*="ant-table-body"]{
+        max-height: calc(100vh - 367px) !important;
+    }
+
     .filterContainer{
         margin: 16px auto;
     }
@@ -358,6 +421,10 @@
   
     .hiringRequest {
         font-size: 26px;
+    }
+
+    .filterRight{
+        gap: 15px;
     }
   
     .filterRight .focusCheckBox{
@@ -390,11 +457,11 @@
     }
 
     .filterSets{
-        padding: 15px;
+        padding: 10px;
     }
-
-    .filterRight{
-        gap: 15px;
+    
+    .filterSets [class*="ant-checkbox-wrapper"]{
+        font-size: 13px;
     }
   
     .addFilter{
@@ -427,5 +494,4 @@
     }
 
 }
-
 /* Responsive css End */

@@ -320,7 +320,7 @@ const UnassignedHRScreen = () => {
 	  },[assignedPOCID,getHRID])
     
 		if(isEdit){
-			return <div style={{display:'flex', alignItems:'center'}}>
+			return <div className="tblEditBox">
 			<TickMark
 				width={24}
 				height={24}
@@ -339,7 +339,7 @@ const UnassignedHRScreen = () => {
 			onClick={() => {setIsEdit(false);setRole(text)}} />
 			</div>
 		}else {
-			return <div style={{display:'flex', alignItems:'center'}}>
+			return <div className="tblEditBox">
 				<EditSVG
 					width={24}
 					height={24}
@@ -642,7 +642,8 @@ const UnassignedHRScreen = () => {
   return (
     <div className={allHRStyles.hiringRequestContainer}>
       {contextHolder}
-      <div className={allHRStyles.addnewHR}>
+      {/* <LogoLoader visible={isLoading} /> */}
+       <div className={allHRStyles.addnewHR}>
       {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
       <LogoLoader visible={isLoading} />
         {/* <div className={allHRStyles.hiringRequest}></div>
@@ -798,13 +799,13 @@ const UnassignedHRScreen = () => {
           >
             Export
           </button>
-        </div> */}
-      </div>
+        </div>*/}
+      </div> 
       {/*
        * --------- Filter Component Starts ---------
        * @Filter Part
        */}
-      <div className={allHRStyles.filterContainer}>
+      <div className={`${allHRStyles.filterContainer} ${allHRStyles.mt0}`}>
         <div className={allHRStyles.filterSets}>
           <div className={allHRStyles.filterSetsInner}>
             {/* <div className={allHRStyles.addFilter} onClick={toggleHRFilter}>
