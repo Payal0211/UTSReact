@@ -541,6 +541,12 @@ export const allHRConfig = {
         child: filterList?.companyModel,
         isSearch: false,
       },
+      {
+        label: "GEO",
+        name: "geoList",
+        child: filterList?.geoList,
+        isSearch: false,
+      },
     ];
   },
   profileLogConfig: (profileLog) => {
