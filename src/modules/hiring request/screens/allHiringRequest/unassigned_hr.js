@@ -814,7 +814,7 @@ const UnassignedHRScreen = () => {
               <div className={allHRStyles.filterLabel}>Add Filters</div>
               <div className={allHRStyles.filterCount}>{filteredTagLength}</div>
             </div> */}
-            <p href="javascript:void(0)" onClick={() => clearFilters()}>Reset Filters</p>
+            <p onClick={() => clearFilters()}>Reset Filters</p>
 
            
 
