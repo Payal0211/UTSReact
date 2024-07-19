@@ -762,7 +762,7 @@ const calcelMember = () =>{
   //  console.log("form error", errors);
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
-      <div className={HRDetailStyle.onboardingProcesspart}>
+      <div className={`${HRDetailStyle.onboardingProcesspart} ${HRDetailStyle.onboardingReleaseOffer}`}>
         {isLoading ? (
           <Skeleton />
         ) : (
@@ -776,197 +776,230 @@ const calcelMember = () =>{
               </div>
 
               <div className={HRDetailStyle.onboardingProcessMid}>
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>Company Name</span>
-                  <span className={HRDetailStyle.onboardingTextBold}>
-                    {preOnboardingDetailsForAMAssignment?.companyName
-                      ? preOnboardingDetailsForAMAssignment?.companyName
-                      : "NA"}
-                  </span>
-                </div>
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>Client Email/Name</span>
-                  <span className={HRDetailStyle.onboardingTextBold}>
-                    {preOnboardingDetailsForAMAssignment?.client
-                      ? preOnboardingDetailsForAMAssignment?.client
-                      : "NA"}
-                  </span>
-                </div>
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>HR ID</span>
-                  <a
-                    target="_blank"
-                    href={`/allhiringrequest/${HRID}`}
-                    rel="noreferrer"
-                    className={HRDetailStyle.onboardingTextUnderline}
-                  >
-                    {preOnboardingDetailsForAMAssignment?.hrNumber
-                      ? preOnboardingDetailsForAMAssignment?.hrNumber
-                      : "NA"}
-                  </a>
-                </div>
-                {/* <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>Country</span>
-                  <span className={HRDetailStyle.onboardingTextBold}>
-                    {preOnboardingDetailsForAMAssignment?.geo
-                      ? preOnboardingDetailsForAMAssignment?.geo
-                      : "NA"}
-                  </span>
-                </div> */}
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>No. of Employees</span>
-                  <span className={HRDetailStyle.onboardingTextBold}>
-                    {preOnboardingDetailsForAMAssignment?.noOfEmployee
-                      ? preOnboardingDetailsForAMAssignment?.noOfEmployee
-                      : "NA"}
-                  </span>
-                </div>
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>Client POC Name</span>
-                  <span className={HRDetailStyle.onboardingTextBold}>
-                    {preOnboardingDetailsForAMAssignment?.client_POC_Name
-                      ? preOnboardingDetailsForAMAssignment?.client_POC_Name
-                      : "NA"}
-                  </span>
-                </div>
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>Client POC Email</span>
-                  <span className={HRDetailStyle.onboardingTextBold}>
-                    {preOnboardingDetailsForAMAssignment?.client_POC_Email
-                      ? preOnboardingDetailsForAMAssignment?.client_POC_Email
-                      : "NA"}
-                  </span>
-                </div>
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>Industry</span>
-                  <span className={HRDetailStyle.onboardingTextBold}>
-                    {preOnboardingDetailsForAMAssignment?.industry
-                      ? preOnboardingDetailsForAMAssignment?.industry
-                      : "NA"}
-                  </span>
-                </div>
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>Discovery Call Link</span>
-                  { preONBoardingData?.preOnboardingDetailsForAMAssignment
-                        ?.discovery_Link ?
-                        <a target="_blank"  href={preONBoardingData?.preOnboardingDetailsForAMAssignment ?.discovery_Link} rel="noreferrer" className={HRDetailStyle.onboardingTextUnderline}>
-                          {preONBoardingData?.preOnboardingDetailsForAMAssignment?.discovery_Link}</a>:"NA"}
-                </div>
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  <span>Job Description</span>
-                  {/* <button className={HRDetailStyle.onboardingDownload}><DownloadJDSVG/>Download JD</button> */}
+                <div className={HRDetailStyle.modalFormWrapper}>
 
-                  {preOnboardingDetailsForAMAssignment?.jobDescription?.split(
-                    ":"
-                  )[0] === "http" ||
-                  preOnboardingDetailsForAMAssignment?.jobDescription?.split(
-                    ":"
-                  )[0] === "https" ? (
-                    <a
-                      className={HRDetailStyle.onboardingDownload}
-                      rel="noreferrer"
-                      href={preOnboardingDetailsForAMAssignment?.jobDescription}
-                      style={{ textDecoration: "underline" }}
-                      target="_blank"
-                    >
-                      <DownloadJDSVG />
-                      Download JD
-                    </a>
-                  ) : (
-                    <a
-                      className={HRDetailStyle.onboardingDownload}
-                      rel="noreferrer"
-                      href={
-                        NetworkInfo.PROTOCOL +
-                        NetworkInfo.DOMAIN +
-                        "Media/JDParsing/JDfiles/" +
-                        preOnboardingDetailsForAMAssignment?.jobDescription
-                      }
-                      style={{ textDecoration: "underline" }}
-                      target="_blank"
-                    >
-                      <DownloadJDSVG />
-                      Download JD
-                    </a>
-                  )}
-                </div>
-                {/* Hide deal source and owner */}
-                {/* <div className={HRDetailStyle.modalFormWrapper}>
-                  <div className={HRDetailStyle.modalFormCol}>
-                    <HRSelectField
-                    controlledValue={controlledDealSource}
-                    setControlledValue={setControlledDealSource}
-                    isControlled={true}
-                      mode="id/value"
-                      setValue={setValue}
-                      register={register}
-                      label={"Deal Source"}
-                      extraAction={()=>{setValue('dealOwner','');
-                      setControlledDealOwner()}}
-                      defaultValue={"Select Deal Source"}
-                      name="dealSource"
-                      options={dealSource && dealSource}
-                      isError={errors["dealSource"] && errors["dealSource"]}
-                      required
-                      errorMsg={"Please select Deal Source"}
-                      disabled={isTabDisabled}
-                    />
+                  <div className={HRDetailStyle.modalFormCol}>        
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Company Name</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        {preOnboardingDetailsForAMAssignment?.companyName
+                          ? preOnboardingDetailsForAMAssignment?.companyName
+                          : "NA"}
+                      </span>
+                    </div>
                   </div>
+
                   <div className={HRDetailStyle.modalFormCol}>
-                    <HRSelectField
-                     controlledValue={controlledDealOwner}
-                     setControlledValue={setControlledDealOwner}
-                     isControlled={true}
-                      mode="id/value"
-                      setValue={setValue}
-                      register={register}
-                      label={"Deal Owner"}
-                      defaultValue={"Select Deal Owner"}
-                      name="dealOwner"
-                      options={dealOwner && dealOwner}
-                      isError={errors["dealOwner"] && errors["dealOwner"]}
-                      required
-                      errorMsg={"Please select Deal Owner"}
-                      disabled={isTabDisabled}
-                    />
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Client Email/Name</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        {preOnboardingDetailsForAMAssignment?.client
+                          ? preOnboardingDetailsForAMAssignment?.client
+                          : "NA"}
+                      </span>
+                    </div>
                   </div>
-                </div> */}
 
-                {/* <div className={HRDetailStyle.onboardingCondition}>
-                    <h5>Is this an Existing Client?</h5>
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>HR ID</span>
+                      <a
+                        target="_blank"
+                        href={`/allhiringrequest/${HRID}`}
+                        rel="noreferrer"
+                        className={HRDetailStyle.onboardingTextUnderline}
+                      >
+                        {preOnboardingDetailsForAMAssignment?.hrNumber
+                          ? preOnboardingDetailsForAMAssignment?.hrNumber
+                          : "NA"}
+                      </a>
+                    </div>
+                  </div>
 
-                    <label className={HRDetailStyle.radioCheck_Mark}>
-                        <p>Yes</p>
-                        <input
-                            // {...register('remote')}
-                            value={0}
-                            type="radio"
-                            // checked={checkednoValue}
-                            // onChange={(e) => {
-                            // 	checkedNo(e);
-                            // }}
-                            id="remote"
-                            name="remote"
-                        />
-                        <span className={HRDetailStyle.customCheck_Mark}></span>
-                    </label>
-                    <label className={HRDetailStyle.radioCheck_Mark}>
-                        <p>No</p>
-                        <input
-                            // {...register('remote')}
-                            value={0}
-                            type="radio"
-                            // checked={checkednoValue}
-                            // onChange={(e) => {
-                            // 	checkedNo(e);
-                            // }}
-                            id="remote"
-                            name="remote"
-                        />
-                        <span className={HRDetailStyle.customCheck_Mark}></span>
-                    </label>
+                  {/*<div className={HRDetailStyle.modalFormCol}>
+                   <div className={HRDetailStyle.onboardingDetailText}>
+                    <span>Country</span>
+                    <span className={HRDetailStyle.onboardingTextBold}>
+                      {preOnboardingDetailsForAMAssignment?.geo
+                        ? preOnboardingDetailsForAMAssignment?.geo
+                        : "NA"}
+                    </span>
+                  </div> 
+                  </div>*/}
 
-                </div> */}
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>No. of Employees</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        {preOnboardingDetailsForAMAssignment?.noOfEmployee
+                          ? preOnboardingDetailsForAMAssignment?.noOfEmployee
+                          : "NA"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Client POC Name</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        {preOnboardingDetailsForAMAssignment?.client_POC_Name
+                          ? preOnboardingDetailsForAMAssignment?.client_POC_Name
+                          : "NA"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Client POC Email</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        {preOnboardingDetailsForAMAssignment?.client_POC_Email
+                          ? preOnboardingDetailsForAMAssignment?.client_POC_Email
+                          : "NA"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Industry</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        {preOnboardingDetailsForAMAssignment?.industry
+                          ? preOnboardingDetailsForAMAssignment?.industry
+                          : "NA"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Discovery Call Link</span>
+                      { preONBoardingData?.preOnboardingDetailsForAMAssignment
+                            ?.discovery_Link ?
+                            <a target="_blank"  href={preONBoardingData?.preOnboardingDetailsForAMAssignment ?.discovery_Link} rel="noreferrer" className={HRDetailStyle.onboardingTextUnderline}>
+                              {preONBoardingData?.preOnboardingDetailsForAMAssignment?.discovery_Link}</a>:"NA"}
+                    </div>
+                  </div>
+
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Job Description</span>
+                      {/* <button className={HRDetailStyle.onboardingDownload}><DownloadJDSVG/>Download JD</button> */}
+
+                      {preOnboardingDetailsForAMAssignment?.jobDescription?.split(
+                        ":"
+                      )[0] === "http" ||
+                      preOnboardingDetailsForAMAssignment?.jobDescription?.split(
+                        ":"
+                      )[0] === "https" ? (
+                        <a
+                          className={HRDetailStyle.onboardingDownload}
+                          rel="noreferrer"
+                          href={preOnboardingDetailsForAMAssignment?.jobDescription}
+                          style={{ textDecoration: "underline" }}
+                          target="_blank"
+                        >
+                          <DownloadJDSVG />
+                          Download JD
+                        </a>
+                      ) : (
+                        <a
+                          className={HRDetailStyle.onboardingDownload}
+                          rel="noreferrer"
+                          href={
+                            NetworkInfo.PROTOCOL +
+                            NetworkInfo.DOMAIN +
+                            "Media/JDParsing/JDfiles/" +
+                            preOnboardingDetailsForAMAssignment?.jobDescription
+                          }
+                          style={{ textDecoration: "underline" }}
+                          target="_blank"
+                        >
+                          <DownloadJDSVG />
+                          Download JD
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Hide deal source and owner */}
+                  {/* <div className={HRDetailStyle.modalFormWrapper}>
+                    <div className={HRDetailStyle.modalFormCol}>
+                      <HRSelectField
+                      controlledValue={controlledDealSource}
+                      setControlledValue={setControlledDealSource}
+                      isControlled={true}
+                        mode="id/value"
+                        setValue={setValue}
+                        register={register}
+                        label={"Deal Source"}
+                        extraAction={()=>{setValue('dealOwner','');
+                        setControlledDealOwner()}}
+                        defaultValue={"Select Deal Source"}
+                        name="dealSource"
+                        options={dealSource && dealSource}
+                        isError={errors["dealSource"] && errors["dealSource"]}
+                        required
+                        errorMsg={"Please select Deal Source"}
+                        disabled={isTabDisabled}
+                      />
+                    </div>
+                    <div className={HRDetailStyle.modalFormCol}>
+                      <HRSelectField
+                      controlledValue={controlledDealOwner}
+                      setControlledValue={setControlledDealOwner}
+                      isControlled={true}
+                        mode="id/value"
+                        setValue={setValue}
+                        register={register}
+                        label={"Deal Owner"}
+                        defaultValue={"Select Deal Owner"}
+                        name="dealOwner"
+                        options={dealOwner && dealOwner}
+                        isError={errors["dealOwner"] && errors["dealOwner"]}
+                        required
+                        errorMsg={"Please select Deal Owner"}
+                        disabled={isTabDisabled}
+                      />
+                    </div>
+                  </div> */}
+
+                  {/* <div className={HRDetailStyle.onboardingCondition}>
+                      <h5>Is this an Existing Client?</h5>
+
+                      <label className={HRDetailStyle.radioCheck_Mark}>
+                          <p>Yes</p>
+                          <input
+                              // {...register('remote')}
+                              value={0}
+                              type="radio"
+                              // checked={checkednoValue}
+                              // onChange={(e) => {
+                              // 	checkedNo(e);
+                              // }}
+                              id="remote"
+                              name="remote"
+                          />
+                          <span className={HRDetailStyle.customCheck_Mark}></span>
+                      </label>
+                      <label className={HRDetailStyle.radioCheck_Mark}>
+                          <p>No</p>
+                          <input
+                              // {...register('remote')}
+                              value={0}
+                              type="radio"
+                              // checked={checkednoValue}
+                              // onChange={(e) => {
+                              // 	checkedNo(e);
+                              // }}
+                              id="remote"
+                              name="remote"
+                          />
+                          <span className={HRDetailStyle.customCheck_Mark}></span>
+                      </label>
+
+                  </div> */}
+                </div>
               </div>
             </div>
 
@@ -979,36 +1012,35 @@ const calcelMember = () =>{
               </div>
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
-                  <div className={HRDetailStyle.onboardingCurrentText}>
-                   {assignAM ? <span>Do you want to edit AM ? </span> : <span>Do you want to assign an AM?</span>}
-                    <span>
-                      <Radio.Group name="assignAM" value={assignAM} onChange={(e) => setAssignAM(e.target.value)}>
-                        <Radio value={true}>Yes</Radio>
-                        {!assignAM && <Radio value={false}>No</Radio>}
-                      </Radio.Group>
-                    </span>
+                  <div className={HRDetailStyle.colMd12}>
+                    <div className={`${HRDetailStyle.onboardingCurrentText} ${HRDetailStyle.onboardingAMAssignmentHead}`}>
+                    {assignAM ? <span>Do you want to edit AM ? </span> : <span>Do you want to assign an AM?</span>}                        <Radio.Group name="assignAM" value={assignAM} onChange={(e) => setAssignAM(e.target.value)}>
+                          <Radio value={true}>Yes</Radio>
+                          <Radio value={false}>No</Radio>
+                        </Radio.Group>                    
+                    </div>
                   </div>
                 {assignAM ?  
                 <>
-                  <HRSelectField
-                    isControlled={true}
-                    controlledValue={controlledAssignAM}
-                    setControlledValue={setControlledAssignAM}
-                    mode="id/value"
-                    setValue={setValue}
-                    register={register}
-                    label={"Select AM"}
-                    defaultValue={"Select AM"}
-                    name="amSalesPersonID"
-                    options={amUsers && amUsers}
-                    isError={errors["selectAM"] && errors["selectAM"]}
-                    required
-                    errorMsg={"Please select AM"}
-                  />
-                  <div className={HRDetailStyle.onboardingCurrentText}>
-                    <span>
+                  <div className={HRDetailStyle.colMd12}>             
+                    <HRSelectField
+                      isControlled={true}
+                      controlledValue={controlledAssignAM}
+                      setControlledValue={setControlledAssignAM}
+                      mode="id/value"
+                      setValue={setValue}
+                      register={register}
+                      label={"Select AM"}
+                      defaultValue={"Select AM"}
+                      name="amSalesPersonID"
+                      options={amUsers && amUsers}
+                      isError={errors["selectAM"] && errors["selectAM"]}
+                      required
+                      errorMsg={"Please select AM"}
+                    />
+                  </div>
+                  <div className={`${HRDetailStyle.modalFormCol} ${HRDetailStyle.assignmentCardTitle}`}>
                       Following HRs will be assigned to the selected AM
-                    </span>
                   </div>
                   {currentHRs?.length > 0 ? (
                     currentHRs
@@ -1062,7 +1094,7 @@ const calcelMember = () =>{
                       No HR Found for Handover
                     </h3>
                   )}
-                  </> : <span>All the current HRs will not be assigned to any AMs</span>}                                  
+                  </> : <div className={HRDetailStyle.colMd12}><div className={HRDetailStyle.assignmentNotAssign}>All the current HRs will not be assigned to any AMs</div></div>}
                 </div>
               </div>
             </div>
@@ -1076,130 +1108,140 @@ const calcelMember = () =>{
               </div>
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
-                  <div className={HRDetailStyle.onboardingDetailText}>
-                    <span>Talent Name</span>
-                    <span className={HRDetailStyle.onboardingTextBold}>
-                      {preOnboardingDetailsForAMAssignment?.talentName
-                        ? preOnboardingDetailsForAMAssignment?.talentName
-                        : "NA"}
-                    </span>
-                  </div>
-
-                  <div className={HRDetailStyle.onboardingDetailText}>
-                    <span>Talent Profile Link</span>
-                    <span className={HRDetailStyle.onboardingTextBold}>
-                      <a
-                      target="_blank"
-                      href={preOnboardingDetailsForAMAssignment?.talentProfileLink}
-                      rel="noreferrer"
-                      className={HRDetailStyle.onboardingTextUnderline}
-                    >
-                      {preOnboardingDetailsForAMAssignment?.talentProfileLink
-                        ? preOnboardingDetailsForAMAssignment?.talentProfileLink
-                        : "NA"}
-                    </a>
-                    </span>
-                  </div>
-
-                  <div className={HRDetailStyle.onboardingDetailText}>
-                    <span>Availability</span>
-                    <span className={HRDetailStyle.onboardingTextBold}>
-                      {preOnboardingDetailsForAMAssignment?.availability
-                        ? preOnboardingDetailsForAMAssignment?.availability
-                        : "NA"}
-                    </span>
-                  </div>
-
-                  <div className={HRDetailStyle.colMd6}>
-                    <div className={HRDetailStyle.timeSlotItemField}>
-                      <div className={HRDetailStyle.timeSlotLabel}>
-                        Talent Shift Start Time <span>*</span>
-                      </div>
-                      <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.formGroup}`}>
-                        {/* <ClockIconSVG /> */}
-                        <HRSelectField
-                        controlledValue={controlledFromTimeValue}
-                        setControlledValue={val=> {setControlledFromTimeValue(val);
-                        let index = getStartEndTimes.findIndex(item=> item.value === val)
-                        if(index >= getStartEndTimes.length -18){         
-                          let newInd =   index - (getStartEndTimes.length -18)
-                          let endtime = getStartEndTimes[newInd]
-                          setControlledEndTimeValue(
-                            endtime.value
-                          );
-                          setValue(
-                            "endTime",{id: "", value: endtime.value}  
-                          );
-                      }else{
-                          let endtime = getStartEndTimes[index + 18]
-                          setControlledEndTimeValue(
-                            endtime.value
-                          );
-                          setValue(
-                            "endTime",{id: "", value: endtime.value}  
-                          );
-                      };
-                    }}
-                    isControlled={true}
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    searchable={true}
-                    defaultValue="Select From Time"
-                    options={getStartEndTimes.map((item) => ({
-                      id: item.id,
-                      label: item.text,
-                      value: item.value,
-                    }))}
-                    name="shiftStartTime"
-                    isError={errors["shiftStartTime"] && errors["shiftStartTime"]}
-                    required={true}
-                    disabled={isTabDisabled}
-                    errorMsg={errors["shiftStartTime"] ?
-                       errors["shiftStartTime"].message.length > 0 ?
-                        errors["fromTime"].message : "Please select from time." : "Please select from time."}
-                  />
-                        {/* {errors.shiftStartTime && (
-                          <div className={HRDetailStyle.error}>
-                            Please enter start time
-                          </div>
-                        )} */}
-                      </div>
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Talent Name</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        {preOnboardingDetailsForAMAssignment?.talentName
+                          ? preOnboardingDetailsForAMAssignment?.talentName
+                          : "NA"}
+                      </span>
                     </div>
                   </div>
 
-                  <div className={HRDetailStyle.colMd6}>
-                    <div className={HRDetailStyle.timeSlotItemField}>
-                      <div className={HRDetailStyle.timeSlotLabel}>
-                        Talent Shift End Time <span>*</span>
-                      </div>
-                      <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.formGroup}`}>
-                        {/* <ClockIconSVG /> */}
-                        <HRSelectField
-                    controlledValue={controlledEndTimeValue}
-                    setControlledValue={setControlledEndTimeValue}
-                    isControlled={true}
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    searchable={true}
-                    defaultValue="Select End Time"
-                    options={getStartEndTimes.map((item) => ({
-                      id: item.id,
-                      label: item.text,
-                      value: item.value,
-                    }))}
-                    disabled={isTabDisabled}
-                    name="shiftEndTime"
-                    isError={errors["shiftEndTime"] && errors["shiftEndTime"]}
-                    required={true}
-                    errorMsg={"Please select end time."}
-                  />
-                        {/* {errors.shiftEndTime && (
-                          <div className={HRDetailStyle.error}>
-                            Please enter end time
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Talent Profile Link</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        <a
+                        target="_blank"
+                        href={preOnboardingDetailsForAMAssignment?.talentProfileLink}
+                        rel="noreferrer"
+                        className={HRDetailStyle.onboardingTextUnderline}
+                      >
+                        {preOnboardingDetailsForAMAssignment?.talentProfileLink
+                          ? preOnboardingDetailsForAMAssignment?.talentProfileLink
+                          : "NA"}
+                      </a>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Availability</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                        {preOnboardingDetailsForAMAssignment?.availability
+                          ? preOnboardingDetailsForAMAssignment?.availability
+                          : "NA"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.modalFormColRow}>
+                      <div className={HRDetailStyle.modalFormCol}>
+                        <div className={HRDetailStyle.timeSlotItemField}>
+                          <div className={HRDetailStyle.timeSlotLabel}>
+                            Talent Shift Start Time <span>*</span>
                           </div>
-                        )} */}
+                          <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.formGroup}`}>
+                            {/* <ClockIconSVG /> */}
+                            <HRSelectField
+                            controlledValue={controlledFromTimeValue}
+                            setControlledValue={val=> {setControlledFromTimeValue(val);
+                            let index = getStartEndTimes.findIndex(item=> item.value === val)
+                            if(index >= getStartEndTimes.length -18){         
+                              let newInd =   index - (getStartEndTimes.length -18)
+                              let endtime = getStartEndTimes[newInd]
+                              setControlledEndTimeValue(
+                                endtime.value
+                              );
+                              setValue(
+                                "endTime",{id: "", value: endtime.value}  
+                              );
+                          }else{
+                              let endtime = getStartEndTimes[index + 18]
+                              setControlledEndTimeValue(
+                                endtime.value
+                              );
+                              setValue(
+                                "endTime",{id: "", value: endtime.value}  
+                              );
+                          };
+                        }}
+                        isControlled={true}
+                        mode={"id/value"}
+                        setValue={setValue}
+                        register={register}
+                        searchable={true}
+                        defaultValue="Select From Time"
+                        options={getStartEndTimes.map((item) => ({
+                          id: item.id,
+                          label: item.text,
+                          value: item.value,
+                        }))}
+                        name="shiftStartTime"
+                        isError={errors["shiftStartTime"] && errors["shiftStartTime"]}
+                        required={true}
+                        disabled={isTabDisabled}
+                        errorMsg={errors["shiftStartTime"] ?
+                          errors["shiftStartTime"].message.length > 0 ?
+                            errors["fromTime"].message : "Please select from time." : "Please select from time."}
+                      />
+                            {/* {errors.shiftStartTime && (
+                              <div className={HRDetailStyle.error}>
+                                Please enter start time
+                              </div>
+                            )} */}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={HRDetailStyle.modalFormCol}>
+                        <div className={HRDetailStyle.timeSlotItemField}>
+                          <div className={HRDetailStyle.timeSlotLabel}>
+                            Talent Shift End Time <span>*</span>
+                          </div>
+                          <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.formGroup}`}>
+                            {/* <ClockIconSVG /> */}
+                            <HRSelectField
+                        controlledValue={controlledEndTimeValue}
+                        setControlledValue={setControlledEndTimeValue}
+                        isControlled={true}
+                        mode={"id/value"}
+                        setValue={setValue}
+                        register={register}
+                        searchable={true}
+                        defaultValue="Select End Time"
+                        options={getStartEndTimes.map((item) => ({
+                          id: item.id,
+                          label: item.text,
+                          value: item.value,
+                        }))}
+                        disabled={isTabDisabled}
+                        name="shiftEndTime"
+                        isError={errors["shiftEndTime"] && errors["shiftEndTime"]}
+                        required={true}
+                        errorMsg={"Please select end time."}
+                      />
+                            {/* {errors.shiftEndTime && (
+                              <div className={HRDetailStyle.error}>
+                                Please enter end time
+                              </div>
+                            )} */}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2065,8 +2107,7 @@ const calcelMember = () =>{
                             </div>
                         </div>
                     </div>)}
-                    </> :  <h3 className={HRDetailStyle.titleLeft}>No Client’s Team Members Availability</h3> }
-                    
+                    </> :  <div className={HRDetailStyle.colMd12}><div className={HRDetailStyle.noClientAvailable}>No Client’s Team Members Availability</div></div> }                    
                 </div>
 
 
@@ -2214,86 +2255,86 @@ const calcelMember = () =>{
               </div>
 
               <div className={HRDetailStyle.onboardingProcessMid}>
-                <div className={`${HRDetailStyle.labelreplacement}`}>
-                  <Checkbox
-                    disabled={isTabDisabled}
-                    name="PayPerCredit"
-                    checked={engagementReplacement?.replacementData}
-                    onChange={(e) => {
-                      setEngagementReplacement({
-                        ...engagementReplacement,
-                        replacementData: e.target.checked,
-                      });
-                      if (e.target.checked === false) {
-                        setAddLetter(false);
-                        setValue("lwd", "");
-                        setValue("engagementreplacement", "");
-                      }
-                    }}
-                  >
-                    Is this engagement going under replacement?
-                  </Checkbox>
-                </div>
-                <div className={`${HRDetailStyle.labelreplacement}`}>
-                  <div className={HRDetailStyle.colMd6}>
-                    {engagementReplacement?.replacementData && (
-                      <div className={HRDetailStyle.timeSlotItemField}>
-                        <div className={HRDetailStyle.timeLabel}>
-                          Last Working Day
-                        </div>
-                        <div className={HRDetailStyle.timeSlotItem}>
-                          <CalenderSVG />
-                          {isTabDisabled ? (
-                            <Controller
-                              render={({ ...props }) => (
-                                <DatePicker
-                                  {...props}
-                                  disabled={isTabDisabled}
-                                  selected={dayjs(watch("lwd"))}
-                                  onChange={(date) => {
-                                    setValue("lwd", date);
-                                  }}
-                                  placeholderText="Last Working Day"
-                                  dateFormat="dd/MM/yyyy"
-                                  disabledDate={disabledDate}
-                                  value={dayjs(watch("lwd"))}
-                                  control={control}
-                                />
-                              )}
-                              name="lwd"
-                              rules={{ required: true }}
-                              control={control}
-                            />
-                          ) : (
-                            <Controller
-                              render={({ ...props }) => (
-                                <DatePicker
-                                  {...props}
-                                  disabled={isTabDisabled}
-                                  selected={dayjs(watch("lwd"))}
-                                  onChange={(date) => {
-                                    setValue("lwd", date);
-                                  }}
-                                  placeholderText="Last Working Day"
-                                  dateFormat="dd/MM/yyyy"
-                                  disabledDate={disabledDate}
-                                  // value={dayjs(watch('lwd'))}
-                                  control={control}
-                                />
-                              )}
-                              name="lwd"
-                              rules={{ required: true }}
-                              control={control}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    )}
+                <div className={HRDetailStyle.modalFormWrapper}>                  
+                  <div className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}>
+                    <Checkbox
+                      disabled={isTabDisabled}
+                      name="PayPerCredit"
+                      checked={engagementReplacement?.replacementData}
+                      onChange={(e) => {
+                        setEngagementReplacement({
+                          ...engagementReplacement,
+                          replacementData: e.target.checked,
+                        });
+                        if (e.target.checked === false) {
+                          setAddLetter(false);
+                          setValue("lwd", "");
+                          setValue("engagementreplacement", "");
+                        }
+                      }}
+                    >
+                      Is this engagement going under replacement?
+                    </Checkbox>
                   </div>
-                </div>
-                <div className={HRDetailStyle.labelreplacement}>
+                
                   {engagementReplacement?.replacementData && (
-                    <div className={HRDetailStyle.colMd6}>
+                    <div className={HRDetailStyle.modalFormCol}>                      
+                        <div className={HRDetailStyle.timeSlotItemField}>
+                          <div className={HRDetailStyle.timeLabel}>
+                            Last Working Day
+                          </div>
+                          <div className={HRDetailStyle.timeSlotItem}>
+                            <CalenderSVG />
+                            {isTabDisabled ? (
+                              <Controller
+                                render={({ ...props }) => (
+                                  <DatePicker
+                                    {...props}
+                                    disabled={isTabDisabled}
+                                    selected={dayjs(watch("lwd"))}
+                                    onChange={(date) => {
+                                      setValue("lwd", date);
+                                    }}
+                                    placeholderText="Last Working Day"
+                                    dateFormat="dd/MM/yyyy"
+                                    disabledDate={disabledDate}
+                                    value={dayjs(watch("lwd"))}
+                                    control={control}
+                                  />
+                                )}
+                                name="lwd"
+                                rules={{ required: true }}
+                                control={control}
+                              />
+                            ) : (
+                              <Controller
+                                render={({ ...props }) => (
+                                  <DatePicker
+                                    {...props}
+                                    disabled={isTabDisabled}
+                                    selected={dayjs(watch("lwd"))}
+                                    onChange={(date) => {
+                                      setValue("lwd", date);
+                                    }}
+                                    placeholderText="Last Working Day"
+                                    dateFormat="dd/MM/yyyy"
+                                    disabledDate={disabledDate}
+                                    // value={dayjs(watch('lwd'))}
+                                    control={control}
+                                  />
+                                )}
+                                name="lwd"
+                                rules={{ required: true }}
+                                control={control}
+                              />
+                            )}
+                          </div>
+                        </div>                      
+                    </div>
+                    )}
+
+                  {engagementReplacement?.replacementData && (
+                    <div className={HRDetailStyle.modalFormCol}>
                       <HRSelectField
                         controlledValue={controlledEngRep}
                         setControlledValue={setControlledEngRep}
@@ -2316,12 +2357,9 @@ const calcelMember = () =>{
                       />
                     </div>
                   )}
-                </div>
-                <div
-                  className={`${HRDetailStyle.labelreplacement} ${HRDetailStyle.mb32}`}
-                >
+
                   {engagementReplacement?.replacementData && (
-                    <div className={HRDetailStyle.colMd12}>
+                    <div className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}>
                       <Checkbox
                         disabled={isTabDisabled}
                         name="PayPerCredit"
@@ -2332,10 +2370,12 @@ const calcelMember = () =>{
                       >
                         Will add this later, by doing this you understand that
                         replacement will not be tracked correctly.
-                      </Checkbox>
+                      </Checkbox>                 
                     </div>
                   )}
+
                 </div>
+
               </div>
             </div>
           </>
