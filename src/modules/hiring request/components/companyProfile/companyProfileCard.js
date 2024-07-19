@@ -410,12 +410,12 @@ const CompanyProfileCard = ({
                     : "NA"}
                 </span>
               </div>
-              <div className={CompanyProfileCardStyle.geo}>
+              {/* <div className={CompanyProfileCardStyle.geo}>
                 <span>Geo:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.GEO ? clientDetail?.GEO : "NA"}
                 </span>
-              </div>
+              </div> */}
               <div className={CompanyProfileCardStyle.preferredShift}>
                 <span>Preferred Time Zone:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
