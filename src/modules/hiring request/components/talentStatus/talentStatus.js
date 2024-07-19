@@ -11,6 +11,7 @@ import { InputType } from 'constants/application';
 import { _isNull } from 'shared/utils/basic_utils';
 import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
 const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 	const {
@@ -76,7 +77,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 	}, [talentStatusCreditBase])
 
 	useEffect(() => {
-		if(talentStatusCreditBase?.RejectReasonId){
+		if(talentStatusCreditBase?.RejectReasonId){			
 			const creditRejectReason = talentStatusCreditBase?.CreditBased_RejectReason?.filter(
 				(item) => item?.id=== talentStatusCreditBase?.RejectReasonId)
 			// const getParentRejectedReasons = talentStatusCreditBase?.CreditBased_RejectReason?.find()
@@ -99,7 +100,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 		}
 	}, [callAPI, hrId, talentInfo?.ContactPriorityID]);
 	const talentStatusSubmitHanlder = useCallback(
-		async (d) => {
+		async (d) => {			
 			if(apiData?.IsPayPerHire == true){
 				setIsLoading(true);
 				let talentStatusObject = {
@@ -144,9 +145,32 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 					callAPI(hrId);
 				}
 			}
+
+			// Call the code of notes for reject talent
+			if(d?.talentStatus?.id === 7 || d?.statusId?.id === 8){				
+				
+				let note = d?.rejectReasonParentID?.value + " - " + d?.rejectReasonID?.value;
+				await saveTalentNotesWhenRejected(note);
+			}
 		},
 		[callAPI, hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID,talentStatus,apiData?.IsPayPerCredit,apiData?.IsPayPerHire,talentStatusCreditBase],
 	);
+
+	const saveTalentNotesWhenRejected = async(notes) => {
+		let payload = {
+            "CompanyId":apiData?.ClientDetail?.CompanyId,
+            "ContactId":apiData?.ClientDetail?.ContactId,
+            "ContactName" : apiData?.ClientDetail?.ClientName,
+            "ContactEmail" : apiData?.ClientDetail?.ClientEmail,
+            "HiringRequest_ID": apiData?.HR_Id,
+            "ATS_TalentID": talentInfo?.ATSTalentID,
+            "Notes": notes,           
+            "EmployeeID": localStorage.getItem('EmployeeID'),
+            "EmployeeName": localStorage.getItem('FullName')
+    	}
+
+		let result = await hiringRequestDAO.saveTalentNotesDAO(payload);
+	}
 
 	useEffect(() => {
 		if(apiData?.IsPayPerCredit == true){
