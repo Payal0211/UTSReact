@@ -642,11 +642,11 @@ const UnassignedHRScreen = () => {
   return (
     <div className={allHRStyles.hiringRequestContainer}>
       {contextHolder}
-      {/* <LogoLoader visible={isLoading} /> */}
-       <div className={allHRStyles.addnewHR}>
-      {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
       <LogoLoader visible={isLoading} />
-        {/* <div className={allHRStyles.hiringRequest}></div>
+      {/* <div className={allHRStyles.addnewHR}>
+      <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
+      <LogoLoader visible={isLoading} />
+        <div className={allHRStyles.hiringRequest}></div>
         <div className={allHRStyles.btn_wrap}>
         {showCloneHRToDemoAccount && <button
         style={{marginRight:'15px'}}
@@ -799,13 +799,15 @@ const UnassignedHRScreen = () => {
           >
             Export
           </button>
-        </div>*/}
-      </div> 
+        </div>
+      </div> */}
+      
       {/*
        * --------- Filter Component Starts ---------
        * @Filter Part
        */}
-      <div className={`${allHRStyles.filterContainer} ${allHRStyles.mt0}`}>
+
+      <div className={`${allHRStyles.filterContainer} ${allHRStyles.unassignFilters}`}>
         <div className={allHRStyles.filterSets}>
           <div className={allHRStyles.filterSetsInner}>
             {/* <div className={allHRStyles.addFilter} onClick={toggleHRFilter}>

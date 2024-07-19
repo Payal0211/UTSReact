@@ -19,8 +19,24 @@
     display: block;
 }
 
-.hiringRequestWrap .mt0{
-    margin-top: 0 !important;
+.hiringRequestWrap .unassignFilters{
+    margin-top: 0;
+}
+
+.hiringRequestWrap .unassignFilters .searchFilterSet{
+    width: 410px;
+    padding: 0 16px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+.hiringRequestWrap .unassignFilters .searchFilterSet svg{
+    min-width: 16px;
+    margin-right: 10px;
+}
+
+.hiringRequestWrap .unassignFilters .searchFilterSet .searchInput{
+    width: 100%;
+    padding: 0;
 }
 
 .hiringRequestTable [class*="ant-table-body"]{
@@ -354,11 +370,6 @@
   margin-left: 5px;
 }
 
-
-.searchFilterSet{
-    width: 180px;
-}
-
 .tableDetails [class^="tblEditBox"]{
     align-items: center;
     display: flex;
@@ -472,6 +483,14 @@
     .searchFilterSet{
         width: 150px;
         height: 35px;
+    }
+
+    .hiringRequestWrap .unassignFilters .searchFilterSet{
+        width: 300px;
+        padding: 0 10px;
+    }
+    .hiringRequestWrap .unassignFilters .searchFilterSet svg{
+        margin-right: 8px;
     }
 
     .searchInput{
