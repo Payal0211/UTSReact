@@ -1339,6 +1339,15 @@ table {
     padding-top: 64px;
   }
 
+  .ant-tabs-top .ant-tabs-tab{
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .ant-tabs-tab .ant-tabs-tab-btn{
+    font-size: var(--fontsize-brittle) !important;
+  }
+
   .ant-table-thead > tr > th {
     font-size: 11px;
     padding-left: 8px !important;

@@ -2,7 +2,6 @@
     bottom: 20%;
     position: fixed;
     right: 0;
-
     background: #FFDA30;
     border: 1px solid transparent;
     border-radius: 8px;
@@ -17,6 +16,7 @@
     cursor: pointer;
     box-shadow: none;
     margin-right: 10px;
+    z-index: 9;
 }
 
 .row {

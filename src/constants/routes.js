@@ -10,7 +10,7 @@ const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
 );
 const AllHiringRequest = React.lazy(() =>
-	import('modules/hiring request/screens/allHiringRequest/all_hiring_request'),
+	import('modules/hiring request/screens/allHiringRequest/mainHRTabs'),
 );
 const HRDetail = React.lazy(() =>
 	import('modules/hiring request/screens/hrdetail/hrdetails'),
