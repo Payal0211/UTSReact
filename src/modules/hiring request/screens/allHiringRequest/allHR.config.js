@@ -724,7 +724,7 @@ export const allHRConfig = {
 
 export const unassignedHRsConfig = {
   tableConfig: (
-    togglePriority,
+    ControlledTitleComp,
     setCloneHR,
     setHRID,
     setHRNumber,
@@ -914,6 +914,22 @@ export const unassignedHRsConfig = {
       // 	key: 'adHocHR',
       // 	align: 'left',
       // },
+      {
+				title: 'Assigned POC',
+				dataIndex: 'assignedPOC',
+				key: 'assignedPOC',
+				render: (data, param) => {	
+ 					return <ControlledTitleComp text={data} values={param} />
+					// return (
+					// 	<>
+					// 		{/* <Button style={{ color: 'black', textDecoration: 'underline' }}> */}
+					// 			<PencilSVG  onClick={onEditTitle}/>
+					// 		{/* </Button> */} &nbsp;&nbsp;
+					// 	{isEdit ? <input  onChange={(e) => onChangeTitle(e)} type='text'/> :  data }
+					// 	</>
+					// );
+				},		
+			},
       {
         title: "Created Date",
         dataIndex: "Date",

@@ -47,6 +47,9 @@ import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
 import PreviewHRModal from "./previewHR/previewHRModal";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
+import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
+import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
+import { ReactComponent as Close } from "assets/svg/close.svg";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -59,8 +62,8 @@ let defaaultFilterState = {  pagesize: 20,
 	sortdatafield: "CreatedDateTime",
 	sortorder: "desc",
 	searchText: "",
-	IsDirectHR: false,
-  hrTypeIds:''
+	// IsDirectHR: false,
+  // hrTypeIds:''
 }
 
 const UnassignedHRScreen = () => {
@@ -194,55 +197,55 @@ const UnassignedHRScreen = () => {
 		},
 		[apiData, messageAPI, navigate],
 	); */
-  const togglePriority = useCallback(
-    async (payload) => {
-      setLoading(true);
-      localStorage.setItem("hrid", payload.hRID);
-      let response = await hiringRequestDAO.setHrPriorityDAO(
-        payload.isNextWeekStarMarked,
-        payload.hRID,
-        payload.person
-      );
-      if (response.statusCode === HTTPStatusCode.OK) {
-        getPriorityCount();
-        const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
-        //if priprity filter enable then remove priority from list otherwise update
-        if (isOnlyPriority) {
-          handleHRRequest(tableFilteredState);
-        } else {
-          setAPIdata([
-            ...apiData.slice(0, index),
-            tempdata,
-            ...apiData.slice(index + 1),
-          ]);
-          setLoading(false);
-        }
+  // const togglePriority = useCallback(
+  //   async (payload) => {
+  //     setLoading(true);
+  //     localStorage.setItem("hrid", payload.hRID);
+  //     let response = await hiringRequestDAO.setHrPriorityDAO(
+  //       payload.isNextWeekStarMarked,
+  //       payload.hRID,
+  //       payload.person
+  //     );
+  //     if (response.statusCode === HTTPStatusCode.OK) {
+  //       getPriorityCount();
+  //       const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
+  //       //if priprity filter enable then remove priority from list otherwise update
+  //       if (isOnlyPriority) {
+  //         handleHRRequest(tableFilteredState);
+  //       } else {
+  //         setAPIdata([
+  //           ...apiData.slice(0, index),
+  //           tempdata,
+  //           ...apiData.slice(index + 1),
+  //         ]);
+  //         setLoading(false);
+  //       }
 
-        messageAPI.open({
-          type: "success",
-          content: `${tempdata?.HR_ID} priority has been changed.`,
-        });
-      } else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
-        setLoading(false);
-        messageAPI.open({
-          type: "error",
-          content: response.responseBody,
-        });
-      } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-        setLoading(false);
-        return navigate(UTSRoutes.LOGINROUTE);
-      } else if (
-        response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-      ) {
-        setLoading(false);
-        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-      } else {
-        setLoading(false);
-        return "NO DATA FOUND";
-      }
-    },
-    [apiData, messageAPI, navigate]
-  );
+  //       messageAPI.open({
+  //         type: "success",
+  //         content: `${tempdata?.HR_ID} priority has been changed.`,
+  //       });
+  //     } else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+  //       setLoading(false);
+  //       messageAPI.open({
+  //         type: "error",
+  //         content: response.responseBody,
+  //       });
+  //     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+  //       setLoading(false);
+  //       return navigate(UTSRoutes.LOGINROUTE);
+  //     } else if (
+  //       response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+  //     ) {
+  //       setLoading(false);
+  //       return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+  //     } else {
+  //       setLoading(false);
+  //       return "NO DATA FOUND";
+  //     }
+  //   },
+  //   [apiData, messageAPI, navigate]
+  // );
   const cloneHRhandler = async (isHybrid, payload) => {
     let data = {
       hrid: getHRID,
@@ -265,14 +268,12 @@ const UnassignedHRScreen = () => {
     setHrIdforPreview(hrId);
     setIspreviewLoading(true);
     let data = {};
-    console.log('userData',userData)
     // data.contactId = 810;
     data.companyId= companyId;
     data.hrId = hrId;
  
     let res = await allCompanyRequestDAO.getHrPreviewDetailsDAO(data);
 
-    console.log('res pre',res)
     if (res.statusCode === 200) {
       let details = res?.responseBody;
       const previewData = { ...details.JobPreview, hrNumber: hrNumber, HRID: hrId};
@@ -283,10 +284,80 @@ const UnassignedHRScreen = () => {
     setIspreviewLoading(false);
   };
 
+  const ControlledTitleComp = ({text,values})=> {
+		const [isEdit,setIsEdit] = useState(false)
+		const [role,setRole] = useState(text)
+    const [allPocs, setAllPocs] = useState([]);
+    const [assignedPOCID, setAssignedPOCID] = useState([])
+
+    const getAllSalesPerson = async () =>  {
+      const allSalesResponse = await MasterDAO.getSalesManRequestDAO();
+       const data = allSalesResponse?.responseBody?.details?.map((item)=>({
+        id:item?.id,
+        value:item?.value
+      }))
+      // _getPOCdata.push(data)
+      setAllPocs(data);
+    }
+
+		const saveEditRole = useCallback(async () => {
+			// if(role){
+				// let e = encodeURIComponent(role)
+        const data = {
+          POCID:assignedPOCID,HRID:values?.HRID
+        }
+				const result = await hiringRequestDAO.assignedPOCForUnassignHRSDAO(data);
+				if(result?.statusCode === HTTPStatusCode.OK){
+					message.success("POC Assigned Successfully.")
+					setIsEdit(false);
+          handleHRRequest(tableFilteredState);
+				}
+        else{
+					message.error("POC not Assigned Successfully.")
+					setIsEdit(false)
+				}	
+			// }	
+	  },[assignedPOCID,getHRID])
+    
+		if(isEdit){
+			return <div style={{display:'flex', alignItems:'center'}}>
+			<TickMark
+				width={24}
+				height={24}
+				style={{marginRight:'10px',cursor:'pointer'}}
+				onClick={() => {saveEditRole();}}
+			/>
+        <Select onChange={e=>setAssignedPOCID(e)}>
+          {allPocs?.map((item)=>(
+            <Select.Option value={item?.id}>{item?.value}</Select.Option>
+          ))}
+        </Select>
+			<Close 
+			width={24}
+			height={24}
+			style={{marginLeft:'10px',cursor:'pointer'}}
+			onClick={() => {setIsEdit(false);setRole(text)}} />
+			</div>
+		}else {
+			return <div style={{display:'flex', alignItems:'center'}}>
+				<EditSVG
+					width={24}
+					height={24}
+					style={{marginRight:'10px',cursor:'pointer'}}
+					onClick={() => {setIsEdit(true);getAllSalesPerson()}}
+				/> 
+				{role}
+		  </div>
+		}
+	}
+
+
+
   const tableColumnsMemo = useMemo(
     () =>
       unassignedHRsConfig.tableConfig(
-        togglePriority,
+        // togglePriority,
+        ControlledTitleComp,
         setCloneHR,
         setHRID,
         setHRNumber,
@@ -303,25 +374,25 @@ const UnassignedHRScreen = () => {
         setpreviewIDs,
         getPreviewPostData
       ),
-    [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
+    [ userData.LoggedInUserTypeID,selectedCheckboxes]
   );
   const handleHRRequest = useCallback(
     async (pageData) => {      
       setLoading(true);
       // save filter value in localstorage
-      if (pageData.filterFields_ViewAllHRs) {
+      if (pageData.filterFields_ViewAllUnAssignedHRs) {
         localStorage.setItem(
-          "filterFields_ViewAllHRs",
-          JSON.stringify(pageData.filterFields_ViewAllHRs)
+          "filterFields_ViewAllUnAssignedHRs",
+          JSON.stringify(pageData.filterFields_ViewAllUnAssignedHRs)
         );
       }else{
-		localStorage.removeItem('filterFields_ViewAllHRs');
+		localStorage.removeItem('filterFields_ViewAllUnAssignedHRs');
 	  }
 
-      let response = await hiringRequestDAO.getPaginatedHiringRequestDAO({
+      let response = await hiringRequestDAO.getAllUnassignedHiringRequestDAO({
         ...pageData,
-        isFrontEndHR: isFrontEndHR,
-        StarNextWeek: isOnlyPriority,
+        // isFrontEndHR: isFrontEndHR,
+        // StarNextWeek: isOnlyPriority,
       });
 
       if (response?.statusCode === HTTPStatusCode.OK) {
@@ -349,14 +420,14 @@ const UnassignedHRScreen = () => {
     [navigate, isFrontEndHR, isOnlyPriority]
   );
 
-  useEffect(() => {
-    getPriorityCount();
-  }, []);
+  // useEffect(() => {
+  //   getPriorityCount();
+  // }, []);
 
-  let getPriorityCount = async () => {
-    let priorityCount = await hiringRequestDAO.getRemainingPriorityCountDAO();
-    setPriorityCount(priorityCount?.responseBody?.details);
-  };
+  // let getPriorityCount = async () => {
+  //   let priorityCount = await hiringRequestDAO.getRemainingPriorityCountDAO();
+  //   setPriorityCount(priorityCount?.responseBody?.details);
+  // };
 
   const debounceFun = useMemo(
     (value) => _debounce(handleHRRequest, 4000),
@@ -382,18 +453,18 @@ const UnassignedHRScreen = () => {
     if (startDate && endDate) {
       handleHRRequest({
         ...tableFilteredState,
-        filterFields_ViewAllHRs: {
-          ...tableFilteredState.filterFields_ViewAllHRs,
+        filterFields_ViewAllUnAssignedHRs: {
+          ...tableFilteredState.filterFields_ViewAllUnAssignedHRs,
           fromDate: new Date(startDate).toLocaleDateString("en-US"),
           toDate: new Date(endDate).toLocaleDateString("en-US"),
         },
       });
     } else {
-      let appliedFilter = localStorage.getItem("filterFields_ViewAllHRs");
+      let appliedFilter = localStorage.getItem("filterFields_ViewAllUnAssignedHRs");
 
       if (
         appliedFilter?.length > 0 &&
-        tableFilteredState.filterFields_ViewAllHRs === undefined
+        tableFilteredState.filterFields_ViewAllUnAssignedHRs === undefined
       ) {
         return;
       } else {
@@ -402,29 +473,32 @@ const UnassignedHRScreen = () => {
     }
   }, [tableFilteredState, endDate, startDate, isFrontEndHR, isOnlyPriority]);
 
+
+
+  
   useEffect(() => {
     // handleHRRequest(tableFilteredState);
     handleRequetWithDates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableFilteredState, isFrontEndHR, isOnlyPriority]);
+  }, [tableFilteredState, isFrontEndHR, isOnlyPriority,handleRequetWithDates]);
 
-  const getHRFilterRequest = useCallback(async () => {
-    const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
-    if (response?.statusCode === HTTPStatusCode.OK) {
-      setFiltersList(response && response?.responseBody?.details?.Data);
-      setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
-    } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-      return navigate(UTSRoutes.LOGINROUTE);
-    } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-      return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-    } else {
-      return "NO DATA FOUND";
-    }
-  }, [navigate]);
+  // const getHRFilterRequest = useCallback(async () => {
+  //   const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
+  //   if (response?.statusCode === HTTPStatusCode.OK) {
+  //     setFiltersList(response && response?.responseBody?.details?.Data);
+  //     setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
+  //   } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+  //     return navigate(UTSRoutes.LOGINROUTE);
+  //   } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+  //     return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+  //   } else {
+  //     return "NO DATA FOUND";
+  //   }
+  // }, [navigate]);
 
-  useEffect(() => {
-    getHRFilterRequest();
-  }, [getHRFilterRequest]);
+  // useEffect(() => {
+  //   getHRFilterRequest();
+  // }, [getHRFilterRequest]);
 
   const toggleHRFilter = useCallback(() => {
     !getHTMLFilter
@@ -446,8 +520,8 @@ const UnassignedHRScreen = () => {
     if (start && end) {
       setTableFilteredState({
         ...tableFilteredState,
-        filterFields_ViewAllHRs: {
-          ...tableFilteredState.filterFields_ViewAllHRs,
+        filterFields_ViewAllUnAssignedHRs: {
+          ...tableFilteredState.filterFields_ViewAllUnAssignedHRs,
           fromDate: new Date(start).toLocaleDateString("en-US"),
           toDate: new Date(end).toLocaleDateString("en-US"),
         },
@@ -463,42 +537,42 @@ const UnassignedHRScreen = () => {
     }
   };
 
-  useEffect(() => {
-    localStorage.removeItem("hrID");
-    localStorage.removeItem("fromEditDeBriefing");
+  // useEffect(() => {
+  //   localStorage.removeItem("hrID");
+  //   localStorage.removeItem("fromEditDeBriefing");
 
-    // console.log("filter list",response?.responseBody?.details?.Data)
-    let appliedFilter = localStorage.getItem("filterFields_ViewAllHRs");
-    let filterList = localStorage.getItem("appliedHRfilters");
-    let checkedState = localStorage.getItem("HRFilterCheckedState");
+  //   // console.log("filter list",response?.responseBody?.details?.Data)
+  //   let appliedFilter = localStorage.getItem("filterFields_ViewAllHRs");
+  //   let filterList = localStorage.getItem("appliedHRfilters");
+  //   let checkedState = localStorage.getItem("HRFilterCheckedState");
 
-    if (appliedFilter?.length > 0 && filterList?.length > 0) {
-      setTableFilteredState((prev) => ({
-        ...prev,
-        filterFields_ViewAllHRs: JSON.parse(appliedFilter),
-      }));
-      let mapData = JSON.parse(filterList);
-      let checkedData = JSON.parse(checkedState);
+  //   if (appliedFilter?.length > 0 && filterList?.length > 0) {
+  //     setTableFilteredState((prev) => ({
+  //       ...prev,
+  //       filterFields_ViewAllHRs: JSON.parse(appliedFilter),
+  //     }));
+  //     let mapData = JSON.parse(filterList);
+  //     let checkedData = JSON.parse(checkedState);
 
-      let newMap = new Map();
-      let newCheckedmap = new Map();
-      let filterCount = mapData.reduce((total, item) => {
-        return total + item.value.split(",").length;
-      }, 0);
-      mapData.forEach((item) => {
-        newMap.set(item.filterType, item);
-      });
-      if (checkedData?.length > 0) {
-        checkedData.forEach((item) => {
-          newCheckedmap.set(item.key, item.value);
-        });
-      }
-      setFilteredTagLength(filterCount);
-      setAppliedFilters(newMap);
-      setCheckedState(newCheckedmap);
-      setTimeout(() => {}, 5000);
-    }
-  }, []);
+  //     let newMap = new Map();
+  //     let newCheckedmap = new Map();
+  //     let filterCount = mapData.reduce((total, item) => {
+  //       return total + item.value.split(",").length;
+  //     }, 0);
+  //     mapData.forEach((item) => {
+  //       newMap.set(item.filterType, item);
+  //     });
+  //     if (checkedData?.length > 0) {
+  //       checkedData.forEach((item) => {
+  //         newCheckedmap.set(item.key, item.value);
+  //       });
+  //     }
+  //     setFilteredTagLength(filterCount);
+  //     setAppliedFilters(newMap);
+  //     setCheckedState(newCheckedmap);
+  //     setTimeout(() => {}, 5000);
+  //   }
+  // }, []);
 
   const handleExport = (apiData) => {
     let DataToExport = apiData.map((data) => {
@@ -512,16 +586,16 @@ const UnassignedHRScreen = () => {
     downloadToExcel(DataToExport);
   };
 
-  useEffect(()=>{
-    if(selectedHRTypes.length > 0) {
-      let typeIds = selectedHRTypes.reduce((val, hr, ind) => {
-        let str = ind === (selectedHRTypes.length -1) ?  val + `${hr.id}` : val + `${hr.id},`
-        return str },'')
-      setTableFilteredState(prev=> ({...prev, hrTypeIds:typeIds}))
-    }else{
-      setTableFilteredState(prev=> ({...prev, hrTypeIds:''}))
-    }
-  },[selectedHRTypes])
+  // useEffect(()=>{
+  //   if(selectedHRTypes.length > 0) {
+  //     let typeIds = selectedHRTypes.reduce((val, hr, ind) => {
+  //       let str = ind === (selectedHRTypes.length -1) ?  val + `${hr.id}` : val + `${hr.id},`
+  //       return str },'')
+  //     setTableFilteredState(prev=> ({...prev, hrTypeIds:typeIds}))
+  //   }else{
+  //     setTableFilteredState(prev=> ({...prev, hrTypeIds:''}))
+  //   }
+  // },[selectedHRTypes])
 
   const clearFilters = useCallback(() => {
     setAppliedFilters(new Map());
@@ -541,7 +615,7 @@ const UnassignedHRScreen = () => {
     //   },
     // };
 
-    localStorage.removeItem("filterFields_ViewAllHRs");
+    localStorage.removeItem("filterFields_ViewAllUnAssignedHRs");
     localStorage.removeItem("appliedHRfilters");
     localStorage.removeItem("HRFilterCheckedState");
     // handleHRRequest(defaaultFilterState);
@@ -732,18 +806,18 @@ const UnassignedHRScreen = () => {
        */}
       <div className={allHRStyles.filterContainer}>
         <div className={allHRStyles.filterSets}>
-          {/* <div className={allHRStyles.filterSetsInner}>
-            <div className={allHRStyles.addFilter} onClick={toggleHRFilter}>
+          <div className={allHRStyles.filterSetsInner}>
+            {/* <div className={allHRStyles.addFilter} onClick={toggleHRFilter}>
               <FunnelSVG style={{ width: "16px", height: "16px" }} />
 
               <div className={allHRStyles.filterLabel}>Add Filters</div>
               <div className={allHRStyles.filterCount}>{filteredTagLength}</div>
-            </div>
-            <p onClick={() => clearFilters()}>Reset Filters</p>
+            </div> */}
+            <p href="javascript:void(0)" onClick={() => clearFilters()}>Reset Filters</p>
 
            
 
-          </div> */}
+          </div>
           <div className={allHRStyles.filterRight}>
             {/* <Checkbox
               checked={isOnlyPriority}
@@ -781,7 +855,7 @@ const UnassignedHRScreen = () => {
                 value={debouncedSearch}
               />
             </div>
-            {/* <div className={allHRStyles.calendarFilterSet}>
+            <div className={allHRStyles.calendarFilterSet}>
               <div className={allHRStyles.label}>Date</div>
               <div className={allHRStyles.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
@@ -800,7 +874,7 @@ const UnassignedHRScreen = () => {
                   selectsRange
                 />
               </div>
-            </div> */}
+            </div>
             {/* <div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Set Priority</div>
 							<div
