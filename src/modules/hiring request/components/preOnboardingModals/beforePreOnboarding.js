@@ -980,11 +980,11 @@ const calcelMember = () =>{
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
                   <div className={HRDetailStyle.onboardingCurrentText}>
-                    <span>Do you want to assign an AM?</span>
+                   {assignAM ? <span>Do you want to edit AM ? </span> : <span>Do you want to assign an AM?</span>}
                     <span>
                       <Radio.Group name="assignAM" value={assignAM} onChange={(e) => setAssignAM(e.target.value)}>
                         <Radio value={true}>Yes</Radio>
-                        <Radio value={false}>No</Radio>
+                        {!assignAM && <Radio value={false}>No</Radio>}
                       </Radio.Group>
                     </span>
                   </div>
@@ -1434,9 +1434,11 @@ const calcelMember = () =>{
                   <div className={HRDetailStyle.onboardingDetailText}>
                     <span>Uplers Fees</span>
                     <span className={HRDetailStyle.onboardingTextBold}>
-                      {preOnboardingDetailsForAMAssignment?.talentRole
+                      {/* {console.log(watch("billRate"),">>>",watch("payRate"))} */}
+                    { ((watch("billRate") > 0 && watch("payRate") > 0) &&  watch("billRate")-watch("payRate")/watch("payRate"))*100 }
+                      {/* {preOnboardingDetailsForAMAssignment?.talentRole
                         ? preOnboardingDetailsForAMAssignment?.talentRole
-                        : "NA"}
+                        : "NA"} */}
                       {/* 35 % */}
                     </span>
                   </div>
