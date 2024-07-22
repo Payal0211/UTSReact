@@ -44,6 +44,7 @@ import infoIcon from 'assets/svg/info.svg'
 import plusSkill from 'assets/svg/plusSkill.svg';
 import DOMPurify from "dompurify";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
+import ReactQuill from 'react-quill';
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -3651,7 +3652,20 @@ const EditHRFields = ({
 
 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
-                    <HRInputField
+                  <label style={{ marginBottom: "12px" }}>
+                  Highlight any key parameters or things to consider for finding the best match talents
+								{/* <span className={HRFieldStyle.reqField}>*</span> */}
+							</label>
+							<ReactQuill
+								register={register}
+								setValue={setValue}
+								theme="snow"
+								className="heightSize"
+								value={watch('parametersHighlight')}
+								name="parametersHighlight"
+								onChange={(val) => setValue("parametersHighlight",val)}
+							/>
+                    {/* <HRInputField
                       register={register}
                       errors={errors}
                       isTextArea={true}
@@ -3663,7 +3677,7 @@ const EditHRFields = ({
 who have worked in scaled start ups."
                       // required={watch("availability")?.value === "Part Time"}
                     
-                    />
+                    /> */}
                   </div>
                 </div>
           </form>

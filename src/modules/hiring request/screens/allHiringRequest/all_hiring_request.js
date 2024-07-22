@@ -243,7 +243,7 @@ const AllHiringRequestScreen = () => {
     },
     [apiData, messageAPI, navigate]
   );
-  const cloneHRhandler = async (isHybrid, payload) => {
+  const cloneHRhandler = async (isHybrid, payload,resetFields) => {
     let data = {
       hrid: getHRID,
     };
@@ -254,6 +254,7 @@ const AllHiringRequestScreen = () => {
     // console.log(response, '--response');
     if (response.statusCode === HTTPStatusCode.OK) {
       setCloneHR(false);
+      resetFields()
       localStorage.setItem("hrID", response?.responseBody?.details);
       localStorage.removeItem("dealID");
       navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });

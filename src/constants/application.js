@@ -155,6 +155,8 @@ export class TalentOnboardStatus {
 	static SUBMIT_CLIENT_FEEDBACK = 'Submit Client Feedback';
 	static EDIT_CLIENT_FEEDBACK = 'Edit Client Feedback';
 	static ANOTHER_ROUND_INTERVIEW = 'Another Round Interview';
+	static SUBMIT_AS_HIRE = "Submit As Hire";
+	static REJECT_TALENT = "Reject Talent";
 	static SCHEDULE_ANOTHER_ROUND_INTERVIEW = 'Schedule Another Interview Round';
 	static GO_TO_ONBOARD = "Go to OnBoard"
 	static VIEW_ENGAGEMENT = 'View Engagement'

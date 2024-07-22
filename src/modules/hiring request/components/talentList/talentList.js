@@ -62,6 +62,7 @@ import AllNotes from './allNotes';
 import ViewNotes from './viewNotes';
 import EditNotes from './editNotes';
 import moment from 'moment';
+import { InterviewDAO } from 'core/interview/interviewDAO';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -70,6 +71,7 @@ const TalentList = ({
 	talentDetail,
 	miscData,
 	callAPI,
+	setLoading,
 	clientDetail,
 	HRStatusCode,
 	hrId,
@@ -393,6 +395,49 @@ const TalentList = ({
 			return 'NO DATA FOUND';
 		}
 	}
+
+	const clientFeedbackHandler = useCallback(
+		async (reload, talentInfo) => {
+			reload && setLoading(true)
+	
+			const clientFeedback = {
+				role: talentInfo?.TalentRole || '',
+				talentName: talentInfo?.Name || '',
+				talentIDValue: talentInfo?.TalentID,
+				contactIDValue: talentInfo?.ContactId,
+				hiringRequestID: hrId,
+				shortlistedInterviewID: talentInfo?.Shortlisted_InterviewID,
+				hdnRadiovalue: reload ? "Hire" : "AnotherRound",
+				topSkill: '',
+				improvedSkill: '',
+				// technicalSkillRating: radioValue2,
+				// communicationSkillRating: radioValue3,
+				// cognitiveSkillRating: radioValue4,
+				messageToTalent: '',
+				clientsDecision:  '',
+				comments:  '',
+				en_Id: '',
+				FeedbackId: talentInfo?.ClientFeedbackID || 0,
+				// IsClientNotificationSent: isClientNotification,
+			};
+
+
+				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
+					clientFeedback,
+				);
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					reload && callAPI(hrId)
+				}else{
+					reload && setLoading(false)
+				}	
+		},
+		[
+			callAPI,
+			hrId,
+			isAnotherRound,
+			messageAPI,
+		],
+	);
 
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
@@ -1219,7 +1264,6 @@ const TalentList = ({
 													isDropdown={true}
 													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
 													menuAction={(menuItem) => {
-														// console.log({menuItem})
 														switch (menuItem.key) {
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 																setScheduleInterviewModal(true);
@@ -1275,8 +1319,18 @@ const TalentList = ({
 																setEditFeedback(true);
 																break;
 															}
+															case TalentOnboardStatus.SUBMIT_AS_HIRE: {
+																clientFeedbackHandler(true,item)
+																break;
+															}
+															case TalentOnboardStatus.REJECT_TALENT: {
+																setTalentStatus(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
 															case TalentOnboardStatus.ANOTHER_ROUND_INTERVIEW: {
 																setAnotherRound(true);
+																clientFeedbackHandler(false,item)
 																setTalentIndex(item?.TalentID);
 																break;
 															}
