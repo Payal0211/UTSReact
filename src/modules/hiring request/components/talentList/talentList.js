@@ -1495,6 +1495,7 @@ const TalentList = ({
 					getOnboardFormDetails={getOnboardFormDetails}
 					getHRAndEngagementId={getHRAndEngagementId}
 					scheduleTimezone={scheduleTimezone}
+					getOnboardingForm={getOnboardingForm}
 				/>
 			</Modal>
 
