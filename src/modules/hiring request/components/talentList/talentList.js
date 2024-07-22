@@ -1218,9 +1218,8 @@ const TalentList = ({
 													iconBorder={`1px solid var(--color-sunlight)`}
 													isDropdown={true}
 													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
-													menuAction={(menuItem) => {
-														// console.log({menuItem})
-														switch (menuItem.key) {
+													menuAction={(menuItem) => {														
+														switch (menuItem.key) {															
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 																setScheduleInterviewModal(true);
 																setTalentIndex(item?.TalentID);
@@ -1348,6 +1347,18 @@ const TalentList = ({
 																setAMFlags(Flags)
 																break;
 															}
+															case TalentOnboardStatus.UPDATE_LEGAL: {																
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'Legal',
+																	forTalent: true,
+																	actionType: 'Legal',
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}															
 															case TalentOnboardStatus.RELEASE_OFFER_DETAILS: {
 																// let onboardID = item.OnBoardId
 																// navigate(`/onboard/edit/${onboardID}`)
@@ -1363,21 +1374,21 @@ const TalentList = ({
 																setAMFlags(Flags)
 																break;
 															}
-															case TalentOnboardStatus.LEGAL: {
-																// let onboardID = item.OnBoardId
-																// navigate(`/onboard/edit/${onboardID}`)
-																// window.scrollTo(0, 0)
-																setShowAMModal(true);
-																let Flags = {
-																	talent: item,
-																	tabLabel: 'Legal',
-																	forTalent: true,
-																	actionType: 'Legal',
-																	hrID: hrId
-																}
-																setAMFlags(Flags)
-																break;
-															}
+															// case TalentOnboardStatus.LEGAL: {
+															// 	// let onboardID = item.OnBoardId
+															// 	// navigate(`/onboard/edit/${onboardID}`)
+															// 	// window.scrollTo(0, 0)
+															// 	setShowAMModal(true);
+															// 	let Flags = {
+															// 		talent: item,
+															// 		tabLabel: 'Legal',
+															// 		forTalent: true,
+															// 		actionType: 'Legal',
+															// 		hrID: hrId
+															// 	}
+															// 	setAMFlags(Flags)
+															// 	break;
+															// }
 															case TalentOnboardStatus.VIEW_ENGAGEMENT: {
 																setHRAndEngagementId({
 																	talentName: item.Name,

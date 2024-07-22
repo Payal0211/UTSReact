@@ -156,8 +156,7 @@ export default function BeforePreOnboarding({
   const [controlledAssignAM, setControlledAssignAM] = useState([]);
   const [controlledState, setControlledState] = useState([]);
   const [controlledIMOW, setControlledMOW] = useState([]);
-
-
+  const [data,setData] = useState({});
   const getStartEndTimeHandler = useCallback(async () => {
     const durationTypes = await MasterDAO.getStartEndTimeDAO();
     setStaryEndTimes(durationTypes && durationTypes?.responseBody);
@@ -255,11 +254,13 @@ export default function BeforePreOnboarding({
         setIsTransparentPricing(
           result.responseBody.details?.isTransparentPricing
         );
+        console.log(result.responseBody.details?.isFirstTabReadOnly);
         setTabDisabled(result.responseBody.details?.isFirstTabReadOnly);
         setPreONBoardingData(result.responseBody.details);
         setPreOnboardingDetailsForAMAssignment(
           result.responseBody.details?.preOnboardingDetailsForAMAssignment
         );
+        setData(result.responseBody.details?.preOnboardingDetailsForAMAssignment);
         setEngagementReplacement({
           ...engagementReplacement,
           replacementData:
@@ -398,8 +399,8 @@ export default function BeforePreOnboarding({
         const _filterData =
           result.responseBody.details.replacementEngAndHR?.filter(
             (e) =>
-              e.id === result.responseBody.details.replacementDetail.newHrid ||
-              result.responseBody.details.replacementDetail.newOnBoardId
+              e.id === result?.responseBody?.details?.replacementDetail?.newHrid ||
+              result?.responseBody?.details?.replacementDetail?.newOnBoardId
           );
         setControlledEngRep(_filterData[0]?.value);
         setValue("engagementreplacement", _filterData[0]);
@@ -448,8 +449,7 @@ export default function BeforePreOnboarding({
       type,
       preOnboardingDetailsForAMAssignment.hR_ID
     );
-    // console.log("fatchpreOnBoardInfo", result.responseBody.details);
-
+    
     if (result?.statusCode === HTTPStatusCode.OK) {
       setDealowner(
         result.responseBody.details.Data.LeadTypeList.filter(
@@ -515,21 +515,21 @@ const calcelMember = () =>{
     async (d) => {
       let _payload = {
         "hR_ID": HRID,
-        "companyID": preOnboardingDetailsForAMAssignment?.companyID,
+        "companyID": data?.companyID,
         "deal_Owner": d?.dealOwner?.value,
         "deal_Source": d?.dealSource?.value,
         "lead_Type": null,
         "industry_Type": null,
         "onboard_ID":talentDeteils?.OnBoardId,
-        "engagemenID": preOnboardingDetailsForAMAssignment?.engagemenID,
+        "engagemenID": data?.engagemenID,
         "assignAM": assignAM,
         "talentID":talentDeteils?.TalentID,
         "talentShiftStartTime":d.shiftStartTime?.value,
         "talentShiftEndTime": d.shiftEndTime?.value,
-        "payRate":preOnboardingDetailsForAMAssignment?.isHRTypeDP ? 0 : parseFloat(d.payRate),
-        "billRate": preOnboardingDetailsForAMAssignment?.isHRTypeDP ? null : parseFloat(d.billRate),
+        "payRate":data?.isHRTypeDP ? 0 : parseFloat(d.payRate),
+        "billRate": data?.isHRTypeDP ? null : parseFloat(d.billRate),
         "netPaymentDays": parseInt(d.netTerm),
-        "nrMargin": !preOnboardingDetailsForAMAssignment?.isHRTypeDP ? d.nrPercent : null,
+        "nrMargin": !data?.isHRTypeDP ? d.nrPercent : null,
         "modeOFWorkingID": d?.modeOFWorkingID?.id,
         "city": d?.city,
         "stateID": d?.stateID?.id,
@@ -554,7 +554,7 @@ const calcelMember = () =>{
         },
         "updateClientOnBoardingDetails": {
           "hR_ID": HRID,
-          "companyID": preOnboardingDetailsForAMAssignment?.companyID,
+          "companyID": data?.companyID,
           "signingAuthorityName": null,
           "signingAuthorityEmail": null,
           "contractDuration": d.contractDuration,
@@ -660,10 +660,6 @@ const calcelMember = () =>{
     ]
   );
 
-  // const handleComplete = () =>{
-  //   console.log(talentDeteils,"talentDeteils");
-  //   EnableNextTab(talentDeteils, HRID, "Legal");
-  // }
   const disabledDate = (current) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -759,7 +755,6 @@ const calcelMember = () =>{
     [getValidation]
   );
 
-  //  console.log("form error", errors);
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
       <div className={`${HRDetailStyle.onboardingProcesspart} ${HRDetailStyle.onboardingReleaseOffer}`}>
@@ -1424,7 +1419,6 @@ const calcelMember = () =>{
                               height="16"
                               onClick={() => {
                                 setEditPayRate(false);
-                                // console.log({nt:watch('netTerm') , num: extractNumberFromString(watch('netTerm'))});
                                 // setValue('netTerm',extractNumberFromString(watch('netTerm')))
                               }}
                             />
@@ -1462,7 +1456,6 @@ const calcelMember = () =>{
                                   //   "payRate",
                                   //   extractNumberFromString(watch("payRate"))
                                   // );
-                                  // console.log(" extractNumberFromString(watch(payRate))", extractNumberFromString(watch("payRate")))
                                 }}
                               />
                             )}
@@ -1476,7 +1469,6 @@ const calcelMember = () =>{
                   <div className={HRDetailStyle.onboardingDetailText}>
                     <span>Uplers Fees</span>
                     <span className={HRDetailStyle.onboardingTextBold}>
-                      {/* {console.log(watch("billRate"),">>>",watch("payRate"))} */}
                     { ((watch("billRate") > 0 && watch("payRate") > 0) &&  watch("billRate")-watch("payRate")/watch("payRate"))*100 }
                       {/* {preOnboardingDetailsForAMAssignment?.talentRole
                         ? preOnboardingDetailsForAMAssignment?.talentRole
