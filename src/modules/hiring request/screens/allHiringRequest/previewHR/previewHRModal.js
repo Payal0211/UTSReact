@@ -3502,7 +3502,7 @@ function PreviewHRModal({
         <div className="modalContent">
           {getcompanyID === 1 ?
             <div className="row">
-              {/* <div className="col-12">
+              <div className="col-12">
                 <div className="form-group">
                   <label>
                     Change engagement model
@@ -3527,7 +3527,7 @@ function PreviewHRModal({
                     }}
                   />
                 </div>
-              </div> */}
+              </div>
               {editDuration?.hiringTypePricingId === 1 &&
                 <div className="col-12">
                   <div className="form-group">
@@ -3560,6 +3560,7 @@ function PreviewHRModal({
                 </div>}
 
               {editDuration?.hiringTypePricingId === 3 &&
+              <div className="col-12">
                 <div className="form-group RadioShowSelect mt-3 col-6 mb-3">
                   <label>Who will manage the Payroll<span>*</span></label>
                   <Select
@@ -3571,6 +3572,7 @@ function PreviewHRModal({
                     options={payrollList}
                     optionLabelProp={true}
                   />
+                </div>
                 </div>
               }
 

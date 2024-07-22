@@ -12,8 +12,9 @@ import { _isNull } from 'shared/utils/basic_utils';
 import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { InterviewDAO } from 'core/interview/interviewDAO';
 
-const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
+const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}) => {
 	const {
 		register,
 		handleSubmit,
@@ -99,6 +100,9 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 			callAPI(hrId);
 		}
 	}, [callAPI, hrId, talentInfo?.ContactPriorityID]);
+
+
+
 	const talentStatusSubmitHanlder = useCallback(
 		async (d) => {			
 			if(apiData?.IsPayPerHire == true){
@@ -116,10 +120,39 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 					remark: d.onHoldRemark || d.lossRemark,
 					ContactTalentPriorityID: talentStatus?.Data?.ContactTalentPriorityID
 				};
-	
-				let response = await TalentStatusDAO.updateTalentStatusRequestDAO(
-					talentStatusObject,
-				);
+
+				const clientFeedback = {
+					role: talentInfo?.TalentRole || '',
+					talentName: talentInfo?.Name || '',
+					talentIDValue: talentInfo?.TalentID,
+					contactIDValue: talentInfo?.ContactId,
+					hiringRequestID: hrId,
+					shortlistedInterviewID: talentInfo?.Shortlisted_InterviewID,
+					hdnRadiovalue:  "NoHire",
+					topSkill: '',
+					improvedSkill: '',
+					messageToTalent: '',
+					clientsDecision:  '',
+					comments:  '',
+					en_Id: '',
+					FeedbackId: talentInfo?.ClientFeedbackID || 0,
+					Remark: d.onHoldRemark || d.lossRemark, 
+					RejectReasonID: _isNull(d.rejectReason?.id) ? 0 : d.rejectReason?.id
+				};
+		
+				let response
+
+				if(ActionKey === 'TalentStatus'){
+					response = await TalentStatusDAO.updateTalentStatusRequestDAO(
+						talentStatusObject,
+					);
+				}
+				if(ActionKey === 'SubmitFeedbackWithNoHire'){
+					response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
+						clientFeedback,
+					);
+				}
+
 				/* if (response?.statusCode === HTTPStatusCode.OK) {
 					callAPI(hrId);
 				} */
@@ -149,7 +182,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 			// Call the code of notes for reject talent
 			if(d?.talentStatus?.id === 7 || d?.statusId?.id === 8){				
 				
-				let note = d?.rejectReasonParentID?.value + " - " + d?.rejectReasonID?.value;
+				let note = d?.rejectReasonParentID?.value + " - " + `${d?.rejectReasonID ? d?.rejectReasonID?.value : d.rejectReason?.value}`;
 				await saveTalentNotesWhenRejected(note);
 			}
 		},
