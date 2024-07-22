@@ -28,6 +28,10 @@ import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, EngOption
 import deleteIcon from "assets/svg/delete.svg";
 import DeleteIcon from "assets/svg/delete-icon.svg";
 import DeleteImg from "assets/svg/delete-icon.svg";
+import MailIcon from "assets/svg/mailIcon.svg";
+import PhoneIcon from "assets/svg/phoneIcon.svg";
+import DeleteCircleIcon from "assets/svg/deleteCircleIcon.svg";
+import EditCircleIcon from "assets/svg/editCircleIcon.svg";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { MasterDAO } from "core/master/masterDAO";
 import YouTubeVideo from "modules/client/components/previewClientDetails/youTubeVideo";
@@ -122,6 +126,10 @@ function PreviewHRModal({
   const [isLoading, setIsLoading] = useState(false);
   const [isAddMonth, setIsAddMonth] = useState(false);
 
+  const[isEditUserInfo,setIsEditUserInfo] = useState(false);
+  const [hrpocUserID,sethrpocUserID] = useState([]);
+  const [activeUserData,setActiveUserData] = useState([]);
+  const[showHRPOCDetailsToTalents,setshowHRPOCDetailsToTalents] = useState(null);
 
   const [isCompensationOptionOpen, setisCompensationOptionOpen] = useState(false);
   const [CompensationValues, setCompensationValues] = useState([]);
@@ -182,6 +190,10 @@ function PreviewHRModal({
   let allInvestors = details?.allInvestors ? details?.allInvestors?.split(",") : [];
   let displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
 
+  const [isPOCContactChange, setPOCContactChange] = useState(false)
+  const [pocContactNo,setPocContactNo] = useState('')
+  const [pocContactIDToUpdate,setPOCContactIDToUpdate] = useState(null)
+
   // const dispatch = useDispatch();
 
   useEffect(() => {
@@ -190,6 +202,7 @@ function PreviewHRModal({
     getTimeZoneValues();
     getStartEndTimeData();
     GetPayrollType();
+    getPOCUsers()
     // getLocationInfo();
     // getPostPreview({
     //   contactId:_user.LoggedInUserID,
@@ -910,6 +923,32 @@ function PreviewHRModal({
     }
   };
 
+  const  updatePOCContact = async ()=>{
+    if(pocContactNo){
+      setIsLoading(true);
+      let payload = {
+      ContactNo:pocContactNo,
+      ContactID:pocContactIDToUpdate,
+      HRID:previewIDs?.hrID
+    }
+    const result =  await MasterDAO.updatePocContactDAO(payload);
+
+    let oldPOCS = jobPreview?.hrpocUserID
+    let index = oldPOCS.findIndex(val => val.hrwiseContactId ===   pocContactIDToUpdate )
+
+    oldPOCS[index] = {...oldPOCS[index], contactNo: pocContactNo}
+
+    setJobPreview((prev) => ({...prev,  
+      hrpocUserID:oldPOCS
+    })); 
+    setPOCContactChange(false)
+    setIsLoading(false);
+    }else{
+      message.error(`Please provide valid phone number`);
+    }
+    
+  }
+
   const updateDuration = async () => {
     let isValid = true;
     setError({});
@@ -1150,6 +1189,15 @@ function PreviewHRModal({
     setStartEndTime(_list);
   };
 
+  const getPOCUsers = async () => {              
+    let response = await MasterDAO.getEmailSuggestionDAO('',previewIDs?.companyID);
+   
+    setActiveUserData([...response?.responseBody?.details?.map((item)=>({
+      value : item?.contactId,
+      label : item?.contactName
+  }))]);
+} 
+
   const GetPayrollType = async () => {
     let res = await MasterDAO.getPayRollTypeDAO();
     if (res?.statusCode === 200) {
@@ -1197,6 +1245,12 @@ function PreviewHRModal({
     }
     setIsLoading(false);
   };
+
+  const deleteHRPOC =async (pocID)=>{
+    const result = await MasterDAO.deletePOCUserDAO(pocID,previewIDs?.hrID);
+    // console.log("previewIDs",result)
+    return result
+  }
 
   const updateLocation = async () => {
     let isValid = true;
@@ -1348,6 +1402,34 @@ function PreviewHRModal({
     }
   };
 
+  const updateUserInfo = async () => {    
+    // sethrpocUserID([...jobPreview?.hrpocUserID?.map((item)=>({
+    //   value : item?.id,
+    //   label : item?.fullName
+    // }))]);
+    let payload = { 
+      showHRPOCDetailsToTalents : showHRPOCDetailsToTalents,
+      hrpocUserID : (hrpocUserID?.length == 0 || !hrpocUserID) ? null : hrpocUserID?.map((a) => a.toString())
+     };
+    setIsLoading(true);
+    let result = await updateJobPostDetail(payload);
+    if (result.statusCode === 200) {
+      setIsEditUserInfo(false);
+      messageApi.open({
+        type: "success",
+        content: "Users details updated",
+      }); 
+      setJobPreview((prev) => ({...prev,  showHRPOCDetailsToTalents: showHRPOCDetailsToTalents,  hrpocUserID: result?.responseBody?.hrpocUserID ? result?.responseBody?.hrpocUserID : []}));               
+      // let _data = {...jobPreview};      
+      // _data.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
+      // _data.hrpocUserID =  result?.responseBody?.details?.hrpocUserID ? result?.responseBody?.details?.hrpocUserID : [];
+    
+    }
+    setshowHRPOCDetailsToTalents(null);
+    sethrpocUserID([]);
+    setIsLoading(false);
+};
+
   const updateExp = async () => {
     let valid = true;
     let _errors = { ...error };
@@ -1413,11 +1495,11 @@ function PreviewHRModal({
 
   return (
     <>
-      {isLoading && (
+      {/* {isLoading && (
         <Space size="middle">
           <Spin size="large" />
         </Space>
-      )}
+      )} */}
       {contextHolder}
       <Modal
         centered
@@ -2682,6 +2764,126 @@ function PreviewHRModal({
                     </div>
                   </div>
                 </div>
+                
+                {getcompanyID === 2 &&  <div className="formFields">
+                  <div className="formFields-box">
+                    <div className="formFields-box-inner">
+                      <h2 className="formFields-box-title">Share details on the job post </h2>
+                      <div className="vitalInformationContent preShareDetailsWrap">  
+                      {/* { jobPreview?.hrpocUserID?.length === 0 ?
+                                   <h3>Need Assistance or Have Questions?
+                                  <span className="editNewIcon" 
+                                    onClick={() => {
+                                      setIsEditUserInfo(true);     
+                                      if(jobPreview?.hrpocUserID?.length>0){
+                                        sethrpocUserID([...jobPreview?.hrpocUserID?.map(item => Number(item.hrwiseContactId))]);
+                                      }else{
+                                        sethrpocUserID([]);
+                                      }                                             
+                                      setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
+                                    }}
+                                    >
+                                    <img src={EditnewIcon}/>
+                                    </span></h3>  :
+                      } */}
+                      <h3>Need Assistance or Have Questions?</h3>
+                      <p>Have questions about this job opportunity? Want to learn more about the role or discuss your candidature? 
+                      Contact the recruiter directly to get accurate insights and guidance for the application process.</p> 
+ <div className="preShareDetailsBox">
+                                      {
+                                        jobPreview?.hrpocUserID?.map((val,index) => {
+                                          return(
+                                            <div className="preShareDetailsItem" key={index}>
+                                              <div className="preShareDetailsAction">
+                                                <button className="preShareDetailsBtn" title="Delete" onClick={async () => {                                                    
+                                                    setIsLoading(true);
+                                                    let response = await deleteHRPOC(val?.hrwiseContactId);             
+                                                    setJobPreview((prev) => ({...prev,  
+                                                      hrpocUserID:response?.responseBody?.details
+                                                    }));                                     
+                                                    setIsLoading(false);
+                                                }}><img src={DeleteCircleIcon} alt="delete-icon"/></button>
+                                                {/* <button className="preShareDetailsBtn" title="Edit" onClick={() => {
+                                                  setIsEditUserInfo(true);                                                 
+                                                  
+                                                  if(jobPreview?.hrpocUserID?.length>0){
+                                                    sethrpocUserID([...jobPreview?.hrpocUserID?.map(item => Number(item.hrwiseContactId))]);
+                                                  }else{
+                                                    sethrpocUserID([]);
+                                                  } 
+                                                  setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
+                                                }}><img src={EditCircleIcon} alt="edit-icon"/></button> */}
+                                              </div>
+                                              <div className="thumbImages">                                                
+                                                <Avatar style={{ width: "66px",height: "66px", display: "flex",alignItems: "center"}} size="large">{val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
+                                              </div>
+                                              <div className="preShareDetailsInfo">
+                                                <h4>{val?.fullName}</h4>
+                                                <ul>
+                                                  <li><img src={MailIcon} alt="email-icon"/> <a href={`mailto:${val?.emailID}`}>{val?.emailID}</a></li>
+                                                  <li><img src={PhoneIcon} alt="phone-icon"/>{val?.contactNo ? <>{val?.contactNo} 
+                                                  <img onClick={() => {
+                                                  setPOCContactChange(true);                                                 
+                                                  setPocContactNo(val?.contactNo)
+                                                  setPOCContactIDToUpdate(val?.hrwiseContactId)
+                                                }} src={EditCircleIcon} alt="edit-icon"
+                                                style={{cursor: 'pointer'}}
+                                                />
+                                                  </>  : <p className="addMorePoc" onClick={() => {
+                                                  setPOCContactChange(true);                                                 
+                                                  setPocContactNo("")
+                                                  setPOCContactIDToUpdate(val?.hrwiseContactId)
+                                                }}>Add contact Number </p>}</li>
+                                                </ul>
+                                              </div>
+                                            </div>
+                                          )
+                                        })
+                                      }                                     
+                                    </div>
+                      {isEditUserInfo ? 
+                                   <>
+                                   <div className="form-group mt-4">
+                                      <label>Assign users to this job post</label>
+                                      <Select
+                                        mode="tags"
+                                        style={{ width: "100%" }}
+                                        value={hrpocUserID}
+                                        onChange={(values, _) => sethrpocUserID(values)}
+                                        placeholder="Select users"
+                                        tokenSeparators={[","]}
+                                        options={activeUserData}
+                                      />                                            
+                                    </div>
+                                    <Checkbox
+                                        name="userShow"
+                                        checked={showHRPOCDetailsToTalents}
+                                        onClick={(e) => setshowHRPOCDetailsToTalents(e.target.checked)}
+                                    >
+                                      <p><b>Show user information to talent</b> (Candidates will be able to view the contact information (email and phone number) of the selected users)</p>
+                                    </Checkbox>
+                                    <div className="buttonEditGroup mt-4">
+                                        <button type="button" class="btnPrimary blank" onClick={() => {setIsEditUserInfo(false);sethrpocUserID([]);setshowHRPOCDetailsToTalents(null);}}> Cancel </button>
+                                        {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updateUserInfo}> SAVE </button>}   
+                                    </div> 
+                                    </> 
+                                    : 
+                                    <h3 className="mt-3 addMorePoc" onClick={() => {
+                                      setIsEditUserInfo(true);     
+                                      if(jobPreview?.hrpocUserID?.length>0){
+                                        sethrpocUserID([...jobPreview?.hrpocUserID?.map(item => Number(item.hrwiseContactId))]);
+                                      }else{
+                                        sethrpocUserID([]);
+                                      }                                             
+                                      setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
+                                    }}>Add Another User</h3>
+                                    }
+                      </div>
+                     
+                    </div>
+                  </div>
+                </div>}
+               
 
                 <div class="previewHRAction">
                   <button
@@ -2837,6 +3039,53 @@ function PreviewHRModal({
                 <button type="button" class="btnPrimary blank" onClick={() => { setIsCompanyNameChange(false); setIsCompanyNameChangeValue(''); setIsCompanyURLChangeValue(''); }}> Cancel </button>
                 {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={() =>
                   updateCompanyDetails('companyName', companyNameChangeValue, setIsCompanyNameChange, setIsCompanyNameChangeValue)
+                }> SAVE </button>}
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+        {/*  POC contact no in Modal */}
+        <Modal
+        centered
+        open={isPOCContactChange}
+        onCancel={() => {
+          setPOCContactChange(false)
+          setPocContactNo('')
+          setPOCContactIDToUpdate(null)
+        }}
+        width={267}
+        className="customModal jobPostEditModal PrevEditmodal"
+        footer={null}
+      >
+        <div className="modalContent">
+          {isLoading && (
+            <Space size="middle">
+              <Spin size="large" />
+            </Space>
+          )}
+          <div className="row formFields">
+            <div className="col-12">
+              <div className="form-group mb-2">
+                <label>Contact </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="contactNumber"
+                  value={pocContactNo}
+                  onChange={(e) => setPocContactNo(e.target.value)}
+                  placeholder="Please enter contact number"
+                />
+              </div>
+       
+              <div className="buttonEditGroup">
+                <button type="button" class="btnPrimary blank" onClick={() => { setPOCContactChange(false)
+                setPOCContactIDToUpdate(null)
+          setPocContactNo('') }}> Cancel </button>
+                {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={() =>
+                  updatePOCContact()
                 }> SAVE </button>}
                 
               </div>
@@ -3309,7 +3558,7 @@ function PreviewHRModal({
                     )}
                   </div>
                 </div>}
-{console.log('edit dur',editDuration)}
+
               {editDuration?.hiringTypePricingId === 3 &&
                 <div className="form-group RadioShowSelect mt-3 col-6 mb-3">
                   <label>Who will manage the Payroll<span>*</span></label>

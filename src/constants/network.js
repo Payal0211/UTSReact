@@ -203,6 +203,8 @@ export class MastersAPI {
 		'GetCountryListByCountryCodeOrPostalcode';
 	static GET_COUNTRY_LIST_BY_CITY = 'FetchCountriesBasedonCity'	
 	static CHECK_COUNTRY_REGION = 'CheckCountryRegion';
+	static DELETE_POC_USER = 'DeleteHRPOC'
+	static EDIT_HR_POC = 'EditHRPOC'
 	static CHECK_COUNTRY_NAME = 'CheckCountryName';
 	static ADD_COUNTRY = 'AddCountry';
 	static GET_CURRENCY_EXCHANGE_RATE_LIST = 'GetCurrencyExchangeRateList';
