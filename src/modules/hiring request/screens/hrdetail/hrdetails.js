@@ -552,6 +552,7 @@ const togglePriority = useCallback(
                   apiData={apiData}
                   clientDetail={apiData?.ClientDetail}
                   callAPI={callAPI}
+				  setLoading={setLoading}
                   talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
                   HRStatusCode={apiData?.HRStatusCode}
                   talentDetail={apiData?.HRTalentDetails}

@@ -234,30 +234,39 @@ export default function UTMTrackingReport() {
       setStartDate(start);
       setEndDate(end);
 
-      if (start.toLocaleDateString() === end.toLocaleDateString()) {
-        let params = {
-          fromDate: new Date(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate()-7
-          ),
-          toDate: new Date(date),
+      if (start && end) {
+        let payload = {
+          fromDate: moment(start).format("YYYY-MM-DD"),
+          toDate: moment(end).format("YYYY-MM-DD"),
+          clientID:selectedClientName ? Number(selectedClientName) : 0
         };
-        setStartDate(params.fromDate);
-        setEndDate(params.toDate);
-        setDateError(true);
-        setTimeout(() => setDateError(false), 5000);
-        return;
-      } else {
-        if (start && end) {
-          let payload = {
-            fromDate: moment(start).format("YYYY-MM-DD"),
-            toDate: moment(end).format("YYYY-MM-DD"),
-            clientID:selectedClientName ? Number(selectedClientName) : 0
-          };
-          getClientPortalReportList(payload);
-        }
+        getClientPortalReportList(payload);
       }
+
+      // if (start.toLocaleDateString() === end.toLocaleDateString()) {
+      //   let params = {
+      //     fromDate: new Date(
+      //       date.getFullYear(),
+      //       date.getMonth(),
+      //       date.getDate()-7
+      //     ),
+      //     toDate: new Date(date),
+      //   };
+      //   setStartDate(params.fromDate);
+      //   setEndDate(params.toDate);
+      //   setDateError(true);
+      //   setTimeout(() => setDateError(false), 5000);
+      //   return;
+      // } else {
+      //   if (start && end) {
+      //     let payload = {
+      //       fromDate: moment(start).format("YYYY-MM-DD"),
+      //       toDate: moment(end).format("YYYY-MM-DD"),
+      //       clientID:selectedClientName ? Number(selectedClientName) : 0
+      //     };
+      //     getClientPortalReportList(payload);
+      //   }
+      // }
     },
     [hrStage, appliedFilter, isFocusedRole,selectedClientName]
   );

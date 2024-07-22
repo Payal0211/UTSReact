@@ -57,8 +57,8 @@ const CloneHRModal = ({
 			  "isVettedProfile": isVettedProfile
 			}
 		  }		
-		  if(cloneHRhandler){resetFields();cloneHRhandler(isHRHybrid,payload);setDisableOK(true)}
-		  else{resetFields();navigateToCloneHR(isHRHybrid,payload);setDisableOK(true)} 
+		  if(cloneHRhandler){cloneHRhandler(isHRHybrid,payload,resetFields);setDisableOK(true)}
+		  else{navigateToCloneHR(isHRHybrid,payload,resetFields);setDisableOK(true)} 
 		}
 
 		

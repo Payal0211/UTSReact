@@ -45,6 +45,7 @@ import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import DOMPurify from "dompurify";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import JobDescriptionComponent from "../jdComponent/jdComponent";
+import ReactQuill from 'react-quill';
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -3729,7 +3730,20 @@ const HRFields = ({
 
 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
-                    <HRInputField
+                  <label style={{ marginBottom: "12px" }}>
+                  Highlight any key parameters or things to consider for finding the best match talents
+								{/* <span className={HRFieldStyle.reqField}>*</span> */}
+							</label>
+							<ReactQuill
+								register={register}
+								setValue={setValue}
+								theme="snow"
+								className="heightSize"
+								value={watch('parametersHighlight')}
+								name="parametersHighlight"
+								onChange={(val) => setValue("parametersHighlight",val)}
+							/>
+                    {/* <HRInputField
                       register={register}
                       errors={errors}
                       isTextArea={true}
@@ -3741,7 +3755,7 @@ const HRFields = ({
 who have worked in scaled start ups."
                       // required={watch("availability")?.value === "Part Time"}
                     
-                    />
+                    /> */}
                   </div>
                 </div>
           </form>

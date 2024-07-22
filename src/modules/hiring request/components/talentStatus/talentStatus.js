@@ -231,7 +231,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 			) : (
 				<div className={TalentStatusStyle.transparent}>
 
-					{apiData?.IsPayPerHire === true && <div className={TalentStatusStyle.colMd12} style={{display:'flex'}}>
+					{/* {apiData?.IsPayPerHire === true && <div className={TalentStatusStyle.colMd12} style={{display:'flex'}}>
 						<p style={{marginRight:'5px'}}>Did this status change occur prior to the interview or following the interview?</p>
 
 						<Radio.Group
@@ -245,7 +245,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 										After Interview
 										</Radio>
 									</Radio.Group>
-					</div>}
+					</div>} */}
 					{apiData?.IsPayPerCredit == true ?(
 					<>
 						<div className={TalentStatusStyle.colMd12}>
