@@ -1012,6 +1012,62 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getEmailSuggestionDAO');
 		}
 	},
+	deletePOCUserDAO: async function (pocID,hrId) {
+		try {
+			const emailSuggestionResponse = await MasterAPI.deletePOCUserRequest(
+				pocID,hrId
+			);
+			if (emailSuggestionResponse) {
+				const statusCode = emailSuggestionResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = emailSuggestionResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return emailSuggestionResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailSuggestionResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.deletePOCUserDAO');
+		}
+	},
+	updatePocContactDAO: async function (payload) {
+		try {
+			const emailSuggestionResponse = await MasterAPI.updatePocContactRequest(
+				payload
+			);
+			if (emailSuggestionResponse) {
+				const statusCode = emailSuggestionResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = emailSuggestionResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return emailSuggestionResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailSuggestionResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.updatePocContactDAO');
+		}
+	},
 	getNRMarginRequestDAO: async function (email) {
 		try {
 			const nrMarginResponse = await MasterAPI.getNRMarginRequest();
