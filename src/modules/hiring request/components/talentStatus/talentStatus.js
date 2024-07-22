@@ -182,7 +182,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 			// Call the code of notes for reject talent
 			if(d?.talentStatus?.id === 7 || d?.statusId?.id === 8){				
 				
-				let note = d?.rejectReasonParentID?.value + " - " + `${d?.rejectReasonID ? d?.rejectReasonID?.value : d.rejectReason?.value}`;
+				let note = d?.rejectReasonParentID?.value + " - " + `${d?.rejectReasonID ? d?.rejectReasonID?.value : d.rejectReason?.value}` + ` - ${d.onHoldRemark || d.lossRemark}`;
 				await saveTalentNotesWhenRejected(note);
 			}
 		},
