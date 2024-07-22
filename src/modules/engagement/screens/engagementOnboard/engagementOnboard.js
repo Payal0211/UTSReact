@@ -7,23 +7,49 @@ import allengagementOnboardStyles from "../engagementOnboard/engagementOnboard.m
 import { ReactComponent as LinkedInSVG } from "assets/svg/linkedin.svg";
 import WithLoader from "shared/components/loader/loader";
 import moment from "moment";
-import { NetworkInfo } from "constants/network";
+import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { ReactComponent as DownloadJDSVG } from "assets/svg/downloadJD.svg";
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
+import { Checkbox, Modal } from "antd";
+import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
+import { engagementRequestDAO } from "core/engagement/engagementDAO";
 
 const EngagementOnboard = ({
   getOnboardFormDetails : gOBFD,
   getHRAndEngagementId,
   isLoading,
   scheduleTimezone,
+  getOnboardingForm,
 }) => {
+
+  const [editModal,setEditModal] = useState(false)
+  const [renewalDiscussion,setRenewalDiscussion] = useState({
+    IsRenewalInitiated:false
+  })
 
   let getOnboardFormDetails = gOBFD?.onboardContractDetails
   let teamMembersDetails = gOBFD?.onBoardClientTeamMembers
 
+  useEffect(()=>{
+    setRenewalDiscussion({
+      ...renewalDiscussion,
+      IsRenewalInitiated: getOnboardFormDetails?.isRenewalInitiated == "yes" ?true:false,
+    });
+  },[getOnboardFormDetails?.isRenewalInitiated])
+
+  const handleSubmit = async () => {
+    const response = await engagementRequestDAO.saveRenewalInitiatedDetailDAO(getOnboardFormDetails?.onBoardID,
+      renewalDiscussion?.IsRenewalInitiated == true ? "Yes":"No"
+    );
+    if(response?.statusCode === HTTPStatusCode?.OK){
+      getOnboardingForm(getHRAndEngagementId?.onBoardId)
+      setEditModal(false);
+    }
+  }
 // console.log({getOnboardFormDetails,
 //   getHRAndEngagementId,})
   return (
+    <>
     <div className={allengagementOnboardStyles.engagementModalWrap}>
       <div className={allengagementOnboardStyles.engagementModalTitle}>
         <h1>
@@ -668,7 +694,7 @@ const EngagementOnboard = ({
         </div>
 
         <div className={allengagementOnboardStyles.engagementContent}>
-          <h2>Before Kick-off</h2>
+          <h2>Contract Details</h2>
           <ul>
             <li>
               <span>Kick off call Date : </span>
@@ -695,52 +721,8 @@ const EngagementOnboard = ({
                 ? getOnboardFormDetails?.talentReportingPOC
                 : "NA"}
             </li>
-          </ul>
-        </div>
-
-        <div className={allengagementOnboardStyles.engagementContent}>
-          <h2>After Kick-off</h2>
-          <ul>
             <li>
-              <span>Zoho Invoice Number: </span>
-
-              {getOnboardFormDetails?.zohoInvoiceNumber
-                ? getOnboardFormDetails?.zohoInvoiceNumber
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Invoice Value : </span>
-
-              {getOnboardFormDetails?.invoiceAmount
-                ? getOnboardFormDetails?.invoiceAmount +
-                  " " +
-                  getOnboardFormDetails?.talent_CurrencyCode
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Engagement Start Date : </span>
-
-              {getOnboardFormDetails?.contractStartDate
-                ? moment(getOnboardFormDetails?.contractStartDate).format(
-                    "DD-MM-YYYY"
-                  )
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Engagement End Date : </span>
-
-              {getOnboardFormDetails?.contractEndDate
-                ? moment(getOnboardFormDetails?.contractEndDate).format(
-                    "DD-MM-YYYY"
-                  )
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Talent Start Date : </span>
+              <span>Talent Joining Date : </span>
 
               {/* {getOnboardFormDetails?.talentOnBoardDate
                 ? getOnboardFormDetails?.talentOnBoardDate
@@ -751,6 +733,53 @@ const EngagementOnboard = ({
                     "DD-MM-YYYY"
                   )
                 : "NA"}
+            </li>
+            <li>
+              <span>Zoho Invoice Number: </span>
+
+              {getOnboardFormDetails?.zohoInvoiceNumber
+                ? getOnboardFormDetails?.zohoInvoiceNumber
+                : "NA"}
+            </li>
+            <li>
+              <span>Invoice Value : </span>
+
+              {getOnboardFormDetails?.invoiceAmount
+                ? getOnboardFormDetails?.invoiceAmount +
+                  " " +
+                  getOnboardFormDetails?.talent_CurrencyCode
+                : "NA"}
+            </li>
+            <li>
+              <span>Engagement Start Date : </span>
+
+              {getOnboardFormDetails?.contractStartDate
+                ? moment(getOnboardFormDetails?.contractStartDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+            <li>
+              <span>Engagement End Date : </span>
+
+              {getOnboardFormDetails?.contractEndDate
+                ? moment(getOnboardFormDetails?.contractEndDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+            <li>
+            <span>Renewal Discussion Initiated : </span>
+              {getOnboardFormDetails?.isRenewalInitiated 
+                ? getOnboardFormDetails?.isRenewalInitiated 
+                : "NA"}
+              <span
+                          className={allengagementOnboardStyles.editNewIcon}
+                          style={{marginLeft:"10px",cursor:"pointer"}}
+                          onClick={() => setEditModal(true)}
+                        >
+                          <EditNewIcon />
+                        </span>
             </li>
           </ul>
         </div>
@@ -836,6 +865,40 @@ const EngagementOnboard = ({
         </div> */}
       </div>
     </div>
+     <Modal
+      width={'300px'}
+      centered
+      footer={false}
+      open={editModal}
+      className="creditTransactionModal customTransactionModal"
+      onOk={() => setEditModal(false)}
+      onCancel={() => setEditModal(false)}
+    >
+      <div className={allengagementOnboardStyles.engagementContentEdit}>
+        <Checkbox
+          name="renewal"
+          checked={renewalDiscussion?.IsRenewalInitiated}
+          onChange={(e) => {
+            setRenewalDiscussion({
+              ...renewalDiscussion,
+              IsRenewalInitiated: e.target.checked,
+            });
+          }}
+        >
+          Renewal Discussion Initiated
+        </Checkbox>
+      </div>
+      <div>
+        <button
+          type="button"
+          className={allengagementOnboardStyles.btnPrimary}
+          onClick={handleSubmit}
+        >
+          SAVE
+        </button>
+      </div>
+    </Modal>
+   </>
   );
 };
 
