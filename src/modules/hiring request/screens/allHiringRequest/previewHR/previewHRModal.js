@@ -196,6 +196,7 @@ function PreviewHRModal({
   const [pocContactNo,setPocContactNo] = useState('')
   const [pocContactIDToUpdate,setPOCContactIDToUpdate] = useState(null)
   const [countryCodeData,setCountryCodeData] = useState("in");
+  const [ContactNoStatus,setContactNoStatus] = useState('')
 
   // const dispatch = useDispatch();
 
@@ -2832,6 +2833,7 @@ function PreviewHRModal({
                                                   <img onClick={() => {
                                                   setPOCContactChange(true);                                                 
                                                   setPocContactNo(val?.contactNo)
+                                                  setContactNoStatus("Edit")
                                                   setPOCContactIDToUpdate(val?.hrwiseContactId)
                                                 }} src={EditCircleIcon} alt="edit-icon"
                                                 style={{cursor: 'pointer'}}
@@ -2839,6 +2841,7 @@ function PreviewHRModal({
                                                   </>  : <p className="addMorePoc" onClick={() => {
                                                   setPOCContactChange(true);                                                 
                                                   setPocContactNo("")
+                                                  setContactNoStatus("Add")
                                                   setPOCContactIDToUpdate(val?.hrwiseContactId)
                                                 }}>Add contact Number </p>}</li>
                                                 </ul>
@@ -2884,7 +2887,7 @@ function PreviewHRModal({
                                         sethrpocUserID([]);
                                       }                                             
                                       setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
-                                    }}>Add Another User</h3>
+                                    }}>Add {jobPreview?.hrpocUserID.length > 0 && "Another"} User</h3>
                                     }
                       </div>
                      
@@ -3077,7 +3080,7 @@ function PreviewHRModal({
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-2">
-                <label>Contact </label>
+                <label>{ContactNoStatus} Contact </label>
                 <div className="phonConturyWrap">
                 <PhoneInput
                       placeholder="Enter contact"
