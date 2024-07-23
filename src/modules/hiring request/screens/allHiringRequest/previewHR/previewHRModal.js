@@ -2,6 +2,8 @@ import { AutoComplete, Avatar, Checkbox, Radio, Select, Space, Spin, Tooltip, me
 import Modal from "antd/es/modal/Modal";
 import "./css/previewHR.css";
 import 'react-quill/dist/quill.snow.css'
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
 import { useEffect, useRef, useState } from "react";
 import infosmallIcon from "assets/svg/infoSmallIcon.svg";
 import EditnewIcon from "assets/svg/editnewIcon.svg";
@@ -193,6 +195,7 @@ function PreviewHRModal({
   const [isPOCContactChange, setPOCContactChange] = useState(false)
   const [pocContactNo,setPocContactNo] = useState('')
   const [pocContactIDToUpdate,setPOCContactIDToUpdate] = useState(null)
+  const [countryCodeData,setCountryCodeData] = useState("in");
 
   // const dispatch = useDispatch();
 
@@ -3070,14 +3073,25 @@ function PreviewHRModal({
             <div className="col-12">
               <div className="form-group mb-2">
                 <label>Contact </label>
-                <input
+                <div className="phonConturyWrap">
+                <PhoneInput
+                      placeholder="Enter contact"
+                      key={'contact phone no'}
+                      value={pocContactNo}
+                      onChange={(e) => setPocContactNo(e)}
+                      country={countryCodeData}
+                      disableSearchIcon={true}
+                      enableSearch={true}
+                    />    
+                </div>    
+                {/* <input
                   type="text"
                   className="form-control"
                   name="contactNumber"
                   value={pocContactNo}
                   onChange={(e) => setPocContactNo(e.target.value)}
                   placeholder="Please enter contact number"
-                />
+                /> */}
               </div>
        
               <div className="buttonEditGroup">
