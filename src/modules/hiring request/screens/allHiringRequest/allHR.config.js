@@ -543,7 +543,7 @@ export const allHRConfig = {
       },
       {
         label: "GEO",
-        name: "geoList",
+        name: "Geos",
         child: filterList?.geoList,
         isSearch: false,
       },
