@@ -924,7 +924,7 @@ export const unassignedHRsConfig = {
 				title: 'Assigned POC',
 				dataIndex: 'assignedPOC',
 				key: 'assignedPOC',
-        width: "260px",
+        width: "300px",
 				render: (data, param) => {	
  					return <ControlledTitleComp text={data} values={param} />
 					// return (
@@ -951,16 +951,16 @@ export const unassignedHRsConfig = {
         key: "HR_ID",
         align: "left",
         width: "190px",
-        render: (text, result) => (
-          <Link
-            target="_blank"
-            to={`/allhiringrequest/${result?.key}`}
-            style={{ color: "black", textDecoration: "underline" }}
-            onClick={() => localStorage.removeItem("dealID")}
-          >
-            {text}
-          </Link>
-        ),
+        // render: (text, result) => (
+        //   <Link
+        //     target="_blank"
+        //     to={`/allhiringrequest/${result?.key}`}
+        //     style={{ color: "black", textDecoration: "underline" }}
+        //     onClick={() => localStorage.removeItem("dealID")}
+        //   >
+        //     {text}
+        //   </Link>
+        // ),
       },
       {
         title: "TR",

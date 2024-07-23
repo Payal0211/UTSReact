@@ -306,9 +306,10 @@ const UnassignedHRScreen = () => {
         const data = {
           POCID:assignedPOCID,HRID:values?.HRID
         }
+      
 				const result = await hiringRequestDAO.assignedPOCForUnassignHRSDAO(data);
 				if(result?.statusCode === HTTPStatusCode.OK){
-					message.success("POC Assigned Successfully.")
+					message.success(`AM ( ${allPocs.find(item=> item.id === assignedPOCID).value } ) is assigned to ${values?.HR_ID} successfully.`)
 					setIsEdit(false);
           handleHRRequest(tableFilteredState);
 				}
@@ -317,7 +318,7 @@ const UnassignedHRScreen = () => {
 					setIsEdit(false)
 				}	
 			// }	
-	  },[assignedPOCID,getHRID])
+	  },[assignedPOCID,getHRID,allPocs])
     
 		if(isEdit){
 			return <div className="tblEditBox">
@@ -327,11 +328,13 @@ const UnassignedHRScreen = () => {
 				style={{marginRight:'10px',cursor:'pointer'}}
 				onClick={() => {saveEditRole();}}
 			/>
-        <Select onChange={e=>setAssignedPOCID(e)}>
-          {allPocs?.map((item)=>(
+     
+<Select mode="id" onChange={(e,_)=>setAssignedPOCID(_.id)} showSearch options={allPocs} />
+          {/* {allPocs?.map((item)=>(
             <Select.Option value={item?.id}>{item?.value}</Select.Option>
-          ))}
-        </Select>
+          ))} */}
+        {/* </Select> */}
+        
 			<Close 
 			width={24}
 			height={24}
@@ -961,7 +964,7 @@ const UnassignedHRScreen = () => {
         ) : (
           <WithLoader className="mainLoader">
             <Table
-              scroll={{ x: "100vw", y: "100vh" }}
+              scroll={{  y: "100vh" }}
               id="hrListingTable"
               columns={tableColumnsMemo}
               bordered={false}
