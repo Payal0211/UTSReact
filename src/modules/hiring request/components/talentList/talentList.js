@@ -1716,7 +1716,6 @@ const TalentList = ({
 						// getSlotInformationHandler={getSlotInformationHandler}
 						getInterviewStatus={getInterviewStatus}
 						isAnotherRound={isAnotherRound}
-						clientFeedbackHandler={()=> clientFeedbackHandler(false,filterTalentID)}
 					/>
 				</Modal>
 			)}
