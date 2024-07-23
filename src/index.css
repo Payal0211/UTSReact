@@ -143,6 +143,10 @@ input[type="file"] {
   justify-content: center !important;
 }
 
+.ant-pagination-options-size-changer{
+display:none !important
+}
+
 .ant-pagination-item a {
   padding: 0;
 }
@@ -1333,6 +1337,15 @@ table {
 @media only screen and (max-width: 1440px) {
   .mainWrapper {
     padding-top: 64px;
+  }
+
+  .ant-tabs-top .ant-tabs-tab{
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .ant-tabs-tab .ant-tabs-tab-btn{
+    font-size: var(--fontsize-brittle) !important;
   }
 
   .ant-table-thead > tr > th {

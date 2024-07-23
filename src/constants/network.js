@@ -203,6 +203,8 @@ export class MastersAPI {
 		'GetCountryListByCountryCodeOrPostalcode';
 	static GET_COUNTRY_LIST_BY_CITY = 'FetchCountriesBasedonCity'	
 	static CHECK_COUNTRY_REGION = 'CheckCountryRegion';
+	static DELETE_POC_USER = 'DeleteHRPOC'
+	static EDIT_HR_POC = 'EditHRPOC'
 	static CHECK_COUNTRY_NAME = 'CheckCountryName';
 	static ADD_COUNTRY = 'AddCountry';
 	static GET_CURRENCY_EXCHANGE_RATE_LIST = 'GetCurrencyExchangeRateList';
@@ -257,6 +259,8 @@ export class ClientsAPI {
 
 export class HiringRequestsAPI {
 	static GET_ALL_HIRING_REQUEST = 'GetAllHiringRequests';
+	static GET_ALL_UNASSIGNED_HIRING_REQUEST = 'GetAllUnAssignedHiringRequests';
+	static ASSIGNED_POC_FOR_UNASSIGNED_HRS = 'AssinedPOCforUnAssignedHRs';
 	static CREATE_HR = 'Create';
 	static CREATE_DEBRIEFING = 'Debriefing'
 	static CHECK_CLIENT_EMAIL = 'CheckClientEmail';
@@ -382,6 +386,7 @@ export class OnboardsAPI {
 	static UPLOAD_LEAVE_POLICY = 'UploadLeavePolicy'
 	static GET_AM_USER = "GetAMUser";
 	static GET_STATE_LIST = "GetStateList";
+	static SAVE_RENEWALINITIATED_DETAILS="SaveRenewalInitiatedDetail"
 }
 
 export class HTTPStatusCode {

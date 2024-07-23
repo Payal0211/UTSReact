@@ -34,6 +34,61 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
 		}
 	},
+	getAllUnassignedHiringRequestDAO: async function (hrData) {
+		try {
+			const hrResult = await HiringRequestAPI.getAllUnassignedHiringRequest(hrData);
+
+			if (hrResult) {
+				const statusCode = hrResult['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return hrResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return hrResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getAllUnassignedHiringRequestDAO');
+		}
+	},
+	assignedPOCForUnassignHRSDAO: async function (hrData) {
+		try {
+			const hrResult = await HiringRequestAPI.assignedPOCForUnassignHRS(hrData);
+			if (hrResult) {
+				const statusCode = hrResult['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return hrResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return hrResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.assignedPOCForUnassignHRSDAO');
+		}
+	},
 	getSchduleInterviewInformation: async function (data) {
 		try {
 			const scheduleResult = await HiringRequestAPI.scheduleInterview(data);

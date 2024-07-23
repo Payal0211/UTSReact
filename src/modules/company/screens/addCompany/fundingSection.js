@@ -130,7 +130,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
       return years;
     };
   
-    const startYear = watch('foundedIn') ? watch('foundedIn') : 1900;
+    const startYear = 1900;
     const endYear = new Date().getFullYear();
   
     const yearOptions = generateYears(startYear, endYear).map((year) => ({

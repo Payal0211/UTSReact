@@ -44,6 +44,7 @@ import infoIcon from 'assets/svg/info.svg'
 import plusSkill from 'assets/svg/plusSkill.svg';
 import DOMPurify from "dompurify";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
+import ReactQuill from 'react-quill';
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -206,7 +207,9 @@ const EditHRFields = ({
   const [clientDetails , setClientDetails] = useState({});
 
   // const isGUID = getHRdetails?.addHiringRequest?.guid 
-  
+  const[showHRPOCDetailsToTalents,setshowHRPOCDetailsToTalents] = useState(null);
+  const [activeUserData,setActiveUserData] = useState([]);
+  const [controlledPocValue, setControlledPocValue] = useState([])
 
   let controllerRef = useRef(null);
   const {
@@ -274,6 +277,15 @@ const EditHRFields = ({
     );
     return filteredData;
   }, [getClientNameSuggestion, watchClientName]);
+
+  const getPOCUsers = async (companyID) => {              
+    let response = await MasterDAO.getEmailSuggestionDAO('',companyID);
+   
+    setActiveUserData([...response?.responseBody?.details?.map((item)=>({
+      value : item?.contactName,
+      id : item?.contactId
+  }))]);
+} 
 
   /* ------------------ Upload JD Starts Here ---------------------- */
   const [openPicker, authResponse] = useDrivePicker();
@@ -1095,6 +1107,15 @@ const EditHRFields = ({
       hrFormDetails.HRIndustryType = specificIndustry?.join('^')
       hrFormDetails.StringSeparator = "^"
 
+      if(companyType.id === 2 ){
+        hrFormDetails.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
+        hrFormDetails.hrpocUserID = watch('jobPostUsers') ? watch('jobPostUsers')?.map(item => item.id.toString()) : []; 
+      }else{
+        hrFormDetails.showHRPOCDetailsToTalents = null;
+        hrFormDetails.hrpocUserID = [];
+      }
+      
+
       if(isDirectHR === true && isBDRMDRUser === true){
         hrFormDetails.directPlacement.address = ''
         hrFormDetails.directPlacement.postalCode = ''
@@ -1211,7 +1232,8 @@ const EditHRFields = ({
       isPostaJob,
       isProfileView,
       isFreshersAllowed,
-      CompensationValues,peopleManagemantexp,specificIndustry
+      CompensationValues,peopleManagemantexp,specificIndustry,
+      showHRPOCDetailsToTalents
     ]
   );
   // useEffect(() => {
@@ -1647,6 +1669,10 @@ const EditHRFields = ({
     setIsVettedProfile(getHRdetails?.addHiringRequest?.isVettedProfile)
     setIsPostaJob(getHRdetails?.companyInfo?.isPostaJob)
     setIsProfileView(getHRdetails?.companyInfo?.isProfileView)
+    getPOCUsers(getHRdetails?.companyInfo?.companyID)
+    setValue('jobPostUsers',getHRdetails?.hrpocUserID?.map(item => ({id:item.hrwiseContactId, value:item.fullName})))
+    setControlledPocValue(getHRdetails?.hrpocUserID?.map(item => ({id:item.hrwiseContactId, value:item.fullName})))
+    setshowHRPOCDetailsToTalents(getHRdetails?.showHRPOCDetailsToTalents)
 
   }, [getHRdetails, tempProjects, setValue, hrPricingTypes,payRollTypes]);
 
@@ -3631,7 +3657,7 @@ const EditHRFields = ({
             <div className={HRFieldStyle.colMd12}>
 <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
-                Does the client reauire a talent with people management exoerience?
+                Does the client require a talent with people management experience?
 							{/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
 								*
 							</span> */}
@@ -3651,7 +3677,20 @@ const EditHRFields = ({
 
 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
-                    <HRInputField
+                  <label style={{ marginBottom: "12px" }}>
+                  Highlight any key parameters or things to consider for finding the best match talents
+								{/* <span className={HRFieldStyle.reqField}>*</span> */}
+							</label>
+							<ReactQuill
+								register={register}
+								setValue={setValue}
+								theme="snow"
+								className="heightSize"
+								value={watch('parametersHighlight')}
+								name="parametersHighlight"
+								onChange={(val) => setValue("parametersHighlight",val)}
+							/>
+                    {/* <HRInputField
                       register={register}
                       errors={errors}
                       isTextArea={true}
@@ -3663,7 +3702,7 @@ const EditHRFields = ({
 who have worked in scaled start ups."
                       // required={watch("availability")?.value === "Part Time"}
                     
-                    />
+                    /> */}
                   </div>
                 </div>
           </form>
@@ -3675,6 +3714,52 @@ who have worked in scaled start ups."
 				register={register}
 				fields={fields}
 			/> */}
+
+      {companyType.id === 2 && <>
+        <Divider />
+
+<div className={HRFieldStyle.partOne}>
+          <div className={HRFieldStyle.hrFieldLeftPane}>
+            <h3>Share Details on the Job Post</h3>
+          
+          </div>
+
+          <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
+          <div className={HRFieldStyle.row}>
+            <div className={HRFieldStyle.colMd12}>
+                  <HRSelectField
+                  isControlled={true}
+                  controlledValue={controlledPocValue}
+                  setControlledValue={setControlledPocValue}
+                    mode='multiple'
+                    setValue={setValue}
+                    register={register}
+                    label={'Assign users to this job post'}
+                    placeholder="Select Users"
+                    // onChange={setSelectGoodToHaveItems}
+                    options={activeUserData}
+                    // setOptions={setSkillMemo}
+                    name="jobPostUsers"
+                    // isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+                    // required
+                    // errorMsg={'Please select Compensation options.'}
+
+                  />
+              </div>
+
+              <div className={HRFieldStyle.colMd12}>
+              <Checkbox checked={showHRPOCDetailsToTalents}
+                        onClick={(e) => setshowHRPOCDetailsToTalents(e.target.checked)} >
+              <span >Show user information to talent</span> (Candidates will be able to view the contact information (email and phone number) of the selected users)
+						</Checkbox>
+              </div>
+              </div>
+            </form>
+          </div>
+      </>}
+
+
+          <Divider />
 
           <div className={HRFieldStyle.formPanelAction}>
             {!getHRdetails?.addHiringRequest?.isActive && (

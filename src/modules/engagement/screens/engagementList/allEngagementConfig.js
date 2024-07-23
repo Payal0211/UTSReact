@@ -678,7 +678,7 @@ export const allEngagementConfig = {
 				}
 			},			
 			{
-				title: ' NR (%)',
+				title: 'Actual NR (%)',
 				dataIndex: 'nr',
 				key: 'nr',
 				align: 'left',

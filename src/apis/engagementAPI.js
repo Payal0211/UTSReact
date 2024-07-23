@@ -479,4 +479,23 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	saveRenewalInitiatedDetail: async function (onBoardId,renewal) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD + 
+			OnboardsAPI.SAVE_RENEWALINITIATED_DETAILS + `?OnBoardId=${onBoardId}&IsRenewalInitiated=${renewal}`
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		// httpService.dataToSend = details;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.saveRenewalInitiatedDetail',
+			);
+		}
+	},
 };
