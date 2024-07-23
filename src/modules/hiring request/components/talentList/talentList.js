@@ -1355,8 +1355,7 @@ const TalentList = ({
 															case TalentOnboardStatus.ANOTHER_ROUND_INTERVIEW: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
-																setAnotherRound(true);
-																clientFeedbackHandler(false,item)
+																setAnotherRound(true);																
 																setTalentIndex(item?.TalentID);
 																break;
 															}
@@ -1717,6 +1716,7 @@ const TalentList = ({
 						// getSlotInformationHandler={getSlotInformationHandler}
 						getInterviewStatus={getInterviewStatus}
 						isAnotherRound={isAnotherRound}
+						clientFeedbackHandler={()=> clientFeedbackHandler(false,filterTalentID)}
 					/>
 				</Modal>
 			)}

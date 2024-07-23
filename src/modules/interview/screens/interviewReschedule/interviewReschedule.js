@@ -34,7 +34,8 @@ const InterviewReschedule = ({
 	reScheduleSlotRadio,
 	setRescheduleSlotRadio,
 	getInterviewStatus,
-	isAnotherRound
+	isAnotherRound,
+	clientFeedbackHandler
 }) => {
 	const {
 		watch,
@@ -198,7 +199,7 @@ const InterviewReschedule = ({
 					: '',
 				IsAnotherRoundInterview: isAnotherRound ?  true : false
 			};
-
+			clientFeedbackHandler()
 			let response = await hiringRequestDAO.getReSchduleInterviewInformation(
 				reScheduleData,
 			);
