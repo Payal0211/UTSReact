@@ -299,4 +299,56 @@ export const OnboardDAO = {
 			return errorDebug(error, 'userDAO.uploadPolicyDAO');
 		}
 	},
+	getAMUsersDAO: async function () {
+		try {
+			const getAmUser =
+				await OnboardAPI.getAMUsers();
+			if (getAmUser) {
+				const statusCode = getAmUser['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = getAmUser?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return getAmUser;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return getAmUser;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getAMUsersDAO');
+		}
+	},
+	getStateListDAO: async function () {
+		try {
+			const getState =
+				await OnboardAPI.getStateList();
+			if (getState) {
+				const statusCode = getState['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = getState?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return getState;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return getState;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getStateListDAO');
+		}
+	},
 };

@@ -361,6 +361,7 @@
 .onboardingProcesspart .onboardingProcesBox {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
     border-bottom: 1px solid rgba(206, 204, 204, 0.50);
     padding: 32px 0 0;
 }
@@ -377,16 +378,30 @@
     line-height: normal;
     max-width: 200px;
     margin-top: 10px;
+    margin-bottom: 0;
 }
 
 .onboardingProcesspart .onboardingProcessLeft {
     width: 24%;
+    padding-bottom: 32px;
 }
 
 .onboardingProcesspart .onboardingProcessMid {
     width: 76%;
     display: flex;
     flex-wrap: wrap;
+}
+
+.onboardingProcesspart.onboardingReleaseOffer{
+    background: #fff;
+}
+
+.onboardingReleaseOffer .modalFormWrapper{
+    width: auto;
+}
+
+.onboardingProcesspart.onboardingReleaseOffer .onboardingProcessMid{
+    display: block;
 }
 
 .onboardingProcesspart .onboardingDetailText {
@@ -486,6 +501,50 @@
     color: #232323;
 }
 
+.modalFormWrapper .onboardingCurrentText.onboardingAMAssignmentHead{
+    width: 100%;
+    font-family: Montserrat;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #676767;
+    margin-bottom: 27px;
+}
+
+.modalFormWrapper .onboardingAMAssignmentHead .onboardingPR16{
+    padding-right: 16px;
+}
+
+.modalFormWrapper .assignmentNotAssign{
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    color:#232323;
+    background: rgba(255, 248, 214, 0.4);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    padding: 18px 16px;
+    width: 100%;
+    margin-bottom: 38px;
+}
+
+.modalFormWrapper .assignmentCardTitle{
+    width: 100%;
+    font-family: Montserrat;
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 400;
+    color: #676767;
+    margin: 0 0 8px;
+}
+.modalFormWrapper .colmb32{
+    margin-bottom: 32px;
+}
+.modalFormWrapper .modalFormColRow{
+    margin: 0 -12px;
+    display: flex;
+}
 
 .onbordingAssignMsgMain {
     padding-bottom: 16px;
@@ -517,13 +576,27 @@
     background: #F7F7F7;
 }
 
+.modalFormWrapper .noClientAvailable{
+    background: #F7F7F7;
+    padding: 16px;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: Montserrat;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 400;
+    color: #232323;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
 .onboardingProcesBox .trailingIcon {
     top: 50%;
     transform: translateY(-50%);
 }
 
 .onboardingProcessLeft .modalBtnWrap .btnPrimary {
-    margin-top: 10px;
+    margin-top: 16px;
 }
 
 .onboardingProcesBox .onboardingDotsDrop {
