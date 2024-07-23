@@ -16,7 +16,7 @@ const CloneHR = ({ updatedSplitter, cloneHR ,hybridInfo}) => {
 
 	const hrId = useParams();
 	const navigate = useNavigate();
-	const navigateToCloneHR = useCallback(async (isHybrid, payload) => {
+	const navigateToCloneHR = useCallback(async (isHybrid, payload,resetFields) => {
 		let data = {
 			hrid: hrId?.hrid,
 		};
@@ -29,6 +29,7 @@ const CloneHR = ({ updatedSplitter, cloneHR ,hybridInfo}) => {
 			localStorage.setItem('hrID', response?.responseBody?.details);
 			localStorage.removeItem('dealID')
 			setCloneHR(false);
+			resetFields()
 			navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		}
 	}, [hrId.hrid, navigate]);

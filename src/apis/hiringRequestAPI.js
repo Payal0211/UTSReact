@@ -31,6 +31,38 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'hiringRequestAPI.getPaginatedHiringRequest');
 		}
 	},
+	getAllUnassignedHiringRequest: async function (hrData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.GET_ALL_UNASSIGNED_HIRING_REQUEST;
+		httpService.dataToSend = hrData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.getAllUnassignedHiringRequest');
+		}
+	},
+	assignedPOCForUnassignHRS: async function (hrData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.ASSIGNED_POC_FOR_UNASSIGNED_HRS;
+		httpService.dataToSend = hrData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.assignedPOCForUnassignHRS');
+		}
+	},
 	scheduleInterview: async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =

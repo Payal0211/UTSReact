@@ -62,6 +62,7 @@ import AllNotes from './allNotes';
 import ViewNotes from './viewNotes';
 import EditNotes from './editNotes';
 import moment from 'moment';
+import { InterviewDAO } from 'core/interview/interviewDAO';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -70,6 +71,7 @@ const TalentList = ({
 	talentDetail,
 	miscData,
 	callAPI,
+	setLoading,
 	clientDetail,
 	HRStatusCode,
 	hrId,
@@ -117,6 +119,7 @@ const TalentList = ({
 	const [replaceTalentModal, setReplaceTalentModal] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
+	const [ActionKey,setActionKey] = useState("")
 	//schedule modal state
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
@@ -393,6 +396,49 @@ const TalentList = ({
 			return 'NO DATA FOUND';
 		}
 	}
+
+	const clientFeedbackHandler = useCallback(
+		async (reload, talentInfo) => {
+			reload && setLoading(true)
+	
+			const clientFeedback = {
+				role: talentInfo?.TalentRole || '',
+				talentName: talentInfo?.Name || '',
+				talentIDValue: talentInfo?.TalentID,
+				contactIDValue: talentInfo?.ContactId,
+				hiringRequestID: hrId,
+				shortlistedInterviewID: talentInfo?.Shortlisted_InterviewID,
+				hdnRadiovalue: reload ? "Hire" : "AnotherRound",
+				topSkill: '',
+				improvedSkill: '',
+				// technicalSkillRating: radioValue2,
+				// communicationSkillRating: radioValue3,
+				// cognitiveSkillRating: radioValue4,
+				messageToTalent: '',
+				clientsDecision:  '',
+				comments:  '',
+				en_Id: '',
+				FeedbackId: talentInfo?.ClientFeedbackID || 0,
+				// IsClientNotificationSent: isClientNotification,
+			};
+
+
+				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
+					clientFeedback,
+				);
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					reload && callAPI(hrId)
+				}else{
+					reload && setLoading(false)
+				}	
+		},
+		[
+			callAPI,
+			hrId,
+			isAnotherRound,
+			messageAPI,
+		],
+	);
 
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
@@ -1219,34 +1265,45 @@ const TalentList = ({
 													isDropdown={true}
 													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
 													menuAction={(menuItem) => {
-														// console.log({menuItem})
 														switch (menuItem.key) {
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setScheduleInterviewModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.ASSIGN_TSC: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																autoAssignTSC(item.OnBoardId)
 																break
 															}
 															case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setReScheduleInterviewModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.TALENT_ACCEPTANCE: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setTalentAcceptance(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.TALENT_STATUS: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setTalentStatus(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 			
 															case TalentOnboardStatus.INTERVIEW_STATUS: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setInterviewStatus(true);
 																setTalentIndex(item?.TalentID);
 																break;
@@ -1254,6 +1311,8 @@ const TalentList = ({
 															case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
 																// setOnboardClientModal(true);
 																// setTalentIndex(item?.TalentID);
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setShowAMModal(true);
 																let Flags = {
 																	talent: item,
@@ -1265,33 +1324,59 @@ const TalentList = ({
 																break;
 															}
 															case TalentOnboardStatus.SUBMIT_CLIENT_FEEDBACK: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setInterviewFeedback(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.EDIT_CLIENT_FEEDBACK: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																// setInterviewFeedback(true);
 																setTalentIndex(item?.TalentID);
 																setEditFeedback(true);
 																break;
 															}
+															case TalentOnboardStatus.SUBMIT_AS_HIRE: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
+																clientFeedbackHandler(true,item)
+																break;
+															}
+															case TalentOnboardStatus.REJECT_TALENT: {
+							
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setTalentStatus(true);
+																setTalentIndex(item?.TalentID);
+																setActionKey(key)
+																break;
+															}
 															case TalentOnboardStatus.ANOTHER_ROUND_INTERVIEW: {
-																setAnotherRound(true);
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
+																setAnotherRound(true);																
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.SCHEDULE_ANOTHER_ROUND_INTERVIEW: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setScheduleAnotherRoundInterview(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setOnboardTalentModal(true);
 																setTalentIndex(item?.TalentID);
 			
 																break;
 															}
 															case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setLegalTalentOnboardModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
@@ -1299,7 +1384,8 @@ const TalentList = ({
 															case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
 																// setLegalClientOnboardModal(true);
 																// setTalentIndex(item?.TalentID);
-			
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setShowAMModal(true);
 																let Flags = {
 																	talent: item,
@@ -1313,6 +1399,8 @@ const TalentList = ({
 															case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
 																// setTalentKickOffModal(true);
 																// setTalentIndex(item?.TalentID);
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setShowAMModal(true);
 																let Flags = {
 																	talent: item,
@@ -1324,11 +1412,15 @@ const TalentList = ({
 																break;
 															}
 															case TalentOnboardStatus.REPLACE_TALENT: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setReplaceTalentModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.CONFIRM_SLOT: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setConfirmSlotModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
@@ -1337,6 +1429,8 @@ const TalentList = ({
 																// let onboardID = item.OnBoardId
 																// navigate(`/onboard/edit/${onboardID}`)
 																// window.scrollTo(0, 0)
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setShowAMModal(true);
 																let Flags = {
 																	talent: item,
@@ -1349,6 +1443,8 @@ const TalentList = ({
 																break;
 															}
 															case TalentOnboardStatus.VIEW_ENGAGEMENT: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
 																setHRAndEngagementId({
 																	talentName: item.Name,
 																	engagementID: item.EngagemenID,
@@ -1398,6 +1494,7 @@ const TalentList = ({
 					getOnboardFormDetails={getOnboardFormDetails}
 					getHRAndEngagementId={getHRAndEngagementId}
 					scheduleTimezone={scheduleTimezone}
+					getOnboardingForm={getOnboardingForm}
 				/>
 			</Modal>
 
@@ -1782,6 +1879,7 @@ const TalentList = ({
 						callAPI={callAPI}
 						closeModal={() => setTalentStatus(false)}
 						apiData={apiData}
+						ActionKey={ActionKey}
 					/>
 				</Modal>
 			)}

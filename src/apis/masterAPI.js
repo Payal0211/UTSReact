@@ -503,6 +503,38 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getEmailSuggestionRequest');
 		}
 	},
+	deletePOCUserRequest: async function (pocID,hrId) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			MastersAPI.DELETE_POC_USER +
+			`?pocId=${pocID}&HRId=${hrId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.deletePOCUserRequest');
+		}
+	},
+	updatePocContactRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			MastersAPI.EDIT_HR_POC ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.updatePocContactRequest');
+		}
+	},
 	getBDRMarketingBasedOnUserTypeRequest: async function (userType) {
 		let httpService = new HttpServices();
 		httpService.URL =
