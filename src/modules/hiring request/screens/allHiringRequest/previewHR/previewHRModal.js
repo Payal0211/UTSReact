@@ -547,6 +547,10 @@ function PreviewHRModal({
         }
       }
     });
+    // if(values.length > 5){
+    //   message.error('More then 5 skills not allowed')
+    //   return
+    // }
     setTopSkills(_topskills);
     setEditTopSkills(values);
     // editskills.forEach((skill) => {
@@ -2856,6 +2860,7 @@ function PreviewHRModal({
                                         placeholder="Select users"
                                         tokenSeparators={[","]}
                                         options={activeUserData}
+                                        menuIsOpen
                                       />                                            
                                     </div>
                                     <Checkbox
@@ -3059,7 +3064,7 @@ function PreviewHRModal({
           setPocContactNo('')
           setPOCContactIDToUpdate(null)
         }}
-        width={267}
+        width={310}
         className="customModal jobPostEditModal PrevEditmodal"
         footer={null}
       >
