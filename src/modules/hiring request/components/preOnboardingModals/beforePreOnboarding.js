@@ -54,12 +54,15 @@ export default function BeforePreOnboarding({
   EnableNextTab,
   actionType,
   setMessage,
+  titleFlag,
 }) {
   const {
     watch,
     register,
     setValue,
     handleSubmit,
+    unregister,
+    clearErrors,
     control,
     formState: { errors },
   } = useForm({});
@@ -117,7 +120,7 @@ export default function BeforePreOnboarding({
   const [controlledEndTimeValue, setControlledEndTimeValue] =
     useState("Select End Time");
   const [controlledDevicePolicy, setControlledDevicePolicy] =
-    useState("Please Select");
+    useState([]);
   const devicePolices = [
     { id: 1, value: "Talent to bring his own devices" },
     { id: 2, value: "Client to buy a device and Uplers to Facilitate" },
@@ -254,7 +257,6 @@ export default function BeforePreOnboarding({
         setIsTransparentPricing(
           result.responseBody.details?.isTransparentPricing
         );
-        console.log(result.responseBody.details?.isFirstTabReadOnly);
         setTabDisabled(result.responseBody.details?.isFirstTabReadOnly);
         setPreONBoardingData(result.responseBody.details);
         setPreOnboardingDetailsForAMAssignment(
@@ -303,19 +305,20 @@ export default function BeforePreOnboarding({
         );
         setValue(
           "modeOFWorkingID",
-            result.responseBody.details?.replacementDetail?.modeOfWork
+            result.responseBody.details?.preOnboardingDetailsForAMAssignment?.modeOfWork
         );
         setValue(
           "city",
-            result.responseBody.details?.replacementDetail?.cityName
+            result.responseBody.details?.preOnboardingDetailsForAMAssignment
+            ?.cityName
         );
         setValue(
           "stateID",
-            result.responseBody.details?.replacementDetail?.stateID
+            result.responseBody.details?.preOnboardingDetailsForAMAssignment?.stateID
         );
         setValue(
           "talent_Designation",
-            result.responseBody.details?.replacementDetail?.talent_Designation
+            result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation
         );
         setValue('aboutCompany',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.company_Description)
         setValue('firstWeek',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstWeek)
@@ -336,35 +339,43 @@ export default function BeforePreOnboarding({
         preOnboardDetail?.nrPercentage &&
           setValue("nrPercent", preOnboardDetail?.nrPercentage);
 
-        let data = amUsers.find((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.amUserID);
-        setValue("amSalesPersonID", {
-          id: data?.id,
-          value: data?.value,
-        });
-        setControlledAssignAM({
-          id: data?.id,
-          value: data?.value,
-        });
+        let data = amUsers?.filter((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.amUserID);
+        setValue("amSalesPersonID", data[0]);
+        setControlledAssignAM(data[0]);
 
-        let modeOfWorking = workingMode.find((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.modeOfWork);
-        setValue("modeOFWorkingID", {
-          id: modeOfWorking?.id,
-          value: modeOfWorking?.value,
-        });
-        setControlledMOW({
-          id: modeOfWorking?.id,
-          value: modeOfWorking?.value,
-        });
+        let modeOfWorking = workingMode?.filter((item) => item.value === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.modeOfWork);
+        setValue("modeOFWorkingID", modeOfWorking[0]);
+        setControlledMOW(modeOfWorking[0]);
 
-        let _state = stateList.find((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.stateID);
-        setValue("stateID", {
-          id: _state?.id,
-          value: _state?.value,
-        });
-        setControlledState({
-          id: _state?.id,
-          value: _state?.value,
-        });
+        let _state = stateList?.filter((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.stateID);
+        setValue("stateID", _state[0]);
+        setControlledState(_state[0]);
+
+        let filteredDevicePolicy = devicePolices.filter(item=> item.value ===  result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption)
+            setValue('devicePolicy',filteredDevicePolicy[0])
+            setControlledDevicePolicy(filteredDevicePolicy[0].value)
+        
+        if(filteredDevicePolicy[0].id === 2){
+          let deviceFilteredMaster = result?.responseBody?.details?.deviceMaster.filter(device=> device.deviceName === result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.device_Radio_Option)
+          // console.log('deviceFilteredMaster', deviceFilteredMaster,  data.secondTabAMAssignmentOnBoardingDetails.device_Radio_Option)
+          if(deviceFilteredMaster[0].id !== 3){
+                  setValue('deviceType',deviceFilteredMaster.map(device=> ({id: device.id, value: `${device.deviceName} $ ${device.deviceCost} USD `}))[0])
+                  setControlledDeviceType(deviceFilteredMaster.map(device=> ({id: device.id, value: `${device.deviceName} $ ${device.deviceCost} USD `}))[0].value)
+          }else {
+                  setValue('deviceType',deviceFilteredMaster.map(device=> ({id: device.id, value: device.deviceName}))[0])
+                  setControlledDeviceType(deviceFilteredMaster.map(device=> ({id: device.id, value: device.deviceName}))[0].value)
+                  setValue('otherDevice',result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.client_DeviceDescription)
+          }
+        } 
+
+        if(result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption){
+          let filteredLeavePolicy = leavePolices.filter(leavePolices => leavePolices.value === result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption)
+          setValue('leavePolicie',filteredLeavePolicy[0])
+          setControlledLeavePolicy(filteredLeavePolicy[0].value)
+          result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithClient_LeavePolicyLink && setValue('policyLink',result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithClient_LeavePolicyLink)
+          result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.leavePolicyFileName && setUploadFileData(result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.leavePolicyFileName)
+  
+         }
 
         let { drpLeadTypes, drpLeadUsers } = result.responseBody.details;
         setDealowner(
@@ -406,7 +417,7 @@ export default function BeforePreOnboarding({
         setValue("engagementreplacement", _filterData[0]);
       }
     },
-    [setValue]
+    [setValue,amUsers,workingMode,stateList]
   );
 
   useEffect(() => {
@@ -511,8 +522,10 @@ const calcelMember = () =>{
   memberUnregister('linkedinLink')
 }
 
+
   const handleComplete = useCallback(
     async (d) => {
+      setIsLoading(true);
       let _payload = {
         "hR_ID": HRID,
         "companyID": data?.companyID,
@@ -623,14 +636,13 @@ const calcelMember = () =>{
       //   },
       //   teamMembers:clientTeamMembers,
       // };
-
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         // if (result?.responseBody.details.IsAMAssigned) {
         //   EnableNextTab(talentDeteils, HRID, "Legal");
         // }
 
-        // callAPI(HRID)
+        callAPI(HRID)
         setMessage(result?.responseBody.details);
         setIsLoading(false);
         setEditBillRate(false);
@@ -656,7 +668,8 @@ const calcelMember = () =>{
       editPayRate,
       engagementReplacement?.replacementData,
       addLatter,
-      assignAM
+      assignAM,
+      clientTeamMembers,getUploadFileData,deviceMasters
     ]
   );
 
@@ -674,6 +687,16 @@ const calcelMember = () =>{
       return false;
     }
   }
+
+  useEffect(()=>{
+    if(getUploadFileData){
+        clearErrors('policyLink')
+        unregister('policyLink')
+    }
+    if(watch("policyLink")){
+        clearErrors('policyFile')
+    }
+},[watch("policyLink"),getUploadFileData])
 
   const uploadFileHandler = useCallback(
     async (fileData) => {
@@ -1009,7 +1032,7 @@ const calcelMember = () =>{
                 <div className={HRDetailStyle.modalFormWrapper}>
                   <div className={HRDetailStyle.colMd12}>
                     <div className={`${HRDetailStyle.onboardingCurrentText} ${HRDetailStyle.onboardingAMAssignmentHead}`}>
-                    {assignAM ? <span>Do you want to edit AM ? </span> : <span>Do you want to assign an AM?</span>}                        <Radio.Group name="assignAM" value={assignAM} onChange={(e) => setAssignAM(e.target.value)}>
+                    {assignAM ? <span>Do you want to edit AM ? </span> : <span>Do you want to assign an AM?</span>}                        <Radio.Group name="assignAM" value={assignAM} disabled={actionType==="Legal"?true:false} onChange={(e) => setAssignAM(e.target.value)}>
                           <Radio value={true}>Yes</Radio>
                           <Radio value={false}>No</Radio>
                         </Radio.Group>                    
@@ -1032,6 +1055,7 @@ const calcelMember = () =>{
                       isError={errors["selectAM"] && errors["selectAM"]}
                       required
                       errorMsg={"Please select AM"}
+                      disabled={actionType==="Legal"?true:false}
                     />
                   </div>
                   <div className={`${HRDetailStyle.modalFormCol} ${HRDetailStyle.assignmentCardTitle}`}>
@@ -1189,7 +1213,7 @@ const calcelMember = () =>{
                         name="shiftStartTime"
                         isError={errors["shiftStartTime"] && errors["shiftStartTime"]}
                         required={true}
-                        disabled={isTabDisabled}
+                        disabled={actionType==="Legal"?true:false}
                         errorMsg={errors["shiftStartTime"] ?
                           errors["shiftStartTime"].message.length > 0 ?
                             errors["fromTime"].message : "Please select from time." : "Please select from time."}
@@ -1224,7 +1248,7 @@ const calcelMember = () =>{
                           label: item.text,
                           value: item.value,
                         }))}
-                        disabled={isTabDisabled}
+                        disabled={actionType==="Legal"?true:false}
                         name="shiftEndTime"
                         isError={errors["shiftEndTime"] && errors["shiftEndTime"]}
                         required={true}
@@ -1254,8 +1278,8 @@ const calcelMember = () =>{
                         required: "please select Payment Net Term.",
                         min: 1,
                       }}
-                      // isError={errors["netTerm"] && errors["netTerm"]}
-                      // errorMsg={"please select Payment Net Term"}
+                      isError={errors["netTerm"] && errors["netTerm"]}
+                      errorMsg={"please select Payment Net Term"}
                       required
                     />
                     ) : (
@@ -1270,12 +1294,12 @@ const calcelMember = () =>{
                           required: "please select Payment Net Term.",
                           min: 1,
                         }}
-                        // isError={errors["netTerm"] && errors["netTerm"]}
-                        // errorMsg={"Please select Payment Net Term"}
+                        isError={errors["netTerm"] && errors["netTerm"]}
+                        errorMsg={"Please select Payment Net Term"}
                         required
                         disabled
                         trailingIcon={
-                          !isTabDisabled && (
+                          actionType!=="Legal" && (
                             <EditFieldSVG
                               width="16"
                               height="16"
@@ -1353,7 +1377,7 @@ const calcelMember = () =>{
                           trailingIcon={
                             <div className={HRDetailStyle.infotextWrapper}>
                               {`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
-                           {!isTabDisabled && <EditFieldSVG
+                           {actionType!=="Legal" && <EditFieldSVG
                               width="16"
                               height="16"
                               onClick={() => {
@@ -1446,7 +1470,7 @@ const calcelMember = () =>{
                         trailingIcon={
                           <div className={HRDetailStyle.infotextWrapper}>
                             {`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
-                            {!isTabDisabled && (
+                            {actionType!=="Legal" && (
                               <EditFieldSVG
                                 width="16"
                                 height="16"
@@ -1469,7 +1493,7 @@ const calcelMember = () =>{
                   <div className={HRDetailStyle.onboardingDetailText}>
                     <span>Uplers Fees</span>
                     <span className={HRDetailStyle.onboardingTextBold}>
-                    { ((watch("billRate") > 0 && watch("payRate") > 0) &&  watch("billRate")-watch("payRate")/watch("payRate"))*100 }
+                    { ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100)+ ' %' : 'NA' )}
                       {/* {preOnboardingDetailsForAMAssignment?.talentRole
                         ? preOnboardingDetailsForAMAssignment?.talentRole
                         : "NA"} */}
@@ -1486,40 +1510,67 @@ const calcelMember = () =>{
                         mode="id/value"
                         setValue={setValue}
                         register={register}
-                        label={"Mode of  Working"}
+                        label={"Mode of Working"}
                         defaultValue={"Select Mode of  Working"}
                         name="modeOFWorkingID"
                         options={workingMode && workingMode}
                         isError={errors["modeOfWorking"] && errors["modeOfWorking"]}
                         required
                         errorMsg={"Please select Mode of  Working"}
+                        disabled={actionType==="Legal"?true:false}
                       />
                     ) : (
-                      <HRInputField
+                      // <HRInputField
+                      //   register={register}
+                      //   errors={errors}
+                      //   label="Mode of  Working"
+                      //   name="modeOFWorkingID"
+                      //   type={InputType.TEXT}
+                      //   placeholder="Mode of Working"
+                      //   validationSchema={{
+                      //     required: "please select Mode of  Working.",
+                      //     min: 1,
+                      //   }}
+                      //   value={watch('modeOFWorkingID')?.value ? watch('modeOFWorkingID')?.value : ""}
+                      //   isError={errors["modeOfWorking"] && errors["modeOfWorking"]}
+                      //   errorMsg={"Please select Mode of  Working"}
+                      //   required
+                      //   disabled
+                      //   trailingIcon={
+                      //     !isTabDisabled && (
+                      //       <EditFieldSVG
+                      //         width="16"
+                      //         height="16"
+                      //         onClick={() => setEditMOF(true)}
+                      //       />
+                      //     )
+                      //   }
+                      // />
+                      <HRSelectField
+                        controlledValue={controlledIMOW}
+                        setControlledValue={setControlledMOW}
+                        isControlled={true}
+                        mode="id/value"
+                        setValue={setValue}
                         register={register}
-                        errors={errors}
-                        label="Mode of  Working"
+                        label={"Mode of Working"}
+                        defaultValue={"Select Mode of  Working"}
                         name="modeOFWorkingID"
-                        type={InputType.TEXT}
-                        placeholder="Mode of Working"
-                        validationSchema={{
-                          required: "please select Mode of  Working.",
-                          min: 1,
-                        }}
-                        value={watch('modeOFWorkingID')?.value ? watch('modeOFWorkingID')?.value : ""}
+                        options={workingMode && workingMode}
                         isError={errors["modeOfWorking"] && errors["modeOfWorking"]}
-                        errorMsg={"Please select Mode of  Working"}
                         required
-                        disabled
-                        trailingIcon={
-                          !isTabDisabled && (
-                            <EditFieldSVG
-                              width="16"
-                              height="16"
-                              onClick={() => setEditMOF(true)}
-                            />
-                          )
-                        }
+                        errorMsg={"Please select Mode of  Working"}
+                        disabled={actionType==="Legal"?true:false}
+                        // disabled
+                        // trailingIcon={
+                        //   !isTabDisabled && (
+                        //     <EditFieldSVG
+                        //       width="16"
+                        //       height="16"
+                        //       onClick={() => setEditMOF(true)}
+                        //     />
+                        //   )
+                        // }
                       />
                     )}
                   </div>
@@ -1558,7 +1609,7 @@ const calcelMember = () =>{
                         required
                         disabled
                         trailingIcon={
-                          !isTabDisabled && (
+                          actionType!=="Legal" && (
                             <EditFieldSVG
                               width="16"
                               height="16"
@@ -1586,34 +1637,61 @@ const calcelMember = () =>{
                         isError={errors["state"] && errors["state"]}
                         required
                         errorMsg={"Please select State"}
+                        disabled={actionType==="Legal"?true:false}
                       />
                     ) : (
-                      <HRInputField
-                        register={register}
-                        errors={errors}
-                        label="State"
-                        name="stateID"
-                        type={InputType.TEXT}
-                        placeholder="State"
-                        validationSchema={{
-                          required: "please select State.",
-                          min: 1,
-                        }}
-                        value={watch('State')?.value ? watch('State')?.value : ""}
-                        isError={errors["state"] && errors["state"]}
-                        errorMsg={"Please select State"}
-                        required
-                        disabled
-                        trailingIcon={
-                          !isTabDisabled && (
-                            <EditFieldSVG
-                              width="16"
-                              height="16"
-                              onClick={() => setEditSate(true)}
-                            />
-                          )
-                        }
-                      />
+                      // <HRInputField
+                      //   register={register}
+                      //   errors={errors}
+                      //   label="State"
+                      //   name="stateID"
+                      //   type={InputType.TEXT}
+                      //   placeholder="State"
+                      //   validationSchema={{
+                      //     required: "please select State.",
+                      //     min: 1,
+                      //   }}
+                      //   value={watch('State')?.value ? watch('State')?.value : ""}
+                      //   isError={errors["state"] && errors["state"]}
+                      //   errorMsg={"Please select State"}
+                      //   required
+                      //   disabled
+                      //   trailingIcon={
+                      //     !isTabDisabled && (
+                      //       <EditFieldSVG
+                      //         width="16"
+                      //         height="16"
+                      //         onClick={() => setEditSate(true)}
+                      //       />
+                      //     )
+                      //   }
+                      // />
+                      <HRSelectField
+                      isControlled={true}
+                      controlledValue={controlledState}
+                      setControlledValue={setControlledState}
+                      mode="id/value"
+                      setValue={setValue}
+                      register={register}
+                      label={"State"}
+                      defaultValue={"Select State"}
+                      name="stateID"
+                      options={stateList && stateList}
+                      isError={errors["state"] && errors["state"]}
+                      required
+                      errorMsg={"Please select State"}
+                      disabled={actionType==="Legal"?true:false}
+                      // disabled
+                      // trailingIcon={
+                      //   !isTabDisabled && (
+                      //     <EditFieldSVG
+                      //       width="16"
+                      //       height="16"
+                      //       onClick={() => setEditSate(true)}
+                      //     />
+                      //   )
+                      // }
+                    />
                     )}
                   </div>
 
@@ -1652,7 +1730,7 @@ const calcelMember = () =>{
                         required
                         disabled
                         trailingIcon={
-                          !isTabDisabled && (
+                          actionType!=="Legal" && (
                             <EditFieldSVG
                               width="16"
                               height="16"
@@ -1688,7 +1766,7 @@ const calcelMember = () =>{
                       validationSchema={{
                         required: "please enter a bit about company culture.",
                       }}
-                      disabled={isTabDisabled}
+                      disabled={actionType==="Legal"?true:false}
                     />
                   </div>
                   <div className={HRDetailStyle.colMd12}>
@@ -1705,7 +1783,7 @@ const calcelMember = () =>{
                         required:
                           "please enter how does the first week look like.",
                       }}
-                      disabled={isTabDisabled}
+                      disabled={actionType==="Legal"?true:false}
                     />
                   </div>
                   <div className={HRDetailStyle.colMd12}>
@@ -1722,7 +1800,7 @@ const calcelMember = () =>{
                         required:
                           "please enter how does the first month look like.",
                       }}
-                      disabled={isTabDisabled}
+                      disabled={actionType==="Legal"?true:false}
                     />
                   </div>
 
@@ -1742,7 +1820,7 @@ const calcelMember = () =>{
                             required:
                               "please enter softwares and tools which will be required.",
                           }}
-                          disabled={isTabDisabled}
+                          disabled={actionType==="Legal"?true:false}
                         />
                         {/* <HRSelectField
                             isControlled={true}
@@ -1771,7 +1849,7 @@ const calcelMember = () =>{
                           validationSchema={{
                             required: "please enter Feedback Process.",
                           }}
-                          disabled={isTabDisabled}
+                          disabled={actionType==="Legal"?true:false}
                         />
                       </div>
                       <div className={HRDetailStyle.colMd12}>
@@ -1792,7 +1870,7 @@ const calcelMember = () =>{
                           }
                           required={!talentDeteils?.IsHRTypeDP}
                           errorMsg={"please select device policy."}
-                          disabled={isTabDisabled}
+                          disabled={actionType==="Legal"?true:false}
                         />
                       </div>
 
@@ -1807,7 +1885,7 @@ const calcelMember = () =>{
                             type={InputType.TEXT}
                             placeholder="Specify standard specifications, If any"
                             required={watchDevicePolicy?.id === 1}
-                            disabled={isTabDisabled}
+                            disabled={actionType==="Legal"?true:false}
                           />
                         </div>
                       )}
@@ -1848,7 +1926,7 @@ const calcelMember = () =>{
                               watchDevicePolicy?.id === 2 ? true : false
                             }
                             errorMsg={"please select device."}
-                            disabled={isTabDisabled}
+                            disabled={actionType==="Legal"?true:false}
                           />
                         </div>
                       )} 
@@ -1864,7 +1942,7 @@ const calcelMember = () =>{
                               name="otherDevice"
                               type={InputType.TEXT}
                               placeholder=""
-                              disabled={isTabDisabled}
+                              disabled={actionType==="Legal"?true:false}
                             />
                           </div>
                         )}
@@ -1889,7 +1967,7 @@ const calcelMember = () =>{
                             }
                             required={!talentDeteils?.IsHRTypeDP}
                             errorMsg={"please select leave policy."}
-                            disabled={isTabDisabled}
+                            disabled={actionType==="Legal"?true:false}
                           />
                         </div>
                       </div>
@@ -1948,8 +2026,8 @@ const calcelMember = () =>{
                           placeholder="Enter Policy Link"
                           required={getUploadFileData ? false : true}
                           disabled={
-                            isTabDisabled === true
-                              ? isTabDisabled
+                            actionType==="Legal"
+                              ? true
                               : getUploadFileData
                               ? true
                               : false
@@ -1971,8 +2049,8 @@ const calcelMember = () =>{
                         {!getUploadFileData ? (
                           <HRInputField
                             disabled={
-                              isTabDisabled === true
-                                ? isTabDisabled
+                              actionType==="Legal"
+                                ? true
                                 : watch("policyLink")
                                 ? true
                                 : false
@@ -1997,7 +2075,7 @@ const calcelMember = () =>{
                             <label>Upload Policy *</label>
                             <div className={HRDetailStyle.uploadedJDName}>
                               {getUploadFileData}{" "}
-                              {!isTabDisabled && (
+                              {actionType!=="Legal" && (
                                 <CloseSVG
                                   className={HRDetailStyle.uploadedJDClose}
                                   onClick={() => {
@@ -2063,8 +2141,8 @@ const calcelMember = () =>{
             <div className={HRDetailStyle.onboardingProcessLeft}>
                 <div><ClientTeamMemberSVG width="51" height="26" /></div>
                 <h3 className={HRDetailStyle.titleLeft}>Client’s Team Members</h3>
-                {!isTabDisabled && <div className={HRDetailStyle.modalBtnWrap}>
-                    <button type="btn" className={HRDetailStyle.btnPrimary} onClick={()=> setAddMoreTeamMember(true)} disabled={isTabDisabled}  >Add More</button>
+                {actionType!=="Legal" && <div className={HRDetailStyle.modalBtnWrap}>
+                    <button type="btn" className={HRDetailStyle.btnPrimary} onClick={()=> setAddMoreTeamMember(true)} disabled={actionType==="Legal"?true:false}  >Add More</button>
                 </div>}
             </div>
 
@@ -2250,7 +2328,7 @@ const calcelMember = () =>{
                 <div className={HRDetailStyle.modalFormWrapper}>                  
                   <div className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}>
                     <Checkbox
-                      disabled={isTabDisabled}
+                      disabled={actionType==="Legal"?true:false}
                       name="PayPerCredit"
                       checked={engagementReplacement?.replacementData}
                       onChange={(e) => {
@@ -2277,12 +2355,12 @@ const calcelMember = () =>{
                           </div>
                           <div className={HRDetailStyle.timeSlotItem}>
                             <CalenderSVG />
-                            {isTabDisabled ? (
+                            {actionType==="Legal" ? (
                               <Controller
                                 render={({ ...props }) => (
                                   <DatePicker
                                     {...props}
-                                    disabled={isTabDisabled}
+                                    disabled={actionType==="Legal"?true:false}
                                     selected={dayjs(watch("lwd"))}
                                     onChange={(date) => {
                                       setValue("lwd", date);
@@ -2290,7 +2368,7 @@ const calcelMember = () =>{
                                     placeholderText="Last Working Day"
                                     dateFormat="dd/MM/yyyy"
                                     disabledDate={disabledDate}
-                                    value={dayjs(watch("lwd"))}
+                                    // value={dayjs(watch("lwd"))}
                                     control={control}
                                   />
                                 )}
@@ -2303,7 +2381,7 @@ const calcelMember = () =>{
                                 render={({ ...props }) => (
                                   <DatePicker
                                     {...props}
-                                    disabled={isTabDisabled}
+                                    disabled={actionType==="Legal"?true:false}
                                     selected={dayjs(watch("lwd"))}
                                     onChange={(date) => {
                                       setValue("lwd", date);
@@ -2331,7 +2409,7 @@ const calcelMember = () =>{
                         controlledValue={controlledEngRep}
                         setControlledValue={setControlledEngRep}
                         isControlled={true}
-                        disabled={addLatter || isTabDisabled}
+                        disabled={addLatter || actionType==="Legal"?true:false}
                         setValue={setValue}
                         mode={"id/value"}
                         register={register}
@@ -2353,7 +2431,7 @@ const calcelMember = () =>{
                   {engagementReplacement?.replacementData && (
                     <div className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}>
                       <Checkbox
-                        disabled={isTabDisabled}
+                        disabled={actionType==="Legal"?true:false}
                         name="PayPerCredit"
                         checked={addLatter}
                         onChange={(e) => {
@@ -2387,7 +2465,7 @@ const calcelMember = () =>{
           className={HRDetailStyle.btnPrimary}
           onClick={handleSubmit(handleComplete)}
           // onClick={handleComplete}
-          disabled={isTabDisabled ? isTabDisabled : isLoading}
+          disabled={actionType==="Legal" ? true : isLoading}
         >
           {/* {preONBoardingData?.dynamicOnBoardCTA?.gotoOnboard
             ? `${preONBoardingData?.dynamicOnBoardCTA?.gotoOnboard?.label}`
