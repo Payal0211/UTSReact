@@ -2935,12 +2935,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
-
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-0">
@@ -2973,11 +2967,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-0">
@@ -3017,11 +3006,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-2">
@@ -3072,11 +3056,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-2">
@@ -3129,11 +3108,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
           <div className="row formFields" >
             <div className="col-12">
               <div className="form-group mb-0">
@@ -3168,11 +3142,6 @@ function PreviewHRModal({
         className="customModal jobPostEditModal"
         footer={null}
       >
-        {isLoading && (
-          <Space size="middle">
-            <Spin size="large" />
-          </Space>
-        )}
         <div className="modalContent">
           <div className="row formFields">
             <div className="col-12">
@@ -3218,11 +3187,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-0">
@@ -4238,11 +4202,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
           <div className="row formFields">
             <div className="col-12">
 
@@ -4295,11 +4254,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-0 vitalInfoBox">
@@ -4357,11 +4311,6 @@ function PreviewHRModal({
         footer={null}
       >
         <div className="modalContent">
-          {isLoading && (
-            <Space size="middle">
-              <Spin size="large" />
-            </Space>
-          )}
           <div className="row formFields">
             <div className="col-12">
 
