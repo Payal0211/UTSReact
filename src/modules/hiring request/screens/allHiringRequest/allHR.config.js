@@ -283,7 +283,7 @@ export const allHRConfig = {
       },
       {
         title: "Engagement Type",
-        dataIndex: "HREngagementType",
+        dataIndex: "hrEngagementType",
         key: "hrEngagementType",
         align: "left",
         width: "180px",
