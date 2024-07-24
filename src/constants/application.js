@@ -161,6 +161,7 @@ export class TalentOnboardStatus {
 	static GO_TO_ONBOARD = "Go to OnBoard"
 	static VIEW_ENGAGEMENT = 'View Engagement'
 	static ASSIGN_TSC = 'Assign TSC'
+	static MOVE_TO_ANOTHER_ROUND = 'Move to Another Round'
 }
 
 export class HRCTA {
