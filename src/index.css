@@ -1084,7 +1084,7 @@ table {
 
 .ant-select .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input {
   height: 50px;
-  padding-left: 0px;
+  padding-left: 16px;
 }
 /* [class*="LinkTableWrap"] .ant-table-tbody > tr > td {
   padding: 10px 12px !important;

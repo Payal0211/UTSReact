@@ -5,6 +5,7 @@ import HRSelectField from '../hrSelectField/hrSelectField';
 import HRInputField from '../hrInputFields/hrInputFields';
 import { InputType } from 'constants/application';
 import { OnboardDAO } from 'core/onboard/onboardDAO';
+import { Skeleton } from 'antd';
 
 const UpdateTalentOnboardStatus = ({
 	talentInfo,
@@ -22,6 +23,7 @@ const UpdateTalentOnboardStatus = ({
 	} = useForm({});
 
 	const [talentStatus, setTalentStatus] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const getTalentStatusHandler = useCallback(async () => {
 		const response = await OnboardDAO.getOnboardStatusRequestDAO({
 			onboardID: talentInfo?.OnBoardId,
@@ -34,6 +36,7 @@ const UpdateTalentOnboardStatus = ({
 
 	const talentStatusSubmitHanlder = useCallback(
 		async (d) => {
+			setIsLoading(true);
 			let talentStatusObject = {
 				onboardID: talentInfo?.OnBoardId,
 				talentID: talentInfo?.TalentID,
@@ -54,6 +57,7 @@ const UpdateTalentOnboardStatus = ({
 				talentStatusObject,
 			);
 			if (response) callAPI(hrId);
+			setIsLoading(false);
 		},
 		[
 			callAPI,
@@ -77,8 +81,7 @@ const UpdateTalentOnboardStatus = ({
 			<div className={UpdateTalentOnboardStatusStyle.modalTitle}>
 				<h2>Change Onboard Talent Status</h2>
 			</div>
-
-			<div className={UpdateTalentOnboardStatusStyle.transparent}>
+			{isLoading?( <Skeleton />):(<div className={UpdateTalentOnboardStatusStyle.transparent}>
 				<div className={UpdateTalentOnboardStatusStyle.colMd12}>
 					<HRSelectField
 						mode={'id/value'}
@@ -126,7 +129,9 @@ const UpdateTalentOnboardStatus = ({
 						Cancel
 					</button>
 				</div>
-			</div>
+			</div>)}
+
+			
 		</div>
 	);
 };

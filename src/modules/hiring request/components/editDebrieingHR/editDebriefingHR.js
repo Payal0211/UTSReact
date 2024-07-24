@@ -890,6 +890,7 @@ const checkValChnage = () => {
 										isError={errors['skills'] && errors['skills']}
 										required
 										errorMsg={'Please enter the skills.'}
+										isMustHaveSkillRes={true}
 									/>
 
 									<ul className={DebriefingHRStyle.selectFieldBox}>

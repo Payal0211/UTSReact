@@ -126,7 +126,7 @@ const InterviewReschedule = ({
 	useEffect(() => {
 		getTimeZone();
 	}, [getTimeZone]);
-	
+
 	const reScheduleInterviewAPIHandler = useCallback(
 		async (data) => {
 			setLoading(true);
@@ -198,67 +198,36 @@ const InterviewReschedule = ({
 					: '',
 				IsAnotherRoundInterview: isAnotherRound ?  true : false
 			};
-			
-
-			const clientFeedback = {
-				role: talentInfo?.TalentRole || '',
-				talentName: talentInfo?.Name || '',
-				talentIDValue: talentInfo?.TalentID,
-				contactIDValue: talentInfo?.ContactId,
-				hiringRequestID: hrId,
-				shortlistedInterviewID: talentInfo?.Shortlisted_InterviewID,
-				hdnRadiovalue: "AnotherRound",
-				topSkill: '',
-				improvedSkill: '',
-				// technicalSkillRating: radioValue2,
-				// communicationSkillRating: radioValue3,
-				// cognitiveSkillRating: radioValue4,
-				messageToTalent: '',
-				clientsDecision:  '',
-				comments:  '',
-				en_Id: '',
-				FeedbackId: talentInfo?.ClientFeedbackID || 0,
-				// IsClientNotificationSent: isClientNotification,
-			};
-
-
-				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
-					clientFeedback,
+			let response = await hiringRequestDAO.getReSchduleInterviewInformation(
+				reScheduleData,
+			);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				setLoading(false);
+				messageAPI.open(
+					{
+						type: 'success',
+						content: 'Interview rescheduled successfully',
+					},
+					1000,
 				);
-				if (response?.statusCode === HTTPStatusCode.OK) {
-					let response = await hiringRequestDAO.getReSchduleInterviewInformation(
-						reScheduleData,
-					);
-					if (response?.statusCode === HTTPStatusCode.OK) {
-						setLoading(false);
-						messageAPI.open(
-							{
-								type: 'success',
-								content: 'Interview rescheduled successfully',
-							},
-							1000,
-						);
-						setTimeout(() => {
-							callAPI(hrId);
-							closeModal();
-						}, 1000);
-					}
-					else if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
-						setTimeErrorMessage(response.responseBody)
-						setLoading(false);
-					} else {
-						setLoading(false);
-						messageAPI.open(
-							{
-								type: 'error',
-								content: 'Something went wrong',
-							},
-							1000,
-						);
-					}
-				}
-
-			
+				setTimeout(() => {
+					callAPI(hrId);
+					closeModal();
+				}, 1000);
+			}
+			else if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+				setTimeErrorMessage(response.responseBody)
+				setLoading(false);
+			} else {
+				setLoading(false);
+				messageAPI.open(
+					{
+						type: 'error',
+						content: 'Something went wrong',
+					},
+					1000,
+				);
+			}
 		},
 
 		[
