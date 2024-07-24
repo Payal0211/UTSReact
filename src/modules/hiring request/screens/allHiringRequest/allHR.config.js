@@ -227,6 +227,13 @@ export const allHRConfig = {
         ),
       },
       {
+        title: "HR Accepted since",
+        dataIndex: "HRAcceptedSince",
+        key: "HRAcceptedSince",
+        width: "80px",
+        align: "left",
+      },
+      {
         title: "TR",
         dataIndex: "TR",
         key: "TR",
@@ -260,19 +267,33 @@ export const allHRConfig = {
         // 	);
         // },
       },
-      {
-        title: "Company Type",
-        dataIndex: "companyModel",
-        key: "companyModel",
-        align: "left",
-        width: "30px",
-      },
+      // {
+      //   title: "Company Type",
+      //   dataIndex: "companyModel",
+      //   key: "companyModel",
+      //   align: "left",
+      //   width: "30px",
+      // },
       {
         title: "HR Type",
         dataIndex: "hrTypeName",
         key: "hrTypeName",
         align: "left",
-        width: "30px",
+        width: "60px",
+      },
+      {
+        title: "Engagement Type",
+        dataIndex: "HREngagementType",
+        key: "HREngagementType",
+        align: "left",
+        width: "80px",
+      },
+      {
+        title: "Salary/Client Budget",
+        dataIndex: "SalaryBudget",
+        key: "SalaryBudget",
+        align: "left",
+        width: "80px",
       },
       {
         title: "HR Status",
@@ -287,19 +308,19 @@ export const allHRConfig = {
           );
         },
       },
-      {
-        title: "Time",
-        dataIndex: "Time",
-        key: "time",
-        align: "left",
-        width: "5%",
-      },
+      // {
+      //   title: "Time",
+      //   dataIndex: "Time",
+      //   key: "time",
+      //   align: "left",
+      //   width: "5%",
+      // },
       {
         title: "FTE/PTE",
         dataIndex: "typeOfEmployee",
         key: "fte_pte",
         align: "left",
-        width: "20px",
+        width: "50px",
       },
       {
         title: "Sales Rep",
@@ -748,178 +769,7 @@ export const unassignedHRsConfig = {
     getPreviewPostData
   ) => {
     return [
-      // {
-      //   title: " ",
-      //   dataIndex: "isHRFocused",
-      //   key: "isHRFocused",
-      //   align: "center",
-      //   width: "2%",
-      //   render: (val) => {
-      //     return val ? <FocusedRole /> : null;
-      //   },
-      // },
-
-      // {
-      //   title: " ",
-      //   dataIndex: "isHRFocused",
-      //   key: "isHRFocused",
-      //   align: "center",
-      //   width: "2%",
-      //   render: (val,result) => {
-      //     return <Tooltip title="Preview/Edit HR" placement="right" >  
-      //          <img src={eyeIcon} alt='info' style={{cursor:'pointer'}} width="22" height="22" onClick={()=>{setIsPreviewModal(true);setpreviewIDs({hrID:result?.HRID,companyID: result?.companyID});getPreviewPostData(result?.HRID,result.HR_ID,result?.companyID)}}  />	
-
-      // </Tooltip> ;
-      //   },
-      // },
-
-      // {
-      //   title: "",
-      //   dataIndex: "showCloneToDemoAccount",
-      //   key: "showCloneToDemoAccount",
-      //   align: "center",
-      //   width: showCloneHRToDemoAccount === true ? "2%": "0",      
-      //   render: (text, result) => {
-      //     if(showCloneHRToDemoAccount === true)
-      //     {
-      //       return (
-      //         <>
-      //         {result?.showCloneToDemoAccount === true ? (
-      //         <Tooltip placement="bottom" title={"Clone HR to Demo Account"}>
-      //               <a href="javascript:void(0);"> 
-      //               <Checkbox
-      //                 checked={selectedCheckboxes.map(item=> item.hRID)?.includes(result.HRID)}
-      //                 onClick={() => handleDemoCloneCheckboxChange(result)}
-      //               >              
-      //               </Checkbox> 
-      //               </a>
-      //             </Tooltip>) : ""}
-      //         </>
-      //       );
-      //   }
-      //   },
-      // },
-
-      // {
-      //   title: " ",
-      //   dataIndex: "starStatus",
-      //   key: "starStatus",
-      //   align: "center",
-      //   width: "3%",
-      //   render: (_, param) => {
-      //     let response = All_Hiring_Request_Utils.GETHRPRIORITY(
-      //       param?.starStatus,
-      //       param?.salesRep,
-      //       param?.key,
-      //       togglePriority
-      //     );
-
-      //     return response;
-      //   },
-      // },
-      // {
-      //   title: " ",
-      //   dataIndex: "reopenHR",
-      //   key: "reopenHR",
-      //   width: "3%",
-      //   align: "center",
-      //   render: (text, result) => {
-      //     return (
-      //       <>
-      //         {result?.reopenHR === 0 && result?.isDisplayReopenOrCloseIcon === true ? (
-      //           <Tooltip placement="bottom" title={"Close HR"}>
-      //             <a href="javascript:void(0);">
-      //               <CloseHR
-      //                 style={{ fontSize: "16px" }}
-      //                 onClick={() => {
-      //                   setCloseHRDetail({ ...result, HR_Id: result?.HRID });
-      //                   setCloseHrModal(true);
-      //                 }}
-      //               />
-      //             </a>
-      //           </Tooltip>
-      //         ) : 
-      //         // LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 &&
-      //          result?.isDisplayReopenOrCloseIcon === true ? (
-      //           <Tooltip placement="bottom" title={"Reopen HR"}>
-      //             <a href="javascript:void(0);">
-      //               <ReopenHR
-      //                 style={{ fontSize: "16px" }}
-      //                 onClick={() => {
-      //                   if(result?.companyModel === 'Pay Per Credit'){
-      //                     const handleReopen = async (d) => {
-      //                       setLoading && setLoading(true)
-      //                       let data = { hrID: result?.HRID, updatedTR: result?.TR };
-      //                       const response = await hiringRequestDAO.ReopenHRDAO(data);
-      //                       // console.log("reoprn ",response)
-      //                       if (response?.statusCode === HTTPStatusCode.OK) {                            
-                              
-      //                         setLoading && setLoading(false)
-      //                         if(response?.responseBody?.details?.isReopen){
-      //                            window.location.reload();
-      //                         }else{
-      //                           message.error(response?.responseBody?.details?.message,10)
-      //                         }
-      //                       }
-      //                       if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
-      //                         message.error(response?.responseBody,10)
-      //                         setLoading && setLoading(false)
-      //                       }
-      //                       setLoading && setLoading(false)
-      //                     };
-      //                     return handleReopen()
-      //                   }
-      //                   setReopenHRData({
-      //                     ...result,
-      //                     HR_Id: result?.HRID,
-      //                     ClientDetail: { NoOfTalents: result?.TR },
-      //                   });
-      //                   setReopenHrModal(true);
-      //                 }}
-      //               />
-      //             </a>
-      //           </Tooltip>
-      //         ) : (
-      //           ""
-      //         )}
-      //       </>
-      //     );
-      //   },
-      // },
-      // {
-      //   title: " ",
-      //   dataIndex: "cloneHR",
-      //   key: "cloneHR",
-      //   width: "3%",
-      //   align: "center",
-      //   render: (text, result) => {
-      //     // if (LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10) {
-      //     //   return;
-      //     // }
-      //     return (
-      //       <>
-      //         <Tooltip placement="bottom" title={"Clone HR"}>
-      //           <a href="javascript:void(0);">
-      //             <CloneHRSVG
-      //               style={{ fontSize: "16px" }}
-      //               onClick={() => {
-      //                 setCloneHR(true);
-      //                 setHRID(result?.key);
-      //                 setHRNumber({hrNumber:result?.HR_ID, isHybrid:result?.isHybrid,companyID:result?.companyID});
-      //               }}
-      //             />
-      //           </a>
-      //         </Tooltip>
-      //       </>
-      //     );
-      //   },
-      // },
-      // {
-      // 	title: 'O/P',
-      // 	dataIndex: 'adHocHR',
-      // 	key: 'adHocHR',
-      // 	align: 'left',
-      // },
+     
       {
 				title: 'Assigned POC',
 				dataIndex: 'assignedPOC',
@@ -963,6 +813,13 @@ export const unassignedHRsConfig = {
         // ),
       },
       {
+        title: "HR Accepted since",
+        dataIndex: "HRAcceptedSince",
+        key: "HRAcceptedSince",
+        width: "50px",
+        align: "left",
+      },
+      {
         title: "TR",
         dataIndex: "TR",
         key: "TR",
@@ -975,14 +832,14 @@ export const unassignedHRsConfig = {
         dataIndex: "Position",
         key: "position",
         align: "left",
-        // width: "50px",
+        width: "50px",
       },
       {
         title: "Company",
         dataIndex: "Company",
         key: "company",
         align: "left",
-        // width: "240px",
+        width: "240px",
         // render: (text) => {
         // 	return (
         // 		<a
@@ -997,68 +854,34 @@ export const unassignedHRsConfig = {
         // 	);
         // },
       },
-      {
-        title: "Company Type",
-        dataIndex: "companyModel",
-        key: "companyModel",
-        align: "left",
-        width: "150px",
-      },
+      // {
+      //   title: "Company Type",
+      //   dataIndex: "companyModel",
+      //   key: "companyModel",
+      //   align: "left",
+      //   width: "150px",
+      // },
       {
         title: "HR Type",
         dataIndex: "hrTypeName",
         key: "hrTypeName",
         align: "left",
-        width: "160px",
+        width: "60px",
       },
-      // {
-      //   title: "HR Status",
-      //   dataIndex: "hrStatus",
-      //   key: "hr_status",
-      //   align: "left",
-      //   width: "12%",
-      //   render: (_, param) => {
-      //     return All_Hiring_Request_Utils.GETHRSTATUS(
-      //       param?.hrStatusCode,
-      //       param?.hrStatus
-      //     );
-      //   },
-      // },
-      // {
-      //   title: "Time",
-      //   dataIndex: "Time",
-      //   key: "time",
-      //   align: "left",
-      //   width: "5%",
-      // },
-      // {
-      //   title: "FTE/PTE",
-      //   dataIndex: "typeOfEmployee",
-      //   key: "fte_pte",
-      //   align: "left",
-      //   width: "20px",
-      // },
-      // {
-      //   title: "Sales Rep",
-      //   dataIndex: "salesRep",
-      //   key: "sales_rep",
-      //   align: "left",
-      //   width: "7%",
-      //   render: (text, result) => {
-      //     // return (
-      //     //   // <Link
-      //     //   //   to={`/user/${result?.userId}`}
-      //     //   //   style={{
-      //     //   //     color: `var(--uplers-black)`,
-      //     //   //     textDecoration: "underline",
-      //     //   //   }}
-      //     //   // >
-      //     //   //   {text}
-      //     //   // </Link>
-      //     // );
-      //     return text
-      //   },
-      // },
+      {
+        title: "Engagement Type",
+        dataIndex: "HREngagementType",
+        key: "HREngagementType",
+        align: "left",
+        width: "50px",
+      },
+      {
+        title: "Salary/Client Budget",
+        dataIndex: "SalaryBudget",
+        key: "SalaryBudget",
+        align: "left",
+        width: "50px",
+      },
     ];
   },
   hrFilterListConfig: () => {

@@ -548,10 +548,10 @@ function PreviewHRModal({
         }
       }
     });
-    // if(values.length > 5){
-    //   message.error('More then 5 skills not allowed')
-    //   return
-    // }
+    if(values.length > 5){
+      message.error('More then 5 skills not allowed')
+      return
+    }
     setTopSkills(_topskills);
     setEditTopSkills(values);
     // editskills.forEach((skill) => {

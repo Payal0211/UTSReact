@@ -1,4 +1,4 @@
-import { Select } from 'antd';
+import { Select, message } from 'antd';
 import HRSelectFieldStyle from './hrSelectField.module.css';
 import { useEffect, useMemo } from 'react';
 
@@ -26,6 +26,7 @@ const HRSelectField = ({
 	extraAction,
 	setOptions,
 	onValueChange,
+	isMustHaveSkillRes
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
 		onValueChange && onValueChange(value, option)
@@ -53,6 +54,14 @@ const HRSelectField = ({
 			setValue(name, option.id);
 			isControlled && setControlledValue(option.value);
 		} else if(mode === 'tags'){	
+			// to ristrict must have skill to select more then 5
+			if(isMustHaveSkillRes === true){
+				if(option.length > 5){
+					message.error('More then 5 skills not allowed')
+					return
+				}
+				
+			}
 			if(option.length){
 				if(Object.keys(option[value.length-1]).length>0){
 				setValue(name,option.map((item) => ({

@@ -1322,7 +1322,7 @@ const HRFields = ({
     }
 
    let newObj =  {
-      Skills: JDDATA?.skills ? JDDATA?.skills.split(',').map((item) => ({
+      Skills: JDDATA?.skills ? JDDATA?.skills.split(',').slice(0, 5).map((item) => ({
 				id: "0",
 				value: item,
 			})) : [],
@@ -1830,7 +1830,7 @@ const HRFields = ({
     if (gptFileDetails?.JDDumpID) {
       setUploadFileData(gptFileDetails.FileName);
       setJDParsedSkills({...gptFileDetails,...{
-        Skills: gptFileDetails?.Skills ? gptFileDetails?.Skills.map((item) => ({
+        Skills: gptFileDetails?.Skills ? gptFileDetails?.Skills.slice(0, 5).map((item) => ({
           id: "0",
           value: item.value,
         })) : [],
