@@ -823,7 +823,7 @@ const HRFields = ({
     },
     [setError,companyID]
   );
-console.log("company Names",getCompanyNameSuggestion)
+
   const getCompanyNameSuggestionHandler = useCallback(
     async (companyName,cid) => {
       setClientNameMessage("");
