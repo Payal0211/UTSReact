@@ -344,7 +344,7 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.onboardingFormAlign}>
                   <div className={HRDetailStyle.modalFormWrapper}>
-                    {/* <div className={HRDetailStyle.modalFormCol}> */}
+                    <div className={HRDetailStyle.modalFormCol}>
                     <label className={HRDetailStyle.timeLabel}>
                       SOW Sign Date{" "}
                       <span className={HRDetailStyle.reqFieldRed}>*</span>
@@ -380,6 +380,7 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
                         * Please select Date.
                       </div>
                     )}
+                    </div>
                     {/* </div> */}
                     {getData?.getLegalInfo?.isHRTypeDP && 
                     <div className={HRDetailStyle.modalFormCol}>
