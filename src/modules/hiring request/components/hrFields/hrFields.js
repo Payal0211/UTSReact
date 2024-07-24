@@ -2220,7 +2220,7 @@ console.log(response)
                   required
                 />
 
-<div className={HRFieldStyle.formGroup}>
+{/* <div className={HRFieldStyle.formGroup}>
                     <label>
                     Company Name <b style={{ color: "black" }}>*</b>
                     </label>
@@ -2265,7 +2265,7 @@ console.log(response)
                           `* ${errors?.companyName?.message}`}
                       </div>
                     )}
-                  </div>
+                  </div> */}
               </div>
               <div className={HRFieldStyle.colMd6}>
                   {pathName === ClientHRURL.ADD_NEW_CLIENT ? (
