@@ -1514,7 +1514,7 @@ const calcelMember = () =>{
                         defaultValue={"Select Mode of  Working"}
                         name="modeOFWorkingID"
                         options={workingMode && workingMode}
-                        isError={errors["modeOfWorking"] && errors["modeOfWorking"]}
+                        isError={errors["modeOFWorkingID"] && errors["modeOFWorkingID"]}
                         required
                         errorMsg={"Please select Mode of  Working"}
                         disabled={actionType==="Legal"?true:false}
@@ -1557,7 +1557,7 @@ const calcelMember = () =>{
                         defaultValue={"Select Mode of  Working"}
                         name="modeOFWorkingID"
                         options={workingMode && workingMode}
-                        isError={errors["modeOfWorking"] && errors["modeOfWorking"]}
+                        isError={errors["modeOFWorkingID"] && errors["modeOFWorkingID"]}
                         required
                         errorMsg={"Please select Mode of  Working"}
                         disabled={actionType==="Legal"?true:false}
@@ -1634,7 +1634,7 @@ const calcelMember = () =>{
                         defaultValue={"Select State"}
                         name="stateID"
                         options={stateList && stateList}
-                        isError={errors["state"] && errors["state"]}
+                        isError={errors["stateID"] && errors["stateID"]}
                         required
                         errorMsg={"Please select State"}
                         disabled={actionType==="Legal"?true:false}
@@ -1677,7 +1677,7 @@ const calcelMember = () =>{
                       defaultValue={"Select State"}
                       name="stateID"
                       options={stateList && stateList}
-                      isError={errors["state"] && errors["state"]}
+                      isError={errors["stateID"] && errors["stateID"]}
                       required
                       errorMsg={"Please select State"}
                       disabled={actionType==="Legal"?true:false}
