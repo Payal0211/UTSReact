@@ -322,7 +322,7 @@ const CompanyProfileCard = ({
                 </span>
               </div> */}
                <div className={CompanyProfileCardStyle.roleName}>
-                <span>Role Title:</span>&nbsp;&nbsp;
+                <span>Position:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.HRTitle ? userSessionMemo?.loggedInUserTypeID ===
                     UserAccountRole.DEVELOPER ||
