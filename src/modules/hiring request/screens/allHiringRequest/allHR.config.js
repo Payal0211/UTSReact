@@ -35,7 +35,7 @@ export const allHRConfig = {
         dataIndex: "isHRFocused",
         key: "isHRFocused",
         align: "center",
-        width: "2%",
+        width: "50px",
         render: (val) => {
           return val ? <FocusedRole /> : null;
         },
@@ -46,7 +46,7 @@ export const allHRConfig = {
         dataIndex: "isHRFocused",
         key: "isHRFocused",
         align: "center",
-        width: "2%",
+        width: "50px",
         render: (val,result) => {
           return <Tooltip title="Preview/Edit HR" placement="right" >  
                <img src={eyeIcon} alt='info' style={{cursor:'pointer'}} width="22" height="22" onClick={()=>{setIsPreviewModal(true);setpreviewIDs({hrID:result?.HRID,companyID: result?.companyID});getPreviewPostData(result?.HRID,result.HR_ID,result?.companyID)}}  />	
@@ -60,7 +60,7 @@ export const allHRConfig = {
         dataIndex: "showCloneToDemoAccount",
         key: "showCloneToDemoAccount",
         align: "center",
-        width: showCloneHRToDemoAccount === true ? "2%": "0",      
+        width: showCloneHRToDemoAccount === true ? "50px": "0",      
         render: (text, result) => {
           if(showCloneHRToDemoAccount === true)
           {
@@ -87,7 +87,7 @@ export const allHRConfig = {
         dataIndex: "starStatus",
         key: "starStatus",
         align: "center",
-        width: "3%",
+        width: "50px",
         render: (_, param) => {
           let response = All_Hiring_Request_Utils.GETHRPRIORITY(
             param?.starStatus,
@@ -103,7 +103,7 @@ export const allHRConfig = {
         title: " ",
         dataIndex: "reopenHR",
         key: "reopenHR",
-        width: "3%",
+        width: "50px",
         align: "center",
         render: (text, result) => {
           return (
@@ -172,7 +172,7 @@ export const allHRConfig = {
         title: " ",
         dataIndex: "cloneHR",
         key: "cloneHR",
-        width: "3%",
+        width: "50px",
         align: "center",
         render: (text, result) => {
           // if (LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10) {
@@ -207,14 +207,14 @@ export const allHRConfig = {
         dataIndex: "Date",
         key: "Date",
         align: "left",
-        width: "8%",
+        width: "150px",
       },
       {
         title: "HR ID",
         dataIndex: "HR_ID",
         key: "HR_ID",
         align: "left",
-        width: "10%",
+        width: "250px",
         render: (text, result) => (
           <Link
             target="_blank"
@@ -230,14 +230,14 @@ export const allHRConfig = {
         title: "HR Accepted since",
         dataIndex: "HRAcceptedSince",
         key: "HRAcceptedSince",
-        width: "80px",
+        width: "150px",
         align: "left",
       },
       {
         title: "TR",
         dataIndex: "TR",
         key: "TR",
-        width: "4%",
+        width: "70px",
         align: "left",
       },
       {
@@ -245,14 +245,14 @@ export const allHRConfig = {
         dataIndex: "Position",
         key: "position",
         align: "left",
-        width: "50px",
+        width: "150px",
       },
       {
         title: "Company",
         dataIndex: "Company",
         key: "company",
         align: "left",
-        width: "40px",
+        width: "200px",
         // render: (text) => {
         // 	return (
         // 		<a
@@ -279,28 +279,28 @@ export const allHRConfig = {
         dataIndex: "hrTypeName",
         key: "hrTypeName",
         align: "left",
-        width: "60px",
+        width: "160px",
       },
       {
         title: "Engagement Type",
         dataIndex: "HREngagementType",
         key: "HREngagementType",
         align: "left",
-        width: "80px",
+        width: "180px",
       },
       {
         title: "Salary/Client Budget",
         dataIndex: "SalaryBudget",
         key: "SalaryBudget",
         align: "left",
-        width: "80px",
+        width: "180px",
       },
       {
         title: "HR Status",
         dataIndex: "hrStatus",
         key: "hr_status",
         align: "left",
-        width: "12%",
+        width: "200px",
         render: (_, param) => {
           return All_Hiring_Request_Utils.GETHRSTATUS(
             param?.hrStatusCode,
@@ -320,14 +320,14 @@ export const allHRConfig = {
         dataIndex: "typeOfEmployee",
         key: "fte_pte",
         align: "left",
-        width: "50px",
+        width: "100px",
       },
       {
         title: "Sales Rep",
         dataIndex: "salesRep",
         key: "sales_rep",
         align: "left",
-        width: "7%",
+        width: "180px",
         render: (text, result) => {
           // return (
           //   // <Link
@@ -816,7 +816,7 @@ export const unassignedHRsConfig = {
         title: "HR Accepted since",
         dataIndex: "HRAcceptedSince",
         key: "HRAcceptedSince",
-        width: "50px",
+        width: "150px",
         align: "left",
       },
       {
@@ -832,7 +832,7 @@ export const unassignedHRsConfig = {
         dataIndex: "Position",
         key: "position",
         align: "left",
-        width: "50px",
+        width: "180px",
       },
       {
         title: "Company",
@@ -866,21 +866,21 @@ export const unassignedHRsConfig = {
         dataIndex: "hrTypeName",
         key: "hrTypeName",
         align: "left",
-        width: "60px",
+        width: "80px",
       },
       {
         title: "Engagement Type",
         dataIndex: "HREngagementType",
         key: "HREngagementType",
         align: "left",
-        width: "50px",
+        width: "150px",
       },
       {
         title: "Salary/Client Budget",
         dataIndex: "SalaryBudget",
         key: "SalaryBudget",
         align: "left",
-        width: "50px",
+        width: "170px",
       },
     ];
   },
