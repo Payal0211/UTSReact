@@ -1918,7 +1918,7 @@ const calcelMember = () =>{
                             errorMsg={'Please select department'}
                         /> */}
                       </div>
-                      <div className={HRDetailStyle.colMd12}>
+                      {/* <div className={HRDetailStyle.colMd12}>
                         <HRInputField
                           isTextArea={true}
                           errors={errors}
@@ -1933,7 +1933,7 @@ const calcelMember = () =>{
                           }}
                           disabled={actionType==="Legal"?true:false}
                         />
-                      </div>
+                      </div> */}
                       <div className={HRDetailStyle.colMd12}>
                         <HRSelectField
                           controlledValue={controlledDevicePolicy}
