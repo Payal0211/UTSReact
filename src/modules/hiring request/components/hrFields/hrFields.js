@@ -171,7 +171,7 @@ const HRFields = ({
   const [prevJDURLLink, setPrevJDURLLink] = useState("");
   const [getGoogleDriveLink, setGoogleDriveLink] = useState("");
   const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
-  const [getCompanytNameSuggestion, setCompanyNameSuggestion] = useState([]);
+  const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
   const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
   const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
   const [controlledTimeZoneValue, setControlledTimeZoneValue] =
@@ -192,6 +192,7 @@ const HRFields = ({
   const [activeUserData,setActiveUserData] = useState([]);
 
   let controllerRef = useRef(null);
+  let controllerCompanyRef = useRef(null);
   const {
     watch,
     register,
@@ -825,12 +826,18 @@ const HRFields = ({
 
   const getCompanyNameSuggestionHandler = useCallback(
     async (companyName,cid) => {
+      setClientNameMessage("");
+      clearErrors('clientName')
+      setValue('clientName','')
+      setAutoCompleteValue('')
+      setAddClient(false)
+      setCompanyID(null)
       let response = await MasterDAO.getCompanySuggestionDAO(companyName);
-console.log(response)
+
       if (response?.statusCode === HTTPStatusCode.OK) {
         clearErrors('companyName')
       setShowAddCompany(false)
-      setCompanyNameSuggestion(response?.responseBody?.details)
+      setCompanyNameSuggestion(response?.responseBody?.details.map(item=> ({...item,value:item.companyName})))
       // setCompanyID(result.details.companyID)
       // getClientNameSuggestionHandler('',result.details.companyID)
       // getPOCUsers(result.details.companyID)
@@ -853,7 +860,7 @@ console.log(response)
 
   const companyvalidate = (companyName) => {
     if (!companyName) {
-      return "please enter the client email/name.";
+      return "please enter the company name.";
     } else if (getCompanyNameMessage !== "" && companyName) {
       return getCompanyNameMessage;
     }
@@ -2200,7 +2207,7 @@ console.log(response)
           <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
             <div className={HRFieldStyle.row}>
             <div className={HRFieldStyle.colMd6}>
-                <HRInputField
+                {/* <HRInputField
                   //	disabled={
                   //	pathName === ClientHRURL.ADD_NEW_CLIENT ||
                   //isCompanyNameAvailable ||
@@ -2218,37 +2225,47 @@ console.log(response)
                   type={InputType.TEXT}
                   placeholder="Enter Company Name"
                   required
-                />
+                /> */}
 
-{/* <div className={HRFieldStyle.formGroup}>
+                    <div className={HRFieldStyle.formGroup}>
                     <label>
-                    Company Name <b style={{ color: "black" }}>*</b>
+                    Company Name <b style={{ color: "#E03A3A" }}>*</b>
                     </label>
                     <Controller
                       render={({ ...props }) => (
                         <AutoComplete
-                          options={getCompanytNameSuggestion}
+                          options={getCompanyNameSuggestion}
                           onSelect={(companyName,_obj) => {
-                            console.log('select',)
-                            // setValue("companyName",companyName);setCompanyAutoCompleteValue(companyName)
-                             // setCompanyID(result.details.companyID)
-      // getClientNameSuggestionHandler('',result.details.companyID)
-      // getPOCUsers(result.details.companyID)
+                            setValue("companyName",companyName);
+                            setCompanyAutoCompleteValue(companyName)
+                            setCompanyID(_obj.companyID)
+                            getClientNameSuggestionHandler('',_obj.companyID)
+                            getPOCUsers(_obj.companyID)
                           }}
                           filterOption={true}
-                          onSearch={(searchValue) => {
-                            setCompanyNameSuggestion([]);
-                            getCompanyNameSuggestionHandler(searchValue);
+                          onSearch={(searchValue) => { 
                             setCompanyAutoCompleteValue(searchValue);
-                            console.log("comp search",searchValue);
+                            if(searchValue){
+                              setCompanyNameSuggestion([]);
+                              getCompanyNameSuggestionHandler(searchValue);                            
+                            }else{
+                              setClientNameMessage("");
+                              clearErrors('clientName')
+                              setValue('clientName','')
+                              setAutoCompleteValue('')
+                              setAddClient(false)
+                              setCompanyID(null)
+                              clearErrors('companyName')
+                              setShowAddCompany(false)
+                            }
+                            
                           }}
                           value={companyautoCompleteValue}
                           onChange={(clientName) =>
                             setValue("companyName", clientName)
                           }
                           placeholder="Enter Company Name"
-
-                          ref={controllerRef}
+                          ref={controllerCompanyRef}
                         />
                       )}
                       {...register("companyName", {
@@ -2265,7 +2282,7 @@ console.log(response)
                           `* ${errors?.companyName?.message}`}
                       </div>
                     )}
-                  </div> */}
+                  </div>
               </div>
               <div className={HRFieldStyle.colMd6}>
                   {pathName === ClientHRURL.ADD_NEW_CLIENT ? (
@@ -2296,7 +2313,7 @@ console.log(response)
                 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
                     <label>
-                      Client Email/Name <b style={{ color: "black" }}>*</b>
+                      Client Email/Name <b style={{ color: "#E03A3A" }}>*</b>
                     </label>
                     <Controller
                       render={({ ...props }) => (
