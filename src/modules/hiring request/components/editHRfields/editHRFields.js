@@ -1807,7 +1807,7 @@ const EditHRFields = ({
 
     if(gptFileDetails.Skills.length > 0){
       // _getHrValues.chatGptSkills = gptFileDetails.Skills.map(item=> item.value).join(',');
-      _getHrValues.skillmulticheckbox = gptFileDetails.Skills?.map(item=> ({...item,text:item.value}))
+      _getHrValues.skillmulticheckbox = gptFileDetails.Skills?.slice(0, 5).map(item=> ({...item,text:item.value}))
       _getHrValues.allSkillmulticheckbox = []
     }  
 
