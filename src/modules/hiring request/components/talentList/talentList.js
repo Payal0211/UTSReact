@@ -399,7 +399,7 @@ const TalentList = ({
 
 	const clientFeedbackHandler = useCallback(
 		async (reload, talentInfo) => {
-			reload && setLoading(true)
+			setLoading(true)
 	
 			const clientFeedback = {
 				role: talentInfo?.TalentRole || '',
@@ -427,9 +427,9 @@ const TalentList = ({
 					clientFeedback,
 				);
 				if (response?.statusCode === HTTPStatusCode.OK) {
-					reload && callAPI(hrId)
+					 callAPI(hrId)
 				}else{
-					reload && setLoading(false)
+					 setLoading(false)
 				}	
 		},
 		[
@@ -1344,6 +1344,12 @@ const TalentList = ({
 																clientFeedbackHandler(true,item)
 																break;
 															}
+															case TalentOnboardStatus.MOVE_TO_ANOTHER_ROUND:{
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																setActionKey(key)
+																clientFeedbackHandler(false,item)
+																break;
+															}
 															case TalentOnboardStatus.REJECT_TALENT: {
 							
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
@@ -1778,6 +1784,7 @@ const TalentList = ({
 						closeModal={() => setScheduleAnotherRoundInterview(false)}
 						talentName={filterTalentID?.Name}
 						hrId={hrId}
+						ActionKey={ActionKey}
 						talentInfo={filterTalentID}
 						hiringRequestNumber={hiringRequestNumber}
 						reScheduleTimezone={reScheduleTimezone}
