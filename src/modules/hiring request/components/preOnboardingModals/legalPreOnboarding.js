@@ -98,6 +98,9 @@ export default function LegalPreOnboarding({
   const handleOnboarding = useCallback( async (d) => {
     setShowAMModal(true);
     setIsLoading(true);
+    if(engagementReplacement?.replacementData==true){
+      
+    }
     let payload = {
         "onBoardID":getData?.getLegalInfo?.onBoardID,
         "talentID": getData?.getLegalInfo?.talentID,
@@ -106,26 +109,25 @@ export default function LegalPreOnboarding({
         "companyID": getData?.getLegalInfo?.companyID,
         "invoiceRaiseTo": d.invoiceRaisinfTo,
         "invoiceRaiseToEmail":  d.invoiceRaisingToEmail,
-        "contractStartDate": d.contractStartDate,
+        "contractStartDate": moment(d.contractStartDate).format("yyyy-MM-DD"),
         "contractEndDate": getData?.getLegalInfo?.isHRTypeDP ? null : moment(d.contractEndDate).format('yyyy-MM-DD'),
         "clientSOWSignDate": moment(d.clientSOWSignDate).format('yyyy-MM-DD'),
         "talentSOWSignDate": moment(d.talentSOWSignDate).format('yyyy-MM-DD'),
-        "clientMSASignDate": null,
+        "clientMSASignDate": moment(d.msaDate).format('yyyy-MM-DD'),
         "talentMSASignDate":null,
-        "msaSignDate": moment(d.msaDate).format('yyyy-MM-DD'),
         "talentReplacement": {
         "onboardId": getData?.getLegalInfo?.onBoardID,
         "replacementID": getData?.ReplacementDetail?.replaceTalentId,
         "hiringRequestID": getData?.getLegalInfo?.hR_ID,
         "talentId": getData?.getLegalInfo?.talentID,
-        "lastWorkingDay":addLatter === false? moment(d.lwd).format('yyyy-MM-DD'):null,
+        "lastWorkingDay":engagementReplacement?.replacementData === true? moment(d.lwd).format('yyyy-MM-DD'):null,
         "lastWorkingDateOption": 0,
         "noticeperiod": 0,
         "replacementInitiatedby": loggedInUserID.toString(),
         "replacementHandledByID": null,
         "engagementReplacementOnBoardID": 0,
         "replacementTalentId": null,
-        "engHRReplacement": addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id
+        "engHRReplacement": engagementReplacement?.replacementData === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id
     },
       }   
     let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
@@ -135,13 +137,24 @@ export default function LegalPreOnboarding({
       callAPI(HRID);
     }    
     setIsLoading(false);
-  },[getData]);
+  },[getData,engagementReplacement]);
 
   const disabledDate = (current) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return current && current < today;
   };
+
+  const date1 = new Date(watch("contractStartDate"));
+const date2 = new Date(watch("contractEndDate"));
+
+const diffInMilliseconds = date2 - date1;
+
+const millisecondsPerDay = 1000 * 60 * 60 * 24;
+const diffInDays = diffInMilliseconds / millisecondsPerDay;
+
+console.log(`Difference in days: ${diffInDays}`,date2,date1);
+
 
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -239,7 +252,6 @@ export default function LegalPreOnboarding({
                     </div>
                       <div className={HRDetailStyle.timeSlotItem}>
                       <CalenderSVG />                      
-                      
                         <Controller
                           render={({ ...props }) => (
                             <DatePicker
@@ -311,7 +323,8 @@ export default function LegalPreOnboarding({
                       <div className={HRDetailStyle.onboardingDetailText}>
                         <span>Contract Duration</span>
                         <span className={HRDetailStyle.onboardingTextBold}>
-                          {getData?.getLegalInfo?.contractDuration ? getData?.getLegalInfo?.contractDuration + "Months" :  "-"}
+                          {`${Math.round(diffInDays)} Days`} 
+                          {/* {getData?.getLegalInfo?.contractDuration ? getData?.getLegalInfo?.contractDuration + "Months" :  "-"} */}
                         </span>
                       </div>
                     </div>
