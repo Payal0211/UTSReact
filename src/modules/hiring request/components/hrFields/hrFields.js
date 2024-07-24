@@ -2255,6 +2255,8 @@ console.log("company Names",getCompanyNameSuggestion)
                               setAutoCompleteValue('')
                               setAddClient(false)
                               setCompanyID(null)
+                              clearErrors('companyName')
+                              setShowAddCompany(false)
                             }
                             
                           }}
