@@ -1,58 +1,56 @@
 import React, { useState, useEffect , useCallback} from "react";
 import {  Modal, Tabs } from 'antd';
 import HRDetailStyle from '../../screens/hrdetail/hrdetail.module.css';
-import { OnboardDAO } from 'core/onboard/onboardDAO';
-import { HTTPStatusCode } from 'constants/network';
-
 import { ReactComponent as AssignCurrectSVG } from 'assets/svg/assignCurrentRight.svg';
-
-
 import BeforePreOnboarding from "./beforePreOnboarding";
-import DuringPreOnboarding from "./duringPreOnboarding";
-import CompleteLegal from "./completeLegal";
-import BeforeKickOff from "./beforeKickOff";
-import AfterKickOff from "./afterKickOff";
-
-
+import LegalPreOnboarding from "./legalPreOnboarding";
 
 export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFlags,callAPI}) {
     const [talentDeteils, setTalentDetais] = useState({})
     const [HRID, setHRID] = useState('')
-    
-
+    const [preOnboardingDetailsForAMAssignment,setPreOnboardingDetailsForAMAssignment] = useState({});
+    const [legalPreOnboardingAMAssignment,setLegalPreOnboardingAMAssignment] = useState({});
     const [items, setItems] = useState([])
     const [activeKey , setActiveKey] = useState('Before Pre-Onboarding')
     const [actionType,setActionType] = useState('AMAssignment')
-    const [message, setMessage] = useState({})
-
-
+    const [message, setMessage] = useState({})    
     const EnableNextTab = useCallback((talentDeteil,HRID, tabLabel) =>{
         const tabList = [
             {
-                label: 'Before Pre-Onboarding',
-                key: 'Before Pre-Onboarding',
-                children: <BeforePreOnboarding  talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType} setMessage={setMessage}/>,
+                label: 'Contract Details',
+                key: 'Contract Details',
+                children: <BeforePreOnboarding 
+                preOnboardingDetailsForAMAssignment={preOnboardingDetailsForAMAssignment} 
+                setPreOnboardingDetailsForAMAssignment={setPreOnboardingDetailsForAMAssignment} 
+                talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType} setMessage={setMessage}/>,
             },
             {
-                label: 'During Pre-Onboarding',
-                key: 'During Pre-Onboarding',
-                children: <DuringPreOnboarding  talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+                label: 'Legal',
+                key: 'Legal', 
+                children: <LegalPreOnboarding  setLegalPreOnboardingAMAssignment={setLegalPreOnboardingAMAssignment}
+                talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} 
+                />,
             },
-            {
-                label: 'Complete Legal',
-                key: 'Complete Legal',
-                children: <CompleteLegal talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab}  callAPI={callAPI} />
-            },
-            {
-                label: 'Before Kick-off',
-                key: 'Before Kick-off',
-                children: <BeforeKickOff talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
-            },
-            {
-                label: 'After Kick-off',
-                key: 'After Kick-off',
-                children: <AfterKickOff talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
-            },
+            // {
+            //     label: 'During Pre-Onboarding',
+            //     key: 'During Pre-Onboarding',
+            //     children: <DuringPreOnboarding  talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+            // },
+            // {
+            //     label: 'Complete Legal',
+            //     key: 'Complete Legal',
+            //     children: <CompleteLegal talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab}  callAPI={callAPI} />
+            // },
+            // {
+            //     label: 'Before Kick-off',
+            //     key: 'Before Kick-off',
+            //     children: <BeforeKickOff talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+            // },
+            // {
+            //     label: 'After Kick-off',
+            //     key: 'After Kick-off',
+            //     children: <AfterKickOff talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+            // },
         ]
 
        let tabIndex = tabList.findIndex(tab => tab.label === tabLabel) 
@@ -64,38 +62,46 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
        setActiveKey(tabLabel)
     },[actionType,setShowAMModal,callAPI])
 
-   
-  
     // create tabs based on flags
     useEffect(() =>{
         if(AMFlags?.tabLabel){
 
             const tabList = [
                 {
-                    label: 'Before Pre-Onboarding',
-                    key: 'Before Pre-Onboarding',
-                    children: <BeforePreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
+                    label: 'Contract Details',
+                    key: 'Contract Details',
+                    children: <BeforePreOnboarding  
+                    preOnboardingDetailsForAMAssignment={preOnboardingDetailsForAMAssignment} 
+                    setPreOnboardingDetailsForAMAssignment={setPreOnboardingDetailsForAMAssignment}
+                    talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
                 },
                 {
-                    label: 'During Pre-Onboarding',
-                    key: 'During Pre-Onboarding',
-                    children: <DuringPreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab}  callAPI={callAPI} />,
+                    label: 'Legal',
+                    key: 'Legal',
+                    children: <LegalPreOnboarding 
+                    setLegalPreOnboardingAMAssignment={setLegalPreOnboardingAMAssignment}
+                    talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
                 },
-                {
-                    label: 'Complete Legal',
-                    key: 'Complete Legal',
-                    children: <CompleteLegal talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />
-                },
-                {
-                    label: 'Before Kick-off',
-                    key: 'Before Kick-off',
-                    children: <BeforeKickOff talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal}  EnableNextTab={EnableNextTab} callAPI={callAPI} />,
-                },
-                {
-                    label: 'After Kick-off',
-                    key: 'After Kick-off',
-                    children: <AfterKickOff talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal}  EnableNextTab={EnableNextTab} callAPI={callAPI} />,
-                },
+                // {
+                //     label: 'During Pre-Onboarding',
+                //     key: 'During Pre-Onboarding',
+                //     children: <DuringPreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab}  callAPI={callAPI} />,
+                // },
+                // {
+                //     label: 'Complete Legal',
+                //     key: 'Complete Legal',
+                //     children: <CompleteLegal talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />
+                // },
+                // {
+                //     label: 'Before Kick-off',
+                //     key: 'Before Kick-off',
+                //     children: <BeforeKickOff talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal}  EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+                // },
+                // {
+                //     label: 'After Kick-off',
+                //     key: 'After Kick-off',
+                //     children: <AfterKickOff talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal}  EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+                // },
             ]
 
            let tabIndex = tabList.findIndex(tab => tab.label === AMFlags.tabLabel) 
@@ -114,8 +120,7 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[AMFlags])
-
-  return (
+    return (
     <Modal
     transitionName=""
     className="assignAMModal"
@@ -135,11 +140,10 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
                 </div>
                 {message?.Message }
             </div>
-        </div>}
-        
+        </div>}        
 
-        <div className={HRDetailStyle.modalLabel}>Onboarding Process</div>
-        <div className={HRDetailStyle.modalLabelMsg}>Kindly provide the required information for pre-onboarding in the AM handover process.</div>
+        <div className={HRDetailStyle.modalLabel}>{preOnboardingDetailsForAMAssignment?.pageTitle ? preOnboardingDetailsForAMAssignment?.pageTitle  : legalPreOnboardingAMAssignment?.getLegalInfo?.pageTitle}</div>
+        <div className={HRDetailStyle.modalLabelMsg}>Kindly provide the required information</div>
 
         {/* HTML Code Starts for Modal - Before Pre-Onboarding */}
         <Tabs

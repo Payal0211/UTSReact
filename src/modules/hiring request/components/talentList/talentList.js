@@ -1264,9 +1264,8 @@ const TalentList = ({
 													iconBorder={`1px solid var(--color-sunlight)`}
 													isDropdown={true}
 													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
-													menuAction={(menuItem) => {
-														console.log(menuItem.key)
-														switch (menuItem.key) {
+													menuAction={(menuItem) => {														
+														switch (menuItem.key) {															
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
@@ -1432,7 +1431,7 @@ const TalentList = ({
 																setTalentIndex(item?.TalentID);
 																break;
 															}
-															case TalentOnboardStatus.GO_TO_ONBOARD: {
+															case TalentOnboardStatus.CONFIRM_CONTRACT_DETAILS: {
 																// let onboardID = item.OnBoardId
 																// navigate(`/onboard/edit/${onboardID}`)
 																// window.scrollTo(0, 0)
@@ -1441,14 +1440,56 @@ const TalentList = ({
 																setShowAMModal(true);
 																let Flags = {
 																	talent: item,
-																	tabLabel: 'Before Pre-Onboarding',
+																	tabLabel: 'Contract Details',
 																	forTalent: true,
-																	actionType: 'GotoOnboard',
+																	actionType: 'ContractDetails',
 																	hrID: hrId
 																}
 																setAMFlags(Flags)
 																break;
 															}
+															case TalentOnboardStatus.UPDATE_LEGAL: {																
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'Legal',
+																	forTalent: true,
+																	actionType: 'Legal',
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}															
+															case TalentOnboardStatus.RELEASE_OFFER_DETAILS: {
+																// let onboardID = item.OnBoardId
+																// navigate(`/onboard/edit/${onboardID}`)
+																// window.scrollTo(0, 0)
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'Contract Details',
+																	forTalent: true,
+																	actionType: 'ContractDetails',
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}
+															// case TalentOnboardStatus.LEGAL: {
+															// 	// let onboardID = item.OnBoardId
+															// 	// navigate(`/onboard/edit/${onboardID}`)
+															// 	// window.scrollTo(0, 0)
+															// 	setShowAMModal(true);
+															// 	let Flags = {
+															// 		talent: item,
+															// 		tabLabel: 'Legal',
+															// 		forTalent: true,
+															// 		actionType: 'Legal',
+															// 		hrID: hrId
+															// 	}
+															// 	setAMFlags(Flags)
+															// 	break;
+															// }
 															case TalentOnboardStatus.VIEW_ENGAGEMENT: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
