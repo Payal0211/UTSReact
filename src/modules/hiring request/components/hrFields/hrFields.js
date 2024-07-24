@@ -123,6 +123,7 @@ const HRFields = ({
     },
   ]);
   const [autoCompleteValue,setAutoCompleteValue] = useState("")
+  const [companyautoCompleteValue,setCompanyAutoCompleteValue] = useState("")
   const [talentRole, setTalentRole] = useState([]);
   const [country, setCountry] = useState([]);
   const [currency, setCurrency] = useState([]);
@@ -152,6 +153,7 @@ const HRFields = ({
   const [type, setType] = useState("");
   const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
   const [getClientNameMessage, setClientNameMessage] = useState("");
+  const [getCompanyNameMessage, setCompanyNameMessage] = useState("");
   const [getContactAndSaleID, setContactAndSalesID] = useState({
     contactID: "",
     salesID: "",
@@ -169,6 +171,7 @@ const HRFields = ({
   const [prevJDURLLink, setPrevJDURLLink] = useState("");
   const [getGoogleDriveLink, setGoogleDriveLink] = useState("");
   const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
+  const [getCompanytNameSuggestion, setCompanyNameSuggestion] = useState([]);
   const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
   const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
   const [controlledTimeZoneValue, setControlledTimeZoneValue] =
@@ -819,6 +822,43 @@ const HRFields = ({
     },
     [setError,companyID]
   );
+
+  const getCompanyNameSuggestionHandler = useCallback(
+    async (companyName,cid) => {
+      let response = await MasterDAO.getCompanySuggestionDAO(companyName);
+console.log(response)
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        clearErrors('companyName')
+      setShowAddCompany(false)
+      setCompanyNameSuggestion(response?.responseBody?.details)
+      // setCompanyID(result.details.companyID)
+      // getClientNameSuggestionHandler('',result.details.companyID)
+      // getPOCUsers(result.details.companyID)
+      } else if (
+        response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+        response?.statusCode === HTTPStatusCode.NOT_FOUND
+      ) {
+        setCompanyNameSuggestion([]);
+        setCompanyNameMessage(response?.responseBody);
+        setError('companyName',{
+          type: "manual",
+          message: "We couldn't find the company. Create company",
+        })
+        setShowAddCompany(true)
+        //TODO:- JD Dump ID
+      }
+    },
+    [setError,companyID]
+  );
+
+  const companyvalidate = (companyName) => {
+    if (!companyName) {
+      return "please enter the client email/name.";
+    } else if (getCompanyNameMessage !== "" && companyName) {
+      return getCompanyNameMessage;
+    }
+    return true;
+  };
 
   const validate = (clientName) => {
     if (!clientName) {
@@ -2179,6 +2219,53 @@ const HRFields = ({
                   placeholder="Enter Company Name"
                   required
                 />
+
+<div className={HRFieldStyle.formGroup}>
+                    <label>
+                    Company Name <b style={{ color: "black" }}>*</b>
+                    </label>
+                    <Controller
+                      render={({ ...props }) => (
+                        <AutoComplete
+                          options={getCompanytNameSuggestion}
+                          onSelect={(companyName,_obj) => {
+                            console.log('select',)
+                            // setValue("companyName",companyName);setCompanyAutoCompleteValue(companyName)
+                             // setCompanyID(result.details.companyID)
+      // getClientNameSuggestionHandler('',result.details.companyID)
+      // getPOCUsers(result.details.companyID)
+                          }}
+                          filterOption={true}
+                          onSearch={(searchValue) => {
+                            setCompanyNameSuggestion([]);
+                            getCompanyNameSuggestionHandler(searchValue);
+                            setCompanyAutoCompleteValue(searchValue);
+                            console.log("comp search",searchValue);
+                          }}
+                          value={companyautoCompleteValue}
+                          onChange={(clientName) =>
+                            setValue("companyName", clientName)
+                          }
+                          placeholder="Enter Company Name"
+
+                          ref={controllerRef}
+                        />
+                      )}
+                      {...register("companyName", {
+                        companyvalidate,
+                      })}
+                      name="companyName"
+                      // rules={{ required: true }}
+                      control={control}
+                      
+                    />
+                    {errors.companyName && (
+                      <div className={HRFieldStyle.error}>
+                        {errors.companyName?.message &&
+                          `* ${errors?.companyName?.message}`}
+                      </div>
+                    )}
+                  </div>
               </div>
               <div className={HRFieldStyle.colMd6}>
                   {pathName === ClientHRURL.ADD_NEW_CLIENT ? (
