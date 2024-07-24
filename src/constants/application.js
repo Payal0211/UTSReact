@@ -164,6 +164,7 @@ export class TalentOnboardStatus {
 	static RELEASE_OFFER_DETAILS = "Release Offer Details"
 	static VIEW_ENGAGEMENT = 'View Engagement'
 	static ASSIGN_TSC = 'Assign TSC'
+	static MOVE_TO_ANOTHER_ROUND = 'Move to Another Round'
 	static LEGAL = 'Legal'
 }
 
