@@ -637,7 +637,7 @@
 }
 
 .reqField{
-    color: #B60707;
+    color: #E03A3A;
     font-weight: 700;
     font-size: 12px;
     margin-left: 4px;
@@ -721,8 +721,8 @@
 .phoneLabel{
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     display: inline-block;
@@ -872,4 +872,22 @@
 .formFieldsbox .companyDetails .disabledTextArea p{
     margin-bottom: 0;
 }
+
+.formGroupLabel {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
 /* Edit Modal css End */
+
+@media screen and (max-width: 1440px) {
+    .formGroupLabel,.phoneLabel{
+        font-size: 12px;
+    }
+}

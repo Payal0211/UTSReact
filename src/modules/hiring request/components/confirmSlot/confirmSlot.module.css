@@ -321,9 +321,9 @@ table{
 
 
 .cardLabel{
-    font-size: 12px;
-    line-height: 15px;
-    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
     color:var(--uplers-black);
     margin-bottom:8px;
 }
@@ -369,7 +369,8 @@ table{
 }
 
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -454,9 +455,9 @@ table{
 }
 .timeSlotLabel label{
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 15px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
     color: #676767;
 }
 .timeSlotItem{
@@ -579,5 +580,8 @@ table{
     }
     .filterSets{
         padding: 15px;
+    }
+    .cardLabel,.timeSlotLabel label{
+        font-size: 12px;
     }
 }

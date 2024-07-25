@@ -387,10 +387,7 @@ const UserDetails = () => {
                         marginTop: "0px",
                       }}
                     >
-                      <label style={{ marginBottom: "12px" }}>
-                      Type of Pricing
-                        <span className={userDetails.reqField}>*</span>
-                      </label>
+                      <label className={userDetails.formGroupLabel}>Type of Pricing <span className={userDetails.reqField}>*</span></label>
                       <Radio.Group
                         onChange={(e) => {
                           setPricingOption(e.target.value);

@@ -2313,7 +2313,7 @@ const HRFields = ({
                 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
                     <label>
-                      Client Email/Name <b style={{ color: "#E03A3A" }}>*</b>
+                      Client Email/Name <span className={HRFieldStyle.reqField}>*</span>
                     </label>
                     <Controller
                       render={({ ...props }) => (
@@ -2556,26 +2556,23 @@ const HRFields = ({
            
 {/* Pay per Hire  */}
 {userCompanyTypeID === 1 && <div className={HRFieldStyle.colMd12}>
-<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-								<label style={{marginBottom:"12px"}}>
-							Type Of pricing
-							<span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
-								*
-							</span>
-						</label>
-            {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
-            {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
-						<Radio.Group
-            disabled={disableYypeOfPricing}
-							// defaultValue={'client'}
-							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> {setTypeOfPricing(e.target.value);resetField('hiringPricingType');resetField('availability');setControlledAvailabilityValue("Select availability");setPricingTypeError(false)}}
-							value={typeOfPricing}
-							>
-							<Radio value={1}>Transparent Pricing</Radio>
-							<Radio value={0}>Non Transparent Pricing</Radio>
-						</Radio.Group>
-							</div>
+  <div className={HRFieldStyle.formGroup}>
+    <div style={{display:'flex',flexDirection:'column'}}> 
+      <label>Type Of pricing <span className={HRFieldStyle.reqField}>*</span></label>
+      {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
+      {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
+      <Radio.Group
+      disabled={disableYypeOfPricing}
+        // defaultValue={'client'}
+        // className={allengagementReplceTalentStyles.radioGroup}
+        onChange={e=> {setTypeOfPricing(e.target.value);resetField('hiringPricingType');resetField('availability');setControlledAvailabilityValue("Select availability");setPricingTypeError(false)}}
+        value={typeOfPricing}
+        >
+        <Radio value={1}>Transparent Pricing</Radio>
+        <Radio value={0}>Non Transparent Pricing</Radio>
+      </Radio.Group>
+    </div>
+  </div>
 </div>}
 
 
@@ -3203,13 +3200,13 @@ const HRFields = ({
               overlayStyle={{minWidth: '650px'}}
 							placement="right"
 							title={"Please provide actual salary ranges for job matching purposes. This information remains confidential to the talents and helps us connect you with suitable candidates."}>
-								<img src={infoIcon} alt='info' />							
+								<img src={infoIcon} alt='info' style={{cursor: 'pointer'}} />							
 						</Tooltip>
             </div>         
             </div>
 
             <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd12}>
+              <div className={HRFieldStyle.colMd12}>
             {/* <HRSelectField
 									// isControlled={true}
 									// controlledValue={controlledGoodToHave}
@@ -3238,19 +3235,20 @@ const HRFields = ({
                     placeholder="Select Compensation"
                     tokenSeparators={[","]}
                   />
-            </div>
-            <ul className={HRFieldStyle.selectFieldBox}>
-            {compensationOptions?.map(option => (
-                      !CompensationValues?.some(val => val === option.value) && (
-                        <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
-                          <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
-                        </li>
-                      )
-                    ))}
-										{/* {compensationOptions?.map((skill) => (																	
-											<li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
-										))}	 */}
-									</ul>
+            
+                <ul className={HRFieldStyle.selectFieldBox}>
+          {compensationOptions?.map(option => (
+                    !CompensationValues?.some(val => val === option.value) && (
+                      <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
+                        <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
+                      </li>
+                    )
+                  ))}
+                  {/* {compensationOptions?.map((skill) => (																	
+                    <li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+                  ))}	 */}
+                </ul>
+              </div>
             </div>
             
 
@@ -3832,32 +3830,28 @@ const HRFields = ({
 									</ul>
             </div>
             
-            </div>
+            
 
-            <div className={HRFieldStyle.colMd12}>
-<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-								<label style={{marginBottom:"12px"}}>
-                Does the client require a talent with people management experience?
-							{/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
-								*
-							</span> */}
-						</label>
-						<Radio.Group
-           
-							// defaultValue={'client'}
-							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> {setHasPeopleManagementExp(e.target.value)}}
-							value={peopleManagemantexp}
-							>
-							<Radio value={1}>Yes</Radio>
-							<Radio value={0}>No</Radio>
-						</Radio.Group>
+          <div className={HRFieldStyle.colMd12}>
+            <div className={HRFieldStyle.formGroup}>
+              <div style={{display:'flex',flexDirection:'column'}}> 
+								<label>Does the client require a talent with people management experience?</label>
+                <Radio.Group              
+                  // defaultValue={'client'}
+                  // className={allengagementReplceTalentStyles.radioGroup}
+                  onChange={e=> {setHasPeopleManagementExp(e.target.value)}}
+                  value={peopleManagemantexp}
+                  >
+                  <Radio value={1}>Yes</Radio>
+                  <Radio value={0}>No</Radio>
+                </Radio.Group>
 							</div>
+            </div>
 </div>
 
 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
-                  <label style={{ marginBottom: "12px" }}>
+                  <label>
                   Highlight any key parameters or things to consider for finding the best match talents
 								{/* <span className={HRFieldStyle.reqField}>*</span> */}
 							</label>
@@ -3884,6 +3878,8 @@ who have worked in scaled start ups."
                     
                     /> */}
                   </div>
+                </div>
+
                 </div>
           </form>
         </div>

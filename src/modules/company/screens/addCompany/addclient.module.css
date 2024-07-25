@@ -119,8 +119,8 @@
     color: var(--uplers-lightBlack); */
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     /* margin: 0 0 8px; */
@@ -387,5 +387,8 @@
     }
     .tabsFormItem {
         margin-bottom: 35px;
+    }
+    .label{
+        font-size: 12px;
     }
 }

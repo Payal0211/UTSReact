@@ -83,7 +83,8 @@
     margin: 0 16px 0 0;
 }
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -199,9 +200,9 @@
 .timeLabel{
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 17px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
     display: inline-block;
@@ -337,8 +338,8 @@ background:#CECCCC ;
 .uploadedJDWrap label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -421,4 +422,10 @@ background:#CECCCC ;
 }
 .mb16{
     margin-bottom: 16px;
+}
+
+@media screen and (max-width: 1440px) {
+    .timeLabel,.uploadedJDWrap label {
+        font-size: 12px;
+    }
 }

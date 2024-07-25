@@ -1,6 +1,15 @@
 .hrFieldRightPane {
     flex: 1;
 }
+
+.hrFieldRightPane [class^="ant-checkbox-wrapper"]{
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: #676767;
+}
+
 .container{
     display: flex;
     flex-direction: column;
@@ -106,7 +115,7 @@
 }
 
 .reqField {
-    color: red;
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -122,11 +131,11 @@
     padding: 16px 16px !important;
 }
 
-.hrFieldRightPane .formGroup label {
+.hrFieldRightPane .formGroup label,.formGroupLabel {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -148,5 +157,8 @@
     }
     .tabsFormItem {
         margin-bottom: 35px;
+    }
+    .hrFieldRightPane .formGroup label,.formGroupLabel{
+        font-size: 12px;
     }
 }
