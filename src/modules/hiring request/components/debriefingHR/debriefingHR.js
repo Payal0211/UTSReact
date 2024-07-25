@@ -1013,7 +1013,7 @@ const getParsingType = (isHaveJD,parseType) => {
 							</div>}
 
 							<div className={DebriefingHRStyle.mb50}>
-								<label style={{ marginBottom: "12px" }}>
+								<label className={DebriefingHRStyle.formGroupLabel}>
 								Job Description
 								<span className={DebriefingHRStyle.reqField}>*</span>
 							</label>

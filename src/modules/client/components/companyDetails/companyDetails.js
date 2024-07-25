@@ -684,23 +684,20 @@ const CompanyDetails = ({
 					</>}
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
-							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-								<label style={{marginBottom:"12px"}}>
-							Type Of Pricing
-							 <span className={CompanyDetailsStyle.reqField}>
-								*
-							</span>
-						</label>
-						{pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}
-						<Radio.Group
-							 disabled={userData?.LoggedInUserTypeID !== 1 || checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2) } 
-							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> {setTypeOfPricing(e.target.value);setPricingTypeError(false)}}
-							value={typeOfPricing}
-							>
-							<Radio value={1}>Transparent Pricing</Radio>
-							<Radio value={0}>Non Transparent Pricing</Radio>
-						</Radio.Group>
+							<div className={CompanyDetailsStyle.formGroup}>
+								<div style={{display:'flex',flexDirection:'column'}}> 
+									<label>Type Of Pricing <span className={CompanyDetailsStyle.reqField}>*</span></label>
+									{pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}
+									<Radio.Group
+										disabled={userData?.LoggedInUserTypeID !== 1 || checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2) } 
+										// className={allengagementReplceTalentStyles.radioGroup}
+										onChange={e=> {setTypeOfPricing(e.target.value);setPricingTypeError(false)}}
+										value={typeOfPricing}
+										>
+										<Radio value={1}>Transparent Pricing</Radio>
+										<Radio value={0}>Non Transparent Pricing</Radio>
+									</Radio.Group>
+								</div>												
 							</div>												
 						</div>
 					</div>

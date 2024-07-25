@@ -79,8 +79,8 @@
 .timeSlotLabel {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -248,4 +248,10 @@
 .timeSlotItem.timePickerItem [class="react-datepicker-popper"] {
     width: 70%;
     right: auto !important;
+}
+
+@media screen and (max-width: 1440px) {
+    .timeSlotLabel{
+        font-size: 12px;
+    }
 }

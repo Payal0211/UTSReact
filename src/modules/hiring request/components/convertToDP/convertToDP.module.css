@@ -269,7 +269,8 @@ tr th:first-child {
 }
 
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -310,6 +311,14 @@ tr th:first-child {
     flex: 1;
 }
 
+.hrFieldRightPane [class^="ant-checkbox-wrapper"]{
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: #676767;
+}
+
 .row {
     margin: 0 -9px;
     flex-wrap: wrap;
@@ -347,8 +356,8 @@ tr th:first-child {
 .formGroup label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -563,8 +572,8 @@ tr th:first-child {
 .uploadedJDWrap label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -699,5 +708,8 @@ tr th:first-child {
     .hrFieldLeftPane p {
         font-size: 14px;
         line-height: 22px;
-    }  
+    }
+    .formGroup label, .uploadedJDWrap label{
+        font-size: 12px;
+    }
 }
