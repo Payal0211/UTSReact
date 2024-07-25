@@ -40,7 +40,8 @@ export const hrUtils = {
 			showCloneToDemoAccount : item?.showCloneToDemoAccount,
 			hrEngagementType: item?.hrEngagementType,
 			hrAcceptedSince:item?.hrAcceptedSince,
-			salaryBudget: item?.salaryBudget
+			salaryBudget: item?.salaryBudget,
+			isDraftHR: item?.isDraftHR,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
