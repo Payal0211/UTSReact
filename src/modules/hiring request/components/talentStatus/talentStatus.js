@@ -168,7 +168,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 					talentId:talentInfo?.TalentID,
 					statusId: d?.statusId?.id,
 					rejectReasonID :_isNull(d?.rejectReasonID?.id) ? 0 : d?.rejectReasonID?.id,
-					profileRejectionStage : _isNull(d?.profileRejectionStage) ? "" : d?.profileRejectionStage
+					profileRejectionStage : _isNull(d?.profileRejectionStage) ? "" : d?.profileRejectionStage,
+					remark: d.onHoldRemark || d.lossRemark,
 				}
 				let response = await TalentStatusDAO.updateTalentaStatusCreditBaseRequestDAO(
 					talentStatusObject,
@@ -342,6 +343,22 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 								}}
 							/>
 							</div>}
+
+							<div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'Loss Remarks'}
+									required
+									name="lossRemark"
+									type={InputType.TEXT}
+									placeholder="Loss Remark"
+									validationSchema={{
+										required: 'please enter the loss remark.',
+									}}
+								/>
+							</div>
 							
 						</>
 							

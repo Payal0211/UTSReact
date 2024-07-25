@@ -48,6 +48,9 @@ export const allHRConfig = {
         align: "center",
         width: "50px",
         render: (val,result) => {
+          if(result.isDraftHR){
+            return
+          }
           return <Tooltip title="Preview/Edit HR" placement="right" >  
                <img src={eyeIcon} alt='info' style={{cursor:'pointer'}} width="22" height="22" onClick={()=>{setIsPreviewModal(true);setpreviewIDs({hrID:result?.HRID,companyID: result?.companyID});getPreviewPostData(result?.HRID,result.HR_ID,result?.companyID)}}  />	
 
