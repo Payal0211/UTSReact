@@ -73,8 +73,8 @@
 }
 
 .cardLabel {
-    font-size: 12px;
-    line-height: 15px;
+    font-size: 13px;
+    line-height: 16px;
     font-weight: 500;
     color: var(--uplers-black);
     /* margin-bottom: 8px; */
@@ -164,7 +164,8 @@
     transition: all .2s ease;
 }
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -262,9 +263,9 @@
 
 .timeSlotLabel label {
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 15px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
     color: #676767;
 }
 
@@ -403,5 +404,8 @@
 @media screen and (max-width: 1440px) {
     .formPanelAction {
         margin-bottom: 24px;
+    }
+    .cardLabel,.timeSlotLabel label {
+        font-size: 12px;
     }
 }

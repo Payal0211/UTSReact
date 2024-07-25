@@ -2477,6 +2477,7 @@ function PreviewClientModal({
                               (checkPayPer?.companyTypeID == 0 ||
                                 checkPayPer?.companyTypeID == 2)
                             ) && (
+                              
                                 <div
                                   style={{
                                     display: "flex",
@@ -2484,7 +2485,7 @@ function PreviewClientModal({
                                     marginBottom: "32px",
                                   }}
                                 >
-                                  <label style={{ marginBottom: "12px" }}>
+                                  <label className={previewClientStyle.formGroupLabel}>
                                     Type Of Pricing
                                     <span className={previewClientStyle.reqField}>
                                       *

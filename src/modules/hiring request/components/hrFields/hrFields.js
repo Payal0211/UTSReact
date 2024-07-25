@@ -171,7 +171,7 @@ const HRFields = ({
   const [prevJDURLLink, setPrevJDURLLink] = useState("");
   const [getGoogleDriveLink, setGoogleDriveLink] = useState("");
   const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
-  const [getCompanytNameSuggestion, setCompanyNameSuggestion] = useState([]);
+  const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
   const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
   const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
   const [controlledTimeZoneValue, setControlledTimeZoneValue] =
@@ -192,6 +192,7 @@ const HRFields = ({
   const [activeUserData,setActiveUserData] = useState([]);
 
   let controllerRef = useRef(null);
+  let controllerCompanyRef = useRef(null);
   const {
     watch,
     register,
@@ -825,12 +826,18 @@ const HRFields = ({
 
   const getCompanyNameSuggestionHandler = useCallback(
     async (companyName,cid) => {
+      setClientNameMessage("");
+      clearErrors('clientName')
+      setValue('clientName','')
+      setAutoCompleteValue('')
+      setAddClient(false)
+      setCompanyID(null)
       let response = await MasterDAO.getCompanySuggestionDAO(companyName);
-console.log(response)
+
       if (response?.statusCode === HTTPStatusCode.OK) {
         clearErrors('companyName')
       setShowAddCompany(false)
-      setCompanyNameSuggestion(response?.responseBody?.details)
+      setCompanyNameSuggestion(response?.responseBody?.details.map(item=> ({...item,value:item.companyName})))
       // setCompanyID(result.details.companyID)
       // getClientNameSuggestionHandler('',result.details.companyID)
       // getPOCUsers(result.details.companyID)
@@ -853,7 +860,7 @@ console.log(response)
 
   const companyvalidate = (companyName) => {
     if (!companyName) {
-      return "please enter the client email/name.";
+      return "please enter the company name.";
     } else if (getCompanyNameMessage !== "" && companyName) {
       return getCompanyNameMessage;
     }
@@ -2200,7 +2207,7 @@ console.log(response)
           <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
             <div className={HRFieldStyle.row}>
             <div className={HRFieldStyle.colMd6}>
-                <HRInputField
+                {/* <HRInputField
                   //	disabled={
                   //	pathName === ClientHRURL.ADD_NEW_CLIENT ||
                   //isCompanyNameAvailable ||
@@ -2218,37 +2225,47 @@ console.log(response)
                   type={InputType.TEXT}
                   placeholder="Enter Company Name"
                   required
-                />
+                /> */}
 
-{/* <div className={HRFieldStyle.formGroup}>
+                    <div className={HRFieldStyle.formGroup}>
                     <label>
-                    Company Name <b style={{ color: "black" }}>*</b>
+                    Company Name <b style={{ color: "#E03A3A" }}>*</b>
                     </label>
                     <Controller
                       render={({ ...props }) => (
                         <AutoComplete
-                          options={getCompanytNameSuggestion}
+                          options={getCompanyNameSuggestion}
                           onSelect={(companyName,_obj) => {
-                            console.log('select',)
-                            // setValue("companyName",companyName);setCompanyAutoCompleteValue(companyName)
-                             // setCompanyID(result.details.companyID)
-      // getClientNameSuggestionHandler('',result.details.companyID)
-      // getPOCUsers(result.details.companyID)
+                            setValue("companyName",companyName);
+                            setCompanyAutoCompleteValue(companyName)
+                            setCompanyID(_obj.companyID)
+                            getClientNameSuggestionHandler('',_obj.companyID)
+                            getPOCUsers(_obj.companyID)
                           }}
                           filterOption={true}
-                          onSearch={(searchValue) => {
-                            setCompanyNameSuggestion([]);
-                            getCompanyNameSuggestionHandler(searchValue);
+                          onSearch={(searchValue) => { 
                             setCompanyAutoCompleteValue(searchValue);
-                            console.log("comp search",searchValue);
+                            if(searchValue){
+                              setCompanyNameSuggestion([]);
+                              getCompanyNameSuggestionHandler(searchValue);                            
+                            }else{
+                              setClientNameMessage("");
+                              clearErrors('clientName')
+                              setValue('clientName','')
+                              setAutoCompleteValue('')
+                              setAddClient(false)
+                              setCompanyID(null)
+                              clearErrors('companyName')
+                              setShowAddCompany(false)
+                            }
+                            
                           }}
                           value={companyautoCompleteValue}
                           onChange={(clientName) =>
                             setValue("companyName", clientName)
                           }
                           placeholder="Enter Company Name"
-
-                          ref={controllerRef}
+                          ref={controllerCompanyRef}
                         />
                       )}
                       {...register("companyName", {
@@ -2265,7 +2282,7 @@ console.log(response)
                           `* ${errors?.companyName?.message}`}
                       </div>
                     )}
-                  </div> */}
+                  </div>
               </div>
               <div className={HRFieldStyle.colMd6}>
                   {pathName === ClientHRURL.ADD_NEW_CLIENT ? (
@@ -2296,7 +2313,7 @@ console.log(response)
                 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
                     <label>
-                      Client Email/Name <b style={{ color: "black" }}>*</b>
+                      Client Email/Name <span className={HRFieldStyle.reqField}>*</span>
                     </label>
                     <Controller
                       render={({ ...props }) => (
@@ -2539,26 +2556,23 @@ console.log(response)
            
 {/* Pay per Hire  */}
 {userCompanyTypeID === 1 && <div className={HRFieldStyle.colMd12}>
-<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-								<label style={{marginBottom:"12px"}}>
-							Type Of pricing
-							<span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
-								*
-							</span>
-						</label>
-            {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
-            {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
-						<Radio.Group
-            disabled={disableYypeOfPricing}
-							// defaultValue={'client'}
-							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> {setTypeOfPricing(e.target.value);resetField('hiringPricingType');resetField('availability');setControlledAvailabilityValue("Select availability");setPricingTypeError(false)}}
-							value={typeOfPricing}
-							>
-							<Radio value={1}>Transparent Pricing</Radio>
-							<Radio value={0}>Non Transparent Pricing</Radio>
-						</Radio.Group>
-							</div>
+  <div className={HRFieldStyle.formGroup}>
+    <div style={{display:'flex',flexDirection:'column'}}> 
+      <label>Type Of pricing <span className={HRFieldStyle.reqField}>*</span></label>
+      {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
+      {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
+      <Radio.Group
+      disabled={disableYypeOfPricing}
+        // defaultValue={'client'}
+        // className={allengagementReplceTalentStyles.radioGroup}
+        onChange={e=> {setTypeOfPricing(e.target.value);resetField('hiringPricingType');resetField('availability');setControlledAvailabilityValue("Select availability");setPricingTypeError(false)}}
+        value={typeOfPricing}
+        >
+        <Radio value={1}>Transparent Pricing</Radio>
+        <Radio value={0}>Non Transparent Pricing</Radio>
+      </Radio.Group>
+    </div>
+  </div>
 </div>}
 
 
@@ -3186,13 +3200,13 @@ console.log(response)
               overlayStyle={{minWidth: '650px'}}
 							placement="right"
 							title={"Please provide actual salary ranges for job matching purposes. This information remains confidential to the talents and helps us connect you with suitable candidates."}>
-								<img src={infoIcon} alt='info' />							
+								<img src={infoIcon} alt='info' style={{cursor: 'pointer'}} />							
 						</Tooltip>
             </div>         
             </div>
 
             <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd12}>
+              <div className={HRFieldStyle.colMd12}>
             {/* <HRSelectField
 									// isControlled={true}
 									// controlledValue={controlledGoodToHave}
@@ -3221,19 +3235,20 @@ console.log(response)
                     placeholder="Select Compensation"
                     tokenSeparators={[","]}
                   />
-            </div>
-            <ul className={HRFieldStyle.selectFieldBox}>
-            {compensationOptions?.map(option => (
-                      !CompensationValues?.some(val => val === option.value) && (
-                        <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
-                          <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
-                        </li>
-                      )
-                    ))}
-										{/* {compensationOptions?.map((skill) => (																	
-											<li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
-										))}	 */}
-									</ul>
+            
+                <ul className={HRFieldStyle.selectFieldBox}>
+          {compensationOptions?.map(option => (
+                    !CompensationValues?.some(val => val === option.value) && (
+                      <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
+                        <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
+                      </li>
+                    )
+                  ))}
+                  {/* {compensationOptions?.map((skill) => (																	
+                    <li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+                  ))}	 */}
+                </ul>
+              </div>
             </div>
             
 
@@ -3815,32 +3830,28 @@ console.log(response)
 									</ul>
             </div>
             
-            </div>
+            
 
-            <div className={HRFieldStyle.colMd12}>
-<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-								<label style={{marginBottom:"12px"}}>
-                Does the client require a talent with people management experience?
-							{/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
-								*
-							</span> */}
-						</label>
-						<Radio.Group
-           
-							// defaultValue={'client'}
-							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> {setHasPeopleManagementExp(e.target.value)}}
-							value={peopleManagemantexp}
-							>
-							<Radio value={1}>Yes</Radio>
-							<Radio value={0}>No</Radio>
-						</Radio.Group>
+          <div className={HRFieldStyle.colMd12}>
+            <div className={HRFieldStyle.formGroup}>
+              <div style={{display:'flex',flexDirection:'column'}}> 
+								<label>Does the client require a talent with people management experience?</label>
+                <Radio.Group              
+                  // defaultValue={'client'}
+                  // className={allengagementReplceTalentStyles.radioGroup}
+                  onChange={e=> {setHasPeopleManagementExp(e.target.value)}}
+                  value={peopleManagemantexp}
+                  >
+                  <Radio value={1}>Yes</Radio>
+                  <Radio value={0}>No</Radio>
+                </Radio.Group>
 							</div>
+            </div>
 </div>
 
 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
-                  <label style={{ marginBottom: "12px" }}>
+                  <label>
                   Highlight any key parameters or things to consider for finding the best match talents
 								{/* <span className={HRFieldStyle.reqField}>*</span> */}
 							</label>
@@ -3867,6 +3878,8 @@ who have worked in scaled start ups."
                     
                     /> */}
                   </div>
+                </div>
+
                 </div>
           </form>
         </div>

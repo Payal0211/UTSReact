@@ -1485,27 +1485,24 @@ export default function AddHR(
               </div>
 
               <div className={HRFieldStyle.colMd12}>
-<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-								<label style={{marginBottom:"12px"}}>
-							Type Of pricing
-							<span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
-								*
-							</span>
-						</label>
-            {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
-            {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
-						<Radio.Group
-            disabled={true}
-							// defaultValue={'client'}
-							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> setTypeOfPricing(e.target.value)}
-							value={typeOfPricing}
-							>
-							<Radio value={1}>Transparent Pricing</Radio>
-							<Radio value={0}>Non Transparent Pricing</Radio>
-						</Radio.Group>
-							</div>
-</div>
+                <div className={HRFieldStyle.formGroup}>
+                  <div style={{display:'flex',flexDirection:'column'}}> 
+                    <label>Type Of pricing <span className={HRFieldStyle.reqField}>*</span></label>
+                    {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
+                    {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
+                    <Radio.Group
+                    disabled={true}
+                      // defaultValue={'client'}
+                      // className={allengagementReplceTalentStyles.radioGroup}
+                      onChange={e=> setTypeOfPricing(e.target.value)}
+                      value={typeOfPricing}
+                      >
+                      <Radio value={1}>Transparent Pricing</Radio>
+                      <Radio value={0}>Non Transparent Pricing</Radio>
+                    </Radio.Group>
+                  </div>
+                </div>
+              </div>
 
 
 <div className={HRFieldStyle.colMd6}>

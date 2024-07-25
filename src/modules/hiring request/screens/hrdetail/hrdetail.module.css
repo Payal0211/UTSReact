@@ -222,7 +222,8 @@
 }
 
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -412,7 +413,7 @@
     font-weight: 400;
     line-height: normal;
     color: #676767;
-    width: 50%;
+    width: 100%;
     margin-bottom: 24px;
 }
 
@@ -732,8 +733,8 @@
 .uploadedJDWrap label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -777,9 +778,9 @@
 .timeLabel {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 17px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
     display: inline-block;
@@ -968,6 +969,17 @@ label.radioCheck_Mark input:checked+span.customCheck_Mark:after {
     margin-left: 4px;
 }
 
+.modalFormWrapper .quillContent [class^='ql-toolbar']{
+    display: none;
+}
+
+.modalFormWrapper .quillContent [class^='ql-editor'] {
+    padding: 0;
+}
+
+.modalFormWrapper .quillContent [class^='ql-container']{
+    border: none;
+}
 
 
 @media screen and (max-width: 1440px) {
@@ -984,5 +996,8 @@ label.radioCheck_Mark input:checked+span.customCheck_Mark:after {
     }
     .hiringRequestIdSets {
         font-size: 1.7rem;
+    }
+    .uploadedJDWrap label, .timeLabel {
+        font-size: 12px;
     }
 }

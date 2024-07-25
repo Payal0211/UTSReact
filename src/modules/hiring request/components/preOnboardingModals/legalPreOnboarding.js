@@ -33,7 +33,7 @@ export default function LegalPreOnboarding({
   talentDeteils,
   HRID,
   setShowAMModal,
-  callAPI,  
+  callAPI,
   actionType,
   setLegalPreOnboardingAMAssignment,
 }) {
@@ -41,13 +41,13 @@ export default function LegalPreOnboarding({
     watch,
     register,
     setValue,
-    handleSubmit,    
+    handleSubmit,
     clearErrors,
     control,
     formState: { errors },
   } = useForm({});
   const [isLoading, setIsLoading] = useState(false);
-  const [getData,setData]  = useState();
+  const [getData, setData] = useState();
   const [engagementReplacement, setEngagementReplacement] = useState({
     replacementData: false,
   });
@@ -61,29 +61,39 @@ export default function LegalPreOnboarding({
   const fatchduringOnBoardInfo = useCallback(
     async (req) => {
       let result = await OnboardDAO.getDuringOnBoardInfoDAO(req);
-      if (result?.statusCode === HTTPStatusCode.OK) {        
+      if (result?.statusCode === HTTPStatusCode.OK) {
         let data = result.responseBody.details;
         setData(data);
-        setValue('invoiceRaisinfTo',data?.getLegalInfo?.invoiceRaiseTo);
-        setValue('invoiceRaiseToEmail',data?.getLegalInfo?.invoiceRaiseToEmail);
-        setValue('contractStartDate',dayjs(data?.getLegalInfo?.contractStartDate).toDate());
-        setValue('contractEndDate',dayjs(data?.getLegalInfo?.contractEndDate).toDate());
-        setValue('lwd',dayjs(data?.ReplacementDetail?.lastWorkingDay).toDate());  
-        setReplacementEngHr(data?.replacementEngHRs);        
-        setLegalPreOnboardingAMAssignment(data);     
-        const _filterData =
-        data?.replacementEngHRs?.filter(
-            (e) =>
-              e.id === data?.replacementEngHRs?.newHrid ||
+        setValue("invoiceRaisinfTo", data?.getLegalInfo?.invoiceRaiseTo);
+        setValue(
+          "invoiceRaiseToEmail",
+          data?.getLegalInfo?.invoiceRaiseToEmail
+        );
+        setValue(
+          "contractStartDate",
+          dayjs(data?.getLegalInfo?.contractStartDate).toDate()
+        );
+        setValue(
+          "contractEndDate",
+          dayjs(data?.getLegalInfo?.contractEndDate).toDate()
+        );
+        setValue(
+          "lwd",
+          dayjs(data?.ReplacementDetail?.lastWorkingDay).toDate()
+        );
+        setReplacementEngHr(data?.replacementEngHRs);
+        setLegalPreOnboardingAMAssignment(data);
+        const _filterData = data?.replacementEngHRs?.filter(
+          (e) =>
+            e.id === data?.replacementEngHRs?.newHrid ||
             data?.replacementEngHRs?.newOnBoardId
-          );
+        );
         setControlledEngRep(_filterData[0]?.value);
-        setValue("engagementreplacement", _filterData[0]);                    
+        setValue("engagementreplacement", _filterData[0]);
       }
     },
     [setValue]
   );
-
 
   useEffect(() => {
     if (talentDeteils?.OnBoardId) {
@@ -95,49 +105,60 @@ export default function LegalPreOnboarding({
     }
   }, [talentDeteils, HRID, actionType, fatchduringOnBoardInfo]);
 
-  const handleOnboarding = useCallback( async (d) => {
-    setShowAMModal(true);
-    setIsLoading(true);
-    if(engagementReplacement?.replacementData==true){
-      
-    }
-    let payload = {
-        "onBoardID":getData?.getLegalInfo?.onBoardID,
-        "talentID": getData?.getLegalInfo?.talentID,
-        "hiringRequestID": getData?.getLegalInfo?.hR_ID,
-        "contactID": getData?.getLegalInfo?.contactID,
-        "companyID": getData?.getLegalInfo?.companyID,
-        "invoiceRaiseTo": d.invoiceRaisinfTo,
-        "invoiceRaiseToEmail":  d.invoiceRaisingToEmail,
-        "contractStartDate": moment(d.contractStartDate).format("yyyy-MM-DD"),
-        "contractEndDate": getData?.getLegalInfo?.isHRTypeDP ? null : moment(d.contractEndDate).format('yyyy-MM-DD'),
-        "clientSOWSignDate": moment(d.clientSOWSignDate).format('yyyy-MM-DD'),
-        "talentSOWSignDate": moment(d.talentSOWSignDate).format('yyyy-MM-DD'),
-        "clientMSASignDate": moment(d.msaDate).format('yyyy-MM-DD'),
-        "talentMSASignDate":null,
-        "talentReplacement": {
-        "onboardId": getData?.getLegalInfo?.onBoardID,
-        "replacementID": getData?.ReplacementDetail?.replaceTalentId,
-        "hiringRequestID": getData?.getLegalInfo?.hR_ID,
-        "talentId": getData?.getLegalInfo?.talentID,
-        "lastWorkingDay":engagementReplacement?.replacementData === true? moment(d.lwd).format('yyyy-MM-DD'):null,
-        "lastWorkingDateOption": 0,
-        "noticeperiod": 0,
-        "replacementInitiatedby": loggedInUserID.toString(),
-        "replacementHandledByID": null,
-        "engagementReplacementOnBoardID": 0,
-        "replacementTalentId": null,
-        "engHRReplacement": engagementReplacement?.replacementData === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id
-    },
-      }   
-    let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
-    if (result?.statusCode === HTTPStatusCode.OK) {
+  const handleOnboarding = useCallback(
+    async (d) => {
+      setShowAMModal(true);
+      setIsLoading(true);
+      if (engagementReplacement?.replacementData == true) {
+      }
+      let payload = {
+        onBoardID: getData?.getLegalInfo?.onBoardID,
+        talentID: getData?.getLegalInfo?.talentID,
+        hiringRequestID: getData?.getLegalInfo?.hR_ID,
+        contactID: getData?.getLegalInfo?.contactID,
+        companyID: getData?.getLegalInfo?.companyID,
+        invoiceRaiseTo: d.invoiceRaisinfTo,
+        invoiceRaiseToEmail: d.invoiceRaisingToEmail,
+        contractStartDate: moment(d.contractStartDate).format("yyyy-MM-DD"),
+        contractEndDate: getData?.getLegalInfo?.isHRTypeDP
+          ? null
+          : moment(d.contractEndDate).format("yyyy-MM-DD"),
+        clientSOWSignDate: moment(d.clientSOWSignDate).format("yyyy-MM-DD"),
+        talentSOWSignDate: moment(d.talentSOWSignDate).format("yyyy-MM-DD"),
+        clientMSASignDate: moment(d.msaDate).format("yyyy-MM-DD"),
+        talentMSASignDate: null,
+        talentReplacement: {
+          onboardId: getData?.getLegalInfo?.onBoardID,
+          replacementID: getData?.ReplacementDetail?.replaceTalentId,
+          hiringRequestID: getData?.getLegalInfo?.hR_ID,
+          talentId: getData?.getLegalInfo?.talentID,
+          lastWorkingDay:
+            engagementReplacement?.replacementData === true
+              ? moment(d.lwd).format("yyyy-MM-DD")
+              : null,
+          lastWorkingDateOption: 0,
+          noticeperiod: 0,
+          replacementInitiatedby: loggedInUserID.toString(),
+          replacementHandledByID: null,
+          engagementReplacementOnBoardID: 0,
+          replacementTalentId: null,
+          engHRReplacement:
+            engagementReplacement?.replacementData === true ||
+            d.engagementreplacement === undefined
+              ? ""
+              : d.engagementreplacement.id,
+        },
+      };
+      let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
+      if (result?.statusCode === HTTPStatusCode.OK) {
+        setIsLoading(false);
+        setShowAMModal(false);
+        callAPI(HRID);
+      }
       setIsLoading(false);
-      setShowAMModal(false);
-      callAPI(HRID);
-    }    
-    setIsLoading(false);
-  },[getData,engagementReplacement]);
+    },
+    [getData, engagementReplacement]
+  );
 
   const disabledDate = (current) => {
     const today = new Date();
@@ -146,15 +167,12 @@ export default function LegalPreOnboarding({
   };
 
   const date1 = new Date(watch("contractStartDate"));
-const date2 = new Date(watch("contractEndDate"));
+  const date2 = new Date(watch("contractEndDate"));
 
-const diffInMilliseconds = date2 - date1;
+  const diffInMilliseconds = date2 - date1;
 
-const millisecondsPerDay = 1000 * 60 * 60 * 24;
-const diffInDays = diffInMilliseconds / millisecondsPerDay;
-
-console.log(`Difference in days: ${diffInDays}`,date2,date1);
-
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  const diffInDays = diffInMilliseconds / millisecondsPerDay;
 
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -208,100 +226,101 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
                     </div>
 
                     <div className={HRDetailStyle.modalFormCol}>
-                      
-                      {getData?.getLegalInfo?.isHRTypeDP === true ? 
-                      <>
-                      <div className={HRDetailStyle.timeLabel}>
-                      Engagement Start Date
-                      <span className={HRDetailStyle.reqFieldRed}>*</span>
-                    </div>
-                      <div className={HRDetailStyle.timeSlotItem}>
-                        <CalenderSVG />                      
-                        
-                          <Controller
-                            render={({ ...props }) => (
-                              <DatePicker
-                                {...props}
-                                selected={(watch("engagementStartDate"))}
-                                onChange={(date) => {
-                                  setValue("engagementStartDate", date);
-                                  clearErrors(`engagementStartDate`);
-                                }}
-                                placeholderText="Engagement Start Date"
-                                dateFormat="dd/MM/yyyy"                                
-                                disabledDate={disabledDate}                                
-                                control={control}
-                                // value={watch('contractStartDate')}
-                              />
-                            )}
-                            name="engagementStartDate"
-                            rules={{ required: true }}
-                            control={control}
-                          />
-                        {errors.engagementStartDate && (
-                      <div className={HRDetailStyle.error}>
-                        * Please select Date.
-                      </div>
-                    )}
-                      </div>
-                      </> : 
-                      <>
-                      <div className={HRDetailStyle.timeLabel}>
-                      Contract Start Date
-                      <span className={HRDetailStyle.reqFieldRed}>*</span>
-                    </div>
-                      <div className={HRDetailStyle.timeSlotItem}>
-                      <CalenderSVG />                      
-                        <Controller
-                          render={({ ...props }) => (
-                            <DatePicker
-                              {...props}
-                              selected={(watch("contractStartDate"))}
-                              onChange={(date) => {
-                                setValue("contractStartDate", date);
-                                clearErrors(`contractStartDate`);
-                              }}
-                              placeholderText="Contract Start Date"
-                              dateFormat="dd/MM/yyyy"                                
-                              disabledDate={disabledDate}                                
+                      {getData?.getLegalInfo?.isHRTypeDP === true ? (
+                        <>
+                          <div className={HRDetailStyle.timeLabel}>
+                            Engagement Start Date
+                            <span className={HRDetailStyle.reqFieldRed}>*</span>
+                          </div>
+                          <div className={HRDetailStyle.timeSlotItem}>
+                            <CalenderSVG />
+
+                            <Controller
+                              render={({ ...props }) => (
+                                <DatePicker
+                                  {...props}
+                                  selected={watch("engagementStartDate")}
+                                  onChange={(date) => {
+                                    setValue("engagementStartDate", date);
+                                    clearErrors(`engagementStartDate`);
+                                  }}
+                                  placeholderText="Engagement Start Date"
+                                  dateFormat="dd/MM/yyyy"
+                                  disabledDate={disabledDate}
+                                  control={control}
+                                  // value={watch('contractStartDate')}
+                                />
+                              )}
+                              name="engagementStartDate"
+                              rules={{ required: true }}
                               control={control}
-                              // value={watch('contractStartDate')}
                             />
-                          )}
-                          name="contractStartDate"
-                          rules={{ required: true }}
-                          control={control}
-                        />
-                      {errors.contractStartDate && (
-                    <div className={HRDetailStyle.error}>
-                      * Please select Date.
-                    </div>
-                  )}
-                    </div></>}
-                      
-                      
+                            {errors.engagementStartDate && (
+                              <div className={HRDetailStyle.error}>
+                                * Please select Date.
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className={HRDetailStyle.timeLabel}>
+                            Contract Start Date
+                            <span className={HRDetailStyle.reqFieldRed}>*</span>
+                          </div>
+                          <div className={HRDetailStyle.timeSlotItem}>
+                            <CalenderSVG />
+                            <Controller
+                              render={({ ...props }) => (
+                                <DatePicker
+                                  {...props}
+                                  selected={watch("contractStartDate")}
+                                  onChange={(date) => {
+                                    setValue("contractStartDate", date);
+                                    clearErrors(`contractStartDate`);
+                                  }}
+                                  placeholderText="Contract Start Date"
+                                  dateFormat="dd/MM/yyyy"
+                                  disabledDate={disabledDate}
+                                  control={control}
+                                  // value={watch('contractStartDate')}
+                                />
+                              )}
+                              name="contractStartDate"
+                              rules={{ required: true }}
+                              control={control}
+                            />
+                            {errors.contractStartDate && (
+                              <div className={HRDetailStyle.error}>
+                                * Please select Date.
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
                     </div>
 
-                {!getData?.getLegalInfo?.isHRTypeDP &&  <div className={HRDetailStyle.modalFormCol}>
-                      <div className={HRDetailStyle.timeLabel}>
-                        Contract End Date
-                        <span className={HRDetailStyle.reqFieldRed}>*</span>
-                      </div>
-                      <div className={HRDetailStyle.timeSlotItem}>
-                        <CalenderSVG />                      
-                        
+                    {!getData?.getLegalInfo?.isHRTypeDP && (
+                      <div className={HRDetailStyle.modalFormCol}>
+                        <div className={HRDetailStyle.timeLabel}>
+                          Contract End Date
+                          <span className={HRDetailStyle.reqFieldRed}>*</span>
+                        </div>
+                        <div className={HRDetailStyle.timeSlotItem}>
+                          <CalenderSVG />
+
                           <Controller
                             render={({ ...props }) => (
                               <DatePicker
                                 {...props}
-                                selected={(watch("contractEndDate"))}
+                                selected={watch("contractEndDate")}
                                 onChange={(date) => {
                                   setValue("contractEndDate", date);
                                   clearErrors(`contractEndDate`);
                                 }}
                                 placeholderText="Contract End Date"
-                                dateFormat="dd/MM/yyyy"                                
-                                disabledDate={disabledDate}                                
+                                dateFormat="dd/MM/yyyy"
+                                disabledDate={disabledDate}
                                 control={control}
                                 // value={dayjs(watch('contractEndDate'))}
                               />
@@ -310,20 +329,19 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
                             rules={{ required: true }}
                             control={control}
                           />
-                        {errors.contractEndDate && (
-                      <div className={HRDetailStyle.error}>
-                        * Please select Date.
+                          {errors.contractEndDate && (
+                            <div className={HRDetailStyle.error}>
+                              * Please select Date.
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    )}
-                      </div>
-                      
-                    </div>
-}
+                    )} 
                     <div className={HRDetailStyle.modalFormCol}>
                       <div className={HRDetailStyle.onboardingDetailText}>
                         <span>Contract Duration</span>
                         <span className={HRDetailStyle.onboardingTextBold}>
-                          {`${Math.round(diffInDays)} Days`} 
+                          {`${Math.round(diffInDays)} Days`}
                           {/* {getData?.getLegalInfo?.contractDuration ? getData?.getLegalInfo?.contractDuration + "Months" :  "-"} */}
                         </span>
                       </div>
@@ -342,19 +360,22 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
               </div>
 
               <div className={HRDetailStyle.onboardingProcessMid}>
-                <div className={HRDetailStyle.onboardingFormAlign}>
+                <div
+                  className={HRDetailStyle.onboardingFormAlign}
+                  style={{ width: "100%" }}
+                >
                   <div className={HRDetailStyle.modalFormWrapper}>
                     <div className={HRDetailStyle.modalFormCol}>
-                    <label className={HRDetailStyle.timeLabel}>
-                      SOW Sign Date{" "}
-                      <span className={HRDetailStyle.reqFieldRed}>*</span>
-                    </label>
-                    <div
-                      className={`${HRDetailStyle.timeSlotItem} ${
-                        errors.sowDate && HRDetailStyle.marginBottom0
-                      }`}
-                    >
-                 
+                      <div className={HRDetailStyle.timeLabel}>
+                        SOW Sign Date{" "}
+                        <span className={HRDetailStyle.reqFieldRed}>*</span>
+                      </div>
+                      <div
+                        className={`${HRDetailStyle.timeSlotItem} ${
+                          errors.sowDate && HRDetailStyle.marginBottom0
+                        }`}
+                      >
+                        <CalenderSVG />
                         <Controller
                           render={({ ...props }) => (
                             <DatePicker
@@ -373,54 +394,52 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
                           rules={{ required: true }}
                           control={control}
                         />
-                    <CalenderSVG />
-                    </div>
-                    {errors.clientSOWSignDate && (
-                      <div className={HRDetailStyle.error}>
-                        * Please select Date.
+                        {errors.clientSOWSignDate && (
+                          <div className={HRDetailStyle.error}>
+                            * Please select Date.
+                          </div>
+                        )}
                       </div>
-                    )}
                     </div>
                     {/* </div> */}
-                    {getData?.getLegalInfo?.isHRTypeDP && 
-                    <div className={HRDetailStyle.modalFormCol}>
-                    <label className={HRDetailStyle.timeLabel}>
-                    MSA Sign Date{" "}
-                      <span className={HRDetailStyle.reqFieldRed}>*</span>
-                    </label>
-                    <div
-                      className={`${HRDetailStyle.timeSlotItem} ${
-                        errors.sowDate && HRDetailStyle.marginBottom0
-                      }`}
-                    >
-                 
-                        <Controller
-                          render={({ ...props }) => (
-                            <DatePicker
-                              selected={watch("msaDate")}
-                              placeholderText="Select Date"
-                              // defaultValue={dayjs(watch('sowDate'), 'YYYY-MM-DD')}
-                              onChange={(date) => {
-                                setValue("msaDate", date);
-                                clearErrors(`msaDate`);
-                              }}
-                              // value={dayjs(watch('msaDate'))}
-                              // dateFormat="yyyy/MM/dd"
-                            />
+                    {getData?.getLegalInfo?.isHRTypeDP && (
+                      <div className={HRDetailStyle.modalFormCol}>
+                        <div className={HRDetailStyle.timeLabel}>
+                          MSA Sign Date{" "}
+                          <span className={HRDetailStyle.reqFieldRed}>*</span>
+                        </div>
+                        <div
+                          className={`${HRDetailStyle.timeSlotItem} ${
+                            errors.sowDate && HRDetailStyle.marginBottom
+                          }`}
+                        >
+                          <CalenderSVG />
+                          <Controller
+                            render={({ ...props }) => (
+                              <DatePicker
+                                selected={watch("msaDate")}
+                                placeholderText="Select Date"
+                                // defaultValue={dayjs(watch('sowDate'), 'YYYY-MM-DD')}
+                                onChange={(date) => {
+                                  setValue("msaDate", date);
+                                  clearErrors(`msaDate`);
+                                }}
+                                // value={dayjs(watch('msaDate'))}
+                                // dateFormat="yyyy/MM/dd"
+                              />
+                            )}
+                            name="msaDate"
+                            rules={{ required: true }}
+                            control={control}
+                          />
+                          {errors.msaDate && (
+                            <div className={HRDetailStyle.error}>
+                              * Please select Date.
+                            </div>
                           )}
-                          name="msaDate"
-                          rules={{ required: true }}
-                          control={control}
-                        />
-                    <CalenderSVG />
-                    </div>
-                    {errors.msaDate && (
-                      <div className={HRDetailStyle.error}>
-                        * Please select Date.
+                        </div>
                       </div>
-                    )}
-                    </div>
-                    }
+                    )} 
                   </div>
                 </div>
               </div>
@@ -436,19 +455,22 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
               </div>
 
               <div className={HRDetailStyle.onboardingProcessMid}>
-                <div className={HRDetailStyle.onboardingFormAlign}>
+                <div
+                  className={HRDetailStyle.onboardingFormAlign}
+                  style={{ width: "100%" }}
+                >
                   <div className={HRDetailStyle.modalFormWrapper}>
-                    {/* <div className={HRDetailStyle.modalFormCol}> */}
-                    <label className={HRDetailStyle.timeLabel}>
-                      SOW Sign Date{" "}
-                      <span className={HRDetailStyle.reqFieldRed}>*</span>
-                    </label>
-                    <div
-                      className={`${HRDetailStyle.timeSlotItem} ${
-                        errors.sowDate && HRDetailStyle.marginBottom0
-                      }`}
-                    >
-                     
+                    <div className={HRDetailStyle.modalFormCol}>
+                      <label className={HRDetailStyle.timeLabel}>
+                        SOW Sign Date{" "}
+                        <span className={HRDetailStyle.reqFieldRed}>*</span>
+                      </label>
+                      <div
+                        className={`${HRDetailStyle.timeSlotItem} ${
+                          errors.sowDate && HRDetailStyle.marginBottom0
+                        }`}
+                      >
+                        <CalenderSVG />
                         <Controller
                           render={({ ...props }) => (
                             <DatePicker
@@ -466,19 +488,17 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
                           name="talentSOWSignDate"
                           rules={{ required: true }}
                           control={control}
-                        />                      
-
-                      <CalenderSVG />
-                    </div>
-                    {errors.talentSOWSignDate && (
-                      <div className={HRDetailStyle.error}>
-                        * Please select Date.
+                        />
+                        {errors.talentSOWSignDate && (
+                          <div className={HRDetailStyle.error}>
+                            * Please select Date.
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
-              {/* </div> */}
             </div>
 
             <div className={HRDetailStyle.onboardingProcesBox}>
@@ -490,8 +510,10 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
               </div>
 
               <div className={HRDetailStyle.onboardingProcessMid}>
-                <div className={HRDetailStyle.modalFormWrapper}>                  
-                  <div className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}>
+                <div className={HRDetailStyle.modalFormWrapper}>
+                  <div
+                    className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}
+                  >
                     <Checkbox
                       name="PayPerCredit"
                       checked={engagementReplacement?.replacementData}
@@ -510,40 +532,39 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
                       Is this engagement going under replacement?
                     </Checkbox>
                   </div>
-                
+
                   {engagementReplacement?.replacementData && (
-                    <div className={HRDetailStyle.modalFormCol}>                      
-                        <div className={HRDetailStyle.timeSlotItemField}>
-                          <div className={HRDetailStyle.timeLabel}>
-                            Last Working Day
-                          </div>
-                          <div className={HRDetailStyle.timeSlotItem}>
-                            <CalenderSVG />
-                          
-                            <Controller
-                              render={({ ...props }) => (
-                                <DatePicker
-                                  {...props}
-                                  selected={dayjs(watch("lwd"))}
-                                  onChange={(date) => {
-                                    setValue("lwd", date);
-                                  }}
-                                  placeholderText="Last Working Day"
-                                  dateFormat="dd/MM/yyyy"
-                                  disabledDate={disabledDate}
-                                  // value={dayjs(watch('lwd'))}
-                                  control={control}
-                                />
-                              )}
-                              name="lwd"
-                              rules={{ required: true }}
-                              control={control}
-                            />
-                          
-                          </div>
-                        </div>                      
+                    <div className={HRDetailStyle.modalFormCol}>
+                      <div className={HRDetailStyle.timeSlotItemField}>
+                        <div className={HRDetailStyle.timeLabel}>
+                          Last Working Day
+                        </div>
+                        <div className={HRDetailStyle.timeSlotItem}>
+                          <CalenderSVG />
+
+                          <Controller
+                            render={({ ...props }) => (
+                              <DatePicker
+                                {...props}
+                                selected={dayjs(watch("lwd"))}
+                                onChange={(date) => {
+                                  setValue("lwd", date);
+                                }}
+                                placeholderText="Last Working Day"
+                                dateFormat="dd/MM/yyyy"
+                                disabledDate={disabledDate}
+                                // value={dayjs(watch('lwd'))}
+                                control={control}
+                              />
+                            )}
+                            name="lwd"
+                            rules={{ required: true }}
+                            control={control}
+                          />
+                        </div>
+                      </div>
                     </div>
-                    )}
+                  )}
 
                   {engagementReplacement?.replacementData && (
                     <div className={HRDetailStyle.modalFormCol}>
@@ -571,7 +592,9 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
                   )}
 
                   {engagementReplacement?.replacementData && (
-                    <div className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}>
+                    <div
+                      className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}
+                    >
                       <Checkbox
                         name="PayPerCredit"
                         checked={addLatter}
@@ -581,12 +604,10 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
                       >
                         Will add this later, by doing this you understand that
                         replacement will not be tracked correctly.
-                      </Checkbox>                 
+                      </Checkbox>
                     </div>
                   )}
-
                 </div>
-
               </div>
             </div>
           </>
@@ -594,7 +615,7 @@ console.log(`Difference in days: ${diffInDays}`,date2,date1);
       </div>
 
       <div className={HRDetailStyle.formPanelAction}>
-      <button
+        <button
           type="submit"
           className={HRDetailStyle.btnPrimaryOutline}
           //   onClick={() => setShowAMModal(false)}

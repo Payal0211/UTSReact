@@ -1304,8 +1304,8 @@
 
 .vitalInfoBox .vitalInfoOption label {
     font-family: Montserrat;
-    font-size: 12px;
-    line-height: 15px;
+    font-size: 13px;
+    line-height: 16px;
     font-weight: 500;
     color: #6B6B6B;
     padding: 11px 16px;
@@ -1676,9 +1676,9 @@
     display: flex;
     align-items: center;
     color: #6B6B6B;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
-    line-height: 14px;
+    line-height: 16px;
 }
 
 .customModal.PrevEditmodal .ant-select-multiple .ant-select-selector {
@@ -2330,7 +2330,8 @@
 /**/
 .formFields .form-group label {
     color: #676767;
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -2360,7 +2361,7 @@
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
-    line-height: 17.262px;
+    line-height: 17px;
     letter-spacing: -0.32px;
     margin-bottom: 0;
 }
@@ -2445,6 +2446,12 @@
     width: 100%;
 }
 
+
+@media only screen and (max-width: 1440px) {
+    .vitalInfoBox .vitalInfoOption label, .PrevEditmodal .modalContent .form-group label, .formFields .form-group label{
+        font-size: 12px;
+    }
+}
 
 @media only screen and (max-width: 1200px) {
     .PreviewpageMainWrap .prevSkillTwopart .SlillBtnBox li, .PrevEditmodal .prevSkillTwopart .SlillBtnBox li{

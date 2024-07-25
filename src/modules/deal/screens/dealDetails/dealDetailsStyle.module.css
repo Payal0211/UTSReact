@@ -97,6 +97,7 @@
     font-size: 18px;
     line-height: 22px;
     color: #232323;
+    height: 100%;
 }
 .topCardItem span{
     display: block;

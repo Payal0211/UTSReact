@@ -19,7 +19,8 @@
 }
 
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -56,6 +57,14 @@
     flex: 1;
 }
 
+.hrFieldRightPane [class^="ant-checkbox-wrapper"]{
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: #676767;
+}
+
 .row {
     margin: 0 -9px;
     flex-wrap: wrap;
@@ -90,8 +99,8 @@
 .formGroup label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -201,8 +210,8 @@
 .uploadedJDWrap label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -275,6 +284,7 @@ cursor: default;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 10px;
+    margin-bottom: 32px;
     padding: 0;
     list-style: none;
     position: relative;
@@ -389,8 +399,8 @@ cursor: default;
 .timezoneLabel{
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -452,5 +462,8 @@ cursor: default;
     .hrFieldLeftPane p {
         font-size: 14px;
         line-height: 22px;
+    }
+    .formGroup label, .uploadedJDWrap label, .timezoneLabel{
+        font-size: 12px;
     }
 }

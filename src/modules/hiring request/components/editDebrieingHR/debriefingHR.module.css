@@ -30,6 +30,14 @@
     flex: 1;
 }
 
+.hrFieldRightPane [class^="ant-checkbox-wrapper"]{
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: #676767;
+}
+
 .focusRole{
     display:flex;
     align-items: center;   
@@ -77,8 +85,8 @@
 .formGroup label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -155,6 +163,7 @@
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 10px;
+    margin-bottom: 32px;
     list-style: none;
     padding: 0;
 }
@@ -181,6 +190,17 @@
     cursor: pointer;
 }
 
+.formGroupLabel {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
 @media screen and (max-width: 1440px) {
     .partOne {
         padding-top: 40px;
@@ -202,5 +222,8 @@
     .hrFieldLeftPane p {
         font-size: 14px;
         line-height: 22px;
+    }
+    .formGroup label, .formGroupLabel{
+        font-size: 12px;
     }
 }

@@ -71,8 +71,8 @@
 .formGroup label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: var(--uplers-lightBlack);
     margin: 0 0 8px;
@@ -85,7 +85,8 @@
 }
 
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -324,5 +325,8 @@
     }
     .tabsFormItem {
         margin-bottom: 35px;
+    }
+    .formGroup label {
+        font-size: 12px;
     }
 }

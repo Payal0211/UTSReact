@@ -46,7 +46,8 @@
 }
 
 .reqField {
-  color: var(--uplers-black);
+  /* color: var(--uplers-black); */
+  color: #E03A3A;
   font-weight: 700;
   font-size: 14px;
   margin-left: 4px;

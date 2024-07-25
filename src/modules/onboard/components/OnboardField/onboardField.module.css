@@ -3,7 +3,8 @@
 }
 
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -49,6 +50,14 @@
     flex: 1;
 }
 
+.hrFieldRightPane [class^="ant-checkbox-wrapper"]{
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: #676767;
+}
+
 .row {
     margin: 0 -9px;
     flex-wrap: wrap;
@@ -82,8 +91,8 @@
 .formGroup label {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -346,8 +355,8 @@
 .timeSlotLabel{
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
@@ -496,9 +505,9 @@
 .timeLabel {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 17px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
     display: inline-block;
@@ -602,5 +611,8 @@
     .hrFieldLeftPane p {
         font-size: 14px;
         line-height: 22px;
+    }
+    .formGroup label, .timeSlotLabel, .timeLabel{
+        font-size: 12px;
     }
 }
