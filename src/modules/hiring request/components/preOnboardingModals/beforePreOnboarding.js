@@ -1775,7 +1775,33 @@ const calcelMember = () =>{
                       }}
                       disabled={actionType==="Legal"?true:false}
                     /> */}
-                    <div className="editor-container">
+                    {actionType=="Legal"?<div className="editor-container">
+                      <label className={HRDetailStyle.editorLabel}>A bit about company culture <span className={HRDetailStyle.editorLabelReq}>*</span></label>
+                      <ReactQuill
+                        className={HRDetailStyle.quillContent}
+                        register={register}
+                        errors={errors}
+                        setValue={setValue}
+                        theme="snow"
+                        value={
+                          watch("aboutCompany")
+                        }
+                        required
+                        readOnly={true}
+                        validationSchema={{
+                          required: "please enter a bit about company culture.",
+                        }}
+                        isError={errors["aboutCompany"] && errors["aboutCompany"]}
+                        name="aboutCompany"
+                        onChange={(val) => setValue("aboutCompany", val)}
+                        errorMsg={"Please enter Talent’s Designation"}
+                      />
+                    {errors?.aboutCompany && (
+                      <p className={HRDetailStyle.error}>
+                        *Please enter About company
+                      </p>
+                     )} 
+                  </div>:<div className="editor-container">
                       <label className={HRDetailStyle.editorLabel}>A bit about company culture <span className={HRDetailStyle.editorLabelReq}>*</span></label>
                       <ReactQuill
                         register={register}
@@ -1800,7 +1826,8 @@ const calcelMember = () =>{
                         *Please enter About company
                       </p>
                      )} 
-                  </div>
+                  </div>}
+                    
                   </div>
                   <div className={HRDetailStyle.colMd12}>
                     <HRInputField

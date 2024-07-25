@@ -968,6 +968,17 @@ label.radioCheck_Mark input:checked+span.customCheck_Mark:after {
     margin-left: 4px;
 }
 
+.modalFormWrapper .quillContent [class^='ql-toolbar']{
+    display: none;
+}
+
+.modalFormWrapper .quillContent [class^='ql-editor'] {
+    padding: 0;
+}
+
+.modalFormWrapper .quillContent [class^='ql-container']{
+    border: none;
+}
 
 
 @media screen and (max-width: 1440px) {
