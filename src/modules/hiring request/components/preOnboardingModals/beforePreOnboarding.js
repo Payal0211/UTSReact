@@ -168,6 +168,8 @@ export default function BeforePreOnboarding({
     setStaryEndTimes(durationTypes && durationTypes?.responseBody);
   }, []);
 
+  const workingModeID = watch("modeOFWorkingID")
+
   useEffect(() => {
     getStartEndTimeHandler();
     getAMusersData();
@@ -389,7 +391,7 @@ export default function BeforePreOnboarding({
         // let _state = stateList?.filter((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.stateID);
         // setValue("stateID", _state[0]);
         // setControlledState(_state[0]);
-
+        if(result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails?.devicesPoliciesOption){
         let filteredDevicePolicy = devicePolices.filter(item=> item.value ===  result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption)
             setValue('devicePolicy',filteredDevicePolicy[0])
             setControlledDevicePolicy(filteredDevicePolicy[0].value)
@@ -406,6 +408,7 @@ export default function BeforePreOnboarding({
                   setValue('otherDevice',result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.client_DeviceDescription)
           }
         } 
+      }
 
         if(result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption){
           let filteredLeavePolicy = leavePolices.filter(leavePolices => leavePolices.value === result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption)
@@ -594,7 +597,7 @@ const calcelMember = () =>{
           "replacementID": 0,
           "hiringRequestID": HRID,
           "talentId": talentDeteils?.TalentID,
-          "lastWorkingDay": engagementReplacement?.replacementData === false ? d.lwd : null,
+          "lastWorkingDay": engagementReplacement?.replacementData === true ? moment(d.lwd).format('yyyy-MM-DD') : null,
           "lastWorkingDateOption": 0,
           "noticeperiod": 0,
           "replacementStage": d.replaceStage?.value,
@@ -603,7 +606,7 @@ const calcelMember = () =>{
           "replacementHandledByID": null,
           "engagementReplacementOnBoardID": 0,
           "replacementTalentId": null,
-          "engHRReplacement": engagementReplacement?.replacementData === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id
+          "engHRReplacement": engagementReplacement?.replacementData === true ? d.engagementreplacement?.id : null 
         },
         "updateClientOnBoardingDetails": {
           "hR_ID": HRID,
@@ -1380,7 +1383,8 @@ const calcelMember = () =>{
                           label="Bill Rate"
                           name="billRate"
                           type={InputType.NUMBER}
-                          placeholder="USD 4000/Month"
+                          placeholder={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                            ?"USD 4000/Year":"USD 4000/Month"}
                           // value={watch('billRate')}
                           leadingIcon={
                             preONBoardingData
@@ -1411,7 +1415,8 @@ const calcelMember = () =>{
                           label="Bill Rate"
                           name="billRate"
                           type={InputType.TEXT}
-                          placeholder="USD 4000/Month"
+                          placeholder={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                            ?"USD 4000/Year":"USD 4000/Month"}
                           // value={watch('billRate')}
                           leadingIcon={
                             preONBoardingData
@@ -1675,8 +1680,8 @@ const calcelMember = () =>{
                     )}
                   </div>}
 
-                  {watch("modeOFWorkingID")?.id!==1 &&<div className={HRDetailStyle.modalFormCol}>
-                    {editState ? (
+
+                  {workingModeID?.id!==1 &&<div className={HRDetailStyle.modalFormCol}>
                       <HRSelectField
                         isControlled={true}
                         controlledValue={controlledState}
@@ -1689,66 +1694,12 @@ const calcelMember = () =>{
                         name="stateID"
                         options={stateList && stateList}
                         isError={errors["stateID"] && errors["stateID"]}
-                        required
+                        required = {workingModeID?.id==2 || workingModeID?.id==3 ?true:false}
                         errorMsg={"Please select State"}
                         disabled={actionType==="Legal"?true:false}
                         searchable={true}
                       />
-                    ) : (
-                      // <HRInputField
-                      //   register={register}
-                      //   errors={errors}
-                      //   label="State"
-                      //   name="stateID"
-                      //   type={InputType.TEXT}
-                      //   placeholder="State"
-                      //   validationSchema={{
-                      //     required: "please select State.",
-                      //     min: 1,
-                      //   }}
-                      //   value={watch('State')?.value ? watch('State')?.value : ""}
-                      //   isError={errors["state"] && errors["state"]}
-                      //   errorMsg={"Please select State"}
-                      //   required
-                      //   disabled
-                      //   trailingIcon={
-                      //     !isTabDisabled && (
-                      //       <EditFieldSVG
-                      //         width="16"
-                      //         height="16"
-                      //         onClick={() => setEditSate(true)}
-                      //       />
-                      //     )
-                      //   }
-                      // />
-                      <HRSelectField
-                      isControlled={true}
-                      controlledValue={controlledState}
-                      setControlledValue={setControlledState}
-                      mode="id/value"
-                      setValue={setValue}
-                      register={register}
-                      label={"State"}
-                      defaultValue={"Select State"}
-                      name="stateID"
-                      options={stateList && stateList}
-                      isError={errors["stateID"] && errors["stateID"]}
-                      required
-                      errorMsg={"Please select State"}
-                      disabled={actionType==="Legal"?true:false}
-                      searchable={true}
-                      // disabled
-                      // trailingIcon={
-                      //   !isTabDisabled && (
-                      //     <EditFieldSVG
-                      //       width="16"
-                      //       height="16"
-                      //       onClick={() => setEditSate(true)}
-                      //     />
-                      //   )
-                      // }
-                    />
-                    )}
+                   
                   </div>}
 
                   <div className={HRDetailStyle.modalFormCol}>
