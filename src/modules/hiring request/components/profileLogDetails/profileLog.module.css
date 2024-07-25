@@ -45,8 +45,8 @@
 .profileNameDate label {
   font-family: "Montserrat";
   font-weight: 400;
-  font-size: 14px;
-  line-height: 17px;
+  font-size: 13px;
+  line-height: 16px;
   color: #676767;
   margin: 0 8px 0 0;
 }
@@ -297,4 +297,11 @@
   line-height: 17px;
   color: #676767;
   text-align: center;
+}
+
+
+@media screen and (max-width: 1440px) {
+  .profileNameDate label {
+    font-size: 12px;
+  }
 }

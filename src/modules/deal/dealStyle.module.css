@@ -320,9 +320,9 @@ table {
 
 
 .cardLabel {
-    font-size: 12px;
-    line-height: 15px;
-    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
     color: var(--uplers-black);
 }
 
@@ -359,7 +359,8 @@ table {
 }
 
 .reqField {
-    color: var(--uplers-black);
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
@@ -546,7 +547,7 @@ table {
         font-size: 10px;
     }
 
-    .label {
+    .label,.cardLabel {
         font-size: 12px;
     }
     .formPanelAction {

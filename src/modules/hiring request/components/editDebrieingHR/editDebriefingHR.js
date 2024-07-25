@@ -727,7 +727,7 @@ const checkValChnage = () => {
 								required
 							/> */}
 							<div className={DebriefingHRStyle.mb50}>
-							<label style={{ marginBottom: "12px" }}>
+							<label className={DebriefingHRStyle.formGroupLabel}>
 								Job Description
 								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
 							</label>

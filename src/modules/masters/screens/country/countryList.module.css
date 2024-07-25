@@ -439,8 +439,8 @@ tr .td:first-child {
 
 
 .cardLabel {
-    font-size: 16px;
-    line-height: 15px;
+    font-size: 13px;
+    line-height: 16px;
     font-weight: 500;
     color: var(--uplers-black);
     margin-bottom: 8px;
@@ -577,9 +577,9 @@ s tr th:first-child {
 .timeLabel {
     vertical-align: top;
     font-family: 'Montserrat';
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 17px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
     display: inline-block;
@@ -792,5 +792,8 @@ s tr th:first-child {
 
     .formPanelAction {
         padding: 24px 0;
+    }
+    .cardLabel, .timeLabel{
+        font-size: 12px;
     }
 }

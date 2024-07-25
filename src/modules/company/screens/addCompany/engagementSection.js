@@ -135,7 +135,7 @@ function EngagementSection({
                   marginBottom: "32px",
                 }}
               >
-                <label style={{ marginBottom: "12px" }}>
+                <label className={AddNewClientStyle.label} style={{ marginBottom: "8px" }}>
                   Client Model
                   <span className={AddNewClientStyle.reqField}>*</span>
                 </label>
@@ -204,7 +204,7 @@ function EngagementSection({
                     marginBottom: "32px",
                   }}
                 >
-                  <label style={{ marginBottom: "12px" }}>
+                  <label className={AddNewClientStyle.label} style={{ marginBottom: "8px" }}>
                     Type Of Pricing
                     <span className={AddNewClientStyle.reqField}>*</span>
                   </label>
@@ -315,7 +315,7 @@ function EngagementSection({
                   
                   <div className={AddNewClientStyle.colMd6}>
                    {companyID !== '0' && <>Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{engagementDetails?.totalCreditBalance}</span></>} 
-                    <div className={AddNewClientStyle.FreecreditFieldWrap}>
+                    <div className={AddNewClientStyle.FreecreditFieldWrap} style={{marginTop: '8px'}}>
                       <HRInputField
                         register={register}
                         errors={errors}
@@ -377,7 +377,7 @@ function EngagementSection({
                     >
                       <div
                         className={AddNewClientStyle.payPerCheckboxWrap}
-                        style={{ marginBottom: "16px" }}
+                        style={{ marginBottom: "24px" }}
                       >
                         <Checkbox
                           name="IsPostaJob"
