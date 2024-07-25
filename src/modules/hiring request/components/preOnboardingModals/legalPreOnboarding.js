@@ -174,8 +174,6 @@ export default function LegalPreOnboarding({
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   const diffInDays = diffInMilliseconds / millisecondsPerDay;
 
-  console.log(`Difference in days: ${diffInDays}`, date2, date1);
-
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
       <div className={HRDetailStyle.onboardingProcesspart}>
