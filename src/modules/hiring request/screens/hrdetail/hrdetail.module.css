@@ -423,6 +423,7 @@
 
 .onboardingProcesspart .onboardingDetailText span {
     margin-bottom: 8px;
+    line-height: 17px;
 }
 
 .onboardingProcesspart .onboardingTextBold {
@@ -949,6 +950,37 @@ label.radioCheck_Mark input:checked+span.customCheck_Mark:after {
 .labelreplacement .formField {
     margin: 0 0 20px;
 }
+
+.modalFormWrapper .editorLabel{
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
+.modalFormWrapper .editorLabelReq{
+    color: #E03A3A;
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.modalFormWrapper .quillContent [class^='ql-toolbar']{
+    display: none;
+}
+
+.modalFormWrapper .quillContent [class^='ql-editor'] {
+    padding: 0;
+}
+
+.modalFormWrapper .quillContent [class^='ql-container']{
+    border: none;
+}
+
 
 @media screen and (max-width: 1440px) {
     .hiringRequestContainer {

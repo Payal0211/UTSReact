@@ -43,6 +43,7 @@ import { ReactComponent as ClientTeamMemberSVG } from 'assets/svg/clientTeammemb
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
 import { ReactComponent as AboutCompanySVG } from 'assets/svg/aboutCompany.svg';
 import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export default function BeforePreOnboarding({
   preOnboardingDetailsForAMAssignment,
@@ -102,6 +103,7 @@ export default function BeforePreOnboarding({
   const [controlledDealSource, setControlledDealSource] = useState();
   const [controlledEngRep, setControlledEngRep] = useState();
 
+
   const [isLoading, setIsLoading] = useState(false);
   const [isTabDisabled, setTabDisabled] = useState(false);
   const [isTransparentPricing, setIsTransparentPricing] = useState(false);
@@ -157,6 +159,7 @@ export default function BeforePreOnboarding({
   const [buddy, setBuddy] = useState([]);
   const [assignAM,setAssignAM] = useState();
   const [controlledAssignAM, setControlledAssignAM] = useState([]);
+  const [controlledPaymentNetTerm, setControlledPaymentNetTerm] = useState([]);
   const [controlledState, setControlledState] = useState([]);
   const [controlledIMOW, setControlledMOW] = useState([]);
   const [data,setData] = useState({});
@@ -165,6 +168,8 @@ export default function BeforePreOnboarding({
     setStaryEndTimes(durationTypes && durationTypes?.responseBody);
   }, []);
 
+  const workingModeID = watch("modeOFWorkingID")
+
   useEffect(() => {
     getStartEndTimeHandler();
     getAMusersData();
@@ -172,6 +177,7 @@ export default function BeforePreOnboarding({
     getStateData();
     getReportingToHandler();
     getBuddyHandler();
+    fatchpreOnBoardInfo();
   }, []);
 
   const getAMusersData = async () =>{
@@ -181,6 +187,7 @@ export default function BeforePreOnboarding({
       value:item?.value
     })))
   }
+
 
   const getReportingToHandler = useCallback(async () => {
     const response = await MasterDAO.getYesNoOptionRequestDAO();
@@ -248,9 +255,41 @@ export default function BeforePreOnboarding({
     return null;
   }
 
+  useEffect(() => {
+    let data = amUsers?.filter((item) => item.id === preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID);
+    setValue("amSalesPersonID", data[0]);
+    setControlledAssignAM(data[0]);
+  }, [preONBoardingData,amUsers])
+
+  useEffect(() => {
+    let list = netTerms?.filter((item) => item.value == preONBoardingData?.preOnboardingDetailsForAMAssignment?.payementNetTerm);
+    setValue("netTerm", list[0]);
+    setControlledPaymentNetTerm(list[0]);
+  }, [preONBoardingData,netTerms])
+
+  useEffect(() => {
+    let modeOfWorking = workingMode?.filter((item) => item.value === preONBoardingData?.preOnboardingDetailsForAMAssignment?.modeOfWork);
+    setValue("modeOFWorkingID", modeOfWorking[0]);
+    setControlledMOW(modeOfWorking[0]);
+  }, [preONBoardingData,workingMode])
+
+  useEffect(() => {
+    let _state = stateList?.filter((item) => item.id === preONBoardingData?.preOnboardingDetailsForAMAssignment?.stateID);
+    setValue("stateID", _state[0]);
+    setControlledState(_state[0]);
+  }, [preONBoardingData,stateList])
+  
+
   const fatchpreOnBoardInfo = useCallback(
-    async (req) => {
-      let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);
+    async () => {
+      if(talentDeteils?.OnBoardId){
+        let req = {
+          OnboardID: talentDeteils?.OnBoardId,
+          HRID: HRID,
+          // actionName: actionType ? actionType : "GotoOnboard",
+        };
+        let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);
+      
       if (result?.statusCode === HTTPStatusCode.OK) {       
         setAssignAM(result?.responseBody?.details?.assignAM)
         setReplacementEngHr(result.responseBody.details?.replacementEngAndHR);
@@ -277,11 +316,11 @@ export default function BeforePreOnboarding({
         setNetTerms(result.responseBody.details?.drpNetPaymentDays);
         setCurrentHRs(result.responseBody.details?.currentHRs);
 
-        setValue(
-          "netTerm",
-          result.responseBody.details?.preOnboardingDetailsForAMAssignment
-            ?.payementNetTerm
-        );
+        // let list = netTerms?.filter((item) => item.value === result.responseBody.details?.preOnboardingDetailsForAMAssignment
+        // ?.payementNetTerm);
+        // setValue("netTerm", list[0]);
+        // setControlledAssignAM(list[0]);
+
         setValue(
           "payRate",
           result.responseBody.details?.preOnboardingDetailsForAMAssignment
@@ -339,18 +378,20 @@ export default function BeforePreOnboarding({
         preOnboardDetail?.nrPercentage &&
           setValue("nrPercent", preOnboardDetail?.nrPercentage);
 
-        let data = amUsers?.filter((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.amUserID);
-        setValue("amSalesPersonID", data[0]);
-        setControlledAssignAM(data[0]);
+        // let data = amUsers?.filter((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.amUserID);
+        // setValue("amSalesPersonID", data[0]);
+        // setControlledAssignAM(data[0]);
 
-        let modeOfWorking = workingMode?.filter((item) => item.value === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.modeOfWork);
-        setValue("modeOFWorkingID", modeOfWorking[0]);
-        setControlledMOW(modeOfWorking[0]);
+        // console.log(amUsers,data,"datadatadata123");
 
-        let _state = stateList?.filter((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.stateID);
-        setValue("stateID", _state[0]);
-        setControlledState(_state[0]);
+        // let modeOfWorking = workingMode?.filter((item) => item.value === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.modeOfWork);
+        // setValue("modeOFWorkingID", modeOfWorking[0]);
+        // setControlledMOW(modeOfWorking[0]);
 
+        // let _state = stateList?.filter((item) => item.id === result?.responseBody?.details?.preOnboardingDetailsForAMAssignment?.stateID);
+        // setValue("stateID", _state[0]);
+        // setControlledState(_state[0]);
+        if(result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails?.devicesPoliciesOption){
         let filteredDevicePolicy = devicePolices.filter(item=> item.value ===  result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption)
             setValue('devicePolicy',filteredDevicePolicy[0])
             setControlledDevicePolicy(filteredDevicePolicy[0].value)
@@ -367,6 +408,7 @@ export default function BeforePreOnboarding({
                   setValue('otherDevice',result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.client_DeviceDescription)
           }
         } 
+      }
 
         if(result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption){
           let filteredLeavePolicy = leavePolices.filter(leavePolices => leavePolices.value === result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption)
@@ -408,7 +450,7 @@ export default function BeforePreOnboarding({
           setValue("dealSource", dealSourceObj[0]);
         }
         const _filterData =
-          result.responseBody.details.replacementEngAndHR?.filter(
+          result?.responseBody?.details?.replacementEngAndHR?.filter(
             (e) =>
               e.id === result?.responseBody?.details?.replacementDetail?.newHrid ||
               result?.responseBody?.details?.replacementDetail?.newOnBoardId
@@ -416,8 +458,9 @@ export default function BeforePreOnboarding({
         setControlledEngRep(_filterData[0]?.value);
         setValue("engagementreplacement", _filterData[0]);
       }
+    }
     },
-    [setValue,amUsers,workingMode,stateList]
+    [setValue,talentDeteils, HRID]
   );
 
   useEffect(() => {
@@ -442,23 +485,23 @@ export default function BeforePreOnboarding({
     }
   }, [preONBoardingData, getStartEndTimes, setValue]);
 
-  useEffect(() => {
-    if (talentDeteils?.OnBoardId) {
-      let req = {
-        OnboardID: talentDeteils?.OnBoardId,
-        HRID: HRID,
-        // actionName: actionType ? actionType : "GotoOnboard",
-      };
-      fatchpreOnBoardInfo(req);
-    }
-  }, [talentDeteils, HRID, fatchpreOnBoardInfo]);
+  // useEffect(() => {
+  //   if (talentDeteils?.OnBoardId) {
+  //     let req = {
+  //       OnboardID: talentDeteils?.OnBoardId,
+  //       HRID: HRID,
+  //       // actionName: actionType ? actionType : "GotoOnboard",
+  //     };
+  //     fatchpreOnBoardInfo(req);
+  //   }
+  // }, [talentDeteils, HRID, fatchpreOnBoardInfo]);
 
   const watchDealSource = watch("dealSource");
 
   const getLeadOwnerBytype = async (type) => {
     let result = await MasterDAO.getLeadTypeDAO(
       type,
-      preOnboardingDetailsForAMAssignment.hR_ID
+      preONBoardingData?.preOnboardingDetailsForAMAssignment.hR_ID
     );
     
     if (result?.statusCode === HTTPStatusCode.OK) {
@@ -476,20 +519,20 @@ export default function BeforePreOnboarding({
     }
   }, [watchDealSource, setValue]);
 
-  useEffect(() => {
-    //     BR (Client Pay ) = select 2200 * 100 /(100-35) : Nontranspernt Modell
-    //     BR (Client Pay ) = select 2200 *( 100+35) /100 : Transpernt Model
-    let billRate = (watch("payRate") * 100) / (100 - watch("nrPercent"));
-    if (isTransparentPricing) {
-      billRate = (+watch("payRate") * (100 + +watch("nrPercent"))) / 100;
-    }
+  // useEffect(() => {
+  //   //     BR (Client Pay ) = select 2200 * 100 /(100-35) : Nontranspernt Modell
+  //   //     BR (Client Pay ) = select 2200 *( 100+35) /100 : Transpernt Model
+  //   let billRate = (watch("payRate") * 100) / (100 - watch("nrPercent"));
+  //   if (isTransparentPricing) {
+  //     billRate = (+watch("payRate") * (100 + +watch("nrPercent"))) / 100;
+  //   }
 
-    billRate && setValue("billRate", billRate.toFixed(2));
-  }, [
-    watch("payRate"),
-    preOnboardingDetailsForAMAssignment,
-    watch("nrPercent"),
-  ]);
+  //   billRate && setValue("billRate", billRate.toFixed(2));
+  // }, [
+  //   watch("payRate"),
+  //   preOnboardingDetailsForAMAssignment,
+  //   watch("nrPercent"),
+  // ]);
 
   const saveMember = (d) =>{
     let newMember = {
@@ -541,7 +584,7 @@ const calcelMember = () =>{
         "talentShiftEndTime": d.shiftEndTime?.value,
         "payRate":data?.isHRTypeDP ? 0 : parseFloat(d.payRate),
         "billRate": data?.isHRTypeDP ? null : parseFloat(d.billRate),
-        "netPaymentDays": parseInt(d.netTerm),
+        "netPaymentDays": parseInt(d.netTerm?.value),
         "nrMargin": !data?.isHRTypeDP ? d.nrPercent : null,
         "modeOFWorkingID": d?.modeOFWorkingID?.id,
         "city": d?.city,
@@ -554,7 +597,7 @@ const calcelMember = () =>{
           "replacementID": 0,
           "hiringRequestID": HRID,
           "talentId": talentDeteils?.TalentID,
-          "lastWorkingDay": addLatter === false ? d.lwd : null,
+          "lastWorkingDay": engagementReplacement?.replacementData === true ? moment(d.lwd).format('yyyy-MM-DD') : null,
           "lastWorkingDateOption": 0,
           "noticeperiod": 0,
           "replacementStage": d.replaceStage?.value,
@@ -563,7 +606,7 @@ const calcelMember = () =>{
           "replacementHandledByID": null,
           "engagementReplacementOnBoardID": 0,
           "replacementTalentId": null,
-          "engHRReplacement": addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id
+          "engHRReplacement": engagementReplacement?.replacementData === true ? d.engagementreplacement?.id : null 
         },
         "updateClientOnBoardingDetails": {
           "hR_ID": HRID,
@@ -778,6 +821,14 @@ const calcelMember = () =>{
     [getValidation]
   );
 
+
+  const addHttps = (url) => {
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    return url;
+  };
+
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
       <div className={`${HRDetailStyle.onboardingProcesspart} ${HRDetailStyle.onboardingReleaseOffer}`}>
@@ -800,8 +851,8 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Company Name</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                        {preOnboardingDetailsForAMAssignment?.companyName
-                          ? preOnboardingDetailsForAMAssignment?.companyName
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.companyName
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.companyName
                           : "NA"}
                       </span>
                     </div>
@@ -811,8 +862,8 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Client Email/Name</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                        {preOnboardingDetailsForAMAssignment?.client
-                          ? preOnboardingDetailsForAMAssignment?.client
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.client
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.client
                           : "NA"}
                       </span>
                     </div>
@@ -827,8 +878,8 @@ const calcelMember = () =>{
                         rel="noreferrer"
                         className={HRDetailStyle.onboardingTextUnderline}
                       >
-                        {preOnboardingDetailsForAMAssignment?.hrNumber
-                          ? preOnboardingDetailsForAMAssignment?.hrNumber
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.hrNumber
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.hrNumber
                           : "NA"}
                       </a>
                     </div>
@@ -849,8 +900,8 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>No. of Employees</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                        {preOnboardingDetailsForAMAssignment?.noOfEmployee
-                          ? preOnboardingDetailsForAMAssignment?.noOfEmployee
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.noOfEmployee
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.noOfEmployee
                           : "NA"}
                       </span>
                     </div>
@@ -860,8 +911,8 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Client POC Name</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                        {preOnboardingDetailsForAMAssignment?.client_POC_Name
-                          ? preOnboardingDetailsForAMAssignment?.client_POC_Name
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.client_POC_Name
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.client_POC_Name
                           : "NA"}
                       </span>
                     </div>
@@ -871,8 +922,8 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Client POC Email</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                        {preOnboardingDetailsForAMAssignment?.client_POC_Email
-                          ? preOnboardingDetailsForAMAssignment?.client_POC_Email
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.client_POC_Email
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.client_POC_Email
                           : "NA"}
                       </span>
                     </div>
@@ -882,8 +933,8 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Industry</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                        {preOnboardingDetailsForAMAssignment?.industry
-                          ? preOnboardingDetailsForAMAssignment?.industry
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.industry
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.industry
                           : "NA"}
                       </span>
                     </div>
@@ -892,9 +943,9 @@ const calcelMember = () =>{
                   <div className={HRDetailStyle.modalFormCol}>
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Discovery Call Link</span>
-                      { preONBoardingData?.preOnboardingDetailsForAMAssignment
-                            ?.discovery_Link ?
-                            <a target="_blank"  href={preONBoardingData?.preOnboardingDetailsForAMAssignment ?.discovery_Link} rel="noreferrer" className={HRDetailStyle.onboardingTextUnderline}>
+                      {preONBoardingData?.preOnboardingDetailsForAMAssignment
+                            ?.discovery_Link && preONBoardingData?.preOnboardingDetailsForAMAssignment?.discovery_Link!=="NA" ?
+                            <a target="_blank" href={preONBoardingData?.preOnboardingDetailsForAMAssignment?.discovery_Link!=="NA"&&addHttps(preONBoardingData?.preOnboardingDetailsForAMAssignment?.discovery_Link)} rel="noreferrer" className={HRDetailStyle.onboardingTextUnderline}>
                               {preONBoardingData?.preOnboardingDetailsForAMAssignment?.discovery_Link}</a>:"NA"}
                     </div>
                   </div>
@@ -904,16 +955,16 @@ const calcelMember = () =>{
                       <span>Job Description</span>
                       {/* <button className={HRDetailStyle.onboardingDownload}><DownloadJDSVG/>Download JD</button> */}
 
-                      {preOnboardingDetailsForAMAssignment?.jobDescription?.split(
+                      {preONBoardingData?.preOnboardingDetailsForAMAssignment?.jobDescription?.split(
                         ":"
                       )[0] === "http" ||
-                      preOnboardingDetailsForAMAssignment?.jobDescription?.split(
+                      preONBoardingData?.preOnboardingDetailsForAMAssignment?.jobDescription?.split(
                         ":"
                       )[0] === "https" ? (
                         <a
                           className={HRDetailStyle.onboardingDownload}
                           rel="noreferrer"
-                          href={preOnboardingDetailsForAMAssignment?.jobDescription}
+                          href={preONBoardingData?.preOnboardingDetailsForAMAssignment?.jobDescription}
                           style={{ textDecoration: "underline" }}
                           target="_blank"
                         >
@@ -928,7 +979,7 @@ const calcelMember = () =>{
                             NetworkInfo.PROTOCOL +
                             NetworkInfo.DOMAIN +
                             "Media/JDParsing/JDfiles/" +
-                            preOnboardingDetailsForAMAssignment?.jobDescription
+                            preONBoardingData?.preOnboardingDetailsForAMAssignment?.jobDescription
                           }
                           style={{ textDecoration: "underline" }}
                           target="_blank"
@@ -1031,12 +1082,13 @@ const calcelMember = () =>{
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
                   <div className={HRDetailStyle.colMd12}>
-                    <div className={`${HRDetailStyle.onboardingCurrentText} ${HRDetailStyle.onboardingAMAssignmentHead}`}>
-                    {assignAM ? <span>Do you want to edit AM ? </span> : <span>Do you want to assign an AM?</span>}                        <Radio.Group name="assignAM" value={assignAM} disabled={actionType==="Legal"?true:false} onChange={(e) => setAssignAM(e.target.value)}>
+                  {!assignAM &&<div className={`${HRDetailStyle.onboardingCurrentText} ${HRDetailStyle.onboardingAMAssignmentHead}`}>
+                     <span>Do you want to assign an AM?</span>                       
+                    <Radio.Group name="assignAM" value={assignAM} disabled={actionType==="Legal"?true:false} onChange={(e) => setAssignAM(e.target.value)}>
                           <Radio value={true}>Yes</Radio>
                           <Radio value={false}>No</Radio>
-                        </Radio.Group>                    
-                    </div>
+                    </Radio.Group>                    
+                    </div>}
                   </div>
                 {assignAM ?  
                 <>
@@ -1048,7 +1100,7 @@ const calcelMember = () =>{
                       mode="id/value"
                       setValue={setValue}
                       register={register}
-                      label={"Select AM"}
+                      label={"Current AM"}
                       defaultValue={"Select AM"}
                       name="amSalesPersonID"
                       options={amUsers && amUsers}
@@ -1056,6 +1108,7 @@ const calcelMember = () =>{
                       required
                       errorMsg={"Please select AM"}
                       disabled={actionType==="Legal"?true:false}
+                      searchable={true}
                     />
                   </div>
                   <div className={`${HRDetailStyle.modalFormCol} ${HRDetailStyle.assignmentCardTitle}`}>
@@ -1131,8 +1184,8 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Talent Name</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                        {preOnboardingDetailsForAMAssignment?.talentName
-                          ? preOnboardingDetailsForAMAssignment?.talentName
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.talentName
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.talentName
                           : "NA"}
                       </span>
                     </div>
@@ -1144,12 +1197,12 @@ const calcelMember = () =>{
                       <span className={HRDetailStyle.onboardingTextBold}>
                         <a
                         target="_blank"
-                        href={preOnboardingDetailsForAMAssignment?.talentProfileLink}
+                        href={preONBoardingData?.preOnboardingDetailsForAMAssignment?.talentProfileLink}
                         rel="noreferrer"
                         className={HRDetailStyle.onboardingTextUnderline}
                       >
-                        {preOnboardingDetailsForAMAssignment?.talentProfileLink
-                          ? preOnboardingDetailsForAMAssignment?.talentProfileLink
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.talentProfileLink
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.talentProfileLink
                           : "NA"}
                       </a>
                       </span>
@@ -1160,8 +1213,8 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Availability</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                        {preOnboardingDetailsForAMAssignment?.availability
-                          ? preOnboardingDetailsForAMAssignment?.availability
+                        {preONBoardingData?.preOnboardingDetailsForAMAssignment?.availability
+                          ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.availability
                           : "NA"}
                       </span>
                     </div>
@@ -1266,8 +1319,8 @@ const calcelMember = () =>{
                   </div>
 
                   <div className={HRDetailStyle.modalFormCol}>
-                    {editNetTerm ? (
-                      <HRInputField
+                    {/* {editNetTerm ? ( */}
+                      {/* <HRSelectField
                       register={register}
                       errors={errors}
                       label="Payment Net Term"
@@ -1281,34 +1334,24 @@ const calcelMember = () =>{
                       isError={errors["netTerm"] && errors["netTerm"]}
                       errorMsg={"please select Payment Net Term"}
                       required
+                    /> */}
+                    <HRSelectField
+                      isControlled={true}
+                      controlledValue={controlledPaymentNetTerm}
+                      setControlledValue={setControlledPaymentNetTerm}
+                      mode="id/value"
+                      setValue={setValue}
+                      register={register}
+                      label={"Payment Net Term"}
+                      defaultValue={"Select Payment Net Term"}
+                      name="netTerm"
+                      options={netTerms && netTerms}
+                      isError={errors["netTerm"] && errors["netTerm"]}
+                      required
+                      errorMsg={"Please select Payment Net Term"}
+                      disabled={actionType==="Legal"?true:false}
+                      searchable={true}
                     />
-                    ) : (
-                      <HRInputField
-                        register={register}
-                        errors={errors}
-                        label="Payment Net Term"
-                        name="netTerm"
-                        type={InputType.TEXT}
-                        placeholder="Payment Net Term"
-                        validationSchema={{
-                          required: "please select Payment Net Term.",
-                          min: 1,
-                        }}
-                        isError={errors["netTerm"] && errors["netTerm"]}
-                        errorMsg={"Please select Payment Net Term"}
-                        required
-                        disabled
-                        trailingIcon={
-                          actionType!=="Legal" && (
-                            <EditFieldSVG
-                              width="16"
-                              height="16"
-                              onClick={() => setEditNetTerm(true)}
-                            />
-                          )
-                        }
-                      />
-                    )}
                   </div>
 
                   <div className={HRDetailStyle.modalFormCol}>
@@ -1340,7 +1383,8 @@ const calcelMember = () =>{
                           label="Bill Rate"
                           name="billRate"
                           type={InputType.NUMBER}
-                          placeholder="USD 4000/Month"
+                          placeholder={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                            ?"USD 4000/Year":"USD 4000/Month"}
                           // value={watch('billRate')}
                           leadingIcon={
                             preONBoardingData
@@ -1348,11 +1392,16 @@ const calcelMember = () =>{
                               ?.currencySign
                           }
                           trailingIcon={
+                            <div className={HRDetailStyle.infotextWrapper}>
+                            {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                              ? `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Year`
+                              : `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
                             <EditFieldSVG
                               width="16"
                               height="16"
                               onClick={() => setEditBillRate(false)}
                             />
+                            </div>
                           }
                         />
                       ) : (
@@ -1366,7 +1415,8 @@ const calcelMember = () =>{
                           label="Bill Rate"
                           name="billRate"
                           type={InputType.TEXT}
-                          placeholder="USD 4000/Month"
+                          placeholder={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                            ?"USD 4000/Year":"USD 4000/Month"}
                           // value={watch('billRate')}
                           leadingIcon={
                             preONBoardingData
@@ -1376,7 +1426,10 @@ const calcelMember = () =>{
                           disabled
                           trailingIcon={
                             <div className={HRDetailStyle.infotextWrapper}>
-                              {`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                              {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                              ? `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Year`
+                              : `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                              
                            {actionType!=="Legal" && <EditFieldSVG
                               width="16"
                               height="16"
@@ -1437,7 +1490,9 @@ const calcelMember = () =>{
                         // value="USD 4000/Month"
                         trailingIcon={
                           <div className={HRDetailStyle.infotextWrapper}>
-                            {`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                            {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                              ? `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Year`
+                              : `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
                             <EditFieldSVG
                               width="16"
                               height="16"
@@ -1469,7 +1524,9 @@ const calcelMember = () =>{
                         }
                         trailingIcon={
                           <div className={HRDetailStyle.infotextWrapper}>
-                            {`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                            {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                              ? `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Year`
+                              : `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
                             {actionType!=="Legal" && (
                               <EditFieldSVG
                                 width="16"
@@ -1490,15 +1547,17 @@ const calcelMember = () =>{
                   </div>
                   {/* // )} */}
 
-                  <div className={HRDetailStyle.onboardingDetailText}>
-                    <span>Uplers Fees</span>
-                    <span className={HRDetailStyle.onboardingTextBold}>
-                    { ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100)+ ' %' : 'NA' )}
-                      {/* {preOnboardingDetailsForAMAssignment?.talentRole
-                        ? preOnboardingDetailsForAMAssignment?.talentRole
-                        : "NA"} */}
-                      {/* 35 % */}
-                    </span>
+                  <div className={HRDetailStyle.modalFormCol}>
+                    <div className={HRDetailStyle.onboardingDetailText}>
+                      <span>Uplers Fees</span>
+                      <span className={HRDetailStyle.onboardingTextBold}>
+                      { ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100)+ ' %' : 'NA' )}
+                        {/* {preOnboardingDetailsForAMAssignment?.talentRole
+                          ? preOnboardingDetailsForAMAssignment?.talentRole
+                          : "NA"} */}
+                        {/* 35 % */}
+                      </span>
+                    </div>
                   </div>
 
                   <div className={HRDetailStyle.modalFormCol}>
@@ -1575,7 +1634,7 @@ const calcelMember = () =>{
                     )}
                   </div>
 
-                  <div className={HRDetailStyle.modalFormCol}>
+                 {watch("modeOFWorkingID")?.id!==1 && <div className={HRDetailStyle.modalFormCol}>
                     {editCity ? (
                       <HRInputField
                       register={register}
@@ -1619,10 +1678,10 @@ const calcelMember = () =>{
                         }
                       />
                     )}
-                  </div>
+                  </div>}
 
-                  <div className={HRDetailStyle.modalFormCol}>
-                    {editState ? (
+
+                  {workingModeID?.id!==1 &&<div className={HRDetailStyle.modalFormCol}>
                       <HRSelectField
                         isControlled={true}
                         controlledValue={controlledState}
@@ -1635,65 +1694,13 @@ const calcelMember = () =>{
                         name="stateID"
                         options={stateList && stateList}
                         isError={errors["stateID"] && errors["stateID"]}
-                        required
+                        required = {workingModeID?.id==2 || workingModeID?.id==3 ?true:false}
                         errorMsg={"Please select State"}
                         disabled={actionType==="Legal"?true:false}
+                        searchable={true}
                       />
-                    ) : (
-                      // <HRInputField
-                      //   register={register}
-                      //   errors={errors}
-                      //   label="State"
-                      //   name="stateID"
-                      //   type={InputType.TEXT}
-                      //   placeholder="State"
-                      //   validationSchema={{
-                      //     required: "please select State.",
-                      //     min: 1,
-                      //   }}
-                      //   value={watch('State')?.value ? watch('State')?.value : ""}
-                      //   isError={errors["state"] && errors["state"]}
-                      //   errorMsg={"Please select State"}
-                      //   required
-                      //   disabled
-                      //   trailingIcon={
-                      //     !isTabDisabled && (
-                      //       <EditFieldSVG
-                      //         width="16"
-                      //         height="16"
-                      //         onClick={() => setEditSate(true)}
-                      //       />
-                      //     )
-                      //   }
-                      // />
-                      <HRSelectField
-                      isControlled={true}
-                      controlledValue={controlledState}
-                      setControlledValue={setControlledState}
-                      mode="id/value"
-                      setValue={setValue}
-                      register={register}
-                      label={"State"}
-                      defaultValue={"Select State"}
-                      name="stateID"
-                      options={stateList && stateList}
-                      isError={errors["stateID"] && errors["stateID"]}
-                      required
-                      errorMsg={"Please select State"}
-                      disabled={actionType==="Legal"?true:false}
-                      // disabled
-                      // trailingIcon={
-                      //   !isTabDisabled && (
-                      //     <EditFieldSVG
-                      //       width="16"
-                      //       height="16"
-                      //       onClick={() => setEditSate(true)}
-                      //     />
-                      //   )
-                      // }
-                    />
-                    )}
-                  </div>
+                   
+                  </div>}
 
                   <div className={HRDetailStyle.modalFormCol}>
                     {editDesignation ? (
@@ -1752,8 +1759,8 @@ const calcelMember = () =>{
               </div>
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
-                  <div className={HRDetailStyle.colMd12}>
-                    <HRInputField
+                  <div className={`${HRDetailStyle.colMd12} ${HRDetailStyle.colmb32}`}>
+                    {/* <HRInputField
                       isTextArea={true}
                       errors={errors}
                       className="TextAreaCustom"
@@ -1767,7 +1774,60 @@ const calcelMember = () =>{
                         required: "please enter a bit about company culture.",
                       }}
                       disabled={actionType==="Legal"?true:false}
-                    />
+                    /> */}
+                    {actionType=="Legal"?<div className="editor-container">
+                      <label className={HRDetailStyle.editorLabel}>A bit about company culture <span className={HRDetailStyle.editorLabelReq}>*</span></label>
+                      <ReactQuill
+                        className={HRDetailStyle.quillContent}
+                        register={register}
+                        errors={errors}
+                        setValue={setValue}
+                        theme="snow"
+                        value={
+                          watch("aboutCompany")
+                        }
+                        required
+                        readOnly={true}
+                        validationSchema={{
+                          required: "please enter a bit about company culture.",
+                        }}
+                        isError={errors["aboutCompany"] && errors["aboutCompany"]}
+                        name="aboutCompany"
+                        onChange={(val) => setValue("aboutCompany", val)}
+                        errorMsg={"Please enter Talent’s Designation"}
+                      />
+                    {errors?.aboutCompany && (
+                      <p className={HRDetailStyle.error}>
+                        *Please enter About company
+                      </p>
+                     )} 
+                  </div>:<div className="editor-container">
+                      <label className={HRDetailStyle.editorLabel}>A bit about company culture <span className={HRDetailStyle.editorLabelReq}>*</span></label>
+                      <ReactQuill
+                        register={register}
+                        errors={errors}
+                        setValue={setValue}
+                        theme="snow"
+                        className="heightSize"
+                        value={
+                          watch("aboutCompany")
+                        }
+                        required
+                        validationSchema={{
+                          required: "please enter a bit about company culture.",
+                        }}
+                        isError={errors["aboutCompany"] && errors["aboutCompany"]}
+                        name="aboutCompany"
+                        onChange={(val) => setValue("aboutCompany", val)}
+                        errorMsg={"Please enter Talent’s Designation"}
+                      />
+                    {errors?.aboutCompany && (
+                      <p className={HRDetailStyle.error}>
+                        *Please enter About company
+                      </p>
+                     )} 
+                  </div>}
+                    
                   </div>
                   <div className={HRDetailStyle.colMd12}>
                     <HRInputField
@@ -1836,7 +1896,7 @@ const calcelMember = () =>{
                             errorMsg={'Please select department'}
                         /> */}
                       </div>
-                      <div className={HRDetailStyle.colMd12}>
+                      {/* <div className={HRDetailStyle.colMd12}>
                         <HRInputField
                           isTextArea={true}
                           errors={errors}
@@ -1851,7 +1911,7 @@ const calcelMember = () =>{
                           }}
                           disabled={actionType==="Legal"?true:false}
                         />
-                      </div>
+                      </div> */}
                       <div className={HRDetailStyle.colMd12}>
                         <HRSelectField
                           controlledValue={controlledDevicePolicy}
@@ -2416,6 +2476,7 @@ const calcelMember = () =>{
                         name="engagementreplacement"
                         label="Select HR ID/Eng ID created to replace this engagement"
                         defaultValue="Select HR ID/Eng ID"
+                        searchable={true}
                         options={
                           replacementEngHr
                             ? replacementEngHr.map((item) => ({

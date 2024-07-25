@@ -37,7 +37,11 @@ export const hrUtils = {
 			isDisplayReopenOrCloseIcon : item?.isDisplayReopenOrCloseIcon,
 			isHybrid: item.isHybrid,
 			companyID: item?.companyID,
-			showCloneToDemoAccount : item?.showCloneToDemoAccount
+			showCloneToDemoAccount : item?.showCloneToDemoAccount,
+			hrEngagementType: item?.hrEngagementType,
+			hrAcceptedSince:item?.hrAcceptedSince,
+			salaryBudget: item?.salaryBudget,
+			isDraftHR: item?.isDraftHR,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
