@@ -503,6 +503,22 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getEmailSuggestionRequest');
 		}
 	},
+	getCompanySuggestionRequest: async function (company) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			"AutoComplete/Company" +
+			`?search=${company}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCompanySuggestionRequest');
+		}
+	},
 	deletePOCUserRequest: async function (pocID,hrId) {
 		let httpService = new HttpServices();
 		httpService.URL =

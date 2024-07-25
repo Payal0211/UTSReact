@@ -508,7 +508,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	useEffect(() => {
 		setModifiedGEO([]);
 		// watchGEO?.map(({ id }) => setModifiedGEO((prev) => [...prev, id]));
-		setModifiedGEO((pev)=>[...pev,watchGEO?.id])
+		setModifiedGEO((pev)=>[...pev,watchGEO?.id ?? 0])
 	}, [watchGEO]);
 
 	useEffect(() => {
@@ -587,7 +587,13 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				id,
 				base64Image,
 				getUploadFileData,
-				modifiedGEO,
+				// modifiedGEO
+				modifiedGEO.map(item=>{
+					if(item === undefined || item === null){
+						return 0
+					}
+					return item
+				}),
 			);
 			let userResponse = await userAPI.createUserRequest(userFormDetails);
 
@@ -736,7 +742,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			}
 		});
 		setGEOType(modifiedGeo);
-		setValue('geo', modifiedGeo);
+		setValue('geo', modifiedGeo[0]);
 	}, [userDetails, GEO]);
 
 	useEffect(() => {
