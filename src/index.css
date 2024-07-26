@@ -1479,3 +1479,6 @@ table {
   font-family: Montserrat,sans-serif!important;
 }
 
+img{
+  max-width: 100%;
+}

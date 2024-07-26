@@ -1756,6 +1756,9 @@
 
 
 /******* Start previewHR.css *******/
+.previewHRModal img{
+    max-width: 100%;
+}
 .previewHRModal .ant-modal-body {
     padding: 0;
 }
