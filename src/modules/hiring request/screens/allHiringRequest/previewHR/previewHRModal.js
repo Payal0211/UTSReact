@@ -24,7 +24,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import moment from 'moment-timezone';
 import infoIcon from "assets/svg/infoIcon.svg";
 import rightGreen from "assets/svg/rightGreen.svg";
-import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, EngOptions, sanitizeLinks, compensationOptions, industryOptions, seriesOptions, monthOptions, foundedIn, formatSkill } from "./services/commonUsedVar";
+import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, EngOptions, sanitizeLinks, compensationOptions, industryOptions, seriesOptions, monthOptions, foundedIn, formatSkill ,isEmptyOrWhitespace} from "./services/commonUsedVar";
 // import { DeleteCultureImage, DeleteYoutubeLink, UpdateDetails, getCompanyPerks } from "../../../services/companyProfileApi";
 
 import deleteIcon from "assets/svg/delete.svg";
@@ -2735,8 +2735,17 @@ function PreviewHRModal({
                         </h6>
 
                         {isPrerequisites ?
-                          <div className="row formFields Filescopypaste__area">
+                          <div className="row formFields Filescopypaste__area customPlaceHolder">
                             <div className="col-12">
+                            {isEmptyOrWhitespace(prerequisites) && 
+                            <div className="placeHolderText">
+                                <p>Ex:</p>
+                                <ul>
+                                    <li>Seeking candidates with startup experience, preferably from a fast-paced and agile environment.</li>
+                                    <li>Targeting candidates with a background from [Specific Company Name], where they developed [Desirable Skills or Experience]</li>
+                                    <li>Looking for candidates who have hands-on experience working with [Specific Tech Environment, e.g. cloud-native, DevOps, etc.], preferably in a similar industry/sector.</li>
+                                </ul>
+                            </div>}  
                               <ReactQuill
                                 theme="snow"
                                 className="heightSize"
@@ -2938,9 +2947,9 @@ function PreviewHRModal({
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-0">
-                <label>Company Linkedin</label>
+                <label>Company Linkedin URL</label>
                 <input type="text"
-                  placeholder="Enter company linkedin"
+                  placeholder="https://www.linkedin.com/company/companyname"
                   className="form-control" value={companyLinkedInValue}
                   onChange={(e) => setCompanyLinkedInValue(e.target.value)} />
                 <div className="buttonEditGroup">

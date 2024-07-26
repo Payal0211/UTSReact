@@ -21,6 +21,13 @@ export const trackingDetailsAPI = () => {
     }
 };
 
+export const isEmptyOrWhitespace = (str) => {
+  const div = document.createElement('div');
+  div.innerHTML = str;
+  const text = div.textContent || div.innerText || '';
+  return text.trim().length === 0;
+};
+
 export const mapCountryToCurrency = (country) => {
   const countryCurrencyMap = {
     'GB': 'GBP', 

@@ -372,7 +372,7 @@ function ViewClientDetails() {
 									{viewDetails?.clientDetails?.geo ? viewDetails?.clientDetails?.geo : "NA"}
 								</li>
 								<li>
-									<span>Company Linkedin: </span>
+									<span>Company Linkedin URL: </span>
                                     {viewDetails?.clientDetails?.companyLinkedIn ? <a
 										href={viewDetails?.clientDetails?.companyLinkedIn}
 										target="_blank"
