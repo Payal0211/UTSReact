@@ -130,19 +130,19 @@ const DemandFunnelScreen = () => {
 						.join('-'),
 				},
 			});
-			getDemandFunnelListingHandler({
-				...tableFilteredState,
-				startDate: new Date(start)
-					.toLocaleDateString('en-UK')
-					.split('/')
-					.reverse()
-					.join('-'),
-				endDate: new Date(end)
-					.toLocaleDateString('en-UK')
-					.split('/')
-					.reverse()
-					.join('-'),
-			});
+			// getDemandFunnelListingHandler({
+			// 	...tableFilteredState,
+			// 	startDate: new Date(start)
+			// 		.toLocaleDateString('en-UK')
+			// 		.split('/')
+			// 		.reverse()
+			// 		.join('-'),
+			// 	endDate: new Date(end)
+			// 		.toLocaleDateString('en-UK')
+			// 		.split('/')
+			// 		.reverse()
+			// 		.join('-'),
+			// });
 		}
 	};
 	const onRemoveFilters = () => {
@@ -288,7 +288,7 @@ const DemandFunnelScreen = () => {
 		onRemoveFilters()
 		getReportFilterHandler()
 		setIsFocusedRole(false)
-		getDemandFunnelListingHandler(reqFilter);
+		// getDemandFunnelListingHandler(reqFilter);
 	}, [
 		setAppliedFilters,
 		setCheckedState,
