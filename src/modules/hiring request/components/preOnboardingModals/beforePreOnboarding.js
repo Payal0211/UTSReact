@@ -282,6 +282,7 @@ export default function BeforePreOnboarding({
 
   const fatchpreOnBoardInfo = useCallback(
     async () => {
+      setIsLoading(true);
       if(talentDeteils?.OnBoardId){
         let req = {
           OnboardID: talentDeteils?.OnBoardId,
@@ -459,6 +460,7 @@ export default function BeforePreOnboarding({
         setValue("engagementreplacement", _filterData[0]);
       }
     }
+    setIsLoading(false);
     },
     [setValue,talentDeteils, HRID]
   );

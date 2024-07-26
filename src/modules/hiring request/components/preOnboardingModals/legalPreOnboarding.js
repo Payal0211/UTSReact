@@ -60,6 +60,7 @@ export default function LegalPreOnboarding({
 
   const fatchduringOnBoardInfo = useCallback(
     async (req) => {
+      setIsLoading(true);
       let result = await OnboardDAO.getDuringOnBoardInfoDAO(req);
       if (result?.statusCode === HTTPStatusCode.OK) {
         let data = result.responseBody.details;
@@ -91,6 +92,7 @@ export default function LegalPreOnboarding({
         setControlledEngRep(_filterData[0]?.value);
         setValue("engagementreplacement", _filterData[0]);
       }
+      setIsLoading(false);
     },
     [setValue]
   );
