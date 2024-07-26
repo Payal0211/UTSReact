@@ -1086,6 +1086,11 @@ table {
   height: 50px;
   padding-left: 16px;
 }
+
+.ant-select.ant-select-multiple .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input{padding-left:0}
+
+.ant-select.ant-select-multiple .ant-select-selector .ant-select-selection-placeholder{left: 16px;right: 16px;}
+
 /* [class*="LinkTableWrap"] .ant-table-tbody > tr > td {
   padding: 10px 12px !important;
 }

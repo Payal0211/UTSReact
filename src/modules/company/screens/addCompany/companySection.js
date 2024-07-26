@@ -465,7 +465,7 @@ function CompanySection({
                       label="Company Linkedin URL"
                       name={"companyLinkedinURL"}
                       type={InputType.TEXT}
-                      placeholder="Add Company Linkedin URL"
+                      placeholder="https://www.linkedin.com/company/companyname"
                       required
                     />
                   </div>

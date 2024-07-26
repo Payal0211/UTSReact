@@ -3397,7 +3397,7 @@ function PreviewClientModal({
             setErrorsData({ "linkedInProfile": "" });
           }}
           type={InputType.TEXT}
-          placeholder="Company Linkedin URL"
+          placeholder="https://www.linkedin.com/company/companyname"
         />
         {errorsData.linkedInProfile && (
           <span style={{ color: "red" }}>

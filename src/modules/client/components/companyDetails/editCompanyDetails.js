@@ -1018,10 +1018,10 @@ const EditCompanyDetails = ({
                     //   }											
                   }
                 }}
-                label="Company Linkedin"
+                label="Company Linkedin URL"
                 name={"companyLinkedinProfile"}
                 type={InputType.TEXT}
-                placeholder="Enter Company Linkedin "
+                placeholder="https://www.linkedin.com/company/companyname"
                 required
               />
             </div>
