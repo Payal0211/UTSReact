@@ -1164,9 +1164,9 @@ const calcelMember = () =>{
                       ))
                       .slice(0, 10)
                   ) : (
-                    <h3 className={HRDetailStyle.titleLeft}>
-                      No HR Found for Handover
-                    </h3>
+                    <>
+                      <div className={HRDetailStyle.colMd12}><div className={HRDetailStyle.assignmentNotAssign}>No HR Found for Handover</div></div>
+                    </>
                   )}
                   </> : <div className={HRDetailStyle.colMd12}><div className={HRDetailStyle.assignmentNotAssign}>All the current HRs will not be assigned to any AMs</div></div>}
                 </div>
