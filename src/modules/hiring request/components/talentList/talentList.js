@@ -594,7 +594,8 @@ const TalentList = ({
 				</div>}
 				
 				<h4>{note?.EmployeeName}  {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/} </h4>
-				<p>{note.Notes.length > 100 ? `${note.Notes.substring(0, 100)}...` : note.Notes} {note.Notes.length > 100 && <span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span>}</p>
+				{note.Notes.length > 100 ? <p>{`${note.Notes.substring(0, 100)}...`}<span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span></p> : <p dangerouslySetInnerHTML={{__html:note.Notes }}></p>}
+				{/* <p>{note.Notes.length > 100 ? `${note.Notes.substring(0, 100)}...` : note.Notes} {note.Notes.length > 100 && <span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span>}</p> */}
 			</div>
 			}) }
 			{allNotes.length > 2 && <div className={TalentListStyle.addNoteMore}>

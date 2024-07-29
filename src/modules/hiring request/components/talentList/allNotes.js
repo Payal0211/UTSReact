@@ -28,7 +28,7 @@ function AllNotes({onClose, allNotes,onEditNote,deleteNote}) {
                     </div>}
                    
                     <h4>{note?.EmployeeName}  {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/}</h4>
-                    <p>{note.Notes}</p>
+                    <p dangerouslySetInnerHTML={{__html:note.Notes}}></p>
                 </div>
                 
                 })}
