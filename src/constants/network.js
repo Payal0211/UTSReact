@@ -305,6 +305,7 @@ export class HiringRequestsAPI {
 	static DELETE_INTERVIEW_DETAILS = 'DeleteInterviewDetails';
 	static CLOSE_HR_VALIDATION = 'CloseHRValidation'; 
 	static CLOSE_HR = 'CloseHR';
+	static CLOSE_HR_WARNING = 'CloseHR_WarningMsg';
 	static REOPEN_HR = 'ReopenHR';
 	static GET_HR_DP_AMOUNT_DETAILS = 'GetHRDPAmountDetails';
 	static UPDATE_DP_AMOUNT = 'UpdateDPAmount';
