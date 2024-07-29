@@ -25,6 +25,7 @@ const CloseHRModal = ({
   // console.log("HR details", closeHRDetail.HR_Id);
   const [valueInfo, setValueInfo] = useState("");
   const [btnText, setBtnText] = useState("");
+  const [warning, setWarning] = useState({show:false,msg:""});
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -45,14 +46,32 @@ const CloseHRModal = ({
     async (hrID) => {
       setIsLoading(true);
       const response = await hiringRequestDAO.getCloseHRValidation(hrID);
+      const responsewarning = await hiringRequestDAO.getCloseHRWarning(hrID);
 
       if (response?.statusCode === HTTPStatusCode.OK) {
         let HRResult = response.responseBody.details.close_HR_Result[0];
         setValueInfo(HRResult?.message);
         setBtnText(HRResult?.btnmessage);
+      } 
+
+      if(responsewarning?.statusCode === HTTPStatusCode.OK){
+      let details = responsewarning.responseBody.details
+      if(details.isWarningMsgNeedToShow){
+        setWarning({
+          show:true,
+          msg: details.warningMsg
+        })
+      }else{
+        setWarning({
+          show:false,
+          msg: ""
+        })
+      }
       }
       setIsLoading(false);
     },
+
+   
     [closeHRDetail.HR_Id]
   );
 
@@ -67,6 +86,7 @@ const CloseHRModal = ({
       </div>
 
       <h4 className={closeHRStyle.infoMsg}>{valueInfo}</h4>
+      {warning?.show && <h4 className={closeHRStyle.warningMsg}>{warning.msg}</h4>}
 
       {isLoading ? (
         <SpinLoader />

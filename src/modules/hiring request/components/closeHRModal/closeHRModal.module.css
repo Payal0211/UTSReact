@@ -89,6 +89,13 @@
   margin: 0 0 20px;
 }
 
+.warningMsg {
+  color: #E03A3A;
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0 0 20px;
+}
+
 .counterFieldGroup {
   position: relative;
 }
