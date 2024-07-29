@@ -100,15 +100,15 @@ const CloneHRModal = ({
             <Checkbox checked={isPostaJob} onClick={()=> setIsPostaJob(prev=> !prev)}>
             <span style={{fontWeight:500}}>Credit per post a job</span>
 						</Checkbox>	
-            <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)}>
+            {/* <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)}>
             <span style={{fontWeight:500}}>Credit per profile view</span>
-						</Checkbox>	
+						</Checkbox>	 */}
             </div>
             {isErrors&& (!isPostaJob && !isProfileView) && <p className={CloneHRModalStyle.error}>Please select Option</p>}
 </div> }
 
 
-{userCompanyTypeID === 2 && isProfileView && <div className={CloneHRModalStyle.colMd12} style={{marginBottom: '32px'}}>
+{/* {userCompanyTypeID === 2 && isProfileView && <div className={CloneHRModalStyle.colMd12} style={{marginBottom: '32px'}}>
 <Radio.Group
                   onChange={e=> {setIsVettedProfile(e.target.value)}}
                   value={isVettedProfile}
@@ -116,7 +116,7 @@ const CloneHRModal = ({
                   <Radio value={false}>Fast Profile</Radio>
                   <Radio value={true}>Vetted Profile</Radio>
                 </Radio.Group>
-</div> }
+</div> } */}
 
 {userCompanyTypeID === 1 && <div className={CloneHRModalStyle.colMd12}>
 			<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 

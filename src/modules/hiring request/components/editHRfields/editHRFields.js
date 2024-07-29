@@ -2194,9 +2194,9 @@ const EditHRFields = ({
                           <Checkbox checked={isPostaJob} disabled={true} onClick={()=> setIsPostaJob(prev=> !prev)}>
                           Credit per post a job
                           </Checkbox>	
-                          <Checkbox checked={isProfileView} disabled={true} onClick={()=> setIsProfileView(prev=> !prev)}>
+                          {/* <Checkbox checked={isProfileView} disabled={true} onClick={()=> setIsProfileView(prev=> !prev)}>
                           Credit per profile view
-                          </Checkbox>	
+                          </Checkbox>	 */}
                           </div>
                           {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
                 </div> }

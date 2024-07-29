@@ -192,6 +192,12 @@ function CompanySection({
     setShowFetchAIButton(false);
     clearErrors("companyURL");
     setIsViewCompanyurl(false);
+    if(!watch("companyName")){
+      setError("companyURL", {
+        type: "manual",
+        message: 'Company Name / Website URL can not be blank to fetch the company logo',
+      });
+    }
     if (watch("companyURL")) {
       if (ValidateFieldURL(watch("companyURL"), "website")) {
         if (companyDetails?.website === watch("companyURL")) {
@@ -404,7 +410,7 @@ function CompanySection({
                           placeholder="Enter website url"
                           required
                           onBlurHandler={() => validateCompanyURL()}
-                          disabled={disableCompanyURL}
+                          // disabled={disableCompanyURL}
                         />
                         <div
                           className={AddNewClientStyle.formPanelAction}

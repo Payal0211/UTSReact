@@ -46,6 +46,7 @@ import DOMPurify from "dompurify";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import JobDescriptionComponent from "../jdComponent/jdComponent";
 import ReactQuill from 'react-quill';
+import { isEmptyOrWhitespace } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -2534,9 +2535,9 @@ const HRFields = ({
           {!hidePostJob && <Checkbox checked={isPostaJob} onClick={()=> setIsPostaJob(prev=> !prev)} disabled={disablePostJob}>
             Credit per post a job
 						</Checkbox>}  	
-          {!hideProfileView && <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)} disabled={disableProfileView}>
+          {/* {!hideProfileView && <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)} disabled={disableProfileView}>
             Credit per profile view
-						</Checkbox>	}  
+						</Checkbox>	}   */}
             </div>
             {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
             {isCreateHRDisable && <p className={HRFieldStyle.error} style={{marginTop:'5px'}}>* Please purchase the subcription package, you do not have enough credit balance</p> }
@@ -3850,11 +3851,20 @@ const HRFields = ({
 </div>
 
 <div className={HRFieldStyle.colMd12}>
-                  <div className={HRFieldStyle.formGroup}>
+                  <div className={`${HRFieldStyle.formGroup} customPlaceHolder`}>
                   <label>
                   Highlight any key parameters or things to consider for finding the best match talents
 								{/* <span className={HRFieldStyle.reqField}>*</span> */}
-							</label>
+							</label> 
+              {isEmptyOrWhitespace(watch('parametersHighlight')) && 
+                            <div className="placeHolderText">
+                                <p>Ex:</p>
+                                <ul>
+                                    <li>Seeking candidates with startup experience, preferably from a fast-paced and agile environment.</li>
+                                    <li>Targeting candidates with a background from [Specific Company Name], where they developed [Desirable Skills or Experience]</li>
+                                    <li>Looking for candidates who have hands-on experience working with [Specific Tech Environment, e.g. cloud-native, DevOps, etc.], preferably in a similar industry/sector.</li>
+                                </ul>
+                            </div>}        
 							<ReactQuill
 								register={register}
 								setValue={setValue}

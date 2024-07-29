@@ -392,7 +392,7 @@ function EngagementSection({
                         >
                           Credit per post a job.
                         </Checkbox>
-                        <Checkbox
+                        {/* <Checkbox
                           name="IsProfileView"
                           checked={IsChecked?.isProfileView}
                           onChange={(e) => {
@@ -405,7 +405,7 @@ function EngagementSection({
                           }}
                         >
                           Credit per profile view.
-                        </Checkbox>
+                        </Checkbox> */}
                       </div>
                       {creditError && (
                         <p className={AddNewClientStyle.error}>
@@ -433,7 +433,7 @@ function EngagementSection({
                           </div>
                         ) }
 
-                        {IsChecked?.isProfileView && (
+                        {/* {IsChecked?.isProfileView && (
                           <>
                             <div className={AddNewClientStyle.colMd6}>
                               <HRInputField
@@ -472,7 +472,7 @@ function EngagementSection({
                               />
                             </div>
                           </>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>
