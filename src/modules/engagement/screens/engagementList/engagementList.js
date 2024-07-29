@@ -508,14 +508,14 @@ const EngagementList = () => {
 					searchYear: year,
 				},
 			});
-			handleHRRequest({
-				...tableFilteredState,
-				searchText: searchText,
-				filterFieldsEngagement: {...tableFilteredState.filterFieldsEngagement ,
-					searchMonth: month,
-					searchYear: year,
-				},
-			});
+			// handleHRRequest({
+			// 	...tableFilteredState,
+			// 	searchText: searchText,
+			// 	filterFieldsEngagement: {...tableFilteredState.filterFieldsEngagement ,
+			// 		searchMonth: month,
+			// 		searchYear: year,
+			// 	},
+			// });
 		}
 		// if (start && end) {
 		// 	setTableFilteredState({
@@ -583,7 +583,7 @@ const EngagementList = () => {
 			...tableFilteredState,
 			filterFieldsEngagement: defaultFilters,
 		};
-		handleHRRequest(reqFilter);
+		// handleHRRequest(reqFilter);
 		onRemoveHRFilters();
 		setSearchText('')
 		setStartDate(new Date());

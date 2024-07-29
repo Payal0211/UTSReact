@@ -900,7 +900,7 @@ function PreviewHRModal({
       setIsLoading(true)
       let result = await updateJobPostDetail(payload);
       // console.log('res for budget', result);
-      if (result.statusCode === 200) {
+      if (result?.statusCode === 200) {
         setisEditBudget(false);
         messageApi.open({
           type: "success",

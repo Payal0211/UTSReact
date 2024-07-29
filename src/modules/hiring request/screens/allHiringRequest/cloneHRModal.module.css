@@ -14,6 +14,7 @@
   color: #676767;
   margin: 0 0 8px;
   display: inline-block;
+  display: flex;
 }
 
 .formPanelAction {
@@ -61,5 +62,6 @@
   }
   .cloneHRConfContent label{
     font-size: 12px;
+    display: flex;
   }
 }

@@ -254,13 +254,13 @@ export default function ViewCompanyDetails() {
                                 >
                                   Credit per post a job.
                                 </Checkbox>
-                                <Checkbox
+                                {/* <Checkbox
                                   name="IsProfileView"
                                   checked={companyDetails?.isProfileView}
                                   disabled={true}
                                 >
                                   Credit per profile view.
-                                </Checkbox>
+                                </Checkbox> */}
                               </li>
                             )}
 
