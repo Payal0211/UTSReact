@@ -335,6 +335,42 @@ export const engagementRequestDAO = {
 			);
 		}
 	},
+	cancelEngagementRequestDAO: async function (talentDetails) {
+		try {
+			const changeContractEndDateResponse =
+				await EngagementRequestAPI.cancelEngagementRequest(talentDetails);
+			if (changeContractEndDateResponse) {
+				const statusCode = changeContractEndDateResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = changeContractEndDateResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return changeContractEndDateResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return changeContractEndDateResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.cancelEngagementRequestDAO',
+			);
+		}
+	},
 	saveInvoiceDetailsRequestDAO: async function (talentDetails) {
 		try {
 			const saveInvoiceResponse =

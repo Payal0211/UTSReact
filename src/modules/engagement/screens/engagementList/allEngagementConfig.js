@@ -201,6 +201,11 @@ export const allEngagementConfig = {
 							key: 'endEngagement',
 							IsEnabled: true,
 						});
+						listItemData.push({
+							label: 'Cancel Engagement',
+							key: 'cancelEngagement',
+							IsEnabled: true,
+						});
 					}
 					if (
 						param?.talentLegal_StatusID === 2 &&
@@ -250,6 +255,14 @@ export const allEngagementConfig = {
 										setEngagementModal({
 											...getEngagementModal,
 											engagementEnd: true,
+										});
+										setFilteredData(param);
+										break;
+									}
+									case 'Cancel Engagement': {
+										setEngagementModal({
+											...getEngagementModal,
+											engagementCancel: true,
 										});
 										setFilteredData(param);
 										break;

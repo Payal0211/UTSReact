@@ -47,6 +47,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 import EditAllBRPR from '../editAllBRPR/editAllBRPR';
 import moment from 'moment';
 import LogoLoader from 'shared/components/loader/logoLoader';
+import EngagementCancel from '../cancelEngagement/cancelEngagement';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
@@ -111,6 +112,7 @@ const EngagementList = () => {
 		engagementEnd: false,
 		engagementInvoice: false,
 		engagementEditAllBillRateAndPayRate:false,
+		engagementCancel:false
 	});
 	const [getHRAndEngagementId, setHRAndEngagementId] = useState({
 		hrNumber: '',
@@ -1017,6 +1019,34 @@ const EngagementList = () => {
 								setEngagementModal({
 									...getEngagementModal,
 									engagementEnd: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
+					{/** ============ MODAL FOR CLOSE END ================ */}
+					{getEngagementModal.engagementCancel && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementCancel}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementCancel: false,
+							})
+						}>
+						<EngagementCancel
+							engagementListHandler={() => handleHRRequest({...tableFilteredState, searchText: searchText})}
+							talentInfo={filteredData}
+							lostReasons={filtersList?.onBoardingLostReasons}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementCancel: false,
 								})
 							}
 						/>

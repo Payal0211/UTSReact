@@ -152,6 +152,7 @@ export class TalentOnboardStatus {
 	static REPLACE_TALENT = 'Replace Talent';
 	static CLONE_HR = 'Clone HR';
 	static CONFIRM_SLOT = 'Confirm Slot';
+	static CANCEL_ENGAGEMENT = 'Cancel Engagement';
 	static SUBMIT_CLIENT_FEEDBACK = 'Submit Client Feedback';
 	static EDIT_CLIENT_FEEDBACK = 'Edit Client Feedback';
 	static ANOTHER_ROUND_INTERVIEW = 'Another Round Interview';
