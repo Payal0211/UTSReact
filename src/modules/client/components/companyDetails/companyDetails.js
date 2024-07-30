@@ -653,13 +653,13 @@ const CompanyDetails = ({
 										checked={IsChecked?.isPostaJob} 
 										onChange={(e)=>{setIsChecked({...IsChecked,isPostaJob:e.target.checked});setCreditError(false)}}>Credit per post a job.
 									</Checkbox>
-									<Checkbox name="IsProfileView" 
+									{/* <Checkbox name="IsProfileView" 
 										checked={IsChecked?.isProfileView} 
 										onChange={(e)=>{setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false);setProfileSharingOption(null);setProfileSharingOptionError(false)}}>Credit per profile view.
-									</Checkbox>
+									</Checkbox> */}
 								</div>
 							{creditError && <p  style={{marginBottom:'0px'}} className={CompanyDetailsStyle.error}>*Please select option</p>}
-							{IsChecked?.isProfileView && 
+							{/* {IsChecked?.isProfileView && 
 							<div style={{display:'flex',flexDirection:'column',marginBottom:'16px',marginLeft: '188px',marginTop:"19px"}}> 
 											<label style={{marginBottom:"12px"}}>
 										Profile Sharing Options
@@ -677,7 +677,7 @@ const CompanyDetails = ({
 									</Radio.Group>
 									 {profileSharingOptionError&&<p  style={{marginTop:'6px',marginBottom:'0px'}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}										
 							</div>	
-						}
+						} */}
 								</div>												
 							</div>
 						</div>

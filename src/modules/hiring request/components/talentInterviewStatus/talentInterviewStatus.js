@@ -30,9 +30,10 @@ export default function TalentInterviewStatus({
             <div>
               Interview Status: <span>{item?.InterviewStatus}</span>
             </div>
-            {(item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
-            item?.ClientFeedback === InterviewFeedbackStatus.REJECTED || 
-            item?.ClientFeedback === InterviewFeedbackStatus.NOHIRE ) && (
+            {(
+            //   item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
+            (item?.ClientFeedback === InterviewFeedbackStatus.REJECTED || 
+            item?.ClientFeedback === InterviewFeedbackStatus.NOHIRE) && item?.TalentStatusID_BasedOnHR === 7 ) && (
             <span
               onClick={() => {
                 setTalentIndex(item?.TalentID);
@@ -50,9 +51,7 @@ export default function TalentInterviewStatus({
             )}
           </div>
         </div>
-      ) : item?.Status === "Rejected" ||
-        item?.Status === "On Hold" ||
-        item?.Status === "Cancelled" ? (
+      ) : item?.Status === "Rejected" || item?.Status === "NoHire"  ? (
         <div
           className={TalentListStyle.statusReject}
           style={{ backgroundColor: item?.InterviewStatusCode }}
@@ -61,11 +60,7 @@ export default function TalentInterviewStatus({
             <div>
              Profile {item?.Status} Reason:{" "}
               <span>
-                {item?.Status === "Cancelled"
-                  ? item?.CancelledReason
-                  : item?.Status === "On Hold"
-                  ? item?.OnHoldReason
-                  : item?.RejectedReason}
+                {item?.RejectedReason}
               </span>
             </div>
             <span
@@ -92,8 +87,9 @@ export default function TalentInterviewStatus({
           <div>
             Interview Status: <span>{item?.InterviewStatus === "" ? "NA" : item?.InterviewStatus}</span>
           </div>
-          {(item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
-            item?.ClientFeedback === InterviewFeedbackStatus.REJECTED || item?.ClientFeedback === InterviewFeedbackStatus.NOHIRE) && (
+          {(
+            // item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
+            (item?.ClientFeedback === InterviewFeedbackStatus.REJECTED || item?.ClientFeedback === InterviewFeedbackStatus.NOHIRE) && item?.TalentStatusID_BasedOnHR === 7  ) && (
             <span
               onClick={() => {
                 setTalentIndex(item?.TalentID);

@@ -108,13 +108,13 @@ const EngagementOnboard = ({
                 ? getOnboardFormDetails?.noOfEmployee
                 : "NA"}
             </li>
-            <li>
+            {/* <li>
               <span>Client POC Name : </span>
 
               {getOnboardFormDetails?.client_POC_Name
                 ? getOnboardFormDetails?.client_POC_Name
                 : "NA"}
-            </li>
+            </li> */}
             <li>
               <span>Client POC Email : </span>
 
@@ -191,19 +191,19 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
 
-            <li>
+            {/* <li>
               <span>Deal Source : </span>
               {getOnboardFormDetails?.dealSource
                 ? getOnboardFormDetails?.dealSource
                 : "NA"}
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <span>Deal Owner : </span>
               {getOnboardFormDetails?.deal_Owner
                 ? getOnboardFormDetails?.deal_Owner
                 : "NA"}
-            </li>
+            </li> */}
 
             {/* <li>
 							<span>Client Name:</span>{' '}
@@ -314,6 +314,8 @@ const EngagementOnboard = ({
 						</li> */}
           </ul>
         </div>
+
+        {console.log(getOnboardFormDetails,"getOnboardFormDetails")}
 
         <div className={allengagementOnboardStyles.engagementContent}>
           <h2>Hiring Request Details</h2>

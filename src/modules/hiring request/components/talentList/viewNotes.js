@@ -15,7 +15,7 @@ function ViewNotes({onClose,viewNoteData,showAll,deleteNote,onEditNote}) {
                         <button type="button" className={AddNotesStyle.addNoteBtn} title='Delete' onClick={()=> deleteNote(viewNoteData)}><DeleteIcon /></button>
                     </div>
                     <h4>{viewNoteData?.EmployeeName}  {moment(viewNoteData.Added_Date).format('DD MMM YYYY')}</h4>
-                    <p>{viewNoteData.Notes}</p>
+                    <p dangerouslySetInnerHTML={{__html:viewNoteData.Notes}}></p>
                 </div>
             </div>
 

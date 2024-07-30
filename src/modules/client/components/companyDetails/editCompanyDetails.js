@@ -870,12 +870,12 @@ const EditCompanyDetails = ({
                       setIsChecked({...IsChecked,isPostaJob:e.target.checked});setCreditError(false)}}
                     >Credit per post a job.
                   </Checkbox>
-									<Checkbox name="IsProfileView" 
+									{/* <Checkbox name="IsProfileView" 
                     checked={IsChecked?.isProfileView} 
                     onChange={(e)=>{
                       setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false);setProfileSharingOption(null);setProfileSharingOptionError(false);}}>
                       Credit per profile view.
-                  </Checkbox>
+                  </Checkbox> */}
 							  </div>
                 {creditError && <p className={CompanyDetailsStyle.error}>*Please select option</p>}
                 {/* {IsChecked?.isProfileView && 
@@ -913,7 +913,7 @@ const EditCompanyDetails = ({
                          />
                        </div> : <div className={CompanyDetailsStyle.colMd4}></div>}
                  
-                      {IsChecked?.isProfileView && (
+                      {/* {IsChecked?.isProfileView && (
                       <>
                         <div className={CompanyDetailsStyle.colMd4}>
                         <HRInputField
@@ -943,7 +943,7 @@ const EditCompanyDetails = ({
                               }}
                             />
                        </div></>
-                       )}
+                       )} */}
                 </div>
                 
 								</div>												
@@ -1018,10 +1018,10 @@ const EditCompanyDetails = ({
                     //   }											
                   }
                 }}
-                label="Company Linkedin"
+                label="Company Linkedin URL"
                 name={"companyLinkedinProfile"}
                 type={InputType.TEXT}
-                placeholder="Enter Company Linkedin "
+                placeholder="https://www.linkedin.com/company/companyname"
                 required
               />
             </div>

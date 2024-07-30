@@ -141,6 +141,7 @@ export class EngagementAPI {
 	static SAVE_BILL_RATE_PAY_RATE = 'SaveBillRatePayRate';
 	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
 	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
+	static CANCEL_ENGAGEMENT = 'CancelEngagement'
 	static CALCULATE_ACTUAL_NR_BR_PR = 'Calculate_ActualNR_From_BRPR';
 	static UPLOAD_FILE = 'UploadFile';
 	static GET_TSC_USERS_DETAIL = 'GetTSCUsersDetail';
@@ -305,6 +306,7 @@ export class HiringRequestsAPI {
 	static DELETE_INTERVIEW_DETAILS = 'DeleteInterviewDetails';
 	static CLOSE_HR_VALIDATION = 'CloseHRValidation'; 
 	static CLOSE_HR = 'CloseHR';
+	static CLOSE_HR_WARNING = 'CloseHR_WarningMsg';
 	static REOPEN_HR = 'ReopenHR';
 	static GET_HR_DP_AMOUNT_DETAILS = 'GetHRDPAmountDetails';
 	static UPDATE_DP_AMOUNT = 'UpdateDPAmount';

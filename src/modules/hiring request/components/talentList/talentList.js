@@ -63,6 +63,7 @@ import ViewNotes from './viewNotes';
 import EditNotes from './editNotes';
 import moment from 'moment';
 import { InterviewDAO } from 'core/interview/interviewDAO';
+import EngagementCancel from 'modules/engagement/screens/cancelEngagement/cancelEngagement';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -225,6 +226,7 @@ const TalentList = ({
 
 	const [getBillRateInfo, setBillRateInfo] = useState({});
 
+	const [showEngagementCancel, setShowEngagementCancel] = useState(false)
 	const [showengagementOnboard, setShowEngagementOnboard] = useState(false);
 	const [getHRAndEngagementId, setHRAndEngagementId] = useState({
 		hrNumber: '',
@@ -594,7 +596,8 @@ const TalentList = ({
 				</div>}
 				
 				<h4>{note?.EmployeeName}  {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/} </h4>
-				<p>{note.Notes.length > 100 ? `${note.Notes.substring(0, 100)}...` : note.Notes} {note.Notes.length > 100 && <span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span>}</p>
+				{note.Notes.length > 100 ? <p>{`${note.Notes.substring(0, 100)}...`}<span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span></p> : <p dangerouslySetInnerHTML={{__html:note.Notes }}></p>}
+				{/* <p>{note.Notes.length > 100 ? `${note.Notes.substring(0, 100)}...` : note.Notes} {note.Notes.length > 100 && <span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span>}</p> */}
 			</div>
 			}) }
 			{allNotes.length > 2 && <div className={TalentListStyle.addNoteMore}>
@@ -1244,7 +1247,8 @@ const TalentList = ({
 										}}
 									/>
 									{talentCTA[ROW_SIZE * pageIndex + listIndex]?.cTAInfoList
-										?.length > 0 && (
+										?.length > 0 && (talentCTA?.[ROW_SIZE * pageIndex + listIndex]
+											?.cTAInfoList[0]?.label === TalentOnboardStatus.CANCEL_ENGAGEMENT ? item?.IsShownTalentStatus === 1 ? true : false : true ) && (
 											<div
 												// style={{
 												// 	position: 'absolute',
@@ -1385,6 +1389,15 @@ const TalentList = ({
 																setActionKey(key)
 																setLegalTalentOnboardModal(true);
 																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.CANCEL_ENGAGEMENT: {
+																setShowEngagementCancel(true)
+																setTalentIndex(item?.TalentID);
+																// let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																// setActionKey(key)
+																// setLegalTalentOnboardModal(true);
+																// setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
@@ -1578,6 +1591,28 @@ const TalentList = ({
 				// talentInfo={filterTalentID}
 				/>
 			</Modal>
+
+			{showEngagementCancel && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={showEngagementCancel}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setShowEngagementCancel(false)
+						}>
+						<EngagementCancel
+							engagementListHandler={() => callAPI(hrId)}
+							talentInfo={filterTalentID}
+							// lostReasons={filtersList?.onBoardingLostReasons}
+							closeModal={() =>
+								setShowEngagementCancel(false)
+							}
+						/>
+					</Modal>
+				)}
 
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
 

@@ -2684,7 +2684,7 @@ function PreviewClientModal({
                                 >
                                   Credit per post a job.
                                 </Checkbox>
-                                <Checkbox
+                                {/* <Checkbox
                                   name="IsProfileView"
                                   checked={IsChecked?.isProfileView}
                                   onChange={(e) => {
@@ -2696,7 +2696,7 @@ function PreviewClientModal({
                                   }}
                                 >
                                   Credit per profile view.
-                                </Checkbox>
+                                </Checkbox> */}
                               </div>
                               {creditError && (
                                 <p className={previewClientStyle.error}>
@@ -2726,7 +2726,7 @@ function PreviewClientModal({
                                   </div>
                                 )}
 
-                                {IsChecked?.isProfileView && (
+                                {/* {IsChecked?.isProfileView && (
                                   <>
                                     <div className={previewClientStyle.colMd6}>
                                       <HRInputField
@@ -2769,7 +2769,7 @@ function PreviewClientModal({
                                       />
                                     </div>
                                   </>
-                                )}
+                                )} */}
                               </div>
                             </div>
                           </div>
@@ -3397,7 +3397,7 @@ function PreviewClientModal({
             setErrorsData({ "linkedInProfile": "" });
           }}
           type={InputType.TEXT}
-          placeholder="Company Linkedin URL"
+          placeholder="https://www.linkedin.com/company/companyname"
         />
         {errorsData.linkedInProfile && (
           <span style={{ color: "red" }}>

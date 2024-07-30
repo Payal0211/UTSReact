@@ -487,7 +487,7 @@ const UserDetails = () => {
                     >
                       Credit per post a job.
                     </Checkbox>
-                    <Checkbox
+                    {/* <Checkbox
                       name="IsProfileView"
                       checked={IsChecked?.IsProfileView}
                       onChange={(e) => {
@@ -501,7 +501,7 @@ const UserDetails = () => {
                       }}
                     >
                       Credit per profile view.
-                    </Checkbox>
+                    </Checkbox> */}
                   </div> 
                    {error && (
                     <p className={userDetails.error}>
@@ -522,7 +522,7 @@ const UserDetails = () => {
                          />
                        </div>
                   )}
-                        {IsChecked?.IsProfileView && (
+                        {/* {IsChecked?.IsProfileView && (
                           <>
                         <div className={userDetails.colMd6}>
                        <HRInputField
@@ -545,7 +545,7 @@ const UserDetails = () => {
                             placeholder="Enter Non Vetted Profile Credit"
                             required
                           />
-                       </div></>)}
+                       </div></>)} */}
                        </div>
                   {/* {IsChecked?.IsProfileView && (
                     <div

@@ -93,10 +93,10 @@ export default function DebrefCompanyDetails({ register, errors, watch, getHRdet
                       }
                 }
                 }}
-                label={"Company Linkedin"}
+                label={"Company Linkedin URL"}
                 name="companyLinkedin"
                 type={InputType.TEXT}
-                placeholder="Enter company Linkedin"
+                placeholder="https://www.linkedin.com/company/companyname"
               />
             </div>
           </div>
