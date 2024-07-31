@@ -313,6 +313,16 @@ cursor: default;
     cursor: pointer;
 }
 
+
+.customPlaceHolderHR{
+    position: relative;
+}
+
+.customPlaceHolderHR [class^="placeHolderText"]{
+    top: 82px;
+    left: 16px;
+}
+
 @media screen and (max-width: 1440px) {
     .partOne {
         padding-top: 40px;

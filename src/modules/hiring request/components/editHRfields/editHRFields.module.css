@@ -285,6 +285,17 @@
     cursor: pointer;
 }
 
+
+.customPlaceHolderHR{
+    position: relative;
+}
+
+.customPlaceHolderHR [class^="placeHolderText"]{
+    top: 82px;
+    left: 16px;
+}
+
+
 .labelForSelect {
     vertical-align: top;
     font-family: 'Montserrat';
