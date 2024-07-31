@@ -157,6 +157,7 @@ export class AllHiringRequestAPI {
 }
 export class MastersAPI {
 	static GET_FIXED_VALUE = 'GetFixedValues';
+	static GET_JOB_TYPES = 'GetJobTypes'
 	static GET_PAYROLL_TYPE = 'GetprgPayrollType';
 	static GET_HR_PRICING_TYPE = 'GetprgHiringTypePricing'
 	static GET_GEO = 'GetGeo';

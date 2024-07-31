@@ -236,7 +236,7 @@ export const hrUtils = {
 			ChildCompanyName: watch('otherChildCompanyName')
 				? watch('otherChildCompanyName')
 				: watch('childCompany')?.value,
-			contractDuration: (companyType?.id === 2 && watch('tempProject')?.value === true)  ? d?.contractDuration?.value === 'Indefinite' ? '-1' : d.contractDuration?.value : !(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 ||watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8 || watch('payrollType')?.id === 4)? "":
+			contractDuration: (companyType?.id === 2 )  ? d?.contractDuration?.value === 'Indefinite' ? '-1' : d.contractDuration?.value : !(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 ||watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8 || watch('payrollType')?.id === 4)? "":
 				draft === SubmitType.SAVE_AS_DRAFT 
 					?  _isNull(watch('contractDuration'))
 						? null
