@@ -2405,53 +2405,6 @@
 
 /* Custom Radio css End*/
 
-.customPlaceHolder {
-    position: relative;
-}
-
-.customPlaceHolder .placeHolderText {
-    font-family: Montserrat;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 17px;
-    color: rgba(107, 107, 107, 0.4);
-    position: absolute;
-    top: 59px;
-    left: 17px;
-    right: 17px;
-    bottom: 16px;
-}
-
-.customPlaceHolder .placeHolderText p,.formFields .customPlaceHolder .placeHolderText p {
-    color: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    margin: 0;
-}
-
-.customPlaceHolder .placeHolderText ul {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-}
-
-.customPlaceHolder .placeHolderText ul li {
-    position: relative;
-    padding-left: 13px;
-}
-
-.customPlaceHolder .placeHolderText ul li:before {
-    content: '';
-    background: rgba(107, 107, 107, 0.4);
-    width: 3px;
-    height: 3px;
-    display: inline-block;
-    border-radius: 20px;
-    position: absolute;
-    top: 7px;
-    left: 2px;
-}
-
 /************************************************/
 .ant-modal-centered {
     z-index: 1000;

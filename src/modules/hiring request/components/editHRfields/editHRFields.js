@@ -45,6 +45,7 @@ import plusSkill from 'assets/svg/plusSkill.svg';
 import DOMPurify from "dompurify";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import ReactQuill from 'react-quill';
+import { isEmptyOrWhitespace } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -3692,11 +3693,20 @@ const EditHRFields = ({
             </div>
 
 <div className={HRFieldStyle.colMd12}>
-                  <div className={HRFieldStyle.formGroup}>
+                  <div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.customPlaceHolderHR} customPlaceHolder`}>
                   <label>
                   Highlight any key parameters or things to consider for finding the best match talents
 								{/* <span className={HRFieldStyle.reqField}>*</span> */}
 							</label>
+              {isEmptyOrWhitespace(watch('parametersHighlight')? watch('parametersHighlight') : '') && 
+                            <div className="placeHolderText">
+                                <p>Ex:</p>
+                                <ul>
+                                    <li>Seeking candidates with startup experience, preferably from a fast-paced and agile environment.</li>
+                                    <li>Targeting candidates with a background from [Specific Company Name], where they developed [Desirable Skills or Experience]</li>
+                                    <li>Looking for candidates who have hands-on experience working with [Specific Tech Environment, e.g. cloud-native, DevOps, etc.], preferably in a similar industry/sector.</li>
+                                </ul>
+                            </div>}        
 							<ReactQuill
 								register={register}
 								setValue={setValue}

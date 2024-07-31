@@ -3856,12 +3856,12 @@ const HRFields = ({
 </div>
 
 <div className={HRFieldStyle.colMd12}>
-                  <div className={`${HRFieldStyle.formGroup} customPlaceHolder`}>
+                  <div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.customPlaceHolderHR} customPlaceHolder`}>
                   <label>
                   Highlight any key parameters or things to consider for finding the best match talents
 								{/* <span className={HRFieldStyle.reqField}>*</span> */}
 							</label> 
-              {isEmptyOrWhitespace(watch('parametersHighlight')) && 
+              {isEmptyOrWhitespace(watch('parametersHighlight')? watch('parametersHighlight') : '') && 
                             <div className="placeHolderText">
                                 <p>Ex:</p>
                                 <ul>
