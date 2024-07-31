@@ -97,6 +97,7 @@ const HRFields = ({
   const inputRef = useRef(null);
   const [getUploadFileData, setUploadFileData] = useState("");
   const [availability, setAvailability] = useState([]);
+  const [JobTypes, setJobTypes] = useState([]);
   const [payRollTypes, setPayRollTypes] = useState([]);
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   // const [timeZonePref, setTimeZonePref] = useState([]);
@@ -541,10 +542,12 @@ const HRFields = ({
   // }, [prefRegion]);
   const getAvailability = useCallback(async () => {
     const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
+    const JobTypesResponse = await MasterDAO.getJobTypesRequestDAO()
     setAvailability(
       availabilityResponse &&
         availabilityResponse.responseBody?.BindHiringAvailability.reverse()
     );
+    setJobTypes(JobTypesResponse && JobTypesResponse?.responseBody)
   }, []);
 
   const getPayrollType = useCallback(async () => {
@@ -1443,9 +1446,11 @@ const HRFields = ({
       if(userCompanyTypeID === 2){
         hrFormDetails.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
         hrFormDetails.hrpocUserID = watch('jobPostUsers') ? watch('jobPostUsers')?.map(item => item.value.toString()) : [];
+        hrFormDetails.jobTypeId = watch('availability')?.id
       }else{
         hrFormDetails.showHRPOCDetailsToTalents = null;
-      hrFormDetails.hrpocUserID = [];
+        hrFormDetails.hrpocUserID = [];
+        hrFormDetails.jobTypeId = 0
       }
         
       
@@ -2592,20 +2597,20 @@ const HRFields = ({
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    label={"Availability"}
+                    label={userCompanyTypeID === 2 ? "Job Type" : "Availability"}
                     defaultValue="Select availability"
-                    options={availability}
+                    options={userCompanyTypeID ===2 ? JobTypes :  availability}
                     name="availability"
                     isError={errors["availability"] && errors["availability"]}
                     required
-                    errorMsg={"Please select the availability."}
+                    errorMsg={`Please select the ${userCompanyTypeID === 2 ? "job type" : "availability"}.`}
                   />
                 </div>
               </div>
 
               {/*  Duration in case of Pay Per Credit */}
               {userCompanyTypeID === 2 && <>
-                  <div className={HRFieldStyle.colMd6}>
+                  {/* <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         controlledValue={controlledTempProjectValue}
@@ -2630,9 +2635,9 @@ const HRFields = ({
                         disabled={controlledAvailabilityValue === 'Part Time' ? true : false}
                       />
                     </div>
-                  </div>
+                  </div> */}
                  
-                  {(watch('availability')?.id !== 2 || watch('tempProject')?.value === true)  &&   <div className={HRFieldStyle.colMd6}>
+                  {(watch('availability')?.id === 2 || watch('availability')?.id === 3 || watch('availability')?.id === 4)  &&   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                     key={'contract Duration for pay per Credit'}
@@ -3503,7 +3508,7 @@ const HRFields = ({
             </div>
 
 
-            {watch("availability")?.value === "Part Time" && (
+            {/* {watch("availability")?.value === "Part Time" && (
               <div className={HRFieldStyle.row}>
                 <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
@@ -3549,7 +3554,7 @@ const HRFields = ({
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
 
             <div className={HRFieldStyle.row}>
               {/* <div className={HRFieldStyle.colMd6}>

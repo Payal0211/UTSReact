@@ -88,6 +88,7 @@ const EditHRFields = ({
 
   const [getUploadFileData, setUploadFileData] = useState("");
   const [availability, setAvailability] = useState([]);
+  const [JobTypes, setJobTypes] = useState([]);
   const [payRollTypes, setPayRollTypes] = useState([]);
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [timeZonePref, setTimeZonePref] = useState([]);
@@ -530,10 +531,13 @@ const EditHRFields = ({
   // }, [prefRegion]);
   const getAvailability = useCallback(async () => {
     const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
+    const JobTypesResponse = await MasterDAO.getJobTypesRequestDAO()
     setAvailability(
       availabilityResponse &&
         availabilityResponse.responseBody?.BindHiringAvailability.reverse()
     );
+    
+    setJobTypes(JobTypesResponse && JobTypesResponse?.responseBody)
   }, []);
 
   const getPayrollType = useCallback(async () => {
@@ -1110,9 +1114,11 @@ const EditHRFields = ({
       if(companyType.id === 2 ){
         hrFormDetails.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
         hrFormDetails.hrpocUserID = watch('jobPostUsers') ? watch('jobPostUsers')?.map(item => item.id.toString()) : []; 
+        hrFormDetails.jobTypeId = watch('availability')?.id
       }else{
         hrFormDetails.showHRPOCDetailsToTalents = null;
         hrFormDetails.hrpocUserID = [];
+        hrFormDetails.jobTypeId = 0
       }
       
 
@@ -1394,10 +1400,21 @@ const EditHRFields = ({
   }, [getHRdetails, salesPerson]);
 
   useEffect(() => {
-    if (getHRdetails?.addHiringRequest?.availability) {
-      const findAvailability = availability.filter(
-        (item) => item?.value === getHRdetails?.addHiringRequest?.availability
+    if (getHRdetails?.addHiringRequest?.availability && availability.length && JobTypes.length) {
+      let findAvailability
+      if(companyType?.id === 2){
+        findAvailability = JobTypes.filter(
+          (item) => {
+            return item?.value.trim() === getHRdetails?.addHiringRequest?.availability.trim()}
+        );
+      }else{
+         findAvailability = availability.filter(
+        (item) => {
+          return item?.value.trim() === getHRdetails?.addHiringRequest?.availability.trim()}
       );
+      }
+      
+    
       setValue("availability", findAvailability[0]);
       setControlledAvailabilityValue(findAvailability[0]?.value);
     }
@@ -2249,36 +2266,37 @@ const EditHRFields = ({
                                     required
                                     errorMsg={'Please select the availability.'}
                                 /> */}
+                                
                     <HRSelectField
                       controlledValue={controlledAvailabilityValue}
                       setControlledValue={val=> {setControlledAvailabilityValue(val);resetField('hiringPricingType');
                       resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
                       setControlledHiringPricingTypeValue("Select Hiring Pricing");resetField('contractDuration');setContractDuration('');
-                      if(companyType?.id === 2){
-                        if(val === 'Part Time'){
-                          setValue('tempProject',{id: undefined, value: true})
-                          setControlledTempProjectValue(true)
-                        }
-                      }          
+                      // if(companyType?.id === 2){
+                      //   if(val === 'Part Time'){
+                      //     setValue('tempProject',{id: undefined, value: true})
+                      //     setControlledTempProjectValue(true)
+                      //   }
+                      // }          
                     }}
                       isControlled={true}
                       mode={"id/value"}
                       setValue={setValue}
                       register={register}
-                      label={"Availability"}
+                      label={companyType?.id === 2 ? "Job Type" : "Availability"}
                       defaultValue="Select availability"
-                      options={availability}
+                      options={companyType?.id === 2 ? JobTypes : availability}
                       name="availability"
                       isError={errors["availability"] && errors["availability"]}
                       required
-                      errorMsg={"Please select the availability."}
+                      errorMsg={`Please select the ${companyType?.id === 2 ? "job type" : "availability"}.`}
                     />
                   </div>
                 </div>
 {/*  Duration in case of Pay Per Credit */}
 
                 {companyType?.id=== 2 && <>
-                  <div className={HRFieldStyle.colMd6}>
+                  {/* <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         controlledValue={controlledTempProjectValue}
@@ -2303,9 +2321,9 @@ const EditHRFields = ({
                         disabled={controlledAvailabilityValue === 'Part Time' ? true : false}
                       />
                     </div>
-                  </div>
+                  </div> */}
                  
-                  {(watch('availability')?.id !== 2 || watch('tempProject')?.value === true)  &&   <div className={HRFieldStyle.colMd6}>
+                  {(watch('availability')?.id === 2 || watch('availability')?.id === 3 || watch('availability')?.id === 4)  &&   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                     key={'contract Duration for pay per Credit'}
@@ -3317,7 +3335,7 @@ const EditHRFields = ({
             </div>         
             </div>
 
-              {(watch("availability")?.value === "Part Time" && companyType.id === 1) && (
+              {/* {(watch("availability")?.value === "Part Time" && companyType.id === 1) && (
                 <div className={HRFieldStyle.row}>
                     <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>
@@ -3367,7 +3385,7 @@ const EditHRFields = ({
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
 
               <div className={HRFieldStyle.row}>
                {/*  <div className={HRFieldStyle.colMd6}>
