@@ -1053,7 +1053,8 @@ function PreviewHRModal({
             // hrCost : result?.responseBody?.details?.hrCost,
             // budgetFrom : result?.responseBody?.details?.budgetFrom,
             // budgetTo : result?.responseBody?.details?.budgetTo,
-            jobTypeID:result?.responseBody?.jobTypeID
+            jobTypeID:result?.responseBody?.jobTypeID,
+            availability:result?.responseBody?.availability
           },
         }));
         setIsLoading(false);
@@ -1700,9 +1701,9 @@ function PreviewHRModal({
                               : jobPreview?.isHiringLimited === "Temporary"
                                 ? `Full Time contract for ${jobPreview?.contractDuration === -1 ? 'Indefinite' : jobPreview?.contractDuration} months`
                                 : `Full Time ${jobPreview?.contractDuration ? jobPreview?.contractDuration == -1 ? "Indefinite" : `${jobPreview?.contractDuration} months` : ""}`} */}
-                                {jobPreview?.contractDuration ? `${jobPreview?.employmentType} contract for ${jobPreview?.contractDuration == -1 ? "Indefinite" : 
-                                      jobPreview?.contractDuration} months` : `${jobPreview?.employmentType}` } 
-
+                                {/* {jobPreview?.contractDuration ? `${jobPreview?.employmentType} contract for ${jobPreview?.contractDuration == -1 ? "Indefinite" : 
+                                      jobPreview?.contractDuration} months` : `${jobPreview?.employmentType}` }  */}
+                                {jobPreview?.availability}
                             <span className="editNewIcon"
                               onClick={() => {
                                 setisEditDuration(true);
@@ -3770,9 +3771,9 @@ function PreviewHRModal({
                       <Radio.Button value={36}>
                         36 Months <img className='checkIcon' src={CheckRadioIcon} alt='check' />
                       </Radio.Button>
-                      <Radio.Button value={-1}>
+                      {editDuration?.jobTypeID !== 4 &&<Radio.Button value={-1}>
                         Indefinite <img className='checkIcon' src={CheckRadioIcon} alt='check' />
-                      </Radio.Button>
+                      </Radio.Button>}
                     </Radio.Group>
 
                     {error?.employmentType && <span className='error'>{error?.employmentType}</span>}
