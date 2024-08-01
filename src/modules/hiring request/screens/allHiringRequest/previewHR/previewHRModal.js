@@ -888,6 +888,24 @@ function PreviewHRModal({
         valid = false;
       }
     }
+
+
+    if(!isFreshersAllowed && editBudget?.employmentType?.toLocaleLowerCase() !== 'part time'){
+      if(editBudget.currency === 'INR'){
+        if(Number(editBudget?.budgetFrom) > 999999){
+           _errors.budgetFrom = "Minimum valid value should be 6 digits."
+        valid = false;
+        }
+       
+      }else{
+        if(Number(editBudget?.budgetFrom) > 9999){
+          _errors.budgetFrom = "Minimum valid value should be 4 digits."
+          valid = false;
+       }
+      }
+    }
+
+
     setError(_errors);
 
     if (valid) {

@@ -2834,6 +2834,10 @@ const EditHRFields = ({
                         value: 1,
                         message: `please don't enter the value less than 1`,
                       },
+                      max:{
+                        value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
+                        message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                      }
                     }}
                     disabled={watch("budget")?.value !== "1"}
                   />
@@ -2853,6 +2857,10 @@ const EditHRFields = ({
                         value: 1,
                         message: `please don't enter the value less than 1`,
                       },
+                      max:{
+                        value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
+                        message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                      }
                     }}
                     disabled={watch("budget")?.value !== "2"}
                   />
@@ -2873,6 +2881,10 @@ const EditHRFields = ({
                         value: watch("minimumBudget"),
                         message: "Budget should be more than minimum budget.",
                       },
+                      max:{
+                        value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
+                        message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                      }
                     }}
                     disabled={watch("budget")?.value !== "2"}
                   />
