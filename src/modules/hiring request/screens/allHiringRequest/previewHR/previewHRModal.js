@@ -52,7 +52,7 @@ function PreviewHRModal({
   previewIDs
 }) {
   const isCloseJob = localStorage.getItem("isCloseJob");
-  const getcompanyID = jobPreview?.hrTypeId === 1 ? 1 : jobPreview?.hrTypeId === 4 ? 2 : 1
+  const getcompanyID = jobPreview?.hrTypeId === 1 ? 1 :  2 
   const userData = getDataFromLocalStorage();
   const [error, setError] = useState({});
   const [iseditRoleName, setiseditRoleName] = useState(false);
