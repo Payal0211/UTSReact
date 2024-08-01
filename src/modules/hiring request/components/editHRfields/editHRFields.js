@@ -2366,8 +2366,12 @@ const EditHRFields = ({
                         </>
                       )}
                       options={contractDurations.filter(item=> {
-                        if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" && item?.value !== "Indefinite"
-                        return item?.value !== "-1"
+                        // if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" && item?.value !== "Indefinite"
+                        // return item?.value !== "-1"
+                        if(watch('availability')?.id === 4){
+                          return item.value !== "Indefinite"
+                     }
+                     return true
                       }).map((item) => ({
                         id: item.id,
                         label: item.text,

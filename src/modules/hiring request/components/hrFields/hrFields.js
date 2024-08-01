@@ -2636,7 +2636,7 @@ const HRFields = ({
                       />
                     </div>
                   </div> */}
-                 
+                 {console.log('contractDurations',contractDurations)}
                   {(watch('availability')?.id === 2 || watch('availability')?.id === 3 || watch('availability')?.id === 4)  &&   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
@@ -2679,8 +2679,12 @@ const HRFields = ({
                         </>
                       )}
                       options={contractDurations.filter(item=> {
-                        if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" || item?.value !== "Indefinite"
-                        return item?.value !== "-1"
+                        // if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" || item?.value !== "Indefinite"
+                        // return item?.value !== "-1"
+                        if(watch('availability')?.id === 4){
+                             return item.value !== "Indefinite"
+                        }
+                        return true
                       }).map((item) => ({
                         id: item.id,
                         label: item.text,
