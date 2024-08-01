@@ -56,8 +56,8 @@ const HRSelectField = ({
 		} else if(mode === 'tags'){	
 			// to ristrict must have skill to select more then 5
 			if(isMustHaveSkillRes === true){
-				if(option.length > 5){
-					message.error('More then 5 skills not allowed')
+				if(option.length > 8){
+					message.error('More then 8 skills not allowed')
 					return
 				}
 				

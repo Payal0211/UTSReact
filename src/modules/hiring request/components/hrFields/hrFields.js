@@ -1883,7 +1883,7 @@ const HRFields = ({
     if (gptFileDetails?.JDDumpID) {
       setUploadFileData(gptFileDetails.FileName);
       setJDParsedSkills({...gptFileDetails,...{
-        Skills: gptFileDetails?.Skills ? gptFileDetails?.Skills.slice(0, 5).map((item) => ({
+        Skills: gptFileDetails?.Skills ? gptFileDetails?.Skills.slice(0, 8).map((item) => ({
           id: "0",
           value: item.value,
         })) : [],

@@ -550,8 +550,8 @@ function PreviewHRModal({
         }
       }
     });
-    if(values.length > 5){
-      message.error('More then 5 skills not allowed')
+    if(values.length > 8){
+      message.error('More then 8 skills not allowed')
       return
     }
     setTopSkills(_topskills);
