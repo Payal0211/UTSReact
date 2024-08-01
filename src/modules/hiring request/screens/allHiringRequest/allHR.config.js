@@ -230,7 +230,7 @@ export const allHRConfig = {
         ),
       },
       {
-        title: "HR Accepted since",
+        title: "HR Published Since",
         dataIndex: "hrAcceptedSince",
         key: "HRAcceptedSince",
         width: "150px",
@@ -816,7 +816,7 @@ export const unassignedHRsConfig = {
         // ),
       },
       {
-        title: "HR Accepted since",
+        title: "HR Published Since",
         dataIndex: "hrAcceptedSince",
         key: "hrAcceptedSince",
         width: "150px",
