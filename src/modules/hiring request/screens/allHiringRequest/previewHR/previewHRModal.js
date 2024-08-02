@@ -52,7 +52,7 @@ function PreviewHRModal({
   previewIDs
 }) {
   const isCloseJob = localStorage.getItem("isCloseJob");
-  const getcompanyID = jobPreview?.hrTypeId === 1 ? 1 : jobPreview?.hrTypeId === 4 ? 2 : 1
+  const getcompanyID = jobPreview?.hrTypeId === 1 ? 1 :  2 
   const userData = getDataFromLocalStorage();
   const [error, setError] = useState({});
   const [iseditRoleName, setiseditRoleName] = useState(false);
@@ -111,6 +111,7 @@ function PreviewHRModal({
   const [payrollList, setPayrollList] = useState([]);
   const [iseditShift, setisEditShift] = useState(false);
   const [companyPerks, setCompanyPerks] = useState([]);
+  const [jobTypes,setJobTypes] = useState([]);
 
   const [editShift, setEditShift] = useState({
     timeZone: "",
@@ -207,6 +208,7 @@ function PreviewHRModal({
     getStartEndTimeData();
     GetPayrollType();
     getPOCUsers()
+    getJobType()
     // getLocationInfo();
     // getPostPreview({
     //   contactId:_user.LoggedInUserID,
@@ -548,8 +550,8 @@ function PreviewHRModal({
         }
       }
     });
-    if(values.length > 5){
-      message.error('More then 5 skills not allowed')
+    if(values.length > 8){
+      message.error('More then 8 skills not allowed')
       return
     }
     setTopSkills(_topskills);
@@ -711,6 +713,7 @@ function PreviewHRModal({
       payrollPartnerName: null,
       jobDescription: null,
       isConfidentialBudget: null,
+      jobTypeID:null,
       utmCountry: TrackData?.trackingDetails?.country,
       // utmState:ipData.utmState,
       // utmCity:ipData.utmCity,
@@ -885,6 +888,24 @@ function PreviewHRModal({
         valid = false;
       }
     }
+
+
+    if(!isFreshersAllowed && editBudget?.employmentType?.toLocaleLowerCase() !== 'part time'){
+      if(editBudget.currency === 'INR'){
+        if(Number(editBudget?.budgetFrom) > 999999){
+           _errors.budgetFrom = "Minimum valid value should be 6 digits."
+        valid = false;
+        }
+       
+      }else{
+        if(Number(editBudget?.budgetFrom) > 9999){
+          _errors.budgetFrom = "Minimum valid value should be 4 digits."
+          valid = false;
+       }
+      }
+    }
+
+
     setError(_errors);
 
     if (valid) {
@@ -971,7 +992,11 @@ function PreviewHRModal({
       return
       }
      
-    }
+    }else if(getcompanyID === 2 && (editDuration?.jobTypeID !== 1) && !editDuration?.contractDuration){
+      message.error(`Please select contract duration`);
+      return
+    } 
+    
     if (editDuration?.hiringTypePricingId == 3 && editDuration.payrollTypeId == 4 && !editDuration.contractDuration) {
       message.error(`Please select contract duration`);
       return
@@ -983,14 +1008,29 @@ function PreviewHRModal({
     }
 
     if (isValid) {
-      let payload = {
-        contractDuration: editDuration.contractDuration ? editDuration.contractDuration : null,
-        employmentType: editDuration.employmentType,
-        hiringTypePricingId: editDuration.hiringTypePricingId,
-        payrollTypeId: editDuration.payrollTypeId,
-        payrollType: editDuration.payrollType,
-        payrollPartnerName: editDuration.payrollPartnerName,
-      };
+      let payload = {};
+      if(getcompanyID === 2){
+        payload = {
+          contractDuration:(editDuration?.jobTypeID !== 1) ?  editDuration.contractDuration : null,
+          employmentType: editDuration.employmentType ? editDuration.employmentType : null ,
+          hiringTypePricingId:editDuration.hiringTypePricingId,
+          payrollTypeId:editDuration.payrollTypeId,
+          payrollType:editDuration.payrollType,
+          payrollPartnerName:editDuration.payrollPartnerName,   
+          jobTypeID:editDuration?.jobTypeID,   
+          isHiringLimited:editDuration.isHiringLimited ? editDuration.isHiringLimited : null,    
+        };                    
+      }else{
+        payload = {
+          contractDuration: editDuration.contractDuration ? editDuration.contractDuration : null,
+          employmentType: editDuration.employmentType,
+          hiringTypePricingId:editDuration.hiringTypePricingId,
+          payrollTypeId:editDuration.payrollTypeId,
+          payrollType:editDuration.payrollType,
+          jobTypeID:0, 
+          payrollPartnerName:editDuration.payrollPartnerName,        
+        };  
+      }       
       setIsLoading(true);
       let result = await updateJobPostDetail(payload);
       if (result.statusCode === 200) {
@@ -999,21 +1039,22 @@ function PreviewHRModal({
           type: "success",
           content: "Duration Updated",
         });
-
         setJobPreview((prev) => ({
           ...prev,
           ...{
             contractDuration: editDuration.contractDuration ? editDuration.contractDuration : null,
-            employmentType: editDuration.employmentType,
+            employmentType: editDuration.employmentType ? editDuration.employmentType : null,
+            isHiringLimited:editDuration.isHiringLimited ? editDuration.isHiringLimited : null,
             hiringTypePricingId: editDuration.hiringTypePricingId,
             // payrollTypeId: editDuration.payrollTypeId,
             // payrollType: editDuration.payrollType,
             // payrollPartnerName: editDuration.payrollPartnerName,
-            isHiringLimited: editDuration.employmentType === 'Temporary' ? 'Temporary' : editDuration.employmentType === 'Permanent' ? 'Permanent' : null,
-            toolTipMessage: result?.responseBody?.details?.toolTipMessage ? result?.responseBody?.details?.toolTipMessage : editDuration?.toolTipMessage,
-            // hrCost: result?.responseBody?.details?.hrCost,
-            // budgetFrom: result?.responseBody?.details?.budgetFrom,
-            // budgetTo: result?.responseBody?.details?.budgetTo
+            toolTipMessage: result?.responseBody?.toolTipMessage ?  result?.responseBody?.toolTipMessage : editDuration?.toolTipMessage,
+            // hrCost : result?.responseBody?.details?.hrCost,
+            // budgetFrom : result?.responseBody?.details?.budgetFrom,
+            // budgetTo : result?.responseBody?.details?.budgetTo,
+            jobTypeID:result?.responseBody?.jobTypeID,
+            availability:result?.responseBody?.availability
           },
         }));
         setIsLoading(false);
@@ -1196,6 +1237,11 @@ function PreviewHRModal({
     }
     setStartEndTime(_list);
   };
+
+  const getJobType = async () => {
+    let response = await  MasterDAO.getJobTypesRequestDAO();        
+    setJobTypes(response?.responseBody);
+  } 
 
   const getPOCUsers = async () => {              
     let response = await MasterDAO.getEmailSuggestionDAO('',previewIDs?.companyID);
@@ -1650,28 +1696,31 @@ function PreviewHRModal({
 
                           <li>
                             <img src={businessIconImage} className="business" />
-                            {jobPreview?.employmentType === "Part Time"
+                            {/* {jobPreview?.employmentType === "Part Time"
                               ? `Part Time contract for ${jobPreview?.contractDuration === -1 ? 'Indefinite' : jobPreview?.contractDuration} months`
                               : jobPreview?.isHiringLimited === "Temporary"
                                 ? `Full Time contract for ${jobPreview?.contractDuration === -1 ? 'Indefinite' : jobPreview?.contractDuration} months`
-                                : `Full Time ${jobPreview?.contractDuration ? jobPreview?.contractDuration == -1 ? "Indefinite" : `${jobPreview?.contractDuration} months` : ""}`}
-
-
+                                : `Full Time ${jobPreview?.contractDuration ? jobPreview?.contractDuration == -1 ? "Indefinite" : `${jobPreview?.contractDuration} months` : ""}`} */}
+                                {/* {jobPreview?.contractDuration ? `${jobPreview?.employmentType} contract for ${jobPreview?.contractDuration == -1 ? "Indefinite" : 
+                                      jobPreview?.contractDuration} months` : `${jobPreview?.employmentType}` }  */}
+                                {jobPreview?.availability}
                             <span className="editNewIcon"
                               onClick={() => {
                                 setisEditDuration(true);
                                 setError({});
-                                let _empType = getcompanyID == 2 ?
-                                  jobPreview.employmentType === 'Part Time' ? jobPreview.employmentType : jobPreview?.isHiringLimited === 'Temporary' ? 'Temporary' : jobPreview?.isHiringLimited === 'Permanent' ? 'Permanent' : ''
-                                  : jobPreview.employmentType
+                                // let _empType = getcompanyID == 2 ?
+                                //   jobPreview.employmentType === 'Part Time' ? jobPreview.employmentType : jobPreview?.isHiringLimited === 'Temporary' ? 'Temporary' : jobPreview?.isHiringLimited === 'Permanent' ? 'Permanent' : ''
+                                //   : jobPreview.employmentType
                                 seteditDuration({
                                   hiringTypePricingId: jobPreview?.hiringTypePricingId,
                                   payrollPartnerName: jobPreview?.payrollPartnerName ? jobPreview?.payrollPartnerName : null,
                                   payrollType: jobPreview?.payrollType ? jobPreview?.payrollType : null,
                                   payrollTypeId: jobPreview?.payrollTypeId ? jobPreview?.payrollTypeId : null,
                                   contractDuration: jobPreview?.contractDuration,
-                                  employmentType: _empType,
-                                  toolTipMessage: jobPreview?.toolTipMessage
+                                  toolTipMessage: jobPreview?.toolTipMessage,
+                                  employmentType:jobPreview?.employmentType,
+                                  jobTypeID:jobPreview?.jobTypeID ? jobPreview?.jobTypeID : null,
+                                  isHiringLimited:jobPreview?.isHiringLimited
                                 });
                               }}
                             ><img src={EditnewIcon} /></span>
@@ -3650,35 +3699,54 @@ function PreviewHRModal({
               <div className="col-12">
                 <div className="form-group">
                   <label>
-                    Change employment type
+                    Change job type
                   </label>
-                  <Radio.Group className="customradio newradiodes small" name='employmentType'
-                    value={editDuration.employmentType}
-                    onChange={(e) => {
-                      seteditDuration((prev) => ({
-                        ...prev,
-                        employmentType: e.target.value,
-                        contractDuration: e.target.value === "Permanent" && null
-                      }));
+                  <Radio.Group className="customradio newradiodes small" name='employmentType'                                 
+                  value={editDuration.jobTypeID}            
+                  onChange={(e) => {
+                    let empType;
+                    let isHirlmt;
+                    if(e.target.id === 1){
+                        empType = "Full time";
+                        isHirlmt = "Permanent";
+                    }else if(e.target.id === 2){
+                        empType = "Full time";
+                        isHirlmt = "Temporary";
+                    }else if(e.target.id === 3){
+                        empType = "Part time";
+                        isHirlmt = "Temporary";
+                    }else if(e.target.id === 4){
+                        empType = "Full time";
+                        isHirlmt = "Permanent";
                     }
-                    }
-                  >
-                    <Radio.Button value="Temporary">
-                      Full-time - Temporary Hiring <img className='checkIcon' src={CheckRadioIcon} alt='check' />
-                    </Radio.Button>
-                    <Radio.Button value="Permanent">
-                      Full-time - Permanent Hiring <img className='checkIcon' src={CheckRadioIcon} alt='check' />
-                    </Radio.Button>
-                    <Radio.Button value="Part Time">
-                      Part-time <img className='checkIcon' src={CheckRadioIcon} alt='check' />
-                    </Radio.Button>
-                  </Radio.Group>
+                    seteditDuration((prev) => ({
+                          ...prev,
+                          employmentType: empType,  
+                          contractDuration: (e.target.id === 1 || e.target.id === 4 ) && null ,
+                          isHiringLimited:isHirlmt ,
+                          jobTypeID:e.target.id                                   
+                        })) ;
+                    }}
+                >                                     
+                      {jobTypes?.map((val,index) => {
+                        return(
+                            <Radio.Button value={val.id}  key={index} id={val.id}>
+                                {val?.text}
+                                <img
+                                    className="checkIcon"
+                                    src={CheckRadioIcon}
+                                    alt="check"
+                                />
+                            </Radio.Button>
+                        )
+                    })}                        
+                </Radio.Group>
                 </div>
               </div>
-              {(editDuration.employmentType === 'Temporary' || editDuration.employmentType === 'Part Time') &&
+              {editDuration?.jobTypeID !== 1 && 
                 <div className='col-12'>
                   <div className="form-group">
-                    <label>Please select or add contract duration <span className='StarRed'>*</span></label>
+                    <label>{editDuration?.jobTypeID === 4 ? 'Please select duration for the initial contract period' : 'Please select contract duration'}  <span className='StarRed'>*</span></label>
                     <Radio.Group className="customradio newradiodes small" name='contractDuration'
                       onChange={(e) => {
                         seteditDuration({ ...editDuration, contractDuration: e.target.value });
@@ -3703,9 +3771,9 @@ function PreviewHRModal({
                       <Radio.Button value={36}>
                         36 Months <img className='checkIcon' src={CheckRadioIcon} alt='check' />
                       </Radio.Button>
-                      <Radio.Button value={-1}>
+                      {editDuration?.jobTypeID !== 4 &&<Radio.Button value={-1}>
                         Indefinite <img className='checkIcon' src={CheckRadioIcon} alt='check' />
-                      </Radio.Button>
+                      </Radio.Button>}
                     </Radio.Group>
 
                     {error?.employmentType && <span className='error'>{error?.employmentType}</span>}

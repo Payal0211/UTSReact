@@ -28,6 +28,7 @@ const HRSelectField = ({
 	onValueChange,
 	isMustHaveSkillRes
 }) => {
+	
 	const getChangeHandlerWithValue = (value, option) => {
 		onValueChange && onValueChange(value, option)
 		if (mode === 'multiple') {
@@ -56,8 +57,8 @@ const HRSelectField = ({
 		} else if(mode === 'tags'){	
 			// to ristrict must have skill to select more then 5
 			if(isMustHaveSkillRes === true){
-				if(option.length > 5){
-					message.error('More then 5 skills not allowed')
+				if(value.length > 8 && controlledValue?.length < value?.length){
+					message.error('More then 8 skills not allowed')
 					return
 				}
 				
@@ -68,7 +69,8 @@ const HRSelectField = ({
 					id: item?.id || item?.text || "0",
 					value: item?.value,
 				})),);	
-				setOptions(options);	
+				setOptions(options);
+
 				}else{
 					if(value[value.length - 1]){					
 						option[value.length - 1] = { ...option[value.length - 1], id: '0' };
@@ -77,7 +79,7 @@ const HRSelectField = ({
 						let obj = {};
 						obj.id = "0";
 						obj.value = value[value.length - 1];
-						_opt.push(obj);
+						_opt.push(obj);						
 						setOptions(_opt);
 						setValue(name,option.map((item) => ({
 							id: item.id,

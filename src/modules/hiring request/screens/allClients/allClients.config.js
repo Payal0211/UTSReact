@@ -88,14 +88,14 @@ export const allClientsConfig = {
                     align: 'center',
                     width: '60px',
                     render:(_,result) => {
-                        return (<div style={{display:'flex'}}>
+                        return (<div style={{display:'flex', alignItems:'center'}}>
                         {isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
                             to={`/addNewCompany/${result.companyID}`}
-                            style={{ color: 'black', textDecoration: 'underline' }}
+                            style={{ color: 'black', textDecoration: 'underline', display:'inline-flex' }}
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
                             <PencilSVG />
                         </Link>}
-                        {(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
+                        {(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px',minWidth:'22px'}}>
                                 <Tooltip title="Preview Company Profile" placement="right" >
                                 {/* <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
                                     <img src={eyeIcon} alt='info' width="22" height="22"  />	

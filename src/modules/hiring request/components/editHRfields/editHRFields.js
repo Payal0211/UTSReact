@@ -45,6 +45,7 @@ import plusSkill from 'assets/svg/plusSkill.svg';
 import DOMPurify from "dompurify";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import ReactQuill from 'react-quill';
+import { isEmptyOrWhitespace } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -88,6 +89,7 @@ const EditHRFields = ({
 
   const [getUploadFileData, setUploadFileData] = useState("");
   const [availability, setAvailability] = useState([]);
+  const [JobTypes, setJobTypes] = useState([]);
   const [payRollTypes, setPayRollTypes] = useState([]);
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [timeZonePref, setTimeZonePref] = useState([]);
@@ -530,10 +532,13 @@ const EditHRFields = ({
   // }, [prefRegion]);
   const getAvailability = useCallback(async () => {
     const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
+    const JobTypesResponse = await MasterDAO.getJobTypesRequestDAO()
     setAvailability(
       availabilityResponse &&
         availabilityResponse.responseBody?.BindHiringAvailability.reverse()
     );
+    
+    setJobTypes(JobTypesResponse && JobTypesResponse?.responseBody)
   }, []);
 
   const getPayrollType = useCallback(async () => {
@@ -1110,9 +1115,11 @@ const EditHRFields = ({
       if(companyType.id === 2 ){
         hrFormDetails.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
         hrFormDetails.hrpocUserID = watch('jobPostUsers') ? watch('jobPostUsers')?.map(item => item.id.toString()) : []; 
+        hrFormDetails.jobTypeId = watch('availability')?.id
       }else{
         hrFormDetails.showHRPOCDetailsToTalents = null;
         hrFormDetails.hrpocUserID = [];
+        hrFormDetails.jobTypeId = 0
       }
       
 
@@ -1394,10 +1401,21 @@ const EditHRFields = ({
   }, [getHRdetails, salesPerson]);
 
   useEffect(() => {
-    if (getHRdetails?.addHiringRequest?.availability) {
-      const findAvailability = availability.filter(
-        (item) => item?.value === getHRdetails?.addHiringRequest?.availability
+    if (getHRdetails?.addHiringRequest?.availability && availability.length && JobTypes.length) {
+      let findAvailability
+      if(companyType?.id === 2){
+        findAvailability = JobTypes.filter(
+          (item) => {
+            return item?.value.trim() === getHRdetails?.addHiringRequest?.availability.trim()}
+        );
+      }else{
+         findAvailability = availability.filter(
+        (item) => {
+          return item?.value.trim() === getHRdetails?.addHiringRequest?.availability.trim()}
       );
+      }
+      
+    
       setValue("availability", findAvailability[0]);
       setControlledAvailabilityValue(findAvailability[0]?.value);
     }
@@ -1807,7 +1825,7 @@ const EditHRFields = ({
 
     if(gptFileDetails.Skills.length > 0){
       // _getHrValues.chatGptSkills = gptFileDetails.Skills.map(item=> item.value).join(',');
-      _getHrValues.skillmulticheckbox = gptFileDetails.Skills?.slice(0, 5).map(item=> ({...item,text:item.value}))
+      _getHrValues.skillmulticheckbox = gptFileDetails.Skills?.slice(0, 8).map(item=> ({...item,text:item.value}))
       _getHrValues.allSkillmulticheckbox = []
     }  
 
@@ -2249,36 +2267,37 @@ const EditHRFields = ({
                                     required
                                     errorMsg={'Please select the availability.'}
                                 /> */}
+                                
                     <HRSelectField
                       controlledValue={controlledAvailabilityValue}
                       setControlledValue={val=> {setControlledAvailabilityValue(val);resetField('hiringPricingType');
                       resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
                       setControlledHiringPricingTypeValue("Select Hiring Pricing");resetField('contractDuration');setContractDuration('');
-                      if(companyType?.id === 2){
-                        if(val === 'Part Time'){
-                          setValue('tempProject',{id: undefined, value: true})
-                          setControlledTempProjectValue(true)
-                        }
-                      }          
+                      // if(companyType?.id === 2){
+                      //   if(val === 'Part Time'){
+                      //     setValue('tempProject',{id: undefined, value: true})
+                      //     setControlledTempProjectValue(true)
+                      //   }
+                      // }          
                     }}
                       isControlled={true}
                       mode={"id/value"}
                       setValue={setValue}
                       register={register}
-                      label={"Availability"}
+                      label={companyType?.id === 2 ? "Job Type" : "Availability"}
                       defaultValue="Select availability"
-                      options={availability}
+                      options={companyType?.id === 2 ? JobTypes : availability}
                       name="availability"
                       isError={errors["availability"] && errors["availability"]}
                       required
-                      errorMsg={"Please select the availability."}
+                      errorMsg={`Please select the ${companyType?.id === 2 ? "job type" : "availability"}.`}
                     />
                   </div>
                 </div>
 {/*  Duration in case of Pay Per Credit */}
 
                 {companyType?.id=== 2 && <>
-                  <div className={HRFieldStyle.colMd6}>
+                  {/* <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         controlledValue={controlledTempProjectValue}
@@ -2303,9 +2322,9 @@ const EditHRFields = ({
                         disabled={controlledAvailabilityValue === 'Part Time' ? true : false}
                       />
                     </div>
-                  </div>
+                  </div> */}
                  
-                  {(watch('availability')?.id !== 2 || watch('tempProject')?.value === true)  &&   <div className={HRFieldStyle.colMd6}>
+                  {(watch('availability')?.id === 2 || watch('availability')?.id === 3 || watch('availability')?.id === 4)  &&   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                     key={'contract Duration for pay per Credit'}
@@ -2347,8 +2366,12 @@ const EditHRFields = ({
                         </>
                       )}
                       options={contractDurations.filter(item=> {
-                        if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" && item?.value !== "Indefinite"
-                        return item?.value !== "-1"
+                        // if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" && item?.value !== "Indefinite"
+                        // return item?.value !== "-1"
+                        if(watch('availability')?.id === 4){
+                          return item.value !== "Indefinite"
+                     }
+                     return true
                       }).map((item) => ({
                         id: item.id,
                         label: item.text,
@@ -2815,6 +2838,10 @@ const EditHRFields = ({
                         value: 1,
                         message: `please don't enter the value less than 1`,
                       },
+                      max:{
+                        value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
+                        message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                      }
                     }}
                     disabled={watch("budget")?.value !== "1"}
                   />
@@ -2834,6 +2861,10 @@ const EditHRFields = ({
                         value: 1,
                         message: `please don't enter the value less than 1`,
                       },
+                      max:{
+                        value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
+                        message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                      }
                     }}
                     disabled={watch("budget")?.value !== "2"}
                   />
@@ -2854,6 +2885,10 @@ const EditHRFields = ({
                         value: watch("minimumBudget"),
                         message: "Budget should be more than minimum budget.",
                       },
+                      max:{
+                        value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
+                        message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                      }
                     }}
                     disabled={watch("budget")?.value !== "2"}
                   />
@@ -3317,7 +3352,7 @@ const EditHRFields = ({
             </div>         
             </div>
 
-              {(watch("availability")?.value === "Part Time" && companyType.id === 1) && (
+              {/* {(watch("availability")?.value === "Part Time" && companyType.id === 1) && (
                 <div className={HRFieldStyle.row}>
                     <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>
@@ -3367,7 +3402,7 @@ const EditHRFields = ({
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
 
               <div className={HRFieldStyle.row}>
                {/*  <div className={HRFieldStyle.colMd6}>
@@ -3674,11 +3709,20 @@ const EditHRFields = ({
             </div>
 
 <div className={HRFieldStyle.colMd12}>
-                  <div className={HRFieldStyle.formGroup}>
+                  <div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.customPlaceHolderHR} customPlaceHolder`}>
                   <label>
                   Highlight any key parameters or things to consider for finding the best match talents
 								{/* <span className={HRFieldStyle.reqField}>*</span> */}
 							</label>
+              {isEmptyOrWhitespace(watch('parametersHighlight')? watch('parametersHighlight') : '') && 
+                            <div className="placeHolderText">
+                                <p>Ex:</p>
+                                <ul>
+                                    <li>Seeking candidates with startup experience, preferably from a fast-paced and agile environment.</li>
+                                    <li>Targeting candidates with a background from [Specific Company Name], where they developed [Desirable Skills or Experience]</li>
+                                    <li>Looking for candidates who have hands-on experience working with [Specific Tech Environment, e.g. cloud-native, DevOps, etc.], preferably in a similar industry/sector.</li>
+                                </ul>
+                            </div>}        
 							<ReactQuill
 								register={register}
 								setValue={setValue}
