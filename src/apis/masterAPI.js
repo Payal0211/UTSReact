@@ -23,6 +23,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getFixedValueRequest');
 		}
 	},
+	getJobTypesRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_JOB_TYPES;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getJobTypesRequest');
+		}
+	},
 	getPayRollTypeRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

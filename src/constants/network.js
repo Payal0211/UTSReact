@@ -141,6 +141,7 @@ export class EngagementAPI {
 	static SAVE_BILL_RATE_PAY_RATE = 'SaveBillRatePayRate';
 	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
 	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
+	static CANCEL_ENGAGEMENT = 'CancelEngagement'
 	static CALCULATE_ACTUAL_NR_BR_PR = 'Calculate_ActualNR_From_BRPR';
 	static UPLOAD_FILE = 'UploadFile';
 	static GET_TSC_USERS_DETAIL = 'GetTSCUsersDetail';
@@ -156,6 +157,7 @@ export class AllHiringRequestAPI {
 }
 export class MastersAPI {
 	static GET_FIXED_VALUE = 'GetFixedValues';
+	static GET_JOB_TYPES = 'GetJobTypes'
 	static GET_PAYROLL_TYPE = 'GetprgPayrollType';
 	static GET_HR_PRICING_TYPE = 'GetprgHiringTypePricing'
 	static GET_GEO = 'GetGeo';
