@@ -9,6 +9,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useParams } from 'react-router-dom';
 import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import { message } from 'antd';
 
 const UpdateTR = ({
 	updateTR,
@@ -140,6 +141,10 @@ const UpdateTR = ({
 			setCount(count - 1);
 			setDisable(false);
 		}
+		if(count == 0){
+			message.error("Decrease TR Should be lass than Active TR and not equal to 0");
+			return
+		}
 	};
 	useEffect(() => {
 		return () => setIsLoading(false);
@@ -149,7 +154,7 @@ const UpdateTR = ({
 			<div className={updateTRStyle.updateTRTitle}>
 				<h2>Update TR</h2>
 				<p>
-					{updateTRDetail?.ClientDetail?.HR_Number} | Current TR:{' '}
+					{updateTRDetail?.ClientDetail?.HR_Number} | Active TR:{' '}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
 						<span>{updateTRDetail?.ClientDetail?.ActiveTR * 2}</span>
 					) : (
@@ -326,7 +331,9 @@ const UpdateTR = ({
 						</button>
 
 						{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
-							updateTRDetail?.ClientDetail?.ActiveTR * 2 === count ? (
+							updateTRDetail?.ClientDetail?.ActiveTR * 2 === count  
+							|| count === 0 
+							 ? (
 								<button
 									type="submit"
 									className={updateTRStyle.btnPrimary}
@@ -355,7 +362,9 @@ const UpdateTR = ({
 									Decrease TR
 								</button>
 							)
-						) : updateTRDetail?.ClientDetail?.ActiveTR === count ? (
+						) : updateTRDetail?.ClientDetail?.ActiveTR === count 
+						||  count === 0 
+						 ? (
 							<button
 								type="submit"
 								className={updateTRStyle.btnPrimary}
