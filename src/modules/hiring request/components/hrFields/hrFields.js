@@ -3115,13 +3115,13 @@ const HRFields = ({
                   errors={errors}
                   validationSchema={{
                     required: "please enter the Adhoc Budget.",
-                    min: {
-                      value: 1,
-                      message: `please don't enter the value less than 1`,
-                    },
-                    max:{
-                      value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
-                      message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                    // min: {
+                    //   value: 1,
+                    //   message: `please don't enter the value less than 1`,
+                    // },
+                    min:{
+                      value: isFreshersAllowed ? 1 : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : 1) ,
+                      message: `please enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `atlest 1`}`,
                     }
                   }}
                   disabled={watch("budget")?.value !== "1"}
@@ -3140,13 +3140,13 @@ const HRFields = ({
                   errors={errors}
                   validationSchema={{
                     required: "please enter the minimum budget.",
-                    min: {
-                      value: 1,
-                      message: `please don't enter the value less than 1`,
-                    },
-                    max:{
-                      value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
-                      message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                    // min: {
+                    //   value: 1,
+                    //   message: `please don't enter the value less than 1`,
+                    // },
+                    min:{
+                      value: isFreshersAllowed ? 1 : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : 1) ,
+                      message: `please enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `atlest 1`}`,
                     }
                   }}
                   disabled={watch("budget")?.value !== "2"}
@@ -3165,13 +3165,13 @@ const HRFields = ({
                   errors={errors}
                   validationSchema={{
                     required: "please enter the maximum budget.",
-                    min: {
-                      value: watch("minimumBudget"),
-                      message: "Budget should be more than minimum budget.",
-                    },
-                    max:{
-                      value: isFreshersAllowed ? null : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  999999 : 9999 : null) ,
-                      message: `please don't enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'more then 6 digits' : 'more then 4 digits' : null}`,
+                    // min: {
+                    //   value: watch("minimumBudget"),
+                    //   message: "Budget should be more than minimum budget.",
+                    // },
+                    min:{
+                      value: isFreshersAllowed ? +watch("minimumBudget") : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : +watch("minimumBudget")) ,
+                      message: `please enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `more than minimum budget`}`,
                     }
                   }}
                   disabled={watch("budget")?.value !== "2"}

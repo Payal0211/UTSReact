@@ -892,13 +892,13 @@ function PreviewHRModal({
 
     if(!isFreshersAllowed && editBudget?.employmentType?.toLocaleLowerCase() !== 'part time'){
       if(editBudget.currency === 'INR'){
-        if(Number(editBudget?.budgetFrom) > 999999){
+        if(Number(editBudget?.budgetFrom) < 100000){
            _errors.budgetFrom = "Minimum valid value should be 6 digits."
         valid = false;
         }
        
       }else{
-        if(Number(editBudget?.budgetFrom) > 9999){
+        if(Number(editBudget?.budgetFrom) < 1000){
           _errors.budgetFrom = "Minimum valid value should be 4 digits."
           valid = false;
        }
