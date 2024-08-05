@@ -81,6 +81,7 @@ export const engagementUtils = {
 			// isContractCompleted: item?.isContractCompleted,
 			isRenewalAvailable: item?.isRenewalAvailable,
 			isRenewalContract: item?.isRenewalContract,
+			isOngoing:item?.isOngoing,
 			payout_BillRate:item?.payout_BillRate,
 			payout_PayRate:item?.payout_PayRate,
 			replacementID:item?.replacementID,
