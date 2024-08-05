@@ -188,7 +188,7 @@ export const allEngagementConfig = {
 							},
 						);
 					}
-					if (param?.isRenewalAvailable === 1 && param?.isRenewalContract === 0) {
+					if (param?.isRenewalAvailable === 1 && param?.isRenewalContract === 0 && param?.isOngoing === true) {
 						listItemData.push({
 							label: 'Renew Engagement',
 							key: 'reNewEngagement',
