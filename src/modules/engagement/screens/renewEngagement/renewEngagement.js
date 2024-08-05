@@ -11,7 +11,7 @@ import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
-import { Divider, Skeleton } from 'antd';
+import { Checkbox, Divider, Skeleton } from 'antd';
 import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
 import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
 import moment from 'moment';
@@ -36,6 +36,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const [startDate,setStartDate] = useState();
 	const [endDate,setEndDate] = useState();
 	const [isLoading ,setIsLoading] = useState(false)
+	const [isOngoing,setIsOngoing] = useState(false)
 
 	const getRenewEngagementHandler = useCallback(async () => {
 		const response = await engagementRequestDAO.getRenewEngagementRequestDAO({
@@ -74,7 +75,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			let contractRenewalDataFormatter = {
 				onBoardId: talentInfo?.onboardID,
 				contractStartDate: d.renewedStartDate,
-				contractEndDate: d.renewedEndDate,
+				contractEndDate: isOngoing ? null:d.renewedEndDate,
 				billRate: billRateValue,
 				payRate: payRateValue,
 				engagementId: getRenewEngagement?.engagementId,
@@ -82,8 +83,9 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 				company: getRenewEngagement?.company,
 				talentName: getRenewEngagement?.talentName,
 				nrPercentage: d.nrMargin,
-				contarctDuration: d.contractDuration,
+				contarctDuration: isOngoing ? null:d.contractDuration,
 				reasonForBRPRChange: d.addReason,
+				IsContractOnGoing:isOngoing
 			};
 			let response = await engagementRequestDAO.saveRenewEngagementRequestDAO(
 				contractRenewalDataFormatter,
@@ -104,7 +106,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			getRenewEngagement?.talentName,
 			talentInfo?.onboardID,
 			billRateValue,
-			payRateValue
+			payRateValue,isOngoing
 		],
 	);
 	useEffect(() => {
@@ -192,7 +194,7 @@ useEffect(()=>{
 						<div className={allengagementEnd.timeLabel}>
 							Renewed Start Date
 							<span>
-								<b style={{ color: 'black' }}>*</b>
+								<b style={{ color: 'red' }}> *</b>
 							</span>
 						</div>
 						<div className={allengagementEnd.timeSlotItem}>
@@ -222,19 +224,30 @@ useEffect(()=>{
 						</div>
 					</div>
 				</div>
-				<div className={allengagementEnd.colMd6}>
+				<Checkbox
+					name="Onboarding"
+					checked={isOngoing}
+					onChange={(e) => {
+						setIsOngoing(e.target.checked);						
+					}}
+				>
+					Is Ongoing
+				</Checkbox>
+			</div>
+			{isOngoing == false &&<div className={allengagementEnd.row}>
+			<div className={allengagementEnd.colMd6}>
 					<div
 						className={`${allengagementEnd.timeSlotItemField} ${allengagementEnd.mb32}`}>
 						<div className={allengagementEnd.timeLabel}>
 							Renewed End Date
 							<span>
-								<b style={{ color: 'black' }}>*</b>
+								<b style={{ color: 'red' }}> *</b>
 							</span>
 						</div>
 						<div className={allengagementEnd.timeSlotItem}>
 							<CalenderSVG />
 							<Controller
-								render={({ ...props }) => (
+								render={({ ...props }) => (	
 									<DatePicker
 										selected={watch('renewedEndDate')}
 										onChange={(date) => {
@@ -258,8 +271,6 @@ useEffect(()=>{
 						</div>
 					</div>
 				</div>
-			</div>
-			<div className={allengagementEnd.row}>
 				<div className={allengagementEnd.colMd6}>
 					<HRInputField
 						register={register}
@@ -279,7 +290,7 @@ useEffect(()=>{
 						required
 					/>
 				</div>
-			</div>
+			</div>}
 
 			<h2 className={allengagementEnd.contractBorderTitle}>Amount Details</h2>
 			<div className={allengagementEnd.row}>
