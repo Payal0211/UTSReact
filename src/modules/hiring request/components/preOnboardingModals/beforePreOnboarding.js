@@ -1553,7 +1553,7 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Uplers Fees</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                      { ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100)+ ' %' : 'NA' )}
+                      { ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100).toFixed(2)+ ' %' : 'NA' )}
                         {/* {preOnboardingDetailsForAMAssignment?.talentRole
                           ? preOnboardingDetailsForAMAssignment?.talentRole
                           : "NA"} */}
