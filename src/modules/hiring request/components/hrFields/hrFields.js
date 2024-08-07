@@ -1844,6 +1844,62 @@ const HRFields = ({
     }
   };
 
+  const getValueForMaxBudget =()=>{
+    
+    if(isFreshersAllowed){
+      return +watch("minimumBudget") 
+    }
+
+if((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire")){
+  if(watch('currency')?.value === 'INR'){
+  
+  if( +watch("minimumBudget") >  100000){
+    return +watch("minimumBudget") 
+  }else{
+    return 100000
+  }  
+  
+  }else{
+    if( +watch("minimumBudget") >  1000){
+      return +watch("minimumBudget") 
+    }else{
+      return 1000
+    } 
+  }
+}else{
+  return +watch("minimumBudget") 
+}
+  
+  }
+
+  const getMessForMaxBudget =()=>{
+   let str = `please enter the value'`
+    if(isFreshersAllowed){
+      return str + ` more than minimum budget`
+    }
+
+if((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire")){
+  if(watch('currency')?.value === 'INR'){
+  
+  if( +watch("minimumBudget") >  100000){
+    return str + ` more than minimum budget`
+  }else{
+    return str+' atlest 6 digits'
+  }  
+  
+  }else{
+    if( +watch("minimumBudget") >  1000){
+      return str + ` more than minimum budget`
+    }else{
+      return str + ' atlest 4 digits'
+    } 
+  }
+}else{
+  return str + ` more than minimum budget`
+}
+  
+  }
+
   useEffect(() => {
     DealHRData.contact && setValue("clientName", DealHRData.contact);
     DealHRData.discoveryCall &&
@@ -3170,8 +3226,8 @@ const HRFields = ({
                     //   message: "Budget should be more than minimum budget.",
                     // },
                     min:{
-                      value: isFreshersAllowed ? +watch("minimumBudget") : ((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : +watch("minimumBudget")) ,
-                      message: `please enter the value ${(watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `more than minimum budget`}`,
+                      value:getValueForMaxBudget(),
+                      message: getMessForMaxBudget(),
                     }
                   }}
                   disabled={watch("budget")?.value !== "2"}
