@@ -109,6 +109,7 @@ export default function LegalPreOnboarding({
 
   const handleOnboarding = useCallback(
     async (d) => {
+      let isValid = true;
       setShowAMModal(true);
       setIsLoading(true);
       if (engagementReplacement?.replacementData == true) {
@@ -122,6 +123,7 @@ export default function LegalPreOnboarding({
         invoiceRaiseTo: d.invoiceRaisinfTo,
         invoiceRaiseToEmail: d.invoiceRaisingToEmail,
         contractStartDate: moment(d.contractStartDate).format("yyyy-MM-DD"),
+        joiningDate: moment(d.joiningDate).format('yyyy-MM-DD'),
         contractEndDate: getData?.getLegalInfo?.isHRTypeDP
           ? null
           : moment(d.contractEndDate).format("yyyy-MM-DD"),
@@ -151,13 +153,21 @@ export default function LegalPreOnboarding({
               : d.engagementreplacement.id,
         },
       };
-      let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
-      if (result?.statusCode === HTTPStatusCode.OK) {
+      if(new Date(d.contractStartDate) >= new Date(d.joiningDate)){
+        isValid = false;
         setIsLoading(false);
-        setShowAMModal(false);
-        callAPI(HRID);
+        message.error("The joining date must be greater than contract start date.")
+        return
+      }      
+      if(isValid){
+        let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
+        if (result?.statusCode === HTTPStatusCode.OK) {
+          setIsLoading(false);
+          setShowAMModal(false);
+          callAPI(HRID);
+          setIsLoading(false);
+        }
       }
-      setIsLoading(false);
     },
     [getData, engagementReplacement]
   );
@@ -339,6 +349,41 @@ export default function LegalPreOnboarding({
                         </div>
                       </div>
                     )} 
+                   {!getData?.getLegalInfo?.isHRTypeDP && <div className={HRDetailStyle.modalFormCol}>
+                        <div className={HRDetailStyle.timeLabel}>
+                          Joining Date
+                          <span className={HRDetailStyle.reqFieldRed}>*</span>
+                        </div>
+                        <div className={HRDetailStyle.timeSlotItem}>
+                          <CalenderSVG />
+
+                          <Controller
+                            render={({ ...props }) => (
+                              <DatePicker
+                                {...props}
+                                selected={watch("joiningDate")}
+                                onChange={(date) => {
+                                    setValue("joiningDate", date);
+                                    clearErrors(`joiningDate`);
+                                }}
+                                placeholderText="Joining Date"
+                                dateFormat="dd/MM/yyyy"
+                                disabledDate={disabledDate}
+                                control={control}
+                                // value={dayjs(watch('contractEndDate'))}
+                              />
+                            )}
+                            name="joiningDate"
+                            rules={{ required: true }}
+                            control={control}
+                          />
+                          {errors.joiningDate && (
+                            <div className={HRDetailStyle.error}>
+                              * Please select Date.
+                            </div>
+                          )}
+                        </div>
+                      </div>}
                     <div className={HRDetailStyle.modalFormCol}>
                       <div className={HRDetailStyle.onboardingDetailText}>
                         <span>Contract Duration</span>
