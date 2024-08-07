@@ -28,6 +28,7 @@ import { IoChevronDownOutline } from 'react-icons/io5';
 import moment from 'moment';
 import WithLoader from 'shared/components/loader/loader';
 import LogoLoader from 'shared/components/loader/logoLoader';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
 // const DemandFunnelFilterLazyComponent = React.lazy(() =>
 // 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
@@ -47,6 +48,7 @@ const SlaReports = () => {
 	const [getHTMLFilter, setHTMLFilter] = useState(false);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [filtersList, setFiltersList] = useState([]);
+	const [filtersSalesRepo, setFiltersSalesRepo] = useState([]);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
 	const [demandFunnelModal, setDemandFunnelModal] = useState(false);
@@ -274,6 +276,13 @@ const SlaReports = () => {
 		const response = await ReportDAO.slaFilterDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody);
+		}
+		const res = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
+		if (res?.statusCode === HTTPStatusCode.OK) {
+			setFiltersSalesRepo(res?.responseBody?.details?.Data?.salesReps?.map(item =>({
+				text : item?.value,
+				value : item?.text
+			})))
 		}
 	}, []);
 
@@ -785,7 +794,7 @@ const SlaReports = () => {
 							getHTMLFilter={getHTMLFilter}
 							hrFilterList={reportConfig.slaReportFilterList()}
 							filtersType={reportConfig.slaReportFilterTypeConfig(
-								filtersList && filtersList,
+								filtersList && filtersList, filtersSalesRepo && filtersSalesRepo
 							)}
 							firstDay={firstDay}
 							lastDay={lastDay}

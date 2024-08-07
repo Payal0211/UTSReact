@@ -926,7 +926,7 @@ export const reportConfig = {
 		];
 	},
 
-	slaReportFilterTypeConfig: (filterList) => {
+	slaReportFilterTypeConfig: (filterList,filtersSalesRepo) => {		
 		return [
 			{
 				label: 'Stages',
@@ -944,6 +944,12 @@ export const reportConfig = {
 				label: 'Company',
 				name: 'CompanyIDs',
 				child: filterList?.companies,
+				isSearch: true,
+			},
+			{
+				label: 'Sales Representative',
+				name: 'sales_ManagerIDs',
+				child: filtersSalesRepo,
 				isSearch: true,
 			},
 		];
