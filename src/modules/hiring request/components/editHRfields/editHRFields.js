@@ -2839,8 +2839,8 @@ const EditHRFields = ({
                       //   message: `please don't enter the value less than 1`,
                       // },
                       min:{
-                        value: isFreshersAllowed ? 1 : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : 1) ,
-                        message: `please enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `atlest 1`}`,
+                        value: isFreshersAllowed ? 1 : ((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : 1) ,
+                        message: `please enter the value ${(watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `atlest 1`}`,
                       }
                     }}
                     disabled={watch("budget")?.value !== "1"}
@@ -2858,8 +2858,8 @@ const EditHRFields = ({
                     validationSchema={{
                       required: "please enter the minimum budget.",                   
                       min:{
-                        value: isFreshersAllowed ? 1 : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : 1) ,
-                        message: `please enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `atlest 1`}`,
+                        value: isFreshersAllowed ? 1 : ((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : 1) ,
+                        message: `please enter the value ${(watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `atlest 1`}`,
                       }
                     }}
                     disabled={watch("budget")?.value !== "2"}
@@ -2882,8 +2882,8 @@ const EditHRFields = ({
                       //   message: "Budget should be more than minimum budget.",
                       // },
                       min:{
-                        value: isFreshersAllowed ? +watch("minimumBudget") : (watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : +watch("minimumBudget")) ,
-                        message: `please enter the value ${watch("availability")?.value === "Full Time" ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `more than minimum budget`}`,
+                        value: isFreshersAllowed ? +watch("minimumBudget") : ((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : +watch("minimumBudget")) ,
+                        message: `please enter the value ${(watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `more than minimum budget`}`,
                       }
                     }}
                     disabled={watch("budget")?.value !== "2"}
