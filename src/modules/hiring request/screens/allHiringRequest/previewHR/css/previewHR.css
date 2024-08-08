@@ -7,7 +7,24 @@
     height: 95px !important;
     min-height: 85px;
 }
-
+.formFields{
+    margin-top: 20px;
+  }
+  
+  .formFields .label{
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    color: #232323;
+    margin-bottom: 8px;
+  }
+  
+  .formFields .label.error{
+    color: #E03A3A;
+    margin: 0 0 8px;
+  }
+  
 /* Post New Job Modal Css Start */
 .PostNewJobModal {
     margin: 24px 0;
@@ -166,6 +183,109 @@
 
 .PostNewJobModal .ql-container.ql-snow {
     border-radius: 0px 0px 8px 8px;
+}
+.formFields .form-group label {
+    color: #676767;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+.PreviewpageMainWrap .previewstepBox{
+    background:#fbfbfb;
+    border: 1px solid #67676752;
+    margin: 0px 0 30px;
+    border-radius: 16px;
+    padding: 16px 24px;
+}
+
+.PreviewpageMainWrap .previewstepBox li{
+    padding-left: 0px;
+}
+
+.previewstepBox li.canJobLocInfoBox{
+    width: 100% !important;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.previewstepBox .canJobLocInfoBox:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    bottom: 0;
+    left: -10px;
+    background: #fff;
+    border-radius: 0 8px 8px 8px;
+    pointer-events: none;
+}
+
+.previewstepBox .canJobLocInfoBox .form-group{
+    position: relative;
+}
+
+.previewstepBox .canJobLocInfoBox .mt-0{
+    margin-top: 0 !important;
+}
+
+.canJobLocInfoBtn .downArrowBtn {
+    width: 24px;
+    height: 18px;
+    background: #FFDA30;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.canJobLocInfoBtn.showInfo .downArrowBtn img {
+    transform: rotateX(180deg);
+}
+
+.canJobLocInfoBtn .downArrowBtn img {
+    transition: all 0.35s ease 0s;
+    min-width: 10px !important;
+}
+
+.previewHRModal .canJobLocInfoBox .ant-select .ant-select-selector>.ant-select-selection-search{
+    left: 0;
+}
+
+.previewstepBox .canJobLocInfoInner{
+    position: relative;
+    z-index: 1;
+}
+
+.previewstepBox .canJobLocInfoInner:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    bottom: -20px;
+    left: -10px;
+    background: #fff;
+    border-radius: 8px 8px 0 0;   
+    z-index: -1;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.previewstepBox .showInfo .canJobLocInfoInner:before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.previewstepBox .canJobLocInfoBox .prevSkillTwopart {
+    gap: 0;
+}
+
+.previewstepBox .canJobLocInfoBox .prevSkillTwopart .SlillBtnBox li {
+    padding: 6px 14px;
+    width: auto;
 }
 
 /* Post job Preview Css End */
@@ -1329,7 +1449,7 @@
     border: 1px solid #67676752;
     margin: 0px 0 30px;
     border-radius: 16px;
-    padding: 16px 10px 16px 24px;
+    padding: 16px;
     position: relative;
     gap: 20px;
     flex-wrap: wrap;
@@ -1725,7 +1845,6 @@
 @media only screen and (max-width: 1200px) {
     .PreviewpageMainWrap .previewstepBox {
         gap: 15px;
-        padding: 15px 10px;
     }
 
     .PreviewpageMainWrap .previewstepBox li {

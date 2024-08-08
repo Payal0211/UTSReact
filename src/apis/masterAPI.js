@@ -1015,5 +1015,31 @@ export const MasterAPI = {
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.downloadResumeAPI');
 		}
-	}
+	},
+	getAutoCompleteCityState: async function (city,{ signal }) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + MastersAPI.GET_AUTO_COMPLETE_CITY_STATE +"?city="+ city ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest({ signal });
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.updateRole');
+		}
+	},
+	getNearByCities: async function (LocationID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + MastersAPI.GET_NEAR_BY_CITIES +"?LocationID="+ LocationID ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.updateRole');
+		}
+	},
 };

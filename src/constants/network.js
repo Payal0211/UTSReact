@@ -223,6 +223,8 @@ export class MastersAPI {
 	static EDIT_TIMEZONE = 'EditTimeZone'
 	static UPDATE_ROLE = 'UpdateRole'
 	static TIMEZONEMASTER = 'GetTimeZoneMaster'
+	static GET_AUTO_COMPLETE_CITY_STATE = 'GetAutoCompleteCityStateWise'
+	static GET_NEAR_BY_CITIES = 'GetNearByCities'
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';

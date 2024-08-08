@@ -4,10 +4,10 @@ import "./css/previewHR.css";
 import 'react-quill/dist/quill.snow.css'
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import infosmallIcon from "assets/svg/infoSmallIcon.svg";
 import EditnewIcon from "assets/svg/editnewIcon.svg";
-
+import SmallDownArrow from "assets/svg/smallDownArrow.svg";
 import businessIconImage from "assets/svg/businessIcon.svg";
 import umbrellaIconImage from "assets/svg/umbrellaIcon.svg";
 import clockIconImage from "assets/svg/clockIcon.svg";
@@ -26,6 +26,7 @@ import infoIcon from "assets/svg/infoIcon.svg";
 import rightGreen from "assets/svg/rightGreen.svg";
 import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, EngOptions, sanitizeLinks, compensationOptions, industryOptions, seriesOptions, monthOptions, foundedIn, formatSkill ,isEmptyOrWhitespace} from "./services/commonUsedVar";
 // import { DeleteCultureImage, DeleteYoutubeLink, UpdateDetails, getCompanyPerks } from "../../../services/companyProfileApi";
+import debounce from 'lodash.debounce';
 
 import deleteIcon from "assets/svg/delete.svg";
 import DeleteIcon from "assets/svg/delete-icon.svg";
@@ -80,11 +81,13 @@ function PreviewHRModal({
   const [iseditNoticePeriod, setisEditNoticePeriod] = useState(false);
   const [editNoticePeriod, setEditNoticePeriod] = useState({ howsoon: "" });
   const [iseditLocation, setisEditLocation] = useState(false);
-  const [editLocation, setEditLocation] = useState({
-    workingModeId: "",
-    city: "",
-    country: "",
-  });
+  const [editLocation, setEditLocation] = useState({workingModeId: "",
+    JobLocation:"",
+    FrequencyOfficeVisitID:null,
+    IsOpenToWorkNearByCities:null,
+    NearByCities:[],
+    ATS_JobLocationID:null,
+    ATS_NearByCities:""});
   const [country, setCountry] = useState([]);
   const [iseditExp, setisEditExp] = useState(false);
   const [editExp, seteditExp] = useState("");
@@ -118,6 +121,9 @@ function PreviewHRModal({
     timeZoneFromTime: "",
     timeZoneEndTime: "",
   });
+  const[frequencyData,setFrequencyData] = useState([]);
+  const[nearByCitiesData,setNearByCitiesData] = useState([]);
+  const[locationList,setLocationList] = useState([]);
 
   const [CurrencyList, setCurrencyList] = useState([]);
   const [isFreshersAllowed, setIsFreshersAllowed] = useState(false)
@@ -1275,30 +1281,6 @@ function PreviewHRModal({
     }
   };
 
-  const getcountryData = async () => {
-    setIsLoading(true)
-    let res = await  MasterDAO.getCountryByCityRequestDAO(editLocation.city)
-
-    if (res?.statusCode == 200) {
-      let _list = [];
-      for (let val of res?.responseBody?.details
-        ) {
-        let obj = {};
-        obj.label = val.country;
-        obj.value = val.id;
-        _list.push(obj);
-      }
-      if (_list.length === 1) {
-        setEditLocation({
-          ...editLocation,
-
-          country: _list[0].value,
-        });
-      }
-      setCountry(_list);
-    }
-    setIsLoading(false);
-  };
 
   const deleteHRPOC =async (pocID)=>{
     const result = await MasterDAO.deletePOCUserDAO(pocID,previewIDs?.hrID);
@@ -1308,28 +1290,42 @@ function PreviewHRModal({
 
   const updateLocation = async () => {
     let isValid = true;
-    let _errors = { ...error };
-
-    if ((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !editLocation.city) {
-      _errors.city = "Please select city";
-      isValid = false;
-    }
-    if ((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !editLocation.country) {
-
-      _errors.country = "Please select country";
-      isValid = false;
-    }
-    setError(_errors);
+        let _errors = { ...error };
+   
+        if (!editLocation.workingModeId) {
+          _errors.workingModeId = "Please select location."
+          isValid = false;
+        }
+        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !editLocation?.JobLocation ){
+            _errors.JobLocation = "Please select job location."
+            isValid = false;
+        }
+        if(editLocation.workingModeId === 2 && !editLocation?.FrequencyOfficeVisitID){
+            _errors.FrequencyOfficeVisitID = "Please select frequency of office visits."
+            isValid = false;
+        }
+        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && editLocation?.IsOpenToWorkNearByCities === null){
+            _errors.IsOpenToWorkNearByCities = "Please select open to applicants from nearby cities."
+            isValid = false;
+        }        
+        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3)  && editLocation?.IsOpenToWorkNearByCities && (!editLocation?.NearByCities || editLocation?.NearByCities?.length  === 0)){
+            _errors.NearByCities = "Please enter near by cities."
+            isValid = false;
+        }
+        setError(_errors);
     if (isValid) {
       setError({});
+      const selectedLabels = nearByCitiesData?.filter(item => editLocation?.NearByCities?.includes(item.value))?.map(item => item.label);
+      const nonNumericValues = editLocation?.NearByCities?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));      
       let payload = {
-        workingModeId: editLocation.workingModeId,
-        country:
-          editLocation.workingModeId === 2 || editLocation.workingModeId === 3
-            ? editLocation?.country?.toString()
-            : null,
-        city: editLocation.workingModeId === 2 || editLocation.workingModeId === 3 ? editLocation?.city : null,
-      };
+        workingModeID: editLocation.locationValue === 'Hybrid' ? 2 :editLocation.locationValue === 'Onsite' ? 3 : editLocation.workingModeId,
+        JobLocation : (editLocation.workingModeId === 2 || editLocation.workingModeId === 3) ? editLocation?.JobLocation : null,
+        FrequencyOfficeVisitID : editLocation.workingModeId === 2 ? editLocation?.FrequencyOfficeVisitID : null,
+        IsOpenToWorkNearByCities : editLocation?.IsOpenToWorkNearByCities,                        
+        NearByCities : selectedLabels?.concat(nonNumericValues)?.join(','),            
+        ATS_JobLocationID : editLocation?.ATS_JobLocationID,
+        ATS_NearByCities : editLocation?.NearByCities?.join(','),
+      }; 
 
       setIsLoading(true)
       let result = await updateJobPostDetail(payload);
@@ -1339,18 +1335,22 @@ function PreviewHRModal({
           type: "success",
           content: "Location Updated",
         });
-        setJobPreview((prev) => ({
-          ...prev,
-          ...{
-            workingModeId: editLocation.workingModeId,
-            country:
-              editLocation.workingModeId === 2 || editLocation.workingModeId === 3
-                ? editLocation?.country?.toString()
-                : null,
-            city: editLocation.workingModeId === 2 || editLocation.workingModeId === 3 ? editLocation?.city : null,
-          },
-        }));
-        // setEditLocation({ workingModeId: "", city: "", country: "" });
+        setJobPreview((prev) => ({...prev,  
+          workingModeId: editLocation.workingModeId ? editLocation.workingModeId  : null ,
+          jobLocation:(editLocation.workingModeId === 2 || editLocation.workingModeId === 3) ? editLocation?.JobLocation : null,
+          frequencyOfficeVisitID: editLocation.workingModeId === 2 ? editLocation?.FrequencyOfficeVisitID : null,
+          isOpenToWorkNearByCities:editLocation?.IsOpenToWorkNearByCities,
+          nearByCities:selectedLabels?.concat(nonNumericValues)?.join(','),
+          atS_JobLocationID:editLocation?.ATS_JobLocationID,
+          atS_NearByCities:editLocation?.NearByCities?.join(',')
+         }));
+         setEditLocation({workingModeId: "",
+          JobLocation:"",
+          FrequencyOfficeVisitID:null,
+          IsOpenToWorkNearByCities:null,
+          NearByCities:[],
+          ATS_JobLocationID:null,
+          ATS_NearByCities:""});
       }
       setIsLoading(false)
     }
@@ -1456,6 +1456,92 @@ function PreviewHRModal({
     }
   };
 
+  const fetchController = useRef();
+
+  const onChangeLocation = async (val) => {
+    if (typeof val === 'number') return;
+    if (fetchController.current) {
+        fetchController.current.abort();
+    }
+    setEditLocation((prev) => ({
+        ...prev,
+        JobLocation: val,
+        NearByCities: [],
+    }));
+    setError({...error,['JobLocation'] : ""});
+    fetchLocations(val);      
+  }; 
+
+  const fetchLocations = useCallback(
+    debounce(async (val) => {
+        if (val.trim() === '') return; // Avoid calling the API if the input is empty
+        const controller = new AbortController();
+        const signal = controller.signal;
+        fetchController.current = controller;
+
+        try {
+            setIsLoading(true);
+            const _res = await MasterDAO.getAutoCompleteCityStateDAO(val, { signal });
+            setIsLoading(false);
+            let locations = [];
+            if (_res?.statusCode === 200) {
+                locations = _res?.responseBody?.details?.map((location) => ({
+                    value: location.row_ID,
+                    label: location.location,
+                }));
+                setLocationList(locations || []);
+            } else {
+                setLocationList([]);
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('Fetch aborted');
+            } else {
+                console.error('Error fetching locations:', error);
+                setLocationList([]);
+            }
+        }
+    }, 300),
+    []
+  );
+
+  const getCities = async (locationId) => {
+    setIsLoading(true);
+    let _res = await MasterDAO.getNearByCitiesDAO(locationId);
+    setIsLoading(false);
+    let citiesValues = [];
+    if (_res?.statusCode === 200) {                
+        citiesValues = _res?.responseBody?.details?.map((city) => ({
+            value: city.nearByDistrictID,
+            label: city.nearByDistrictName,
+        }));                       
+        return citiesValues || [];                                                            
+    }else{
+      return []
+    }    
+  }
+
+  const handleBlur = () => {
+    const isValidSelection = locationList?.some(
+        (location) => location.label === editLocation?.JobLocation
+    );
+  
+    if (!isValidSelection) {
+        setEditLocation((prev) => ({
+            ...prev,
+            JobLocation: '',
+            ATS_JobLocationID: null,
+            NearByCities:[nearByCitiesData?.length>0 && nearByCitiesData[0]?.label] 
+        }));
+        // setError('Please select a valid location from the list.');
+    }else{
+      setEditLocation((prev) => ({
+        ...prev,
+        NearByCities:[nearByCitiesData?.length>0 && nearByCitiesData[0]?.label] 
+    }));
+    }
+  };
+
   const updateUserInfo = async () => {    
     // sethrpocUserID([...jobPreview?.hrpocUserID?.map((item)=>({
     //   value : item?.id,
@@ -1483,7 +1569,7 @@ function PreviewHRModal({
     sethrpocUserID([]);
     setIsLoading(false);
 };
-
+  
   const updateExp = async () => {
     let valid = true;
     let _errors = { ...error };
@@ -1642,7 +1728,7 @@ function PreviewHRModal({
                           </div>
                         </div>
                       )}
-
+                          
                       <div className="FieldsBoxInner-Content">
                         <ul className="previewstepBox">
                           <li>
@@ -1741,28 +1827,41 @@ function PreviewHRModal({
                               }}
                             ><img src={EditnewIcon} /></span>
                           </li>
-                          <li>
-                            <img src={locationIconImage} className="business" />
-                            {jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3
-                              ? jobPreview?.countryID ? `${jobPreview?.city ? jobPreview?.city : ""},${jobPreview?.countryID ? jobPreview?.countryID : ""}` : `${jobPreview?.city ? jobPreview?.city : ""}`
-                              : "Work from anywhere"}
-
-
-                            <span className="editNewIcon"
-                              onClick={() => {
-                                  setisEditLocation(true);
-                                  getcountryData();
-                                setEditLocation({
-                                  ...editLocation,
-                                  workingModeId: jobPreview?.workingModeId,
-                                  city: jobPreview?.city,
-                                  country: jobPreview?.country,
-                                  countryID: jobPreview?.countryID,
-                                });
-                              }}
-                            ><img src={EditnewIcon} /></span>
-
-                          </li>
+                          <li className={`canJobLocInfoBtn ${iseditLocation ? "showInfo" : ""}`}>
+                                        <div className="canJobLocInfoInner">
+                                          <img src={locationIconImage} className="business" />{" "}
+                                          {jobPreview?.workingModeId === 1 ? "Work from anywhere" : jobPreview?.workingModeId == 2 ? "Hybrid" :jobPreview?.workingModeId == 3 ?  "On-site" : "-"}
+                                          <span className="editNewIcon" onClick={() => { 
+                                              setisEditLocation(true);
+                                              // getcountryData();
+                                              setEditLocation({
+                                                ...editLocation,
+                                                workingModeId: jobPreview?.workingModeId,
+                                                JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
+                                                FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
+                                                IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
+                                                NearByCities : jobPreview?.nearByCities?.split(','),            
+                                                ATS_JobLocationID : jobPreview?.atS_JobLocationID,
+                                                ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
+                                              });
+                                          }} >  <img src={EditnewIcon}/></span>
+                                          <span className="downArrowBtn"  onClick={() => {
+                                            setisEditLocation(!iseditLocation);
+                                            setEditLocation({
+                                              ...editLocation,
+                                              workingModeId: jobPreview?.workingModeId,
+                                              JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
+                                              FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
+                                              IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
+                                              NearByCities : jobPreview?.nearByCities?.split(','),            
+                                              ATS_JobLocationID : jobPreview?.atS_JobLocationID,
+                                              ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
+                                            });
+                                          }}>
+                                            <img src={SmallDownArrow} alt="small-down-arrow"/>
+                                          </span> 
+                                        </div> 
+                                      </li>
                           <li>
                             <img src={awardIconImage} className="business" />
                             {jobPreview?.isFresherAllowed ? 'Fresher' : jobPreview?.experienceYears !== ''
@@ -1803,6 +1902,194 @@ function PreviewHRModal({
                               ><img src={EditnewIcon} /></span>
                             </li>
                           </Tooltip>
+                          {iseditLocation && 
+                            <li className="canJobLocInfoBox">
+                              <div className="row">
+                                <div className="col-12">
+                                  <div className="form-group">
+                                    <label>Change job location </label>
+                                    <div>
+                                      <Radio.Group
+                                        className="customradio newradiodes small"
+                                        name="workingModeID"
+                                        value={editLocation.workingModeId}
+                                        onChange={(e) => {
+                                          setEditLocation({
+                                            ...editLocation,
+                                            workingModeId: e.target.value,
+                                            JobLocation:"",
+                                            FrequencyOfficeVisitID:null,
+                                            IsOpenToWorkNearByCities:null,
+                                            NearByCities:[],
+                                            ATS_JobLocationID:null,
+                                            ATS_NearByCities:""
+                                          });
+                                        }}
+                                      >
+                                        <Radio.Button value={1}>
+                                          Remote{" "}
+                                          <img
+                                            className="checkIcon"
+                                            src={CheckRadioIcon}
+                                            alt="check"
+                                          />
+                                        </Radio.Button>
+                                        <Radio.Button value={3}>
+                                          On-site{" "}
+                                          <img
+                                            className="checkIcon"
+                                            src={CheckRadioIcon}
+                                            alt="check"
+                                          />
+                                        </Radio.Button>
+                                        <Radio.Button value={2}>
+                                          Hybrid{" "}
+                                          <img
+                                            className="checkIcon"
+                                            src={CheckRadioIcon}
+                                            alt="check"
+                                          />
+                                        </Radio.Button>
+                                      </Radio.Group>
+                                    </div>
+                                  </div>
+                                </div>
+                                {editLocation.workingModeId !== 1 && (
+                                  <>
+                                    <div className="col-md-6">
+                                        <div className={`form-group`}>
+                                            <h3>Location <span>*</span></h3>
+                                            <div className='cutomeAutoCompliteArrow'>
+                                                <AutoComplete
+                                                    value={editLocation?.JobLocation}
+                                                    options={locationList ?? []}
+                                                    onChange={onChangeLocation}
+                                                    onSelect={async (value, option) => {                                                                                                                                    
+                                                      let citiesVal = await getCities(option.value);                                                                 
+                                                      setEditLocation({...editLocation,
+                                                        JobLocation: option.label,
+                                                        ATS_JobLocationID: option.value,
+                                                        NearByCities:[citiesVal?.length>0 && citiesVal[0]?.label]  
+                                                      });                                                                                                                                                                                                                                                                                              
+                                                      setNearByCitiesData(citiesVal);                                                                 
+                                                      setError({...error,['JobLocation'] : ""});                                                           
+                                                  }}                       
+                                                    onBlur={handleBlur}                                 
+                                                    placeholder='Select location'
+                                                    className='customSelectAutoField'                                                       
+                                                />
+                                                <span className='downArrowCus'></span>
+                                            </div>
+                                            {error?.JobLocation && <span className='error'>{error?.JobLocation}</span>}
+                                        </div>
+                                    </div>
+                                    {editLocation?.workingModeId === 2 && 
+                                    <div className="col-md-6">
+                                          <div className={`form-group`}>
+                                              <h3>Frequency of Office Visits <span>*</span></h3>
+                                              <Select
+                                                  placeholder='Select frequency of office visits'
+                                                  tokenSeparators={[","]}
+                                                  onSelect={(e) => {
+                                                      setEditLocation((prev) => ({
+                                                          ...prev,
+                                                          FrequencyOfficeVisitID: e,
+                                                      }));
+                                                      setError({...error,['FrequencyOfficeVisitID'] : ""});
+                                                  }}                                                         
+                                                  value={editLocation?.FrequencyOfficeVisitID}
+                                                  options={frequencyData}
+                                              />
+                                              {error?.FrequencyOfficeVisitID && <span className='error'>{error?.FrequencyOfficeVisitID}</span>}
+                                          </div>
+                                    </div>}
+                                    <div className="col-12">
+                                        <div className={`form-group`}>
+                                            <h3>Open to applicants from other cities<span>*</span></h3>
+                                            <Radio.Group
+                                                className="customradio newradiodes small"
+                                                value={editLocation?.IsOpenToWorkNearByCities}
+                                                onChange={async (e) => {
+                                                    setEditLocation({...editLocation,IsOpenToWorkNearByCities:e.target.value})
+                                                    // if(e.target.value && editLocation?.workingModeId === 2){                                                                
+                                                    //     getCities(editLocation?.ATS_JobLocationID);
+                                                    // }
+                                                    setError({...error,['IsOpenToWorkNearByCities'] : ""});
+                                                }}
+                                            >
+                                                <Radio.Button value={true}>
+                                                Yes <img className='checkIcon' src={CheckRadioIcon} alt='check' />
+                                                </Radio.Button>
+                                                <Radio.Button value={false}>
+                                                No <img className='checkIcon' src={CheckRadioIcon} alt='check' />
+                                                </Radio.Button>                                               
+                                            </Radio.Group>
+                                            {error?.IsOpenToWorkNearByCities && <span className='error'>{error?.IsOpenToWorkNearByCities}</span>}
+                                        </div>
+                                    </div>
+                                    {editLocation?.IsOpenToWorkNearByCities &&
+                                    <div className="col-12">
+                                        <div className={`form-group prevSkillTwopart`}>
+                                            <h3>Other cities</h3>
+                                            <Select
+                                                mode="tags"
+                                                style={{ width: "100%" }}
+                                                value={editLocation?.NearByCities}
+                                                options={nearByCitiesData}
+                                                onChange={(values, _) => {
+                                                    setEditLocation({ ...editLocation, NearByCities: values });
+                                                    setError({...error,['NearByCities'] : ""});
+                                                }}
+                                                placeholder="Enter cities"
+                                                tokenSeparators={[","]}
+                                                open={false}
+                                                suffixIcon={false}
+                                            />                                                                                                  
+                                            {error?.NearByCities && <span className='error'>{error?.NearByCities}</span>}  
+                                            {editLocation?.workingModeId === 2 && 
+                                            <ul className="SlillBtnBox">
+                                              {nearByCitiesData
+                                                ?.filter(option => !editLocation?.NearByCities?.includes(option.label))
+                                                .map((option) =>{                                                                                                                   
+                                                  return (
+                                                    <li key={option.value} style={{ cursor: "pointer" }} onClick={() => {  
+                                                      let updatedCities = [...editLocation?.NearByCities, option.value];
+                                                      setEditLocation({...editLocation, NearByCities: updatedCities});
+                                                      setError({...error, ['NearByCities']: ""});
+                                                    }}>
+                                                      <span>{option.label} <img src={plusImage} loading="lazy" alt="star" /></span>
+                                                    </li>
+                                                  )
+                                                } )}
+                                            </ul>
+                                          }                                                                  
+                                          
+                                        </div>
+                                    </div>}
+                                  </>
+                                )}
+                                <div className="buttonEditGroup col-12 mb-2 mt-0">
+                                  <button
+                                    type="button"
+                                    class="btnPrimary blank"
+                                    onClick={() => {
+                                      setisEditLocation(false);
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btnPrimary"
+                                    onClick={() => updateLocation()}
+                                  >
+                                    SAVE
+                                  </button>
+                                </div>
+                              </div>
+                            </li>
+                          }
+
                         </ul>
 
                         <div className="prevSkillTwopart">
@@ -2022,6 +2309,7 @@ function PreviewHRModal({
                           </div>
                         </div>
                       </div>
+                     
                     </div>
                   </div>
                 </div>
@@ -3902,7 +4190,7 @@ function PreviewHRModal({
       </Modal>
 
       {/*  Location Modal */}
-      <Modal
+      {/*  <Modal
         centered
         open={iseditLocation}
         onCancel={() => {
@@ -4040,7 +4328,7 @@ function PreviewHRModal({
             </div>
           </div>
         </div>
-      </Modal>
+      </Modal>*/}
 
       {/*  Experience Modal */}
       <Modal
