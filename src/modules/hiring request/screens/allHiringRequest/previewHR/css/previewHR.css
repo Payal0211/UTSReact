@@ -685,7 +685,37 @@
     max-height: calc(100vh - 98px);
     padding: 8px 0 20px;
 }
+.PreviewModal-Header .PreviewBtnHead{
+    display: flex;
+    gap: 12px;
+    padding-right: 12px;
+}
 
+.PreviewStickyContent .btnPrimary{
+        color: #232323;
+        font-style: normal;
+        line-height: normal;
+        font-weight: 700;
+        text-transform: uppercase;
+        border: 0;
+        transition: 0.5s all;
+        background: #FFDA30;
+        padding: 0 20px;
+        font-size: 18px;
+        display: inline-block;
+        text-align: center;
+        min-height: 40px;
+        /* line-height: 46px; */
+        border-radius: 27px;
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+        cursor: pointer;
+}
+
+.PreviewpageMainWrap .Post-Header{
+    padding: 24px 58px 0px;
+}
 
 @media only screen and (max-width: 767px) {
     .poup-new-content .customradio.ant-radio-group {

@@ -1,4 +1,4 @@
-import { AutoComplete, Avatar, Checkbox, Radio, Select, Space, Spin, Tooltip, message } from "antd";
+import { AutoComplete, Avatar, Checkbox, Popconfirm, Radio, Select, Space, Spin, Tooltip, message } from "antd";
 import Modal from "antd/es/modal/Modal";
 import "./css/previewHR.css";
 import 'react-quill/dist/quill.snow.css'
@@ -39,6 +39,8 @@ import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { MasterDAO } from "core/master/masterDAO";
 import YouTubeVideo from "modules/client/components/previewClientDetails/youTubeVideo";
 import { NetworkInfo } from "constants/network";
+import confirm from "antd/es/modal/confirm";
+
 // import "../../CompanyDetails/companyDetails.css";
 function PreviewHRModal({
   setViewPosition,
@@ -115,6 +117,10 @@ function PreviewHRModal({
   const [iseditShift, setisEditShift] = useState(false);
   const [companyPerks, setCompanyPerks] = useState([]);
   const [jobTypes,setJobTypes] = useState([]);
+  const[isAutogenerateQuestions,setIsAutogenerateQuestions] = useState(false);
+  const[open,setIsOpen] = useState(false);
+  const [isSaveAllChanges,setIsSaveAllChanges] = useState(false);
+  const [isAnyFieldUpdate,setIsAnyFieldUpdate] = useState(false);
 
   const [editShift, setEditShift] = useState({
     timeZone: "",
@@ -213,8 +219,9 @@ function PreviewHRModal({
     getTimeZoneValues();
     getStartEndTimeData();
     GetPayrollType();
-    getPOCUsers()
-    getJobType()
+    getPOCUsers();
+    getJobType();
+    getFrequencyData();
     // getLocationInfo();
     // getPostPreview({
     //   contactId:_user.LoggedInUserID,
@@ -494,7 +501,7 @@ function PreviewHRModal({
           type: "success",
           content: "Role Updated",
         });
-
+        setIsAutogenerateQuestions(true);
         setJobPreview((prev) => ({ ...prev, roleName: editRoleName }));
         setiseditRoleName(false);
         setError({});
@@ -617,7 +624,7 @@ function PreviewHRModal({
           type: "success",
           content: "Skills Updated",
         });
-
+        setIsAutogenerateQuestions(true);
         setJobPreview((prev) => ({
           ...prev,
           ...{
@@ -734,7 +741,8 @@ function PreviewHRModal({
     });
 
     let result = await allCompanyRequestDAO.updateHrPreviewDetailsDAO(payload);
-
+    setIsAnyFieldUpdate(true);
+    setIsSaveAllChanges(false);
     return result;
   };
 
@@ -835,6 +843,7 @@ function PreviewHRModal({
           type: "success",
           content: "job Description Updated",
         });
+        setIsAutogenerateQuestions(true);
         setJobPreview(prev => ({ ...prev, whatweoffer: editWhatWeOffer }))
         setisEditWhatWeoffer(false);
       }
@@ -1244,6 +1253,14 @@ function PreviewHRModal({
     setStartEndTime(_list);
   };
 
+  const getFrequencyData = async () => {
+    let response = await  MasterDAO.getFrequencyDAO();    
+    setFrequencyData(response?.responseBody?.details?.map((fre) => ({
+      value: fre.id,
+      label: fre.frequency,                
+  })))
+  }
+
   const getJobType = async () => {
     let response = await  MasterDAO.getJobTypesRequestDAO();        
     setJobTypes(response?.responseBody);
@@ -1599,6 +1616,7 @@ function PreviewHRModal({
           type: "success",
           content: "Experience Updated",
         });
+        setIsAutogenerateQuestions(true);
         setJobPreview((prev) => ({
           ...prev,
           experienceYears: editExp,
@@ -1616,6 +1634,72 @@ function PreviewHRModal({
       GetHiringTypePricing(editDuration.employmentType);
     }
   }, [editDuration.employmentType]);
+
+  const UpdateSaveDataToATS = async() => {    
+    if(isAutogenerateQuestions && jobPreview?.screeningQuestionsExternallyModified){  
+      setIsOpen(true);        
+    }else{
+      setIsLoading(true);
+      setIsSaveAllChanges(true);
+      let res = await MasterDAO.updateJobPostDataToATSDAO(hrIdforPreview,null);
+      if (res?.statusCode === 200) {
+        messageApi.open({
+          type: "success",
+          content: "All edits are updated successfully",
+        });
+      }
+      setIsLoading(false);
+      setViewPosition(false);
+      setisEditRolesAndRes(false)
+      setisEditRequirenments(false)
+      setisEditSkills(false)
+      setChangeStatus(true)
+      setEditWhatWeOffer('')
+      setIsAutogenerateQuestions(false)       
+    }    
+  }
+  const handleOk = async () => {
+    setIsOpen(false);
+    setIsLoading(true);
+    setIsSaveAllChanges(true);
+    let res = await MasterDAO.updateJobPostDataToATSDAO(hrIdforPreview,true);
+    if (res?.statusCode === 200) {
+      messageApi.open({
+        type: "success",
+        content: "All edits are updated successfully",
+      });
+    }
+    setIsLoading(false);
+    setIsAutogenerateQuestions(false); 
+    setViewPosition(false);
+    setisEditRolesAndRes(false)
+    setisEditRequirenments(false)
+    setisEditSkills(false)
+    setChangeStatus(true)
+    setEditWhatWeOffer('')
+    
+  }  
+  const handleCancel = async () => {
+    setIsOpen(false);
+    setIsLoading(true);
+    setIsSaveAllChanges(true);
+    let res = await MasterDAO.updateJobPostDataToATSDAO(hrIdforPreview,false);
+    if (res?.statusCode === 200) {
+      messageApi.open({
+        type: "success",
+        content: "All edits are updated successfully",
+      });
+    }   
+    setIsLoading(false);    
+    setIsAutogenerateQuestions(false);
+    setViewPosition(false);
+    setisEditRolesAndRes(false)
+    setisEditRequirenments(false)
+    setisEditSkills(false)
+    setChangeStatus(true)
+    setEditWhatWeOffer('')
+  }
+
 
   const GetHiringTypePricing = async () => {
     setIsLoading(true);
@@ -1646,13 +1730,44 @@ function PreviewHRModal({
         open={ViewPosition}
         onOk={() => setViewPosition(false)}
         onCancel={() => {
-          setViewPosition(false);
-          setError({});
-          setisEditRolesAndRes(false)
-          setisEditRequirenments(false)
-          setisEditSkills(false)
-          setChangeStatus(true)
-          setEditWhatWeOffer("");
+          if(isAnyFieldUpdate && !isSaveAllChanges){
+            confirm({
+              title: 'Please save your changes before leaving this page to avoid losing any unsaved data.',
+              okText: 'SAVE CHANGES',
+              okButtonProps: {
+                style: {
+                  fontSize:"14px",
+                  fontWeight:700,                              
+                  height: "41px",
+                  minHeight:"46px",
+                  color: "#232323",
+                  fontStyle: "normal",
+                  lineHeight: "normal",                                                            
+                  border: 0,
+                  transition: "0.5s all",
+                  background: "#FFDA30",
+                  padding: "0 25px",                                                            
+                  borderRadius: "27px",                                    
+                },
+              },
+              okCancel:"",
+              onOk() {
+                UpdateSaveDataToATS();
+              },    
+              onCancel(){
+
+              }                           
+            });  
+          }else{
+            setViewPosition(false);
+            setError({});
+            setisEditRolesAndRes(false)
+            setisEditRequirenments(false)
+            setisEditSkills(false)
+            setChangeStatus(true)
+            setEditWhatWeOffer("");          
+            setIsAutogenerateQuestions(false)
+          }                 
         }}
         footer={null}
         width={1080}
@@ -1660,19 +1775,59 @@ function PreviewHRModal({
         maskClosable={false}
       >
 
-        <div className="PostNewJobModal-Content poup-new-content">
-        
+        <div className="PostNewJobModal-Content poup-new-content">      
        
           <div className="PreviewpageMainWrap">
             <div className="PreviewStickyContent">
-
-              <div className="Post-Header">
-                <h4>Preview/Edit HR</h4>
-              </div>
-
-              {ispreviewLoading ? <div style={{display:'flex',justifyContent:'center'}}><Space size="large">
-          <Spin size="large" />
-        </Space> </div>  :  <div className="PostJobStepSecondWrap">
+              
+                <div className="Post-Header Post-Header-Edit-Modal" style={{display:"flex",justifyContent:"space-between"}}>
+                  <h4>Preview/Edit HR</h4>
+                  <div className="PreviewBtnHead">              
+                    <Popconfirm                  
+                      title={jobPreview?.totalScreeningQuestions > 10 ? 'There were few custom changes made to AI video vetting questions earlier. Do you want to regenerate the new questions on the basis of new information you edit related to the job ?' : 'There were few custom changes made to AI video vetting questions earlier. Do you want to regenerate the new questions on the basis of new information you edit related to the job ? Upon regeneration there will be a set of at least 10 questions asked to the candidate.'}
+                      open={open}
+                      onConfirm={handleOk}
+                      onCancel={handleCancel}
+                      overlayStyle={{ width: "500px" }}  
+                      okText="Yes" 
+                      cancelText="No" 
+                      okButtonProps={{ style: {
+                        fontSize:"14px",
+                        fontWeight:700,                              
+                        height: "30px",
+                        minHeight:"35px",
+                        color: "#232323",
+                        fontStyle: "normal",
+                        lineHeight: "normal",                                                            
+                        border: 0,
+                        transition: "0.5s all",
+                        background: "#FFDA30",
+                        padding: "0 25px",                                                            
+                        borderRadius: "27px",                                    
+                      }, }} 
+                      cancelButtonProps={{ style: {
+                        fontSize:"14px",
+                        fontWeight:700,                              
+                        height: "30px",
+                        minHeight:"35px",
+                        color: "#232323",
+                        fontStyle: "normal",
+                        lineHeight: "normal",                                                            
+                        border: 0,
+                        transition: "0.5s all",
+                        background: "#FFDA30",
+                        padding: "0 25px",                                                            
+                        borderRadius: "27px",                                    
+                      }, }}                  
+                    >
+                    <button type="button" className="btnPrimary" onClick={() => UpdateSaveDataToATS()}>Save Changes</button>
+                    </Popconfirm>
+                  </div>             
+                </div>
+              {ispreviewLoading ? <div style={{display:'flex',justifyContent:'center'}}>
+                <Space size="large">
+                  <Spin size="large" />
+                </Space> </div>  :  <div className="PostJobStepSecondWrap">
                 <div className="formFields">
                   <div className="formFields-box">
                     <div className="formFields-box-inner">
@@ -3247,13 +3402,40 @@ function PreviewHRModal({
                     type="button"
                     class="btnPrimary"
                     onClick={() => {
-                      // myJobPosts(true);
-                      setViewPosition(false);
-                      setisEditRolesAndRes(false)
-                      setisEditRequirenments(false)
-                      setisEditSkills(false)
-                      setChangeStatus(true)
-                      setEditWhatWeOffer('')
+                      if(isAnyFieldUpdate && !isSaveAllChanges){
+                        confirm({
+                          title: 'Please save your changes before leaving this page to avoid losing any unsaved data.',
+                          okText: 'SAVE CHANGES',
+                          okButtonProps: {
+                            style: {
+                              fontSize:"14px",
+                              fontWeight:700,                              
+                              height: "41px",
+                              minHeight:"46px",
+                              color: "#232323",
+                              fontStyle: "normal",
+                              lineHeight: "normal",                                                            
+                              border: 0,
+                              transition: "0.5s all",
+                              background: "#FFDA30",
+                              padding: "0 25px",                                                            
+                              borderRadius: "27px",                                    
+                            },
+                          },
+                          onOk() {
+                            UpdateSaveDataToATS();
+                          },                               
+                        });  
+                      }else{
+                        setViewPosition(false);
+                        setError({});
+                        setisEditRolesAndRes(false)
+                        setisEditRequirenments(false)
+                        setisEditSkills(false)
+                        setChangeStatus(true)
+                        setEditWhatWeOffer("");          
+                        setIsAutogenerateQuestions(false)
+                      } 
                     }}
                   >
                     close

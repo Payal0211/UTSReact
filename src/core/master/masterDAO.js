@@ -1980,5 +1980,61 @@ export const MasterDAO = {
 				'MasterDAO.getNearByCitiesDAO',
 			);
 		}
+	},
+	getFrequencyDAO : async function () {
+		try {
+			const getFrequencyResponse = await MasterAPI.getFrequency();
+				if (getFrequencyResponse) {
+					const statusCode = getFrequencyResponse['statusCode'];
+					if (statusCode === HTTPStatusCode.OK) {
+						const tempResut = getFrequencyResponse?.responseBody;
+						return {
+							statusCode: statusCode,
+							responseBody: tempResut,
+						};
+					} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+						return getFrequencyResponse;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+						return getFrequencyResponse;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+						let deletedResponse =
+							UserSessionManagementController.deleteAllSession();
+						if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+					}
+				}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getFrequencyDAO',
+			);
+		}
+	},
+	updateJobPostDataToATSDAO : async function () {
+		try {
+			const updateJobPostDataToATSResponse = await MasterAPI.getFrequency();
+				if (updateJobPostDataToATSResponse) {
+					const statusCode = updateJobPostDataToATSResponse['statusCode'];
+					if (statusCode === HTTPStatusCode.OK) {
+						const tempResut = updateJobPostDataToATSResponse?.responseBody;
+						return {
+							statusCode: statusCode,
+							responseBody: tempResut,
+						};
+					} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+						return updateJobPostDataToATSResponse;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+						return updateJobPostDataToATSResponse;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+						let deletedResponse =
+							UserSessionManagementController.deleteAllSession();
+						if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+					}
+				}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.updateJobPostDataToATSDAO',
+			);
+		}
 	}
 };
