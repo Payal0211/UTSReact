@@ -188,7 +188,7 @@ export const allEngagementConfig = {
 							},
 						);
 					}
-					if (param?.isRenewalAvailable === 1 && param?.isRenewalContract === 0 && param?.isOngoing === true) {
+					if (param?.isRenewalAvailable === 1 && param?.isRenewalContract === 0 && param?.isOngoing === false) {
 						listItemData.push({
 							label: 'Renew Engagement',
 							key: 'reNewEngagement',
@@ -326,6 +326,8 @@ export const allEngagementConfig = {
 									result?.feedbackType,
 								),
 								textDecoration: 'underline',
+								display: 'inline-flex',
+								width: 'max-content',
 							}}
 							onClick={() => {
 								setHRAndEngagementId({
@@ -364,6 +366,8 @@ export const allEngagementConfig = {
 										result?.feedbackType,
 									),
 									textDecoration: 'underline',
+									display: 'inline-flex',
+									width: 'max-content',
 								}}
 								onClick={() => {
 									setFeedBackData((prev) => ({
