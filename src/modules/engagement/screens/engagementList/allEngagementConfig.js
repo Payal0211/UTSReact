@@ -326,6 +326,8 @@ export const allEngagementConfig = {
 									result?.feedbackType,
 								),
 								textDecoration: 'underline',
+								display: 'inline-flex',
+								width: 'max-content',
 							}}
 							onClick={() => {
 								setHRAndEngagementId({
@@ -364,6 +366,8 @@ export const allEngagementConfig = {
 										result?.feedbackType,
 									),
 									textDecoration: 'underline',
+									display: 'inline-flex',
+									width: 'max-content',
 								}}
 								onClick={() => {
 									setFeedBackData((prev) => ({
