@@ -1461,7 +1461,8 @@ const HRFields = ({
           return 
         }
         hrFormDetails.IsPostaJob = isPostaJob
-        hrFormDetails.IsProfileView = isProfileView
+        // hrFormDetails.IsProfileView = isProfileView
+        hrFormDetails.IsProfileView = false
         hrFormDetails.IsVettedProfile = isProfileView ? isVettedProfile : null
       }
       if(userCompanyTypeID === 1){
