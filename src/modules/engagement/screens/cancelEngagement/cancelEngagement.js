@@ -184,7 +184,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 				</div>
 
 				{engType === 'Other' &&  <>
-				{closureDate && <div className={allengagementEnd.colMd6} style={{marginBottom:'10px'}}>
+				{!closureDate && <div className={allengagementEnd.colMd6} style={{marginBottom:'10px'}}>
 					<div className={allengagementEnd.timeSlotItemField}>
 						<div className={allengagementEnd.timeLabel}>
 							Last Working Day
