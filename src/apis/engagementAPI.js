@@ -124,6 +124,25 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	getContentCancelEngagementRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_CANCEL_ENGAGEMENT +
+			`?OnBoardID=${talentDetails?.onboardID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getContentCancelEngagementRequest',
+			);
+		}
+	},
 	getAMDetailsRequest: async function (id) {
 		let httpService = new HttpServices();
 		httpService.URL =
