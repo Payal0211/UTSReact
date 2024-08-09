@@ -13,7 +13,7 @@ import HRSelectField from "modules/hiring request/components/hrSelectField/hrSel
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import moment from 'moment/moment';
-import { Checkbox, Skeleton } from 'antd';
+import { Checkbox, Skeleton, Radio } from 'antd';
 
 const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostReasons }) => {
 	const {
@@ -40,13 +40,18 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 	const [engagementReplacement,setEngagementReplacement] = useState({
 		replacementData : false
 	})
+	const [closureDate,setClosureDate] = useState('')
+	const [engType,setEngType] = useState('Backout')
 
 
 	const getEndEngagementHandler = useCallback(async () => {
-		const response =
-			await engagementRequestDAO.getContentEndEngagementRequestDAO({
+		const response = await engagementRequestDAO.getContentEndEngagementRequestDAO({
 				onboardID: talentInfo?.onboardID ?  talentInfo?.onboardID : talentInfo?.OnBoardId ,
 			});
+		const res =	await engagementRequestDAO.getContentCancelEngagementRequestDAO({
+				onboardID: talentInfo?.onboardID ?  talentInfo?.onboardID : talentInfo?.OnBoardId ,
+			});
+		
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setEndEngagementDetails(response?.responseBody?.details)
 			if(response?.responseBody?.details?.contractEndDate){
@@ -56,8 +61,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 			const formattedDate = convertedDate?.format('YYYY-MM-DDTHH:mm:ss');
 			setValue("lastWorkingDate", new Date(formattedDate));
 			setValue("newContractStartDate", new Date(formattedDate));
-			}
-			
+			}	
 			/* let updatedDate = new Date(
 				new Date(
 					response?.responseBody?.details?.contractEndDate,
@@ -67,6 +71,10 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 			console.log(updatedDate, '-updatedDate');
 			setValue('lastWorkingDate', updatedDate); */
 		}
+		
+		if(res.statusCode === HTTPStatusCode.OK){
+			setClosureDate(res?.responseBody?.details?.closureDate)
+		}	
 	}, [talentInfo?.onboardID]);
 
 	const submitEndEngagementHandler = useCallback(
@@ -77,6 +85,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 				"contractDetailID": getEndEngagementDetails?.contractDetailID,
 				"LastWorkingDate": d.lastWorkingDate,
 				"reason": d.endEngagementReason,
+				"EngcancelType": engType,
 				"LostReasonID": 0
 			}
 		
@@ -99,7 +108,8 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 			getUploadFileData,
 			talentInfo,
 			engagementReplacement?.replacementData,
-			addLatter
+			addLatter,
+			engType
 		],
 	);
 
@@ -141,6 +151,13 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 						<span>Engagement ID:</span>
 						{talentInfo?.engagementID || talentInfo?.EngagemenID}
 					</li>
+					{closureDate && <>
+						<li className={allengagementEnd.divider}>|</li>
+						<li>
+						<span>Closure Date:</span>
+						{closureDate}
+					</li>
+					</>}
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
 						<span>Talent Name:</span>
@@ -156,7 +173,18 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 
 			{isSubmit ? <Skeleton /> : <>
 				<div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
-				<div className={allengagementEnd.colMd12}>
+					<div className={allengagementEnd.colMd12} style={{marginBottom:'10px'}}>
+					<Radio.Group
+                  onChange={e=> {setEngType(e.target.value)}}
+                  value={engType}
+                  >
+                  <Radio value={'Backout'}>Backout</Radio>
+                  <Radio value={'Other'}>Other</Radio>
+                </Radio.Group>
+				</div>
+
+				{engType === 'Other' &&  <>
+				{closureDate && <div className={allengagementEnd.colMd6} style={{marginBottom:'10px'}}>
 					<div className={allengagementEnd.timeSlotItemField}>
 						<div className={allengagementEnd.timeLabel}>
 							Last Working Day
@@ -189,28 +217,32 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 							)}
 						</div>
 					</div>
-				</div>				
-			</div>
-
-
-			<div className={allengagementEnd.row}>
-				<div className={allengagementEnd.colMd12}>
+				</div>	}
+				
+				
+					<div className={allengagementEnd.colMd12} style={{marginBottom:'10px'}}>
 					<HRInputField
 						required
 						isTextArea={true}
 						rows={4}
 						errors={errors}
 						validationSchema={{
-							required: 'Please enter the reason for closing Engagement.',
+							required: 'Please enter the reason for Closing Engagement.',
 						}}
-						label={'Reason for closing Engagement'}
+						label={'Reason for Closing Engagement'}
 						register={register}
 						name="endEngagementReason"
 						type={InputType.TEXT}
 						placeholder="Enter Reason"
 					/>
 				</div>
+				</>}
+					
+							
 			</div>
+
+
+		
 		
 			</>}
 			<div className={allengagementEnd.formPanelAction}>
