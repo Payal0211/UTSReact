@@ -582,7 +582,7 @@ const calcelMember = () =>{
         "assignAM": assignAM,
         "talentID":talentDeteils?.talentID,
         "talentShiftStartTime":d.shiftStartTime?.value,
-        "talentShiftEndTime": d.shiftEndTime?.value,
+        "talentShiftEndTime": d.endTime?.value,
         "payRate":data?.isHRTypeDP ? 0 : parseFloat(d.payRate),
         "billRate": data?.isHRTypeDP ? null : parseFloat(d.billRate),
         "netPaymentDays": parseInt(d.netTerm?.value),
@@ -638,48 +638,7 @@ const calcelMember = () =>{
           "leavePolicyPasteLinkName": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
           "teamMembers": clientTeamMembers
         }
-      }
-      // let payload = {
-      //   hR_ID: HRID,
-      //   companyID: preOnboardingDetailsForAMAssignment?.companyID,
-      //   deal_Owner: d?.dealOwner?.value, //Update
-      //   deal_Source: d?.dealSource?.value, //Update
-      //   onboard_ID: talentDeteils?.OnBoardId,
-      //   engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
-      //   assignAM: assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
-      //   amSalesPersonID:d.amSalesPersonID?.id,
-      //   talentID: talentDeteils?.TalentID,      
-      //   talentShiftStartTime: d.shiftStartTime?.value, //Update
-      //   talentShiftEndTime: d.shiftEndTime?.value, //Update
-      //   payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-      //     ? 0
-      //     : parseFloat(d.payRate), // pass as null if DP HR  // send numeric value //Update
-      //   modeOFWorkingID: d?.modeOFWorkingID?.id,
-      //   city:d?.city,
-      //   talent_Designation: d?.talent_Designation,
-      //   stateID:d?.stateID?.id,
-      //   // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-      //   //   ? null
-      //   //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
-      //   billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-      //     ? null
-      //     : parseFloat(d.billRate), //,
-      //   netPaymentDays: parseInt(d.netTerm), //Update
-      //   nrMargin: !preOnboardingDetailsForAMAssignment?.isHRTypeDP
-      //     ? d.nrPercent
-      //     : null,
-      //   isReplacement: engagementReplacement?.replacementData,
-      //   talentReplacement: {
-      //     onboardId: talentDeteils?.OnBoardId,
-      //     lastWorkingDay: addLatter === false ? d.lwd : "",
-      //     replacementInitiatedby: loggedInUserID.toString(),
-      //     engHRReplacement:
-      //       addLatter === true || d.engagementreplacement === undefined
-      //         ? ""
-      //         : d.engagementreplacement.id,
-      //   },
-      //   teamMembers:clientTeamMembers,
-      // };
+      }      
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         // if (result?.responseBody.details.IsAMAssigned) {
