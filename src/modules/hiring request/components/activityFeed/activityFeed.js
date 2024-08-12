@@ -2,7 +2,7 @@ import { InputType } from 'constants/application';
 import ActivityFeedStyle from './activityFeed.module.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { SlGraph } from 'react-icons/sl';
-import React, { Fragment, useState, useMemo, Suspense, useEffect } from 'react';
+import React, { Fragment, useState, useMemo, Suspense, useEffect, useRef } from 'react';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { Divider, TabsProps, Space, Table, Tag, Modal, Skeleton, Tooltip} from 'antd';
 import ReactPlayer from 'react-player';
@@ -143,12 +143,76 @@ const ActivityFeed = ({
 	const [showActivityDetails,setShowActivityDetails] = useState(false)
 	const [issHistoryLoading,setIsHistoryLoading] = useState(false)
 	const [historyData,sethistoryData] = useState({})
+	const [data, setData] = useState([]);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+	const [totalRecords, setTotalRecords] = useState(0); 
+    const recordsPerPage = 20;
+    const observerRef = useRef();
+	
+
+	const fetchData = async (page) => {
+        setLoading(true);
+        try {
+			const payload = {
+				"totalrecord":20,
+				"pagenumber":page,
+				"filterFields":
+				{
+					"HRID":hrID
+				}
+			}
+				const response = await hiringRequestDAO.getHRActivityUsingPaginationDAO(payload)			
+				const newData = response?.responseBody?.details?.rows;
+				if (newData.length > 0) {
+					setData(prevData => [...prevData, ...newData]);
+					setTotalRecords(response?.responseBody?.details?.totalrows); 
+				}
+	
+				const loadedRecords = (page - 1) * recordsPerPage + newData.length;
+				if (loadedRecords >= response?.responseBody?.details?.totalrows) {
+					setHasMore(false);  
+				}
+            // setHasMore(newData.length > 0);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        setLoading(false);
+    };
+
+	useEffect(() => {
+        if (hasMore) {
+            fetchData(page);
+        }
+    }, [page]);
+
+
+	useEffect(() => {
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && !loading && hasMore) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+
+        if (observerRef.current) {
+            observer.observe(observerRef.current);
+        }
+
+        return () => {
+            if (observerRef.current) {
+                observer.unobserve(observerRef.current);
+            }
+        };
+    }, [loading, hasMore]);
+
+
 
 	const sanitizer = DOMPurify.sanitize;
 	const searchMemo = useMemo(() => {
 		if (search) return search;
 		else return activityFeed;
-	}, [search, activityFeed]);
+	}, [search, activityFeed]);	
 
 	const displayNotes = (notes) => {
 		const notesTemplate = new DOMParser().parseFromString(notes, 'text/html');
@@ -384,35 +448,35 @@ const ActivityFeed = ({
 						<div className={ActivityFeedStyle.contentGrid}>
 							<div className={ActivityFeedStyle.activityFeedList}>
 								<div className={ActivityFeedStyle.activityFeedListBody}>
-									{searchMemo?.map((item, index) => {
+									{data?.map((item, index) => {
 										return (
 											<Fragment key={index}>
 												<div className={ActivityFeedStyle.activityFeedListItem}>
 													<div className={ActivityFeedStyle.activityFeedTimeDetails}>
 														<div>
-															{moment(item?.ActionDate).format('DD/MM/YYYY')}
+															{moment(item?.actionDate).format('DD/MM/YYYY')}
 														</div>
 														<div>
-															{DateTimeUtils.getTimeFromString(item?.ActionDate)}
+															{DateTimeUtils.getTimeFromString(item?.actionDate)}
 														</div>
 													</div>
 													<div className={ActivityFeedStyle.activityFeedActivities}>
-														{item?.IsNotes === 0 ? (
+														{item?.isNotes === 0 ? (
 															<div className={ActivityFeedStyle.profileStatus}>
 																<span>
-																	{item?.DisplayName 
-																		? item?.DisplayName === "TSC Auto Assignment" ? `TSC ${item?.TSCPerson} Auto Assignment`: item?.DisplayName
-																		: item?.ActionName}{' '}
+																	{item?.displayName 
+																		? item?.displayName === "TSC Auto Assignment" ? `TSC ${item?.tscPerson} Auto Assignment`: item?.displayName
+																		: item?.actionName}{' '}
 
-																	{(item?.IsDisplayUpdateHR === 1 || item?.IsDisplayUpdateHRDetail === 1) &&  <Tooltip title="View Details"><img src={infoIcon} style={{marginLeft:'5px', cursor:'pointer'}}  alt="info" onClick={()=>{setShowActivityDetails(true);setHistoryID(item?.HistoryID);setDetailHistoryID(item?.DetailHistoryID)}} /></Tooltip>}	
+																	{(item?.isDisplayUpdateHR === 1 || item?.isDisplayUpdateHRDetail === 1) &&  <Tooltip title="View Details"><img src={infoIcon} style={{marginLeft:'5px', cursor:'pointer'}}  alt="info" onClick={()=>{setShowActivityDetails(true);setHistoryID(item?.historyID);setDetailHistoryID(item?.detailHistoryID)}} /></Tooltip>}	
 																</span>
-																<span>{item?.TalentName && ' for '}</span>
+																<span>{item?.talentName && ' for '}</span>
 																<span
 																	style={{
 																		textDecoration: 'underline',
 																		fontWeight: '500',
 																	}}>
-																	{item?.TalentName}
+																	{item?.talentName}
 																</span>
 															</div>
 														) : (
@@ -423,7 +487,7 @@ const ActivityFeed = ({
 																		textDecoration: 'underline',
 																		fontWeight: '500',
 																	}}>
-																	{item?.ActionPerformedBy}
+																	{item?.actionPerformedBy}
 																</span>
 															</div>
 														)}
@@ -519,10 +583,12 @@ const ActivityFeed = ({
 														</div>
 													</div>
 												</div>
-												{index < activityFeed.length - 1 && <Divider />}
+												{index < activityFeed?.length - 1 && <Divider />}
 											</Fragment>
 										);
 									})}
+									<div ref={observerRef}></div>
+									{loading && <p>Loading...</p>}
 								</div>
 							</div>	
 						</div>

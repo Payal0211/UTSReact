@@ -27,6 +27,9 @@ const TalentProfileCard = ({
 	urlSplitter,
 	getNextActionMissingActionMemo,
 	updatedSplitter,
+	hrData,
+	setPage,
+	page,
 }) => {
 	const [isMatchmaking, setIsMatchMaking] = useState(false);
 	return (
@@ -100,6 +103,9 @@ const TalentProfileCard = ({
 								IsTransparentPricing={apiData?.transparentModel?.IsTransparentPricing}
 								DynamicSalaryInfo={apiData?.DynamicSalaryInfo}
 								apiData={apiData}
+								hrData={hrData}
+								setPage={setPage}
+								page={page}
 							/>
 						</Suspense>
 					) : (

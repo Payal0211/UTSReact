@@ -1357,6 +1357,38 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.saveTalentNotesAPI');
 		}
 	},
+	getHRActivityUsingPagination: async function (hrData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.GET_HR_ACTIVITY_PAGINATION;
+		httpService.dataToSend = hrData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.getHRActivityUsingPagination');
+		}
+	},
+	getHRTalentUsingPagination:async function (hrData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.GET_HR_TALENT_PAGINATION;
+		httpService.dataToSend = hrData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.getHRActivityUsingPagination');
+		}
+	}
 
 	// getChannelLibraryApi: async (data) => {
 	// 	let httpService = new HttpServices();

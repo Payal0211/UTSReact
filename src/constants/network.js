@@ -326,6 +326,8 @@ export class HiringRequestsAPI {
 	static DELETE_TEST_HR = 'DeleteTestHR'
 	static GET_SALES_USER_WITH_HEAD_AFTER_HRCREATE = "GetSalesUserWithHeadAfterHRCreate";
 	static CLONE_HR_DEMO_ACCOUNT = "CloneHRDemoAccount";
+	static GET_HR_ACTIVITY_PAGINATION = "GetHRActivityUsingPagination";
+	static GET_HR_TALENT_PAGINATION = "GetHRTalentsUsingPagination";
 }
 
 export class UsersAPI {
