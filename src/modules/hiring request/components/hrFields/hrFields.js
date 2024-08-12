@@ -48,6 +48,8 @@ import JobDescriptionComponent from "../jdComponent/jdComponent";
 import ReactQuill from 'react-quill';
 import { isEmptyOrWhitespace } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
+import debounce from 'lodash.debounce';
+
 export const secondaryInterviewer = {
   interviewerId:"0",
   fullName: "",
@@ -192,6 +194,13 @@ const HRFields = ({
 
   const[showHRPOCDetailsToTalents,setshowHRPOCDetailsToTalents] = useState(null);
   const [activeUserData,setActiveUserData] = useState([]);
+
+  const[locationList,setLocationList] = useState([]);
+  const[frequencyData,setFrequencyData] = useState([]);
+  const[nearByCitiesData,setNearByCitiesData] = useState([]);
+  const [isRelocate,setIsRelocate] = useState(false)
+  const [NearByCitesValues,setNearByCitesValues] = useState([]);
+  const [controlledFrequencyValue,setControlledFrequencyValue] = useState('Select')
 
   let controllerRef = useRef(null);
   let controllerCompanyRef = useRef(null);
@@ -714,6 +723,14 @@ const HRFields = ({
     );
   }, []);
 
+  const getFrequencyData = async () => {
+    let response = await  MasterDAO.getFrequencyDAO();    
+    setFrequencyData(response?.responseBody?.details?.map((fre) => ({
+      id: fre.id,
+      value: fre.frequency,                
+  })))
+  }
+
   const getStartEndTimeHandler = useCallback(async () => {
     const durationTypes = await MasterDAO.getStartEndTimeDAO();
     setStaryEndTimes(durationTypes && durationTypes?.responseBody);
@@ -1213,6 +1230,7 @@ const HRFields = ({
       getNRMarginHandler();
       getDurationTypes();
       getStartEndTimeHandler();
+      getFrequencyData()
       // get country name based on IP
       fetch("https://ipapi.co/json")
       .then((response) => response.json())
@@ -1410,6 +1428,26 @@ const HRFields = ({
     }
   }
 
+  const getNearByCitiesForAts = () => {
+
+    if(watch("workingMode").id === 3){
+      return NearByCitesValues.join(',')
+    }else{
+      let cities = []
+
+      NearByCitesValues.forEach(val=> {
+        let valFind = nearByCitiesData.filter(c => c.label === val)
+        if(valFind.length > 0){
+          cities.push(valFind[0]?.value)
+        }else{
+          cities.push(val)
+        }
+      })
+
+      return cities.join(',')
+    }
+  }
+
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
@@ -1443,6 +1481,15 @@ const HRFields = ({
       hrFormDetails.prerequisites = watch('parametersHighlight') ?? ''
       hrFormDetails.HRIndustryType = specificIndustry?.join('^')
       hrFormDetails.StringSeparator = "^"
+
+      hrFormDetails.JobTypeID = watch("workingMode").id
+      hrFormDetails.JobLocation = (watch("workingMode").id === 2 || watch("workingMode").id === 3) ? watch('location') : null
+      hrFormDetails.FrequencyOfficeVisitID = watch("workingMode").id === 2 ? watch('officeVisits').id : null
+      hrFormDetails.IsOpenToWorkNearByCities = (watch("workingMode").id === 2 || watch("workingMode").id === 3) ? isRelocate : null                       
+      hrFormDetails.NearByCities = isRelocate ? NearByCitesValues.join(',') : null          
+      hrFormDetails.ATS_JobLocationID = (watch("workingMode").id === 2 || watch("workingMode").id === 3) ? locationList?.find(loc=> loc.value === watch('location'))?.id : null
+      hrFormDetails.ATS_NearByCities = isRelocate ? getNearByCitiesForAts() : null  
+
       if(userCompanyTypeID === 2){
         hrFormDetails.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
         hrFormDetails.hrpocUserID = watch('jobPostUsers') ? watch('jobPostUsers')?.map(item => item.value.toString()) : [];
@@ -1610,7 +1657,9 @@ const HRFields = ({
       isFreshersAllowed,
       isHaveJD,parseType,getUploadFileData,textCopyPastData,
       CompensationValues,peopleManagemantexp,specificIndustry,
-      showHRPOCDetailsToTalents
+      showHRPOCDetailsToTalents,
+      NearByCitesValues,
+      isRelocate,locationList,locationList
     ]
   );
 
@@ -2255,6 +2304,61 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
        //  setDisableSubmit(false)
      }
    }
+
+   const onChangeLocation = async (val) => {
+    if (typeof val === 'number') return;
+    fetchLocations(val);      
+  }; 
+
+  const fetchLocations = useCallback(
+    debounce(async (val) => {
+        if (val.trim() === '') return; // Avoid calling the API if the input is empty
+        const controller = new AbortController();
+        const signal = controller.signal;
+        // fetchController.current = controller;
+
+        try {
+            setIsLoading(true);
+            const _res = await MasterDAO.getAutoCompleteCityStateDAO(val, { signal });
+            setIsLoading(false);
+            let locations = [];
+            if (_res?.statusCode === 200) {
+                locations = _res?.responseBody?.details?.map((location) => ({
+                    id: location.row_ID,
+                    value: location.location,
+                }));
+                setLocationList(locations || []);
+            } else {
+                setLocationList([]);
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('Fetch aborted');
+            } else {
+                console.error('Error fetching locations:', error);
+                setLocationList([]);
+            }
+        }
+    }, 300),
+    []
+  );
+
+  const getCities = async (locationId) => {
+    setIsLoading(true);
+    let _res = await MasterDAO.getNearByCitiesDAO(locationId);
+    setIsLoading(false);
+    let citiesValues = [];
+    if (_res?.statusCode === 200) {                
+        citiesValues = _res?.responseBody?.details?.map((city) => ({
+            value: city.nearByDistrictID,
+            label: city.nearByDistrictName,
+        }));                       
+        return citiesValues || [];                                                            
+    }else{
+      return []
+    }    
+  }
+
   return (
     <>
       {contextHolder}
@@ -2693,7 +2797,7 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                       />
                     </div>
                   </div> */}
-                 {console.log('contractDurations',contractDurations)}
+                 
                   {(watch('availability')?.id === 2 || watch('availability')?.id === 3 || watch('availability')?.id === 4)  &&   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
@@ -3160,7 +3264,7 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                 </div>
               </div>
               <div className={HRFieldStyle.colMd4}>
-                {console.log("currency",watch('currency'))}
+             
                 <HRInputField
                   label={`${isGUID ? 'Talent Salary Estimated Budget (Annum)' : 'Client Estimated Budget (Monthly)' }`}
                   
@@ -3337,7 +3441,17 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledWorkingValue}
-                    setControlledValue={setControlledWorkingValue}
+                    setControlledValue={val=> {setControlledWorkingValue(val);
+                      if(val !==WorkingMode.HYBRID){
+                        unregister('officeVisits')
+                      }
+                      resetField("location")
+                      resetField("officeVisits")
+                      setControlledFrequencyValue('Select')
+                      setIsRelocate(false)
+                      setNearByCitesValues([])
+                      setNearByCitiesData([])
+                    }}
                     isControlled={true}
                     mode={"id/value"}
                     searchable={false}
@@ -4378,7 +4492,149 @@ who have worked in scaled start ups."
     } else {
       return (<>
         <div className={HRFieldStyle.row}>
-                 <div className={HRFieldStyle.colMd6}>
+        <div className={HRFieldStyle.colMd6}>
+        <div className={HRFieldStyle.formGroup}>
+                    <label>
+                      Location <span className={HRFieldStyle.reqField}>*</span>
+                    </label>
+                    <Controller
+                      render={({ ...props }) => (
+                        <AutoComplete
+                          options={locationList ?? []}
+                          onSelect={async (locName,_obj) =>{
+                            // getClientNameValue(clientName,_obj)
+                            let citiesVal = await getCities(_obj.id);   
+                            if(watch("workingMode").value === WorkingMode.HYBRID){
+                              let firstCity = citiesVal[0]
+                              setNearByCitesValues([firstCity.label])
+                              setNearByCitiesData(citiesVal);
+                            }
+                            else{
+                              let firstCity = citiesVal[0]
+                              setNearByCitesValues([firstCity.label])
+                              setNearByCitiesData([firstCity]);
+                            }                                                                                                                                                                                                                                                                                           
+                            
+                          }
+                          }
+                          filterOption={true}
+                          onSearch={(searchValue) => {
+                            // setClientNameSuggestion([]);
+                            onChangeLocation(searchValue)
+                          }}
+                          onChange={(locName) => {
+                            setValue("location", locName);
+                          }}
+                          placeholder="Enter Location"
+                          // ref={controllerRef}
+                          // name="clientName"
+                          // defaultValue={clientNameValue}
+                          value={watch('location')}
+                        
+                        />
+                      )}
+                      {...register("location", {
+                        required: (watch("workingMode").id === 2 || watch("workingMode").id === 3) ? true  : false,
+                      })}
+                      name="location"
+                      // rules={{ required: true }}
+                      control={control}
+                    />
+                    {errors.location && (
+                      <div className={HRFieldStyle.error}>              
+                          * Please Select Location
+                      </div>
+                    )}
+                  </div>
+
+
+                       {/* <HRInputField
+                        onChangeHandler={e=> cityDeb() }
+                         register={register}
+                         errors={errors}
+                         validationSchema={{
+                           required: "please enter the location.",
+                         }}
+                         label="location"
+                         name="location"
+                         type={InputType.TEXT}
+                         placeholder="Enter the location"
+                         required
+                       />
+                       {countryListMessage !== null && <p className={HRFieldStyle.error}>*{countryListMessage}</p>} */}
+                 </div>
+
+
+               {watch("workingMode").value === WorkingMode.HYBRID && <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    controlledValue={controlledFrequencyValue}
+                    setControlledValue={setControlledFrequencyValue}
+                    isControlled={true}
+                    mode={"id/value"}
+                    searchable={true}
+                    setValue={setValue}
+                    register={register}
+                    label={"Ferquency of Office Visits"}
+                    defaultValue="officeVisits"
+                    options={frequencyData}
+                    name="officeVisits"
+                    isError={errors["officeVisits"] && errors["officeVisits"]}
+                    required={watch("workingMode").value === WorkingMode.HYBRID ? true : false}
+                    errorMsg={"Please select office visits"}
+                  />
+                </div>
+              </div>}  
+
+                 <div className={HRFieldStyle.colMd12}>
+            <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+                  <label style={{marginBottom:"12px"}}>
+                  Are you open to applicants willing to relocate to your location?
+                  <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
+                    *
+                  </span>
+                </label>
+                {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
+                {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
+                <Radio.Group
+                  onChange={e=> {setIsRelocate(e.target.value)}}
+                  value={isRelocate}
+                  >
+                  <Radio value={true}>Yes</Radio>
+                  <Radio value={false}>No</Radio>
+                </Radio.Group>
+							</div>
+            </div>
+
+                {
+                  isRelocate &&  <div className={HRFieldStyle.colMd12} style={{marginBottom:'12px'}}>
+
+                <div className={HRFieldStyle.labelForSelect}>Do you have a preference in candidate's location?</div>
+                 <Select
+                    mode="tags"
+                    style={{ width: "100%" }}
+                    value={NearByCitesValues}
+                    options={nearByCitiesData}
+                    onChange={(values, _) => setNearByCitesValues(values)}
+                    placeholder="Select Compensation"
+                    tokenSeparators={[","]}
+                  />
+            
+                <ul className={HRFieldStyle.selectFieldBox}>
+          {watch("workingMode").value === WorkingMode.HYBRID && nearByCitiesData?.filter(option => !NearByCitesValues?.includes(option.label)).map(option => (
+                     (
+                      <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setNearByCitesValues([...NearByCitesValues, option?.label])}>
+                        <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
+                      </li>
+                    )
+                  ))}
+                 
+                </ul>
+              </div>
+                }
+
+
+                 {/* <div className={HRFieldStyle.colMd6}>
                        <HRInputField
                         onChangeHandler={e=> cityDeb() }
                          register={register}
@@ -4414,7 +4670,7 @@ who have worked in scaled start ups."
                            errorMsg={"Please select the country."}
                          />
                        </div>
-                 </div>
+                 </div> */}
         </div>
        </>)
       // if(isDirectHR){

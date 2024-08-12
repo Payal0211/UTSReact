@@ -142,6 +142,7 @@ export class EngagementAPI {
 	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
 	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
 	static CANCEL_ENGAGEMENT = 'CancelEngagement'
+	static GET_CANCEL_ENGAGEMENT = 'GetCancelEndEnagagement'
 	static CALCULATE_ACTUAL_NR_BR_PR = 'Calculate_ActualNR_From_BRPR';
 	static UPLOAD_FILE = 'UploadFile';
 	static GET_TSC_USERS_DETAIL = 'GetTSCUsersDetail';
@@ -223,6 +224,9 @@ export class MastersAPI {
 	static EDIT_TIMEZONE = 'EditTimeZone'
 	static UPDATE_ROLE = 'UpdateRole'
 	static TIMEZONEMASTER = 'GetTimeZoneMaster'
+	static GET_AUTO_COMPLETE_CITY_STATE = 'GetAutoCompleteCityStateWise'
+	static GET_NEAR_BY_CITIES = 'GetNearByCities'
+	static GET_FREQUENCY = 'GetFrequency'
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';

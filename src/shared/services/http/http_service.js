@@ -132,7 +132,7 @@ export class HttpServices {
 	 * @Returns An Object
 	 */
 
-	async sendGetRequest() {
+	async sendGetRequest(options = {}) {
 		try {
 			const response = await axios.get(this._URL, {
 				headers: {
@@ -140,6 +140,7 @@ export class HttpServices {
 					Authorization: this._isAuthRequired && this._authToken,
 					"ngrok-skip-browser-warning":"69420",
 				},
+				signal:options.signal
 			});
 			return {
 				statusCode: response.status,
