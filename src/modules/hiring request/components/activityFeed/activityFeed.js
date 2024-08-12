@@ -448,7 +448,9 @@ const ActivityFeed = ({
 						<div className={ActivityFeedStyle.contentGrid}>
 							<div className={ActivityFeedStyle.activityFeedList}>
 								<div className={ActivityFeedStyle.activityFeedListBody}>
-									{data?.map((item, index) => {										
+									{data?.map((item, index) => {	
+										console.log(index ,activityFeed?.length,"log");
+																			
 										return (
 											<Fragment key={index}>
 												<div className={ActivityFeedStyle.activityFeedListItem}>
@@ -583,12 +585,13 @@ const ActivityFeed = ({
 														</div>
 													</div>
 												</div>
-												{index < activityFeed?.length - 1 && <Divider />}
+												{/* {index < activityFeed?.length - 1 && <Divider />} */}
+												<Divider/>
 											</Fragment>
 										);
 									})}
 									<div ref={observerRef}></div>
-									{loading && <p>Loading...</p>}
+									{loading && <h3>Loading...</h3>}
 								</div>
 							</div>	
 						</div>
