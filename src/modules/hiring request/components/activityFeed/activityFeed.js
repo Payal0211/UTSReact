@@ -448,7 +448,7 @@ const ActivityFeed = ({
 						<div className={ActivityFeedStyle.contentGrid}>
 							<div className={ActivityFeedStyle.activityFeedList}>
 								<div className={ActivityFeedStyle.activityFeedListBody}>
-									{data?.map((item, index) => {
+									{data?.map((item, index) => {										
 										return (
 											<Fragment key={index}>
 												<div className={ActivityFeedStyle.activityFeedListItem}>
@@ -494,29 +494,29 @@ const ActivityFeed = ({
 														
 														<div className={ActivityFeedStyle.activityAction} style={{display:'flex', justifyContent:'space-between', width:'100%' }}>
 															<div>
-																{item?.IsNotes ? <BsTag /> : <SlGraph />}
+																{item?.isNotes ? <BsTag /> : <SlGraph />}
 															&nbsp;&nbsp;
 															<span style={{ fontWeight: '500' }}>
-																{item?.IsNotes === 1
-																	? item?.DisplayName === "Talent Note" ? "Talent : " :'Assigned to : '
+																{item?.isNotes === 1
+																	? item?.displayName === "Talent Note" ? "Talent : " :'Assigned to : '
 																	: 'Action by : '}
 															</span>
 															<span>
-																{item?.IsNotes === 1
-																	? item?.AssignedUsers
-																	: item?.ActionPerformedBy}
+																{item?.isNotes === 1
+																	? item?.assignedUsers
+																	: item?.actionPerformedBy}
 															</span>
 															</div>
 															
 															<div>
-															{item?.SLA_DueDate && <>
+															{item?.slA_DueDate && <>
 																<span style={{marginRight: '14px'}}></span>
 															&nbsp;&nbsp;
 															<span style={{ fontWeight: '500' }}>
 															{'SLA Date : '}
 															</span>
 															<span>
-																{moment(item?.SLA_DueDate).format('DD/MM/YYYY')}
+																{moment(item?.slA_DueDate).format('DD/MM/YYYY')}
 															</span>
 															</>
 														
@@ -524,28 +524,28 @@ const ActivityFeed = ({
 															</div>
 														</div>
 
-														{item?.ActionName === "Interview Scheduled" && <div className={ActivityFeedStyle.activityAction}>
+														{item?.actionName === "Interview Scheduled" && <div className={ActivityFeedStyle.activityAction}>
 															<span style={{marginRight: '14px'}}></span>
 															&nbsp;&nbsp;
 															<span style={{ fontWeight: '500' }}>
 															{'Interview Scheduled : '}
 															</span>
 															<span>
-																{item?.InterviewDateTime?.split('-').join('/')}
+																{item?.interviewDateTime?.split('-').join('/')}
 															</span>
 														</div>}
 														
 
 														
-														{item?.Comments?<div className={ActivityFeedStyle.activityAction}>
-															{item?.IsNotes ? <BsTag /> : <span style={{marginRight: '14px'}}></span>}
+														{item?.comments?<div className={ActivityFeedStyle.activityAction}>
+															{item?.isNotes ? <BsTag /> : <span style={{marginRight: '14px'}}></span>}
 															&nbsp;&nbsp;
 															<span style={{ fontWeight: '500' }}>
-																{ item?.ActionName === "Talent Status Cancelled" ? "Cancel Reason : "  : item?.ActionName === "Talent Status On Hold" ? "Talent On Hold Reason : " :'Comments : '} 
+																{ item?.actionName === "Talent Status Cancelled" ? "Cancel Reason : "  : item?.actionName === "Talent Status On Hold" ? "Talent On Hold Reason : " :'Comments : '} 
 															</span>
 															&nbsp;
 															<span>
-															{item?.Comments}	
+															{item?.comments}	
 															</span>
 														</div>:""}
 														
@@ -565,18 +565,18 @@ const ActivityFeed = ({
 																	{item?.Remark &&   item?.Remark }
 																</span></>
 															)} */}
-															{ item?.Remark && (<>
+															{ item?.remark && (<>
 																<span style={{marginRight: '14px'}}></span>
 																<span style={{ fontWeight: '500' }}>{'Remark : '}</span>
 																<span >
-																	{item?.Remark &&   item?.Remark }
+																	{item?.remark &&   item?.remark }
 																</span></>
 															)}
-															{item?.IsNotes === 1 && (
+															{item?.isNotes === 1 && (
 																<span
 																	dangerouslySetInnerHTML={{
 																		__html: sanitizer(
-																			displayNotes(item?.ActionName).innerHTML,
+																			displayNotes(item?.actionName).innerHTML,
 																		),
 																	}}></span>
 															)}
