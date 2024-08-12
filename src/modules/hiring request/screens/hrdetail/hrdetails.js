@@ -123,7 +123,6 @@ const HRDetailScreen = () => {
 			setLoading(false);
 			// setAPIdata(response?.responseBody?.details?.rows)
 			if (response?.statusCode === HTTPStatusCode.OK) {
-				console.log(response?.responseBody);				
 				setAPIdata(response && response?.responseBody);
 				setLoading(false);
 			} else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
