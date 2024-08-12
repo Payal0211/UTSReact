@@ -177,7 +177,7 @@ export default function BeforePreOnboarding({
     getStateData();
     getReportingToHandler();
     getBuddyHandler();
-    fatchpreOnBoardInfo();
+    fatchpreOnBoardInfo();    
   }, []);
 
   const getAMusersData = async () =>{
@@ -282,15 +282,14 @@ export default function BeforePreOnboarding({
 
   const fatchpreOnBoardInfo = useCallback(
     async () => {
-      setIsLoading(true);
-      if(talentDeteils?.OnBoardId){
+      setIsLoading(true);      
+      if(talentDeteils?.onBoardId){
         let req = {
-          OnboardID: talentDeteils?.OnBoardId,
+          OnboardID: talentDeteils?.onBoardId,
           HRID: HRID,
           // actionName: actionType ? actionType : "GotoOnboard",
         };
-        let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);
-      
+        let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);      
       if (result?.statusCode === HTTPStatusCode.OK) {       
         setAssignAM(result?.responseBody?.details?.assignAM)
         setReplacementEngHr(result.responseBody.details?.replacementEngAndHR);
@@ -578,10 +577,10 @@ const calcelMember = () =>{
         "deal_Source": d?.dealSource?.value,
         "lead_Type": null,
         "industry_Type": null,
-        "onboard_ID":talentDeteils?.OnBoardId,
+        "onboard_ID":talentDeteils?.onBoardId,
         "engagemenID": data?.engagemenID,
         "assignAM": assignAM,
-        "talentID":talentDeteils?.TalentID,
+        "talentID":talentDeteils?.talentID,
         "talentShiftStartTime":d.shiftStartTime?.value,
         "talentShiftEndTime": d.shiftEndTime?.value,
         "payRate":data?.isHRTypeDP ? 0 : parseFloat(d.payRate),
@@ -595,10 +594,10 @@ const calcelMember = () =>{
         "amSalesPersonID": d.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
         "talentReplacement": {
-          "onboardId": talentDeteils?.OnBoardId,
+          "onboardId": talentDeteils?.onBoardId,
           "replacementID": 0,
           "hiringRequestID": HRID,
-          "talentId": talentDeteils?.TalentID,
+          "talentId": talentDeteils?.talentID,
           "lastWorkingDay": engagementReplacement?.replacementData === true ? moment(d.lwd).format('yyyy-MM-DD') : null,
           "lastWorkingDateOption": 0,
           "noticeperiod": 0,
@@ -616,27 +615,27 @@ const calcelMember = () =>{
           "signingAuthorityName": null,
           "signingAuthorityEmail": null,
           "contractDuration": d.contractDuration,
-          "onBoardID": talentDeteils?.OnBoardId,
+          "onBoardID": talentDeteils?.onBoardId,
           "about_Company_desc": d?.aboutCompany,
           "talent_FirstWeek": d?.firstWeek,
           "talent_FirstMonth": d?.firstMonth,
           "softwareToolsRequired": d?.softwareToolsRequired,
-          "devicesPoliciesOption": !talentDeteils?.IsHRTypeDP ? d.devicePolicy.value : "",
-          "talentDeviceDetails": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 1 ? d.standerdSpecifications : '' : "",
+          "devicesPoliciesOption": !talentDeteils?.isHRTypeDP ? d.devicePolicy.value : "",
+          "talentDeviceDetails": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 1 ? d.standerdSpecifications : '' : "",
           // "additionalCostPerMonth_RDPSecurity": 0,
           // "isRecurring": true,
           // "proceedWithUplers_LeavePolicyOption": null,
           // "proceedWithClient_LeavePolicyOption": null,
-          "proceedWithClient_LeavePolicyLink": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "" ,
-          "leavePolicyFileName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" ,
+          "proceedWithClient_LeavePolicyLink": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "" ,
+          "leavePolicyFileName": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" ,
           "exit_Policy": d?.exitPolicy,
-          "hdnRadioDevicesPolicies": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.value : "",
-          "device_Radio_Option": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '' : "",
-          "deviceID": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ? d.deviceType.id : 0 : 0,
-          "client_DeviceDescription": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' :"" ,
-          "totalCost": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,
-          "radio_LeavePolicies": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.value : "",
-          "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
+          "hdnRadioDevicesPolicies": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.value : "",
+          "device_Radio_Option": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '' : "",
+          "deviceID": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 2 ? d.deviceType.id : 0 : 0,
+          "client_DeviceDescription": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' :"" ,
+          "totalCost": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,
+          "radio_LeavePolicies": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.value : "",
+          "leavePolicyPasteLinkName": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
           "teamMembers": clientTeamMembers
         }
       }
@@ -772,7 +771,7 @@ const calcelMember = () =>{
         formData.append("File", fileData);
         let uploadFileResponse = await OnboardDAO.uploadPolicyDAO(
           formData,
-          talentDeteils?.OnBoardId
+          talentDeteils?.onBoardId
         );
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -1877,7 +1876,7 @@ const calcelMember = () =>{
                           name="softwareToolsRequired"
                           type={InputType.TEXT}
                           placeholder="Enter Softwares and Tools which will be required"
-                          required={!talentDeteils?.IsHRTypeDP}
+                          required={!talentDeteils?.isHRTypeDP}
                           validationSchema={{
                             required:
                               "please enter softwares and tools which will be required.",
@@ -1930,7 +1929,7 @@ const calcelMember = () =>{
                           isError={
                             errors["devicePolicy"] && errors["devicePolicy"]
                           }
-                          required={!talentDeteils?.IsHRTypeDP}
+                          required={!talentDeteils?.isHRTypeDP}
                           errorMsg={"please select device policy."}
                           disabled={actionType==="Legal"?true:false}
                         />
@@ -2027,7 +2026,7 @@ const calcelMember = () =>{
                             isError={
                               errors["leavePolicie"] && errors["leavePolicie"]
                             }
-                            required={!talentDeteils?.IsHRTypeDP}
+                            required={!talentDeteils?.isHRTypeDP}
                             errorMsg={"please select leave policy."}
                             disabled={actionType==="Legal"?true:false}
                           />
@@ -2045,7 +2044,7 @@ const calcelMember = () =>{
                             placeholder="First Month"
                             // value="First Month - 7 Days Second Month Onwards - 30 Days"
                             disabled
-                            required={!talentDeteils?.IsHRTypeDP}
+                            required={!talentDeteils?.isHRTypeDP}
                             validationSchema={{
                               required: "please enter Exit Policy.",
                             }}

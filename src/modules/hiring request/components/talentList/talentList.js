@@ -467,7 +467,7 @@ const TalentList = ({
 
 	const filterTalentCTAs = useMemo(
 		() =>
-			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
+			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},		
 		[talentCTA, talentIndex],
 	);
 
@@ -706,12 +706,12 @@ const TalentList = ({
 					position: 'top',
 					total:hrData?.totalrows,
 					current:page,					
-					onChange: (page, pageSize) => {								
-						setPage(page);		
+					onChange: (page, pageSize) => {	
 						setPageIndex(page - 1);	
+						setPage(page);
 					},
 				}}
-				renderItem={(item, listIndex) => {								
+				renderItem={(item, listIndex) => {	
 					return (
 						<div
 							key={item?.name}
@@ -1251,9 +1251,9 @@ const TalentList = ({
 										style={{
 											margin: '10px 0',
 										}}
-									/>
-									{talentCTA[ROW_SIZE * page + listIndex]?.cTAInfoList
-										?.length > 0 && (talentCTA?.[ROW_SIZE * page + listIndex]
+									/>		
+									{talentCTA[ROW_SIZE * (page-1) + listIndex]?.cTAInfoList
+										?.length > 0 && (talentCTA?.[ROW_SIZE * (page-1) + listIndex]
 											?.cTAInfoList[0]?.label === TalentOnboardStatus.CANCEL_ENGAGEMENT ? item?.isShownTalentStatus === 1 ? true : false : true ) && (
 											<div
 												// style={{
@@ -1266,7 +1266,7 @@ const TalentList = ({
 												<HROperator
 													onClickHandler={() => setTalentIndex(item?.talentID)}
 													title={
-														talentCTA?.[ROW_SIZE * page + listIndex]
+														talentCTA?.[ROW_SIZE * (page-1) + listIndex]
 															?.cTAInfoList[0]?.label
 													}
 													icon={<AiOutlineDown />}
@@ -1274,7 +1274,7 @@ const TalentList = ({
 													iconBorder={`1px solid var(--color-sunlight)`}
 													isDropdown={true}
 													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
-													menuAction={(menuItem) => {														
+													menuAction={(menuItem) => {							
 														switch (menuItem.key) {															
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key

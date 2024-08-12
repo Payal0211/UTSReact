@@ -98,9 +98,9 @@ export default function LegalPreOnboarding({
   );
 
   useEffect(() => {
-    if (talentDeteils?.OnBoardId) {
+    if (talentDeteils?.onBoardId) {
       let req = {
-        OnboardID: talentDeteils?.OnBoardId,
+        OnboardID: talentDeteils?.onBoardId,
         HRID: HRID,
       };
       fatchduringOnBoardInfo(req);
