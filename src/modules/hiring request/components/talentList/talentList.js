@@ -690,21 +690,19 @@ const TalentList = ({
 	
 	}
 
-
-
 	return (
 		<div>
 			{contextHolder}			
 			<List
 				grid={{ gutter: 16, column: 2 }}
 				size="large"
-				dataSource={hrData?.rows && hrData?.rows}				
+				dataSource={hrData && hrData}				
 				pagination={{
 					className: TalentListStyle.paginate,
 					size: 'small',
 					pageSize: ROW_SIZE,
 					position: 'top',
-					total:hrData?.totalrows,
+					total:hrData?.totalRecords,
 					current:page,					
 					onChange: (page, pageSize) => {	
 						setPageIndex(page - 1);	

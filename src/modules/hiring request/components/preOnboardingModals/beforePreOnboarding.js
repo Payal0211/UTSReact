@@ -80,6 +80,7 @@ export default function BeforePreOnboarding({
   const [editNetTerm, setEditNetTerm] = useState(false);
   const [editPayRate, setEditPayRate] = useState(false);
   const [editBillRate, setEditBillRate] = useState(false);
+  const [editUplersFee, setEditUplersFee] = useState(false);
   const [editAcceptHR, setEditAcceptHR] = useState(false);
   const [editMOF, setEditMOF] = useState(false);
   const [editCity, setEditCity] = useState(false);
@@ -277,8 +278,7 @@ export default function BeforePreOnboarding({
     let _state = stateList?.filter((item) => item.id === preONBoardingData?.preOnboardingDetailsForAMAssignment?.stateID);
     setValue("stateID", _state[0]);
     setControlledState(_state[0]);
-  }, [preONBoardingData,stateList])
-  
+  }, [preONBoardingData,stateList])  
 
   const fatchpreOnBoardInfo = useCallback(
     async () => {
@@ -325,6 +325,11 @@ export default function BeforePreOnboarding({
           "payRate",
           result.responseBody.details?.preOnboardingDetailsForAMAssignment
             ?.talentCost
+        );
+        setValue(
+          "uplersFee",
+          result.responseBody.details?.preOnboardingDetailsForAMAssignment
+            ?.uplersFeesAmount
         );
         setValue(
           "billRate",
@@ -593,6 +598,7 @@ const calcelMember = () =>{
         "talent_Designation": d?.talent_Designation,
         "amSalesPersonID": d.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
+        "uplersFeesAmount":data?.isHRTypeDP ? parseFloat(d?.uplersFee):null,
         "talentReplacement": {
           "onboardId": talentDeteils?.onBoardId,
           "replacementID": 0,
@@ -638,13 +644,10 @@ const calcelMember = () =>{
           "leavePolicyPasteLinkName": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
           "teamMembers": clientTeamMembers
         }
-      }      
+      }
+            
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
-        // if (result?.responseBody.details.IsAMAssigned) {
-        //   EnableNextTab(talentDeteils, HRID, "Legal");
-        // }
-
         callAPI(HRID)
         setMessage(result?.responseBody.details);
         setIsLoading(false);
@@ -652,12 +655,6 @@ const calcelMember = () =>{
         setEditPayRate(false);
         setEditNetTerm(false);
         setShowAMModal(false);
-        // let req = {
-        //   OnboardID: talentDeteils?.OnBoardId,
-        //   HRID: HRID,
-        //   // actionName: actionType ? actionType : "GotoOnboard",
-        // };
-        // fatchpreOnBoardInfo(req);
       }
       setIsLoading(false);
     },
@@ -1314,23 +1311,85 @@ const calcelMember = () =>{
                     />
                   </div>
 
-                  <div className={HRDetailStyle.modalFormCol}>
-                    {/* {preOnboardingDetailsForAMAssignment?.isHRTypeDP ? (
+                  {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true ?
+                  <div className={HRDetailStyle.modalFormCol}> 
+                  <>
+                    {editUplersFee ? (
                       <HRInputField
                         register={register}
                         errors={errors}
-                        // validationSchema={{
-                        //   required: "please enter the Current CTC.",
-                        // }}
-                        // required
-                        label="CurrentCTC"
-                        name="currentCTC"
-                        type={InputType.TEXT}
-                        placeholder="USD 4000/Month"
+                        validationSchema={{
+                          required: "please enter the Uplers Fee.",
+                        }}
+                        required
+                        label="Uplers Fee (One-time)"
+                        name="uplersFee"
+                        type={InputType.NUMBER}
+                        placeholder={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                          ?"USD 4000/Year":"USD 4000/Month"}
                         // value={watch('billRate')}
-                        disabled
+                        leadingIcon={
+                          preONBoardingData
+                            ?.preOnboardingDetailsForAMAssignment
+                            ?.currencySign
+                        }
+                        trailingIcon={
+                          <div className={HRDetailStyle.infotextWrapper}>
+                          {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                            ? `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Year`
+                            : `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                          <EditFieldSVG
+                            width="16"
+                            height="16"
+                            onClick={() => setEditUplersFee(false)}
+                          />
+                          </div>
+                        }
                       />
-                    ) : ( */}
+                    ) : (
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        validationSchema={{
+                          required: "please enter the Uplers Fee.",
+                        }}
+                        required
+                        label="Uplers Fee (One-time)"
+                        name="uplersFee"
+                        type={InputType.TEXT}
+                        placeholder={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                          ?"USD 4000/Year":"USD 4000/Month"}
+                        // value={watch('billRate')}
+                        leadingIcon={
+                          preONBoardingData
+                            ?.preOnboardingDetailsForAMAssignment
+                            ?.currencySign
+                        }
+                        disabled
+                        trailingIcon={
+                          <div className={HRDetailStyle.infotextWrapper}>
+                            {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                            ? `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Year`
+                            : `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                            
+                         {actionType!=="Legal" && <EditFieldSVG
+                            width="16"
+                            height="16"
+                            onClick={() => {
+                              setEditUplersFee(true);
+                              setValue(
+                                "uplersFee",
+                                extractNumberFromString(watch("uplersFee"))
+                              );
+                            }}
+                          />}
+                          </div>
+                        }
+                      />
+                    )}
+                  </>
+                </div>
+                 :<div className={HRDetailStyle.modalFormCol}> 
                     <>
                       {editBillRate ? (
                         <HRInputField
@@ -1406,8 +1465,9 @@ const calcelMember = () =>{
                         />
                       )}
                     </>
-                    {/* )} */}
-                  </div>
+                  </div>}
+
+                  
 
                   {/* {preOnboardingDetailsForAMAssignment?.isHRTypeDP ? (
                     <div className={HRDetailStyle.modalFormCol}>
@@ -1511,7 +1571,11 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Uplers Fees</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                      { ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100).toFixed(2)+ ' %' : 'NA' )}
+                        { 
+                        preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP == false ? 
+                        ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100).toFixed(2)+ ' %' : 'NA' ) 
+                        : ((watch("uplersFee") > 0 && watch("payRate") > 0) ?  ((watch("uplersFee")/watch("payRate"))*100).toFixed(2) + " %" :"NA")
+                        }
                         {/* {preOnboardingDetailsForAMAssignment?.talentRole
                           ? preOnboardingDetailsForAMAssignment?.talentRole
                           : "NA"} */}
