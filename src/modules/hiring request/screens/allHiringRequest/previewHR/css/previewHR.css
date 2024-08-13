@@ -328,18 +328,6 @@
     display: flex;
   }
   
-  .preShareDetailsWrap .preShareDetailsBox .preShareDetailsItem {
-    width: calc(50% - 12px);
-    padding: 24px;
-    border-radius: 16px;
-    border: 1px solid rgba(35, 35, 35, 0.2);
-    display: flex;
-    word-break: break-word;
-    position: relative;
-    align-items: center;
-  }
-
-
   .preShareDetailsWrap p {
     font-size: inherit;
     line-height: inherit;
@@ -441,7 +429,37 @@
     color: #232323;
     margin: 0 0 6px;
   }
-  
+
+  .preShareDetailsItem .preShareDetailsInfo .form-group .fieldIcon {
+    display: inline-flex;
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    height: 16px;
+    width: 16px;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .formFields-box img {
+    max-width: 100%;
+    }
+img {
+    vertical-align: middle;
+    border-style: none;
+}
+  .preShareDetailsItem .preShareDetailsInfo .form-group .form-control {
+    font-family: Montserrat;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    height: auto;
+    color: #232323;
+    border: 1px solid rgba(35, 35, 35, 0.2);
+    transition: all 0.35s ease 0s;
+    border-radius: 40px !important;
+    padding: 8px 16px 8px 34px;
+  }
   .preShareDetailsItem .preShareDetailsInfo ul {
     margin: 0;
     padding: 0;
