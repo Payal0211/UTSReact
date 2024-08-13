@@ -2543,7 +2543,7 @@ function PreviewClientModal({
                       checkPayPer?.companyTypeID !== null && (
                         <>
                         <div className={previewClientStyle.row}>
-                          <div className={previewClientStyle.colMd6}>
+                          <div className={previewClientStyle.colMd6} style={{marginBottom:'32px'}}>
                             <label className={previewClientStyle.phoneLabel}>
                               Currency
                               <span className={previewClientStyle.reqField}>
@@ -2607,7 +2607,13 @@ function PreviewClientModal({
                             </div>
                           )}
 
-                          <div className={previewClientStyle.colMd6}>
+                        
+                        </div>
+
+                        
+
+                        <div className={previewClientStyle.row}>
+                        <div className={previewClientStyle.colMd6}>
                             Remaining Credit : <span style={{ fontWeight: "bold", marginBottom: "80px", marginTop: "20px" }}>{getCompanyDetails?.engagementDetails?.totalCreditBalance}</span>
                             <div
                               className={previewClientStyle.FreecreditFieldWrap}
@@ -2651,10 +2657,6 @@ function PreviewClientModal({
                               />
                             </div>
                           </div>
-                        </div>
-
-                        <div className={previewClientStyle.row}>
-                          <div className={previewClientStyle.colMd6}></div>
                         </div>
                         <div className={previewClientStyle.row}>
                           <div className={previewClientStyle.colMd12}>
