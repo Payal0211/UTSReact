@@ -4860,7 +4860,7 @@ who have worked in scaled start ups."
                             <span className="preShareToolTip">
                               {Val?.hrwiseContactId ===
                                 getContactAndSaleID?.contactID && (
-                                <Tooltip title="You cannot delete this user because you are the default user of this job post. You can choose to show or hide your information from the candidates using the checkbox below.">
+                                <Tooltip title="You cannot delete this user because this is the default user of this job post. You can choose to show or hide the information from the candidates using the checkbox below.">
                                   <img src={infoSmallIcon} alt="info" />
                                 </Tooltip>
                               )}
