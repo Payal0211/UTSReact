@@ -4602,7 +4602,7 @@ who have worked in scaled start ups."
 
                 <div className={HRFieldStyle.partOne}>
                   <div className={HRFieldStyle.hrFieldLeftPane}>
-                    <h3>Share Details on the Job Post</h3>
+                    <h3>Hiring Team</h3>
                   </div>
 
                   <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>

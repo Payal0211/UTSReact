@@ -1586,10 +1586,19 @@ function PreviewHRModal({
     //   value : item?.id,
     //   label : item?.fullName
     // }))]);
-    let payload = { 
-      showHRPOCDetailsToTalents : showHRPOCDetailsToTalents,
-      hrpocUserID : (hrpocUserID?.length == 0 || !hrpocUserID) ? null : hrpocUserID?.map((a) => a.toString())
-     };
+    let payload = {                     
+      hrpocUserDetails : hrpocUserDetails?.map(user => ({
+      pocUserID: user.pocUserID,
+      contactNo: user.contactNo,
+      showEmailToTalent: user.showEmailToTalent,
+      showContactNumberToTalent: user.showContactNumberToTalent
+    }))
+   };
+    
+    // let payload = { 
+    //   showHRPOCDetailsToTalents : showHRPOCDetailsToTalents,
+    //   hrpocUserID : (hrpocUserID?.length == 0 || !hrpocUserID) ? null : hrpocUserID?.map((a) => a.toString())
+    //  };
     setIsLoading(true);
     let result = await updateJobPostDetail(payload);
     if (result.statusCode === 200) {
@@ -1598,17 +1607,17 @@ function PreviewHRModal({
         type: "success",
         content: "Users details updated",
       }); 
-      setJobPreview((prev) => ({...prev,  showHRPOCDetailsToTalents: showHRPOCDetailsToTalents,  hrpocUserID: result?.responseBody?.hrpocUserID ? result?.responseBody?.hrpocUserID : []}));               
+      sethrpocUserDetails(result?.responseBody?.hrpocUserID ? result?.responseBody?.hrpocUserID : []);
+      setJobPreview((prev) => ({...prev, 
+        hrpocUserID : result?.responseBody?.hrpocUserID ? result?.responseBody?.hrpocUserID : []}));               
       // let _data = {...jobPreview};      
       // _data.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
       // _data.hrpocUserID =  result?.responseBody?.details?.hrpocUserID ? result?.responseBody?.details?.hrpocUserID : [];
     
     }
-    setshowHRPOCDetailsToTalents(null);
     sethrpocUserID([]);
     setIsLoading(false);
-};
-  
+};  
   const updateExp = async () => {
     let valid = true;
     let _errors = { ...error };
@@ -1758,6 +1767,9 @@ function PreviewHRModal({
     sethrpocUserDetails(prevDetails =>
       prevDetails.filter(detail => detail.pocUserID !== pocUserID)
     );
+    
+    // const hrwiseContactIds = jobPreview?.hrpocUserID?.map(user => Number(user.hrwiseContactId));
+    // sethrpocUserID(hrwiseContactIds);  
   };
   let data = `<h3><span style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; vertical-align: baseline; white-space-collapse: preserve;"><b>Not Just Another Java Developer:</b></span><span style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; vertical-align: baseline; white-space-collapse: preserve;"> We're looking for someone who has </span><span style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-weight: 700; vertical-align: baseline; white-space-collapse: preserve;">moved beyond just building applications with Spring Boot</span><span style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; vertical-align: baseline; white-space-collapse: preserve;"> or similar frameworks. You should have an experience that demonstrates a deep understanding of Java, including direct manipulation of bytecode, custom library creation, and performance optimization.</span><br></h3><h3 dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 7pt 0pt;"><span id="docs-internal-guid-7360c499-7fff-3bcb-8ebc-5d825d46fbbb"></span></h3><h3 dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:7pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"><b>A True Java Enthusiast: </b></span><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">You find excitement in exploring Java beyond the surface level, delving into its internals, and leveraging this knowledge to build innovative solutions.</span></h3><h3><span><span id="docs-internal-guid-6bb6224d-7fff-05ca-b573-ac1cc7d15e92"></span><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><span id="docs-internal-guid-07c09f7d-7fff-dd32-3d7e-028182257644"></span>
 </span></p></span></h3><h3 dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:7pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"><b>Roles &amp; Responsibilities</b></span></h3><h3><span><div><b style="" id="docs-internal-guid-78e0a3ae-7fff-ce9a-7b62-ef98c61be725"><ul style="margin-top: 0px; margin-bottom: 0px; padding-inline-start: 48px;"><li style=""><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Develop the</span><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"> HyperTest Java SDK</span><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">, employing advanced Java techniques for runtime library manipulation and data mocking.</span></li><li style=""><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Extend</span><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"> OpenTelemetry for observability </span><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">and monitoring in distributed systems, ensuring our SDK integrates seamlessly with modern development ecosystems.</span></li></ul></b></div></span></h3><h3><span><div><b style="font-weight:normal;"><ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;"><li><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Create solutions for simulated testing environments that operate in various modes without modifying the original application code.</span></li></ul></b></div></span></h3><h3><span><div><b style=""><ul style="margin-top: 0px; margin-bottom: 0px; padding-inline-start: 48px;"><li style=""><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Serve as a Java subject matter expert, </span><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">guiding the team in best practices</span><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"> and innovative software development approaches.</span></li></ul></b></div></span></h3><h3 dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:7pt;"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"><br></span><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"><b>Requirement</b></span></h3><h3><ul><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Java Expertise</span><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">: Extensive experience in Java, including familiarity with its internals, memory model, concurrency, and performance optimization. Not just experience with high-level frameworks, but a solid understanding of underlying principles and the ability to manipulate Java's core functionalities.</span></p></li></ul><ul><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Software Architecture</span><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">: Strong grasp of software design patterns, architectural principles, and the ability to solve complex problems with efficient, scalable solutions.</span></p></li></ul><ul><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Analytical Skills: Exceptional problem-solving abilities, capable of addressing complex challenges and driving innovative solutions.</span></p></li></ul><ul><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Specialized Knowledge</span><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">: Experience with bytecode manipulation, library patching (e.g., Byte Buddy), and a clear understanding of Java's compilation and execution process.</span></p></li></ul></h3><h3><br></h3><h3><span id="docs-internal-guid-35acbabc-7fff-9ed3-2149-d24abe76f9f1"><b style="background-color: transparent; color: rgb(0, 0, 0); font-size: 11pt; white-space-collapse: preserve;">What We Offer</b><br><ol><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">A dynamic work environment</span></p></li></ol><ol><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 11pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Opportunities for professional growth</span></p></li><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 11pt;" role="presentation"><span style="background-color: transparent; font-family: Arial, sans-serif; font-size: 11pt; text-wrap: wrap;">The chance to make a significant impact on our product and the wider development community</span></p></li></ol><span id="docs-internal-guid-9ae09089-7fff-b2c4-6beb-801f533e09d6"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 11pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><b>Interview Process</b></span></p><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 11pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><span id="docs-internal-guid-fbf606f9-7fff-e78c-8bc7-953b68199fcc"></span></span></p><ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;"><li dir="ltr" style="list-style-type:disc;font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">First 15 minutes discussion with the CTO</span></p></li></ul><div><font color="#000000" face="Arial, sans-serif"><span style="font-size: 14.6667px; white-space-collapse: preserve;"><br></span></font></div><ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;"><li dir="ltr" style="list-style-type:disc;font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Second Round - Take home assessment</span></p></li></ul><div><font color="#000000" face="Arial, sans-serif"><span style="font-size: 14.6667px; white-space-collapse: preserve;"><br></span></font></div><ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;"><li dir="ltr" style="list-style-type:disc;font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:11pt;" role="presentation"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Third round - General discussion</span></p></li></ul><div><span id="docs-internal-guid-98b46740-7fff-32ce-43db-b26231a857b5"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 11pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><b>Benefits</b></span></p><ul style="margin-bottom: 0px; padding-inline-start: 48px;"><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 11pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Unlimited leaves</span></p></li><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 11pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">PF</span></p></li></ul></span></div><div><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><br></span></div></span></span></h3>`
@@ -3317,13 +3329,12 @@ function PreviewHRModal({
                       </div>
                     </div>
                   </div>
-                </div>
-                
+                </div>                
                 {getcompanyID === 2 &&  
                 <div className="formFields">
                   <div className="formFields-box">
                     <div className="formFields-box-inner">
-                      <h2 className="formFields-box-title">Hiring Team</h2>
+                      <h2 className="formFields-box-title">Hiring Team</h2>                      
                       <div className="vitalInformationContent preShareDetailsWrap">  
                       {/* { jobPreview?.hrpocUserID?.length === 0 ?
                                    <h3>Need Assistance or Have Questions?
@@ -3344,13 +3355,13 @@ function PreviewHRModal({
                       <h3>Need Assistance or Have Questions?</h3>
                       <p>Have questions about this job opportunity? Want to learn more about the role or discuss your candidature? 
                       Contact the recruiter directly to get accurate insights and guidance for the application process.</p> 
-                      <div className="preShareDetailsBox">
+                                      <div className="preShareDetailsBox">                      
                                         {
                                           jobPreview?.hrpocUserID?.map((val,index) => {                                            
                                             return(
-                                              <div className="preShareDetailsItem" key={index}>
-                                                <div className="preShareDetailsAction">
-                                                  {val?.hrwiseContactId !== userData?.LoggedInUserID && <button className="preShareDetailsBtn" title="Delete"
+                                              <div className="preShareDetailsItem" key={index}>                                                
+                                                <div className="preShareDetailsAction">                                                 
+                                                  <button className="preShareDetailsBtn" title="Delete"
                                                     onClick={async () => {             
                                                       setIsLoading(true);       
                                                       let response = await deleteHRPOC(val?.hrwiseContactId);                                                  
@@ -3359,7 +3370,7 @@ function PreviewHRModal({
                                                       }));  
                                                       setIsLoading(false);
                                                   }}
-                                                  ><img src={DeleteCircleIcon} alt="delete-icon"/></button> }                                                 
+                                                  ><img src={DeleteCircleIcon} alt="delete-icon"/></button>
                                                 </div>
                                                 <div className="thumbImages">                                                
                                                   <Avatar style={{ width: "66px",height: "66px", display: "flex",alignItems: "center"}} size="large">{val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
@@ -3400,110 +3411,110 @@ function PreviewHRModal({
                                             )
                                           })
                                         }                                                                       
-                                      </div>   
-                                {isEditUserInfo ? 
-                                   <>
-                                   <div className="form-group mt-4">
-                                      <label>Assign users to this job post</label>
-                                      <Select
-                                        mode="tags"
-                                        style={{ width: "100%" }}
-                                        value={hrpocUserID}
-                                        onChange={(values, _) => {                                                                                                            
-                                          // if(!values?.includes(userData?.LoggedInUserID)) return                                                                                                         
-                                          const newPocDetails = values?.map(id => {                                                                                         
-                                            const existingDetail = hrpocUserDetails.find(detail => detail.pocUserID === id);
-                                            if (existingDetail) return existingDetail;   
-                                            let _userData = allUserData.find(user => user.companyId === id);
-                                            return {
-                                              pocUserID: _userData?.companyId,
-                                              contactNo: _userData?.contactNumber,
-                                              showEmailToTalent: true,
-                                              showContactNumberToTalent: true,
-                                              email: _userData?.emailId,
-                                              fullName: _userData?.contactName
-                                            };
-                                          }).filter(Boolean);     
-                                          sethrpocUserID(values);                                     
-                                          sethrpocUserDetails(newPocDetails);                                                                                 
-                                      }}
-                                        placeholder="Select users"
-                                        tokenSeparators={[","]}
-                                        options={activeUserData}
-                                        menuIsOpen
-                                      />                                            
+                      </div>   
+                      {isEditUserInfo ? 
+                          <>
+                          <div className="form-group mt-4">
+                            <label>Assign users to this job post</label>
+                            <Select
+                              mode="tags"
+                              style={{ width: "100%" }}
+                              value={hrpocUserID}
+                              onChange={(values, _) => {                                                                                                            
+                                // if(!values?.includes(userData?.LoggedInUserID)) return                                                                                                         
+                                const newPocDetails = values?.map(id => {   
+                                  const existingDetail = hrpocUserDetails?.find(detail => detail.pocUserID === id);
+                                  if (existingDetail) return existingDetail;   
+                                  let _userData = allUserData.find(user => user.contactId === id);
+                                  return {
+                                    pocUserID: _userData?.contactId,
+                                    contactNo: _userData?.contactNumber,
+                                    showEmailToTalent: true,
+                                    showContactNumberToTalent: true,
+                                    email: _userData?.emailId,
+                                    fullName: _userData?.contactName
+                                  };
+                                }).filter(Boolean);     
+                                sethrpocUserID(values);                                     
+                                sethrpocUserDetails(newPocDetails);                                                                                 
+                            }}
+                              placeholder="Select users"
+                              tokenSeparators={[","]}
+                              options={activeUserData}
+                              menuIsOpen
+                            />                                            
+                          </div>
+                          <div className="noJobDesInfo mt-4">Candidates can view the contact information (email and mobile number) of the selected users. You can choose which details to share.</div>
+                          
+                          <div className="preShareDetailsBox hireTeamInfo">
+                                  {hrpocUserDetails?.map((Val,index) => {                                           
+                                    return(
+                                    <div className="preShareDetailsItem" key={index}>
+                                        {Val?.pocUserID !== userData?.LoggedInUserID && <div className="preShareDetailsAction">
+                                            <button className="preShareDetailsBtn" title="Delete" onClick={() => handleDelete(Val.pocUserID)}><img src={DeleteCircleIcon} alt="delete-icon" /></button>
+                                        </div>}
+                                        <div className="thumbImages">
+                                            <Avatar style={{ width: "75px", height: "75px", display: "flex", alignItems: "center" }} size="large">{Val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
+                                        </div>
+                                        <div className="preShareDetailsInfo">
+                                            <h4>{Val?.fullName} <span className="preShareToolTip">{Val?.pocUserID === userData?.LoggedInUserID &&
+                                                <Tooltip title="You cannot delete this user because you are the default user of this job post. You can choose to show or hide your information from the candidates using the checkbox below."> 
+                                                    <img src={infosmallIcon} alt='info' />
+                                                </Tooltip>
+                                                }</span></h4>
+                                            <ul>
+                                                <li>
+                                                    <div className="form-group justifyCenter">
+                                                        <i className="fieldIcon"><img src={MailIcon} alt="email-icon" /></i>
+                                                        <input type="text" className="form-control" placeholder="Enter email address" value={Val?.email} disabled />
+                                                        <Checkbox name="userShow" 
+                                                        checked={Val?.showEmailToTalent}
+                                                        onChange={(e) => handleCheckboxChange(index, 'showEmailToTalent', e.target.checked)}
+                                                        >Show email to candidates</Checkbox>
+                                                    </div>
+                                                </li> 
+
+                                                <li>
+                                                    <div className="form-group justifyCenter">
+                                                        <i className="fieldIcon"><img src={PhoneIcon} alt="phone-icon" /></i>
+                                                        <input type="text" className="form-control" placeholder="Enter mobile number" value={Val?.contactNo} maxLength={10}
+                                                        onChange={(e) => handleContactNoChange(index, e.target.value)}
+                                                        />
+                                                        <Checkbox name="userShow" checked={Val?.showContactNumberToTalent} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div className="noJobDesInfo mt-4">Candidates can view the contact information (email and mobile number) of the selected users. You can choose which details to share.</div>
-                                    
-                                    <div className="preShareDetailsBox hireTeamInfo">
-                                            {hrpocUserDetails?.map((Val,index) => {                                           
-                                              return(
-                                              <div className="preShareDetailsItem" key={index}>
-                                                  {Val?.pocUserID !== userData?.LoggedInUserID && <div className="preShareDetailsAction">
-                                                      <button className="preShareDetailsBtn" title="Delete" onClick={() => handleDelete(Val.pocUserID)}><img src={DeleteCircleIcon} alt="delete-icon" /></button>
-                                                  </div>}
-                                                  <div className="thumbImages">
-                                                      <Avatar style={{ width: "75px", height: "75px", display: "flex", alignItems: "center" }} size="large">{Val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
-                                                  </div>
-                                                  <div className="preShareDetailsInfo">
-                                                      <h4>{Val?.fullName} <span className="preShareToolTip">{Val?.pocUserID === userData?.LoggedInUserID &&
-                                                          <Tooltip title="You cannot delete this user because you are the default user of this job post. You can choose to show or hide your information from the candidates using the checkbox below."> 
-                                                              <img src={infosmallIcon} alt='info' />
-                                                          </Tooltip>
-                                                          }</span></h4>
-                                                      <ul>
-                                                          <li>
-                                                              <div className="form-group">
-                                                                  <i className="fieldIcon"><img src={MailIcon} alt="email-icon" /></i>
-                                                                  <input type="text" className="form-control" placeholder="Enter email address" value={Val?.email} disabled />
-                                                                  <Checkbox name="userShow" 
-                                                                  checked={Val?.showEmailToTalent}
-                                                                  onChange={(e) => handleCheckboxChange(index, 'showEmailToTalent', e.target.checked)}
-                                                                  >Show email to candidates</Checkbox>
-                                                              </div>
-                                                          </li> 
+                                    )
+                                  })}
+                                </div> 
 
-                                                          <li>
-                                                              <div className="form-group">
-                                                                  <i className="fieldIcon"><img src={PhoneIcon} alt="phone-icon" /></i>
-                                                                  <input type="text" className="form-control" placeholder="Enter mobile number" value={Val?.contactNo} maxLength={10}
-                                                                  onChange={(e) => handleContactNoChange(index, e.target.value)}
-                                                                  />
-                                                                  <Checkbox name="userShow" checked={Val?.showContactNumberToTalent} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
-                                                              </div>
-                                                          </li>
-                                                      </ul>
-                                                  </div>
-                                              </div>
-                                              )
-                                            })}
-                                          </div> 
-
-                                    <div className="buttonEditGroup mt-4">
-                                        <button type="button" class="btnPrimary blank" onClick={() => {setIsEditUserInfo(false);sethrpocUserID([]);setshowHRPOCDetailsToTalents(null);}}> Cancel </button>
-                                        {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updateUserInfo}> SAVE </button>}   
-                                    </div> 
-                                    </> 
-                                    : 
-                                    <h3 className="mt-3 addMorePoc" onClick={() => {
-                                      setIsEditUserInfo(true);     
-                                      if(jobPreview?.hrpocUserID?.length>0){
-                                        sethrpocUserDetails(jobPreview?.hrpocUserID?.map(user => ({
-                                          pocUserID: user.hrwiseContactId,
-                                          contactNo: user.contactNo,
-                                          showEmailToTalent: user.showEmailToTalent,
-                                          showContactNumberToTalent: user.showContactNumberToTalent,
-                                          email:user.emailID,
-                                          fullName:user.fullName
-                                      })));
-                                      const hrwiseContactIds = jobPreview?.hrpocUserID?.map(user => Number(user.hrwiseContactId));
-                                      sethrpocUserID(hrwiseContactIds);   
-                                      }else{
-                                        sethrpocUserID([]);
-                                      }                                             
-                                      setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
-                                    }}>Add {jobPreview?.hrpocUserID.length > 0 && "Another"} User</h3>
-                                    }
+                          <div className="buttonEditGroup mt-4">
+                              <button type="button" class="btnPrimary blank" onClick={() => {setIsEditUserInfo(false);sethrpocUserID([]);setshowHRPOCDetailsToTalents(null);}}> Cancel </button>
+                              {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updateUserInfo}> SAVE </button>}   
+                          </div> 
+                          </> 
+                          : 
+                          <h3 className="mt-3 addMorePoc" onClick={() => {
+                            setIsEditUserInfo(true);     
+                            if(jobPreview?.hrpocUserID?.length>0){
+                              sethrpocUserDetails(jobPreview?.hrpocUserID?.map(user => ({
+                                pocUserID: user.hrwiseContactId,
+                                contactNo: user.contactNo,
+                                showEmailToTalent: user.showEmailToTalent,
+                                showContactNumberToTalent: user.showContactNumberToTalent,
+                                email:user.emailID,
+                                fullName:user.fullName
+                            })));
+                            const hrwiseContactIds = jobPreview?.hrpocUserID?.map(user => Number(user.hrwiseContactId));
+                            sethrpocUserID(hrwiseContactIds);   
+                            }else{
+                              sethrpocUserID([]);
+                            }                                             
+                            setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
+                          }}>Add {jobPreview?.hrpocUserID.length > 0 && "Another"} User</h3>
+                      }
                       </div>
                      
                     </div>
