@@ -688,7 +688,7 @@ const TalentList = ({
 		</div>
 		)
 	
-	}
+	}	
 
 	return (
 		<div>
@@ -702,7 +702,7 @@ const TalentList = ({
 					size: 'small',
 					pageSize: ROW_SIZE,
 					position: 'top',
-					total:hrData?.totalRecords,
+					total:hrData[0]?.totalRecords,
 					current:page,					
 					onChange: (page, pageSize) => {	
 						setPageIndex(page - 1);	
