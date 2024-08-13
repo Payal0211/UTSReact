@@ -98,7 +98,7 @@ export const OnboardAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK + SubDomain.ONBOARD +
-			OnboardsAPI.GET_PRE_ONBOARDING_DETAIL + `?OnBoardId=${payload.OnboardID}&HR_ID=${payload.HRID}&actionName=${payload.actionName}`
+			OnboardsAPI.GET_PRE_ONBOARDING_DETAIL + `?OnBoardId=${payload.OnboardID}&HR_ID=${payload.HRID}`
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
