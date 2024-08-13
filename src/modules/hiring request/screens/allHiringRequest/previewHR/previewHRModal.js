@@ -3360,8 +3360,10 @@ function PreviewHRModal({
                                           jobPreview?.hrpocUserID?.map((val,index) => {                                            
                                             return(
                                               <div className="preShareDetailsItem" key={index}>                                                
-                                                <div className="preShareDetailsAction">                                                 
-                                                  <button className="preShareDetailsBtn" title="Delete"
+                                                <div className="preShareDetailsAction">  
+                                                  {val?.isDefaultUser ? <Tooltip title={val?.iInfoMsg}>
+                                  <img src={infosmallIcon} alt="info" />
+                                </Tooltip> :<button className="preShareDetailsBtn" title="Delete"
                                                     onClick={async () => {             
                                                       setIsLoading(true);       
                                                       let response = await deleteHRPOC(val?.hrwiseContactId);                                                  
@@ -3371,6 +3373,8 @@ function PreviewHRModal({
                                                       setIsLoading(false);
                                                   }}
                                                   ><img src={DeleteCircleIcon} alt="delete-icon"/></button>
+                                                  }                                               
+                                                  
                                                 </div>
                                                 <div className="thumbImages">                                                
                                                   <Avatar style={{ width: "66px",height: "66px", display: "flex",alignItems: "center"}} size="large">{val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
@@ -3438,6 +3442,24 @@ function PreviewHRModal({
                                 sethrpocUserID(values);                                     
                                 sethrpocUserDetails(newPocDetails);                                                                                 
                             }}
+                            tagRender={(props) => {
+                              const { label, value, closable, onClose } = props;
+                              let pocData =    jobPreview?.hrpocUserID?.find(it => it.hrwiseContactId === value)
+                              return (
+                                <div className="ant-select-selection-item" style={{ marginRight: 3, fontWeight:'bold',color:'black' }}>
+                                  {label}
+                                  {!pocData?.isDefaultUser && closable && (
+                                    <span
+                                      className="ant-select-selection-item-remove"
+                                      style={{fontSize:"22px",color: "#232323" , fontWeight:"normal"}}
+                                      onClick={onClose}
+                                    >
+                                      &times;
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                          }}
                               placeholder="Select users"
                               tokenSeparators={[","]}
                               options={activeUserData}
@@ -3447,12 +3469,16 @@ function PreviewHRModal({
                           <div className="noJobDesInfo mt-4">Candidates can view the contact information (email and mobile number) of the selected users. You can choose which details to share.</div>
                           
                           <div className="preShareDetailsBox hireTeamInfo">
-                                  {hrpocUserDetails?.map((Val,index) => {                                           
+                                  {hrpocUserDetails?.map((Val,index) => {    
+                                   
+                                    let pocData =    jobPreview?.hrpocUserID?.find(it => it.hrwiseContactId === Val.pocUserID)                                 
                                     return(
                                     <div className="preShareDetailsItem" key={index}>
-                                        {Val?.pocUserID !== userData?.LoggedInUserID && <div className="preShareDetailsAction">
+                                        <div className="preShareDetailsAction">{pocData?.isDefaultUser ? <Tooltip title={pocData?.iInfoMsg}>
+                                  <img src={infosmallIcon} alt="info" />
+                                </Tooltip> : 
                                             <button className="preShareDetailsBtn" title="Delete" onClick={() => handleDelete(Val.pocUserID)}><img src={DeleteCircleIcon} alt="delete-icon" /></button>
-                                        </div>}
+                                       } </div>
                                         <div className="thumbImages">
                                             <Avatar style={{ width: "75px", height: "75px", display: "flex", alignItems: "center" }} size="large">{Val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
                                         </div>
