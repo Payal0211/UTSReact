@@ -77,13 +77,14 @@ const HRDetailScreen = () => {
 	// const [deleteModal, setDeleteModal] = useState(false);
 	const [isLoading, setLoading] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
+	const[hrData,setHrData] = useState([]);
 	const navigate = useNavigate();
 	const switchLocation = useLocation();
 	// const [deleteReason, setDeleteReason] = useState([]);
 	const [callHRapi, setHRapiCall] = useState(false);
 
 	const [editDebrifing, setEditDebring] = useState([]);
-
+	const[page,setPage] = useState(1);
 	const [closeHrModal, setCloseHrModal] = useState(false);
 	const [deleteHRModal,setDeleteHrModal] = useState(false);
 	const [userData, setUserData] = useState({});
@@ -93,7 +94,13 @@ const HRDetailScreen = () => {
 			if (userData) setUserData(userData);
 		};
 		getUserResult();
+		
 	}, []);
+
+	useEffect(() => {
+		getHrUserData();
+	}, [page])
+	
 
 	const {
 		watch,
@@ -111,8 +118,10 @@ const HRDetailScreen = () => {
 
 	const callAPI = useCallback(
 		async (hrid) => {
-			setLoading(true);
+			setLoading(true);			
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+			setLoading(false);
+			// setAPIdata(response?.responseBody?.details?.rows)
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(response && response?.responseBody);
 				setLoading(false);
@@ -122,6 +131,21 @@ const HRDetailScreen = () => {
 		},
 		[navigate],
 	);
+
+	const getHrUserData = async () => {
+		setLoading(true);
+		const payload = {
+			"totalrecord":2,
+			"pagenumber":page,
+			"filterFields":
+			{
+				"HRID":Number(urlSplitter?.split('HR')[0])
+			}
+		}
+		const _response = await hiringRequestDAO.getHRTalentUsingPaginationDAO(payload);
+		setHrData(_response?.responseBody?.details);
+		setLoading(false);
+	}
 
 	// console.log(apiData, '--apiData-');
 	// const clientOnLossSubmitHandler = useCallback(
@@ -565,6 +589,9 @@ const togglePriority = useCallback(
                   callHRapi={callHRapi}
                   setHRapiCall={setHRapiCall}
                   inteviewSlotDetails={apiData?.InterviewSlotDetails}
+				  hrData={hrData}
+				  setPage={setPage}
+				  page={page}
                 />
               </Suspense>
             )}

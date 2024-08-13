@@ -2446,6 +2446,65 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.saveTalentNotesDAO()');
 		}
 	},
+	getHRActivityUsingPaginationDAO:async (data) => {
+		try {
+			const result = await HiringRequestAPI.getHRActivityUsingPagination(data);
+			if (result) {
+				const statusCode = result['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = result.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return result;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return result;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getHRActivityUsingPaginationDAO()');
+		}
+	},
+
+	getHRTalentUsingPaginationDAO:async (data) => {
+		try {
+			const result = await HiringRequestAPI.getHRTalentUsingPagination(data);
+			if (result) {
+				const statusCode = result['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = result.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return result;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return result;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getHRTalentUsingPaginationDAO()');
+		}
+	},
 
 	// getChannelLibraryDAO:async (data) => {
 	// 	try {

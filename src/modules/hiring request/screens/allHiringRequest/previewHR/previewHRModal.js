@@ -1,13 +1,13 @@
-import { AutoComplete, Avatar, Checkbox, Radio, Select, Space, Spin, Tooltip, message } from "antd";
+import { AutoComplete, Avatar, Checkbox, Popconfirm, Radio, Select, Space, Spin, Tooltip, message } from "antd";
 import Modal from "antd/es/modal/Modal";
 import "./css/previewHR.css";
 import 'react-quill/dist/quill.snow.css'
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import infosmallIcon from "assets/svg/infoSmallIcon.svg";
 import EditnewIcon from "assets/svg/editnewIcon.svg";
-
+import SmallDownArrow from "assets/svg/smallDownArrow.svg";
 import businessIconImage from "assets/svg/businessIcon.svg";
 import umbrellaIconImage from "assets/svg/umbrellaIcon.svg";
 import clockIconImage from "assets/svg/clockIcon.svg";
@@ -26,6 +26,7 @@ import infoIcon from "assets/svg/infoIcon.svg";
 import rightGreen from "assets/svg/rightGreen.svg";
 import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, EngOptions, sanitizeLinks, compensationOptions, industryOptions, seriesOptions, monthOptions, foundedIn, formatSkill ,isEmptyOrWhitespace} from "./services/commonUsedVar";
 // import { DeleteCultureImage, DeleteYoutubeLink, UpdateDetails, getCompanyPerks } from "../../../services/companyProfileApi";
+import debounce from 'lodash.debounce';
 
 import deleteIcon from "assets/svg/delete.svg";
 import DeleteIcon from "assets/svg/delete-icon.svg";
@@ -38,6 +39,8 @@ import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { MasterDAO } from "core/master/masterDAO";
 import YouTubeVideo from "modules/client/components/previewClientDetails/youTubeVideo";
 import { NetworkInfo } from "constants/network";
+import confirm from "antd/es/modal/confirm";
+
 // import "../../CompanyDetails/companyDetails.css";
 function PreviewHRModal({
   setViewPosition,
@@ -80,11 +83,13 @@ function PreviewHRModal({
   const [iseditNoticePeriod, setisEditNoticePeriod] = useState(false);
   const [editNoticePeriod, setEditNoticePeriod] = useState({ howsoon: "" });
   const [iseditLocation, setisEditLocation] = useState(false);
-  const [editLocation, setEditLocation] = useState({
-    workingModeId: "",
-    city: "",
-    country: "",
-  });
+  const [editLocation, setEditLocation] = useState({workingModeId: "",
+    JobLocation:"",
+    FrequencyOfficeVisitID:null,
+    IsOpenToWorkNearByCities:null,
+    NearByCities:[],
+    ATS_JobLocationID:null,
+    ATS_NearByCities:""});
   const [country, setCountry] = useState([]);
   const [iseditExp, setisEditExp] = useState(false);
   const [editExp, seteditExp] = useState("");
@@ -112,12 +117,19 @@ function PreviewHRModal({
   const [iseditShift, setisEditShift] = useState(false);
   const [companyPerks, setCompanyPerks] = useState([]);
   const [jobTypes,setJobTypes] = useState([]);
+  const[isAutogenerateQuestions,setIsAutogenerateQuestions] = useState(false);
+  const[open,setIsOpen] = useState(false);
+  const [isSaveAllChanges,setIsSaveAllChanges] = useState(false);
+  const [isAnyFieldUpdate,setIsAnyFieldUpdate] = useState(false);
 
   const [editShift, setEditShift] = useState({
     timeZone: "",
     timeZoneFromTime: "",
     timeZoneEndTime: "",
   });
+  const[frequencyData,setFrequencyData] = useState([]);
+  const[nearByCitiesData,setNearByCitiesData] = useState([]);
+  const[locationList,setLocationList] = useState([]);
 
   const [CurrencyList, setCurrencyList] = useState([]);
   const [isFreshersAllowed, setIsFreshersAllowed] = useState(false)
@@ -193,12 +205,17 @@ function PreviewHRModal({
   let allInvestors = details?.allInvestors ? details?.allInvestors?.split(",") : [];
   let displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
 
-  const [isPOCContactChange, setPOCContactChange] = useState(false)
-  const [pocContactNo,setPocContactNo] = useState('')
-  const [pocContactIDToUpdate,setPOCContactIDToUpdate] = useState(null)
   const [countryCodeData,setCountryCodeData] = useState("in");
-  const [ContactNoStatus,setContactNoStatus] = useState('')
-
+  const[hrpocUserDetails,sethrpocUserDetails] = useState([]);
+  const [allUserData,setAllUserData] = useState([]);
+  const [isContactEdit,setIsContactEdit] = useState(false);
+  const [pocDetails,setPOCDetails] = useState({
+    pocId:"",
+    contactNo:"",
+    guid:"",
+    showContactNumberToTalent:null,
+    isEdit:null
+  });
   // const dispatch = useDispatch();
 
   useEffect(() => {
@@ -207,8 +224,9 @@ function PreviewHRModal({
     getTimeZoneValues();
     getStartEndTimeData();
     GetPayrollType();
-    getPOCUsers()
-    getJobType()
+    getPOCUsers();
+    getJobType();
+    getFrequencyData();
     // getLocationInfo();
     // getPostPreview({
     //   contactId:_user.LoggedInUserID,
@@ -216,7 +234,7 @@ function PreviewHRModal({
     // });
     getCompanyPerksDetails();
   }, [hrIdforPreview]);
-
+  
   const getCompanyPerksDetails = async () => {
     // let res = await getCompanyPerks();
     // setCompanyPerks(res?.responseBody?.details)
@@ -488,7 +506,7 @@ function PreviewHRModal({
           type: "success",
           content: "Role Updated",
         });
-
+        setIsAutogenerateQuestions(true);
         setJobPreview((prev) => ({ ...prev, roleName: editRoleName }));
         setiseditRoleName(false);
         setError({});
@@ -611,7 +629,7 @@ function PreviewHRModal({
           type: "success",
           content: "Skills Updated",
         });
-
+        setIsAutogenerateQuestions(true);
         setJobPreview((prev) => ({
           ...prev,
           ...{
@@ -728,7 +746,8 @@ function PreviewHRModal({
     });
 
     let result = await allCompanyRequestDAO.updateHrPreviewDetailsDAO(payload);
-
+    setIsAnyFieldUpdate(true);
+    setIsSaveAllChanges(false);
     return result;
   };
 
@@ -829,6 +848,7 @@ function PreviewHRModal({
           type: "success",
           content: "job Description Updated",
         });
+        setIsAutogenerateQuestions(true);
         setJobPreview(prev => ({ ...prev, whatweoffer: editWhatWeOffer }))
         setisEditWhatWeoffer(false);
       }
@@ -953,24 +973,41 @@ function PreviewHRModal({
   };
 
   const  updatePOCContact = async ()=>{
-    if(pocContactNo){
-      setIsLoading(true);
+    if(pocDetails?.contactNo){
+      setIsLoading(true);   
       let payload = {
-      ContactNo:pocContactNo,
-      ContactID:pocContactIDToUpdate,
-      HRID:previewIDs?.hrID
-    }
+        contactNo:pocDetails?.contactNo,
+        contactID:pocDetails?.pocId,
+        hrid:previewIDs?.hrID ,          
+        // guid:pocDetails?.guid,
+        showEmailToTalent:null,
+        showContactNumberToTalent: pocDetails?.showContactNumberToTalent         
+      }   
     const result =  await MasterDAO.updatePocContactDAO(payload);
-
-    let oldPOCS = jobPreview?.hrpocUserID
-    let index = oldPOCS.findIndex(val => val.hrwiseContactId ===   pocContactIDToUpdate )
-
-    oldPOCS[index] = {...oldPOCS[index], contactNo: pocContactNo}
-
-    setJobPreview((prev) => ({...prev,  
-      hrpocUserID:oldPOCS
-    })); 
-    setPOCContactChange(false)
+    if (result.statusCode === 200) {
+      messageApi.open({
+          type: "success",
+          content: "POC details updated",
+      });  
+      setIsContactEdit(false);
+      setPOCDetails({
+        pocId:"",
+        contactNo:"",
+        guid:"",
+        isEdit:null
+      });          
+      // setJobPreview((prev) => ({...prev,  
+      //   hrpocUserID:result?.responseBody?.details
+      // }));
+      let oldPOCS = jobPreview?.hrpocUserID
+      let index = oldPOCS.findIndex(val => val.hrwiseContactId ===   pocDetails?.pocId )
+  
+      oldPOCS[index] = {...oldPOCS[index], contactNo: pocDetails?.contactNo}
+  
+      setJobPreview((prev) => ({...prev,  
+        hrpocUserID:oldPOCS
+      })); 
+    }
     setIsLoading(false);
     }else{
       message.error(`Please provide valid phone number`);
@@ -1238,18 +1275,26 @@ function PreviewHRModal({
     setStartEndTime(_list);
   };
 
+  const getFrequencyData = async () => {
+    let response = await  MasterDAO.getFrequencyDAO();    
+    setFrequencyData(response?.responseBody?.details?.map((fre) => ({
+      value: fre.id,
+      label: fre.frequency,                
+  })))
+  }
+
   const getJobType = async () => {
     let response = await  MasterDAO.getJobTypesRequestDAO();        
     setJobTypes(response?.responseBody);
   } 
 
   const getPOCUsers = async () => {              
-    let response = await MasterDAO.getEmailSuggestionDAO('',previewIDs?.companyID);
-   
+    let response = await MasterDAO.getEmailSuggestionDAO('',previewIDs?.companyID);   
     setActiveUserData([...response?.responseBody?.details?.map((item)=>({
       value : item?.contactId,
       label : item?.contactName
-  }))]);
+    }))]);
+    setAllUserData(response?.responseBody?.details ?? []);
 } 
 
   const GetPayrollType = async () => {
@@ -1275,30 +1320,6 @@ function PreviewHRModal({
     }
   };
 
-  const getcountryData = async () => {
-    setIsLoading(true)
-    let res = await  MasterDAO.getCountryByCityRequestDAO(editLocation.city)
-
-    if (res?.statusCode == 200) {
-      let _list = [];
-      for (let val of res?.responseBody?.details
-        ) {
-        let obj = {};
-        obj.label = val.country;
-        obj.value = val.id;
-        _list.push(obj);
-      }
-      if (_list.length === 1) {
-        setEditLocation({
-          ...editLocation,
-
-          country: _list[0].value,
-        });
-      }
-      setCountry(_list);
-    }
-    setIsLoading(false);
-  };
 
   const deleteHRPOC =async (pocID)=>{
     const result = await MasterDAO.deletePOCUserDAO(pocID,previewIDs?.hrID);
@@ -1308,28 +1329,42 @@ function PreviewHRModal({
 
   const updateLocation = async () => {
     let isValid = true;
-    let _errors = { ...error };
-
-    if ((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !editLocation.city) {
-      _errors.city = "Please select city";
-      isValid = false;
-    }
-    if ((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !editLocation.country) {
-
-      _errors.country = "Please select country";
-      isValid = false;
-    }
-    setError(_errors);
+        let _errors = { ...error };
+   
+        if (!editLocation.workingModeId) {
+          _errors.workingModeId = "Please select location."
+          isValid = false;
+        }
+        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !editLocation?.JobLocation ){
+            _errors.JobLocation = "Please select job location."
+            isValid = false;
+        }
+        if(editLocation.workingModeId === 2 && !editLocation?.FrequencyOfficeVisitID){
+            _errors.FrequencyOfficeVisitID = "Please select frequency of office visits."
+            isValid = false;
+        }
+        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && editLocation?.IsOpenToWorkNearByCities === null){
+            _errors.IsOpenToWorkNearByCities = "Please select open to applicants from nearby cities."
+            isValid = false;
+        }        
+        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3)  && editLocation?.IsOpenToWorkNearByCities && (!editLocation?.NearByCities || editLocation?.NearByCities?.length  === 0)){
+            _errors.NearByCities = "Please enter near by cities."
+            isValid = false;
+        }
+        setError(_errors);
     if (isValid) {
       setError({});
+      const selectedLabels = nearByCitiesData?.filter(item => editLocation?.NearByCities?.includes(item.value))?.map(item => item.label);
+      const nonNumericValues = editLocation?.NearByCities?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));      
       let payload = {
-        workingModeId: editLocation.workingModeId,
-        country:
-          editLocation.workingModeId === 2 || editLocation.workingModeId === 3
-            ? editLocation?.country?.toString()
-            : null,
-        city: editLocation.workingModeId === 2 || editLocation.workingModeId === 3 ? editLocation?.city : null,
-      };
+        workingModeID: editLocation.locationValue === 'Hybrid' ? 2 :editLocation.locationValue === 'Onsite' ? 3 : editLocation.workingModeId,
+        JobLocation : (editLocation.workingModeId === 2 || editLocation.workingModeId === 3) ? editLocation?.JobLocation : null,
+        FrequencyOfficeVisitID : editLocation.workingModeId === 2 ? editLocation?.FrequencyOfficeVisitID : null,
+        IsOpenToWorkNearByCities : editLocation?.IsOpenToWorkNearByCities,                        
+        NearByCities : selectedLabels?.concat(nonNumericValues)?.join(','),            
+        ATS_JobLocationID : editLocation?.ATS_JobLocationID,
+        ATS_NearByCities : editLocation?.NearByCities?.join(','),
+      }; 
 
       setIsLoading(true)
       let result = await updateJobPostDetail(payload);
@@ -1339,18 +1374,22 @@ function PreviewHRModal({
           type: "success",
           content: "Location Updated",
         });
-        setJobPreview((prev) => ({
-          ...prev,
-          ...{
-            workingModeId: editLocation.workingModeId,
-            country:
-              editLocation.workingModeId === 2 || editLocation.workingModeId === 3
-                ? editLocation?.country?.toString()
-                : null,
-            city: editLocation.workingModeId === 2 || editLocation.workingModeId === 3 ? editLocation?.city : null,
-          },
-        }));
-        // setEditLocation({ workingModeId: "", city: "", country: "" });
+        setJobPreview((prev) => ({...prev,  
+          workingModeId: editLocation.workingModeId ? editLocation.workingModeId  : null ,
+          jobLocation:(editLocation.workingModeId === 2 || editLocation.workingModeId === 3) ? editLocation?.JobLocation : null,
+          frequencyOfficeVisitID: editLocation.workingModeId === 2 ? editLocation?.FrequencyOfficeVisitID : null,
+          isOpenToWorkNearByCities:editLocation?.IsOpenToWorkNearByCities,
+          nearByCities:selectedLabels?.concat(nonNumericValues)?.join(','),
+          atS_JobLocationID:editLocation?.ATS_JobLocationID,
+          atS_NearByCities:editLocation?.NearByCities?.join(',')
+         }));
+         setEditLocation({workingModeId: "",
+          JobLocation:"",
+          FrequencyOfficeVisitID:null,
+          IsOpenToWorkNearByCities:null,
+          NearByCities:[],
+          ATS_JobLocationID:null,
+          ATS_NearByCities:""});
       }
       setIsLoading(false)
     }
@@ -1456,15 +1495,110 @@ function PreviewHRModal({
     }
   };
 
+  const fetchController = useRef();
+
+  const onChangeLocation = async (val) => {
+    if (typeof val === 'number') return;
+    if (fetchController.current) {
+        fetchController.current.abort();
+    }
+    setEditLocation((prev) => ({
+        ...prev,
+        JobLocation: val,
+        NearByCities: [],
+    }));
+    setError({...error,['JobLocation'] : ""});
+    fetchLocations(val);      
+  }; 
+
+  const fetchLocations = useCallback(
+    debounce(async (val) => {
+        if (val.trim() === '') return; // Avoid calling the API if the input is empty
+        const controller = new AbortController();
+        const signal = controller.signal;
+        fetchController.current = controller;
+
+        try {
+            setIsLoading(true);
+            const _res = await MasterDAO.getAutoCompleteCityStateDAO(val, { signal });
+            setIsLoading(false);
+            let locations = [];
+            if (_res?.statusCode === 200) {
+                locations = _res?.responseBody?.details?.map((location) => ({
+                    value: location.row_ID,
+                    label: location.location,
+                }));
+                setLocationList(locations || []);
+            } else {
+                setLocationList([]);
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.log('Fetch aborted');
+            } else {
+                console.error('Error fetching locations:', error);
+                setLocationList([]);
+            }
+        }
+    }, 300),
+    []
+  );
+
+  const getCities = async (locationId) => {
+    setIsLoading(true);
+    let _res = await MasterDAO.getNearByCitiesDAO(locationId);
+    setIsLoading(false);
+    let citiesValues = [];
+    if (_res?.statusCode === 200) {                
+        citiesValues = _res?.responseBody?.details?.map((city) => ({
+            value: city.nearByDistrictID,
+            label: city.nearByDistrictName,
+        }));                       
+        return citiesValues || [];                                                            
+    }else{
+      return []
+    }    
+  }
+
+  const handleBlur = () => {
+    const isValidSelection = locationList?.some(
+        (location) => location.label === editLocation?.JobLocation
+    );
+  
+    if (!isValidSelection) {
+        setEditLocation((prev) => ({
+            ...prev,
+            JobLocation: '',
+            ATS_JobLocationID: null,
+            NearByCities:[nearByCitiesData?.length>0 && nearByCitiesData[0]?.label] 
+        }));
+        // setError('Please select a valid location from the list.');
+    }else{
+      setEditLocation((prev) => ({
+        ...prev,
+        NearByCities:[nearByCitiesData?.length>0 && nearByCitiesData[0]?.label] 
+    }));
+    }
+  };
+
   const updateUserInfo = async () => {    
     // sethrpocUserID([...jobPreview?.hrpocUserID?.map((item)=>({
     //   value : item?.id,
     //   label : item?.fullName
     // }))]);
-    let payload = { 
-      showHRPOCDetailsToTalents : showHRPOCDetailsToTalents,
-      hrpocUserID : (hrpocUserID?.length == 0 || !hrpocUserID) ? null : hrpocUserID?.map((a) => a.toString())
-     };
+    let payload = {                     
+      hrpocUserDetails : hrpocUserDetails?.map(user => ({
+      pocUserID: user.pocUserID,
+      contactNo: user.contactNo,
+      showEmailToTalent: user.showEmailToTalent,
+      showContactNumberToTalent: user.showContactNumberToTalent
+    }))
+   };
+    
+    // let payload = { 
+    //   showHRPOCDetailsToTalents : showHRPOCDetailsToTalents,
+    //   hrpocUserID : (hrpocUserID?.length == 0 || !hrpocUserID) ? null : hrpocUserID?.map((a) => a.toString())
+    //  };
     setIsLoading(true);
     let result = await updateJobPostDetail(payload);
     if (result.statusCode === 200) {
@@ -1473,17 +1607,17 @@ function PreviewHRModal({
         type: "success",
         content: "Users details updated",
       }); 
-      setJobPreview((prev) => ({...prev,  showHRPOCDetailsToTalents: showHRPOCDetailsToTalents,  hrpocUserID: result?.responseBody?.hrpocUserID ? result?.responseBody?.hrpocUserID : []}));               
+      sethrpocUserDetails(result?.responseBody?.hrpocUserID ? result?.responseBody?.hrpocUserID : []);
+      setJobPreview((prev) => ({...prev, 
+        hrpocUserID : result?.responseBody?.hrpocUserID ? result?.responseBody?.hrpocUserID : []}));               
       // let _data = {...jobPreview};      
       // _data.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
       // _data.hrpocUserID =  result?.responseBody?.details?.hrpocUserID ? result?.responseBody?.details?.hrpocUserID : [];
     
     }
-    setshowHRPOCDetailsToTalents(null);
     sethrpocUserID([]);
     setIsLoading(false);
-};
-
+};  
   const updateExp = async () => {
     let valid = true;
     let _errors = { ...error };
@@ -1513,6 +1647,7 @@ function PreviewHRModal({
           type: "success",
           content: "Experience Updated",
         });
+        setIsAutogenerateQuestions(true);
         setJobPreview((prev) => ({
           ...prev,
           experienceYears: editExp,
@@ -1531,6 +1666,72 @@ function PreviewHRModal({
     }
   }, [editDuration.employmentType]);
 
+  const UpdateSaveDataToATS = async() => {    
+    if(isAutogenerateQuestions && jobPreview?.screeningQuestionsExternallyModified){  
+      setIsOpen(true);        
+    }else{
+      setIsLoading(true);
+      setIsSaveAllChanges(true);
+      let res = await MasterDAO.updateJobPostDataToATSDAO(hrIdforPreview,null);
+      if (res?.statusCode === 200) {
+        messageApi.open({
+          type: "success",
+          content: "All edits are updated successfully",
+        });
+      }
+      setIsLoading(false);
+      setViewPosition(false);
+      setisEditRolesAndRes(false)
+      setisEditRequirenments(false)
+      setisEditSkills(false)
+      setChangeStatus(true)
+      setEditWhatWeOffer('')
+      setIsAutogenerateQuestions(false)       
+    }    
+  }
+  const handleOk = async () => {
+    setIsOpen(false);
+    setIsLoading(true);
+    setIsSaveAllChanges(true);
+    let res = await MasterDAO.updateJobPostDataToATSDAO(hrIdforPreview,true);
+    if (res?.statusCode === 200) {
+      messageApi.open({
+        type: "success",
+        content: "All edits are updated successfully",
+      });
+    }
+    setIsLoading(false);
+    setIsAutogenerateQuestions(false); 
+    setViewPosition(false);
+    setisEditRolesAndRes(false)
+    setisEditRequirenments(false)
+    setisEditSkills(false)
+    setChangeStatus(true)
+    setEditWhatWeOffer('')
+    
+  }  
+  const handleCancel = async () => {
+    setIsOpen(false);
+    setIsLoading(true);
+    setIsSaveAllChanges(true);
+    let res = await MasterDAO.updateJobPostDataToATSDAO(hrIdforPreview,false);
+    if (res?.statusCode === 200) {
+      messageApi.open({
+        type: "success",
+        content: "All edits are updated successfully",
+      });
+    }   
+    setIsLoading(false);    
+    setIsAutogenerateQuestions(false);
+    setViewPosition(false);
+    setisEditRolesAndRes(false)
+    setisEditRequirenments(false)
+    setisEditSkills(false)
+    setChangeStatus(true)
+    setEditWhatWeOffer('')
+  }
+
+
   const GetHiringTypePricing = async () => {
     setIsLoading(true);
     // let res = await getHiringTypePricing(
@@ -1543,7 +1744,33 @@ function PreviewHRModal({
     setIsLoading(false);
   };
 
-
+  const handleContactNoChange = (index, newValue) => {
+    const regex = /^[0-9]\d*$/;
+    if (regex.test(newValue) || newValue === "") {
+    sethrpocUserDetails(prevDetails =>
+      prevDetails.map((detail, i) =>
+        i === index ? { ...detail, contactNo: newValue } : detail
+      )
+    );
+    }   
+  };
+  
+  const handleCheckboxChange = (index, field, checked) => {
+    sethrpocUserDetails(prevDetails =>
+      prevDetails.map((detail, i) =>
+        i === index ? { ...detail, [field]: checked } : detail
+      )
+    );
+  };
+  
+  const handleDelete = (pocUserID) => {
+    sethrpocUserDetails(prevDetails =>
+      prevDetails.filter(detail => detail.pocUserID !== pocUserID)
+    );
+    
+    // const hrwiseContactIds = jobPreview?.hrpocUserID?.map(user => Number(user.hrwiseContactId));
+    // sethrpocUserID(hrwiseContactIds);  
+  };
   let data = `<h3><span style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; vertical-align: baseline; white-space-collapse: preserve;"><b>Not Just Another Java Developer:</b></span><span style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; vertical-align: baseline; white-space-collapse: preserve;"> We're looking for someone who has </span><span style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-weight: 700; vertical-align: baseline; white-space-collapse: preserve;">moved beyond just building applications with Spring Boot</span><span style="font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; vertical-align: baseline; white-space-collapse: preserve;"> or similar frameworks. You should have an experience that demonstrates a deep understanding of Java, including direct manipulation of bytecode, custom library creation, and performance optimization.</span><br></h3><h3 dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 7pt 0pt;"><span id="docs-internal-guid-7360c499-7fff-3bcb-8ebc-5d825d46fbbb"></span></h3><h3 dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:7pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"><b>A True Java Enthusiast: </b></span><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">You find excitement in exploring Java beyond the surface level, delving into its internals, and leveraging this knowledge to build innovative solutions.</span></h3><h3><span><span id="docs-internal-guid-6bb6224d-7fff-05ca-b573-ac1cc7d15e92"></span><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><span id="docs-internal-guid-07c09f7d-7fff-dd32-3d7e-028182257644"></span>
 </span></p></span></h3><h3 dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:7pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"><b>Roles &amp; Responsibilities</b></span></h3><h3><span><div><b style="" id="docs-internal-guid-78e0a3ae-7fff-ce9a-7b62-ef98c61be725"><ul style="margin-top: 0px; margin-bottom: 0px; padding-inline-start: 48px;"><li style=""><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Develop the</span><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"> HyperTest Java SDK</span><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">, employing advanced Java techniques for runtime library manipulation and data mocking.</span></li><li style=""><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Extend</span><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"> OpenTelemetry for observability </span><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">and monitoring in distributed systems, ensuring our SDK integrates seamlessly with modern development ecosystems.</span></li></ul></b></div></span></h3><h3><span><div><b style="font-weight:normal;"><ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;"><li><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Create solutions for simulated testing environments that operate in various modes without modifying the original application code.</span></li></ul></b></div></span></h3><h3><span><div><b style=""><ul style="margin-top: 0px; margin-bottom: 0px; padding-inline-start: 48px;"><li style=""><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">Serve as a Java subject matter expert, </span><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;">guiding the team in best practices</span><span style="font-weight: 400; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"> and innovative software development approaches.</span></li></ul></b></div></span></h3><h3 dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:7pt;"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"><br></span><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap;"><b>Requirement</b></span></h3><h3><ul><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Java Expertise</span><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">: Extensive experience in Java, including familiarity with its internals, memory model, concurrency, and performance optimization. Not just experience with high-level frameworks, but a solid understanding of underlying principles and the ability to manipulate Java's core functionalities.</span></p></li></ul><ul><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Software Architecture</span><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">: Strong grasp of software design patterns, architectural principles, and the ability to solve complex problems with efficient, scalable solutions.</span></p></li></ul><ul><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Analytical Skills: Exceptional problem-solving abilities, capable of addressing complex challenges and driving innovative solutions.</span></p></li></ul><ul><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-weight: 700; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Specialized Knowledge</span><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">: Experience with bytecode manipulation, library patching (e.g., Byte Buddy), and a clear understanding of Java's compilation and execution process.</span></p></li></ul></h3><h3><br></h3><h3><span id="docs-internal-guid-35acbabc-7fff-9ed3-2149-d24abe76f9f1"><b style="background-color: transparent; color: rgb(0, 0, 0); font-size: 11pt; white-space-collapse: preserve;">What We Offer</b><br><ol><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">A dynamic work environment</span></p></li></ol><ol><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 11pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Opportunities for professional growth</span></p></li><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 11pt;" role="presentation"><span style="background-color: transparent; font-family: Arial, sans-serif; font-size: 11pt; text-wrap: wrap;">The chance to make a significant impact on our product and the wider development community</span></p></li></ol><span id="docs-internal-guid-9ae09089-7fff-b2c4-6beb-801f533e09d6"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 11pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><b>Interview Process</b></span></p><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 11pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><span id="docs-internal-guid-fbf606f9-7fff-e78c-8bc7-953b68199fcc"></span></span></p><ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;"><li dir="ltr" style="list-style-type:disc;font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">First 15 minutes discussion with the CTO</span></p></li></ul><div><font color="#000000" face="Arial, sans-serif"><span style="font-size: 14.6667px; white-space-collapse: preserve;"><br></span></font></div><ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;"><li dir="ltr" style="list-style-type:disc;font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;" role="presentation"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Second Round - Take home assessment</span></p></li></ul><div><font color="#000000" face="Arial, sans-serif"><span style="font-size: 14.6667px; white-space-collapse: preserve;"><br></span></font></div><ul style="margin-top:0;margin-bottom:0;padding-inline-start:48px;"><li dir="ltr" style="list-style-type:disc;font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;" aria-level="1"><p dir="ltr" style="line-height:1.38;background-color:#ffffff;margin-top:0pt;margin-bottom:11pt;" role="presentation"><span style="font-size:11pt;font-family:Arial,sans-serif;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">Third round - General discussion</span></p></li></ul><div><span id="docs-internal-guid-98b46740-7fff-32ce-43db-b26231a857b5"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 11pt;"><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><b>Benefits</b></span></p><ul style="margin-bottom: 0px; padding-inline-start: 48px;"><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 11pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">Unlimited leaves</span></p></li><li dir="ltr" style="list-style-type: disc; font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space: pre;" aria-level="1"><p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 11pt;" role="presentation"><span style="font-size: 11pt; font-family: Arial, sans-serif; background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; text-wrap: wrap;">PF</span></p></li></ul></span></div><div><span style="font-size: 11pt; font-family: Arial, sans-serif; color: rgb(0, 0, 0); background-color: transparent; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-variant-position: normal; vertical-align: baseline; white-space-collapse: preserve;"><br></span></div></span></span></h3>`
 
@@ -1560,13 +1787,44 @@ function PreviewHRModal({
         open={ViewPosition}
         onOk={() => setViewPosition(false)}
         onCancel={() => {
-          setViewPosition(false);
-          setError({});
-          setisEditRolesAndRes(false)
-          setisEditRequirenments(false)
-          setisEditSkills(false)
-          setChangeStatus(true)
-          setEditWhatWeOffer("");
+          if(isAnyFieldUpdate && !isSaveAllChanges){
+            confirm({
+              title: 'Please save your changes before leaving this page to avoid losing any unsaved data.',
+              okText: 'SAVE CHANGES',
+              okButtonProps: {
+                style: {
+                  fontSize:"14px",
+                  fontWeight:700,                              
+                  height: "41px",
+                  minHeight:"46px",
+                  color: "#232323",
+                  fontStyle: "normal",
+                  lineHeight: "normal",                                                            
+                  border: 0,
+                  transition: "0.5s all",
+                  background: "#FFDA30",
+                  padding: "0 25px",                                                            
+                  borderRadius: "27px",                                    
+                },
+              },
+              okCancel:"",
+              onOk() {
+                UpdateSaveDataToATS();
+              },    
+              onCancel(){
+
+              }                           
+            });  
+          }else{
+            setViewPosition(false);
+            setError({});
+            setisEditRolesAndRes(false)
+            setisEditRequirenments(false)
+            setisEditSkills(false)
+            setChangeStatus(true)
+            setEditWhatWeOffer("");          
+            setIsAutogenerateQuestions(false)
+          }                 
         }}
         footer={null}
         width={1080}
@@ -1574,19 +1832,59 @@ function PreviewHRModal({
         maskClosable={false}
       >
 
-        <div className="PostNewJobModal-Content poup-new-content">
-        
+        <div className="PostNewJobModal-Content poup-new-content">      
        
           <div className="PreviewpageMainWrap">
             <div className="PreviewStickyContent">
-
-              <div className="Post-Header">
-                <h4>Preview/Edit HR</h4>
-              </div>
-
-              {ispreviewLoading ? <div style={{display:'flex',justifyContent:'center'}}><Space size="large">
-          <Spin size="large" />
-        </Space> </div>  :  <div className="PostJobStepSecondWrap">
+              
+                <div className="Post-Header Post-Header-Edit-Modal" style={{display:"flex",justifyContent:"space-between"}}>
+                  <h4>Preview/Edit HR</h4>
+                  <div className="PreviewBtnHead">              
+                    <Popconfirm                  
+                      title={jobPreview?.totalScreeningQuestions > 10 ? 'There were few custom changes made to AI video vetting questions earlier. Do you want to regenerate the new questions on the basis of new information you edit related to the job ?' : 'There were few custom changes made to AI video vetting questions earlier. Do you want to regenerate the new questions on the basis of new information you edit related to the job ? Upon regeneration there will be a set of at least 10 questions asked to the candidate.'}
+                      open={open}
+                      onConfirm={handleOk}
+                      onCancel={handleCancel}
+                      overlayStyle={{ width: "500px" }}  
+                      okText="Yes" 
+                      cancelText="No" 
+                      okButtonProps={{ style: {
+                        fontSize:"14px",
+                        fontWeight:700,                              
+                        height: "30px",
+                        minHeight:"35px",
+                        color: "#232323",
+                        fontStyle: "normal",
+                        lineHeight: "normal",                                                            
+                        border: 0,
+                        transition: "0.5s all",
+                        background: "#FFDA30",
+                        padding: "0 25px",                                                            
+                        borderRadius: "27px",                                    
+                      }, }} 
+                      cancelButtonProps={{ style: {
+                        fontSize:"14px",
+                        fontWeight:700,                              
+                        height: "30px",
+                        minHeight:"35px",
+                        color: "#232323",
+                        fontStyle: "normal",
+                        lineHeight: "normal",                                                            
+                        border: 0,
+                        transition: "0.5s all",
+                        background: "#FFDA30",
+                        padding: "0 25px",                                                            
+                        borderRadius: "27px",                                    
+                      }, }}                  
+                    >
+                    <button type="button" className="btnPrimary" onClick={() => UpdateSaveDataToATS()}>Save Changes</button>
+                    </Popconfirm>
+                  </div>             
+                </div>
+              {ispreviewLoading ? <div style={{display:'flex',justifyContent:'center'}}>
+                <Space size="large">
+                  <Spin size="large" />
+                </Space> </div>  :  <div className="PostJobStepSecondWrap">
                 <div className="formFields">
                   <div className="formFields-box">
                     <div className="formFields-box-inner">
@@ -1642,7 +1940,7 @@ function PreviewHRModal({
                           </div>
                         </div>
                       )}
-
+                          
                       <div className="FieldsBoxInner-Content">
                         <ul className="previewstepBox">
                           <li>
@@ -1741,28 +2039,41 @@ function PreviewHRModal({
                               }}
                             ><img src={EditnewIcon} /></span>
                           </li>
-                          <li>
-                            <img src={locationIconImage} className="business" />
-                            {jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3
-                              ? jobPreview?.countryID ? `${jobPreview?.city ? jobPreview?.city : ""},${jobPreview?.countryID ? jobPreview?.countryID : ""}` : `${jobPreview?.city ? jobPreview?.city : ""}`
-                              : "Work from anywhere"}
-
-
-                            <span className="editNewIcon"
-                              onClick={() => {
-                                  setisEditLocation(true);
-                                  getcountryData();
-                                setEditLocation({
-                                  ...editLocation,
-                                  workingModeId: jobPreview?.workingModeId,
-                                  city: jobPreview?.city,
-                                  country: jobPreview?.country,
-                                  countryID: jobPreview?.countryID,
-                                });
-                              }}
-                            ><img src={EditnewIcon} /></span>
-
-                          </li>
+                          <li className={`canJobLocInfoBtn ${iseditLocation ? "showInfo" : ""}`}>
+                                        <div className="canJobLocInfoInner">
+                                          <img src={locationIconImage} className="business" />{" "}
+                                          {jobPreview?.workingModeId === 1 ? "Work from anywhere" : jobPreview?.workingModeId == 2 ? "Hybrid" :jobPreview?.workingModeId == 3 ?  "On-site" : "-"}
+                                          <span className="editNewIcon" onClick={() => { 
+                                              setisEditLocation(true);
+                                              // getcountryData();
+                                              setEditLocation({
+                                                ...editLocation,
+                                                workingModeId: jobPreview?.workingModeId,
+                                                JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
+                                                FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
+                                                IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
+                                                NearByCities : jobPreview?.nearByCities?.split(','),            
+                                                ATS_JobLocationID : jobPreview?.atS_JobLocationID,
+                                                ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
+                                              });
+                                          }} >  <img src={EditnewIcon}/></span>
+                                          <span className="downArrowBtn"  onClick={() => {
+                                            setisEditLocation(!iseditLocation);
+                                            setEditLocation({
+                                              ...editLocation,
+                                              workingModeId: jobPreview?.workingModeId,
+                                              JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
+                                              FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
+                                              IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
+                                              NearByCities : jobPreview?.nearByCities?.split(','),            
+                                              ATS_JobLocationID : jobPreview?.atS_JobLocationID,
+                                              ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
+                                            });
+                                          }}>
+                                            <img src={SmallDownArrow} alt="small-down-arrow"/>
+                                          </span> 
+                                        </div> 
+                                      </li>
                           <li>
                             <img src={awardIconImage} className="business" />
                             {jobPreview?.isFresherAllowed ? 'Fresher' : jobPreview?.experienceYears !== ''
@@ -1803,6 +2114,194 @@ function PreviewHRModal({
                               ><img src={EditnewIcon} /></span>
                             </li>
                           </Tooltip>
+                          {iseditLocation && 
+                            <li className="canJobLocInfoBox">
+                              <div className="row">
+                                <div className="col-12">
+                                  <div className="form-group">
+                                    <label>Change job location </label>
+                                    <div>
+                                      <Radio.Group
+                                        className="customradio newradiodes small"
+                                        name="workingModeID"
+                                        value={editLocation.workingModeId}
+                                        onChange={(e) => {
+                                          setEditLocation({
+                                            ...editLocation,
+                                            workingModeId: e.target.value,
+                                            JobLocation:"",
+                                            FrequencyOfficeVisitID:null,
+                                            IsOpenToWorkNearByCities:null,
+                                            NearByCities:[],
+                                            ATS_JobLocationID:null,
+                                            ATS_NearByCities:""
+                                          });
+                                        }}
+                                      >
+                                        <Radio.Button value={1}>
+                                          Remote{" "}
+                                          <img
+                                            className="checkIcon"
+                                            src={CheckRadioIcon}
+                                            alt="check"
+                                          />
+                                        </Radio.Button>
+                                        <Radio.Button value={3}>
+                                          On-site{" "}
+                                          <img
+                                            className="checkIcon"
+                                            src={CheckRadioIcon}
+                                            alt="check"
+                                          />
+                                        </Radio.Button>
+                                        <Radio.Button value={2}>
+                                          Hybrid{" "}
+                                          <img
+                                            className="checkIcon"
+                                            src={CheckRadioIcon}
+                                            alt="check"
+                                          />
+                                        </Radio.Button>
+                                      </Radio.Group>
+                                    </div>
+                                  </div>
+                                </div>
+                                {editLocation.workingModeId !== 1 && (
+                                  <>
+                                    <div className="col-md-6">
+                                        <div className={`form-group`}>
+                                            <h3>Location <span>*</span></h3>
+                                            <div className='cutomeAutoCompliteArrow'>
+                                                <AutoComplete
+                                                    value={editLocation?.JobLocation}
+                                                    options={locationList ?? []}
+                                                    onChange={onChangeLocation}
+                                                    onSelect={async (value, option) => {                                                                                                                                    
+                                                      let citiesVal = await getCities(option.value);                                                                 
+                                                      setEditLocation({...editLocation,
+                                                        JobLocation: option.label,
+                                                        ATS_JobLocationID: option.value,
+                                                        NearByCities:[citiesVal?.length>0 && citiesVal[0]?.label]  
+                                                      });                                                                                                                                                                                                                                                                                              
+                                                      setNearByCitiesData(citiesVal);                                                                 
+                                                      setError({...error,['JobLocation'] : ""});                                                           
+                                                  }}                       
+                                                    onBlur={handleBlur}                                 
+                                                    placeholder='Select location'
+                                                    className='customSelectAutoField'                                                       
+                                                />
+                                                <span className='downArrowCus'></span>
+                                            </div>
+                                            {error?.JobLocation && <span className='error'>{error?.JobLocation}</span>}
+                                        </div>
+                                    </div>
+                                    {editLocation?.workingModeId === 2 && 
+                                    <div className="col-md-6">
+                                          <div className={`form-group`}>
+                                              <h3>Frequency of Office Visits <span>*</span></h3>
+                                              <Select
+                                                  placeholder='Select frequency of office visits'
+                                                  tokenSeparators={[","]}
+                                                  onSelect={(e) => {
+                                                      setEditLocation((prev) => ({
+                                                          ...prev,
+                                                          FrequencyOfficeVisitID: e,
+                                                      }));
+                                                      setError({...error,['FrequencyOfficeVisitID'] : ""});
+                                                  }}                                                         
+                                                  value={editLocation?.FrequencyOfficeVisitID}
+                                                  options={frequencyData}
+                                              />
+                                              {error?.FrequencyOfficeVisitID && <span className='error'>{error?.FrequencyOfficeVisitID}</span>}
+                                          </div>
+                                    </div>}
+                                    <div className="col-12">
+                                        <div className={`form-group`}>
+                                            <h3>Open to applicants from other cities<span>*</span></h3>
+                                            <Radio.Group
+                                                className="customradio newradiodes small"
+                                                value={editLocation?.IsOpenToWorkNearByCities}
+                                                onChange={async (e) => {
+                                                    setEditLocation({...editLocation,IsOpenToWorkNearByCities:e.target.value})
+                                                    // if(e.target.value && editLocation?.workingModeId === 2){                                                                
+                                                    //     getCities(editLocation?.ATS_JobLocationID);
+                                                    // }
+                                                    setError({...error,['IsOpenToWorkNearByCities'] : ""});
+                                                }}
+                                            >
+                                                <Radio.Button value={true}>
+                                                Yes <img className='checkIcon' src={CheckRadioIcon} alt='check' />
+                                                </Radio.Button>
+                                                <Radio.Button value={false}>
+                                                No <img className='checkIcon' src={CheckRadioIcon} alt='check' />
+                                                </Radio.Button>                                               
+                                            </Radio.Group>
+                                            {error?.IsOpenToWorkNearByCities && <span className='error'>{error?.IsOpenToWorkNearByCities}</span>}
+                                        </div>
+                                    </div>
+                                    {editLocation?.IsOpenToWorkNearByCities &&
+                                    <div className="col-12">
+                                        <div className={`form-group prevSkillTwopart`}>
+                                            <h3>Other cities</h3>
+                                            <Select
+                                                mode="tags"
+                                                style={{ width: "100%" }}
+                                                value={editLocation?.NearByCities}
+                                                options={nearByCitiesData}
+                                                onChange={(values, _) => {
+                                                    setEditLocation({ ...editLocation, NearByCities: values });
+                                                    setError({...error,['NearByCities'] : ""});
+                                                }}
+                                                placeholder="Enter cities"
+                                                tokenSeparators={[","]}
+                                                open={false}
+                                                suffixIcon={false}
+                                            />                                                                                                  
+                                            {error?.NearByCities && <span className='error'>{error?.NearByCities}</span>}  
+                                            {editLocation?.workingModeId === 2 && 
+                                            <ul className="SlillBtnBox">
+                                              {nearByCitiesData
+                                                ?.filter(option => !editLocation?.NearByCities?.includes(option.label))
+                                                .map((option) =>{                                                                                                                   
+                                                  return (
+                                                    <li key={option.value} style={{ cursor: "pointer" }} onClick={() => {  
+                                                      let updatedCities = [...editLocation?.NearByCities, option.value];
+                                                      setEditLocation({...editLocation, NearByCities: updatedCities});
+                                                      setError({...error, ['NearByCities']: ""});
+                                                    }}>
+                                                      <span>{option.label} <img src={plusImage} loading="lazy" alt="star" /></span>
+                                                    </li>
+                                                  )
+                                                } )}
+                                            </ul>
+                                          }                                                                  
+                                          
+                                        </div>
+                                    </div>}
+                                  </>
+                                )}
+                                <div className="buttonEditGroup col-12 mb-2 mt-0">
+                                  <button
+                                    type="button"
+                                    class="btnPrimary blank"
+                                    onClick={() => {
+                                      setisEditLocation(false);
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btnPrimary"
+                                    onClick={() => updateLocation()}
+                                  >
+                                    SAVE
+                                  </button>
+                                </div>
+                              </div>
+                            </li>
+                          }
+
                         </ul>
 
                         <div className="prevSkillTwopart">
@@ -2022,6 +2521,7 @@ function PreviewHRModal({
                           </div>
                         </div>
                       </div>
+                     
                     </div>
                   </div>
                 </div>
@@ -2829,12 +3329,12 @@ function PreviewHRModal({
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                {getcompanyID === 2 &&  <div className="formFields">
+                </div>                
+                {getcompanyID === 2 &&  
+                <div className="formFields">
                   <div className="formFields-box">
                     <div className="formFields-box-inner">
-                      <h2 className="formFields-box-title">Share details on the job post </h2>
+                      <h2 className="formFields-box-title">Hiring Team</h2>                      
                       <div className="vitalInformationContent preShareDetailsWrap">  
                       {/* { jobPreview?.hrpocUserID?.length === 0 ?
                                    <h3>Need Assistance or Have Questions?
@@ -2855,117 +3355,236 @@ function PreviewHRModal({
                       <h3>Need Assistance or Have Questions?</h3>
                       <p>Have questions about this job opportunity? Want to learn more about the role or discuss your candidature? 
                       Contact the recruiter directly to get accurate insights and guidance for the application process.</p> 
- <div className="preShareDetailsBox">
-                                      {
-                                        jobPreview?.hrpocUserID?.map((val,index) => {
-                                          return(
-                                            <div className="preShareDetailsItem" key={index}>
-                                              <div className="preShareDetailsAction">
-                                                <button className="preShareDetailsBtn" title="Delete" onClick={async () => {                                                    
-                                                    setIsLoading(true);
-                                                    let response = await deleteHRPOC(val?.hrwiseContactId);             
-                                                    setJobPreview((prev) => ({...prev,  
-                                                      hrpocUserID:response?.responseBody?.details
-                                                    }));                                     
-                                                    setIsLoading(false);
-                                                }}><img src={DeleteCircleIcon} alt="delete-icon"/></button>
-                                                {/* <button className="preShareDetailsBtn" title="Edit" onClick={() => {
-                                                  setIsEditUserInfo(true);                                                 
+                                      <div className="preShareDetailsBox">                      
+                                        {
+                                          jobPreview?.hrpocUserID?.map((val,index) => {                                            
+                                            return(
+                                              <div className="preShareDetailsItem" key={index}>                                                
+                                                <div className="preShareDetailsAction">  
+                                                  {val?.isDefaultUser ? <Tooltip title={val?.iInfoMsg}>
+                                  <img src={infosmallIcon} alt="info" />
+                                </Tooltip> :<button className="preShareDetailsBtn" title="Delete"
+                                                    onClick={async () => {             
+                                                      setIsLoading(true);       
+                                                      let response = await deleteHRPOC(val?.hrwiseContactId);                                                  
+                                                      setJobPreview((prev) => ({...prev,  
+                                                        hrpocUserID:response?.responseBody?.details
+                                                      }));  
+                                                      setIsLoading(false);
+                                                  }}
+                                                  ><img src={DeleteCircleIcon} alt="delete-icon"/></button>
+                                                  }                                               
                                                   
-                                                  if(jobPreview?.hrpocUserID?.length>0){
-                                                    sethrpocUserID([...jobPreview?.hrpocUserID?.map(item => Number(item.hrwiseContactId))]);
-                                                  }else{
-                                                    sethrpocUserID([]);
-                                                  } 
-                                                  setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
-                                                }}><img src={EditCircleIcon} alt="edit-icon"/></button> */}
+                                                </div>
+                                                <div className="thumbImages">                                                
+                                                  <Avatar style={{ width: "66px",height: "66px", display: "flex",alignItems: "center"}} size="large">{val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
+                                                </div>
+                                                <div className="preShareDetailsInfo">
+                                                  <h4>{val?.fullName}
+                                                  <span className="preShareToolTip">{val?.hrwiseContactId === userData?.LoggedInUserID &&
+                                                        <Tooltip title="You cannot delete this user because you are the default user of this job post. You can choose to show or hide your information from the candidates using the checkbox below."> 
+                                                            <img src={infosmallIcon} alt='info' />
+                                                        </Tooltip>
+                                                        }
+                                                  </span>
+                                                  </h4>
+                                                  <ul>
+                                                    <li>
+                                                      <img src={MailIcon} alt="email-icon"/> 
+                                                      <a href={`mailto:${val?.emailID}`}>{val?.emailID}</a>
+                                                      <Tooltip title={val?.showEmailToTalent ? "Email is visible to candidates" : "Email is hidden from candidates"}> 
+                                                            <img src={infosmallIcon} alt='info' />
+                                                        </Tooltip>
+                                                    </li>
+                                                    <li><img src={PhoneIcon} alt="phone-icon"/>
+                                                    {val?.contactNo ? val?.contactNo : 
+                                                    <span className="preShareDeailLink" onClick={() => {
+                                                      setIsContactEdit(true);
+                                                      setPOCDetails({...pocDetails,guid:val?.guid,isEdit:false,pocId:val?.hrwiseContactId,contactNo:"",showContactNumberToTalent:null})
+                                                    }}>Add Contact Number</span>
+                                                    }
+                                                      {val?.contactNo && <img onClick={() => {
+                                                          setIsContactEdit(true)
+                                                          setPOCDetails({...pocDetails,guid:val?.guid,isEdit:true,pocId:val?.hrwiseContactId,contactNo:val?.contactNo,showContactNumberToTalent:val?.showContactNumberToTalent})
+                                                        }} src={EditCircleIcon} alt="edit-icon" className="preShareDeailEdit"/>
+                                                      }
+                                                    </li>
+                                                  </ul>                                                
+                                                </div>                                              
                                               </div>
-                                              <div className="thumbImages">                                                
-                                                <Avatar style={{ width: "66px",height: "66px", display: "flex",alignItems: "center"}} size="large">{val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
-                                              </div>
-                                              <div className="preShareDetailsInfo">
-                                                <h4>{val?.fullName}</h4>
-                                                <ul>
-                                                  <li><img src={MailIcon} alt="email-icon"/> <a href={`mailto:${val?.emailID}`}>{val?.emailID}</a></li>
-                                                  <li><img src={PhoneIcon} alt="phone-icon"/>{val?.contactNo ? <>{val?.contactNo} 
-                                                  <img onClick={() => {
-                                                  setPOCContactChange(true);                                                 
-                                                  setPocContactNo(val?.contactNo)
-                                                  setContactNoStatus("Edit")
-                                                  setPOCContactIDToUpdate(val?.hrwiseContactId)
-                                                }} src={EditCircleIcon} alt="edit-icon"
-                                                style={{cursor: 'pointer'}}
-                                                />
-                                                  </>  : <p className="addMorePoc" onClick={() => {
-                                                  setPOCContactChange(true);                                                 
-                                                  setPocContactNo("")
-                                                  setContactNoStatus("Add")
-                                                  setPOCContactIDToUpdate(val?.hrwiseContactId)
-                                                }}>Add contact Number </p>}</li>
-                                                </ul>
-                                              </div>
-                                            </div>
-                                          )
-                                        })
-                                      }                                     
-                                    </div>
+                                            )
+                                          })
+                                        }                                                                       
+                      </div>   
                       {isEditUserInfo ? 
-                                   <>
-                                   <div className="form-group mt-4">
-                                      <label>Assign users to this job post</label>
-                                      <Select
-                                        mode="tags"
-                                        style={{ width: "100%" }}
-                                        value={hrpocUserID}
-                                        onChange={(values, _) => sethrpocUserID(values)}
-                                        placeholder="Select users"
-                                        tokenSeparators={[","]}
-                                        options={activeUserData}
-                                        menuIsOpen
-                                      />                                            
-                                    </div>
-                                    <Checkbox
-                                        name="userShow"
-                                        checked={showHRPOCDetailsToTalents}
-                                        onClick={(e) => setshowHRPOCDetailsToTalents(e.target.checked)}
+                          <>
+                          <div className="form-group mt-4">
+                            <label>Assign users to this job post</label>
+                            <Select
+                              mode="tags"
+                              style={{ width: "100%" }}
+                              value={hrpocUserID}
+                              onChange={(values, _) => {                                                                                                            
+                                // if(!values?.includes(userData?.LoggedInUserID)) return                                                                                                         
+                                const newPocDetails = values?.map(id => {   
+                                  const existingDetail = hrpocUserDetails?.find(detail => detail.pocUserID === id);
+                                  if (existingDetail) return existingDetail;   
+                                  let _userData = allUserData.find(user => user.contactId === id);
+                                  return {
+                                    pocUserID: _userData?.contactId,
+                                    contactNo: _userData?.contactNumber,
+                                    showEmailToTalent: true,
+                                    showContactNumberToTalent: true,
+                                    email: _userData?.emailId,
+                                    fullName: _userData?.contactName
+                                  };
+                                }).filter(Boolean);     
+                                sethrpocUserID(values);                                     
+                                sethrpocUserDetails(newPocDetails);                                                                                 
+                            }}
+                            tagRender={(props) => {
+                              const { label, value, closable, onClose } = props;
+                              let pocData =    jobPreview?.hrpocUserID?.find(it => it.hrwiseContactId === value)
+                              return (
+                                <div className="ant-select-selection-item" style={{ marginRight: 3, fontWeight:'bold',color:'black' }}>
+                                  {label}
+                                  {!pocData?.isDefaultUser && closable && (
+                                    <span
+                                      className="ant-select-selection-item-remove"
+                                      style={{fontSize:"22px",color: "#232323" , fontWeight:"normal"}}
+                                      onClick={onClose}
                                     >
-                                      <p><b>Show user information to talent</b> (Candidates will be able to view the contact information (email and phone number) of the selected users)</p>
-                                    </Checkbox>
-                                    <div className="buttonEditGroup mt-4">
-                                        <button type="button" class="btnPrimary blank" onClick={() => {setIsEditUserInfo(false);sethrpocUserID([]);setshowHRPOCDetailsToTalents(null);}}> Cancel </button>
-                                        {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updateUserInfo}> SAVE </button>}   
-                                    </div> 
-                                    </> 
-                                    : 
-                                    <h3 className="mt-3 addMorePoc" onClick={() => {
-                                      setIsEditUserInfo(true);     
-                                      if(jobPreview?.hrpocUserID?.length>0){
-                                        sethrpocUserID([...jobPreview?.hrpocUserID?.map(item => Number(item.hrwiseContactId))]);
-                                      }else{
-                                        sethrpocUserID([]);
-                                      }                                             
-                                      setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
-                                    }}>Add {jobPreview?.hrpocUserID.length > 0 && "Another"} User</h3>
-                                    }
+                                      &times;
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                          }}
+                              placeholder="Select users"
+                              tokenSeparators={[","]}
+                              options={activeUserData}
+                              menuIsOpen
+                            />                                            
+                          </div>
+                          <div className="noJobDesInfo mt-4">Candidates can view the contact information (email and mobile number) of the selected users. You can choose which details to share.</div>
+                          
+                          <div className="preShareDetailsBox hireTeamInfo">
+                                  {hrpocUserDetails?.map((Val,index) => {    
+                                   
+                                    let pocData =    jobPreview?.hrpocUserID?.find(it => it.hrwiseContactId === Val.pocUserID)                                 
+                                    return(
+                                    <div className="preShareDetailsItem" key={index}>
+                                        <div className="preShareDetailsAction">{pocData?.isDefaultUser ? <Tooltip title={pocData?.iInfoMsg}>
+                                  <img src={infosmallIcon} alt="info" />
+                                </Tooltip> : 
+                                            <button className="preShareDetailsBtn" title="Delete" onClick={() => handleDelete(Val.pocUserID)}><img src={DeleteCircleIcon} alt="delete-icon" /></button>
+                                       } </div>
+                                        <div className="thumbImages">
+                                            <Avatar style={{ width: "75px", height: "75px", display: "flex", alignItems: "center" }} size="large">{Val?.fullName?.substring(0, 2).toUpperCase()}</Avatar>
+                                        </div>
+                                        <div className="preShareDetailsInfo">
+                                            <h4>{Val?.fullName} <span className="preShareToolTip">{Val?.pocUserID === userData?.LoggedInUserID &&
+                                                <Tooltip title="You cannot delete this user because you are the default user of this job post. You can choose to show or hide your information from the candidates using the checkbox below."> 
+                                                    <img src={infosmallIcon} alt='info' />
+                                                </Tooltip>
+                                                }</span></h4>
+                                            <ul>
+                                                <li>
+                                                    <div className="form-group justifyCenter">
+                                                        <i className="fieldIcon"><img src={MailIcon} alt="email-icon" /></i>
+                                                        <input type="text" className="form-control" placeholder="Enter email address" value={Val?.email} disabled />
+                                                        <Checkbox name="userShow" 
+                                                        checked={Val?.showEmailToTalent}
+                                                        onChange={(e) => handleCheckboxChange(index, 'showEmailToTalent', e.target.checked)}
+                                                        >Show email to candidates</Checkbox>
+                                                    </div>
+                                                </li> 
+
+                                                <li>
+                                                    <div className="form-group justifyCenter">
+                                                        <i className="fieldIcon"><img src={PhoneIcon} alt="phone-icon" /></i>
+                                                        <input type="text" className="form-control" placeholder="Enter mobile number" value={Val?.contactNo} maxLength={10}
+                                                        onChange={(e) => handleContactNoChange(index, e.target.value)}
+                                                        />
+                                                        <Checkbox name="userShow" checked={Val?.showContactNumberToTalent} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    )
+                                  })}
+                                </div> 
+
+                          <div className="buttonEditGroup mt-4">
+                              <button type="button" class="btnPrimary blank" onClick={() => {setIsEditUserInfo(false);sethrpocUserID([]);setshowHRPOCDetailsToTalents(null);}}> Cancel </button>
+                              {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updateUserInfo}> SAVE </button>}   
+                          </div> 
+                          </> 
+                          : 
+                          <h3 className="mt-3 addMorePoc" onClick={() => {
+                            setIsEditUserInfo(true);     
+                            if(jobPreview?.hrpocUserID?.length>0){
+                              sethrpocUserDetails(jobPreview?.hrpocUserID?.map(user => ({
+                                pocUserID: user.hrwiseContactId,
+                                contactNo: user.contactNo,
+                                showEmailToTalent: user.showEmailToTalent,
+                                showContactNumberToTalent: user.showContactNumberToTalent,
+                                email:user.emailID,
+                                fullName:user.fullName
+                            })));
+                            const hrwiseContactIds = jobPreview?.hrpocUserID?.map(user => Number(user.hrwiseContactId));
+                            sethrpocUserID(hrwiseContactIds);   
+                            }else{
+                              sethrpocUserID([]);
+                            }                                             
+                            setshowHRPOCDetailsToTalents(jobPreview?.showHRPOCDetailsToTalents);
+                          }}>Add {jobPreview?.hrpocUserID.length > 0 && "Another"} User</h3>
+                      }
                       </div>
                      
                     </div>
                   </div>
-                </div>}
-               
-
+                </div>}              
                 <div class="previewHRAction">
                   <button
                     type="button"
                     class="btnPrimary"
                     onClick={() => {
-                      // myJobPosts(true);
-                      setViewPosition(false);
-                      setisEditRolesAndRes(false)
-                      setisEditRequirenments(false)
-                      setisEditSkills(false)
-                      setChangeStatus(true)
-                      setEditWhatWeOffer('')
+                      if(isAnyFieldUpdate && !isSaveAllChanges){
+                        confirm({
+                          title: 'Please save your changes before leaving this page to avoid losing any unsaved data.',
+                          okText: 'SAVE CHANGES',
+                          okButtonProps: {
+                            style: {
+                              fontSize:"14px",
+                              fontWeight:700,                              
+                              height: "41px",
+                              minHeight:"46px",
+                              color: "#232323",
+                              fontStyle: "normal",
+                              lineHeight: "normal",                                                            
+                              border: 0,
+                              transition: "0.5s all",
+                              background: "#FFDA30",
+                              padding: "0 25px",                                                            
+                              borderRadius: "27px",                                    
+                            },
+                          },
+                          onOk() {
+                            UpdateSaveDataToATS();
+                          },                               
+                        });  
+                      }else{
+                        setViewPosition(false);
+                        setError({});
+                        setisEditRolesAndRes(false)
+                        setisEditRequirenments(false)
+                        setisEditSkills(false)
+                        setChangeStatus(true)
+                        setEditWhatWeOffer("");          
+                        setIsAutogenerateQuestions(false)
+                      } 
                     }}
                   >
                     close
@@ -3100,59 +3719,7 @@ function PreviewHRModal({
         </div>
       </Modal>
 
-        {/*  POC contact no in Modal */}
-        <Modal
-        centered
-        open={isPOCContactChange}
-        onCancel={() => {
-          setPOCContactChange(false)
-          setPocContactNo('')
-          setPOCContactIDToUpdate(null)
-        }}
-        width={310}
-        className="customModal jobPostEditModal PrevEditmodal"
-        footer={null}
-      >
-        <div className="modalContent">
-          <div className="row formFields">
-            <div className="col-12">
-              <div className="form-group mb-2">
-                <label>{ContactNoStatus} Contact </label>
-                <div className="phonConturyWrap">
-                <PhoneInput
-                      placeholder="Enter contact"
-                      key={'contact phone no'}
-                      value={pocContactNo}
-                      onChange={(e) => setPocContactNo(e)}
-                      country={countryCodeData}
-                      disableSearchIcon={true}
-                      enableSearch={true}
-                    />    
-                </div>    
-                {/* <input
-                  type="text"
-                  className="form-control"
-                  name="contactNumber"
-                  value={pocContactNo}
-                  onChange={(e) => setPocContactNo(e.target.value)}
-                  placeholder="Please enter contact number"
-                /> */}
-              </div>
-       
-              <div className="buttonEditGroup">
-                <button type="button" class="btnPrimary blank" onClick={() => { setPOCContactChange(false)
-                setPOCContactIDToUpdate(null)
-          setPocContactNo('') }}> Cancel </button>
-                {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={() =>
-                  updatePOCContact()
-                }> SAVE </button>}
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
-
+      
       {/* Headquarters Location modal */}
       <Modal
         centered
@@ -3902,7 +4469,7 @@ function PreviewHRModal({
       </Modal>
 
       {/*  Location Modal */}
-      <Modal
+      {/*  <Modal
         centered
         open={iseditLocation}
         onCancel={() => {
@@ -4040,7 +4607,7 @@ function PreviewHRModal({
             </div>
           </div>
         </div>
-      </Modal>
+      </Modal>*/}
 
       {/*  Experience Modal */}
       <Modal
@@ -4420,6 +4987,55 @@ function PreviewHRModal({
           </div>
         </div>
       </Modal>
+
+        {/* Edit POC contact number Modal */}
+        <Modal
+            centered
+            open={isContactEdit}
+            onCancel={() => {
+              setIsContactEdit(false);             
+            }}
+            width={355}
+            className="customModal jobPostEditModal"
+            footer={null}
+          >
+            {isLoading && (
+                  <Space size="middle">
+                    <Spin size="large" />
+                  </Space>
+            )}
+            <div className="row formFields">
+              <div className="col-12">
+                <div className="form-group mb-0">
+                <div className="form-group">
+                  <label>{pocDetails?.isEdit ? "Edit" :"Add"} mobile number</label>                
+                  <div className="phonConturyWrap">
+                    <PhoneInput
+                      placeholder="Enter mobile number"
+                      key={0}
+                      value={pocDetails?.contactNo}
+                      onChange={(e) => setPOCDetails({...pocDetails,contactNo:e})}
+                      country={countryCodeData}
+                      disableSearchIcon={true}
+                      enableSearch={true}
+                    />     
+                    <Checkbox name="userShow" checked={pocDetails?.showContactNumberToTalent} onChange={(e) =>                       
+                      setPOCDetails({...pocDetails,showContactNumberToTalent: e.target.checked})                      
+                      }>Show mobile number to candidates</Checkbox>              
+                  </div>
+                </div> 
+                <div className="buttonEditGroup">
+                    <button type="button" class="btnPrimary blank" onClick={() => setIsContactEdit(false)}> Cancel </button>
+                    <button type="button" class="btnPrimary" 
+                    onClick={updatePOCContact}
+                    
+                    > SAVE </button>
+                </div>       
+                </div>
+              </div>
+            </div> 
+           
+          </Modal>
     </>
   );
 }

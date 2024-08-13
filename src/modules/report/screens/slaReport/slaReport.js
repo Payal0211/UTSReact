@@ -72,7 +72,7 @@ const SlaReports = () => {
 	var lastDay = endDate !== null ?  moment(endDate).format('YYYY-MM-DD') : new Date(date.getFullYear(), date.getMonth() + 1, 0);
 	
 	const [tableFilteredState, setTableFilteredState] = useState({
-		totalrecord: 100,
+		totalrecord: 200,
 		pagenumber: 1,
 		isExport: false,
 		filterFieldsSLA: {
@@ -102,7 +102,7 @@ const SlaReports = () => {
 		setCheckednoValue(false);
 		setslaValue(0);
 		setTableFilteredState({
-			totalrecord: 100,
+			totalrecord: 200,
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
@@ -136,7 +136,7 @@ const SlaReports = () => {
 		setCheckedValue(false);
 		setslaValue(1);
 		setTableFilteredState({
-			totalrecord: 100,
+			totalrecord: 200,
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
@@ -473,7 +473,7 @@ const SlaReports = () => {
 		setFilteredTagLength(0);
 	
 		let defaultState = {
-		  totalrecord: 100,
+		  totalrecord: 200,
 		  pagenumber: 1,
 		  isExport: false,
 		  filterFieldsSLA: {

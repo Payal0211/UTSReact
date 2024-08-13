@@ -8,7 +8,8 @@ import {
   Modal,
   Radio,
   Tooltip,
-  Select
+  Select,
+  Avatar,
 } from "antd";
 import {
   ClientHRURL,
@@ -39,17 +40,23 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { UserAccountRole } from "constants/application";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { HttpStatusCode } from "axios";
-import infoIcon from 'assets/svg/info.svg'
-import plusSkill from 'assets/svg/plusSkill.svg';
+import infoIcon from "assets/svg/info.svg";
+import plusSkill from "assets/svg/plusSkill.svg";
 import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import DOMPurify from "dompurify";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import JobDescriptionComponent from "../jdComponent/jdComponent";
-import ReactQuill from 'react-quill';
+import ReactQuill from "react-quill";
+import PhoneIcon from "assets/svg/phoneIcon.svg";
+import DeleteCircleIcon from "assets/svg/deleteCircleIcon.svg";
+import infoSmallIcon from "assets/svg/infoSmallIcon.svg";
+import MailIcon from "assets/svg/mailIcon.svg";
 import { isEmptyOrWhitespace } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
+import debounce from "lodash.debounce";
+
 export const secondaryInterviewer = {
-  interviewerId:"0",
+  interviewerId: "0",
   fullName: "",
   emailID: "",
   linkedin: "",
@@ -78,7 +85,13 @@ const HRFields = ({
   setDisabledFields,
   defaultPropertys,
   isDirectHR,
-  setAboutCompanyDesc,userCompanyTypeID, setUserCompanyTypeID,isHaveJD, setIsHaveJD,parseType,setParseType
+  setAboutCompanyDesc,
+  userCompanyTypeID,
+  setUserCompanyTypeID,
+  isHaveJD,
+  setIsHaveJD,
+  parseType,
+  setParseType,
 }) => {
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
@@ -90,10 +103,10 @@ const HRFields = ({
     getUserResult();
   }, []);
 
-  const [creditBaseCheckBoxError,setCreditBaseCheckBoxError] = useState(false)
+  const [creditBaseCheckBoxError, setCreditBaseCheckBoxError] = useState(false);
   const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [controlledCountryName, setControlledCountryName] = useState("");
-  const [countryListMessage,setCountryListMessage] = useState(null)
+  const [countryListMessage, setCountryListMessage] = useState(null);
   const inputRef = useRef(null);
   const [getUploadFileData, setUploadFileData] = useState("");
   const [availability, setAvailability] = useState([]);
@@ -107,7 +120,7 @@ const HRFields = ({
   );
 
   const [controlledTempProjectValue, setControlledTempProjectValue] =
-  useState("Please select .");
+    useState("Please select .");
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -124,17 +137,18 @@ const HRFields = ({
       value: false,
     },
   ]);
-  const [autoCompleteValue,setAutoCompleteValue] = useState("")
-  const [companyautoCompleteValue,setCompanyAutoCompleteValue] = useState("")
+  const [autoCompleteValue, setAutoCompleteValue] = useState("");
+  const [companyautoCompleteValue, setCompanyAutoCompleteValue] = useState("");
   const [talentRole, setTalentRole] = useState([]);
   const [country, setCountry] = useState([]);
   const [currency, setCurrency] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [salesPerson, setSalesPerson] = useState([]);
-  const [isSalesPersionDisable,setIsSalesPersionDisable] = useState(false)
-  const [salesPersionNameFromEmail,setSalesPersionNameFromEmail] = useState('')
+  const [isSalesPersionDisable, setIsSalesPersionDisable] = useState(false);
+  const [salesPersionNameFromEmail, setSalesPersionNameFromEmail] =
+    useState("");
   const [howSoon, setHowSoon] = useState([]);
-  // const [region, setRegion] = useState([]); // removed 
+  // const [region, setRegion] = useState([]); // removed
   const [isLoading, setIsLoading] = useState(false);
   const [contractDurations, setcontractDurations] = useState([]);
   const [partialEngagements, setPartialEngagements] = useState([]);
@@ -143,8 +157,8 @@ const HRFields = ({
   const [showUploadModal, setUploadModal] = useState(false);
   const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
   const [controlledBudgetValue, setControlledBudgetValue] =
-  useState("Select Budget");
-// from add client flow to enadle JD fields 
+    useState("Select Budget");
+  // from add client flow to enadle JD fields
   // useEffect(()=>{
   //   if(fromClientflow === true){
   //     setIsCompanyNameAvailable(true)
@@ -184,14 +198,28 @@ const HRFields = ({
     useState("Select End Time");
   const [controlledCurrencyValue, setControlledCurrencyValue] =
     useState("Select Currency");
-    const [controlledAvailabilityValue, setControlledAvailabilityValue] =
+  const [controlledAvailabilityValue, setControlledAvailabilityValue] =
     useState("Select availability");
-    const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
-    useState("Select Hiring Pricing");
+  const [
+    controlledHiringPricingTypeValue,
+    setControlledHiringPricingTypeValue,
+  ] = useState("Select Hiring Pricing");
   const [DealHRData, setDealHRData] = useState({});
 
-  const[showHRPOCDetailsToTalents,setshowHRPOCDetailsToTalents] = useState(null);
-  const [activeUserData,setActiveUserData] = useState([]);
+  const [showHRPOCDetailsToTalents, setshowHRPOCDetailsToTalents] =
+    useState(null);
+  const [activeUserData, setActiveUserData] = useState([]);
+  const [activeUserDataList, setActiveUserDataList] = useState([]);
+  const [jobPostUsersDetails, setJobPostUsersDetails] = useState([]);
+  const [controlledPocValue, setControlledPocValue] = useState([]);
+
+  const [locationList, setLocationList] = useState([]);
+  const [frequencyData, setFrequencyData] = useState([]);
+  const [nearByCitiesData, setNearByCitiesData] = useState([]);
+  const [isRelocate, setIsRelocate] = useState(false);
+  const [NearByCitesValues, setNearByCitesValues] = useState([]);
+  const [controlledFrequencyValue, setControlledFrequencyValue] =
+    useState("Select");
 
   let controllerRef = useRef(null);
   let controllerCompanyRef = useRef(null);
@@ -213,23 +241,32 @@ const HRFields = ({
   });
   const compensationOptions = [
     { value: "Performance Bonuses", label: "Performance Bonuses" },
-    { value: "Stock Options (ESOPs/ESPPs)", label: "Stock Options (ESOPs/ESPPs)" },
+    {
+      value: "Stock Options (ESOPs/ESPPs)",
+      label: "Stock Options (ESOPs/ESPPs)",
+    },
     { value: "Incentives / Variable Pay", label: "Incentives / Variable Pay" },
     { value: "Profit Sharing", label: "Profit Sharing" },
-    { value: "Signing Bonus", label: "Signing Bonus"},
+    { value: "Signing Bonus", label: "Signing Bonus" },
     { value: "Retention Bonus", label: "Retention Bonus" },
-    {value:"Overtime Pay", label:"Overtime Pay"},
-    {value:"Allowances (e.g. Travel, Housing, Medical, Education, WFH)", label:"Allowances (e.g. Travel, Housing, Medical, Education, WFH)"},
-    {value:"Restricted Stock Units (RSUs)", label:"Restricted Stock Units (RSUs)"},
+    { value: "Overtime Pay", label: "Overtime Pay" },
+    {
+      value: "Allowances (e.g. Travel, Housing, Medical, Education, WFH)",
+      label: "Allowances (e.g. Travel, Housing, Medical, Education, WFH)",
+    },
+    {
+      value: "Restricted Stock Units (RSUs)",
+      label: "Restricted Stock Units (RSUs)",
+    },
   ];
 
   const industryOptions = [
     { value: "Service", label: "Service" },
-    {value:"Product", label:"Product"},
-    {value:"Manufacturing", label:"Manufacturing"},
-  ]
+    { value: "Product", label: "Product" },
+    { value: "Manufacturing", label: "Manufacturing" },
+  ];
 
-  const [timeZoneList,setTimezoneList] = useState([]);
+  const [timeZoneList, setTimezoneList] = useState([]);
 
   const watchSalesPerson = watch("salesPerson");
   const watchChildCompany = watch("childCompany");
@@ -237,18 +274,18 @@ const HRFields = ({
   const [showGPTModal, setShowGPTModal] = useState(false);
   const [gptDetails, setGPTDetails] = useState({});
   const [gptFileDetails, setGPTFileDetails] = useState({});
-  const [typeOfPricing,setTypeOfPricing] = useState(null)
-  const [pricingTypeError,setPricingTypeError] = useState(false);
-  const [transactionMessage,setTransactionMessage] = useState('')
-  const [disableYypeOfPricing,setDisableTypeOfPricing] = useState(false)
-  const [isBudgetConfidential, setIsBudgetConfidentil] = useState(false)
-  const [isFreshersAllowed,setIsFreshersAllowed] = useState(false)
-  const [isExpDisabled , setIsExpDisabled ] = useState(false)
-  const [isFresherDisabled,setIsFresherDisabled] = useState(false)
-  const [isProfileView,setIsProfileView] = useState(false)
-  const [isPostaJob,setIsPostaJob] = useState(false)
-  const [isVettedProfile,setIsVettedProfile] = useState(true)
-  const [peopleManagemantexp, setHasPeopleManagementExp] = useState(null)
+  const [typeOfPricing, setTypeOfPricing] = useState(null);
+  const [pricingTypeError, setPricingTypeError] = useState(false);
+  const [transactionMessage, setTransactionMessage] = useState("");
+  const [disableYypeOfPricing, setDisableTypeOfPricing] = useState(false);
+  const [isBudgetConfidential, setIsBudgetConfidentil] = useState(false);
+  const [isFreshersAllowed, setIsFreshersAllowed] = useState(false);
+  const [isExpDisabled, setIsExpDisabled] = useState(false);
+  const [isFresherDisabled, setIsFresherDisabled] = useState(false);
+  const [isProfileView, setIsProfileView] = useState(false);
+  const [isPostaJob, setIsPostaJob] = useState(false);
+  const [isVettedProfile, setIsVettedProfile] = useState(true);
+  const [peopleManagemantexp, setHasPeopleManagementExp] = useState(null);
   const [CompensationValues, setCompensationValues] = useState([]);
   const [specificIndustry, setSpecificIndustry] = useState([]);
   /* const { fields, append, remove } = useFieldArray({
@@ -256,23 +293,26 @@ const HRFields = ({
 		name: 'secondaryInterviewer',
 	}); */
 
-  const [clientDetails , setClientDetails] = useState({});
-  
+  const [clientDetails, setClientDetails] = useState({});
 
-  const [countryBasedOnIP, setCountryBasedOnIP] = useState('')
-  const [checkCreditAvailability,setCheckCreditAvailability] = useState({})
-  const [isCreateHRDisable,setIsCreateHRDisable] = useState(false)
-  const [hideProfileView, setHideProfileView] = useState(false)
-  const [hidePostJob, setHidePostJob] = useState(false)
-  const [disableProfileView,setDisableProfileView] = useState(false)
-  const [disablePostJob,setDisablePostJob] = useState(false)
+  const [countryBasedOnIP, setCountryBasedOnIP] = useState("");
+  const [checkCreditAvailability, setCheckCreditAvailability] = useState({});
+  const [isCreateHRDisable, setIsCreateHRDisable] = useState(false);
+  const [hideProfileView, setHideProfileView] = useState(false);
+  const [hidePostJob, setHidePostJob] = useState(false);
+  const [disableProfileView, setDisableProfileView] = useState(false);
+  const [disablePostJob, setDisablePostJob] = useState(false);
 
-  const [ showAddCompany, setShowAddCompany] = useState(false)
-  const [showAddClient,setAddClient] = useState(false)
-  const[textCopyPastData,setTextCopyPastData] = useState('');  
+  const [showAddCompany, setShowAddCompany] = useState(false);
+  const [showAddClient, setAddClient] = useState(false);
+  const [textCopyPastData, setTextCopyPastData] = useState("");
 
-  const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 || userCompanyTypeID === 2 ) ? 'DPHR' : ''
-
+  const isGUID =
+    watch("hiringPricingType")?.id === 3 ||
+    watch("hiringPricingType")?.id === 6 ||
+    userCompanyTypeID === 2
+      ? "DPHR"
+      : "";
 
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
@@ -352,7 +392,7 @@ const HRFields = ({
         fileData?.type !== "application/msword" &&
         fileData?.type !== "text/plain" &&
         fileData?.type !==
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         //   &&
         // fileData?.type !== "image/png" &&
         // fileData?.type !== "image/jpeg"
@@ -373,7 +413,14 @@ const HRFields = ({
       } else {
         let formData = new FormData();
         formData.append("File", fileData);
-        formData.append("clientemail", clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '');
+        formData.append(
+          "clientemail",
+          clientDetail?.clientemail
+            ? clientDetail?.clientemail
+            : filteredMemo[0]?.emailId
+            ? filteredMemo[0]?.emailId
+            : watchClientName ?? ""
+        );
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -428,7 +475,7 @@ const HRFields = ({
       }
       setIsLoading(false);
     },
-    [getValidation, setJDDumpID, setJDParsedSkills, filteredMemo,clientDetail]
+    [getValidation, setJDDumpID, setJDParsedSkills, filteredMemo, clientDetail]
   );
 
   const googleDriveFileUploader = useCallback(() => {
@@ -460,14 +507,17 @@ const HRFields = ({
     });
   }, [openPicker, setJDParsedSkills, uploadFileFromGoogleDriveValidator]);
 
-  const getPOCUsers = async (companyID) => {              
-    let response = await MasterDAO.getEmailSuggestionDAO('',companyID);
+  const getPOCUsers = async (companyID) => {
+    let response = await MasterDAO.getEmailSuggestionDAO("", companyID);
     // console.log("poc users",response)
-    setActiveUserData([...response?.responseBody?.details?.map((item)=>({
-      value : item?.contactId,
-      label : item?.contactName
-  }))]);
-} 
+    setActiveUserData([
+      ...response?.responseBody?.details?.map((item) => ({
+        value: item?.contactId,
+        label: item?.contactName,
+      })),
+    ]);
+    setActiveUserDataList(response?.responseBody?.details);
+  };
 
   const uploadFileFromGoogleDriveLink = useCallback(async () => {
     setValidation({
@@ -542,63 +592,68 @@ const HRFields = ({
   // }, [prefRegion]);
   const getAvailability = useCallback(async () => {
     const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
-    const JobTypesResponse = await MasterDAO.getJobTypesRequestDAO()
+    const JobTypesResponse = await MasterDAO.getJobTypesRequestDAO();
     setAvailability(
       availabilityResponse &&
         availabilityResponse.responseBody?.BindHiringAvailability.reverse()
     );
-    setJobTypes(JobTypesResponse && JobTypesResponse?.responseBody)
+    setJobTypes(JobTypesResponse && JobTypesResponse?.responseBody);
   }, []);
 
   const getPayrollType = useCallback(async () => {
     const payRollsResponse = await MasterDAO.getPayRollTypeDAO();
-    setPayRollTypes(
-      payRollsResponse &&
-        payRollsResponse.responseBody
-    );
+    setPayRollTypes(payRollsResponse && payRollsResponse.responseBody);
   }, []);
   const getHRPricingType = useCallback(async () => {
     const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
-    setHRPricingTypes(
-      HRPricingResponse &&
-      HRPricingResponse.responseBody
-    );
+    setHRPricingTypes(HRPricingResponse && HRPricingResponse.responseBody);
   }, []);
 
-  const getRequiredHRPricingType = useCallback(() =>{
-    let reqOpt = []
+  const getRequiredHRPricingType = useCallback(() => {
+    let reqOpt = [];
 
-    if(watch("availability")?.value === "Full Time"){
-      if(typeOfPricing === 1){
-        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Full Time" && item.isTransparent === true)
-        if(Filter.length){
-          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+    if (watch("availability")?.value === "Full Time") {
+      if (typeOfPricing === 1) {
+        let Filter = hrPricingTypes.filter(
+          (item) =>
+            item.engagementType === "Full Time" && item.isTransparent === true
+        );
+        if (Filter.length) {
+          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
         }
-      }else{
-        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Full Time" && item.isTransparent === false)
-        if(Filter.length){
-          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
-        }
-      }
-    }
-
-    if(watch("availability")?.value === "Part Time"){
-      if(typeOfPricing === 1){
-        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Part Time"&& item.isTransparent === true)
-        if(Filter.length){
-          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
-        }
-      }else{
-        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Part Time" && item.isTransparent === false)
-        if(Filter.length){
-          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+      } else {
+        let Filter = hrPricingTypes.filter(
+          (item) =>
+            item.engagementType === "Full Time" && item.isTransparent === false
+        );
+        if (Filter.length) {
+          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
         }
       }
     }
 
-    return reqOpt
+    if (watch("availability")?.value === "Part Time") {
+      if (typeOfPricing === 1) {
+        let Filter = hrPricingTypes.filter(
+          (item) =>
+            item.engagementType === "Part Time" && item.isTransparent === true
+        );
+        if (Filter.length) {
+          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+        }
+      } else {
+        let Filter = hrPricingTypes.filter(
+          (item) =>
+            item.engagementType === "Part Time" && item.isTransparent === false
+        );
+        if (Filter.length) {
+          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+        }
+      }
+    }
 
-  },[hrPricingTypes, watch('availability'), typeOfPricing]) 
+    return reqOpt;
+  }, [hrPricingTypes, watch("availability"), typeOfPricing]);
 
   const watchPostalCode = watch("postalCode");
 
@@ -619,7 +674,10 @@ const HRFields = ({
           setValue("state", "");
         } else if (response.getCountry?.length === 1) {
           setControlledCountryName(response?.getCountry?.[0]?.value);
-          setValue("country", {id: response?.getCountry?.[0]?.id, value: response?.getCountry?.[0]?.value} )
+          setValue("country", {
+            id: response?.getCountry?.[0]?.id,
+            value: response?.getCountry?.[0]?.value,
+          });
           setValue("city", response?.stateCityData?.province);
           setValue("state", response?.stateCityData?.stateEn);
           clearErrors("country");
@@ -694,14 +752,15 @@ const HRFields = ({
 
     setTalentRole(talentRole && talentRole.responseBody);
     setTalentRole((preValue) => {
-      let oldArray = new Array(preValue) 
+      let oldArray = new Array(preValue);
       return [
-      ...oldArray,
-      {
-        id: -1,
-        value: "Others",
-      },
-    ]});
+        ...oldArray,
+        {
+          id: -1,
+          value: "Others",
+        },
+      ];
+    });
   }, []);
 
   const getDurationTypes = useCallback(async () => {
@@ -713,6 +772,16 @@ const HRFields = ({
         )
     );
   }, []);
+
+  const getFrequencyData = async () => {
+    let response = await MasterDAO.getFrequencyDAO();
+    setFrequencyData(
+      response?.responseBody?.details?.map((fre) => ({
+        id: fre.id,
+        value: fre.frequency,
+      }))
+    );
+  };
 
   const getStartEndTimeHandler = useCallback(async () => {
     const durationTypes = await MasterDAO.getStartEndTimeDAO();
@@ -738,22 +807,22 @@ const HRFields = ({
   // }, []);
 
   const getTimeZoneList = useCallback(async () => {
-		let response = await MasterDAO.getTimeZoneRequestDAO();
-		setTimezoneList(response && response?.responseBody);
-	}, [setTimezoneList]);
+    let response = await MasterDAO.getTimeZoneRequestDAO();
+    setTimezoneList(response && response?.responseBody);
+  }, [setTimezoneList]);
 
   const getLocation = useLocation();
-  const {state} = useLocation();
-  const [companyID,setCompanyID]= useState(null)
+  const { state } = useLocation();
+  const [companyID, setCompanyID] = useState(null);
 
   useEffect(() => {
-    if(state?.companyName){
+    if (state?.companyName) {
       setCompanyID(state.companyID);
-      setValue('companyName', state?.companyName);
-      getClientNameSuggestionHandler('',state.companyID)
+      setValue("companyName", state?.companyName);
+      getClientNameSuggestionHandler("", state.companyID);
       // getClientNameSuggestionHandler("")
     }
-  },[state])
+  }, [state]);
 
   const onNameChange = (event) => {
     setName(event.target.value);
@@ -786,14 +855,34 @@ const HRFields = ({
     setHRDirectPlacement(e.target.checked);
   }, []);
 
-  const getClientNameValue = (clientName,clientData) => {
+  const getClientNameValue = (clientName, clientData) => {
     setValue("clientName", clientName);
-    setClientDetails(clientData)
+    setClientDetails(clientData);
+    setIsVettedProfile(clientData?.isVettedProfile);
+    setIsPostaJob(clientData?.isPostaJob);
+    setIsProfileView(clientData?.isProfileView);
+    setIsVettedProfile(clientData?.isVettedProfile);
 
-    setIsVettedProfile(clientData?.isVettedProfile)
-    setIsPostaJob(clientData?.isPostaJob)
-    setIsProfileView(clientData?.isProfileView)
-    setIsVettedProfile(clientData?.isVettedProfile)
+    // setDefault POC
+    setControlledPocValue([
+      { value: clientData.contactId, label: clientData.contactName },
+    ]);
+    setValue("jobPostUsers", [
+      { value: clientData.contactId, label: clientData.contactName },
+    ]);
+    const poctoadd = {
+      hiringRequestId: 0,
+      hrwiseContactId: clientData?.contactId,
+      guid: "",
+      fullName: clientData.contactName,
+      emailID: clientData.emailId,
+      contactNo: clientData.contactNumber,
+      showEmailToTalent: false,
+      showContactNumberToTalent: false,
+      isDefaultUser: false,
+      iInfoMsg: "",
+    };
+    setJobPostUsersDetails([poctoadd]);
     // to unfocus or blur client name field
     document.activeElement.blur();
     setError("clientName", {
@@ -803,13 +892,16 @@ const HRFields = ({
   };
 
   const getClientNameSuggestionHandler = useCallback(
-    async (clientName,cid) => {
-      let response = await MasterDAO.getEmailSuggestionDAO(clientName,cid? cid :companyID);
+    async (clientName, cid) => {
+      let response = await MasterDAO.getEmailSuggestionDAO(
+        clientName,
+        cid ? cid : companyID
+      );
 
       if (response?.statusCode === HTTPStatusCode.OK) {
         setClientNameSuggestion(response?.responseBody?.details);
         setClientNameMessage("");
-        setAddClient(false)
+        setAddClient(false);
       } else if (
         response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
         response?.statusCode === HTTPStatusCode.NOT_FOUND
@@ -819,47 +911,52 @@ const HRFields = ({
           // message: response?.responseBody,
           message: "We couldn't find the client. Add Client to this Company",
         });
-        setAddClient(true)
+        setAddClient(true);
         setClientNameSuggestion([]);
         setClientNameMessage(response?.responseBody);
         //TODO:- JD Dump ID
       }
     },
-    [setError,companyID]
+    [setError, companyID]
   );
 
   const getCompanyNameSuggestionHandler = useCallback(
-    async (companyName,cid) => {
+    async (companyName, cid) => {
       setClientNameMessage("");
-      clearErrors('clientName')
-      setValue('clientName','')
-      setAutoCompleteValue('')
-      setAddClient(false)
-      setCompanyID(null)
+      clearErrors("clientName");
+      setValue("clientName", "");
+      setAutoCompleteValue("");
+      setAddClient(false);
+      setCompanyID(null);
       let response = await MasterDAO.getCompanySuggestionDAO(companyName);
 
       if (response?.statusCode === HTTPStatusCode.OK) {
-        clearErrors('companyName')
-      setShowAddCompany(false)
-      setCompanyNameSuggestion(response?.responseBody?.details.map(item=> ({...item,value:item.companyName})))
-      // setCompanyID(result.details.companyID)
-      // getClientNameSuggestionHandler('',result.details.companyID)
-      // getPOCUsers(result.details.companyID)
+        clearErrors("companyName");
+        setShowAddCompany(false);
+        setCompanyNameSuggestion(
+          response?.responseBody?.details.map((item) => ({
+            ...item,
+            value: item.companyName,
+          }))
+        );
+        // setCompanyID(result.details.companyID)
+        // getClientNameSuggestionHandler('',result.details.companyID)
+        // getPOCUsers(result.details.companyID)
       } else if (
         response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
         response?.statusCode === HTTPStatusCode.NOT_FOUND
       ) {
         setCompanyNameSuggestion([]);
         setCompanyNameMessage(response?.responseBody);
-        setError('companyName',{
+        setError("companyName", {
           type: "manual",
           message: "We couldn't find the company. Create company",
-        })
-        setShowAddCompany(true)
+        });
+        setShowAddCompany(true);
         //TODO:- JD Dump ID
       }
     },
-    [setError,companyID]
+    [setError, companyID]
   );
 
   const companyvalidate = (companyName) => {
@@ -882,7 +979,7 @@ const HRFields = ({
 
   const getHRClientName = useCallback(
     async (watchClientName) => {
-      setIsSavedLoading(true)
+      setIsSavedLoading(true);
       if (watchClientName || filteredMemo) {
         let existingClientDetails =
           await hiringRequestDAO.getClientDetailRequestDAO(
@@ -897,56 +994,79 @@ const HRFields = ({
         //     contactID: existingClientDetails?.responseBody?.contactid,
         //   }));
 
-          if(existingClientDetails?.statusCode === HTTPStatusCode.OK){
-            setIsSavedLoading(false)
-            setContactAndSalesID((prev) => ({
-              ...prev,
-              contactID: existingClientDetails?.responseBody?.contactid,
-            }));
-            // setIsCompanyNameAvailable(true);
-            setValue("companyName", existingClientDetails?.responseBody?.name);
-            setValue("clientName", existingClientDetails?.responseBody?.email)
-            clearErrors(["clientName"])
-          
-            companyName(existingClientDetails?.responseBody?.name);
+        if (existingClientDetails?.statusCode === HTTPStatusCode.OK) {
+          setIsSavedLoading(false);
+          setContactAndSalesID((prev) => ({
+            ...prev,
+            contactID: existingClientDetails?.responseBody?.contactid,
+          }));
+          // setIsCompanyNameAvailable(true);
+          setValue("companyName", existingClientDetails?.responseBody?.name);
+          setValue("clientName", existingClientDetails?.responseBody?.email);
+          clearErrors(["clientName"]);
 
-            setCheckCreditAvailability(existingClientDetails?.responseBody?.CheckCreditAvailablilty) 
+          companyName(existingClientDetails?.responseBody?.name);
 
-            setAboutCompanyDesc(existingClientDetails?.responseBody?.AboutCompanyDesc?? null)
-            if(clientDetails?.isHybrid === false){
-              let companyType = existingClientDetails?.responseBody.CompanyTypes?.find(item=> item.isActive) 
-              setUserCompanyTypeID(companyType.id)
-            }else{
-              setUserCompanyTypeID(1)
-            }
-         
-            if(existingClientDetails?.responseBody?.isTransparentPricing !== null ){
-              setTypeOfPricing(existingClientDetails?.responseBody?.isTransparentPricing === true ? 1 : 0)
-              setDisableTypeOfPricing(true)
-              setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
-            }else{
-              setTypeOfPricing(null)
-              setDisableTypeOfPricing(false)
-              setTransactionMessage('*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing.')
-            }
+          setCheckCreditAvailability(
+            existingClientDetails?.responseBody?.CheckCreditAvailablilty
+          );
 
-            if(existingClientDetails?.responseBody?.salesuserid > 0){
-              // setIsSalesPersionDisable(true)
-              let salesUserObj = salesPerson.filter(p=> p.id === parseInt(existingClientDetails?.responseBody?.salesuserid))
-              setValue("salesPerson", salesUserObj[0]?.id);
-              setSalesPersionNameFromEmail(salesUserObj[0]?.value)
-            }else {
-              if(userData?.LoggedInUserTypeID !== UserAccountRole.SALES){
-                if(defaultPropertys !==null && defaultPropertys?.salesPerson > 0 ){
-                  return
-                }
-                setIsSalesPersionDisable(false)
-                resetField("salesPerson")
-                setSalesPersionNameFromEmail('')
+          setAboutCompanyDesc(
+            existingClientDetails?.responseBody?.AboutCompanyDesc ?? null
+          );
+          if (clientDetails?.isHybrid === false) {
+            let companyType =
+              existingClientDetails?.responseBody.CompanyTypes?.find(
+                (item) => item.isActive
+              );
+            setUserCompanyTypeID(companyType.id);
+          } else {
+            setUserCompanyTypeID(1);
+          }
+
+          if (
+            existingClientDetails?.responseBody?.isTransparentPricing !== null
+          ) {
+            setTypeOfPricing(
+              existingClientDetails?.responseBody?.isTransparentPricing === true
+                ? 1
+                : 0
+            );
+            setDisableTypeOfPricing(true);
+            setTransactionMessage(
+              "*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR."
+            );
+          } else {
+            setTypeOfPricing(null);
+            setDisableTypeOfPricing(false);
+            setTransactionMessage(
+              "*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing."
+            );
+          }
+
+          if (existingClientDetails?.responseBody?.salesuserid > 0) {
+            // setIsSalesPersionDisable(true)
+            let salesUserObj = salesPerson.filter(
+              (p) =>
+                p.id ===
+                parseInt(existingClientDetails?.responseBody?.salesuserid)
+            );
+            setValue("salesPerson", salesUserObj[0]?.id);
+            setSalesPersionNameFromEmail(salesUserObj[0]?.value);
+          } else {
+            if (userData?.LoggedInUserTypeID !== UserAccountRole.SALES) {
+              if (
+                defaultPropertys !== null &&
+                defaultPropertys?.salesPerson > 0
+              ) {
+                return;
               }
-              
+              setIsSalesPersionDisable(false);
+              resetField("salesPerson");
+              setSalesPersionNameFromEmail("");
             }
           }
+        }
 
         /* setError('clientName', {
 			type: 'duplicateCompanyName',
@@ -955,31 +1075,27 @@ const HRFields = ({
 				'Client email does not exist.',
 		}); */
 
-    // for manage and fetch from HubSpot
-    if(existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND){
-
-      let email =  filteredMemo[0]?.emailId
-      ? filteredMemo[0]?.emailId
-      : watchClientName
-      if(EmailRegEx.email.test(email)){
-         let response = await HubSpotDAO.getContactsByEmailDAO(email)
-      if(response.statusCode === HTTPStatusCode.OK){
-        getHRClientName(watchClientName)
-
-      }else{
-        message.error(response?.responseBody)
-        setValue("clientName", "")
-      } 
-      setIsSavedLoading(false)
-        setIsLoading(false);
-      }else{
-        setValue("clientName", "")
-        setIsSavedLoading(false)
-        setIsLoading(false);
-      }
-
-         
-    }
+        // for manage and fetch from HubSpot
+        if (existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND) {
+          let email = filteredMemo[0]?.emailId
+            ? filteredMemo[0]?.emailId
+            : watchClientName;
+          if (EmailRegEx.email.test(email)) {
+            let response = await HubSpotDAO.getContactsByEmailDAO(email);
+            if (response.statusCode === HTTPStatusCode.OK) {
+              getHRClientName(watchClientName);
+            } else {
+              message.error(response?.responseBody);
+              setValue("clientName", "");
+            }
+            setIsSavedLoading(false);
+            setIsLoading(false);
+          } else {
+            setValue("clientName", "");
+            setIsSavedLoading(false);
+            setIsLoading(false);
+          }
+        }
         // existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
         //   setValue("clientName", "");
         // existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
@@ -989,55 +1105,65 @@ const HRFields = ({
         // companyName(existingClientDetails?.responseBody?.name);
         // existingClientDetails?.statusCode === HTTPStatusCode.OK &&
         //   setIsCompanyNameAvailable(true);
-        setIsSavedLoading(false)
+        setIsSavedLoading(false);
         setIsLoading(false);
       }
-      setIsSavedLoading(false)
-
+      setIsSavedLoading(false);
     },
-    [filteredMemo, setValue, watchClientName,defaultPropertys,clientDetails?.isHybrid]
+    [
+      filteredMemo,
+      setValue,
+      watchClientName,
+      defaultPropertys,
+      clientDetails?.isHybrid,
+    ]
   );
 
-  useEffect(()=>{
+  useEffect(() => {
     // for Disable Enable Create HR based on credit
-    if(userCompanyTypeID === 2){
-      if(checkCreditAvailability?.isCreditAvailable === false && isPostaJob === true){
-        setIsCreateHRDisable(true)
-      }else{
-        setIsCreateHRDisable(false)
+    if (userCompanyTypeID === 2) {
+      if (
+        checkCreditAvailability?.isCreditAvailable === false &&
+        isPostaJob === true
+      ) {
+        setIsCreateHRDisable(true);
+      } else {
+        setIsCreateHRDisable(false);
       }
-    }else{
-      setIsCreateHRDisable(false)
+    } else {
+      setIsCreateHRDisable(false);
     }
 
-    if(clientDetails?.isHybrid === false && clientDetails?.companyTypeID ===2 ){
-          if(clientDetails?.isPostaJob && clientDetails?.isProfileView=== false){
-            setHideProfileView(true)
-            setDisablePostJob(true)
-            return
-          }
-          if(clientDetails?.isProfileView &&  clientDetails?.isPostaJob=== false){
-            setHidePostJob(true)
-            setDisableProfileView(true)
-            return
-          }
-          if(clientDetails?.isProfileView &&  clientDetails?.isPostaJob){
-            setDisableProfileView(true)
-            setDisablePostJob(true)
-            return
-          }
-          setHidePostJob(false)
-          setHideProfileView(false)
-          setDisablePostJob(false)
-          setDisableProfileView(false)
-
-    }else{
-      setHidePostJob(false)
-      setHideProfileView(false)
-      setDisablePostJob(false)
-      setDisableProfileView(false)
+    if (
+      clientDetails?.isHybrid === false &&
+      clientDetails?.companyTypeID === 2
+    ) {
+      if (clientDetails?.isPostaJob && clientDetails?.isProfileView === false) {
+        setHideProfileView(true);
+        setDisablePostJob(true);
+        return;
+      }
+      if (clientDetails?.isProfileView && clientDetails?.isPostaJob === false) {
+        setHidePostJob(true);
+        setDisableProfileView(true);
+        return;
+      }
+      if (clientDetails?.isProfileView && clientDetails?.isPostaJob) {
+        setDisableProfileView(true);
+        setDisablePostJob(true);
+        return;
+      }
+      setHidePostJob(false);
+      setHideProfileView(false);
+      setDisablePostJob(false);
+      setDisableProfileView(false);
+    } else {
+      setHidePostJob(false);
+      setHideProfileView(false);
+      setDisablePostJob(false);
+      setDisableProfileView(false);
     }
-  },[checkCreditAvailability,userCompanyTypeID,isPostaJob])
+  }, [checkCreditAvailability, userCompanyTypeID, isPostaJob]);
 
   const getOtherRoleHandler = useCallback(
     async (data) => {
@@ -1072,7 +1198,7 @@ const HRFields = ({
   //   }else{
   //     !isPostalCodeNotFound && debouncedFunction("POSTAL_CODE");
   //   }
-    
+
   // }, [debouncedFunction, watchPostalCode, isPostalCodeNotFound,removeFields]);
   // useEffect(() => {
   //   if(removeFields !== null && removeFields?.postalCode === true){
@@ -1084,38 +1210,60 @@ const HRFields = ({
   // }
   // }, [country, debouncedFunction, isPostalCodeNotFound, watchCountry,removeFields]);
 
- // Handle city change for Direct HR
+  // Handle city change for Direct HR
   const watchCity = watch("city");
-  const cityChangeHandler = async () =>{
-    const countryResponse = await MasterDAO.getCountryByCityRequestDAO(watchCity)
+  const cityChangeHandler = async () => {
+    const countryResponse = await MasterDAO.getCountryByCityRequestDAO(
+      watchCity
+    );
 
-    if(countryResponse.statusCode === HttpStatusCode.Ok){
-      if(countryResponse.responseBody.message === "List of countries"){
-        setCountryListMessage(null)
-        let countryList = countryResponse.responseBody.details
-        setCountry(countryList !== null ? {getCountry: countryList.map(list=> ({id:list.id, value: list.country}))     }  : [])
-        if(countryList.length === 1){
-          
+    if (countryResponse.statusCode === HttpStatusCode.Ok) {
+      if (countryResponse.responseBody.message === "List of countries") {
+        setCountryListMessage(null);
+        let countryList = countryResponse.responseBody.details;
+        setCountry(
+          countryList !== null
+            ? {
+                getCountry: countryList.map((list) => ({
+                  id: list.id,
+                  value: list.country,
+                })),
+              }
+            : []
+        );
+        if (countryList.length === 1) {
           setControlledCountryName(countryList[0]?.country);
-          setValue('country',countryList[0])
+          setValue("country", countryList[0]);
         }
-        if(countryList.length > 1){
-          setControlledCountryName('')
-          resetField('country')
+        if (countryList.length > 1) {
+          setControlledCountryName("");
+          resetField("country");
         }
-      }else{
-        let countryList = countryResponse.responseBody.details
-        setCountry(countryList !== null ? {getCountry: countryList.map(list=> ({id:list.id, value: list.country}))     }  : [])
-        setControlledCountryName('')
-        resetField('country')
-        setCountryListMessage(countryResponse.responseBody.message)
-        setTimeout(()=>{
-          setCountryListMessage(null)
-        },7000)
+      } else {
+        let countryList = countryResponse.responseBody.details;
+        setCountry(
+          countryList !== null
+            ? {
+                getCountry: countryList.map((list) => ({
+                  id: list.id,
+                  value: list.country,
+                })),
+              }
+            : []
+        );
+        setControlledCountryName("");
+        resetField("country");
+        setCountryListMessage(countryResponse.responseBody.message);
+        setTimeout(() => {
+          setCountryListMessage(null);
+        }, 7000);
       }
     }
-  }
-  const { isReady: isCityReady, debouncedFunction: cityDeb } = useDebounce(cityChangeHandler, 2000);
+  };
+  const { isReady: isCityReady, debouncedFunction: cityDeb } = useDebounce(
+    cityChangeHandler,
+    2000
+  );
 
   useEffect(() => {
     let timer;
@@ -1138,18 +1286,21 @@ const HRFields = ({
     pathName === ClientHRURL.ADD_NEW_CLIENT &&
       setValue("companyName", clientDetail?.companyname);
 
-      if(clientDetail?.typeOfPricing !== undefined){
-          if(clientDetail?.typeOfPricing !== null ){
-        setTypeOfPricing(clientDetail?.typeOfPricing)
-        setDisableTypeOfPricing(true)
-        setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
-      }else{
-        setTypeOfPricing(null)
-        setDisableTypeOfPricing(false)
-        setTransactionMessage('*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing.')
+    if (clientDetail?.typeOfPricing !== undefined) {
+      if (clientDetail?.typeOfPricing !== null) {
+        setTypeOfPricing(clientDetail?.typeOfPricing);
+        setDisableTypeOfPricing(true);
+        setTransactionMessage(
+          "*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR."
+        );
+      } else {
+        setTypeOfPricing(null);
+        setDisableTypeOfPricing(false);
+        setTransactionMessage(
+          "*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing."
+        );
       }
-      }
-    
+    }
   }, [
     getLocation.pathname,
     clientDetail?.clientemail,
@@ -1195,14 +1346,14 @@ const HRFields = ({
   }, [userData]);
 
   useEffect(
-    () => {    
+    () => {
       getAvailability();
-      getPayrollType ();
+      getPayrollType();
       getHRPricingType();
       getTalentRole();
       // getSalesPerson();
       // getRegion();
-      getTimeZoneList()
+      getTimeZoneList();
       getWorkingMode();
       // postalCodeHandler();
       getCurrencyHandler();
@@ -1213,12 +1364,13 @@ const HRFields = ({
       getNRMarginHandler();
       getDurationTypes();
       getStartEndTimeHandler();
+      getFrequencyData();
       // get country name based on IP
       fetch("https://ipapi.co/json")
-      .then((response) => response.json())
-      .then((data) => {
-        setCountryBasedOnIP(data.country_name)
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          setCountryBasedOnIP(data.country_name);
+        });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [
@@ -1253,45 +1405,63 @@ const HRFields = ({
     isHRDirectPlacement === true && unregister("tempProject");
   }, [isHRDirectPlacement, unregister]);
 
+  useEffect(() => {
+    let precentage = hrPricingTypes.find(
+      (item) => item.id === watch("hiringPricingType")?.id
+    )?.pricingPercent;
 
+    setValue("NRMargin", precentage);
 
-  useEffect(()=>{
-    let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
-
-    setValue('NRMargin',precentage)
-
-    if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
-      unregister('payrollType')    
-      watch('hiringPricingType')?.id === 1 && unregister("tempProject")
+    if (
+      watch("hiringPricingType")?.id === 1 ||
+      watch("hiringPricingType")?.id === 4 ||
+      watch("hiringPricingType")?.id === 7 ||
+      watch("hiringPricingType")?.id === 8
+    ) {
+      unregister("payrollType");
+      watch("hiringPricingType")?.id === 1 && unregister("tempProject");
     }
 
-    if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-      if(countryBasedOnIP === 'India'){
-        setValue('NRMargin',7.5)
+    if (
+      watch("hiringPricingType")?.id === 3 ||
+      watch("hiringPricingType")?.id === 6
+    ) {
+      if (countryBasedOnIP === "India") {
+        setValue("NRMargin", 7.5);
       }
-      unregister("tempProject")
-      watch('payrollType')?.id !== 4 && unregister('contractDuration')
+      unregister("tempProject");
+      watch("payrollType")?.id !== 4 && unregister("contractDuration");
 
-      if(watch('payrollType')?.id === 4){
-        register('contractDuration',{
-          required: true
-        })    
+      if (watch("payrollType")?.id === 4) {
+        register("contractDuration", {
+          required: true,
+        });
       }
     }
 
-    if((watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 )){
-      unregister('payrollType')
-      unregister("tempProject")
-      watch('hiringPricingType')?.id !== 2 && unregister('contractDuration')
+    if (
+      watch("hiringPricingType")?.id === 2 ||
+      watch("hiringPricingType")?.id === 5
+    ) {
+      unregister("payrollType");
+      unregister("tempProject");
+      watch("hiringPricingType")?.id !== 2 && unregister("contractDuration");
     }
 
-     // re register full time
-     if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
-      register('contractDuration',{
-        required: true
-      })
+    // re register full time
+    if (
+      watch("hiringPricingType")?.id === 1 ||
+      watch("hiringPricingType")?.id === 2 ||
+      watch("hiringPricingType")?.id === 4 ||
+      watch("hiringPricingType")?.id === 5 ||
+      watch("hiringPricingType")?.id === 7 ||
+      watch("hiringPricingType")?.id === 8
+    ) {
+      register("contractDuration", {
+        required: true,
+      });
     }
-  },[watch('hiringPricingType'),hrPricingTypes,countryBasedOnIP])
+  }, [watch("hiringPricingType"), hrPricingTypes, countryBasedOnIP]);
 
   useEffect(() => {
     if (watch("budget")?.value === "2") {
@@ -1352,76 +1522,105 @@ const HRFields = ({
 
   const [messageAPI, contextHolder] = message.useMessage();
 
+  const getTextDetils = async () => {
+    if (textCopyPastData) {
+      let payload = { pdfText: textCopyPastData };
 
-  const getTextDetils = async ()=>{
-    if(textCopyPastData){
-      let payload = {"pdfText" :textCopyPastData }
+      const result = await hiringRequestDAO.getDetailsFromTextDAO(
+        payload,
+        clientDetail?.clientemail
+          ? clientDetail?.clientemail
+          : filteredMemo[0]?.emailId
+          ? filteredMemo[0]?.emailId
+          : watchClientName ?? ""
+      );
 
-    const result = await hiringRequestDAO.getDetailsFromTextDAO(payload , clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '')
+      if (result.statusCode === 200) {
+        let JDDATA = result?.responseBody?.details;
+        let _getHrValues = { ...getHRdetails };
+        if (!_getHrValues.salesHiringRequest_Details) {
+          _getHrValues["salesHiringRequest_Details"] = {
+            JobDescription: JDDATA?.jobDescription ?? "",
+          };
+        } else {
+          _getHrValues.salesHiringRequest_Details.JobDescription =
+            JDDATA?.jobDescription ?? "";
+        }
 
-  
-    if(result.statusCode === 200 ){
-     let JDDATA =  result?.responseBody?.details
-     let _getHrValues = { ...getHRdetails };
-     if(!_getHrValues.salesHiringRequest_Details){
-      _getHrValues['salesHiringRequest_Details'] = {
-        JobDescription :JDDATA?.jobDescription ?? '',   
-      }
-    }else{
-       _getHrValues.salesHiringRequest_Details.JobDescription =
-       JDDATA?.jobDescription ?? '' ;
-    }
-
-   let newObj =  {
-      Skills: JDDATA?.skills ? JDDATA?.skills.split(',').slice(0, 5).map((item) => ({
-				id: "0",
-				value: item,
-			})) : [],
-      AllSkills: JDDATA?.allSkills ? JDDATA?.allSkills.split(',').map((item) => ({
-				id: "0",
-				value: item,
-			})) : [],
-      Responsibility: "",
-      Requirements: "",
-      JobDescription:JDDATA.jobDescription ?? '',
-      roleName:JDDATA?.roleName ?? ''
-    }
-    // console.log(newObj)
-      setJDParsedSkills(newObj)
-      setHRdetails(_getHrValues);
-    }else{
-      message.error("Something went wrong!")
-    }
-    }
-    
-  }
-
-  const getParsingType = (isHaveJD,parseType) => {
-    if(isHaveJD === 1){
-      return 'DonotHaveJD'
-    }
-    if(isHaveJD === 0){
-      if(parseType === 'JDFileUpload'){
-        return 'FileUpload'
-      }
-      if(parseType === "Text_Parsing"){
-        return 'CopyPaste'
+        let newObj = {
+          Skills: JDDATA?.skills
+            ? JDDATA?.skills
+                .split(",")
+                .slice(0, 5)
+                .map((item) => ({
+                  id: "0",
+                  value: item,
+                }))
+            : [],
+          AllSkills: JDDATA?.allSkills
+            ? JDDATA?.allSkills.split(",").map((item) => ({
+                id: "0",
+                value: item,
+              }))
+            : [],
+          Responsibility: "",
+          Requirements: "",
+          JobDescription: JDDATA.jobDescription ?? "",
+          roleName: JDDATA?.roleName ?? "",
+        };
+        // console.log(newObj)
+        setJDParsedSkills(newObj);
+        setHRdetails(_getHrValues);
+      } else {
+        message.error("Something went wrong!");
       }
     }
-  }
+  };
+
+  const getParsingType = (isHaveJD, parseType) => {
+    if (isHaveJD === 1) {
+      return "DonotHaveJD";
+    }
+    if (isHaveJD === 0) {
+      if (parseType === "JDFileUpload") {
+        return "FileUpload";
+      }
+      if (parseType === "Text_Parsing") {
+        return "CopyPaste";
+      }
+    }
+  };
+
+  const getNearByCitiesForAts = () => {
+    if (watch("workingMode").id === 3) {
+      return NearByCitesValues.join(",");
+    } else {
+      let cities = [];
+
+      NearByCitesValues.forEach((val) => {
+        let valFind = nearByCitiesData.filter((c) => c.label === val);
+        if (valFind.length > 0) {
+          cities.push(valFind[0]?.value);
+        } else {
+          cities.push(val);
+        }
+      });
+
+      return cities.join(",");
+    }
+  };
 
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
-      setCreditBaseCheckBoxError(false)
-      if(userCompanyTypeID === 1){
-        if(typeOfPricing === null){
-                setIsSavedLoading(false)
-                setPricingTypeError(true)
-                return
-              }
+      setCreditBaseCheckBoxError(false);
+      if (userCompanyTypeID === 1) {
+        if (typeOfPricing === null) {
+          setIsSavedLoading(false);
+          setPricingTypeError(true);
+          return;
+        }
       }
-      
 
       let hrFormDetails = hrUtils.hrFormDataFormatter(
         d,
@@ -1431,82 +1630,125 @@ const HRFields = ({
         isHRDirectPlacement,
         addHRResponse,
         getUploadFileData && getUploadFileData,
-        jdDumpID,typeOfPricing,hrPricingTypes,{id:userCompanyTypeID}
+        jdDumpID,
+        typeOfPricing,
+        hrPricingTypes,
+        { id: userCompanyTypeID }
       );
-      hrFormDetails.isDirectHR = isDirectHR
-      hrFormDetails.PayPerType =  userCompanyTypeID
-      hrFormDetails.IsConfidentialBudget = isBudgetConfidential
-      hrFormDetails.IsFresherAllowed = isFreshersAllowed
-      hrFormDetails.industryType= specificIndustry?.join('^')
-      hrFormDetails.compensationOption = CompensationValues?.join('^')
-      hrFormDetails.hasPeopleManagementExp = peopleManagemantexp !== null ? peopleManagemantexp === 1 ? true : false : null
-      hrFormDetails.prerequisites = watch('parametersHighlight') ?? ''
-      hrFormDetails.HRIndustryType = specificIndustry?.join('^')
-      hrFormDetails.StringSeparator = "^"
-      if(userCompanyTypeID === 2){
+      hrFormDetails.isDirectHR = isDirectHR;
+      hrFormDetails.PayPerType = userCompanyTypeID;
+      hrFormDetails.IsConfidentialBudget = isBudgetConfidential;
+      hrFormDetails.IsFresherAllowed = isFreshersAllowed;
+      hrFormDetails.industryType = specificIndustry?.join("^");
+      hrFormDetails.compensationOption = CompensationValues?.join("^");
+      hrFormDetails.hasPeopleManagementExp =
+        peopleManagemantexp !== null
+          ? peopleManagemantexp === 1
+            ? true
+            : false
+          : null;
+      hrFormDetails.prerequisites = watch("parametersHighlight") ?? "";
+      hrFormDetails.HRIndustryType = specificIndustry?.join("^");
+      hrFormDetails.StringSeparator = "^";
+
+      hrFormDetails.JobTypeID = watch("workingMode").id;
+      hrFormDetails.JobLocation =
+        watch("workingMode").id === 2 || watch("workingMode").id === 3
+          ? watch("location")
+          : null;
+      hrFormDetails.FrequencyOfficeVisitID =
+        watch("workingMode").id === 2 ? watch("officeVisits").id : null;
+      hrFormDetails.IsOpenToWorkNearByCities =
+        watch("workingMode").id === 2 || watch("workingMode").id === 3
+          ? isRelocate
+          : null;
+      hrFormDetails.NearByCities = isRelocate
+        ? NearByCitesValues.join(",")
+        : null;
+      hrFormDetails.ATS_JobLocationID =
+        watch("workingMode").id === 2 || watch("workingMode").id === 3
+          ? locationList?.find((loc) => loc.value === watch("location"))?.id
+          : null;
+      hrFormDetails.ATS_NearByCities = isRelocate
+        ? getNearByCitiesForAts()
+        : null;
+
+      if (userCompanyTypeID === 2) {
         hrFormDetails.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
-        hrFormDetails.hrpocUserID = watch('jobPostUsers') ? watch('jobPostUsers')?.map(item => item.value.toString()) : [];
-        hrFormDetails.jobTypeId = watch('availability')?.id
-      }else{
+        hrFormDetails.hrpocUserID = watch("jobPostUsers")
+          ? watch("jobPostUsers")?.map((item) => item.value.toString())
+          : [];
+        hrFormDetails.hrpocUserDetails = jobPostUsersDetails
+          ? jobPostUsersDetails.map((val) => ({
+              pocUserID: val.hrwiseContactId,
+              contactNo: val.contactNo,
+              showEmailToTalent: val.showEmailToTalent,
+              showContactNumberToTalent: val.showContactNumberToTalent,
+            }))
+          : [];
+        hrFormDetails.jobTypeId = watch("availability")?.id;
+      } else {
         hrFormDetails.showHRPOCDetailsToTalents = null;
         hrFormDetails.hrpocUserID = [];
-        hrFormDetails.jobTypeId = 0
+        hrFormDetails.hrpocUserDetails = [];
+        hrFormDetails.jobTypeId = 0;
       }
-        
-      
-      if(userCompanyTypeID === 2){
-        if(!isPostaJob && !isProfileView){
-          setCreditBaseCheckBoxError(true)
+
+      if (userCompanyTypeID === 2) {
+        if (!isPostaJob && !isProfileView) {
+          setCreditBaseCheckBoxError(true);
           setIsSavedLoading(false);
-          return 
+          return;
         }
-        hrFormDetails.IsPostaJob = isPostaJob
+        hrFormDetails.IsPostaJob = isPostaJob;
         // hrFormDetails.IsProfileView = isProfileView
-        hrFormDetails.IsProfileView = false
-        hrFormDetails.IsVettedProfile = isProfileView ? isVettedProfile : null
+        hrFormDetails.IsProfileView = false;
+        hrFormDetails.IsVettedProfile = isProfileView ? isVettedProfile : null;
       }
-      if(userCompanyTypeID === 1){
-        hrFormDetails.IsPostaJob = false
-        hrFormDetails.IsProfileView = false
-        hrFormDetails.IsVettedProfile = false
+      if (userCompanyTypeID === 1) {
+        hrFormDetails.IsPostaJob = false;
+        hrFormDetails.IsProfileView = false;
+        hrFormDetails.IsVettedProfile = false;
       }
 
       // For JD error Handling
 
-      if(isHaveJD === 0){
-        if(parseType === 'Manual'){
-          message.error('Please select a file to upload')
+      if (isHaveJD === 0) {
+        if (parseType === "Manual") {
+          message.error("Please select a file to upload");
           setIsSavedLoading(false);
-          return
+          return;
         }
-        if(parseType === 'JDFileUpload'){
-          if(getUploadFileData === ''){
-            message.error('Please select a file to upload')
-          setIsSavedLoading(false);
-          return
-          } 
+        if (parseType === "JDFileUpload") {
+          if (getUploadFileData === "") {
+            message.error("Please select a file to upload");
+            setIsSavedLoading(false);
+            return;
+          }
         }
-        if(parseType === "Text_Parsing"){
-          if(textCopyPastData === '' || textCopyPastData === '<p><br></p>'){
-          message.error('Please Copy & Paste JD')
-          setIsSavedLoading(false);
-          return}
+        if (parseType === "Text_Parsing") {
+          if (textCopyPastData === "" || textCopyPastData === "<p><br></p>") {
+            message.error("Please Copy & Paste JD");
+            setIsSavedLoading(false);
+            return;
+          }
         }
       }
-      hrFormDetails.ParsingType = getParsingType(isHaveJD,parseType)
-      hrFormDetails.JDDescription = getParsingType(isHaveJD,parseType) === 'CopyPaste' ?  getHRdetails?.salesHiringRequest_Details?.JobDescription : null
-      
+      hrFormDetails.ParsingType = getParsingType(isHaveJD, parseType);
+      hrFormDetails.JDDescription =
+        getParsingType(isHaveJD, parseType) === "CopyPaste"
+          ? getHRdetails?.salesHiringRequest_Details?.JobDescription
+          : null;
 
-      if(type !== SubmitType.SAVE_AS_DRAFT){
-        if(watch('fromTime')?.value === watch('endTime')?.value){
-        setIsSavedLoading(false);
-        return setError("fromTime", {
-          type: "validate",
-          message: "Start & End Time is same.",
-        });
-      }  
+      if (type !== SubmitType.SAVE_AS_DRAFT) {
+        if (watch("fromTime")?.value === watch("endTime")?.value) {
+          setIsSavedLoading(false);
+          return setError("fromTime", {
+            type: "validate",
+            message: "Start & End Time is same.",
+          });
+        }
       }
-      
 
       if (type === SubmitType.SAVE_AS_DRAFT) {
         if (_isNull(watch("clientName"))) {
@@ -1608,9 +1850,19 @@ const HRFields = ({
       isProfileView,
       isVettedProfile,
       isFreshersAllowed,
-      isHaveJD,parseType,getUploadFileData,textCopyPastData,
-      CompensationValues,peopleManagemantexp,specificIndustry,
-      showHRPOCDetailsToTalents
+      isHaveJD,
+      parseType,
+      getUploadFileData,
+      textCopyPastData,
+      CompensationValues,
+      peopleManagemantexp,
+      specificIndustry,
+      showHRPOCDetailsToTalents,
+      NearByCitesValues,
+      isRelocate,
+      locationList,
+      locationList,
+      jobPostUsersDetails,
     ]
   );
 
@@ -1624,106 +1876,146 @@ const HRFields = ({
     }
   }, [errors?.clientName]);
 
-  useEffect(() => {  
-      setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));   
+  useEffect(() => {
+    setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
   }, [watchSalesPerson]);
 
-
-  // set uplers fees 
+  // set uplers fees
   useEffect(() => {
-    if(watch('budget')?.value === '1'){
-      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+    if (watch("budget")?.value === "1") {
+      if (
+        watch("hiringPricingType")?.id === 3 ||
+        watch("hiringPricingType")?.id === 6
+      ) {
         // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
-        let dpPercentage = watch('NRMargin')
+        let dpPercentage = watch("NRMargin");
         // let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
-        // // let cal = ((watch('adhocBudgetCost') * 100)/ (100 + +dpPercentage)) 
+        // // let cal = ((watch('adhocBudgetCost') * 100)/ (100 + +dpPercentage))
         // let needtopay = watch('adhocBudgetCost') - cal
         // setValue("needToPay",needtopay ? needtopay.toFixed(2) : 0)
         // setValue('uplersFees',cal? cal.toFixed(2) : 0)
-        if(isGUID){
+        if (isGUID) {
           // let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
-          let cal = (dpPercentage * (watch('adhocBudgetCost'))) / 100
-          let needToPay = watch('adhocBudgetCost') - cal
-          setValue('uplersFees',cal ? cal : 0)
-          setValue("needToPay",needToPay? needToPay : 0)
-        }else{
-          let cal = ((watch('adhocBudgetCost') * 100)/ (100 + +dpPercentage)) 
-          let upFess = (watch('adhocBudgetCost') - cal) * 12
-          setValue("needToPay",cal? cal.toFixed(2) : 0)
-          setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
+          let cal = (dpPercentage * watch("adhocBudgetCost")) / 100;
+          let needToPay = watch("adhocBudgetCost") - cal;
+          setValue("uplersFees", cal ? cal : 0);
+          setValue("needToPay", needToPay ? needToPay : 0);
+        } else {
+          let cal = (watch("adhocBudgetCost") * 100) / (100 + +dpPercentage);
+          let upFess = (watch("adhocBudgetCost") - cal) * 12;
+          setValue("needToPay", cal ? cal.toFixed(2) : 0);
+          setValue("uplersFees", upFess ? upFess.toFixed(2) : 0);
         }
-      }else{
-          //  let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
-          // let cal =  (watch('adhocBudgetCost') * 100)/ (100 + +watch('NRMargin'))
-          // let upFess = watch('adhocBudgetCost') - cal
-          // setValue("needToPay",cal? cal.toFixed(2) : 0)
-          // setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
+      } else {
+        //  let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
+        // let cal =  (watch('adhocBudgetCost') * 100)/ (100 + +watch('NRMargin'))
+        // let upFess = watch('adhocBudgetCost') - cal
+        // setValue("needToPay",cal? cal.toFixed(2) : 0)
+        // setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
 
-          if(isGUID){
-            let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
-            let needToPay = +watch('adhocBudgetCost') + cal
-        setValue('uplersFees',cal ? cal : 0)
-        setValue("needToPay",needToPay? needToPay : 0)
-          }else{
-            let cal =  (watch('adhocBudgetCost') * 100)/ (100 + +watch('NRMargin'))
-            let upFess = watch('adhocBudgetCost') - cal
-            setValue("needToPay",cal? cal.toFixed(2) : 0)
-            setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
-          }           
+        if (isGUID) {
+          let cal = (watch("NRMargin") * watch("adhocBudgetCost")) / 100;
+          let needToPay = +watch("adhocBudgetCost") + cal;
+          setValue("uplersFees", cal ? cal : 0);
+          setValue("needToPay", needToPay ? needToPay : 0);
+        } else {
+          let cal =
+            (watch("adhocBudgetCost") * 100) / (100 + +watch("NRMargin"));
+          let upFess = watch("adhocBudgetCost") - cal;
+          setValue("needToPay", cal ? cal.toFixed(2) : 0);
+          setValue("uplersFees", upFess ? upFess.toFixed(2) : 0);
         }
       }
-   
-    
-      if(watch('budget')?.value === '2'){
-        if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-          // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
-          if(isGUID){
-              let dpPercentage = watch('NRMargin')
-              // let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
-              // let calMax = (dpPercentage * watch('maximumBudget') *12) /100        
-              let calMin = (dpPercentage * (watch('minimumBudget'))) / 100
-              let calMax = (dpPercentage * watch('maximumBudget')) /100      
-              let minCal = +watch('minimumBudget') - calMin
-              let maxCal = +watch('maximumBudget') - calMax
-              setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
-              setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`,watch('NRMargin'))
-          }else{
-                let calMin = ((watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))) 
-                let minUpFees = (watch('minimumBudget') - calMin)* 12
-                let calMax = ((watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))) 
-                let maxUpFees = (watch('maximumBudget') - calMax)* 12
-                setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
-                setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
-          }
-         
-        }else{
-          if(isGUID){
-              let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
-              let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
-              let minCal = +watch('minimumBudget') + +calMin
-              let maxCal = +watch('maximumBudget') + +calMax
-              setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
-              setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
-          }else{
-            let calMin =  (watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))
-            let minUpFees = watch('minimumBudget') - calMin
-            let calMax =  (watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))
-            let maxUpFees = watch('maximumBudget') - calMax
-            setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
-            setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
-          }
-          
-         }
+    }
+
+    if (watch("budget")?.value === "2") {
+      if (
+        watch("hiringPricingType")?.id === 3 ||
+        watch("hiringPricingType")?.id === 6
+      ) {
+        // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        if (isGUID) {
+          let dpPercentage = watch("NRMargin");
+          // let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
+          // let calMax = (dpPercentage * watch('maximumBudget') *12) /100
+          let calMin = (dpPercentage * watch("minimumBudget")) / 100;
+          let calMax = (dpPercentage * watch("maximumBudget")) / 100;
+          let minCal = +watch("minimumBudget") - calMin;
+          let maxCal = +watch("maximumBudget") - calMax;
+          setValue(
+            "needToPay",
+            `${minCal ? minCal : 0} - ${maxCal ? maxCal : 0}`
+          );
+          setValue(
+            "uplersFees",
+            `${calMin ? calMin : 0} - ${calMax ? calMax : 0}`,
+            watch("NRMargin")
+          );
+        } else {
+          let calMin =
+            (watch("minimumBudget") * 100) / (100 + +watch("NRMargin"));
+          let minUpFees = (watch("minimumBudget") - calMin) * 12;
+          let calMax =
+            (watch("maximumBudget") * 100) / (100 + +watch("NRMargin"));
+          let maxUpFees = (watch("maximumBudget") - calMax) * 12;
+          setValue(
+            "needToPay",
+            `${calMin ? calMin.toFixed(2) : 0} - ${
+              calMax ? calMax.toFixed(2) : 0
+            }`
+          );
+          setValue(
+            "uplersFees",
+            `${minUpFees ? minUpFees.toFixed(2) : 0} - ${
+              maxUpFees ? maxUpFees.toFixed(2) : 0
+            }`
+          );
+        }
+      } else {
+        if (isGUID) {
+          let calMin = (watch("NRMargin") * watch("minimumBudget")) / 100;
+          let calMax = (watch("NRMargin") * watch("maximumBudget")) / 100;
+          let minCal = +watch("minimumBudget") + +calMin;
+          let maxCal = +watch("maximumBudget") + +calMax;
+          setValue(
+            "needToPay",
+            `${minCal ? minCal : 0} - ${maxCal ? maxCal : 0}`
+          );
+          setValue(
+            "uplersFees",
+            `${calMin ? calMin : 0} - ${calMax ? calMax : 0}`
+          );
+        } else {
+          let calMin =
+            (watch("minimumBudget") * 100) / (100 + +watch("NRMargin"));
+          let minUpFees = watch("minimumBudget") - calMin;
+          let calMax =
+            (watch("maximumBudget") * 100) / (100 + +watch("NRMargin"));
+          let maxUpFees = watch("maximumBudget") - calMax;
+          setValue(
+            "needToPay",
+            `${calMin ? calMin.toFixed(2) : 0} - ${
+              calMax ? calMax.toFixed(2) : 0
+            }`
+          );
+          setValue(
+            "uplersFees",
+            `${minUpFees ? minUpFees.toFixed(2) : 0} - ${
+              maxUpFees ? maxUpFees.toFixed(2) : 0
+            }`
+          );
+        }
       }
+    }
     // if(watch('budget')?.value === '2'){
     //   if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
     //     // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
     //     let dpPercentage = watch('NRMargin')
     //     let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
     //     let calMax = (dpPercentage * watch('maximumBudget') *12) /100
-    //     // let calMin = ((watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))) 
+    //     // let calMin = ((watch('minimumBudget') * 100)/(100 + +watch('NRMargin')))
     //     let minUpFees = (watch('minimumBudget') - calMin)* 12
-    //     // let calMax = ((watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))) 
+    //     // let calMax = ((watch('maximumBudget') * 100)/(100 + +watch('NRMargin')))
     //     let maxUpFees = (watch('maximumBudget') - calMax)* 12
     //     setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
     //     setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
@@ -1738,30 +2030,45 @@ const HRFields = ({
     //     setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
     //    }
     // }
-  },[watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget'),watch('budget'),watch('NRMargin')]);
+  }, [
+    watch("adhocBudgetCost"),
+    watch("maximumBudget"),
+    watch("minimumBudget"),
+    watch("budget"),
+    watch("NRMargin"),
+  ]);
 
-  const setBudgetValueOnChange = () =>{
-    if(watch('budget')?.value === '1'){
-      if(watch('adhocBudgetCost')){
-         if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-            setValue('adhocBudgetCost',watch('adhocBudgetCost') *12)
-      }
-      else{
-        setValue('adhocBudgetCost',watch('adhocBudgetCost') / 12)
-      }
+  const setBudgetValueOnChange = () => {
+    if (watch("budget")?.value === "1") {
+      if (watch("adhocBudgetCost")) {
+        if (
+          watch("hiringPricingType")?.id === 3 ||
+          watch("hiringPricingType")?.id === 6
+        ) {
+          setValue("adhocBudgetCost", watch("adhocBudgetCost") * 12);
+        } else {
+          setValue("adhocBudgetCost", watch("adhocBudgetCost") / 12);
+        }
       }
     }
 
-    if(watch('budget')?.value === '2'){
-      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-        watch('maximumBudget') && setValue('maximumBudget', watch('maximumBudget') * 12)
-        watch('minimumBudget') && setValue('minimumBudget', watch('minimumBudget') * 12)
-      }else{
-        watch('maximumBudget') && setValue('maximumBudget', watch('maximumBudget') / 12)
-        watch('minimumBudget') && setValue('minimumBudget', watch('minimumBudget') / 12)
+    if (watch("budget")?.value === "2") {
+      if (
+        watch("hiringPricingType")?.id === 3 ||
+        watch("hiringPricingType")?.id === 6
+      ) {
+        watch("maximumBudget") &&
+          setValue("maximumBudget", watch("maximumBudget") * 12);
+        watch("minimumBudget") &&
+          setValue("minimumBudget", watch("minimumBudget") * 12);
+      } else {
+        watch("maximumBudget") &&
+          setValue("maximumBudget", watch("maximumBudget") / 12);
+        watch("minimumBudget") &&
+          setValue("minimumBudget", watch("minimumBudget") / 12);
       }
     }
-  }
+  };
 
   // set client need to pay
   // useEffect(()=>{
@@ -1773,7 +2080,7 @@ const HRFields = ({
   //       let cal = parseFloat(watch('adhocBudgetCost')) + parseFloat(watch('uplersFees'))
   //       setValue("needToPay",cal? cal.toFixed(2) : 0)
   //     }
-      
+
   //   }
   //   if(watch('budget')?.value === '2'){
   //     if(typeOfPricing === 0){
@@ -1788,8 +2095,7 @@ const HRFields = ({
 
   //       setValue("needToPay",`${minCal? minCal.toFixed(2) : 0} - ${maxCal? maxCal.toFixed(2) : 0}`)
   //     }
-      
-      
+
   //   }
   // },[watch('uplersFees'),watch('budget'),watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget')])
 
@@ -1845,61 +2151,62 @@ const HRFields = ({
     }
   };
 
-  const getValueForMaxBudget =()=>{
-    
-    if(isFreshersAllowed){
-      return +watch("minimumBudget") 
+  const getValueForMaxBudget = () => {
+    if (isFreshersAllowed) {
+      return +watch("minimumBudget");
     }
 
-if((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire")){
-  if(watch('currency')?.value === 'INR'){
-  
-  if( +watch("minimumBudget") >  100000){
-    return +watch("minimumBudget") 
-  }else{
-    return 100000
-  }  
-  
-  }else{
-    if( +watch("minimumBudget") >  1000){
-      return +watch("minimumBudget") 
-    }else{
-      return 1000
-    } 
-  }
-}else{
-  return +watch("minimumBudget") 
-}
-  
-  }
+    if (
+      watch("availability")?.value === "Full Time" ||
+      watch("availability")?.value === "Contract" ||
+      watch("availability")?.value === "Contract to Hire"
+    ) {
+      if (watch("currency")?.value === "INR") {
+        if (+watch("minimumBudget") > 100000) {
+          return +watch("minimumBudget");
+        } else {
+          return 100000;
+        }
+      } else {
+        if (+watch("minimumBudget") > 1000) {
+          return +watch("minimumBudget");
+        } else {
+          return 1000;
+        }
+      }
+    } else {
+      return +watch("minimumBudget");
+    }
+  };
 
-  const getMessForMaxBudget =()=>{
-   let str = `please enter the value'`
-    if(isFreshersAllowed){
-      return str + ` more than minimum budget`
+  const getMessForMaxBudget = () => {
+    let str = `please enter the value'`;
+    if (isFreshersAllowed) {
+      return str + ` more than minimum budget`;
     }
 
-if((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire")){
-  if(watch('currency')?.value === 'INR'){
-  
-  if( +watch("minimumBudget") >  100000){
-    return str + ` more than minimum budget`
-  }else{
-    return str+' atlest 6 digits'
-  }  
-  
-  }else{
-    if( +watch("minimumBudget") >  1000){
-      return str + ` more than minimum budget`
-    }else{
-      return str + ' atlest 4 digits'
-    } 
-  }
-}else{
-  return str + ` more than minimum budget`
-}
-  
-  }
+    if (
+      watch("availability")?.value === "Full Time" ||
+      watch("availability")?.value === "Contract" ||
+      watch("availability")?.value === "Contract to Hire"
+    ) {
+      if (watch("currency")?.value === "INR") {
+        if (+watch("minimumBudget") > 100000) {
+          return str + ` more than minimum budget`;
+        } else {
+          return str + " atlest 6 digits";
+        }
+      } else {
+        if (+watch("minimumBudget") > 1000) {
+          return str + ` more than minimum budget`;
+        } else {
+          return str + " atlest 4 digits";
+        }
+      }
+    } else {
+      return str + ` more than minimum budget`;
+    }
+  };
 
   useEffect(() => {
     DealHRData.contact && setValue("clientName", DealHRData.contact);
@@ -1939,15 +2246,20 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
     //when file uploaded
     if (gptFileDetails?.JDDumpID) {
       setUploadFileData(gptFileDetails.FileName);
-      setJDParsedSkills({...gptFileDetails,...{
-        Skills: gptFileDetails?.Skills ? gptFileDetails?.Skills.slice(0, 8).map((item) => ({
-          id: "0",
-          value: item.value,
-        })) : [],
-        AllSkills: [],
-        // JobDescription:JDDATA.jobDescription ?? '',
-        roleName:gptFileDetails?.Title ?? ''
-      }});
+      setJDParsedSkills({
+        ...gptFileDetails,
+        ...{
+          Skills: gptFileDetails?.Skills
+            ? gptFileDetails?.Skills.slice(0, 8).map((item) => ({
+                id: "0",
+                value: item.value,
+              }))
+            : [],
+          AllSkills: [],
+          // JobDescription:JDDATA.jobDescription ?? '',
+          roleName: gptFileDetails?.Title ?? "",
+        },
+      });
 
       setJDDumpID(gptFileDetails.JDDumpID);
       setGPTFileDetails({});
@@ -1955,29 +2267,27 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
 
       let _getHrValues = { ...getHRdetails };
 
-      if(!_getHrValues.salesHiringRequest_Details){
-        _getHrValues['salesHiringRequest_Details'] = {
-          JobDescription :gptFileDetails.JobDescription?? '',
-          requirement : gptFileDetails.Requirements?? '',
-          roleAndResponsibilities :    gptFileDetails.Responsibility?? '',
-        rolesResponsibilities : gptFileDetails.Responsibility,
-      jdurl : "",
-      jdfilename : gptFileDetails.FileName,
-
-        }
-      }else{
+      if (!_getHrValues.salesHiringRequest_Details) {
+        _getHrValues["salesHiringRequest_Details"] = {
+          JobDescription: gptFileDetails.JobDescription ?? "",
+          requirement: gptFileDetails.Requirements ?? "",
+          roleAndResponsibilities: gptFileDetails.Responsibility ?? "",
+          rolesResponsibilities: gptFileDetails.Responsibility,
+          jdurl: "",
+          jdfilename: gptFileDetails.FileName,
+        };
+      } else {
         _getHrValues.salesHiringRequest_Details.JobDescription =
-              gptFileDetails.JobDescription?? '';
-            _getHrValues.salesHiringRequest_Details.requirement =
-              gptFileDetails.Requirements?? '';
-            _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
-              gptFileDetails.Responsibility?? '';
-            _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
-              gptFileDetails.Responsibility;
-            _getHrValues.addHiringRequest.jdurl = "";
-            _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
+          gptFileDetails.JobDescription ?? "";
+        _getHrValues.salesHiringRequest_Details.requirement =
+          gptFileDetails.Requirements ?? "";
+        _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
+          gptFileDetails.Responsibility ?? "";
+        _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
+          gptFileDetails.Responsibility;
+        _getHrValues.addHiringRequest.jdurl = "";
+        _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
       }
-     
 
       setHRdetails(_getHrValues);
     } else {
@@ -1987,32 +2297,34 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
         (item) => item?.id == gptDetails?.modeOfWorkingId
       );
 
-      if(findWorkingMode[0]?.value){
+      if (findWorkingMode[0]?.value) {
         setValue("workingMode", findWorkingMode[0]);
-      setControlledWorkingValue(findWorkingMode[0]?.value);
+        setControlledWorkingValue(findWorkingMode[0]?.value);
       }
-      
+
       setValue("jdExport", "");
       gptDetails?.addHiringRequest?.noofTalents &&
         setValue("talentsNumber", gptDetails?.addHiringRequest?.noofTalents);
       // gptDetails?.addHiringRequest?.availability &&
       //   setValue("availability", gptDetails?.addHiringRequest?.availability);
-      if(gptDetails?.addHiringRequest?.availability){
-        let findAvailability = availability.filter(item=> item.value === gptDetails?.addHiringRequest?.availability)
+      if (gptDetails?.addHiringRequest?.availability) {
+        let findAvailability = availability.filter(
+          (item) => item.value === gptDetails?.addHiringRequest?.availability
+        );
         setValue("availability", findAvailability[0]);
-        setControlledAvailabilityValue(findAvailability[0].value)
+        setControlledAvailabilityValue(findAvailability[0].value);
       }
 
-      if(gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 ){
-        resetField("adhocBudgetCost")
-        setValue("budget", {id: '', value: '2'});
-        setControlledBudgetValue('2')
+      if (gptDetails?.salesHiringRequest_Details?.budgetFrom > 0) {
+        resetField("adhocBudgetCost");
+        setValue("budget", { id: "", value: "2" });
+        setControlledBudgetValue("2");
         setValue(
-            "minimumBudget",
-            gptDetails?.salesHiringRequest_Details?.budgetFrom
-          );
+          "minimumBudget",
+          gptDetails?.salesHiringRequest_Details?.budgetFrom
+        );
       }
-        
+
       gptDetails?.salesHiringRequest_Details?.budgetTo > 0 &&
         setValue(
           "maximumBudget",
@@ -2035,7 +2347,11 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
         setControlledCurrencyValue(
           gptDetails?.salesHiringRequest_Details?.currency
         );
-		gptDetails?.salesHiringRequest_Details?.currency && setValue('currency',{id:"",value:gptDetails?.salesHiringRequest_Details?.currency})
+      gptDetails?.salesHiringRequest_Details?.currency &&
+        setValue("currency", {
+          id: "",
+          value: gptDetails?.salesHiringRequest_Details?.currency,
+        });
       gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
         setControlledFromTimeValue(
           gptDetails?.salesHiringRequest_Details?.timeZoneFromTime
@@ -2045,49 +2361,47 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
           gptDetails?.salesHiringRequest_Details?.timeZoneEndTime
         );
       gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
-        setValue(
-          "fromTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneFromTime}
-          
-        );
+        setValue("fromTime", {
+          id: "",
+          value: gptDetails?.salesHiringRequest_Details?.timeZoneFromTime,
+        });
       gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
-        setValue(
-          "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}
-          
-        );
+        setValue("endTime", {
+          id: "",
+          value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime,
+        });
 
-      
-
-	    setHRdetails(gptDetails);
-        setAddData(gptDetails);
-        //   setValue("jdExport", "");
-        //   setValue('talentsNumber',response?.responseBody?.details?.addHiringRequest?.noofTalents);
-        //   setValue('availability',response?.responseBody?.details?.addHiringRequest?.availability);
-        //   setValue(
-        // 	"minimumBudget",
-        // 	response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom
-        //   );
-        //   setValue(
-        // 	"maximumBudget",
-        // 	response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo
-        //   );
-        //   setValue("years", response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp);
-        //   setValue("months", response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth);
-        //   setValue(
-        // 	"contractDuration",
-        // 	response?.responseBody?.details?.salesHiringRequest_Details?.durationType
-        //   );
-        //   setValue('currency', response?.responseBody?.details?.salesHiringRequest_Details?.currency);
-        //   const findWorkingMode = workingMode.filter(
-        // 	  (item) => item?.value === response?.responseBody?.details?.modeOfWorkingId
-        //   );
-        //   setValue("workingMode", findWorkingMode[0]);
-        //   // setControlledWorkingValue(findWorkingMode[0]?.value);
-        //   setControlledCurrencyValue(response?.responseBody?.details?.salesHiringRequest_Details?.currency);
-        //   setControlledFromTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
-        //   setControlledEndTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
-        //   setValue("fromTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
-        //   setValue("endTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
-        //   setValue('budget',"2");
+      setHRdetails(gptDetails);
+      setAddData(gptDetails);
+      //   setValue("jdExport", "");
+      //   setValue('talentsNumber',response?.responseBody?.details?.addHiringRequest?.noofTalents);
+      //   setValue('availability',response?.responseBody?.details?.addHiringRequest?.availability);
+      //   setValue(
+      // 	"minimumBudget",
+      // 	response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom
+      //   );
+      //   setValue(
+      // 	"maximumBudget",
+      // 	response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo
+      //   );
+      //   setValue("years", response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp);
+      //   setValue("months", response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth);
+      //   setValue(
+      // 	"contractDuration",
+      // 	response?.responseBody?.details?.salesHiringRequest_Details?.durationType
+      //   );
+      //   setValue('currency', response?.responseBody?.details?.salesHiringRequest_Details?.currency);
+      //   const findWorkingMode = workingMode.filter(
+      // 	  (item) => item?.value === response?.responseBody?.details?.modeOfWorkingId
+      //   );
+      //   setValue("workingMode", findWorkingMode[0]);
+      //   // setControlledWorkingValue(findWorkingMode[0]?.value);
+      //   setControlledCurrencyValue(response?.responseBody?.details?.salesHiringRequest_Details?.currency);
+      //   setControlledFromTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
+      //   setControlledEndTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
+      //   setValue("fromTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
+      //   setValue("endTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
+      //   setValue('budget',"2");
 
       setGPTDetails({});
       setShowGPTModal(false);
@@ -2097,13 +2411,14 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
   const onHandleFocusOut = async (e) => {
     const regex = /\(([^)]+)\)/;
 
-    if(!watchClientName){   
-      setError('jdURL',{message:'Please Select client Email/Name '})
-    setTimeout(()=> { clearErrors('jdURL');
-      resetField('jdURL')
-      setJDURLLink('')
-      },3000)
-      return
+    if (!watchClientName) {
+      setError("jdURL", { message: "Please Select client Email/Name " });
+      setTimeout(() => {
+        clearErrors("jdURL");
+        resetField("jdURL");
+        setJDURLLink("");
+      }, 3000);
+      return;
     }
     const match = watchClientName.match(regex);
     let email = "";
@@ -2112,16 +2427,22 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
     }
 
     //set email when page open from client flow
-    if(fromClientflow === true){
-      email = watchClientName
+    if (fromClientflow === true) {
+      email = watchClientName;
     }
-  
+
     setIsLoading(true);
     setIsSavedLoading(true);
 
     const getResponse = async () => {
       const response = await hiringRequestDAO.extractTextUsingPythonDAO({
-        clientEmail: email? email.trim() : clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '',
+        clientEmail: email
+          ? email.trim()
+          : clientDetail?.clientemail
+          ? clientDetail?.clientemail
+          : filteredMemo[0]?.emailId
+          ? filteredMemo[0]?.emailId
+          : watchClientName ?? "",
         psUrl: e.target.value,
       });
       if (response.statusCode === HTTPStatusCode.OK) {
@@ -2129,10 +2450,10 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
         setGPTDetails(response?.responseBody?.details);
         setIsLoading(false);
         setIsSavedLoading(false);
-      }else{
-		setIsSavedLoading(false);
-    	setIsLoading(false);
-	  }
+      } else {
+        setIsSavedLoading(false);
+        setIsLoading(false);
+      }
     };
 
     setPrevJDURLLink((prev) => {
@@ -2144,117 +2465,181 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
       }
 
       return e.target.value;
-    });   
+    });
   };
 
+  useEffect(() => {
+    //setDefault values
+    if (defaultPropertys !== null && defaultPropertys !== undefined) {
+      let { talentsNumber, isTransparentPricing, currency } = defaultPropertys;
 
-  useEffect(()=> {
+      if (talentsNumber > 0) {
+        setValue("talentsNumber", talentsNumber);
+      }
 
-    //setDefault values 
-    if(defaultPropertys !== null && defaultPropertys !== undefined){
-        let {talentsNumber,isTransparentPricing,currency } = defaultPropertys
+      setControlledCurrencyValue(currency);
+      setValue("currency", { id: "", value: currency });
 
-        if(talentsNumber > 0){
-          setValue('talentsNumber',talentsNumber)
-        }
-
-        setControlledCurrencyValue(currency);
-        setValue('currency',{id:"",value:currency})
-
-        setTypeOfPricing(isTransparentPricing  === true ? 1 : 0)
-        setDisableTypeOfPricing(true)
+      setTypeOfPricing(isTransparentPricing === true ? 1 : 0);
+      setDisableTypeOfPricing(true);
     }
-  
-
-
-  },[  
-    removeFields,
-    disabledFields,
-    defaultPropertys,
-    setValue
-  ])
+  }, [removeFields, disabledFields, defaultPropertys, setValue]);
 
   useEffect(() => {
-    if(defaultPropertys !== null && defaultPropertys !== undefined ){
-      let {salesPerson :salesPersonID } = defaultPropertys
-      
-      if(salesPersonID && salesPerson?.length > 0){
-        setIsSalesPersionDisable(disabledFields?.salesPerson)
-        let salesUserObj = salesPerson.filter(p=> p.id === salesPersonID)
+    if (defaultPropertys !== null && defaultPropertys !== undefined) {
+      let { salesPerson: salesPersonID } = defaultPropertys;
+
+      if (salesPersonID && salesPerson?.length > 0) {
+        setIsSalesPersionDisable(disabledFields?.salesPerson);
+        let salesUserObj = salesPerson.filter((p) => p.id === salesPersonID);
         setValue("salesPerson", salesUserObj[0]?.id);
-        setSalesPersionNameFromEmail(salesUserObj[0]?.value)
+        setSalesPersionNameFromEmail(salesUserObj[0]?.value);
       }
     }
-  },[defaultPropertys,salesPerson,disabledFields])
-
+  }, [defaultPropertys, salesPerson, disabledFields]);
 
   useEffect(() => {
-    if(userCompanyTypeID === 1){
-      resetField('talentsNumber')
-      setDisabledFields(prev=> ({...prev , talentRequired : false}))
-      unregister('tempProject')
-      setControlledTempProjectValue("Please select .")
-      unregister('contractDuration')
-      setIsProfileView(false)
-      setIsVettedProfile(false)
-      setIsPostaJob(false)
+    if (userCompanyTypeID === 1) {
+      resetField("talentsNumber");
+      setDisabledFields((prev) => ({ ...prev, talentRequired: false }));
+      unregister("tempProject");
+      setControlledTempProjectValue("Please select .");
+      unregister("contractDuration");
+      setIsProfileView(false);
+      setIsVettedProfile(false);
+      setIsPostaJob(false);
     }
 
-    if(userCompanyTypeID === 2){
-      setValue('talentsNumber',1)
-      setDisabledFields(prev=> ({...prev , talentRequired : true}))
-      if(watch('tempProject')?.value === false){
-        unregister('contractDuration')
-        unregister('hiringPricingType')
+    if (userCompanyTypeID === 2) {
+      setValue("talentsNumber", 1);
+      setDisabledFields((prev) => ({ ...prev, talentRequired: true }));
+      if (watch("tempProject")?.value === false) {
+        unregister("contractDuration");
+        unregister("hiringPricingType");
       }
-      if(watch('tempProject')?.value === true){
-        unregister('hiringPricingType')
-        register('contractDuration')
+      if (watch("tempProject")?.value === true) {
+        unregister("hiringPricingType");
+        register("contractDuration");
       }
     }
-
-  },[userCompanyTypeID,watch('tempProject')])
+  }, [userCompanyTypeID, watch("tempProject")]);
   const sanitizedDescription = (JobDescription) => {
     return DOMPurify.sanitize(JobDescription, {
-        // ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'],
-        ALLOWED_ATTR: {
-            // '*': ['class'], // Allow class attribute for custom styling
-            'a': ['href', 'target'] // Allow href and target for links
-        }
-    })
+      // ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'],
+      ALLOWED_ATTR: {
+        // '*': ['class'], // Allow class attribute for custom styling
+        a: ["href", "target"], // Allow href and target for links
+      },
+    });
   };
 
   const validateCompanyName = async () => {
     setClientNameMessage("");
-    clearErrors('clientName')
-    setValue('clientName','')
-    setAutoCompleteValue('')
-    setAddClient(false)
-    setCompanyID(null)
+    clearErrors("clientName");
+    setValue("clientName", "");
+    setAutoCompleteValue("");
+    setAddClient(false);
+    setCompanyID(null);
     let payload = {
-       "workEmail": "",
-       "companyName": watch('companyName').trim(),
-       "currentCompanyID": 0
-     }
+      workEmail: "",
+      companyName: watch("companyName").trim(),
+      currentCompanyID: 0,
+    };
 
-     const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload)
-     if(result.statusCode === HTTPStatusCode.OK){
-       setError('companyName',{
-         type: "manual",
-         message: "We couldn't find the company. Create company",
-       })
-       setShowAddCompany(true)
+    const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setError("companyName", {
+        type: "manual",
+        message: "We couldn't find the company. Create company",
+      });
+      setShowAddCompany(true);
       //  setDisableSubmit(true)
-     }
-     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
-      clearErrors('companyName')
-      setShowAddCompany(false)
-      setCompanyID(result.details.companyID)
-      getClientNameSuggestionHandler('',result.details.companyID)
-      getPOCUsers(result.details.companyID)
-       //  setDisableSubmit(false)
-     }
-   }
+    }
+    if (result.statusCode === HTTPStatusCode.BAD_REQUEST) {
+      clearErrors("companyName");
+      setShowAddCompany(false);
+      setCompanyID(result.details.companyID);
+      getClientNameSuggestionHandler("", result.details.companyID);
+      getPOCUsers(result.details.companyID);
+      //  setDisableSubmit(false)
+    }
+  };
+
+  const onChangeLocation = async (val) => {
+    if (typeof val === "number") return;
+    fetchLocations(val);
+  };
+
+  const fetchLocations = useCallback(
+    debounce(async (val) => {
+      if (val.trim() === "") return; // Avoid calling the API if the input is empty
+      const controller = new AbortController();
+      const signal = controller.signal;
+      // fetchController.current = controller;
+
+      try {
+        setIsLoading(true);
+        const _res = await MasterDAO.getAutoCompleteCityStateDAO(val, {
+          signal,
+        });
+        setIsLoading(false);
+        let locations = [];
+        if (_res?.statusCode === 200) {
+          locations = _res?.responseBody?.details?.map((location) => ({
+            id: location.row_ID,
+            value: location.location,
+          }));
+          setLocationList(locations || []);
+        } else {
+          setLocationList([]);
+        }
+      } catch (error) {
+        if (error.name === "AbortError") {
+          console.log("Fetch aborted");
+        } else {
+          console.error("Error fetching locations:", error);
+          setLocationList([]);
+        }
+      }
+    }, 300),
+    []
+  );
+
+  const getCities = async (locationId) => {
+    setIsLoading(true);
+    let _res = await MasterDAO.getNearByCitiesDAO(locationId);
+    setIsLoading(false);
+    let citiesValues = [];
+    if (_res?.statusCode === 200) {
+      citiesValues = _res?.responseBody?.details?.map((city) => ({
+        value: city.nearByDistrictID,
+        label: city.nearByDistrictName,
+      }));
+      return citiesValues || [];
+    } else {
+      return [];
+    }
+  };
+
+  const handleCheckboxChange = (index, field, checked) => {
+    setJobPostUsersDetails((prevDetails) =>
+      prevDetails.map((detail, i) =>
+        i === index ? { ...detail, [field]: checked } : detail
+      )
+    );
+  };
+
+  const handleContactNoChange = (index, newValue) => {
+    const regex = /^[0-9]\d*$/;
+    if (regex.test(newValue) || newValue === "") {
+      setJobPostUsersDetails((prevDetails) =>
+        prevDetails.map((detail, i) =>
+          i === index ? { ...detail, contactNo: newValue } : detail
+        )
+      );
+    }
+  };
+
   return (
     <>
       {contextHolder}
@@ -2269,7 +2654,7 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
 
           <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
             <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.colMd6}>
                 {/* <HRInputField
                   //	disabled={
                   //	pathName === ClientHRURL.ADD_NEW_CLIENT ||
@@ -2290,176 +2675,201 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                   required
                 /> */}
 
-                    <div className={HRFieldStyle.formGroup}>
-                    <label>
+                <div className={HRFieldStyle.formGroup}>
+                  <label>
                     Company Name <b style={{ color: "#E03A3A" }}>*</b>
-                    </label>
-                    <Controller
-                      render={({ ...props }) => (
-                        <AutoComplete
-                          options={getCompanyNameSuggestion}
-                          onSelect={(companyName,_obj) => {
-                            setValue("companyName",companyName);
-                            setCompanyAutoCompleteValue(companyName)
-                            setCompanyID(_obj.companyID)
-                            getClientNameSuggestionHandler('',_obj.companyID)
-                            getPOCUsers(_obj.companyID)
-                          }}
-                          filterOption={true}
-                          onSearch={(searchValue) => { 
-                            setCompanyAutoCompleteValue(searchValue);
-                            if(searchValue){
-                              setCompanyNameSuggestion([]);
-                              getCompanyNameSuggestionHandler(searchValue);                            
-                            }else{
-                              setClientNameMessage("");
-                              clearErrors('clientName')
-                              setValue('clientName','')
-                              setAutoCompleteValue('')
-                              setAddClient(false)
-                              setCompanyID(null)
-                              clearErrors('companyName')
-                              setShowAddCompany(false)
-                            }
-                            
-                          }}
-                          value={companyautoCompleteValue}
-                          onChange={(clientName) =>
-                            setValue("companyName", clientName)
+                  </label>
+                  <Controller
+                    render={({ ...props }) => (
+                      <AutoComplete
+                        options={getCompanyNameSuggestion}
+                        onSelect={(companyName, _obj) => {
+                          setValue("companyName", companyName);
+                          setCompanyAutoCompleteValue(companyName);
+                          setCompanyID(_obj.companyID);
+                          getClientNameSuggestionHandler("", _obj.companyID);
+                          getPOCUsers(_obj.companyID);
+                        }}
+                        filterOption={true}
+                        onSearch={(searchValue) => {
+                          setCompanyAutoCompleteValue(searchValue);
+                          if (searchValue) {
+                            setCompanyNameSuggestion([]);
+                            getCompanyNameSuggestionHandler(searchValue);
+                          } else {
+                            setClientNameMessage("");
+                            clearErrors("clientName");
+                            setValue("clientName", "");
+                            setAutoCompleteValue("");
+                            setAddClient(false);
+                            setCompanyID(null);
+                            clearErrors("companyName");
+                            setShowAddCompany(false);
                           }
-                          placeholder="Enter Company Name"
-                          ref={controllerCompanyRef}
-                        />
-                      )}
-                      {...register("companyName", {
-                        companyvalidate,
-                      })}
-                      name="companyName"
-                      // rules={{ required: true }}
-                      control={control}
-                      
-                    />
-                    {errors.companyName && (
-                      <div className={HRFieldStyle.error}>
-                        {errors.companyName?.message &&
-                          `* ${errors?.companyName?.message}`}
-                      </div>
+                        }}
+                        value={companyautoCompleteValue}
+                        onChange={(clientName) =>
+                          setValue("companyName", clientName)
+                        }
+                        placeholder="Enter Company Name"
+                        ref={controllerCompanyRef}
+                      />
                     )}
-                  </div>
+                    {...register("companyName", {
+                      companyvalidate,
+                    })}
+                    name="companyName"
+                    // rules={{ required: true }}
+                    control={control}
+                  />
+                  {errors.companyName && (
+                    <div className={HRFieldStyle.error}>
+                      {errors.companyName?.message &&
+                        `* ${errors?.companyName?.message}`}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className={HRFieldStyle.colMd6}>
-                  {pathName === ClientHRURL.ADD_NEW_CLIENT ? (
-                <div className={HRFieldStyle.colMd12}>
-                  <HRInputField
-                    disabled={
-                      pathName === ClientHRURL.ADD_NEW_CLIENT ||
-                      isCompanyNameAvailable ||
-                      isLoading
-                    }
-                    register={register}
-                    errors={errors}
-                    validationSchema={{
-                      required: "please enter the client name.",
-                    }}
-                    label="Client Email/Name"
-                    name="clientName"
-                    type={InputType.TEXT}
-                    placeholder={
-                      watchClientName
-                        ? watchClientName
-                        : "Enter Client Email/Name"
-                    }
-                    required
-                  />
-                </div>
-              ) : (
-                <div className={HRFieldStyle.colMd12}>
-                  <div className={HRFieldStyle.formGroup}>
-                    <label>
-                      Client Email/Name <span className={HRFieldStyle.reqField}>*</span>
-                    </label>
-                    <Controller
-                      render={({ ...props }) => (
-                        <AutoComplete
-                          disabled={companyID === undefined || companyID === null ? true : false}
-                          options={getClientNameSuggestion}
-                          onSelect={(clientName,_obj) => {getClientNameValue(clientName,_obj);setAutoCompleteValue(clientName)}}
-                          filterOption={true}
-                          onSearch={(searchValue) => {
-                            setClientNameSuggestion([]);
-                            getClientNameSuggestionHandler(searchValue);
-                            setAutoCompleteValue(searchValue);
-                          }}
-                          value={autoCompleteValue}
-                          onChange={(clientName) =>
-                            setValue("clientName", clientName)
-                          }
-                          placeholder={
-                            watchClientName
-                              ? watchClientName
-                              : "Enter Client Email/Name"
-                          }
-                          ref={controllerRef}
-                        />
-                      )}
-                      {...register("clientName", {
-                        validate,
-                      })}
+                {pathName === ClientHRURL.ADD_NEW_CLIENT ? (
+                  <div className={HRFieldStyle.colMd12}>
+                    <HRInputField
+                      disabled={
+                        pathName === ClientHRURL.ADD_NEW_CLIENT ||
+                        isCompanyNameAvailable ||
+                        isLoading
+                      }
+                      register={register}
+                      errors={errors}
+                      validationSchema={{
+                        required: "please enter the client name.",
+                      }}
+                      label="Client Email/Name"
                       name="clientName"
-                      // rules={{ required: true }}
-                      control={control}
-                      
+                      type={InputType.TEXT}
+                      placeholder={
+                        watchClientName
+                          ? watchClientName
+                          : "Enter Client Email/Name"
+                      }
+                      required
                     />
-                    {errors.clientName && (
-                      <div className={HRFieldStyle.error}>
-                        {errors.clientName?.message &&
-                          `* ${errors?.clientName?.message}`}
-                      </div>
-                    )}
                   </div>
-                </div>
-              )}
-           
+                ) : (
+                  <div className={HRFieldStyle.colMd12}>
+                    <div className={HRFieldStyle.formGroup}>
+                      <label>
+                        Client Email/Name{" "}
+                        <span className={HRFieldStyle.reqField}>*</span>
+                      </label>
+                      <Controller
+                        render={({ ...props }) => (
+                          <AutoComplete
+                            disabled={
+                              companyID === undefined || companyID === null
+                                ? true
+                                : false
+                            }
+                            options={getClientNameSuggestion}
+                            onSelect={(clientName, _obj) => {
+                              getClientNameValue(clientName, _obj);
+                              setAutoCompleteValue(clientName);
+                            }}
+                            filterOption={true}
+                            onSearch={(searchValue) => {
+                              setClientNameSuggestion([]);
+                              getClientNameSuggestionHandler(searchValue);
+                              setAutoCompleteValue(searchValue);
+                            }}
+                            value={autoCompleteValue}
+                            onChange={(clientName) =>
+                              setValue("clientName", clientName)
+                            }
+                            placeholder={
+                              watchClientName
+                                ? watchClientName
+                                : "Enter Client Email/Name"
+                            }
+                            ref={controllerRef}
+                          />
+                        )}
+                        {...register("clientName", {
+                          validate,
+                        })}
+                        name="clientName"
+                        // rules={{ required: true }}
+                        control={control}
+                      />
+                      {errors.clientName && (
+                        <div className={HRFieldStyle.error}>
+                          {errors.clientName?.message &&
+                            `* ${errors?.clientName?.message}`}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
-             <div className={HRFieldStyle.colMd6}>{showAddCompany && 
-             <div className={HRFieldStyle.formPanelAction} style={{padding: '0 0 32px 0 ',justifyContent:'flex-start'}}>
-                <button
-                  onClick={()=>navigate('/addNewCompany/0',{state:{createHR:true , companyName:watch('companyName')}})}
-                  className={HRFieldStyle.btnPrimary}
-                
-                >
-                Add Company / Client
-                </button>
-              </div>} 
+              <div className={HRFieldStyle.colMd6}>
+                {showAddCompany && (
+                  <div
+                    className={HRFieldStyle.formPanelAction}
+                    style={{
+                      padding: "0 0 32px 0 ",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <button
+                      onClick={() =>
+                        navigate("/addNewCompany/0", {
+                          state: {
+                            createHR: true,
+                            companyName: watch("companyName"),
+                          },
+                        })
+                      }
+                      className={HRFieldStyle.btnPrimary}
+                    >
+                      Add Company / Client
+                    </button>
+                  </div>
+                )}
               </div>
 
-              <div className={HRFieldStyle.colMd6}>{showAddClient && 
-             <div className={HRFieldStyle.formPanelAction} style={{padding: '0 0 32px 0 ',justifyContent:'flex-start'}}>
-                <button
-                  onClick={()=>navigate(`/addNewCompany/${companyID}`,{state:{createHR:true }})}
-                  className={HRFieldStyle.btnPrimary}
-                
-                >
-                Add Client
-                </button>
-              </div>} 
+              <div className={HRFieldStyle.colMd6}>
+                {showAddClient && (
+                  <div
+                    className={HRFieldStyle.formPanelAction}
+                    style={{
+                      padding: "0 0 32px 0 ",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <button
+                      onClick={() =>
+                        navigate(`/addNewCompany/${companyID}`, {
+                          state: { createHR: true },
+                        })
+                      }
+                      className={HRFieldStyle.btnPrimary}
+                    >
+                      Add Client
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             <div className={HRFieldStyle.row}>
-             
-
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   {userData.LoggedInUserTypeID && isSalesPersionDisable ? (
-                    <HRSelectField                  
-                    key={"salesPersionDefaultDisabled"}
+                    <HRSelectField
+                      key={"salesPersionDefaultDisabled"}
                       setValue={setValue}
                       searchable={true}
                       register={register}
                       label={"Sales Person"}
-                      defaultValue={
-                        salesPersionNameFromEmail
-                      }
+                      defaultValue={salesPersionNameFromEmail}
                       options={salesPerson && salesPerson}
                       name="salesPerson"
                       isError={errors["salesPerson"] && errors["salesPerson"]}
@@ -2470,15 +2880,14 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                       }
                       disabled
                     />
-                  ) :userData?.LoggedInUserTypeID === UserAccountRole.SALES ? (
+                  ) : userData?.LoggedInUserTypeID === UserAccountRole.SALES ? (
                     <HRSelectField
-                  
-                    key={"salesPersionEnabledSales"}
+                      key={"salesPersionEnabledSales"}
                       setValue={setValue}
                       searchable={true}
                       register={register}
                       label={"Sales Person"}
-                      defaultValue={ userData?.FullName}
+                      defaultValue={userData?.FullName}
                       options={salesPerson && salesPerson}
                       name="salesPerson"
                       isError={errors["salesPerson"] && errors["salesPerson"]}
@@ -2489,19 +2898,20 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                       }
                       disabled={true}
                     />
-                  ): (
+                  ) : (
                     <HRSelectField
-                    controlledValue={salesPersionNameFromEmail}
-                   setControlledValue={setSalesPersionNameFromEmail}
-                   mode={'id'}
-                   isControlled={true}
-                    key={"salesPersionEnabled"}
+                      controlledValue={salesPersionNameFromEmail}
+                      setControlledValue={setSalesPersionNameFromEmail}
+                      mode={"id"}
+                      isControlled={true}
+                      key={"salesPersionEnabled"}
                       setValue={setValue}
                       searchable={true}
                       register={register}
                       label={"Sales Person"}
                       defaultValue={
-                        salesPersionNameFromEmail?.length > 0 ? salesPersionNameFromEmail 
+                        salesPersionNameFromEmail?.length > 0
+                          ? salesPersionNameFromEmail
                           : "Select Sales Persons"
                       }
                       options={salesPerson && salesPerson}
@@ -2570,43 +2980,87 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
 								</div>
 							</div> */}
 
-            {clientDetails?.isHybrid &&  <div className={HRFieldStyle.colMd12}>
-            <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-                  <label style={{marginBottom:"12px"}}>
-                  Type Of Company
-                  <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
-                    *
-                  </span>
-                </label>
-                {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
-                {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
-                <Radio.Group
-                  onChange={e=> {setUserCompanyTypeID(e.target.value);clearErrors();resetField('tempProject')}}
-                  value={userCompanyTypeID}
+              {clientDetails?.isHybrid && (
+                <div className={HRFieldStyle.colMd12}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      marginBottom: "32px",
+                    }}
                   >
-                  <Radio value={1}>Pay Per Hire</Radio>
-                  <Radio value={2}>Pay Per Credit</Radio>
-                </Radio.Group>
-							</div>
-            </div> }
+                    <label style={{ marginBottom: "12px" }}>
+                      Type Of Company
+                      <span
+                        style={{
+                          color: "#E03A3A",
+                          marginLeft: "4px",
+                          fontSize: "14px",
+                          fontWeight: 700,
+                        }}
+                      >
+                        *
+                      </span>
+                    </label>
+                    {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
+                {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
+                    <Radio.Group
+                      onChange={(e) => {
+                        setUserCompanyTypeID(e.target.value);
+                        clearErrors();
+                        resetField("tempProject");
+                      }}
+                      value={userCompanyTypeID}
+                    >
+                      <Radio value={1}>Pay Per Hire</Radio>
+                      <Radio value={2}>Pay Per Credit</Radio>
+                    </Radio.Group>
+                  </div>
+                </div>
+              )}
 
-{/* Pay per Credit */}
-{userCompanyTypeID === 2 && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
-  {!clientDetails?.isHybrid && <p className={HRFieldStyle.teansactionMessage}>If you wish to create a pay per hire HR, edit company and make the hybrid model selection for this account.</p> }
-  <div>
-          {!hidePostJob && <Checkbox checked={isPostaJob} onClick={()=> setIsPostaJob(prev=> !prev)} disabled={disablePostJob}>
-            Credit per post a job
-						</Checkbox>}  	
-          {/* {!hideProfileView && <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)} disabled={disableProfileView}>
+              {/* Pay per Credit */}
+              {userCompanyTypeID === 2 && (
+                <div
+                  className={HRFieldStyle.colMd12}
+                  style={{ marginBottom: "32px" }}
+                >
+                  {!clientDetails?.isHybrid && (
+                    <p className={HRFieldStyle.teansactionMessage}>
+                      If you wish to create a pay per hire HR, edit company and
+                      make the hybrid model selection for this account.
+                    </p>
+                  )}
+                  <div>
+                    {!hidePostJob && (
+                      <Checkbox
+                        checked={isPostaJob}
+                        onClick={() => setIsPostaJob((prev) => !prev)}
+                        disabled={disablePostJob}
+                      >
+                        Credit per post a job
+                      </Checkbox>
+                    )}
+                    {/* {!hideProfileView && <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)} disabled={disableProfileView}>
             Credit per profile view
 						</Checkbox>	}   */}
-            </div>
-            {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
-            {isCreateHRDisable && <p className={HRFieldStyle.error} style={{marginTop:'5px'}}>* Please purchase the subcription package, you do not have enough credit balance</p> }
-</div> }
+                  </div>
+                  {creditBaseCheckBoxError && !isPostaJob && !isProfileView && (
+                    <p className={HRFieldStyle.error}>Please select Option</p>
+                  )}
+                  {isCreateHRDisable && (
+                    <p
+                      className={HRFieldStyle.error}
+                      style={{ marginTop: "5px" }}
+                    >
+                      * Please purchase the subcription package, you do not have
+                      enough credit balance
+                    </p>
+                  )}
+                </div>
+              )}
 
-
-{/* {userCompanyTypeID === 2 && isProfileView && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+              {/* {userCompanyTypeID === 2 && isProfileView && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
 <Radio.Group
                   onChange={e=> {setIsVettedProfile(e.target.value)}}
                   value={isVettedProfile}
@@ -2616,57 +3070,89 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                 </Radio.Group>
 </div> } */}
 
-           
-{/* Pay per Hire  */}
-{userCompanyTypeID === 1 && <div className={HRFieldStyle.colMd12}>
-  <div className={HRFieldStyle.formGroup}>
-    <div style={{display:'flex',flexDirection:'column'}}> 
-      <label>Type Of pricing <span className={HRFieldStyle.reqField}>*</span></label>
-      {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
-      {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
-      <Radio.Group
-      disabled={disableYypeOfPricing}
-        // defaultValue={'client'}
-        // className={allengagementReplceTalentStyles.radioGroup}
-        onChange={e=> {setTypeOfPricing(e.target.value);resetField('hiringPricingType');resetField('availability');setControlledAvailabilityValue("Select availability");setPricingTypeError(false)}}
-        value={typeOfPricing}
-        >
-        <Radio value={1}>Transparent Pricing</Radio>
-        <Radio value={0}>Non Transparent Pricing</Radio>
-      </Radio.Group>
-    </div>
-  </div>
-</div>}
-
+              {/* Pay per Hire  */}
+              {userCompanyTypeID === 1 && (
+                <div className={HRFieldStyle.colMd12}>
+                  <div className={HRFieldStyle.formGroup}>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <label>
+                        Type Of pricing{" "}
+                        <span className={HRFieldStyle.reqField}>*</span>
+                      </label>
+                      {pricingTypeError && (
+                        <p className={HRFieldStyle.error}>
+                          *Please select pricing type
+                        </p>
+                      )}
+                      {transactionMessage && (
+                        <p className={HRFieldStyle.teansactionMessage}>
+                          {transactionMessage}
+                        </p>
+                      )}
+                      <Radio.Group
+                        disabled={disableYypeOfPricing}
+                        // defaultValue={'client'}
+                        // className={allengagementReplceTalentStyles.radioGroup}
+                        onChange={(e) => {
+                          setTypeOfPricing(e.target.value);
+                          resetField("hiringPricingType");
+                          resetField("availability");
+                          setControlledAvailabilityValue("Select availability");
+                          setPricingTypeError(false);
+                        }}
+                        value={typeOfPricing}
+                      >
+                        <Radio value={1}>Transparent Pricing</Radio>
+                        <Radio value={0}>Non Transparent Pricing</Radio>
+                      </Radio.Group>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
-                   controlledValue={controlledAvailabilityValue}
-                   setControlledValue={val=>{setControlledAvailabilityValue(val);resetField('hiringPricingType');
-                   resetField('payrollType');setControlledHiringPricingTypeValue("Select Hiring Pricing");
-                   if(userCompanyTypeID === 2){
-                    if(val === 'Part Time'){
-                      setValue('tempProject',{id: undefined, value: true})
-                      setControlledTempProjectValue(true)
-                    }}}}
-                   isControlled={true}
+                    controlledValue={controlledAvailabilityValue}
+                    setControlledValue={(val) => {
+                      setControlledAvailabilityValue(val);
+                      resetField("hiringPricingType");
+                      resetField("payrollType");
+                      setControlledHiringPricingTypeValue(
+                        "Select Hiring Pricing"
+                      );
+                      if (userCompanyTypeID === 2) {
+                        if (val === "Part Time") {
+                          setValue("tempProject", {
+                            id: undefined,
+                            value: true,
+                          });
+                          setControlledTempProjectValue(true);
+                        }
+                      }
+                    }}
+                    isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    label={userCompanyTypeID === 2 ? "Job Type" : "Availability"}
+                    label={
+                      userCompanyTypeID === 2 ? "Job Type" : "Availability"
+                    }
                     defaultValue="Select availability"
-                    options={userCompanyTypeID ===2 ? JobTypes :  availability}
+                    options={userCompanyTypeID === 2 ? JobTypes : availability}
                     name="availability"
                     isError={errors["availability"] && errors["availability"]}
                     required
-                    errorMsg={`Please select the ${userCompanyTypeID === 2 ? "job type" : "availability"}.`}
+                    errorMsg={`Please select the ${
+                      userCompanyTypeID === 2 ? "job type" : "availability"
+                    }.`}
                   />
                 </div>
               </div>
 
               {/*  Duration in case of Pay Per Credit */}
-              {userCompanyTypeID === 2 && <>
+              {userCompanyTypeID === 2 && (
+                <>
                   {/* <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
@@ -2693,111 +3179,138 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                       />
                     </div>
                   </div> */}
-                 {console.log('contractDurations',contractDurations)}
-                  {(watch('availability')?.id === 2 || watch('availability')?.id === 3 || watch('availability')?.id === 4)  &&   <div className={HRFieldStyle.colMd6}>
-                  <div className={HRFieldStyle.formGroup}>
-                    <HRSelectField
-                    key={'contract Duration for pay per Credit'}
-                      dropdownRender={(menu) => (
-                        <>
-                          {menu}
-                          <Divider style={{ margin: "8px 0" }} />
-                          <Space style={{ padding: "0 8px 4px" }}>
-                            <label>Other:</label>
-                            <input
-                              type={InputType.NUMBER}
-                              className={HRFieldStyle.addSalesItem}
-                              placeholder="Ex: 5,6,7..."
-                              ref={inputRef}
-                              value={name}
-                              onChange={onNameChange}
-                              required
-                            />
-                            <Button
-                              style={{
-                                backgroundColor: `var(--uplers-grey)`,
-                              }}
-                              shape="round"
-                              type="text"
-                              icon={<PlusOutlined />}
-                              onClick={addItem}
-                              disabled={
-                                name
-                                  ? contractDurations.filter(
-                                      (duration) => duration.value == name
-                                    ).length > 0
-                                  : true
-                              }
-                            >
-                              Add item
-                            </Button>
-                          </Space>
-                          <br />
-                        </>
-                      )}
-                      options={contractDurations.filter(item=> {
-                        // if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" || item?.value !== "Indefinite"
-                        // return item?.value !== "-1"
-                        if(watch('availability')?.id === 4){
-                             return item.value !== "Indefinite"
-                        }
-                        return true
-                      }).map((item) => ({
-                        id: item.id,
-                        label: item.text,
-                        value: item.value,
-                      }))}
-                      // controlledValue={contractDurationValue}
-                      // setControlledValue={setContractDuration}
-                      // isControlled={true}
-                      setValue={setValue}
-                      register={register}
-                      label={"Contract Duration (in months)"}
-                      defaultValue="Ex: 3,6,12..."
-                      inputRef={inputRef}
-                      addItem={addItem}
-                      mode={"id/value"}
-                      onNameChange={onNameChange}
-                      name="contractDuration"
-                      isError={
-                        errors["contractDuration"] && errors["contractDuration"]
-                      }
-                      required={userCompanyTypeID === 2 ? (watch('availability')?.id !== 2 || watch('tempProject')?.value === true) ? true : false : false}
-                      errorMsg={
-                        "Please select hiring request contract duration"
-                      }
-                      // disabled={isHRDirectPlacement}
-                    />
-                  </div>
-                </div>}
-               
-                </> 
-                  }
 
-                  {userCompanyTypeID=== 1 && <>
-                   {watch('availability')?.id && <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                   controlledValue={controlledHiringPricingTypeValue}
-                   setControlledValue={val => {setControlledHiringPricingTypeValue(val);setBudgetValueOnChange()}}
-                   isControlled={true}
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    // label={"Hiring Pricing Type"}
-                    label={"Employment Type"}
-                    defaultValue="Select Hiring Pricing"
-                    options={getRequiredHRPricingType()}
-                    name="hiringPricingType"
-                    isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
-                    required={userCompanyTypeID=== 1 ? true : false}
-                    errorMsg={"Please select the Hiring Pricing."}
-                  />
-                </div>
-              </div>
-              }
-              {(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8) &&  <>
-              {/* {(watch('hiringPricingType')?.id !== 1) && <div className={HRFieldStyle.colMd6}>
+                  {(watch("availability")?.id === 2 ||
+                    watch("availability")?.id === 3 ||
+                    watch("availability")?.id === 4) && (
+                    <div className={HRFieldStyle.colMd6}>
+                      <div className={HRFieldStyle.formGroup}>
+                        <HRSelectField
+                          key={"contract Duration for pay per Credit"}
+                          dropdownRender={(menu) => (
+                            <>
+                              {menu}
+                              <Divider style={{ margin: "8px 0" }} />
+                              <Space style={{ padding: "0 8px 4px" }}>
+                                <label>Other:</label>
+                                <input
+                                  type={InputType.NUMBER}
+                                  className={HRFieldStyle.addSalesItem}
+                                  placeholder="Ex: 5,6,7..."
+                                  ref={inputRef}
+                                  value={name}
+                                  onChange={onNameChange}
+                                  required
+                                />
+                                <Button
+                                  style={{
+                                    backgroundColor: `var(--uplers-grey)`,
+                                  }}
+                                  shape="round"
+                                  type="text"
+                                  icon={<PlusOutlined />}
+                                  onClick={addItem}
+                                  disabled={
+                                    name
+                                      ? contractDurations.filter(
+                                          (duration) => duration.value == name
+                                        ).length > 0
+                                      : true
+                                  }
+                                >
+                                  Add item
+                                </Button>
+                              </Space>
+                              <br />
+                            </>
+                          )}
+                          options={contractDurations
+                            .filter((item) => {
+                              // if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" || item?.value !== "Indefinite"
+                              // return item?.value !== "-1"
+                              if (watch("availability")?.id === 4) {
+                                return item.value !== "Indefinite";
+                              }
+                              return true;
+                            })
+                            .map((item) => ({
+                              id: item.id,
+                              label: item.text,
+                              value: item.value,
+                            }))}
+                          // controlledValue={contractDurationValue}
+                          // setControlledValue={setContractDuration}
+                          // isControlled={true}
+                          setValue={setValue}
+                          register={register}
+                          label={"Contract Duration (in months)"}
+                          defaultValue="Ex: 3,6,12..."
+                          inputRef={inputRef}
+                          addItem={addItem}
+                          mode={"id/value"}
+                          onNameChange={onNameChange}
+                          name="contractDuration"
+                          isError={
+                            errors["contractDuration"] &&
+                            errors["contractDuration"]
+                          }
+                          required={
+                            userCompanyTypeID === 2
+                              ? watch("availability")?.id !== 2 ||
+                                watch("tempProject")?.value === true
+                                ? true
+                                : false
+                              : false
+                          }
+                          errorMsg={
+                            "Please select hiring request contract duration"
+                          }
+                          // disabled={isHRDirectPlacement}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {userCompanyTypeID === 1 && (
+                <>
+                  {watch("availability")?.id && (
+                    <div className={HRFieldStyle.colMd6}>
+                      <div className={HRFieldStyle.formGroup}>
+                        <HRSelectField
+                          controlledValue={controlledHiringPricingTypeValue}
+                          setControlledValue={(val) => {
+                            setControlledHiringPricingTypeValue(val);
+                            setBudgetValueOnChange();
+                          }}
+                          isControlled={true}
+                          mode={"id/value"}
+                          setValue={setValue}
+                          register={register}
+                          // label={"Hiring Pricing Type"}
+                          label={"Employment Type"}
+                          defaultValue="Select Hiring Pricing"
+                          options={getRequiredHRPricingType()}
+                          name="hiringPricingType"
+                          isError={
+                            errors["hiringPricingType"] &&
+                            errors["hiringPricingType"]
+                          }
+                          required={userCompanyTypeID === 1 ? true : false}
+                          errorMsg={"Please select the Hiring Pricing."}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {(watch("hiringPricingType")?.id === 1 ||
+                    watch("hiringPricingType")?.id === 2 ||
+                    watch("hiringPricingType")?.id === 4 ||
+                    watch("hiringPricingType")?.id === 5 ||
+                    watch("hiringPricingType")?.id === 7 ||
+                    watch("hiringPricingType")?.id === 8) && (
+                    <>
+                      {/* {(watch('hiringPricingType')?.id !== 1) && <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                       mode={"id/value"}
@@ -2820,191 +3333,220 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                   </div>
                 </div>}
                */}
-              <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                    dropdownRender={(menu) => (
-                      <>
-                        {menu}
-                        <Divider style={{ margin: "8px 0" }} />
-                        <Space style={{ padding: "0 8px 4px" }}>
-                          <label>Other:</label>
-                          <input
-                            type={InputType.NUMBER}
-                            className={HRFieldStyle.addSalesItem}
-                            placeholder="Ex: 5,6,7..."
-                            ref={inputRef}
-                            value={name}
-                            onChange={onNameChange}
-                            required
-                          />
-                          <Button
-                            style={{
-                              backgroundColor: `var(--uplers-grey)`,
-                            }}
-                            shape="round"
-                            type="text"
-                            icon={<PlusOutlined />}
-                            onClick={addItem}
-                            disabled={
-                              name
-                                ? contractDurations.filter(
-                                    (duration) => duration.value == name
-                                  ).length > 0
-                                : true
+                      <div className={HRFieldStyle.colMd6}>
+                        <div className={HRFieldStyle.formGroup}>
+                          <HRSelectField
+                            dropdownRender={(menu) => (
+                              <>
+                                {menu}
+                                <Divider style={{ margin: "8px 0" }} />
+                                <Space style={{ padding: "0 8px 4px" }}>
+                                  <label>Other:</label>
+                                  <input
+                                    type={InputType.NUMBER}
+                                    className={HRFieldStyle.addSalesItem}
+                                    placeholder="Ex: 5,6,7..."
+                                    ref={inputRef}
+                                    value={name}
+                                    onChange={onNameChange}
+                                    required
+                                  />
+                                  <Button
+                                    style={{
+                                      backgroundColor: `var(--uplers-grey)`,
+                                    }}
+                                    shape="round"
+                                    type="text"
+                                    icon={<PlusOutlined />}
+                                    onClick={addItem}
+                                    disabled={
+                                      name
+                                        ? contractDurations.filter(
+                                            (duration) => duration.value == name
+                                          ).length > 0
+                                        : true
+                                    }
+                                  >
+                                    Add item
+                                  </Button>
+                                </Space>
+                                <br />
+                              </>
+                            )}
+                            options={contractDurations
+                              .filter((item) => {
+                                if (
+                                  watch("hiringPricingType")?.id === 1 ||
+                                  watch("hiringPricingType")?.id === 7
+                                )
+                                  return item?.value !== "Indefinite";
+                                return true;
+                              })
+                              .map((item) => ({
+                                id: item.id,
+                                label: item.text,
+                                value: item.value,
+                              }))}
+                            mode={"id/value"}
+                            setValue={setValue}
+                            register={register}
+                            label={"Contract Duration (in months)"}
+                            defaultValue="Ex: 3,6,12..."
+                            inputRef={inputRef}
+                            addItem={addItem}
+                            onNameChange={onNameChange}
+                            name="contractDuration"
+                            isError={
+                              errors["contractDuration"] &&
+                              errors["contractDuration"]
                             }
-                          >
-                            Add item
-                          </Button>
-                        </Space>
-                        <br />
-                      </>
-                    )}
-                    options={contractDurations.filter(item=> {
-                      if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return  item?.value !== "Indefinite"
-                      return true
-                    }).map((item) => ({
-                      id: item.id,
-                      label: item.text,
-                      value: item.value,
-                    }))}
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    label={"Contract Duration (in months)"}
-                    defaultValue="Ex: 3,6,12..."
-                    inputRef={inputRef}
-                    addItem={addItem}
-                    onNameChange={onNameChange}
-                    name="contractDuration"
-                    isError={
-                      errors["contractDuration"] && errors["contractDuration"]
-                    }
-                    // required={!isHRDirectPlacement}
-                    required={(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)?true:false}
-                    errorMsg={"Please select hiring request contract duration"}
-                    // disabled={isHRDirectPlacement}
-                  />
-                   {/* {console.log("req in month",(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8),watch('hiringPricingType'),
+                            // required={!isHRDirectPlacement}
+                            required={
+                              watch("hiringPricingType")?.id === 1 ||
+                              watch("hiringPricingType")?.id === 2 ||
+                              watch("hiringPricingType")?.id === 4 ||
+                              watch("hiringPricingType")?.id === 5 ||
+                              watch("hiringPricingType")?.id === 7 ||
+                              watch("hiringPricingType")?.id === 8
+                                ? true
+                                : false
+                            }
+                            errorMsg={
+                              "Please select hiring request contract duration"
+                            }
+                            // disabled={isHRDirectPlacement}
+                          />
+                          {/* {console.log("req in month",(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8),watch('hiringPricingType'),
                   errors)} */}
-                </div>
-              </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
 
-</>}
-                  </>}
-             
-              
+              {(watch("hiringPricingType")?.id === 3 ||
+                watch("hiringPricingType")?.id === 6) && (
+                <>
+                  <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.formGroup}>
+                      <HRSelectField
+                        //  controlledValue={controlledAvailabilityValue}
+                        //  setControlledValue={setControlledAvailabilityValue}
+                        //  isControlled={true}
+                        mode={"id/value"}
+                        setValue={setValue}
+                        register={register}
+                        label={"Who will manage the payroll?"}
+                        defaultValue="Select payroll"
+                        options={payRollTypes}
+                        name="payrollType"
+                        isError={errors["payrollType"] && errors["payrollType"]}
+                        required={
+                          watch("hiringPricingType")?.id === 3 ||
+                          watch("hiringPricingType")?.id === 6
+                            ? true
+                            : false
+                        }
+                        errorMsg={"Please select Payroll Type."}
+                      />
+                    </div>
+                  </div>
+                  {watch("payrollType")?.id === 4 && (
+                    <div className={HRFieldStyle.colMd6}>
+                      <div className={HRFieldStyle.formGroup}>
+                        <HRSelectField
+                          dropdownRender={(menu) => (
+                            <>
+                              {menu}
+                              <Divider style={{ margin: "8px 0" }} />
+                              <Space style={{ padding: "0 8px 4px" }}>
+                                <label>Other:</label>
+                                <input
+                                  type={InputType.NUMBER}
+                                  className={HRFieldStyle.addSalesItem}
+                                  placeholder="Ex: 5,6,7..."
+                                  ref={inputRef}
+                                  value={name}
+                                  onChange={onNameChange}
+                                  required
+                                />
+                                <Button
+                                  style={{
+                                    backgroundColor: `var(--uplers-grey)`,
+                                  }}
+                                  shape="round"
+                                  type="text"
+                                  icon={<PlusOutlined />}
+                                  onClick={addItem}
+                                  disabled={
+                                    name
+                                      ? contractDurations.filter(
+                                          (duration) => duration.value == name
+                                        ).length > 0
+                                      : true
+                                  }
+                                >
+                                  Add item
+                                </Button>
+                              </Space>
+                              <br />
+                            </>
+                          )}
+                          options={contractDurations.map((item) => ({
+                            id: item.id,
+                            label: item.text,
+                            value: item.value,
+                          }))}
+                          mode={"id/value"}
+                          setValue={setValue}
+                          register={register}
+                          label={"Contract Duration (in months)"}
+                          defaultValue="Ex: 3,6,12..."
+                          inputRef={inputRef}
+                          addItem={addItem}
+                          onNameChange={onNameChange}
+                          name="contractDuration"
+                          isError={
+                            errors["contractDuration"] &&
+                            errors["contractDuration"]
+                          }
+                          // required={!isHRDirectPlacement}
+                          required={
+                            userCompanyTypeID === 1 &&
+                            watch("payrollType")?.id === 4
+                          }
+                          errorMsg={
+                            "Please select hiring request contract duration"
+                          }
+                          // disabled={isHRDirectPlacement}
+                        />
+                      </div>
+                    </div>
+                  )}
 
-              
-              {(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) && <>
-                 <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                  //  controlledValue={controlledAvailabilityValue}
-                  //  setControlledValue={setControlledAvailabilityValue}
-                  //  isControlled={true}
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    label={"Who will manage the payroll?"}
-                    defaultValue="Select payroll"
-                    options={payRollTypes}
-                    name="payrollType"
-                    isError={errors["payrollType"] && errors["payrollType"]}
-                    required={(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 )? true : false}
-                    errorMsg={"Please select Payroll Type."}
-                  />
-                </div>
-              </div>
-              {watch('payrollType')?.id === 4 && <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                    dropdownRender={(menu) => (
-                      <>
-                        {menu}
-                        <Divider style={{ margin: "8px 0" }} />
-                        <Space style={{ padding: "0 8px 4px" }}>
-                          <label>Other:</label>
-                          <input
-                            type={InputType.NUMBER}
-                            className={HRFieldStyle.addSalesItem}
-                            placeholder="Ex: 5,6,7..."
-                            ref={inputRef}
-                            value={name}
-                            onChange={onNameChange}
-                            required
-                          />
-                          <Button
-                            style={{
-                              backgroundColor: `var(--uplers-grey)`,
-                            }}
-                            shape="round"
-                            type="text"
-                            icon={<PlusOutlined />}
-                            onClick={addItem}
-                            disabled={
-                              name
-                                ? contractDurations.filter(
-                                    (duration) => duration.value == name
-                                  ).length > 0
-                                : true
-                            }
-                          >
-                            Add item
-                          </Button>
-                        </Space>
-                        <br />
-                      </>
-                    )}
-                    options={contractDurations.map((item) => ({
-                      id: item.id,
-                      label: item.text,
-                      value: item.value,
-                    }))}
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    label={"Contract Duration (in months)"}
-                    defaultValue="Ex: 3,6,12..."
-                    inputRef={inputRef}
-                    addItem={addItem}
-                    onNameChange={onNameChange}
-                    name="contractDuration"
-                    isError={
-                      errors["contractDuration"] && errors["contractDuration"]
-                    }
-                    // required={!isHRDirectPlacement}
-                    required={userCompanyTypeID === 1 && watch('payrollType')?.id === 4}
-                    errorMsg={"Please select hiring request contract duration"}
-                    // disabled={isHRDirectPlacement}
-                  />
-                </div>
-              </div>}
+                  {watch("payrollType")?.id === 3 && (
+                    <div className={HRFieldStyle.colMd6}>
+                      <div className={HRFieldStyle.formGroup}>
+                        <HRInputField
+                          register={register}
+                          errors={errors}
+                          validationSchema={{
+                            required: "please enter payroll partner name.",
+                          }}
+                          label="Payroll Partner Name"
+                          name="payrollPartnerName"
+                          type={InputType.TEXT}
+                          placeholder="Enter the Payroll partner name"
+                          required={watch("payrollType")?.id === 3}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
 
-              {watch('payrollType')?.id === 3 && <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                <HRInputField
-                    register={register}
-                    errors={errors}
-                    validationSchema={{
-                      required: "please enter payroll partner name.",
-                    }}
-                    label="Payroll Partner Name"
-                    name="payrollPartnerName"
-                    type={InputType.TEXT}
-                    placeholder="Enter the Payroll partner name"
-                    required={watch('payrollType')?.id === 3}
-                  />
-                </div>
-              </div>}
-              </>
-              }
-
-             
-
-              
-             
-            {/* {watch('role')?.id === -1 && (
+              {/* {watch('role')?.id === -1 && (
 							<div className={HRFieldStyle.row}>
 								<div className={HRFieldStyle.colMd12}>
 									<HRInputField
@@ -3027,7 +3569,7 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
 								</div>
 							</div>
 						)} */}
-            {/* <div className={HRFieldStyle.row}>
+              {/* <div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
 								<HRInputField
 									register={register}
@@ -3043,10 +3585,7 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
 								/>
 							</div>
 						</div> */}
-
-        
             </div>
-
 
             <div className={HRFieldStyle.row}>
               {isHRDirectPlacement ? (
@@ -3066,47 +3605,52 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                 </div>
               ) : (
                 <>
-                {
-                  userCompanyTypeID === 1 &&  <div className={HRFieldStyle.colMd6}>
-                  <HRInputField
-                    register={register}
-                    errors={errors}
-                    validationSchema={{
-                      required: "please enter the Uplers Fees %.",
-                      min:{value:1,message:"Uplers Fees % can not be 0"},
-                      max:{value:100,message:"Uplers Fees % can not be more then 100"}
-                    }}
-                    label="Uplers Fees %"
-                    name="NRMargin"
-                    type={InputType.NUMBER}
-                    placeholder="Select Uplers Fees %"
-                    required={!isHRDirectPlacement}
-                  />
-                </div>
-                }
-                 
-                <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                    controlledValue={controlledCurrencyValue}
-                    setControlledValue={setControlledCurrencyValue}
-                    isControlled={true}
-                    mode={"id/value"}
-                    searchable={true}
-                    setValue={setValue}
-                    register={register}
-                    label={"Currency"}
-                    defaultValue="Select Currency"
-                    options={currency && currency}
-                    name="currency"
-                    isError={errors["currency"] && errors["currency"]}
-                    required
-                    errorMsg={"Please select currency"}
-                  />
-                </div>
-              </div>
+                  {userCompanyTypeID === 1 && (
+                    <div className={HRFieldStyle.colMd6}>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        validationSchema={{
+                          required: "please enter the Uplers Fees %.",
+                          min: {
+                            value: 1,
+                            message: "Uplers Fees % can not be 0",
+                          },
+                          max: {
+                            value: 100,
+                            message: "Uplers Fees % can not be more then 100",
+                          },
+                        }}
+                        label="Uplers Fees %"
+                        name="NRMargin"
+                        type={InputType.NUMBER}
+                        placeholder="Select Uplers Fees %"
+                        required={!isHRDirectPlacement}
+                      />
+                    </div>
+                  )}
+
+                  <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.formGroup}>
+                      <HRSelectField
+                        controlledValue={controlledCurrencyValue}
+                        setControlledValue={setControlledCurrencyValue}
+                        isControlled={true}
+                        mode={"id/value"}
+                        searchable={true}
+                        setValue={setValue}
+                        register={register}
+                        label={"Currency"}
+                        defaultValue="Select Currency"
+                        options={currency && currency}
+                        name="currency"
+                        isError={errors["currency"] && errors["currency"]}
+                        required
+                        errorMsg={"Please select currency"}
+                      />
+                    </div>
+                  </div>
                 </>
-              
               )}
 
               {/* {!isHRDirectPlacement && (
@@ -3138,13 +3682,17 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
               <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
-                  controlledValue={controlledBudgetValue}
-                  setControlledValue={setControlledBudgetValue}
-                  isControlled={true}
+                    controlledValue={controlledBudgetValue}
+                    setControlledValue={setControlledBudgetValue}
+                    isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    label={`${isGUID? "Add your talent salary budget (Annum)" : "Add your client estimated budget (Monthly)"} `}
+                    label={`${
+                      isGUID
+                        ? "Add your talent salary budget (Annum)"
+                        : "Add your client estimated budget (Monthly)"
+                    } `}
                     // label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (${isGUID ? "Annum" : "Monthly"})`}
                     defaultValue="Select Budget"
                     options={budgets.map((item) => ({
@@ -3160,10 +3708,12 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                 </div>
               </div>
               <div className={HRFieldStyle.colMd4}>
-                {console.log("currency",watch('currency'))}
                 <HRInputField
-                  label={`${isGUID ? 'Talent Salary Estimated Budget (Annum)' : 'Client Estimated Budget (Monthly)' }`}
-                  
+                  label={`${
+                    isGUID
+                      ? "Talent Salary Estimated Budget (Annum)"
+                      : "Client Estimated Budget (Monthly)"
+                  }`}
                   register={register}
                   name="adhocBudgetCost"
                   type={InputType.NUMBER}
@@ -3176,17 +3726,37 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                     //   value: 1,
                     //   message: `please don't enter the value less than 1`,
                     // },
-                    min:{
-                      value: isFreshersAllowed ? 1 : ((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : 1) ,
-                      message: `please enter the value ${(watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `atlest 1`}`,
-                    }
+                    min: {
+                      value: isFreshersAllowed
+                        ? 1
+                        : watch("availability")?.value === "Full Time" ||
+                          watch("availability")?.value === "Contract" ||
+                          watch("availability")?.value === "Contract to Hire"
+                        ? watch("currency")?.value === "INR"
+                          ? 100000
+                          : 1000
+                        : 1,
+                      message: `please enter the value ${
+                        watch("availability")?.value === "Full Time" ||
+                        watch("availability")?.value === "Contract" ||
+                        watch("availability")?.value === "Contract to Hire"
+                          ? watch("currency")?.value === "INR"
+                            ? "atlest 6 digits"
+                            : "atlest 4 digits"
+                          : `atlest 1`
+                      }`,
+                    },
                   }}
                   disabled={watch("budget")?.value !== "1"}
                 />
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                 label={`${isGUID ? 'Talent Salary Estimated Minimum Budget (Annum)' : 'Client Estimated Minimum Budget (Monthly)'}`}
+                  label={`${
+                    isGUID
+                      ? "Talent Salary Estimated Minimum Budget (Annum)"
+                      : "Client Estimated Minimum Budget (Monthly)"
+                  }`}
                   // label={`Estimated Minimum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
                   // label={isGUID ?  `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`: `Client Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
@@ -3201,10 +3771,26 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                     //   value: 1,
                     //   message: `please don't enter the value less than 1`,
                     // },
-                    min:{
-                      value: isFreshersAllowed ? 1 : ((watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  100000 : 1000 : 1) ,
-                      message: `please enter the value ${(watch("availability")?.value === "Full Time" || watch("availability")?.value === "Contract" || watch("availability")?.value === "Contract to Hire") ? watch('currency')?.value === 'INR'   ?  'atlest 6 digits' : 'atlest 4 digits' : `atlest 1`}`,
-                    }
+                    min: {
+                      value: isFreshersAllowed
+                        ? 1
+                        : watch("availability")?.value === "Full Time" ||
+                          watch("availability")?.value === "Contract" ||
+                          watch("availability")?.value === "Contract to Hire"
+                        ? watch("currency")?.value === "INR"
+                          ? 100000
+                          : 1000
+                        : 1,
+                      message: `please enter the value ${
+                        watch("availability")?.value === "Full Time" ||
+                        watch("availability")?.value === "Contract" ||
+                        watch("availability")?.value === "Contract to Hire"
+                          ? watch("currency")?.value === "INR"
+                            ? "atlest 6 digits"
+                            : "atlest 4 digits"
+                          : `atlest 1`
+                      }`,
+                    },
                   }}
                   disabled={watch("budget")?.value !== "2"}
                 />
@@ -3212,7 +3798,11 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
 
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={`${isGUID ? 'Talent Salary Estimated Maximum Budget (Annum)' : 'Client Estimated Maximum Budget (Monthly)'}`}
+                  label={`${
+                    isGUID
+                      ? "Talent Salary Estimated Maximum Budget (Annum)"
+                      : "Client Estimated Maximum Budget (Monthly)"
+                  }`}
                   // label={isGUID ?   `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})` : `Client Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
                   name="maximumBudget"
@@ -3226,68 +3816,96 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                     //   value: watch("minimumBudget"),
                     //   message: "Budget should be more than minimum budget.",
                     // },
-                    min:{
-                      value:getValueForMaxBudget(),
+                    min: {
+                      value: getValueForMaxBudget(),
                       message: getMessForMaxBudget(),
-                    }
+                    },
                   }}
                   disabled={watch("budget")?.value !== "2"}
                 />
               </div>
 
-              {userCompanyTypeID === 1 && <>
-                {watch('budget')?.value !== "3" && <>
-              <div className={HRFieldStyle.colMd4}>
-                              <HRInputField
-                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annum)' : '(Monthly)' }` : `Estimated Uplers Fees ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annum)' : '(Monthly)' }`}
-                                register={register}
-                                name="uplersFees"
-                                type={InputType.TEXT}
-                                placeholder="Maximum- Ex: 2300"
-                                disabled={true}
-                              />
-                            </div>
+              {userCompanyTypeID === 1 && (
+                <>
+                  {watch("budget")?.value !== "3" && (
+                    <>
+                      <div className={HRFieldStyle.colMd4}>
+                        <HRInputField
+                          label={
+                            watch("budget")?.value === "2"
+                              ? `Estimated Uplers Fees ( Min - Max) ${
+                                  watch("hiringPricingType")?.id === 3 ||
+                                  watch("hiringPricingType")?.id === 6
+                                    ? "(Annum)"
+                                    : "(Monthly)"
+                                }`
+                              : `Estimated Uplers Fees ${
+                                  watch("hiringPricingType")?.id === 3 ||
+                                  watch("hiringPricingType")?.id === 6
+                                    ? "(Annum)"
+                                    : "(Monthly)"
+                                }`
+                          }
+                          register={register}
+                          name="uplersFees"
+                          type={InputType.TEXT}
+                          placeholder="Maximum- Ex: 2300"
+                          disabled={true}
+                        />
+                      </div>
 
-                            {!isGUID && <div className={HRFieldStyle.colMd4}>
-                              <HRInputField
-                                // label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
-                                register={register}
-                                label={`Estimated Salary Budget(${isGUID ? "Annum" : "Monthly"})`}
-                                name="needToPay"
-                                type={InputType.TEXT}
-                                placeholder="Maximum- Ex: 2300"
-                                disabled={true}
-                              />
-                            </div>}
-                           
-              </>}
-              </>}
-            
-
-
+                      {!isGUID && (
+                        <div className={HRFieldStyle.colMd4}>
+                          <HRInputField
+                            // label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
+                            register={register}
+                            label={`Estimated Salary Budget(${
+                              isGUID ? "Annum" : "Monthly"
+                            })`}
+                            name="needToPay"
+                            type={InputType.TEXT}
+                            placeholder="Maximum- Ex: 2300"
+                            disabled={true}
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
 
               {/* {(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? } */}
-              
-
-
             </div>
-            <div className={HRFieldStyle.row}> 
-            <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
-            <Checkbox checked={isBudgetConfidential} onClick={()=> setIsBudgetConfidentil(prev => !prev)}>
-                Keep my budget confidential
-						</Checkbox>	
-            <Tooltip
-              overlayStyle={{minWidth: '650px'}}
-							placement="right"
-							title={"Please provide actual salary ranges for job matching purposes. This information remains confidential to the talents and helps us connect you with suitable candidates."}>
-								<img src={infoIcon} alt='info' style={{cursor: 'pointer'}} />							
-						</Tooltip>
-            </div>         
+            <div className={HRFieldStyle.row}>
+              <div
+                className={HRFieldStyle.colMd6}
+                style={{ paddingBottom: "20px" }}
+              >
+                <Checkbox
+                  checked={isBudgetConfidential}
+                  onClick={() => setIsBudgetConfidentil((prev) => !prev)}
+                >
+                  Keep my budget confidential
+                </Checkbox>
+                <Tooltip
+                  overlayStyle={{ minWidth: "650px" }}
+                  placement="right"
+                  title={
+                    "Please provide actual salary ranges for job matching purposes. This information remains confidential to the talents and helps us connect you with suitable candidates."
+                  }
+                >
+                  <img
+                    src={infoIcon}
+                    alt="info"
+                    style={{ cursor: "pointer" }}
+                  />
+                </Tooltip>
+              </div>
             </div>
 
             <div className={HRFieldStyle.row}>
               <div className={HRFieldStyle.colMd12}>
-            {/* <HRSelectField
+                {/* <HRSelectField
 									// isControlled={true}
 									// controlledValue={controlledGoodToHave}
 									// setControlledValue={setControlledGoodToHave}
@@ -3305,39 +3923,66 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
 									// required
 									// errorMsg={'Please select Compensation options.'}
 								/> */}
-                <div className={HRFieldStyle.labelForSelect}>Compensation options</div>
-                 <Select
-                    mode="tags"
-                    style={{ width: "100%" }}
-                    value={CompensationValues}
-                    options={compensationOptions}
-                    onChange={(values, _) => setCompensationValues(values)}
-                    placeholder="Select Compensation"
-                    tokenSeparators={[","]}
-                  />
-            
+                <div className={HRFieldStyle.labelForSelect}>
+                  Compensation options
+                </div>
+                <Select
+                  mode="tags"
+                  style={{ width: "100%" }}
+                  value={CompensationValues}
+                  options={compensationOptions}
+                  onChange={(values, _) => setCompensationValues(values)}
+                  placeholder="Select Compensation"
+                  tokenSeparators={[","]}
+                />
+
                 <ul className={HRFieldStyle.selectFieldBox}>
-          {compensationOptions?.map(option => (
-                    !CompensationValues?.some(val => val === option.value) && (
-                      <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
-                        <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
-                      </li>
-                    )
-                  ))}
+                  {compensationOptions?.map(
+                    (option) =>
+                      !CompensationValues?.some(
+                        (val) => val === option.value
+                      ) && (
+                        <li
+                          key={option.value}
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            setCompensationValues([
+                              ...CompensationValues,
+                              option?.value,
+                            ])
+                          }
+                        >
+                          <span>
+                            {option.label}{" "}
+                            <img src={plusSkill} loading="lazy" alt="star" />
+                          </span>
+                        </li>
+                      )
+                  )}
                   {/* {compensationOptions?.map((skill) => (																	
                     <li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
                   ))}	 */}
                 </ul>
               </div>
             </div>
-            
 
             <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledWorkingValue}
-                    setControlledValue={setControlledWorkingValue}
+                    setControlledValue={(val) => {
+                      setControlledWorkingValue(val);
+                      if (val !== WorkingMode.HYBRID) {
+                        unregister("officeVisits");
+                      }
+                      resetField("location");
+                      resetField("officeVisits");
+                      setControlledFrequencyValue("Select");
+                      setIsRelocate(false);
+                      setNearByCitesValues([]);
+                      setNearByCitiesData([]);
+                    }}
                     isControlled={true}
                     mode={"id/value"}
                     searchable={false}
@@ -3352,7 +3997,7 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                     errorMsg={"Please select the working mode."}
                   />
                 </div>
-              </div>              
+              </div>
             </div>
             {getWorkingModelFields()}
             {/* <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
@@ -3432,9 +4077,25 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                 />
               </div>
             </div> */}
-<JobDescriptionComponent  helperProps={{ setUploadFileData,setValidation,setShowGPTModal,setGPTFileDetails,watch,isHaveJD,
-   setIsHaveJD,textCopyPastData,setTextCopyPastData,parseType,setParseType,getTextDetils,watchClientName,filteredMemo,clientDetail}} />
-            
+            <JobDescriptionComponent
+              helperProps={{
+                setUploadFileData,
+                setValidation,
+                setShowGPTModal,
+                setGPTFileDetails,
+                watch,
+                isHaveJD,
+                setIsHaveJD,
+                textCopyPastData,
+                setTextCopyPastData,
+                parseType,
+                setParseType,
+                getTextDetils,
+                watchClientName,
+                filteredMemo,
+                clientDetail,
+              }}
+            />
 
             {/* <div className={HRFieldStyle.row}>
               <div className={HRFieldStyle.colMd12}>
@@ -3446,9 +4107,6 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
               </div>
             </div> */}
             <br />
-           
-
-
 
             {/* <div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd6}>
@@ -3491,26 +4149,26 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                   />
                 </div>
               </div> */}
-            
+
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
                     onChangeHandler={(value) => {
-                      let val= value.target.value
-                      if(val === ''){
-                        setIsExpDisabled(false) 
-                        setIsFresherDisabled(false)
-                        return
+                      let val = value.target.value;
+                      if (val === "") {
+                        setIsExpDisabled(false);
+                        setIsFresherDisabled(false);
+                        return;
                       }
-                      if(val === '0'){
-                        setIsFreshersAllowed(true)
-                        setIsExpDisabled(true) 
-                        setIsFresherDisabled(false)
-                      }else{
-                        setIsFreshersAllowed(false)
-                        setIsExpDisabled(false) 
-                        setIsFresherDisabled(true)
+                      if (val === "0") {
+                        setIsFreshersAllowed(true);
+                        setIsExpDisabled(true);
+                        setIsFresherDisabled(false);
+                      } else {
+                        setIsFreshersAllowed(false);
+                        setIsExpDisabled(false);
+                        setIsFresherDisabled(true);
                       }
                     }}
                     label="Required Experience"
@@ -3519,7 +4177,9 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                       required: "please enter the years.",
                       min: {
                         value: isFreshersAllowed ? 0 : 1,
-                        message: `please don't enter the value less than ${isFreshersAllowed ? 0 : 1}`,
+                        message: `please don't enter the value less than ${
+                          isFreshersAllowed ? 0 : 1
+                        }`,
                       },
                       max: {
                         value: 60,
@@ -3554,33 +4214,50 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                   name="talentsNumber"
                   type={InputType.NUMBER}
                   placeholder="Please enter number of talents needed"
-                  required={disabledFields !== null ? !disabledFields?.talentRequired : true}
-                  disabled={disabledFields !== null ? disabledFields?.talentRequired : false}
+                  required={
+                    disabledFields !== null
+                      ? !disabledFields?.talentRequired
+                      : true
+                  }
+                  disabled={
+                    disabledFields !== null
+                      ? disabledFields?.talentRequired
+                      : false
+                  }
                 />
               </div>
             </div>
 
-            <div className={HRFieldStyle.row}> 
-            <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
-            <Checkbox checked={isFreshersAllowed} onClick={()=> {setIsFreshersAllowed(prev => {
-              if(prev === false){
-                setValue('years',0)
-                setIsExpDisabled(true)
-              }else{
-                setIsExpDisabled(false)
-              }
-              return !prev})}} disabled={isFresherDisabled}>
-             Freshers allowed
-						</Checkbox>	
-            {/* <Tooltip
+            <div className={HRFieldStyle.row}>
+              <div
+                className={HRFieldStyle.colMd6}
+                style={{ paddingBottom: "20px" }}
+              >
+                <Checkbox
+                  checked={isFreshersAllowed}
+                  onClick={() => {
+                    setIsFreshersAllowed((prev) => {
+                      if (prev === false) {
+                        setValue("years", 0);
+                        setIsExpDisabled(true);
+                      } else {
+                        setIsExpDisabled(false);
+                      }
+                      return !prev;
+                    });
+                  }}
+                  disabled={isFresherDisabled}
+                >
+                  Freshers allowed
+                </Checkbox>
+                {/* <Tooltip
               overlayStyle={{minWidth: '650px'}}
 							placement="right"
 							title={"Please provide actual salary ranges for job matching purposes. This information remains confidential to the talents and helps us connect you with suitable candidates."}>
 								<img src={infoIcon} alt='info' />							
 						</Tooltip> */}
-            </div>         
+              </div>
             </div>
-
 
             {/* {watch("availability")?.value === "Part Time" && (
               <div className={HRFieldStyle.row}>
@@ -3705,26 +4382,21 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledFromTimeValue}
-                    setControlledValue={val=> {setControlledFromTimeValue(val);
-                      let index = getStartEndTimes.findIndex(item=> item.value === val)
-                      if(index >= getStartEndTimes.length -18){         
-                          let newInd =   index - (getStartEndTimes.length -18)
-                          let endtime = getStartEndTimes[newInd]
-                          setControlledEndTimeValue(
-                            endtime.value
-                          );
-                          setValue(
-                            "endTime",{id: "", value: endtime.value}  
-                          );
-                      }else{
-                          let endtime = getStartEndTimes[index + 18]
-                          setControlledEndTimeValue(
-                            endtime.value
-                          );
-                          setValue(
-                            "endTime",{id: "", value: endtime.value}  
-                          );
-                      };
+                    setControlledValue={(val) => {
+                      setControlledFromTimeValue(val);
+                      let index = getStartEndTimes.findIndex(
+                        (item) => item.value === val
+                      );
+                      if (index >= getStartEndTimes.length - 18) {
+                        let newInd = index - (getStartEndTimes.length - 18);
+                        let endtime = getStartEndTimes[newInd];
+                        setControlledEndTimeValue(endtime.value);
+                        setValue("endTime", { id: "", value: endtime.value });
+                      } else {
+                        let endtime = getStartEndTimes[index + 18];
+                        setControlledEndTimeValue(endtime.value);
+                        setValue("endTime", { id: "", value: endtime.value });
+                      }
                     }}
                     isControlled={true}
                     mode={"id/value"}
@@ -3748,7 +4420,13 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                     required={true}
                     // errorMsg={"Please select from time."}
                     // errorMsg={errors["fromTime"]?.message ?  errors["fromTime"].message : "Please select from time."}
-                    errorMsg={errors["fromTime"] ? errors["fromTime"].message.length > 0 ? errors["fromTime"].message : "Please select from time." : "Please select from time."}
+                    errorMsg={
+                      errors["fromTime"]
+                        ? errors["fromTime"].message.length > 0
+                          ? errors["fromTime"].message
+                          : "Please select from time."
+                        : "Please select from time."
+                    }
                   />
                 </div>
               </div>
@@ -3813,43 +4491,47 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
                 />
               </div>}
               </>} */}
-              
-             
             </div>
 
-            {userCompanyTypeID === 1 &&  <div className={HRFieldStyle.row}>
-              {(removeFields !== null && removeFields?.hrFormLink === true) ? null :  <div className={HRFieldStyle.colMd6}>
-                <HRInputField
-                  register={register}
-                  errors={errors}
-                  validationSchema={{
-                  	required: 'please enter the HR form link.',
-                  }}
-                  label="HR Form Link"
-                  name="bqFormLink"
-                  type={InputType.TEXT}
-                  placeholder="Enter the link for HR form"
-                  required
-                />
-              </div> }
-             
-              {(removeFields !== null && removeFields?.discoveryCallLink === true) ? null :    <div className={HRFieldStyle.colMd6}>
-                <HRInputField
-                  register={register}
-                  errors={errors}
-                  validationSchema={{
-                  	required: 'please enter the discovery call link.',
-                  }}
-                  label="Discovery Call Link"
-                  name="discoveryCallLink"
-                  type={InputType.TEXT}
-                  placeholder="Enter the link for Discovery call"
-                  required
-                />
-              </div>}
-           
-            </div>}
-           
+            {userCompanyTypeID === 1 && (
+              <div className={HRFieldStyle.row}>
+                {removeFields !== null &&
+                removeFields?.hrFormLink === true ? null : (
+                  <div className={HRFieldStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      errors={errors}
+                      validationSchema={{
+                        required: "please enter the HR form link.",
+                      }}
+                      label="HR Form Link"
+                      name="bqFormLink"
+                      type={InputType.TEXT}
+                      placeholder="Enter the link for HR form"
+                      required
+                    />
+                  </div>
+                )}
+
+                {removeFields !== null &&
+                removeFields?.discoveryCallLink === true ? null : (
+                  <div className={HRFieldStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      errors={errors}
+                      validationSchema={{
+                        required: "please enter the discovery call link.",
+                      }}
+                      label="Discovery Call Link"
+                      name="discoveryCallLink"
+                      type={InputType.TEXT}
+                      placeholder="Enter the link for Discovery call"
+                      required
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </form>
         </div>
         <Divider />
@@ -3857,18 +4539,17 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
         <div className={HRFieldStyle.partOne}>
           <div className={HRFieldStyle.hrFieldLeftPane}>
             <h3>Enhance Talent Matchmaking</h3>
-            <p>This information will not be visible to
-                the talents or on job board, but will be used
-                by the system/internal team to find more
-                accurate match for this HR/Job.</p>
-           
-          
+            <p>
+              This information will not be visible to the talents or on job
+              board, but will be used by the system/internal team to find more
+              accurate match for this HR/Job.
+            </p>
           </div>
 
           <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
-          <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd12}>
-            {/* <HRSelectField
+            <div className={HRFieldStyle.row}>
+              <div className={HRFieldStyle.colMd12}>
+                {/* <HRSelectField
 									// isControlled={true}
 									// controlledValue={controlledGoodToHave}
 									// setControlledValue={setControlledGoodToHave}
@@ -3886,74 +4567,114 @@ if((watch("availability")?.value === "Full Time" || watch("availability")?.value
 									// required
 									// errorMsg={'Please select Compensation options.'}
 								/> */}
-                 <div className={HRFieldStyle.labelForSelect}>Specify the industry from which the client needs talents</div>
-                 <Select
-                    mode="tags"
-                    style={{ width: "100%" }}
-                    value={specificIndustry}
-                      onChange={(values, _) => setSpecificIndustry(values)}
-                    options={industryOptions}
-                    placeholder="Select Industry"
-                    tokenSeparators={[","]}
-                  />
-                  <ul className={HRFieldStyle.selectFieldBox}>
-            {industryOptions?.map(option => (
-                      !specificIndustry?.some(val => val === option.value) && (
-                        <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setSpecificIndustry([...specificIndustry, option?.value])}>
-                          <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
+                <div className={HRFieldStyle.labelForSelect}>
+                  Specify the industry from which the client needs talents
+                </div>
+                <Select
+                  mode="tags"
+                  style={{ width: "100%" }}
+                  value={specificIndustry}
+                  onChange={(values, _) => setSpecificIndustry(values)}
+                  options={industryOptions}
+                  placeholder="Select Industry"
+                  tokenSeparators={[","]}
+                />
+                <ul className={HRFieldStyle.selectFieldBox}>
+                  {industryOptions?.map(
+                    (option) =>
+                      !specificIndustry?.some(
+                        (val) => val === option.value
+                      ) && (
+                        <li
+                          key={option.value}
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            setSpecificIndustry([
+                              ...specificIndustry,
+                              option?.value,
+                            ])
+                          }
+                        >
+                          <span>
+                            {option.label}{" "}
+                            <img src={plusSkill} loading="lazy" alt="star" />
+                          </span>
                         </li>
                       )
-                    ))}
-										{/* {compensationOptions?.map((skill) => (																	
+                  )}
+                  {/* {compensationOptions?.map((skill) => (																	
 											<li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
 										))}	 */}
-									</ul>
-            </div>
-            
-            
+                </ul>
+              </div>
 
-          <div className={HRFieldStyle.colMd12}>
-            <div className={HRFieldStyle.formGroup}>
-              <div style={{display:'flex',flexDirection:'column'}}> 
-								<label>Does the client require a talent with people management experience?</label>
-                <Radio.Group              
-                  // defaultValue={'client'}
-                  // className={allengagementReplceTalentStyles.radioGroup}
-                  onChange={e=> {setHasPeopleManagementExp(e.target.value)}}
-                  value={peopleManagemantexp}
-                  >
-                  <Radio value={1}>Yes</Radio>
-                  <Radio value={0}>No</Radio>
-                </Radio.Group>
-							</div>
-            </div>
-</div>
+              <div className={HRFieldStyle.colMd12}>
+                <div className={HRFieldStyle.formGroup}>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <label>
+                      Does the client require a talent with people management
+                      experience?
+                    </label>
+                    <Radio.Group
+                      // defaultValue={'client'}
+                      // className={allengagementReplceTalentStyles.radioGroup}
+                      onChange={(e) => {
+                        setHasPeopleManagementExp(e.target.value);
+                      }}
+                      value={peopleManagemantexp}
+                    >
+                      <Radio value={1}>Yes</Radio>
+                      <Radio value={0}>No</Radio>
+                    </Radio.Group>
+                  </div>
+                </div>
+              </div>
 
-<div className={HRFieldStyle.colMd12}>
-                  <div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.customPlaceHolderHR} customPlaceHolder`}>
+              <div className={HRFieldStyle.colMd12}>
+                <div
+                  className={`${HRFieldStyle.formGroup} ${HRFieldStyle.customPlaceHolderHR} customPlaceHolder`}
+                >
                   <label>
-                  Highlight any key parameters or things to consider for finding the best match talents
-								{/* <span className={HRFieldStyle.reqField}>*</span> */}
-							</label> 
-              {isEmptyOrWhitespace(watch('parametersHighlight')? watch('parametersHighlight') : '') && 
-                            <div className="placeHolderText">
-                                <p>Ex:</p>
-                                <ul>
-                                    <li>Seeking candidates with startup experience, preferably from a fast-paced and agile environment.</li>
-                                    <li>Targeting candidates with a background from [Specific Company Name], where they developed [Desirable Skills or Experience]</li>
-                                    <li>Looking for candidates who have hands-on experience working with [Specific Tech Environment, e.g. cloud-native, DevOps, etc.], preferably in a similar industry/sector.</li>
-                                </ul>
-                            </div>}        
-							<ReactQuill
-								register={register}
-								setValue={setValue}
-								theme="snow"
-								className="heightSize"
-								value={watch('parametersHighlight')}
-								name="parametersHighlight"
-								onChange={(val) => setValue("parametersHighlight",val)}
-							/>
-                    {/* <HRInputField
+                    Highlight any key parameters or things to consider for
+                    finding the best match talents
+                    {/* <span className={HRFieldStyle.reqField}>*</span> */}
+                  </label>
+                  {isEmptyOrWhitespace(
+                    watch("parametersHighlight")
+                      ? watch("parametersHighlight")
+                      : ""
+                  ) && (
+                    <div className="placeHolderText">
+                      <p>Ex:</p>
+                      <ul>
+                        <li>
+                          Seeking candidates with startup experience, preferably
+                          from a fast-paced and agile environment.
+                        </li>
+                        <li>
+                          Targeting candidates with a background from [Specific
+                          Company Name], where they developed [Desirable Skills
+                          or Experience]
+                        </li>
+                        <li>
+                          Looking for candidates who have hands-on experience
+                          working with [Specific Tech Environment, e.g.
+                          cloud-native, DevOps, etc.], preferably in a similar
+                          industry/sector.
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                  <ReactQuill
+                    register={register}
+                    setValue={setValue}
+                    theme="snow"
+                    className="heightSize"
+                    value={watch("parametersHighlight")}
+                    name="parametersHighlight"
+                    onChange={(val) => setValue("parametersHighlight", val)}
+                  />
+                  {/* <HRInputField
                       register={register}
                       errors={errors}
                       isTextArea={true}
@@ -3966,10 +4687,9 @@ who have worked in scaled start ups."
                       // required={watch("availability")?.value === "Part Time"}
                     
                     /> */}
-                  </div>
                 </div>
-
-                </div>
+              </div>
+            </div>
           </form>
         </div>
         {/* <AddInterviewer
@@ -3979,53 +4699,253 @@ who have worked in scaled start ups."
 				register={register}
 				fields={fields}
 			/> */}
-{userCompanyTypeID === 2 && <>
-  <Divider />
+        {userCompanyTypeID === 2 && (
+          <>
+            <Divider />
 
-<div className={HRFieldStyle.partOne}>
-          <div className={HRFieldStyle.hrFieldLeftPane}>
-            <h3>Share Details on the Job Post</h3>
-          
-          </div>
-
-          <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
-          <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd12}>
-                  <HRSelectField
-                    mode='multiple'
-                    setValue={setValue}
-                    register={register}
-                    label={'Assign users to this job post'}
-                    placeholder="Select Users"
-                    // onChange={setSelectGoodToHaveItems}
-                    options={activeUserData}
-                    // setOptions={setSkillMemo}
-                    name="jobPostUsers"
-                    // isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
-                    // required
-                    // errorMsg={'Please select Compensation options.'}
-
-                  />
+            <div className={HRFieldStyle.partOne}>
+              <div className={HRFieldStyle.hrFieldLeftPane}>
+                <h3>Hiring Team</h3>
               </div>
 
-              <div className={HRFieldStyle.colMd12}>
-              <Checkbox checked={showHRPOCDetailsToTalents}
-                        onClick={(e) => setshowHRPOCDetailsToTalents(e.target.checked)} >
-              <span >Show user information to talent</span> (Candidates will be able to view the contact information (email and phone number) of the selected users)
-						</Checkbox>
-              </div>
-              </div>
-            </form>
-          </div>
-</>}
+              <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
+                <div className={HRFieldStyle.row}>
+                  <div className={HRFieldStyle.colMd12}>
+                    <HRSelectField
+                      isControlled={true}
+                      controlledValue={controlledPocValue}
+                      setControlledValue={(val) => {
+                        setControlledPocValue((prev) => {
+                          if (prev.length > val.length) {
+                            // remove item
+                            const notInA2 = prev.filter(
+                              (item1) =>
+                                !val.some(
+                                  (item2) => item2.value === item1.value
+                                )
+                            );
 
+                            if (
+                              notInA2[0].value ===
+                              getContactAndSaleID?.contactID
+                            ) {
+                              message.error("Default POC can not be removed");
+                              return prev;
+                            }
+                            setJobPostUsersDetails((prevItem) =>
+                              prevItem.filter(
+                                (it) => it.hrwiseContactId !== notInA2[0].value
+                              )
+                            );
+                          } else {
+                            // added item
+                            const notInA2 = val.filter(
+                              (item1) =>
+                                !prev.some(
+                                  (item2) => item2.value === item1.value
+                                )
+                            );
+                            const iToAdd = activeUserDataList.find(
+                              (user) => user.contactId === notInA2[0]?.value
+                            );
+                            const poctoadd = {
+                              hiringRequestId:
+                                getHRdetails?.addHiringRequest?.id,
+                              hrwiseContactId: iToAdd?.contactId,
+                              guid: "",
+                              fullName: iToAdd.contactName,
+                              emailID: iToAdd.emailId,
+                              contactNo: iToAdd.contactNumber,
+                              showEmailToTalent: false,
+                              showContactNumberToTalent: false,
+                              isDefaultUser: false,
+                              iInfoMsg: "",
+                            };
+                            setJobPostUsersDetails((prevItem) => [
+                              ...prevItem,
+                              poctoadd,
+                            ]);
+                          }
+                          return val;
+                        });
+                      }}
+                      mode="multiple"
+                      setValue={setValue}
+                      register={register}
+                      label={"Assign users to this job post"}
+                      placeholder="Select Users"
+                      // onChange={setSelectGoodToHaveItems}
+                      options={activeUserData}
+                      // setOptions={setSkillMemo}
+                      name="jobPostUsers"
+                      // isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+                      // required
+                      // errorMsg={'Please select Compensation options.'}
+                    />
+                  </div>
 
-          <Divider />
+                  {/* <div className={HRFieldStyle.colMd12}>
+                    <Checkbox
+                      checked={showHRPOCDetailsToTalents}
+                      onClick={(e) =>
+                        setshowHRPOCDetailsToTalents(e.target.checked)
+                      }
+                    >
+                      <span>Show user information to talent</span> (Candidates
+                      will be able to view the contact information (email and
+                      phone number) of the selected users)
+                    </Checkbox>
+                  </div> */}
+                </div>
+
+                <div
+                  className={`${HRFieldStyle.row}  preShareDetailsBox hireTeamInfo`}
+                  style={{marginTop:'10px'}}
+                >
+                  {jobPostUsersDetails.map((Val, index) => {
+                    return (
+                      <div
+                        className="preShareDetailsItem"
+                        key={index}
+                        style={{ display: "flex", position: "relative" }}
+                      >
+                        {Val?.hrwiseContactId !==
+                          getContactAndSaleID?.contactID && (
+                          <div className="preShareDetailsAction">
+                            <button
+                              className="preShareDetailsBtn"
+                              title="Delete"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setControlledPocValue((prev) =>
+                                  prev.filter(
+                                    (it) => it.id !== Val?.hrwiseContactId
+                                  )
+                                );
+                                setJobPostUsersDetails((prevItem) =>
+                                  prevItem.filter(
+                                    (it) =>
+                                      it.hrwiseContactId !==
+                                      Val?.hrwiseContactId
+                                  )
+                                );
+                                setValue(
+                                  "jobPostUsers",
+                                  watch("jobPostUsers").filter(
+                                    (it) => it.id !== Val?.hrwiseContactId
+                                  )
+                                );
+                              }}
+                            >
+                              <img src={DeleteCircleIcon} alt="delete-icon" />
+                            </button>
+                          </div>
+                        )}
+                        <div className="thumbImages">
+                          <Avatar
+                            style={{
+                              width: "75px",
+                              height: "75px",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                            size="large"
+                          >
+                            {Val?.fullName?.substring(0, 2).toUpperCase()}
+                          </Avatar>
+                        </div>
+                        <div className="preShareDetailsInfo">
+                          <h4>
+                            {Val?.fullName}{" "}
+                            <span className="preShareToolTip">
+                              {Val?.hrwiseContactId ===
+                                getContactAndSaleID?.contactID && (
+                                <Tooltip title="You cannot delete this user because this is the default user of this job post. You can choose to show or hide the information from the candidates using the checkbox below.">
+                                  <img src={infoSmallIcon} alt="info" />
+                                </Tooltip>
+                              )}
+                            </span>
+                          </h4>
+                          <ul>
+                            <li>
+                              <div className="form-group justifyCenter">
+                                <i className="fieldIcon">
+                                  <img src={MailIcon} alt="email-icon" />
+                                </i>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Enter email address"
+                                  value={Val?.emailID}
+                                  disabled
+                                />
+                                <Checkbox
+                                  name="userShow"
+                                  checked={Val?.showEmailToTalent}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      index,
+                                      "showEmailToTalent",
+                                      e.target.checked
+                                    )
+                                  }
+                                >
+                                  Show email to candidates
+                                </Checkbox>
+                              </div>
+                            </li>
+
+                            <li>
+                              <div className="form-group justifyCenter">
+                                <i className="fieldIcon">
+                                  <img src={PhoneIcon} alt="phone-icon" />
+                                </i>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Enter mobile number"
+                                  value={Val?.contactNo}
+                                  maxLength={10}
+                                  onChange={(e) =>
+                                    handleContactNoChange(index, e.target.value)
+                                  }
+                                />
+                                <Checkbox
+                                  name="userShow"
+                                  checked={Val?.showContactNumberToTalent}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      index,
+                                      "showContactNumberToTalent",
+                                      e.target.checked
+                                    )
+                                  }
+                                >
+                                  Show mobile number to candidates
+                                </Checkbox>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </form>
+            </div>
+          </>
+        )}
+
+        <Divider />
 
         <div className={HRFieldStyle.formPanelAction}>
           <button
             style={{
-              cursor:isCreateHRDisable ? 'not-allowed' : type === SubmitType.SUBMIT ? "no-drop" : "pointer",
+              cursor: isCreateHRDisable
+                ? "not-allowed"
+                : type === SubmitType.SUBMIT
+                ? "no-drop"
+                : "pointer",
             }}
             disabled={isCreateHRDisable ? true : type === SubmitType.SUBMIT}
             className={HRFieldStyle.btn}
@@ -4043,175 +4963,169 @@ who have worked in scaled start ups."
           </button>
         </div>
 
-		{showGPTModal && (
-            <Modal
-              footer={false}
-              title="GPT Response"
-              open={showGPTModal}
-              onCancel={() => {
-                setShowGPTModal(false);
-                setGPTFileDetails({});
-                setGPTDetails({});
+        {showGPTModal && (
+          <Modal
+            footer={false}
+            title="GPT Response"
+            open={showGPTModal}
+            onCancel={() => {
+              setShowGPTModal(false);
+              setGPTFileDetails({});
+              setGPTDetails({});
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                // justifyContent: "center",
+                // alignItems: "center",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  // justifyContent: "center",
-                  // alignItems: "center",
-                }}
-              >
-                <div>
-                  {gptDetails?.addHiringRequest?.noofTalents && (
-                    <p>
-                      NO of talents :{" "}
-                      <b>{gptDetails?.addHiringRequest?.noofTalents}</b>
-                    </p>
-                  )}
-                  {gptDetails?.addHiringRequest?.requestForTalent && (
-                    <p>
-                      Title/Role :{" "}
-                      <b>{gptDetails?.addHiringRequest?.requestForTalent}</b>
-                    </p>
-                  )}
-                  {gptDetails?.addHiringRequest?.availability && (
-                    <p>
-                      Availability :{" "}
-                      <b>{gptDetails?.addHiringRequest?.availability}</b>
-                    </p>
-                  )}
-                  {gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 && (
-                    <p>
-                      Budget From :{" "}
-                      <b>
-                        {gptDetails?.salesHiringRequest_Details?.budgetFrom}
-                      </b>
-                    </p>
-                  )}
-                  {gptDetails?.salesHiringRequest_Details?.budgetTo > 0 && (
-                    <p>
-                      Budget To:{" "}
-                      <b>{gptDetails?.salesHiringRequest_Details?.budgetTo}</b>
-                    </p>
-                  )}
-                  {gptDetails?.salesHiringRequest_Details?.timeZoneFromTime && (
-                    <p>
-                      From Time :{" "}
-                      <b>
-                        {
-                          gptDetails?.salesHiringRequest_Details
-                            ?.timeZoneFromTime
-                        }
-                      </b>
-                    </p>
-                  )}
-                  {gptDetails?.salesHiringRequest_Details?.timeZoneEndTime && (
-                    <p>
-                      To Time :{" "}
-                      <b>
-                        {
-                          gptDetails?.salesHiringRequest_Details
-                            ?.timeZoneEndTime
-                        }
-                      </b>
-                    </p>
-                  )}
-                  {gptDetails?.salesHiringRequest_Details?.currency && (
-                    <p>
-                      Currency:{" "}
-                      <b>{gptDetails?.salesHiringRequest_Details?.currency}</b>
-                    </p>
-                  )}
-                  {gptDetails?.salesHiringRequest_Details?.yearOfExp > 0 && (
-                    <p>
-                      Years of Experience :{" "}
-                      <b>{gptDetails?.salesHiringRequest_Details?.yearOfExp}</b>
-                    </p>
-                  )}
-                  {gptDetails?.salesHiringRequest_Details?.durationType && (
-                    <p>
-                      Duration Type :{" "}
-                      <b>
-                        {gptDetails?.salesHiringRequest_Details?.durationType}
-                      </b>
-                    </p>
-                  )}
-                  {gptDetails?.modeOfWorkingId && (
-                    <p>
-                      Mode of Working :{" "}
-                      <b>
-                        {
-                          workingMode.filter(
-                            (item) => item?.id == gptDetails?.modeOfWorkingId
-                          )[0]?.value
-                        }
-                      </b>
-                    </p>
-                  )}
+              <div>
+                {gptDetails?.addHiringRequest?.noofTalents && (
+                  <p>
+                    NO of talents :{" "}
+                    <b>{gptDetails?.addHiringRequest?.noofTalents}</b>
+                  </p>
+                )}
+                {gptDetails?.addHiringRequest?.requestForTalent && (
+                  <p>
+                    Title/Role :{" "}
+                    <b>{gptDetails?.addHiringRequest?.requestForTalent}</b>
+                  </p>
+                )}
+                {gptDetails?.addHiringRequest?.availability && (
+                  <p>
+                    Availability :{" "}
+                    <b>{gptDetails?.addHiringRequest?.availability}</b>
+                  </p>
+                )}
+                {gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 && (
+                  <p>
+                    Budget From :{" "}
+                    <b>{gptDetails?.salesHiringRequest_Details?.budgetFrom}</b>
+                  </p>
+                )}
+                {gptDetails?.salesHiringRequest_Details?.budgetTo > 0 && (
+                  <p>
+                    Budget To:{" "}
+                    <b>{gptDetails?.salesHiringRequest_Details?.budgetTo}</b>
+                  </p>
+                )}
+                {gptDetails?.salesHiringRequest_Details?.timeZoneFromTime && (
+                  <p>
+                    From Time :{" "}
+                    <b>
+                      {gptDetails?.salesHiringRequest_Details?.timeZoneFromTime}
+                    </b>
+                  </p>
+                )}
+                {gptDetails?.salesHiringRequest_Details?.timeZoneEndTime && (
+                  <p>
+                    To Time :{" "}
+                    <b>
+                      {gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}
+                    </b>
+                  </p>
+                )}
+                {gptDetails?.salesHiringRequest_Details?.currency && (
+                  <p>
+                    Currency:{" "}
+                    <b>{gptDetails?.salesHiringRequest_Details?.currency}</b>
+                  </p>
+                )}
+                {gptDetails?.salesHiringRequest_Details?.yearOfExp > 0 && (
+                  <p>
+                    Years of Experience :{" "}
+                    <b>{gptDetails?.salesHiringRequest_Details?.yearOfExp}</b>
+                  </p>
+                )}
+                {gptDetails?.salesHiringRequest_Details?.durationType && (
+                  <p>
+                    Duration Type :{" "}
+                    <b>
+                      {gptDetails?.salesHiringRequest_Details?.durationType}
+                    </b>
+                  </p>
+                )}
+                {gptDetails?.modeOfWorkingId && (
+                  <p>
+                    Mode of Working :{" "}
+                    <b>
+                      {
+                        workingMode.filter(
+                          (item) => item?.id == gptDetails?.modeOfWorkingId
+                        )[0]?.value
+                      }
+                    </b>
+                  </p>
+                )}
 
-                  {gptDetails?.chatGptSkills && (
-                    <>
-                      <h3 style={{ marginTop: "10px" }}>Must Have Skills :</h3>
-                      <div className={HRFieldStyle.skillsList}>
-                        {gptFileDetails.Skills?.length === 0 ? (
-                          <p>NA</p>
-                        ) : (
-                          gptDetails?.chatGptSkills?.split(",").map((item) => {
-                            return <span>{item}</span>;
-                          })
-                        )}
-                      </div>
-                    </>
-                  )}
-
-                  {gptDetails?.chatGptAllSkills && (
-                    <>
-                      <h3 style={{ marginTop: "10px" }}>
-                        Good To Have Skills :
-                      </h3>
-                      <div className={HRFieldStyle.skillsList}>
-                        {gptDetails?.chatGptAllSkills?.length === 0 ? (
-                          <p>NA</p>
-                        ) : (
-                          gptDetails?.chatGptAllSkills
-                            ?.split(",")
-                            .map((item) => {
-                              return <span>{item}</span>;
-                            })
-                        )}
-                      </div>
-                    </>
-                  )}
-                  {gptDetails?.salesHiringRequest_Details?.jobDescription && (
-                    <>
-                      <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
-                      {testJSON(
-                        gptDetails?.salesHiringRequest_Details?.jobDescription
-                      ) ? (
-                        <div className={HRFieldStyle.viewHrJDDetailsBox}>
-                          <ul>
-                            {JSON.parse(
-                              gptDetails?.salesHiringRequest_Details
-                                ?.jobDescription
-                            ).map((text) => (
-                              <li dangerouslySetInnerHTML={{ __html: sanitizedDescription(text) }} />
-                            ))}
-                          </ul>
-                        </div>
+                {gptDetails?.chatGptSkills && (
+                  <>
+                    <h3 style={{ marginTop: "10px" }}>Must Have Skills :</h3>
+                    <div className={HRFieldStyle.skillsList}>
+                      {gptFileDetails.Skills?.length === 0 ? (
+                        <p>NA</p>
                       ) : (
-                        <div
-                          className={HRFieldStyle.viewHrJDDetailsBox}
-                          dangerouslySetInnerHTML={{
-                            __html:
-                            sanitizedDescription(gptDetails?.salesHiringRequest_Details?.jobDescription),
-                          }}
-                        />
+                        gptDetails?.chatGptSkills?.split(",").map((item) => {
+                          return <span>{item}</span>;
+                        })
                       )}
-                    </>
-                  )}
+                    </div>
+                  </>
+                )}
 
-                  {/* {gptDetails?.salesHiringRequest_Details?.requirement && (
+                {gptDetails?.chatGptAllSkills && (
+                  <>
+                    <h3 style={{ marginTop: "10px" }}>Good To Have Skills :</h3>
+                    <div className={HRFieldStyle.skillsList}>
+                      {gptDetails?.chatGptAllSkills?.length === 0 ? (
+                        <p>NA</p>
+                      ) : (
+                        gptDetails?.chatGptAllSkills?.split(",").map((item) => {
+                          return <span>{item}</span>;
+                        })
+                      )}
+                    </div>
+                  </>
+                )}
+                {gptDetails?.salesHiringRequest_Details?.jobDescription && (
+                  <>
+                    <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
+                    {testJSON(
+                      gptDetails?.salesHiringRequest_Details?.jobDescription
+                    ) ? (
+                      <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                        <ul>
+                          {JSON.parse(
+                            gptDetails?.salesHiringRequest_Details
+                              ?.jobDescription
+                          ).map((text) => (
+                            <li
+                              dangerouslySetInnerHTML={{
+                                __html: sanitizedDescription(text),
+                              }}
+                            />
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <div
+                        className={HRFieldStyle.viewHrJDDetailsBox}
+                        dangerouslySetInnerHTML={{
+                          __html: sanitizedDescription(
+                            gptDetails?.salesHiringRequest_Details
+                              ?.jobDescription
+                          ),
+                        }}
+                      />
+                    )}
+                  </>
+                )}
+
+                {/* {gptDetails?.salesHiringRequest_Details?.requirement && (
                     <>
                       <h3 style={{ marginTop: "10px" }}>Requirements :</h3>
                       {testJSON(
@@ -4273,97 +5187,102 @@ who have worked in scaled start ups."
                     </>
                   )} */}
 
-                  {/*  For JD File  */}
-                  {gptFileDetails.JDDumpID && (
-                    <div>
-                      <h3>File Name : {gptFileDetails?.FileName}</h3>
-                     {gptFileDetails?.Title && <h3>Role Title : {gptFileDetails?.Title}</h3>} 
+                {/*  For JD File  */}
+                {gptFileDetails.JDDumpID && (
+                  <div>
+                    <h3>File Name : {gptFileDetails?.FileName}</h3>
+                    {gptFileDetails?.Title && (
+                      <h3>Role Title : {gptFileDetails?.Title}</h3>
+                    )}
 
-                      {gptFileDetails?.Skills.length > 0 && (
-                        <>
-                          <h3 style={{ marginTop: "10px" }}>Skills :</h3>
-                          <div className={HRFieldStyle.skillsList}>
-                            {gptFileDetails.Skills?.length === 0 ? (
-                              <p>NA</p>
-                            ) : (
-                              gptFileDetails.Skills?.map((item) => {
-                                return <span>{item?.value}</span>;
-                              })
-                            )}
-                          </div>
-                        </>
-                      )}
+                    {gptFileDetails?.Skills.length > 0 && (
+                      <>
+                        <h3 style={{ marginTop: "10px" }}>Skills :</h3>
+                        <div className={HRFieldStyle.skillsList}>
+                          {gptFileDetails.Skills?.length === 0 ? (
+                            <p>NA</p>
+                          ) : (
+                            gptFileDetails.Skills?.map((item) => {
+                              return <span>{item?.value}</span>;
+                            })
+                          )}
+                        </div>
+                      </>
+                    )}
 
-                      {/* {gptFileDetails?.Requirements && (
+                    {/* {gptFileDetails?.Requirements && (
                         <>
                           <h3 style={{ marginTop: "10px" }}>Requirements :</h3>
                           <div className={HRFieldStyle.viewHrJDDetailsBox}> */}
-                            {/* <ul>
+                    {/* <ul>
                     {gptFileDetails?.Requirements?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
-                            {/* {gptFileDetails?.Requirements}
+                    {/* {gptFileDetails?.Requirements}
                           </div>
                         </>
                       )} */}
 
-                      {/* {gptFileDetails?.Responsibility && (
+                    {/* {gptFileDetails?.Responsibility && (
                         <>
                           <h3 style={{ marginTop: "10px" }}>
                             Responsibility :
                           </h3>
                           <div className={HRFieldStyle.viewHrJDDetailsBox}> */}
-                            {/* <ul>
+                    {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
-                            {/* {gptFileDetails?.Responsibility}
+                    {/* {gptFileDetails?.Responsibility}
                           </div>
                         </>
                       )} */}
 
-                      {gptFileDetails?.JobDescription && (
-                        <>
-                          <h3 style={{ marginTop: "10px" }}>
-                          Job Description :
-                          </h3>
-                          <div className={`${HRFieldStyle.viewHrJDDetailsBox} jobDescritionCSS`} dangerouslySetInnerHTML={{__html: gptFileDetails?.JobDescription}}>
-                            {/* <ul>
+                    {gptFileDetails?.JobDescription && (
+                      <>
+                        <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
+                        <div
+                          className={`${HRFieldStyle.viewHrJDDetailsBox} jobDescritionCSS`}
+                          dangerouslySetInnerHTML={{
+                            __html: gptFileDetails?.JobDescription,
+                          }}
+                        >
+                          {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
-                            {/* {gptFileDetails?.JobDescription} */}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
+                          {/* {gptFileDetails?.JobDescription} */}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
 
-                <h3 style={{ marginTop: "10px" }}>
-                  Are you sure you want to proceed with this?
-                </h3>
-              </div>
-              <div className={HRFieldStyle.formPanelAction}>
-                <button
-                  type="submit"
-                  onClick={() => {
-                    continueWithGPTres();
-                  }}
-                  className={HRFieldStyle.btnPrimary}
-                >
-                  OK
-                </button>
-                <button
-                  onClick={() => {
-                    setShowGPTModal(false);
-                    setGPTFileDetails({});
-                    setGPTDetails({});
-                  }}
-                  className={HRFieldStyle.btn}
-                >
-                  Cancel
-                </button>
-              </div>
-            </Modal>
-          )}
+              <h3 style={{ marginTop: "10px" }}>
+                Are you sure you want to proceed with this?
+              </h3>
+            </div>
+            <div className={HRFieldStyle.formPanelAction}>
+              <button
+                type="submit"
+                onClick={() => {
+                  continueWithGPTres();
+                }}
+                className={HRFieldStyle.btnPrimary}
+              >
+                OK
+              </button>
+              <button
+                onClick={() => {
+                  setShowGPTModal(false);
+                  setGPTFileDetails({});
+                  setGPTDetails({});
+                }}
+                className={HRFieldStyle.btn}
+              >
+                Cancel
+              </button>
+            </div>
+          </Modal>
+        )}
       </div>
     </>
   );
@@ -4376,9 +5295,189 @@ who have worked in scaled start ups."
     ) {
       return null;
     } else {
-      return (<>
-        <div className={HRFieldStyle.row}>
-                 <div className={HRFieldStyle.colMd6}>
+      return (
+        <>
+          <div className={HRFieldStyle.row}>
+            <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.formGroup}>
+                <label>
+                  Location <span className={HRFieldStyle.reqField}>*</span>
+                </label>
+                <Controller
+                  render={({ ...props }) => (
+                    <AutoComplete
+                      options={locationList ?? []}
+                      onSelect={async (locName, _obj) => {
+                        // getClientNameValue(clientName,_obj)
+                        let citiesVal = await getCities(_obj.id);
+                        if (watch("workingMode").value === WorkingMode.HYBRID) {
+                          let firstCity = citiesVal[0];
+                          setNearByCitesValues([firstCity.label]);
+                          setNearByCitiesData(citiesVal);
+                        } else {
+                          let firstCity = citiesVal[0];
+                          setNearByCitesValues([firstCity.label]);
+                          setNearByCitiesData([firstCity]);
+                        }
+                      }}
+                      filterOption={true}
+                      onSearch={(searchValue) => {
+                        // setClientNameSuggestion([]);
+                        onChangeLocation(searchValue);
+                      }}
+                      onChange={(locName) => {
+                        setValue("location", locName);
+                      }}
+                      placeholder="Enter Location"
+                      // ref={controllerRef}
+                      // name="clientName"
+                      // defaultValue={clientNameValue}
+                      value={watch("location")}
+                    />
+                  )}
+                  {...register("location", {
+                    required:
+                      watch("workingMode").id === 2 ||
+                      watch("workingMode").id === 3
+                        ? true
+                        : false,
+                  })}
+                  name="location"
+                  // rules={{ required: true }}
+                  control={control}
+                />
+                {errors.location && (
+                  <div className={HRFieldStyle.error}>
+                    * Please Select Location
+                  </div>
+                )}
+              </div>
+
+              {/* <HRInputField
+                        onChangeHandler={e=> cityDeb() }
+                         register={register}
+                         errors={errors}
+                         validationSchema={{
+                           required: "please enter the location.",
+                         }}
+                         label="location"
+                         name="location"
+                         type={InputType.TEXT}
+                         placeholder="Enter the location"
+                         required
+                       />
+                       {countryListMessage !== null && <p className={HRFieldStyle.error}>*{countryListMessage}</p>} */}
+            </div>
+
+            {watch("workingMode").value === WorkingMode.HYBRID && (
+              <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    controlledValue={controlledFrequencyValue}
+                    setControlledValue={setControlledFrequencyValue}
+                    isControlled={true}
+                    mode={"id/value"}
+                    searchable={true}
+                    setValue={setValue}
+                    register={register}
+                    label={"Ferquency of Office Visits"}
+                    defaultValue="officeVisits"
+                    options={frequencyData}
+                    name="officeVisits"
+                    isError={errors["officeVisits"] && errors["officeVisits"]}
+                    required={
+                      watch("workingMode").value === WorkingMode.HYBRID
+                        ? true
+                        : false
+                    }
+                    errorMsg={"Please select office visits"}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className={HRFieldStyle.colMd12}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  marginBottom: "32px",
+                }}
+              >
+                <label style={{ marginBottom: "12px" }}>
+                  Are you open to applicants willing to relocate to your
+                  location?
+                  <span
+                    style={{
+                      color: "#E03A3A",
+                      marginLeft: "4px",
+                      fontSize: "14px",
+                      fontWeight: 700,
+                    }}
+                  >
+                    *
+                  </span>
+                </label>
+                {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
+                {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
+                <Radio.Group
+                  onChange={(e) => {
+                    setIsRelocate(e.target.value);
+                  }}
+                  value={isRelocate}
+                >
+                  <Radio value={true}>Yes</Radio>
+                  <Radio value={false}>No</Radio>
+                </Radio.Group>
+              </div>
+            </div>
+
+            {isRelocate && (
+              <div
+                className={HRFieldStyle.colMd12}
+                style={{ marginBottom: "12px" }}
+              >
+                <div className={HRFieldStyle.labelForSelect}>
+                  Do you have a preference in candidate's location?
+                </div>
+                <Select
+                  mode="tags"
+                  style={{ width: "100%" }}
+                  value={NearByCitesValues}
+                  options={nearByCitiesData}
+                  onChange={(values, _) => setNearByCitesValues(values)}
+                  placeholder="Select Compensation"
+                  tokenSeparators={[","]}
+                />
+
+                <ul className={HRFieldStyle.selectFieldBox}>
+                  {watch("workingMode").value === WorkingMode.HYBRID &&
+                    nearByCitiesData
+                      ?.filter(
+                        (option) => !NearByCitesValues?.includes(option.label)
+                      )
+                      .map((option) => (
+                        <li
+                          key={option.value}
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            setNearByCitesValues([
+                              ...NearByCitesValues,
+                              option?.label,
+                            ])
+                          }
+                        >
+                          <span>
+                            {option.label}{" "}
+                            <img src={plusSkill} loading="lazy" alt="star" />
+                          </span>
+                        </li>
+                      ))}
+                </ul>
+              </div>
+            )}
+
+            {/* <div className={HRFieldStyle.colMd6}>
                        <HRInputField
                         onChangeHandler={e=> cityDeb() }
                          register={register}
@@ -4414,9 +5513,10 @@ who have worked in scaled start ups."
                            errorMsg={"Please select the country."}
                          />
                        </div>
-                 </div>
-        </div>
-       </>)
+                 </div> */}
+          </div>
+        </>
+      );
       // if(isDirectHR){
       //   return (<>
       //    <div className={HRFieldStyle.row}>
@@ -4482,7 +5582,7 @@ who have worked in scaled start ups."
       //           required
       //         />
       //       </div>}
-         
+
       //       <div className={HRFieldStyle.colMd6}>
       //         <div className={HRFieldStyle.formGroup}>
       //           <HRSelectField
@@ -4518,7 +5618,7 @@ who have worked in scaled start ups."
       //           required
       //         />
       //       </div>}
-                   
+
       //       <div className={HRFieldStyle.colMd6}>
       //         <HRInputField
       //           register={register}
@@ -4534,7 +5634,7 @@ who have worked in scaled start ups."
       //         />
       //       </div>
       //     </div>
-          
+
       //     {(removeFields !== null && removeFields?.address === true) ? null : <div className={HRFieldStyle.row}>
       //       <div className={HRFieldStyle.colMd12}>
       //         <HRInputField
@@ -4552,7 +5652,7 @@ who have worked in scaled start ups."
       //         />
       //       </div>
       //     </div>}
-          
+
       //     {isNewPostalCodeModal && (
       //       <Modal
       //         footer={false}

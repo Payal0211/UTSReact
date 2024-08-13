@@ -80,6 +80,7 @@ export default function BeforePreOnboarding({
   const [editNetTerm, setEditNetTerm] = useState(false);
   const [editPayRate, setEditPayRate] = useState(false);
   const [editBillRate, setEditBillRate] = useState(false);
+  const [editUplersFee, setEditUplersFee] = useState(false);
   const [editAcceptHR, setEditAcceptHR] = useState(false);
   const [editMOF, setEditMOF] = useState(false);
   const [editCity, setEditCity] = useState(false);
@@ -177,7 +178,7 @@ export default function BeforePreOnboarding({
     getStateData();
     getReportingToHandler();
     getBuddyHandler();
-    fatchpreOnBoardInfo();
+    fatchpreOnBoardInfo();    
   }, []);
 
   const getAMusersData = async () =>{
@@ -277,20 +278,18 @@ export default function BeforePreOnboarding({
     let _state = stateList?.filter((item) => item.id === preONBoardingData?.preOnboardingDetailsForAMAssignment?.stateID);
     setValue("stateID", _state[0]);
     setControlledState(_state[0]);
-  }, [preONBoardingData,stateList])
-  
+  }, [preONBoardingData,stateList])  
 
   const fatchpreOnBoardInfo = useCallback(
     async () => {
-      setIsLoading(true);
-      if(talentDeteils?.OnBoardId){
+      setIsLoading(true);      
+      if(talentDeteils?.onBoardId){
         let req = {
-          OnboardID: talentDeteils?.OnBoardId,
+          OnboardID: talentDeteils?.onBoardId,
           HRID: HRID,
           // actionName: actionType ? actionType : "GotoOnboard",
         };
-        let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);
-      
+        let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);      
       if (result?.statusCode === HTTPStatusCode.OK) {       
         setAssignAM(result?.responseBody?.details?.assignAM)
         setReplacementEngHr(result.responseBody.details?.replacementEngAndHR);
@@ -326,6 +325,11 @@ export default function BeforePreOnboarding({
           "payRate",
           result.responseBody.details?.preOnboardingDetailsForAMAssignment
             ?.talentCost
+        );
+        setValue(
+          "uplersFee",
+          result.responseBody.details?.preOnboardingDetailsForAMAssignment
+            ?.uplersFeesAmount
         );
         setValue(
           "billRate",
@@ -578,12 +582,12 @@ const calcelMember = () =>{
         "deal_Source": d?.dealSource?.value,
         "lead_Type": null,
         "industry_Type": null,
-        "onboard_ID":talentDeteils?.OnBoardId,
+        "onboard_ID":talentDeteils?.onBoardId,
         "engagemenID": data?.engagemenID,
         "assignAM": assignAM,
-        "talentID":talentDeteils?.TalentID,
+        "talentID":talentDeteils?.talentID,
         "talentShiftStartTime":d.shiftStartTime?.value,
-        "talentShiftEndTime": d.shiftEndTime?.value,
+        "talentShiftEndTime": d.endTime?.value,
         "payRate":data?.isHRTypeDP ? 0 : parseFloat(d.payRate),
         "billRate": data?.isHRTypeDP ? null : parseFloat(d.billRate),
         "netPaymentDays": parseInt(d.netTerm?.value),
@@ -594,11 +598,12 @@ const calcelMember = () =>{
         "talent_Designation": d?.talent_Designation,
         "amSalesPersonID": d.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
+        "uplersFeesAmount":data?.isHRTypeDP ? parseFloat(d?.uplersFee):null,
         "talentReplacement": {
-          "onboardId": talentDeteils?.OnBoardId,
+          "onboardId": talentDeteils?.onBoardId,
           "replacementID": 0,
           "hiringRequestID": HRID,
-          "talentId": talentDeteils?.TalentID,
+          "talentId": talentDeteils?.talentID,
           "lastWorkingDay": engagementReplacement?.replacementData === true ? moment(d.lwd).format('yyyy-MM-DD') : null,
           "lastWorkingDateOption": 0,
           "noticeperiod": 0,
@@ -616,77 +621,33 @@ const calcelMember = () =>{
           "signingAuthorityName": null,
           "signingAuthorityEmail": null,
           "contractDuration": d.contractDuration,
-          "onBoardID": talentDeteils?.OnBoardId,
+          "onBoardID": talentDeteils?.onBoardId,
           "about_Company_desc": d?.aboutCompany,
           "talent_FirstWeek": d?.firstWeek,
           "talent_FirstMonth": d?.firstMonth,
           "softwareToolsRequired": d?.softwareToolsRequired,
-          "devicesPoliciesOption": !talentDeteils?.IsHRTypeDP ? d.devicePolicy.value : "",
-          "talentDeviceDetails": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 1 ? d.standerdSpecifications : '' : "",
+          "devicesPoliciesOption": !talentDeteils?.isHRTypeDP ? d.devicePolicy.value : "",
+          "talentDeviceDetails": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 1 ? d.standerdSpecifications : '' : "",
           // "additionalCostPerMonth_RDPSecurity": 0,
           // "isRecurring": true,
           // "proceedWithUplers_LeavePolicyOption": null,
           // "proceedWithClient_LeavePolicyOption": null,
-          "proceedWithClient_LeavePolicyLink": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "" ,
-          "leavePolicyFileName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" ,
+          "proceedWithClient_LeavePolicyLink": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "" ,
+          "leavePolicyFileName": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" ,
           "exit_Policy": d?.exitPolicy,
-          "hdnRadioDevicesPolicies": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.value : "",
-          "device_Radio_Option": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '' : "",
-          "deviceID": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ? d.deviceType.id : 0 : 0,
-          "client_DeviceDescription": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' :"" ,
-          "totalCost": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,
-          "radio_LeavePolicies": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.value : "",
-          "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
+          "hdnRadioDevicesPolicies": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.value : "",
+          "device_Radio_Option": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '' : "",
+          "deviceID": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 2 ? d.deviceType.id : 0 : 0,
+          "client_DeviceDescription": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' :"" ,
+          "totalCost": !talentDeteils?.isHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,
+          "radio_LeavePolicies": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.value : "",
+          "leavePolicyPasteLinkName": !talentDeteils?.isHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
           "teamMembers": clientTeamMembers
         }
       }
-      // let payload = {
-      //   hR_ID: HRID,
-      //   companyID: preOnboardingDetailsForAMAssignment?.companyID,
-      //   deal_Owner: d?.dealOwner?.value, //Update
-      //   deal_Source: d?.dealSource?.value, //Update
-      //   onboard_ID: talentDeteils?.OnBoardId,
-      //   engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
-      //   assignAM: assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
-      //   amSalesPersonID:d.amSalesPersonID?.id,
-      //   talentID: talentDeteils?.TalentID,      
-      //   talentShiftStartTime: d.shiftStartTime?.value, //Update
-      //   talentShiftEndTime: d.shiftEndTime?.value, //Update
-      //   payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-      //     ? 0
-      //     : parseFloat(d.payRate), // pass as null if DP HR  // send numeric value //Update
-      //   modeOFWorkingID: d?.modeOFWorkingID?.id,
-      //   city:d?.city,
-      //   talent_Designation: d?.talent_Designation,
-      //   stateID:d?.stateID?.id,
-      //   // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-      //   //   ? null
-      //   //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
-      //   billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-      //     ? null
-      //     : parseFloat(d.billRate), //,
-      //   netPaymentDays: parseInt(d.netTerm), //Update
-      //   nrMargin: !preOnboardingDetailsForAMAssignment?.isHRTypeDP
-      //     ? d.nrPercent
-      //     : null,
-      //   isReplacement: engagementReplacement?.replacementData,
-      //   talentReplacement: {
-      //     onboardId: talentDeteils?.OnBoardId,
-      //     lastWorkingDay: addLatter === false ? d.lwd : "",
-      //     replacementInitiatedby: loggedInUserID.toString(),
-      //     engHRReplacement:
-      //       addLatter === true || d.engagementreplacement === undefined
-      //         ? ""
-      //         : d.engagementreplacement.id,
-      //   },
-      //   teamMembers:clientTeamMembers,
-      // };
+            
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
-        // if (result?.responseBody.details.IsAMAssigned) {
-        //   EnableNextTab(talentDeteils, HRID, "Legal");
-        // }
-
         callAPI(HRID)
         setMessage(result?.responseBody.details);
         setIsLoading(false);
@@ -694,12 +655,6 @@ const calcelMember = () =>{
         setEditPayRate(false);
         setEditNetTerm(false);
         setShowAMModal(false);
-        // let req = {
-        //   OnboardID: talentDeteils?.OnBoardId,
-        //   HRID: HRID,
-        //   // actionName: actionType ? actionType : "GotoOnboard",
-        // };
-        // fatchpreOnBoardInfo(req);
       }
       setIsLoading(false);
     },
@@ -772,7 +727,7 @@ const calcelMember = () =>{
         formData.append("File", fileData);
         let uploadFileResponse = await OnboardDAO.uploadPolicyDAO(
           formData,
-          talentDeteils?.OnBoardId
+          talentDeteils?.onBoardId
         );
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -1356,23 +1311,85 @@ const calcelMember = () =>{
                     />
                   </div>
 
-                  <div className={HRDetailStyle.modalFormCol}>
-                    {/* {preOnboardingDetailsForAMAssignment?.isHRTypeDP ? (
+                  {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true ?
+                  <div className={HRDetailStyle.modalFormCol}> 
+                  <>
+                    {editUplersFee ? (
                       <HRInputField
                         register={register}
                         errors={errors}
-                        // validationSchema={{
-                        //   required: "please enter the Current CTC.",
-                        // }}
-                        // required
-                        label="CurrentCTC"
-                        name="currentCTC"
-                        type={InputType.TEXT}
-                        placeholder="USD 4000/Month"
+                        validationSchema={{
+                          required: "please enter the Uplers Fee.",
+                        }}
+                        required
+                        label="Uplers Fee (One-time)"
+                        name="uplersFee"
+                        type={InputType.NUMBER}
+                        placeholder={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                          ?"USD 4000/Year":"USD 4000/Month"}
                         // value={watch('billRate')}
-                        disabled
+                        leadingIcon={
+                          preONBoardingData
+                            ?.preOnboardingDetailsForAMAssignment
+                            ?.currencySign
+                        }
+                        trailingIcon={
+                          <div className={HRDetailStyle.infotextWrapper}>
+                          {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                            ? `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Year`
+                            : `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                          <EditFieldSVG
+                            width="16"
+                            height="16"
+                            onClick={() => setEditUplersFee(false)}
+                          />
+                          </div>
+                        }
                       />
-                    ) : ( */}
+                    ) : (
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        validationSchema={{
+                          required: "please enter the Uplers Fee.",
+                        }}
+                        required
+                        label="Uplers Fee (One-time)"
+                        name="uplersFee"
+                        type={InputType.TEXT}
+                        placeholder={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                          ?"USD 4000/Year":"USD 4000/Month"}
+                        // value={watch('billRate')}
+                        leadingIcon={
+                          preONBoardingData
+                            ?.preOnboardingDetailsForAMAssignment
+                            ?.currencySign
+                        }
+                        disabled
+                        trailingIcon={
+                          <div className={HRDetailStyle.infotextWrapper}>
+                            {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP==true 
+                            ? `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Year`
+                            : `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                            
+                         {actionType!=="Legal" && <EditFieldSVG
+                            width="16"
+                            height="16"
+                            onClick={() => {
+                              setEditUplersFee(true);
+                              setValue(
+                                "uplersFee",
+                                extractNumberFromString(watch("uplersFee"))
+                              );
+                            }}
+                          />}
+                          </div>
+                        }
+                      />
+                    )}
+                  </>
+                </div>
+                 :<div className={HRDetailStyle.modalFormCol}> 
                     <>
                       {editBillRate ? (
                         <HRInputField
@@ -1448,8 +1465,9 @@ const calcelMember = () =>{
                         />
                       )}
                     </>
-                    {/* )} */}
-                  </div>
+                  </div>}
+
+                  
 
                   {/* {preOnboardingDetailsForAMAssignment?.isHRTypeDP ? (
                     <div className={HRDetailStyle.modalFormCol}>
@@ -1553,7 +1571,11 @@ const calcelMember = () =>{
                     <div className={HRDetailStyle.onboardingDetailText}>
                       <span>Uplers Fees</span>
                       <span className={HRDetailStyle.onboardingTextBold}>
-                      { ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100).toFixed(2)+ ' %' : 'NA' )}
+                        { 
+                        preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP == false ? 
+                        ((watch("billRate") > 0 && watch("payRate") > 0) ?  (((watch("billRate")-watch("payRate"))/watch("payRate"))*100).toFixed(2)+ ' %' : 'NA' ) 
+                        : ((watch("uplersFee") > 0 && watch("payRate") > 0) ?  ((watch("uplersFee")/watch("payRate"))*100).toFixed(2) + " %" :"NA")
+                        }
                         {/* {preOnboardingDetailsForAMAssignment?.talentRole
                           ? preOnboardingDetailsForAMAssignment?.talentRole
                           : "NA"} */}
@@ -1877,7 +1899,7 @@ const calcelMember = () =>{
                           name="softwareToolsRequired"
                           type={InputType.TEXT}
                           placeholder="Enter Softwares and Tools which will be required"
-                          required={!talentDeteils?.IsHRTypeDP}
+                          required={!talentDeteils?.isHRTypeDP}
                           validationSchema={{
                             required:
                               "please enter softwares and tools which will be required.",
@@ -1930,7 +1952,7 @@ const calcelMember = () =>{
                           isError={
                             errors["devicePolicy"] && errors["devicePolicy"]
                           }
-                          required={!talentDeteils?.IsHRTypeDP}
+                          required={!talentDeteils?.isHRTypeDP}
                           errorMsg={"please select device policy."}
                           disabled={actionType==="Legal"?true:false}
                         />
@@ -2027,7 +2049,7 @@ const calcelMember = () =>{
                             isError={
                               errors["leavePolicie"] && errors["leavePolicie"]
                             }
-                            required={!talentDeteils?.IsHRTypeDP}
+                            required={!talentDeteils?.isHRTypeDP}
                             errorMsg={"please select leave policy."}
                             disabled={actionType==="Legal"?true:false}
                           />
@@ -2045,7 +2067,7 @@ const calcelMember = () =>{
                             placeholder="First Month"
                             // value="First Month - 7 Days Second Month Onwards - 30 Days"
                             disabled
-                            required={!talentDeteils?.IsHRTypeDP}
+                            required={!talentDeteils?.isHRTypeDP}
                             validationSchema={{
                               required: "please enter Exit Policy.",
                             }}

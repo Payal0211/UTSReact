@@ -791,7 +791,6 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.addCountryRequestDAO');
 		}
 	},
-
 	getCountryByPostalCodeRequestDAO: async function (postalData) {
 		try {
 			const hrCountryResponse = await MasterAPI.getCountryByPostalCodeRequest(
@@ -948,7 +947,6 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getReporteeTeamManagerRequestDAO');
 		}
 	},
-
 	getBDRMarketingBasedOnUserTypeRequestDAO: async function (userType) {
 		try {
 			const reporteeTeamManagerResponse =
@@ -1305,7 +1303,6 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getBuddyRequestDAO');
 		}
 	},
-
 	getDepartmentRequestDAO: async function () {
 		try {
 			const departmentListResult = await userAPI.getDeparmentListRequest();
@@ -1425,7 +1422,6 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getDashboardCountForEngagementDAO');
 		}
 	},
-
 	checkIsSalesPersonDAO: async function (getContactAndSaleID) {
 		try {
 			const isCheckSales = await MasterAPI.checkIsSalesPerson(
@@ -1451,7 +1447,6 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getDashboardCountForEngagementDAO');
 		}
 	},
-
 	getDurationTypeDAO: async function (data) {
 		try {
 			const durationTypeResponse = await MasterAPI.getDurationType(data);
@@ -1585,7 +1580,6 @@ export const MasterDAO = {
 			);
 		}
 	},
-
 	getRolesListRequestDAO :async function (data) {
 		try {
 			const rolesListResponse =
@@ -1615,7 +1609,6 @@ export const MasterDAO = {
 			);
 		}
 	},
-
 	updateTalentRoleStatus :async function (id,isActive){
 		try {
 			const roleStatusResponse =
@@ -1927,6 +1920,120 @@ export const MasterDAO = {
 			return errorDebug(
 				error,
 				'MasterDAO.downloadResumeDAO',
+			);
+		}
+	},
+	getAutoCompleteCityStateDAO : async function (city,{ signal }) {
+		try {
+			const autoCompleteCityStateResponse =
+				await MasterAPI.getAutoCompleteCityState(city,{ signal });
+				if (autoCompleteCityStateResponse) {
+					const statusCode = autoCompleteCityStateResponse['statusCode'];
+					if (statusCode === HTTPStatusCode.OK) {
+						const tempResut = autoCompleteCityStateResponse?.responseBody;
+						return {
+							statusCode: statusCode,
+							responseBody: tempResut,
+						};
+					} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+						return autoCompleteCityStateResponse;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+						return autoCompleteCityStateResponse;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+						let deletedResponse =
+							UserSessionManagementController.deleteAllSession();
+						if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+					}
+				}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getAutoCompleteCityStateDAO',
+			);
+		}
+	},
+	getNearByCitiesDAO : async function (LocationID) {		
+		try {
+			const getNearByCitiesResponse =
+			await MasterAPI.getNearByCities(LocationID);
+				if (getNearByCitiesResponse) {
+					const statusCode = getNearByCitiesResponse['statusCode'];
+					if (statusCode === HTTPStatusCode.OK) {
+						const tempResut = getNearByCitiesResponse?.responseBody;
+						return {
+							statusCode: statusCode,
+							responseBody: tempResut,
+						};
+					} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+						return getNearByCitiesResponse;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+						return getNearByCitiesResponse;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+						let deletedResponse =
+							UserSessionManagementController.deleteAllSession();
+						if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+					}
+				}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getNearByCitiesDAO',
+			);
+		}
+	},
+	getFrequencyDAO : async function () {
+		try {
+			const getFrequencyResponse = await MasterAPI.getFrequency();
+				if (getFrequencyResponse) {
+					const statusCode = getFrequencyResponse['statusCode'];
+					if (statusCode === HTTPStatusCode.OK) {
+						const tempResut = getFrequencyResponse?.responseBody;
+						return {
+							statusCode: statusCode,
+							responseBody: tempResut,
+						};
+					} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+						return getFrequencyResponse;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+						return getFrequencyResponse;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+						let deletedResponse =
+							UserSessionManagementController.deleteAllSession();
+						if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+					}
+				}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getFrequencyDAO',
+			);
+		}
+	},
+	updateJobPostDataToATSDAO : async function () {
+		try {
+			const updateJobPostDataToATSResponse = await MasterAPI.getFrequency();
+				if (updateJobPostDataToATSResponse) {
+					const statusCode = updateJobPostDataToATSResponse['statusCode'];
+					if (statusCode === HTTPStatusCode.OK) {
+						const tempResut = updateJobPostDataToATSResponse?.responseBody;
+						return {
+							statusCode: statusCode,
+							responseBody: tempResut,
+						};
+					} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+						return updateJobPostDataToATSResponse;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+						return updateJobPostDataToATSResponse;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+						let deletedResponse =
+							UserSessionManagementController.deleteAllSession();
+						if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+					}
+				}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.updateJobPostDataToATSDAO',
 			);
 		}
 	}
