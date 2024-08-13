@@ -1529,3 +1529,287 @@ img{
   top: 7px;
   left: 2px;
 }
+ .preShareDetailsBox {
+  gap: 24px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  display: flex;
+}
+
+ .preShareDetailsBox .preShareDetailsItem {
+  width: calc(50% - 12px);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(35, 35, 35, 0.2);
+  display: flex;
+  word-break: break-word;
+  position: relative;
+  align-items: center;
+  background: #FFF;
+}
+
+ .preShareDetailsBox .preShareDetailsItem .thumbImages {
+  width: 75px;
+  min-width: 75px;
+  height: 75px;
+  font-weight: 600;
+  border-radius: 80px;
+}
+
+ .preShareDetailsBox .preShareDetailsItem .thumbImages .ant-avatar,
+ .preShareDetailsBox .preShareDetailsItem .thumbImages img {
+  width: 100% !important;
+  min-width: 100% !important;
+  height: 100% !important;
+  border-radius: 80px;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.preShareDetailsBox .preShareDetailsItem .preShareDetailsAction {
+  position: absolute;
+  display: inline-flex;
+  top: 12px;
+  right: 12px;
+}
+
+.preShareDetailsItem .preShareDetailsAction .preShareDetailsBtn {
+  width: 18px;
+  height: 18px;
+  border-radius: 30px;
+  border: none;
+  background: rgba(186, 186, 186, 0.2);
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.preShareDetailsItem .preShareDetailsAction .preShareDetailsBtn+.preShareDetailsBtn {
+  margin-left: 8px;
+}
+
+.preShareDetailsBox .preShareDetailsItem .preShareDetailsImage {
+  width: 75px;
+  min-width: 75px;
+  height: 75px;
+  border-radius: 75px;
+  overflow: hidden;
+  background: #f7f7f7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 10px;
+  line-height: 14px;
+}
+
+
+.justifyCenter {
+  flex-direction: column;
+    display: flex;
+}
+
+.preShareDetailsBox .preShareDetailsItem .preShareDetailsImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 100px;
+}
+
+.preShareDetailsBox .preShareDetailsItem .preShareDetailsInfo {
+  padding-left: 16px;
+  font-family: Montserrat;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: left;
+  color: #6B6B6B;
+  flex: 1;
+}
+
+.preShareDetailsItem .preShareDetailsInfo h4 {
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: left;
+  color: #232323;
+  margin: 0 0 8px;
+}
+
+.preShareDetailsItem .preShareDetailsInfo h4 .preShareToolTip {
+  display: inline-flex;
+  cursor: pointer;
+  margin-left: 2px;
+}
+
+.preShareDetailsItem .preShareDetailsInfo ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.preShareDetailsItem .preShareDetailsInfo ul li {
+  margin-bottom: 6px;
+  gap: 8px;
+  align-items: center;
+  display: flex;
+}
+
+.preShareDetailsItem .preShareDetailsInfo a {
+  color: #6B6B6B;
+  text-decoration: underline;
+  transition: all 0.35s ease 0s;
+}
+
+.preShareDetailsItem .preShareDetailsInfo ul li:last-child {
+  margin-bottom: 0;
+}
+
+.preShareDetailsItem .preShareDetailsInfo a:hover {
+  color: #232323;
+  text-decoration: none;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .preShareDeailEdit {
+  cursor: pointer;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .preShareDeailLink {
+  font-weight: 500;
+  color: #002DCB;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+ .preShareDetailsBox.hireTeamInfo .preShareDetailsItem {
+  align-items: flex-start;
+}
+
+ .preShareDetailsBox.hireTeamInfo .preShareDetailsItem .preShareDetailsInfo ul li {
+  margin-bottom: 18px;
+}
+
+ .preShareDetailsBox.hireTeamInfo .preShareDetailsItem .preShareDetailsInfo ul li:last-child {
+  margin-bottom: 0;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .form-group {
+  margin-bottom: 0;
+  width: 100%;
+  position: relative;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .form-group .form-control {
+  font-family: Montserrat;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  height: auto;
+  color: #232323;
+  border: 1px solid rgba(35, 35, 35, 0.2);
+  transition: all 0.35s ease 0s;
+  border-radius: 40px !important;
+  padding: 8px 16px 8px 34px;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .form-group .form-control:focus,
+.preShareDetailsItem .preShareDetailsInfo .form-group .form-control:hover {
+  border-color: #ffda30;
+  box-shadow: 0 0 0 1px #ffda30;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .form-group .form-control::-webkit-input-placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .form-group .form-control::-moz-placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .form-group .form-control:-ms-input-placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .form-group .form-control:-moz-placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.preShareDetailsItem .preShareDetailsInfo ul li .ant-checkbox-wrapper {
+  margin-top: 7px;
+}
+
+.preShareDetailsItem .preShareDetailsInfo ul li .ant-checkbox-wrapper span {
+  font-family: Montserrat;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #232323;
+}
+
+.preShareDetailsItem .preShareDetailsInfo .form-group .fieldIcon {
+  display: inline-flex;
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  height: 16px;
+  width: 16px;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+ .preShareAddUser {
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 17.07px;
+  color: #1B73BA;
+  cursor: pointer;
+  outline: none;
+  text-decoration: underline;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  display: inline-block;
+  padding: 0;
+  margin-top: 24px;
+  -webkit-transition: all 0.35s ease 0s;
+  transition: all 0.35s ease 0s;
+}
+
+ .preShareAddUser:hover {
+  text-decoration: none;
+  color: #232323;
+}
+
+ .showUserInfo {
+  align-items: flex-start;
+  justify-content: flex-start;
+  display: flex;
+}
+
+ .showUserInfo .ant-checkbox {
+  margin: 3px 0 auto;
+}
+
+ .showUserInfo:after {
+  display: none;
+}
