@@ -947,6 +947,12 @@ export const reportConfig = {
 				isSearch: true,
 			},
 			{
+				label: 'Sales Head',
+				name: 'Heads',
+				child: filterList?.salesHead_List,
+				isSearch: true,
+			},
+			{
 				label: 'Sales Representative',
 				name: 'sales_ManagerIDs',
 				child: filtersSalesRepo,
@@ -1431,7 +1437,7 @@ export const reportConfig = {
 			},
 		];
 	},
-	HRReportFilterTypeConfig: (filterList) => {
+	HRReportFilterTypeConfig: (filterList,filtersSalesRepo) => {
 		return [
 			{
 				label: 'Hiring Status',
@@ -1450,6 +1456,12 @@ export const reportConfig = {
 				label: 'Head',
 				name: 'SalesManager',
 				child: filterList?.SalesManager,
+				isSearch: true,
+			},
+			{
+				label: 'Sales Representative',
+				name: 'sales_ManagerIDs',
+				child: filtersSalesRepo,
 				isSearch: true,
 			},
 			{
