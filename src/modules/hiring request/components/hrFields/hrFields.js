@@ -4718,7 +4718,7 @@ who have worked in scaled start ups."
                         setControlledPocValue((prev) => {
                           if(prev === undefined){
                             const iToAdd = activeUserDataList.find(
-                              (user) => user.contactId === val[0].id
+                              (user) => user.contactId === val[0].value
                             );
                             const poctoadd = {
                               hiringRequestId:
