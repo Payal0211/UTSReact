@@ -84,7 +84,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 			{
 				"contractDetailID": getEndEngagementDetails?.contractDetailID,
 				"LastWorkingDate": d.lastWorkingDate,
-				"reason": d.endEngagementReason,
+				"reason": d.endEngagementReason ?? "",
 				"EngcancelType": engType,
 				"LostReasonID": 0
 			}

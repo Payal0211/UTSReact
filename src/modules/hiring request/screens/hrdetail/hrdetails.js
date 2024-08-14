@@ -76,6 +76,7 @@ const ActivityFeed = React.lazy(() =>
 const HRDetailScreen = () => {
 	// const [deleteModal, setDeleteModal] = useState(false);
 	const [isLoading, setLoading] = useState(false);
+	const [isCardLoading, setCardLoading] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
 	const[hrData,setHrData] = useState([]);
 	const navigate = useNavigate();
@@ -133,7 +134,7 @@ const HRDetailScreen = () => {
 	);
 
 	const getHrUserData = async () => {
-		setLoading(true);
+		setCardLoading(true);
 		const payload = {
 			"totalrecord":2,
 			"pagenumber":page,
@@ -144,7 +145,7 @@ const HRDetailScreen = () => {
 		}
 		const _response = await hiringRequestDAO.getHRTalentUsingPaginationDAO(payload);
 		setHrData(_response?.responseBody?.details);
-		setLoading(false);
+		setCardLoading(false);
 	}
 
 	// console.log(apiData, '--apiData-');
@@ -566,8 +567,8 @@ const togglePriority = useCallback(
             )}
           </div>
           <div className={HRDetailStyle.talentPortal}>
-            {isLoading ? (
-              <Skeleton active />
+            {isCardLoading ? (
+              <Skeleton active/>
             ) : (
               <Suspense>
                 <TalentProfileCard
