@@ -588,7 +588,7 @@ const calcelMember = () =>{
         "talentID":talentDeteils?.talentID,
         "talentShiftStartTime":d.shiftStartTime?.value,
         "talentShiftEndTime": d.endTime?.value,
-        "payRate":data?.isHRTypeDP ? 0 : parseFloat(d.payRate),
+        "payRate": parseFloat(d.payRate),
         "billRate": data?.isHRTypeDP ? null : parseFloat(d.billRate),
         "netPaymentDays": parseInt(d.netTerm?.value),
         "nrMargin": !data?.isHRTypeDP ? d.nrPercent : null,

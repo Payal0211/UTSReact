@@ -122,7 +122,7 @@ export default function LegalPreOnboarding({
         companyID: getData?.getLegalInfo?.companyID,
         invoiceRaiseTo: d.invoiceRaisinfTo,
         invoiceRaiseToEmail: d.invoiceRaisingToEmail,
-        contractStartDate: moment(d.contractStartDate).format("yyyy-MM-DD"),
+        contractStartDate: getData?.getLegalInfo?.isHRTypeDP === true ? moment(d.engagementStartDate).format("yyyy-MM-DD") : moment(d.contractStartDate).format("yyyy-MM-DD"),
         joiningDate: moment(d.joiningDate).format('yyyy-MM-DD'),
         contractEndDate: getData?.getLegalInfo?.isHRTypeDP
           ? null
