@@ -4613,6 +4613,28 @@ who have worked in scaled start ups."
                           controlledValue={controlledPocValue}
                           setControlledValue={(val) => {
                             setControlledPocValue((prev) => {
+                              if(prev === undefined){
+                                const iToAdd = activeUserDataList.find(
+                                  (user) => user.contactId === val[0].id
+                                );
+                                const poctoadd = {
+                                  hiringRequestId:
+                                    getHRdetails?.addHiringRequest?.id,
+                                  hrwiseContactId: iToAdd?.contactId,
+                                  guid: "",
+                                  fullName: iToAdd.contactName,
+                                  emailID: iToAdd.emailId,
+                                  contactNo: iToAdd.contactNumber,
+                                  showEmailToTalent: false,
+                                  showContactNumberToTalent: false,
+                                  isDefaultUser: false,
+                                  iInfoMsg: "",
+                                };
+                                setJobPostUsersDetails([
+                                  poctoadd
+                                ]);
+                                return val;
+                              }
                               if (prev.length > val.length) {
                                 // remove item
                                 const notInA2 = prev.filter(
@@ -4697,7 +4719,7 @@ who have worked in scaled start ups."
                       className={`${HRFieldStyle.row}  preShareDetailsBox hireTeamInfo`}
                       style={{marginTop:'10px'}}
                     >
-                      {jobPostUsersDetails.map((Val, index) => {
+                      {jobPostUsersDetails?.map((Val, index) => {
                         return (
                           <div
                             className="preShareDetailsItem"
