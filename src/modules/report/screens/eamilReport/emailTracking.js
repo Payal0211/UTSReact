@@ -228,10 +228,10 @@ export default function EmailTracking() {
           let params = {     
               fromDate: moment(firstDay).format("YYYY-MM-DD"),
               toDate: moment(lastDay).format("YYYY-MM-DD"),
-              EvenType:reportData?.eventType,
+              eventType:reportData?.eventType,
               CompanyID:selectedClientName?Number(selectedClientName):0
           };
-          console.log(params,reportData);
+        //   console.log(params,reportData);
 
           getEmailPopUpReportList(params);
         },
