@@ -22,6 +22,7 @@ import clientReport from  'assets/svg/clientReport.svg';
 import HRReport from 'assets/svg/clientLogs.svg'
 import UTMTrackingIcon from 'assets/UTMtracking report.png'
 import ClientDetailsIcon from 'assets/Clienttracking details.png'
+import EmailTracking from 'assets/svg/emailTrack.svg'
 import ReplacementIcon from 'assets/Talentreplacement.png'
 import TalentBackoutIcon from 'assets/Talentbackout.png'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
@@ -342,6 +343,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			icon: ClientDetailsIcon,
 			navigateTo: UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT,
 			isVisible: isAccess(usertypeID, 'Client Tracking Details')
+		}),
+		new SideBarModels({
+			id: 'EmailTrackingReport',
+			title: 'Email Tracking Details',
+			isActive: false,
+			icon: EmailTracking,
+			navigateTo: UTSRoutes.EMAIL_TRACKING_REOPRT,
+			isVisible: isAccess(usertypeID, 'Email Tracking Details')
 		}),
 		new SideBarModels({
 			id: 'I2SReport',

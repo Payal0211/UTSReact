@@ -49,6 +49,7 @@ export class SubDomain {
 	static I2S_REPORT = 'InterviewToSuccess/';
 	static HUB_SPOT = 'Hubspot/';
 	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'	
+	static EMAIL_TRACKING = 'AWSSESTrackingDetails/'
 	static DIRECT_HR = 'DirectHR/'
 	static SPACE = "space"
 	static MEMBER = "member"
@@ -85,6 +86,7 @@ export class UserAPI {
 	static SIGNUP = '/signup';
 	static FORGOTPASSWORD = '/forgotpassword';
 	static LIST = 'List';
+	static GET_CLIENT_POPUP_LIST = 'PopUPList'
 	static ADD_NEW_USER = 'AddEdit';
 	static GET_USER_DETAIL = 'GetUserDetail';
 	static UPDATEPASSWORD = '/updatepassword';

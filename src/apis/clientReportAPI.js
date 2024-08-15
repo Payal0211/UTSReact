@@ -17,6 +17,32 @@ export const clientReportAPI = {
 			return errorDebug(error, 'clientReportAPI.getClientReportRequest');
 		}
 	},
+	getEmailReportRequest: async (Data) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.EMAIL_TRACKING + UserAPI.LIST;
+			httpService.setAuthRequired = true;
+			httpService.dataToSend = Data;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'clientReportAPI.getEmailReportRequest');
+		}
+	},
+	getEmailReportPopupRequest: async (Data) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.EMAIL_TRACKING + UserAPI.GET_CLIENT_POPUP_LIST;
+			httpService.setAuthRequired = true;
+			httpService.dataToSend = Data;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'clientReportAPI.getEmailReportPopupRequest');
+		}
+	},
 	getClientPopUPReportRequest: async (Data) => {
 		try {
 			let httpService = new HttpServices();

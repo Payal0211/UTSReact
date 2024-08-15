@@ -56,6 +56,56 @@ export const clientReport = {
 			return errorDebug(error, 'clientReport.getClienPopUpRequestList');
 		}
 	},
+	getEmailRequestList: async function (Data) {
+		try {
+			const emailListResult = await clientReportAPI.getEmailReportRequest(Data);
+			if (emailListResult) {
+				const statusCode = emailListResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = emailListResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return emailListResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailListResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'clientReport.getEmailReportList');
+		}
+	},
+	emailReportPopupListDAO: async function (Data) {
+		try {
+			const emailListResult = await clientReportAPI.getEmailReportPopupRequest(Data);
+			if (emailListResult) {
+				const statusCode = emailListResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = emailListResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return emailListResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailListResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'clientReport.emailReportPopupListDAO');
+		}
+	},
 	getClientReportFilters: async function (){
 		try {
 			const clientFilterResult = await clientReportAPI.getClientReportFiltersRequest()

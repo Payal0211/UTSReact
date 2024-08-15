@@ -1875,5 +1875,90 @@ export const reportConfig = {
 				},					
 			];
 		}
+	},
+	EmailPopupReportConfig: () => {
+		return [
+			{
+				title: 'Action Date',
+				dataIndex: 'trackingDate',
+				key: 'trackingDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{moment(text).format("DD/MM/YYYY") }</Fragment>;
+				},
+			},
+			{
+				title: 'Client/User',
+				dataIndex: 'client',
+				key: 'client',
+				align: 'left',				
+			},
+			{
+				title: 'Email Link',
+				dataIndex: 'email_Link',
+				key: 'email_Link',
+				align: 'left',		
+				render: (text, result) => (
+					result?.hrid ? 
+					<Link
+					  target="_blank"
+					  to={`/allhiringrequest/${result?.hrid}`}
+					  style={{ color: "black", textDecoration: "underline" }}
+					  onClick={() => localStorage.removeItem("dealID")}
+					>
+					  {text}
+					</Link> : {text}
+				  ),		
+			},
+			{
+				title: 'Email Link Tags',
+				dataIndex: 'email_LinkTags',
+				key: 'email_LinkTags',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Email Subject',
+				dataIndex: 'email_Subject',
+				key: 'email_Subject',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'IP Address',
+				dataIndex: 'ipAddress',
+				key: 'ipAddress',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'User Agent',
+				dataIndex: 'user_Agent',
+				key: 'user_Agent',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			// {
+			// 	title: 'Location',
+			// 	dataIndex: 'location',
+			// 	key: 'location',
+			// 	align: 'left',
+			// 	render: (text) => {
+			// 		let data = text.split(",");
+			// 		const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+			// 		const result = filteredValues.join(", ");
+			// 		return <Fragment key={result}>{result}</Fragment>;
+			// 	},
+			// },				
+		];
 	}
+
 };

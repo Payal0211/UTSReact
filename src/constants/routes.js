@@ -28,6 +28,10 @@ const EditClient = React.lazy(() =>
 const InterviewList = React.lazy(() =>
 	import('modules/interview/screens/interviewList/interviewList'),
 );
+
+const EmailTracking = React.lazy(() =>
+	import('modules/report/screens/eamilReport/emailTracking'),
+);
 /* 
 
 const InterviewSchedule = React.lazy(() =>
@@ -210,6 +214,7 @@ export default class UTSRoutes {
 	static VIEWCLIENT = '/viewClient/:companyID/:clientID';
 	static CHANGE_PASSOWRD = '/changepassword'
 	static CHAT_GPT_RESPONSE = '/chatGPTResponse'
+	static EMAIL_TRACKING_REOPRT = '/emailTracking'
 	static ADD_HR = '/addHR'
 	static Edit_HR = '/EditNewHR/:hrID'
 	static ABOUT_CLIENT = '/userDetails';
@@ -396,6 +401,11 @@ export const navigateToComponent = {
 	[UTSRoutes.UTM_TRACKING_REPORT]:(
 		<Suspense>
 			<UTMTrackingReport />
+		</Suspense>
+	),
+	[UTSRoutes.EMAIL_TRACKING_REOPRT]:(
+		<Suspense>
+			<EmailTracking />
 		</Suspense>
 	),
 	[UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT]:(
