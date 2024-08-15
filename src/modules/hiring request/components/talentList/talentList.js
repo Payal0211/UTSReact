@@ -409,8 +409,8 @@ const TalentList = ({
 			const clientFeedback = {
 				role: talentInfo?.TalentRole || '',
 				talentName: talentInfo?.Name || '',
-				talentIDValue: talentInfo?.talentID,
-				contactIDValue: talentInfo?.contactId,
+				talentIDValue: talentInfo?.TalentID,
+				contactIDValue: talentInfo?.ContactId,
 				hiringRequestID: hrId,
 				shortlistedInterviewID: talentInfo?.Shortlisted_InterviewID,
 				hdnRadiovalue: reload ? "Hire" : "AnotherRound",
