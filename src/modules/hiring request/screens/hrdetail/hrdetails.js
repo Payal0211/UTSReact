@@ -144,7 +144,8 @@ const HRDetailScreen = () => {
 			}
 		}
 		const _response = await hiringRequestDAO.getHRTalentUsingPaginationDAO(payload);
-		setHrData(_response?.responseBody?.details);
+		const data = JSON.parse(_response?.responseBody?.details);
+		setHrData(data);
 		setCardLoading(false);
 	}
 

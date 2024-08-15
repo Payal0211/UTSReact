@@ -90,8 +90,7 @@ const TalentList = ({
 	hrData,
 	setPage,
 	page,
-}) => {
-
+}) => {	
 	const navigate = useNavigate()
 	const EmpID = localStorage.getItem('EmployeeID')
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
@@ -696,13 +695,13 @@ const TalentList = ({
 			<List
 				grid={{ gutter: 16, column: 2 }}
 				size="large"
-				dataSource={hrData && hrData}				
+				dataSource={hrData?.rows && hrData?.rows}				
 				pagination={{
 					className: TalentListStyle.paginate,
 					size: 'small',
 					pageSize: ROW_SIZE,
 					position: 'top',
-					total:hrData[0]?.totalRecords,
+					total:hrData?.totalrows,
 					current:page,					
 					onChange: (page, pageSize) => {	
 						setPageIndex(page - 1);	
@@ -712,8 +711,8 @@ const TalentList = ({
 				renderItem={(item, listIndex) => {	
 					return (
 						<div
-							key={item?.name}
-							id={item?.talentID}>
+							key={item?.Name}
+							id={item?.TalentID}>
 							<div className={`${TalentListStyle.talentCard} ${TalentListStyle.talentItemCard}`} style={{ minHeight: hrType ? '680px' : '' }}>
 								<div className={TalentListStyle.talentCardBody}>
 									<div className={TalentListStyle.partWise}>
@@ -730,8 +729,8 @@ const TalentList = ({
 												}}>
 												<img
 													src={
-														item?.profileURL
-															? item?.profileURL
+														item?.ProfileURL
+															? item?.ProfileURL
 															: 'https://www.w3schools.com/howto/img_avatar.png'
 													}
 													className={TalentListStyle.avatar}
@@ -744,8 +743,8 @@ const TalentList = ({
 														top: '-30px',
 													}}>
 													{All_Hiring_Request_Utils.GETTALENTSTATUS(
-														item?.profileStatusCode,
-														item?.status,
+														item?.ProfileStatusCode,
+														item?.Status,
 													)}
 												</div>
 												<div
@@ -759,9 +758,9 @@ const TalentList = ({
 															textDecoration: 'underline',
 															fontWeight: '600',
 														}}>
-														{item?.name}
+														{item?.Name}
 													</div>
-													<div>{item?.talentRole}</div>
+													<div>{item?.TalentRole}</div>
 												</div>
 											</div>
 										</div>
@@ -775,7 +774,7 @@ const TalentList = ({
 															key={0}
 															onClick={() => {
 																setProfileLogModal(true); // TODO:-
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																// viewProfileInfo();
 															}}>
 															View Profile Log
@@ -794,12 +793,12 @@ const TalentList = ({
 									</div>
 			
 									<div className={TalentListStyle.profileURL}>
-										<span>{item?.needToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
+										<span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{item?.needToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Click here</p> : item?.atsTalentLiveURL ? (
+											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Click here</p> : item?.ATSTalentLiveURL ? (
 												<a
 													style={{ textDecoration: 'underline' }}
-													href={item?.atsTalentLiveURL}
+													href={item?.ATSTalentLiveURL}
 													target="_blank"
 													rel="noreferrer">
 													Click here
@@ -814,44 +813,44 @@ const TalentList = ({
 									<div className={TalentListStyle.EmailID}>
 										<span>Talent Email:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{item?.emailID ? item?.emailID : "-"}
+											{item?.EmailID ? item?.EmailID : "-"}
 										</span>
 									</div>
 			
 									<div className={TalentListStyle.experience}>
 										<span>Experience:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{_isNull(item?.totalExpYears)
+											{_isNull(item?.TotalExpYears)
 												? 'NA'
-												: item?.totalExpYears + ' years'}
+												: item?.TotalExpYears + ' years'}
 										</span>
 									</div>
 									<div className={TalentListStyle.noticePeriod}>
 										<span>Notice Period:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{_isNull(item?.noticePeriod) ? 'NA' : item?.noticePeriod}
+											{_isNull(item?.NoticePeriod) ? 'NA' : item?.NoticePeriod}
 										</span>
 									</div>
 									<div className={TalentListStyle.agreedShift}>
 										<span>Agreed Shift:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{_isNull(item?.talentTimeZone)
+											{_isNull(item?.TalentTimeZone)
 												? 'NA'
-												: item?.talentTimeZone}
+												: item?.TalentTimeZone}
 										</span>
 									</div>
 									<div className={TalentListStyle.availability}>
 										<span>Preferred Availability:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{_isNull(item?.preferredAvailability)
+											{_isNull(item?.PreferredAvailability)
 												? 'NA'
-												: item?.preferredAvailability}
+												: item?.PreferredAvailability}
 										</span>
 									</div>
 									<div className={TalentListStyle.profileSource}>
 										<span>Profile Source:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{_isNull(item?.talentSource) ? 'NA' : item?.talentSource}
+											{_isNull(item?.TalentSource) ? 'NA' : item?.TalentSource}
 										</span>
 									</div>
 									<Divider
@@ -932,7 +931,7 @@ const TalentList = ({
 										}}
 									/>
 			
-									{DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.talentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
+									{DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
 										<div>
 											<span>
 												{info.Title}
@@ -945,12 +944,12 @@ const TalentList = ({
 										{info.IsEditable && <>
 											{!hrType ? <>
 												{apiData?.JobStatusID !== 2 &&
-													(item?.status === 'Selected' || item?.status === 'Profile Shared' || item?.status === 'In Interview' || item?.status === 'Replacement') &&
+													(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') &&
 													<span
 														onClick={() => {
 															// setEditPayRate(true);
 															// setTalentIndex(item?.TalentID);
-															setTalentIndex(item?.talentID);
+															setTalentIndex(item?.TalentID);
 															setEditBillRate(true);
 														}}
 			
@@ -965,7 +964,7 @@ const TalentList = ({
 												{apiData?.JobStatusID !== 2 && <span
 													onClick={() => {
 														setEditDPRate(true);
-														setDPData({ talentId: item?.talentID, contactPriorityID: item?.contactPriorityID, allValues: item });
+														setDPData({ talentId: item?.TalentID, contactPriorityID: item?.ContactPriorityID, allValues: item });
 													}}
 													style={{
 														textDecoration: 'underline',
@@ -1145,11 +1144,11 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-									{item?.scheduleTimeZone && (
+									{item?.ScheduleTimeZone && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Time Zone:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500' }}>
-												{item?.scheduleTimeZone}
+												{item?.ScheduleTimeZone}
 											</span>
 										</div>
 									)}
@@ -1158,9 +1157,9 @@ const TalentList = ({
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{/* { inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList?.length === 0 } */}
-											{inteviewSlotDetails?.find(tal => tal.TalentID === item.talentID)?.SlotList?.length === 0 ? (
+											{inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID)?.SlotList?.length === 0 ? (
 												'NA'
-											) : item.interViewStatusId !== 1 ? 'NA' : (
+											) : item.InterViewStatusId !== 1 ? 'NA' : (
 												<Dropdown
 													trigger={['click']}
 													placement="bottom"
@@ -1179,7 +1178,7 @@ const TalentList = ({
 																})} */}
 															{hrUtils
 																?.formatInterviewSlots(
-																	inteviewSlotDetails?.find(tal => tal.TalentID === item.talentID).SlotList
+																	inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList
 																)
 																?.map((item, index) => {
 																	return (
@@ -1198,7 +1197,7 @@ const TalentList = ({
 																)?.[0]?.label
 															} */}
 															{hrUtils?.formatInterviewSlots(
-																inteviewSlotDetails?.find(tal => tal.TalentID === item.talentID).SlotList,
+																inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList,
 															)?.[0]?.label}
 															<DownOutlined />
 														</Space>
@@ -1207,11 +1206,11 @@ const TalentList = ({
 											)}
 										</span>
 									</div>
-									{item?.slotconfirmed && (
+									{item?.Slotconfirmed && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Slot Confirmed:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500' }}>
-												{item?.slotconfirmed}
+												{item?.Slotconfirmed}
 											</span>
 										</div>
 									)}
@@ -1252,7 +1251,7 @@ const TalentList = ({
 									/>		
 									{talentCTA[ROW_SIZE * (page-1) + listIndex]?.cTAInfoList
 										?.length > 0 && (talentCTA?.[ROW_SIZE * (page-1) + listIndex]
-											?.cTAInfoList[0]?.label === TalentOnboardStatus.CANCEL_ENGAGEMENT ? item?.isShownTalentStatus === 1 ? true : false : true ) && (
+											?.cTAInfoList[0]?.label === TalentOnboardStatus.CANCEL_ENGAGEMENT ? item?.IsShownTalentStatus === 1 ? true : false : true ) && (
 											<div
 												// style={{
 												// 	position: 'absolute',
@@ -1262,7 +1261,7 @@ const TalentList = ({
 												className={TalentListStyle.talentCardAction}
 											>
 												<HROperator
-													onClickHandler={() => setTalentIndex(item?.talentID)}
+													onClickHandler={() => setTalentIndex(item?.TalentID)}
 													title={
 														talentCTA?.[ROW_SIZE * (page-1) + listIndex]
 															?.cTAInfoList[0]?.label
@@ -1278,34 +1277,34 @@ const TalentList = ({
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setScheduleInterviewModal(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.ASSIGN_TSC: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
-																autoAssignTSC(item.onBoardId)
+																autoAssignTSC(item.OnBoardId)
 																break
 															}
 															case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setReScheduleInterviewModal(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.TALENT_ACCEPTANCE: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setTalentAcceptance(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.TALENT_STATUS: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setTalentStatus(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 			
@@ -1313,7 +1312,7 @@ const TalentList = ({
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setInterviewStatus(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
@@ -1335,14 +1334,14 @@ const TalentList = ({
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setInterviewFeedback(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.EDIT_CLIENT_FEEDBACK: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																// setInterviewFeedback(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																setEditFeedback(true);
 																break;
 															}
@@ -1362,7 +1361,7 @@ const TalentList = ({
 							
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setTalentStatus(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																setActionKey(key)
 																break;
 															}
@@ -1370,21 +1369,21 @@ const TalentList = ({
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setAnotherRound(true);																
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.SCHEDULE_ANOTHER_ROUND_INTERVIEW: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setScheduleAnotherRoundInterview(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setOnboardTalentModal(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 			
 																break;
 															}
@@ -1392,12 +1391,12 @@ const TalentList = ({
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setLegalTalentOnboardModal(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.CANCEL_ENGAGEMENT: {
 																setShowEngagementCancel(true)
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																// let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																// setActionKey(key)
 																// setLegalTalentOnboardModal(true);
@@ -1438,14 +1437,14 @@ const TalentList = ({
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setReplaceTalentModal(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.CONFIRM_SLOT: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setConfirmSlotModal(true);
-																setTalentIndex(item?.talentID);
+																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.CONFIRM_CONTRACT_DETAILS: {
@@ -1511,10 +1510,10 @@ const TalentList = ({
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
 																setActionKey(key)
 																setHRAndEngagementId({
-																	talentName: item.name,
-																	engagementID: item.engagemenID,
-																	hrNumber: item.hR_Number,
-																	onBoardId: item.onBoardId,
+																	talentName: item.Name,
+																	engagementID: item.EngagemenID,
+																	hrNumber: item.HR_Number,
+																	onBoardId: item.OnBoardId,
 																	hrId: hrId,
 																})
 																setShowEngagementOnboard(true)
