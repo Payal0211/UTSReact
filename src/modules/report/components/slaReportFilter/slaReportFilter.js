@@ -158,6 +158,7 @@ const SlaReportFilerList = ({
     newState.filterFieldsSLA['actionFilterIDs'] =  filters['actionFilterIDs'] ?  filters['actionFilterIDs'] : '' ;
     newState.filterFieldsSLA['CompanyIDs'] =  filters['CompanyIDs'] ?  filters['CompanyIDs'] : '' ;
     newState.filterFieldsSLA['sales_ManagerIDs'] =  filters['sales_ManagerIDs'] ?  filters['sales_ManagerIDs'] : '' ;
+    newState.filterFieldsSLA['Heads'] =  filters['Heads'] ?  filters['Heads'] : '' ;
  
 
     // handleHRRequest(newState);

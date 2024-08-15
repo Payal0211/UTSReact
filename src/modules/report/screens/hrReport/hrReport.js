@@ -11,6 +11,7 @@ import DatePicker from "react-datepicker";
 import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
 import { clientReport } from "core/clientReport/clientReportDAO";
 import { reportConfig } from "modules/report/report.config";
@@ -39,6 +40,7 @@ export default function HRReport() {
 
   const [getHTMLFilter, setHTMLFilter] = useState(false);
   const [filtersList, setFiltersList] = useState([]);
+  const [filtersSalesRepo, setFiltersSalesRepo] = useState([]);
   const [pageSize, setPageSize] = useState(100);
   const [isAllowFilters, setIsAllowFilters] = useState(false);
   const [filteredTagLength, setFilteredTagLength] = useState(0);
@@ -119,12 +121,27 @@ export default function HRReport() {
     }
   };
 
+  const getEngagementFilterList = useCallback(async () => {
+		const res = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
+		if (res?.statusCode === HTTPStatusCode.OK) {
+			setFiltersSalesRepo(res?.responseBody?.details?.Data?.salesReps?.map(item =>({
+				text : item?.text,
+				value : item?.value
+			})))
+		}
+	}, []);
+
+  useEffect(()=>{
+		getEngagementFilterList();
+	},[getEngagementFilterList])
+
   const handleFiltersRequest = useCallback(
     (reqFilter) => {
       let fd = reqFilter.filterFields_DealList;
 
       let TypeOfHR = fd["TypeOfHR"] ? fd["TypeOfHR"] : "";
       let SalesManager = fd["SalesManager"] ? fd["SalesManager"] : "";
+      let sales_ManagerIDs = fd["sales_ManagerIDs"] ? fd["sales_ManagerIDs"] : "";
       let ModeOfWorking = fd["ModeOfWorking"] ? fd["ModeOfWorking"] : "";
       let HiringStatus = fd["HiringStatus"] ? fd["HiringStatus"] : "";
       let ClientType = fd["ClientType"] ? fd["ClientType"] : "0"
@@ -139,6 +156,7 @@ export default function HRReport() {
           typeOfHR: TypeOfHR,
           modeOfWorkId: ModeOfWorking,
           heads: SalesManager,
+          sales_ManagerIDs:sales_ManagerIDs,
           hrStatusID: HiringStatus,
           isHrfocused: isFocusedRole,
           clientType: ClientType,
@@ -156,6 +174,7 @@ export default function HRReport() {
           typeOfHR: TypeOfHR,
           modeOfWorkId: ModeOfWorking,
           heads: SalesManager,
+          sales_ManagerIDs:sales_ManagerIDs,
           hrStatusID: HiringStatus,
           isHrfocused: isFocusedRole,
           stages: hrStage,
@@ -205,6 +224,7 @@ export default function HRReport() {
 
     let TypeOfHR = filters["TypeOfHR"] ? filters["TypeOfHR"] : "";
     let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
+    let sales_ManagerIDs = filters["sales_ManagerIDs"] ? filters["sales_ManagerIDs"] : "";
     let ModeOfWorking = filters["ModeOfWorking"]
       ? filters["ModeOfWorking"]
       : "";
@@ -221,6 +241,7 @@ export default function HRReport() {
         typeOfHR: TypeOfHR,
         modeOfWorkId: ModeOfWorking,
         heads: SalesManager,
+        sales_ManagerIDs:sales_ManagerIDs,
         hrStatusID: HiringStatus,
         isHrfocused: isFocusedRole,
         clientType: ClientType,
@@ -266,6 +287,7 @@ export default function HRReport() {
           let SalesManager = filters["SalesManager"]
             ? filters["SalesManager"]
             : "";
+            let sales_ManagerIDs = filters["sales_ManagerIDs"] ? filters["sales_ManagerIDs"] : "";
           let ModeOfWorking = filters["ModeOfWorking"]
             ? filters["ModeOfWorking"]
             : "";
@@ -286,6 +308,7 @@ export default function HRReport() {
               typeOfHR: TypeOfHR,
               modeOfWorkId: ModeOfWorking,
               heads: SalesManager,
+              sales_ManagerIDs:sales_ManagerIDs,
               hrStatusID: HiringStatus,
               isHrfocused: isFocusedRole,
               clientType: ClientType,
@@ -348,6 +371,7 @@ export default function HRReport() {
 
       let TypeOfHR = filters["TypeOfHR"] ? filters["TypeOfHR"] : "";
       let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
+      let sales_ManagerIDs = filters["sales_ManagerIDs"] ? filters["sales_ManagerIDs"] : "";
       let ModeOfWorking = filters["ModeOfWorking"]
         ? filters["ModeOfWorking"]
         : "";
@@ -367,6 +391,7 @@ export default function HRReport() {
           typeOfHR: TypeOfHR,
           modeOfWorkId: ModeOfWorking,
           heads: SalesManager,
+          sales_ManagerIDs:sales_ManagerIDs,
           hrStatusID: HiringStatus,
           stages: reportData.stageName,
           isHrfocused: isFocusedRole,
@@ -510,6 +535,23 @@ export default function HRReport() {
 							alt="rocket"
 						/> */}
           <h2>
+          At least 3 profiles shared in 3 days % -{" "}
+            <span>
+              {reportList.length > 0 && reportList[0].stageValue > 0 ?
+                (
+                  (reportList[11].stageValue / reportList[0].stageValue) *
+                  100
+                ).toFixed(2) : "NA"}
+            </span>
+          </h2>
+        </div>
+
+        <div className={hrReportStyle.filterType}>
+          {/* <img
+							src={Rocket}
+							alt="rocket"
+						/> */}
+          <h2>
           At least 3 profile shared % -{" "}
             <span>
               {reportList.length > 0 && reportList[0].stageValue > 0 ?
@@ -538,7 +580,14 @@ export default function HRReport() {
           </h2>
         </div>
 
-        <div className={hrReportStyle.filterType}>
+      
+      </div>
+
+      <div
+        className={`${hrReportStyle.filterSets} ${hrReportStyle.filterDescription}`}
+        style={{ marginTop: "0" }}
+      >
+          <div className={hrReportStyle.filterType}>
           <h2>
           At least 6 profiles shared in 10 days % -{" "}
             <span>
@@ -550,12 +599,7 @@ export default function HRReport() {
             </span>
           </h2>
         </div>
-      </div>
 
-      <div
-        className={`${hrReportStyle.filterSets} ${hrReportStyle.filterDescription}`}
-        style={{ marginTop: "0" }}
-      >
         <div className={hrReportStyle.filterType}>
           <h2>
           At least 5 profiles are shared in 5 days % -{" "}
@@ -686,7 +730,7 @@ export default function HRReport() {
             getHTMLFilter={getHTMLFilter}
             // hrFilterList={DealConfig.dealFiltersListConfig()}
             filtersType={reportConfig.HRReportFilterTypeConfig(
-              filtersList && filtersList
+              filtersList && filtersList,filtersSalesRepo && filtersSalesRepo
             )}
             clearFilters={resetFilter}
           />

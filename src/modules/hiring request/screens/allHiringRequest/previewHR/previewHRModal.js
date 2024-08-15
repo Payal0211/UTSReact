@@ -1561,23 +1561,47 @@ function PreviewHRModal({
   }
 
   const handleBlur = () => {
+
+  
     const isValidSelection = locationList?.some(
         (location) => location.label === editLocation?.JobLocation
     );
+
+    if(!editLocation?.JobLocation || locationList?.length === 0){
+      setEditLocation((prev) => ({
+        ...prev,
+        NearByCities:[] 
+    }));
+      return
+    }
   
     if (!isValidSelection) {
-        setEditLocation((prev) => ({
+      if(nearByCitiesData?.length>0){
+         setEditLocation((prev) => ({
             ...prev,
             JobLocation: '',
             ATS_JobLocationID: null,
             NearByCities:[nearByCitiesData?.length>0 && nearByCitiesData[0]?.label] 
         }));
+      }else{
+        setEditLocation((prev) => ({
+          ...prev,
+          NearByCities:[] }));
+      }
+       
         // setError('Please select a valid location from the list.');
     }else{
-      setEditLocation((prev) => ({
+      if(nearByCitiesData?.length>0){
+         setEditLocation((prev) => ({
         ...prev,
         NearByCities:[nearByCitiesData?.length>0 && nearByCitiesData[0]?.label] 
     }));
+      }else{
+        setEditLocation((prev) => ({
+          ...prev,
+          NearByCities:[] }));
+      }
+     
     }
   };
 
@@ -2182,7 +2206,7 @@ function PreviewHRModal({
                                                         JobLocation: option.label,
                                                         ATS_JobLocationID: option.value,
                                                         NearByCities:[citiesVal?.length>0 && citiesVal[0]?.label]  
-                                                      });                                                                                                                                                                                                                                                                                              
+                                                      });                                                                                                                                                                                                                                              
                                                       setNearByCitiesData(citiesVal);                                                                 
                                                       setError({...error,['JobLocation'] : ""});                                                           
                                                   }}                       

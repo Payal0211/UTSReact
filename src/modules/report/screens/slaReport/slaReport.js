@@ -275,7 +275,7 @@ const SlaReports = () => {
 	const getEngagementFilterList = useCallback(async () => {
 		const response = await ReportDAO.slaFilterDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			setFiltersList(response && response?.responseBody);
+			setFiltersList(response && {...response?.responseBody,salesHead_List:response?.responseBody?.salesHead_List.map(val => ({text:val.fullName,value:`${val.id}`})) });
 		}
 		const res = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
 		if (res?.statusCode === HTTPStatusCode.OK) {

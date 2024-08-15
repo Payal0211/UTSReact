@@ -1,0 +1,493 @@
+.dealContainer {
+    /* height: 100vh; */
+    padding: 24px 40px;
+}
+
+.header {
+    /* margin-bottom: 61px; */
+    margin-bottom: 32px;
+    width: inherit;
+}
+
+.dealLable {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 40px;
+}
+.cardInner .textLink{
+    text-decoration: underline;
+    color:#337ab7;
+    cursor: pointer;
+
+}
+
+.btnPrimary {
+    background: #FFDA30;
+    border: 1px solid #FFDA30;
+    border-radius: 8px;
+    padding: 13px 16px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    cursor: pointer;
+    transition: all 0.35s ease 0s;
+    box-shadow: none;
+    outline: none;
+    margin:0 10px
+}
+
+.btnPrimary:hover{
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+}
+
+.filterInterview {
+    height: 10vh;
+    border-radius: 8px;
+    background-color: var(--background-color-light);
+    margin-bottom: 25px;
+}
+
+.filterContainer, .i2sContainer {
+    border-radius: 10px;
+    margin: 24px auto;
+    background-color: var(--background-color-light);
+}
+
+.i2sContainer {
+    margin-top: 24px;
+}
+
+.i2sListing{
+    list-style: none;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.i2sListing > li{
+    max-width: 33.333%;
+    width: 33.333%;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 30px;
+}
+
+
+.error {
+    color: #fe0000;
+    margin: 0;
+  }
+
+
+@media screen and (min-width: 1441px){
+    .i2sListing > li{
+        max-width: 25%;
+        width: 25%;
+    }
+}
+
+.cardWrapper{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+}
+
+.cardTitle{
+    font-size: 15px;
+    font-weight: 600;
+    /* border-bottom: 1px solid #f0f0f0; */
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cardTitle div:first-child{ 
+    min-width: 82px;
+}
+
+.cardTitle div:last-child{ 
+    padding-right: 25px;
+}
+
+.cardInner{
+    padding: 10px 0;
+    margin-bottom: 0;
+    list-style-type: none;
+}
+
+.cardInner .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    font-size: 13px;
+    align-items: center;
+}
+
+.cardInner .row p{
+    margin-bottom: 0;
+}
+
+.cardInner .row div:first-child{
+    min-width: 95px
+}
+
+.cardInner .row:nth-child(even){
+    background-color: #f9f9f9;
+}
+
+.cardInner .rowValue{
+    display: flex;
+    justify-content: center;
+    min-width: 60px;
+}
+
+.rowValue.a{
+    color: #337ab7;
+}
+
+.cardInner .textLink{
+    text-decoration: underline;
+    color:#337ab7;
+    cursor: pointer;
+    margin: 0;
+}
+
+
+.LeftTextWrap{
+    display: flex;
+    align-items: center;
+}   
+
+.filterSets {
+    /* width: 96%; */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 24px;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: var(--background-color-light);
+}
+
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+
+
+.filterSetsInner p{
+    margin: 0 0 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filterRight {
+    display: flex;
+    justify-content: flex-end;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.addFilter {
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 167px;
+    height: 44px;
+    border: 1px solid var(--background-color-metal);
+}
+
+.filterLabel {
+    font-weight: 500;
+    font-size: .7vw;
+}
+
+.filterCount {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: var(--fontsize-uplers);
+    background-color: var(--color-sunlight);
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.searchFilterSet {
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    width: 250px;
+    height: 44px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.searchInput {
+    cursor: pointer;
+    width: 80%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+
+.calendarFilterSet {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 8px;
+}
+
+.label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--uplers-lightBlack);
+}
+
+.calendarFilter {
+    width: 250px;
+    height: 44px;
+    border-radius: 8px;
+    padding: 2px 10px;
+    border: 1px solid var(--background-color-metal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.calendarFilter [class*="react-datepicker-popper"] {
+    right: 0 !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    margin: 40px 0 30px;
+}
+
+.calendarFilter [class*="react-datepicker-popper"]>div>[class*="react-datepicker"] {
+    margin-left: 0;
+    min-width: 100%;
+}
+
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
+    top: 14px;
+}
+
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"] {
+    margin-top: 5px;
+}
+
+.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"] {
+    margin-bottom: 10px;
+}
+
+
+.dateFilter {
+    cursor: pointer;
+    width: 102%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+
+.filterDescription {
+    margin: 35px auto 15px auto;
+    justify-content: inherit;
+    gap: 16px;
+}
+
+
+.filterType {
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    padding: 10px 16px;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content:center;
+    align-items: center;
+    display: inline-flex;
+    flex: 1;
+}
+
+.filterType img{
+    max-width: 24px;
+    margin-right: 8px;
+}
+
+.filterType h2 {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #232323;
+    margin-bottom: 0px;
+}
+
+.filterType span {
+    font-weight: 600;
+}
+
+.exportAction {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 10px 16px 10px 24px;
+}
+
+.exportAction h3{
+    padding: 0;
+    margin: 0;
+}
+
+.exportAction .btnPrimary {
+    margin: 0;
+    padding: 10px 24px;
+}
+
+.noDataFoundText{
+    text-align: center;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.filterSetsInner [class*="ant-select-selection-search-input"] {
+    height: auto !important;
+    padding: 16px 16px !important;
+}
+
+@media only screen and (max-width: 1440px) {
+    .filterContainer, .i2sContainer{
+        margin: 16px auto;
+    }
+
+    .dealContainer {
+        padding: 16px 24px;
+    }
+
+    .calendarFilter{
+        width: 200px;
+        height: 42px;
+    }
+
+    .filterSetsInner [class*='ant-select-single'] [class*='ant-select-selector']{
+        height: 42px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .filterSetsInner [class*="ant-select-selection-search-input"]{
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    .calendarFilter svg{
+        margin-right: 5px !important;
+    }
+  
+    .calendarFilter .dateFilter{
+        font-size: 12px;
+    }
+  
+    .searchInput{
+        font-size: 12px;
+    }  
+
+    .dealLable {
+        font-size: 26px;
+    }
+  
+    .filterRight .focusCheckBox{
+        max-width: 115px;
+        align-items: center;
+    }
+
+    .filterRight .focusCheckBox span{
+        font-size: 12px;
+        line-height: 16px;
+    }
+  
+    .filterSetsInner p{
+        font-size: 12px;
+    }
+  
+    .filterSets{
+        padding: 15px;
+    }
+  
+    .addFilter{
+        width: 125px;
+        height: 35px;
+        gap: 8px;
+    }
+
+    .header {
+        margin-bottom: 24px;
+    }
+
+    .btnPrimary {
+        font-size: 12px;
+        line-height: 16px;
+        padding: 12px 25px;
+    }
+
+    .togglebtn {
+        height: 40px
+    }
+
+    .filterRight{
+        gap: 15px;
+    }
+  
+    .searchFilterSet{
+        width: 200px;
+        height: 35px;
+    }
+
+    .searchInput{
+        font-size: 10px;
+    }   
+
+    .paginationFilter {
+        width: 65px;
+        height: 35px;
+    }
+
+    .filterCount{
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+    .label {
+        font-size: 12px;
+    }
+
+    .filterDescription {
+       padding: 15px !important;
+    }
+
+
+  }
