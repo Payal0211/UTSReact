@@ -1884,7 +1884,7 @@ export const reportConfig = {
 				key: 'trackingDate',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{moment(text).format("DD/MM/YYYY") }</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
