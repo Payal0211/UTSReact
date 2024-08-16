@@ -266,14 +266,14 @@ const AllHiringRequestScreen = () => {
     setHrIdforPreview(hrId);
     setIspreviewLoading(true);
     let data = {};
-    console.log('userData',userData)
+   
     // data.contactId = 810;
     data.companyId= companyId;
     data.hrId = hrId;
  
     let res = await allCompanyRequestDAO.getHrPreviewDetailsDAO(data);
 
-    console.log('res pre',res)
+
     if (res.statusCode === 200) {
       let details = res?.responseBody;
       const previewData = { ...details.JobPreview, hrNumber: hrNumber, HRID: hrId};

@@ -225,6 +225,7 @@ export class MastersAPI {
 	static EDIT_ROLE = 'EditRole'
 	static EDIT_TIMEZONE = 'EditTimeZone'
 	static UPDATE_ROLE = 'UpdateRole'
+	static GET_HIRING_PRICING_TYPE = 'GetHiringTypePricingDetails'
 	static TIMEZONEMASTER = 'GetTimeZoneMaster'
 	static GET_AUTO_COMPLETE_CITY_STATE = 'GetAutoCompleteCityStateWise'
 	static GET_NEAR_BY_CITIES = 'GetNearByCities'

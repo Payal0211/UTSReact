@@ -1677,6 +1677,24 @@ export const reportConfig = {
 					  ),		
 				},
 				{
+					title: 'Talent',
+					dataIndex: 'talentName',
+					key: 'talentName',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text}</Fragment>;
+					},
+				},	
+				{
+					title: 'Talent Status',
+					dataIndex: 'talentStatus',
+					key: 'talentStatus',
+					align: 'left',
+					render: (text) => {
+						return <div key={text} dangerouslySetInnerHTML={{__html:text}}></div>;
+					},
+				},	
+				{
 					title: 'Device',
 					dataIndex: 'device',
 					key: 'device',
@@ -1715,24 +1733,7 @@ export const reportConfig = {
 						return <Fragment key={result}>{result}</Fragment>;
 					},
 				},
-				{
-					title: 'Talent',
-					dataIndex: 'talentName',
-					key: 'talentName',
-					align: 'left',
-					render: (text) => {
-						return <Fragment key={text}>{text}</Fragment>;
-					},
-				},	
-				{
-					title: 'Talent Status',
-					dataIndex: 'talentStatus',
-					key: 'talentStatus',
-					align: 'left',
-					render: (text) => {
-						return <Fragment key={text}>{text}</Fragment>;
-					},
-				},					
+								
 			];
 		}else if (hrStageId===1 || hrStageId===2 || hrStageId===18){
 			return [
@@ -1826,6 +1827,15 @@ export const reportConfig = {
 					  ),		
 				},
 				{
+					title: 'Talent',
+					dataIndex: 'talentName',
+					key: 'talentName',
+					align: 'left',
+					render: (text) => {
+						return <div key={text} dangerouslySetInnerHTML={{__html:text}}></div>;
+					},
+				},	
+				{
 					title: 'Device',
 					dataIndex: 'device',
 					key: 'device',
@@ -1862,15 +1872,6 @@ export const reportConfig = {
 						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
 						const result = filteredValues.join(", ");
 						return <Fragment key={result}>{result}</Fragment>;
-					},
-				},
-				{
-					title: 'Talent',
-					dataIndex: 'talentName',
-					key: 'talentName',
-					align: 'left',
-					render: (text) => {
-						return <Fragment key={text}>{text}</Fragment>;
 					},
 				},					
 			];
