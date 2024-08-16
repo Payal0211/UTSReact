@@ -41,6 +41,7 @@ export default function HRReport() {
   const [getHTMLFilter, setHTMLFilter] = useState(false);
   const [filtersList, setFiltersList] = useState([]);
   const [filtersSalesRepo, setFiltersSalesRepo] = useState([]);
+  const [filtersHRType, setFiltersHRType] = useState([]);
   const [pageSize, setPageSize] = useState(100);
   const [isAllowFilters, setIsAllowFilters] = useState(false);
   const [filteredTagLength, setFilteredTagLength] = useState(0);
@@ -128,6 +129,12 @@ export default function HRReport() {
 				text : item?.text,
 				value : item?.value
 			})))
+
+      setFiltersHRType(res?.responseBody?.details?.Data?.hrTypes?.map(item =>{
+        return ({
+				text : item?.text,
+				value : item?.value
+			})}))
 		}
 	}, []);
 
@@ -730,7 +737,7 @@ export default function HRReport() {
             getHTMLFilter={getHTMLFilter}
             // hrFilterList={DealConfig.dealFiltersListConfig()}
             filtersType={reportConfig.HRReportFilterTypeConfig(
-              filtersList && filtersList,filtersSalesRepo && filtersSalesRepo
+              filtersList && filtersList,filtersSalesRepo && filtersSalesRepo, filtersHRType && filtersHRType
             )}
             clearFilters={resetFilter}
           />
