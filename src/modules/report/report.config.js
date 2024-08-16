@@ -1437,7 +1437,7 @@ export const reportConfig = {
 			},
 		];
 	},
-	HRReportFilterTypeConfig: (filterList,filtersSalesRepo) => {
+	HRReportFilterTypeConfig: (filterList,filtersSalesRepo,filtersHRType) => {
 		return [
 			{
 				label: 'Hiring Status',
@@ -1467,7 +1467,7 @@ export const reportConfig = {
 			{
 				label: 'HR Type',
 				name: 'TypeOfHR',
-				child: filterList?.TypeOfHR.filter(val => val.text !== "-1" ),
+				child: filtersHRType.filter(val => val.text === "4" || val.text === "1" ),
 				isSearch: false,
 				isSingle:true
 			},
@@ -1941,6 +1941,33 @@ export const reportConfig = {
 				title: 'User Agent',
 				dataIndex: 'user_Agent',
 				key: 'user_Agent',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Bounce Type',
+				dataIndex: 'bounceType',
+				key: 'bounceType',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Bounce Sub Type',
+				dataIndex: 'bounceSubType',
+				key: 'bounceSubType',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Bounced Recipients',
+				dataIndex: 'bouncedRecipients',
+				key: 'bouncedRecipients',
 				align: 'left',
 				render: (text) => {
 					return <Fragment key={text}>{text }</Fragment>;
