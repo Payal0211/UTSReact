@@ -2887,7 +2887,10 @@ function PreviewClientModal({
                         <li>
                           <span>Engagement Mode (Pay per hire)</span>
                           <p>
-                            {getCompanyDetails?.engagementDetails
+
+                            { getCompanyDetails?.engagementDetails &&  getRequiredHRPricingType()?.find(val=>val.id === getCompanyDetails?.engagementDetails
+                                ?.hiringTypePricingId)?.value}
+                            {/* {getCompanyDetails?.engagementDetails
                               ?.hiringTypePricingId === 1
                               ? "Hire a Contractor"
                               : getCompanyDetails?.engagementDetails
@@ -2899,7 +2902,7 @@ function PreviewClientModal({
                                   : getCompanyDetails?.engagementDetails
                                     ?.hiringTypePricingId === 4
                                     ? "Hire part time Contractors"
-                                    : "NA"}
+                                    : "NA"} */}
                           </p>
                         </li>
                       </ul>
