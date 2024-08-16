@@ -219,7 +219,7 @@ export default function EmailTracking() {
           );
           return obj;
         });
-        downloadToExcel(DataToExport, `ClientPortalTrackingReport: ${hrStage}_${moment(startDate).format("YYYY-MM-DD")}/${ moment(endDate).format("YYYY-MM-DD")}.xlsx`);
+        downloadToExcel(DataToExport, `EmailTrackingReport: ${hrStage}_${moment(startDate).format("YYYY-MM-DD")}/${ moment(endDate).format("YYYY-MM-DD")}.xlsx`);
       };
 
     const setTableData = useCallback(
