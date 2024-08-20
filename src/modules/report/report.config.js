@@ -1693,14 +1693,17 @@ export const reportConfig = {
 					render: (text) => {
 						return <div key={text} dangerouslySetInnerHTML={{__html:text}}></div>;
 					},
-				},	
+				},
 				{
-					title: 'Device',
-					dataIndex: 'device',
-					key: 'device',
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
 					align: 'left',
 					render: (text) => {
-						return <Fragment key={text}>{text }</Fragment>;
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
 					},
 				},
 				{
@@ -1720,20 +1723,16 @@ export const reportConfig = {
 					render: (text) => {
 						return <Fragment key={text}>{text }</Fragment>;
 					},
-				},
+				},	
 				{
-					title: 'Location',
-					dataIndex: 'location',
-					key: 'location',
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
 					align: 'left',
 					render: (text) => {
-						let data = text.split(",");
-						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
-						const result = filteredValues.join(", ");
-						return <Fragment key={result}>{result}</Fragment>;
+						return <Fragment key={text}>{text }</Fragment>;
 					},
-				},
-								
+				},										
 			];
 		}else if (hrStageId===1 || hrStageId===2 || hrStageId===18){
 			return [
@@ -1753,12 +1752,15 @@ export const reportConfig = {
 					align: 'left',				
 				},
 				{
-					title: 'Device',
-					dataIndex: 'device',
-					key: 'device',
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
 					align: 'left',
 					render: (text) => {
-						return <Fragment key={text}>{text }</Fragment>;
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
 					},
 				},
 				{
@@ -1780,17 +1782,14 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Location',
-					dataIndex: 'location',
-					key: 'location',
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
 					align: 'left',
 					render: (text) => {
-						let data = text.split(",");
-						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
-						const result = filteredValues.join(", ");
-						return <Fragment key={result}>{result}</Fragment>;
+						return <Fragment key={text}>{text }</Fragment>;
 					},
-				},				
+				},							
 			];
 		}else if (hrStageId=== 3){
 			return [
@@ -1854,12 +1853,15 @@ export const reportConfig = {
 					},
 				},	
 				{
-					title: 'Device',
-					dataIndex: 'device',
-					key: 'device',
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
 					align: 'left',
 					render: (text) => {
-						return <Fragment key={text}>{text }</Fragment>;
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
 					},
 				},
 				{
@@ -1881,17 +1883,15 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Location',
-					dataIndex: 'location',
-					key: 'location',
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
 					align: 'left',
 					render: (text) => {
-						let data = text.split(",");
-						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
-						const result = filteredValues.join(", ");
-						return <Fragment key={result}>{result}</Fragment>;
+						return <Fragment key={text}>{text }</Fragment>;
 					},
-				},					
+				},
+									
 			];
 		} else{
 			return [
@@ -1937,12 +1937,15 @@ export const reportConfig = {
 					},
 				},	
 				{
-					title: 'Device',
-					dataIndex: 'device',
-					key: 'device',
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
 					align: 'left',
 					render: (text) => {
-						return <Fragment key={text}>{text }</Fragment>;
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
 					},
 				},
 				{
@@ -1964,17 +1967,14 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Location',
-					dataIndex: 'location',
-					key: 'location',
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
 					align: 'left',
 					render: (text) => {
-						let data = text.split(",");
-						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
-						const result = filteredValues.join(", ");
-						return <Fragment key={result}>{result}</Fragment>;
+						return <Fragment key={text}>{text }</Fragment>;
 					},
-				},					
+				},								
 			];
 		}
 	},
