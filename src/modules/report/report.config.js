@@ -2000,16 +2000,15 @@ export const reportConfig = {
 				dataIndex: 'email_Link',
 				key: 'email_Link',
 				align: 'left',		
-				render: (text, result) => (
-					result?.hrid ? 
+				render: (text, result) => (				
 					<Link
 					  target="_blank"
-					  to={`/allhiringrequest/${result?.hrid}`}
+					  to={text}
 					  style={{ color: "black", textDecoration: "underline" }}
-					  onClick={() => localStorage.removeItem("dealID")}
+					//   onClick={() => localStorage.removeItem("dealID")}
 					>
 					  {text}
-					</Link> : {text}
+					</Link> 
 				  ),		
 			},
 			{

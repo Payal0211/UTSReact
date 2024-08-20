@@ -1012,11 +1012,21 @@ function PreviewHRModal({
       let oldPOCS = jobPreview?.hrpocUserID
       let index = oldPOCS.findIndex(val => val.hrwiseContactId ===   pocDetails?.pocId )
   
-      oldPOCS[index] = {...oldPOCS[index], contactNo: pocDetails?.contactNo}
+      oldPOCS[index] = {...oldPOCS[index], contactNo: pocDetails?.contactNo ,showContactNumberToTalent: pocDetails?.showContactNumberToTalent  }
   
       setJobPreview((prev) => ({...prev,  
         hrpocUserID:oldPOCS
       })); 
+      sethrpocUserDetails(prev => {    
+        prev[index] = {
+          contactNo: oldPOCS[index].contactNo ,
+          email: oldPOCS[index].emailID ,
+          fullName: oldPOCS[index].fullName   , 
+          pocUserID: oldPOCS[index].hrwiseContactId ,
+          showContactNumberToTalent:  oldPOCS[index].showContactNumberToTalent,
+          showEmailToTalent  :oldPOCS[index].showEmailToTalent }
+        return prev
+      });
     }
     setIsLoading(false);
     }else{
