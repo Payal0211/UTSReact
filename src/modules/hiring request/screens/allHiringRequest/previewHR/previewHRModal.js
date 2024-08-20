@@ -216,6 +216,8 @@ function PreviewHRModal({
     showContactNumberToTalent:null,
     isEdit:null
   });
+
+  const [transparentEngType,setTransparentEngType] = useState([])
   // const dispatch = useDispatch();
 
   useEffect(() => {
@@ -226,7 +228,7 @@ function PreviewHRModal({
     GetPayrollType();
     getPOCUsers();
     getJobType();
-    getFrequencyData();
+    getFrequencyData(); 
     // getLocationInfo();
     // getPostPreview({
     //   contactId:_user.LoggedInUserID,
@@ -234,6 +236,14 @@ function PreviewHRModal({
     // });
     getCompanyPerksDetails();
   }, [hrIdforPreview]);
+
+  useEffect(()=>{
+    if(jobPreview?.isTransparentPricing === true){
+      setTransparentEngType([])
+    }else{
+      getTransparentEngType(hrIdforPreview)
+    }
+  },[hrIdforPreview,jobPreview])
   
   const getCompanyPerksDetails = async () => {
     // let res = await getCompanyPerks();
@@ -1002,11 +1012,21 @@ function PreviewHRModal({
       let oldPOCS = jobPreview?.hrpocUserID
       let index = oldPOCS.findIndex(val => val.hrwiseContactId ===   pocDetails?.pocId )
   
-      oldPOCS[index] = {...oldPOCS[index], contactNo: pocDetails?.contactNo}
+      oldPOCS[index] = {...oldPOCS[index], contactNo: pocDetails?.contactNo ,showContactNumberToTalent: pocDetails?.showContactNumberToTalent  }
   
       setJobPreview((prev) => ({...prev,  
         hrpocUserID:oldPOCS
       })); 
+      sethrpocUserDetails(prev => {    
+        prev[index] = {
+          contactNo: oldPOCS[index].contactNo ,
+          email: oldPOCS[index].emailID ,
+          fullName: oldPOCS[index].fullName   , 
+          pocUserID: oldPOCS[index].hrwiseContactId ,
+          showContactNumberToTalent:  oldPOCS[index].showContactNumberToTalent,
+          showEmailToTalent  :oldPOCS[index].showEmailToTalent }
+        return prev
+      });
     }
     setIsLoading(false);
     }else{
@@ -1286,6 +1306,11 @@ function PreviewHRModal({
   const getJobType = async () => {
     let response = await  MasterDAO.getJobTypesRequestDAO();        
     setJobTypes(response?.responseBody);
+  } 
+
+  const getTransparentEngType = async (ID) => {
+    let response = await  MasterDAO.getEngTypesRequestDAO(ID);     
+    setTransparentEngType(response?.responseBody?.map(item=> ( { value: item.id, label: item.type})));
   } 
 
   const getPOCUsers = async () => {              
@@ -4052,7 +4077,7 @@ function PreviewHRModal({
                   ><span style={{ fontWeight: 400 }} >Keep the Salary Confidential</span></Checkbox>
                 </div>
 
-                {getcompanyID === 1 &&
+                {getcompanyID === 1 && jobPreview?.isTransparentPricing &&
 
                   (jobPreview?.hiringTypePricingId === 3 ?
                     (editBudget?.budgetType == 1 && editBudget?.budgetFrom > 0)
@@ -4145,7 +4170,7 @@ function PreviewHRModal({
                   <Select
                     popupClassName="selDropdowncustom"
                     className="customSelect"
-                    options={EngOptions}
+                    options={transparentEngType.length ? transparentEngType : EngOptions}
                     value={editDuration?.hiringTypePricingId}
                     getOptionLabel={(option) => option.label}
                     getOptionValue={(option) => option.value}

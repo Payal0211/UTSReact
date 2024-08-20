@@ -56,6 +56,31 @@ export const MasterDAO = {
 			return errorDebug(error, 'masterDAO.getJobTypesRequestDAO');
 		}
 	},
+	getEngTypesRequestDAO: async function (ID) {
+		try {
+			const fixedValueResult = await MasterAPI.getEngTypesRequest(ID);
+			if (fixedValueResult) {
+				const statusCode = fixedValueResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = fixedValueResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return fixedValueResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return fixedValueResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'masterDAO.getEngTypesRequestDAO');
+		}
+	},
 	getPayRollTypeDAO: async function () {
 		try {
 			const fixedValueResult = await MasterAPI.getPayRollTypeRequest();

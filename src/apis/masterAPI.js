@@ -36,6 +36,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getJobTypesRequest');
 		}
 	},
+	getEngTypesRequest: async function (HRID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.COMPANY + MastersAPI.GET_HIRING_PRICING_TYPE + `?hrId=${HRID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getEngTypesRequest');
+		}
+	},
 	getPayRollTypeRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
