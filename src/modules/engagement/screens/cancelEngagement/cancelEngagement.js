@@ -83,7 +83,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 			let formattedData =
 			{
 				"contractDetailID": getEndEngagementDetails?.contractDetailID,
-				"LastWorkingDate": d.lastWorkingDate,
+				"LastWorkingDate": d.lastWorkingDate ?? null,
 				"reason": d.endEngagementReason ?? "",
 				"EngcancelType": engType,
 				"LostReasonID": 0

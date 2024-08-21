@@ -99,7 +99,7 @@ const HRDetailScreen = () => {
 	}, []);
 
 	useEffect(() => {
-		getHrUserData();
+		getHrUserData(Number(urlSplitter?.split('HR')[0]));
 	}, [page])
 	
 
@@ -133,14 +133,14 @@ const HRDetailScreen = () => {
 		[navigate],
 	);
 
-	const getHrUserData = async () => {
+	const getHrUserData = async (hrid) => {
 		setCardLoading(true);
 		const payload = {
 			"totalrecord":2,
 			"pagenumber":page,
 			"filterFields":
 			{
-				"HRID":Number(urlSplitter?.split('HR')[0])
+				"HRID":hrid
 			}
 		}
 		const _response = await hiringRequestDAO.getHRTalentUsingPaginationDAO(payload);
@@ -577,7 +577,7 @@ const togglePriority = useCallback(
                   updatedSplitter={updatedSplitter}
                   apiData={apiData}
                   clientDetail={apiData?.ClientDetail}
-                  callAPI={callAPI}
+                  callAPI={getHrUserData}
 				  setLoading={setLoading}
                   talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
                   HRStatusCode={apiData?.HRStatusCode}
@@ -608,7 +608,7 @@ const togglePriority = useCallback(
                 hrID={urlSplitter?.split("HR")[0]}
                 activityFeed={apiData?.HRHistory}
                 tagUsers={apiData?.UsersToTag}
-                callActivityFeedAPI={callAPI}
+                callActivityFeedAPI={getHrUserData}
 				ChannelID={apiData?.ChannelID}
               />
             </Suspense>
