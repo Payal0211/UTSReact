@@ -338,10 +338,38 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 								required
 								isError={errors['rejectReasonID'] && errors['rejectReasonID']}
 								errorMsg="Please select Category."
-								onValueChange={()=>{
+								onValueChange={async (e,val)=>{
+									// setIsLoading(true);         
+									let res = await hiringRequestDAO.getRejectionReasonForTalentDAO({
+										hrId:hrId,
+										rejectionId:val?.id,
+										atsTalentId:talentInfo?.ATSTalentID
+									});
+									const tempDiv = document.createElement('div');
+									tempDiv.innerHTML = res?.responseBody?.details?.rejectionMessageForTalent;
+									const textContent = tempDiv.textContent || tempDiv.innerText || ''; 
+									setValue("OtherRejectReason",textContent)
+									// setIsLoading(false); 
 									clearErrors('rejectReasonID')
 								}}
+								
 							/>
+							</div>}
+
+							{watch('rejectReason')?.id && <div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'Rejection message for the candidate'}
+									required
+									name="OtherRejectReason"
+									type={InputType.TEXT}
+									placeholder="please enter rejection message"	
+									validationSchema={{
+										required: 'please enter rejection message.',
+									}}								
+								/>
 							</div>}
 
 							<div className={TalentStatusStyle.colMd12}>
@@ -453,9 +481,36 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 									required
 									isError={errors['rejectReason'] && errors['rejectReason']}
 									errorMsg="Please select Category."
-									onValueChange={()=>{
+									onValueChange={async (e,val)=>{
+										// setIsLoading(true);         
+										let res = await hiringRequestDAO.getRejectionReasonForTalentDAO({
+											hrId:hrId,
+											rejectionId:val?.id,
+											atsTalentId:talentInfo?.ATSTalentID
+										});
+										const tempDiv = document.createElement('div');
+										tempDiv.innerHTML = res?.responseBody?.details?.rejectionMessageForTalent;
+										const textContent = tempDiv.textContent || tempDiv.innerText || ''; 
+										setValue("OtherRejectReason",textContent)
+										// setIsLoading(false); 
 										clearErrors('rejectReason')
 									}}
+								/>
+							</div>}
+
+							{watch('rejectReason')?.id && <div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'Rejection message for the candidate'}
+									required
+									name="OtherRejectReason"
+									type={InputType.TEXT}
+									placeholder="please enter rejection message"	
+									validationSchema={{
+										required: 'please enter rejection message.',
+									}}								
 								/>
 							</div>}
 							
