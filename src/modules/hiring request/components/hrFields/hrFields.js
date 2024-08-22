@@ -118,6 +118,7 @@ const HRFields = ({
   const [controlledWorkingValue, setControlledWorkingValue] = useState(
     "Select working mode"
   );
+  const [locationSelectValidation,setLocationSelectValidation] = useState(false);
 
   const [controlledTempProjectValue, setControlledTempProjectValue] =
     useState("Please select .");
@@ -1613,6 +1614,11 @@ const HRFields = ({
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
+      if(locationSelectValidation){
+        setIsSavedLoading(false);
+        return
+      }
+
       setCreditBaseCheckBoxError(false);
       if (userCompanyTypeID === 1) {
         if (typeOfPricing === null) {
@@ -1863,6 +1869,7 @@ const HRFields = ({
       locationList,
       locationList,
       jobPostUsersDetails,
+      locationSelectValidation
     ]
   );
 
@@ -3980,6 +3987,7 @@ const HRFields = ({
                       resetField("officeVisits");
                       setControlledFrequencyValue("Select");
                       setIsRelocate(false);
+                      setLocationSelectValidation(false)
                       setNearByCitesValues([]);
                       setNearByCitiesData([]);
                     }}
@@ -5331,6 +5339,7 @@ who have worked in scaled start ups."
                       options={locationList ?? []}
                       onSelect={async (locName, _obj) => {
                         // getClientNameValue(clientName,_obj)
+                        setLocationSelectValidation(false)
                         let citiesVal = await getCities(_obj.id);
                         if (watch("workingMode").value === WorkingMode.HYBRID) {
                           let firstCity = citiesVal[0];
@@ -5349,6 +5358,14 @@ who have worked in scaled start ups."
                       }}
                       onChange={(locName) => {
                         setValue("location", locName);
+                      }}
+                      onBlur={e=>{
+                        const isValidSelection = locationList?.some(
+                          (location) => location.value === e.target.value
+                      );
+                      if (!isValidSelection) {    
+                         setLocationSelectValidation(true)
+                      }
                       }}
                       placeholder="Enter Location"
                       // ref={controllerRef}
@@ -5371,6 +5388,11 @@ who have worked in scaled start ups."
                 {errors.location && (
                   <div className={HRFieldStyle.error}>
                     * Please Select Location
+                  </div>
+                )}
+                 {locationSelectValidation && (
+                  <div className={HRFieldStyle.error}>
+                    * Choose a valid option from the suggestions.
                   </div>
                 )}
               </div>
