@@ -206,8 +206,8 @@ export default function EmailTracking() {
     }
 
     const tableColumnsMemo = useMemo(
-        () => reportConfig.EmailPopupReportConfig(),
-        []
+        () => reportConfig.EmailPopupReportConfig(hrStage),
+        [hrStage]
       );
 
     const handleExport = (apiData) => {
