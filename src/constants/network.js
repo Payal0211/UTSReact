@@ -235,6 +235,7 @@ export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
 	static UPDATE_TALENT_STATUS = 'UpdateTalentStatus';
 	static REMOVE_ONHOLD_STATUS = 'RemoveOnHoldStatus';
+	static GET_REJECTION_REASON_FOR_TALENT = 'GetRejectionReasonForTalent';
 }
 
 export class HRAcceptanceAPI {
