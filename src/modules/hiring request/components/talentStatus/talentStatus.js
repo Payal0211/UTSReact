@@ -105,6 +105,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 
 	const talentStatusSubmitHanlder = useCallback(
 		async (d) => {			
+			debugger
 			if(apiData?.IsPayPerHire == true){
 				setIsLoading(true);
 				let talentStatusObject = {
@@ -116,7 +117,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 					rejectReasonID: _isNull(d.rejectReason?.id) ? 0 : d.rejectReason?.id,
 					onHoldReasonID: _isNull(d.onHoldReason?.id) ? 0 : d.onHoldReason?.id,
 					cancelReasonID: _isNull(d.cancelReason?.id) ? 0 : d.cancelReason?.id,
-					otherReason: _isNull(d.otherReason) ? null : d.otherReason,
+					otherReason: d?.OtherRejectReason ? d?.OtherRejectReason : null,
 					remark: d.onHoldRemark || d.lossRemark,
 					ContactTalentPriorityID: talentStatus?.Data?.ContactTalentPriorityID
 				};
