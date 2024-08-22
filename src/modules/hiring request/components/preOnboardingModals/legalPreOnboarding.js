@@ -34,6 +34,7 @@ export default function LegalPreOnboarding({
   HRID,
   setShowAMModal,
   callAPI,
+  getHrUserData,
   actionType,
   setLegalPreOnboardingAMAssignment,
 }) {
@@ -165,6 +166,7 @@ export default function LegalPreOnboarding({
           setIsLoading(false);
           setShowAMModal(false);
           callAPI(HRID);
+          getHrUserData(HRID)
           setIsLoading(false);
         }
       }
@@ -666,7 +668,7 @@ export default function LegalPreOnboarding({
           type="submit"
           className={HRDetailStyle.btnPrimaryOutline}
           //   onClick={() => setShowAMModal(false)}
-          onClick={() => callAPI(HRID)}
+          onClick={() => {callAPI(HRID); getHrUserData(HRID)}}
         >
           Cancel
         </button>

@@ -30,6 +30,7 @@ const TalentProfileCard = ({
 	hrData,
 	setPage,
 	page,
+	getHrUserData,
 }) => {
 	const [isMatchmaking, setIsMatchMaking] = useState(false);
 	return (
@@ -86,6 +87,7 @@ const TalentProfileCard = ({
 						<Suspense>
 							<TalentList
 								callAPI={callAPI}
+								getHrUserData={getHrUserData}
 								setLoading={setLoading}
 								talentCTA={talentCTA}
 								talentDetail={talentDetail && talentDetail}

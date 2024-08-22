@@ -33,6 +33,7 @@ const AnotherRound = ({
 	getScheduleSlotDate,
 	setScheduleSlotDate,
 	callAPI,
+	getHrUserData,
 	hrId,
 	closeModal,
 }) => {
@@ -279,6 +280,7 @@ const AnotherRound = ({
 				);
 				setTimeout(() => {
 					callAPI(hrId);
+					getHrUserData(hrId)
 					closeModal();
 				}, 1000);
 			}else if (response?.statusCode === HTTPStatusCode.BAD_REQUEST){
@@ -298,6 +300,7 @@ const AnotherRound = ({
 		},
 		[
 			callAPI,
+			getHrUserData,
 			closeModal,
 			getScheduleSlotDate,
 			hrId,
