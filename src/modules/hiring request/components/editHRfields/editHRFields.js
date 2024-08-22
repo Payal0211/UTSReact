@@ -232,6 +232,7 @@ const EditHRFields = ({
   const [activeUserDataList, setActiveUserDataList] = useState([]);
   const [jobPostUsersDetails, setJobPostUsersDetails] = useState([]);
   const [controlledPocValue, setControlledPocValue] = useState([]);
+  const [locationSelectValidation,setLocationSelectValidation] = useState(false);
 
   let controllerRef = useRef(null);
   const {
@@ -1185,6 +1186,11 @@ const EditHRFields = ({
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
 
+      if(locationSelectValidation){
+        setIsSavedLoading(false);
+        return
+      }
+
       if (typeOfPricing === null && companyType.id === 1) {
         setIsSavedLoading(false);
         setPricingTypeError(true);
@@ -1392,6 +1398,7 @@ const EditHRFields = ({
       locationList,
       locationList,
       jobPostUsersDetails,
+      locationSelectValidation
     ]
   );
   // useEffect(() => {
@@ -3747,6 +3754,7 @@ const EditHRFields = ({
                           resetField("officeVisits");
                           setControlledFrequencyValue("Select");
                           setIsRelocate(false);
+                          setLocationSelectValidation(false)
                           setNearByCitesValues([]);
                           setNearByCitiesData([]);
                         }}
@@ -5266,6 +5274,7 @@ who have worked in scaled start ups."
                       options={locationList ?? []}
                       onSelect={async (locName, _obj) => {
                         // getClientNameValue(clientName,_obj)
+                        setLocationSelectValidation(false)
                         let citiesVal = await getCities(_obj.id);
                         if (watch("workingMode").value === WorkingMode.HYBRID) {
                           let firstCity = citiesVal[0];
@@ -5284,6 +5293,14 @@ who have worked in scaled start ups."
                       }}
                       onChange={(locName) => {
                         setValue("location", locName);
+                      }}
+                      onBlur={e=>{
+                        const isValidSelection = locationList?.some(
+                          (location) => location.value === e.target.value
+                      );
+                      if (!isValidSelection) {    
+                         setLocationSelectValidation(true)
+                      }
                       }}
                       placeholder="Enter Location"
                       // ref={controllerRef}
@@ -5306,6 +5323,11 @@ who have worked in scaled start ups."
                 {errors.location && (
                   <div className={HRFieldStyle.error}>
                     * Please Select Location
+                  </div>
+                )}
+                {locationSelectValidation && (
+                  <div className={HRFieldStyle.error}>
+                    * Choose a valid option from the suggestions.
                   </div>
                 )}
               </div>
