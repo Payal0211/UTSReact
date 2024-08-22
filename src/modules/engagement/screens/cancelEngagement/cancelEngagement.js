@@ -83,12 +83,13 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 			let formattedData =
 			{
 				"contractDetailID": getEndEngagementDetails?.contractDetailID,
-				"LastWorkingDate": d.lastWorkingDate ?? null,
+				"LastWorkingDate": d.lastWorkingDate ? moment(d.lastWorkingDate).format("yyyy-MM-DD") : null,
 				"reason": d.endEngagementReason ?? "",
 				"EngcancelType": engType,
 				"LostReasonID": 0
 			}
-		
+	
+
 			const response =
 				await engagementRequestDAO.cancelEngagementRequestDAO(
 					formattedData,

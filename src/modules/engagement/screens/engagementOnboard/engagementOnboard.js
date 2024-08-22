@@ -84,16 +84,11 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
             <li>
-              <span>HR ID : </span>
-              <a
-                target="_blank"
-                href={`/allhiringrequest/${getOnboardFormDetails.hR_ID}`}
-                rel="noreferrer"
-              >
-                {getOnboardFormDetails?.hrNumber
-                  ? getOnboardFormDetails?.hrNumber
-                  : "NA"}
-              </a>
+              <span>Industry : </span>
+
+              {getOnboardFormDetails?.industry
+                ? getOnboardFormDetails?.industry
+                : "NA"}
             </li>
 
             <li>
@@ -101,13 +96,7 @@ const EngagementOnboard = ({
 
               {getOnboardFormDetails?.geo ? getOnboardFormDetails?.geo : "NA"}
             </li>
-            <li>
-              <span>No. of Employees : </span>
-
-              {getOnboardFormDetails?.noOfEmployee
-                ? getOnboardFormDetails?.noOfEmployee
-                : "NA"}
-            </li>
+          
             {/* <li>
               <span>Client POC Name : </span>
 
@@ -115,79 +104,18 @@ const EngagementOnboard = ({
                 ? getOnboardFormDetails?.client_POC_Name
                 : "NA"}
             </li> */}
+               <li>
+              <span>Client POC : </span>
+
+              {getOnboardFormDetails?.aM_Name
+                ? getOnboardFormDetails?.aM_Name
+                : "NA"}
+            </li>
             <li>
               <span>Client POC Email : </span>
 
               {getOnboardFormDetails?.client_POC_Email
                 ? getOnboardFormDetails?.client_POC_Email
-                : "NA"}
-            </li>
-            <li>
-              <span>Industry : </span>
-
-              {getOnboardFormDetails?.industry
-                ? getOnboardFormDetails?.industry
-                : "NA"}
-            </li>
-            <li>
-              <span>Discovery Call Link : </span>
-              <a
-                target="_blank"
-                href={getOnboardFormDetails?.discovery_Link}
-                rel="noreferrer"
-              >
-                {getOnboardFormDetails?.discovery_Link}
-              </a>
-            </li>
-            <li>
-              <span>Interview Link : </span>
-              <a
-                target="_blank"
-                href={getOnboardFormDetails?.interView_Link}
-                rel="noreferrer"
-              >
-                {getOnboardFormDetails?.interView_Link}
-              </a>
-            </li>
-            <li>
-              <span>Job Description : </span>
-              {/* <button className={HRDetailStyle.onboardingDownload}><DownloadJDSVG/>Download JD</button> */}
-
-              {getOnboardFormDetails?.jobDescription?.split(":")[0] ===
-                "http" ||
-              getOnboardFormDetails?.jobDescription?.split(":")[0] ===
-                "https" ? (
-                <a
-                  rel="noreferrer"
-                  href={getOnboardFormDetails?.jobDescription}
-                  style={{ textDecoration: "underline" }}
-                  target="_blank"
-                >
-                  <DownloadJDSVG />
-                  Download JD
-                </a>
-              ) : (
-                <a
-                  rel="noreferrer"
-                  href={
-                    NetworkInfo.PROTOCOL +
-                    NetworkInfo.DOMAIN +
-                    "Media/JDParsing/JDfiles/" +
-                    getOnboardFormDetails?.jobDescription
-                  }
-                  style={{ textDecoration: "underline" }}
-                  target="_blank"
-                >
-                  <DownloadJDSVG />
-                  Download JD
-                </a>
-              )}
-            </li>
-            <li>
-              <span>AM Name : </span>
-
-              {getOnboardFormDetails?.aM_Name
-                ? getOnboardFormDetails?.aM_Name
                 : "NA"}
             </li>
 
@@ -320,6 +248,123 @@ const EngagementOnboard = ({
         <div className={allengagementOnboardStyles.engagementContent}>
           <h2>Hiring Request Details</h2>
           <ul>
+          <li>
+              <span>HR ID : </span>
+              <a
+                target="_blank"
+                href={`/allhiringrequest/${getOnboardFormDetails.hR_ID}`}
+                rel="noreferrer"
+              >
+                {getOnboardFormDetails?.hrNumber
+                  ? getOnboardFormDetails?.hrNumber
+                  : "NA"}
+              </a>
+            </li>
+            <li>
+              <span>No. of Employees : </span>
+
+              {getOnboardFormDetails?.noOfEmployee
+                ? getOnboardFormDetails?.noOfEmployee
+                : "NA"}
+            </li>
+          
+
+            {/* <li>
+              <span>UTS HR Accepted by : </span>
+              {getOnboardFormDetails?.utS_HRAcceptedBy
+                ? getOnboardFormDetails?.utS_HRAcceptedBy
+                : "NA"}
+            </li> */}
+
+            <li>
+              <span>Job Title : </span>
+              {getOnboardFormDetails?.talentRole
+                ? getOnboardFormDetails?.talentRole
+                : "NA"}
+            </li>
+
+            <li>
+              <span>Discovery Call Link : </span>
+              <a
+                target="_blank"
+                href={getOnboardFormDetails?.discovery_Link}
+                rel="noreferrer"
+              >
+                {getOnboardFormDetails?.discovery_Link}
+              </a>
+            </li>
+            {/* <li>
+              <span>Interview Link : </span>
+              <a
+                target="_blank"
+                href={getOnboardFormDetails?.interView_Link}
+                rel="noreferrer"
+              >
+                {getOnboardFormDetails?.interView_Link}
+              </a>
+            </li> */}
+            <li>
+              <span>Job Description : </span>
+              {/* <button className={HRDetailStyle.onboardingDownload}><DownloadJDSVG/>Download JD</button> */}
+
+              {getOnboardFormDetails?.jobDescription?.split(":")[0] ===
+                "http" ||
+              getOnboardFormDetails?.jobDescription?.split(":")[0] ===
+                "https" ? (
+                <a
+                  rel="noreferrer"
+                  href={getOnboardFormDetails?.jobDescription}
+                  style={{ textDecoration: "underline" }}
+                  target="_blank"
+                >
+                  <DownloadJDSVG />
+                  Download JD
+                </a>
+              ) : (
+                <a
+                  rel="noreferrer"
+                  href={
+                    NetworkInfo.PROTOCOL +
+                    NetworkInfo.DOMAIN +
+                    "Media/JDParsing/JDfiles/" +
+                    getOnboardFormDetails?.jobDescription
+                  }
+                  style={{ textDecoration: "underline" }}
+                  target="_blank"
+                >
+                  <DownloadJDSVG />
+                  Download JD
+                </a>
+              )}
+            </li>
+
+            <li>
+              <span>Mode of Working : </span>
+              {getOnboardFormDetails?.workForceManagement
+                ? getOnboardFormDetails?.workForceManagement
+                : "NA"}
+            </li>
+          </ul>
+        </div>
+
+        <div className={allengagementOnboardStyles.engagementContent}>
+          <h2>Talent Details</h2>
+          <ul>
+            <li>
+              <span>Talent Name : </span>
+
+              {getOnboardFormDetails?.talentName
+                ? getOnboardFormDetails?.talentName
+                : "NA"}
+            </li>
+            <li>
+              <span>Talent Designation : </span>
+
+              {getOnboardFormDetails?.talent_Designation
+                ? getOnboardFormDetails?.talent_Designation
+                : "NA"}
+            </li>
+
             <li>
               <span>Net Payment Term : </span>
               {getOnboardFormDetails?.payment_NetTerm
@@ -378,47 +423,6 @@ const EngagementOnboard = ({
             )}
 
             <li>
-              <span>UTS HR Accepted by : </span>
-              {getOnboardFormDetails?.utS_HRAcceptedBy
-                ? getOnboardFormDetails?.utS_HRAcceptedBy
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Role Title : </span>
-              {getOnboardFormDetails?.talentRole
-                ? getOnboardFormDetails?.talentRole
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Workforce Management : </span>
-              {getOnboardFormDetails?.workForceManagement
-                ? getOnboardFormDetails?.workForceManagement
-                : "NA"}
-            </li>
-          </ul>
-        </div>
-
-        <div className={allengagementOnboardStyles.engagementContent}>
-          <h2>Talent Details</h2>
-          <ul>
-            <li>
-              <span>Talent Name : </span>
-
-              {getOnboardFormDetails?.talentName
-                ? getOnboardFormDetails?.talentName
-                : "NA"}
-            </li>
-            <li>
-              <span>Talent Designation : </span>
-
-              {getOnboardFormDetails?.talent_Designation
-                ? getOnboardFormDetails?.talent_Designation
-                : "NA"}
-            </li>
-
-            <li>
               <span>Talent Profile Link : </span>
               {getOnboardFormDetails?.talentProfileLink ? (
                 <a
@@ -460,7 +464,7 @@ const EngagementOnboard = ({
         </div>
 
         <div className={allengagementOnboardStyles.engagementContent}>
-          <h2>Invoicing and Contract</h2>
+          <h2>Invoicing and Legal</h2>
           <ul>
             <li>
               <span>Invoice Raising to : </span>
@@ -484,12 +488,130 @@ const EngagementOnboard = ({
                 ? getOnboardFormDetails?.contractDuration
                 : "NA"}
             </li>
-            <li>
+            {/* <li>
               <span>BDR/MDR Name : </span>
 
               {getOnboardFormDetails?.bdR_MDR_Name
                 ? getOnboardFormDetails?.bdR_MDR_Name
                 : "NA"}
+            </li> */}
+
+<li>
+              <span>MSA Sign Date : </span>
+
+              {getOnboardFormDetails?.msaSignDate
+                ? moment(getOnboardFormDetails?.msaSignDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+
+            <li>
+              <span>SOW Sign Date : </span>
+
+              {getOnboardFormDetails?.clientLegalDate
+                ? moment(getOnboardFormDetails?.clientLegalDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+            <li>
+              <span>SOW Document/Link : </span>
+
+              {getOnboardFormDetails?.sowDocument
+                ? getOnboardFormDetails?.sowDocument
+                : "NA"}
+            </li>
+          </ul>
+        </div>
+
+        <div className={allengagementOnboardStyles.engagementContent}>
+          <h2>Contract Details</h2>
+          <ul>
+            <li>
+              <span>Kick off call Date : </span>
+
+              {getOnboardFormDetails?.talentLegalDate
+                ? moment(getOnboardFormDetails?.talentLegalDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+
+            <li>
+              <span>Timezone : </span>
+
+              {getOnboardFormDetails?.kickOffTimeZone
+                ? getOnboardFormDetails?.kickOffTimeZone
+                : "NA"}
+            </li>
+
+            <li>
+              <span>Talent Reporting POC : </span>
+
+              {getOnboardFormDetails?.talentReportingPOC
+                ? getOnboardFormDetails?.talentReportingPOC
+                : "NA"}
+            </li>
+            <li>
+              <span>Talent Joining Date : </span>
+
+              {/* {getOnboardFormDetails?.talentOnBoardDate
+                ? getOnboardFormDetails?.talentOnBoardDate
+                : "NA"} */}
+
+              {getOnboardFormDetails?.contractStartDate
+                ? moment(getOnboardFormDetails?.contractStartDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+            <li>
+              <span>Zoho Invoice Number: </span>
+
+              {getOnboardFormDetails?.zohoInvoiceNumber
+                ? getOnboardFormDetails?.zohoInvoiceNumber
+                : "NA"}
+            </li>
+            <li>
+              <span>Invoice Value : </span>
+
+              {getOnboardFormDetails?.invoiceAmount
+                ? getOnboardFormDetails?.invoiceAmount +
+                  " " +
+                  getOnboardFormDetails?.talent_CurrencyCode
+                : "NA"}
+            </li>
+            <li>
+              <span>Engagement Start Date : </span>
+
+              {getOnboardFormDetails?.contractStartDate
+                ? moment(getOnboardFormDetails?.contractStartDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+            <li>
+              <span>Engagement End Date : </span>
+
+              {getOnboardFormDetails?.contractEndDate
+                ? moment(getOnboardFormDetails?.contractEndDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+            <li>
+            <span>Renewal Discussion Initiated : </span>
+              {getOnboardFormDetails?.isRenewalInitiated 
+                ? getOnboardFormDetails?.isRenewalInitiated 
+                : "NA"}
+              <span
+                          className={allengagementOnboardStyles.editNewIcon}
+                          style={{marginLeft:"10px",cursor:"pointer"}}
+                          onClick={() => setEditModal(true)}
+                        >
+                          <EditNewIcon />
+                        </span>
             </li>
           </ul>
         </div>
@@ -663,7 +785,7 @@ const EngagementOnboard = ({
         </div>}
        
 
-        <div className={allengagementOnboardStyles.engagementContent}>
+        {/* <div className={allengagementOnboardStyles.engagementContent}>
           <h2>During Legal</h2>
           <ul>
             <li>
@@ -693,98 +815,9 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
           </ul>
-        </div>
+        </div> */}
 
-        <div className={allengagementOnboardStyles.engagementContent}>
-          <h2>Contract Details</h2>
-          <ul>
-            <li>
-              <span>Kick off call Date : </span>
-
-              {getOnboardFormDetails?.talentLegalDate
-                ? moment(getOnboardFormDetails?.talentLegalDate).format(
-                    "DD-MM-YYYY"
-                  )
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Timezone : </span>
-
-              {getOnboardFormDetails?.kickOffTimeZone
-                ? getOnboardFormDetails?.kickOffTimeZone
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Talent Reporting POC : </span>
-
-              {getOnboardFormDetails?.talentReportingPOC
-                ? getOnboardFormDetails?.talentReportingPOC
-                : "NA"}
-            </li>
-            <li>
-              <span>Talent Joining Date : </span>
-
-              {/* {getOnboardFormDetails?.talentOnBoardDate
-                ? getOnboardFormDetails?.talentOnBoardDate
-                : "NA"} */}
-
-              {getOnboardFormDetails?.contractStartDate
-                ? moment(getOnboardFormDetails?.contractStartDate).format(
-                    "DD-MM-YYYY"
-                  )
-                : "NA"}
-            </li>
-            <li>
-              <span>Zoho Invoice Number: </span>
-
-              {getOnboardFormDetails?.zohoInvoiceNumber
-                ? getOnboardFormDetails?.zohoInvoiceNumber
-                : "NA"}
-            </li>
-            <li>
-              <span>Invoice Value : </span>
-
-              {getOnboardFormDetails?.invoiceAmount
-                ? getOnboardFormDetails?.invoiceAmount +
-                  " " +
-                  getOnboardFormDetails?.talent_CurrencyCode
-                : "NA"}
-            </li>
-            <li>
-              <span>Engagement Start Date : </span>
-
-              {getOnboardFormDetails?.contractStartDate
-                ? moment(getOnboardFormDetails?.contractStartDate).format(
-                    "DD-MM-YYYY"
-                  )
-                : "NA"}
-            </li>
-            <li>
-              <span>Engagement End Date : </span>
-
-              {getOnboardFormDetails?.contractEndDate
-                ? moment(getOnboardFormDetails?.contractEndDate).format(
-                    "DD-MM-YYYY"
-                  )
-                : "NA"}
-            </li>
-            <li>
-            <span>Renewal Discussion Initiated : </span>
-              {getOnboardFormDetails?.isRenewalInitiated 
-                ? getOnboardFormDetails?.isRenewalInitiated 
-                : "NA"}
-              <span
-                          className={allengagementOnboardStyles.editNewIcon}
-                          style={{marginLeft:"10px",cursor:"pointer"}}
-                          onClick={() => setEditModal(true)}
-                        >
-                          <EditNewIcon />
-                        </span>
-            </li>
-          </ul>
-        </div>
+        
         </> : <h2>No Data Available</h2>}
       
 
