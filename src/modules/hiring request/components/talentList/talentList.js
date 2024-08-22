@@ -90,6 +90,7 @@ const TalentList = ({
 	hrData,
 	setPage,
 	page,
+	getHrUserData
 }) => {	
 	const navigate = useNavigate()
 	const EmpID = localStorage.getItem('EmployeeID')
@@ -392,6 +393,7 @@ const TalentList = ({
 		);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			callAPI(hrId)
+			getHrUserData(hrId)
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
@@ -432,12 +434,14 @@ const TalentList = ({
 				);
 				if (response?.statusCode === HTTPStatusCode.OK) {
 					 callAPI(hrId)
+					 getHrUserData(hrId)
 				}else{
 					 setLoading(false)
 				}	
 		},
 		[
 			callAPI,
+			getHrUserData,
 			hrId,
 			isAnotherRound,
 			messageAPI,
@@ -1540,7 +1544,7 @@ const TalentList = ({
 			/>
 
 			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
-			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal} AMFlags={AMFlags} callAPI={callAPI} />
+			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal} AMFlags={AMFlags} callAPI={callAPI} getHrUserData={getHrUserData}/>
 
 
 			{/** ============ Engagement Onboard ================ */}
@@ -1607,7 +1611,7 @@ const TalentList = ({
 							setShowEngagementCancel(false)
 						}>
 						<EngagementCancel
-							engagementListHandler={() => callAPI(hrId)}
+							engagementListHandler={() => {callAPI(hrId); getHrUserData(hrId)}}
 							talentInfo={filterTalentID}
 							// lostReasons={filtersList?.onBoardingLostReasons}
 							closeModal={() =>
@@ -1754,6 +1758,7 @@ const TalentList = ({
 					onCancel={() => setReScheduleInterviewModal(false)}>
 					<InterviewReschedule
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setReScheduleInterviewModal(false)}
 						talentName={filterTalentID?.Name}
 						hrId={hrId}
@@ -1786,6 +1791,7 @@ const TalentList = ({
 					onCancel={() => setAnotherRound(false)}>
 					<InterviewReschedule
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setAnotherRound(false)}
 						talentName={filterTalentID?.Name}
 						hrId={hrId}
@@ -1819,6 +1825,7 @@ const TalentList = ({
 					onCancel={() => setScheduleAnotherRoundInterview(false)}>
 					<InterviewReschedule
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setScheduleAnotherRoundInterview(false)}
 						talentName={filterTalentID?.Name}
 						hrId={hrId}
@@ -1852,6 +1859,7 @@ const TalentList = ({
 					onCancel={() => setScheduleInterviewModal(false)}>
 					<InterviewSchedule
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						talentName={filterTalentID?.Name}
 						talentInfo={filterTalentID}
 						hrId={hrId}
@@ -1885,6 +1893,7 @@ const TalentList = ({
 						hrId={hrId}
 						clientDetail={clientDetail}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						getScheduleSlotDate={getScheduleSlotDate}
 						setScheduleSlotDate={setScheduleSlotDate}
 						talentInfo={filterTalentID}
@@ -1916,6 +1925,7 @@ const TalentList = ({
 						hrId={hrId}
 						clientDetail={clientDetail}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						talentInfo={filterTalentID}
 						talentName={filterTalentID?.Name}
 						HRStatusCode={HRStatusCode}
@@ -1940,6 +1950,7 @@ const TalentList = ({
 					<TalentAcceptance
 						clientDetail={clientDetail}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						talentInfo={filterTalentID}
 						talentName={filterTalentID?.Name}
 						HRStatusCode={HRStatusCode}
@@ -1964,6 +1975,7 @@ const TalentList = ({
 						talentInfo={filterTalentID}
 						hrId={hrId}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setTalentStatus(false)}
 						apiData={apiData}
 						ActionKey={ActionKey}
@@ -1985,6 +1997,7 @@ const TalentList = ({
 						hrId={hrId}
 						talentInfo={filterTalentID}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setInterviewStatus(false)}
 					/>
 				</Modal>
@@ -2003,6 +2016,7 @@ const TalentList = ({
 						talentInfo={filterTalentID}
 						hrId={hrId}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setOnboardClientModal(false)}
 					/>
 				</Modal>
@@ -2021,6 +2035,7 @@ const TalentList = ({
 						talentInfo={filterTalentID}
 						hrId={hrId}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setOnboardTalentModal(false)}
 					/>
 				</Modal>
@@ -2039,6 +2054,7 @@ const TalentList = ({
 						talentInfo={filterTalentID}
 						hrId={hrId}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setLegalClientOnboardModal(false)}
 					/>
 				</Modal>
@@ -2057,6 +2073,7 @@ const TalentList = ({
 						talentInfo={filterTalentID}
 						hrId={hrId}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setLegalTalentOnboardModal(false)}
 					/>
 				</Modal>
@@ -2074,6 +2091,7 @@ const TalentList = ({
 					onCancel={() => setEditBillRate(false)}>
 					<EditBillRate
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						hrId={hrId}
 						hrNO={hiringRequestNumber}
 						filterTalentID={filterTalentID}
@@ -2140,6 +2158,7 @@ const TalentList = ({
 						talentInfo={filterTalentID}
 						hrId={hrId}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setTalentKickOffModal(false)}
 					/>
 				</Modal>
@@ -2158,6 +2177,7 @@ const TalentList = ({
 						talentInfo={filterTalentID}
 						hrId={hrId}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						closeModal={() => setReplaceTalentModal(false)}
 						isEngagement={false}
 					/>
@@ -2205,6 +2225,7 @@ const TalentList = ({
 						onCancel={() => setShowFeedback(false)}
 						hrId={hrId}
 						callAPI={callAPI}
+						getHrUserData={getHrUserData}
 						clientDetail={clientDetail}
 						talentInfo={filterTalentID}
 					/>

@@ -7,7 +7,7 @@ import { InterviewDAO } from 'core/interview/interviewDAO';
 import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
-const InterviewStatus = ({ hrId, talentInfo, callAPI, closeModal }) => {
+const InterviewStatus = ({ hrId, talentInfo, callAPI, getHrUserData,closeModal }) => {
 	const {
 		register,
 		handleSubmit,
@@ -50,6 +50,7 @@ const InterviewStatus = ({ hrId, talentInfo, callAPI, closeModal }) => {
 				);
 				setTimeout(() => {
 					callAPI(hrId);
+					getHrUserData(hrId)
 					closeModal();
 				}, 1000);
 			} else {
@@ -65,6 +66,7 @@ const InterviewStatus = ({ hrId, talentInfo, callAPI, closeModal }) => {
 		},
 		[
 			callAPI,
+			getHrUserData,
 			closeModal,
 			hrId,
 			messageAPI,

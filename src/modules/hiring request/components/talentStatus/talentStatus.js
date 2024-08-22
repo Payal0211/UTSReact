@@ -14,7 +14,7 @@ import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { InterviewDAO } from 'core/interview/interviewDAO';
 
-const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}) => {
+const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiData,ActionKey}) => {
 	const {
 		register,
 		handleSubmit,
@@ -98,8 +98,9 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 		});
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			callAPI(hrId);
+			getHrUserData(hrId)
 		}
-	}, [callAPI, hrId, talentInfo?.ContactPriorityID]);
+	}, [callAPI,getHrUserData, hrId, talentInfo?.ContactPriorityID]);
 
 
 
@@ -160,6 +161,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 				if (response) {
 					setIsLoading(false);
 					callAPI(hrId);
+					getHrUserData(hrId)
 				}
 			}else if (apiData?.IsPayPerCredit == true){
 				setIsLoading(true);
@@ -178,6 +180,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 				if (response) {
 					setIsLoading(false);
 					callAPI(hrId);
+					getHrUserData(hrId)
 				}
 			}
 
@@ -188,7 +191,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData,ActionKey}
 				await saveTalentNotesWhenRejected(note);
 			}
 		},
-		[callAPI, hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID,talentStatus,apiData?.IsPayPerCredit,apiData?.IsPayPerHire,talentStatusCreditBase],
+		[callAPI, getHrUserData,hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID,talentStatus,apiData?.IsPayPerCredit,apiData?.IsPayPerHire,talentStatusCreditBase],
 	);
 
 	const saveTalentNotesWhenRejected = async(notes) => {

@@ -13,6 +13,7 @@ const UpdateLegalClientOnboardStatus = ({
 	talentInfo,
 	hrId,
 	callAPI,
+	getHrUserData,
 	closeModal,
 }) => {
 	const {
@@ -64,10 +65,11 @@ const UpdateLegalClientOnboardStatus = ({
 			let response = await OnboardDAO.onboardStatusUpdatesRequestDAO(
 				talentStatusObject,
 			);
-			if (response) callAPI(hrId);
+			if (response) {callAPI(hrId); getHrUserData(hrId);}
 		},
 		[
 			callAPI,
+			getHrUserData,
 			hrId,
 			talentInfo?.ContactId,
 			talentInfo?.OnBoardId,

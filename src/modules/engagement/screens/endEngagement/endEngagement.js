@@ -104,11 +104,14 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setEndEngagementDetails(response?.responseBody?.details)
 			let dateString = response?.responseBody?.details?.contractEndDate
-			let convertedDate = moment(dateString, 'DD/MM/YYYY')
+			let convertedDate = dateString ? moment(dateString, 'DD/MM/YYYY') : ''
 
-			const formattedDate = convertedDate?.format('YYYY-MM-DDTHH:mm:ss');
-			setValue("lastWorkingDate", new Date(formattedDate));
-			setValue("newContractStartDate", new Date(formattedDate));
+			if(dateString){
+				const formattedDate = convertedDate?.format('YYYY-MM-DDTHH:mm:ss');
+				setValue("lastWorkingDate", new Date(formattedDate));
+				setValue("newContractStartDate", new Date(formattedDate));
+			}
+			
 			/* let updatedDate = new Date(
 				new Date(
 					response?.responseBody?.details?.contractEndDate,
@@ -125,7 +128,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 			setIsSubmit(true)
 			let formattedData = {
 				contractDetailID: getEndEngagementDetails?.contractDetailID,
-				contractEndDate: d.lastWorkingDate,
+				contractEndDate: d.lastWorkingDate ? moment(d.lastWorkingDate).format("yyyy-MM-DD") : d.lastWorkingDate,
 				reason: d.endEngagementReason,
 				fileName: getUploadFileData,
 				LostReasonID: +d.lostReason.id,
@@ -136,13 +139,13 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				isReplacement: engagementReplacement?.replacementData,
 				talentReplacement: {
 				onboardId: talentInfo?.onboardID,
-				lastWorkingDay: addLatter === false ? d.lwd :"" ,
+				lastWorkingDay: addLatter === false ? moment(d.lwd).format("yyyy-MM-DD") :"" ,
 				replacementInitiatedby:loggedInUserID.toString(),
 				engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
 				},
 				dpPercentage : +d.dpPercentage,
 				dpAmount : +d.dpAmount,
-				newContractStartDate : d.newContractStartDate,
+				newContractStartDate : d.newContractStartDate ? moment(d.newContractStartDate).format("yyyy-MM-DD") : d.newContractStartDate ,
 				expectedCTC : +d.expectedCTC,
 			};
 			const response =

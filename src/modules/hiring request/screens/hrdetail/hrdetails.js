@@ -311,6 +311,7 @@ const togglePriority = useCallback(
 
 	const [showAMModal, setShowAMModal] = useState(false);
 	const [reopenHrModal, setReopenHrModal] = useState(false);
+		
 	return (
 		<WithLoader
 			showLoader={isLoading}
@@ -577,7 +578,8 @@ const togglePriority = useCallback(
                   updatedSplitter={updatedSplitter}
                   apiData={apiData}
                   clientDetail={apiData?.ClientDetail}
-                  callAPI={getHrUserData}
+                  callAPI={callAPI}
+				  getHrUserData={getHrUserData}
 				  setLoading={setLoading}
                   talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
                   HRStatusCode={apiData?.HRStatusCode}
@@ -608,7 +610,7 @@ const togglePriority = useCallback(
                 hrID={urlSplitter?.split("HR")[0]}
                 activityFeed={apiData?.HRHistory}
                 tagUsers={apiData?.UsersToTag}
-                callActivityFeedAPI={getHrUserData}
+                callActivityFeedAPI={callAPI}
 				ChannelID={apiData?.ChannelID}
               />
             </Suspense>

@@ -14,6 +14,7 @@ const InterviewFeedback = ({
 	isEditFeedback,
 	hrId,
 	callAPI,
+	getHrUserData,
 	talentInfo,
 	talentName,
 	hiringRequestNumber,
@@ -108,6 +109,7 @@ const InterviewFeedback = ({
 					);
 					setTimeout(() => {
 						callAPI(hrId);
+						getHrUserData(hrId)
 						closeModal();
 					}, 1000);
 				} else {
@@ -122,6 +124,7 @@ const InterviewFeedback = ({
 		},
 		[
 			callAPI,
+			getHrUserData,
 			closeModal,
 			hrId,
 			isAnotherRound,
@@ -182,6 +185,7 @@ const InterviewFeedback = ({
 			getSlotInformationHandler={getSlotInformationHandler}
 			scheduleSlotRadio={scheduleSlotRadio}
 			callAPI={callAPI}
+			getHrUserData={getHrUserData}
 			hrId={hrId}
 			closeModal={closeModal}
 		/>
