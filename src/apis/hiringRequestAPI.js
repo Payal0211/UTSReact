@@ -6,7 +6,8 @@ import {
 	InterviewsAPI,
 	NetworkInfo,
 	SubDomain,
-	ClientsAPI
+	ClientsAPI,
+	TalentStatus
 } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
@@ -1387,6 +1388,18 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'hiringRequestAPI.getHRActivityUsingPagination');
+		}
+	},
+	getRejectionReasonForTalent:async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.TALENT_STATUS + TalentStatus.GET_REJECTION_REASON_FOR_TALENT + `?hrId=${data?.hrId}&rejectionReasonID=${data?.rejectionId}&atsTalentID=${data?.atsTalentId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'HiringRequestAPI.getRejectionReasonForTalent');
 		}
 	}
 

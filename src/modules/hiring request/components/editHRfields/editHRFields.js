@@ -1233,10 +1233,9 @@ const EditHRFields = ({
       hrFormDetails.NearByCities = isRelocate
         ? NearByCitesValues.join(",")
         : null;
-      hrFormDetails.ATS_JobLocationID =
+        hrFormDetails.ATS_JobLocationID =
         watch("workingMode").id === 2 || watch("workingMode").id === 3
-          ? locationList?.find((loc) => loc.value === watch("location"))?.id
-          : null;
+          ? locationList.length ? locationList?.find((loc) => loc.value === watch("location"))?.id : getHRdetails?.directPlacement?.atsJobLocationId : null;
       hrFormDetails.ATS_NearByCities = isRelocate
         ? getNearByCitiesForAts()
         : null;

@@ -106,6 +106,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 
 	const talentStatusSubmitHanlder = useCallback(
 		async (d) => {			
+			debugger
 			if(apiData?.IsPayPerHire == true){
 				setIsLoading(true);
 				let talentStatusObject = {
@@ -117,7 +118,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 					rejectReasonID: _isNull(d.rejectReason?.id) ? 0 : d.rejectReason?.id,
 					onHoldReasonID: _isNull(d.onHoldReason?.id) ? 0 : d.onHoldReason?.id,
 					cancelReasonID: _isNull(d.cancelReason?.id) ? 0 : d.cancelReason?.id,
-					otherReason: _isNull(d.otherReason) ? null : d.otherReason,
+					otherReason: d?.OtherRejectReason ? d?.OtherRejectReason : null,
 					remark: d.onHoldRemark || d.lossRemark,
 					ContactTalentPriorityID: talentStatus?.Data?.ContactTalentPriorityID
 				};
@@ -341,10 +342,38 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 								required
 								isError={errors['rejectReasonID'] && errors['rejectReasonID']}
 								errorMsg="Please select Category."
-								onValueChange={()=>{
+								onValueChange={async (e,val)=>{
+									// setIsLoading(true);         
+									let res = await hiringRequestDAO.getRejectionReasonForTalentDAO({
+										hrId:hrId,
+										rejectionId:val?.id,
+										atsTalentId:talentInfo?.ATSTalentID
+									});
+									const tempDiv = document.createElement('div');
+									tempDiv.innerHTML = res?.responseBody?.details?.rejectionMessageForTalent;
+									const textContent = tempDiv.textContent || tempDiv.innerText || ''; 
+									setValue("OtherRejectReason",textContent)
+									// setIsLoading(false); 
 									clearErrors('rejectReasonID')
 								}}
+								
 							/>
+							</div>}
+
+							{watch('rejectReason')?.id && <div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'Rejection message for the candidate'}
+									required
+									name="OtherRejectReason"
+									type={InputType.TEXT}
+									placeholder="please enter rejection message"	
+									validationSchema={{
+										required: 'please enter rejection message.',
+									}}								
+								/>
 							</div>}
 
 							<div className={TalentStatusStyle.colMd12}>
@@ -456,9 +485,36 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									required
 									isError={errors['rejectReason'] && errors['rejectReason']}
 									errorMsg="Please select Category."
-									onValueChange={()=>{
+									onValueChange={async (e,val)=>{
+										// setIsLoading(true);         
+										let res = await hiringRequestDAO.getRejectionReasonForTalentDAO({
+											hrId:hrId,
+											rejectionId:val?.id,
+											atsTalentId:talentInfo?.ATSTalentID
+										});
+										const tempDiv = document.createElement('div');
+										tempDiv.innerHTML = res?.responseBody?.details?.rejectionMessageForTalent;
+										const textContent = tempDiv.textContent || tempDiv.innerText || ''; 
+										setValue("OtherRejectReason",textContent)
+										// setIsLoading(false); 
 										clearErrors('rejectReason')
 									}}
+								/>
+							</div>}
+
+							{watch('rejectReason')?.id && <div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'Rejection message for the candidate'}
+									required
+									name="OtherRejectReason"
+									type={InputType.TEXT}
+									placeholder="please enter rejection message"	
+									validationSchema={{
+										required: 'please enter rejection message.',
+									}}								
 								/>
 							</div>}
 							
