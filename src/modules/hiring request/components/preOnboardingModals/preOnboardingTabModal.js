@@ -5,7 +5,7 @@ import { ReactComponent as AssignCurrectSVG } from 'assets/svg/assignCurrentRigh
 import BeforePreOnboarding from "./beforePreOnboarding";
 import LegalPreOnboarding from "./legalPreOnboarding";
 
-export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFlags,callAPI}) {
+export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFlags,callAPI,getHrUserData}) {
     const [talentDeteils, setTalentDetais] = useState({})
     const [HRID, setHRID] = useState('')
     const [preOnboardingDetailsForAMAssignment,setPreOnboardingDetailsForAMAssignment] = useState({});
@@ -22,13 +22,13 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
                 children: <BeforePreOnboarding 
                 preOnboardingDetailsForAMAssignment={preOnboardingDetailsForAMAssignment} 
                 setPreOnboardingDetailsForAMAssignment={setPreOnboardingDetailsForAMAssignment} 
-                talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType} setMessage={setMessage}/>,
+                talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType} setMessage={setMessage} getHrUserData={getHrUserData}/>,
             },
             {
                 label: 'Legal',
                 key: 'Legal', 
                 children: <LegalPreOnboarding  setLegalPreOnboardingAMAssignment={setLegalPreOnboardingAMAssignment}
-                talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} 
+                talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} getHrUserData={getHrUserData}
                 />,
             },
             // {
@@ -60,7 +60,7 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
     // })
        setItems(ReqTabs)
        setActiveKey(tabLabel)
-    },[actionType,setShowAMModal,callAPI])
+    },[actionType,setShowAMModal,callAPI,getHrUserData])
 
     // create tabs based on flags
     useEffect(() =>{
@@ -73,14 +73,14 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
                     children: <BeforePreOnboarding  
                     preOnboardingDetailsForAMAssignment={preOnboardingDetailsForAMAssignment} 
                     setPreOnboardingDetailsForAMAssignment={setPreOnboardingDetailsForAMAssignment}
-                    talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
+                    talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} getHrUserData={getHrUserData}/>,
                 },
                 {
                     label: 'Legal',
                     key: 'Legal',
                     children: <LegalPreOnboarding 
                     setLegalPreOnboardingAMAssignment={setLegalPreOnboardingAMAssignment}
-                    talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
+                    talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} getHrUserData={getHrUserData}/>,
                 },
                 // {
                 //     label: 'During Pre-Onboarding',

@@ -11,6 +11,7 @@ const UpdateKickOffOnboardStatus = ({
 	talentInfo,
 	hrId,
 	callAPI,
+	getHrUserData,
 	closeModal,
 }) => {
 	const {
@@ -55,10 +56,11 @@ const UpdateKickOffOnboardStatus = ({
 			let response = await OnboardDAO.onboardStatusUpdatesRequestDAO(
 				talentStatusObject,
 			);
-			if (response) callAPI(hrId);
+			if (response) callAPI(hrId); getHrUserData(hrId)
 		},
 		[
 			callAPI,
+			getHrUserData,
 			hrId,
 			talentInfo?.ContactId,
 			talentInfo?.OnBoardId,

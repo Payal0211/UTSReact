@@ -38,6 +38,7 @@ const InterviewSchedule = ({
 
 	getInterviewStatus,
 	callAPI,
+	getHrUserData,
 }) => {
 	const {
 		register,
@@ -203,6 +204,7 @@ const InterviewSchedule = ({
 				);
 				setTimeout(() => {
 					callAPI(hrId);
+					getHrUserData(hrId)
 					closeModal();
 				}, 1000);
 			} else {
@@ -218,6 +220,7 @@ const InterviewSchedule = ({
 		},
 		[
 			callAPI,
+			getHrUserData,
 			closeModal,
 			getInterviewStatus,
 			getScheduleSlotDate,

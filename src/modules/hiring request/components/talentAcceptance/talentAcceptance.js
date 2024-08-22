@@ -17,6 +17,7 @@ const TalentAcceptance = ({
 	HRStatusCode,
 	hrStatus,
 	callAPI,
+	getHrUserData,
 	clientDetail,
 	talentInfo,
 	closeModal,
@@ -104,10 +105,12 @@ const TalentAcceptance = ({
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setIsLoading(false);
 			callAPI(urlSplitter);
+			getHrUserData(urlSplitter)
 		}
 		setIsLoading(false);
 	}, [
 		callAPI,
+		getHrUserData,
 		postAcceptanceAvailability,
 		postAcceptanceHowSoon,
 		postAcceptanceValue,

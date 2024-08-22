@@ -25,6 +25,7 @@ const InterviewReschedule = ({
 	talentInfo,
 	hiringRequestNumber,
 	callAPI,
+	getHrUserData,
 	reScheduleTimezone,
 	setRescheduleTimezone,
 	getRescheduleSlotDate,
@@ -212,6 +213,7 @@ const InterviewReschedule = ({
 				);
 				setTimeout(() => {
 					callAPI(hrId);
+					getHrUserData(hrId);
 					closeModal();
 				}, 1000);
 			}
@@ -232,6 +234,7 @@ const InterviewReschedule = ({
 
 		[
 			callAPI,
+			getHrUserData,
 			closeModal,
 			getInterviewStatus,
 			getRescheduleSlotDate,

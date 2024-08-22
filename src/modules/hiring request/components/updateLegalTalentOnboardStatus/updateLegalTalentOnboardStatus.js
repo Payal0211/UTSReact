@@ -14,6 +14,7 @@ const UpdateLegalTalentOnboardStatus = ({
 	talentInfo,
 	hrId,
 	callAPI,
+	getHrUserData,
 	closeModal,
 }) => {
 	const {
@@ -74,10 +75,11 @@ const UpdateLegalTalentOnboardStatus = ({
 				talentStatusObject,
 			);
 			setIsLoading(false)
-			if (response) callAPI(hrId);
+			if (response) {callAPI(hrId); getHrUserData(hrId)}
 		},
 		[
 			callAPI,
+			getHrUserData,
 			hrId,
 			talentInfo?.ContactId,
 			talentInfo?.OnBoardId,

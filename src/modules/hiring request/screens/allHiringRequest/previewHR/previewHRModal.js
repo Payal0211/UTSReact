@@ -1363,6 +1363,9 @@ function PreviewHRModal({
         if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !editLocation?.JobLocation ){
             _errors.JobLocation = "Please select job location."
             isValid = false;
+        }else if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !locationList?.some((location) => location.label === editLocation?.JobLocation)){
+          _errors.JobLocation = "Choose a valid location from the suggestions."
+          isValid = false;
         }
         if(editLocation.workingModeId === 2 && !editLocation?.FrequencyOfficeVisitID){
             _errors.FrequencyOfficeVisitID = "Please select frequency of office visits."
@@ -1585,9 +1588,7 @@ function PreviewHRModal({
     }    
   }
 
-  const handleBlur = () => {
-
-  
+  const handleBlur = () => {      
     const isValidSelection = locationList?.some(
         (location) => location.label === editLocation?.JobLocation
     );
@@ -1598,8 +1599,7 @@ function PreviewHRModal({
         NearByCities:[] 
     }));
       return
-    }
-  
+    }  
     if (!isValidSelection) {
       if(nearByCitiesData?.length>0){
          setEditLocation((prev) => ({
@@ -1608,13 +1608,12 @@ function PreviewHRModal({
             ATS_JobLocationID: null,
             NearByCities:[nearByCitiesData?.length>0 && nearByCitiesData[0]?.label] 
         }));
+        setError({...error,['JobLocation'] : "Choose a valid location from the suggestions."}); 
       }else{
         setEditLocation((prev) => ({
           ...prev,
           NearByCities:[] }));
-      }
-       
-        // setError('Please select a valid location from the list.');
+      }       
     }else{
       if(nearByCitiesData?.length>0){
          setEditLocation((prev) => ({
@@ -1625,8 +1624,7 @@ function PreviewHRModal({
         setEditLocation((prev) => ({
           ...prev,
           NearByCities:[] }));
-      }
-     
+      }     
     }
   };
 

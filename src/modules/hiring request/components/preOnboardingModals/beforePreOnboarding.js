@@ -56,6 +56,7 @@ export default function BeforePreOnboarding({
   actionType,
   setMessage,
   titleFlag,
+  getHrUserData
 }) {
   const {
     watch,
@@ -649,6 +650,7 @@ const calcelMember = () =>{
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         callAPI(HRID)
+        getHrUserData(HRID)
         setMessage(result?.responseBody.details);
         setIsLoading(false);
         setEditBillRate(false);

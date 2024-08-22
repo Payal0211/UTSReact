@@ -15,6 +15,7 @@ const EngagementReplaceTalent = ({
 	talentInfo,
 	hrId,
 	callAPI,
+	getHrUserData,
 	closeModal,
 	isEngagement,
 	engagementListHandler,
@@ -130,6 +131,7 @@ const EngagementReplaceTalent = ({
 		},
 		[
 			callAPI,
+			getHrUserData,
 			closeModal,
 			engagementListHandler,
 			getRadio,
@@ -155,6 +157,7 @@ const EngagementReplaceTalent = ({
 			engagementListHandler();
 		} else {
 			callAPI(hrId);
+			getHrUserData(hrId)
 		}
 	} 
 
