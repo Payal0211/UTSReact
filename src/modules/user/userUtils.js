@@ -34,7 +34,7 @@ export const userUtils = {
 
 		return filteredData;
 	},
-	userDataFormatter: (d, id, base64Image, getUploadFileData, modifiedGEO) => {
+	userDataFormatter: (d, id, base64Image, getUploadFileData, anotherUserTypeID,modifiedGEO) => {
 		var _itemVal;
 		if (d?.team?.id) {
 			_itemVal = d.team.id;
@@ -163,6 +163,7 @@ export const userUtils = {
 					},
 				],
 			},
+			another_UserTypeID:anotherUserTypeID?.another_UserTypeID
 		};
 		return userFormDetails;
 	},
