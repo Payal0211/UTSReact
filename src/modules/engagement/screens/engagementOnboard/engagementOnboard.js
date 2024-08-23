@@ -66,7 +66,7 @@ const EngagementOnboard = ({
 
         {getOnboardFormDetails?.hR_ID ? <>
           <div className={allengagementOnboardStyles.engagementContent}>
-          <h2>General Information</h2>
+          <h2>Client Information</h2>
           <ul>
             <li>
               <span>Company Name : </span>
@@ -243,7 +243,6 @@ const EngagementOnboard = ({
           </ul>
         </div>
 
-        {console.log(getOnboardFormDetails,"getOnboardFormDetails")}
 
         <div className={allengagementOnboardStyles.engagementContent}>
           <h2>Hiring Request Details</h2>
@@ -285,13 +284,14 @@ const EngagementOnboard = ({
 
             <li>
               <span>Discovery Call Link : </span>
-              <a
+              {getOnboardFormDetails?.discovery_Link ? <a
                 target="_blank"
                 href={getOnboardFormDetails?.discovery_Link}
                 rel="noreferrer"
               >
                 {getOnboardFormDetails?.discovery_Link}
-              </a>
+              </a> : "NA"}
+              
             </li>
             {/* <li>
               <span>Interview Link : </span>
@@ -365,12 +365,7 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
 
-            <li>
-              <span>Net Payment Term : </span>
-              {getOnboardFormDetails?.payment_NetTerm
-                ? getOnboardFormDetails?.payment_NetTerm
-                : "NA"}
-            </li>
+         
 
             {getOnboardFormDetails?.hrType === "Direct Placement" ? (
               <>
@@ -437,13 +432,7 @@ const EngagementOnboard = ({
               )}
             </li>
 
-            <li>
-              <span>Availability : </span>
 
-              {getOnboardFormDetails?.availability
-                ? getOnboardFormDetails?.availability
-                : "NA"}
-            </li>
 
             <li>
               <span>Talent IST Shift Start Time : </span>
@@ -458,6 +447,21 @@ const EngagementOnboard = ({
 
               {getOnboardFormDetails?.shiftEndTime
                 ? getOnboardFormDetails?.shiftEndTime
+                : "NA"}
+            </li>
+
+            <li>
+              <span>Availability : </span>
+
+              {getOnboardFormDetails?.availability
+                ? getOnboardFormDetails?.availability
+                : "NA"}
+            </li>
+
+            <li>
+              <span>Net Payment Term : </span>
+              {getOnboardFormDetails?.payment_NetTerm
+                ? getOnboardFormDetails?.payment_NetTerm
                 : "NA"}
             </li>
           </ul>
@@ -481,13 +485,6 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
 
-            <li>
-              <span>UTS Contract Duration (In Months) : </span>
-
-              {getOnboardFormDetails?.contractDuration
-                ? getOnboardFormDetails?.contractDuration
-                : "NA"}
-            </li>
             {/* <li>
               <span>BDR/MDR Name : </span>
 
@@ -528,61 +525,7 @@ const EngagementOnboard = ({
         <div className={allengagementOnboardStyles.engagementContent}>
           <h2>Contract Details</h2>
           <ul>
-            <li>
-              <span>Kick off call Date : </span>
-
-              {getOnboardFormDetails?.talentLegalDate
-                ? moment(getOnboardFormDetails?.talentLegalDate).format(
-                    "DD-MM-YYYY"
-                  )
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Timezone : </span>
-
-              {getOnboardFormDetails?.kickOffTimeZone
-                ? getOnboardFormDetails?.kickOffTimeZone
-                : "NA"}
-            </li>
-
-            <li>
-              <span>Talent Reporting POC : </span>
-
-              {getOnboardFormDetails?.talentReportingPOC
-                ? getOnboardFormDetails?.talentReportingPOC
-                : "NA"}
-            </li>
-            <li>
-              <span>Talent Joining Date : </span>
-
-              {/* {getOnboardFormDetails?.talentOnBoardDate
-                ? getOnboardFormDetails?.talentOnBoardDate
-                : "NA"} */}
-
-              {getOnboardFormDetails?.contractStartDate
-                ? moment(getOnboardFormDetails?.contractStartDate).format(
-                    "DD-MM-YYYY"
-                  )
-                : "NA"}
-            </li>
-            <li>
-              <span>Zoho Invoice Number: </span>
-
-              {getOnboardFormDetails?.zohoInvoiceNumber
-                ? getOnboardFormDetails?.zohoInvoiceNumber
-                : "NA"}
-            </li>
-            <li>
-              <span>Invoice Value : </span>
-
-              {getOnboardFormDetails?.invoiceAmount
-                ? getOnboardFormDetails?.invoiceAmount +
-                  " " +
-                  getOnboardFormDetails?.talent_CurrencyCode
-                : "NA"}
-            </li>
-            <li>
+          <li>
               <span>Engagement Start Date : </span>
 
               {getOnboardFormDetails?.contractStartDate
@@ -600,7 +543,73 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
             </li>
+
+           {/*  <li>
+              <span>Timezone : </span>
+
+              {getOnboardFormDetails?.kickOffTimeZone
+                ? getOnboardFormDetails?.kickOffTimeZone
+                : "NA"}
+            </li> */}
+
+          
             <li>
+              <span>Talent Joining Date : </span>
+
+              {/* {getOnboardFormDetails?.talentOnBoardDate
+                ? getOnboardFormDetails?.talentOnBoardDate
+                : "NA"} */}
+
+              {getOnboardFormDetails?.contractStartDate
+                ? moment(getOnboardFormDetails?.contractStartDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+            {/* <li>
+              <span>Zoho Invoice Number: </span>
+
+              {getOnboardFormDetails?.zohoInvoiceNumber
+                ? getOnboardFormDetails?.zohoInvoiceNumber
+                : "NA"}
+            </li>
+            <li>
+              <span>Invoice Value : </span>
+
+              {getOnboardFormDetails?.invoiceAmount
+                ? getOnboardFormDetails?.invoiceAmount +
+                  " " +
+                  getOnboardFormDetails?.talent_CurrencyCode
+                : "NA"}
+            </li> */}
+       
+            <li>
+              <span>Last Working Date : </span>
+
+              {getOnboardFormDetails?.talentLegalDate
+                ? moment(getOnboardFormDetails?.talentLegalDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li>
+            <li>
+              <span>Contract Duration (In Months) : </span>
+
+              {getOnboardFormDetails?.contractDuration
+                ? getOnboardFormDetails?.contractDuration
+                : "NA"}
+            </li>
+           
+
+            <li>
+              <span>Talent Reporting POC : </span>
+
+              {getOnboardFormDetails?.talentReportingPOC
+                ? getOnboardFormDetails?.talentReportingPOC
+                : "NA"}
+            </li>
+
+             <li>
             <span>Renewal Discussion Initiated : </span>
               {getOnboardFormDetails?.isRenewalInitiated 
                 ? getOnboardFormDetails?.isRenewalInitiated 
@@ -613,6 +622,7 @@ const EngagementOnboard = ({
                           <EditNewIcon />
                         </span>
             </li>
+          
           </ul>
         </div>
 
@@ -623,7 +633,7 @@ const EngagementOnboard = ({
             <span>A Bit about company culture : </span>
 
             {getOnboardFormDetails?.company_Description
-              ? getOnboardFormDetails?.company_Description
+              ? <div dangerouslySetInnerHTML={{__html:getOnboardFormDetails?.company_Description}}></div>
               : "NA"}
           </div>
           <div className={allengagementOnboardStyles.engagementContentList}>
@@ -737,7 +747,7 @@ const EngagementOnboard = ({
               <span>Exit Polices : </span>
 
               {getOnboardFormDetails?.exit_Policy
-                ? getOnboardFormDetails?.exit_Policy
+                ? <div dangerouslySetInnerHTML={{__html:getOnboardFormDetails?.exit_Policy}}></div> 
                 : "NA"}
             </li>
 

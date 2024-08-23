@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import AddNewClientStyle from "../../screens/addnewClient/add_new_client.module.css";
-import { useParams } from "react-router-dom";
+import dealDetailsStyles from '../../../viewClient/viewClientDetails.module.css';
+import { useParams , useNavigate} from "react-router-dom";
 import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import { MasterDAO } from "core/master/masterDAO";
+import { DateTimeUtils } from "shared/utils/basic_utils";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
-import { Avatar, Tabs, Table, Skeleton, Checkbox } from "antd";
+import { Avatar, Tabs, Table, Skeleton, Checkbox, message, Modal } from "antd";
 import { allClientRequestDAO } from "core/allClients/allClientsDAO";
+import { allClientsConfig } from "modules/hiring request/screens/allClients/allClients.config";
+import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
+import UTSRoutes from 'constants/routes';
+import Star from 'assets/svg/selectStarFill.svg';
 
 const creditColumn = [
   {
@@ -82,6 +88,7 @@ const creditColumn = [
 ];
 
 export default function ViewCompanyDetails() {
+  const navigate = useNavigate();
   const { CompanyID } = useParams();
   const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [companyDetails, setCompanyDetails] = useState({});
@@ -91,6 +98,11 @@ export default function ViewCompanyDetails() {
   const [salesMan, setSalesMan] = useState([]);
   const [title, setTitle] = useState("Company Details");
   const [creditUtilize, setCreditUtilize] = useState([]);
+  const [viewDetails,setViewDetails] = useState({});
+  const [jobpostDraft, setModaljobpostDraft] = useState(false);
+  const [guid,setGuid] = useState('');
+  const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
+
 
   const getCompanyDetails = async (ID) => {
     setIsSavedLoading(true);
@@ -657,6 +669,107 @@ alt="preview"
     );
   };
 
+  const getDataForViewClient = async (CompanyID,clientID) => {
+		// setLoading(true)
+		let response = await allClientRequestDAO.getClientDetailsForViewDAO(CompanyID,clientID);	
+		// setLoading(false);
+		setViewDetails(response?.responseBody);	
+	}
+
+  useEffect(() => {
+    if(contactDetails.length){
+      getDataForViewClient(CompanyID,contactDetails[0].id)
+    }
+  },[
+    CompanyID,contactDetails
+  ])
+
+  const togglePriority = useCallback(
+		async (payload) => {
+			setIsSavedLoading(true);
+
+			let response = await hiringRequestDAO.setHrPriorityDAO(
+				payload.isNextWeekStarMarked,
+				payload.hRID,
+				payload.person,
+			);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				// const { tempdata, index } = hrUtils.hrTogglePriority(response, viewDetails?.hrList);
+				// setAPIdata([
+				// 	...viewDetails?.hrList.slice(0, index),
+				// 	tempdata,
+				// 	...viewDetails?.hrList.slice(index + 1),
+				// ]);
+				getDataForViewClient(CompanyID,contactDetails[0].id)
+				message.success(`priority has been changed.`)
+				setIsSavedLoading(false);
+			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+				message.error(response.responseBody)
+				setIsSavedLoading(false);
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setIsSavedLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setIsSavedLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			} else {
+				setIsSavedLoading(false);
+				return 'NO DATA FOUND';
+			}
+		},
+		[ navigate],
+	);
+		
+
+  const columns = useMemo(
+		() => allClientsConfig.ViewClienttableConfig(togglePriority,setModaljobpostDraft,setGuid),
+	[]); 
+
+  useEffect(() => {
+		if(jobpostDraft){
+			getJobPostDraftData();
+		}else{
+			setGuid("");
+		}
+	},[jobpostDraft]);
+	
+	const getJobPostDraftData = async () => {
+		// setLoading(true)
+		let response = await allClientRequestDAO.getDraftJobDetailsDAO(guid,contactDetails[0].id);	
+		if(response.statusCode === HTTPStatusCode.Ok){
+			setDraftJobPostDetails(response.responseBody);
+		}
+		// setLoading(false);
+	}
+
+  function testJSON(text) {
+		if (typeof text !== "string") {
+			return false;
+		}
+		try {
+			JSON.parse(text);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
+  const HrsDetails = () => {
+    return <>
+    {isSavedLoading ? (
+              <Skeleton active />
+            ) :  <Table 
+				scroll={{  y: '100vh' }}
+				dataSource={viewDetails?.hrList ? viewDetails?.hrList : []} 
+				columns={columns} 
+				pagination={false}
+				/>
+        }       
+    </>
+  }
+
   return (
     <>
       <div className={AddNewClientStyle.addNewContainer}>
@@ -675,14 +788,181 @@ alt="preview"
               key: "Company Details",
               children: <CompDetails />,
             },
+            {
+              label: "HR's Details",
+              key: "HR's Details",
+              children: <HrsDetails />,
+            },
             companyDetails?.companyTypeID && {
               label: "Credit Utilize",
               key: "Credit Utilize",
               children: <CredUtilize />,
             },
+           
           ]}
         />
       </div>
+
+      <Modal
+				width={'864px'}
+				centered
+				footer={false}
+				open={jobpostDraft}
+				className="jobpostDraftModal"
+				onOk={() => setModaljobpostDraft(false)}
+				onCancel={() => setModaljobpostDraft(false)}
+			>
+				<h2>Job Post in Draft</h2>
+				 <div className={dealDetailsStyles.jobPostDraftContent}>
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Role and type of hiring</h4>
+							<span>Last Edited on: { draftJObPostDetails?.JobDetails?.firstTabDate ? DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.firstTabDate) : "-"}</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={dealDetailsStyles.jobRoleTypeBox}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Title for this position</p>
+									<h5>{draftJObPostDetails?.JobDetails?.roleName ? draftJObPostDetails?.JobDetails?.roleName : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Number of Talents</p>
+									<h5>{draftJObPostDetails?.JobDetails?.noOfTalents ? draftJObPostDetails?.JobDetails?.noOfTalents : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Contract duration (In Months)</p>
+									<h5>{draftJObPostDetails?.JobDetails?.contractDuration ? draftJObPostDetails?.JobDetails?.contractDuration : '-'}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Years of Experience</p>
+									<h5>{draftJObPostDetails?.JobDetails?.experienceYears ? draftJObPostDetails?.JobDetails?.experienceYears : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Temporary or permenant hiring</p>
+									<h5>{draftJObPostDetails?.JobDetails?.isHiringLimited ? draftJObPostDetails?.JobDetails?.isHiringLimited : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Is this is a remote opportunity</p>
+									<h5>{draftJObPostDetails?.JobDetails?.modeOfWorking === 'Remote' ? 'Yes' : 'No'}</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Skills and Budget</h4>
+							<span>Last Edited on: {draftJObPostDetails?.JobDetails?.secondTabDate ? DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.secondTabDate) : "-"}</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Top 5 must have skills</p>
+									<ul className={dealDetailsStyles.SkillWrapBox}>
+										{draftJObPostDetails?.JobDetails?.skills?.split(",")?.map((skill,index) => {
+											return <li key={index}><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> {skill} </li>
+										})}								
+									</ul>									
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Good to have skills</p>
+									<ul className={dealDetailsStyles.SkillWrapBox}>
+										{draftJObPostDetails?.JobDetails?.allSkills?.split(",")?.map((skill,index) => {
+											return (
+												<li key={index}>{skill}</li>
+											)
+										})}								
+									</ul>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Budget in mind (Monthly)</p>
+									<h5>{draftJObPostDetails?.JobDetails?.currency} {draftJObPostDetails?.JobDetails?.budgetFrom} - {draftJObPostDetails?.JobDetails?.budgetTo}/month</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Employment details</h4>
+							<span>Last Edited on: {draftJObPostDetails?.JobDetails?.thirdTabDate ? DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.thirdTabDate) : "-"}</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.employDetailWrap}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Employment type </p>
+									<h5>{draftJObPostDetails?.JobDetails?.employmentType ? draftJObPostDetails?.JobDetails?.employmentType : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Timezone - Shift Time</p>
+									<h5>{draftJObPostDetails?.JobDetails?.timeZone} - {draftJObPostDetails?.JobDetails?.timeZone_FromTime}-{draftJObPostDetails?.JobDetails?.timeZone_EndTime}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Talent to start</p>
+									<h5>{draftJObPostDetails?.JobDetails?.howSoon ? draftJObPostDetails?.JobDetails?.howSoon : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Achieve with Uplers</p>
+									<h5>{draftJObPostDetails?.JobDetails?.reason ? draftJObPostDetails?.JobDetails?.reason : "-"}</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>JD/Responsibilities & requirements</h4>
+							<span>Last Edited on: {draftJObPostDetails?.JobDetails?.fourthTabDate ? DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.fourthTabDate) : "-"}</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								{draftJObPostDetails?.JobDetails?.processType === "JDFileUpload"  ? 
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Upload your JD</p>
+									<a href={draftJObPostDetails?.JDLink} target="_blank">Download JD</a>
+								</div>: 
+								(draftJObPostDetails?.JobDetails?.processType === "URL_Parsing"  || draftJObPostDetails?.JobDetails?.processType === "JDURLParsingGenerated")?
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>JD Link</p>
+									<a href={draftJObPostDetails?.JDLink} target="_blank">{draftJObPostDetails?.JobDetails?.jdLink}</a>
+								</div> : ""								
+								}
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Roles & Responsibilities </p>										
+									
+									{draftJObPostDetails?.JobDetails?.rolesResponsibilities ? testJSON(draftJObPostDetails?.JobDetails?.rolesResponsibilities) ? <ul className={dealDetailsStyles.jdRequrementText}>
+									{JSON.parse(draftJObPostDetails?.JobDetails?.rolesResponsibilities).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)} </ul>: <div  dangerouslySetInnerHTML={{ __html: draftJObPostDetails?.JobDetails?.rolesResponsibilities}} /> 
+									: "-"}									
+									
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Requirements</p>
+									
+										{(!draftJObPostDetails?.JobDetails?.requirements || draftJObPostDetails?.JobDetails?.requirements === "[]") ?  
+										"-" : testJSON(draftJObPostDetails?.JobDetails?.requirements) ? <ul className={dealDetailsStyles.jdRequrementText}>{JSON.parse(draftJObPostDetails?.JobDetails?.requirements).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)}</ul> : 
+										<div  dangerouslySetInnerHTML={{ __html: draftJObPostDetails?.JobDetails?.requirements}} /> }										
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{/* <div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Job Description</h4>
+							<span>Last Edited on: 2-10-2023</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Upload your JD</p>
+									<a href="#">Download JD</a>
+								</div>
+							</div>
+						</div>
+					</div> */}
+				</div>
+			</Modal>
     </>
   );
 }
