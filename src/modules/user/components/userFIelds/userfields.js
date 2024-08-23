@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Divider, Modal, Tooltip, Spin } from 'antd';
+import { Divider, Modal, Tooltip, Spin, Radio } from 'antd';
 import { InputType, SubmitType, UserAccountRole } from 'constants/application';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import HRInputField from '../../../hiring request/components/hrInputFields/hrInputFields';
@@ -105,6 +105,10 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [getTeamUserForm, setTeamUserForm] = useState([]);
 	const [getformLoading, setFormIsLoading] = useState(false);
 	const [userDataLoading,setUserDataLoading] = useState(false)
+	const [anotherUserTypeID,setAnotherUserTypeID] = useState({
+		another_UserTypeID :""
+	})
+	const [anotherUserTypeIDError,setAnotherUserTypeIDError] = useState(false)
 
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
@@ -580,13 +584,14 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 	const userSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
-			setFormIsLoading(true);
+			let isValid = true;
 
 			let userFormDetails = userUtils.userDataFormatter(
 				d,
 				id,
 				base64Image,
 				getUploadFileData,
+				anotherUserTypeID,
 				// modifiedGEO
 				modifiedGEO.map(item=>{
 					if(item === undefined || item === null){
@@ -595,14 +600,23 @@ const UsersFields = ({ id, setLoading, loading }) => {
 					return item
 				}),
 			);
-			let userResponse = await userAPI.createUserRequest(userFormDetails);
 
-			if (userResponse.statusCode === HTTPStatusCode.OK) {
-				setFormIsLoading(false);
-				navigate(UTSRoutes.USERLISTROUTE);
+			if(anotherUserTypeID?.another_UserTypeID == ""){
+				setAnotherUserTypeIDError(true);
+				isValid = false;
+			}			
+			
+			if(isValid){	
+				setFormIsLoading(true);			
+				let userResponse = await userAPI.createUserRequest(userFormDetails);
+	
+				if (userResponse.statusCode === HTTPStatusCode.OK) {
+					setFormIsLoading(false);
+					navigate(UTSRoutes.USERLISTROUTE);
+				}
 			}
 		},
-		[id, navigate, base64Image, getUploadFileData, modifiedGEO],
+		[id, navigate, base64Image, getUploadFileData, modifiedGEO,anotherUserTypeID],
 	);
 
 	const uploadFileHandler = useCallback(
@@ -756,6 +770,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			setValue('employeeDesignation', userDetails?.designation);
 			setValue('description', userDetails?.description);
 			setValue('priorityCount', userDetails?.priorityCount);
+			setAnotherUserTypeID({...anotherUserTypeID,another_UserTypeID:userDetails?.another_UserTypeID})
 			if (userDetails?.profilePic) {
 				setUploadFileData({
 					name: userDetails?.profilePic,
@@ -1397,6 +1412,34 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											placeholder="Enter Description"
 											rows={'4'}
 										/>
+									</div>
+									<div className={UserFieldStyle.colMd12}> 
+										<label>
+											User Access  <span className={UserFieldStyle.reqField}>*</span>
+										</label>
+										<Radio.Group 
+											className={UserFieldStyle.userAccessRadio}
+											onChange={(e) => {setAnotherUserTypeID({...anotherUserTypeID,another_UserTypeID:e.target.value});
+											setAnotherUserTypeIDError(false);}} 
+											value={anotherUserTypeID?.another_UserTypeID}>
+											<Radio value={1}>Admin</Radio>
+											<Radio value={4}>Sales</Radio>
+											<Radio value={5}>Ops</Radio>
+											<Radio value={6}>Sales + Ops</Radio>
+											<Radio value={7}>Other</Radio>
+										</Radio.Group>
+										{anotherUserTypeIDError && (
+											<p
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												marginTop: "0px",
+											}}
+											className={UserFieldStyle.error}
+											>
+											* Please select user access
+											</p>
+										)}
 									</div>
 								</div>
 							</div>
