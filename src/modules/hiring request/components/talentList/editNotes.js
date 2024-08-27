@@ -42,7 +42,7 @@ function EditNotes({onClose,viewNoteData,apiData,setAllNotes,item}) {
 		"hrid": apiData?.HR_Id,
 		"atsTalentID": item?.ATSTalentID,
 		"utsTalentID": item?.TalentID,
-		"notes": d.addNoteForTalen,
+		"notes": d.addNoteForTalent,
 		"atsNoteID": viewNoteData.Note_Id,
 		"createdByDateTime": viewNoteData.Added_Date,
 		"flag": "Edit"
