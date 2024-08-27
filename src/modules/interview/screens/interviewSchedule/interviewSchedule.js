@@ -209,6 +209,7 @@ const InterviewSchedule = ({
 				}, 1000);
 			} else {
 				setIsLoading(false);
+				response.responseBody && setTimeErrorMessage(response.responseBody)
 				messageAPI.open(
 					{
 						type: 'error',
