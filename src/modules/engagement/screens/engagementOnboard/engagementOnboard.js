@@ -560,8 +560,8 @@ const EngagementOnboard = ({
                 ? getOnboardFormDetails?.talentOnBoardDate
                 : "NA"} */}
 
-              {getOnboardFormDetails?.contractStartDate
-                ? moment(getOnboardFormDetails?.contractStartDate).format(
+              {getOnboardFormDetails?.clientLegalDate
+                ? moment(getOnboardFormDetails?.clientLegalDate).format(
                     "DD-MM-YYYY"
                   )
                 : "NA"}
