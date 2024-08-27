@@ -164,8 +164,8 @@ export const allClientsConfig = {
                             return text
                         }
                         return (<div style={{display:'flex',alignItems:'center'}}> <Link
-                                // to={`/viewClient/${result.companyID}~${result.clientID}`}
-                                to={`/viewClient/${result.companyID}/${result.clientID}`}
+                                to={`/viewCompanyDetails/${result.companyID}`}
+                                // to={`/viewClient/${result.companyID}/${result.clientID}`}
                                 target="_blank"
                                 style={{
                                     color: `var(--uplers-black)`,
@@ -293,25 +293,25 @@ export const allClientsConfig = {
                     key: 'isActive',
                     width: '100px',                   
                 },
-                {
-                    title: '',
-                    dataIndex: 'Edit',
-                    key: 'edit',
-                    align: 'center',
-                    width: '200px',
-                render: (text, result) => {
-                    return <>{(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
+            //     {
+            //         title: '',
+            //         dataIndex: 'Edit',
+            //         key: 'edit',
+            //         align: 'center',
+            //         width: '200px',
+            //     render: (text, result) => {
+            //         return <>{(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
             
-                    <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank" className={clienthappinessSurveyStyles.linkForSSO}>
-                        {/* <img src={eyeIcon} alt='info' width="22" height="22"  />	 */}
-                        <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn}>View Company Details</button>
-                        {/* <EyeIcon /> */}
-                        </a>                               
+            //         <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank" className={clienthappinessSurveyStyles.linkForSSO}>
+            //             {/* <img src={eyeIcon} alt='info' width="22" height="22"  />	 */}
+            //             <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn}>View Company Details</button>
+            //             {/* <EyeIcon /> */}
+            //             </a>                               
                
-                </div>}
-                    </>
-                }
-            }
+            //     </div>}
+            //         </>
+            //     }
+            // }
               ]; 
         }else if (LoggedInUserTypeID?.LoggedInUserTypeID == 2){
             return [
@@ -384,8 +384,8 @@ export const allClientsConfig = {
                         }
                         return (
                             <Link
-                                // to={`/viewClient/${result.companyID}~${result.clientID}`}
-                                to={`/viewClient/${result.companyID}/${result.clientID}`}
+                                to={`/viewCompanyDetails/${result.companyID}`}
+                                // to={`/viewClient/${result.companyID}/${result.clientID}`}
                                 target="_blank"
                                 style={{
                                     color: `var(--uplers-black)`,
@@ -578,8 +578,8 @@ export const allClientsConfig = {
                         }
                         return (
                             <Link
-                                // to={`/viewClient/${result.companyID}~${result.clientID}`}
-                                to={`/viewClient/${result.companyID}/${result.clientID}`}
+                                to={`/viewCompanyDetails/${result.companyID}`}
+                                // to={`/viewClient/${result.companyID}/${result.clientID}`}
                                 target="_blank"
                                 style={{
                                     color: `var(--uplers-black)`,

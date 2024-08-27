@@ -324,6 +324,7 @@ export class HiringRequestsAPI {
 	static EXTRACTTEXTUSINGPYTHON = 'ExtractTextUsingPython';
 	// static GET_CHANNEL_LIBRARY = 'GetChannelLibrary';
 	static NOTE_LIST = 'hr/note-list';
+	static ADD_DELETE_NOTES_DATA = 'AddDeleteNotesData'
 	static SAVE_NOTES = 'hr/note-create';
 	static DETAIL_FROM_TEXT = 'GetAllDetailsFromText'
 	static DONT_HAVE_JD = 'DontHaveJD'

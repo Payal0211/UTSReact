@@ -37,10 +37,22 @@ function EditNotes({onClose,viewNoteData,apiData,setAllNotes,item}) {
             "EmployeeName": localStorage.getItem('FullName')
     }
 
+    let dataForUTSAPI = {
+		"contactID": item?.ContactId,
+		"hrid": apiData?.HR_Id,
+		"atsTalentID": item?.ATSTalentID,
+		"utsTalentID": item?.TalentID,
+		"notes": d.addNoteForTalent,
+		"atsNoteID": viewNoteData.Note_Id,
+		"createdByDateTime": viewNoteData.Added_Date,
+		"flag": "Edit"
+	  }
+
     
     let result = await hiringRequestDAO.saveTalentNotesDAO(payload)
     
     if(result.statusCode === 200) {
+        hiringRequestDAO.addDeleteNotesDataDAO(dataForUTSAPI)
         setAllNotes(prev => {
             let newArr = [...prev]
             let index = newArr.findIndex(item=> item.Note_Id === viewNoteData.Note_Id)
