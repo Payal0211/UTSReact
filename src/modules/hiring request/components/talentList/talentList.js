@@ -5,7 +5,7 @@ import TalentListStyle from './talentList.module.css';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
-import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
+import { Fragment, useEffect, useState, useCallback, useMemo, memo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 import { ReactComponent as NotesIcon } from 'assets/svg/notesIcon.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/editIcon.svg';
@@ -569,13 +569,37 @@ const TalentList = ({
 			"EmployeeID": localStorage.getItem('EmployeeID'),
             "EmployeeName": localStorage.getItem('FullName')
     }
-    
+
+	let dataForUTSAPI = {
+		"contactID": item?.ContactId,
+		"hrid": apiData?.HR_Id,
+		"atsTalentID": item?.ATSTalentID,
+		"utsTalentID": item?.TalentID,
+		"notes": note.Notes,
+		"atsNoteID": note.Note_Id,
+		"createdByDateTime": note.Added_Date,
+		"flag": "Delete"
+	  }
+
     let result = await hiringRequestDAO.saveTalentNotesDAO(payload)
 
 	if(result.statusCode === 200){
 		setAllNotes(prev => prev.filter(i => i.Note_Id !== note.Note_Id))
+		hiringRequestDAO.addDeleteNotesDataDAO(dataForUTSAPI)
 	}
         }
+
+	function arePropsEqual(oldProps, newProps) {
+		console.log({ oldProps, newProps})
+		return (
+			oldProps.dataPoints.length === newProps.dataPoints.length &&
+			oldProps.dataPoints.every((oldPoint, index) => {
+			const newPoint = newProps.dataPoints[index];
+			return oldPoint.x === newPoint.x && oldPoint.y === newPoint.y;
+			})
+		);
+		}
+
 
 	const TalentNotesCardComp = ({item})=>{
 		const [allNotes , setAllNotes] = useState([])

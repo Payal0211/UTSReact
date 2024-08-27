@@ -1330,6 +1330,20 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.cloneHRToDemoAccount');
 		}
 	},
+	addDeleteNotesDataAPI: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.ADD_DELETE_NOTES_DATA ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.addDeleteNotesDataAPI');
+		}
+	},
 	getTalentNotesAPI: async (data) => {
 		let httpService = new HttpServices();
 		httpService.URL =

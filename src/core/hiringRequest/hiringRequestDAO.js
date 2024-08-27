@@ -2446,6 +2446,35 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.saveTalentNotesDAO()');
 		}
 	},
+	addDeleteNotesDataDAO:async (data) => {
+		try {
+			const notesResult = await HiringRequestAPI.addDeleteNotesDataAPI(data);
+			if (notesResult) {
+				const statusCode = notesResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = notesResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return notesResult;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return notesResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.addDeleteNotesDataDAO()');
+		}
+	},
 	getHRActivityUsingPaginationDAO:async (data) => {
 		try {
 			const result = await HiringRequestAPI.getHRActivityUsingPagination(data);

@@ -6,6 +6,7 @@ import AddNotesStyle from './addNotes.module.css';
 import { InputType } from 'constants/application';
 import HRInputField from '../hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
+import moment from 'moment';
 
 function AddNotes({onCancel , item, apiData,setAllNotes}) {
     const {
@@ -39,6 +40,17 @@ function AddNotes({onCancel , item, apiData,setAllNotes}) {
     if(result.statusCode === 200) {
         setAllNotes(prev => ([{"Note_Id":result.responseBody.Note_Id, ...payload
             }, ...prev]))
+            let dataForUTSAPI = {
+                "contactID": item?.ContactId,
+                "hrid": apiData?.HR_Id,
+                "atsTalentID": item?.ATSTalentID,
+                "utsTalentID": item?.TalentID,
+                "notes": d.addNoteForTalent,
+                "atsNoteID": result.responseBody.Note_Id,
+                "createdByDateTime": moment(new Date()).format('YYYY-MM-DD') ,
+                "flag": "Add"
+              }
+            hiringRequestDAO.addDeleteNotesDataDAO(dataForUTSAPI)
             onCancel()
             resetField('addNoteForTalent')
     }else{
