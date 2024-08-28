@@ -166,8 +166,8 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
-						<span>DP Percentage:</span>
-						{getEndEngagementDetails?.dpnrPercentage}
+						<span>Uplers Fees :</span>
+						{getEndEngagementDetails?.dpnrPercentage} %
 					</li>
 				</ul>
 			</div>
