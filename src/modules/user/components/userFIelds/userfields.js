@@ -279,7 +279,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			typeID: id !== 0 ? watch('userType')?.id : watchUserType?.id,
 		});
 		setUserRole(response && response?.responseBody?.details);
-	}, [id, watch, watchUserType?.id]);
+	}, []);
 
 	const getReporteeManager = useCallback(async () => {
 		let response = await MasterDAO.getReporteeTeamManagerRequestDAO({
@@ -514,9 +514,13 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		// watchGEO?.map(({ id }) => setModifiedGEO((prev) => [...prev, id]));
 		setModifiedGEO((pev)=>[...pev,watchGEO?.id ?? 0])
 	}, [watchGEO]);
-
 	useEffect(() => {
 		(!_isNull(watchUserType) || id !== 0) && getUserRoles();
+	}, [id, watch, watchUserType?.id])
+	
+
+	useEffect(() => {
+	
 		!_isNull(watchUserType) && getGEO();
 		!_isNull(watchReporteeManager) && getReporteeManager();
 		!_isNull(watchUserRole) && getBDRMarketingOnUserType();
