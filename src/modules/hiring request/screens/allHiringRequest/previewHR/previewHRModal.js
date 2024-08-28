@@ -3556,7 +3556,7 @@ function PreviewHRModal({
                                                         <input type="text" className="form-control" placeholder="Enter mobile number" value={Val?.contactNo} maxLength={10}
                                                         onChange={(e) => handleContactNoChange(index, e.target.value)}
                                                         />
-                                                        <Checkbox name="userShow" disabled={Val?.contactNo ? false : true} checked={Val?.showContactNumberToTalent} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
+                                                        <Checkbox name="userShow" disabled={Val?.contactNo ? false : true} checked={Val?.contactNo?Val?.showContactNumberToTalent:false} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
                                                     </div>
                                                 </li>
                                             </ul>
@@ -5069,7 +5069,7 @@ function PreviewHRModal({
                       disableSearchIcon={true}
                       enableSearch={true}
                     />     
-                    <Checkbox name="userShow" disabled={pocDetails?.contactNo ==""?true:false}checked={pocDetails?.showContactNumberToTalent} onChange={(e) =>                       
+                    <Checkbox name="userShow" disabled={pocDetails?.contactNo ==""?true:false}checked={pocDetails?.contactNo?pocDetails?.showContactNumberToTalent:false} onChange={(e) =>                       
                       setPOCDetails({...pocDetails,showContactNumberToTalent: e.target.checked})                      
                       }>Show mobile number to candidates</Checkbox>              
                   </div>

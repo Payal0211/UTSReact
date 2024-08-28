@@ -4846,7 +4846,7 @@ who have worked in scaled start ups."
                                     />
                                     <Checkbox
                                       name="userShow"
-                                      checked={Val?.showContactNumberToTalent}
+                                      checked={Val?.contactNo?Val?.showContactNumberToTalent:false}
                                       disabled={Val?.contactNo ? false : true}
                                       onChange={(e) =>
                                         handleCheckboxChange(
