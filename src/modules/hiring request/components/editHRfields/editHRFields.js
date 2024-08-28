@@ -2552,6 +2552,9 @@ const EditHRFields = ({
   const handleContactNoChange = (index, newValue) => {
     const regex = /^[0-9]\d*$/;
     if (regex.test(newValue) || newValue === "") {
+      if(newValue === ""){
+        handleCheckboxChange(index, 'showContactNumberToTalent', false)
+    }
       setJobPostUsersDetails((prevDetails) =>
         prevDetails.map((detail, i) =>
           i === index ? { ...detail, contactNo: newValue } : detail
@@ -4844,6 +4847,7 @@ who have worked in scaled start ups."
                                     <Checkbox
                                       name="userShow"
                                       checked={Val?.showContactNumberToTalent}
+                                      disabled={Val?.contactNo ? false : true}
                                       onChange={(e) =>
                                         handleCheckboxChange(
                                           index,

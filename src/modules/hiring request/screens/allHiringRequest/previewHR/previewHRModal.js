@@ -1794,6 +1794,9 @@ function PreviewHRModal({
   const handleContactNoChange = (index, newValue) => {
     const regex = /^[0-9]\d*$/;
     if (regex.test(newValue) || newValue === "") {
+      if(newValue === ""){
+        handleCheckboxChange(index, 'showContactNumberToTalent', false)
+    }
     sethrpocUserDetails(prevDetails =>
       prevDetails.map((detail, i) =>
         i === index ? { ...detail, contactNo: newValue } : detail
@@ -3553,7 +3556,7 @@ function PreviewHRModal({
                                                         <input type="text" className="form-control" placeholder="Enter mobile number" value={Val?.contactNo} maxLength={10}
                                                         onChange={(e) => handleContactNoChange(index, e.target.value)}
                                                         />
-                                                        <Checkbox name="userShow" checked={Val?.showContactNumberToTalent} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
+                                                        <Checkbox name="userShow" disabled={Val?.contactNo ? false : true} checked={Val?.showContactNumberToTalent} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
                                                     </div>
                                                 </li>
                                             </ul>
@@ -5061,12 +5064,12 @@ function PreviewHRModal({
                       placeholder="Enter mobile number"
                       key={0}
                       value={pocDetails?.contactNo}
-                      onChange={(e) => setPOCDetails({...pocDetails,contactNo:e})}
+                      onChange={(e) => setPOCDetails({...pocDetails,contactNo:e,showContactNumberToTalent:e ==""?false:true})}
                       country={countryCodeData}
                       disableSearchIcon={true}
                       enableSearch={true}
                     />     
-                    <Checkbox name="userShow" checked={pocDetails?.showContactNumberToTalent} onChange={(e) =>                       
+                    <Checkbox name="userShow" disabled={pocDetails?.contactNo ==""?true:false}checked={pocDetails?.showContactNumberToTalent} onChange={(e) =>                       
                       setPOCDetails({...pocDetails,showContactNumberToTalent: e.target.checked})                      
                       }>Show mobile number to candidates</Checkbox>              
                   </div>
