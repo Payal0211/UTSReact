@@ -32,6 +32,31 @@ export const clientPortalTrackingReportDAO = {
 			return errorDebug(error, 'clientPortalTrackingReportDAO.clientPortalTrackingReportFilterDAO');
 		}
 	},
+	emailSubjectFilterDAO: async function () {
+		try {
+			const clientPortalTrackingReport = await clientPortalTrackingReportAPI.emailSubjectFilterFilter();
+			if (clientPortalTrackingReport) {
+				const statusCode = clientPortalTrackingReport['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = clientPortalTrackingReport?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return clientPortalTrackingReport;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return clientPortalTrackingReport;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'clientPortalTrackingReportDAO.emailSubjectFilterDAO');
+		}
+	},
 	clientPortalTrackingReportListDAO: async function (data) {
 		try {
 			const clientPortalTrackingReport = await clientPortalTrackingReportAPI.clientPortalTrackingReportList(data);
