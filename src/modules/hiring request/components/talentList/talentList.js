@@ -820,7 +820,7 @@ const TalentList = ({
 										</div>
 									</div>
 			
-									<div className={TalentListStyle.profileURL}>
+									<div className={TalentListStyle.profileURL} style={{marginBottom:'5px'}}>
 										<span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Click here</p> : item?.ATSTalentLiveURL ? (
@@ -850,7 +850,7 @@ const TalentList = ({
 										<span style={{ fontWeight: '500' }}>
 											{_isNull(item?.TotalExpYears)
 												? 'NA'
-												: item?.TotalExpYears + ' years'}
+												: item?.TotalExpYears}
 										</span>
 									</div>
 									<div className={TalentListStyle.noticePeriod}>
@@ -875,12 +875,12 @@ const TalentList = ({
 												: item?.PreferredAvailability}
 										</span>
 									</div>
-									<div className={TalentListStyle.profileSource}>
+									{/* <div className={TalentListStyle.profileSource}>
 										<span>Profile Source:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{_isNull(item?.TalentSource) ? 'NA' : item?.TalentSource}
 										</span>
-									</div>
+									</div> */}
 									<Divider
 										style={{
 											margin: '10px 0',
@@ -1172,6 +1172,41 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
+								
+									{item?.ContractStartdate ? <>
+										{item?.ContractStartdate && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Contract Start Date:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.ContractStartdate}
+											</span>
+										</div>
+									)}
+										{item?.ContractEnddate && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Contract End Date:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.ContractEnddate}
+											</span>
+										</div>
+									)}
+										{item?.JoiningDate && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Joining Date:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.JoiningDate}
+											</span>
+										</div>
+									)}
+										{item?.LastWorkingDate && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Last Working Date:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.LastWorkingDate}
+											</span>
+										</div>
+									)}
+									</>: <>
 									{item?.ScheduleTimeZone && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Time Zone:</span>&nbsp;&nbsp;
@@ -1242,6 +1277,8 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
+									</>}
+									
 			
 									{/* <Divider
 										style={{
