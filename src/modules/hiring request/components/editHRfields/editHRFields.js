@@ -2980,7 +2980,25 @@ const EditHRFields = ({
                             <HRSelectField
                               controlledValue={controlledHiringPricingTypeValue}
                               setControlledValue={(val) => {
-                                setControlledHiringPricingTypeValue(val);
+                                setControlledHiringPricingTypeValue(prev=>{
+                                  
+
+                                  let prevID = hrPricingTypes.find(value => value.type === prev)?.id 
+                                  let currentId = hrPricingTypes.find(value => value.type === val)?.id
+
+                                  let isPrevDirect = prevID === 3
+                                  let isCurrentDirect = currentId === 3
+// console.log("check",getRequiredHRPricingType() , prev ,val , {prevID,currentId,isPrevDirect,isCurrentDirect})
+                                  if(isPrevDirect){
+                                    setBudgetValueOnChange();
+                                  }else{
+                                    if(isCurrentDirect){
+                                      setBudgetValueOnChange();
+                                    }
+                                  }
+                                  
+                                  return val
+                                });
                                 let precentage = hrPricingTypes.find(
                                   (item) =>
                                     item.id === watch("hiringPricingType")?.id
@@ -2990,7 +3008,7 @@ const EditHRFields = ({
                                 resetField("payrollType");
                                 setControlledPayrollTypeValue("Select payroll");
                                 setValue("NRMargin", precentage);
-                                setBudgetValueOnChange();
+                                
                               }}
                               isControlled={true}
                               mode={"id/value"}

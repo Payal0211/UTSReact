@@ -13,6 +13,7 @@ import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { InterviewDAO } from 'core/interview/interviewDAO';
+import LockIcon from 'assets/svg/smallLockIcon.svg'
 
 const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiData,ActionKey}) => {
 	const {
@@ -326,6 +327,12 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									clearErrors('rejectReasonParentID')
 								}}
 							/>
+							<div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This rejection reason wont be shared with the candidate.
+								</div>
 							</div>
 							{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
 							<HRSelectField
@@ -358,9 +365,15 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 								}}
 								
 							/>
+							<div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This rejection reason wont be shared with the candidate.
+								</div>
 							</div>}
 
-							{watch('rejectReason')?.id && <div className={TalentStatusStyle.colMd12}>
+							{watch('rejectReasonID')?.id && <div className={TalentStatusStyle.colMd12}>
 								<HRInputField
 									isTextArea={true}
 									register={register}
@@ -374,6 +387,12 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 										required: 'please enter rejection message.',
 									}}								
 								/>
+								<div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This message is derived from the above input and will be shared with the candidate
+								</div>
 							</div>}
 
 							<div className={TalentStatusStyle.colMd12}>
@@ -381,15 +400,21 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									isTextArea={true}
 									register={register}
 									errors={errors}
-									label={'Loss Remarks'}
+									label={'Any additional remarks for Uplers AI model'}
 									required
 									name="lossRemark"
 									type={InputType.TEXT}
-									placeholder="Loss Remark"
+									placeholder="Enter rejection message"
 									validationSchema={{
 										required: 'please enter the loss remark.',
 									}}
 								/>
+								 <div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This remarks will not be shared with the candidate
+								</div>
 							</div>
 							
 						</>
@@ -469,6 +494,12 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									clearErrors('rejectReasonParentID')
 								}}
 							/>
+							<div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This rejection reason wont be shared with the candidate.
+								</div>
 							</div>
 							{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
 								<HRSelectField
@@ -500,6 +531,12 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 										clearErrors('rejectReason')
 									}}
 								/>
+								<div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This rejection reason wont be shared with the candidate.
+								</div>
 							</div>}
 
 							{watch('rejectReason')?.id && <div className={TalentStatusStyle.colMd12}>
@@ -516,6 +553,12 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 										required: 'please enter rejection message.',
 									}}								
 								/>
+								<div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This message is derived from the above input and will be shared with the candidate
+								</div>
 							</div>}
 							
 							<div className={TalentStatusStyle.colMd12}>
@@ -523,15 +566,21 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									isTextArea={true}
 									register={register}
 									errors={errors}
-									label={'Loss Remarks'}
+									label={'Any additional remarks for Uplers AI model'}
 									required
 									name="lossRemark"
 									type={InputType.TEXT}
-									placeholder="Loss Remark"
+									placeholder="Enter rejection message"
 									validationSchema={{
 										required: 'please enter the loss remark.',
 									}}
 								/>
+								     <div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									// src={LockIcon} 
+									alt="lock-icon" />
+									This remarks will not be shared with the candidate
+								</div>
 							</div>
 						</>
 						)}

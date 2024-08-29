@@ -91,11 +91,11 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
 
-            <li>
+            {/* <li>
               <span>Country : </span>
 
               {getOnboardFormDetails?.geo ? getOnboardFormDetails?.geo : "NA"}
-            </li>
+            </li> */}
           
             {/* <li>
               <span>Client POC Name : </span>
@@ -107,8 +107,8 @@ const EngagementOnboard = ({
                <li>
               <span>Client POC : </span>
 
-              {getOnboardFormDetails?.aM_Name
-                ? getOnboardFormDetails?.aM_Name
+              {getOnboardFormDetails?.client_POC_Name
+                ? getOnboardFormDetails?.client_POC_Name
                 : "NA"}
             </li>
             <li>
@@ -344,6 +344,23 @@ const EngagementOnboard = ({
                 ? getOnboardFormDetails?.workForceManagement
                 : "NA"}
             </li>
+
+                { getOnboardFormDetails?.workForceManagement !== 'Remote' && <>
+                 <li>
+              <span>City : </span>
+              {getOnboardFormDetails?.cityName
+                ? getOnboardFormDetails?.cityName
+                : "NA"}
+            </li>
+
+            <li>
+              <span>State : </span>
+              {getOnboardFormDetails?.stateName
+                ? getOnboardFormDetails?.stateName
+                : "NA"}
+            </li>
+                </>}
+           
           </ul>
         </div>
 
@@ -370,25 +387,25 @@ const EngagementOnboard = ({
             {getOnboardFormDetails?.hrType === "Direct Placement" ? (
               <>
                 <li>
-                  <span>DP amount : </span>
-                  {getOnboardFormDetails?.dpAmount
-                    ? getOnboardFormDetails?.dpAmount
+                  <span>Uplers fees amount : </span>
+                  {getOnboardFormDetails?.uplersfeesAmount
+                    ? getOnboardFormDetails?.uplersfeesAmount
                     : "NA"}
                 </li>
                 <li>
-                  <span>Current CTC : </span>
+                  <span>Talent's Current Pay: </span>
                   {getOnboardFormDetails?.currentCTC
                     ? getOnboardFormDetails?.currentCTC
                     : "NA"}
                 </li>
                 <li>
-                  <span>DP % : </span>
+                  <span>Uplers fees % : </span>
                   {getOnboardFormDetails?.dP_Percentage
                     ? getOnboardFormDetails?.dP_Percentage
                     : "NA"}
                 </li>
                 <li>
-                  <span>Expected Rate : </span>
+                  <span>Talent's Expected Pay : </span>
                   {getOnboardFormDetails?.expectedSalary
                     ? getOnboardFormDetails?.expectedSalary
                     : "NA"}
@@ -396,22 +413,41 @@ const EngagementOnboard = ({
               </>
             ) : (
               <>
-                <li>
+                {/* <li>
                   <span>Pay Rate : </span>
                   {getOnboardFormDetails?.payRate
                     ? getOnboardFormDetails?.payRate
                     : "NA"}
-                </li>
+                </li> */}
                 <li>
-                  <span>Bill Rate : </span>
+                  <span>Client's Bill Amount : </span>
                   {getOnboardFormDetails?.billRate
                     ? getOnboardFormDetails?.billRate
                     : "NA"}
                 </li>
+              
                 <li>
-                  <span>NR % : </span>
+                  <span>Talent's Current Pay: </span>
+                  {getOnboardFormDetails?.currentCTC
+                    ? getOnboardFormDetails?.currentCTC
+                    : "NA"}
+                </li>
+                <li>
+                  <span>Uplers fees % : </span>
                   {getOnboardFormDetails?.nrPercentage
                     ? getOnboardFormDetails?.nrPercentage
+                    : "NA"}
+                </li>
+                <li>
+                  <span>Talent's Expected Pay : </span>
+                  {getOnboardFormDetails?.expectedSalary
+                    ? getOnboardFormDetails?.expectedSalary
+                    : "NA"}
+                </li>
+                <li>
+                  <span>Uplers fees amount : </span>
+                  {getOnboardFormDetails?.uplersfeesAmount
+                    ? getOnboardFormDetails?.uplersfeesAmount
                     : "NA"}
                 </li>
               </>
@@ -512,13 +548,14 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
             </li>
-            <li>
+           
+           {getOnboardFormDetails?.sowDocument && <li>
               <span>SOW Document/Link : </span>
 
               {getOnboardFormDetails?.sowDocument
                 ? getOnboardFormDetails?.sowDocument
                 : "NA"}
-            </li>
+            </li>} 
           </ul>
         </div>
 
@@ -534,7 +571,8 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
             </li>
-            <li>
+            {
+              getOnboardFormDetails?.hrType !== "Direct Placement" && <li>
               <span>Engagement End Date : </span>
 
               {getOnboardFormDetails?.contractEndDate
@@ -543,6 +581,8 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
             </li>
+            }
+           
 
            {/*  <li>
               <span>Timezone : </span>
@@ -560,8 +600,8 @@ const EngagementOnboard = ({
                 ? getOnboardFormDetails?.talentOnBoardDate
                 : "NA"} */}
 
-              {getOnboardFormDetails?.clientLegalDate
-                ? moment(getOnboardFormDetails?.clientLegalDate).format(
+              {getOnboardFormDetails?.joiningDate
+                ? moment(getOnboardFormDetails?.joiningDate).format(
                     "DD-MM-YYYY"
                   )
                 : "NA"}
@@ -584,21 +624,23 @@ const EngagementOnboard = ({
             </li> */}
        
             <li>
-              <span>Last Working Date : </span>
+              <span>Talent Last Working Date : </span>
 
-              {getOnboardFormDetails?.talentLegalDate
-                ? moment(getOnboardFormDetails?.talentLegalDate).format(
+              {getOnboardFormDetails?.lastWorkingDate
+                ? moment(getOnboardFormDetails?.lastWorkingDate).format(
                     "DD-MM-YYYY"
                   )
                 : "NA"}
             </li>
-            <li>
+
+            { getOnboardFormDetails?.hrType !== "Direct Placement" &&  <li>
               <span>Contract Duration (In Months) : </span>
 
               {getOnboardFormDetails?.contractDuration
                 ? getOnboardFormDetails?.contractDuration
                 : "NA"}
-            </li>
+            </li>}
+           
            
 
             <li>

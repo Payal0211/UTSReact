@@ -1893,7 +1893,7 @@ export const reportConfig = {
 				},
 									
 			];
-		} else{
+		}else if (hrStageId === 25 || hrStageId === 26) {
 			return [
 				{
 					title: 'Action Date',
@@ -1928,6 +1928,80 @@ export const reportConfig = {
 					  ),		
 				},
 				{
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
+					align: 'left',
+					render: (text) => {
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
+					},
+				},
+				{
+					title: 'Browser',
+					dataIndex: 'browser',
+					key: 'browser',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'IP Address',
+					dataIndex: 'ipAddress',
+					key: 'ipAddress',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},								
+			];
+		} else{
+			return [
+				{
+					title: 'Action Date',
+					dataIndex: 'createdDate',
+					key: 'createdDate',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+					},
+				},
+				{
+					title: 'Client/User',
+					dataIndex: 'client',
+					key: 'client',
+					align: 'left',				
+				},
+				{
+					title: 'HR #',
+					dataIndex: 'hrNumber',
+					key: 'hrNumber',
+					align: 'left',		
+					render: (text, result) => (
+						result?.hrid ? 
+						<Link
+						  target="_blank"
+						  to={`/allhiringrequest/${result?.hrid}`}
+						  style={{ color: "black", textDecoration: "underline" }}
+						  onClick={() => localStorage.removeItem("dealID")}
+						>
+						  {text}
+						</Link> : {text}
+					  ),		
+				},
+				 {
 					title: 'Talent',
 					dataIndex: 'talentName',
 					key: 'talentName',
