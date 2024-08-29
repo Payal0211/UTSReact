@@ -413,22 +413,41 @@ const EngagementOnboard = ({
               </>
             ) : (
               <>
-                <li>
+                {/* <li>
                   <span>Pay Rate : </span>
                   {getOnboardFormDetails?.payRate
                     ? getOnboardFormDetails?.payRate
                     : "NA"}
-                </li>
+                </li> */}
                 <li>
-                  <span>Bill Rate : </span>
+                  <span>Client's Bill Amount : </span>
                   {getOnboardFormDetails?.billRate
                     ? getOnboardFormDetails?.billRate
+                    : "NA"}
+                </li>
+              
+                <li>
+                  <span>Talent's Current Pay: </span>
+                  {getOnboardFormDetails?.currentCTC
+                    ? getOnboardFormDetails?.currentCTC
                     : "NA"}
                 </li>
                 <li>
                   <span>Uplers fees % : </span>
                   {getOnboardFormDetails?.nrPercentage
                     ? getOnboardFormDetails?.nrPercentage
+                    : "NA"}
+                </li>
+                <li>
+                  <span>Talent's Expected Pay : </span>
+                  {getOnboardFormDetails?.expectedSalary
+                    ? getOnboardFormDetails?.expectedSalary
+                    : "NA"}
+                </li>
+                <li>
+                  <span>Uplers fees amount : </span>
+                  {getOnboardFormDetails?.uplersfeesAmount
+                    ? getOnboardFormDetails?.uplersfeesAmount
                     : "NA"}
                 </li>
               </>
