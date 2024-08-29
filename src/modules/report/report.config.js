@@ -2124,26 +2124,37 @@ export const reportConfig = {
 					dataIndex: 'email_Link',
 					key: 'email_Link',
 					align: 'left',		
-					render: (text, result) => (				
-						<Link
-						  target="_blank"
-						  to={text}
-						  style={{ color: "black", textDecoration: "underline" }}
-						//   onClick={() => localStorage.removeItem("dealID")}
-						>
-						  {text}
-						</Link> 
-					  ),		
+					render: (text, result) => {
+						const parsedUrl = new URL(text);
+
+						// Remove domain and query parameters
+						const cleanPathname = parsedUrl.pathname;
+						let pathArr = cleanPathname.split('/')
+						if(pathArr.length > 2) {
+							return pathArr[1]
+						}
+						return cleanPathname.replaceAll("/",' ')
+						// return (				
+						// <a
+						//   target="_blank"
+						//   href={text}
+						//   rel="noreferrer"
+						//   style={{ color: "black", textDecoration: "underline" }}
+						// //   onClick={() => localStorage.removeItem("dealID")}
+						// >
+						//   {cleanPathname}
+						// </a>  )
+					 },		
 				},
-				{
-					title: 'Email Link Tags',
-					dataIndex: 'email_LinkTags',
-					key: 'email_LinkTags',
-					align: 'left',
-					render: (text) => {
-						return <Fragment key={text}>{text }</Fragment>;
-					},
-				},
+				// {
+				// 	title: 'Email Link Tags',
+				// 	dataIndex: 'email_LinkTags',
+				// 	key: 'email_LinkTags',
+				// 	align: 'left',
+				// 	render: (text) => {
+				// 		return <Fragment key={text}>{text }</Fragment>;
+				// 	},
+				// },
 				{
 					title: 'Email Subject',
 					dataIndex: 'email_Subject',
@@ -2227,26 +2238,37 @@ export const reportConfig = {
 				dataIndex: 'email_Link',
 				key: 'email_Link',
 				align: 'left',		
-				render: (text, result) => (				
-					<Link
-					  target="_blank"
-					  to={text}
-					  style={{ color: "black", textDecoration: "underline" }}
-					//   onClick={() => localStorage.removeItem("dealID")}
-					>
-					  {text}
-					</Link> 
-				  ),		
+				render: (text, result) => {
+					const parsedUrl = new URL(text);
+
+					// Remove domain and query parameters
+					const cleanPathname = parsedUrl.pathname;
+					let pathArr = cleanPathname.split('/')
+					if(pathArr.length > 2) {
+						return pathArr[1]
+					}
+					return cleanPathname.replaceAll("/",' ')
+					// return (				
+					// <a
+					//   target="_blank"
+					//   href={text}
+					//   rel="noreferrer"
+					//   style={{ color: "black", textDecoration: "underline" }}
+					// //   onClick={() => localStorage.removeItem("dealID")}
+					// >
+					//   {cleanPathname}
+					// </a>  )
+				 },		
 			},
-			{
-				title: 'Email Link Tags',
-				dataIndex: 'email_LinkTags',
-				key: 'email_LinkTags',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
-				},
-			},
+			// {
+			// 	title: 'Email Link Tags',
+			// 	dataIndex: 'email_LinkTags',
+			// 	key: 'email_LinkTags',
+			// 	align: 'left',
+			// 	render: (text) => {
+			// 		return <Fragment key={text}>{text }</Fragment>;
+			// 	},
+			// },
 			{
 				title: 'Email Subject',
 				dataIndex: 'email_Subject',

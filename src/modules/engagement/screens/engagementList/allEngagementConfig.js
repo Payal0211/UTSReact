@@ -138,7 +138,8 @@ export const allEngagementConfig = {
 		setISEditTSC,
 		setActiveTab,
 		setAllBRPRdata,
-		editAMModalcontroler
+		editAMModalcontroler,
+		// editTSCModalcontroler
 	) => {
 		return [
 			{
@@ -560,8 +561,8 @@ export const allEngagementConfig = {
 				align: 'left',
 				width:"180px",
 				render:(text,data)=>{
-					return  data?.nbdName ? <div> {text} </div>:  
-					<div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.invoicingDetails)}}>{text}</div> 
+					// return  data?.nbdName ? <div> {text} </div>:  
+					return <div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.invoicingDetails)}}>{text}</div> 
 				}
 			},
 			{
