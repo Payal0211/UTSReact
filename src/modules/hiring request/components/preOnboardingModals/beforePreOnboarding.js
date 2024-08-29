@@ -357,6 +357,9 @@ export default function BeforePreOnboarding({
             result.responseBody.details?.preOnboardingDetailsForAMAssignment
             ?.cityName
         );
+        if(result.responseBody.details?.preOnboardingDetailsForAMAssignment?.cityName){
+          setEditCity(false)
+        }else{setEditCity(true)}
         setValue(
           "stateID",
             result.responseBody.details?.preOnboardingDetailsForAMAssignment?.stateID
@@ -365,6 +368,9 @@ export default function BeforePreOnboarding({
           "talent_Designation",
             result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation
         );
+        if(result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation){
+          setEditDesignation(false)
+        }else{setEditDesignation(true)}
         setValue('aboutCompany',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.company_Description)
         setValue('firstWeek',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstWeek)
         setValue('firstMonth',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstMonth)
