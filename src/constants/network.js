@@ -400,6 +400,7 @@ export class OnboardsAPI {
 	static UPLOAD_LEAVE_POLICY = 'UploadLeavePolicy'
 	static GET_AM_USER = "GetAMUser";
 	static GET_STATE_LIST = "GetStateList";
+	static SYNC_ENGAGEMENT= 'SyncEngagementDetailToATS'
 	static SAVE_RENEWALINITIATED_DETAILS="SaveRenewalInitiatedDetail"
 }
 
@@ -466,6 +467,7 @@ export class ClientPortalTrackingReport{
 	static CLIENT_PORTAL_TRACKING_FILTER="ClientPortalTrackingDetails/Filters";
 	static CLIENT_PORTAL_TRACKING_LIST="ClientPortalTrackingDetails/List";
 	static CLIENT_PORTAL_TRACKING_POPUP_LIST="ClientPortalTrackingDetails/PopUPList";
+	static EMAIL_SUBJECT_FILTER = 'EmailSubjectFilters'
 }
 
 export class RegisterSteps{

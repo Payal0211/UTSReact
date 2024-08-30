@@ -52,34 +52,55 @@ export default function EmailTracking() {
     const [isFocusedRole, setIsFocusedRole] = useState(false);
 
     const [selectedClientName, setSelectClientName] = useState()
+    const [subject,  setSubject]= useState()
     const [ClientNameList,setClientNameList] = useState([])
+    const [subjectList,setSubjectList] = useState([])
     const client = localStorage.getItem("CompanyID");
     const CompanyID = Number(client);
 
     
     const getClientNameFilter = useCallback(async () => {
-        setLoading(true);
+        // setLoading(true);
         const response = await clientPortalTrackingReportDAO.clientPortalTrackingReportFilterDAO();
         if (response?.statusCode === HTTPStatusCode.OK) {
           // setFiltersList(response && response?.responseBody?.details?.Data);
           // setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
           setClientNameList(response && response?.responseBody?.details?.map(i=>({value:i?.clientID,label:i?.clientName})))
-          setLoading(false);
+          // setLoading(false);
         } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-          setLoading(false);
+          // setLoading(false);
           return navigate(UTSRoutes.LOGINROUTE);
         } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-          setLoading(false);
+          // setLoading(false);
           return navigate(UTSRoutes.SOMETHINGWENTWRONG);
         } else {
-           setLoading(false);
+          //  setLoading(false);
+          return "NO DATA FOUND";
+        }
+      }, [navigate]);
+
+      const getClientSubjectFilter = useCallback(async () => {
+        // setLoading(true);
+        const response = await clientPortalTrackingReportDAO.emailSubjectFilterDAO();
+        if (response?.statusCode === HTTPStatusCode.OK) {
+          setSubjectList(response && response?.responseBody?.details?.map(i=>({value:i?.id,label:i?.displayName})))
+          // setLoading(false);
+        } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+          // setLoading(false);
+          return navigate(UTSRoutes.LOGINROUTE);
+        } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+          // setLoading(false);
+          return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+          //  setLoading(false);
           return "NO DATA FOUND";
         }
       }, [navigate]);
       
       useEffect(() => {
         getClientNameFilter();
-      }, [getClientNameFilter]);
+        getClientSubjectFilter()
+      }, [getClientNameFilter,getClientSubjectFilter]);
 
 
 
@@ -88,12 +109,13 @@ export default function EmailTracking() {
         let payload = {
           fromDate: moment(startDate).format("YYYY-MM-DD"),
           toDate: moment(endDate).format("YYYY-MM-DD"),
-          CompanyID:selectedClientName ? Number(selectedClientName) : 0
+          CompanyID:selectedClientName ? Number(selectedClientName) : 0,
+          SubjectID: subject ? subject : 0
         };
 
         let response = await clientReport.getEmailRequestList(payload)
 
-        console.log("email rep list",response)
+        // console.log("email rep list",response)
         if (response.statusCode === HTTPStatusCode.OK) {
             let details = response.responseBody.details;
             setReportList(details);
@@ -119,7 +141,7 @@ export default function EmailTracking() {
     if(startDate && endDate){
         getEmailReport()
     }
-    },[startDate, endDate, selectedClientName])
+    },[startDate, endDate, selectedClientName, subject])
 
 
     const onCalenderFilter = useCallback(
@@ -143,6 +165,7 @@ export default function EmailTracking() {
 
       const resetFilter = () => {
         setSelectClientName();
+        setSubject()
         let params = {
           fromDate: new Date(
             date.getFullYear(),
@@ -174,14 +197,15 @@ export default function EmailTracking() {
     };
 
     const changeClientName = (value)=>{
-        let payload = {
-        fromDate: moment(firstDay).format("YYYY-MM-DD"),
-        toDate: moment(lastDay).format("YYYY-MM-DD"),
-        CompanyID:value?value:0
-        };
+        // let payload = {
+        // fromDate: moment(firstDay).format("YYYY-MM-DD"),
+        // toDate: moment(lastDay).format("YYYY-MM-DD"),
+        // CompanyID:value?value:0
+        // };
         setSelectClientName(value)
         // getClientPortalReportList(payload);
     }
+
 
     const getEmailPopUpReportList = async (payload)=>{
         setLoading(true);
@@ -229,13 +253,14 @@ export default function EmailTracking() {
               fromDate: moment(firstDay).format("YYYY-MM-DD"),
               toDate: moment(lastDay).format("YYYY-MM-DD"),
               eventType:reportData?.eventType,
-              CompanyID:selectedClientName?Number(selectedClientName):0
+              CompanyID:selectedClientName?Number(selectedClientName):0,
+              SubjectID: subject ? subject : 0
           };
         //   console.log(params,reportData);
 
           getEmailPopUpReportList(params);
         },
-        [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole,selectedClientName]
+        [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole,selectedClientName, subject]
       );
 
   return (
@@ -262,6 +287,21 @@ export default function EmailTracking() {
           options={ClientNameList}
           showSearch
           value={selectedClientName}
+        />
+         <Select
+          // defaultValue="lucy"
+          style={{ width: 400 }}
+          // onSelect={(value)=>{
+          //   setSelectClientName(value);   
+          // }}
+          onChange={(value)=>{
+            setSubject(value);   
+          }}
+          filterOption={(inputValue, option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
+          placeholder="Select stage name"
+          options={subjectList}
+          showSearch
+          value={subject}
         />
           {/* <div
             className={emailReportStyle.addFilter}

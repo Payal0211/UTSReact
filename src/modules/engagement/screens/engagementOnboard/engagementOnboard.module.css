@@ -19,6 +19,20 @@
     color: #232323;
 }
 
+.syncEng{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.syncEngagement{
+    cursor: pointer;
+    display: flex;
+    border: 1px solid #b7b7b7;
+    padding: 4px;
+    border-radius: 4px;
+}
+
 .btnPrimary{
     background: var(--color-sunlight);
     border: none;

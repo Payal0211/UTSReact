@@ -2552,6 +2552,9 @@ const EditHRFields = ({
   const handleContactNoChange = (index, newValue) => {
     const regex = /^[0-9]\d*$/;
     if (regex.test(newValue) || newValue === "") {
+      if(newValue === ""){
+        handleCheckboxChange(index, 'showContactNumberToTalent', false)
+    }
       setJobPostUsersDetails((prevDetails) =>
         prevDetails.map((detail, i) =>
           i === index ? { ...detail, contactNo: newValue } : detail
@@ -2977,7 +2980,25 @@ const EditHRFields = ({
                             <HRSelectField
                               controlledValue={controlledHiringPricingTypeValue}
                               setControlledValue={(val) => {
-                                setControlledHiringPricingTypeValue(val);
+                                setControlledHiringPricingTypeValue(prev=>{
+                                  
+
+                                  let prevID = hrPricingTypes.find(value => value.type === prev)?.id 
+                                  let currentId = hrPricingTypes.find(value => value.type === val)?.id
+
+                                  let isPrevDirect = prevID === 3
+                                  let isCurrentDirect = currentId === 3
+// console.log("check",getRequiredHRPricingType() , prev ,val , {prevID,currentId,isPrevDirect,isCurrentDirect})
+                                  if(isPrevDirect){
+                                    setBudgetValueOnChange();
+                                  }else{
+                                    if(isCurrentDirect){
+                                      setBudgetValueOnChange();
+                                    }
+                                  }
+                                  
+                                  return val
+                                });
                                 let precentage = hrPricingTypes.find(
                                   (item) =>
                                     item.id === watch("hiringPricingType")?.id
@@ -2987,7 +3008,7 @@ const EditHRFields = ({
                                 resetField("payrollType");
                                 setControlledPayrollTypeValue("Select payroll");
                                 setValue("NRMargin", precentage);
-                                setBudgetValueOnChange();
+                                
                               }}
                               isControlled={true}
                               mode={"id/value"}
@@ -4843,7 +4864,8 @@ who have worked in scaled start ups."
                                     />
                                     <Checkbox
                                       name="userShow"
-                                      checked={Val?.showContactNumberToTalent}
+                                      checked={Val?.contactNo?Val?.showContactNumberToTalent:false}
+                                      disabled={Val?.contactNo ? false : true}
                                       onChange={(e) =>
                                         handleCheckboxChange(
                                           index,
