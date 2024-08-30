@@ -18,6 +18,20 @@ export const clientPortalTrackingReportAPI = {
 			return errorDebug(error, 'utmTrackingReportList');
 		}
 	},
+	emailSubjectFilterFilter: async () => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.EMAIL_TRACKING + ClientPortalTrackingReport.EMAIL_SUBJECT_FILTER
+			httpService.setAuthRequired = true;
+			// httpService.dataToSend = data;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'emailSubjectFilterFilter');
+		}
+	},
 	clientPortalTrackingReportList: async (data) => {
 		try {
 			let httpService = new HttpServices();

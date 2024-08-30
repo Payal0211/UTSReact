@@ -466,6 +466,7 @@ export class ClientPortalTrackingReport{
 	static CLIENT_PORTAL_TRACKING_FILTER="ClientPortalTrackingDetails/Filters";
 	static CLIENT_PORTAL_TRACKING_LIST="ClientPortalTrackingDetails/List";
 	static CLIENT_PORTAL_TRACKING_POPUP_LIST="ClientPortalTrackingDetails/PopUPList";
+	static EMAIL_SUBJECT_FILTER = 'EmailSubjectFilters'
 }
 
 export class RegisterSteps{

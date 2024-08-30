@@ -528,7 +528,8 @@ export const allEngagementConfig = {
 				width:"180px",
 				render:(text, data)=>{
 					if(text){
-						return text
+						return  <div className={allengagementStyles.amName}  onClick={()=>{setISEditTSC(true)
+							setTSCONBoardData({onboardID :data.onboardID, engagementID:data.engagementID, talentName: data.talentName, tscName: data.tscName})}}>{text}</div> 
 					}else{
 						if(data.currentStatus !== "In Replacement"){
 							return	<a href="javascript:void(0);"
@@ -560,8 +561,8 @@ export const allEngagementConfig = {
 				align: 'left',
 				width:"180px",
 				render:(text,data)=>{
-					return  data?.nbdName ? <div> {text} </div>:  
-					<div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.invoicingDetails)}}>{text}</div> 
+					// return  data?.nbdName ? <div> {text} </div>:  
+					return <div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.invoicingDetails)}}>{text}</div> 
 				}
 			},
 			{

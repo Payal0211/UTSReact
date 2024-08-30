@@ -61,8 +61,8 @@ export default function UTMTrackingReport() {
   const [term,setTerm] = useState([]);
   const [selectedClientName, setSelectClientName] = useState()
   const [ClientNameList,setClientNameList] = useState([])
-  const client = localStorage.getItem("clientID");
-  const clientID = Number(client);
+  // const client = localStorage.getItem("clientID");
+  const clientID = Number(0);
 
   // const [utmTrackingListList, setutmTrackingListList] = useState([]); 
 
@@ -396,6 +396,7 @@ export default function UTMTrackingReport() {
       <div className={clientPortalTrackingReportStyle.filterContainer}>
         <div className={clientPortalTrackingReportStyle.filterSets}>
           <div className={clientPortalTrackingReportStyle.filterSetsInner}>
+            {console.log('selectedClientName',selectedClientName,ClientNameList.find(i=> i.value === selectedClientName))}
           <Select
             // defaultValue="lucy"
             style={{ width: 400 }}

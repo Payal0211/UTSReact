@@ -318,6 +318,8 @@ const EngagementList = () => {
 			"tscUserId": +d.AddTSCName,
 			"tscEditReason": d.tscReason ? d.tscReason : '',
 			"oldTSC_PersonID": TSCONBoardData.tscPersonID,
+			"month": new Date(startDate).getMonth() + 1,
+			"year": new Date(startDate).getFullYear(),
 		  }
 		let response = await engagementRequestDAO.updateTSCNameDAO(payload);
 			if (response?.statusCode === HTTPStatusCode.OK) {

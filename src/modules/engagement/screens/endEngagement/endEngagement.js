@@ -139,7 +139,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				isReplacement: engagementReplacement?.replacementData,
 				talentReplacement: {
 				onboardId: talentInfo?.onboardID,
-				lastWorkingDay: addLatter === false ? moment(d.lwd).format("yyyy-MM-DD") :"" ,
+				lastWorkingDay: addLatter === false ? moment(d.lwd).format("yyyy-MM-DD") : undefined ,
 				replacementInitiatedby:loggedInUserID.toString(),
 				engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
 				},
@@ -492,7 +492,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 									/>
 								)}
 								name="lwd"
-								rules={{ required: true }}
+								rules={{ required: false }}
 								control={control}
 							/>
 						</div>
