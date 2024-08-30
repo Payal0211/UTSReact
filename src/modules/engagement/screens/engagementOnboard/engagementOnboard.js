@@ -71,7 +71,7 @@ const EngagementOnboard = ({
         </h1>
 
         <div className={allengagementOnboardStyles.syncEngagement} onClick={() => syncEngagement()}>
-              <Tooltip title={'Sync company data to ATS'} placement="bottom"
+              <Tooltip title={'Sync Engagement data to ATS'} placement="bottom"
                 style={{ "zIndex": "9999" }}
 
                 overlayClassName="custom-syntooltip">
