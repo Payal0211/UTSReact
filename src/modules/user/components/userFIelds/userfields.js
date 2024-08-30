@@ -105,6 +105,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [getTeamUserForm, setTeamUserForm] = useState([]);
 	const [getformLoading, setFormIsLoading] = useState(false);
 	const [userDataLoading,setUserDataLoading] = useState(false)
+	const [getEmpErrormsg,setEmpErrormsg] = useState(false)
 	const [anotherUserTypeID,setAnotherUserTypeID] = useState({
 		another_UserTypeID :""
 	})
@@ -163,6 +164,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				employeeID: data,
 			});
 			if (companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST) {
+				setEmpErrormsg(true)
 				setError('employeeId', {
 					type: 'duplicateEmployeeID',
 					message:
@@ -826,13 +828,13 @@ const UsersFields = ({ id, setLoading, loading }) => {
               </div>
             )} */}
 							</div>
-
+{console.log(enableALlFieldsMemo,id,getEmpErrormsg,"enableALlFieldsMemo")}
 							<div className={UserFieldStyle.hrFieldRightPane}>
 								<div className={UserFieldStyle.row}>
 									{/* Employee ID */}
 									<div className={UserFieldStyle.colMd6}>
 										<HRInputField
-											disabled={enableALlFieldsMemo || isLoading}
+											disabled={(enableALlFieldsMemo || isLoading) && !getEmpErrormsg}
 											register={register}
 											errors={errors}
 											validationSchema={{
