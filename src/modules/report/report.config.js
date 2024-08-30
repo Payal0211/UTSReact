@@ -2053,7 +2053,7 @@ export const reportConfig = {
 		}
 	},
 	EmailPopupReportConfig: (hrStage) => {
-		if(hrStage === 'Open'){
+		if(hrStage === 'Opened'){
 			return  [
 				{
 					title: 'Action Date',
@@ -2101,7 +2101,7 @@ export const reportConfig = {
 			];
 		}
 
-		if(hrStage === 'Click'){
+		if(hrStage === 'Clicked'){
 
 			return  [
 				{
@@ -2185,7 +2185,7 @@ export const reportConfig = {
 				
 			];
 		}
-		if(hrStage === 'Delivery' || hrStage === 'Send'){
+		if(hrStage === 'Delivered' || hrStage === 'Send'){
 			return  [
 				{
 					title: 'Action Date',
