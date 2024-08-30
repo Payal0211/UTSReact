@@ -517,6 +517,25 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	syncEngagementRequest: async function (onBoardId) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD + 
+			OnboardsAPI.SYNC_ENGAGEMENT + `?onBoardId=${onBoardId}`
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		// httpService.dataToSend = details;
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.saveRenewalInitiatedDetail',
+			);
+		}
+	},
 	saveRenewalInitiatedDetail: async function (onBoardId,renewal) {
 		let httpService = new HttpServices();
 		httpService.URL =

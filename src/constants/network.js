@@ -400,6 +400,7 @@ export class OnboardsAPI {
 	static UPLOAD_LEAVE_POLICY = 'UploadLeavePolicy'
 	static GET_AM_USER = "GetAMUser";
 	static GET_STATE_LIST = "GetStateList";
+	static SYNC_ENGAGEMENT= 'SyncEngagementDetailToATS'
 	static SAVE_RENEWALINITIATED_DETAILS="SaveRenewalInitiatedDetail"
 }
 
