@@ -22,7 +22,7 @@ import React, {
   import { downloadToExcel } from "modules/report/reportUtils";
   import LogoLoader from "shared/components/loader/logoLoader";
   import { clientPortalTrackingReportDAO } from "core/clientPortalTrackingReport/clientPoralTrackingReportDAO";
- 
+  import infoIcon from "../../../../assets/svg/info.svg"
 
 
 
@@ -374,7 +374,14 @@ export default function EmailTracking() {
             {reportList?.map((report) => (
               <li className={emailReportStyle.row}>
                 <div className={emailReportStyle.LeftTextWrap}>
-                 <div className={emailReportStyle.rowLabel}>{report.eventType}</div>
+                 <div className={emailReportStyle.rowLabel}>{report.eventType} {" "}
+                 {report.eventType==='Open' && 
+                  <Tooltip 	placement="bottomLeft"
+                   title= "Today open count which are might be sent earlier.">
+                   <img src={infoIcon} alt='info'/> 
+                 </Tooltip>
+                 }
+                 </div>
                  </div>
                 <div className={emailReportStyle.rowValue}>                
                 {report.totalRecords > 0 ? (
