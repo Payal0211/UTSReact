@@ -60,39 +60,39 @@ export default function EmailTracking() {
 
     
     const getClientNameFilter = useCallback(async () => {
-        setLoading(true);
+        // setLoading(true);
         const response = await clientPortalTrackingReportDAO.clientPortalTrackingReportFilterDAO();
         if (response?.statusCode === HTTPStatusCode.OK) {
           // setFiltersList(response && response?.responseBody?.details?.Data);
           // setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
           setClientNameList(response && response?.responseBody?.details?.map(i=>({value:i?.clientID,label:i?.clientName})))
-          setLoading(false);
+          // setLoading(false);
         } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-          setLoading(false);
+          // setLoading(false);
           return navigate(UTSRoutes.LOGINROUTE);
         } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-          setLoading(false);
+          // setLoading(false);
           return navigate(UTSRoutes.SOMETHINGWENTWRONG);
         } else {
-           setLoading(false);
+          //  setLoading(false);
           return "NO DATA FOUND";
         }
       }, [navigate]);
 
       const getClientSubjectFilter = useCallback(async () => {
-        setLoading(true);
+        // setLoading(true);
         const response = await clientPortalTrackingReportDAO.emailSubjectFilterDAO();
         if (response?.statusCode === HTTPStatusCode.OK) {
           setSubjectList(response && response?.responseBody?.details?.map(i=>({value:i?.id,label:i?.displayName})))
-          setLoading(false);
+          // setLoading(false);
         } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-          setLoading(false);
+          // setLoading(false);
           return navigate(UTSRoutes.LOGINROUTE);
         } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-          setLoading(false);
+          // setLoading(false);
           return navigate(UTSRoutes.SOMETHINGWENTWRONG);
         } else {
-           setLoading(false);
+          //  setLoading(false);
           return "NO DATA FOUND";
         }
       }, [navigate]);

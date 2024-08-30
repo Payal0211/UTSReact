@@ -45,6 +45,8 @@ import "react-quill/dist/quill.snow.css";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { getFlagAndCodeOptions } from "modules/client/clientUtils";
 import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
+import { v4 as uuidv4 } from 'uuid';
+import { encrypt } from 'modules/EncryptionDecryption/encryptiondescryption.js'; 
 
 function PreviewClientModal({
   isPreviewModal,
@@ -937,12 +939,20 @@ function PreviewClientModal({
     setErrorsData(_errors);
     if (valid) {
       setIsLoading(true);
+      const newGuid = uuidv4();
+      const shortGuid = newGuid.slice(0, 10); // Pick only the first 10 letters 
+      let password = shortGuid;
+      let encryptedPassword = encrypt(password);
+
+
       let payload = {
         basicDetails: {
           companyID: getcompanyID,
           companyName: watch("companyName")
         },
-        clientDetails: [otherClientDetailsData],
+        clientDetails: [{...otherClientDetailsData,
+          "password" : password,
+          "encryptedPassword" : encryptedPassword }],
         IsUpdateFromPreviewPage: true,
       };
       let response = await allCompanyRequestDAO.updateCompanyDetailsDAO(

@@ -138,8 +138,7 @@ export const allEngagementConfig = {
 		setISEditTSC,
 		setActiveTab,
 		setAllBRPRdata,
-		editAMModalcontroler,
-		// editTSCModalcontroler
+		editAMModalcontroler
 	) => {
 		return [
 			{
@@ -529,7 +528,8 @@ export const allEngagementConfig = {
 				width:"180px",
 				render:(text, data)=>{
 					if(text){
-						return text
+						return  <div className={allengagementStyles.amName}  onClick={()=>{setISEditTSC(true)
+							setTSCONBoardData({onboardID :data.onboardID, engagementID:data.engagementID, talentName: data.talentName, tscName: data.tscName})}}>{text}</div> 
 					}else{
 						if(data.currentStatus !== "In Replacement"){
 							return	<a href="javascript:void(0);"
