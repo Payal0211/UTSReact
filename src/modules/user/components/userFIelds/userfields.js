@@ -828,7 +828,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
               </div>
             )} */}
 							</div>
-{console.log(enableALlFieldsMemo,id,getEmpErrormsg,"enableALlFieldsMemo")}
 							<div className={UserFieldStyle.hrFieldRightPane}>
 								<div className={UserFieldStyle.row}>
 									{/* Employee ID */}
