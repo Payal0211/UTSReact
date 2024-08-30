@@ -10,8 +10,9 @@ import moment from "moment";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { ReactComponent as DownloadJDSVG } from "assets/svg/downloadJD.svg";
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
-import { Checkbox, Modal } from "antd";
+import { Checkbox, Modal, Tooltip, message } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
+import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { engagementRequestDAO } from "core/engagement/engagementDAO";
 
 const EngagementOnboard = ({
@@ -46,12 +47,20 @@ const EngagementOnboard = ({
       setEditModal(false);
     }
   }
+
+  const syncEngagement = async () => {
+    let res = await engagementRequestDAO.syncEngagementDAO(getOnboardFormDetails?.onBoardID);
+    if (res?.statusCode === 200) {
+      message.success("Sync successfully");
+    }
+  }
+
 // console.log({getOnboardFormDetails,
 //   getHRAndEngagementId,})
   return (
     <>
     <div className={allengagementOnboardStyles.engagementModalWrap}>
-      <div className={allengagementOnboardStyles.engagementModalTitle}>
+      <div className={`${allengagementOnboardStyles.engagementModalTitle} ${allengagementOnboardStyles.syncEng}`}>
         <h1>
           Onboarding for {getHRAndEngagementId?.talentName}
           {/* <button
@@ -60,6 +69,15 @@ const EngagementOnboard = ({
                     Edit Details
                 </button> */}
         </h1>
+
+        <div className={allengagementOnboardStyles.syncEngagement} onClick={() => syncEngagement()}>
+              <Tooltip title={'Sync company data to ATS'} placement="bottom"
+                style={{ "zIndex": "9999" }}
+
+                overlayClassName="custom-syntooltip">
+                <RefreshSyncSVG width="17" height="16" style={{ fontSize: '16px' }} />
+              </Tooltip>
+        </div>
       </div>
 
       <div className={allengagementOnboardStyles.engagementBody}>
