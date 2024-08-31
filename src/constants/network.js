@@ -229,6 +229,7 @@ export class MastersAPI {
 	static TIMEZONEMASTER = 'GetTimeZoneMaster'
 	static GET_AUTO_COMPLETE_CITY_STATE = 'GetAutoCompleteCityStateWise'
 	static GET_NEAR_BY_CITIES = 'GetNearByCities'
+	static GET_AUTO_COMPLETE_CITY = 'GetAutoCompleteCityWise'
 	static GET_FREQUENCY = 'GetFrequency'
 }
 export class TalentStatus {
