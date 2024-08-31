@@ -216,7 +216,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
-						<span>DP Percentage:</span>
+						<span>Uplers Fees:</span>
 						{getEndEngagementDetails?.dpnrPercentage}
 					</li>
 				</ul>
