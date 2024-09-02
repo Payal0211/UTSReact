@@ -1779,6 +1779,7 @@ const calcelMember = () =>{
                             }}
                             placeholder="Enter City"                      
                             value={watch("city")}
+                            disabled={actionType==="Legal"?true:false} 
                           />
                         )}
                         {...register("location", {
