@@ -388,12 +388,12 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
 
-            <li>
+            {/* <li>
               <span>State : </span>
               {getOnboardFormDetails?.stateName
                 ? getOnboardFormDetails?.stateName
                 : "NA"}
-            </li>
+            </li> */} 
                 </>}
            
           </ul>

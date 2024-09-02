@@ -8,6 +8,7 @@ import {
   Radio,
   message,
   TimePicker,
+  AutoComplete,
 } from "antd";
 import HRDetailStyle from "../../screens/hrdetail/hrdetail.module.css";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
@@ -44,6 +45,7 @@ import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.s
 import { ReactComponent as AboutCompanySVG } from 'assets/svg/aboutCompany.svg';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import debounce from "lodash.debounce";
 
 export default function BeforePreOnboarding({
   preOnboardingDetailsForAMAssignment,
@@ -91,6 +93,8 @@ export default function BeforePreOnboarding({
   const [addMoreTeamMember, setAddMoreTeamMember] = useState(false)
   const [clientTeamMembers, setClientTeamMembers] = useState([])
   const [controlledReportingTo, setControlledReportingTo] = useState('Please Select');
+  const [locationList, setLocationList] = useState([]);
+  const [locationSelectValidation,setLocationSelectValidation] = useState(false);
 
   const [preONBoardingData, setPreONBoardingData] = useState({});
 
@@ -179,8 +183,47 @@ export default function BeforePreOnboarding({
     getStateData();
     getReportingToHandler();
     getBuddyHandler();
-    fatchpreOnBoardInfo();    
+    fatchpreOnBoardInfo();   
+    
   }, []);
+
+  const onChangeLocation = async (val) => {
+    if (typeof val === "number") return;
+    fetchLocations(val);
+  };
+
+  const fetchLocations = useCallback(
+    debounce(async (val) => {
+      if (val?.trim() === "") return;
+      const controller = new AbortController();
+      const signal = controller.signal;
+      try {
+        // setIsLoading(true);
+        const _res = await MasterDAO.getAutoCompleteCityStateDAO(val, {
+          signal,
+        });
+        // setIsLoading(false);
+        let locations = [];
+        if (_res?.statusCode === 200) {
+          locations = _res?.responseBody?.details?.map((location) => ({
+            id: location?.row_ID,
+            value: location?.location,
+          }));
+          setLocationList(locations || []);
+        } else {
+          setLocationList([]);
+        }
+      } catch (error) {
+        if (error.name === "AbortError") {
+          console.log("Fetch aborted");
+        } else {
+          console.error("Error fetching locations:", error);
+          setLocationList([]);
+        }
+      }
+    }, 300),
+    []
+  );
 
   const getAMusersData = async () =>{
     const res = await OnboardDAO.getAMUsersDAO();
@@ -263,7 +306,7 @@ export default function BeforePreOnboarding({
     setControlledAssignAM(data[0]);
   }, [preONBoardingData,amUsers])
 
-  useEffect(() => {
+  useEffect(() => {    
     let list = netTerms?.filter((item) => item.value == preONBoardingData?.preOnboardingDetailsForAMAssignment?.payementNetTerm);
     setValue("netTerm", list[0]);
     setControlledPaymentNetTerm(list[0]);
@@ -272,6 +315,7 @@ export default function BeforePreOnboarding({
   useEffect(() => {
     let modeOfWorking = workingMode?.filter((item) => item.value === preONBoardingData?.preOnboardingDetailsForAMAssignment?.modeOfWork);
     setValue("modeOFWorkingID", modeOfWorking[0]);
+    setValue("city",preONBoardingData?.preOnboardingDetailsForAMAssignment?.cityName);
     setControlledMOW(modeOfWorking[0]);
   }, [preONBoardingData,workingMode])
 
@@ -357,14 +401,21 @@ export default function BeforePreOnboarding({
             result.responseBody.details?.preOnboardingDetailsForAMAssignment
             ?.cityName
         );
-        setValue(
-          "stateID",
-            result.responseBody.details?.preOnboardingDetailsForAMAssignment?.stateID
-        );
-        setValue(
-          "talent_Designation",
-            result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation
-        );
+        // if(result.responseBody.details?.preOnboardingDetailsForAMAssignment?.cityName){
+        //   setEditCity(false)
+        // }else{
+        //   setEditCity(true)}
+        //   setValue(
+        //     "stateID",
+        //       result.responseBody.details?.preOnboardingDetailsForAMAssignment?.stateID
+        //   );
+        //   setValue(
+        //     "talent_Designation",
+        //       result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation
+        //   );
+        if(result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation){
+          setEditDesignation(false)
+        }else{setEditDesignation(true)}
         setValue('aboutCompany',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.company_Description)
         setValue('firstWeek',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstWeek)
         setValue('firstMonth',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstMonth)
@@ -575,7 +626,7 @@ const calcelMember = () =>{
 
   const handleComplete = useCallback(
     async (d) => {
-      setIsLoading(true);
+      setIsLoading(true);      
       let _payload = {
         "hR_ID": HRID,
         "companyID": data?.companyID,
@@ -1645,22 +1696,15 @@ const calcelMember = () =>{
                         isError={errors["modeOFWorkingID"] && errors["modeOFWorkingID"]}
                         required
                         errorMsg={"Please select Mode of  Working"}
-                        disabled={actionType==="Legal"?true:false}
-                        // disabled
-                        // trailingIcon={
-                        //   !isTabDisabled && (
-                        //     <EditFieldSVG
-                        //       width="16"
-                        //       height="16"
-                        //       onClick={() => setEditMOF(true)}
-                        //     />
-                        //   )
-                        // }
+                        disabled={actionType==="Legal"?true:false}                      
                       />
                     )}
                   </div>
 
-                 {watch("modeOFWorkingID")?.id!==1 && <div className={HRDetailStyle.modalFormCol}>
+                  {/* already had code */}
+
+                 {/* {watch("modeOFWorkingID")?.id!==1 && 
+                 <div className={HRDetailStyle.modalFormCol}>
                     {editCity ? (
                       <HRInputField
                       register={register}
@@ -1704,29 +1748,63 @@ const calcelMember = () =>{
                         }
                       />
                     )}
-                  </div>}
+                  </div>} */}
 
-
-                  {workingModeID?.id!==1 &&<div className={HRDetailStyle.modalFormCol}>
-                      <HRSelectField
-                        isControlled={true}
-                        controlledValue={controlledState}
-                        setControlledValue={setControlledState}
-                        mode="id/value"
-                        setValue={setValue}
-                        register={register}
-                        label={"State"}
-                        defaultValue={"Select State"}
-                        name="stateID"
-                        options={stateList && stateList}
-                        isError={errors["stateID"] && errors["stateID"]}
-                        required = {workingModeID?.id==2 || workingModeID?.id==3 ?true:false}
-                        errorMsg={"Please select State"}
-                        disabled={actionType==="Legal"?true:false}
-                        searchable={true}
+            {watch("modeOFWorkingID")?.id!==1 && 
+                  <div className={HRDetailStyle.modalFormCol}>           
+                  <label>
+                    City <span className={HRDetailStyle.reqField}>*</span>
+                  </label>        
+                      <Controller
+                        render={({ ...props }) => (
+                          <AutoComplete
+                            options={locationList ?? []}
+                            onSelect={async (locName, _obj) => {
+                              setLocationSelectValidation(false);                            
+                            }}
+                            filterOption={true}
+                            onSearch={(searchValue) => {
+                              onChangeLocation(searchValue);
+                            }}
+                            onChange={(locName) => {
+                              setValue("city", locName);
+                            }}
+                            onBlur={e=>{
+                              const isValidSelection = locationList?.some(
+                                (location) => location.value === e.target.value
+                            );
+                            if (!isValidSelection) {    
+                              setLocationSelectValidation(true)
+                            }
+                            }}
+                            placeholder="Enter City"                      
+                            value={watch("city")}
+                            disabled={actionType==="Legal"?true:false} 
+                          />
+                        )}
+                        {...register("location", {
+                          required:
+                          watch("modeOFWorkingID")?.id === 2 ||
+                          watch("modeOFWorkingID")?.id === 3
+                              ? true
+                              : false,
+                        })}
+                        name="city"
+                        control={control}
                       />
-                   
-                  </div>}
+                      {errors.location ? 
+                      (
+                        <div className={HRDetailStyle.error}>
+                          * Please Select Location
+                        </div>
+                      ):
+                      locationSelectValidation ? (
+                        <div className={HRDetailStyle.error}>
+                          * Choose a valid option from the suggestions.
+                        </div>
+                      ) :""}                
+                  </div>
+                }
 
                   <div className={HRDetailStyle.modalFormCol}>
                     {editDesignation ? (

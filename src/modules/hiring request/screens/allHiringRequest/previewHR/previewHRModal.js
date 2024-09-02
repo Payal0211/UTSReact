@@ -129,6 +129,8 @@ function PreviewHRModal({
   });
   const[frequencyData,setFrequencyData] = useState([]);
   const[nearByCitiesData,setNearByCitiesData] = useState([]);
+  const[allCities,setAllCities] = useState([]);
+
   const[locationList,setLocationList] = useState([]);
 
   const [CurrencyList, setCurrencyList] = useState([]);
@@ -235,6 +237,7 @@ function PreviewHRModal({
     //   guid:_guid
     // });
     getCompanyPerksDetails();
+    fetchCities();
   }, [hrIdforPreview]);
 
   useEffect(()=>{
@@ -984,6 +987,10 @@ function PreviewHRModal({
 
   const  updatePOCContact = async ()=>{
     if(pocDetails?.contactNo){
+      const regex = /^[6-9]\d{9}$/;
+    if (!regex.test(pocDetails?.contactNo)) {      
+      return message.error('Invalid phone number. Must be 10 digits and start with 6-9.');
+    }
       setIsLoading(true);   
       let payload = {
         contactNo:pocDetails?.contactNo,
@@ -1382,7 +1389,7 @@ function PreviewHRModal({
         setError(_errors);
     if (isValid) {
       setError({});
-      const selectedLabels = nearByCitiesData?.filter(item => editLocation?.NearByCities?.includes(item.value))?.map(item => item.label);
+      const selectedLabels = allCities?.filter(item => editLocation?.NearByCities?.includes(item.value))?.map(item => item.label);
       const nonNumericValues = editLocation?.NearByCities?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));      
       let payload = {
         workingModeID: editLocation.locationValue === 'Hybrid' ? 2 :editLocation.locationValue === 'Onsite' ? 3 : editLocation.workingModeId,
@@ -1571,6 +1578,22 @@ function PreviewHRModal({
     }, 300),
     []
   );
+
+  const fetchCities = useCallback(async () => {     
+    setIsLoading(true);
+    const _res = await MasterDAO.getAutoCompleteCity("");
+    setIsLoading(false);    
+    let citiesValues = [];
+    if (_res?.statusCode === 200) {        
+    citiesValues = _res?.responseBody?.details?.map((city) => ({
+        value: city.row_ID,
+        label: city.location,
+    }));
+    setAllCities(citiesValues || []);
+    } else {
+        setAllCities([]);
+    }            
+});
 
   const getCities = async (locationId) => {
     setIsLoading(true);
@@ -1794,6 +1817,9 @@ function PreviewHRModal({
   const handleContactNoChange = (index, newValue) => {
     const regex = /^[0-9]\d*$/;
     if (regex.test(newValue) || newValue === "") {
+      if(newValue === ""){
+        handleCheckboxChange(index, 'showContactNumberToTalent', false)
+    }
     sethrpocUserDetails(prevDetails =>
       prevDetails.map((detail, i) =>
         i === index ? { ...detail, contactNo: newValue } : detail
@@ -2294,18 +2320,19 @@ function PreviewHRModal({
                                                 mode="tags"
                                                 style={{ width: "100%" }}
                                                 value={editLocation?.NearByCities}
-                                                options={nearByCitiesData}
+                                                options={allCities}
                                                 onChange={(values, _) => {
                                                     setEditLocation({ ...editLocation, NearByCities: values });
                                                     setError({...error,['NearByCities'] : ""});
                                                 }}
                                                 placeholder="Enter cities"
                                                 tokenSeparators={[","]}
-                                                open={false}
-                                                suffixIcon={false}
+                                                showSearch={true}
+                                                filterOption={(input, option) => 
+                                                  option.label.toLowerCase().includes(input.toLowerCase())
+                                                } 
                                             />                                                                                                  
                                             {error?.NearByCities && <span className='error'>{error?.NearByCities}</span>}  
-                                            {editLocation?.workingModeId === 2 && 
                                             <ul className="SlillBtnBox">
                                               {nearByCitiesData
                                                 ?.filter(option => !editLocation?.NearByCities?.includes(option.label))
@@ -2320,9 +2347,7 @@ function PreviewHRModal({
                                                     </li>
                                                   )
                                                 } )}
-                                            </ul>
-                                          }                                                                  
-                                          
+                                            </ul>                                                              
                                         </div>
                                     </div>}
                                   </>
@@ -3552,8 +3577,19 @@ function PreviewHRModal({
                                                         <i className="fieldIcon"><img src={PhoneIcon} alt="phone-icon" /></i>
                                                         <input type="text" className="form-control" placeholder="Enter mobile number" value={Val?.contactNo} maxLength={10}
                                                         onChange={(e) => handleContactNoChange(index, e.target.value)}
+                                                        onBlur={(e) => {
+                                                          const regex = /^[6-9]\d{9}$/;                                                                    
+                                                            if (!regex.test(e.target.value)) {      
+                                                              sethrpocUserDetails(prevDetails =>
+                                                                prevDetails.map((detail, i) =>
+                                                                  i === index ? { ...detail, contactNo: '' } : detail
+                                                                )
+                                                              );
+                                                              return message.error('Invalid phone number. Must be 10 digits and start with 6-9.');
+                                                            }
+                                                        }}
                                                         />
-                                                        <Checkbox name="userShow" checked={Val?.showContactNumberToTalent} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
+                                                        <Checkbox name="userShow" disabled={Val?.contactNo ? false : true} checked={Val?.contactNo?Val?.showContactNumberToTalent:false} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
                                                     </div>
                                                 </li>
                                             </ul>
@@ -5057,16 +5093,18 @@ function PreviewHRModal({
                 <div className="form-group">
                   <label>{pocDetails?.isEdit ? "Edit" :"Add"} mobile number</label>                
                   <div className="phonConturyWrap">
-                    <PhoneInput
-                      placeholder="Enter mobile number"
-                      key={0}
-                      value={pocDetails?.contactNo}
-                      onChange={(e) => setPOCDetails({...pocDetails,contactNo:e})}
-                      country={countryCodeData}
-                      disableSearchIcon={true}
-                      enableSearch={true}
-                    />     
-                    <Checkbox name="userShow" checked={pocDetails?.showContactNumberToTalent} onChange={(e) =>                       
+                  <input type="text" className="form-control" placeholder="Edit mobile number" value={pocDetails?.contactNo} maxLength={10}
+                    onChange={(e) => {
+                      const regex = /^[0-9]\d*$/;
+                          if (regex.test(e.target.value) || e.target.value === "") {
+                            if(e.target.value ==""){
+                              setPOCDetails({...pocDetails,showContactNumberToTalent: false})
+                            }
+                            setPOCDetails({...pocDetails,contactNo:e.target.value})                          
+                          }  
+                    }}
+                  />    
+                    <Checkbox name="userShow" disabled={pocDetails?.contactNo ==""?true:false}checked={pocDetails?.contactNo?pocDetails?.showContactNumberToTalent:false} onChange={(e) =>                       
                       setPOCDetails({...pocDetails,showContactNumberToTalent: e.target.checked})                      
                       }>Show mobile number to candidates</Checkbox>              
                   </div>

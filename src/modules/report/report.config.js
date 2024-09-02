@@ -2185,7 +2185,7 @@ export const reportConfig = {
 				
 			];
 		}
-		if(hrStage === 'Delivered' || hrStage === 'Send'){
+		if(hrStage === 'Delivered' || hrStage === 'Sent'){
 			return  [
 				{
 					title: 'Action Date',
@@ -2233,33 +2233,33 @@ export const reportConfig = {
 				key: 'client',
 				align: 'left',				
 			},
-			{
-				title: 'Email Link',
-				dataIndex: 'email_Link',
-				key: 'email_Link',
-				align: 'left',		
-				render: (text, result) => {
-					const parsedUrl = new URL(text);
+			// {
+			// 	title: 'Email Link',
+			// 	dataIndex: 'email_Link',
+			// 	key: 'email_Link',
+			// 	align: 'left',		
+			// 	render: (text, result) => {
+			// 		const parsedUrl = new URL(text);
 
-					// Remove domain and query parameters
-					const cleanPathname = parsedUrl.pathname;
-					let pathArr = cleanPathname.split('/')
-					if(pathArr.length > 2) {
-						return pathArr[1]
-					}
-					return cleanPathname.replaceAll("/",' ')
-					// return (				
-					// <a
-					//   target="_blank"
-					//   href={text}
-					//   rel="noreferrer"
-					//   style={{ color: "black", textDecoration: "underline" }}
-					// //   onClick={() => localStorage.removeItem("dealID")}
-					// >
-					//   {cleanPathname}
-					// </a>  )
-				 },		
-			},
+			// 		// Remove domain and query parameters
+			// 		const cleanPathname = parsedUrl.pathname;
+			// 		let pathArr = cleanPathname.split('/')
+			// 		if(pathArr.length > 2) {
+			// 			return pathArr[1]
+			// 		}
+			// 		return cleanPathname.replaceAll("/",' ')
+			// 		// return (				
+			// 		// <a
+			// 		//   target="_blank"
+			// 		//   href={text}
+			// 		//   rel="noreferrer"
+			// 		//   style={{ color: "black", textDecoration: "underline" }}
+			// 		// //   onClick={() => localStorage.removeItem("dealID")}
+			// 		// >
+			// 		//   {cleanPathname}
+			// 		// </a>  )
+			// 	 },		
+			// },
 			// {
 			// 	title: 'Email Link Tags',
 			// 	dataIndex: 'email_LinkTags',
