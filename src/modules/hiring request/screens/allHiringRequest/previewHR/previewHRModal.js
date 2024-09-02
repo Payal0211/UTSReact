@@ -1360,6 +1360,7 @@ function PreviewHRModal({
   }
 
   const updateLocation = async () => {
+    debugger
     let isValid = true;
         let _errors = { ...error };
    
@@ -2129,6 +2130,7 @@ function PreviewHRModal({
                                                 ATS_JobLocationID : jobPreview?.atS_JobLocationID,
                                                 ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
                                               });
+                                              fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
                                           }} >  <img src={EditnewIcon}/></span>
                                           <span className="downArrowBtn"  onClick={() => {
                                             setisEditLocation(!iseditLocation);
@@ -2142,6 +2144,7 @@ function PreviewHRModal({
                                               ATS_JobLocationID : jobPreview?.atS_JobLocationID,
                                               ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
                                             });
+                                            fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
                                           }}>
                                             <img src={SmallDownArrow} alt="small-down-arrow"/>
                                           </span> 
