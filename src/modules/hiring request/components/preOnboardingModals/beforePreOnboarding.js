@@ -645,7 +645,7 @@ const calcelMember = () =>{
         "netPaymentDays": parseInt(d.netTerm?.value),
         "nrMargin": !data?.isHRTypeDP ? d.nrPercent : null,
         "modeOFWorkingID": d?.modeOFWorkingID?.id,
-        "city": d?.location,
+        "city": d?.city,
         "stateID": d?.stateID?.id,
         "talent_Designation": d?.talent_Designation,
         "amSalesPersonID": d.amSalesPersonID?.id,
@@ -1767,7 +1767,7 @@ const calcelMember = () =>{
                               onChangeLocation(searchValue);
                             }}
                             onChange={(locName) => {
-                              setValue("location", locName);
+                              setValue("city", locName);
                             }}
                             onBlur={e=>{
                               const isValidSelection = locationList?.some(
