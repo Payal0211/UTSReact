@@ -1003,14 +1003,15 @@ const EditHRFields = ({
       }
     }
 
-    if (
-      watch("hiringPricingType")?.id === 2 ||
-      watch("hiringPricingType")?.id === 5
-    ) {
-      unregister("payrollType");
-      unregister("tempProject");
-      watch("hiringPricingType")?.id !== 2 && unregister("contractDuration");
-    }
+    // if (
+    //   watch("hiringPricingType")?.id === 2 ||
+    //   watch("hiringPricingType")?.id === 5
+    // ) {
+    //   unregister("payrollType");
+    //   unregister("tempProject");
+    //   console.log('😅 unreg ',watch("payrollType"), watch("hiringPricingType")?.id)
+    //   watch("hiringPricingType")?.id !== 2 && unregister("contractDuration");
+    // }
 
     // re register full time
     if (
@@ -2075,7 +2076,7 @@ const EditHRFields = ({
         // this will trigger this Effect again and then go to if
       }
     }
-  }, [getHRdetails, contractDurations]);
+  }, [getHRdetails, contractDurations,setcontractDurations,setValue]);
 
   // useEffect(() => {
   //   if (localStorage.getItem("fromEditDeBriefing")) {
