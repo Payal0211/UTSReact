@@ -233,6 +233,7 @@ const EditHRFields = ({
   const [jobPostUsersDetails, setJobPostUsersDetails] = useState([]);
   const [controlledPocValue, setControlledPocValue] = useState([]);
   const [locationSelectValidation,setLocationSelectValidation] = useState(false);
+  const[allCities,setAllCities] = useState([]);
 
   let controllerRef = useRef(null);
   const {
@@ -931,6 +932,22 @@ const EditHRFields = ({
     setPartialEngagements(response && response?.responseBody);
   }, []);
 
+  const fetchCities = useCallback(async () => {     
+    setIsLoading(true);
+    const _res = await MasterDAO.getAutoCompleteCity("");
+    setIsLoading(false);    
+    let citiesValues = [];
+    if (_res?.statusCode === 200) {        
+    citiesValues = _res?.responseBody?.details?.map((city) => ({
+        value: city.row_ID,
+        label: city.location,
+    }));
+    setAllCities(citiesValues || []);
+    } else {
+        setAllCities([]);
+    }            
+});
+
   useEffect(() => {
     getCurrencyHandler();
     getAvailability();
@@ -950,6 +967,7 @@ const EditHRFields = ({
     getStartEndTimeHandler();
     getPartialEngHandler();
     getFrequencyData();
+    fetchCities() 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -1237,8 +1255,11 @@ const EditHRFields = ({
         watch("workingMode").id === 2 || watch("workingMode").id === 3
           ? isRelocate
           : null;
+
+      const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
+      const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value)); 
       hrFormDetails.NearByCities = isRelocate
-        ? NearByCitesValues.join(",")
+        ?  selectedLabels?.concat(nonNumericValues)?.join(',')
         : null;
         hrFormDetails.ATS_JobLocationID =
         watch("workingMode").id === 2 || watch("workingMode").id === 3
@@ -3840,7 +3861,7 @@ const EditHRFields = ({
                   <div className={HRFieldStyle.colMd12}>
                     {!getUploadFileData ? (
                       <HRInputField
-                        disabled={jdURLLink}
+                        // disabled={jdURLLink}
                         register={register}
                         leadingIcon={<UploadSVG />}
                         label="Job Description"
@@ -5306,7 +5327,8 @@ who have worked in scaled start ups."
                         } else {
                           let firstCity = citiesVal[0];
                           setNearByCitesValues([firstCity.label]);
-                          setNearByCitiesData([firstCity]);
+                          // setNearByCitiesData([firstCity]);
+                          setNearByCitiesData(citiesVal);
                         }
                       }}
                       filterOption={true}
@@ -5446,14 +5468,19 @@ who have worked in scaled start ups."
                   mode="tags"
                   style={{ width: "100%" }}
                   value={NearByCitesValues}
-                  options={nearByCitiesData}
+                  showSearch={true}
+                  filterOption={(input, option) => 
+                    option.label.toLowerCase().includes(input.toLowerCase())
+                  } 
+                  options={allCities}
+                  // options={nearByCitiesData}
                   onChange={(values, _) => setNearByCitesValues(values)}
                   placeholder="Select Compensation"
                   tokenSeparators={[","]}
                 />
 
                 <ul className={HRFieldStyle.selectFieldBox}>
-                  {watch("workingMode").value === WorkingMode.HYBRID &&
+                  {
                     nearByCitiesData
                       ?.filter(
                         (option) => !NearByCitesValues?.includes(option.label)
