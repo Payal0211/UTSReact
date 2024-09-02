@@ -129,6 +129,8 @@ function PreviewHRModal({
   });
   const[frequencyData,setFrequencyData] = useState([]);
   const[nearByCitiesData,setNearByCitiesData] = useState([]);
+  const[allCities,setAllCities] = useState([]);
+
   const[locationList,setLocationList] = useState([]);
 
   const [CurrencyList, setCurrencyList] = useState([]);
@@ -235,6 +237,7 @@ function PreviewHRModal({
     //   guid:_guid
     // });
     getCompanyPerksDetails();
+    fetchCities();
   }, [hrIdforPreview]);
 
   useEffect(()=>{
@@ -1386,7 +1389,7 @@ function PreviewHRModal({
         setError(_errors);
     if (isValid) {
       setError({});
-      const selectedLabels = nearByCitiesData?.filter(item => editLocation?.NearByCities?.includes(item.value))?.map(item => item.label);
+      const selectedLabels = allCities?.filter(item => editLocation?.NearByCities?.includes(item.value))?.map(item => item.label);
       const nonNumericValues = editLocation?.NearByCities?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));      
       let payload = {
         workingModeID: editLocation.locationValue === 'Hybrid' ? 2 :editLocation.locationValue === 'Onsite' ? 3 : editLocation.workingModeId,
@@ -1575,6 +1578,22 @@ function PreviewHRModal({
     }, 300),
     []
   );
+
+  const fetchCities = useCallback(async () => {     
+    setIsLoading(true);
+    const _res = await MasterDAO.getAutoCompleteCity("");
+    setIsLoading(false);    
+    let citiesValues = [];
+    if (_res?.statusCode === 200) {        
+    citiesValues = _res?.responseBody?.details?.map((city) => ({
+        value: city.row_ID,
+        label: city.location,
+    }));
+    setAllCities(citiesValues || []);
+    } else {
+        setAllCities([]);
+    }            
+});
 
   const getCities = async (locationId) => {
     setIsLoading(true);
@@ -2301,18 +2320,19 @@ function PreviewHRModal({
                                                 mode="tags"
                                                 style={{ width: "100%" }}
                                                 value={editLocation?.NearByCities}
-                                                options={nearByCitiesData}
+                                                options={allCities}
                                                 onChange={(values, _) => {
                                                     setEditLocation({ ...editLocation, NearByCities: values });
                                                     setError({...error,['NearByCities'] : ""});
                                                 }}
                                                 placeholder="Enter cities"
                                                 tokenSeparators={[","]}
-                                                open={false}
-                                                suffixIcon={false}
+                                                showSearch={true}
+                                                filterOption={(input, option) => 
+                                                  option.label.toLowerCase().includes(input.toLowerCase())
+                                                } 
                                             />                                                                                                  
                                             {error?.NearByCities && <span className='error'>{error?.NearByCities}</span>}  
-                                            {editLocation?.workingModeId === 2 && 
                                             <ul className="SlillBtnBox">
                                               {nearByCitiesData
                                                 ?.filter(option => !editLocation?.NearByCities?.includes(option.label))
@@ -2327,9 +2347,7 @@ function PreviewHRModal({
                                                     </li>
                                                   )
                                                 } )}
-                                            </ul>
-                                          }                                                                  
-                                          
+                                            </ul>                                                              
                                         </div>
                                     </div>}
                                   </>

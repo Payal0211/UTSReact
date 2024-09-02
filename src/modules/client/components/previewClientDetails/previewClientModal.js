@@ -47,6 +47,7 @@ import { getFlagAndCodeOptions } from "modules/client/clientUtils";
 import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { v4 as uuidv4 } from 'uuid';
 import { encrypt } from 'modules/EncryptionDecryption/encryptiondescryption.js'; 
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
 function PreviewClientModal({
   isPreviewModal,
@@ -155,6 +156,16 @@ function PreviewClientModal({
   const cultureDetails = [];
   const youTubeDetails = getCompanyDetails?.youTubeDetails ?? [];
   let _currency = watch("creditCurrency");
+
+  const [userData, setUserData] = useState({});
+
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
 
   useEffect(() => {
     if (clickIndex !== null && isEditClient) {
@@ -1074,14 +1085,15 @@ function PreviewClientModal({
         <div className={previewClientStyle.PreviewpageMainWrap}>
           <div className={`${previewClientStyle.PostHeader} ${previewClientStyle.refreshBtnWrap}`}>
             <h4>Company / Client Details</h4>
-            <div className={previewClientStyle.hiringRequestPriority} onClick={() => syncCompany()}>
+            {(userData?.LoggedInUserTypeID === 1 || userData?.LoggedInUserTypeID === 2) &&      <div className={previewClientStyle.hiringRequestPriority} onClick={() => syncCompany()}>
               <Tooltip title={'Sync company data to ATS'} placement="bottom"
                 style={{ "zIndex": "9999" }}
 
                 overlayClassName="custom-syntooltip">
                 <RefreshSyncSVG width="17" height="16" style={{ fontSize: '16px' }} />
               </Tooltip>
-            </div>
+            </div>}
+      
           </div>
 
 

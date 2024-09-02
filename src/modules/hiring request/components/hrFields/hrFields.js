@@ -221,6 +221,7 @@ const HRFields = ({
   const [NearByCitesValues, setNearByCitesValues] = useState([]);
   const [controlledFrequencyValue, setControlledFrequencyValue] =
     useState("Select");
+  const[allCities,setAllCities] = useState([]);  
 
   let controllerRef = useRef(null);
   let controllerCompanyRef = useRef(null);
@@ -1346,6 +1347,22 @@ const HRFields = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
+  const fetchCities = useCallback(async () => {     
+    setIsLoading(true);
+    const _res = await MasterDAO.getAutoCompleteCity("");
+    setIsLoading(false);    
+    let citiesValues = [];
+    if (_res?.statusCode === 200) {        
+    citiesValues = _res?.responseBody?.details?.map((city) => ({
+        value: city.row_ID,
+        label: city.location,
+    }));
+    setAllCities(citiesValues || []);
+    } else {
+        setAllCities([]);
+    }            
+});
+
   useEffect(
     () => {
       getAvailability();
@@ -1366,6 +1383,7 @@ const HRFields = ({
       getDurationTypes();
       getStartEndTimeHandler();
       getFrequencyData();
+      fetchCities()
       // get country name based on IP
       fetch("https://ipapi.co/json")
         .then((response) => response.json())
@@ -1668,8 +1686,10 @@ const HRFields = ({
         watch("workingMode").id === 2 || watch("workingMode").id === 3
           ? isRelocate
           : null;
+      const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
+      const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value)); 
       hrFormDetails.NearByCities = isRelocate
-        ? NearByCitesValues.join(",")
+        ?  selectedLabels?.concat(nonNumericValues)?.join(',')
         : null;
       hrFormDetails.ATS_JobLocationID =
         watch("workingMode").id === 2 || watch("workingMode").id === 3
@@ -5348,7 +5368,8 @@ who have worked in scaled start ups."
                         } else {
                           let firstCity = citiesVal[0];
                           setNearByCitesValues([firstCity.label]);
-                          setNearByCitiesData([firstCity]);
+                          // setNearByCitiesData([firstCity]);
+                          setNearByCitiesData(citiesVal);
                         }
                       }}
                       filterOption={true}
@@ -5488,14 +5509,19 @@ who have worked in scaled start ups."
                   mode="tags"
                   style={{ width: "100%" }}
                   value={NearByCitesValues}
-                  options={nearByCitiesData}
+                  showSearch={true}
+                  filterOption={(input, option) => 
+                    option.label.toLowerCase().includes(input.toLowerCase())
+                  } 
+                  options={allCities}
+                  // options={nearByCitiesData}
                   onChange={(values, _) => setNearByCitesValues(values)}
                   placeholder="Select Compensation"
                   tokenSeparators={[","]}
                 />
 
                 <ul className={HRFieldStyle.selectFieldBox}>
-                  {watch("workingMode").value === WorkingMode.HYBRID &&
+                  {
                     nearByCitiesData
                       ?.filter(
                         (option) => !NearByCitesValues?.includes(option.label)

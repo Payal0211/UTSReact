@@ -14,6 +14,8 @@ import { Checkbox, Modal, Tooltip, message } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { engagementRequestDAO } from "core/engagement/engagementDAO";
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import LogoLoader from "shared/components/loader/logoLoader";
 
 const EngagementOnboard = ({
   getOnboardFormDetails : gOBFD,
@@ -30,6 +32,17 @@ const EngagementOnboard = ({
 
   let getOnboardFormDetails = gOBFD?.onboardContractDetails
   let teamMembersDetails = gOBFD?.onBoardClientTeamMembers
+
+  const [userData, setUserData] = useState({});
+  const [syncLoading,setSyncLoading] = useState(false)
+
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
 
   useEffect(()=>{
     setRenewalDiscussion({
@@ -49,10 +62,13 @@ const EngagementOnboard = ({
   }
 
   const syncEngagement = async () => {
+    setSyncLoading(true)
     let res = await engagementRequestDAO.syncEngagementDAO(getOnboardFormDetails?.onBoardID);
     if (res?.statusCode === 200) {
+      setSyncLoading(false)
       message.success("Sync successfully");
     }
+    setSyncLoading(false)
   }
 
 // console.log({getOnboardFormDetails,
@@ -69,15 +85,16 @@ const EngagementOnboard = ({
                     Edit Details
                 </button> */}
         </h1>
-
-        <div className={allengagementOnboardStyles.syncEngagement} onClick={() => syncEngagement()}>
+        <LogoLoader visible={syncLoading} />
+        {(userData?.LoggedInUserTypeID === 1 || userData?.LoggedInUserTypeID === 2) &&  <div className={allengagementOnboardStyles.syncEngagement} onClick={() => syncEngagement()}>
               <Tooltip title={'Sync Engagement data to ATS'} placement="bottom"
                 style={{ "zIndex": "9999" }}
 
                 overlayClassName="custom-syntooltip">
                 <RefreshSyncSVG width="17" height="16" style={{ fontSize: '16px' }} />
               </Tooltip>
-        </div>
+        </div>}
+       
       </div>
 
       <div className={allengagementOnboardStyles.engagementBody}>
@@ -371,12 +388,12 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
 
-            <li>
+            {/* <li>
               <span>State : </span>
               {getOnboardFormDetails?.stateName
                 ? getOnboardFormDetails?.stateName
                 : "NA"}
-            </li>
+            </li> */} 
                 </>}
            
           </ul>
