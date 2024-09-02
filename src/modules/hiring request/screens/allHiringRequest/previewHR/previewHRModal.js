@@ -1360,7 +1360,6 @@ function PreviewHRModal({
   }
 
   const updateLocation = async () => {
-    debugger
     let isValid = true;
         let _errors = { ...error };
    
