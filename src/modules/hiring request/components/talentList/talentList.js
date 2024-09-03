@@ -969,7 +969,7 @@ const TalentList = ({
 												{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
 											</span>
 										</div>
-										{info.IsEditable && <>
+										{/* {info.IsEditable && <>
 											{!hrType ? <>
 												{apiData?.JobStatusID !== 2 &&
 													(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') &&
@@ -1002,7 +1002,7 @@ const TalentList = ({
 													Edit
 												</span>}
 											</>}
-										</>}
+										</>} */}
 			
 									</div>)}
 									{/* {!hrType ? (
@@ -1174,6 +1174,14 @@ const TalentList = ({
 									/>
 								
 									{item?.ContractStartdate ? <>
+										{item?.JoiningDate && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Joining Date:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.JoiningDate}
+											</span>
+										</div>
+									)}
 										{item?.ContractStartdate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Contract Start Date:</span>&nbsp;&nbsp;
@@ -1189,15 +1197,7 @@ const TalentList = ({
 												{item?.ContractEnddate}
 											</span>
 										</div>
-									)}
-										{item?.JoiningDate && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Joining Date:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.JoiningDate}
-											</span>
-										</div>
-									)}
+									)}										
 										{item?.LastWorkingDate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Last Working Date:</span>&nbsp;&nbsp;

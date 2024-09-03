@@ -35,13 +35,13 @@ const creditColumn = [
     },
   },
   {
-    title: "HR # Job Title",
+    title: "HR # / Job Title",
     dataIndex: "hrNumber",
     key: "hrNumber",
     align: "left",
     width: "300px",
-    render: (text, result) => (
-      <Link
+    render: (text, result) => (<> 
+    <Link
         target="_blank"
         to={`/allhiringrequest/${result?.hrid}`}
         style={{ color: "black", textDecoration: "underline" }}
@@ -49,6 +49,9 @@ const creditColumn = [
       >
         {text}
       </Link>
+     {text && ` / ${result.requestTalent}`} 
+    </>
+     
     ),
   },
   {
