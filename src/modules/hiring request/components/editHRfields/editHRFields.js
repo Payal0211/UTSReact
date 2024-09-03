@@ -4885,7 +4885,7 @@ who have worked in scaled start ups."
                                       }
                                       onBlur={(e) => {
                                         const regex = /^[6-9]\d{9}$/;                                                                    
-                                          if (!regex.test(e.target.value)) {      
+                                          if (e.target.value && !regex.test(e.target.value)) {      
                                             setJobPostUsersDetails(prevDetails =>
                                               prevDetails.map((detail, i) =>
                                                 i === index ? { ...detail, contactNo: '' } : detail
