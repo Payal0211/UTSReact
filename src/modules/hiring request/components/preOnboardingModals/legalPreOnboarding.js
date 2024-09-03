@@ -58,6 +58,7 @@ export default function LegalPreOnboarding({
   const loggedInUserID = JSON.parse(
     localStorage.getItem("userSessionInfo")
   ).LoggedInUserTypeID;
+  const [isIndefiniteMonth,setIsIndefiniteMonth] = useState(false);
 
   const fatchduringOnBoardInfo = useCallback(
     async (req) => {
@@ -98,6 +99,10 @@ export default function LegalPreOnboarding({
     [setValue]
   );
 
+  useEffect(()=> {
+    setIsIndefiniteMonth(getData?.getLegalInfo?.isIndefiniteMonth)
+  },[getData?.getLegalInfo?.isIndefiniteMonth])
+
   useEffect(() => {
     if (talentDeteils?.OnBoardId) {
       let req = {
@@ -127,7 +132,7 @@ export default function LegalPreOnboarding({
         joiningDate: moment(d.joiningDate).format('yyyy-MM-DD'),
         contractEndDate: getData?.getLegalInfo?.isHRTypeDP
           ? null
-          : moment(d.contractEndDate).format("yyyy-MM-DD"),
+          : isIndefiniteMonth ? null : moment(d.contractEndDate).format("yyyy-MM-DD"),
         clientSOWSignDate: moment(d.clientSOWSignDate).format("yyyy-MM-DD"),
         talentSOWSignDate: moment(d.talentSOWSignDate).format("yyyy-MM-DD"),
         clientMSASignDate: moment(d.msaDate).format("yyyy-MM-DD"),
@@ -239,6 +244,20 @@ export default function LegalPreOnboarding({
                       />
                     </div>
 
+                    { getData?.getLegalInfo?.isIndefiniteMonth === true &&  <div className={HRDetailStyle.modalFormCol}><Checkbox 
+                               checked={isIndefiniteMonth}
+                               onChange={(e) =>{
+                                 setIsIndefiniteMonth(prev=> !prev)
+                               }}
+                              //  id={item?.value + `/${index + 1}`}
+                               style={{
+                                //  fontSize: `${!item.label && '1rem'}`,
+                                marginBottom:'10px',
+                                 fontWeight: '500',
+                               }}>														
+                              Indefinite contract
+                             </Checkbox></div>}   
+               
                     <div className={HRDetailStyle.modalFormCol}>
                       {getData?.getLegalInfo?.isHRTypeDP === true ? (
                         <>
@@ -278,6 +297,7 @@ export default function LegalPreOnboarding({
                         </>
                       ) : (
                         <>
+                       
                           <div className={HRDetailStyle.timeLabel}>
                             Contract Start Date
                             <span className={HRDetailStyle.reqFieldRed}>*</span>
@@ -314,43 +334,7 @@ export default function LegalPreOnboarding({
                       )}
                     </div>
 
-                    {!getData?.getLegalInfo?.isHRTypeDP && (
-                      <div className={HRDetailStyle.modalFormCol}>
-                        <div className={HRDetailStyle.timeLabel}>
-                          Contract End Date
-                          <span className={HRDetailStyle.reqFieldRed}>*</span>
-                        </div>
-                        <div className={HRDetailStyle.timeSlotItem}>
-                          <CalenderSVG />
-
-                          <Controller
-                            render={({ ...props }) => (
-                              <DatePicker
-                                {...props}
-                                selected={watch("contractEndDate")}
-                                onChange={(date) => {
-                                  setValue("contractEndDate", date);
-                                  clearErrors(`contractEndDate`);
-                                }}
-                                placeholderText="Contract End Date"
-                                dateFormat="dd/MM/yyyy"
-                                disabledDate={disabledDate}
-                                control={control}
-                                // value={dayjs(watch('contractEndDate'))}
-                              />
-                            )}
-                            name="contractEndDate"
-                            rules={{ required: true }}
-                            control={control}
-                          />
-                          {errors.contractEndDate && (
-                            <div className={HRDetailStyle.error}>
-                              * Please select Date.
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )} 
+                    
                    {!getData?.getLegalInfo?.isHRTypeDP && <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.timeLabel}>
                           Joining Date
@@ -386,7 +370,48 @@ export default function LegalPreOnboarding({
                           )}
                         </div>
                       </div>}
-                    <div className={HRDetailStyle.modalFormCol}>
+
+
+                  {   
+                         <>
+                         {(!getData?.getLegalInfo?.isHRTypeDP && !isIndefiniteMonth) && (
+                          <>
+                      <div className={HRDetailStyle.modalFormCol}>
+                        <div className={HRDetailStyle.timeLabel}>
+                          Contract End Date
+                          <span className={HRDetailStyle.reqFieldRed}>*</span>
+                        </div>
+                        <div className={HRDetailStyle.timeSlotItem}>
+                          <CalenderSVG />
+
+                          <Controller
+                            render={({ ...props }) => (
+                              <DatePicker
+                                {...props}
+                                selected={watch("contractEndDate")}
+                                onChange={(date) => {
+                                  setValue("contractEndDate", date);
+                                  clearErrors(`contractEndDate`);
+                                }}
+                                placeholderText="Contract End Date"
+                                dateFormat="dd/MM/yyyy"
+                                disabledDate={disabledDate}
+                                control={control}
+                                // value={dayjs(watch('contractEndDate'))}
+                              />
+                            )}
+                            name="contractEndDate"
+                            rules={{ required:  !isIndefiniteMonth }}
+                            control={control}
+                          />
+                          {errors.contractEndDate && (
+                            <div className={HRDetailStyle.error}>
+                              * Please select Date.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+ {getData?.getLegalInfo?.isHRTypeDP === false && <div className={HRDetailStyle.modalFormCol}>
                       <div className={HRDetailStyle.onboardingDetailText}>
                         <span>Contract Duration</span>
                         <span className={HRDetailStyle.onboardingTextBold}>
@@ -394,7 +419,13 @@ export default function LegalPreOnboarding({
                           {/* {getData?.getLegalInfo?.contractDuration ? getData?.getLegalInfo?.contractDuration + "Months" :  "-"} */}
                         </span>
                       </div>
-                    </div>
+                    </div>}  
+                      </>
+                    )}                          
+                         </>
+
+                    }
+
                   </div>
                 </div>
               </div>

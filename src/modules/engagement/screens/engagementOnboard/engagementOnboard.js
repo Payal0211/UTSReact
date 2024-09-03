@@ -606,7 +606,7 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
             </li>
-            {
+            {/* {
               getOnboardFormDetails?.hrType !== "Direct Placement" && <li>
               <span>Engagement End Date : </span>
 
@@ -616,7 +616,17 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
             </li>
-            }
+            } */}
+
+            {getOnboardFormDetails?.contractEndDate && <li>
+              <span>Engagement End Date : </span>
+
+              {getOnboardFormDetails?.contractEndDate
+                ? moment(getOnboardFormDetails?.contractEndDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li> }
            
 
            {/*  <li>
@@ -706,13 +716,15 @@ const EngagementOnboard = ({
         <div className={allengagementOnboardStyles.engagementContent}>
           <h2>About Company</h2>
 
-          <div className={allengagementOnboardStyles.engagementContentList}>
+          {/* <div className={allengagementOnboardStyles.engagementContentList}> */}
+          <div className="jobDescrition">
             <span>A Bit about company culture : </span>
 
             {getOnboardFormDetails?.company_Description
               ? <div dangerouslySetInnerHTML={{__html:getOnboardFormDetails?.company_Description}}></div>
               : "NA"}
           </div>
+
           <div className={allengagementOnboardStyles.engagementContentList}>
             <span>How does the first week look like : </span>
 
