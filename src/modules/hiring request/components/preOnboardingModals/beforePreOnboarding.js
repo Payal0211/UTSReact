@@ -1782,7 +1782,7 @@ const calcelMember = () =>{
                             disabled={actionType==="Legal"?true:false} 
                           />
                         )}
-                        {...register("location", {
+                        {...register("city", {
                           required:
                           watch("modeOFWorkingID")?.id === 2 ||
                           watch("modeOFWorkingID")?.id === 3
@@ -1792,7 +1792,7 @@ const calcelMember = () =>{
                         name="city"
                         control={control}
                       />
-                      {errors.location ? 
+                      {errors.city ? 
                       (
                         <div className={HRDetailStyle.error}>
                           * Please Select Location
