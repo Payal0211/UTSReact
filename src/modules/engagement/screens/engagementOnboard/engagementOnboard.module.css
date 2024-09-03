@@ -116,6 +116,20 @@
     color: #7C7C7C;
 }
 
+.engagementContent [class^="jobDescrition"] h2,.engagementContent [class^="jobDescrition"] h3{
+    font-weight: 400;
+}
+
+.engagementContent [class^="jobDescrition"] ul{
+    display: block;
+    margin: 0;
+}
+
+.engagementContent [class^="jobDescrition"] ul li{
+    width: 100%;
+    padding: 0;
+}
+
 .engagementContentList {
     /* width: 50%; */
     padding: 0 0 16px 0;
