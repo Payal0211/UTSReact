@@ -1192,16 +1192,24 @@ table {
   margin-bottom: 4px;
 }
 
+.jobDescrition img{
+  max-width: 100%;
+}
+
 .jobDescrition ul, .jobDescrition ol{
   padding-left: 18px;
   padding-inline-start: 18px !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 16px !important;
+}
+
+.jobDescrition strong {
+  font-weight: 600;
 }
 
 .jobDescrition ul li{
   list-style-type: disc;
   padding-left: 0;
-  margin-bottom: 0px !important;
+  margin-bottom: 8px !important;
 }
 
 .jobDescrition ol li{
@@ -1211,7 +1219,11 @@ table {
   counter-increment: list-0;
   list-style: decimal;
   display: list-item;
-  margin-bottom: 0px !important;
+  margin-bottom: 8px !important;
+}
+
+.jobDescrition ul li:last-child,.jobDescrition ol li:last-child{
+  margin-bottom: 0 !important;
 }
 
 .jobDescrition.prerequisites ul{
@@ -1250,41 +1262,56 @@ table {
 
 .jobDescrition p{
   color: rgba(0, 0, 0, 0.85) !important;
-  margin-bottom: 0px !important;
+  margin-bottom: 16px !important;
   line-height: 18px !important;
 }
 
 .jobDescrition h1{
     font-size: 2em !important;
     color: rgba(0, 0, 0, 0.85) !important;
-    margin-bottom: 0px !important;
+    margin-bottom: 16px !important;
+    font-weight: 600 !important;
 }
 
 .jobDescrition h2{
     font-size: 1.5em !important;
     color: rgba(0, 0, 0, 0.85) !important;
-    margin-bottom: 0px !important;
+    margin-bottom: 16px !important;
+    font-weight: 600 !important;
 }
 
 .jobDescrition h3 {
   font-size: 1.17em !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  margin-bottom: 0px !important
+  margin-bottom: 16px !important;
+  font-weight: 600 !important;
 }
 .jobDescrition h4 {
   font-size: 1em !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  margin-bottom: 0px;
+  margin-bottom: 4px;
+  font-weight: 600 !important;
 }
 .jobDescrition h5 {
   font-size: 0.83em !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  margin-bottom: 0px;
+  margin-bottom: 4px;
+  font-weight: 600 !important;
 }
 .jobDescrition h6 {
   font-size: 0.67em !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  margin-bottom: 0px;
+  margin-bottom: 4px;
+  font-weight: 600 !important;
+}
+body .jobDescrition h1,body .jobDescrition h2,body .jobDescrition h3,body .jobDescrition h4,body .jobDescrition h5,body .jobDescrition h6{
+  font-family: inherit !important;
+}
+.jobDescrition h1 span, .jobDescrition h2 span, .jobDescrition h3 span{
+  font-size: inherit !important;
+  line-height: inherit !important;
+  color: inherit !important;
+  margin: 0 !important;
 }
 .jobDescrition a {
   text-decoration: underline;
