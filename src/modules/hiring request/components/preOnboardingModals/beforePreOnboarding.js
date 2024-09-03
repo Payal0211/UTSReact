@@ -24,6 +24,7 @@ import { MasterDAO } from "core/master/masterDAO";
 import { HTTPStatusCode } from "constants/network";
 import "react-datepicker/dist/react-datepicker.css";
 import { NetworkInfo } from "constants/network";
+import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 
 import { ReactComponent as GeneralInformationSVG } from "assets/svg/generalInformation.svg";
 import { ReactComponent as DownloadJDSVG } from "assets/svg/downloadJD.svg";
@@ -108,7 +109,9 @@ export default function BeforePreOnboarding({
   const [controlledDealOwner, setControlledDealOwner] = useState();
   const [controlledDealSource, setControlledDealSource] = useState();
   const [controlledEngRep, setControlledEngRep] = useState();
-
+  const [TSCusers, setTSCusers] = useState([])
+  const [controlledTSC, setControlledTSC] =
+    useState("Please Select");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isTabDisabled, setTabDisabled] = useState(false);
@@ -186,6 +189,30 @@ export default function BeforePreOnboarding({
     fatchpreOnBoardInfo();   
     
   }, []);
+
+  useEffect(()=>{
+		const getTSCUSERS = async(ID)=> {
+				let response = await engagementRequestDAO.getTSCUserListDAO(ID);
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					// setTSCusers()
+					setTSCusers(response.responseBody.drpTSCUserList.map(item=> ({...item, id:item.value , value: item.text, })))
+					// setTSCONBoardData(prev=>({...prev,tscPersonID: response.responseBody.tscPersonID}))
+				} 
+			}
+
+		if(talentDeteils?.OnBoardId){
+			getTSCUSERS(talentDeteils?.OnBoardId)
+		}		
+
+	},[talentDeteils?.OnBoardId])
+
+  useEffect(()=>{
+    if(TSCusers.length && preONBoardingData?.preOnboardingDetailsForAMAssignment?.tscUserId){
+      let tscUser = TSCusers.find(usr => usr.id == preONBoardingData?.preOnboardingDetailsForAMAssignment?.tscUserId)
+      setControlledTSC(tscUser?.value)
+      setValue('AddTSCName',tscUser)
+    }
+  },[TSCusers,preONBoardingData?.preOnboardingDetailsForAMAssignment?.tscUserId])
 
   const onChangeLocation = async (val) => {
     if (typeof val === "number") return;
@@ -638,6 +665,7 @@ const calcelMember = () =>{
         "engagemenID": data?.engagemenID,
         "assignAM": assignAM,
         "talentID":talentDeteils?.TalentID,
+        "tscUserId":d.AddTSCName ? +d.AddTSCName?.id : 0,
         "talentShiftStartTime":d.shiftStartTime?.value,
         "talentShiftEndTime": d.endTime?.value,
         "payRate": parseFloat(d.payRate),
@@ -1180,6 +1208,40 @@ const calcelMember = () =>{
                 </div>
               </div>
             </div>
+
+            <div className={HRDetailStyle.onboardingProcesBox}>
+              <div className={HRDetailStyle.onboardingProcessLeft}>
+                <div>
+                  <HireingRequestDetailSVG width="27" height="32" />
+                </div>
+                <h3 className={HRDetailStyle.titleLeft}>Current TSC</h3>
+              </div>
+
+              <div className={HRDetailStyle.onboardingProcessMid}>
+                <div className={HRDetailStyle.modalFormWrapper}>
+                <div className={HRDetailStyle.colMd12}>             
+                    <HRSelectField
+                      isControlled={true}
+                      controlledValue={controlledTSC}
+                      setControlledValue={setControlledTSC}
+                      mode="id/value"
+                      setValue={setValue}
+                      register={register}
+                      name="AddTSCName"
+                      label="Select TSC Name"
+                      defaultValue="Select TSC Name"
+                      options={TSCusers && TSCusers}
+                      isError={errors["AddTSCName"] && errors["AddTSCName"]}
+                      required
+                      errorMsg={"Please select TSC name"}
+                      disabled={actionType==="Legal"?true:false}
+                      searchable={true}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            
 
             <div className={HRDetailStyle.onboardingProcesBox}>
               <div className={HRDetailStyle.onboardingProcessLeft}>
