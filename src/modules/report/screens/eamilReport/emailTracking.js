@@ -375,7 +375,7 @@ export default function EmailTracking() {
               <li className={emailReportStyle.row}>
                 <div className={emailReportStyle.LeftTextWrap}>
                  <div className={emailReportStyle.rowLabel}>{report.eventType} {" "}
-                 {report.eventType==='Open' && 
+                 {report.eventType==='Opened' && 
                   <Tooltip 	placement="bottomLeft"
                    title= "Today open count which are might be sent earlier.">
                    <img src={infoIcon} alt='info'/> 
