@@ -10,56 +10,94 @@ import { Avatar, Tabs, Table, Skeleton, Checkbox, message, Modal } from "antd";
 import { allClientRequestDAO } from "core/allClients/allClientsDAO";
 import { allClientsConfig } from "modules/hiring request/screens/allClients/allClients.config";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
+import greenArrowLeftImage from "assets/svg/greenArrowLeft.svg";
+import redArrowRightImage from "assets/svg/redArrowRight.svg";
 import UTSRoutes from 'constants/routes';
+import { Link } from "react-router-dom";
 import Star from 'assets/svg/selectStarFill.svg';
 
 const creditColumn = [
   {
-    title: "Created Date",
+    title: "Transaction Date",
     dataIndex: "createdByDate",
     key: "createdByDate",
     align: "left",
     width: "150px",
   },
-  {
-    title: "Package",
-    dataIndex: "packageName",
-    key: "packageName",
-    align: "left",
-    width: "100px",
-  },
-  {
-    title: "Client (Company)",
+   {
+    title: "Client",
     dataIndex: "company",
     key: "company",
     align: "left",
-    width: "300px",
+    width: "200px",
     render: (_, val) => {
-      return `${val.client} (${val.company})`;
+      return `${val.client}`;
     },
   },
   {
-    title: "HR #",
+    title: "HR # Job Title",
     dataIndex: "hrNumber",
     key: "hrNumber",
     align: "left",
-    width: "200px",
+    width: "300px",
+    render: (text, result) => (
+      <Link
+        target="_blank"
+        to={`/allhiringrequest/${result?.hrid}`}
+        style={{ color: "black", textDecoration: "underline" }}
+        onClick={() => localStorage.removeItem("dealID")}
+      >
+        {text}
+      </Link>
+    ),
   },
-
   {
-    title: "Talent",
-    dataIndex: "talentName",
-    key: "talentName",
-    align: "left",
-    width: "200px",
-  },
-  {
-    title: "Credit Used",
-    dataIndex: "creditUsed",
-    key: "creditUsed",
+    title: "Action",
+    dataIndex: "actionDescription",
+    key: "actionDescription",
     align: "left",
     width: "150px",
   },
+ 
+ 
+
+  // {
+  //   title: "Talent",
+  //   dataIndex: "talentName",
+  //   key: "talentName",
+  //   align: "left",
+  //   width: "200px",
+  // },
+  {
+    title: "Credit Utilization",
+    dataIndex: "creditUsed",
+    key: "creditUsed",
+    align: "left",
+    width: "250px",
+    render:(_,values) =>{
+     return  <div className="balanceCredit">
+      <h4>
+        {values?.creditSpent}{" "}
+        <img
+          src={
+            values?.creditDebit?.toLowerCase() === "credit"
+              ? greenArrowLeftImage
+              : redArrowRightImage
+          }
+          alt="icon"
+        />
+      </h4>
+      <p>{values?.creditBalanceAfterSpent}</p>
+    </div>
+    }
+  },
+  // {
+  //   title: "Credit Used",
+  //   dataIndex: "creditUsed",
+  //   key: "creditUsed",
+  //   align: "left",
+  //   width: "150px",
+  // },
 
   {
     title: "Credit/Price",
@@ -773,7 +811,7 @@ alt="preview"
   return (
     <>
       <div className={AddNewClientStyle.addNewContainer}>
-        <div className={AddNewClientStyle.addHRTitle}>Company Details</div>
+        <div className={AddNewClientStyle.addHRTitle}>{companyDetails?.companyName ?? 'Company'} Details</div>
 
         <Tabs
           onChange={(e) => setTitle(e)}
