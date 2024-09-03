@@ -606,7 +606,7 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
             </li>
-            {
+            {/* {
               getOnboardFormDetails?.hrType !== "Direct Placement" && <li>
               <span>Engagement End Date : </span>
 
@@ -616,7 +616,17 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
             </li>
-            }
+            } */}
+
+            {getOnboardFormDetails?.contractEndDate && <li>
+              <span>Engagement End Date : </span>
+
+              {getOnboardFormDetails?.contractEndDate
+                ? moment(getOnboardFormDetails?.contractEndDate).format(
+                    "DD-MM-YYYY"
+                  )
+                : "NA"}
+            </li> }
            
 
            {/*  <li>
