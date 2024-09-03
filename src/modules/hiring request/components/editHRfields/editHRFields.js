@@ -4883,6 +4883,17 @@ who have worked in scaled start ups."
                                           e.target.value
                                         )
                                       }
+                                      onBlur={(e) => {
+                                        const regex = /^[6-9]\d{9}$/;                                                                    
+                                          if (!regex.test(e.target.value)) {      
+                                            setJobPostUsersDetails(prevDetails =>
+                                              prevDetails.map((detail, i) =>
+                                                i === index ? { ...detail, contactNo: '' } : detail
+                                              )
+                                            );
+                                            return message.error('Invalid phone number. Must be 10 digits and start with 6-9.');
+                                          }
+                                      }}
                                     />
                                     <Checkbox
                                       name="userShow"
@@ -4896,7 +4907,7 @@ who have worked in scaled start ups."
                                         )
                                       }
                                     >
-                                      Show mobile number to candidates
+                                      Show mobile number to candidates 
                                     </Checkbox>
                                   </div>
                                 </li>
