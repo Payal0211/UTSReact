@@ -167,6 +167,8 @@ export default function BeforePreOnboarding({
   const [controlledBuddy, setControlledBuddy] = useState('Please Select');
   const [buddy, setBuddy] = useState([]);
   const [assignAM,setAssignAM] = useState();
+  const [assignAMnew,setAssignAMNew] = useState();
+  const [tempAMAssign, setTempAMAssign] = useState()
   const [controlledAssignAM, setControlledAssignAM] = useState([]);
   const [controlledPaymentNetTerm, setControlledPaymentNetTerm] = useState([]);
   const [controlledState, setControlledState] = useState([]);
@@ -364,6 +366,8 @@ export default function BeforePreOnboarding({
         let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);      
       if (result?.statusCode === HTTPStatusCode.OK) {       
         setAssignAM(result?.responseBody?.details?.assignAM)
+        setTempAMAssign(result?.responseBody?.details?.assignAM)
+        setAssignAMNew(result?.responseBody?.details?.assignAM)
         setReplacementEngHr(result.responseBody.details?.replacementEngAndHR);
         setIsTransparentPricing(
           result.responseBody.details?.isTransparentPricing
@@ -1120,7 +1124,7 @@ const calcelMember = () =>{
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
                   <div className={HRDetailStyle.colMd12}>
-                  {!assignAM &&<div className={`${HRDetailStyle.onboardingCurrentText} ${HRDetailStyle.onboardingAMAssignmentHead}`}>
+                  {!tempAMAssign &&<div className={`${HRDetailStyle.onboardingCurrentText} ${HRDetailStyle.onboardingAMAssignmentHead}`}>
                      <span>Do you want to assign an AM?</span>                       
                     <Radio.Group name="assignAM" value={assignAM} disabled={actionType==="Legal"?true:false} onChange={(e) => setAssignAM(e.target.value)}>
                           <Radio value={true}>Yes</Radio>
@@ -1129,7 +1133,21 @@ const calcelMember = () =>{
                     </div>}
                   </div>
                 {assignAM ?  
-                <>
+                <> 
+                
+                {tempAMAssign &&<div className={HRDetailStyle.colMd12}>
+                <div className={`${HRDetailStyle.onboardingCurrentText} ${HRDetailStyle.onboardingAMAssignmentHead}`}>
+                   <span >Would you like to continue managing this client, or would you prefer to hand it over to another sales person (AM or NBD)?</span>                       
+                  <Radio.Group name="assignAM" value={assignAMnew} disabled={actionType==="Legal"?true:false} onChange={(e) => setAssignAMNew(e.target.value)} style={{display:'flex',flexDirection:'column',marginTop:'5px'}}>
+                        <Radio value={true} style={{marginBottom:'5px'}} onChange={()=>{
+                          let data = amUsers?.filter((item) => item.id === preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID);
+                          setValue("amSalesPersonID", data[0]);
+                          setControlledAssignAM(data[0]);
+                        }}>I would like to continue managing the client. </Radio>
+                        <Radio value={false}>I prefer to hand over the client to another salesperson.</Radio>
+                  </Radio.Group>                    
+                  </div>
+                </div>}
                   <div className={HRDetailStyle.colMd12}>             
                     <HRSelectField
                       isControlled={true}
@@ -1145,7 +1163,7 @@ const calcelMember = () =>{
                       isError={errors["selectAM"] && errors["selectAM"]}
                       required
                       errorMsg={"Please select AM"}
-                      disabled={actionType==="Legal"?true:false}
+                      disabled={actionType==="Legal"?true: assignAMnew ? true :  false}
                       searchable={true}
                     />
                   </div>
