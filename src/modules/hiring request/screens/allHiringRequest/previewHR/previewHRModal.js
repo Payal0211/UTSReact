@@ -3495,11 +3495,11 @@ function PreviewHRModal({
                           <div className="form-group mt-4">
                             <label>Assign users to this job post</label>
                             <Select
-                              mode="tags"
+                              mode="multiple"
                               style={{ width: "100%" }}
                               value={hrpocUserID}
-                              onChange={(values, _) => {                                                                                                            
-                                // if(!values?.includes(userData?.LoggedInUserID)) return                                                                                                         
+                              onChange={(values, _) => {  
+                                if(!values?.includes(jobPreview?.contactId)) return                                                                                                         
                                 const newPocDetails = values?.map(id => {   
                                   const existingDetail = hrpocUserDetails?.find(detail => detail.pocUserID === id);
                                   if (existingDetail) return existingDetail;   
