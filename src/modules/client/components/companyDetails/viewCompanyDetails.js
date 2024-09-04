@@ -29,7 +29,7 @@ const creditColumn = [
     dataIndex: "company",
     key: "company",
     align: "left",
-    width: "200px",
+    width: "160px",
     render: (_, val) => {
       return `${val.client}`;
     },
@@ -39,18 +39,18 @@ const creditColumn = [
     dataIndex: "hrNumber",
     key: "hrNumber",
     align: "left",
-    width: "300px",
-    render: (text, result) => (<> 
+    width: "250px",
+    render: (text, result) => (<div style={{display:'flex', flexDirection:'column'}}> 
     <Link
         target="_blank"
         to={`/allhiringrequest/${result?.hrid}`}
-        style={{ color: "black", textDecoration: "underline" }}
+        style={{ color: "black", textDecoration: "underline" , marginBottom:'5px'}}
         onClick={() => localStorage.removeItem("dealID")}
       >
         {text}
       </Link>
-     {text && ` / ${result.requestTalent}`} 
-    </>
+     {text && `${result.requestTalent}`} 
+    </div>
      
     ),
   },
@@ -76,7 +76,7 @@ const creditColumn = [
     dataIndex: "creditUsed",
     key: "creditUsed",
     align: "left",
-    width: "250px",
+    width: "150px",
     render:(_,values) =>{
      return  <div className="balanceCredit">
       <h4>
@@ -107,7 +107,7 @@ const creditColumn = [
     dataIndex: "amountPerCredit",
     key: "amountPerCredit",
     align: "left",
-    width: "150px",
+    width: "100px",
   },
   {
     title: "Total",
@@ -656,12 +656,18 @@ alt="preview"
       <>
         <div className={AddNewClientStyle.summaryContainer}>
         <div className={AddNewClientStyle.summaryCard}>
-            Total Credit Used:{" "}
+            Total Credits :{" "}
+            <span>
+              {creditUtilize[0].creditBalance}
+            </span>
+          </div>
+        <div className={AddNewClientStyle.summaryCard}>
+            Credit Used :{" "}
             <span>
               {creditUtilize.map(item=> item.creditUsed).reduce((acc, crrent)=> crrent + acc , 0)}
             </span>
           </div>
-          <div className={AddNewClientStyle.summaryCard}>
+          {/* <div className={AddNewClientStyle.summaryCard}>
             Vetted Count:{" "}
             <span>
               {creditUtilize.length > 0 ? creditUtilize[0].vettedCount : "NA"}
@@ -674,23 +680,23 @@ alt="preview"
                 ? creditUtilize[0].nonVettedCount
                 : "NA"}
             </span>
-          </div>
+          </div> */}
           <div className={AddNewClientStyle.summaryCard}>
-            JP Credit Balance:{" "}
+            Credit Balance :{" "}
             <span>
               {creditUtilize.length > 0
                 ? creditUtilize[0].jpCreditBalance
                 : "NA"}
             </span>
-          </div>
+          </div>     
           <div className={AddNewClientStyle.summaryCard}>
-            Current Amount:{" "}
+            Credit/Price :{" "}
             <span>
               {creditUtilize.length > 0 ? creditUtilize[0].currentAmount : "NA"}
             </span>
           </div>
           <div className={AddNewClientStyle.summaryCard}>
-            Current Currency:{" "}
+            Current Currency :{" "}
             <span>
               {creditUtilize.length > 0
                 ? creditUtilize[0].currentCurrency
