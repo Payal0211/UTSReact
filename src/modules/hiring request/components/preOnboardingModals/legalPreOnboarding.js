@@ -58,7 +58,7 @@ export default function LegalPreOnboarding({
   const loggedInUserID = JSON.parse(
     localStorage.getItem("userSessionInfo")
   ).LoggedInUserTypeID;
-  const [isIndefiniteMonth,setIsIndefiniteMonth] = useState(false);
+  const [isIndefiniteHR,setIsIndefiniteHR] = useState(false);
 
   const fatchduringOnBoardInfo = useCallback(
     async (req) => {
@@ -100,8 +100,8 @@ export default function LegalPreOnboarding({
   );
 
   useEffect(()=> {
-    setIsIndefiniteMonth(getData?.getLegalInfo?.isIndefiniteMonth)
-  },[getData?.getLegalInfo?.isIndefiniteMonth])
+    setIsIndefiniteHR(getData?.getLegalInfo?.isIndefiniteHR)
+  },[getData?.getLegalInfo?.isIndefiniteHR])
 
   useEffect(() => {
     if (talentDeteils?.OnBoardId) {
@@ -132,7 +132,8 @@ export default function LegalPreOnboarding({
         joiningDate: moment(d.joiningDate).format('yyyy-MM-DD'),
         contractEndDate: getData?.getLegalInfo?.isHRTypeDP
           ? null
-          : isIndefiniteMonth ? null : moment(d.contractEndDate).format("yyyy-MM-DD"),
+          : isIndefiniteHR ? null : moment(d.contractEndDate).format("yyyy-MM-DD"),
+        isIndefiniteHR:isIndefiniteHR,
         clientSOWSignDate: moment(d.clientSOWSignDate).format("yyyy-MM-DD"),
         talentSOWSignDate: moment(d.talentSOWSignDate).format("yyyy-MM-DD"),
         clientMSASignDate: moment(d.msaDate).format("yyyy-MM-DD"),
@@ -176,7 +177,7 @@ export default function LegalPreOnboarding({
         }
       }
     },
-    [getData, engagementReplacement]
+    [getData, engagementReplacement,isIndefiniteHR]
   );
 
   const disabledDate = (current) => {
@@ -244,11 +245,12 @@ export default function LegalPreOnboarding({
                       />
                     </div>
 
-                    { getData?.getLegalInfo?.isIndefiniteMonth === true &&  <div className={HRDetailStyle.modalFormCol}><Checkbox 
-                               checked={isIndefiniteMonth}
+                    { getData?.getLegalInfo?.isIndefiniteHR === true &&  <div className={HRDetailStyle.modalFormCol}><Checkbox 
+                               checked={isIndefiniteHR}
                                onChange={(e) =>{
-                                 setIsIndefiniteMonth(prev=> !prev)
+                                 setIsIndefiniteHR(prev=> !prev)
                                }}
+                               disabled={ getData?.getLegalInfo?.isHRTypeDP}
                               //  id={item?.value + `/${index + 1}`}
                                style={{
                                 //  fontSize: `${!item.label && '1rem'}`,
@@ -374,7 +376,7 @@ export default function LegalPreOnboarding({
 
                   {   
                          <>
-                         {(!getData?.getLegalInfo?.isHRTypeDP && !isIndefiniteMonth) && (
+                         {(!getData?.getLegalInfo?.isHRTypeDP && !isIndefiniteHR) && (
                           <>
                       <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.timeLabel}>
@@ -401,7 +403,7 @@ export default function LegalPreOnboarding({
                               />
                             )}
                             name="contractEndDate"
-                            rules={{ required:  !isIndefiniteMonth }}
+                            rules={{ required:  !isIndefiniteHR }}
                             control={control}
                           />
                           {errors.contractEndDate && (
