@@ -109,16 +109,16 @@ const creditColumn = [
     align: "left",
     width: "100px",
   },
-  {
-    title: "Total",
-    dataIndex: "amountPerCredit",
-    key: "amountPerCredit",
-    align: "left",
-    width: "100px",
-    render: (_, val) => {
-      return val.amountPerCredit * val.creditUsed;
-    },
-  },
+  // {
+  //   title: "Total",
+  //   dataIndex: "amountPerCredit",
+  //   key: "amountPerCredit",
+  //   align: "left",
+  //   width: "100px",
+  //   render: (_, val) => {
+  //     return val.amountPerCredit * val.creditUsed;
+  //   },
+  // },
   {
     title: "Currency",
     dataIndex: "creditCurrency",
