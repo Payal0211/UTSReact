@@ -327,12 +327,14 @@ export default function ViewCompanyDetails() {
                                   : "NA"}
                               </li>
                             )}
-                          <li>
+
+                            {!(companyDetails?.companyTypeID === 2 && companyDetails?.anotherCompanyTypeID === 0) && <li>
                             <span>Type Of Pricing:</span>{" "}
                             {companyDetails?.isTransparentPricing
                               ? "Transparent Pricing"
                               : "Non Transparent Pricing"}
-                          </li>
+                          </li>}
+                          
                           <li>
                             <span>Company Address:</span>{" "}
                             {companyDetails?.address
