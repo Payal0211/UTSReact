@@ -2897,7 +2897,7 @@ function PreviewClientModal({
                           </p>
                         </li>
 
-                        <li>
+                        {!(getCompanyDetails?.engagementDetails?.companyTypeID === 2 &&  getCompanyDetails?.engagementDetails?.anotherCompanyTypeID === 0) &&   <li>
                           <span>Type of Pricing (Pay per hire)</span>
                           <p>
                             {getCompanyDetails?.engagementDetails
@@ -2905,7 +2905,8 @@ function PreviewClientModal({
                               ? "Transparent"
                               : "Non Transparent"}
                           </p>
-                        </li>
+                        </li>}
+                       
                         <li>
                           <span>Engagement Mode (Pay per hire)</span>
                           <p>
