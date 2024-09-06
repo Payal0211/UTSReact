@@ -887,7 +887,6 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-			
 									<TalentInterviewStatus
 										item={item}
 										setProfileRejectedModal={setProfileRejectedModal}
