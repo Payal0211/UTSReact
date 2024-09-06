@@ -944,7 +944,7 @@ const ActivityFeed = ({
 							{historyData?.city && <div className={ActivityFeedStyle.historyGridInfo}><span>City:</span> {historyData?.city}</div>}
 							{historyData?.country && <div className={ActivityFeedStyle.historyGridInfo}><span>Country:</span> {historyData?.country}</div>}
 						</div>
-						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> <div dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
+						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> <div className="jobDescrition" dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
 						{historyData?.mustHaveSkills && <div className={ActivityFeedStyle.MustHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Must Have Skills:</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.mustHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
 						{historyData?.goodToHaveSkills && <div className={ActivityFeedStyle.GoodToHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Good To Have Skills:</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.goodToHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
 						</>}

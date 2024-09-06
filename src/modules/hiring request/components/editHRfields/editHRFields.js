@@ -1270,7 +1270,7 @@ const EditHRFields = ({
 
       if (companyType.id === 2) {
 
-        if (jobPostUsersDetails.length){
+        if (jobPostUsersDetails?.length){
           let allValid = true
           jobPostUsersDetails.forEach((user) =>{
             if(user.contactNo){
