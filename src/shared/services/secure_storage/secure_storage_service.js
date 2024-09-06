@@ -12,6 +12,10 @@ export const SecuredStorageService = {
 	writeSecuredData: function (securedData) {
 		try {
 			localStorage.setItem(securedData.key, JSON.stringify(securedData.value));
+			if(securedData?.value){
+				const sessionStartTime = new Date().getTime();
+				localStorage.setItem('sessionStartTime', sessionStartTime.toString());
+			}			
 		} catch (error) {
 			return errorDebug(error, 'SecureStorageService.writeSecuredData');
 		}
