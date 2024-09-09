@@ -265,7 +265,7 @@ const HRFields = ({
   const industryOptions = [
     { value: "Service", label: "Service" },
     { value: "Product", label: "Product" },
-    { value: "Manufacturing", label: "Manufacturing" },
+    // { value: "Manufacturing", label: "Manufacturing" },
   ];
 
   const [timeZoneList, setTimezoneList] = useState([]);

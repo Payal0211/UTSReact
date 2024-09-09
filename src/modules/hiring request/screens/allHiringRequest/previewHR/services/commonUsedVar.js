@@ -274,7 +274,7 @@ export const compensationOptions = [
 export const industryOptions = [
   { value: "Service", label: "Service" },
   {value:"Product", label:"Product"},
-  {value:"Manufacturing", label:"Manufacturing"},
+  // {value:"Manufacturing", label:"Manufacturing"},
 ]
 let TrackData = {
   trackingDetails: trackingDetailsAPI()
