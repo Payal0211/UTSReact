@@ -89,8 +89,7 @@ function PreviewHRModal({
     IsOpenToWorkNearByCities:null,
     NearByCities:[],
     ATS_JobLocationID:null,
-    ATS_NearByCities:""});
-  const [country, setCountry] = useState([]);
+    ATS_NearByCities:""});  
   const [iseditExp, setisEditExp] = useState(false);
   const [editExp, seteditExp] = useState("");
   const [iseditSkills, setisEditSkills] = useState(false);
