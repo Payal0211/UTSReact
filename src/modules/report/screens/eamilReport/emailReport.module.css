@@ -119,6 +119,10 @@
     padding-right: 25px;
 }
 
+.cardHeadAction button + button {
+    margin-left: 16px;
+}
+
 .cardInner{
     padding: 10px 0;
     margin-bottom: 0;
@@ -365,6 +369,10 @@
 .exportAction .btnPrimary {
     margin: 0;
     padding: 10px 24px;
+}
+
+.exportAction .btnPrimary + .btnPrimary{
+    margin-left: 16px;
 }
 
 .noDataFoundText{

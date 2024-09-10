@@ -10,7 +10,7 @@ import React, {
   import DatePicker from "react-datepicker";
   import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
   import "react-datepicker/dist/react-datepicker.css";
-  import { useNavigate } from "react-router-dom";
+  import { Link, useNavigate } from "react-router-dom";
   
   import { clientReport } from "core/clientReport/clientReportDAO";
   import { reportConfig } from "modules/report/report.config";
@@ -256,13 +256,19 @@ export default function EmailTracking() {
               CompanyID:selectedClientName?Number(selectedClientName):0,
               SubjectID: subject ? subject : 0
           };
-        //   console.log(params,reportData);
-
           getEmailPopUpReportList(params);
         },
         [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole,selectedClientName, subject]
       );
-
+    
+    const handleClientTracking = useCallback(async() =>{
+      const payload = {
+        fromDate: moment(firstDay).format("YYYY-MM-DD"),
+        toDate: moment(lastDay).format("YYYY-MM-DD"),
+        clientID:selectedClientName?Number(selectedClientName):0,
+      }
+      navigate("/clientPortalTrackingReport",{state:payload})
+    },[firstDay, lastDay,selectedClientName]);
   return (
     <div className={emailReportStyle.dealContainer}>
     <div className={emailReportStyle.header}>
@@ -375,12 +381,12 @@ export default function EmailTracking() {
               <li className={emailReportStyle.row}>
                 <div className={emailReportStyle.LeftTextWrap}>
                  <div className={emailReportStyle.rowLabel}>{report.eventType} {" "}
-                 {report.eventType==='Opened' && 
+                 {/* {report.eventType==='Opened' && 
                   <Tooltip 	placement="bottomLeft"
                    title= "Today open count which are might be sent earlier.">
                    <img src={infoIcon} alt='info'/> 
                  </Tooltip>
-                 }
+                 } */}
                  </div>
                  </div>
                 <div className={emailReportStyle.rowValue}>                
@@ -415,15 +421,25 @@ export default function EmailTracking() {
             <>
               <div className={emailReportStyle.exportAction}>
                 <h3 className={emailReportStyle.cardTitle}>
-                Client Tracking Details : {hrStage}
+                Email Tracking Details : {hrStage}
                 </h3>
+                <div className={emailReportStyle.cardHeadAction}>
+                  {hrStage === "Opened" &&
+                  <button
+                    className={emailReportStyle.btnPrimary}
+                    onClick={() => handleClientTracking()}
+                  >
+                    Client Tracking Detail
+                  </button>}
 
-                <button
-                  className={emailReportStyle.btnPrimary}
-                  onClick={() => handleExport(reportPopupList)}
-                >
-                  Export
-                </button>
+                  <button
+                    className={emailReportStyle.btnPrimary}
+                    onClick={() => handleExport(reportPopupList)}
+                  >
+                    Export
+                  </button>
+                </div>
+               
               </div>
 
               <Table
