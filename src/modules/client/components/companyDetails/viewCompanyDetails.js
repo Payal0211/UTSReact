@@ -328,7 +328,7 @@ export default function ViewCompanyDetails() {
                               </li>
                             )}
 
-                            {!(companyDetails?.companyTypeID === 2 && companyDetails?.anotherCompanyTypeID === 0) && <li>
+                            {!(companyDetails?.companyTypeID === 2 && companyDetails?.anotherCompanyTypeID === 0) && companyDetails?.isTransparentPricing !== null && <li>
                             <span>Type Of Pricing:</span>{" "}
                             {companyDetails?.isTransparentPricing
                               ? "Transparent Pricing"
