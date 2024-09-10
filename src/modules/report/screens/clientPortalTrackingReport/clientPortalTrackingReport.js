@@ -10,7 +10,7 @@ import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
 import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
 import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { clientReport } from "core/clientReport/clientReportDAO";
 import { reportConfig } from "modules/report/report.config";
@@ -63,6 +63,9 @@ export default function UTMTrackingReport() {
   const [ClientNameList,setClientNameList] = useState([])
   // const client = localStorage.getItem("clientID");
   const clientID = Number(0);
+
+  const location = useLocation();
+  const data = location.state; 
 
   // const [utmTrackingListList, setutmTrackingListList] = useState([]); 
 
@@ -224,8 +227,12 @@ export default function UTMTrackingReport() {
          toDate: moment(lastDay).format("YYYY-MM-DD"),
          clientID:clientID ?Number(clientID):0
        };
-      getClientPortalReportList(payload);
-  }, [clientID]);
+       if(data){
+          getClientPortalReportList(data);
+       }else{
+          getClientPortalReportList(payload);
+       }
+  }, [clientID,data]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -396,7 +403,6 @@ export default function UTMTrackingReport() {
       <div className={clientPortalTrackingReportStyle.filterContainer}>
         <div className={clientPortalTrackingReportStyle.filterSets}>
           <div className={clientPortalTrackingReportStyle.filterSetsInner}>
-            {console.log('selectedClientName',selectedClientName,ClientNameList.find(i=> i.value === selectedClientName))}
           <Select
             // defaultValue="lucy"
             style={{ width: 400 }}

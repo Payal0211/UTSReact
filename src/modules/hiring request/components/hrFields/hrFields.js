@@ -265,7 +265,7 @@ const HRFields = ({
   const industryOptions = [
     { value: "Service", label: "Service" },
     { value: "Product", label: "Product" },
-    { value: "Manufacturing", label: "Manufacturing" },
+    // { value: "Manufacturing", label: "Manufacturing" },
   ];
 
   const [timeZoneList, setTimezoneList] = useState([]);
@@ -1671,7 +1671,7 @@ const HRFields = ({
             ? true
             : false
           : null;
-      hrFormDetails.prerequisites = watch("parametersHighlight") ?? "";
+      hrFormDetails.prerequisites = watch("parametersHighlight") ?? null;
       hrFormDetails.HRIndustryType = specificIndustry?.join("^");
       hrFormDetails.StringSeparator = "^";
 
@@ -1700,6 +1700,28 @@ const HRFields = ({
         : null;
 
       if (userCompanyTypeID === 2) {
+
+        if (jobPostUsersDetails.length){
+          let allValid = true
+          jobPostUsersDetails.forEach((user) =>{
+            if(user.contactNo){
+              const regex = /^[6-9]\d{9}$/;
+              console.log('validate Contact no.',!regex.test(user.contactNo))
+              if (!regex.test(user.contactNo)) {  
+                message.error('Invalid phone number. Must be 10 digits and start with 6-9.');  
+                setIsSavedLoading(false);  
+                 console.log('validate Contact no.',!regex.test(user.contactNo))
+                 allValid = false
+              }
+            
+            }
+          })
+
+          if(allValid === false){
+            return
+          }
+        }
+        
         hrFormDetails.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
         hrFormDetails.hrpocUserID = watch("jobPostUsers")
           ? watch("jobPostUsers")?.map((item) => item.value.toString())

@@ -89,8 +89,7 @@ function PreviewHRModal({
     IsOpenToWorkNearByCities:null,
     NearByCities:[],
     ATS_JobLocationID:null,
-    ATS_NearByCities:""});
-  const [country, setCountry] = useState([]);
+    ATS_NearByCities:""});  
   const [iseditExp, setisEditExp] = useState(false);
   const [editExp, seteditExp] = useState("");
   const [iseditSkills, setisEditSkills] = useState(false);
@@ -2564,7 +2563,7 @@ function PreviewHRModal({
                             }}
                           /> */}
                                   <div className="jobDescrition" dangerouslySetInnerHTML={{
-                                    __html: editWhatWeOffer ? editWhatWeOffer : jobPreview?.jobDescription ? jobPreview?.jobDescription : `
+                                    __html: editWhatWeOffer ? editWhatWeOffer?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : jobPreview?.jobDescription ? jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : `
                             ${jobPreview?.roleOverviewDescription ? `<h3>Role Overview Description</h3>${jobPreview?.roleOverviewDescription}<br><br>` : ''}
                             ${jobPreview?.rolesResponsibilities ? `<h3>Roles & Responsibilities</h3>${jobPreview?.rolesResponsibilities}<br><br>` : ''}
                             ${jobPreview?.requirements ? `<h3>Requirements</h3>${jobPreview?.requirements}<br><br>` : ''}
@@ -3471,7 +3470,12 @@ function PreviewHRModal({
                                                         </Tooltip>
                                                     </li>
                                                     <li><img src={PhoneIcon} alt="phone-icon"/>
-                                                    {val?.contactNo ? val?.contactNo : 
+                                                    {val?.contactNo ? 
+                                                    <>
+                                                    <spna>{val?.contactNo}</spna>
+                                                    <Tooltip title={val?.showContactNumberToTalent ? "Contact number is visible to candidates" : "Contact number is hidden from candidates"}> 
+                                                    <img src={infosmallIcon} alt='info' />
+                                                </Tooltip></> : 
                                                     <span className="preShareDeailLink" onClick={() => {
                                                       setIsContactEdit(true);
                                                       setPOCDetails({...pocDetails,guid:val?.guid,isEdit:false,pocId:val?.hrwiseContactId,contactNo:"",showContactNumberToTalent:null})

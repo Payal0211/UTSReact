@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import { Routes, Navigate, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UTSRoutes, { navigateToComponent , isAccess } from 'constants/routes';
@@ -15,6 +15,26 @@ const Layout = React.lazy(() => import('layout/layout'));
 function App() {
 	const queryClient = new QueryClient();
 
+	const isAuthenticatedRoute = () => {
+		let token = localStorage.getItem("apiKey");		
+		const sessionStartTime = localStorage.getItem('sessionStartTime');
+		
+		if (token && sessionStartTime) {
+			
+			const sessionDuration = new Date().getTime() - sessionStartTime;
+			const maxSessionDuration = 82800000; // 23 hours in milliseconds     
+		  
+		  if (sessionDuration < maxSessionDuration) {
+			return true;
+		  } else {
+			localStorage.clear()
+			return false;
+		  }
+		}
+		localStorage.clear()
+		return false;
+	};	  
+
 	const [userData, setUserData] = useState({});
 
 	useEffect(() => {
@@ -25,19 +45,19 @@ function App() {
 		getUserResult();
 	}, []);
 
-    const isAllowed =  isAccess(userData?.LoggedInUserTypeID) 
+    const isAllowed =  isAccess(userData?.LoggedInUserTypeID) 	
 	
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Suspense>
 				<Routes>
-					<Route
+					{!isAuthenticatedRoute() && <Route
 						exact
 						path={UTSRoutes.LOGINROUTE}
 						element={<Login />}
-					/>
+					/>}
 
-					{ userData?.LoggedInUserTypeID && <Route
+					{isAuthenticatedRoute() && userData?.LoggedInUserTypeID && <Route
 						path={UTSRoutes.HOMEROUTE}
 						element={
 							<Navigate

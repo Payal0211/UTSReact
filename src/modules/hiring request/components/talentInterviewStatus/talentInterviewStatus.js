@@ -21,7 +21,7 @@ export default function TalentInterviewStatus({
 }) {
   return (
     <>
-      { !_isNull(item.ClientFeedback) ? (
+      { !_isNull(item.ClientFeedback) && item?.ClientFeedback !== "NoHire"  ? (
         <div
           className={TalentListStyle.statusPending}
           style={{ backgroundColor: "#D8F3F2" }}
@@ -30,7 +30,7 @@ export default function TalentInterviewStatus({
             <div>
               Interview Status: <span>{item?.InterviewStatus}</span>
             </div>
-            {(
+            {/* {(
             //   item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
             (item?.ClientFeedback === InterviewFeedbackStatus.REJECTED || 
             item?.ClientFeedback === InterviewFeedbackStatus.NOHIRE) && item?.TalentStatusID_BasedOnHR === 7 ) && (
@@ -48,22 +48,23 @@ export default function TalentInterviewStatus({
               {" "}
               View
             </span>
-            )}
+            )} */}
           </div>
         </div>
-      ) : item?.Status === "Rejected" || item?.Status === "NoHire"  ? (
+      ) : item?.TalentStatusID_BasedOnHR === 7 
+         ? (
         <div
           className={TalentListStyle.statusReject}
           style={{ backgroundColor: item?.InterviewStatusCode }}
         >
           <div className={TalentListStyle.statusRejectInner}>
             <div>
-             Profile {item?.Status} Reason:{" "}
+             {item?.Status} Reason:{" "}
               <span>
                 {item?.RejectedReason}
               </span>
             </div>
-            <span
+            {/* <span
               onClick={() => {
                 setTalentIndex(item?.TalentID)
                 setProfileRejectedModal(true);
@@ -75,7 +76,7 @@ export default function TalentInterviewStatus({
               }}
             >
               View
-            </span>
+            </span> */}
           </div>
         </div>
       ) : (
@@ -87,7 +88,7 @@ export default function TalentInterviewStatus({
           <div>
             Interview Status: <span>{item?.InterviewStatus === "" ? "NA" : item?.InterviewStatus}</span>
           </div>
-          {(
+          {/* {(
             // item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
             (item?.ClientFeedback === InterviewFeedbackStatus.REJECTED || item?.ClientFeedback === InterviewFeedbackStatus.NOHIRE) && item?.TalentStatusID_BasedOnHR === 7  ) && (
             <span
@@ -104,7 +105,7 @@ export default function TalentInterviewStatus({
               {" "}
               View
             </span>
-            )}
+            )} */}
         </div>
       </div>
         // <div className={TalentListStyle.payRate}  style={{ backgroundColor: item?.InterviewStatusCode }}>
