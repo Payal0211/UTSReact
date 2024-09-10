@@ -222,7 +222,8 @@ function PreviewHRModal({
   // const dispatch = useDispatch();
 
   useEffect(() => {
-    getRolesCurrencyList();
+    if(hrIdforPreview){
+       getRolesCurrencyList();
     getSkillList();
     getTimeZoneValues();
     getStartEndTimeData();
@@ -237,6 +238,7 @@ function PreviewHRModal({
     // });
     getCompanyPerksDetails();
     fetchCities();
+    }
   }, [hrIdforPreview]);
 
   useEffect(()=>{
