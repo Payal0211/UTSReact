@@ -2939,7 +2939,7 @@ function PreviewClientModal({
 
             <div className={previewClientStyle.formFields}>
               <div className={previewClientStyle.formFieldsbox}>
-                <div className={previewClientStyle.formFieldsboxinner}>
+                <div className={`${previewClientStyle.formFieldsboxinner} ${previewClientStyle.formSalesPersonFields}`}>
                   <h2>
                   Uplers's Salesperson (NBD/AM){" "}
                     <span
@@ -2981,6 +2981,7 @@ function PreviewClientModal({
                               label="Uplers's Salesperson (NBD/AM)"
                               defaultValue="Select Salesperson (NBD/AM)"
                               options={allPocs}
+                              searchable={true}
                               required
                             // isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
                             // errorMsg="Please select POC name."
