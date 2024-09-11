@@ -134,39 +134,41 @@ export class AddNewType {
 }
 
 export class TalentOnboardStatus {
-	static SCHEDULE_INTERVIEW = 'Schedule Interview';
-	static RESCHEDULE_INTERVIEW = 'Reschedule Interview';
-	static TALENT_STATUS = 'Talent Status';
-	static TALENT_ACCEPTANCE = 'Talent Acceptance';
-	static UPDATE_KICKOFF = 'Update kickoff & Onboard Status';
-	static ONBOARD_TALENT = 'Onboard Talent';
-	static INTERVIEW_STATUS = 'Interview Status';
-	static INTERVIEW_DETAILS = 'Interviewer Details';
-	static UPDATE_CLIENT_ON_BOARD_STATUS = 'Update Client On Board Status';
-	static UPDATE_TALENT_ON_BOARD_STATUS = 'Update Talent On Board Status';
-	static UPDATE_LEGAL_TALENT_ONBOARD_STATUS =
-		'Update Legal Talent On Board Status';
-	static UPDATE_LEGAL_CLIENT_ONBOARD_STATUS =
-		'Update Legal Client On Board Status';
-	static UPDATE_KICKOFF_ONBOARD_STATUS = 'Update Kick Off On Board Status';
-	static REPLACE_TALENT = 'Replace Talent';
-	static CLONE_HR = 'Clone HR';
-	static CONFIRM_SLOT = 'Confirm Slot';
-	static CANCEL_ENGAGEMENT = 'Cancel Engagement';
-	static SUBMIT_CLIENT_FEEDBACK = 'Submit Client Feedback';
-	static EDIT_CLIENT_FEEDBACK = 'Edit Client Feedback';
-	static ANOTHER_ROUND_INTERVIEW = 'Another Round Interview';
-	static SUBMIT_AS_HIRE = "Submit As Hire";
-	static REJECT_TALENT = "Reject Talent";
+	static SCHEDULE_INTERVIEW = 'ScheduleInterview';
+	static RESCHEDULE_INTERVIEW = 'RescheduleInterview';
+	static TALENT_STATUS = 'TalentStatus';
+	static INTERVIEW_STATUS = 'InterviewStatus';	
+	static UPDATE_TALENT_ON_BOARD_STATUS = 'UpdateTalentOnBoardStatus';
+	static REPLACE_TALENT = 'ReplaceTalent';	
+	static CONFIRM_SLOT = 'ConfirmSlot';
+	static CANCEL_ENGAGEMENT = 'CancelEngagement';	
+	static ANOTHER_ROUND_INTERVIEW = 'AnotherRoundInterview';
+	static SUBMIT_AS_HIRE = "SubmitClientFeedback";
+	static REJECT_TALENT = "TalentStatus";
+	static REJECT_TALENT_NO_HIRE = "SubmitFeedbackWithNoHire";
 	static SCHEDULE_ANOTHER_ROUND_INTERVIEW = 'Schedule Another Interview Round';
-	static GO_TO_ONBOARD = "Go to OnBoard"
-	static CONFIRM_CONTRACT_DETAILS = "Confirm Contract Details";
-	static UPDATE_LEGAL = "Confirm legal Info";
-	static RELEASE_OFFER_DETAILS = "Release Offer Details"
-	static VIEW_ENGAGEMENT = 'View Engagement'
-	static ASSIGN_TSC = 'Assign TSC'
-	static MOVE_TO_ANOTHER_ROUND = 'Move to Another Round'
-	static LEGAL = 'Legal'
+	
+	static CONFIRM_CONTRACT_DETAILS = "GotoOnBoard";
+	static UPDATE_LEGAL = "UpdateLegalClientOnBoardStatus";
+	static RELEASE_OFFER_DETAILS = "GotoOnBoard"
+	static VIEW_ENGAGEMENT = 'ViewEngagement'	
+	static MOVE_TO_ANOTHER_ROUND = 'SubmitFeedbackWithAnotherRound'
+	// static GO_TO_ONBOARD = "GotoOnBoard"
+	// static UPDATE_LEGAL_TALENT_ONBOARD_STATUS =
+	// 	'Update Legal Talent On Board Status';
+	// static UPDATE_LEGAL_CLIENT_ONBOARD_STATUS =
+	// 	'Update Legal Client On Board Status';
+	// static UPDATE_KICKOFF_ONBOARD_STATUS = 'Update Kick Off On Board Status';
+	// static SUBMIT_CLIENT_FEEDBACK = 'SubmitClientFeedback';
+	// static EDIT_CLIENT_FEEDBACK = 'Edit Client Feedback';
+	// static CLONE_HR = 'Clone HR';
+	// static TALENT_ACCEPTANCE = 'Talent Acceptance';
+	// static UPDATE_KICKOFF = 'Update kickoff & Onboard Status';
+	// static ONBOARD_TALENT = 'Onboard Talent';
+	// static INTERVIEW_DETAILS = 'Interviewer Details';
+	// static UPDATE_CLIENT_ON_BOARD_STATUS = 'Update Client On Board Status';
+	// static ASSIGN_TSC = 'AssignTSC'
+	// static LEGAL = 'Legal'
 }
 
 export class HRCTA {

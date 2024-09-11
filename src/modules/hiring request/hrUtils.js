@@ -668,7 +668,7 @@ export const hrUtils = {
 		let tempArray = [];
 		item?.cTAInfoList?.map((item) =>
 			tempArray.push({
-				key: item?.label,
+				key: item?.key,
 				label: item?.label,
 				IsEnabled: item?.IsEnabled,
 			}),

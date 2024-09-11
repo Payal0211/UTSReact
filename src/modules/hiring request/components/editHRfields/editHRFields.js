@@ -5437,7 +5437,7 @@ who have worked in scaled start ups."
                     searchable={true}
                     setValue={setValue}
                     register={register}
-                    label={"Ferquency of Office Visits"}
+                    label={"Frquency of Office Visits"}
                     defaultValue="officeVisits"
                     options={frequencyData}
                     name="officeVisits"

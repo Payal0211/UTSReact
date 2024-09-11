@@ -2159,6 +2159,22 @@ function PreviewClientModal({
                               onClick={() => {
                                 setEditClient(true);
                                 setClickIndex(index);
+                                let pNo 
+                                if(val?.contactNo){
+                                  if (val?.contactNo?.includes("+91")) {
+                                   
+                                    setValue("contactNo",val?.contactNo?.slice(3))
+                                    setValue("countryCode",val?.contactNo?.slice(0, 3))
+                                    pNo  = val?.contactNo?.slice(3)
+                                  }else if (val?.contactNo?.includes("+")) {
+                                    setValue("contactNo",val?.contactNo?.slice(2))
+                                    setValue("countryCode",val?.contactNo?.slice(0, 2))
+                                    pNo  = val?.contactNo?.slice(2)
+                                  } else {
+                                    setValue("contactNo",val?.contactNo)
+                                    pNo  = val?.contactNo
+                                  }
+                                }
                                 setClientDetailsData({
                                   ...clientDetailsData,
                                   clientID: val?.id,
@@ -2167,7 +2183,7 @@ function PreviewClientModal({
                                   fullName: val?.fullName,
                                   emailId: val?.emailID,
                                   designation: val?.designation,
-                                  phoneNumber: val?.contactNo,
+                                  phoneNumber: pNo,
                                   accessRoleId: val?.roleID,
                                 });
                               }}
