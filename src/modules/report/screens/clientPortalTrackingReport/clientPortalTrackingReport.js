@@ -228,7 +228,10 @@ export default function UTMTrackingReport() {
          clientID:clientID ?Number(clientID):0
        };
        if(data){
-          getClientPortalReportList(data);
+        setStartDate(data?.fromDate ? moment(data.fromDate).toDate() : null);
+        setEndDate(data?.toDate ? moment(data.toDate).toDate() : null);
+        setSelectClientName(data?.clientID === 0 ? null : data?.clientID)
+        getClientPortalReportList(data);
        }else{
           getClientPortalReportList(payload);
        }
