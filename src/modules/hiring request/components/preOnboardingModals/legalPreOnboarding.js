@@ -166,7 +166,7 @@ export default function LegalPreOnboarding({
       //   message.error("The joining date must be greater than contract start date.")
       //   return
       // }    
-       if(!(new Date(d.joiningDate) >= new Date(d.contractStartDate))){
+       if(getData?.getLegalInfo?.isHRTypeDP !== true  && !(new Date(d.joiningDate) >= new Date(d.contractStartDate))){
         isValid = false;
         setIsLoading(false);
         message.error("The joining date must be greater than and same as contract start date.")
