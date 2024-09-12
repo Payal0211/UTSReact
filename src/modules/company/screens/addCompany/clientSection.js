@@ -73,6 +73,9 @@ function ClientSection({
           if (contact?.contactNo?.includes("+91")) {
             phoneDetails.contactNo = contact?.contactNo?.slice(3);
             phoneDetails.countryCode = contact?.contactNo?.slice(0, 3);
+          }else if (contact?.contactNo?.includes("+")) {
+            phoneDetails.contactNo = contact?.contactNo?.slice(2)?.trim();
+            phoneDetails.countryCode = contact?.contactNo?.slice(0, 2);
           } else {
             phoneDetails.contactNo = contact?.contactNo;
           }

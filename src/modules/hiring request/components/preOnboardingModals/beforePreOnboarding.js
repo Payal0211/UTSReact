@@ -1249,8 +1249,8 @@ const calcelMember = () =>{
                       label="Select TSC Name"
                       defaultValue="Select TSC Name"
                       options={TSCusers && TSCusers}
-                      isError={errors["AddTSCName"] && errors["AddTSCName"]}
-                      required
+                      // isError={errors["AddTSCName"] && errors["AddTSCName"]}
+                      // required
                       errorMsg={"Please select TSC name"}
                       disabled={actionType==="Legal"?true:false}
                       searchable={true}

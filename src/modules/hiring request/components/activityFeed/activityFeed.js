@@ -879,74 +879,78 @@ const ActivityFeed = ({
 						<h3>{historyData?.hrNumber}</h3>
 
 						<div className={ActivityFeedStyle.historyGrid}>
-							{historyData?.yearOfExp && <div className={ActivityFeedStyle.historyGridInfo}><span>Year of experience:</span> {historyData?.yearOfExp}</div>}
-							{historyData?.about_Company_desc && <div className={ActivityFeedStyle.historyGridInfo}><span>About Company:</span> {historyData?.about_Company_desc}</div>}
-							{historyData?.adhoc_BudgetCost && <div className={ActivityFeedStyle.historyGridInfo}><span>Adhoc Budget:</span> {historyData?.adhoc_BudgetCost}</div>}
-							{historyData?.ambitionBoxRating && <div className={ActivityFeedStyle.historyGridInfo}><span>Ambition Box Rating:</span> {historyData?.ambitionBoxRating}</div>}
-							{historyData?.availability && <div className={ActivityFeedStyle.historyGridInfo}><span>Availability:</span> {historyData?.availability}</div>}
-							{historyData?.bqLink && <div className={ActivityFeedStyle.historyGridInfo}><span>BQ Link:</span> {historyData?.bqLink}</div>}
-							{historyData?.budgetFrom && <div className={ActivityFeedStyle.historyGridInfo}><span>Budget From:</span> {historyData?.budgetFrom}</div>}
-							{historyData?.budgetTo && <div className={ActivityFeedStyle.historyGridInfo}><span>Budget To:</span> {historyData?.budgetTo}</div>}
-							{historyData?.calculatedUplersfees && <div className={ActivityFeedStyle.historyGridInfo}><span>Calculated Uplers fees:</span> {historyData?.calculatedUplersfees}</div>}
-							{historyData?.communicationType && <div className={ActivityFeedStyle.historyGridInfo}><span>Communication Type:</span> {historyData?.communicationType}</div>}
-							{historyData?.cost && <div className={ActivityFeedStyle.historyGridInfo}><span>Cost:</span> {historyData?.cost}</div>}
-							{historyData?.currency && <div className={ActivityFeedStyle.historyGridInfo}><span>Currency:</span> {historyData?.currency}</div>}
-							{historyData?.deleteHRReason && <div className={ActivityFeedStyle.historyGridInfo}><span>Delete HR Reason:</span> {historyData?.deleteHRReason}</div>}
-							{historyData?.discovery_Call && <div className={ActivityFeedStyle.historyGridInfo}><span>Discovery Call:</span> {historyData?.discovery_Call}</div>}
-							{historyData?.discription && <div className={ActivityFeedStyle.historyGridInfo}><span>Discription:</span> {historyData?.discription}</div>}
-							{historyData?.dpPercentage && <div className={ActivityFeedStyle.historyGridInfo}><span>DP Percentage:</span> {historyData?.dpPercentage}</div>}
-							{historyData?.duration && <div className={ActivityFeedStyle.historyGridInfo}><span>Duration:</span> {historyData?.specificMonth == "-1" ? "Indefinite" : historyData?.duration}</div>}
-							{historyData?.durationType && <div className={ActivityFeedStyle.historyGridInfo}><span>DurationType:</span> {historyData?.durationType}</div>}
-							{historyData?.genericInfo && <div className={ActivityFeedStyle.historyGridInfo}><span>Generic Info:</span> {historyData?.genericInfo}</div>}
-							{historyData?.hR_Cost && <div className={ActivityFeedStyle.historyGridInfo}><span>HR Cost:</span> {historyData?.hR_Cost}</div>}
+							{historyData?.yearOfExp && <div className={ActivityFeedStyle.historyGridInfo}><span>Year of experience :</span> {historyData?.yearOfExp}</div>}
+							{historyData?.about_Company_desc && <div className={ActivityFeedStyle.historyGridInfo}><span>About Company :</span> {historyData?.about_Company_desc}</div>}
+							{historyData?.adhoc_BudgetCost && <div className={ActivityFeedStyle.historyGridInfo}><span>Adhoc Budget :</span> {historyData?.adhoc_BudgetCost}</div>}
+							{historyData?.ambitionBoxRating && <div className={ActivityFeedStyle.historyGridInfo}><span>Ambition Box Rating :</span> {historyData?.ambitionBoxRating}</div>}
+							{historyData?.availability && <div className={ActivityFeedStyle.historyGridInfo}><span>Availability :</span> {historyData?.availability}</div>}
+							{historyData?.bqLink && <div className={ActivityFeedStyle.historyGridInfo}><span>BQ Link :</span> {historyData?.bqLink}</div>}
+							{historyData?.budgetFrom && <div className={ActivityFeedStyle.historyGridInfo}><span>Budget From :</span> {historyData?.budgetFrom}</div>}
+							{historyData?.budgetTo && <div className={ActivityFeedStyle.historyGridInfo}><span>Budget To :</span> {historyData?.budgetTo}</div>}
+							{historyData?.calculatedUplersfees && <div className={ActivityFeedStyle.historyGridInfo}><span>Calculated Uplers fees :</span> {historyData?.calculatedUplersfees}</div>}
+							{historyData?.communicationType && <div className={ActivityFeedStyle.historyGridInfo}><span>Communication Type :</span> {historyData?.communicationType}</div>}
+							{historyData?.cost && <div className={ActivityFeedStyle.historyGridInfo}><span>Cost :</span> {historyData?.cost}</div>}
+							{historyData?.currency && <div className={ActivityFeedStyle.historyGridInfo}><span>Currency :</span> {historyData?.currency}</div>}
+							{historyData?.deleteHRReason && <div className={ActivityFeedStyle.historyGridInfo}><span>Delete HR Reason :</span> {historyData?.deleteHRReason}</div>}
+							{historyData?.discovery_Call && <div className={ActivityFeedStyle.historyGridInfo}><span>Discovery Call :</span> {historyData?.discovery_Call}</div>}
+							{historyData?.discription && <div className={ActivityFeedStyle.historyGridInfo}><span>Discription :</span> {historyData?.discription}</div>}
+							{historyData?.dpPercentage && <div className={ActivityFeedStyle.historyGridInfo}><span>DP Percentage :</span> {historyData?.dpPercentage}</div>}
+							{historyData?.duration && <div className={ActivityFeedStyle.historyGridInfo}><span>Duration :</span> {historyData?.specificMonth == "-1" ? "Indefinite" : historyData?.duration}</div>}
+							{historyData?.durationType && <div className={ActivityFeedStyle.historyGridInfo}><span>DurationType :</span> {historyData?.durationType}</div>}
+							{historyData?.genericInfo && <div className={ActivityFeedStyle.historyGridInfo}><span>Generic Info :</span> {historyData?.genericInfo}</div>}
+							{historyData?.hR_Cost && <div className={ActivityFeedStyle.historyGridInfo}><span>HR Cost :</span> {historyData?.hR_Cost}</div>}
 							{/* {historyData?.historyDate && <div className={ActivityFeedStyle.historyGridInfo}><span>History Date:</span> {historyData?.historyDate}</div>} */}
-							{historyData?.howSoon && <div className={ActivityFeedStyle.historyGridInfo}><span>How Soon:</span> {historyData?.howSoon}</div>}
-							{historyData?.interviewLinkedin && <div className={ActivityFeedStyle.historyGridInfo}><span>Interview Linkedin:</span> {historyData?.interviewLinkedin}</div>}
-							{historyData?.interviewerDesignation && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer Designation:</span> {historyData?.interviewerDesignation}</div>}
-							{historyData?.interviewerEmailID && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer EmailID:</span> {historyData?.interviewerEmailID}</div>}
-							{historyData?.interviewerName && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer Name:</span> {historyData?.interviewerName}</div>}
-							{historyData?.interviewerYearofExperience && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer Year of Experience:</span> {historyData?.interviewerYearofExperience}</div>}
-							{historyData?.jdFilename && <div className={ActivityFeedStyle.historyGridInfo}><span>JD File Name:</span> {historyData?.jdFilename}</div>}
-							{historyData?.jdurl && <div className={ActivityFeedStyle.historyGridInfo}><span>JD url:</span> {historyData?.jdurl}</div>}
-							{historyData?.jobExpiredORClosedDate && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Expired OR Closed Date:</span> {historyData?.jobExpiredORClosedDate}</div>}
-							{historyData?.jobStatus && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Status:</span> {historyData?.jobStatus}</div>}
-							{historyData?.lastActivityDate && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Activity Date:</span> {historyData?.lastActivityDate}</div>}
-							{historyData?.lastModifiedBy && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Modified By:</span> {historyData?.lastModifiedBy}</div>}
+							{historyData?.howSoon && <div className={ActivityFeedStyle.historyGridInfo}><span>How Soon :</span> {historyData?.howSoon}</div>}
+							{historyData?.interviewLinkedin && <div className={ActivityFeedStyle.historyGridInfo}><span>Interview Linkedin :</span> {historyData?.interviewLinkedin}</div>}
+							{historyData?.interviewerDesignation && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer Designation :</span> {historyData?.interviewerDesignation}</div>}
+							{historyData?.interviewerEmailID && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer EmailID :</span> {historyData?.interviewerEmailID}</div>}
+							{historyData?.interviewerName && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer Name :</span> {historyData?.interviewerName}</div>}
+							{historyData?.interviewerYearofExperience && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer Year of Experience :</span> {historyData?.interviewerYearofExperience}</div>}
+							{historyData?.jdFilename && <div className={ActivityFeedStyle.historyGridInfo}><span>JD File Name :</span> {historyData?.jdFilename}</div>}
+							{historyData?.jdurl && <div className={ActivityFeedStyle.historyGridInfo}><span>JD url :</span> {historyData?.jdurl}</div>}
+							{historyData?.jobExpiredORClosedDate && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Expired OR Closed Date :</span> {historyData?.jobExpiredORClosedDate}</div>}
+							{historyData?.jobStatus && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Status :</span> {historyData?.jobStatus}</div>}
+							{historyData?.lastActivityDate && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Activity Date :</span> {historyData?.lastActivityDate}</div>}
+							{historyData?.lastModifiedBy && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Modified By :</span> {historyData?.lastModifiedBy}</div>}
 							{/* {historyData?.lastModifiedDatetime && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Modified Date time:</span> {historyData?.lastModifiedDatetime}</div>} */}
-							{historyData?.lossRemark && <div className={ActivityFeedStyle.historyGridInfo}><span>Loss Remark:</span> {historyData?.lossRemark}</div>}
-							{historyData?.monthDuration && <div className={ActivityFeedStyle.historyGridInfo}><span>Month Duration:</span> {historyData?.monthDuration}</div>}
-							{historyData?.noofEmployee && <div className={ActivityFeedStyle.historyGridInfo}><span>No of Employee:</span> {historyData?.noofEmployee}</div>}
-							{historyData?.noofHoursworking && <div className={ActivityFeedStyle.historyGridInfo}><span>No of Hours working:</span> {historyData?.noofHoursworking}</div>}
-							{historyData?.noofTalents && <div className={ActivityFeedStyle.historyGridInfo}><span>No of Talents:</span> {historyData?.noofTalents}</div>}
-							{historyData?.notAcceptedHRReason && <div className={ActivityFeedStyle.historyGridInfo}><span>Not Accepted HR Reason:</span> {historyData?.notAcceptedHRReason}</div>}
-							{historyData?.onHoldRemark && <div className={ActivityFeedStyle.historyGridInfo}><span>On Hold Remark:</span> {historyData?.onHoldRemark}</div>}
-							{historyData?.overlapingHours && <div className={ActivityFeedStyle.historyGridInfo}><span>Overlaping Hours:</span> {historyData?.overlapingHours}</div>}
-							{historyData?.pauseHRReason && <div className={ActivityFeedStyle.historyGridInfo}><span>Pause HR Reason:</span> {historyData?.pauseHRReason}</div>}
-							{historyData?.pauseHRReasonOther && <div className={ActivityFeedStyle.historyGridInfo}><span>Pause HR Reason Other:</span> {historyData?.pauseHRReasonOther}</div>}
-							{historyData?.payrollPartnerName && <div className={ActivityFeedStyle.historyGridInfo}><span>Payroll Partner Name:</span> {historyData?.payrollPartnerName}</div>}
-							{historyData?.remark && <div className={ActivityFeedStyle.historyGridInfo}><span>Remark:</span> {historyData?.remark}</div>}
-							{historyData?.requestForTalent && <div className={ActivityFeedStyle.historyGridInfo}><span>Request For Talent:</span> {historyData?.requestForTalent}</div>}
-							{historyData?.requirement && <div className={ActivityFeedStyle.historyGridInfo}><span>Requirement:</span> {historyData?.requirement}</div>}
-							{historyData?.roleStatus && <div className={ActivityFeedStyle.historyGridInfo}><span>Role Status:</span> {historyData?.roleStatus}</div>}
-							{historyData?.roleTeamSize && <div className={ActivityFeedStyle.historyGridInfo}><span>Role Team Size:</span> {historyData?.roleTeamSize}</div>}
-							{historyData?.rolesResponsibilities && <div className={ActivityFeedStyle.historyGridInfo}><span>Roles/Responsibilities:</span> {historyData?.rolesResponsibilities}</div>}
-							{historyData?.salesUser && <div className={ActivityFeedStyle.historyGridInfo}><span>Sales User:</span> {historyData?.salesUser}</div>}
-							{(historyData?.specificMonth && historyData?.specificMonth == "-1") && <div className={ActivityFeedStyle.historyGridInfo}><span>Specific Month:</span> {historyData?.specificMonth == "-1" ? "Indefinite" : historyData?.specificMonth}</div>}
-							{historyData?.tR_Accepted && <div className={ActivityFeedStyle.historyGridInfo}><span>TR Accepted:</span> {historyData?.tR_Accepted}</div>}
-							{historyData?.talentCostCalcPercentage && <div className={ActivityFeedStyle.historyGridInfo}><span>Talent Cost Percentage:</span> {historyData?.talentCostCalcPercentage}</div>}
-							{historyData?.timeZone_FromTime && <div className={ActivityFeedStyle.historyGridInfo}><span>From Time:</span> {historyData?.timeZone_FromTime}</div>}
-							{historyData?.timeZone_EndTime && <div className={ActivityFeedStyle.historyGridInfo}><span>End Time:</span> {historyData?.timeZone_EndTime}</div>}							
-							{historyData?.timezone && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone:</span> {historyData?.timezone}</div>}
-							{historyData?.timezone_Preference && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone Preference:</span> {historyData?.timezone_Preference}</div>}
+							{historyData?.lossRemark && <div className={ActivityFeedStyle.historyGridInfo}><span>Loss Remark :</span> {historyData?.lossRemark}</div>}
+							{historyData?.monthDuration && <div className={ActivityFeedStyle.historyGridInfo}><span>Month Duration :</span> {historyData?.monthDuration}</div>}
+							{historyData?.noofEmployee && <div className={ActivityFeedStyle.historyGridInfo}><span>No of Employee :</span> {historyData?.noofEmployee}</div>}
+							{historyData?.noofHoursworking && <div className={ActivityFeedStyle.historyGridInfo}><span>No of Hours working :</span> {historyData?.noofHoursworking}</div>}
+							{historyData?.noofTalents && <div className={ActivityFeedStyle.historyGridInfo}><span>No of Talents :</span> {historyData?.noofTalents}</div>}
+							{historyData?.notAcceptedHRReason && <div className={ActivityFeedStyle.historyGridInfo}><span>Not Accepted HR Reason :</span> {historyData?.notAcceptedHRReason}</div>}
+							{historyData?.onHoldRemark && <div className={ActivityFeedStyle.historyGridInfo}><span>On Hold Remark :</span> {historyData?.onHoldRemark}</div>}
+							{historyData?.overlapingHours && <div className={ActivityFeedStyle.historyGridInfo}><span>Overlaping Hours :</span> {historyData?.overlapingHours}</div>}
+							{historyData?.pauseHRReason && <div className={ActivityFeedStyle.historyGridInfo}><span>Pause HR Reason :</span> {historyData?.pauseHRReason}</div>}
+							{historyData?.pauseHRReasonOther && <div className={ActivityFeedStyle.historyGridInfo}><span>Pause HR Reason Other :</span> {historyData?.pauseHRReasonOther}</div>}
+							{historyData?.payrollPartnerName && <div className={ActivityFeedStyle.historyGridInfo}><span>Payroll Partner Name :</span> {historyData?.payrollPartnerName}</div>}
+							{historyData?.remark && <div className={ActivityFeedStyle.historyGridInfo}><span>Remark :</span> {historyData?.remark}</div>}
+							{historyData?.requestForTalent && <div className={ActivityFeedStyle.historyGridInfo}><span>Request For Talent :</span> {historyData?.requestForTalent}</div>}
+							{historyData?.requirement && <div className={ActivityFeedStyle.historyGridInfo}><span>Requirement :</span> {historyData?.requirement}</div>}
+							{historyData?.roleStatus && <div className={ActivityFeedStyle.historyGridInfo}><span>Role Status :</span> {historyData?.roleStatus}</div>}
+							{historyData?.roleTeamSize && <div className={ActivityFeedStyle.historyGridInfo}><span>Role Team Size :</span> {historyData?.roleTeamSize}</div>}
+							{historyData?.rolesResponsibilities && <div className={ActivityFeedStyle.historyGridInfo}><span>Roles/Responsibilities :</span> {historyData?.rolesResponsibilities}</div>}
+							{historyData?.salesUser && <div className={ActivityFeedStyle.historyGridInfo}><span>Sales User :</span> {historyData?.salesUser}</div>}
+							{(historyData?.specificMonth && historyData?.specificMonth == "-1") && <div className={ActivityFeedStyle.historyGridInfo}><span>Specific Month :</span> {historyData?.specificMonth == "-1" ? "Indefinite" : historyData?.specificMonth}</div>}
+							{historyData?.tR_Accepted && <div className={ActivityFeedStyle.historyGridInfo}><span>TR Accepted :</span> {historyData?.tR_Accepted}</div>}
+							{historyData?.talentCostCalcPercentage && <div className={ActivityFeedStyle.historyGridInfo}><span>Talent Cost Percentage :</span> {historyData?.talentCostCalcPercentage}</div>}
+							{historyData?.timeZone_FromTime && <div className={ActivityFeedStyle.historyGridInfo}><span>From Time :</span> {historyData?.timeZone_FromTime}</div>}
+							{historyData?.timeZone_EndTime && <div className={ActivityFeedStyle.historyGridInfo}><span>End Time :</span> {historyData?.timeZone_EndTime}</div>}							
+							{historyData?.timezone && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone :</span> {historyData?.timezone}</div>}
+							{historyData?.timezone_Preference && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone Preference :</span> {historyData?.timezone_Preference}</div>}
 							{historyData?.employmentType && <div className={ActivityFeedStyle.historyGridInfo}><span>Employment Type :</span> {historyData?.employmentType}</div>}
-							{historyData?.payrollType && <div className={ActivityFeedStyle.historyGridInfo}><span>Payroll Type:</span> {historyData?.payrollType}</div>}
-							{historyData?.modeOfWork && <div className={ActivityFeedStyle.historyGridInfo}><span>Mode of work:</span> {historyData?.modeOfWork}</div>}
-							{historyData?.city && <div className={ActivityFeedStyle.historyGridInfo}><span>City:</span> {historyData?.city}</div>}
-							{historyData?.country && <div className={ActivityFeedStyle.historyGridInfo}><span>Country:</span> {historyData?.country}</div>}
+							{historyData?.payrollType && <div className={ActivityFeedStyle.historyGridInfo}><span>Payroll Type :</span> {historyData?.payrollType}</div>}
+							{historyData?.modeOfWork && <div className={ActivityFeedStyle.historyGridInfo}><span>Mode of work :</span> {historyData?.modeOfWork}</div>}
+							{/* {historyData?.city && <div className={ActivityFeedStyle.historyGridInfo}><span>City:</span> {historyData?.city}</div>}
+							{historyData?.country && <div className={ActivityFeedStyle.historyGridInfo}><span>Country:</span> {historyData?.country}</div>} */}
+							{historyData?.jobLocation && <div className={ActivityFeedStyle.historyGridInfo}><span>Location :</span> {historyData?.jobLocation}</div>}
+							{historyData?.frequencyOfficeVisit && <div className={ActivityFeedStyle.historyGridInfo}><span>Frequency of Office Visits :</span> {historyData?.frequencyOfficeVisit}</div>}
+							{historyData?.isOpenToWorkNearByCities && <div className={ActivityFeedStyle.historyGridInfo}><span> Applicants willing to relocate :</span> {historyData?.isOpenToWorkNearByCities}</div>}
+							{historyData?.nearByCities && <div className={ActivityFeedStyle.historyGridInfo}><span>Candidate's preference location :</span> {historyData?.nearByCities}</div>}
 						</div>
-						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> <div className="jobDescrition" dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
-						{historyData?.mustHaveSkills && <div className={ActivityFeedStyle.MustHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Must Have Skills:</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.mustHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
-						{historyData?.goodToHaveSkills && <div className={ActivityFeedStyle.GoodToHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Good To Have Skills:</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.goodToHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
+						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description :</span> <div className="jobDescrition" dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
+						{historyData?.mustHaveSkills && <div className={ActivityFeedStyle.MustHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Must Have Skills :</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.mustHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
+						{historyData?.goodToHaveSkills && <div className={ActivityFeedStyle.GoodToHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Good To Have Skills :</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.goodToHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
 						</>}
 						</Modal>}
 

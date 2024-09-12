@@ -11,6 +11,7 @@ const HROperator = ({
 	isDropdown,
 	listItem,
 	menuAction,
+	isUseKey
 }) => {
 
 	const controlledLabelMenuAction = (val) =>{
@@ -32,7 +33,7 @@ const HROperator = ({
 							<Menu.Item
 								style={{ cursor: item?.IsEnabled ? 'pointer' : 'no-drop' }}
 								disabled={!item?.IsEnabled}
-								key={item.label}
+								key={isUseKey ? item.key : item.label}
 								onClick={menuAction}>
 								{item.label}
 							</Menu.Item>
@@ -43,7 +44,7 @@ const HROperator = ({
 								<Menu.Item
 									style={{ cursor: item?.IsEnabled ? 'pointer' : 'no-drop' }}
 									disabled={!item?.IsEnabled}
-									key={item.label}
+									key={isUseKey ? item.key : item.label}
 									onClick={menuAction}>
 									{item.label}
 								</Menu.Item>

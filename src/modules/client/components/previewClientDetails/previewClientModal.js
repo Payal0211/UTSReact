@@ -2159,6 +2159,22 @@ function PreviewClientModal({
                               onClick={() => {
                                 setEditClient(true);
                                 setClickIndex(index);
+                                let pNo 
+                                if(val?.contactNo){
+                                  if (val?.contactNo?.includes("+91")) {
+                                   
+                                    setValue("contactNo",val?.contactNo?.slice(3))
+                                    setValue("countryCode",val?.contactNo?.slice(0, 3))
+                                    pNo  = val?.contactNo?.slice(3)
+                                  }else if (val?.contactNo?.includes("+")) {
+                                    setValue("contactNo",val?.contactNo?.slice(2))
+                                    setValue("countryCode",val?.contactNo?.slice(0, 2))
+                                    pNo  = val?.contactNo?.slice(2)
+                                  } else {
+                                    setValue("contactNo",val?.contactNo)
+                                    pNo  = val?.contactNo
+                                  }
+                                }
                                 setClientDetailsData({
                                   ...clientDetailsData,
                                   clientID: val?.id,
@@ -2167,7 +2183,7 @@ function PreviewClientModal({
                                   fullName: val?.fullName,
                                   emailId: val?.emailID,
                                   designation: val?.designation,
-                                  phoneNumber: val?.contactNo,
+                                  phoneNumber: pNo,
                                   accessRoleId: val?.roleID,
                                 });
                               }}
@@ -2939,7 +2955,7 @@ function PreviewClientModal({
 
             <div className={previewClientStyle.formFields}>
               <div className={previewClientStyle.formFieldsbox}>
-                <div className={previewClientStyle.formFieldsboxinner}>
+                <div className={`${previewClientStyle.formFieldsboxinner} ${previewClientStyle.formSalesPersonFields}`}>
                   <h2>
                   Uplers's Salesperson (NBD/AM){" "}
                     <span
@@ -2981,6 +2997,7 @@ function PreviewClientModal({
                               label="Uplers's Salesperson (NBD/AM)"
                               defaultValue="Select Salesperson (NBD/AM)"
                               options={allPocs}
+                              searchable={true}
                               required
                             // isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
                             // errorMsg="Please select POC name."
