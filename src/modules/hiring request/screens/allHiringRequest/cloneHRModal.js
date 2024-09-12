@@ -30,12 +30,12 @@ const CloneHRModal = ({
 	const handleHybridClone = () => {
 		let ERROR = false
 		setIsErrors(false)
-		if(userCompanyTypeID === 1 ){
-			if(typeOfPricing === null){ 
-				ERROR = true
-				setIsErrors(true)
-			}
-		}
+		// if(userCompanyTypeID === 1 ){
+		// 	if(typeOfPricing === null){ 
+		// 		ERROR = true
+		// 		setIsErrors(true)
+		// 	}
+		// }
 		if(userCompanyTypeID === 2 ){
 			if(!isProfileView && !isPostaJob){
 				ERROR = true
@@ -51,7 +51,8 @@ const CloneHRModal = ({
 			"companyId":companyID,
 			"hybridModel": {
 			  "payPerType": userCompanyTypeID,
-			  "isTransparentPricing": typeOfPricing === 1 ? true : false,
+			//   "isTransparentPricing": typeOfPricing === 1 ? true : false,
+			"isTransparentPricing": null,
 			  "isPostaJob": isPostaJob,
 			  "isProfileView": isProfileView,
 			  "isVettedProfile": isVettedProfile
@@ -118,7 +119,7 @@ const CloneHRModal = ({
                 </Radio.Group>
 </div> } */}
 
-{userCompanyTypeID === 1 && <div className={CloneHRModalStyle.colMd12}>
+{/* {userCompanyTypeID === 1 && <div className={CloneHRModalStyle.colMd12}>
 			<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
 							Type Of pricing
@@ -127,7 +128,7 @@ const CloneHRModal = ({
 							</span>
 						</label>
              {isErrors && typeOfPricing === null && <p className={CloneHRModalStyle.error}>*Please select pricing type</p>}
-           {/* {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
+           {/* {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  
 						<Radio.Group
 							// defaultValue={'client'}
 							// className={allengagementReplceTalentStyles.radioGroup}
@@ -138,7 +139,7 @@ const CloneHRModal = ({
 							<Radio value={0}>Non Transparent Pricing</Radio>
 						</Radio.Group>
 							</div>
-			</div>}
+			</div>} */}
 			</>}
 
 
