@@ -1272,7 +1272,7 @@ img {
 
 .quill .ql-container,
 .quill .ql-editor {
-    all: unset;
+    /* all: unset; */
 }
 
 .quill .ql-editor ol li:not(.ql-direction-rtl),
