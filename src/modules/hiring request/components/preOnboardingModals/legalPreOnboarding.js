@@ -160,12 +160,12 @@ export default function LegalPreOnboarding({
               : d.engagementreplacement.id,
         },
       };
-      if(new Date(d.contractStartDate) >= new Date(d.joiningDate)){
-        isValid = false;
-        setIsLoading(false);
-        message.error("The joining date must be greater than contract start date.")
-        return
-      }      
+      // if(new Date(d.contractStartDate) >= new Date(d.joiningDate)){
+      //   isValid = false;
+      //   setIsLoading(false);
+      //   message.error("The joining date must be greater than contract start date.")
+      //   return
+      // }      
       if(isValid){
         let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
         if (result?.statusCode === HTTPStatusCode.OK) {
