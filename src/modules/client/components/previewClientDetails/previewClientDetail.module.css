@@ -884,6 +884,18 @@
     display: inline-block;
 }
 
+.PreviewpageMainWrap .formFieldsboxinner.formSalesPersonFields{
+    overflow: visible;
+}
+
+.PreviewpageMainWrap .formFieldsboxinner.formSalesPersonFields > h2{
+    border-radius: 16px 16px 0 0;
+}
+
+.formSalesPersonFields [class^="ant-select"] [class^="ant-select-selector"] > [class^="ant-select-selection-search"]{
+    padding: 16px 0;
+}
+
 /* Edit Modal css End */
 
 @media screen and (max-width: 1440px) {

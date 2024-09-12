@@ -223,21 +223,21 @@ function PreviewHRModal({
 
   useEffect(() => {
     if(hrIdforPreview){
-       getRolesCurrencyList();
-    getSkillList();
-    getTimeZoneValues();
-    getStartEndTimeData();
-    GetPayrollType();
+      //  getRolesCurrencyList();
+    // getSkillList();
+    // getTimeZoneValues();
+    // getStartEndTimeData();
+    // GetPayrollType();
     getPOCUsers();
-    getJobType();
-    getFrequencyData(); 
+    // getJobType();
+    // getFrequencyData(); 
     // getLocationInfo();
     // getPostPreview({
     //   contactId:_user.LoggedInUserID,
     //   guid:_guid
     // });
     getCompanyPerksDetails();
-    fetchCities();
+    // fetchCities();
     }
   }, [hrIdforPreview]);
 
@@ -673,7 +673,7 @@ function PreviewHRModal({
     // }else{
     //   setEditSkills([]);
     // }
-
+getSkillList();
     setisEditSkills(true);
     let _topskills = [...topSkills];
     let _skills = [...new Set(jobPreview?.skills?.split(",").filter(skill => skill.trim()))];
@@ -1972,6 +1972,7 @@ function PreviewHRModal({
                               onClick={() => {                              
                                   setiseditRoleName(true);
                                 seteditRoleName(jobPreview?.roleName);
+                                getRolesCurrencyList();
                               }}
                             ><img src={EditnewIcon} /></span>
                           </h2>
@@ -2079,6 +2080,8 @@ function PreviewHRModal({
                             <span className="editNewIcon"
                               onClick={() => {
                                 setisEditDuration(true);
+                                GetPayrollType();
+                                getJobType();
                                 setError({});
                                 // let _empType = getcompanyID == 2 ?
                                 //   jobPreview.employmentType === 'Part Time' ? jobPreview.employmentType : jobPreview?.isHiringLimited === 'Temporary' ? 'Temporary' : jobPreview?.isHiringLimited === 'Permanent' ? 'Permanent' : ''
@@ -2120,6 +2123,8 @@ function PreviewHRModal({
                                           <span className="editNewIcon" onClick={() => { 
                                               setisEditLocation(true);
                                               // getcountryData();
+                                              getFrequencyData()
+                                              fetchCities()
                                               setEditLocation({
                                                 ...editLocation,
                                                 workingModeId: jobPreview?.workingModeId,
@@ -2134,6 +2139,8 @@ function PreviewHRModal({
                                           }} >  <img src={EditnewIcon}/></span>
                                           <span className="downArrowBtn"  onClick={() => {
                                             setisEditLocation(!iseditLocation);
+                                            getFrequencyData()
+                                            fetchCities()
                                             setEditLocation({
                                               ...editLocation,
                                               workingModeId: jobPreview?.workingModeId,
@@ -2180,6 +2187,8 @@ function PreviewHRModal({
 
                               <span className="editNewIcon"
                                 onClick={() => {
+                                  getTimeZoneValues();
+                                  getStartEndTimeData();
                                     setisEditShift(true);
                                   setEditShift({
                                     timeZone: jobPreview?.timeZone,
@@ -3480,6 +3489,7 @@ function PreviewHRModal({
                                                 </Tooltip></> : 
                                                     <span className="preShareDeailLink" onClick={() => {
                                                       setIsContactEdit(true);
+                                                      // getPOCUsers();
                                                       setPOCDetails({...pocDetails,guid:val?.guid,isEdit:false,pocId:val?.hrwiseContactId,contactNo:"",showContactNumberToTalent:null})
                                                     }}>Add Contact Number</span>
                                                     }

@@ -1332,42 +1332,43 @@ const TalentList = ({
 														talentCTA?.[ROW_SIZE * (page-1) + listIndex]
 															?.cTAInfoList[0]?.label
 													}
+													isUseKey={true}
 													icon={<AiOutlineDown />}
 													backgroundColor={`var(--color-sunlight)`}
 													iconBorder={`1px solid var(--color-sunlight)`}
 													isDropdown={true}
 													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
-													menuAction={(menuItem) => {							
+													menuAction={(menuItem) => {						
 														switch (menuItem.key) {															
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setScheduleInterviewModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
-															case TalentOnboardStatus.ASSIGN_TSC: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
-																setActionKey(key)
-																autoAssignTSC(item.OnBoardId)
-																break
-															}
+															// case TalentOnboardStatus.ASSIGN_TSC: {
+															// 	let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															// 	setActionKey(key)
+															// 	autoAssignTSC(item.OnBoardId)
+															// 	break
+															// }
 															case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setReScheduleInterviewModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
-															case TalentOnboardStatus.TALENT_ACCEPTANCE: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
-																setActionKey(key)
-																setTalentAcceptance(true);
-																setTalentIndex(item?.TalentID);
-																break;
-															}
+															// case TalentOnboardStatus.TALENT_ACCEPTANCE: {
+															// 	let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															// 	setActionKey(key)
+															// 	setTalentAcceptance(true);
+															// 	setTalentIndex(item?.TalentID);
+															// 	break;
+															// }
 															case TalentOnboardStatus.TALENT_STATUS: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setTalentStatus(true);
 																setTalentIndex(item?.TalentID);
@@ -1375,91 +1376,100 @@ const TalentList = ({
 															}
 			
 															case TalentOnboardStatus.INTERVIEW_STATUS: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setInterviewStatus(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
-															case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
-																// setOnboardClientModal(true);
-																// setTalentIndex(item?.TalentID);
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
-																setActionKey(key)
-																setShowAMModal(true);
-																let Flags = {
-																	talent: item,
-																	tabLabel: 'During Pre-Onboarding',
-																	forTalent: true,
-																	hrID: hrId
-																}
-																setAMFlags(Flags)
-																break;
-															}
-															case TalentOnboardStatus.SUBMIT_CLIENT_FEEDBACK: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
-																setActionKey(key)
-																setInterviewFeedback(true);
-																setTalentIndex(item?.TalentID);
-																break;
-															}
-															case TalentOnboardStatus.EDIT_CLIENT_FEEDBACK: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
-																setActionKey(key)
-																// setInterviewFeedback(true);
-																setTalentIndex(item?.TalentID);
-																setEditFeedback(true);
-																break;
-															}
+															// case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
+															// 	// setOnboardClientModal(true);
+															// 	// setTalentIndex(item?.TalentID);
+															// 	let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															// 	setActionKey(key)
+															// 	setShowAMModal(true);
+															// 	let Flags = {
+															// 		talent: item,
+															// 		tabLabel: 'During Pre-Onboarding',
+															// 		forTalent: true,
+															// 		hrID: hrId
+															// 	}
+															// 	setAMFlags(Flags)
+															// 	break;
+															// }
+															// case TalentOnboardStatus.SUBMIT_CLIENT_FEEDBACK: {
+															// 	let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															// 	setActionKey(key)
+															// 	setInterviewFeedback(true);
+															// 	setTalentIndex(item?.TalentID);
+															// 	break;
+															// }
+															// case TalentOnboardStatus.EDIT_CLIENT_FEEDBACK: {
+															// 	let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															// 	setActionKey(key)
+															// 	// setInterviewFeedback(true);
+															// 	setTalentIndex(item?.TalentID);
+															// 	setEditFeedback(true);
+															// 	break;
+															// }
 															case TalentOnboardStatus.SUBMIT_AS_HIRE: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																console.log("as hire")
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																clientFeedbackHandler(true,item)
 																break;
 															}
 															case TalentOnboardStatus.MOVE_TO_ANOTHER_ROUND:{
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																clientFeedbackHandler(false,item)
 																break;
 															}
 															case TalentOnboardStatus.REJECT_TALENT: {
 							
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																setTalentStatus(true);
+																setTalentIndex(item?.TalentID);
+																setActionKey(key)
+																break;
+															}
+															case TalentOnboardStatus.REJECT_TALENT_NO_HIRE: {
+							
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setTalentStatus(true);
 																setTalentIndex(item?.TalentID);
 																setActionKey(key)
 																break;
 															}
 															case TalentOnboardStatus.ANOTHER_ROUND_INTERVIEW: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setAnotherRound(true);																
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.SCHEDULE_ANOTHER_ROUND_INTERVIEW: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setScheduleAnotherRoundInterview(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setOnboardTalentModal(true);
 																setTalentIndex(item?.TalentID);
 			
 																break;
 															}
-															case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
-																setActionKey(key)
-																setLegalTalentOnboardModal(true);
-																setTalentIndex(item?.TalentID);
-																break;
-															}
+															// case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
+															// 	let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															// 	setActionKey(key)
+															// 	setLegalTalentOnboardModal(true);
+															// 	setTalentIndex(item?.TalentID);
+															// 	break;
+															// }
 															case TalentOnboardStatus.CANCEL_ENGAGEMENT: {
 																setShowEngagementCancel(true)
 																setTalentIndex(item?.TalentID);
@@ -1469,45 +1479,45 @@ const TalentList = ({
 																// setTalentIndex(item?.TalentID);
 																break;
 															}
-															case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
-																// setLegalClientOnboardModal(true);
-																// setTalentIndex(item?.TalentID);
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
-																setActionKey(key)
-																setShowAMModal(true);
-																let Flags = {
-																	talent: item,
-																	tabLabel: 'Complete Legal',
-																	forTalent: true,
-																	hrID: hrId
-																}
-																setAMFlags(Flags)
-																break;
-															}
-															case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
-																// setTalentKickOffModal(true);
-																// setTalentIndex(item?.TalentID);
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
-																setActionKey(key)
-																setShowAMModal(true);
-																let Flags = {
-																	talent: item,
-																	tabLabel: 'Before Kick-off',
-																	forTalent: true,
-																	hrID: hrId
-																}
-																setAMFlags(Flags)
-																break;
-															}
+															// case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
+															// 	// setLegalClientOnboardModal(true);
+															// 	// setTalentIndex(item?.TalentID);
+															// 	let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															// 	setActionKey(key)
+															// 	setShowAMModal(true);
+															// 	let Flags = {
+															// 		talent: item,
+															// 		tabLabel: 'Complete Legal',
+															// 		forTalent: true,
+															// 		hrID: hrId
+															// 	}
+															// 	setAMFlags(Flags)
+															// 	break;
+															// }
+															// case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
+															// 	// setTalentKickOffModal(true);
+															// 	// setTalentIndex(item?.TalentID);
+															// 	let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															// 	setActionKey(key)
+															// 	setShowAMModal(true);
+															// 	let Flags = {
+															// 		talent: item,
+															// 		tabLabel: 'Before Kick-off',
+															// 		forTalent: true,
+															// 		hrID: hrId
+															// 	}
+															// 	setAMFlags(Flags)
+															// 	break;
+															// }
 															case TalentOnboardStatus.REPLACE_TALENT: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setReplaceTalentModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.CONFIRM_SLOT: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setConfirmSlotModal(true);
 																setTalentIndex(item?.TalentID);
@@ -1517,7 +1527,7 @@ const TalentList = ({
 																// let onboardID = item.OnBoardId
 																// navigate(`/onboard/edit/${onboardID}`)
 																// window.scrollTo(0, 0)
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setShowAMModal(true);
 																let Flags = {
@@ -1573,7 +1583,7 @@ const TalentList = ({
 															// 	break;
 															// }
 															case TalentOnboardStatus.VIEW_ENGAGEMENT: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setHRAndEngagementId({
 																	talentName: item.Name,
