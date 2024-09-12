@@ -892,7 +892,7 @@
     border-radius: 16px 16px 0 0;
 }
 
-.formSalesPersonFields .ant-select .ant-select-selector .ant-select-selection-search{
+.formSalesPersonFields [class^="ant-select"] [class^="ant-select-selector"] > [class^="ant-select-selection-search"]{
     padding: 16px 0;
 }
 
