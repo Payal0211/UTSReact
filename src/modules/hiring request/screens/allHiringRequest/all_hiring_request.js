@@ -254,7 +254,7 @@ const AllHiringRequestScreen = () => {
     // console.log(response, '--response');
     if (response.statusCode === HTTPStatusCode.OK) {
       setCloneHR(false);
-      resetFields()
+      resetFields && resetFields()
       localStorage.setItem("hrID", response?.responseBody?.details);
       localStorage.removeItem("dealID");
       navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });

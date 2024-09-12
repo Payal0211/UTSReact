@@ -29,7 +29,7 @@ const CloneHR = ({ updatedSplitter, cloneHR ,hybridInfo}) => {
 			localStorage.setItem('hrID', response?.responseBody?.details);
 			localStorage.removeItem('dealID')
 			setCloneHR(false);
-			resetFields()
+			resetFields && resetFields()
 			navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		}
 	}, [hrId.hrid, navigate]);
