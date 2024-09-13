@@ -896,6 +896,19 @@
     padding: 16px 0;
 }
 
+.companyDetails .comFormFields {
+    margin: 0 0 32px;
+}
+
+.companyDetails .comFormFields [class^="hrSelectField"],.companyDetails .comFormFields [class^="hrInputFields"]{
+    margin: 0;
+}
+
+.comFormFields .error{
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}
+
 /* Edit Modal css End */
 
 @media screen and (max-width: 1440px) {

@@ -343,7 +343,8 @@ export default function LegalPreOnboarding({
                     </div>
 
                     
-                   {!getData?.getLegalInfo?.isHRTypeDP && <div className={HRDetailStyle.modalFormCol}>
+                   {/* {!getData?.getLegalInfo?.isHRTypeDP &&  */}
+                   <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.timeLabel}>
                           Joining Date
                           <span className={HRDetailStyle.reqFieldRed}>*</span>
@@ -377,7 +378,8 @@ export default function LegalPreOnboarding({
                             </div>
                           )}
                         </div>
-                      </div>}
+                      </div>
+                      {/* } */}
 
 
                   {   
