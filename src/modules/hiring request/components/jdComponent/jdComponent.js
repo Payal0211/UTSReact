@@ -12,6 +12,7 @@ import { HiringRequestsAPI , NetworkInfo, SubDomain } from "constants/network";
 import './jdComp.css'
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
+import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 const JobDescriptionComponent = ({error,helperProps}) => {
  const { setUploadFileData,setValidation,setShowGPTModal,setGPTFileDetails,watch
