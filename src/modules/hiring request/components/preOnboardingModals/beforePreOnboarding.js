@@ -1977,7 +1977,9 @@ const calcelMember = () =>{
                         }}
                         isError={errors["aboutCompany"] && errors["aboutCompany"]}
                         name="aboutCompany"
-                        onChange={(val) => setValue("aboutCompany", val)}
+                        onChange={(val) => {
+                          let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                          setValue("aboutCompany", _updatedVal)}}
                         errorMsg={"Please enter Talent’s Designation"}
                       />
                     {errors?.aboutCompany && (
@@ -2002,7 +2004,10 @@ const calcelMember = () =>{
                         }}
                         isError={errors["aboutCompany"] && errors["aboutCompany"]}
                         name="aboutCompany"
-                        onChange={(val) => setValue("aboutCompany", val)}
+                        onChange={(val) => {
+                          let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                          setValue("aboutCompany", _updatedVal)}
+                        }
                         errorMsg={"Please enter Talent’s Designation"}
                       />
                     {errors?.aboutCompany && (

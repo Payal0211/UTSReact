@@ -70,15 +70,16 @@ function ClientSection({
         };
 
         if (contact?.contactNo) {
-          if (contact?.contactNo?.includes("+91")) {
-            phoneDetails.contactNo = contact?.contactNo?.slice(3);
-            phoneDetails.countryCode = contact?.contactNo?.slice(0, 3);
-          }else if (contact?.contactNo?.includes("+")) {
-            phoneDetails.contactNo = contact?.contactNo?.slice(2)?.trim();
-            phoneDetails.countryCode = contact?.contactNo?.slice(0, 2);
-          } else {
-            phoneDetails.contactNo = contact?.contactNo;
-          }
+          // if (contact?.contactNo?.includes("+91")) {
+          //   phoneDetails.contactNo = contact?.contactNo?.slice(3);
+          //   phoneDetails.countryCode = contact?.contactNo?.slice(0, 3);
+          // }else if (contact?.contactNo?.includes("+")) {
+          //   phoneDetails.contactNo = contact?.contactNo?.slice(2)?.trim();
+          //   phoneDetails.countryCode = contact?.contactNo?.slice(0, 2);
+          // } else {
+          //   phoneDetails.contactNo = contact?.contactNo;
+          // }
+          phoneDetails.contactNo = contact?.contactNo;
         }
         append({
           ...secondaryClient,
@@ -338,7 +339,7 @@ function ClientSection({
                   <div className={AddNewClientStyle.colMd6}>
                     <div className={AddNewClientStyle.label}>Phone number</div>
                     <div style={{ display: "flex" }}>
-                      <div className={AddNewClientStyle.phoneNoCode}>
+                      {/* <div className={AddNewClientStyle.phoneNoCode}>
                         <HRSelectField
                           searchable={true}
                           setValue={setValue}
@@ -347,8 +348,8 @@ function ClientSection({
                           defaultValue="+91"
                           options={flagAndCodeMemo}
                         />
-                      </div>
-                      <div className={AddNewClientStyle.phoneNoInput}>
+                      </div> */}
+                      {/* <div className={AddNewClientStyle.phoneNoInput}> */}
                         <HRInputField
                           register={register}
                           name={`clientDetails.[${index}].contactNo`}
@@ -365,7 +366,7 @@ function ClientSection({
                           forArrayFields={true}
                           errors={errors?.clientDetails?.[index]?.contactNo}
                         />
-                      </div>
+                      {/* </div> */}
                     </div>
                   </div>
 
