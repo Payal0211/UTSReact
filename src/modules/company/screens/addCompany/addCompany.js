@@ -243,7 +243,8 @@ function AddCompany() {
         "fullName": client.fullName,
         "emailId": client.emailID,
         "designation": client.designation,
-        "phoneNumber": client.countryCode+ client.contactNo,
+        // "phoneNumber": client.countryCode+ client.contactNo,
+        "phoneNumber": client.contactNo,
         "accessRoleId": client.roleID,
         "password" : password,
         "encryptedPassword" : encryptedPassword

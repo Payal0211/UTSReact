@@ -2065,7 +2065,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client/User',
+					title: 'Client',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
