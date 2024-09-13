@@ -40,6 +40,7 @@ import { MasterDAO } from "core/master/masterDAO";
 import YouTubeVideo from "modules/client/components/previewClientDetails/youTubeVideo";
 import { NetworkInfo } from "constants/network";
 import confirm from "antd/es/modal/confirm";
+import HSContent from "constants/CommonEditorPreview/HSContent";
 
 // import "../../CompanyDetails/companyDetails.css";
 function PreviewHRModal({
@@ -2573,13 +2574,14 @@ getSkillList();
                               border: "none !important",
                             }}
                           /> */}
-                                  <div className="jobDescrition" dangerouslySetInnerHTML={{
+                                  {/* <div className="jobDescrition" dangerouslySetInnerHTML={{
                                     __html: editWhatWeOffer ? editWhatWeOffer?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : jobPreview?.jobDescription ? jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : `
                             ${jobPreview?.roleOverviewDescription ? `<h3>Role Overview Description</h3>${jobPreview?.roleOverviewDescription}<br><br>` : ''}
                             ${jobPreview?.rolesResponsibilities ? `<h3>Roles & Responsibilities</h3>${jobPreview?.rolesResponsibilities}<br><br>` : ''}
                             ${jobPreview?.requirements ? `<h3>Requirements</h3>${jobPreview?.requirements}<br><br>` : ''}
                             ${jobPreview?.whatweoffer ? `<h3>What We Offer</h3>${jobPreview?.whatweoffer}` : ''}`
-                                  }} />
+                                  }} /> */}
+                                  <HSContent data={jobPreview?.jobDescription && jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim()} />
                                 </div>
                               )}
                             </div>

@@ -2159,21 +2159,22 @@ function PreviewClientModal({
                               onClick={() => {
                                 setEditClient(true);
                                 setClickIndex(index);
-                                let pNo 
+                               
                                 if(val?.contactNo){
-                                  if (val?.contactNo?.includes("+91")) {
+                                  // if (val?.contactNo?.includes("+91")) {
                                    
-                                    setValue("contactNo",val?.contactNo?.slice(3))
-                                    setValue("countryCode",val?.contactNo?.slice(0, 3))
-                                    pNo  = val?.contactNo?.slice(3)
-                                  }else if (val?.contactNo?.includes("+")) {
-                                    setValue("contactNo",val?.contactNo?.slice(2))
-                                    setValue("countryCode",val?.contactNo?.slice(0, 2))
-                                    pNo  = val?.contactNo?.slice(2)
-                                  } else {
-                                    setValue("contactNo",val?.contactNo)
-                                    pNo  = val?.contactNo
-                                  }
+                                  //   setValue("contactNo",val?.contactNo?.slice(3))
+                                  //   setValue("countryCode",val?.contactNo?.slice(0, 3))
+                                  //   pNo  = val?.contactNo?.slice(3)
+                                  // }else if (val?.contactNo?.includes("+")) {
+                                  //   setValue("contactNo",val?.contactNo?.slice(2))
+                                  //   setValue("countryCode",val?.contactNo?.slice(0, 2))
+                                  //   pNo  = val?.contactNo?.slice(2)
+                                  // } else {
+                                  //   setValue("contactNo",val?.contactNo)
+                                  //   pNo  = val?.contactNo
+                                  // }
+                                  setValue("contactNo",val?.contactNo)
                                 }
                                 setClientDetailsData({
                                   ...clientDetailsData,
@@ -2183,7 +2184,7 @@ function PreviewClientModal({
                                   fullName: val?.fullName,
                                   emailId: val?.emailID,
                                   designation: val?.designation,
-                                  phoneNumber: pNo,
+                                  phoneNumber: val?.contactNo,
                                   accessRoleId: val?.roleID,
                                 });
                               }}
@@ -2331,7 +2332,7 @@ function PreviewClientModal({
                                     Phone number
                                   </div>
                                   <div style={{ display: "flex" }}>
-                                    <div
+                                    {/* <div
                                       className={previewClientStyle.phoneNoCode}
                                     >
                                       <HRSelectField
@@ -2344,12 +2345,12 @@ function PreviewClientModal({
                                         defaultValue="+91"
                                         options={flagAndCodeMemo}
                                       />
-                                    </div>
-                                    <div
+                                    </div> */}
+                                    {/* <div
                                       className={
                                         previewClientStyle.phoneNoInput
                                       }
-                                    >
+                                    > */}
                                       <HRInputField
                                         register={register}
                                         // name={`clientDetails.[${index}].contactNo`}
@@ -2364,7 +2365,7 @@ function PreviewClientModal({
                                         placeholder="Enter Phone number"
                                         value={clientDetailsData?.phoneNumber}
                                       />
-                                    </div>
+                                    {/* </div> */}
                                   </div>
                                 </div>
                               </div>
