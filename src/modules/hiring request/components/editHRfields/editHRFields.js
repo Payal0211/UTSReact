@@ -4640,7 +4640,9 @@ const EditHRFields = ({
                         className="heightSize"
                         value={watch("parametersHighlight")}
                         name="parametersHighlight"
-                        onChange={(val) => setValue("parametersHighlight", val)}
+                        onChange={(val) => {
+                          let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                          setValue("parametersHighlight", _updatedVal)}}
                       />
                       {/* <HRInputField
                       register={register}

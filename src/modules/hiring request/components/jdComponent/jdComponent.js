@@ -290,8 +290,7 @@ const JobDescriptionComponent = ({error,helperProps}) => {
                         className="heightSize"
                         value={textCopyPastData}                         
                         onChange={(val) => {
-                        //   let sanitizedContent = sanitizeLinks(val);
-                        let sanitizedContent = val;
+                          let sanitizedContent = sanitizeLinks(val);                        
                           setTextCopyPastData(sanitizedContent);                          
                           setUploadedFileInfo(null);
                           setUploadFileData('');
