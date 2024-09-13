@@ -855,11 +855,11 @@ function PreviewClientModal({
       setErrorCreditAmount(true);
       return
     }
-    if(!watch("freeCredit")&&checkPayPer?.companyTypeID==2 ){
-      setIsLoading(false);
-      setErrorFreeCredit(true);
-      return
-    }
+    // if(!watch("freeCredit")&&checkPayPer?.companyTypeID==2 ){
+    //   setIsLoading(false);
+    //   setErrorFreeCredit(true);
+    //   return
+    // }
     if(!watch("jobPostCredit") && IsChecked?.isPostaJob && checkPayPer?.companyTypeID==2){
       setIsLoading(false);
       setErrorJobCredit(true);
@@ -2756,18 +2756,18 @@ function PreviewClientModal({
                                   label="Free Credit"
                                   type={InputType.NUMBER}
                                   placeholder="Enter number of free credits"
-                                  required={
-                                    checkPayPer?.companyTypeID !== 0 &&
-                                      checkPayPer?.companyTypeID !== null
-                                      ? true
-                                      : false
-                                  }
+                                  // required={
+                                  //   checkPayPer?.companyTypeID !== 0 &&
+                                  //     checkPayPer?.companyTypeID !== null
+                                  //     ? true
+                                  //     : false
+                                  // }
                                 />
-                                {errorFreeCredit &&(
+                                {/* {errorFreeCredit &&(
                                   <div className={previewClientStyle.error}                              >
                                   * Please enter Free Credit
                                   </div>
-                                )}
+                                )} */}
                               </div>
                             </div>
                           </div>
