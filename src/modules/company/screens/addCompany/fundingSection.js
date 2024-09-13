@@ -303,7 +303,9 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
               // value={companyDetails?.culture ? companyDetails.culture : ''} 
               value={watch(`fundingDetails.[${index}].additionalInformation`)}
               name={`fundingDetails.[${index}].additionalInformation`}
-              onChange={(val) => {setValue(`fundingDetails.[${index}].additionalInformation`,val)
+              onChange={(val) => {
+                let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                setValue(`fundingDetails.[${index}].additionalInformation`,_updatedVal)
                 // setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
               }}
             />

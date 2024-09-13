@@ -1274,7 +1274,9 @@ function PreviewClientModal({
                           <ReactQuill
                             theme="snow"
                             value={isAboutUs}
-                            onChange={(val) => setIsAboutUs(val)}
+                            onChange={(val) => {
+                              let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                              setIsAboutUs(_updatedVal)}}
                             className={previewClientStyle.reactQuillEdit}
                             required
                           />
@@ -1522,7 +1524,9 @@ function PreviewClientModal({
                                   value={
                                     additionalInformation
                                   }
-                                  onChange={(val) => setAdditionInformation(val)}
+                                  onChange={(val) => {
+                                    let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                    setAdditionInformation(_updatedVal)}}
                                   readOnly={isSelfFunded ? true : false}
                                   // modules={{ toolbar: false }}
                                   className={
@@ -1605,7 +1609,9 @@ function PreviewClientModal({
                                   <ReactQuill
                                     theme="snow"
                                     value={isCulture}
-                                    onChange={(val) => setIsCulture(val)}
+                                    onChange={(val) => {
+                                      let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                      setIsCulture(_updatedVal)}}
                                     className={
                                       previewClientStyle.reactQuillEdit
                                     }

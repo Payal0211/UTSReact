@@ -2527,7 +2527,10 @@ getSkillList();
                                     theme="snow"
                                     className="heightSize"
                                     value={editWhatWeOffer}
-                                    onChange={(val) => setEditWhatWeOffer(val)}
+                                    onChange={(val) => {
+                                      let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                      setEditWhatWeOffer(_updatedVal)
+                                    }}
                                   />
                                   {(!editWhatWeOffer ||
                                     editWhatWeOffer == "<p><br></p>") && (

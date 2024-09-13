@@ -605,7 +605,9 @@ function CompanySection({
                           : watch("aboutCompany")
                       }
                       name="aboutCompany"
-                      onChange={(val) => setValue("aboutCompany", val)}
+                      onChange={(val) => {
+                        let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                        setValue("aboutCompany", _updatedVal)}}
                     />
                     {aboutCompanyError && (
                       <p className={AddNewClientStyle.error}>
