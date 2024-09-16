@@ -195,9 +195,9 @@ function PreviewClientModal({
   };
   let eReg = new RegExp(EmailRegEx.email);
 
-  useEffect(() => {
-    getCodeAndFlag();
-  }, []);
+  // useEffect(() => {
+  //   getCodeAndFlag();
+  // }, []);
 
   const allInvestors = getCompanyDetails?.fundingDetails?.[0]?.allInvestors
     ? getCompanyDetails?.fundingDetails?.[0]?.allInvestors?.split(",")
@@ -351,7 +351,9 @@ function PreviewClientModal({
   };
 
   useEffect(() => {
-    getDetails();
+    if(getcompanyID){
+      getDetails();
+    }
   }, [getcompanyID, setValue]);
 
   const getAllValuesForDD = useCallback(async () => {
@@ -365,8 +367,8 @@ function PreviewClientModal({
   }, []);
 
   useEffect(() => {
-    getAllValuesForDD();
-    getAllSalesPerson();
+    // getAllValuesForDD();
+    // getAllSalesPerson();
   }, []);
 
   useEffect(() => {
@@ -718,9 +720,9 @@ function PreviewClientModal({
     const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
     setHRPricingTypes(HRPricingResponse && HRPricingResponse.responseBody);
   }, []);
-  useEffect(() => {
-    getHRPricingType();
-  }, []);
+  // useEffect(() => {
+  //   getHRPricingType();
+  // }, []);
 
   const getRequiredHRPricingType = useCallback(() => {
     let reqOpt = [];
@@ -1913,7 +1915,7 @@ function PreviewClientModal({
                       Company perks & benefits
                         <span
                           className={previewClientStyle.editNewIcon}
-                          onClick={() => setEditCompanyBenefits(true)}
+                          onClick={() => {setEditCompanyBenefits(true); getAllValuesForDD()}}
                         >
                           <EditNewIcon />
                         </span>
@@ -1987,7 +1989,7 @@ function PreviewClientModal({
 
                       <span
                         className={previewClientStyle.addNewClientText}
-                        onClick={() => setAddNewClient(true)}
+                        onClick={() => {setAddNewClient(true);getCodeAndFlag(); getAllValuesForDD();}}
                       >
                         Add New Client
                       </span>
@@ -2200,6 +2202,8 @@ function PreviewClientModal({
                               onClick={() => {
                                 setEditClient(true);
                                 setClickIndex(index);
+                                getCodeAndFlag();
+                                getAllValuesForDD();
                                
                                 if(val?.contactNo){
                                   // if (val?.contactNo?.includes("+91")) {
@@ -2477,7 +2481,7 @@ function PreviewClientModal({
 
                     <span
                       className={previewClientStyle.editNewIcon}
-                      onClick={() => setEditEngagement(true)}
+                      onClick={() => {setEditEngagement(true);getHRPricingType();}}
                     >
                       <EditNewIcon />
                     </span>
@@ -3052,7 +3056,7 @@ function PreviewClientModal({
                   Uplers's Salesperson (NBD/AM){" "}
                     <span
                       className={previewClientStyle.editNewIcon}
-                      onClick={() => setEditPOC(true)}
+                      onClick={() => {setEditPOC(true); getAllSalesPerson()}}
                     >
                       <EditNewIcon />
                     </span>
