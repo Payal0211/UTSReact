@@ -440,10 +440,10 @@ export default function BeforePreOnboarding({
         //     "stateID",
         //       result.responseBody.details?.preOnboardingDetailsForAMAssignment?.stateID
         //   );
-        //   setValue(
-        //     "talent_Designation",
-        //       result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation
-        //   );
+          setValue(
+            "talent_Designation",
+              result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation
+          );
         if(result.responseBody.details?.preOnboardingDetailsForAMAssignment?.talent_Designation){
           setEditDesignation(false)
         }else{setEditDesignation(true)}
@@ -683,9 +683,13 @@ const calcelMember = () =>{
         "amSalesPersonID": d.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
         "uplersFeesAmount":data?.isHRTypeDP ? parseFloat(d?.uplersFee):null,
-        "uplersFeesPerc":preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP == false ? 
-        ((d.billRate > 0 && d.payRate > 0) ?  (((d.billRate-d.payRate)/d.payRate)*100).toFixed(2)+ ' %' : 'NA')
-        : ((d.uplersFee > 0 && d.payRate > 0) ?  ((d.uplersFee/d.payRate)*100).toFixed(2) + " %" :"NA"),
+        "uplersFeesPerc":preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP == false 
+        ? ((d.billRate > 0 && d.payRate > 0) 
+            ? Number((((d.billRate - d.payRate) / d.payRate) * 100).toFixed(2)) 
+            : null)
+        : ((d.uplersFee > 0 && d.payRate > 0) 
+            ? Number(((d.uplersFee / d.payRate) * 100).toFixed(2)) 
+            : null),    
         "talentReplacement": {
           "onboardId": talentDeteils?.OnBoardId,
           "replacementID": 0,
@@ -732,7 +736,6 @@ const calcelMember = () =>{
           "teamMembers": clientTeamMembers
         }
       }      
-            
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         callAPI(HRID)

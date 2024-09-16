@@ -10,6 +10,7 @@
     left: unset !important;
     white-space: normal !important;
     word-break: break-word;
+    background: transparent !important;
 }
 
 .HSContentWrap>.HSContent img {
