@@ -896,6 +896,35 @@
     padding: 16px 0;
 }
 
+.companyDetails .comFormFields {
+    margin: 0 0 32px;
+}
+
+.companyDetails .comFormFields [class^="hrSelectField"],.companyDetails .comFormFields [class^="hrInputFields"]{
+    margin: 0;
+}
+
+.comFormFields .error{
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}
+
+.PreviewpageMainWrap .clientDetailListed [class^="country-list"] {
+    display: block;
+}
+
+.PreviewpageMainWrap .clientDetailListed [class^="country-list"] li span {
+    display: initial;
+}
+
+.formFieldsboxinner.formPreClientDetail{
+    overflow: visible;
+}
+
+.formFieldsboxinner.formPreClientDetail .formFieldTitleTwo h2{
+    border-radius: 16px 16px 0 0;
+}
+
 /* Edit Modal css End */
 
 @media screen and (max-width: 1440px) {

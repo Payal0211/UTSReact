@@ -1363,6 +1363,98 @@ body .jobDescrition h1,body .jobDescrition h2,body .jobDescrition h3,body .jobDe
   padding: 32px;
 }
 
+.phonConturyWrap .PhoneInput{
+  /* height: 50px; */
+}
+
+.phonConturyWrap .PhoneInputCountry{
+  border: 1px solid #CECCCC;
+  border-radius: 8px 0px 0 8px;
+  width: 90px;
+  justify-content: space-between;
+  padding: 0 16px 0 24px;
+  margin: 0;
+  border-right: 0px;
+}
+
+.phonConturyWrap .PhoneInputInput{
+  padding: 16px;
+  border: 1px solid #CECCCC;
+  border-radius: 0px 8px 8px 0px;
+  height: 52px;
+}
+
+.phonConturyWrap .PhoneInputInput:focus{
+  border: 1px solid #ffda30;
+  box-shadow: inherit;
+  outline: 0;
+}
+
+.phonConturyWrap .PhoneInputCountrySelectArrow{
+  font-size: 24px;
+  color: #232323;
+  position: relative;
+  top: -1px;
+  left: -10px;
+  opacity: 1;   
+}
+
+.phonConturyWrap .PhoneInputCountrySelect:focus + .PhoneInputCountryIcon + .PhoneInputCountrySelectArrow{
+  color: #232323;
+}
+
+
+/* new country npm css */
+
+.phonConturyWrap{
+  position: relative;
+  z-index: 99;
+}
+
+.phonConturyWrap .react-tel-input .form-control{
+  height: 55px;
+  width: 100%;
+  padding-left: 80px;
+}
+
+.phonConturyWrap .react-tel-input::after{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 66px;
+  width: 1px;
+  height: 100%;
+  background: #CACACA;
+}
+
+.phonConturyWrap .react-tel-input .flag-dropdown{
+  background-color: transparent;
+  border: 0px;
+  padding-left: 12px;
+}
+
+.phonConturyWrap .react-tel-input .selected-flag:hover, .phonConturyWrap .react-tel-input .selected-flag:focus, .phonConturyWrap .react-tel-input .flag-dropdown.open .selected-flag, .phonConturyWrap .react-tel-input .flag-dropdown.open{
+  background-color: transparent;
+  background: transparent;
+}
+
+.phonConturyWrap .react-tel-input .selected-flag .arrow{
+  box-sizing: border-box;
+  height: 8px;
+  width: 8px;
+  border-style: solid;
+  border-color: black;
+  border-width: 0px 1px 1px 0px;
+  transform: rotate(45deg);
+  transition: border-width 150ms ease-in-out;
+  margin-top: -6px;
+  left: 28px;
+}
+
+.phonConturyWrap .react-tel-input .selected-flag .arrow.up{
+  border-bottom: 1px solid black;
+}
+
 
 /* Responsive css start */
 

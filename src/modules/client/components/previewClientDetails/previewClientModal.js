@@ -20,6 +20,8 @@ import {
 } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as DeleteNewIcon } from "assets/svg/delete-icon.svg";
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
 
 import CompanyDetailimg1 from "assets/CompanyDetailimg1.jpg";
 import CompanyDetailimg2 from "assets/CompanyDetailimg2.jpg";
@@ -126,6 +128,9 @@ function PreviewClientModal({
   const [typeOfPricing, setTypeOfPricing] = useState(null);
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [errorCurrency, seterrorCurrency] = useState(false);
+  const [errorCreditAmount, setErrorCreditAmount] = useState(false);
+  const [errorFreeCredit, setErrorFreeCredit] = useState(false);
+  const [errorJobCredit, setErrorJobCredit] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(false)
   const [
     controlledHiringPricingTypeValue,
@@ -150,6 +155,7 @@ function PreviewClientModal({
   const [errorsData, setErrorsData] = useState({});  
   const [controlledRoleId, setControlledRoleId] = useState([]);
   const [pricingTypeError, setPricingTypeError] = useState(false);
+  const [engagementModeTypeError, setEngagementModeTypeError] = useState(false);
   const [additionalInformation, setAdditionInformation] = useState("")
   const pictureRef = useRef();
   const { Dragger } = Upload;
@@ -158,6 +164,10 @@ function PreviewClientModal({
   let _currency = watch("creditCurrency");
 
   const [userData, setUserData] = useState({});
+
+  const [countryCodeData,setCountryCodeData] = useState("in");
+  const [key, setKey] = useState(0);
+
 
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -191,9 +201,9 @@ function PreviewClientModal({
   };
   let eReg = new RegExp(EmailRegEx.email);
 
-  useEffect(() => {
-    getCodeAndFlag();
-  }, []);
+  // useEffect(() => {
+  //   getCodeAndFlag();
+  // }, []);
 
   const allInvestors = getCompanyDetails?.fundingDetails?.[0]?.allInvestors
     ? getCompanyDetails?.fundingDetails?.[0]?.allInvestors?.split(",")
@@ -347,7 +357,9 @@ function PreviewClientModal({
   };
 
   useEffect(() => {
-    getDetails();
+    if(getcompanyID){
+      getDetails();
+    }
   }, [getcompanyID, setValue]);
 
   const getAllValuesForDD = useCallback(async () => {
@@ -360,10 +372,10 @@ function PreviewClientModal({
     setAllPocs(allSalesResponse && allSalesResponse?.responseBody?.details);
   }, []);
 
-  useEffect(() => {
-    getAllValuesForDD();
-    getAllSalesPerson();
-  }, []);
+  // useEffect(() => {
+  //   getAllValuesForDD();
+  //   getAllSalesPerson();
+  // }, []);
 
   useEffect(() => {
     if (getCompanyDetails?.pocUserDetailsEdit && allPocs?.length) {
@@ -710,21 +722,13 @@ function PreviewClientModal({
     getDetails();
   };
 
-  useEffect(() => {
-    if (!_currency) {
-      seterrorCurrency(true);
-    } else {
-      seterrorCurrency(false);
-    }
-  }, [_currency]);
-
   const getHRPricingType = useCallback(async () => {
     const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
     setHRPricingTypes(HRPricingResponse && HRPricingResponse.responseBody);
   }, []);
-  useEffect(() => {
-    getHRPricingType();
-  }, []);
+  // useEffect(() => {
+  //   getHRPricingType();
+  // }, []);
 
   const getRequiredHRPricingType = useCallback(() => {
     let reqOpt = [];
@@ -839,6 +843,36 @@ function PreviewClientModal({
 
   const addEngagementDetails = async () => {
     setIsLoading(true);
+    if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+			setIsLoading(false);
+			setPricingTypeError(true)
+			return
+		}    
+    if(!watch("hiringPricingType")?.id && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+      setIsLoading(false);
+      setEngagementModeTypeError(true)
+      return
+    }
+    if (!_currency && checkPayPer?.companyTypeID==2) {
+      setIsLoading(false);
+      seterrorCurrency(true);
+      return
+    }    
+    if(!watch("creditAmount")&& _currency === "USD" &&checkPayPer?.companyTypeID==2){
+      setIsLoading(false);
+      setErrorCreditAmount(true);
+      return
+    }
+    // if(!watch("freeCredit")&&checkPayPer?.companyTypeID==2 ){
+    //   setIsLoading(false);
+    //   setErrorFreeCredit(true);
+    //   return
+    // }
+    if(!watch("jobPostCredit") && IsChecked?.isPostaJob && checkPayPer?.companyTypeID==2){
+      setIsLoading(false);
+      setErrorJobCredit(true);
+      return
+    }
     let payload = {
       basicDetails: {
         companyID: getcompanyID,
@@ -867,6 +901,12 @@ function PreviewClientModal({
     getDetails();
     setEditEngagement(false);
     setIsLoading(false);
+    seterrorCurrency(false)
+    setEngagementModeTypeError(false)
+    setErrorCreditAmount(false)
+    setErrorJobCredit(false)
+    setErrorFreeCredit(false)
+    setPricingTypeError(false);
     // }
   };
 
@@ -995,13 +1035,16 @@ function PreviewClientModal({
 
   const companyTypeMessages = [
     getCompanyDetails?.engagementDetails?.anotherCompanyTypeID === 1 &&
-    "Pay per Hire",
-    getCompanyDetails?.engagementDetails?.companyTypeID === 2 &&
-    "Pay per Credit",
+      `Pay per Hire (${
+        getCompanyDetails?.engagementDetails?.isTransparentPricing
+          ? "Transparent"
+          : "Non Transparent"
+      })`,
+    getCompanyDetails?.engagementDetails?.companyTypeID === 2 && "Pay per Credit",
   ]
     .filter(Boolean)
     .join(", ");
-
+  
   const handleSubmitCompanyPerks = async () => {
     setIsLoading(true);
     let payload = {
@@ -1274,7 +1317,9 @@ function PreviewClientModal({
                           <ReactQuill
                             theme="snow"
                             value={isAboutUs}
-                            onChange={(val) => setIsAboutUs(val)}
+                            onChange={(val) => {
+                              let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                              setIsAboutUs(_updatedVal)}}
                             className={previewClientStyle.reactQuillEdit}
                             required
                           />
@@ -1522,7 +1567,9 @@ function PreviewClientModal({
                                   value={
                                     additionalInformation
                                   }
-                                  onChange={(val) => setAdditionInformation(val)}
+                                  onChange={(val) => {
+                                    let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                    setAdditionInformation(_updatedVal)}}
                                   readOnly={isSelfFunded ? true : false}
                                   // modules={{ toolbar: false }}
                                   className={
@@ -1605,7 +1652,9 @@ function PreviewClientModal({
                                   <ReactQuill
                                     theme="snow"
                                     value={isCulture}
-                                    onChange={(val) => setIsCulture(val)}
+                                    onChange={(val) => {
+                                      let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                      setIsCulture(_updatedVal)}}
                                     className={
                                       previewClientStyle.reactQuillEdit
                                     }
@@ -1872,7 +1921,7 @@ function PreviewClientModal({
                       Company perks & benefits
                         <span
                           className={previewClientStyle.editNewIcon}
-                          onClick={() => setEditCompanyBenefits(true)}
+                          onClick={() => {setEditCompanyBenefits(true); getAllValuesForDD()}}
                         >
                           <EditNewIcon />
                         </span>
@@ -1939,14 +1988,14 @@ function PreviewClientModal({
 
             <div className={previewClientStyle.formFields}>
               <div className={previewClientStyle.formFieldsbox}>
-                <div className={previewClientStyle.formFieldsboxinner}>
+                <div className={`${previewClientStyle.formFieldsboxinner} ${previewClientStyle.formPreClientDetail}`}>
                   <div className={previewClientStyle.formFieldTitleTwo}>
                     <h2>
                       Client Details{" "}
 
                       <span
                         className={previewClientStyle.addNewClientText}
-                        onClick={() => setAddNewClient(true)}
+                        onClick={() => {setAddNewClient(true);getCodeAndFlag(); getAllValuesForDD();}}
                       >
                         Add New Client
                       </span>
@@ -2076,8 +2125,8 @@ function PreviewClientModal({
                             <div className={previewClientStyle.phoneLabel}>
                               Phone number
                             </div>
-                            <div style={{ display: "flex" }}>
-                              <div className={previewClientStyle.phoneNoCode}>
+                            <div className="phonConturyWrap" style={{ display: "flex" }}>
+                              {/* <div className={previewClientStyle.phoneNoCode}>
                                 <HRSelectField
                                   searchable={true}
                                   // setValue={setValue}
@@ -2103,13 +2152,27 @@ function PreviewClientModal({
                                   placeholder="Enter Phone number"
                                   value={otherClientDetailsData?.phoneNumber}
                                 />
-                              </div>
+                              </div> */}
+                              <PhoneInput
+                                        placeholder="Enter number"
+                                        key={key}
+                                        value={otherClientDetailsData?.phoneNumber}
+                                        onChange={value => {
+                                          setOtherClientDetailsData({
+                                            ...otherClientDetailsData,
+                                            phoneNumber: value,
+                                          });
+                                        }}
+                                        country={countryCodeData}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
                             </div>
                           </div>
                         </div>
 
                         <div
-                          className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24}`}
+                          className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24} ${previewClientStyle.mt24}`}
                         >
                           <button
                             type="button"
@@ -2159,21 +2222,24 @@ function PreviewClientModal({
                               onClick={() => {
                                 setEditClient(true);
                                 setClickIndex(index);
-                                let pNo 
+                                getCodeAndFlag();
+                                getAllValuesForDD();
+                               
                                 if(val?.contactNo){
-                                  if (val?.contactNo?.includes("+91")) {
+                                  // if (val?.contactNo?.includes("+91")) {
                                    
-                                    setValue("contactNo",val?.contactNo?.slice(3))
-                                    setValue("countryCode",val?.contactNo?.slice(0, 3))
-                                    pNo  = val?.contactNo?.slice(3)
-                                  }else if (val?.contactNo?.includes("+")) {
-                                    setValue("contactNo",val?.contactNo?.slice(2))
-                                    setValue("countryCode",val?.contactNo?.slice(0, 2))
-                                    pNo  = val?.contactNo?.slice(2)
-                                  } else {
-                                    setValue("contactNo",val?.contactNo)
-                                    pNo  = val?.contactNo
-                                  }
+                                  //   setValue("contactNo",val?.contactNo?.slice(3))
+                                  //   setValue("countryCode",val?.contactNo?.slice(0, 3))
+                                  //   pNo  = val?.contactNo?.slice(3)
+                                  // }else if (val?.contactNo?.includes("+")) {
+                                  //   setValue("contactNo",val?.contactNo?.slice(2))
+                                  //   setValue("countryCode",val?.contactNo?.slice(0, 2))
+                                  //   pNo  = val?.contactNo?.slice(2)
+                                  // } else {
+                                  //   setValue("contactNo",val?.contactNo)
+                                  //   pNo  = val?.contactNo
+                                  // }
+                                  setValue("contactNo",val?.contactNo)
                                 }
                                 setClientDetailsData({
                                   ...clientDetailsData,
@@ -2183,7 +2249,7 @@ function PreviewClientModal({
                                   fullName: val?.fullName,
                                   emailId: val?.emailID,
                                   designation: val?.designation,
-                                  phoneNumber: pNo,
+                                  phoneNumber: val?.contactNo,
                                   accessRoleId: val?.roleID,
                                 });
                               }}
@@ -2330,8 +2396,8 @@ function PreviewClientModal({
                                   >
                                     Phone number
                                   </div>
-                                  <div style={{ display: "flex" }}>
-                                    <div
+                                  <div className="phonConturyWrap" >
+                                    {/* <div
                                       className={previewClientStyle.phoneNoCode}
                                     >
                                       <HRSelectField
@@ -2344,13 +2410,13 @@ function PreviewClientModal({
                                         defaultValue="+91"
                                         options={flagAndCodeMemo}
                                       />
-                                    </div>
-                                    <div
+                                    </div> */}
+                                    {/* <div
                                       className={
                                         previewClientStyle.phoneNoInput
                                       }
-                                    >
-                                      <HRInputField
+                                    > */}
+                                      {/* <HRInputField
                                         register={register}
                                         // name={`clientDetails.[${index}].contactNo`}
                                         name="contactNo"
@@ -2363,13 +2429,27 @@ function PreviewClientModal({
                                         type={InputType.NUMBER}
                                         placeholder="Enter Phone number"
                                         value={clientDetailsData?.phoneNumber}
-                                      />
-                                    </div>
+                                      /> */}
+                                      <PhoneInput
+                                        placeholder="Enter number"
+                                        key={key}
+                                        value={clientDetailsData?.phoneNumber}
+                                        onChange={(value)=> {
+                                          setClientDetailsData({
+                                            ...clientDetailsData,
+                                            phoneNumber: value,
+                                          });
+                                        }}
+                                        country={countryCodeData}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
+                                    {/* </div> */}
                                   </div>
                                 </div>
                               </div>
                               <div
-                                className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24}`}
+                                className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24} ${previewClientStyle.mt24}`}
                               >
                                 <button
                                   type="button"
@@ -2435,7 +2515,7 @@ function PreviewClientModal({
 
                     <span
                       className={previewClientStyle.editNewIcon}
-                      onClick={() => setEditEngagement(true)}
+                      onClick={() => {setEditEngagement(true);getHRPricingType();getDetails();}}
                     >
                       <EditNewIcon />
                     </span>
@@ -2473,6 +2553,10 @@ function PreviewClientModal({
                                       ? e.target.value
                                       : 0,
                                 });
+                                setValue("creditCurrency", null);
+                                setValue("creditAmount",null);
+                                setValue("jobPostCredit",null);
+                                setValue("freeCredit",null);
                                 setPayPerError(false);
                                 setIsChecked({
                                   ...IsChecked,
@@ -2520,7 +2604,7 @@ function PreviewClientModal({
                                   style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    marginBottom: "32px",
+                                    // marginBottom: "32px",
                                   }}
                                 >
                                   <label className={previewClientStyle.formGroupLabel}>
@@ -2529,11 +2613,6 @@ function PreviewClientModal({
                                       *
                                     </span>
                                   </label>
-                                  {pricingTypeError && (
-                                    <p className={previewClientStyle.error}>
-                                      *Please select pricing type
-                                    </p>
-                                  )}
                                   <Radio.Group
                                     disabled={
                                       // userData?.LoggedInUserTypeID !== 1 ||
@@ -2542,6 +2621,9 @@ function PreviewClientModal({
                                         checkPayPer?.companyTypeID == 2)
                                     }
                                     onChange={(e) => {
+                                      setControlledHiringPricingTypeValue(null);
+                                      setValue("hiringPricingType",null);
+                                      setEngagementModeTypeError(false);
                                       setTypeOfPricing(e.target.value);
                                       setPricingTypeError &&
                                         setPricingTypeError(false);
@@ -2553,95 +2635,121 @@ function PreviewClientModal({
                                       Non Transparent Pricing
                                     </Radio>
                                   </Radio.Group>
+                                  {pricingTypeError && (
+                                    <p className={previewClientStyle.error} style={{color:"red"}}>
+                                      *Please select pricing type
+                                    </p>
+                                  )}
                                 </div>
                               )}
                           </div>
                         </div>
-                        { checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={previewClientStyle.row} >
+                        {checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={previewClientStyle.row} >
                           <div className={previewClientStyle.colMd12}>
-                            <HRSelectField
-                              controlledValue={controlledHiringPricingTypeValue}
-                              setControlledValue={setControlledHiringPricingTypeValue}
-                              isControlled={true}
-                              mode={"id/value"}
-                              setValue={setValue}
-                              register={register}
-                              // label={"Hiring Pricing Type"}
-                              label={"Choose Engagement Mode"}
-                              defaultValue="Select Engagement Mode"
-                              options={getRequiredHRPricingType()}
-                              name="hiringPricingType"
-                              isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
-                              required={(checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null) ? true : null}
-                              errorMsg={"Please select the Engagement Mode."}
-                            />
+                            <div className={previewClientStyle.comFormFields}>
+                              <HRSelectField
+                                controlledValue={controlledHiringPricingTypeValue}
+                                setControlledValue={setControlledHiringPricingTypeValue}
+                                isControlled={true}
+                                mode={"id/value"}
+                                setValue={setValue}
+                                register={register}
+                                onValueChange={()=>setEngagementModeTypeError(false)}
+                                // label={"Hiring Pricing Type"}
+                                label={"Choose Engagement Mode"}
+                                defaultValue="Select Engagement Mode"
+                                options={getRequiredHRPricingType()}
+                                name="hiringPricingType"
+                                isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
+                                required={(checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null) ? true : null}
+                                errorMsg={"Please select the Engagement Mode."}
+                              />
+                              {engagementModeTypeError && (
+                                <div className={previewClientStyle.error} style={{color:"red"}}>
+                                  *Please select Engagement Mode
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>}
                         {checkPayPer?.companyTypeID !== 0 &&
                       checkPayPer?.companyTypeID !== null && (
                         <>
                         <div className={previewClientStyle.row}>
-                          <div className={previewClientStyle.colMd6} style={{marginBottom:'32px'}}>
-                            <label className={previewClientStyle.phoneLabel}>
-                              Currency
-                              <span className={previewClientStyle.reqField}>
-                                *
-                              </span>
-                            </label>
-                            <Select
-                              onChange={(e) => {
-                                setValue("creditCurrency", e);
-                                seterrorCurrency(false);
-                              }}
-                              getPopupContainer={(trigger) =>
-                                trigger.parentElement
-                              }
-                              name="creditCurrency"
-                              value={_currency}
-                              placeholder={"Select currency"}
-                            >
-                              <Select.Option value="INR">INR</Select.Option>
-                              <Select.Option value="USD">USD</Select.Option>
-                            </Select>
-                            {errorCurrency && (
-                              <p
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
+                          <div className={previewClientStyle.colMd6}>
+                            <div className={previewClientStyle.comFormFields}>
+                              <label className={previewClientStyle.phoneLabel}>
+                                Currency
+                                <span className={previewClientStyle.reqField}>
+                                  *
+                                </span>
+                              </label>
+                              <Select
+                                onChange={(e) => {
+                                  setValue("creditCurrency", e);
+                                  setValue("creditAmount",null)
+                                  seterrorCurrency(false);
                                 }}
-                                className={previewClientStyle.error}
+                                getPopupContainer={(trigger) =>
+                                  trigger.parentElement
+                                }
+                                name="creditCurrency"
+                                value={_currency}
+                                placeholder={"Select currency"}
                               >
-                                * Please select currency
-                              </p>
-                            )}
+                                <Select.Option value="INR">INR</Select.Option>
+                                <Select.Option value="USD">USD</Select.Option>
+                              </Select>
+                              {errorCurrency && (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    color:"red"
+                                  }}
+                                  className={previewClientStyle.error}
+                                >
+                                  * Please select currency
+                                </div>
+                              )}
+                            </div>
                           </div>
+
                           {_currency === "INR" ? null : (
                             <div className={previewClientStyle.colMd6}>
-                              <HRInputField
-                                register={register}
-                                errors={errors}
-                                label="Per credit amount"
-                                name="creditAmount"
-                                type={InputType.NUMBER}
-                                placeholder="Enter the rate per credit"
-                                required={
-                                  checkPayPer?.companyTypeID !== 0 &&
-                                    checkPayPer?.companyTypeID !== null
-                                    ? _currency === "INR"
-                                      ? false
-                                      : true
-                                    : false
-                                }
-                                validationSchema={{
-                                  required:
+                              <div className={previewClientStyle.comFormFields}>
+                                <HRInputField
+                                  register={register}
+                                  errors={errors}
+                                  label="Per credit amount"
+                                  name="creditAmount"
+                                  type={InputType.NUMBER}
+                                  onChangeHandler={()=>setErrorCreditAmount(false)}
+                                  placeholder="Enter the rate per credit"
+                                  required={
                                     checkPayPer?.companyTypeID !== 0 &&
                                       checkPayPer?.companyTypeID !== null
                                       ? _currency === "INR"
-                                        ? null
-                                        : "Please enter Per credit amount."
-                                      : null,
-                                }}
-                              />
+                                        ? false
+                                        : true
+                                      : false
+                                  }
+                                  validationSchema={{
+                                    required:
+                                      checkPayPer?.companyTypeID !== 0 &&
+                                        checkPayPer?.companyTypeID !== null
+                                        ? _currency === "INR"
+                                          ? null
+                                          : "Please enter Per credit amount."
+                                        : null,
+                                  }}
+                                />
+                                {errorCreditAmount && (
+                                  <div className={previewClientStyle.error}>
+                                    * Please enter pre credit amount
+                                  </div>                                
+                                )}
+                              </div>
                             </div>
                           )}
 
@@ -2652,47 +2760,53 @@ function PreviewClientModal({
 
                         <div className={previewClientStyle.row}>
                         <div className={previewClientStyle.colMd6}>
-                            Remaining Credit : <span style={{ fontWeight: "bold", marginBottom: "80px", marginTop: "20px" }}>{getCompanyDetails?.engagementDetails?.totalCreditBalance}</span>
-                            <div
-                              className={previewClientStyle.FreecreditFieldWrap}
-                            >
-                              <HRInputField
-                                register={register}
-                                errors={errors}
-                                className="yourClassName"
-                                validationSchema={{
-                                  required:
-                                    checkPayPer?.companyTypeID !== 0 &&
-                                      checkPayPer?.companyTypeID !== null
-                                      ? "Please enter free credits."
-                                      : null,
-                                  min: {
-                                    value: 0,
-                                    message: `please don't enter the value less than 0`,
-                                  },
-                                }}
-                                onKeyDownHandler={(e) => {
-                                  if (
-                                    e.key === "-" ||
-                                    e.key === "+" ||
-                                    e.key === "E" ||
-                                    e.key === "e"
-                                  ) {
-                                    e.preventDefault();
-                                  }
-                                }}
-                                // label={`Free Credits Balance C redit : ${companyDetail?.jpCreditBalance}`}
-                                name={"freeCredit"}
-                                label="Free Credit"
-                                type={InputType.NUMBER}
-                                placeholder="Enter number of free credits"
-                                required={
-                                  checkPayPer?.companyTypeID !== 0 &&
-                                    checkPayPer?.companyTypeID !== null
-                                    ? true
-                                    : false
-                                }
-                              />
+                            Remaining Credit : <span style={{ fontWeight: "bold"}}>{getCompanyDetails?.engagementDetails?.totalCreditBalance}</span>
+                            <div className={previewClientStyle.FreecreditFieldWrap} style={{ marginTop: "16px"}}>
+                              <div className={previewClientStyle.comFormFields}>
+                                <HRInputField
+                                  register={register}
+                                  errors={errors}
+                                  className="yourClassName"
+                                  onChangeHandler={()=>setErrorFreeCredit(false)}
+                                  validationSchema={{
+                                    required:
+                                      checkPayPer?.companyTypeID !== 0 &&
+                                        checkPayPer?.companyTypeID !== null
+                                        ? "Please enter free credits."
+                                        : null,
+                                    min: {
+                                      value: 0,
+                                      message: `please don't enter the value less than 0`,
+                                    },
+                                  }}
+                                  onKeyDownHandler={(e) => {
+                                    if (
+                                      e.key === "-" ||
+                                      e.key === "+" ||
+                                      e.key === "E" ||
+                                      e.key === "e"
+                                    ) {
+                                      e.preventDefault();
+                                    }
+                                  }}
+                                  // label={`Free Credits Balance C redit : ${companyDetail?.jpCreditBalance}`}
+                                  name={"freeCredit"}
+                                  label="Free Credit"
+                                  type={InputType.NUMBER}
+                                  placeholder="Enter number of free credits"
+                                  // required={
+                                  //   checkPayPer?.companyTypeID !== 0 &&
+                                  //     checkPayPer?.companyTypeID !== null
+                                  //     ? true
+                                  //     : false
+                                  // }
+                                />
+                                {/* {errorFreeCredit &&(
+                                  <div className={previewClientStyle.error}                              >
+                                  * Please enter Free Credit
+                                  </div>
+                                )} */}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -2747,8 +2861,10 @@ function PreviewClientModal({
                               <div className={previewClientStyle.row}>
                                 {IsChecked?.isPostaJob && (
                                   <div className={previewClientStyle.colMd6}>
+                                    <div className={previewClientStyle.comFormFields}>
                                     <HRInputField
                                       register={register}
+                                      onChangeHandler={()=>setErrorJobCredit(false)}
                                       errors={errors}
                                       label="Credit per post a job"
                                       name="jobPostCredit"
@@ -2763,6 +2879,12 @@ function PreviewClientModal({
                                           : null,
                                       }}
                                     />
+                                    {errorJobCredit&&(
+                                      <div className={previewClientStyle.error} >
+                                      *Please enter Credit per post a job
+                                    </div>
+                                    )}
+                                    </div>
                                   </div>
                                 )}
 
@@ -2824,7 +2946,14 @@ function PreviewClientModal({
                           <button
                             type="button"
                             className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
-                            onClick={() => setEditEngagement(false)}
+                            onClick={() => {setEditEngagement(false)
+                              seterrorCurrency(false)
+                              setEngagementModeTypeError(false)
+                              setErrorCreditAmount(false)
+                              setErrorJobCredit(false)
+                              setErrorFreeCredit(false)
+                              setPricingTypeError(false);
+                            }}
                           >
                             {" "}
                             Cancel{" "}
@@ -2913,7 +3042,7 @@ function PreviewClientModal({
                           </p>
                         </li>
 
-                        {!(getCompanyDetails?.engagementDetails?.companyTypeID === 2 &&  getCompanyDetails?.engagementDetails?.anotherCompanyTypeID === 0) && getCompanyDetails?.engagementDetails
+                        {/* {!(getCompanyDetails?.engagementDetails?.companyTypeID === 2 &&  getCompanyDetails?.engagementDetails?.anotherCompanyTypeID === 0) && getCompanyDetails?.engagementDetails
                               ?.isTransparentPricing !== null  &&  <li>
                           <span>Type of Pricing (Pay per hire)</span>
                           <p>
@@ -2922,15 +3051,14 @@ function PreviewClientModal({
                               ? "Transparent"
                               : "Non Transparent"}
                           </p>
-                        </li>}
+                        </li>} */}
                        
                         <li>
                           <span>Engagement Mode (Pay per hire)</span>
                           <p>
-
-                            { getCompanyDetails?.engagementDetails &&  getRequiredHRPricingType()?.find(val=>val.id === getCompanyDetails?.engagementDetails
-                                ?.hiringTypePricingId)?.value}
-                            {/* {getCompanyDetails?.engagementDetails
+                            {/* {getCompanyDetails?.engagementDetails &&  getRequiredHRPricingType()?.find(val=>val.id === getCompanyDetails?.engagementDetails
+                                ?.hiringTypePricingId)?.value}                                 */}
+                            {getCompanyDetails?.engagementDetails
                               ?.hiringTypePricingId === 1
                               ? "Hire a Contractor"
                               : getCompanyDetails?.engagementDetails
@@ -2938,11 +3066,13 @@ function PreviewClientModal({
                                 ? "Hire an employee on Uplers Payroll"
                                 : getCompanyDetails?.engagementDetails
                                   ?.hiringTypePricingId === 3
-                                  ? "Direct-hire on your payroll"
+                                  ? "Direct-hire"
                                   : getCompanyDetails?.engagementDetails
                                     ?.hiringTypePricingId === 4
-                                    ? "Hire part time Contractors"
-                                    : "NA"} */}
+                                    ? "Hire a Contractor"
+                                    : getCompanyDetails?.engagementDetails
+                                    ?.hiringTypePricingId === 5
+                                    ? "Hire an employee on Uplers Payroll":"NA"}
                           </p>
                         </li>
                       </ul>
@@ -2960,7 +3090,7 @@ function PreviewClientModal({
                   Uplers's Salesperson (NBD/AM){" "}
                     <span
                       className={previewClientStyle.editNewIcon}
-                      onClick={() => setEditPOC(true)}
+                      onClick={() => {setEditPOC(true); getAllSalesPerson()}}
                     >
                       <EditNewIcon />
                     </span>

@@ -212,7 +212,10 @@ const addnewYoutubeLink = (e) =>{
                   : watch("culture")
               }
               name="culture"
-              onChange={(val) => setValue("culture", val)}
+              onChange={(val) => {
+                let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                setValue("culture", _updatedVal)}
+              }
               // onChange={(val) => {
               //   // console.log(val,"dfsdfsdfsdfsdfsdfsdfdsf");
               //   // setValue("culture",val)

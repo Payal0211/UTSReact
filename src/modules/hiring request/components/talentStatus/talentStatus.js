@@ -577,7 +577,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 								/>
 								     <div className={TalentStatusStyle.rejectCandNote}>
 									<img 
-									// src={LockIcon} 
+									src={LockIcon} 
 									alt="lock-icon" />
 									This remarks will not be shared with the candidate
 								</div>

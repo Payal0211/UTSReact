@@ -1,0 +1,194 @@
+/* Start Preview Editor CSS */
+.HSContentWrap>.HSContent,
+.HSContentWrap>.HSContent * {
+    font-family: Montserrat !important;
+    font-size: 14px;
+    line-height: 18px;
+    color: #231f20 !important;
+    position: relative !important;
+    top: unset !important;
+    left: unset !important;
+    white-space: normal !important;
+    word-break: break-word;
+    background: transparent !important;
+}
+
+.HSContentWrap>.HSContent img {
+    max-width: 100%;
+}
+
+.HSContentWrap>.HSContent ul,
+.HSContentWrap>.HSContent ol {
+    padding-left: 18px;
+    padding-inline-start: 18px !important;
+    margin-bottom: 16px !important;
+}
+
+.HSContentWrap>.HSContent strong {
+    font-weight: 600;
+}
+
+.HSContentWrap>.HSContent ul li {
+    list-style-type: disc;
+    padding-left: 0;
+    margin-bottom: 8px !important;
+}
+
+.HSContentWrap>.HSContent ol li {
+    font-weight: 400;
+    color: #231f20;
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    counter-increment: list-0;
+    list-style: decimal;
+    display: list-item;
+    margin-bottom: 8px !important;
+}
+
+.HSContentWrap>.HSContent ul li:last-child,
+.HSContentWrap>.HSContent ol li:last-child {
+    margin-bottom: 0 !important;
+}
+
+.HSContentWrap>.HSContent.prerequisites ul {
+    display: block;
+    gap: 0px;
+}
+
+.HSContentWrap>.HSContent.prerequisites ul li {
+    background: transparent;
+    border: 0px;
+    margin-bottom: 0px !important;
+    padding: 0;
+    display: list-item;
+    font-weight: 400;
+    color: #231f20;
+}
+
+.HSContentWrap>.HSContent.prerequisites ol li {
+    font-weight: 400;
+    color: #231f20;
+    background: transparent;
+    border: 0px;
+    padding: 0;
+    margin-bottom: 0px !important;
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    counter-increment: list-0;
+    list-style: decimal;
+    display: list-item;
+}
+
+.HSContentWrap>.HSContent {
+    color: #231f20 !important;
+    line-height: 1.42 !important;
+}
+
+.HSContentWrap>.HSContent p {
+    color: #231f20 !important;
+    margin-bottom: 16px !important;
+    line-height: 18px !important;
+}
+
+.HSContentWrap>.HSContent h1 {
+    font-size: 2em !important;
+    color: #231f20 !important;
+    margin-bottom: 16px !important;
+    font-weight: 600 !important;
+}
+
+.HSContentWrap>.HSContent h2 {
+    font-size: 1.5em !important;
+    color: #231f20 !important;
+    margin-bottom: 16px !important;
+    font-weight: 600 !important;
+}
+
+.HSContentWrap>.HSContent h3 {
+    font-size: 1.17em !important;
+    color: #231f20 !important;
+    margin-bottom: 16px !important;
+    font-weight: 600 !important;
+}
+
+.HSContentWrap>.HSContent h4 {
+    font-size: 1em !important;
+    color: #231f20 !important;
+    margin-bottom: 4px;
+    font-weight: 600 !important;
+}
+
+.HSContentWrap>.HSContent h5 {
+    font-size: 0.83em !important;
+    color: #231f20 !important;
+    margin-bottom: 4px;
+    font-weight: 600 !important;
+}
+
+.HSContentWrap>.HSContent h6 {
+    font-size: 0.67em !important;
+    color: #231f20 !important;
+    margin-bottom: 4px;
+    font-weight: 600 !important;
+}
+
+body .HSContentWrap>.HSContent h1,
+body .HSContentWrap>.HSContent h2,
+body .HSContentWrap>.HSContent h3,
+body .HSContentWrap>.HSContent h4,
+body .HSContentWrap>.HSContent h5,
+body .HSContentWrap>.HSContent h6 {
+    font-family: inherit !important;
+}
+
+.HSContentWrap>.HSContent h1 span,
+.HSContentWrap>.HSContent h2 span,
+.HSContentWrap>.HSContent h3 span {
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
+    margin: 0 !important;
+}
+
+.HSContentWrap>.HSContent a {
+    text-decoration: underline;
+}
+
+.HSContentWrap>.HSContent blockquote {
+    border-left: 4px solid #ccc;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-left: 16px;
+}
+
+.HSContentWrap>.HSContent code,
+.HSContentWrap>.HSContent pre {
+    background-color: #f0f0f0;
+    border-radius: 3px;
+}
+
+.HSContentWrap>.HSContent pre {
+    white-space: pre-wrap;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px 10px;
+}
+
+.HSContentWrap>.HSContent code {
+    font-size: 85%;
+    padding: 2px 4px;
+}
+
+.HSContentWrap>.HSContent div,
+.HSContentWrap>.HSContent span {
+    width: auto !important;
+    height: auto !important;
+    font-family: Montserrat, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+}
+
+body .HSContentWrap>.HSContent div,
+body .HSContentWrap>.HSContent span {
+    font-family: Montserrat, sans-serif !important;
+}
+
+/* END Preview Editor CSS*/

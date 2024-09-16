@@ -1025,7 +1025,9 @@ const getParsingType = (isHaveJD,parseType) => {
 								className="heightSize"
 								value={watch('jobDescription')}
 								name="jobDescription"
-								onChange={(val) => setValue("jobDescription",val)}
+								onChange={(val) => {
+									let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+									setValue("jobDescription",_updatedVal)}}
 							/>
 							<input
 								type="hidden"

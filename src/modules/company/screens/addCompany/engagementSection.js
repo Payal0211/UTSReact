@@ -223,6 +223,8 @@ function EngagementSection({
                     onChange={(e) => {
                       setTypeOfPricing(e.target.value);
                       setPricingTypeError && setPricingTypeError(false);
+                      setControlledHiringPricingTypeValue(null);
+                      setValue("hiringPricingType",null);
                     }}
                     value={typeOfPricing}
                   >
