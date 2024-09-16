@@ -683,6 +683,9 @@ const calcelMember = () =>{
         "amSalesPersonID": d.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
         "uplersFeesAmount":data?.isHRTypeDP ? parseFloat(d?.uplersFee):null,
+        "uplersFeesPerc":preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP == false ? 
+        ((d.billRate > 0 && d.payRate > 0) ?  (((d.billRate-d.payRate)/d.payRate)*100).toFixed(2)+ ' %' : 'NA')
+        : ((d.uplersFee > 0 && d.payRate > 0) ?  ((d.uplersFee/d.payRate)*100).toFixed(2) + " %" :"NA"),
         "talentReplacement": {
           "onboardId": talentDeteils?.OnBoardId,
           "replacementID": 0,
@@ -728,7 +731,7 @@ const calcelMember = () =>{
           "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
           "teamMembers": clientTeamMembers
         }
-      }
+      }      
             
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
