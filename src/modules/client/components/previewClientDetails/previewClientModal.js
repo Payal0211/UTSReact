@@ -2481,7 +2481,7 @@ function PreviewClientModal({
 
                     <span
                       className={previewClientStyle.editNewIcon}
-                      onClick={() => {setEditEngagement(true);getHRPricingType();}}
+                      onClick={() => {setEditEngagement(true);getHRPricingType();getDetails();}}
                     >
                       <EditNewIcon />
                     </span>
