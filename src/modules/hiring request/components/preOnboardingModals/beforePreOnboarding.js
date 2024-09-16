@@ -683,6 +683,9 @@ const calcelMember = () =>{
         "amSalesPersonID": d.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
         "uplersFeesAmount":data?.isHRTypeDP ? parseFloat(d?.uplersFee):null,
+        "uplersFeesPerc":preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP == false ? 
+        ((d.billRate > 0 && d.payRate > 0) ?  (((d.billRate-d.payRate)/d.payRate)*100).toFixed(2)+ ' %' : 'NA')
+        : ((d.uplersFee > 0 && d.payRate > 0) ?  ((d.uplersFee/d.payRate)*100).toFixed(2) + " %" :"NA"),
         "talentReplacement": {
           "onboardId": talentDeteils?.OnBoardId,
           "replacementID": 0,
@@ -728,7 +731,7 @@ const calcelMember = () =>{
           "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
           "teamMembers": clientTeamMembers
         }
-      }
+      }      
             
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
@@ -1119,7 +1122,7 @@ const calcelMember = () =>{
                 <div>
                   <CurrentHrsSVG width="27" height="32" />
                 </div>
-                <h3 className={HRDetailStyle.titleLeft}>AM Assignment</h3>
+                <h3 className={HRDetailStyle.titleLeft}>Client Handover</h3>
               </div>
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
@@ -1156,19 +1159,19 @@ const calcelMember = () =>{
                       mode="id/value"
                       setValue={setValue}
                       register={register}
-                      label={"Current AM"}
-                      defaultValue={"Select AM"}
+                      label={"Current POC"}
+                      defaultValue={"Select POC"}
                       name="amSalesPersonID"
                       options={amUsers && amUsers}
                       isError={errors["selectAM"] && errors["selectAM"]}
                       required
-                      errorMsg={"Please select AM"}
+                      errorMsg={"Please select POC"}
                       disabled={actionType==="Legal"?true: assignAMnew ? true :  false}
                       searchable={true}
                     />
                   </div>
                   <div className={`${HRDetailStyle.modalFormCol} ${HRDetailStyle.assignmentCardTitle}`}>
-                      Following HRs will be assigned to the selected AM
+                      Following HRs will be assigned to the selected Sales Person
                   </div>
                   {currentHRs?.length > 0 ? (
                     currentHRs

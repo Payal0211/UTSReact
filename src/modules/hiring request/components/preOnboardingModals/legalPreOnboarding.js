@@ -165,13 +165,24 @@ export default function LegalPreOnboarding({
       //   setIsLoading(false);
       //   message.error("The joining date must be greater than contract start date.")
       //   return
-      // }    
-       if(getData?.getLegalInfo?.isHRTypeDP !== true  && !(new Date(d.joiningDate) >= new Date(d.contractStartDate))){
-        isValid = false;
-        setIsLoading(false);
-        message.error("The joining date must be greater than and same as contract start date.")
-        return
-      }   
+      // } 
+      
+      if(getData?.getLegalInfo?.isHRTypeDP === true){
+        if(new Date(d.joiningDate) >= new Date(d.engagementStartDate)){
+          isValid = false;
+          setIsLoading(false);
+          message.error("The joining date must be greater than and same as engagement start date.")
+          return
+        }
+      } else{
+        if(new Date(d.joiningDate) >= new Date(d.contractStartDate)){
+          isValid = false;
+          setIsLoading(false);
+          message.error("The joining date must be greater than and same as contract start date.")
+          return
+        }  
+      } 
+       
       if(isValid){
         let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
         if (result?.statusCode === HTTPStatusCode.OK) {
@@ -343,7 +354,8 @@ export default function LegalPreOnboarding({
                     </div>
 
                     
-                   {!getData?.getLegalInfo?.isHRTypeDP && <div className={HRDetailStyle.modalFormCol}>
+                   {/* {!getData?.getLegalInfo?.isHRTypeDP &&  */}
+                   <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.timeLabel}>
                           Joining Date
                           <span className={HRDetailStyle.reqFieldRed}>*</span>
@@ -377,7 +389,8 @@ export default function LegalPreOnboarding({
                             </div>
                           )}
                         </div>
-                      </div>}
+                      </div>
+                      {/* } */}
 
 
                   {   
