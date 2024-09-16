@@ -195,9 +195,9 @@ function PreviewClientModal({
   };
   let eReg = new RegExp(EmailRegEx.email);
 
-  useEffect(() => {
-    getCodeAndFlag();
-  }, []);
+  // useEffect(() => {
+  //   getCodeAndFlag();
+  // }, []);
 
   const allInvestors = getCompanyDetails?.fundingDetails?.[0]?.allInvestors
     ? getCompanyDetails?.fundingDetails?.[0]?.allInvestors?.split(",")
@@ -351,7 +351,14 @@ function PreviewClientModal({
   };
 
   useEffect(() => {
-    getDetails();
+    if(getcompanyID){
+        getDetails();
+        getAllValuesForDD();
+        getAllSalesPerson();
+        getCodeAndFlag();
+        getHRPricingType();
+    }
+  
   }, [getcompanyID, setValue]);
 
   const getAllValuesForDD = useCallback(async () => {
@@ -364,10 +371,10 @@ function PreviewClientModal({
     setAllPocs(allSalesResponse && allSalesResponse?.responseBody?.details);
   }, []);
 
-  useEffect(() => {
-    getAllValuesForDD();
-    getAllSalesPerson();
-  }, []);
+  // useEffect(() => {
+  //   getAllValuesForDD();
+  //   getAllSalesPerson();
+  // }, []);
 
   useEffect(() => {
     if (getCompanyDetails?.pocUserDetailsEdit && allPocs?.length) {
@@ -718,9 +725,9 @@ function PreviewClientModal({
     const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
     setHRPricingTypes(HRPricingResponse && HRPricingResponse.responseBody);
   }, []);
-  useEffect(() => {
-    getHRPricingType();
-  }, []);
+  // useEffect(() => {
+  //   getHRPricingType();
+  // }, []);
 
   const getRequiredHRPricingType = useCallback(() => {
     let reqOpt = [];
