@@ -18,6 +18,7 @@ const Navbar = ({ fullName }) => {
 		const res = await userDAO.logoutDAO();
 		queryClient.removeQueries();
 		window.location.reload()
+		localStorage.clear();
 		if (res) navigation(UTSRoutes.LOGINROUTE);
 	};
 
