@@ -109,6 +109,7 @@
     transform: none !important;
     width: 100% !important;
     margin: 40px 0 30px;
+    min-width: 220px;
 }
 .calendarFilter
   [class*="react-datepicker-popper"]

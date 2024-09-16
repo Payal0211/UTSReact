@@ -909,6 +909,22 @@
     font-size: var(--fontsize-tough);
 }
 
+.PreviewpageMainWrap .clientDetailListed [class^="country-list"] {
+    display: block;
+}
+
+.PreviewpageMainWrap .clientDetailListed [class^="country-list"] li span {
+    display: initial;
+}
+
+.formFieldsboxinner.formPreClientDetail{
+    overflow: visible;
+}
+
+.formFieldsboxinner.formPreClientDetail .formFieldTitleTwo h2{
+    border-radius: 16px 16px 0 0;
+}
+
 /* Edit Modal css End */
 
 @media screen and (max-width: 1440px) {

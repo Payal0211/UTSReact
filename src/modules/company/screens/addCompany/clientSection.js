@@ -3,7 +3,8 @@ import AddNewClientStyle from "./addclient.module.css";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
-
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
 import {
   clientFormDataFormatter,
   getFlagAndCodeOptions,
@@ -59,6 +60,8 @@ function ClientSection({
       getCodeAndFlagResponse && getCodeAndFlagResponse.responseBody
     );
   };
+  const [countryCodeData,setCountryCodeData] = useState("in");
+  const [key, setKey] = useState(0);
 
   useEffect(() => {
     remove();
@@ -206,7 +209,7 @@ function ClientSection({
                 </div>
               </div>
 
-              <div className={AddNewClientStyle.tabsRightPanel}>
+              <div className={AddNewClientStyle.tabsRightPanel} style={{paddingBottom:'30px'}}>
                 <div className={AddNewClientStyle.row}>
                   <div className={AddNewClientStyle.colMd6}>
                     <HRInputField
@@ -338,7 +341,7 @@ function ClientSection({
                 <div className={AddNewClientStyle.row}>
                   <div className={AddNewClientStyle.colMd6}>
                     <div className={AddNewClientStyle.label}>Phone number</div>
-                    <div style={{ display: "flex" }}>
+                    <div className="phonConturyWrap" style={{ display: "flex" }}>
                       {/* <div className={AddNewClientStyle.phoneNoCode}>
                         <HRSelectField
                           searchable={true}
@@ -350,7 +353,7 @@ function ClientSection({
                         />
                       </div> */}
                       {/* <div className={AddNewClientStyle.phoneNoInput}> */}
-                        <HRInputField
+                        {/* <HRInputField
                           register={register}
                           name={`clientDetails.[${index}].contactNo`}
                           type={InputType.NUMBER}
@@ -365,7 +368,16 @@ function ClientSection({
                           required={watch(`clientDetails.[${index}].contactNo`) ? true : false}
                           forArrayFields={true}
                           errors={errors?.clientDetails?.[index]?.contactNo}
-                        />
+                        /> */}
+                        <PhoneInput
+                                        placeholder="Enter number"
+                                        key={key}
+                                        value={watch(`clientDetails.[${index}].contactNo`)}
+                                        onChange={(value)=> setValue(`clientDetails.[${index}].contactNo`,value)}
+                                        country={countryCodeData}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
                       {/* </div> */}
                     </div>
                   </div>

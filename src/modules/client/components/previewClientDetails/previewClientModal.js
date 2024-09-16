@@ -20,6 +20,8 @@ import {
 } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as DeleteNewIcon } from "assets/svg/delete-icon.svg";
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
 
 import CompanyDetailimg1 from "assets/CompanyDetailimg1.jpg";
 import CompanyDetailimg2 from "assets/CompanyDetailimg2.jpg";
@@ -162,6 +164,10 @@ function PreviewClientModal({
   let _currency = watch("creditCurrency");
 
   const [userData, setUserData] = useState({});
+
+  const [countryCodeData,setCountryCodeData] = useState("in");
+  const [key, setKey] = useState(0);
+
 
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -1982,7 +1988,7 @@ function PreviewClientModal({
 
             <div className={previewClientStyle.formFields}>
               <div className={previewClientStyle.formFieldsbox}>
-                <div className={previewClientStyle.formFieldsboxinner}>
+                <div className={`${previewClientStyle.formFieldsboxinner} ${previewClientStyle.formPreClientDetail}`}>
                   <div className={previewClientStyle.formFieldTitleTwo}>
                     <h2>
                       Client Details{" "}
@@ -2119,8 +2125,8 @@ function PreviewClientModal({
                             <div className={previewClientStyle.phoneLabel}>
                               Phone number
                             </div>
-                            <div style={{ display: "flex" }}>
-                              <div className={previewClientStyle.phoneNoCode}>
+                            <div className="phonConturyWrap" style={{ display: "flex" }}>
+                              {/* <div className={previewClientStyle.phoneNoCode}>
                                 <HRSelectField
                                   searchable={true}
                                   // setValue={setValue}
@@ -2146,13 +2152,27 @@ function PreviewClientModal({
                                   placeholder="Enter Phone number"
                                   value={otherClientDetailsData?.phoneNumber}
                                 />
-                              </div>
+                              </div> */}
+                              <PhoneInput
+                                        placeholder="Enter number"
+                                        key={key}
+                                        value={otherClientDetailsData?.phoneNumber}
+                                        onChange={value => {
+                                          setOtherClientDetailsData({
+                                            ...otherClientDetailsData,
+                                            phoneNumber: value,
+                                          });
+                                        }}
+                                        country={countryCodeData}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
                             </div>
                           </div>
                         </div>
 
                         <div
-                          className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24}`}
+                          className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24} ${previewClientStyle.mt24}`}
                         >
                           <button
                             type="button"
@@ -2376,7 +2396,7 @@ function PreviewClientModal({
                                   >
                                     Phone number
                                   </div>
-                                  <div style={{ display: "flex" }}>
+                                  <div className="phonConturyWrap" >
                                     {/* <div
                                       className={previewClientStyle.phoneNoCode}
                                     >
@@ -2396,7 +2416,7 @@ function PreviewClientModal({
                                         previewClientStyle.phoneNoInput
                                       }
                                     > */}
-                                      <HRInputField
+                                      {/* <HRInputField
                                         register={register}
                                         // name={`clientDetails.[${index}].contactNo`}
                                         name="contactNo"
@@ -2409,13 +2429,27 @@ function PreviewClientModal({
                                         type={InputType.NUMBER}
                                         placeholder="Enter Phone number"
                                         value={clientDetailsData?.phoneNumber}
-                                      />
+                                      /> */}
+                                      <PhoneInput
+                                        placeholder="Enter number"
+                                        key={key}
+                                        value={clientDetailsData?.phoneNumber}
+                                        onChange={(value)=> {
+                                          setClientDetailsData({
+                                            ...clientDetailsData,
+                                            phoneNumber: value,
+                                          });
+                                        }}
+                                        country={countryCodeData}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
                                     {/* </div> */}
                                   </div>
                                 </div>
                               </div>
                               <div
-                                className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24}`}
+                                className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24} ${previewClientStyle.mt24}`}
                               >
                                 <button
                                   type="button"
