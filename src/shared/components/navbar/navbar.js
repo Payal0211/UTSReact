@@ -17,6 +17,8 @@ const Navbar = ({ fullName }) => {
 	const onLogoutHandler = async () => {
 		const res = await userDAO.logoutDAO();
 		queryClient.removeQueries();
+		window.location.reload()
+		localStorage.clear();
 		if (res) navigation(UTSRoutes.LOGINROUTE);
 	};
 

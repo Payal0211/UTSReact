@@ -50,6 +50,7 @@ import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { v4 as uuidv4 } from 'uuid';
 import { encrypt } from 'modules/EncryptionDecryption/encryptiondescryption.js'; 
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 function PreviewClientModal({
   isPreviewModal,
@@ -358,13 +359,8 @@ function PreviewClientModal({
 
   useEffect(() => {
     if(getcompanyID){
-        getDetails();
-        getAllValuesForDD();
-        getAllSalesPerson();
-        getCodeAndFlag();
-        getHRPricingType();
+      getDetails();
     }
-  
   }, [getcompanyID, setValue]);
 
   const getAllValuesForDD = useCallback(async () => {
@@ -1122,7 +1118,7 @@ function PreviewClientModal({
         centered
         open={isPreviewModal}
         onOk={() => setIsPreviewModal(false)}
-        onCancel={() => setIsPreviewModal(false)}
+        onCancel={() => {setIsPreviewModal(false);setEditEngagement(false);}}
         width={1080}
         footer={false}
         maskClosable={false}
@@ -1323,7 +1319,8 @@ function PreviewClientModal({
                             theme="snow"
                             value={isAboutUs}
                             onChange={(val) => {
-                              let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                              let sanitizedContent = sanitizeLinks(val);
+                              let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                               setIsAboutUs(_updatedVal)}}
                             className={previewClientStyle.reactQuillEdit}
                             required
@@ -1573,7 +1570,8 @@ function PreviewClientModal({
                                     additionalInformation
                                   }
                                   onChange={(val) => {
-                                    let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                    let sanitizedContent = sanitizeLinks(val);
+                                    let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                                     setAdditionInformation(_updatedVal)}}
                                   readOnly={isSelfFunded ? true : false}
                                   // modules={{ toolbar: false }}
@@ -1658,7 +1656,8 @@ function PreviewClientModal({
                                     theme="snow"
                                     value={isCulture}
                                     onChange={(val) => {
-                                      let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                      let sanitizedContent = sanitizeLinks(val);
+                                      let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                                       setIsCulture(_updatedVal)}}
                                     className={
                                       previewClientStyle.reactQuillEdit
@@ -1926,7 +1925,7 @@ function PreviewClientModal({
                       Company perks & benefits
                         <span
                           className={previewClientStyle.editNewIcon}
-                          onClick={() => setEditCompanyBenefits(true)}
+                          onClick={() => {setEditCompanyBenefits(true); getAllValuesForDD()}}
                         >
                           <EditNewIcon />
                         </span>
@@ -2000,7 +1999,7 @@ function PreviewClientModal({
 
                       <span
                         className={previewClientStyle.addNewClientText}
-                        onClick={() => setAddNewClient(true)}
+                        onClick={() => {setAddNewClient(true);getCodeAndFlag(); getAllValuesForDD();}}
                       >
                         Add New Client
                       </span>
@@ -2227,6 +2226,8 @@ function PreviewClientModal({
                               onClick={() => {
                                 setEditClient(true);
                                 setClickIndex(index);
+                                getCodeAndFlag();
+                                getAllValuesForDD();
                                
                                 if(val?.contactNo){
                                   // if (val?.contactNo?.includes("+91")) {
@@ -2518,7 +2519,7 @@ function PreviewClientModal({
 
                     <span
                       className={previewClientStyle.editNewIcon}
-                      onClick={() => setEditEngagement(true)}
+                      onClick={() => {setEditEngagement(true);getHRPricingType();getDetails();}}
                     >
                       <EditNewIcon />
                     </span>
@@ -3093,7 +3094,7 @@ function PreviewClientModal({
                   Uplers's Salesperson (NBD/AM){" "}
                     <span
                       className={previewClientStyle.editNewIcon}
-                      onClick={() => setEditPOC(true)}
+                      onClick={() => {setEditPOC(true); getAllSalesPerson()}}
                     >
                       <EditNewIcon />
                     </span>
