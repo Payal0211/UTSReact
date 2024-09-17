@@ -2561,30 +2561,7 @@ getSkillList();
                                   </div>
                                 </>
                               ) : (
-                                <div>
-                                  {/* <ReactQuill
-                            theme="snow"                            
-                            value={editWhatWeOffer ? editWhatWeOffer : jobPreview?.jobDescription ? jobPreview?.jobDescription : `
-                            ${jobPreview?.roleOverviewDescription ? `<h3>Role Overview Description</h3>${jobPreview?.roleOverviewDescription}<br><br>` : ''}
-                            ${jobPreview?.rolesResponsibilities ? `<h3>Roles & Responsibilities</h3>${jobPreview?.rolesResponsibilities}<br><br>` : ''}
-                            ${jobPreview?.requirements ? `<h3>Requirements</h3>${jobPreview?.requirements}<br><br>` : ''}
-                            ${jobPreview?.whatweoffer ? `<h3>What We Offer</h3>${jobPreview?.whatweoffer}` : ''}
-                          `}
-                          // value={data}
-                            readOnly
-                            modules={{ toolbar: false }}
-                            className="reactQuillEdit"
-                            style={{
-                              border: "none !important",
-                            }}
-                          /> */}
-                                  {/* <div className="jobDescrition" dangerouslySetInnerHTML={{
-                                    __html: editWhatWeOffer ? editWhatWeOffer?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : jobPreview?.jobDescription ? jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : `
-                            ${jobPreview?.roleOverviewDescription ? `<h3>Role Overview Description</h3>${jobPreview?.roleOverviewDescription}<br><br>` : ''}
-                            ${jobPreview?.rolesResponsibilities ? `<h3>Roles & Responsibilities</h3>${jobPreview?.rolesResponsibilities}<br><br>` : ''}
-                            ${jobPreview?.requirements ? `<h3>Requirements</h3>${jobPreview?.requirements}<br><br>` : ''}
-                            ${jobPreview?.whatweoffer ? `<h3>What We Offer</h3>${jobPreview?.whatweoffer}` : ''}`
-                                  }} /> */}
+                                <div>                              
                                   <HSContent data={jobPreview?.jobDescription && jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim()} />
                                 </div>
                               )}
@@ -2707,17 +2684,7 @@ getSkillList();
                           </div>
                           <h6>About us <span className="editNewIcon" onClick={() => { setisAboutCompany(true); setAboutCompanyValue(basicDetails?.aboutCompany) }}><img src={EditnewIcon} /></span></h6>
                           {!isAboutCompany ?
-                            basicDetails?.aboutCompany ?
-                              // <ReactQuill
-                              //   theme="snow"
-                              //   value={basicDetails?.aboutCompany}  
-                              //   readOnly
-                              //   modules={{ toolbar: false }}    
-                              //   className="reactQuillEdit"             
-                              //   style={{
-                              //   border:"none !important",
-                              // }}                 
-                              // />: "NA" : 
+                            basicDetails?.aboutCompany ?                            
                               <div className="jobDescrition" dangerouslySetInnerHTML={{ __html: basicDetails?.aboutCompany }} /> : "NA" :
                             <>
                               <ReactQuill
@@ -2952,14 +2919,7 @@ getSkillList();
                                     fontWeight: "600",
                                     color: "#232323",
                                     marginBottom: "10px"
-                                  }}>Additional Information</span>
-                                  {/* <ReactQuill
-                                                style={{width:'100%'}}
-                                                value={fundingDetails[0]?.additionalInformation}
-                                                readOnly  
-                                                className="reactQuillEdit"
-                                                modules={{toolbar:false}}                                          
-                                              />    */}
+                                  }}>Additional Information</span>                                 
                                   <div className="jobDescrition" dangerouslySetInnerHTML={{ __html: fundingDetails[0]?.additionalInformation }} />
                                 </div>
                               </> :
@@ -2970,14 +2930,7 @@ getSkillList();
                           <h6>Culture
                             <span className="editNewIcon" onClick={() => { setIsCulture(true); setCulture(basicDetails?.culture) }}><img src={EditnewIcon} /></span>
                           </h6>
-                          {!isCulture &&
-                            // <ReactQuill 
-                            //   // theme="snow"
-                            //   value={basicDetails?.culture}
-                            //   readOnly
-                            //   modules={{ toolbar: false }}    
-                            //   className="reactQuillEdit"
-                            // /> 
+                          {!isCulture &&                            
                             <div className="jobDescrition" dangerouslySetInnerHTML={{ __html: basicDetails?.culture }} />
                           }
                           {isCulture &&
@@ -3403,17 +3356,8 @@ getSkillList();
                             </div>
                           </div>
                           :
-                          <div className="company-benefits">
-                            {/* <ReactQuill
-                                          theme="snow"
-                                          className="reactQuillEdit" 
-                                          value={jobPreview?.prerequisites}
-                                          onChange={(e) => setPrerequisites(e)}
-                                          modules={{ toolbar: false }}
-                                          readOnly                                      
-                                        />   */}
-                            <div className="jobDescrition prerequisites" dangerouslySetInnerHTML={{ __html: jobPreview?.prerequisites ? jobPreview?.prerequisites : "NA" }} />
-                            {/* <h3>{jobPreview?.prerequisites}</h3> */}
+                          <div className="company-benefits">                         
+                            <div className="jobDescrition prerequisites" dangerouslySetInnerHTML={{ __html: jobPreview?.prerequisites ? jobPreview?.prerequisites : "NA" }} />                            
                           </div>
                         }
                       </div>
