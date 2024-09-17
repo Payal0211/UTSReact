@@ -568,7 +568,7 @@ function CompanySection({
                     <HRInputField
                       register={register}
                       // errors={errors}
-                      label="Headquaters"
+                      label="Headquarters"
                       name="headquaters"
                       type={InputType.TEXT}
                       // validationSchema={{
