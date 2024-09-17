@@ -42,6 +42,7 @@ import { NetworkInfo } from "constants/network";
 import confirm from "antd/es/modal/confirm";
 import HSContent from "constants/CommonEditorPreview/HSContent";
 
+
 // import "../../CompanyDetails/companyDetails.css";
 function PreviewHRModal({
   setViewPosition,
@@ -1340,10 +1341,23 @@ getSkillList();
 
   const getRolesCurrencyList = async () => {
     let res = await MasterDAO.getTalentsRoleRequestDAO();
-    let currencyresult = await MasterDAO.getCurrencyRequestDAO();
+    // let currencyresult = await MasterDAO.getCurrencyRequestDAO();
     if (res.statusCode === 200) {
       setRolesData(res.responseBody);
     }
+    // if (currencyresult.statusCode === 200) {
+    //   setCurrencyList(
+    //     currencyresult.responseBody.map((currency) => ({
+    //       value: currency.value,
+    //       label: currency.value,
+    //     }))
+    //   );
+    // }
+  };
+
+  const getCurrencyList = async () => {
+
+    let currencyresult = await MasterDAO.getCurrencyRequestDAO();
     if (currencyresult.statusCode === 200) {
       setCurrencyList(
         currencyresult.responseBody.map((currency) => ({
@@ -2050,6 +2064,7 @@ getSkillList();
                             <span className="editNewIcon"
                               onClick={() => {
                                 setisEditBudget(true);
+                                getCurrencyList();
                                 setEditBudget({
                                   ...editBudget,
                                   currency: jobPreview?.currency,
@@ -3541,8 +3556,20 @@ getSkillList();
                                                 </li> 
 
                                                 <li>
-                                                    <div className="form-group justifyCenter">
-                                                        <i className="fieldIcon"><img src={PhoneIcon} alt="phone-icon" /></i>
+                                                    <div className="phonConturyWrap previewHRPhoneNoField" >
+                                                    <PhoneInput
+                                                        placeholder="Enter number"
+                                                        key={'phoneNumber'}
+                                                        value={Val?.contactNo}
+                                                        onChange={value => {
+                                                          handleContactNoChange(index, value)
+                                                        
+                                                        }}
+                                                        country={countryCodeData}
+                                                        disableSearchIcon={true}
+                                                        enableSearch={true}
+                                                        />
+                                                        {/* <i className="fieldIcon"><img src={PhoneIcon} alt="phone-icon" /></i>
                                                         <input type="text" className="form-control" placeholder="Enter mobile number" value={Val?.contactNo} maxLength={10}
                                                         onChange={(e) => handleContactNoChange(index, e.target.value)}
                                                         onBlur={(e) => {
@@ -3556,7 +3583,7 @@ getSkillList();
                                                               return message.error('Invalid phone number. Must be 10 digits and start with 6-9.');
                                                             }
                                                         }}
-                                                        />
+                                                        /> */}
                                                         <Checkbox name="userShow" disabled={Val?.contactNo ? false : true} checked={Val?.contactNo?Val?.showContactNumberToTalent:false} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
                                                     </div>
                                                 </li>
@@ -5061,7 +5088,28 @@ getSkillList();
                 <div className="form-group">
                   <label>{pocDetails?.isEdit ? "Edit" :"Add"} mobile number</label>                
                   <div className="phonConturyWrap">
-                  <input type="text" className="form-control" placeholder="Edit mobile number" value={pocDetails?.contactNo} maxLength={10}
+                  <PhoneInput
+                                        placeholder="Enter number"
+                                        key={'phoneNumber'}
+                                        value={pocDetails?.contactNo}
+                                        onChange={value => {
+                                          if(value ==""){
+                                            setPOCDetails({...pocDetails,showContactNumberToTalent: false})
+                                          }
+                                          setPOCDetails({...pocDetails,contactNo:value})    
+                                          // const regex = /^[0-9]\d*$/;
+                                          // if (regex.test(value) || value === "") {
+                                          //   if(value ==""){
+                                          //     setPOCDetails({...pocDetails,showContactNumberToTalent: false})
+                                          //   }
+                                          //   setPOCDetails({...pocDetails,contactNo:value})                          
+                                          // }  
+                                        }}
+                                        country={countryCodeData}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
+                  {/* <input type="text" className="form-control" placeholder="Edit mobile number" value={pocDetails?.contactNo} maxLength={10}
                     onChange={(e) => {
                       const regex = /^[0-9]\d*$/;
                           if (regex.test(e.target.value) || e.target.value === "") {
@@ -5071,7 +5119,7 @@ getSkillList();
                             setPOCDetails({...pocDetails,contactNo:e.target.value})                          
                           }  
                     }}
-                  />    
+                  />     */}
                     <Checkbox name="userShow" disabled={pocDetails?.contactNo ==""?true:false}checked={pocDetails?.contactNo?pocDetails?.showContactNumberToTalent:false} onChange={(e) =>                       
                       setPOCDetails({...pocDetails,showContactNumberToTalent: e.target.checked})                      
                       }>Show mobile number to candidates</Checkbox>              

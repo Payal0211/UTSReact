@@ -1417,6 +1417,22 @@ body .jobDescrition h1,body .jobDescrition h2,body .jobDescrition h3,body .jobDe
   padding-left: 80px;
 }
 
+.HRFormPhoneNo {
+  z-index: 0 !important;
+}
+
+.HRFormPhoneNo .react-tel-input .form-control{
+  border-radius: 20px !important;
+  height: 33px !important;
+  background: #EFEFEF4D;
+}
+
+.previewHRPhoneNoField .react-tel-input .form-control{
+  border-radius: 20px !important;
+  height: 33px !important;
+
+}
+
 .phonConturyWrap .react-tel-input::after{
   content: "";
   position: absolute;
