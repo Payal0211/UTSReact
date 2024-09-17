@@ -245,8 +245,8 @@ export const foundedIn = [
   { value: 1900, label: "1900" }
 ];  
 
-export const sanitizeLinks = (val) => {
-  let html = val?.replace(/<img\b[^>]*>/gi, '');
+export const sanitizeLinks = (html) => {
+  // let html = val?.replace(/<img\b[^>]*>/gi, '');
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = html;
   tempDiv.innerHTML = tempDiv.innerHTML.replace(/●/g, '&#8226;');

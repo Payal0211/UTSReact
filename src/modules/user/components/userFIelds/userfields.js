@@ -25,6 +25,8 @@ import { HttpServices } from 'shared/services/http/http_service';
 import { LoadingOutlined } from '@ant-design/icons';
 import { ReactComponent as LongArrowSVG } from 'assets/svg/longArrow.svg';
 import LogoLoader from "shared/components/loader/logoLoader";
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -1236,7 +1238,20 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											? '*'
 											: null} */}
 											</label>
-											<div className={UserFieldStyle.phoneNoCode}>
+												<div className="phonConturyWrap" style={{width:'100%'}}>
+													<PhoneInput
+														placeholder="Enter number"
+														key={'phoneNumber'}
+														value={watch('primaryClientPhoneNumber')}
+														onChange={(value,__) => {
+														setValue('primaryClientPhoneNumber',value) 
+														}}
+														country={'in'}
+														disableSearchIcon={true}
+														enableSearch={true}
+													/>
+										</div>
+											{/* <div className={UserFieldStyle.phoneNoCode}>
 												<HRSelectField
 													searchable={true}
 													setValue={setValue}
@@ -1257,7 +1272,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 													// 	required: 'Please enter contact number',
 													// }}
 												/>
-											</div>
+											</div> */}
 										</div>
 									</div>
 
