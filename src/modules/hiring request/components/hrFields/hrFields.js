@@ -51,7 +51,7 @@ import PhoneIcon from "assets/svg/phoneIcon.svg";
 import DeleteCircleIcon from "assets/svg/deleteCircleIcon.svg";
 import infoSmallIcon from "assets/svg/infoSmallIcon.svg";
 import MailIcon from "assets/svg/mailIcon.svg";
-import { isEmptyOrWhitespace } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
+import { isEmptyOrWhitespace, sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 import debounce from "lodash.debounce";
 
@@ -4723,7 +4723,8 @@ const HRFields = ({
                     value={watch("parametersHighlight")}
                     name="parametersHighlight"
                     onChange={(val) => {
-                      let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                      let sanitizedContent = sanitizeLinks(val);
+                      let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                       setValue("parametersHighlight", _updatedVal)}
                     }
                   />

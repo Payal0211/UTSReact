@@ -2529,7 +2529,8 @@ getSkillList();
                                     className="heightSize"
                                     value={editWhatWeOffer}
                                     onChange={(val) => {
-                                      let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                      let sanitizedContent = sanitizeLinks(val);
+                                      let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                                       setEditWhatWeOffer(_updatedVal)
                                     }}
                                   />

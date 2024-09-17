@@ -46,7 +46,7 @@ import plusSkill from "assets/svg/plusSkill.svg";
 import DOMPurify from "dompurify";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import ReactQuill from "react-quill";
-import { isEmptyOrWhitespace } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
+import { isEmptyOrWhitespace, sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 import infoSmallIcon from "assets/svg/infoSmallIcon.svg";
 import MailIcon from "assets/svg/mailIcon.svg";
 import PhoneIcon from "assets/svg/phoneIcon.svg";
@@ -4641,8 +4641,10 @@ const EditHRFields = ({
                         value={watch("parametersHighlight")}
                         name="parametersHighlight"
                         onChange={(val) => {
-                          let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                          let sanitizedContent = sanitizeLinks(val);
+                          let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                           setValue("parametersHighlight", _updatedVal)}}
+
                       />
                       {/* <HRInputField
                       register={register}

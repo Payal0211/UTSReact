@@ -47,6 +47,7 @@ import { ReactComponent as AboutCompanySVG } from 'assets/svg/aboutCompany.svg';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import debounce from "lodash.debounce";
+import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 export default function BeforePreOnboarding({
   preOnboardingDetailsForAMAssignment,
@@ -1984,7 +1985,8 @@ const calcelMember = () =>{
                         isError={errors["aboutCompany"] && errors["aboutCompany"]}
                         name="aboutCompany"
                         onChange={(val) => {
-                          let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                          let sanitizedContent = sanitizeLinks(val);
+                          let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                           setValue("aboutCompany", _updatedVal)}}
                         errorMsg={"Please enter Talent’s Designation"}
                       />
@@ -2011,7 +2013,8 @@ const calcelMember = () =>{
                         isError={errors["aboutCompany"] && errors["aboutCompany"]}
                         name="aboutCompany"
                         onChange={(val) => {
-                          let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                          let sanitizedContent = sanitizeLinks(val);
+                          let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                           setValue("aboutCompany", _updatedVal)}
                         }
                         errorMsg={"Please enter Talent’s Designation"}
