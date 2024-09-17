@@ -16,10 +16,10 @@ const Navbar = ({ fullName }) => {
 	const queryClient = useQueryClient();
 	const onLogoutHandler = async () => {
 		const res = await userDAO.logoutDAO();
-		queryClient.removeQueries();
-		window.location.reload()
+		queryClient.removeQueries();		
 		localStorage.clear();
-		if (res) navigation(UTSRoutes.LOGINROUTE);
+		// if (res) navigation(UTSRoutes.LOGINROUTE);	
+		window.location.reload()
 	};
 
 	// const getDashboardCountHandler = useCallback(async () => {
