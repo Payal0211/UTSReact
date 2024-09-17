@@ -1117,7 +1117,7 @@ function PreviewClientModal({
         centered
         open={isPreviewModal}
         onOk={() => setIsPreviewModal(false)}
-        onCancel={() => setIsPreviewModal(false)}
+        onCancel={() => {setIsPreviewModal(false);setEditEngagement(false);}}
         width={1080}
         footer={false}
         maskClosable={false}
