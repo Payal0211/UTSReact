@@ -21,6 +21,7 @@ import plusSkill from "../../../../assets/svg/plusSkill.svg";
 import PublishHRPopup from '../publishHRPopup/publishHRPopup';
 import DebrefCompanyDetails from '../editDebrieingHR/debrefCompanyDetails';
 import ReactQuill from 'react-quill';
+import { sanitizeLinks } from 'modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -1026,7 +1027,8 @@ const getParsingType = (isHaveJD,parseType) => {
 								value={watch('jobDescription')}
 								name="jobDescription"
 								onChange={(val) => {
-									let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+									let sanitizedContent = sanitizeLinks(val);
+									let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
 									setValue("jobDescription",_updatedVal)}}
 							/>
 							<input

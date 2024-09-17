@@ -10,6 +10,7 @@ import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HTTPStatusCode } from "constants/network";
 import { HttpStatusCode } from "axios";
 import ReactQuill from "react-quill";
+import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDetails,cultureDetails,companyDetails,setCompanyDetails,companyID,loadingDetails,cultureAndParksValue}) {
     const [controlledperk, setControlledperk] = useState([]);
@@ -213,7 +214,8 @@ const addnewYoutubeLink = (e) =>{
               }
               name="culture"
               onChange={(val) => {
-                let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                let sanitizedContent = sanitizeLinks(val);
+                let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                 setValue("culture", _updatedVal)}
               }
               // onChange={(val) => {

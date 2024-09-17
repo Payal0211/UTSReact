@@ -50,6 +50,7 @@ import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { v4 as uuidv4 } from 'uuid';
 import { encrypt } from 'modules/EncryptionDecryption/encryptiondescryption.js'; 
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 function PreviewClientModal({
   isPreviewModal,
@@ -1117,7 +1118,7 @@ function PreviewClientModal({
         centered
         open={isPreviewModal}
         onOk={() => setIsPreviewModal(false)}
-        onCancel={() => setIsPreviewModal(false)}
+        onCancel={() => {setIsPreviewModal(false);setEditEngagement(false);}}
         width={1080}
         footer={false}
         maskClosable={false}
@@ -1318,7 +1319,8 @@ function PreviewClientModal({
                             theme="snow"
                             value={isAboutUs}
                             onChange={(val) => {
-                              let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                              let sanitizedContent = sanitizeLinks(val);
+                              let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                               setIsAboutUs(_updatedVal)}}
                             className={previewClientStyle.reactQuillEdit}
                             required
@@ -1568,7 +1570,8 @@ function PreviewClientModal({
                                     additionalInformation
                                   }
                                   onChange={(val) => {
-                                    let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                    let sanitizedContent = sanitizeLinks(val);
+                                    let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                                     setAdditionInformation(_updatedVal)}}
                                   readOnly={isSelfFunded ? true : false}
                                   // modules={{ toolbar: false }}
@@ -1653,7 +1656,8 @@ function PreviewClientModal({
                                     theme="snow"
                                     value={isCulture}
                                     onChange={(val) => {
-                                      let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                      let sanitizedContent = sanitizeLinks(val);
+                                      let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                                       setIsCulture(_updatedVal)}}
                                     className={
                                       previewClientStyle.reactQuillEdit

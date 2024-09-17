@@ -42,6 +42,7 @@ import { NetworkInfo } from "constants/network";
 import confirm from "antd/es/modal/confirm";
 import HSContent from "constants/CommonEditorPreview/HSContent";
 
+
 // import "../../CompanyDetails/companyDetails.css";
 function PreviewHRModal({
   setViewPosition,
@@ -1340,10 +1341,23 @@ getSkillList();
 
   const getRolesCurrencyList = async () => {
     let res = await MasterDAO.getTalentsRoleRequestDAO();
-    let currencyresult = await MasterDAO.getCurrencyRequestDAO();
+    // let currencyresult = await MasterDAO.getCurrencyRequestDAO();
     if (res.statusCode === 200) {
       setRolesData(res.responseBody);
     }
+    // if (currencyresult.statusCode === 200) {
+    //   setCurrencyList(
+    //     currencyresult.responseBody.map((currency) => ({
+    //       value: currency.value,
+    //       label: currency.value,
+    //     }))
+    //   );
+    // }
+  };
+
+  const getCurrencyList = async () => {
+
+    let currencyresult = await MasterDAO.getCurrencyRequestDAO();
     if (currencyresult.statusCode === 200) {
       setCurrencyList(
         currencyresult.responseBody.map((currency) => ({
@@ -2050,6 +2064,7 @@ getSkillList();
                             <span className="editNewIcon"
                               onClick={() => {
                                 setisEditBudget(true);
+                                getCurrencyList();
                                 setEditBudget({
                                   ...editBudget,
                                   currency: jobPreview?.currency,
@@ -2529,7 +2544,8 @@ getSkillList();
                                     className="heightSize"
                                     value={editWhatWeOffer}
                                     onChange={(val) => {
-                                      let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                                      let sanitizedContent = sanitizeLinks(val);
+                                      let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                                       setEditWhatWeOffer(_updatedVal)
                                     }}
                                   />
@@ -2560,30 +2576,7 @@ getSkillList();
                                   </div>
                                 </>
                               ) : (
-                                <div>
-                                  {/* <ReactQuill
-                            theme="snow"                            
-                            value={editWhatWeOffer ? editWhatWeOffer : jobPreview?.jobDescription ? jobPreview?.jobDescription : `
-                            ${jobPreview?.roleOverviewDescription ? `<h3>Role Overview Description</h3>${jobPreview?.roleOverviewDescription}<br><br>` : ''}
-                            ${jobPreview?.rolesResponsibilities ? `<h3>Roles & Responsibilities</h3>${jobPreview?.rolesResponsibilities}<br><br>` : ''}
-                            ${jobPreview?.requirements ? `<h3>Requirements</h3>${jobPreview?.requirements}<br><br>` : ''}
-                            ${jobPreview?.whatweoffer ? `<h3>What We Offer</h3>${jobPreview?.whatweoffer}` : ''}
-                          `}
-                          // value={data}
-                            readOnly
-                            modules={{ toolbar: false }}
-                            className="reactQuillEdit"
-                            style={{
-                              border: "none !important",
-                            }}
-                          /> */}
-                                  {/* <div className="jobDescrition" dangerouslySetInnerHTML={{
-                                    __html: editWhatWeOffer ? editWhatWeOffer?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : jobPreview?.jobDescription ? jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : `
-                            ${jobPreview?.roleOverviewDescription ? `<h3>Role Overview Description</h3>${jobPreview?.roleOverviewDescription}<br><br>` : ''}
-                            ${jobPreview?.rolesResponsibilities ? `<h3>Roles & Responsibilities</h3>${jobPreview?.rolesResponsibilities}<br><br>` : ''}
-                            ${jobPreview?.requirements ? `<h3>Requirements</h3>${jobPreview?.requirements}<br><br>` : ''}
-                            ${jobPreview?.whatweoffer ? `<h3>What We Offer</h3>${jobPreview?.whatweoffer}` : ''}`
-                                  }} /> */}
+                                <div>                              
                                   <HSContent data={jobPreview?.jobDescription && jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim()} />
                                 </div>
                               )}
@@ -2706,17 +2699,7 @@ getSkillList();
                           </div>
                           <h6>About us <span className="editNewIcon" onClick={() => { setisAboutCompany(true); setAboutCompanyValue(basicDetails?.aboutCompany) }}><img src={EditnewIcon} /></span></h6>
                           {!isAboutCompany ?
-                            basicDetails?.aboutCompany ?
-                              // <ReactQuill
-                              //   theme="snow"
-                              //   value={basicDetails?.aboutCompany}  
-                              //   readOnly
-                              //   modules={{ toolbar: false }}    
-                              //   className="reactQuillEdit"             
-                              //   style={{
-                              //   border:"none !important",
-                              // }}                 
-                              // />: "NA" : 
+                            basicDetails?.aboutCompany ?                            
                               <div className="jobDescrition" dangerouslySetInnerHTML={{ __html: basicDetails?.aboutCompany }} /> : "NA" :
                             <>
                               <ReactQuill
@@ -2951,14 +2934,7 @@ getSkillList();
                                     fontWeight: "600",
                                     color: "#232323",
                                     marginBottom: "10px"
-                                  }}>Additional Information</span>
-                                  {/* <ReactQuill
-                                                style={{width:'100%'}}
-                                                value={fundingDetails[0]?.additionalInformation}
-                                                readOnly  
-                                                className="reactQuillEdit"
-                                                modules={{toolbar:false}}                                          
-                                              />    */}
+                                  }}>Additional Information</span>                                 
                                   <div className="jobDescrition" dangerouslySetInnerHTML={{ __html: fundingDetails[0]?.additionalInformation }} />
                                 </div>
                               </> :
@@ -2969,14 +2945,7 @@ getSkillList();
                           <h6>Culture
                             <span className="editNewIcon" onClick={() => { setIsCulture(true); setCulture(basicDetails?.culture) }}><img src={EditnewIcon} /></span>
                           </h6>
-                          {!isCulture &&
-                            // <ReactQuill 
-                            //   // theme="snow"
-                            //   value={basicDetails?.culture}
-                            //   readOnly
-                            //   modules={{ toolbar: false }}    
-                            //   className="reactQuillEdit"
-                            // /> 
+                          {!isCulture &&                            
                             <div className="jobDescrition" dangerouslySetInnerHTML={{ __html: basicDetails?.culture }} />
                           }
                           {isCulture &&
@@ -3402,17 +3371,8 @@ getSkillList();
                             </div>
                           </div>
                           :
-                          <div className="company-benefits">
-                            {/* <ReactQuill
-                                          theme="snow"
-                                          className="reactQuillEdit" 
-                                          value={jobPreview?.prerequisites}
-                                          onChange={(e) => setPrerequisites(e)}
-                                          modules={{ toolbar: false }}
-                                          readOnly                                      
-                                        />   */}
-                            <div className="jobDescrition prerequisites" dangerouslySetInnerHTML={{ __html: jobPreview?.prerequisites ? jobPreview?.prerequisites : "NA" }} />
-                            {/* <h3>{jobPreview?.prerequisites}</h3> */}
+                          <div className="company-benefits">                         
+                            <div className="jobDescrition prerequisites" dangerouslySetInnerHTML={{ __html: jobPreview?.prerequisites ? jobPreview?.prerequisites : "NA" }} />                            
                           </div>
                         }
                       </div>
@@ -3596,8 +3556,20 @@ getSkillList();
                                                 </li> 
 
                                                 <li>
-                                                    <div className="form-group justifyCenter">
-                                                        <i className="fieldIcon"><img src={PhoneIcon} alt="phone-icon" /></i>
+                                                    <div className="phonConturyWrap previewHRPhoneNoField" >
+                                                    <PhoneInput
+                                                        placeholder="Enter number"
+                                                        key={'phoneNumber'}
+                                                        value={Val?.contactNo}
+                                                        onChange={value => {
+                                                          handleContactNoChange(index, value)
+                                                        
+                                                        }}
+                                                        country={countryCodeData}
+                                                        disableSearchIcon={true}
+                                                        enableSearch={true}
+                                                        />
+                                                        {/* <i className="fieldIcon"><img src={PhoneIcon} alt="phone-icon" /></i>
                                                         <input type="text" className="form-control" placeholder="Enter mobile number" value={Val?.contactNo} maxLength={10}
                                                         onChange={(e) => handleContactNoChange(index, e.target.value)}
                                                         onBlur={(e) => {
@@ -3611,7 +3583,7 @@ getSkillList();
                                                               return message.error('Invalid phone number. Must be 10 digits and start with 6-9.');
                                                             }
                                                         }}
-                                                        />
+                                                        /> */}
                                                         <Checkbox name="userShow" disabled={Val?.contactNo ? false : true} checked={Val?.contactNo?Val?.showContactNumberToTalent:false} onChange={(e) => handleCheckboxChange(index, 'showContactNumberToTalent', e.target.checked)}>Show mobile number to candidates</Checkbox>
                                                     </div>
                                                 </li>
@@ -5116,7 +5088,28 @@ getSkillList();
                 <div className="form-group">
                   <label>{pocDetails?.isEdit ? "Edit" :"Add"} mobile number</label>                
                   <div className="phonConturyWrap">
-                  <input type="text" className="form-control" placeholder="Edit mobile number" value={pocDetails?.contactNo} maxLength={10}
+                  <PhoneInput
+                                        placeholder="Enter number"
+                                        key={'phoneNumber'}
+                                        value={pocDetails?.contactNo}
+                                        onChange={value => {
+                                          if(value ==""){
+                                            setPOCDetails({...pocDetails,showContactNumberToTalent: false})
+                                          }
+                                          setPOCDetails({...pocDetails,contactNo:value})    
+                                          // const regex = /^[0-9]\d*$/;
+                                          // if (regex.test(value) || value === "") {
+                                          //   if(value ==""){
+                                          //     setPOCDetails({...pocDetails,showContactNumberToTalent: false})
+                                          //   }
+                                          //   setPOCDetails({...pocDetails,contactNo:value})                          
+                                          // }  
+                                        }}
+                                        country={countryCodeData}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
+                  {/* <input type="text" className="form-control" placeholder="Edit mobile number" value={pocDetails?.contactNo} maxLength={10}
                     onChange={(e) => {
                       const regex = /^[0-9]\d*$/;
                           if (regex.test(e.target.value) || e.target.value === "") {
@@ -5126,7 +5119,7 @@ getSkillList();
                             setPOCDetails({...pocDetails,contactNo:e.target.value})                          
                           }  
                     }}
-                  />    
+                  />     */}
                     <Checkbox name="userShow" disabled={pocDetails?.contactNo ==""?true:false}checked={pocDetails?.contactNo?pocDetails?.showContactNumberToTalent:false} onChange={(e) =>                       
                       setPOCDetails({...pocDetails,showContactNumberToTalent: e.target.checked})                      
                       }>Show mobile number to candidates</Checkbox>              

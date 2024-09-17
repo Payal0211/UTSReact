@@ -46,13 +46,15 @@ import plusSkill from "assets/svg/plusSkill.svg";
 import DOMPurify from "dompurify";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import ReactQuill from "react-quill";
-import { isEmptyOrWhitespace } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
+import { isEmptyOrWhitespace,convertCurrency,sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 import infoSmallIcon from "assets/svg/infoSmallIcon.svg";
 import MailIcon from "assets/svg/mailIcon.svg";
 import PhoneIcon from "assets/svg/phoneIcon.svg";
 import DeleteCircleIcon from "assets/svg/deleteCircleIcon.svg";
 import EditCircleIcon from "assets/svg/editCircleIcon.svg";
 import debounce from "lodash.debounce";
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -1270,31 +1272,31 @@ const EditHRFields = ({
 
       if (companyType.id === 2) {
 
-        if (jobPostUsersDetails?.length){
-          let allValid = true
-          jobPostUsersDetails.forEach((user) =>{
-            if(user.contactNo){
-              const regex = /^[6-9]\d{9}$/;
-              console.log('validate Contact no.',!regex.test(user.contactNo))
-              if (!regex.test(user.contactNo)) {  
-                message.error('Invalid phone number. Must be 10 digits and start with 6-9.');  
-                setIsSavedLoading(false);  
-                 console.log('validate Contact no.',!regex.test(user.contactNo))
-                 allValid = false
-              }
+        // if (jobPostUsersDetails?.length){
+        //   let allValid = true
+        //   jobPostUsersDetails.forEach((user) =>{
+        //     if(user.contactNo){
+        //       const regex = /^[6-9]\d{9}$/;
+        //       console.log('validate Contact no.',!regex.test(user.contactNo))
+        //       if (!regex.test(user.contactNo)) {  
+        //         message.error('Invalid phone number. Must be 10 digits and start with 6-9.');  
+        //         setIsSavedLoading(false);  
+        //          console.log('validate Contact no.',!regex.test(user.contactNo))
+        //          allValid = false
+        //       }
             
-            }
-          })
+        //     }
+        //   })
 
-          if(allValid === false){
-            return
-          }
-        }
+        //   if(allValid === false){
+        //     return
+        //   }
+        // }
 
         hrFormDetails.showHRPOCDetailsToTalents = showHRPOCDetailsToTalents;
-        hrFormDetails.hrpocUserID = watch("jobPostUsers")
-          ? watch("jobPostUsers")?.map((item) => item.id.toString())
-          : [];
+        // hrFormDetails.hrpocUserID = watch("jobPostUsers")
+        //   ? watch("jobPostUsers")?.map((item) => item.id.toString())
+        //   : [];
         hrFormDetails.hrpocUserDetails = jobPostUsersDetails
           ? jobPostUsersDetails.map((val) => ({
               pocUserID: val.hrwiseContactId,
@@ -1306,7 +1308,7 @@ const EditHRFields = ({
         hrFormDetails.jobTypeId = watch("availability")?.id;
       } else {
         hrFormDetails.showHRPOCDetailsToTalents = null;
-        hrFormDetails.hrpocUserID = [];
+        // hrFormDetails.hrpocUserID = [];
         hrFormDetails.hrpocUserDetails = [];
         hrFormDetails.jobTypeId = 0;
       }
@@ -2607,6 +2609,32 @@ const EditHRFields = ({
     }
   };
 
+  const checkBudgetValue = async (value,oldCurrency) => {        
+    const response = await fetch(
+        `https://open.er-api.com/v6/latest/USD`
+    );
+    const data = await response?.json();
+    const rate = data?.rates[value];
+
+    if(watch("budget")?.value === "1"){
+      if(watch("adhocBudgetCost")){
+         let convertedCost = convertCurrency(oldCurrency, value, watch("adhocBudgetCost"), data?.rates);
+         setValue("adhocBudgetCost",convertedCost)
+      }
+       
+    }
+
+    if(watch("budget")?.value === "2"){
+      if(watch("minimumBudget") && watch("maximumBudget")){
+        let minConverted = convertCurrency(oldCurrency, value, watch("minimumBudget"), data?.rates);
+        let maxConverted = convertCurrency(oldCurrency, value, watch("maximumBudget"), data?.rates);
+        setValue('minimumBudget',minConverted)
+        setValue('maximumBudget',maxConverted)
+      }
+     
+    }
+};
+
   return (
     <>
       <div className={HRFieldStyle.hrFieldContainer}>
@@ -3417,7 +3445,11 @@ const EditHRFields = ({
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         controlledValue={controlledCurrencyValue}
-                        setControlledValue={setControlledCurrencyValue}
+                        setControlledValue={val => {setControlledCurrencyValue(prev=>{
+                          checkBudgetValue(val,prev)
+                          return val
+                        })
+                        }}
                         isControlled={true}
                         mode={"id/value"}
                         searchable={true}
@@ -4641,8 +4673,10 @@ const EditHRFields = ({
                         value={watch("parametersHighlight")}
                         name="parametersHighlight"
                         onChange={(val) => {
-                          let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                          let sanitizedContent = sanitizeLinks(val);
+                          let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                           setValue("parametersHighlight", _updatedVal)}}
+
                       />
                       {/* <HRInputField
                       register={register}
@@ -4891,8 +4925,23 @@ who have worked in scaled start ups."
                                 </li>
 
                                 <li>
-                                  <div className="form-group justifyCenter">
-                                    <i className="fieldIcon">
+                                  <div className="phonConturyWrap HRFormPhoneNo">                                 
+                                    <PhoneInput
+                                        placeholder="Enter number"
+                                        key={'phoneNumber'}
+                                        value={Val?.contactNo}
+                                        onChange={(value,__) => {
+                                          handleContactNoChange(
+                                            index,
+                                            value
+                                          )  
+                                        }}
+                                        country={'in'}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
+                                  
+                                    {/* <i className="fieldIcon">
                                       <img src={PhoneIcon} alt="phone-icon" />
                                     </i>
                                     <input
@@ -4918,7 +4967,7 @@ who have worked in scaled start ups."
                                             return message.error('Invalid phone number. Must be 10 digits and start with 6-9.');
                                           }
                                       }}
-                                    />
+                                    /> */}
                                     <Checkbox
                                       name="userShow"
                                       checked={Val?.contactNo?Val?.showContactNumberToTalent:false}

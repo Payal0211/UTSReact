@@ -8,6 +8,7 @@ import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HttpStatusCode } from "axios";
 import TextEditor from "shared/components/textEditor/textEditor";
 import ReactQuill from "react-quill";
+import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 
 const defaultFunding = {
@@ -304,7 +305,8 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
               value={watch(`fundingDetails.[${index}].additionalInformation`)}
               name={`fundingDetails.[${index}].additionalInformation`}
               onChange={(val) => {
-                let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                let sanitizedContent = sanitizeLinks(val);
+                let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                 setValue(`fundingDetails.[${index}].additionalInformation`,_updatedVal)
                 // setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
               }}

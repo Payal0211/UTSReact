@@ -11,6 +11,7 @@ import { allCompanyRequestDAO } from "core/company/companyDAO";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import spinGif from "assets/gif/RefreshLoader.gif";
 import ReactQuill from "react-quill";
+import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 function CompanySection({
   companyID,
@@ -568,7 +569,7 @@ function CompanySection({
                     <HRInputField
                       register={register}
                       // errors={errors}
-                      label="Headquaters"
+                      label="Headquarters"
                       name="headquaters"
                       type={InputType.TEXT}
                       // validationSchema={{
@@ -606,7 +607,8 @@ function CompanySection({
                       }
                       name="aboutCompany"
                       onChange={(val) => {
-                        let _updatedVal = val?.replace(/<img\b[^>]*>/gi, '');
+                        let sanitizedContent = sanitizeLinks(val);
+                        let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                         setValue("aboutCompany", _updatedVal)}}
                     />
                     {aboutCompanyError && (
