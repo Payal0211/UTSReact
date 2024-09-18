@@ -51,11 +51,11 @@ function App() {
 		<QueryClientProvider client={queryClient}>
 			<Suspense>
 				<Routes>
-					{!isAuthenticatedRoute() && <Route
+					<Route
 						exact
 						path={UTSRoutes.LOGINROUTE}
 						element={<Login />}
-					/>}
+					/>
 
 					{isAuthenticatedRoute() && userData?.LoggedInUserTypeID && <Route
 						path={UTSRoutes.HOMEROUTE}
