@@ -1320,8 +1320,8 @@ function PreviewClientModal({
                             value={isAboutUs}
                             onChange={(val) => {
                               let sanitizedContent = sanitizeLinks(val);
-                              let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                              setIsAboutUs(_updatedVal)}}
+                              // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                              setIsAboutUs(sanitizedContent)}}
                             className={previewClientStyle.reactQuillEdit}
                             required
                           />
@@ -1571,8 +1571,8 @@ function PreviewClientModal({
                                   }
                                   onChange={(val) => {
                                     let sanitizedContent = sanitizeLinks(val);
-                                    let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                                    setAdditionInformation(_updatedVal)}}
+                                    // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                                    setAdditionInformation(sanitizedContent)}}
                                   readOnly={isSelfFunded ? true : false}
                                   // modules={{ toolbar: false }}
                                   className={
@@ -1657,8 +1657,8 @@ function PreviewClientModal({
                                     value={isCulture}
                                     onChange={(val) => {
                                       let sanitizedContent = sanitizeLinks(val);
-                                      let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                                      setIsCulture(_updatedVal)}}
+                                      // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                                      setIsCulture(sanitizedContent)}}
                                     className={
                                       previewClientStyle.reactQuillEdit
                                     }

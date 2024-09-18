@@ -1988,8 +1988,8 @@ const calcelMember = () =>{
                         name="aboutCompany"
                         onChange={(val) => {
                           let sanitizedContent = sanitizeLinks(val);
-                          let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                          setValue("aboutCompany", _updatedVal)}}
+                          // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                          setValue("aboutCompany", sanitizedContent)}}
                         errorMsg={"Please enter Talent’s Designation"}
                       />
                     {errors?.aboutCompany && (
@@ -2016,8 +2016,8 @@ const calcelMember = () =>{
                         name="aboutCompany"
                         onChange={(val) => {
                           let sanitizedContent = sanitizeLinks(val);
-                          let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                          setValue("aboutCompany", _updatedVal)}
+                          // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                          setValue("aboutCompany", sanitizedContent)}
                         }
                         errorMsg={"Please enter Talent’s Designation"}
                       />
