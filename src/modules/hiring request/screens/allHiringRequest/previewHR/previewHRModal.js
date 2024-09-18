@@ -247,7 +247,7 @@ function PreviewHRModal({
     if(jobPreview?.isTransparentPricing === true){
       setTransparentEngType([])
     }else{
-      getTransparentEngType(hrIdforPreview)
+      hrIdforPreview && getTransparentEngType(hrIdforPreview)
     }
   },[hrIdforPreview,jobPreview])
   
