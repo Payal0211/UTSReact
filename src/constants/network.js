@@ -335,6 +335,7 @@ export class HiringRequestsAPI {
 	static GET_ACTION_UPDATES = 'GetUpdateHRDetails'
 	static CLOSE_ACTION_History = 'GetHRCloseActionHistory'
 	static DELETE_TEST_HR = 'DeleteTestHR'
+	static HRDETAILSFORSHORTLISTED ="HrDetailsForShortlisted";
 	static GET_SALES_USER_WITH_HEAD_AFTER_HRCREATE = "GetSalesUserWithHeadAfterHRCreate";
 	static CLONE_HR_DEMO_ACCOUNT = "CloneHRDemoAccount";
 	static GET_HR_ACTIVITY_PAGINATION = "GetHRActivityUsingPagination";
