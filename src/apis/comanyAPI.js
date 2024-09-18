@@ -132,6 +132,22 @@ export const CompanyAPI = {
 			return errorDebug(error, 'CompanyAPI.gethrPreviewDetails');
 		}
 	},
+	createWhatsAppGroup:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			CompanysAPI.CREATE_WHATSAPP_GROUP ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'CompanyAPI.createWhatsAppGroup');
+		}
+	},
 	updateHrPreviewDetails:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

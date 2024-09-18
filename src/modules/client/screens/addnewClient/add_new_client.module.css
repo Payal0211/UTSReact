@@ -12,6 +12,23 @@
     margin: 0 auto;
 } */
 
+.btnPrimaryResendBtn{
+  background: var(--color-sunlight);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none;
+  color: var(--uplers-black);
+  cursor: pointer;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 17px;
+  margin-top: 30px;
+  outline: none;
+  padding: 12px 28px;
+}
+
 .addNewContainer {
   padding: 24px 40px;
 }
