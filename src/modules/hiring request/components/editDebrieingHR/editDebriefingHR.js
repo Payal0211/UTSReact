@@ -741,8 +741,8 @@ const checkValChnage = () => {
 								name="jobDescription"
 								onChange={(val) => {
 									let sanitizedContent = sanitizeLinks(val);
-									let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-									setValue("jobDescription",_updatedVal)}}
+									// let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+									setValue("jobDescription",sanitizedContent)}}
 							/>
 							<input
 								type="hidden"

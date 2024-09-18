@@ -306,8 +306,8 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
               name={`fundingDetails.[${index}].additionalInformation`}
               onChange={(val) => {
                 let sanitizedContent = sanitizeLinks(val);
-                let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                setValue(`fundingDetails.[${index}].additionalInformation`,_updatedVal)
+                // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                setValue(`fundingDetails.[${index}].additionalInformation`,sanitizedContent)
                 // setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
               }}
             />
