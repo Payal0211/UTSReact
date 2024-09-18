@@ -15,6 +15,7 @@ import redArrowRightImage from "assets/svg/redArrowRight.svg";
 import UTSRoutes from 'constants/routes';
 import { Link } from "react-router-dom";
 import Star from 'assets/svg/selectStarFill.svg';
+import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 const creditColumn = [
   {
@@ -133,6 +134,7 @@ export default function ViewCompanyDetails() {
   const { CompanyID } = useParams();
   const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [companyDetails, setCompanyDetails] = useState({});
+  const [companyPreviewData,setCompanyDetailsPreview] = useState({})
   const [contactDetails, setContactDetails] = useState([]);
   const [contactPoc, setContactPoc] = useState([]);
   const [companyContract, setCompanyContract] = useState({});
@@ -143,6 +145,24 @@ export default function ViewCompanyDetails() {
   const [jobpostDraft, setModaljobpostDraft] = useState(false);
   const [guid,setGuid] = useState('');
   const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
+
+  const groupMemberColumns = [
+    {
+      title: "Name (Email)",
+      dataIndex: "name",
+      key: "name",
+      align: "left",
+    },
+    {
+      title: "Admin",
+      dataIndex: "isAdmin",
+      key: "isAdmin",
+      align: "center",
+      render: (val) => {
+        return val ? "YES" : "NO";
+      },
+    },
+  ]
 
 
   const getCompanyDetails = async (ID) => {
@@ -185,11 +205,40 @@ export default function ViewCompanyDetails() {
     }
   };
 
+  const getDetails = async (compID) => {
+    setIsSavedLoading(true);
+    const result = await allCompanyRequestDAO.getCompanyDetailDAO(compID);
+
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      const data = result?.responseBody;
+      setCompanyDetailsPreview(data)
+      setIsSavedLoading(false);
+    }
+    setIsSavedLoading(false);
+  };
+
   useEffect(() => {
-    getCompanyDetails(CompanyID);
+    // getCompanyDetails(CompanyID);
+    getDetails(CompanyID)
     getSalesMan();
     getCreditUtilization(CompanyID);
   }, [CompanyID]);
+
+  const CreateWhatsAppGroup = async ()=>{
+    setIsSavedLoading(true);
+    const payload = {
+      "companyID": +CompanyID,
+      "companyName": companyPreviewData?.basicDetails?.companyName,
+      "pocUserID": companyPreviewData?.pocUserDetailsEdit?.pocUserID
+    }
+
+    let result = await allCompanyRequestDAO.createWhatsAppGroupDAO(payload)
+
+    if(result?.statusCode === 200){
+      setCompanyDetailsPreview(prev => ({...prev,whatsappDetails:result.responseBody}))
+    }
+    setIsSavedLoading(false);
+  }
 
   const CompDetails = () => {
     return (
@@ -218,7 +267,7 @@ export default function ViewCompanyDetails() {
                     textAlign: "center",
                   }}
                 >
-                  {!companyDetails?.companyLogo ? (
+                  {!companyPreviewData?.basicDetails?.companyLogo ? (
                     <Avatar
                       style={{
                         width: "100%",
@@ -228,7 +277,7 @@ export default function ViewCompanyDetails() {
                       }}
                       size="large"
                     >
-                      {companyDetails?.companyName
+                      {companyPreviewData?.basicDetails?.companyName
                         ?.substring(0, 2)
                         .toUpperCase()}
                     </Avatar>
@@ -243,7 +292,7 @@ export default function ViewCompanyDetails() {
                         NetworkInfo.PROTOCOL +
                         NetworkInfo.DOMAIN +
                         "Media/CompanyLogo/" +
-                        companyDetails?.companyLogo
+                        companyPreviewData?.basicDetails?.companyLogo
                       }
                       alt="preview"
                     />
@@ -259,21 +308,23 @@ export default function ViewCompanyDetails() {
                         <ul>
                           <li>
                             <span>Company Name:</span>{" "}
-                            {companyDetails?.companyName ?? "NA"}
+                            {/* {companyDetails?.companyName ?? "NA"} */}
+                            {companyPreviewData?.basicDetails?.companyName ?? "NA"}
                           </li>
-                          <li>
+                          {/* <li>
                             <span>Company Location:</span>{" "}
                             {companyDetails?.location
                               ? companyDetails?.location
                               : "NA"}
-                          </li>
+                          </li> */}
                           <li>
                             {/* <span>Client Model:</span>{" "} */}
                             <Checkbox
                               value={2}
                               // onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);
                               // setIsChecked({...IsChecked,isPostaJob:false,isProfileView:false})}}
-                              checked={companyDetails?.companyTypeID}
+                              // checked={companyDetails?.companyTypeID}
+                              checked={companyPreviewData?.engagementDetails?.companyTypeID}
                               disabled={true}
                             >
                               Pay Per Credit
@@ -281,13 +332,14 @@ export default function ViewCompanyDetails() {
                             <Checkbox
                               value={1}
                               // onChange={(e)=>{setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);setTypeOfPricing(null)}}
-                              checked={companyDetails?.anotherCompanyTypeID}
+                              // checked={companyDetails?.anotherCompanyTypeID}
+                              checked={companyPreviewData?.engagementDetails?.anotherCompanyTypeID}
                               disabled={true}
                             >
                               Pay Per Hire
                             </Checkbox>
                           </li>
-                          {companyDetails?.companyTypeID !== 0 &&
+                          {/* {companyDetails?.companyTypeID !== 0 &&
                             companyDetails?.companyTypeID !== null && (
                               <li>
                                 <span>Currency:</span>{" "}
@@ -295,14 +347,14 @@ export default function ViewCompanyDetails() {
                                   ? companyDetails?.creditCurrency
                                   : "NA"}
                               </li>
-                            )}
+                            )} */}
 
-                          {companyDetails?.companyTypeID !== 0 &&
-                            companyDetails?.companyTypeID !== null && (
+                          {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
+                            companyPreviewData?.engagementDetails?.companyTypeID !== null && (
                               <li>
                                 <Checkbox
                                   name="IsPostaJob"
-                                  checked={companyDetails?.isPostaJob}
+                                  checked={companyPreviewData?.engagementDetails?.isPostaJob}
                                   disabled={true}
                                 >
                                   Credit per post a job.
@@ -317,36 +369,78 @@ export default function ViewCompanyDetails() {
                               </li>
                             )}
 
-                          {companyDetails?.companyTypeID !== 0 &&
-                            companyDetails?.companyTypeID !== null &&
-                            companyDetails?.isPostaJob && (
+                          {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
+                            companyPreviewData?.engagementDetails?.companyTypeID !== null && (
+                              <>
+                                <li>
+                                  <span>Per credit amount with currency:</span>{" "}
+                                  {/* {companyDetails?.creditAmount
+                                    ? `${companyDetails?.creditAmount} ${companyDetails?.creditCurrency}`
+                                    : "NA"} */}
+                                    {companyPreviewData?.engagementDetails?.creditAmount
+                                    ? `${companyPreviewData?.engagementDetails?.creditAmount} ${companyPreviewData?.engagementDetails?.creditCurrency}`
+                                    : "NA"}
+                                </li>
+                                <li>
+                                  <span>Credit Balance:</span>{" "}
+                                  {/* {companyDetails?.jpCreditBalance
+                                    ? companyDetails?.jpCreditBalance
+                                    : "NA"} */}
+                                    {companyPreviewData?.engagementDetails?.totalCreditBalance ?? 'NA'}
+                                </li>
+
+                                {companyPreviewData?.engagementDetails?.isProfileView && (
+                                  <>
+                                    {" "}
+                                    <li>
+                                      <span>Vetted Profile Credit:</span>{" "}
+                                      {/* {companyDetails?.vettedProfileViewCredit} */}
+                                      {companyPreviewData?.engagementDetails?.vettedProfileViewCredit}
+                                    </li>
+                                    <li>
+                                      <span>Non Vetted Profile Credit:</span>{" "}
+                                      {/* {
+                                        companyDetails?.nonVettedProfileViewCredit
+                                      } */}
+                                        {
+                                        companyPreviewData?.engagementDetails?.nonVettedProfileViewCredit
+                                      }
+                                    </li>
+                                  </>
+                                )}
+                              </>
+                            )}
+
+                          {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
+                            companyPreviewData?.engagementDetails?.companyTypeID !== null &&
+                            companyPreviewData?.engagementDetails?.isPostaJob && (
                               <li>
                                 <span>Job post credit:</span>{" "}
-                                {companyDetails?.jobPostCredit
+                                {/* {companyDetails?.jobPostCredit
                                   ? companyDetails?.jobPostCredit
-                                  : "NA"}
+                                  : "NA"} */}
+                                {companyPreviewData?.engagementDetails?.jobPostCredit ?? 'NA'}
                               </li>
                             )}
 
-                            {!(companyDetails?.companyTypeID === 2 && companyDetails?.anotherCompanyTypeID === 0) && companyDetails?.isTransparentPricing !== null && <li>
+                            {!(companyPreviewData?.engagementDetails?.companyTypeID === 2 && companyPreviewData?.engagementDetails?.anotherCompanyTypeID === 0) && companyPreviewData?.engagementDetails?.isTransparentPricing !== null && <li>
                             <span>Type Of Pricing:</span>{" "}
-                            {companyDetails?.isTransparentPricing
+                            {/* {companyDetails?.isTransparentPricing
                               ? "Transparent Pricing"
-                              : "Non Transparent Pricing"}
+                              : "Non Transparent Pricing"} */}
+                              {companyPreviewData?.engagementDetails?.isTransparentPricing === true
+                              ? "Transparent Pricing"
+                              : companyPreviewData?.engagementDetails?.isTransparentPricing === false ? "Non Transparent Pricing" : "NA"}
                           </li>}
                           
-                          <li>
-                            <span>Company Address:</span>{" "}
-                            {companyDetails?.address
-                              ? companyDetails?.address
-                              : "NA"}
-                          </li>
+                        
 
                           <li>
-                            <span>Phone Number:</span>{" "}
-                            {companyDetails?.phone
+                            <span>Uplers's Salesperson:</span>{" "}
+                            {/* {companyDetails?.phone
                               ? companyDetails?.phone
-                              : "NA"}
+                              : "NA"} */}
+                              {companyPreviewData?.pocUserDetailsEdit?.pocName ?? "NA"}
                           </li>
                         </ul>
                       </div>
@@ -356,76 +450,70 @@ export default function ViewCompanyDetails() {
                         <ul>
                           <li>
                             <span>Company URL:</span>{" "}
-                            {companyDetails?.website ? (
+                            {companyPreviewData?.basicDetails?.website ? (
                               <a
-                                href={"//" + companyDetails?.website}
+                                href={"//" + companyPreviewData?.basicDetails?.website}
                                 target="_blank"
                               >
-                                {companyDetails?.website}
+                                {/* {companyDetails?.website} */}
+                                {companyPreviewData?.basicDetails?.website}
                               </a>
                             ) : (
                               "NA"
                             )}
                           </li>
-                          <li>
-                            <span>Company Size:</span>{" "}
-                            {companyDetails?.companySize ?? "NA"}
-                          </li>
-                          {companyDetails?.companyTypeID !== 0 &&
-                            companyDetails?.companyTypeID !== null && (
-                              <>
-                                <li>
-                                  <span>Per credit amount:</span>{" "}
-                                  {companyDetails?.creditAmount
-                                    ? companyDetails?.creditAmount
-                                    : "NA"}
-                                </li>
-                                <li>
-                                  <span>Remaining Credit:</span>{" "}
-                                  {companyDetails?.jpCreditBalance
-                                    ? companyDetails?.jpCreditBalance
-                                    : "NA"}
-                                </li>
-
-                                {companyDetails?.isProfileView && (
-                                  <>
-                                    {" "}
-                                    <li>
-                                      <span>Vetted Profile Credit:</span>{" "}
-                                      {companyDetails?.vettedProfileViewCredit}
-                                    </li>
-                                    <li>
-                                      <span>Non Vetted Profile Credit:</span>{" "}
-                                      {
-                                        companyDetails?.nonVettedProfileViewCredit
-                                      }
-                                    </li>
-                                  </>
-                                )}
-                              </>
-                            )}
-
                           <li>
                             <span>Linkedin Profile:</span>{" "}
-                            {companyDetails?.linkedInProfile ? (
-                              <a href={companyDetails?.link}>
-                                {companyDetails?.linkedInProfile}
+                            {companyPreviewData?.basicDetails?.linkedInProfile ? (
+                              <a href={companyPreviewData?.basicDetails?.linkedInProfile}>
+                                {companyPreviewData?.basicDetails?.linkedInProfile}
                               </a>
                             ) : (
                               "NA"
                             )}
                           </li>
                           <li>
+                            <span>Team Size:</span>{" "}
+                            {companyPreviewData?.basicDetails?.companySize ?? "NA"}
+                          </li>
+                        
+                          {/* <li>
+                            <span>Company Address:</span>{" "}
+                            {companyDetails?.address
+                              ? companyDetails?.address
+                              : "NA"}
+                          </li> */}
+                          <li>
+                            <span>Headquarters:</span>{" "}
+                            {companyPreviewData?.basicDetails?.headquaters
+                              ? companyPreviewData?.basicDetails?.headquaters
+                              : "NA"}
+                          </li>
+
+                        {companyPreviewData?.showWhatsappCTA && <li>
+                          <button
+                          type="submit"
+                          onClick={() => {
+                            CreateWhatsAppGroup()
+                          }}
+                          className={AddNewClientStyle.btnPrimaryResendBtn}
+                        >
+                          Create Whatsapp Group 
+                        </button>
+                        </li> }
+
+                          {/* <li>
                             <span>Lead Source:</span>{" "}
                             {companyDetails?.leadType
                               ? companyDetails?.leadType
                               : "NA"}
-                          </li>
+                          </li> */}
                         </ul>
                       </div>
                     </div>
                   </div>
                 </div>
+               
                 <div
                   className={AddNewClientStyle.viewHRDetailsBoxWrap}
                   style={{ marginTop: "10px" }}
@@ -435,11 +523,12 @@ export default function ViewCompanyDetails() {
                       <div className={AddNewClientStyle.colLg12}>
                         <ul>
                           <li>
-                            <span>About Company:</span>{" "}
-                            {companyDetails?.aboutCompanyDesc ? (
+                            <span style={{marginBottom:'30px'}}>About Company:</span>{" "}
+                            {companyPreviewData?.basicDetails?.aboutCompany ? (
                               <div
+                              style={{marginTop:'10px'}}
                                 dangerouslySetInnerHTML={{
-                                  __html: companyDetails?.aboutCompanyDesc,
+                                  __html: companyPreviewData?.basicDetails?.aboutCompany,
                                 }}
                               />
                             ) : (
@@ -455,6 +544,70 @@ export default function ViewCompanyDetails() {
             )}
           </div>
         </div>
+
+        { companyPreviewData?.whatsappDetails?.length > 0 &&    <div className={AddNewClientStyle.viewHRDetailsItem}>
+          <div className={AddNewClientStyle.viewHRLeftDetails}>
+            <h2>Whatsapp Details</h2>
+          </div>
+          <div className={AddNewClientStyle.viewHRRightDetails}>
+          {isSavedLoading ? (
+              <Skeleton active />
+            ): <div
+            className={AddNewClientStyle.viewHRDetailsBoxWrap}
+            style={{ marginTop: "10px" }}
+          >
+            
+              <div className={AddNewClientStyle.row}>
+              <div className={AddNewClientStyle.viewHRDetailsBox} style={{width:'100%'}}>
+                <div className={AddNewClientStyle.colLg12}>
+                  <ul>
+                  <li>
+                      <span style={{marginBottom:'30px'}}>Group Name :</span>{" "}
+                      {companyPreviewData?.whatsappDetails[0]?.groupName ? companyPreviewData?.whatsappDetails[0]?.groupName : (
+                        "NA"
+                      )}
+                    </li>
+
+                    <li>
+                      <span style={{marginBottom:'30px'}}>Group Created By :</span>{" "}
+                      {companyPreviewData?.whatsappDetails[0]?.groupCreatedBy ? companyPreviewData?.whatsappDetails[0]?.groupCreatedBy : (
+                        "NA"
+                      )}
+                    </li>
+
+                    <li>
+                      <span style={{marginBottom:'30px'}}>Group Creation Date :</span>{" "}
+                      {companyPreviewData?.whatsappDetails[0]?.groupCreatedDate ? companyPreviewData?.whatsappDetails[0]?.groupCreatedDate : (
+                        "NA"
+                      )}
+                    </li>
+
+                    <li>
+                      <span style={{marginBottom:'30px'}}>Group Members :</span>{" "}
+                      <Table 
+                   columns={groupMemberColumns}
+                   bordered={false}
+                   dataSource={
+                    companyPreviewData?.whatsappDetails?.map(val=> ({name: val.groupMember, isAdmin: val.isAdmin}))
+                   }
+                   pagination={false}
+                  />
+                    </li>
+                  </ul>
+
+                
+                </div>
+             
+              </div>
+            
+            </div>
+            
+          </div> }
+         
+        
+                </div>
+        </div> }
+      
 
         <div className={AddNewClientStyle.viewHRDetailsItem}>
           <div className={AddNewClientStyle.viewHRLeftDetails}>
@@ -501,7 +654,7 @@ alt="preview"
             {isSavedLoading ? (
               <Skeleton active />
             ) : (
-              contactDetails?.map((contact, index) => (
+              companyPreviewData?.contactDetails?.map((contact, index) => (
                 <div
                   className={AddNewClientStyle.viewHRDetailsBoxWrap}
                   key={contact?.fullName}
@@ -513,15 +666,15 @@ alt="preview"
                       <div className={AddNewClientStyle.viewHRDetailsBox}>
                         <ul>
                           <li>
-                            <span>Client Full Name:</span>{" "}
+                            <span>Full Name:</span>{" "}
                             {contact?.fullName ? contact?.fullName : "NA"}
                           </li>
                           <li>
-                            <span>Client's Phone Number:</span>{" "}
+                            <span>Phone Number:</span>{" "}
                             {contact?.contactNo ? contact?.contactNo : "NA"}
                           </li>
                           <li>
-                            <span>Client Linkedin Profile:</span>{" "}
+                            <span>Linkedin Profile:</span>{" "}
                             {contact?.linkedIn ? contact?.linkedIn : "NA"}
                           </li>
                         </ul>
@@ -531,7 +684,7 @@ alt="preview"
                       <div className={AddNewClientStyle.viewHRDetailsBox}>
                         <ul>
                           <li>
-                            <span>Client Email ID:</span>{" "}
+                            <span>Email ID:</span>{" "}
                             {contact?.emailID ? contact?.emailID : "NA"}
                           </li>
                           <li>
@@ -548,7 +701,7 @@ alt="preview"
           </div>
         </div>
 
-        <div className={AddNewClientStyle.viewHRDetailsItem}>
+        {/* <div className={AddNewClientStyle.viewHRDetailsItem}>
           <div className={AddNewClientStyle.viewHRLeftDetails}>
             <h2>Legal Information</h2>
           </div>
@@ -573,7 +726,7 @@ alt="preview"
 <span>Client's Phone Number:</span>{" "}
 {contact?.contactNo ? contact?.contactNo :
 "NA"}
-</li> */}
+</li> 
                         <li>
                           <span>Legal Company Name:</span>{" "}
                           {companyContract?.legalCompanyName
@@ -611,7 +764,7 @@ alt="preview"
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* <div
           className={AddNewClientStyle.viewHRDetailsItem}
@@ -822,7 +975,7 @@ alt="preview"
   return (
     <>
       <div className={AddNewClientStyle.addNewContainer}>
-        <div className={AddNewClientStyle.addHRTitle}>{companyDetails?.companyName ?? 'Company'} Details</div>
+        <div className={AddNewClientStyle.addHRTitle}>{companyPreviewData?.basicDetails?.companyName ?? 'Company'} Details</div>
 
         <Tabs
           onChange={(e) => setTitle(e)}
@@ -842,7 +995,7 @@ alt="preview"
               key: "HR's Details",
               children: <HrsDetails />,
             },
-            companyDetails?.companyTypeID && {
+            companyPreviewData?.engagementDetails?.companyTypeID && {
               label: "Credit Utilize",
               key: "Credit Utilize",
               children: <CredUtilize />,
