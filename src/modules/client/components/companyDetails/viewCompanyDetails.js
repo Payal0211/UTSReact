@@ -105,7 +105,7 @@ const creditColumn = [
   // },
 
   {
-    title: "Credit/Price",
+    title: "Price/Credit",
     dataIndex: "amountPerCredit",
     key: "amountPerCredit",
     align: "left",
@@ -860,7 +860,7 @@ alt="preview"
             </span>
           </div>     
           <div className={AddNewClientStyle.summaryCard}>
-            Credit/Price :{" "}
+            Price/Credit :{" "}
             <span>
               {creditUtilize.length > 0 ? creditUtilize[0].currentAmount : "NA"}
             </span>
