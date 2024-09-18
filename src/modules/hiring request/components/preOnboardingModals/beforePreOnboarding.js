@@ -656,7 +656,7 @@ const calcelMember = () =>{
 
 
   const handleComplete = useCallback(
-    async (d) => {
+    async (d) => {   
       setIsLoading(true);      
       let _payload = {
         "hR_ID": HRID,
@@ -669,23 +669,23 @@ const calcelMember = () =>{
         "engagemenID": data?.engagemenID,
         "assignAM": assignAM,
         "talentID":talentDeteils?.TalentID,
-        "tscUserId":d.AddTSCName ? +d.AddTSCName?.id : 0,
-        "talentShiftStartTime":d.shiftStartTime?.value,
-        "talentShiftEndTime": d.endTime?.value,
+        "tscUserId":d?.AddTSCName ? +d.AddTSCName?.id : 0,
+        "talentShiftStartTime":d?.shiftStartTime?.value,
+        "talentShiftEndTime": d?.shiftEndTime?.value,
         "payRate": parseFloat(d.payRate),
-        "billRate": data?.isHRTypeDP ? null : parseFloat(d.billRate),
+        "billRate": data?.isHRTypeDP ? 0 : parseFloat(d.billRate),
         "netPaymentDays": parseInt(d.netTerm?.value),
-        "nrMargin": !data?.isHRTypeDP ? d.nrPercent : null,
+        "nrMargin": !data?.isHRTypeDP ? d.nrPercent : 0,
         "modeOFWorkingID": d?.modeOFWorkingID?.id,
         "city": d?.city,
         "stateID": d?.stateID?.id,
         "talent_Designation": d?.talent_Designation,
-        "amSalesPersonID": d.amSalesPersonID?.id,
+        "amSalesPersonID": d?.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
-        "uplersFeesAmount":data?.isHRTypeDP ? parseFloat(d?.uplersFee):null,
+        "uplersFeesAmount":data?.isHRTypeDP ? parseFloat(d?.uplersFee):0,
         "uplersFeesPerc":preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP == false ? 
-        ((d.billRate > 0 && d.payRate > 0) ?  (((d.billRate-d.payRate)/d.payRate)*100).toFixed(2)+ ' %' : 'NA')
-        : ((d.uplersFee > 0 && d.payRate > 0) ?  ((d.uplersFee/d.payRate)*100).toFixed(2) + " %" :"NA"),
+        ((d?.billRate > 0 && d?.payRate > 0) ?  (((d?.billRate-d?.payRate)/d?.payRate)*100).toFixed(2)+ ' %' : '0')
+        : ((d?.uplersFee > 0 && d?.payRate > 0) ?  ((d?.uplersFee/d?.payRate)*100).toFixed(2) + " %" :"0"),
         "talentReplacement": {
           "onboardId": talentDeteils?.OnBoardId,
           "replacementID": 0,
@@ -694,45 +694,44 @@ const calcelMember = () =>{
           "lastWorkingDay": engagementReplacement?.replacementData === true ? moment(d.lwd).format('yyyy-MM-DD') : null,
           "lastWorkingDateOption": 0,
           "noticeperiod": 0,
-          "replacementStage": d.replaceStage?.value,
-          "reasonforReplacement": d.replaceStage?.value,
+          "replacementStage": d?.replaceStage?.value,
+          "reasonforReplacement": d?.replaceStage?.value,
           "replacementInitiatedby": loggedInUserID.toString(),
           "replacementHandledByID": null,
           "engagementReplacementOnBoardID": 0,
           "replacementTalentId": null,
-          "engHRReplacement": engagementReplacement?.replacementData === true ? d.engagementreplacement?.id : null 
+          "engHRReplacement": engagementReplacement?.replacementData === true ? d?.engagementreplacement?.id : null 
         },
         "updateClientOnBoardingDetails": {
           "hR_ID": HRID,
           "companyID": data?.companyID,
           "signingAuthorityName": null,
           "signingAuthorityEmail": null,
-          "contractDuration": d.contractDuration,
+          "contractDuration": d?.contractDuration,
           "onBoardID": talentDeteils?.OnBoardId,
           "about_Company_desc": d?.aboutCompany,
           "talent_FirstWeek": d?.firstWeek,
           "talent_FirstMonth": d?.firstMonth,
           "softwareToolsRequired": d?.softwareToolsRequired,
-          "devicesPoliciesOption": !talentDeteils?.IsHRTypeDP ? d.devicePolicy.value : "",
-          "talentDeviceDetails": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 1 ? d.standerdSpecifications : '' : "",
+          "devicesPoliciesOption": !talentDeteils?.IsHRTypeDP ? d?.devicePolicy.value : "",
+          "talentDeviceDetails": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.id === 1 ? d?.standerdSpecifications : '' : "",
           // "additionalCostPerMonth_RDPSecurity": 0,
           // "isRecurring": true,
           // "proceedWithUplers_LeavePolicyOption": null,
           // "proceedWithClient_LeavePolicyOption": null,
-          "proceedWithClient_LeavePolicyLink": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "" ,
-          "leavePolicyFileName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" ,
+          "proceedWithClient_LeavePolicyLink": !talentDeteils?.IsHRTypeDP ?  d?.leavePolicie.id === 2 ?  d?.policyLink ? d?.policyLink : "" : "" : "" ,
+          "leavePolicyFileName": !talentDeteils?.IsHRTypeDP ?  d?.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" ,
           "exit_Policy": d?.exitPolicy,
-          "hdnRadioDevicesPolicies": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.value : "",
-          "device_Radio_Option": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '' : "",
-          "deviceID": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ? d.deviceType.id : 0 : 0,
-          "client_DeviceDescription": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' :"" ,
-          "totalCost": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,
-          "radio_LeavePolicies": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.value : "",
-          "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
+          "hdnRadioDevicesPolicies": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.value : "",
+          "device_Radio_Option": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d?.deviceType.id)[0].deviceName : '' : "",
+          "deviceID": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.id === 2 ? d?.deviceType.id : 0 : 0,
+          "client_DeviceDescription": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.id === 2 &&  d?.deviceType.id === 3 ? d?.otherDevice : '' :"" ,
+          "totalCost": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d?.deviceType.id)[0].deviceCost : 0 : 0,
+          "radio_LeavePolicies": !talentDeteils?.IsHRTypeDP ?  d?.leavePolicie.value : "",
+          "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d?.leavePolicie.id === 2 ?  d?.policyLink ? d?.policyLink : "" : "" : "",
           "teamMembers": clientTeamMembers
         }
-      }      
-            
+      }              
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         callAPI(HRID)
@@ -757,7 +756,8 @@ const calcelMember = () =>{
       engagementReplacement?.replacementData,
       addLatter,
       assignAM,
-      clientTeamMembers,getUploadFileData,deviceMasters
+      clientTeamMembers,getUploadFileData,deviceMasters,
+      data
     ]
   );
 
@@ -1601,7 +1601,8 @@ const calcelMember = () =>{
                         />
                       )}
                     </>
-                  </div>}
+                  </div>
+                  }
 
                   
 
