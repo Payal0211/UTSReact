@@ -235,7 +235,7 @@ export default function ViewCompanyDetails() {
     let result = await allCompanyRequestDAO.createWhatsAppGroupDAO(payload)
 
     if(result?.statusCode === 200){
-      setCompanyDetailsPreview(prev => ({...prev,whatsappDetails:result.responseBody}))
+      setCompanyDetailsPreview(prev => ({...prev,whatsappDetails:result.responseBody.WhatsappDetails, showWhatsappCTA: result.responseBody.ShowWhatsappCTA}))
     }
     setIsSavedLoading(false);
   }
