@@ -4674,8 +4674,8 @@ const EditHRFields = ({
                         name="parametersHighlight"
                         onChange={(val) => {
                           let sanitizedContent = sanitizeLinks(val);
-                          let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                          setValue("parametersHighlight", _updatedVal)}}
+                          // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                          setValue("parametersHighlight", sanitizedContent)}}
 
                       />
                       {/* <HRInputField
