@@ -646,7 +646,7 @@ const InterviewSchedule = ({
                             
 							{timeErrorMessage && <p className={InterviewScheduleStyle.error}>{timeErrorMessage}</p>}
 							
-							{scheduleSlotRadio === 4 && (
+							{/* {scheduleSlotRadio === 4 && (
 								<div className={InterviewScheduleStyle.row}>
 									<div className={InterviewScheduleStyle.colMd12}>
 										<HRInputField
@@ -659,7 +659,19 @@ const InterviewSchedule = ({
 										/>
 									</div>
 								</div>
-							)}
+							)} */}
+							<div className={InterviewScheduleStyle.row}>
+									<div className={InterviewScheduleStyle.colMd12}>
+										<HRInputField
+											register={register}
+											errors={errors}
+											label="Additional Notes"
+											name="additionalNotes"
+											type={InputType.TEXT}
+											placeholder="Add Notes"
+										/>
+									</div>
+								</div>
 							<div className={InterviewScheduleStyle.formPanelAction}>
 								<button
 									// disabled={isLoading}
