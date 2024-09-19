@@ -27,7 +27,8 @@ export const allHRConfig = {
     showCloneHRToDemoAccount,
     setIsPreviewModal,
     setpreviewIDs,
-    getPreviewPostData
+    getPreviewPostData,
+    setRepostHrModal
   ) => {
     return [
       {
@@ -126,40 +127,27 @@ export const allHRConfig = {
               ) : 
               // LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 &&
                result?.isDisplayReopenOrCloseIcon === true ? (
-                <Tooltip placement="bottom" title={"Reopen HR"}>
+                <Tooltip placement="bottom" title={result?.companyModel === 'Pay Per Credit' ? "Re-post HR" :"Reopen HR"}>
                   <a href="javascript:void(0);">
                     <ReopenHR
                       style={{ fontSize: "16px" }}
                       onClick={() => {
                         if(result?.companyModel === 'Pay Per Credit'){
-                          const handleReopen = async (d) => {
-                            setLoading && setLoading(true)
-                            let data = { hrID: result?.HRID, updatedTR: result?.TR };
-                            const response = await hiringRequestDAO.ReopenHRDAO(data);
-                            // console.log("reoprn ",response)
-                            if (response?.statusCode === HTTPStatusCode.OK) {                            
-                              
-                              setLoading && setLoading(false)
-                              if(response?.responseBody?.details?.isReopen){
-                                 window.location.reload();
-                              }else{
-                                message.error(response?.responseBody?.details?.message,10)
-                              }
-                            }
-                            if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
-                              message.error(response?.responseBody,10)
-                              setLoading && setLoading(false)
-                            }
-                            setLoading && setLoading(false)
-                          };
-                          return handleReopen()
-                        }
-                        setReopenHRData({
+                          setReopenHRData({
+                            ...result,
+                            HR_Id: result?.HRID,
+                            ClientDetail: { NoOfTalents: result?.TR },
+                          });
+                          setRepostHrModal(true)
+                        }else{
+                         setReopenHRData({
                           ...result,
                           HR_Id: result?.HRID,
                           ClientDetail: { NoOfTalents: result?.TR },
                         });
-                        setReopenHrModal(true);
+                        setReopenHrModal(true);  
+                        }
+                       
                       }}
                     />
                   </a>

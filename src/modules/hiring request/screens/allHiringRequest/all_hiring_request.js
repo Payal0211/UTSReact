@@ -47,6 +47,7 @@ import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
 import PreviewHRModal from "./previewHR/previewHRModal";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
+import RePostHRModal from "modules/hiring request/components/repostHRModal/repostHRModal";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -91,6 +92,7 @@ const AllHiringRequestScreen = () => {
   const [getHRID, setHRID] = useState("");
   const [reopenHrData, setReopenHRData] = useState({});
   const [reopenHrModal, setReopenHrModal] = useState(false);
+  const [repostHrModal,setRepostHrModal] = useState(false)
   const [closeHRDetail, setCloseHRDetail] = useState({});
   const [closeHrModal, setCloseHrModal] = useState(false);
   const [isFrontEndHR, setIsFrontEndHR] = useState(false);
@@ -284,6 +286,27 @@ const AllHiringRequestScreen = () => {
     setIspreviewLoading(false);
   };
 
+  const handleReopen = async (d) => {
+    setLoading && setLoading(true)
+    let data = { hrID: reopenHrData?.HR_Id , updatedTR: reopenHrData?.ClientDetail?.NoOfTalents };
+    const response = await hiringRequestDAO.ReopenHRDAO(data);
+    // console.log("reoprn ",response)
+    if (response?.statusCode === HTTPStatusCode.OK) {                            
+      
+      setLoading && setLoading(false)
+      if(response?.responseBody?.details?.isReopen){
+         window.location.reload();
+      }else{
+        message.error(response?.responseBody?.details?.message,10)
+      }
+    }
+    if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+      message.error(response?.responseBody,10)
+      setLoading && setLoading(false)
+    }
+    setLoading && setLoading(false)
+  };
+
   const tableColumnsMemo = useMemo(
     () =>
       allHRConfig.tableConfig(
@@ -302,7 +325,8 @@ const AllHiringRequestScreen = () => {
         showCloneHRToDemoAccount,
         setIsPreviewModal,
         setpreviewIDs,
-        getPreviewPostData
+        getPreviewPostData,
+        setRepostHrModal
       ),
     [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
@@ -982,6 +1006,23 @@ const AllHiringRequestScreen = () => {
           <ReopenHRModal
             onCancel={() => setReopenHrModal(false)}
             apiData={reopenHrData}
+          />
+        </Modal>
+      )}
+
+    {repostHrModal && (
+        <Modal
+          width={"864px"}
+          centered
+          footer={false}
+          open={repostHrModal}
+          className="updateTRModal"
+          onCancel={() => setRepostHrModal(false)}
+        >
+          <RePostHRModal
+            onCancel={() => setRepostHrModal(false)}
+            apiData={reopenHrData}
+            handleReopen={()=>handleReopen()}
           />
         </Modal>
       )}

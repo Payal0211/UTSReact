@@ -57,6 +57,7 @@ import TextEditor from 'shared/components/textEditor/textEditor';
 import { BsThreeDots } from 'react-icons/bs';
 import PreOnboardingTabModal from 'modules/hiring request/components/preOnboardingModals/preOnboardingTabModal';
 import DeleteHRModal from 'modules/hiring request/components/deleteHR/deleteHRModal';
+import RePostHRModal from 'modules/hiring request/components/repostHRModal/repostHRModal';
 
 /** Lazy Loading the component */
 
@@ -311,6 +312,7 @@ const togglePriority = useCallback(
 
 	const [showAMModal, setShowAMModal] = useState(false);
 	const [reopenHrModal, setReopenHrModal] = useState(false);
+	const [repostHrModal,setRepostHrModal] = useState(false)
 		
 	return (
 		<WithLoader
@@ -452,12 +454,14 @@ const togglePriority = useCallback(
                   className={HRDetailStyle.hiringRequestPriority}
                   onClick={() => {
 					if(apiData?.IsPayPerCredit){
-						return handleReopen()
-					}
-                    setReopenHrModal(true);
+						// return handleReopen()
+						setRepostHrModal(true)
+					}else{
+						setReopenHrModal(true);
+					}                  
                   }}
                 >
-                  <Tooltip placement="bottom" title="Reopen HR">
+                  <Tooltip placement="bottom" title={apiData?.IsPayPerCredit ? "Re-post HR" : "Reopen HR"}>
                     <ReopenHR
                       style={{ width: "24px" }}
                       className={HRDetailStyle.deleteSVG}
@@ -478,6 +482,24 @@ const togglePriority = useCallback(
                   <ReopenHRModal
                     onCancel={() => setReopenHrModal(false)}
                     apiData={apiData}
+
+                  />
+                </Modal>
+              )}
+
+			{repostHrModal && (
+                <Modal
+                  width={"950px"}
+                  centered
+                  footer={false}
+                  open={repostHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setRepostHrModal(false)}
+                >
+                  <RePostHRModal
+                    onCancel={() => setRepostHrModal(false)}
+                    apiData={apiData}
+					handleReopen={()=>handleReopen()}
                   />
                 </Modal>
               )}

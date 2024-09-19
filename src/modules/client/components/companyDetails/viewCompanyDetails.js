@@ -15,6 +15,7 @@ import redArrowRightImage from "assets/svg/redArrowRight.svg";
 import UTSRoutes from 'constants/routes';
 import { Link } from "react-router-dom";
 import Star from 'assets/svg/selectStarFill.svg';
+import spinGif from "assets/gif/RefreshLoader.gif";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 const creditColumn = [
@@ -104,7 +105,7 @@ const creditColumn = [
   // },
 
   {
-    title: "Credit/Price",
+    title: "Price/Credit",
     dataIndex: "amountPerCredit",
     key: "amountPerCredit",
     align: "left",
@@ -133,6 +134,8 @@ export default function ViewCompanyDetails() {
   const navigate = useNavigate();
   const { CompanyID } = useParams();
   const [isSavedLoading, setIsSavedLoading] = useState(false);
+  const [ isGroupCreating ,setIsgroupCreating] = useState(false)
+  const [groupError,setGroupError] = useState('')
   const [companyDetails, setCompanyDetails] = useState({});
   const [companyPreviewData,setCompanyDetailsPreview] = useState({})
   const [contactDetails, setContactDetails] = useState([]);
@@ -225,7 +228,7 @@ export default function ViewCompanyDetails() {
   }, [CompanyID]);
 
   const CreateWhatsAppGroup = async ()=>{
-    setIsSavedLoading(true);
+    setIsgroupCreating(true);
     const payload = {
       "companyID": +CompanyID,
       "companyName": companyPreviewData?.basicDetails?.companyName,
@@ -239,9 +242,13 @@ export default function ViewCompanyDetails() {
     }
 
     if(result?.statusCode === HTTPStatusCode.BAD_REQUEST){
-      message.error(result.responseBody)
-    }
-    setIsSavedLoading(false);
+      // message.error(result.responseBody)
+     setGroupError(result?.responseBody)
+     setTimeout(()=>{
+      setGroupError('')
+     },5000)
+        }
+    setIsgroupCreating(false);
   }
 
   const CompDetails = () => {
@@ -500,10 +507,14 @@ export default function ViewCompanyDetails() {
                           onClick={() => {
                             CreateWhatsAppGroup()
                           }}
+                          disabled={isGroupCreating}
                           className={AddNewClientStyle.btnPrimaryResendBtn}
                         >
                           Create Whatsapp Group 
                         </button>
+
+                        {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+                       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
                         </li> }
 
                           {/* <li>
@@ -849,7 +860,7 @@ alt="preview"
             </span>
           </div>     
           <div className={AddNewClientStyle.summaryCard}>
-            Credit/Price :{" "}
+            Price/Credit :{" "}
             <span>
               {creditUtilize.length > 0 ? creditUtilize[0].currentAmount : "NA"}
             </span>

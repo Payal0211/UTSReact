@@ -80,6 +80,21 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'hiringRequestAPI.getPaginatedHiringRequest');
 		}
 	},
+	fetchrepostDetailsRequest:async function (HRID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.HRDETAILSFORSHORTLISTED + `?hrid=${HRID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.closeJobLogs');
+		}
+	},
 	closeJobLogs:async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =
