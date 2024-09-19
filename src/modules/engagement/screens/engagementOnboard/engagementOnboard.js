@@ -16,6 +16,7 @@ import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { engagementRequestDAO } from "core/engagement/engagementDAO";
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import LogoLoader from "shared/components/loader/logoLoader";
+import { budgetStringToCommaSeprated } from "shared/utils/basic_utils";
 
 const EngagementOnboard = ({
   getOnboardFormDetails : gOBFD,
@@ -424,13 +425,13 @@ const EngagementOnboard = ({
                 <li>
                   <span>Uplers fees amount : </span>
                   {getOnboardFormDetails?.uplersfeesAmount
-                    ? getOnboardFormDetails?.uplersfeesAmount
+                    ? budgetStringToCommaSeprated(getOnboardFormDetails?.uplersfeesAmount)
                     : "NA"}
                 </li>
                 <li>
                   <span>Talent's Current Pay: </span>
                   {getOnboardFormDetails?.currentCTC
-                    ? getOnboardFormDetails?.currentCTC
+                    ? budgetStringToCommaSeprated(getOnboardFormDetails?.currentCTC)
                     : "NA"}
                 </li>
                 <li>
@@ -442,7 +443,7 @@ const EngagementOnboard = ({
                 <li>
                   <span>Talent's Expected Pay : </span>
                   {getOnboardFormDetails?.expectedSalary
-                    ? getOnboardFormDetails?.expectedSalary
+                    ? budgetStringToCommaSeprated(getOnboardFormDetails?.expectedSalary)
                     : "NA"}
                 </li>
               </>
@@ -457,14 +458,14 @@ const EngagementOnboard = ({
                 <li>
                   <span>Client's Bill Amount : </span>
                   {getOnboardFormDetails?.billRate
-                    ? getOnboardFormDetails?.billRate
+                    ? budgetStringToCommaSeprated(getOnboardFormDetails?.billRate)
                     : "NA"}
                 </li>
               
                 <li>
                   <span>Talent's Current Pay: </span>
                   {getOnboardFormDetails?.currentCTC
-                    ? getOnboardFormDetails?.currentCTC
+                    ? budgetStringToCommaSeprated(getOnboardFormDetails?.currentCTC)
                     : "NA"}
                 </li>
                 <li>
@@ -476,13 +477,13 @@ const EngagementOnboard = ({
                 <li>
                   <span>Talent's Expected Pay : </span>
                   {getOnboardFormDetails?.expectedSalary
-                    ? getOnboardFormDetails?.expectedSalary
+                    ? budgetStringToCommaSeprated(getOnboardFormDetails?.expectedSalary)
                     : "NA"}
                 </li>
                 <li>
                   <span>Uplers fees amount : </span>
                   {getOnboardFormDetails?.uplersfeesAmount
-                    ? getOnboardFormDetails?.uplersfeesAmount
+                    ? budgetStringToCommaSeprated(getOnboardFormDetails?.uplersfeesAmount)
                     : "NA"}
                 </li>
               </>
