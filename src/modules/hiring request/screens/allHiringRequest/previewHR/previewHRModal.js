@@ -40,7 +40,6 @@ import { MasterDAO } from "core/master/masterDAO";
 import YouTubeVideo from "modules/client/components/previewClientDetails/youTubeVideo";
 import { NetworkInfo } from "constants/network";
 import confirm from "antd/es/modal/confirm";
-import HSContent from "constants/CommonEditorPreview/HSContent";
 
 
 // import "../../CompanyDetails/companyDetails.css";
@@ -2577,7 +2576,17 @@ getSkillList();
                                 </>
                               ) : (
                                 <div>                              
-                                  <HSContent data={jobPreview?.jobDescription && jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim()} />
+                                  <ReactQuill
+                                                    theme="snow"
+                                                    className="heightSize previewQuill"
+                                                    value={jobPreview?.jobDescription && jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim()}
+                                                    // onChange={(val) =>{
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   setEditWhatWeOffer(sanitizedContent)
+                                                    // }}
+                                                    modules={modules}
+                                                    readOnly
+                                                  />
                                 </div>
                               )}
                             </div>

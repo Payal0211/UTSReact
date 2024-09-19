@@ -1471,6 +1471,29 @@ body .jobDescrition h1,body .jobDescrition h2,body .jobDescrition h3,body .jobDe
   border-bottom: 1px solid black;
 }
 
+.quill.heightSize .ql-container .ql-editor ul,
+.quill.heightSize .ql-container .ql-editor p{
+  /* margin-bottom: 16px; */
+  margin-bottom: 0;
+}
+
+/*Preview Quill Editor*/
+.quill.previewQuill .ql-container{
+  border: none;
+}
+.quill.previewQuill .ql-toolbar.ql-snow{
+  display: none;
+}
+.quill.heightSize.previewQuill .ql-container .ql-editor{
+  height: auto;
+  padding: 0;
+  max-height: inherit;
+}
+.quill.heightSize.previewQuill .ql-container{
+  border: none;
+}
+/*END Preview Quill Editor*/
+
 
 /* Responsive css start */
 
