@@ -5229,6 +5229,17 @@ who have worked in scaled start ups."
                 {gptDetails?.salesHiringRequest_Details?.jobDescription && (
                   <>
                     <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
+                    <ReactQuill
+                                                    theme="snow"
+                                                    className="heightSize previewQuill"
+                                                    value={gptDetails?.salesHiringRequest_Details?.jobDescription}
+                                                    // onChange={(val) =>{
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   setEditWhatWeOffer(sanitizedContent)
+                                                    // }}
+                                                    // modules={modules}
+                                                    readOnly
+                                                  />
                     {testJSON(
                       gptDetails?.salesHiringRequest_Details?.jobDescription
                     ) ? (
@@ -5374,6 +5385,17 @@ who have worked in scaled start ups."
                     {gptFileDetails?.JobDescription && (
                       <>
                         <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
+                        <ReactQuill
+                                                    theme="snow"
+                                                    className="heightSize previewQuill"
+                                                    value={gptFileDetails?.JobDescription}
+                                                    // onChange={(val) =>{
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   setEditWhatWeOffer(sanitizedContent)
+                                                    // }}
+                                                    // modules={modules}
+                                                    readOnly
+                                                  />
                         <div
                           className={`${HRFieldStyle.viewHrJDDetailsBox} jobDescritionCSS`}
                           dangerouslySetInnerHTML={{
