@@ -1338,7 +1338,7 @@ const calcelMember = () =>{
                                 endtime.value
                               );
                               setValue(
-                                "endTime",{id: "", value: endtime.value}  
+                                "shiftEndTime",{id: "", value: endtime.value}  
                               );
                           }else{
                               let endtime = getStartEndTimes[index + 18]
@@ -1346,7 +1346,7 @@ const calcelMember = () =>{
                                 endtime.value
                               );
                               setValue(
-                                "endTime",{id: "", value: endtime.value}  
+                                "shiftEndTime",{id: "", value: endtime.value}  
                               );
                           };
                         }}
