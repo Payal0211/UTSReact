@@ -55,6 +55,7 @@ import EditCircleIcon from "assets/svg/editCircleIcon.svg";
 import debounce from "lodash.debounce";
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
+import JobDescriptionComponent from "../jdComponent/jdComponent";
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -62,6 +63,7 @@ export const secondaryInterviewer = {
   linkedin: "",
   designation: "",
 };
+
 
 const EditHRFields = ({
   setJDDumpID,
@@ -83,6 +85,10 @@ const EditHRFields = ({
   isDirectHR,
   originalDetails,
   setOriginalDetails,
+  isHaveJD,
+  setIsHaveJD,
+  parseType,
+  setParseType,
 }) => {
   const inputRef = useRef(null);
   const [userData, setUserData] = useState({});
@@ -236,6 +242,7 @@ const EditHRFields = ({
   const [controlledPocValue, setControlledPocValue] = useState([]);
   const [locationSelectValidation,setLocationSelectValidation] = useState(false);
   const[allCities,setAllCities] = useState([]);
+  const [textCopyPastData, setTextCopyPastData] = useState("");
 
   let controllerRef = useRef(null);
   const {
@@ -1203,6 +1210,20 @@ const EditHRFields = ({
     }
   };
 
+  const getParsingType = (isHaveJD, parseType) => {
+    if (isHaveJD === 1) {
+      return "DonotHaveJD";
+    }
+    if (isHaveJD === 0) {
+      if (parseType === "JDFileUpload") {
+        return "FileUpload";
+      }
+      if (parseType === "Text_Parsing") {
+        return "CopyPaste";
+      }
+    }
+  };
+
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
@@ -1246,15 +1267,15 @@ const EditHRFields = ({
       hrFormDetails.HRIndustryType = specificIndustry?.join("^");
       hrFormDetails.StringSeparator = "^";
 
-      hrFormDetails.JobTypeID = watch("workingMode").id;
+      hrFormDetails.JobTypeID = watch("workingMode")?.id;
       hrFormDetails.JobLocation =
-        watch("workingMode").id === 2 || watch("workingMode").id === 3
+        watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? watch("location")
           : null;
       hrFormDetails.FrequencyOfficeVisitID =
-        watch("workingMode").id === 2 ? watch("officeVisits").id : null;
+        watch("workingMode")?.id === 2 ? watch("officeVisits")?.id : null;
       hrFormDetails.IsOpenToWorkNearByCities =
-        watch("workingMode").id === 2 || watch("workingMode").id === 3
+        watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? isRelocate
           : null;
 
@@ -1264,7 +1285,7 @@ const EditHRFields = ({
         ?  selectedLabels?.concat(nonNumericValues)?.join(',')
         : null;
         hrFormDetails.ATS_JobLocationID =
-        watch("workingMode").id === 2 || watch("workingMode").id === 3
+        watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? locationList.length ? locationList?.find((loc) => loc.value === watch("location"))?.id : getHRdetails?.directPlacement?.atsJobLocationId : null;
       hrFormDetails.ATS_NearByCities = isRelocate
         ? getNearByCitiesForAts()
@@ -1336,6 +1357,36 @@ const EditHRFields = ({
         hrFormDetails.IsProfileView = false;
         hrFormDetails.IsVettedProfile = false;
       }
+
+      // For JD error Handling
+      if (isHaveJD === 0) {
+        if (parseType === "Manual") {
+          message.error("Please select a file to upload");
+          setIsSavedLoading(false);
+          return;
+        }
+        if (parseType === "JDFileUpload") {
+          if (getUploadFileData === "") {
+            message.error("Please select a file to upload");
+            setIsSavedLoading(false);
+            return;
+          }
+        }
+        if (parseType === "Text_Parsing") {
+          if (textCopyPastData === "" || textCopyPastData === "<p><br></p>") {
+            message.error("Please Copy & Paste JD");
+            setIsSavedLoading(false);
+            return;
+          }
+        }
+      }
+      hrFormDetails.ParsingType = getParsingType(isHaveJD, parseType);
+      hrFormDetails.JDDescription =
+        getParsingType(isHaveJD, parseType) === "CopyPaste"
+          ? getHRdetails?.salesHiringRequest_Details?.JobDescription
+          : null;
+
+
       if (type !== SubmitType.SAVE_AS_DRAFT) {
         if (watch("fromTime")?.value === watch("endTime")?.value) {
           setIsSavedLoading(false);
@@ -1387,6 +1438,10 @@ const EditHRFields = ({
       }
       setInterval(() => setIsSavedLoading(false), 58000);
 
+      // console.log("submit handler",hrFormDetails)
+      // setIsSavedLoading(false);
+      // return
+
       const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
       if (addHRRequest?.statusCode === HTTPStatusCode.OK) {
@@ -1407,6 +1462,9 @@ const EditHRFields = ({
             type: "success",
             content: "HR details has been saved to draft.",
           });
+          setTimeout(() => {
+            navigate("/allhiringrequest");
+          }, 1000);
           // setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
         }
       }
@@ -1444,7 +1502,9 @@ const EditHRFields = ({
       locationList,
       locationList,
       jobPostUsersDetails,
-      locationSelectValidation
+      locationSelectValidation,
+      isHaveJD,
+      parseType,
     ]
   );
   // useEffect(() => {
@@ -1558,6 +1618,7 @@ const EditHRFields = ({
     );
     if (getHRdetails?.salesHiringRequest_Details?.yearOfExp === 0) {
       setIsExpDisabled(true);
+      setIsFreshersAllowed(true);
       setIsFresherDisabled(false);
     } else {
       setIsExpDisabled(false);
@@ -1610,7 +1671,14 @@ const EditHRFields = ({
         getHRdetails?.clientName.substring(0, 3)
       );
     }
-    setUploadFileData(getHRdetails?.addHiringRequest?.jdfilename);
+    if(getHRdetails?.addHiringRequest?.jdfilename){
+       setUploadFileData(getHRdetails?.addHiringRequest?.jdfilename);
+    }else{
+      if(!getHRdetails?.draftDontHaveJD){
+        setIsHaveJD(1)
+      }     
+    }
+   
 
     let company_Type = getHRdetails?.companyTypes?.filter(
       (item) => item.isActive === true
@@ -2606,6 +2674,63 @@ const EditHRFields = ({
           i === index ? { ...detail, contactNo: newValue } : detail
         )
       );
+    }
+  };
+
+  const getTextDetils = async () => {
+    if (textCopyPastData) {
+      let payload = { pdfText: textCopyPastData };
+
+      const result = await hiringRequestDAO.getDetailsFromTextDAO(
+        payload,
+        getHRdetails?.contact
+      );
+
+      if (result.statusCode === 200) {
+        if(result?.responseBody.message === "Contact Not Found."){
+         message.error(result?.responseBody.message);
+         return
+        }
+        let JDDATA = result?.responseBody?.details;
+        let _getHrValues = { ...getHRdetails };
+        if (!_getHrValues.salesHiringRequest_Details) {
+          _getHrValues["salesHiringRequest_Details"] = {
+            JobDescription: JDDATA?.jobDescription ?? "",
+          };
+          _getHrValues.draftDontHaveJD = true;
+        } else {
+          _getHrValues.salesHiringRequest_Details.JobDescription =
+            JDDATA?.jobDescription ?? "";
+            _getHrValues.draftDontHaveJD = true;
+        }
+
+        let newObj = {
+          Skills: JDDATA?.skills
+            ? JDDATA?.skills
+                .split(",")
+                .slice(0, 5)
+                .map((item) => ({
+                  id: "0",
+                  value: item,
+                }))
+            : [],
+          AllSkills: JDDATA?.allSkills
+            ? JDDATA?.allSkills.split(",").map((item) => ({
+                id: "0",
+                value: item,
+              }))
+            : [],
+          Responsibility: "",
+          Requirements: "",
+          JobDescription: JDDATA.jobDescription ?? "",
+          roleName: JDDATA?.roleName ?? "",
+        };
+        // console.log(newObj)
+        setJDParsedSkills(newObj);
+        setHRdetails(_getHrValues);
+      } else {
+        message.error("Something went wrong!");
+      }
     }
   };
 
@@ -3911,7 +4036,7 @@ const EditHRFields = ({
 							/>
 						</div>
 					</div> */}
-                <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
+               {getHRdetails.addHiringRequest.jdfilename ? <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
                   <div className={HRFieldStyle.colMd12}>
                     {!getUploadFileData ? (
                       <HRInputField
@@ -4007,8 +4132,27 @@ const EditHRFields = ({
                     }
                   />
                 </div> */}
-                </div>
-
+                </div> : <JobDescriptionComponent
+                helperProps={{
+                setUploadFileData,
+                setValidation,
+                setShowGPTModal,
+                setGPTFileDetails,
+                watch,
+                isHaveJD,
+                setIsHaveJD,
+                textCopyPastData,
+                setTextCopyPastData,
+                parseType,
+                setParseType,
+                getTextDetils,
+                watchClientName,
+                filteredMemo,
+                clientDetail,
+              }}
+            />} 
+               
+                
                 {/* <div className={HRFieldStyle.row}>
                 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.checkBoxGroup}>
@@ -4931,6 +5075,7 @@ who have worked in scaled start ups."
                                         key={'phoneNumber'}
                                         value={Val?.contactNo}
                                         onChange={(value,__) => {
+                                          // console.log(__)
                                           handleContactNoChange(
                                             index,
                                             value
@@ -5176,7 +5321,19 @@ who have worked in scaled start ups."
                     {gptDetails?.salesHiringRequest_Details?.jobDescription && (
                       <>
                         <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
-                        {testJSON(
+                        <ReactQuill
+                                                    theme="snow"
+                                                    className="heightSize previewQuill"
+                                                    value={gptDetails?.salesHiringRequest_Details?.jobDescription}
+                                                    // onChange={(val) =>{
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   setEditWhatWeOffer(sanitizedContent)
+                                                    // }}
+                                                    // modules={modules}
+                                                    readOnly
+                                                  />
+
+                        {/* {testJSON(
                           gptDetails?.salesHiringRequest_Details?.jobDescription
                         ) ? (
                           <div className={HRFieldStyle.viewHrJDDetailsBox}>
@@ -5203,7 +5360,7 @@ who have worked in scaled start ups."
                               ),
                             }}
                           />
-                        )}
+                        )} */}
                       </>
                     )}
 
@@ -5322,7 +5479,18 @@ who have worked in scaled start ups."
                             <h3 style={{ marginTop: "10px" }}>
                               Job Description :
                             </h3>
-                            <div
+                            <ReactQuill
+                                                    theme="snow"
+                                                    className="heightSize previewQuill"
+                                                    value={gptFileDetails?.JobDescription}
+                                                    // onChange={(val) =>{
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   setEditWhatWeOffer(sanitizedContent)
+                                                    // }}
+                                                    // modules={modules}
+                                                    readOnly
+                                                  />
+                            {/* <div
                               className={`${HRFieldStyle.viewHrJDDetailsBox} jobDescritionCSS`}
                               dangerouslySetInnerHTML={{
                                 __html: gptFileDetails?.JobDescription,
@@ -5330,9 +5498,9 @@ who have worked in scaled start ups."
                             >
                               {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
-                  </ul> */}
-                              {/* {gptFileDetails?.JobDescription} */}
-                            </div>
+                  </ul> 
+                              {/* {gptFileDetails?.JobDescription} 
+                            </div> */}
                           </>
                         )}
                       </div>
