@@ -41,7 +41,7 @@ const EditDebriefingHR = ({
 	getHRdetails,
 	isDirectHR,
 	disabledFields,
-	originalDetails , setOriginalDetails 
+	originalDetails , setOriginalDetails,parseType ,isHaveJD
 }) => {
 	const {
 		watch,
@@ -50,6 +50,7 @@ const EditDebriefingHR = ({
 		setValue,
 		control,
 		setError,
+		clearErrors,
 		unregister,
 		formState: { errors },
 	} = useForm({
@@ -86,6 +87,7 @@ const EditDebriefingHR = ({
 	const [talentRole, setTalentRole] = useState([]);
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [companyType , setComapnyType] = useState({})
+	const [fetchAIJD,setFetchAIJD] = useState(false)
 	//to set skills and control
 	useEffect(()=>{
 		setControlledJDParsed(getHRdetails?.skillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})))
@@ -401,6 +403,21 @@ const checkValChnage = () => {
 		// Compare the JSON strings
 		return (arr1Str === arr2Str ? false : true);
 }
+
+const getParsingType = (isHaveJD,parseType) => {
+    if(isHaveJD === 1){
+      return 'DonotHaveJD'
+    }
+    if(isHaveJD === 0){
+      if(parseType === 'JDFileUpload'){
+        return 'FileUpload'
+      }
+      if(parseType === "Text_Parsing"){
+        return 'CopyPaste'
+      }
+    }
+  }
+
 	const debriefSubmitHandler = useCallback(
 		async (d) => {
 			setIsLoading(true);
@@ -479,6 +496,7 @@ const checkValChnage = () => {
 				},
 				companyType: companyType?.name,
 				PayPerType:  companyType?.id,
+				ParsingType: getParsingType(isHaveJD,parseType),
 				// --update-- 0 or 1 check
 				 IsMustHaveSkillschanged: originalDetails?.skillmulticheckbox?.map(i=> i.text).toString() === skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString() ? false :true,
 				 IsGoodToHaveSkillschanged:originalDetails?.allSkillmulticheckbox?.map(i=> i.text).toString() === goodToSkillList.map(item=> item.skillsName).toString() ? false: true,
@@ -651,6 +669,58 @@ const checkValChnage = () => {
 	
 	}
 
+	const genrateAIJD = async () =>{
+		setFetchAIJD(true)
+		clearErrors(['hrTitle','skills','goodToHaveSkills'])
+
+		if(!watch('hrTitle')){
+			setError('hrTitle', {
+				type: 'AI Error',
+				message: 'Please enter hiring request title',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		let mustSkills = watch('skills') ? watch('skills')?.map((item) => item.value || item?.skillsName) : []
+		let goodSkills = watch('goodToHaveSkills') ? watch('goodToHaveSkills')?.map((item) => item.value || item?.skillsName) : []
+
+		if(mustSkills.length === 0){
+			setError('skills', {
+				type: 'AI Error',
+				message: 'Please Select Skill',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		if(goodSkills.length === 0){
+			setError('goodToHaveSkills', {
+				type: 'AI Error',
+				message: 'Please Select Skill',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		let payload = {
+			"ContactID": getHRdetails?.contactId,
+			"HRID": getHRdetails?.id,
+			"MustHaveSkill": watch('skills').map((item) => item.value || item?.skillsName),
+			"GoodToHaveSkill": watch('goodToHaveSkills').map((item) => item.value || item?.skillsName),
+			"Title": watch('hrTitle'),
+			"Location": getHRdetails?.directPlacement?.modeOfWork			
+		}
+
+		const result =await hiringRequestDAO.createAIJDDAO(payload)
+
+		if(result?.statusCode === 200){
+			setValue("jobDescription",result?.responseBody?.jobDescription)	
+			setFetchAIJD(false)	
+		}
+		setFetchAIJD(false)
+	}
+
 
 	return (
 		<>
@@ -673,6 +743,43 @@ const checkValChnage = () => {
 						</div>
 						</div>
 						<div className={DebriefingHRStyle.hrFieldRightPane}>
+
+						<div className={DebriefingHRStyle.mb50}>
+								<div className={DebriefingHRStyle.formGroup}>
+                    <label>
+					Hiring Request Title <b style={{ color: "red" }}>*</b>
+                    </label>
+                    <Controller
+                      render={({ ...props }) => (
+                        <AutoComplete
+                          options={talentRole && talentRole}
+                          filterOption={true}             
+                          onChange={(hrTitle) => {
+                            setValue("hrTitle", hrTitle);
+                          }}
+                          placeholder="Enter Hiring Request Title"
+                        //   ref={controllerRef}
+                          value={watch('hrTitle')}
+                        //   disabled={
+                        //     getHRdetails.allowSpecialEdit ? false : true
+                        //   }
+                        />
+                      )}
+                      {...register("hrTitle", {
+                        required: 'please enter the hiring request title.',
+                      })}
+                      name="hrTitle"
+                      // rules={{ required: true }}
+                      control={control}
+                    />
+                    {errors.hrTitle && (
+                      <div className={DebriefingHRStyle.error}>
+                        {errors.hrTitle?.message &&
+                          `* ${errors?.hrTitle?.message}`}
+                      </div>
+                    )}
+                  </div> 
+								</div>
 							<div className={DebriefingHRStyle.colMd12}>
 								{/* <TextEditor
 									isControlled={true}
@@ -727,6 +834,124 @@ const checkValChnage = () => {
 								name="jobDescription"
 								required
 							/> */}
+
+<div className={DebriefingHRStyle.mb50}>
+									<HRSelectField
+										isControlled={true}
+										controlledValue={controlledJDParsed}
+										setControlledValue={setControlledJDParsed}
+										// mode="multiple"
+										mode="tags"
+										setValue={setValue}
+										register={register}
+										label={'Must have Skills'}
+										placeholder="Type skills" 
+										onChange={setSelectedItems}
+										options={combinedSkillsMemo}
+										setOptions = {setCombinedSkillsMemo}
+										name="skills"
+										isError={errors['skills'] && errors['skills']}
+										required
+										errorMsg={'Please enter the skills.'}
+										isMustHaveSkillRes={true}
+									/>
+
+									<ul className={DebriefingHRStyle.selectFieldBox}>
+										{goodSuggestedSkills?.map((skill) => (																	
+											<li key={skill} onClick={() => onSelectSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+										))}	
+									</ul>
+								</div>
+								{/* <ul className={DebriefingHRStyle.selectFieldBox}>
+									{goodSuggestedSkills?.map((skill) => (
+										  onClick={() =>
+										 addtopSkillFromSuggestion(skill, top5Skills)
+										 }									
+										<li key={skill} className={DebriefingHRStyle.mb50} onClick={() => onSelectSkill(skill)}>                      
+											{skill}test
+											 <img
+											// src={plusImage}                          
+											loading="lazy"
+											alt="star"
+											/> 
+										</li>									
+									))}
+								</ul> */}						
+
+								{isOtherSkillExistMemo && (
+									<>
+									<div className={DebriefingHRStyle.colMd12}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the other skills.',
+											pattern: {
+												value: /^((?!other).)*$/,
+												message: 'Please remove "other" keyword.',
+											},
+										}}
+										label="Other Skills"
+										name="otherSkill"
+										type={InputType.TEXT}
+										placeholder="Enter other skill"
+										maxLength={50}
+										required
+									/>
+								</div>									
+							</>
+														
+						)}
+
+						<div className={DebriefingHRStyle.mb50}>
+									<HRSelectField
+										isControlled={true}
+										controlledValue={controlledGoodToHave}
+										setControlledValue={setControlledGoodToHave}
+										// mode="multiple"
+										mode="tags"
+										setValue={setValue}
+										register={register}
+										label={'Good to have Skills'}
+										placeholder="Type skills"
+										onChange={setSelectGoodToHaveItems}
+										options={SkillMemo}
+										setOptions = {setSkillMemo}
+										name="goodToHaveSkills"
+										isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+										required
+										errorMsg={sameSkillErrors ? 'Same Skills are not allowed!' : 'Please enter the skills.'}
+									/>
+								</div>
+								{/* <div className="selectFieldBox">
+								{allSuggestedSkills?.map((skill) => (																		
+									<button key={skill} onClick={() => onSelectGoodSkill(skill)}>                      
+										{skill}										
+									</button>									
+								))}
+								</div> */}
+
+								<ul className={DebriefingHRStyle.selectFieldBox}>
+										{allSuggestedSkills?.map((skill) => (																	
+											<li key={skill} onClick={() => onSelectGoodSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+										))}	
+								</ul>
+
+								{fetchAIJD && <LogoLoader visible={fetchAIJD}/> }
+							{isHaveJD === 1 && <div className={DebriefingHRStyle.mb50}>
+							<div className={DebriefingHRStyle.formPanelAction} style={{justifyContent:'left', padding:'5px 0'}}>
+								
+								<button
+							type="button"
+							className={DebriefingHRStyle.btnPrimary}
+							onClick={()=>genrateAIJD()}
+							>							
+							Generate AI JD
+						</button>
+					</div>
+							</div>}
+
+
 							<div className={DebriefingHRStyle.mb50}>
 							<label className={DebriefingHRStyle.formGroupLabel}>
 								Job Description
@@ -839,144 +1064,9 @@ const checkValChnage = () => {
 									/>	
 								</div>	 */}
 
-								<div className={DebriefingHRStyle.mb50}>
-								<div className={DebriefingHRStyle.formGroup}>
-                    <label>
-					Hiring Request Title <b style={{ color: "red" }}>*</b>
-                    </label>
-                    <Controller
-                      render={({ ...props }) => (
-                        <AutoComplete
-                          options={talentRole && talentRole}
-                          filterOption={true}             
-                          onChange={(hrTitle) => {
-                            setValue("hrTitle", hrTitle);
-                          }}
-                          placeholder="Enter Hiring Request Title"
-                        //   ref={controllerRef}
-                          value={watch('hrTitle')}
-                        //   disabled={
-                        //     getHRdetails.allowSpecialEdit ? false : true
-                        //   }
-                        />
-                      )}
-                      {...register("hrTitle", {
-                        required: 'please enter the hiring request title.',
-                      })}
-                      name="hrTitle"
-                      // rules={{ required: true }}
-                      control={control}
-                    />
-                    {errors.hrTitle && (
-                      <div className={DebriefingHRStyle.error}>
-                        {errors.hrTitle?.message &&
-                          `* ${errors?.hrTitle?.message}`}
-                      </div>
-                    )}
-                  </div> 
-								</div>
+							
 								
-								<div className={DebriefingHRStyle.mb50}>
-									<HRSelectField
-										isControlled={true}
-										controlledValue={controlledJDParsed}
-										setControlledValue={setControlledJDParsed}
-										// mode="multiple"
-										mode="tags"
-										setValue={setValue}
-										register={register}
-										label={'Must have Skills'}
-										placeholder="Type skills" 
-										onChange={setSelectedItems}
-										options={combinedSkillsMemo}
-										setOptions = {setCombinedSkillsMemo}
-										name="skills"
-										isError={errors['skills'] && errors['skills']}
-										required
-										errorMsg={'Please enter the skills.'}
-										isMustHaveSkillRes={true}
-									/>
-
-									<ul className={DebriefingHRStyle.selectFieldBox}>
-										{goodSuggestedSkills?.map((skill) => (																	
-											<li key={skill} onClick={() => onSelectSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
-										))}	
-									</ul>
-								</div>
-								{/* <ul className={DebriefingHRStyle.selectFieldBox}>
-									{goodSuggestedSkills?.map((skill) => (
-										  onClick={() =>
-										 addtopSkillFromSuggestion(skill, top5Skills)
-										 }									
-										<li key={skill} className={DebriefingHRStyle.mb50} onClick={() => onSelectSkill(skill)}>                      
-											{skill}test
-											 <img
-											// src={plusImage}                          
-											loading="lazy"
-											alt="star"
-											/> 
-										</li>									
-									))}
-								</ul> */}						
-
-								{isOtherSkillExistMemo && (
-									<>
-									<div className={DebriefingHRStyle.colMd12}>
-									<HRInputField
-										register={register}
-										errors={errors}
-										validationSchema={{
-											required: 'please enter the other skills.',
-											pattern: {
-												value: /^((?!other).)*$/,
-												message: 'Please remove "other" keyword.',
-											},
-										}}
-										label="Other Skills"
-										name="otherSkill"
-										type={InputType.TEXT}
-										placeholder="Enter other skill"
-										maxLength={50}
-										required
-									/>
-								</div>									
-							</>
-														
-						)}
-
-						<div className={DebriefingHRStyle.mb50}>
-									<HRSelectField
-										isControlled={true}
-										controlledValue={controlledGoodToHave}
-										setControlledValue={setControlledGoodToHave}
-										// mode="multiple"
-										mode="tags"
-										setValue={setValue}
-										register={register}
-										label={'Good to have Skills'}
-										placeholder="Type skills"
-										onChange={setSelectGoodToHaveItems}
-										options={SkillMemo}
-										setOptions = {setSkillMemo}
-										name="goodToHaveSkills"
-										isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
-										required
-										errorMsg={sameSkillErrors ? 'Same Skills are not allowed!' : 'Please enter the skills.'}
-									/>
-								</div>
-								{/* <div className="selectFieldBox">
-								{allSuggestedSkills?.map((skill) => (																		
-									<button key={skill} onClick={() => onSelectGoodSkill(skill)}>                      
-										{skill}										
-									</button>									
-								))}
-								</div> */}
-
-								<ul className={DebriefingHRStyle.selectFieldBox}>
-										{allSuggestedSkills?.map((skill) => (																	
-											<li key={skill} onClick={() => onSelectGoodSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
-										))}	
-								</ul>
+					
 								{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{

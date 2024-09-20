@@ -220,6 +220,8 @@ const AddNewHR = () => {
 									setOriginalDetails={setOriginalDetails} 
 									isHaveJD={isHaveJD}
 									setIsHaveJD={setIsHaveJD}
+									parseType={parseType}
+									setParseType={setParseType}
 								/>
 							),
 							disabled: localStorage.getItem('fromEditDeBriefing') && true,
@@ -245,6 +247,7 @@ const AddNewHR = () => {
 									setOriginalDetails={setOriginalDetails} 
 									isHaveJD={isHaveJD}
 									setIsHaveJD={setIsHaveJD}
+									parseType={parseType}
 								/>
 							),
 							disabled: tabFieldDisabled?.debriefingHR,
