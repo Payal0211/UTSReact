@@ -1198,7 +1198,15 @@ const TalentList = ({
 												{item?.ContractEnddate}
 											</span>
 										</div>
-									)}										
+									)}		
+									{item?.OfferedCTC && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Talent's Offered CTC:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{budgetStringToCommaSeprated(item?.OfferedCTC)}
+											</span>
+										</div>
+									)}								
 										{item?.LastWorkingDate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Last Working Date:</span>&nbsp;&nbsp;

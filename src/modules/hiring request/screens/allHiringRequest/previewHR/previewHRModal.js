@@ -40,7 +40,6 @@ import { MasterDAO } from "core/master/masterDAO";
 import YouTubeVideo from "modules/client/components/previewClientDetails/youTubeVideo";
 import { NetworkInfo } from "constants/network";
 import confirm from "antd/es/modal/confirm";
-import HSContent from "constants/CommonEditorPreview/HSContent";
 
 
 // import "../../CompanyDetails/companyDetails.css";
@@ -247,7 +246,7 @@ function PreviewHRModal({
     if(jobPreview?.isTransparentPricing === true){
       setTransparentEngType([])
     }else{
-      getTransparentEngType(hrIdforPreview)
+      hrIdforPreview && getTransparentEngType(hrIdforPreview)
     }
   },[hrIdforPreview,jobPreview])
   
@@ -2533,7 +2532,7 @@ getSkillList();
                                     ${jobPreview?.requirements ? `<h3>Requirements</h3>${jobPreview?.requirements}<br><br>` : ''}
                                     ${jobPreview?.whatweoffer ? `<h3>What We Offer</h3>${jobPreview?.whatweoffer}` : ''}
                                   `;
-                                    setEditWhatWeOffer(editWhatWeOffer ? editWhatWeOffer : jobPreview?.jobDescription ? jobPreview?.jobDescription : mergedContent);
+                                    setEditWhatWeOffer(editWhatWeOffer ? editWhatWeOffer : jobPreview?.jobDescription ? jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim() : mergedContent);
                                   }}
                                 ><img src={EditnewIcon} /></span>
                               </h6>
@@ -2545,8 +2544,8 @@ getSkillList();
                                     value={editWhatWeOffer}
                                     onChange={(val) => {
                                       let sanitizedContent = sanitizeLinks(val);
-                                      let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                                      setEditWhatWeOffer(_updatedVal)
+                                      // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                                      setEditWhatWeOffer(sanitizedContent)
                                     }}
                                   />
                                   {(!editWhatWeOffer ||
@@ -2577,7 +2576,17 @@ getSkillList();
                                 </>
                               ) : (
                                 <div>                              
-                                  <HSContent data={jobPreview?.jobDescription && jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim()} />
+                                  <ReactQuill
+                                                    theme="snow"
+                                                    className="heightSize previewQuill"
+                                                    value={jobPreview?.jobDescription && jobPreview?.jobDescription?.replace(/\s+/g, ' ')?.replace(/>\s+</g, '><')?.trim()}
+                                                    // onChange={(val) =>{
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   setEditWhatWeOffer(sanitizedContent)
+                                                    // }}
+                                                    modules={modules}
+                                                    readOnly
+                                                  />
                                 </div>
                               )}
                             </div>

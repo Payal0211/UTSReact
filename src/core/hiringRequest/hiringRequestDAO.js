@@ -113,7 +113,30 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
 		}
 	},
-
+	fetchrepostDetails: async function (HRID) {
+		try {
+			const scheduleResult = await HiringRequestAPI.fetchrepostDetailsRequest(HRID);
+			if (scheduleResult) {
+				const statusCode = scheduleResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = scheduleResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return scheduleResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return scheduleResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.fetchrepostDetails');
+		}
+	},
 	getCloseJobPostsLogs: async function (data) {
 		try {
 			const closejobResult = await HiringRequestAPI.closeJobLogs(data);

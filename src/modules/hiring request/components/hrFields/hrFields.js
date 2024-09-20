@@ -4758,8 +4758,8 @@ const HRFields = ({
                     name="parametersHighlight"
                     onChange={(val) => {
                       let sanitizedContent = sanitizeLinks(val);
-                      let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                      setValue("parametersHighlight", _updatedVal)}
+                      // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                      setValue("parametersHighlight", sanitizedContent)}
                     }
                   />
                   {/* <HRInputField
@@ -5229,7 +5229,18 @@ who have worked in scaled start ups."
                 {gptDetails?.salesHiringRequest_Details?.jobDescription && (
                   <>
                     <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
-                    {testJSON(
+                    <ReactQuill
+                                                    theme="snow"
+                                                    className="heightSize previewQuill"
+                                                    value={gptDetails?.salesHiringRequest_Details?.jobDescription}
+                                                    // onChange={(val) =>{
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   setEditWhatWeOffer(sanitizedContent)
+                                                    // }}
+                                                    // modules={modules}
+                                                    readOnly
+                                                  />
+                    {/* {testJSON(
                       gptDetails?.salesHiringRequest_Details?.jobDescription
                     ) ? (
                       <div className={HRFieldStyle.viewHrJDDetailsBox}>
@@ -5256,7 +5267,7 @@ who have worked in scaled start ups."
                           ),
                         }}
                       />
-                    )}
+                    )} */}
                   </>
                 )}
 
@@ -5374,7 +5385,18 @@ who have worked in scaled start ups."
                     {gptFileDetails?.JobDescription && (
                       <>
                         <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
-                        <div
+                        <ReactQuill
+                                                    theme="snow"
+                                                    className="heightSize previewQuill"
+                                                    value={gptFileDetails?.JobDescription}
+                                                    // onChange={(val) =>{
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   setEditWhatWeOffer(sanitizedContent)
+                                                    // }}
+                                                    // modules={modules}
+                                                    readOnly
+                                                  />
+                        {/* <div
                           className={`${HRFieldStyle.viewHrJDDetailsBox} jobDescritionCSS`}
                           dangerouslySetInnerHTML={{
                             __html: gptFileDetails?.JobDescription,
@@ -5382,9 +5404,9 @@ who have worked in scaled start ups."
                         >
                           {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
-                  </ul> */}
-                          {/* {gptFileDetails?.JobDescription} */}
-                        </div>
+                  </ul> 
+                          {/* {gptFileDetails?.JobDescription} 
+                        </div> */}
                       </>
                     )}
                   </div>

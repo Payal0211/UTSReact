@@ -215,8 +215,8 @@ const addnewYoutubeLink = (e) =>{
               name="culture"
               onChange={(val) => {
                 let sanitizedContent = sanitizeLinks(val);
-                let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                setValue("culture", _updatedVal)}
+                // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                setValue("culture", sanitizedContent)}
               }
               // onChange={(val) => {
               //   // console.log(val,"dfsdfsdfsdfsdfsdfsdfdsf");
