@@ -5240,7 +5240,7 @@ who have worked in scaled start ups."
                                                     // modules={modules}
                                                     readOnly
                                                   />
-                    {testJSON(
+                    {/* {testJSON(
                       gptDetails?.salesHiringRequest_Details?.jobDescription
                     ) ? (
                       <div className={HRFieldStyle.viewHrJDDetailsBox}>
@@ -5267,7 +5267,7 @@ who have worked in scaled start ups."
                           ),
                         }}
                       />
-                    )}
+                    )} */}
                   </>
                 )}
 
@@ -5396,7 +5396,7 @@ who have worked in scaled start ups."
                                                     // modules={modules}
                                                     readOnly
                                                   />
-                        <div
+                        {/* <div
                           className={`${HRFieldStyle.viewHrJDDetailsBox} jobDescritionCSS`}
                           dangerouslySetInnerHTML={{
                             __html: gptFileDetails?.JobDescription,
@@ -5404,9 +5404,9 @@ who have worked in scaled start ups."
                         >
                           {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
-                  </ul> */}
-                          {/* {gptFileDetails?.JobDescription} */}
-                        </div>
+                  </ul> 
+                          {/* {gptFileDetails?.JobDescription} 
+                        </div> */}
                       </>
                     )}
                   </div>
