@@ -1677,15 +1677,15 @@ const HRFields = ({
       hrFormDetails.HRIndustryType = specificIndustry?.join("^");
       hrFormDetails.StringSeparator = "^";
 
-      hrFormDetails.JobTypeID = watch("workingMode").id;
+      hrFormDetails.JobTypeID = watch("workingMode")?.id;
       hrFormDetails.JobLocation =
-        watch("workingMode").id === 2 || watch("workingMode").id === 3
+        watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? watch("location")
           : null;
       hrFormDetails.FrequencyOfficeVisitID =
-        watch("workingMode").id === 2 ? watch("officeVisits").id : null;
+        watch("workingMode")?.id === 2 ? watch("officeVisits")?.id : null;
       hrFormDetails.IsOpenToWorkNearByCities =
-        watch("workingMode").id === 2 || watch("workingMode").id === 3
+        watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? isRelocate
           : null;
       const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
@@ -1694,7 +1694,7 @@ const HRFields = ({
         ?  selectedLabels?.concat(nonNumericValues)?.join(',')
         : null;
       hrFormDetails.ATS_JobLocationID =
-        watch("workingMode").id === 2 || watch("workingMode").id === 3
+        watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? locationList?.find((loc) => loc.value === watch("location"))?.id
           : null;
       hrFormDetails.ATS_NearByCities = isRelocate
