@@ -504,7 +504,15 @@ const EngagementOnboard = ({
               )}
             </li>
 
-
+            <li>
+              <span>Talent's Offered CTC : </span>
+              {getOnboardFormDetails?.offeredCTC ? (
+               
+                  budgetStringToCommaSeprated(getOnboardFormDetails?.offeredCTC)
+              ) : (
+                "NA"
+              )}
+            </li>
 
             <li>
               <span>Talent IST Shift Start Time : </span>
