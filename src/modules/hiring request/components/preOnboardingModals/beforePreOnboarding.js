@@ -331,9 +331,18 @@ export default function BeforePreOnboarding({
   }
 
   useEffect(() => {
-    let data = amUsers?.filter((item) => item.id === preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID);
-    setValue("amSalesPersonID", data[0]);
-    setControlledAssignAM(data[0]);
+    if(amUsers.length > 0 &&  preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID ){
+      let data = amUsers?.filter((item) => item.id === preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID); 
+    if(data[0]){
+      setValue("amSalesPersonID", data[0]);
+      setControlledAssignAM(data[0]);
+    }else{
+      setValue("amSalesPersonID", {id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name});
+      setControlledAssignAM({id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name});
+      setAMUsers(prev=> [...prev,{id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name}])
+    }  
+    }
+    
   }, [preONBoardingData,amUsers])
 
   useEffect(() => {    
@@ -1156,7 +1165,7 @@ const calcelMember = () =>{
                   </Radio.Group>                    
                   </div>
                 </div>}
-                  <div className={HRDetailStyle.colMd12}>             
+                  <div className={HRDetailStyle.colMd12}>
                     <HRSelectField
                       isControlled={true}
                       controlledValue={controlledAssignAM}
