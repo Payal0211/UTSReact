@@ -894,11 +894,11 @@ alt="preview"
 	}
 
   useEffect(() => {
-    if(contactDetails.length){
-      getDataForViewClient(CompanyID,contactDetails[0].id)
+    if(companyPreviewData?.contactDetails?.length){
+      getDataForViewClient(CompanyID, companyPreviewData?.contactDetails[0].id)
     }
   },[
-    CompanyID,contactDetails
+    CompanyID, companyPreviewData?.contactDetails
   ])
 
   const togglePriority = useCallback(
