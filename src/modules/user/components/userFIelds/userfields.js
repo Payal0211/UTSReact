@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Divider, Modal, Tooltip, Spin, Radio } from 'antd';
+import { Divider, Modal, Tooltip, Spin, Radio, Checkbox } from 'antd';
 import { InputType, SubmitType, UserAccountRole } from 'constants/application';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import HRInputField from '../../../hiring request/components/hrInputFields/hrInputFields';
@@ -112,6 +112,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		another_UserTypeID :""
 	})
 	const [anotherUserTypeIDError,setAnotherUserTypeIDError] = useState(false)
+	const [checkNumber, setCheckNumber] = useState(false);
 
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
@@ -612,8 +613,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			if(anotherUserTypeID?.another_UserTypeID == ""){
 				setAnotherUserTypeIDError(true);
 				isValid = false;
-			}			
-			
+			}	
+
 			if(isValid){	
 				setFormIsLoading(true);			
 				let userResponse = await userAPI.createUserRequest(userFormDetails);
@@ -775,6 +776,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			// setValue('skypeID', userDetails?.skypeId);
 			setValue('emailID', userDetails?.emailId);
 			setValue('primaryClientPhoneNumber', userDetails?.contactNumber);
+			setValue('whatsappNumber',userDetails?.whatsappNumber);
 			setValue('employeeDesignation', userDetails?.designation);
 			setValue('description', userDetails?.description);
 			setValue('priorityCount', userDetails?.priorityCount);
@@ -1273,6 +1275,43 @@ const UsersFields = ({ id, setLoading, loading }) => {
 													// }}
 												/>
 											</div> */}
+										</div>
+									</div>
+
+									<div className={UserFieldStyle.colMd6}>
+										<div className={`${UserFieldStyle.formGroup} ${UserFieldStyle.phoneNoGroup} ${UserFieldStyle.mb32}`}>
+											<label>WhatsApp Number</label>
+											<div className="phonConturyWrap" style={{width:'100%'}}>
+												<PhoneInput
+													placeholder="Enter number"
+													key={'whatsAppNumber'}
+													value={watch('whatsappNumber')}
+													onChange={(value,__) => {
+													setValue('whatsappNumber',value) 
+													}}
+													country={'in'}
+													disableSearchIcon={true}
+													enableSearch={true}
+												/>
+											</div>
+										</div>
+									</div>
+
+									<div className={UserFieldStyle.colMd6}>
+										<div className={`${UserFieldStyle.formGroup} ${UserFieldStyle.phoneNoGroup}`}>
+											<label>Contact Number same as WhatsApp Number</label>
+											<Checkbox
+												name="checkWhatsAppNumber"
+												checked={checkNumber}
+												onChange={(e) => {
+													setCheckNumber(e.target.checked);
+													if(e.target.checked === true){
+														setValue("whatsappNumber",watch('primaryClientPhoneNumber'))
+													}else{
+														setValue("whatsappNumber","")
+													}
+												}}
+											/>
 										</div>
 									</div>
 

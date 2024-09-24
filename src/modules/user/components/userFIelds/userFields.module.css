@@ -161,6 +161,10 @@
     margin-bottom: 0 !important;
 }
 
+.mb32 {
+    margin-bottom: 32px !important;
+}
+
 .reqExperience {
     margin: 0;
     flex-wrap: wrap;
