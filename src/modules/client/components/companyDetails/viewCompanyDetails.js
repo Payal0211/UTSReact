@@ -6,7 +6,7 @@ import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import { MasterDAO } from "core/master/masterDAO";
 import { DateTimeUtils } from "shared/utils/basic_utils";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
-import { Avatar, Tabs, Table, Skeleton, Checkbox, message, Modal } from "antd";
+import { Avatar, Tabs, Table, Skeleton, Checkbox, message, Modal, Select } from "antd";
 import { allClientRequestDAO } from "core/allClients/allClientsDAO";
 import { allClientsConfig } from "modules/hiring request/screens/allClients/allClients.config";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
@@ -16,6 +16,8 @@ import UTSRoutes from 'constants/routes';
 import { Link } from "react-router-dom";
 import Star from 'assets/svg/selectStarFill.svg';
 import spinGif from "assets/gif/RefreshLoader.gif";
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 const creditColumn = [
@@ -148,6 +150,10 @@ export default function ViewCompanyDetails() {
   const [jobpostDraft, setModaljobpostDraft] = useState(false);
   const [guid,setGuid] = useState('');
   const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
+  const [showwhatsAppmodal,setWhatsappModal] = useState(false)
+  const [ wUsersToAdd,setWusersToAdd] = useState([]);
+
+  const [selectedUsers,setSelectedUsers] = useState([]);
 
   const groupMemberColumns = [
     {
@@ -229,26 +235,109 @@ export default function ViewCompanyDetails() {
 
   const CreateWhatsAppGroup = async ()=>{
     setIsgroupCreating(true);
+    setGroupError('')
+    const selecteUserForGroup = wUsersToAdd.filter(wUser => 
+      selectedUsers.map(user => user.userID).includes(wUser.userID)
+    );
+    
     const payload = {
       "companyID": +CompanyID,
       "companyName": companyPreviewData?.basicDetails?.companyName,
-      "pocUserID": companyPreviewData?.pocUserDetailsEdit?.pocUserID
+      "pocUserID": companyPreviewData?.pocUserDetailsEdit?.pocUserID,
     }
+    let result 
 
-    let result = await allCompanyRequestDAO.createWhatsAppGroupDAO(payload)
+    if(companyPreviewData?.whatsappDetails?.length > 0){
+      let addeUsers = selecteUserForGroup.filter(wUser => !wUser.groupID )
+      let removedUsers = companyPreviewData?.whatsappDetails?.filter(user => !selectedUsers.map(user => user.groupMember).includes(user.groupMember))
+    
+      payload["whatsappMemberDetails"] = [...addeUsers?.map(item => ({
+        "memberName": item.groupMember,
+        "whatsappNumber": item.whatsappNumber,
+        "userId": typeof item.userID === "string" ? 0 : item.userID,
+        "admin": item.isAdmin,
+        "memberFlag": "Add"
+      })),
+      ...removedUsers.map(item => ({
+        "memberName": item.groupMember,
+        "whatsappNumber": item.whatsappNumber,
+        "userId": typeof item.userID === "string" ? 0 : item.userID,
+        "admin": item.isAdmin,
+        "memberFlag": "Remove",
+        "memberId": item.memberId,
+      }))
+      ]
+
+      payload["groupId"]  = companyPreviewData?.whatsappDetails[0].groupID 
+
+      result = await allCompanyRequestDAO.updateWhatsAppGroupDAO(payload)
+    }else{
+      payload["whatsappMemberDetails"] = selecteUserForGroup.map(item => ({
+        "memberName": item.memberName ?? item.groupMember,
+        "whatsappNumber": item.whatsappNumber,
+        "userId": typeof item.userID === "string" ? 0 : item.userID,
+        "admin": item.isAdmin,
+        "memberFlag": "Add"
+      }))
+
+      result = await allCompanyRequestDAO.createWhatsAppGroupDAO(payload)
+    }  
 
     if(result?.statusCode === HTTPStatusCode.OK){
       setCompanyDetailsPreview(prev => ({...prev,whatsappDetails:result.responseBody.WhatsappDetails, showWhatsappCTA: result.responseBody.ShowWhatsappCTA}))
+      setWhatsappModal(false)
+      setGroupError('')
     }
 
     if(result?.statusCode === HTTPStatusCode.BAD_REQUEST){
-      // message.error(result.responseBody)
      setGroupError(result?.responseBody)
-     setTimeout(()=>{
-      setGroupError('')
-     },5000)
         }
     setIsgroupCreating(false);
+  }
+
+  const openWhatsAppmodal = ()=> {
+    setWhatsappModal(true)
+    let Poc = salesMan.find(val=> val.id === companyPreviewData?.pocUserDetailsEdit?.pocUserID)
+ 
+    let userObj = {
+      "detailID": 0,
+      "groupID": null,
+      "groupName": null,
+      "groupCreatedBy": null,
+      "groupCreatedDate": null,
+      "groupMember": Poc?.value,
+      "isAdmin": true,
+      "employeeID": null,
+      "whatsappNumber": Poc.contactNumber ,
+      "memberId": null,
+      "userID": Poc?.id
+  }
+    setWusersToAdd([userObj])
+  }
+
+  const openEditWhatsAppmodal =()=>{
+    setWhatsappModal(true)
+    let addedusers = companyPreviewData?.whatsappDetails?.map(user=> ({...user,userID: user.userID ? user.userID : user.groupMember }))
+    setWusersToAdd(addedusers)
+    setSelectedUsers(addedusers.map(val=> ({userID: val.userID,groupMember:val.groupMember})))
+  }
+
+  const addNewUserToAdd = () =>{
+    let userObj = {
+      "detailID": 0,
+      "groupID": null,
+      "groupName": null,
+      "groupCreatedBy": null,
+      "groupCreatedDate": null,
+      "groupMember": null,
+      "isAdmin": false,
+      "employeeID": null,
+      "whatsappNumber": null ,
+      "memberId": null,
+      "userID": null
+  }
+
+    setWusersToAdd(prev => [...prev , userObj])
   }
 
   const CompDetails = () => {
@@ -501,11 +590,12 @@ export default function ViewCompanyDetails() {
                               : "NA"}
                           </li>
 
-                        {companyPreviewData?.showWhatsappCTA && <li>
+                        {companyPreviewData?.showWhatsappCTA ? <li>
                           <button
                           type="submit"
                           onClick={() => {
-                            CreateWhatsAppGroup()
+                            // CreateWhatsAppGroup()
+                            openWhatsAppmodal()
                           }}
                           disabled={isGroupCreating}
                           className={AddNewClientStyle.btnPrimaryResendBtn}
@@ -515,7 +605,21 @@ export default function ViewCompanyDetails() {
 
                         {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
                        {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
-                        </li> }
+                        </li> : companyPreviewData?.whatsappDetails?.length > 0 && <li>
+                          <button
+                          type="submit"
+                          onClick={() => {
+                            openEditWhatsAppmodal()
+                          }}
+                          disabled={isGroupCreating}
+                          className={AddNewClientStyle.btnPrimaryResendBtn}
+                        >
+                          Manage Whatsapp Group 
+                        </button>
+
+                        {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+                       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
+                        </li>}
 
                           {/* <li>
                             <span>Lead Source:</span>{" "}
@@ -1019,6 +1123,204 @@ alt="preview"
           ]}
         />
       </div>
+
+      <Modal
+				width={'864px'}
+				centered
+				footer={false}
+				open={showwhatsAppmodal}
+				className="jobpostDraftModal"
+				onOk={() => setWhatsappModal(false)}
+				onCancel={() => setWhatsappModal(false)}
+			>
+         <div className={AddNewClientStyle.engagementModalContainer}>
+      <div className={AddNewClientStyle.updateTRTitle}>
+        <h2>{companyPreviewData?.whatsappDetails?.length ? "Edit" : "Create"} Whatsapp Group</h2>
+        {/* <p>{closeHRDetail?.ClientDetail?.HR_Number}</p> */}
+      </div>
+
+      <div className={AddNewClientStyle.row}>
+{wUsersToAdd.map((user, index) => <div className={AddNewClientStyle.colMd12}>
+          <div className={AddNewClientStyle.groupUserContainer}>
+          <div style={{width:'150px'}}>
+            {index === 0 ? <p className={AddNewClientStyle.titleName}>Default user</p> : index === wUsersToAdd.length  - 1 ? <div className={AddNewClientStyle.formPanelAction} >
+            <button
+              type="submit"
+              className={AddNewClientStyle.btnPrimary}
+              onClick={()=>addNewUserToAdd()}
+            >
+              Add User
+            </button>
+          </div> : null}
+            </div>
+
+            <div style={{width:'200px'}}>
+            <Select
+              mode="tags"
+              defaultValue={user.groupMember ?? "Select User"}
+              value = {user.groupMember ?? "Select User"}
+              // style={{ width: 120 }}
+              disabled={selectedUsers.map(user => user.userID).includes(user.userID)}
+              showSearch={true}
+              onChange={(val,_)=> {
+
+                if (_?.length === 0){
+                  let obj ={
+                    ...user,
+                    "groupMember": null,
+                    "whatsappNumber": null ,
+                    "userID": null
+                }
+                let usersToAddnewArr = [...wUsersToAdd] 
+                usersToAddnewArr[index] = obj
+                setWusersToAdd(usersToAddnewArr)
+                }
+
+                if (_?.length >= 1){
+                    if(!_[_?.length - 1].id){
+                      let obj ={
+                        ...user,
+                        "groupMember": val[_?.length - 1],
+                        "whatsappNumber": null ,
+                        "userID": val[_?.length - 1]
+                    }
+                    let usersToAddnewArr = [...wUsersToAdd] 
+                    usersToAddnewArr[index] = obj
+                    setWusersToAdd(usersToAddnewArr)
+                    }else{
+                      let obj ={
+                        ...user,
+                        "groupMember": _[_?.length - 1].value,
+                        "whatsappNumber": _[_?.length - 1].contactNumber ,
+                        "userID": _[_?.length - 1].id
+                    }
+                    let usersToAddnewArr = [...wUsersToAdd] 
+                    usersToAddnewArr[index] = obj
+                    setWusersToAdd(usersToAddnewArr)
+                    }
+                }else{
+                  if(!_[0].id){
+                    let obj ={
+                      ...user,
+                      "groupMember": val[0],
+                      "whatsappNumber": null ,
+                      "userID": val[0]
+                  }
+                  let usersToAddnewArr = [...wUsersToAdd] 
+                  usersToAddnewArr[index] = obj
+                  setWusersToAdd(usersToAddnewArr)
+                  }else{
+                    let obj ={
+                      ...user,
+                      "groupMember": _[0].value,
+                      "whatsappNumber": _[0].contactNumber ,
+                      "userID": _[0].id
+                  }
+                  let usersToAddnewArr = [...wUsersToAdd] 
+                  usersToAddnewArr[index] = obj
+                  setWusersToAdd(usersToAddnewArr)
+                  }
+                
+                }
+               
+            }
+            }
+              options={salesMan}
+            />
+          </div>
+
+          <div>
+          <div className="phonConturyWrap">                                 
+                                    <PhoneInput
+                                        placeholder="Enter number"
+                                        key={"Phone " + index}
+                                        value={user.whatsappNumber}
+                                        onChange={(value,__) => {
+                                          let obj ={
+                                            ...user,
+                                            "whatsappNumber": value,
+                                        }
+                                        let usersToAddnewArr = [...wUsersToAdd] 
+                                        usersToAddnewArr[index] = obj
+                                        setWusersToAdd(usersToAddnewArr)
+                                        }}
+                                        country={'in'}
+                                        disableSearchIcon={true}
+                                        enableSearch={true}
+                                        />
+                                  </div>
+          </div>
+          <div>
+          <div className={AddNewClientStyle.userPanelAction}>
+            <button
+              onClick={() => {
+                setSelectedUsers(prev => [...prev, {userID: user.userID,groupMember:user.groupMember}])
+              }}
+              disabled={!user.groupMember ? !user.groupMember : selectedUsers.map(user => user.userID).includes(user.userID)  }
+              className={AddNewClientStyle.btnPrimary}
+            >
+              Add
+            </button>
+
+            <button
+              // type="submit"
+              className={AddNewClientStyle.btnPrimaryRemove}
+              disabled={!selectedUsers.map(user => user.userID).includes(user.userID)}
+              onClick={()=>{
+                setSelectedUsers(prev=> prev.filter(U=> U.userID !== user.userID))
+              }}
+            >
+             Remove
+            </button>
+          </div>
+          </div>
+          </div>
+        </div>)}
+       
+       {wUsersToAdd.length === 1 && <div className={AddNewClientStyle.formPanelAction} style={{marginLeft:'5px',padding:'12px 20px'}}>
+            <button
+              type="submit"
+              className={AddNewClientStyle.btnPrimary}
+              onClick={()=>addNewUserToAdd()}
+            >
+              Add User
+            </button>
+          </div>} 
+      </div>
+
+      <div className={AddNewClientStyle.row}>
+      <p className={AddNewClientStyle.titleName} style={{marginBottom:'-15px',marginLeft:'24px'}}>Selected users to add in the group :</p>
+        <ul className={AddNewClientStyle.userNameContainer}>
+          
+          {selectedUsers?.map(user =>{
+           return <li>{user.groupMember}</li>
+          })}
+        </ul>
+      </div>
+      {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px',marginLeft:'20px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+      {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold",marginLeft:'20px'}}>{groupError}</p>}
+      <div className={AddNewClientStyle.formPanelAction} style={{padding:'20px'}}>
+            <button
+              onClick={() => {
+                setWhatsappModal(false)
+              }}
+              className={AddNewClientStyle.btn}
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              className={AddNewClientStyle.btnPrimary}
+              onClick={()=>{CreateWhatsAppGroup()}}
+              disabled={selectedUsers.length === 0}
+            >
+              {companyPreviewData?.whatsappDetails?.length ? "Edit" : "Create"}
+            </button>
+          </div>
+      </div>
+    
+        </Modal>
 
       <Modal
 				width={'864px'}
