@@ -1295,7 +1295,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 									</div>
 
 									<div className={UserFieldStyle.colMd6}>
-										<div className={`${UserFieldStyle.formGroup} ${UserFieldStyle.phoneNoGroup} ${UserFieldStyle.mb32}`}>
+										<div className={`${UserFieldStyle.formGroup} ${UserFieldStyle.phoneNoGroup} ${UserFieldStyle.mb6}`}>
 											<label>WhatsApp Number</label>
 											<div className="phonConturyWrap" style={{width:'100%'}}>
 												<PhoneInput
@@ -1314,7 +1314,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 									</div>
 
 									<div className={UserFieldStyle.colMd6}>
-										<div className={UserFieldStyle.checkbox}>
+										<div className={`${UserFieldStyle.checkbox} ${UserFieldStyle.mb10}`}>
 											<Checkbox
 												name="checkWhatsAppNumber"
 												checked={checkNumber}

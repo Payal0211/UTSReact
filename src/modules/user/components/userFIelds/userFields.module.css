@@ -170,8 +170,12 @@
     margin-bottom: 0 !important;
 }
 
-.mb32 {
-    margin-bottom: 32px !important;
+.mb10 {
+    margin-bottom: 10px !important;
+}
+
+.mb6 {
+    margin-bottom: 6px !important;
 }
 
 .reqExperience {
