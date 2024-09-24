@@ -73,7 +73,8 @@ export class CompanysAPI {
 	static DELETE_FUNDING = "DeleteFundingDetails"
 	static PREVIEW = 'Preview'
 	static HR_UPDATE_PREVIEW = 'HRUpdatePreviewDetails'
-	static CREATE_WHATSAPP_GROUP = 'CreateWhatsappGroup '
+	static CREATE_WHATSAPP_GROUP = 'CreateWhatsappGroup'
+	static UPDATE_WHATSAPP_GROUP = 'UpdateWhatsappGroupMembers'
 }
 export class MethodType {
 	static GET = '/get';
