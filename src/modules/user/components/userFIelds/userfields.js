@@ -1228,6 +1228,22 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											required
 										/>
 									</div>
+
+									<div className={UserFieldStyle.colMd6}>
+										<HRInputField
+											register={register}
+											errors={errors}
+											validationSchema={{
+												required: 'please enter designation',
+											}}
+											label="Designation"
+											name="employeeDesignation"
+											type={InputType.TEXT}
+											placeholder="Enter Designation"
+											required
+										/>
+									</div>
+
 									<div className={UserFieldStyle.colMd6}>
 										<div
 											className={`${UserFieldStyle.formGroup} ${UserFieldStyle.phoneNoGroup}`}>
@@ -1298,8 +1314,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 									</div>
 
 									<div className={UserFieldStyle.colMd6}>
-										<div className={`${UserFieldStyle.formGroup} ${UserFieldStyle.phoneNoGroup}`}>
-											<label>Contact Number same as WhatsApp Number</label>
+										<div className={UserFieldStyle.checkbox}>
 											<Checkbox
 												name="checkWhatsAppNumber"
 												checked={checkNumber}
@@ -1311,24 +1326,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														setValue("whatsappNumber","")
 													}
 												}}
-											/>
+											>Contact Number same as WhatsApp Number</Checkbox>
 										</div>
 									</div>
 
-									<div className={UserFieldStyle.colMd6}>
-										<HRInputField
-											register={register}
-											errors={errors}
-											validationSchema={{
-												required: 'please enter designation',
-											}}
-											label="Designation"
-											name="employeeDesignation"
-											type={InputType.TEXT}
-											placeholder="Enter Designation"
-											required
-										/>
-									</div>
+									
 									<div className={UserFieldStyle.colMd12}>
 										{Object.keys(getUploadFileData).length === 0 ? (
 											<HRInputField
