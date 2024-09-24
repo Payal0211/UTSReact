@@ -613,8 +613,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			if(anotherUserTypeID?.another_UserTypeID == ""){
 				setAnotherUserTypeIDError(true);
 				isValid = false;
-			}	
-
+			}			
+			
 			if(isValid){	
 				setFormIsLoading(true);			
 				let userResponse = await userAPI.createUserRequest(userFormDetails);
