@@ -349,6 +349,14 @@
     width: fit-content;
   }
 
+  .groupUserContainer .waSelectGroup{
+    width: 240px;
+  }
+
+  .groupUserContainer .waSelectGroup [class*="ant-select"] [class*="ant-select-selector"] [class*="ant-select-selection-search"] [class*="ant-select-selection-search-input"]{    
+    height: 18px;
+  }
+
 @media screen and (max-width: 1440px) {
   .addNewContainer {
     padding: 16px 24px;

@@ -392,6 +392,7 @@ export default function ViewCompanyDetails() {
                         width: "145px",
                         height: "145px",
                         borderRadius: "50%",
+                        objectFit: "contain"
                       }}
                       src={
                         NetworkInfo.PROTOCOL +
@@ -1159,7 +1160,7 @@ alt="preview"
           </div> : null}
             </div>
 
-            <div style={{width:'200px'}}>
+            <div className={AddNewClientStyle.waSelectGroup}>
             <Select
               mode="tags"
               defaultValue={user.groupMember ?? "Select User"}
@@ -1293,14 +1294,16 @@ alt="preview"
           </div>} 
       </div>
 
-      <div className={AddNewClientStyle.row}>
-      <p className={AddNewClientStyle.titleName} style={{marginBottom:'-15px',marginLeft:'24px'}}>Selected users to add in the group :</p>
-        <ul className={AddNewClientStyle.userNameContainer}>
-          
-          {selectedUsers?.map(user =>{
-           return <li>{user.groupMember}</li>
-          })}
-        </ul>
+      <div className={AddNewClientStyle.row} style={{marginTop:'24px'}}>
+        <div className={AddNewClientStyle.colMd12}>
+          <p className={AddNewClientStyle.titleName}>Selected users to add in the group :</p>
+          <ul className={AddNewClientStyle.userNameContainer} style={{padding:'8px 0'}}>
+            
+            {selectedUsers?.map(user =>{
+            return <li>{user.groupMember}</li>
+            })}
+          </ul>
+        </div>
       </div>
       {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px',marginLeft:'20px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold",marginLeft:'20px'}}>{groupError}</p>}
