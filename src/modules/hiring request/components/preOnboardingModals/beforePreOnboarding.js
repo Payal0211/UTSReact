@@ -67,6 +67,7 @@ export default function BeforePreOnboarding({
     register,
     setValue,
     handleSubmit,
+    resetField,
     unregister,
     clearErrors,
     control,
@@ -331,15 +332,36 @@ export default function BeforePreOnboarding({
   }
 
   useEffect(() => {
-    if(amUsers.length > 0 &&  preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID ){
+    if(amUsers.length > 0 &&  (preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID ===0 || preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID) ){
       let data = amUsers?.filter((item) => item.id === preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID); 
+
     if(data[0]){
-      setValue("amSalesPersonID", data[0]);
-      setControlledAssignAM(data[0]);
+      if(preONBoardingData?.preOnboardingDetailsForAMAssignment.amUserID === 0){
+        setValue("amSalesPersonID", {id: preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbdUserID, value: preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbD_Name});
+        setControlledAssignAM({id: preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbdUserID, value: preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbD_Name});
+        if(!amUsers.map(u=>u.id).includes(preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbdUserID)){
+          setAMUsers(prev=>  [...prev,{id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbdUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbD_Name}])
+        }
+       
+      }else{
+        setValue("amSalesPersonID", data[0]);
+        setControlledAssignAM(data[0]);
+      }
     }else{
-      setValue("amSalesPersonID", {id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name});
-      setControlledAssignAM({id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name});
-      setAMUsers(prev=> [...prev,{id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name}])
+      if(preONBoardingData?.preOnboardingDetailsForAMAssignment.amUserID === 0){
+        setValue("amSalesPersonID", {id: preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbdUserID, value: preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbD_Name});
+        setControlledAssignAM({id: preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbdUserID, value: preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbD_Name});
+        if(!amUsers.map(u=>u.id).includes(preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID)){
+          setAMUsers(prev=> [...prev,{id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name}])
+        }
+        // setAMUsers(prev=> [...prev,{id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbdUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.nbD_Name}])
+      }else{
+        setValue("amSalesPersonID", {id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name});
+        setControlledAssignAM({id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name});
+        if(!amUsers.map(u=>u.id).includes(preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID)){
+          setAMUsers(prev=> [...prev,{id:preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID, value:preONBoardingData?.preOnboardingDetailsForAMAssignment?.aM_Name}])
+        }
+      }      
     }  
     }
     
@@ -374,8 +396,13 @@ export default function BeforePreOnboarding({
           // actionName: actionType ? actionType : "GotoOnboard",
         };
         let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);      
-      if (result?.statusCode === HTTPStatusCode.OK) {       
-        setAssignAM(result?.responseBody?.details?.assignAM)
+      if (result?.statusCode === HTTPStatusCode.OK) {    
+        if(result?.responseBody?.details.preOnboardingDetailsForAMAssignment.amUserID === 0){
+          setAssignAM(true)
+        }else{
+          setAssignAM(result?.responseBody?.details?.assignAM)
+        }   
+        
         setTempAMAssign(result?.responseBody?.details?.assignAM)
         setAssignAMNew(result?.responseBody?.details?.assignAM)
         setReplacementEngHr(result.responseBody.details?.replacementEngAndHR);
@@ -1141,15 +1168,22 @@ const calcelMember = () =>{
               <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
                   <div className={HRDetailStyle.colMd12}>
+                    {/* for add case  */}
                   {!tempAMAssign &&<div className={`${HRDetailStyle.onboardingCurrentText} ${HRDetailStyle.onboardingAMAssignmentHead}`}>
-                     <span>Do you want to assign an AM?</span>                       
-                    <Radio.Group name="assignAM" value={assignAM} disabled={actionType==="Legal"?true:false} onChange={(e) => setAssignAM(e.target.value)}>
-                          <Radio value={true}>Yes</Radio>
-                          <Radio value={false}>No</Radio>
+                     <span>Would you like to continue managing this client, or would you prefer to hand it over to another sales person (AM or NBD)?</span>                       
+                    <Radio.Group name="assignAM" value={assignAM} disabled={actionType==="Legal"?true:false} onChange={(e) => {setAssignAM(e.target.value)
+                    // if(preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID === 0){
+                    //   resetField("amSalesPersonID")
+                    //   setControlledAssignAM([]);
+                    // }
+
+                    }} style={{display:'flex',flexDirection:'column',marginTop:'5px',height:'50px',justifyContent:'space-around'}}>
+                          <Radio value={true}>I would like to continue managing the client.</Radio>
+                          <Radio value={false}>I prefer to hand over the client to another salesperson.</Radio>
                     </Radio.Group>                    
                     </div>}
                   </div>
-                {assignAM ?  
+               
                 <> 
                 
                 {tempAMAssign &&<div className={HRDetailStyle.colMd12}>
@@ -1165,6 +1199,7 @@ const calcelMember = () =>{
                   </Radio.Group>                    
                   </div>
                 </div>}
+                                           
                   <div className={HRDetailStyle.colMd12}>
                     <HRSelectField
                       isControlled={true}
@@ -1239,7 +1274,7 @@ const calcelMember = () =>{
                       <div className={HRDetailStyle.colMd12}><div className={HRDetailStyle.assignmentNotAssign}>No HR Found for Handover</div></div>
                     </>
                   )}
-                  </> : <div className={HRDetailStyle.colMd12}><div className={HRDetailStyle.assignmentNotAssign}>All the current HRs will not be assigned to any AMs</div></div>}
+                  </> 
                 </div>
               </div>
             </div>
