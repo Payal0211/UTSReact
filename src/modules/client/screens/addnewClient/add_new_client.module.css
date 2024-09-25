@@ -198,6 +198,165 @@
     font-weight: bold;
   }
 
+  .colMd12 {
+    width: 100%;
+    padding: 0 25px;
+  }
+
+  .userPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #cecccc;
+    border-radius: 8px;
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 4px 10px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-right: 5px;
+  }
+
+  .userPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+  }
+  .userPanelAction button:disabled {
+    background: #cecccc;
+    border: 1px solid #cecccc;
+    cursor: not-allowed;
+  }
+
+  .userPanelAction .btnPrimaryRemove {
+    background: var(--color-danger);
+    border-color: var(--color-sunlight);
+    color: #fff;
+  }
+  
+
+  .userPanelAction {
+      display: flex;
+  }
+
+  .formPanelAction {
+    display: flex;
+  }
+
+  .titleName {
+    font-size: small;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+
+  .formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #cecccc;
+    border-radius: 8px;
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+  }
+  .formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+  }
+
+  .formPanelAction button:disabled {
+    background: #cecccc;
+    border: 1px solid #cecccc;
+    cursor: not-allowed;
+  }
+  
+  .formPanelAction button + button {
+    margin-left: 24px;
+  }
+
+  .updateTRTitle {
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #676767;
+  }
+  .updateTRTitle span {
+    color: #232323;
+    font-weight: 600;
+  }
+  
+  .updateTRTitle h2 {
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 29px;
+    color: #232323;
+    margin: 0 0 16px;
+  }
+  .updateTRTitle p {
+    margin-bottom: 0;
+  }
+
+  .groupUserContainer{
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+  }
+
+  .userNameContainer{
+    /* width:100%;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    /* background-color: #2196F3; */
+
+    width: 100%;
+    /* display: grid; */
+    grid-template-columns: auto auto auto auto;
+    /* background-color: #2196F3; */
+    /* padding: 20px; */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 0;
+    padding: 20px;
+  }
+
+  .userNameContainer li {
+    display: flex;
+    height: 27px;
+    padding: 6px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #FFF8D6;
+    color: #232323;
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    width: fit-content;
+  }
+
+  .groupUserContainer .waSelectGroup{
+    width: 240px;
+  }
+
+  .groupUserContainer .waSelectGroup [class*="ant-select"] [class*="ant-select-selector"] [class*="ant-select-selection-search"] [class*="ant-select-selection-search-input"]{    
+    height: 18px;
+  }
+
 @media screen and (max-width: 1440px) {
   .addNewContainer {
     padding: 16px 24px;

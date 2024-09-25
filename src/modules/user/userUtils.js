@@ -75,6 +75,7 @@ export const userUtils = {
 			profilePic: '',
 			geoIds: modifiedGEO ? modifiedGEO : [0],
 			userHierarchyParentID: d?.reportingUser?.id ? d?.reportingUser?.id : 0,
+			whatsappNumber:d?.whatsappNumber?d?.whatsappNumber:'',
 			contactNumber: d?.primaryClientPhoneNumber
 				? d?.primaryClientPhoneNumber
 				: '',

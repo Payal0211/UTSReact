@@ -64,6 +64,15 @@
     color: #676767;
 }
 
+.checkbox{
+    margin: 0;
+    width: 100%;
+    padding: 0px;
+    display: flex;
+    margin-left: 0;
+    padding-bottom: 20px;
+}
+
 .row {
     margin: 0 -9px;
     flex-wrap: wrap;
@@ -159,6 +168,14 @@
 
 .mb0 {
     margin-bottom: 0 !important;
+}
+
+.mb10 {
+    margin-bottom: 10px !important;
+}
+
+.mb6 {
+    margin-bottom: 6px !important;
 }
 
 .reqExperience {
