@@ -251,6 +251,11 @@ export default function ViewCompanyDetails() {
       let addeUsers = selecteUserForGroup.filter(wUser => !wUser.groupID )
       let removedUsers = companyPreviewData?.whatsappDetails?.filter(user => !selectedUsers.map(user => user.groupMember).includes(user.groupMember))
     
+      if(addeUsers.length === 0 && removedUsers.length === 0){
+        setIsgroupCreating(false);
+        message.error('No change applied to the group')
+        return
+      }
       payload["whatsappMemberDetails"] = [...addeUsers?.map(item => ({
         "memberName": item.groupMember,
         "whatsappNumber": item.whatsappNumber,
