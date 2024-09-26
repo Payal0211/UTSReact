@@ -704,13 +704,17 @@ const getParsingType = (isHaveJD,parseType) => {
 		}
 
 		let payload = {
-			"ContactID": getHRdetails?.contactId,
-			"HRID": getHRdetails?.id,
+			"ContactID": getHRdetails?.contactId ?? getHRdetails?.addHiringRequest?.contactId,
+			"HRID": getHRdetails?.id ?? getHRdetails?.addHiringRequest?.id			,
 			"MustHaveSkill": watch('skills').map((item) => item.value || item?.skillsName),
 			"GoodToHaveSkill": watch('goodToHaveSkills').map((item) => item.value || item?.skillsName),
 			"Title": watch('hrTitle'),
-			"Location": getHRdetails?.directPlacement?.modeOfWork			
+			"Location": getHRdetails?.directPlacement?.modeOfWork ?? getHRdetails?.hdnModeOfWork
+ 		
 		}
+		// console.log('jd',payload)
+		// setFetchAIJD(false)
+		// return
 
 		const result =await hiringRequestDAO.createAIJDDAO(payload)
 
