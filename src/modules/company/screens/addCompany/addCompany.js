@@ -28,6 +28,7 @@ function AddCompany() {
   const [controlledPOC, setControlledPOC] = useState([]);
   const [isSelfFunded,setIsSelfFunded] = useState(false)
   const [pricingTypeError, setPricingTypeError] = useState(false);
+  const [pricingTypeErrorPPH, setPricingTypeErrorPPH] = useState(false);
   const [payPerError, setPayPerError] = useState(false);
   const [creditError, setCreditError] = useState(false);
   const [aboutCompanyError, setAboutCompanyError] = useState(false);
@@ -37,6 +38,8 @@ function AddCompany() {
   const [disableSubmit , setDisableSubmit] = useState(false)
   const [ loadingCompanyDetails , setLoadingCompanyDetails] = useState(false)
   const [showFetchATButton,setShowFetchAIButton] = useState(false);
+  const [hrPricingTypes, setHRPricingTypes] = useState([]);
+  const [manageablePricingType, setManageablePricingType] = useState([])
 
 
   // engagement Values 
@@ -125,6 +128,36 @@ function AddCompany() {
     getAllSalesPerson();
   }, []);
 
+  const getHRPricingType = useCallback(async () => {
+    const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
+    setHRPricingTypes(
+      HRPricingResponse &&
+      HRPricingResponse.responseBody
+    );
+  }, []);
+
+  useEffect(() => {
+    getHRPricingType()
+  },[])
+
+  const getRequiredHRPricingType = useCallback(() =>{
+    let reqOpt = []
+    if(typeOfPricing === 1){
+      let Filter = hrPricingTypes.filter(item=> item.isActive === true && item.isTransparent === true && item.engagementType === "Full Time")
+      if(Filter.length){
+        reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+      }
+    }else{
+      let Filter = hrPricingTypes.filter(item=> item.isActive === true && item.isTransparent === false && item.engagementType === "Full Time")
+      if(Filter.length){
+        reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+      }
+    }
+
+    return reqOpt
+
+  },[hrPricingTypes,  typeOfPricing]) 
+
   useEffect(() => {
     if (companyID !== '0') {
       getDetails();
@@ -179,6 +212,14 @@ function AddCompany() {
     setDisableSubmit(true)
     if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
 			setPricingTypeError(true)
+      setLoadingDetails(false)
+      setIsLogoLoader(false)
+      setDisableSubmit(false)
+			return
+		}
+
+    if(!watch('hiringPricingType')?.id && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+			setPricingTypeErrorPPH(true)
       setLoadingDetails(false)
       setIsLogoLoader(false)
       setDisableSubmit(false)
@@ -257,6 +298,11 @@ function AddCompany() {
       culture_Image: culture.cultureImage
     }))
 
+    let companyHiringTypePricing = checkPayPer?.anotherCompanyTypeID === 1 ?  manageablePricingType.filter(i=> getRequiredHRPricingType().map(it=> it.id).includes(i.id)).map(item=> ({
+      "hiringTypePricingId": item.id,
+      "hiringTypePricingPercentage": item.pricingPercent
+    }))  : undefined
+
     let payload = {
       "basicDetails": {
         "companyID": companyID,
@@ -292,9 +338,11 @@ function AddCompany() {
         "jobPostCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob=== true) ? +d?.jobPostCredit ?? null : null,
         "vettedProfileViewCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ?  +d?.vettedProfileViewCredit ?? null : null,
         "nonVettedProfileViewCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ? +d?.nonVettedProfileViewCredit?? null : null,
-        "hiringTypePricingId": checkPayPer?.anotherCompanyTypeID === 1 ? d?.hiringPricingType?.id : null
+        "hiringTypePricingId": checkPayPer?.anotherCompanyTypeID === 1 ? d?.hiringPricingType?.id : null,
+        "hiringTypePricingPercentage": checkPayPer?.anotherCompanyTypeID === 1 ? manageablePricingType.find(itm=> itm.id === d?.hiringPricingType?.id)?.pricingPercent  : undefined
       },
       // "pocIds": d.uplersPOCname?.map(poc=> poc.id),
+      "companyHiringTypePricing": companyHiringTypePricing ,
       "pocId": d?.uplersPOCname?.id,
       "HRID":getCompanyDetails?.pocUserDetailsEdit?.hrid ?? 0,
       "Sales_AM_NBD":getCompanyDetails?.pocUserDetailsEdit?.sales_AM_NBD ?? '',
@@ -302,7 +350,11 @@ function AddCompany() {
     }
 
 
-    // console.log("plaod",payload)
+    console.log("plaod",payload)
+    // setLoadingDetails(false)
+    // setIsLogoLoader(false)
+    //   setDisableSubmit(false)
+    //   return
 
     let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
     setCompanyDetails(prev=> ({...prev,
@@ -420,8 +472,14 @@ function AddCompany() {
         watch={watch}
         resetField={resetField}
         unregister={unregister}
+        hiringDetailsFromGetDetails={getCompanyDetails?.hiringDetails}
         engagementDetails={getCompanyDetails?.engagementDetails}
-        hooksProps={{checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError,creditError, setCreditError}}
+        hooksProps={{checkPayPer, setCheckPayPer, IsChecked, 
+          setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, 
+          setPricingTypeError,payPerError, setPayPerError,creditError, 
+          setCreditError,manageablePricingType, setManageablePricingType,
+          hrPricingTypes, setHRPricingTypes,getRequiredHRPricingType,pricingTypeErrorPPH, setPricingTypeErrorPPH
+        }}
         loadingDetails={loadingDetails}
       />
 

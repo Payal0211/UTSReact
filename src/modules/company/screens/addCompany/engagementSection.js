@@ -14,13 +14,15 @@ function EngagementSection({
   unregister,
   watch,
   engagementDetails,
+  hiringDetailsFromGetDetails,
   hooksProps,
   companyID,
   loadingDetails
 }) {
-  const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError,creditError, setCreditError} = hooksProps  
+  const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,
+    payPerError,hrPricingTypes, setPayPerError,creditError, setCreditError , manageablePricingType, setManageablePricingType ,getRequiredHRPricingType,
+    pricingTypeErrorPPH, setPricingTypeErrorPPH } = hooksProps  
 
-  const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
   useState("Select Hiring Pricing");
 
@@ -36,34 +38,7 @@ function EngagementSection({
     }
   },[_currency]);
 
-  const getHRPricingType = useCallback(async () => {
-    const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
-    setHRPricingTypes(
-      HRPricingResponse &&
-      HRPricingResponse.responseBody
-    );
-  }, []);
-  useEffect(() => {
-    getHRPricingType()
-  },[])
-
-  const getRequiredHRPricingType = useCallback(() =>{
-    let reqOpt = []
-    if(typeOfPricing === 1){
-      let Filter = hrPricingTypes.filter(item=> item.isActive === true && item.isTransparent === true && item.engagementType === "Full Time")
-      if(Filter.length){
-        reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
-      }
-    }else{
-      let Filter = hrPricingTypes.filter(item=> item.isActive === true && item.isTransparent === false && item.engagementType === "Full Time")
-      if(Filter.length){
-        reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
-      }
-    }
-
-    return reqOpt
-
-  },[hrPricingTypes,  typeOfPricing]) 
+ 
 
   useEffect(() => {
     // engagementDetails?.companyTypeID &&
@@ -117,6 +92,20 @@ function EngagementSection({
       }
     }
   },[engagementDetails?.hiringTypePricingId,hrPricingTypes  ])
+
+  useEffect(()=>{
+    if(hrPricingTypes.length > 0){
+      let typeArr = [...hrPricingTypes]
+      if(hiringDetailsFromGetDetails?.length > 0 ){
+        hiringDetailsFromGetDetails.forEach(item=>{
+          let ind = typeArr.findIndex(val=> val.id === item.hiringTypePricingId)
+          typeArr[ind] = {...typeArr[ind],pricingPercent: item.hiringTypePercentage  }
+        })
+      }
+      setManageablePricingType(typeArr)
+    }
+
+  },[hrPricingTypes,hiringDetailsFromGetDetails])
 
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
@@ -223,6 +212,7 @@ function EngagementSection({
                     onChange={(e) => {
                       setTypeOfPricing(e.target.value);
                       setPricingTypeError && setPricingTypeError(false);
+                      setPricingTypeErrorPPH && setPricingTypeErrorPPH(false);
                       setControlledHiringPricingTypeValue(null);
                       setValue("hiringPricingType",null);
                     }}
@@ -238,7 +228,7 @@ function EngagementSection({
 
           { checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={AddNewClientStyle.row} >
             <div className={AddNewClientStyle.colMd12}>
-                <HRSelectField 
+                {/* <HRSelectField 
                  controlledValue={controlledHiringPricingTypeValue}
                  setControlledValue={setControlledHiringPricingTypeValue}
                  isControlled={true}
@@ -246,14 +236,49 @@ function EngagementSection({
                   setValue={setValue}
                   register={register}
                   // label={"Hiring Pricing Type"}
-                  label={"Choose Engagement Mode"}
+                  label={"Choose Current Engagement Mode"}
                   defaultValue="Select Engagement Mode"
                   options={getRequiredHRPricingType()}
                   name="hiringPricingType"
                   isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
                   required={(checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null) ? true : null}
                   errorMsg={"Please select the Engagement Mode."}
-                />
+                /> */}
+                {pricingTypeErrorPPH && (
+                    <p className={AddNewClientStyle.error}>
+                      *Please choose engagement model
+                    </p>
+                  )}
+{ console.log(getRequiredHRPricingType())}
+<label className={AddNewClientStyle.label} style={{ marginBottom: "8px" }}>
+Choose Current Engagement Model
+                    <span className={AddNewClientStyle.reqField}>*</span>
+                  </label>
+                  <Radio.Group
+                    onChange={(e) => {
+                      setPricingTypeErrorPPH(false)
+                      setValue('hiringPricingType',getRequiredHRPricingType().find(item=> item.id === e.target.value))
+                    }}
+                    value={watch('hiringPricingType')?.id}
+                  >
+                    <div>
+                      {                  
+                    getRequiredHRPricingType().map((value) => 
+                      <Radio value={value.id}><div>{value.value} <input  type="number" value={manageablePricingType.find(item=> item.id === value.id)?.pricingPercent} onChange={(e)=> {
+                      setManageablePricingType(prev=> {
+                        let newArr = [...prev]
+                        let i = prev.findIndex(itm=> itm.id === value.id)
+                        newArr[i] = {...newArr[i] ,pricingPercent : + e.target.value }
+                        return newArr
+                      })
+                    }}/></div></Radio> 
+                     )
+                  }
+                    </div> 
+                    {/* <Radio value={1}>Hire a Contractor <input type="text" value={}/> </Radio>
+                    <Radio value={2}>Hire an employee on Uplers Payroll</Radio>
+                    <Radio value={3}>Direct-hire</Radio> */}
+                  </Radio.Group>
             </div>
             </div>}
 
