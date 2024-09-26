@@ -265,21 +265,21 @@ export default function HRReport() {
       setStartDate(start);
       setEndDate(end);
 
-      if (start.toLocaleDateString() === end.toLocaleDateString()) {
-        let params = {
-          fromDate: new Date(
-            date.getFullYear(),
-            date.getMonth() - 1,
-            date.getDate()
-          ),
-          toDate: new Date(date),
-        };
-        setStartDate(params.fromDate);
-        setEndDate(params.toDate);
-        setDateError(true);
-        setTimeout(() => setDateError(false), 5000);
-        return;
-      } else {
+      // if (start.toLocaleDateString() === end.toLocaleDateString()) {
+      //   let params = {
+      //     fromDate: new Date(
+      //       date.getFullYear(),
+      //       date.getMonth() - 1,
+      //       date.getDate()
+      //     ),
+      //     toDate: new Date(date),
+      //   };
+      //   setStartDate(params.fromDate);
+      //   setEndDate(params.toDate);
+      //   setDateError(true);
+      //   setTimeout(() => setDateError(false), 5000);
+      //   return;
+      // } else {
         if (start && end) {
           let filters = {};
           appliedFilter.forEach((item) => {
@@ -324,7 +324,7 @@ export default function HRReport() {
           };
           getHRReportList(payload);
         }
-      }
+      // }
     },
     [hrStage, appliedFilter, isFocusedRole]
   );
