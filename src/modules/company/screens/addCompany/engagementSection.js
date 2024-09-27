@@ -81,9 +81,13 @@ function EngagementSection({
       }
     }
 
+  }, [engagementDetails]);
+
+  useEffect(() => {
     getRequiredHRPricingType()?.map((value)=>
       setValue(`pricingPercent_${value?.id}`,manageablePricingType.find(item=> item.id === value.id)?.pricingPercent))
-  }, [engagementDetails,manageablePricingType]);
+  }, [getRequiredHRPricingType()])
+  
 
   useEffect(()=>{
     if(engagementDetails?.hiringTypePricingId && hrPricingTypes.length > 0){
