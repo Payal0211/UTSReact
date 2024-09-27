@@ -912,6 +912,16 @@ function PreviewClientModal({
       "hiringTypePricingPercentage": item.pricingPercent
     }))  : undefined
 
+    if(companyHiringTypePricing){
+      companyHiringTypePricing.forEach(val => {
+        if(val?.hiringTypePricingPercentage<=0 || val?.hiringTypePricingPercentage >=100){
+          setIsLoading(false);
+          message.error(`Please Provide "${getRequiredHRPricingType()?.find(item => item?.id === val?.hiringTypePricingId)?.type}" % value between 1-99`)
+          return
+        }
+      })
+    }
+
     let payload = {
       basicDetails: {
         companyID: getcompanyID,
