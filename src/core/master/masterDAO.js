@@ -56,9 +56,9 @@ export const MasterDAO = {
 			return errorDebug(error, 'masterDAO.getJobTypesRequestDAO');
 		}
 	},
-	getEngTypesRequestDAO: async function (ID) {
+	getEngTypesRequestDAO: async function (ID,compId) {
 		try {
-			const fixedValueResult = await MasterAPI.getEngTypesRequest(ID);
+			const fixedValueResult = await MasterAPI.getEngTypesRequest(ID,compId);
 			if (fixedValueResult) {
 				const statusCode = fixedValueResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {

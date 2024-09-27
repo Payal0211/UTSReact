@@ -859,13 +859,25 @@ const HRFields = ({
     setHRDirectPlacement(e.target.checked);
   }, []);
 
+  const getTransparentEngType = async (compID) => {
+    let response = await  MasterDAO.getEngTypesRequestDAO("",compID); 
+    console.log('res ENTDDD ',compID ,response)    
+    // setTransparentEngType(response?.responseBody?.map(item=> ( { value: item.id, label: item.type})));
+  } 
+
   const getClientNameValue = (clientName, clientData) => {
+    console.log("setClientName",clientName, clientData)
     setValue("clientName", clientName);
     setClientDetails(clientData);
     setIsVettedProfile(clientData?.isVettedProfile);
     setIsPostaJob(clientData?.isPostaJob);
     setIsProfileView(clientData?.isProfileView);
     setIsVettedProfile(clientData?.isVettedProfile);
+
+    getTransparentEngType(clientData?.companyId)
+    //set availability
+    setValue("availability", {id: userCompanyTypeID === 2 ? 2 : 1, value :"Full Time"})
+    setControlledAvailabilityValue("Full Time")
 
     // setDefault POC
     setControlledPocValue([
@@ -3186,13 +3198,14 @@ const HRFields = ({
                   </div>
                 </div>
               )}
-
+{console.log({JobTypes , availability,watch:watch("availability")})}
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledAvailabilityValue}
                     setControlledValue={(val) => {
                       setControlledAvailabilityValue(val);
+                      console.log("change avail",val)
                       resetField("hiringPricingType");
                       resetField("payrollType");
                       setControlledHiringPricingTypeValue(
