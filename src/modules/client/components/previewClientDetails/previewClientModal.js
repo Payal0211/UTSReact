@@ -825,11 +825,14 @@ function PreviewClientModal({
       }
     }
 
+  }, [getCompanyDetails?.engagementDetails]);
+
+  useEffect(() => {
     getRequiredHRPricingType()?.map((value)=>
       setValue(`pricingPercent_${value?.id}`,manageablePricingType.find(item=> item.id === value.id)?.pricingPercent)
     )
-
-  }, [getCompanyDetails?.engagementDetails,manageablePricingType]);
+  }, [getRequiredHRPricingType()])
+  
 
   // useEffect(() => {
   //   if (
