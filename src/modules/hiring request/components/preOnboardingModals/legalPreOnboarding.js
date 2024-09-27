@@ -166,9 +166,9 @@ export default function LegalPreOnboarding({
       //   message.error("The joining date must be greater than contract start date.")
       //   return
       // } 
-      
+
       if(getData?.getLegalInfo?.isHRTypeDP === true){
-        if(!(new Date(d.joiningDate) >= new Date(d.engagementStartDate))){
+        if(!(new Date(d.joiningDate) >= new Date(d.contractStartDate))){
           isValid = false;
           setIsLoading(false);
           message.error("The joining date must be greater than and same as engagement start date.")
@@ -182,6 +182,17 @@ export default function LegalPreOnboarding({
           return
         }  
       } 
+
+
+      if(!isIndefiniteHR){
+        if(!d.contractEndDate){
+            message.error(" Please select contract end date")
+            return
+        }
+
+      }
+
+      
        
       if(isValid){
         let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
