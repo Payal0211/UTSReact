@@ -303,6 +303,24 @@ function AddCompany() {
       "hiringTypePricingPercentage": item.pricingPercent
     }))  : undefined
 
+    let valid = true
+    if(companyHiringTypePricing){
+      
+      companyHiringTypePricing.forEach(val=> {
+        if( val.hiringTypePricingPercentage <= 0 || val.hiringTypePricingPercentage >= 100 ){
+          setLoadingDetails(false)
+          setIsLogoLoader(false)
+          setDisableSubmit(false)
+          message.error(`Please provide "${getRequiredHRPricingType().find(itm=> itm.id === val.hiringTypePricingId)?.value}" % value between 1-99`)
+          valid=false
+        }
+      })    
+    }
+    if(!valid){
+      return
+    }
+    
+
     let payload = {
       "basicDetails": {
         "companyID": companyID,
