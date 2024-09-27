@@ -165,6 +165,7 @@ function PreviewClientModal({
   let _currency = watch("creditCurrency");
 
   const [userData, setUserData] = useState({});
+  const [manageablePricingType,setManageablePricingType] = useState([])
 
   const [countryCodeData,setCountryCodeData] = useState("in");
   const [key, setKey] = useState(0);
@@ -739,19 +740,31 @@ function PreviewClientModal({
         (item) => item.isActive === true && item.isTransparent === true && item.engagementType === "Full Time"
       );
       if (Filter.length) {
-        reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+        reqOpt = Filter.map((item) => ( item ));
       }
     } else {
       let Filter = hrPricingTypes.filter(
         (item) => item.isActive === true && item.isTransparent === false && item.engagementType === "Full Time"
       );
       if (Filter.length) {
-        reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+        reqOpt = Filter.map((item) => ( item ));
       }
     }
-
     return reqOpt;
   }, [hrPricingTypes, typeOfPricing]);
+
+  useEffect(()=>{
+    if(hrPricingTypes.length > 0){
+      let typeArr = [...hrPricingTypes]
+      if(getCompanyDetails?.hiringDetails?.length > 0 ){
+        getCompanyDetails?.hiringDetails.forEach(item=>{
+          let ind = typeArr.findIndex(val=> val.id === item.hiringTypePricingId)
+          typeArr[ind] = {...typeArr[ind],pricingPercent: item.hiringTypePercentage  }
+        })
+      }
+      setManageablePricingType(typeArr)
+    }
+  },[hrPricingTypes,getCompanyDetails?.hiringDetails])
 
   useEffect(() => {
     // engagementDetails?.companyTypeID &&
@@ -811,30 +824,49 @@ function PreviewClientModal({
           );
       }
     }
+
   }, [getCompanyDetails?.engagementDetails]);
 
   useEffect(() => {
-    if (
-      getCompanyDetails?.engagementDetails?.hiringTypePricingId &&
-      hrPricingTypes.length > 0
-    ) {
-      let filteredHRtype = hrPricingTypes.find(
-        (item) =>
-          item.id === getCompanyDetails?.engagementDetails?.hiringTypePricingId
-      );
+    getRequiredHRPricingType()?.map((value)=>
+      setValue(`pricingPercent_${value?.id}`,manageablePricingType.find(item=> item.id === value.id)?.pricingPercent)
+    )
+  }, [getRequiredHRPricingType()])
+  
 
-      if (filteredHRtype) {
-        setValue("hiringPricingType", {
-          id: filteredHRtype.id,
-          value: filteredHRtype.type,
-        });
-        setControlledHiringPricingTypeValue(filteredHRtype.type);
+  // useEffect(() => {
+  //   if (
+  //     getCompanyDetails?.engagementDetails?.hiringTypePricingId &&
+  //     hrPricingTypes.length > 0
+  //   ) {
+  //     let filteredHRtype = hrPricingTypes.find(
+  //       (item) =>
+  //         item.id === getCompanyDetails?.engagementDetails?.hiringTypePricingId
+  //     );
+
+  //     if (filteredHRtype) {
+  //       setValue("hiringPricingType", {
+  //         id: filteredHRtype.id,
+  //         value: filteredHRtype.type,
+  //       });
+  //       setControlledHiringPricingTypeValue(filteredHRtype.type);
+  //     }
+  //   }
+  // }, [
+  //   getCompanyDetails?.engagementDetails?.hiringTypePricingId,
+  //   hrPricingTypes,
+  // ]);
+
+  useEffect(()=>{
+    if(getCompanyDetails?.engagementDetails?.hiringTypePricingId && hrPricingTypes.length > 0){
+      let filteredHRtype = hrPricingTypes.find(item=> item.id === getCompanyDetails?.engagementDetails?.hiringTypePricingId)
+   
+      if(filteredHRtype){
+        setValue('hiringPricingType',{id:filteredHRtype.id, value: filteredHRtype.type})
+        setControlledHiringPricingTypeValue(filteredHRtype.type)
       }
     }
-  }, [
-    getCompanyDetails?.engagementDetails?.hiringTypePricingId,
-    hrPricingTypes,
-  ]);
+  },[getCompanyDetails?.engagementDetails?.hiringTypePricingId,hrPricingTypes  ])
 
   const flagAndCodeMemo = useMemo(
     () => getFlagAndCodeOptions(flagAndCode),
@@ -874,6 +906,27 @@ function PreviewClientModal({
       setErrorJobCredit(true);
       return
     }
+
+    let companyHiringTypePricing = checkPayPer?.anotherCompanyTypeID === 1 ?  manageablePricingType.filter(i=> getRequiredHRPricingType().map(it=> it.id).includes(i.id)).map(item=> ({
+      "hiringTypePricingId": item.id,
+      "hiringTypePricingPercentage": item.pricingPercent
+    }))  : undefined
+
+    let valid = true
+    if(companyHiringTypePricing){
+      companyHiringTypePricing.forEach(val => {
+        if(val?.hiringTypePricingPercentage<=0 || val?.hiringTypePricingPercentage >=100){
+          setIsLoading(false);
+          message.error(`Please Provide "${getRequiredHRPricingType()?.find(item => item?.id === val?.hiringTypePricingId)?.type}" % value between 1-99`)
+          valid=false
+        }
+      })
+    }
+
+    if(!valid){
+      return
+    }
+
     let payload = {
       basicDetails: {
         companyID: getcompanyID,
@@ -893,8 +946,9 @@ function PreviewClientModal({
         vettedProfileViewCredit: (checkPayPer?.companyTypeID === 2 && IsChecked?.isProfileView === true) ? parseInt(watch("vettedProfileViewCredit")) ?? null : null,
         nonVettedProfileViewCredit: (checkPayPer?.companyTypeID === 2 && IsChecked?.isProfileView === true) ? parseInt(watch("nonVettedProfileViewCredit")) ?? null : null,
         hiringTypePricingId: checkPayPer?.anotherCompanyTypeID === 1 ? watch("hiringPricingType")?.id : null,
+        hiringTypePricingPercentage:  checkPayPer?.anotherCompanyTypeID === 1 ? manageablePricingType.find(itm=> itm.id === watch("hiringPricingType")?.id)?.pricingPercent  : undefined
       },
-
+      companyHiringTypePricing:companyHiringTypePricing,
       IsUpdateFromPreviewPage: true,
     };
     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
@@ -1118,7 +1172,16 @@ function PreviewClientModal({
         centered
         open={isPreviewModal}
         onOk={() => setIsPreviewModal(false)}
-        onCancel={() => {setIsPreviewModal(false);setEditEngagement(false);}}
+        onCancel={() => {setIsPreviewModal(false);
+          setEditEngagement(false);
+          setIsEditAboutUs(false);
+          setEditFunding(false);
+          setEditCultureSection(false);
+          setEditCompanyBenefits(false);
+          setEditClient(false);
+          setAddNewClient(false);
+          setEditPOC(false);
+        }}
         width={1080}
         footer={false}
         maskClosable={false}
@@ -2648,32 +2711,48 @@ function PreviewClientModal({
                               )}
                           </div>
                         </div>
-                        {checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={previewClientStyle.row} >
+                        {checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={`${previewClientStyle.row} ${previewClientStyle.mb24}`} >
                           <div className={previewClientStyle.colMd12}>
-                            <div className={previewClientStyle.comFormFields}>
-                              <HRSelectField
-                                controlledValue={controlledHiringPricingTypeValue}
-                                setControlledValue={setControlledHiringPricingTypeValue}
-                                isControlled={true}
-                                mode={"id/value"}
-                                setValue={setValue}
-                                register={register}
-                                onValueChange={()=>setEngagementModeTypeError(false)}
-                                // label={"Hiring Pricing Type"}
-                                label={"Choose Engagement Mode"}
-                                defaultValue="Select Engagement Mode"
-                                options={getRequiredHRPricingType()}
-                                name="hiringPricingType"
-                                isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
-                                required={(checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null) ? true : null}
-                                errorMsg={"Please select the Engagement Mode."}
-                              />
+                            <div className={previewClientStyle.engModelField}>
+                              <label className={previewClientStyle.formGroupLabel}>
+                              Choose Current Engagement Model
+                                <span className={previewClientStyle.reqField}>*</span>
+                              </label>
+                              <Radio.Group 
+                               onChange={(e) => {
+                                setValue('hiringPricingType',getRequiredHRPricingType().find(item=> item.id === e.target.value))
+                              }}
+                              value={watch('hiringPricingType')?.id}
+                              >
+                                {getRequiredHRPricingType()?.map((value=>(
+                                  <>
+                                  <div className={previewClientStyle.engModelOption}>
+                                    <Radio value={value?.id}>{value?.type}</Radio>
+                                    <HRInputField
+                                      register={register}
+                                      setValue={setValue}
+                                      className="yourClassName"
+                                      name={`pricingPercent_${value?.id}`}
+                                      type={InputType.NUMBER}
+                                      onChangeHandler={(e)=> {
+                                        setManageablePricingType(prev=> {
+                                          let newArr = [...prev]
+                                          let i = prev.findIndex(itm=> itm.id === value.id)
+                                          newArr[i] = {...newArr[i] ,pricingPercent : + e.target.value }
+                                          return newArr
+                                        })
+                                      }}
+                                      />
+                                  </div>
+                                  </>
+                                )))}
+                              </Radio.Group>
+                            </div>
                               {engagementModeTypeError && (
                                 <div className={previewClientStyle.error} style={{color:"red"}}>
-                                  *Please select Engagement Mode
+                                  *Please Choose Engagement Model
                                 </div>
                               )}
-                            </div>
                           </div>
                         </div>}
                         {checkPayPer?.companyTypeID !== 0 &&
@@ -3396,7 +3475,7 @@ function PreviewClientModal({
           required
         />
         {errorsData.teamSize && (
-          <span style={{ color: "red" }}>
+          <span style={{ color: "red", padding:"0px" }}>
             {errorsData.teamSize}
           </span>
         )}
