@@ -366,6 +366,52 @@
     padding: 13px;
 }
 
+
+.tabsRightPanel .engModelField{
+    margin: 0;
+}
+
+.tabsRightPanel .engModelField > .label{
+    width: 100%;
+}
+
+.tabsRightPanel .engModelField [class^="ant-radio-group"]{
+    display: block;
+}
+
+.tabsRightPanel .engModelField .engModelOption{
+    margin: 0 0 16px;
+    align-items: center;
+    gap: 24px;
+    display: flex;
+}
+
+.tabsRightPanel .engModelField .engModelOption:last-child{
+    margin-bottom: 0;
+}
+
+.engModelField .engModelOption [class^="ant-radio-wrapper"]{
+    white-space: nowrap;
+    margin: 0;
+    min-width: 240px;
+}
+
+.engModelField .engModelOption [class^="hrInputFields_formField"]{
+    margin: 0;
+    width: 250px;
+    max-width: 100%;
+}
+
+.engModelField .engModelOption [class^="hrInputFields_formField"] [class^="hrInputFields_inputfield"]{
+    padding: 10px 16px;
+}
+.tabsRightPanel .mb32{
+    margin-bottom: 32px;
+}
+.tabsRightPanel .mb24{
+    margin-bottom: 24px;
+}
+
 @media screen and (max-width: 1440px) {
     .addNewContainer {
         padding: 16px 24px;

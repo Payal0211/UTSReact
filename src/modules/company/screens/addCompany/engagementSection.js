@@ -80,7 +80,10 @@ function EngagementSection({
           );
       }
     }
-  }, [engagementDetails]);
+
+    getRequiredHRPricingType()?.map((value)=>
+      setValue(`pricingPercent_${value?.id}`,manageablePricingType.find(item=> item.id === value.id)?.pricingPercent))
+  }, [engagementDetails,manageablePricingType]);
 
   useEffect(()=>{
     if(engagementDetails?.hiringTypePricingId && hrPricingTypes.length > 0){
@@ -226,7 +229,7 @@ function EngagementSection({
             </div>
           </div>
 
-          { checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={AddNewClientStyle.row} >
+          { checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={`${AddNewClientStyle.row} ${AddNewClientStyle.mb32}`} >
             <div className={AddNewClientStyle.colMd12}>
                 {/* <HRSelectField 
                  controlledValue={controlledHiringPricingTypeValue}
@@ -244,48 +247,61 @@ function EngagementSection({
                   required={(checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null) ? true : null}
                   errorMsg={"Please select the Engagement Mode."}
                 /> */}
-                {pricingTypeErrorPPH && (
+                  <div className={AddNewClientStyle.engModelField}>
+                    <label className={AddNewClientStyle.label} style={{ marginBottom: "8px" }}>
+                    Choose Current Engagement Model
+                      <span className={AddNewClientStyle.reqField}>*</span>
+                    </label>
+                    <Radio.Group
+                      onChange={(e) => {
+                        setPricingTypeErrorPPH(false)
+                        setValue('hiringPricingType',getRequiredHRPricingType().find(item=> item.id === e.target.value))
+                      }}
+                      value={watch('hiringPricingType')?.id}
+                    >
+                      
+                        {                  
+                      getRequiredHRPricingType().map((value) => 
+                        <>
+                        <div className={AddNewClientStyle.engModelOption}>
+                          <Radio value={value.id}>{value.value}</Radio>                          
+                          <HRInputField  
+                          register={register}
+                          setValue={setValue}
+                          className="yourClassName"
+                          name={`pricingPercent_${value?.id}`}
+                          type={InputType.NUMBER}
+                          onChangeHandler={(e)=> {
+                            setManageablePricingType(prev=> {
+                              let newArr = [...prev]
+                              let i = prev.findIndex(itm=> itm.id === value.id)
+                              newArr[i] = {...newArr[i] ,pricingPercent : + e.target.value }
+                              return newArr
+                            })
+                          }}
+                        />
+                        </div> 
+                      </>
+                      )
+                    }
+                      
+                      {/* <Radio value={1}>Hire a Contractor <input type="text" value={}/> </Radio>
+                      <Radio value={2}>Hire an employee on Uplers Payroll</Radio>
+                      <Radio value={3}>Direct-hire</Radio> */}
+                    </Radio.Group>
+                  </div>
+                  {pricingTypeErrorPPH && (
                     <p className={AddNewClientStyle.error}>
                       *Please choose engagement model
                     </p>
                   )}
-{ console.log(getRequiredHRPricingType())}
-<label className={AddNewClientStyle.label} style={{ marginBottom: "8px" }}>
-Choose Current Engagement Model
-                    <span className={AddNewClientStyle.reqField}>*</span>
-                  </label>
-                  <Radio.Group
-                    onChange={(e) => {
-                      setPricingTypeErrorPPH(false)
-                      setValue('hiringPricingType',getRequiredHRPricingType().find(item=> item.id === e.target.value))
-                    }}
-                    value={watch('hiringPricingType')?.id}
-                  >
-                    <div>
-                      {                  
-                    getRequiredHRPricingType().map((value) => 
-                      <Radio value={value.id}><div>{value.value} <input  type="number" value={manageablePricingType.find(item=> item.id === value.id)?.pricingPercent} onChange={(e)=> {
-                      setManageablePricingType(prev=> {
-                        let newArr = [...prev]
-                        let i = prev.findIndex(itm=> itm.id === value.id)
-                        newArr[i] = {...newArr[i] ,pricingPercent : + e.target.value }
-                        return newArr
-                      })
-                    }}/></div></Radio> 
-                     )
-                  }
-                    </div> 
-                    {/* <Radio value={1}>Hire a Contractor <input type="text" value={}/> </Radio>
-                    <Radio value={2}>Hire an employee on Uplers Payroll</Radio>
-                    <Radio value={3}>Direct-hire</Radio> */}
-                  </Radio.Group>
             </div>
             </div>}
 
           {checkPayPer?.companyTypeID !== 0 &&
             checkPayPer?.companyTypeID !== null && (
               <>
-                <div className={AddNewClientStyle.row}>
+                <div className={`${AddNewClientStyle.row} ${AddNewClientStyle.mb24}`}>
                   <div className={AddNewClientStyle.colMd6}>
                     <label className={AddNewClientStyle.label}>
                       Currency
@@ -338,8 +354,9 @@ Choose Current Engagement Model
                       }}
                     />
                   </div>
+                </div>
 
-                  
+                <div className={`${AddNewClientStyle.row} ${AddNewClientStyle.mb24}`}>
                   <div className={AddNewClientStyle.colMd6}>
                    {companyID !== '0' && <>Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{engagementDetails?.totalCreditBalance}</span></>} 
                     <div className={AddNewClientStyle.FreecreditFieldWrap} style={{marginTop: '8px'}}>
