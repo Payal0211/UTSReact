@@ -360,10 +360,15 @@ export default function UTMTrackingReport() {
   const getClientNameFilter = useCallback(async () => {
     setLoading(true);
     const response = await clientPortalTrackingReportDAO.clientPortalTrackingReportFilterDAO();
-    if (response?.statusCode === HTTPStatusCode.OK) {
+    if (response?.statusCode === HTTPStatusCode.OK) {   
       // setFiltersList(response && response?.responseBody?.details?.Data);
       // setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
-      setClientNameList(response && response?.responseBody?.details?.map(i=>({value:i?.clientID,label:i?.clientName})))
+      setClientNameList(response && response?.responseBody?.details?.ClientList?.map(i=>({value:i?.clientID,label:i?.clientName})))
+      setFiltersHRType(response?.responseBody?.details?.model?.hrTypes?.map(item =>{
+        return ({
+				text : item?.text,
+				value : item?.value
+			})}))
       setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
       setLoading(false);
@@ -416,25 +421,25 @@ export default function UTMTrackingReport() {
   //   getHRReportFilterList();
   // }, [])
 
-  const getEngagementFilterList = useCallback(async () => {
-		const res = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
-		if (res?.statusCode === HTTPStatusCode.OK) {
-			setFiltersSalesRepo(res?.responseBody?.details?.Data?.salesReps?.map(item =>({
-				text : item?.text,
-				value : item?.value
-			})))
+  // const getEngagementFilterList = useCallback(async () => {
+	// 	const res = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
+	// 	if (res?.statusCode === HTTPStatusCode.OK) {
+	// 		setFiltersSalesRepo(res?.responseBody?.details?.Data?.salesReps?.map(item =>({
+	// 			text : item?.text,
+	// 			value : item?.value
+	// 		})))
 
-      setFiltersHRType(res?.responseBody?.details?.Data?.hrTypes?.map(item =>{
-        return ({
-				text : item?.text,
-				value : item?.value
-			})}))
-		}
-	}, []);
+  //     setFiltersHRType(res?.responseBody?.details?.Data?.hrTypes?.map(item =>{
+  //       return ({
+	// 			text : item?.text,
+	// 			value : item?.value
+	// 		})}))
+	// 	}
+	// }, []);
 
-  useEffect(()=>{
-		getEngagementFilterList();
-	},[getEngagementFilterList])
+  // useEffect(()=>{
+	// 	getEngagementFilterList();
+	// },[getEngagementFilterList])
   
   return (
     <div className={clientPortalTrackingReportStyle.dealContainer}>
@@ -616,7 +621,7 @@ export default function UTMTrackingReport() {
             getHTMLFilter={getHTMLFilter}
             // hrFilterList={DealConfig.dealFiltersListConfig()}
             filtersType={reportConfig.ClientTrackingReportFilterTypeConfig(
-              filtersList && filtersList,filtersSalesRepo && filtersSalesRepo, filtersHRType && filtersHRType
+              filtersList && filtersList, filtersHRType && filtersHRType
             )}
             clearFilters={resetFilter}
           />
