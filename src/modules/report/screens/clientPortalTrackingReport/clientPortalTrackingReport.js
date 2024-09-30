@@ -65,6 +65,7 @@ export default function UTMTrackingReport() {
   const [ClientNameList,setClientNameList] = useState([])
   const [filtersSalesRepo, setFiltersSalesRepo] = useState([]);
   const [filtersHRType, setFiltersHRType] = useState([]);
+  const [clientid,setClientid] = useState();
   // const client = localStorage.getItem("clientID");
   const clientID = Number(0);
 
@@ -176,18 +177,23 @@ export default function UTMTrackingReport() {
       let TypeOfHR = fd["TypeOfHR"] ? fd["TypeOfHR"] : "";
       setTypeofHR(TypeOfHR);
 
-      let params = {
-        fromDate: moment(firstDay).format("YYYY-MM-DD"),
-        toDate: moment(lastDay).format("YYYY-MM-DD"),
-        typeOfHR: TypeOfHR,
-        clientID:clientID ?Number(clientID):0
+      let params = {};
+      if(clientID === 0){
+          params.fromDate= moment(firstDay).format("YYYY-MM-DD");
+          params.toDate= moment(lastDay).format("YYYY-MM-DD");
+          params.typeOfHR= TypeOfHR;
+          params.clientID=clientid ?Number(clientid):0
+      }else {
+          params.fromDate= moment(firstDay).format("YYYY-MM-DD");
+          params.toDate= moment(lastDay).format("YYYY-MM-DD");
+          params.typeOfHR= TypeOfHR;
+          params.clientID=clientID ?Number(clientID):0
       };
-
       // if (hrStage) {
         getClientPortalReportList(params);
       // }
     },
-    [clientID, firstDay, lastDay, appliedFilter, isFocusedRole,selectedClientName]
+    [clientid,clientID,appliedFilter, isFocusedRole,selectedClientName]
   );
 
   useEffect(() => {
@@ -228,7 +234,7 @@ export default function UTMTrackingReport() {
        }else{
           getClientPortalReportList(payload);
        }
-  }, [clientID,data,typeofHR]);
+  }, [clientID,data]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -387,6 +393,7 @@ export default function UTMTrackingReport() {
   }, [getClientNameFilter]);
 
   const changeClientName = (value)=>{
+    setClientid(value);
     let payload = {
       fromDate: moment(firstDay).format("YYYY-MM-DD"),
       toDate: moment(lastDay).format("YYYY-MM-DD"),
