@@ -62,10 +62,10 @@ export default function EmailTracking() {
     const getClientNameFilter = useCallback(async () => {
         // setLoading(true);
         const response = await clientPortalTrackingReportDAO.clientPortalTrackingReportFilterDAO();
-        if (response?.statusCode === HTTPStatusCode.OK) {
+        if (response?.statusCode === HTTPStatusCode.OK) {         
           // setFiltersList(response && response?.responseBody?.details?.Data);
           // setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
-          setClientNameList(response && response?.responseBody?.details?.map(i=>({value:i?.clientID,label:i?.clientName})))
+          setClientNameList(response && response?.responseBody?.details?.ClientList?.map(i=>({value:i?.clientID,label:i?.clientName})))
           // setLoading(false);
         } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
           // setLoading(false);
