@@ -26,6 +26,8 @@ import { clientPortalTrackingReportAPI } from "apis/clientPortalTrackingReportAP
 import { utmTrackingReportAPI } from "apis/utmTrackingReportAPI";
 import { utmTrackingReportDAO } from "core/utmTrackingReport/utmTrackingReportDAO";
 import infoIcon from "../../../../assets/svg/info.svg"
+import { DealConfig } from "modules/deal/deal.config";
+import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -61,6 +63,8 @@ export default function UTMTrackingReport() {
   const [term,setTerm] = useState([]);
   const [selectedClientName, setSelectClientName] = useState()
   const [ClientNameList,setClientNameList] = useState([])
+  const [filtersSalesRepo, setFiltersSalesRepo] = useState([]);
+  const [filtersHRType, setFiltersHRType] = useState([]);
   // const client = localStorage.getItem("clientID");
   const clientID = Number(0);
 
@@ -164,39 +168,27 @@ export default function UTMTrackingReport() {
   //   setTerm(filtersList && filtersList?.utM_Term?.map((item)=>({id:item?.text,value:item?.value})));
   // }
 
-  // const handleFiltersRequest = useCallback(
-  //   (reqFilter) => {
-  //     let fd = reqFilter.filterFields_DealList;
-  //     let get_JobPostCount_For_UTM_Tracking_Lead = fd["get_JobPostCount_For_UTM_Tracking_Lead"] ? fd["get_JobPostCount_For_UTM_Tracking_Lead"] : null;
-  //     let ref_Url = fd["ref_Url"] ? fd["ref_Url"] : "";
-  //     let utM_Campaign= fd["utM_Campaign"] ? fd["utM_Campaign"] : "";
-  //     let utM_Content = fd["utM_Content"] ? fd["utM_Content"] : "";
-  //     let utM_Medium = fd["utM_Medium"] ? fd["utM_Medium"] : "";
-  //     let utM_Placement = fd["utM_Placement"] ? fd["utM_Placement"] : "";
-  //     let utM_Source = fd["utM_Source"] ? fd["utM_Source"] : ""
-  //     let utM_Term = fd["utM_Term"] ? fd["utM_Term"] : ""
+  const [typeofHR,setTypeofHR] = useState();
 
-     
+  const handleFiltersRequest = useCallback(
+    (reqFilter) => {
+      let fd = reqFilter.filterFields_DealList;
+      let TypeOfHR = fd["TypeOfHR"] ? fd["TypeOfHR"] : "";
+      setTypeofHR(TypeOfHR);
 
-  //     let params = {
-  //         Fromdate: moment(firstDay).format("YYYY-MM-DD"),
-  //         ToDate: moment(lastDay).format("YYYY-MM-DD"),
-  //         // NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
-  //         UTM_Source: utM_Source,
-  //         UTM_Medium: utM_Medium,
-  //         UTM_Campaign: utM_Campaign,
-  //         UTM_Content: utM_Content,
-  //         UTM_Term: utM_Term,
-  //         UTM_Placement:utM_Placement,
-  //         ref_url:ref_Url
-  //     };
+      let params = {
+        fromDate: moment(firstDay).format("YYYY-MM-DD"),
+        toDate: moment(lastDay).format("YYYY-MM-DD"),
+        typeOfHR: TypeOfHR,
+        clientID:clientID ?Number(clientID):0
+      };
 
-  //     if (hrStage) {
-  //       // getClientPortalPopUpReportList(params);
-  //     }
-  //   },
-  //   [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole,selectedClientName]
-  // );
+      // if (hrStage) {
+        getClientPortalReportList(params);
+      // }
+    },
+    [clientID, firstDay, lastDay, appliedFilter, isFocusedRole,selectedClientName]
+  );
 
   useEffect(() => {
     let payload = {
@@ -225,7 +217,8 @@ export default function UTMTrackingReport() {
       let payload = {
          fromDate: moment(firstDay).format("YYYY-MM-DD"),
          toDate: moment(lastDay).format("YYYY-MM-DD"),
-         clientID:clientID ?Number(clientID):0
+         clientID:clientID ?Number(clientID):0,
+         typeOfHR:typeofHR,
        };
        if(data){
         setStartDate(data?.fromDate ? moment(data.fromDate).toDate() : null);
@@ -235,7 +228,7 @@ export default function UTMTrackingReport() {
        }else{
           getClientPortalReportList(payload);
        }
-  }, [clientID,data]);
+  }, [clientID,data,typeofHR]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -248,7 +241,8 @@ export default function UTMTrackingReport() {
         let payload = {
           fromDate: moment(start).format("YYYY-MM-DD"),
           toDate: moment(end).format("YYYY-MM-DD"),
-          clientID:selectedClientName ? Number(selectedClientName) : 0
+          clientID:selectedClientName ? Number(selectedClientName) : 0,
+          typeOfHR:typeofHR,
         };
         getClientPortalReportList(payload);
       }
@@ -278,7 +272,7 @@ export default function UTMTrackingReport() {
       //   }
       // }
     },
-    [hrStage, appliedFilter, isFocusedRole,selectedClientName]
+    [hrStage, appliedFilter, isFocusedRole,selectedClientName,typeofHR]
   );
   const resetFilter = () => {
     setSelectClientName();
@@ -297,6 +291,7 @@ export default function UTMTrackingReport() {
     setCheckedState(new Map());
     setFilteredTagLength(0);
     setIsFocusedRole(false);
+    setTypeofHR("");
 
     let payload = {
       // pageIndex: 1,
@@ -304,11 +299,11 @@ export default function UTMTrackingReport() {
   
       fromDate: moment(params.fromDate).format("YYYY-MM-DD"),
       toDate: moment(params.toDate).format("YYYY-MM-DD"),
-      clientID:0
-
+      clientID:0,
+      typeOfHR:"",
     };
     getClientPortalReportList(payload);
-    // onRemoveDealFilters();
+    onRemoveDealFilters();
     // getI2SReport(params);
   };
 
@@ -320,11 +315,12 @@ export default function UTMTrackingReport() {
           fromDate: moment(firstDay).format("YYYY-MM-DD"),
           toDate: moment(lastDay).format("YYYY-MM-DD"),
           actionID:reportData?.actionID,
-          clientID:selectedClientName?Number(selectedClientName):0
+          clientID:selectedClientName?Number(selectedClientName):0,
+          typeOfHR:typeofHR,
       };
       getClientPortalPopUpReportList(params);
     },
-    [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole,selectedClientName]
+    [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole,selectedClientName,typeofHR]
   );
 
   const tableColumnsMemo = useMemo(
@@ -332,12 +328,12 @@ export default function UTMTrackingReport() {
     [hrStage,hrStageId]
   );
 
-  // const onRemoveDealFilters = () => {
-  //   setTimeout(() => {
-  //     setIsAllowFilters(false);
-  //   }, 300);
-  //   setHTMLFilter(false);
-  // };
+  const onRemoveDealFilters = () => {
+    setTimeout(() => {
+      setIsAllowFilters(false);
+    }, 300);
+    setHTMLFilter(false);
+  };
 
   const toggleClientFilter = useCallback(() => {
     // getDealFilterRequest();
@@ -389,13 +385,57 @@ export default function UTMTrackingReport() {
     let payload = {
       fromDate: moment(firstDay).format("YYYY-MM-DD"),
       toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID:value?value:0
+      clientID:value?value:0,
+      typeOfHR:typeofHR,
     };
     setSelectClientName(value)
     getClientPortalReportList(payload);
   }
 
+  // const getHRReportFilterList = async () => {
+  //   setLoading(true);
+  //   const response = await clientReport.getHRReportFilters();
+  //   if (response.statusCode === HTTPStatusCode.OK) {
+  //     let details = response.responseBody.details;
+  //     // console.log("filter data", details)
+  //     setFiltersList(details);
+  //     setLoading(false);
+  //   } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+  //     setLoading(false);
+  //     return navigate(UTSRoutes.LOGINROUTE);
+  //   } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+  //     setLoading(false);
+  //     return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+  //   } else {
+  //     setLoading(false);
+  //     return "NO DATA FOUND";
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   getHRReportFilterList();
+  // }, [])
+
+  const getEngagementFilterList = useCallback(async () => {
+		const res = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
+		if (res?.statusCode === HTTPStatusCode.OK) {
+			setFiltersSalesRepo(res?.responseBody?.details?.Data?.salesReps?.map(item =>({
+				text : item?.text,
+				value : item?.value
+			})))
+
+      setFiltersHRType(res?.responseBody?.details?.Data?.hrTypes?.map(item =>{
+        return ({
+				text : item?.text,
+				value : item?.value
+			})}))
+		}
+	}, []);
+
+  useEffect(()=>{
+		getEngagementFilterList();
+	},[getEngagementFilterList])
+  
   return (
     <div className={clientPortalTrackingReportStyle.dealContainer}>
       <div className={clientPortalTrackingReportStyle.header}>
@@ -405,36 +445,40 @@ export default function UTMTrackingReport() {
 
       <div className={clientPortalTrackingReportStyle.filterContainer}>
         <div className={clientPortalTrackingReportStyle.filterSets}>
-          <div className={clientPortalTrackingReportStyle.filterSetsInner}>
-          <Select
-            // defaultValue="lucy"
-            style={{ width: 400 }}
-            // onSelect={(value)=>{
-            //   setSelectClientName(value);   
-            // }}
-            onChange={(value)=>{
-              changeClientName(value);   
-            }}
-            filterOption={(inputValue, option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
-            placeholder="Select client name"
-            options={ClientNameList}
-            showSearch
-            value={selectedClientName}
-          />
-            {/* <div
-              className={clientPortalTrackingReportStyle.addFilter}
-              onClick={toggleClientFilter}
-            >1
-              <FunnelSVG style={{ width: "16px", height: "16px" }} />
+          <div className={clientPortalTrackingReportStyle.filterLeft}>
+            <div className={clientPortalTrackingReportStyle.filterSetsInner}>
+                <div
+                  className={clientPortalTrackingReportStyle.addFilter}
+                  onClick={toggleClientFilter}
+                >
+                  <FunnelSVG style={{ width: "16px", height: "16px" }} />
 
-              <div className={clientPortalTrackingReportStyle.filterLabel}>Add Filters</div>
-              <div className={clientPortalTrackingReportStyle.filterCount}>
-                {filteredTagLength}
-              </div>
-            </div> */}
-            <p 
-            onClick={() => resetFilter()}
-            >Reset Filters</p>
+                  <div className={clientPortalTrackingReportStyle.filterLabel}>Add Filters</div>
+                  <div className={clientPortalTrackingReportStyle.filterCount}>
+                    {filteredTagLength}
+                  </div>
+                </div>
+            </div>
+            <div className={clientPortalTrackingReportStyle.filterSetsInner}>
+            <Select
+              // defaultValue="lucy"
+              style={{ width: 400 }}
+              // onSelect={(value)=>{
+              //   setSelectClientName(value);   
+              // }}
+              onChange={(value)=>{
+                changeClientName(value);   
+              }}
+              filterOption={(inputValue, option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
+              placeholder="Select client name"
+              options={ClientNameList}
+              showSearch
+              value={selectedClientName}
+            />
+              <p 
+              onClick={() => resetFilter()}
+              >Reset Filters</p>
+            </div>
           </div>
 
           <div className={clientPortalTrackingReportStyle.filterRight}>
@@ -564,15 +608,15 @@ export default function UTMTrackingReport() {
             appliedFilter={appliedFilter}
             setCheckedState={setCheckedState}
             checkedState={checkedState}
-            // handleDealRequest={handleFiltersRequest}
+            handleDealRequest={handleFiltersRequest}
             setTableFilteredState={setTableFilteredState}
             tableFilteredState={tableFilteredState}
             setFilteredTagLength={setFilteredTagLength}
-            // onRemoveDealFilters={onRemoveDealFilters}
+            onRemoveDealFilters={onRemoveDealFilters}
             getHTMLFilter={getHTMLFilter}
             // hrFilterList={DealConfig.dealFiltersListConfig()}
-            filtersType={reportConfig.UTMReportFilterTypeConfig(
-              filtersList && filtersList
+            filtersType={reportConfig.ClientTrackingReportFilterTypeConfig(
+              filtersList && filtersList,filtersSalesRepo && filtersSalesRepo, filtersHRType && filtersHRType
             )}
             clearFilters={resetFilter}
           />
