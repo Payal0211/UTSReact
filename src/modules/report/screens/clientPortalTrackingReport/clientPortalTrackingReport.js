@@ -189,10 +189,17 @@ export default function UTMTrackingReport() {
           params.typeOfHR= TypeOfHR;
           params.clientID=clientID ?Number(clientID):0
       };
+      if(selectedClientName){
+        params.fromDate= moment(firstDay).format("YYYY-MM-DD");
+          params.toDate= moment(lastDay).format("YYYY-MM-DD");
+          params.typeOfHR= TypeOfHR;
+          params.clientID=selectedClientName ?Number(selectedClientName):0
+      }
       // if (hrStage) {
         getClientPortalReportList(params);
       // }
     },
+    
     [clientid,clientID,appliedFilter, isFocusedRole,selectedClientName]
   );
 
