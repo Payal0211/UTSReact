@@ -281,9 +281,9 @@ let TrackData = {
   trackingDetails: trackingDetailsAPI()
 };
 export const EngOptions = [
-  { value: 1, label: "Hire a contractor  |  35% monthly of talent's pay"},
-  { value: 2, label: "Hire an employee on Uplers payroll | 35% monthly of talent's pay"},
-  { value: 3, label: `Direct-hire | ${TrackData?.trackingDetails?.country == "IN" ? "7.5%" : "10%"} one-time of annual salary`}
+  { value: 1, label: "Hire a contractor"},
+  { value: 2, label: "Hire an employee on Uplers payroll"},
+  { value: 3, label: `Direct-hire one-time of annual salary`}
 ]
 
 export const formatSkill = (skill) => {

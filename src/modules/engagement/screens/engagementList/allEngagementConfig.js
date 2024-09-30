@@ -562,7 +562,8 @@ export const allEngagementConfig = {
 				width:"180px",
 				render:(text,data)=>{
 					// return  data?.nbdName ? <div> {text} </div>:  
-					return <div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.invoicingDetails)}}>{text}</div> 
+					return <div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.onboardID
+					)}}>{text}</div> 
 				}
 			},
 			{
