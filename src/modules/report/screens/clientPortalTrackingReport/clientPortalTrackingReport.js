@@ -620,9 +620,7 @@ export default function UTMTrackingReport() {
             onRemoveDealFilters={onRemoveDealFilters}
             getHTMLFilter={getHTMLFilter}
             // hrFilterList={DealConfig.dealFiltersListConfig()}
-            filtersType={reportConfig.ClientTrackingReportFilterTypeConfig(
-              filtersList && filtersList, filtersHRType && filtersHRType
-            )}
+            filtersType={reportConfig.ClientTrackingReportFilterTypeConfig( filtersHRType && filtersHRType)}
             clearFilters={resetFilter}
           />
         </Suspense>
