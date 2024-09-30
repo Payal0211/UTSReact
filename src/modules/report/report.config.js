@@ -2336,6 +2336,17 @@ export const reportConfig = {
 			// 	},
 			// },				
 		];
-	}
+	},
+	ClientTrackingReportFilterTypeConfig: (filterList,filtersSalesRepo,filtersHRType) => {
+		return [
+			{
+				label: 'HR Type',
+				name: 'TypeOfHR',
+				child: filtersHRType.filter(val => val.text === "4" || val.text === "1" ),
+				isSearch: false,
+				isSingle:true
+			},
+		];
+	},
 
 };
