@@ -488,7 +488,9 @@ export default function BeforePreOnboarding({
         setValue('firstWeek',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstWeek)
         setValue('firstMonth',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstMonth)
         setValue('softwareToolsRequired',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.softwareToolsRequired)
-        setValue('exitPolicy',result?.responseBody?.details.exit_Policy)
+        if(result?.responseBody?.details.exit_Policy){
+          setValue('exitPolicy',result?.responseBody?.details.exit_Policy)
+        }
         setValue('feedbackProcess', result?.responseBody?.details.feedback_Process)
         setValue('policyLink',result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithClient_LeavePolicyLink)
         setDeviceMasters(result?.responseBody?.details?.deviceMaster)
@@ -762,7 +764,7 @@ const calcelMember = () =>{
           // "proceedWithClient_LeavePolicyOption": null,
           "proceedWithClient_LeavePolicyLink": !talentDeteils?.IsHRTypeDP ?  d?.leavePolicie.id === 2 ?  d?.policyLink ? d?.policyLink : "" : "" : "" ,
           "leavePolicyFileName": !talentDeteils?.IsHRTypeDP ?  d?.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" ,
-          "exit_Policy": d?.exitPolicy,
+          "exit_Policy": d?.exitPolicy ? d?.exitPolicy :null,
           "hdnRadioDevicesPolicies": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.value : "",
           "device_Radio_Option": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d?.deviceType.id)[0].deviceName : '' : "",
           "deviceID": !talentDeteils?.IsHRTypeDP ?  d?.devicePolicy.id === 2 ? d?.deviceType.id : 0 : 0,
@@ -772,7 +774,7 @@ const calcelMember = () =>{
           "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d?.leavePolicie.id === 2 ?  d?.policyLink ? d?.policyLink : "" : "" : "",
           "teamMembers": clientTeamMembers
         }
-      }      
+      }  
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(_payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         callAPI(HRID)
@@ -2275,8 +2277,7 @@ const calcelMember = () =>{
                           />
                         </div>
                       </div>
-
-                      <div className={HRDetailStyle.modalFormCol}>
+                      {watch("exitPolicy") && <div className={HRDetailStyle.colMd12}>
                         <div className={HRDetailStyle.modalFormEdited}>
                           <HRInputField
                             register={register}
@@ -2294,7 +2295,7 @@ const calcelMember = () =>{
                             // trailingIcon= {<EditFieldSVG width="16" height="16" />}
                           />
                         </div>
-                      </div>
+                      </div>}
                     </>
                   {/* )} */}
                   {watch("leavePolicie")?.id === 1 && (

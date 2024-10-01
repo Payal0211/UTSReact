@@ -31,16 +31,16 @@ export const allHRConfig = {
     setRepostHrModal
   ) => {
     return [
-      {
-        title: " ",
-        dataIndex: "isHRFocused",
-        key: "isHRFocused",
-        align: "center",
-        width: "50px",
-        render: (val) => {
-          return val ? <FocusedRole /> : null;
-        },
-      },
+      // {
+      //   title: " ",
+      //   dataIndex: "isHRFocused",
+      //   key: "isHRFocused",
+      //   align: "center",
+      //   width: "50px",
+      //   render: (val) => {
+      //     return val ? <FocusedRole /> : null;
+      //   },
+      // },
 
       {
         title: " ",
@@ -218,13 +218,6 @@ export const allHRConfig = {
         ),
       },
       {
-        title: "HR Published Since",
-        dataIndex: "hrAcceptedSince",
-        key: "HRAcceptedSince",
-        width: "150px",
-        align: "left",
-      },
-      {
         title: "TR",
         dataIndex: "TR",
         key: "TR",
@@ -333,6 +326,13 @@ export const allHRConfig = {
           // );
           return text
         },
+      },
+      {
+        title: "HR Published Since",
+        dataIndex: "hrAcceptedSince",
+        key: "HRAcceptedSince",
+        width: "150px",
+        align: "left",
       },
     ];
   },
