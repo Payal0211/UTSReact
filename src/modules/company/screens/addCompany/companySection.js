@@ -193,6 +193,7 @@ function CompanySection({
     setShowFetchAIButton(false);
     clearErrors("companyURL");
     setIsViewCompanyurl(false);
+    
     if(!watch("companyName")){
       setError("companyURL", {
         type: "manual",
@@ -200,6 +201,15 @@ function CompanySection({
       });
     }
     if (watch("companyURL")) {
+      let linkedInPattern = /linkedin\.com/i;
+      if(linkedInPattern.test(watch("companyURL"))){
+        setError("companyURL", {
+          type: "manual",
+          message: 'Entered value does not match url format',
+        });
+        return 
+      }
+
       if (ValidateFieldURL(watch("companyURL"), "website")) {
         if (companyDetails?.website === watch("companyURL")) {
           clearErrors("companyURL");
@@ -401,9 +411,10 @@ function CompanySection({
                           validationSchema={{
                             required: "Please enter the Company Website link.",
                             validate: (value) => {
+                             
                               if (ValidateFieldURL(value, "website")) {
                                 return true;
-                              } else {
+                              }else {
                                 return "Entered value does not match url format";
                               }
                             },
