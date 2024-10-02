@@ -306,6 +306,7 @@ function EngagementSection({
                                 })
                               }}
                             />
+                            <div className={AddNewClientStyle.percentageLabel}><span>%</span></div>
                         </div> 
                       </>
                       )

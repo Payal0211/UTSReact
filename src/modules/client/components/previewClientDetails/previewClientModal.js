@@ -2743,6 +2743,7 @@ function PreviewClientModal({
                                         })
                                       }}
                                       />
+                                      <div className={previewClientStyle.percentageLabel}><span>%</span></div>
                                   </div>
                                   </>
                                 )))}

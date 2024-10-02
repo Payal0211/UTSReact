@@ -410,6 +410,12 @@
 
 .tabsRightPanel .engModelField .engModelOption [class^="hrInputFields_formField"] [class^="hrInputFields_inputfield"]{
     padding: 10px 16px;
+    /* width: 125% */
+}
+
+.percentageLabel{
+    font-size: 18px;
+    color: #232323;
 }
 
 .tabsRightPanel .mb32{

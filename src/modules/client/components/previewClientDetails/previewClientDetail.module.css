@@ -964,6 +964,11 @@
     padding: 10px 16px;
 }
 
+.percentageLabel{
+    font-size: 18px;
+    color: #232323;
+}
+
 /* Edit Modal css End */
 
 @media screen and (max-width: 1440px) {
