@@ -116,6 +116,10 @@
     color: #7C7C7C;
 }
 
+.engagementContent ul .width100{
+    width: 100%;
+}
+
 .engagementContent [class^="jobDescrition"] h2,.engagementContent [class^="jobDescrition"] h3{
     font-weight: 400;
 }

@@ -117,6 +117,12 @@ function EngagementSection({
 
   },[hrPricingTypes,hiringDetailsFromGetDetails])
 
+  useEffect(() => {
+    getRequiredHRPricingType()?.map((value)=>
+      setValue(`pricingPercent_${value?.id}`,manageablePricingType.find(item=> item.id === value.id)?.pricingPercent)
+    )
+  }, [getRequiredHRPricingType()])
+
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
       {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -272,7 +278,7 @@ function EngagementSection({
                         <>
                         <div className={AddNewClientStyle.engModelOption}>
                           <Radio value={value.id}>{value.value}</Radio>   
-                          <input
+                          {/* <input
                               value={manageablePricingType.find(item=> item.id === value.id).pricingPercent}
                               className={formFieldClasses}
                               type={'number'}
@@ -284,7 +290,23 @@ function EngagementSection({
                                   return newArr
                                 })
                               }}
-                            />                   
+
+                            />                        */}
+                            <HRInputField
+                              register={register}
+                              setValue={setValue}
+                              className="yourClassName"
+                              name={`pricingPercent_${value?.id}`}
+                              type={InputType.NUMBER}
+                              onChangeHandler={(e)=> {
+                                setManageablePricingType(prev=> {
+                                  let newArr = [...prev]
+                                  let i = prev.findIndex(itm=> itm.id === value.id)
+                                  newArr[i] = {...newArr[i] ,pricingPercent : + e.target.value }
+                                  return newArr
+                                })
+                              }}
+                            />
                         </div> 
                       </>
                       )

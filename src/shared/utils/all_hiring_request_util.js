@@ -20,7 +20,7 @@ export const All_Hiring_Request_Utils = {
 					// 	placement="bottom"
 					// 	title="No Priority"
 					// 	color={`var(--uplers-black)`}>
-						<a href="javascript:void(0);" onClick={
+						<a href="javascript:void(0);" style={{display: 'inline-flex'}} onClick={
 							disabled === 'disabled'? null :	DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
@@ -51,7 +51,7 @@ export const All_Hiring_Request_Utils = {
 					// 	placement="bottom"
 					// 	title="Next Week Priority"
 					// 	color={`var(--color-sunlight)`}>
-						<a href="javascript:void(0);" onClick={
+						<a href="javascript:void(0);" style={{display: 'inline-flex'}} onClick={
 							disabled === 'disabled'? null :	DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
