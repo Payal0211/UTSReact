@@ -29,14 +29,19 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
 	const navigateToEditDebriefing = useCallback(async () => {
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrID);
+		// const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrID);
 
-		if (response?.statusCode === HTTPStatusCode.OK) {
-			localStorage.setItem('hrID', hrID);
-			localStorage.removeItem('dealID')
-			localStorage.setItem('fromEditDeBriefing', true);
-			navigate(UTSRoutes.ADDNEWHR);
-		}
+		// if (response?.statusCode === HTTPStatusCode.OK) {
+		// 	localStorage.setItem('hrID', hrID);
+		// 	localStorage.removeItem('dealID')
+		// 	localStorage.setItem('fromEditDeBriefing', true);
+		// 	navigate(UTSRoutes.ADDNEWHR);
+		// }
+
+		localStorage.setItem('hrID', hrID);
+		localStorage.removeItem('dealID')
+		localStorage.setItem('fromEditDeBriefing', true);
+		navigate(UTSRoutes.ADDNEWHR);
 	}, [hrID, navigate]);
 
 	const navigateToEditDirectDebriefing = useCallback(async () => {	

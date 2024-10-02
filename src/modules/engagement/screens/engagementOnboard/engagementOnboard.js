@@ -797,6 +797,12 @@ const EngagementOnboard = ({
                     : "NA"}
                 </li>
                 <li>
+                  <span>Work Option : </span>
+                  {getOnboardFormDetails?.work_option
+                    ? getOnboardFormDetails?.work_option
+                    : "NA"}
+                </li>
+                <li>
                   <span>Talent Device Detail: </span>
 
                   {getOnboardFormDetails?.talentDeviceDetails
@@ -841,15 +847,15 @@ const EngagementOnboard = ({
               </>
             )}
 
-            <li>
+            {getOnboardFormDetails?.exit_Policy && <li className={allengagementOnboardStyles.width100}>
               <span>Exit Polices : </span>
 
               {getOnboardFormDetails?.exit_Policy
-                ? <div dangerouslySetInnerHTML={{__html:getOnboardFormDetails?.exit_Policy}}></div> 
+                ? <label dangerouslySetInnerHTML={{__html:getOnboardFormDetails?.exit_Policy}}></label> 
                 : "NA"}
-            </li>
+            </li>}
 
-            <li>
+            <li className={allengagementOnboardStyles.width100}>
               <span>Feedback Process : </span>
 
               {getOnboardFormDetails?.feedback_Process

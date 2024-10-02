@@ -402,6 +402,16 @@
     max-width: 100%;
 }
 
+.tabsRightPanel .engModelField .engModelOption [class^="hrInputFields_formField"]{
+    margin: 0;
+    width: 250px;
+    max-width: 100%;
+}
+
+.tabsRightPanel .engModelField .engModelOption [class^="hrInputFields_formField"] [class^="hrInputFields_inputfield"]{
+    padding: 10px 16px;
+}
+
 .tabsRightPanel .mb32{
     margin-bottom: 32px;
 }

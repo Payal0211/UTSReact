@@ -562,8 +562,13 @@ export const allEngagementConfig = {
 				width:"180px",
 				render:(text,data)=>{
 					// return  data?.nbdName ? <div> {text} </div>:  
-					return <div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.onboardID
-					)}}>{text}</div> 
+					if(data?.isOngoing){
+						return <div>{text}</div> 
+					}else{
+						return <div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.onboardID
+						)}}>{text}</div>
+					}
+					
 				}
 			},
 			{
