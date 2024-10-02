@@ -262,7 +262,7 @@ function EngagementSection({
                 /> */}
                   <div className={AddNewClientStyle.engModelField}>
                     <label className={AddNewClientStyle.label} style={{ marginBottom: "8px" }}>
-                    Choose Current/Last Engagement Model
+                    Choose Default/Current Engagement Model
                       <span className={AddNewClientStyle.reqField}>*</span>
                     </label>
                     <Radio.Group

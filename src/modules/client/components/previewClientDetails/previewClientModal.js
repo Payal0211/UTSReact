@@ -2736,7 +2736,7 @@ function PreviewClientModal({
                           <div className={previewClientStyle.colMd12}>
                             <div className={previewClientStyle.engModelField}>
                               <label className={previewClientStyle.formGroupLabel}>
-                              Choose Current/Last Engagement Model
+                              Choose Default/Current Engagement Model
                                 <span className={previewClientStyle.reqField}>*</span>
                               </label>
                               <Radio.Group 
