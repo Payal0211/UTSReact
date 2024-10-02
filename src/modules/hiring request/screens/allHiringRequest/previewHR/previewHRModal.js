@@ -323,11 +323,17 @@ function PreviewHRModal({
     }
   }
   const updateCompanyDetails = async (name, value, closeState, resetValState) => {
-    setIsLoading(true);
+    
     let linkedinRegex = /^(http(s)?:\/\/)?([\w]+\.)?linkedin\.com\/(pub|in|profile|company)\/[A-z0-9_-]+\/?/i;
     let payload;
 
     if (name === "companyName") {
+      let websiteRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
+      let linkedInPattern = /linkedin\.com/i;
+      if(companyURLChangeValue && (!websiteRegex.test(companyURLChangeValue) || linkedInPattern.test(companyURLChangeValue))){      
+        message.error("Please enter valid website URL")
+        return
+      }
       payload = {
         IsUpdateFromPreviewPage:true,
         "basicDetails": {
@@ -395,7 +401,7 @@ function PreviewHRModal({
         }
       };
     }
-
+    setIsLoading(true);
     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
     if (res.statusCode === 200) {
       messageApi.open({

@@ -259,7 +259,16 @@ function PreviewClientModal({
     let valid = true;
     let _errors = { ...errorsData };
 
-    if (!ValidateFieldURL(watch('linkedInProfile')?.trim(), "linkedin")) {
+    if (watch("websiteUrl")) {
+      let websiteRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
+      let linkedInPattern = /linkedin\.com/i;
+      if(!websiteRegex.test(watch("websiteUrl")) || linkedInPattern.test(watch("websiteUrl"))){     
+        _errors.websiteUrl = 'Entered value does not match url format';
+        valid = false;
+      }   
+    }
+
+    if (watch('linkedInProfile') && !ValidateFieldURL(watch('linkedInProfile')?.trim(), "linkedin")) {
       _errors.linkedInProfile = '* Entered value does not match linkedin url format';
       valid = false;
     }
@@ -1163,6 +1172,18 @@ function PreviewClientModal({
       url = 'https://' + url;
     }
     return url;
+  };
+
+  const validateCompanyURL = async () => {    
+    if (watch("websiteUrl")) {
+      let websiteRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
+      let linkedInPattern = /linkedin\.com/i;
+      if(!websiteRegex.test(watch("websiteUrl")) || linkedInPattern.test(watch("websiteUrl"))){
+        let _errors = { ...errorsData };
+        _errors.websiteUrl = 'Entered value does not match url format';
+        setErrorsData(_errors);      
+      }   
+    }
   };
   return (
     <>
@@ -2715,7 +2736,7 @@ function PreviewClientModal({
                           <div className={previewClientStyle.colMd12}>
                             <div className={previewClientStyle.engModelField}>
                               <label className={previewClientStyle.formGroupLabel}>
-                              Choose Current Engagement Model
+                              Choose Default/Current Engagement Model
                                 <span className={previewClientStyle.reqField}>*</span>
                               </label>
                               <Radio.Group 
@@ -3339,15 +3360,20 @@ function PreviewClientModal({
             // 	message: 'Entered value does not match url format',
             // },
             validate: (value) => {
+              let linkedInPattern = /linkedin\.com/i;
               if (ValidateFieldURL(value, "website")) {
                 return true;
-              } else {
+              }else if(linkedInPattern.test(value)){
+                setErrorsData({ "websiteUrl": "Entered value does not match url format" });
+                return 
+              }else {
                 return "Entered value does not match url format";
               }
             },
           }}
+          onBlurHandler={() => validateCompanyURL()}
           placeholder="Company website"
-        />
+        />        
         {errorsData.websiteUrl && (
           <span style={{ color: "red" }}>
             {errorsData.websiteUrl}

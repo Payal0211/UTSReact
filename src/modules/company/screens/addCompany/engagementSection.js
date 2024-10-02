@@ -262,7 +262,7 @@ function EngagementSection({
                 /> */}
                   <div className={AddNewClientStyle.engModelField}>
                     <label className={AddNewClientStyle.label} style={{ marginBottom: "8px" }}>
-                    Choose Current Engagement Model
+                    Choose Default/Current Engagement Model
                       <span className={AddNewClientStyle.reqField}>*</span>
                     </label>
                     <Radio.Group
@@ -290,6 +290,7 @@ function EngagementSection({
                                   return newArr
                                 })
                               }}
+
                             />                        */}
                             <HRInputField
                               register={register}

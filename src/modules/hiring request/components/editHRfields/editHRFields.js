@@ -593,56 +593,56 @@ const EditHRFields = ({
     const payRollsResponse = await MasterDAO.getPayRollTypeDAO();
     setPayRollTypes(payRollsResponse && payRollsResponse.responseBody);
   }, []);
-  const getHRPricingType = useCallback(async () => {
-    const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
-    setHRPricingTypes(HRPricingResponse && HRPricingResponse.responseBody);
-  }, []);
+  // const getHRPricingType = useCallback(async () => {
+  //   const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
+  //   setHRPricingTypes(HRPricingResponse && HRPricingResponse.responseBody);
+  // }, []);
 
-  const getRequiredHRPricingType = useCallback(() => {
-    let reqOpt = [];
+  // const getRequiredHRPricingType = useCallback(() => {
+  //   let reqOpt = [];
 
-    if (watch("availability")?.value === "Full Time") {
-      if (typeOfPricing === 1) {
-        let Filter = hrPricingTypes.filter(
-          (item) =>
-            item.engagementType === "Full Time" && item.isTransparent === true
-        );
-        if (Filter.length) {
-          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
-        }
-      } else {
-        let Filter = hrPricingTypes.filter(
-          (item) =>
-            item.engagementType === "Full Time" && item.isTransparent === false
-        );
-        if (Filter.length) {
-          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
-        }
-      }
-    }
+  //   if (watch("availability")?.value === "Full Time") {
+  //     if (typeOfPricing === 1) {
+  //       let Filter = hrPricingTypes.filter(
+  //         (item) =>
+  //           item.engagementType === "Full Time" && item.isTransparent === true
+  //       );
+  //       if (Filter.length) {
+  //         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+  //       }
+  //     } else {
+  //       let Filter = hrPricingTypes.filter(
+  //         (item) =>
+  //           item.engagementType === "Full Time" && item.isTransparent === false
+  //       );
+  //       if (Filter.length) {
+  //         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+  //       }
+  //     }
+  //   }
 
-    if (watch("availability")?.value === "Part Time") {
-      if (typeOfPricing === 1) {
-        let Filter = hrPricingTypes.filter(
-          (item) =>
-            item.engagementType === "Part Time" && item.isTransparent === true
-        );
-        if (Filter.length) {
-          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
-        }
-      } else {
-        let Filter = hrPricingTypes.filter(
-          (item) =>
-            item.engagementType === "Part Time" && item.isTransparent === false
-        );
-        if (Filter.length) {
-          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
-        }
-      }
-    }
+  //   if (watch("availability")?.value === "Part Time") {
+  //     if (typeOfPricing === 1) {
+  //       let Filter = hrPricingTypes.filter(
+  //         (item) =>
+  //           item.engagementType === "Part Time" && item.isTransparent === true
+  //       );
+  //       if (Filter.length) {
+  //         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+  //       }
+  //     } else {
+  //       let Filter = hrPricingTypes.filter(
+  //         (item) =>
+  //           item.engagementType === "Part Time" && item.isTransparent === false
+  //       );
+  //       if (Filter.length) {
+  //         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+  //       }
+  //     }
+  //   }
 
-    return reqOpt;
-  }, [hrPricingTypes, watch("availability"), typeOfPricing]);
+  //   return reqOpt;
+  // }, [hrPricingTypes, watch("availability"), typeOfPricing]);
 
   const getHowSoon = useCallback(async () => {
     const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
@@ -961,7 +961,7 @@ const EditHRFields = ({
     getCurrencyHandler();
     getAvailability();
     getPayrollType();
-    getHRPricingType();
+    // getHRPricingType();
     getTalentRole();
     getSalesPerson();
     // getRegion();
@@ -2069,6 +2069,25 @@ const EditHRFields = ({
       // setControlledDurationTypeValue(findDurationMode[0]?.value);
     }
   }, [getHRdetails, getStartEndTimes, setValue]);
+
+  const getTransparentEngType = async (compID, hrtypeid) => {
+    let response = await  MasterDAO.getEngTypesRequestDAO("",compID); 
+ 
+    if(response.statusCode === 200){
+      let types = response.responseBody
+      setHRPricingTypes(types);
+      // let current = types.find(item => item.id === hrtypeid)
+      // setControlledHiringPricingTypeValue(current.type)
+      // setValue("hiringPricingType",{id: current.id, value: current.type})
+      // console.log('set NR',current.pricingPercent)
+      // setValue('NRMargin',current.pricingPercent)
+    }
+  } 
+
+  useEffect(() =>{
+    hrPricingTypes.length === 0 &&  getTransparentEngType(getHRdetails?.companyInfo?.companyID)
+   
+  },[getHRdetails?.companyInfo?.companyID,hrPricingTypes])
 
   useEffect(() => {
     if (getHRdetails?.addHiringRequest) {
@@ -3214,7 +3233,7 @@ const EditHRFields = ({
                               // label={"Hiring Pricing Type"}
                               label={"Employment Type"}
                               defaultValue="Select Hiring Pricing"
-                              options={getRequiredHRPricingType()}
+                              options={hrPricingTypes && hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
                               name="hiringPricingType"
                               isError={
                                 errors["hiringPricingType"] &&

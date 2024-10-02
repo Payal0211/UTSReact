@@ -107,7 +107,6 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 
 	const talentStatusSubmitHanlder = useCallback(
 		async (d) => {			
-			debugger
 			if(apiData?.IsPayPerHire == true){
 				setIsLoading(true);
 				let talentStatusObject = {
