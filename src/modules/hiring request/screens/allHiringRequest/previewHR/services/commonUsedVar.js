@@ -283,7 +283,7 @@ let TrackData = {
 export const EngOptions = [
   { value: 1, label: "Hire a contractor"},
   { value: 2, label: "Hire an employee on Uplers payroll"},
-  { value: 3, label: `Direct-hire one-time of annual salary`}
+  { value: 3, label: `Direct-hire `}
 ]
 
 export const formatSkill = (skill) => {
