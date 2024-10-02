@@ -150,6 +150,8 @@ export default function BeforePreOnboarding({
   const [deviceMasters, setDeviceMasters] = useState([]);
   const [controlledLeavePolicy, setControlledLeavePolicy] =
     useState("Please Select");
+  const [controlledWorkOption, setControlledWorkOption] =
+  useState("Please Select");
   const leavePolices = [
     { id: 1, value: "Proceed with Uplers Policies" },
     { id: 2, value: "Upload Your Policies" },
@@ -163,6 +165,7 @@ export default function BeforePreOnboarding({
     linkValidation: "",
   });
   const [amUsers,setAMUsers] = useState([]);
+  const [workOptions,setWorkOptions] = useState([]);
   const [workingMode, setWorkingMode] = useState([]);
   const [stateList,setStateList] = useState([]);
   const [reportingTo, setReportingTo] = useState([]);
@@ -373,6 +376,12 @@ export default function BeforePreOnboarding({
     setControlledPaymentNetTerm(list[0]);
   }, [preONBoardingData,netTerms])
 
+  useEffect(() => {    
+      let data = workOptions?.filter((item) => item?.id === preONBoardingData?.secondTabAMAssignmentOnBoardingDetails?.work_option_id)
+      setControlledWorkOption(data[0]?.value)
+      setValue("workOption",data[0])
+  }, [preONBoardingData,workOptions])
+
   useEffect(() => {
     let modeOfWorking = workingMode?.filter((item) => item.value === preONBoardingData?.preOnboardingDetailsForAMAssignment?.modeOfWork);
     setValue("modeOFWorkingID", modeOfWorking[0]);
@@ -488,12 +497,14 @@ export default function BeforePreOnboarding({
         setValue('firstWeek',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstWeek)
         setValue('firstMonth',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.talent_FirstMonth)
         setValue('softwareToolsRequired',result?.responseBody?.details.secondTabAMAssignmentOnBoardingDetails.softwareToolsRequired)
-        if(result?.responseBody?.details.exit_Policy){
-          setValue('exitPolicy',result?.responseBody?.details.exit_Policy)
-        }
+          setValue('exitPolicy',result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails?.exit_Policy)
         setValue('feedbackProcess', result?.responseBody?.details.feedback_Process)
         setValue('policyLink',result?.responseBody?.details?.secondTabAMAssignmentOnBoardingDetails.proceedWithClient_LeavePolicyLink)
         setDeviceMasters(result?.responseBody?.details?.deviceMaster)
+        setWorkOptions(result?.responseBody?.details?.bindWorkOptionDrp?.map((item=>({
+          id:item?.id,
+          value:item?.value
+        }))))
         setClientTeamMembers(result?.responseBody?.details?.onBoardClientTeam)
         let preOnboardDetail =
           result.responseBody.details?.preOnboardingDetailsForAMAssignment;
@@ -718,6 +729,7 @@ const calcelMember = () =>{
         "modeOFWorkingID": d?.modeOFWorkingID?.id,
         "city": d?.city,
         "stateID": d?.stateID?.id,
+        "work_option_id":d?.workOption?d?.workOption?.id:null,
         "talent_Designation": d?.talent_Designation,
         "amSalesPersonID": d?.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
@@ -2252,7 +2264,6 @@ const calcelMember = () =>{
                             />
                           </div>
                         )}
-
                       <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.modalFormLeaveUnderLine}>
                           <HRSelectField
@@ -2277,25 +2288,46 @@ const calcelMember = () =>{
                           />
                         </div>
                       </div>
-                      {watch("exitPolicy") && <div className={HRDetailStyle.colMd12}>
-                        <div className={HRDetailStyle.modalFormEdited}>
-                          <HRInputField
+                      <div className={HRDetailStyle.modalFormCol}>
+                          <div className={HRDetailStyle.modalFormLeaveUnderLine}>
+                          <HRSelectField
+                            controlledValue={controlledWorkOption}
+                            setControlledValue={setControlledWorkOption}
+                            isControlled={true}
+                            mode="id/value"
+                            setValue={setValue}
                             register={register}
-                            errors={errors}
-                            label="Exit Policy"
-                            name="exitPolicy"
-                            type={InputType.TEXT}
-                            placeholder="First Month"
-                            // value="First Month - 7 Days Second Month Onwards - 30 Days"
-                            disabled
-                            required={!talentDeteils?.IsHRTypeDP}
-                            validationSchema={{
-                              required: "please enter Exit Policy.",
-                            }}
-                            // trailingIcon= {<EditFieldSVG width="16" height="16" />}
+                            className="leavePolicylabel"
+                            label={"Work Options"}
+                            placeholder={"Select Work Option"}
+                            options={workOptions}
+                            name="workOption"
+                            disabled={actionType==="Legal"?true:false}
                           />
+                          </div>
                         </div>
-                      </div>}
+                      {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP=== false && 
+                        <div className={HRDetailStyle.colMd12}>
+                          <div className={HRDetailStyle.modalFormEdited}>
+                            <HRInputField
+                              register={register}
+                              errors={preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP=== false && errors}
+                              label="Exit Policy"
+                              name="exitPolicy"
+                              type={InputType.TEXT}
+                              placeholder="Enter exit policy"
+                              // value="First Month - 7 Days Second Month Onwards - 30 Days"
+                              // disabled
+                              required={!talentDeteils?.IsHRTypeDP}
+                              validationSchema={{
+                                required: "please enter exit policy.",
+                              }}
+                              disabled={actionType==="Legal"?true:false}
+                              // trailingIcon= {<EditFieldSVG width="16" height="16" />}
+                            />
+                          </div>
+                        </div>
+                      } 
                     </>
                   {/* )} */}
                   {watch("leavePolicie")?.id === 1 && (
