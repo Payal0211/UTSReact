@@ -825,11 +825,14 @@ function PreviewClientModal({
       }
     }
 
+  }, [getCompanyDetails?.engagementDetails]);
+
+  useEffect(() => {
     getRequiredHRPricingType()?.map((value)=>
       setValue(`pricingPercent_${value?.id}`,manageablePricingType.find(item=> item.id === value.id)?.pricingPercent)
     )
-
-  }, [getCompanyDetails?.engagementDetails,manageablePricingType]);
+  }, [getRequiredHRPricingType()])
+  
 
   // useEffect(() => {
   //   if (
@@ -908,6 +911,21 @@ function PreviewClientModal({
       "hiringTypePricingId": item.id,
       "hiringTypePricingPercentage": item.pricingPercent
     }))  : undefined
+
+    let valid = true
+    if(companyHiringTypePricing){
+      companyHiringTypePricing.forEach(val => {
+        if(val?.hiringTypePricingPercentage<=0 || val?.hiringTypePricingPercentage >=100){
+          setIsLoading(false);
+          message.error(`Please Provide "${getRequiredHRPricingType()?.find(item => item?.id === val?.hiringTypePricingId)?.type}" % value between 1-99`)
+          valid=false
+        }
+      })
+    }
+
+    if(!valid){
+      return
+    }
 
     let payload = {
       basicDetails: {

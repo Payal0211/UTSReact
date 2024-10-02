@@ -390,26 +390,65 @@
     margin-bottom: 0;
 }
 
-.engModelField .engModelOption [class^="ant-radio-wrapper"]{
+.tabsRightPanel .engModelField .engModelOption [class^="ant-radio-wrapper"]{
     white-space: nowrap;
     margin: 0;
-    min-width: 240px;
+    min-width: 282px;
 }
 
-.engModelField .engModelOption [class^="hrInputFields_formField"]{
-    margin: 0;
+.tabsRightPanel .engModelField .engModelOption [class^="addclient_inputfield"]{
+    padding: 10px 16px;
     width: 250px;
     max-width: 100%;
 }
 
-.engModelField .engModelOption [class^="hrInputFields_formField"] [class^="hrInputFields_inputfield"]{
-    padding: 10px 16px;
-}
 .tabsRightPanel .mb32{
     margin-bottom: 32px;
 }
 .tabsRightPanel .mb24{
     margin-bottom: 24px;
+}
+
+
+.inputfield {
+    text-align: left;
+    width: 100%;
+    padding: 16px 16px;
+    background: var(--background-color-light);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--uplers-black);
+    outline: 1px solid transparent;
+    transition: all 0.25s ease 0s;
+    vertical-align: middle;
+}
+
+.inputfield::-webkit-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.inputfield::-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.inputfield:-ms-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.inputfield:-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.inputfield:focus {
+    outline-color: var(--color-sunlight);
+    border-color: var(--color-sunlight);
 }
 
 @media screen and (max-width: 1440px) {

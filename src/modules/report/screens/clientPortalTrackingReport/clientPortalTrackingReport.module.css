@@ -186,6 +186,18 @@
     align-items: center;
 }
 
+.filterSets .filterLeft{
+    align-items: center;
+    gap: 24px;
+    display: flex;
+}
+
+.filterLeft .filterSetsInner [class*='ant-select-single'] [class*='ant-select-selector']{
+    height: 44px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+}
+
 
 .filterSetsInner p{
     margin: 0 0 0 10px;
@@ -375,7 +387,7 @@
 
 .filterSetsInner [class*="ant-select-selection-search-input"] {
     height: auto !important;
-    padding: 16px 16px !important;
+    padding: 11px 16px !important;
 }
 
 @media only screen and (max-width: 1440px) {
@@ -391,7 +403,9 @@
         width: 200px;
         height: 42px;
     }
-
+    .filterSets .filterLeft{
+        gap: 16px;
+    }
     .filterSetsInner [class*='ant-select-single'] [class*='ant-select-selector']{
         height: 42px;
         padding-top: 10px;
@@ -399,8 +413,8 @@
     }
 
     .filterSetsInner [class*="ant-select-selection-search-input"]{
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
+        padding-top: 11px !important;
+        padding-bottom: 11px !important;
     }
 
     .calendarFilter svg{
@@ -439,7 +453,7 @@
   
     .addFilter{
         width: 125px;
-        height: 35px;
+        height: 42px;
         gap: 8px;
     }
 

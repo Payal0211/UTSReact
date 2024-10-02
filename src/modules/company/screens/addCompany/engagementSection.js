@@ -5,6 +5,8 @@ import HRSelectField from "modules/hiring request/components/hrSelectField/hrSel
 import { InputType } from "constants/application";
 import { Checkbox, Select, Radio, Skeleton } from "antd";
 import { MasterDAO } from "core/master/masterDAO";
+// import HRInputFieldStyle from '../../../hiring request/components/hrFields/hrInputFields.module.css';
+import classNames from 'classnames';
 
 function EngagementSection({
   register,
@@ -27,6 +29,11 @@ function EngagementSection({
   useState("Select Hiring Pricing");
 
   const [errorCurrency, seterrorCurrency] = useState(false);
+
+  const formFieldClasses = classNames({
+		[AddNewClientStyle.inputfield]: true,
+		[AddNewClientStyle.disabled]: false,
+	});
 
   let _currency = watch("creditCurrency");
  let _totalSum = parseInt(watch("freeCredit"))+parseInt(engagementDetails?.totalCreditBalance?? 0);
@@ -81,9 +88,9 @@ function EngagementSection({
       }
     }
 
-    getRequiredHRPricingType()?.map((value)=>
-      setValue(`pricingPercent_${value?.id}`,manageablePricingType.find(item=> item.id === value.id)?.pricingPercent))
-  }, [engagementDetails,manageablePricingType]);
+    // getRequiredHRPricingType()?.map((value)=>
+    //   setValue(`pricingPercent_${value?.id}`,manageablePricingType.find(item=> item.id === value.id)?.pricingPercent))
+  }, [engagementDetails]);
 
   useEffect(()=>{
     if(engagementDetails?.hiringTypePricingId && hrPricingTypes.length > 0){
@@ -264,22 +271,20 @@ function EngagementSection({
                       getRequiredHRPricingType().map((value) => 
                         <>
                         <div className={AddNewClientStyle.engModelOption}>
-                          <Radio value={value.id}>{value.value}</Radio>                          
-                          <HRInputField  
-                          register={register}
-                          setValue={setValue}
-                          className="yourClassName"
-                          name={`pricingPercent_${value?.id}`}
-                          type={InputType.NUMBER}
-                          onChangeHandler={(e)=> {
-                            setManageablePricingType(prev=> {
-                              let newArr = [...prev]
-                              let i = prev.findIndex(itm=> itm.id === value.id)
-                              newArr[i] = {...newArr[i] ,pricingPercent : + e.target.value }
-                              return newArr
-                            })
-                          }}
-                        />
+                          <Radio value={value.id}>{value.value}</Radio>   
+                          <input
+                              value={manageablePricingType.find(item=> item.id === value.id).pricingPercent}
+                              className={formFieldClasses}
+                              type={'number'}
+                              onChange={(e) => {
+                                setManageablePricingType(prev=> {
+                                  let newArr = [...prev]
+                                  let i = prev.findIndex(itm=> itm.id === value.id)
+                                  newArr[i] = {...newArr[i] ,pricingPercent : + e.target.value }
+                                  return newArr
+                                })
+                              }}
+                            />                       
                         </div> 
                       </>
                       )

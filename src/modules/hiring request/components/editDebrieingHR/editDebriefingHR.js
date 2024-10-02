@@ -168,6 +168,13 @@ const EditDebriefingHR = ({
 	useEffect(()=>{ isOtherSkillExistMemo === false && unregister('otherSkill') }, [isOtherSkillExistMemo, unregister])
 
 	useEffect(() => {
+		// add skills to the list of skills
+		setCombinedSkillsMemo(prev=>{
+			console.log({prev, newSet:getHRdetails?.skillmulticheckbox.map((item) =>({id:item.id,value:item.text})) })
+			return [...prev,
+				...getHRdetails?.skillmulticheckbox.map((item) =>({id:item.id,value:item.text}))
+			]
+		})
 		setValue(
 			'skills',
 			getHRdetails?.skillmulticheckbox?.map((item) => ({
