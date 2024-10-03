@@ -90,6 +90,7 @@ export const allClientsConfig = {
                     render:(_,result) => {
                         return (<div style={{display:'flex', alignItems:'center'}}>
                         {isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
+                        target="_blank"
                             to={`/addNewCompany/${result.companyID}`}
                             style={{ color: 'black', textDecoration: 'underline', display:'inline-flex' }}
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
