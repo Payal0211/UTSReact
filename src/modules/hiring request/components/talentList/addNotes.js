@@ -7,6 +7,8 @@ import { InputType } from 'constants/application';
 import HRInputField from '../hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
 import moment from 'moment';
+import ReactQuill from 'react-quill';
+import { sanitizeLinks } from 'modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar';
 
 function AddNotes({onCancel , item, apiData,setAllNotes}) {
     const {
@@ -51,8 +53,8 @@ function AddNotes({onCancel , item, apiData,setAllNotes}) {
                 "flag": "Add"
               }
             hiringRequestDAO.addDeleteNotesDataDAO(dataForUTSAPI)
-            onCancel()
             resetField('addNoteForTalent')
+            onCancel()            
     }else{
          message.error('Not able to add Note Something went Wrong. Please try again')
     }
@@ -68,7 +70,7 @@ function AddNotes({onCancel , item, apiData,setAllNotes}) {
                 Please note that any notes you add here will also be accessible to the client.
             </div>
 
-            <HRInputField
+            {/* <HRInputField
                 isTextArea={true}
                 rows={4}
                 // errors={errors}
@@ -82,6 +84,25 @@ function AddNotes({onCancel , item, apiData,setAllNotes}) {
                 validationSchema={{
                     required: "please enter a note for talent.",
                 }}
+            /> */}
+
+            <ReactQuill
+                theme="snow"
+                value={watch('addNoteForTalent')}
+                onChange={(val) => {
+                    let sanitizedContent = sanitizeLinks(val);
+                    setValue('addNoteForTalent',sanitizedContent);
+                }}
+                className="heightSize"
+                required
+                modules={
+                    {
+                        toolbar: [    
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],   
+                        ],
+                    }
+                  }
             />
 
             <div className={AddNotesStyle.formPanelAction}>

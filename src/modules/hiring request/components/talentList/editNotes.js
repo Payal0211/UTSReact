@@ -6,6 +6,8 @@ import { InputType } from 'constants/application';
 import HRInputField from '../hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import ReactQuill from 'react-quill';
+import { sanitizeLinks } from 'modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar';
 
 function EditNotes({onClose,viewNoteData,apiData,setAllNotes,item}) {
     const {
@@ -72,7 +74,7 @@ function EditNotes({onClose,viewNoteData,apiData,setAllNotes,item}) {
                 <h2>Edit note</h2>
             </div>
 
-        <HRInputField
+        {/* <HRInputField
                 isTextArea={true}
                 rows={4}
                 // errors={errors}
@@ -86,9 +88,28 @@ function EditNotes({onClose,viewNoteData,apiData,setAllNotes,item}) {
                 validationSchema={{
                     required: "please enter a note for talent.",
                 }}
+            /> */}
+
+            <ReactQuill
+                theme="snow"
+                value={watch('addNoteForTalent')}
+                onChange={(val) => {
+                    let sanitizedContent = sanitizeLinks(val);
+                    setValue('addNoteForTalent',sanitizedContent)
+                }}
+                className="heightSize"
+                required
+                modules={
+                    {
+                        toolbar: [    
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],   
+                        ],
+                    }
+                  }
             />
 
-            <div className={AddNotesStyle.addNotesAlert}>
+            <div className={`${AddNotesStyle.addNotesAlert}`} style={{marginTop:"10px"}}>
                 <img src={AlertIcon} alt='alert-icon' />
                 Please note that any notes you add here will also be accessible to the client.
             </div>
