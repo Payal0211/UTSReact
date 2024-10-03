@@ -608,56 +608,56 @@ const HRFields = ({
     const payRollsResponse = await MasterDAO.getPayRollTypeDAO();
     setPayRollTypes(payRollsResponse && payRollsResponse.responseBody);
   }, []);
-  const getHRPricingType = useCallback(async () => {
-    const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
-    setHRPricingTypes(HRPricingResponse && HRPricingResponse.responseBody);
-  }, []);
+  // const getHRPricingType = useCallback(async () => {
+  //   const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
+  //   setHRPricingTypes(HRPricingResponse && HRPricingResponse.responseBody);
+  // }, []);
 
-  const getRequiredHRPricingType = useCallback(() => {
-    let reqOpt = [];
+  // const getRequiredHRPricingType = useCallback(() => {
+  //   let reqOpt = [];
 
-    if (watch("availability")?.value === "Full Time") {
-      if (typeOfPricing === 1) {
-        let Filter = hrPricingTypes.filter(
-          (item) =>
-            item.engagementType === "Full Time" && item.isTransparent === true
-        );
-        if (Filter.length) {
-          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
-        }
-      } else {
-        let Filter = hrPricingTypes.filter(
-          (item) =>
-            item.engagementType === "Full Time" && item.isTransparent === false
-        );
-        if (Filter.length) {
-          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
-        }
-      }
-    }
+  //   if (watch("availability")?.value === "Full Time") {
+  //     if (typeOfPricing === 1) {
+  //       let Filter = hrPricingTypes.filter(
+  //         (item) =>
+  //           item.engagementType === "Full Time" && item.isTransparent === true
+  //       );
+  //       if (Filter.length) {
+  //         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+  //       }
+  //     } else {
+  //       let Filter = hrPricingTypes.filter(
+  //         (item) =>
+  //           item.engagementType === "Full Time" && item.isTransparent === false
+  //       );
+  //       if (Filter.length) {
+  //         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+  //       }
+  //     }
+  //   }
 
-    if (watch("availability")?.value === "Part Time") {
-      if (typeOfPricing === 1) {
-        let Filter = hrPricingTypes.filter(
-          (item) =>
-            item.engagementType === "Part Time" && item.isTransparent === true
-        );
-        if (Filter.length) {
-          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
-        }
-      } else {
-        let Filter = hrPricingTypes.filter(
-          (item) =>
-            item.engagementType === "Part Time" && item.isTransparent === false
-        );
-        if (Filter.length) {
-          reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
-        }
-      }
-    }
+  //   if (watch("availability")?.value === "Part Time") {
+  //     if (typeOfPricing === 1) {
+  //       let Filter = hrPricingTypes.filter(
+  //         (item) =>
+  //           item.engagementType === "Part Time" && item.isTransparent === true
+  //       );
+  //       if (Filter.length) {
+  //         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+  //       }
+  //     } else {
+  //       let Filter = hrPricingTypes.filter(
+  //         (item) =>
+  //           item.engagementType === "Part Time" && item.isTransparent === false
+  //       );
+  //       if (Filter.length) {
+  //         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
+  //       }
+  //     }
+  //   }
 
-    return reqOpt;
-  }, [hrPricingTypes, watch("availability"), typeOfPricing]);
+  //   return reqOpt;
+  // }, [hrPricingTypes, watch("availability"), typeOfPricing]);
 
   const watchPostalCode = watch("postalCode");
 
@@ -859,6 +859,20 @@ const HRFields = ({
     setHRDirectPlacement(e.target.checked);
   }, []);
 
+  const getTransparentEngType = async (compID, hrtypeid) => {
+    let response = await  MasterDAO.getEngTypesRequestDAO("",compID); 
+
+    // setTransparentEngType(response?.responseBody?.map(item=> ( { value: item.id, label: item.type})));
+    if(response.statusCode === 200){
+      let types = response.responseBody
+      setHRPricingTypes(types);
+      let current = types.find(item => item.id === hrtypeid)
+      setControlledHiringPricingTypeValue(current.type)
+      setValue("hiringPricingType",{id: current.id, value: current.type})
+      setValue('NRMargin',current.pricingPercent)
+    }
+  } 
+
   const getClientNameValue = (clientName, clientData) => {
     setValue("clientName", clientName);
     setClientDetails(clientData);
@@ -866,6 +880,11 @@ const HRFields = ({
     setIsPostaJob(clientData?.isPostaJob);
     setIsProfileView(clientData?.isProfileView);
     setIsVettedProfile(clientData?.isVettedProfile);
+
+    getTransparentEngType(clientData?.companyId , clientData?.hiringTypePricingId,)
+    //set availability
+    setValue("availability", {id: userCompanyTypeID === 2 ? 2 : 1, value :"Full Time"})
+    setControlledAvailabilityValue("Full Time")
 
     // setDefault POC
     setControlledPocValue([
@@ -1369,7 +1388,7 @@ const HRFields = ({
     () => {
       getAvailability();
       getPayrollType();
-      getHRPricingType();
+      // getHRPricingType();
       getTalentRole();
       // getSalesPerson();
       // getRegion();
@@ -3186,7 +3205,7 @@ const HRFields = ({
                   </div>
                 </div>
               )}
-
+{/* {console.log({JobTypes , availability,watch:watch("availability")})} */}
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
@@ -3368,7 +3387,7 @@ const HRFields = ({
                           // label={"Hiring Pricing Type"}
                           label={"Employment Type"}
                           defaultValue="Select Hiring Pricing"
-                          options={getRequiredHRPricingType()}
+                          options={hrPricingTypes && hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
                           name="hiringPricingType"
                           isError={
                             errors["hiringPricingType"] &&

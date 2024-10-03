@@ -24,7 +24,7 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import moment from 'moment-timezone';
 import infoIcon from "assets/svg/infoIcon.svg";
 import rightGreen from "assets/svg/rightGreen.svg";
-import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, EngOptions, sanitizeLinks, compensationOptions, industryOptions, seriesOptions, monthOptions, foundedIn, formatSkill ,isEmptyOrWhitespace} from "./services/commonUsedVar";
+import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, sanitizeLinks, compensationOptions, industryOptions, seriesOptions, monthOptions, foundedIn, formatSkill ,isEmptyOrWhitespace, EngOptions} from "./services/commonUsedVar";
 // import { DeleteCultureImage, DeleteYoutubeLink, UpdateDetails, getCompanyPerks } from "../../../services/companyProfileApi";
 import debounce from 'lodash.debounce';
 
@@ -201,8 +201,7 @@ function PreviewHRModal({
   const [calculatedUplersFees, setCalculateUplersFees] = useState({
     from: "", to: ""
   })
-  const [uplersFees, setUplersFees] = useState(0);
-
+  
   let details = fundingDetails && fundingDetails[0] ? fundingDetails[0] : {};
   let allInvestors = details?.allInvestors ? details?.allInvestors?.split(",") : [];
   let displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
@@ -289,9 +288,8 @@ function PreviewHRModal({
     let calculateFromBudget = 0;
 
     if (getcompanyID === 1) {
-      if (jobPreview?.hiringTypePricingId === 1 || jobPreview?.hiringTypePricingId === 2) {
-        let fees = 35;
-        setUplersFees(fees);
+      let fees = jobPreview?.pricingPercentage;      
+      if (jobPreview?.hiringTypePricingId === 1 || jobPreview?.hiringTypePricingId === 2) {              
 
         let _calVal = { ...calculatedUplersFees };
         if (fromSalaryBudget || fromBudget === 0) {
@@ -310,9 +308,7 @@ function PreviewHRModal({
         }
         setCalculateUplersFees(_calVal);
       }
-      else {
-        let fees = TrackData?.trackingDetails?.country == "IN" ? 7.5 : 10;
-        setUplersFees(fees);
+      else {                
         if (fromSalaryBudget) {
           fromBudget = (fromSalaryBudget ? fromSalaryBudget : estimatedFromSalaryBudget);
           let percentValuesFromBudget = (((fromBudget) * fees) / 100);
@@ -327,11 +323,17 @@ function PreviewHRModal({
     }
   }
   const updateCompanyDetails = async (name, value, closeState, resetValState) => {
-    setIsLoading(true);
+    
     let linkedinRegex = /^(http(s)?:\/\/)?([\w]+\.)?linkedin\.com\/(pub|in|profile|company)\/[A-z0-9_-]+\/?/i;
     let payload;
 
     if (name === "companyName") {
+      let websiteRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
+      let linkedInPattern = /linkedin\.com/i;
+      if(companyURLChangeValue && (!websiteRegex.test(companyURLChangeValue) || linkedInPattern.test(companyURLChangeValue))){      
+        message.error("Please enter valid website URL")
+        return
+      }
       payload = {
         IsUpdateFromPreviewPage:true,
         "basicDetails": {
@@ -399,7 +401,7 @@ function PreviewHRModal({
         }
       };
     }
-
+    setIsLoading(true);
     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
     if (res.statusCode === 200) {
       messageApi.open({
@@ -1104,7 +1106,7 @@ getSkillList();
         messageApi.open({
           type: "success",
           content: "Duration Updated",
-        });
+        });        
         setJobPreview((prev) => ({
           ...prev,
           ...{
@@ -1120,7 +1122,8 @@ getSkillList();
             // budgetFrom : result?.responseBody?.details?.budgetFrom,
             // budgetTo : result?.responseBody?.details?.budgetTo,
             jobTypeID:result?.responseBody?.jobTypeID,
-            availability:result?.responseBody?.availability
+            availability:result?.responseBody?.availability,
+            pricingPercentage:result?.responseBody?.pricingPercentage
           },
         }));
         setIsLoading(false);
@@ -2095,6 +2098,7 @@ getSkillList();
                             <span className="editNewIcon"
                               onClick={() => {
                                 setisEditDuration(true);
+                                // if(!jobPreview?.isTransparentPricing) getTransparentEngType(hrIdforPreview);
                                 GetPayrollType();
                                 getJobType();
                                 setError({});
@@ -4121,9 +4125,9 @@ getSkillList();
                     (editBudget?.budgetType == 1 && editBudget?.budgetFrom > 0)
                       ?
                       <div className="noJobDesInfo mt-2">
-                        Based on your selection of the 'Direct hire on your payroll - {TrackData?.trackingDetails?.country == "IN" ? "7.5%" : "10%"}' model, the one-time Uplers fee will be {editBudget?.currency} {estimatedFromSalaryBudget}
+                        Based on your selection of the 'Direct hire on your payroll - {jobPreview?.pricingPercentage}%' model, the one-time Uplers fee will be {editBudget?.currency} {estimatedFromSalaryBudget}
                       </div> : editBudget?.budgetTo > 0 && <div className="noJobDesInfo mt-2">
-                        Based on your selection of the 'Direct hire on your payroll - {TrackData?.trackingDetails?.country == "IN" ? "7.5%" : "10%"}' model, the one-time Uplers fee will be {editBudget?.currency} {estimatedFromSalaryBudget} - {estimatedToSalaryBudget}
+                        Based on your selection of the 'Direct hire on your payroll - {jobPreview?.pricingPercentage}%' model, the one-time Uplers fee will be {editBudget?.currency} {estimatedFromSalaryBudget} - {estimatedToSalaryBudget}
                       </div>
                     :
 
@@ -4131,14 +4135,14 @@ getSkillList();
                       ?
                       <div className="noJobDesInfo">Based on your selection of the
                         {jobPreview?.hiringTypePricingId === 1 ?
-                          " Hire a contractor - 35% " : jobPreview?.hiringTypePricingId === 2 ? " Hire an employee on Uplers payroll - 35% " : ` Direct-hire ${TrackData?.trackingDetails?.country == "IN" ? "7.5% " : "10% "}`
+                          ` Hire a contractor - ${jobPreview?.pricingPercentage}% ` : jobPreview?.hiringTypePricingId === 2 ?  `Hire an employee on Uplers payroll - ${jobPreview?.pricingPercentage}% ` : ` Direct-hire ${jobPreview?.pricingPercentage}%`
                         }
                         model, the candidate payout is {editBudget?.currency} {estimatedFromSalaryBudget}/month, with Uplers fees up to {editBudget?.currency} {calculatedUplersFees?.from}/month.
 
                       </div> : editBudget?.budgetTo > 0 &&
                       <div className="noJobDesInfo">Based on your selection of the
                         {jobPreview?.hiringTypePricingId === 1 ?
-                          " Hire a contractor - 35% " : jobPreview?.hiringTypePricingId === 2 ? " Hire an employee on Uplers payroll - 35% " : ` Direct-hire ${TrackData?.trackingDetails?.country == "IN" ? "7.5% " : "10% "}`
+                          ` Hire a contractor - ${jobPreview?.pricingPercentage}% ` : jobPreview?.hiringTypePricingId === 2 ?  `Hire an employee on Uplers payroll - ${jobPreview?.pricingPercentage}% ` : ` Direct-hire ${jobPreview?.pricingPercentage}%`
                         }
                         model, the candidate payout is {editBudget?.currency} {estimatedFromSalaryBudget + " - " + estimatedToSalaryBudget}/month, with Uplers fees ranging from  {editBudget?.currency} {calculatedUplersFees?.from + " - " + calculatedUplersFees?.to}/month.
 

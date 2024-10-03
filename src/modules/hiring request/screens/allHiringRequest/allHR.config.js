@@ -31,23 +31,23 @@ export const allHRConfig = {
     setRepostHrModal
   ) => {
     return [
-      {
-        title: " ",
-        dataIndex: "isHRFocused",
-        key: "isHRFocused",
-        align: "center",
-        width: "50px",
-        render: (val) => {
-          return val ? <FocusedRole /> : null;
-        },
-      },
+      // {
+      //   title: " ",
+      //   dataIndex: "isHRFocused",
+      //   key: "isHRFocused",
+      //   align: "center",
+      //   width: "50px",
+      //   render: (val) => {
+      //     return val ? <FocusedRole /> : null;
+      //   },
+      // },
 
       {
         title: " ",
         dataIndex: "isHRFocused",
         key: "isHRFocused",
         align: "center",
-        width: "50px",
+        width: "60px",
         render: (val,result) => {
           if(result.isDraftHR){
             return
@@ -60,11 +60,11 @@ export const allHRConfig = {
       },
 
       {
-        title: "",
+        title: " ",
         dataIndex: "showCloneToDemoAccount",
         key: "showCloneToDemoAccount",
         align: "center",
-        width: showCloneHRToDemoAccount === true ? "50px": "0",      
+        width: showCloneHRToDemoAccount === true ? "42px": "0",      
         render: (text, result) => {
           if(showCloneHRToDemoAccount === true)
           {
@@ -72,7 +72,7 @@ export const allHRConfig = {
               <>
               {result?.showCloneToDemoAccount === true ? (
               <Tooltip placement="bottom" title={"Clone HR to Demo Account"}>
-                    <a href="javascript:void(0);"> 
+                    <a href="javascript:void(0);" style={{display: 'inline-flex'}}> 
                     <Checkbox
                       checked={selectedCheckboxes.map(item=> item.hRID)?.includes(result.HRID)}
                       onClick={() => handleDemoCloneCheckboxChange(result)}
@@ -91,7 +91,7 @@ export const allHRConfig = {
         dataIndex: "starStatus",
         key: "starStatus",
         align: "center",
-        width: "50px",
+        width: "42px",
         render: (_, param) => {
           let response = All_Hiring_Request_Utils.GETHRPRIORITY(
             param?.starStatus,
@@ -107,14 +107,14 @@ export const allHRConfig = {
         title: " ",
         dataIndex: "reopenHR",
         key: "reopenHR",
-        width: "50px",
+        width: "42px",
         align: "center",
         render: (text, result) => {
           return (
             <>
               {result?.reopenHR === 0 && result?.isDisplayReopenOrCloseIcon === true ? (
                 <Tooltip placement="bottom" title={"Close HR"}>
-                  <a href="javascript:void(0);">
+                  <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
                     <CloseHR
                       style={{ fontSize: "16px" }}
                       onClick={() => {
@@ -128,7 +128,7 @@ export const allHRConfig = {
               // LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 &&
                result?.isDisplayReopenOrCloseIcon === true ? (
                 <Tooltip placement="bottom" title={result?.companyModel === 'Pay Per Credit' ? "Re-post HR" :"Reopen HR"}>
-                  <a href="javascript:void(0);">
+                  <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
                     <ReopenHR
                       style={{ fontSize: "16px" }}
                       onClick={() => {
@@ -163,7 +163,7 @@ export const allHRConfig = {
         title: " ",
         dataIndex: "cloneHR",
         key: "cloneHR",
-        width: "50px",
+        width: "42px",
         align: "center",
         render: (text, result) => {
           // if (LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10) {
@@ -172,7 +172,7 @@ export const allHRConfig = {
           return (
             <>
               <Tooltip placement="bottom" title={"Clone HR"}>
-                <a href="javascript:void(0);">
+                <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
                   <CloneHRSVG
                     style={{ fontSize: "16px" }}
                     onClick={() => {
@@ -198,14 +198,14 @@ export const allHRConfig = {
         dataIndex: "Date",
         key: "Date",
         align: "left",
-        width: "150px",
+        width: "120px",
       },
       {
         title: "HR ID",
         dataIndex: "HR_ID",
         key: "HR_ID",
         align: "left",
-        width: "250px",
+        width: "176px",
         render: (text, result) => (
           <Link
             target="_blank"
@@ -216,13 +216,6 @@ export const allHRConfig = {
             {text}
           </Link>
         ),
-      },
-      {
-        title: "HR Published Since",
-        dataIndex: "hrAcceptedSince",
-        key: "HRAcceptedSince",
-        width: "150px",
-        align: "left",
       },
       {
         title: "TR",
@@ -284,7 +277,7 @@ export const allHRConfig = {
         dataIndex: "salaryBudget",
         key: "salaryBudget",
         align: "left",
-        width: "180px",
+        width: "200px",
       },
       {
         title: "HR Status",
@@ -333,6 +326,18 @@ export const allHRConfig = {
           // );
           return text
         },
+      },
+      {
+        title: `HR Published Since`,
+        // title: (
+        //   <>
+        //     HR Published <br /> Since
+        //   </>
+        // ),
+        dataIndex: "hrAcceptedSince",
+        key: "HRAcceptedSince",
+        width: "164px",
+        align: "left",
       },
     ];
   },

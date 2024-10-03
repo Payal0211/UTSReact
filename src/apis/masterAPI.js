@@ -36,10 +36,10 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getJobTypesRequest');
 		}
 	},
-	getEngTypesRequest: async function (HRID) {
+	getEngTypesRequest: async function (HRID,compID) {
 		let httpService = new HttpServices();
 		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.COMPANY + MastersAPI.GET_HIRING_PRICING_TYPE + `?hrId=${HRID}`;
+			NetworkInfo.NETWORK + SubDomain.COMPANY + MastersAPI.GET_HIRING_PRICING_TYPE +   `?hrId=${HRID? HRID : 0}&companyId=${compID? compID : 0}` ;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
