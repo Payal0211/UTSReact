@@ -1406,11 +1406,11 @@ const HRFields = ({
       getFrequencyData();
       fetchCities()
       // get country name based on IP
-      fetch("https://ipapi.co/json")
-        .then((response) => response.json())
-        .then((data) => {
-          setCountryBasedOnIP(data.country_name);
-        });
+      // fetch("https://ipapi.co/json")
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     setCountryBasedOnIP(data.country_name);
+      //   });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [
@@ -1466,9 +1466,9 @@ const HRFields = ({
       watch("hiringPricingType")?.id === 3 ||
       watch("hiringPricingType")?.id === 6
     ) {
-      if (countryBasedOnIP === "India") {
-        setValue("NRMargin", 7.5);
-      }
+      // if (countryBasedOnIP === "India") {
+      //   setValue("NRMargin", 7.5);
+      // }
       unregister("tempProject");
       watch("payrollType")?.id !== 4 && unregister("contractDuration");
 
@@ -1501,7 +1501,7 @@ const HRFields = ({
         required: true,
       });
     }
-  }, [watch("hiringPricingType"), hrPricingTypes, countryBasedOnIP]);
+  }, [watch("hiringPricingType"), hrPricingTypes]);
 
   useEffect(() => {
     if (watch("budget")?.value === "2") {
