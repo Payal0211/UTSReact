@@ -22,6 +22,10 @@ function AddNotes({onCancel , item, apiData,setAllNotes}) {
     } = useForm();
 
     const saveNoteDetails = async (d) => {
+        if(!d.addNoteForTalent || d.addNoteForTalent === "<p><br></p>"){
+            message.error("please enter a note for talent.")
+            return
+        }
         let payload = {
             "CompanyId":apiData?.ClientDetail?.CompanyId,
             "ContactId":apiData?.ClientDetail?.ContactId,
@@ -91,6 +95,7 @@ function AddNotes({onCancel , item, apiData,setAllNotes}) {
                 value={watch('addNoteForTalent')}
                 onChange={(val) => {
                     let sanitizedContent = sanitizeLinks(val);
+                    register('addNoteForTalent')
                     setValue('addNoteForTalent',sanitizedContent);
                 }}
                 className="heightSize"

@@ -27,6 +27,10 @@ function EditNotes({onClose,viewNoteData,apiData,setAllNotes,item}) {
     },[viewNoteData,setValue])
 
     const editNoteDetails = async (d) => {
+        if(!d.addNoteForTalent || d.addNoteForTalent === "<p><br></p>"){
+            message.error("please enter a note for talent.")
+            return
+        }
         let payload = {
             ...viewNoteData,
             "Notes": d.addNoteForTalent,
