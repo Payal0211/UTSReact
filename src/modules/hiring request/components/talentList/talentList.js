@@ -515,7 +515,7 @@ const TalentList = ({
 	const resumeDownload = async (data) => {
 		try {
 			const payload = {
-				"resumeFile": data.TalentResumeLink
+				"resumeFile": decodeURI(data.TalentResumeLink)
 			};
 			//   payload.filename = data?.Talent_Resume;
 			//   payload.talentId = data?.ATS_TalentID;
