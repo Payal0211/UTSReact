@@ -240,10 +240,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT 
 					?  _isNull(watch('contractDuration'))
 						? null
-						: watch('contractDuration').value === 'Indefinite' ? '-1' : watch('contractDuration').value
-					: _isNull(d.contractDuration.value)
+						: watch('contractDuration')?.value === 'Indefinite' ? '-1' : watch('contractDuration')?.value
+					: _isNull(d.contractDuration?.value)
 					? null
-					: d.contractDuration.value === 'Indefinite' ? '-1' : d.contractDuration.value ,
+					: d.contractDuration?.value === 'Indefinite' ? '-1' : d.contractDuration?.value ,
 			TimeZoneFromTime:  
 					draft === SubmitType.SAVE_AS_DRAFT
 						?  _isNull(watch('fromTime')?.value)

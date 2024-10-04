@@ -1192,22 +1192,23 @@ const EditHRFields = ({
   getHRdetails?.en_Id && setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
 
   const getNearByCitiesForAts = () => {
-    if (watch("workingMode").id === 3) {
-      return NearByCitesValues.join(",");
-    } else {
-      let cities = [];
+    // if (watch("workingMode").id === 3) {
+    //   return NearByCitesValues.join(",");
+    // } else {
+    //   let cities = [];
 
-      NearByCitesValues.forEach((val) => {
-        let valFind = nearByCitiesData.filter((c) => c.label === val);
-        if (valFind.length > 0) {
-          cities.push(valFind[0]?.value);
-        } else {
-          cities.push(val);
-        }
-      });
+    //   NearByCitesValues.forEach((val) => {
+    //     let valFind = nearByCitiesData.filter((c) => c.label === val);
+    //     if (valFind.length > 0) {
+    //       cities.push(valFind[0]?.value);
+    //     } else {
+    //       cities.push(val);
+    //     }
+    //   });
 
-      return cities.join(",");
-    }
+    //   return cities.join(",");
+    // }
+    return NearByCitesValues.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",")
   };
 
   const getParsingType = (isHaveJD, parseType) => {
@@ -5591,20 +5592,23 @@ who have worked in scaled start ups."
                         // getClientNameValue(clientName,_obj)
                         setLocationSelectValidation(false)
                         let citiesVal = await getCities(_obj.id);
-                        if (watch("workingMode").value === WorkingMode.HYBRID) {
-                          let firstCity = citiesVal[0];
-                          setNearByCitesValues([firstCity.label]);
-                          setNearByCitiesData(citiesVal);
-                        } else {
-                          let firstCity = citiesVal[0];
-                          setNearByCitesValues([firstCity.label]);
-                          // setNearByCitiesData([firstCity]);
-                          setNearByCitiesData(citiesVal);
-                        }
+                        setNearByCitiesData(citiesVal.filter(c=> c.value !== _obj.id));
+
+                        // if (watch("workingMode").value === WorkingMode.HYBRID) {
+                        //   let firstCity = citiesVal[0];
+                        //   setNearByCitesValues([firstCity.label]);
+                        //   setNearByCitiesData(citiesVal);
+                        // } else {
+                        //   let firstCity = citiesVal[0];
+                        //   setNearByCitesValues([firstCity.label]);
+                        //   // setNearByCitiesData([firstCity]);
+                        //   setNearByCitiesData(citiesVal);
+                        // }
                       }}
                       filterOption={true}
                       onSearch={(searchValue) => {
                         // setClientNameSuggestion([]);
+                        setNearByCitesValues([])
                         onChangeLocation(searchValue);
                       }}
                       onChange={(locName) => {
@@ -5736,14 +5740,14 @@ who have worked in scaled start ups."
                   Do you have a preference in candidate's location?
                 </div>
                 <Select
-                  mode="tags"
+                  mode="multiple"
                   style={{ width: "100%" }}
                   value={NearByCitesValues}
                   showSearch={true}
                   filterOption={(input, option) => 
                     option.label.toLowerCase().includes(input.toLowerCase())
                   } 
-                  options={allCities}
+                  options={allCities.filter(cit => cit.value !==  locationList.find(loc => loc.value === watch("location"))?.id)}
                   // options={nearByCitiesData}
                   onChange={(values, _) => setNearByCitesValues(values)}
                   placeholder="Select Compensation"
