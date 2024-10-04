@@ -184,6 +184,41 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
                 </Radio.Group>
 				</div>
 
+				{engType === 'Backout' && <div className={allengagementEnd.colMd6} style={{marginBottom:'10px'}}>
+					<div className={allengagementEnd.timeSlotItemField}>
+						<div className={allengagementEnd.timeLabel}>
+							Last Working Day
+							<span>
+								<b style={{ color: 'red' }}> *</b>
+							</span>
+						</div>
+						<div className={allengagementEnd.timeSlotItem}>
+							<CalenderSVG />
+							<Controller
+								render={({ ...props }) => (
+									<DatePicker
+										selected={watch('lastWorkingDate')}
+										onChange={(date) => {
+											setValue('lastWorkingDate', date);
+											setValue("lwd",date)
+										}}
+										placeholderText="Last working Date"
+										dateFormat="dd/MM/yyyy"
+									/>
+								)}
+								name="lastWorkingDate"
+								rules={{ required: true }}
+								control={control}
+							/>
+							{errors.lastWorkingDate && (
+								<div className={allengagementEnd.error}>
+									* Please select last working date.
+								</div>
+							)}
+						</div>
+					</div>
+				</div> }
+
 				{engType === 'Other' &&  <>
 				{!closureDate && <div className={allengagementEnd.colMd6} style={{marginBottom:'10px'}}>
 					<div className={allengagementEnd.timeSlotItemField}>
@@ -203,7 +238,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 											setValue('lastWorkingDate', date);
 											setValue("lwd",date)
 										}}
-										placeholderText="Contract End Date"
+										placeholderText="Last working Date"
 										dateFormat="dd/MM/yyyy"
 									/>
 								)}

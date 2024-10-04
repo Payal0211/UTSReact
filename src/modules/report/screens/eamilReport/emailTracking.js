@@ -338,7 +338,7 @@ export default function EmailTracking() {
                 * Start and End dates can't be same{" "}
               </p>
             )}
-            <div className={emailReportStyle.label}>Date</div>
+            <div className={emailReportStyle.label}>Sent Date</div>
             <div className={emailReportStyle.calendarFilter}>
               <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
               <DatePicker
