@@ -3053,7 +3053,7 @@ const EditHRFields = ({
                         }
                         defaultValue="Select availability"
                         options={
-                          companyType?.id === 2 ? JobTypes : watch('hiringPricingType')?.id === 3 ?  availability.filter(i=> i.id !== 1) : availability
+                          companyType?.id === 2 ? JobTypes : availability
                         }
                         name="availability"
                         isError={
@@ -3234,7 +3234,7 @@ const EditHRFields = ({
                               // label={"Hiring Pricing Type"}
                               label={"Employment Type"}
                               defaultValue="Select Hiring Pricing"
-                              options={hrPricingTypes && hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
+                              options={hrPricingTypes &&  watch('availability')?.id === 1 ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type })).filter(i=> i.id !== 3) : hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
                               name="hiringPricingType"
                               isError={
                                 errors["hiringPricingType"] &&
