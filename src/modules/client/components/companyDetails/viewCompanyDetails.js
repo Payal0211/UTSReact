@@ -807,10 +807,26 @@ export default function ViewCompanyDetails() {
                       <div className={AddNewClientStyle.colLg6}>
                         <div className={AddNewClientStyle.viewHRDetailsBox}>
                           <ul>
-                            <li>
+                            {/* <li>
                               <span>Model:</span>{" "}
                               {companyTypeMessages ? companyTypeMessages : "NA"}
-                            </li>
+                            </li> */}
+                            <li>
+                            <Checkbox
+                              value={2}
+                              checked={companyPreviewData?.engagementDetails?.companyTypeID}
+                              disabled={true}
+                            >
+                              Pay Per Credit
+                            </Checkbox>
+                            <Checkbox
+                              value={1}
+                              checked={companyPreviewData?.engagementDetails?.anotherCompanyTypeID}
+                              disabled={true}
+                            >
+                              Pay Per Hire
+                            </Checkbox>
+                          </li>
                             <li>
                               <span>Per Credit Amount:</span>{" "}
                               {companyPreviewData?.engagementDetails?.creditAmount
@@ -833,6 +849,18 @@ export default function ViewCompanyDetails() {
                                 ?.jobPostCredit
                               : "NA"}
                             </li>
+                            {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
+                            companyPreviewData?.engagementDetails?.companyTypeID !== null && (
+                              <li>
+                                <Checkbox
+                                  name="IsPostaJob"
+                                  checked={companyPreviewData?.engagementDetails?.isPostaJob}
+                                  disabled={true}
+                                >
+                                  Credit per post a job.
+                                </Checkbox>
+                              </li>
+                            )}
                           </ul>
                         </div>
                       </div>
