@@ -1416,7 +1416,7 @@ getSkillList();
         FrequencyOfficeVisitID : editLocation.workingModeId === 2 ? editLocation?.FrequencyOfficeVisitID : null,
         IsOpenToWorkNearByCities : editLocation?.IsOpenToWorkNearByCities,                        
         NearByCities : selectedLabels?.concat(nonNumericValues)?.join(','),            
-        ATS_JobLocationID : editLocation?.ATS_JobLocationID,
+        ATS_JobLocation : editLocation?.ATS_JobLocationID,
         ATS_NearByCities : selectedValues?.join(','),
       }; 
 
@@ -2145,7 +2145,7 @@ getSkillList();
                                               setisEditLocation(true);                                                                                           
                                               fetchCities();
                                               fetchLocations(jobPreview?.jobLocation?.substring(0,3)); 
-                                              let citiesVal = await getCities(jobPreview?.atS_JobLocationID);                                                                                                                                 
+                                              let citiesVal = await getCities(jobPreview?.atS_JobLocation);                                                                                                                                 
                                               let val = citiesVal?.filter(option => option?.label !== citiesVal[0]?.label) 
                                               setNearByCitiesData(val);                                                                
                                               setEditLocation({
@@ -2154,8 +2154,8 @@ getSkillList();
                                                 JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
                                                 FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
                                                 IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
-                                                NearByCities : jobPreview?.nearByCities?.split(','),            
-                                                ATS_JobLocationID : jobPreview?.atS_JobLocationID,
+                                                NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],             
+                                                ATS_JobLocationID : jobPreview?.atS_JobLocation,
                                                 ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
                                               });
                                           }} >  <img src={EditnewIcon}/></span>
@@ -2169,8 +2169,8 @@ getSkillList();
                                               JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
                                               FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
                                               IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
-                                              NearByCities : jobPreview?.nearByCities?.split(','),            
-                                              ATS_JobLocationID : jobPreview?.atS_JobLocationID,
+                                              NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],            
+                                              ATS_JobLocationID : jobPreview?.atS_JobLocation,
                                               ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
                                             });
                                             fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
@@ -2354,7 +2354,7 @@ getSkillList();
                                                 style={{ width: "100%" }}
                                                 value={editLocation?.NearByCities}
                                                 options={allCities}                                               
-                                                onChange={(values, _) => {                                                            
+                                                onChange={(values, _) => {                                                                                                         
                                                   let filteredValues = values.filter((city) => {
                                                       const cityOption = allCities.find(
                                                           (option) => option.label === city || option.value === city
