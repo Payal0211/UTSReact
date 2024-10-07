@@ -3209,7 +3209,6 @@ const HRFields = ({
 {/* {console.log({JobTypes , availability,watch:watch("availability")})} */}
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
-                  {console.log("availability",availability, watch('hiringPricingType'))}
                   <HRSelectField
                     controlledValue={controlledAvailabilityValue}
                     setControlledValue={(val) => {
@@ -3237,7 +3236,7 @@ const HRFields = ({
                       userCompanyTypeID === 2 ? "Job Type" : "Availability"
                     }
                     defaultValue="Select availability"
-                    options={userCompanyTypeID === 2 ? JobTypes : watch('hiringPricingType')?.id === 3 ?  availability.filter(i=> i.id !== 1) : availability}
+                    options={userCompanyTypeID === 2 ? JobTypes :  availability}
                     name="availability"
                     isError={errors["availability"] && errors["availability"]}
                     required
@@ -3389,7 +3388,7 @@ const HRFields = ({
                           // label={"Hiring Pricing Type"}
                           label={"Employment Type"}
                           defaultValue="Select Hiring Pricing"
-                          options={hrPricingTypes && hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
+                          options={hrPricingTypes && watch('availability')?.id === 1 ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type })).filter(i=> i.id !== 3) : hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
                           name="hiringPricingType"
                           isError={
                             errors["hiringPricingType"] &&
