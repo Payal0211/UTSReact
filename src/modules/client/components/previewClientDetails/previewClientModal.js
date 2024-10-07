@@ -3165,19 +3165,19 @@ function PreviewClientModal({
                                 ?.hiringTypePricingId)?.value}                                 */}
                             {getCompanyDetails?.engagementDetails
                               ?.hiringTypePricingId === 1
-                              ? "Hire a Contractor"
+                              ? `Hire a Contractor (${getCompanyDetails?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
                               : getCompanyDetails?.engagementDetails
                                 ?.hiringTypePricingId === 2
-                                ? "Hire an employee on Uplers Payroll"
+                                ? `Hire an employee on Uplers Payroll (${getCompanyDetails?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
                                 : getCompanyDetails?.engagementDetails
                                   ?.hiringTypePricingId === 3
-                                  ? "Direct-hire"
+                                  ? `Direct-hire (${getCompanyDetails?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
                                   : getCompanyDetails?.engagementDetails
                                     ?.hiringTypePricingId === 4
-                                    ? "Hire a Contractor"
+                                    ? `Hire a Contractor (${getCompanyDetails?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
                                     : getCompanyDetails?.engagementDetails
                                     ?.hiringTypePricingId === 5
-                                    ? "Hire an employee on Uplers Payroll":"NA"}
+                                    ? `Hire an employee on Uplers Payroll (${getCompanyDetails?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`:"NA"}
                           </p>
                         </li>
                       </ul>
