@@ -868,6 +868,13 @@ export default function ViewCompanyDetails() {
                         <div className={AddNewClientStyle.viewHRDetailsBox}>
                           <ul>
                             <li>
+                              <span>Type Of Pricing:</span>{" "}
+                              {companyPreviewData?.engagementDetails?.anotherCompanyTypeID === 1 ?
+                                companyPreviewData?.engagementDetails?.isTransparentPricing ?
+                                "Transparent" : "Non Transparent" 
+                              :"NA"}
+                            </li>
+                            <li>
                               <span>Currency (Credit):</span>{" "}
                               {companyPreviewData?.engagementDetails
                               ?.creditCurrency
