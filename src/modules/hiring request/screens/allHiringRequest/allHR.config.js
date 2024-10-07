@@ -64,7 +64,7 @@ export const allHRConfig = {
         dataIndex: "showCloneToDemoAccount",
         key: "showCloneToDemoAccount",
         align: "center",
-        width: showCloneHRToDemoAccount === true ? "42px": "0",      
+        width: showCloneHRToDemoAccount === true ? "32px": "0",     
         render: (text, result) => {
           if(showCloneHRToDemoAccount === true)
           {
@@ -130,7 +130,7 @@ export const allHRConfig = {
                 <Tooltip placement="bottom" title={result?.companyModel === 'Pay Per Credit' ? "Re-post HR" :"Reopen HR"}>
                   <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
                     <ReopenHR
-                      style={{ fontSize: "16px" }}
+                      style={{ fontSize: "16px", width: "20px" }}
                       onClick={() => {
                         if(result?.companyModel === 'Pay Per Credit'){
                           setReopenHRData({

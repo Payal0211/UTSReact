@@ -1654,7 +1654,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client/User',
+					title: 'Company (Client)',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -1734,7 +1734,7 @@ export const reportConfig = {
 					},
 				},										
 			];
-		}else if (hrStageId===1 || hrStageId===2 || hrStageId===18){
+		}else if (hrStageId===1 || hrStageId===2 || hrStageId===18 || hrStageId === 1000){
 			return [
 				{
 					title: 'Action Date',
@@ -1746,7 +1746,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client/User',
+					title: 'Company (Client)',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -1803,7 +1803,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client/User',
+					title: 'Company (Client)',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -1905,7 +1905,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client/User',
+					title: 'Company (Client)',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -1979,7 +1979,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client/User',
+					title: 'Company (Client)',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -2065,7 +2065,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client',
+					title: 'Company (Client)',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -2114,7 +2114,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client/User',
+					title: 'Company (Client)',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -2197,7 +2197,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client/User',
+					title: 'Company (Client)',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -2228,7 +2228,7 @@ export const reportConfig = {
 				},
 			},
 			{
-				title: 'Client/User',
+				title: 'Company (Client)',
 				dataIndex: 'client',
 				key: 'client',
 				align: 'left',				

@@ -201,7 +201,7 @@ function PreviewHRModal({
   const [calculatedUplersFees, setCalculateUplersFees] = useState({
     from: "", to: ""
   })
-  
+  const selectRef = useRef(null);
   let details = fundingDetails && fundingDetails[0] ? fundingDetails[0] : {};
   let allInvestors = details?.allInvestors ? details?.allInvestors?.split(",") : [];
   let displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
@@ -1408,6 +1408,7 @@ getSkillList();
     if (isValid) {
       setError({});
       const selectedLabels = allCities?.filter(item => editLocation?.NearByCities?.includes(item.value))?.map(item => item.label);
+      const selectedValues = allCities?.filter(item => (editLocation?.NearByCities?.includes(item.label) || editLocation?.NearByCities?.includes(item.value)))?.map(item => item.value);
       const nonNumericValues = editLocation?.NearByCities?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));      
       let payload = {
         workingModeID: editLocation.locationValue === 'Hybrid' ? 2 :editLocation.locationValue === 'Onsite' ? 3 : editLocation.workingModeId,
@@ -1415,8 +1416,8 @@ getSkillList();
         FrequencyOfficeVisitID : editLocation.workingModeId === 2 ? editLocation?.FrequencyOfficeVisitID : null,
         IsOpenToWorkNearByCities : editLocation?.IsOpenToWorkNearByCities,                        
         NearByCities : selectedLabels?.concat(nonNumericValues)?.join(','),            
-        ATS_JobLocationID : editLocation?.ATS_JobLocationID,
-        ATS_NearByCities : editLocation?.NearByCities?.join(','),
+        ATS_JobLocation : editLocation?.ATS_JobLocationID,
+        ATS_NearByCities : selectedValues?.join(','),
       }; 
 
       setIsLoading(true)
@@ -1632,8 +1633,7 @@ getSkillList();
   const handleBlur = () => {      
     const isValidSelection = locationList?.some(
         (location) => location.label === editLocation?.JobLocation
-    );
-
+    );   
     if(!editLocation?.JobLocation || locationList?.length === 0){
       setEditLocation((prev) => ({
         ...prev,
@@ -2139,22 +2139,25 @@ getSkillList();
                                         <div className="canJobLocInfoInner">
                                           <img src={locationIconImage} className="business" />{" "}
                                           {jobPreview?.workingModeId === 1 ? "Work from anywhere" : jobPreview?.workingModeId == 2 ? "Hybrid" :jobPreview?.workingModeId == 3 ?  "On-site" : "-"}
-                                          <span className="editNewIcon" onClick={() => { 
-                                              setisEditLocation(true);
-                                              // getcountryData();
+                                          <span className="editNewIcon" onClick={async () => { 
+                                              setLocationList([]);                                      
                                               getFrequencyData()
-                                              fetchCities()
+                                              setisEditLocation(true);                                                                                           
+                                              fetchCities();
+                                              fetchLocations(jobPreview?.jobLocation?.substring(0,3)); 
+                                              let citiesVal = await getCities(jobPreview?.atS_JobLocation);                                                                                                                                 
+                                              let val = citiesVal?.filter(option => option?.label !== citiesVal[0]?.label) 
+                                              setNearByCitiesData(val);                                                                
                                               setEditLocation({
                                                 ...editLocation,
                                                 workingModeId: jobPreview?.workingModeId,
                                                 JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
                                                 FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
                                                 IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
-                                                NearByCities : jobPreview?.nearByCities?.split(','),            
-                                                ATS_JobLocationID : jobPreview?.atS_JobLocationID,
+                                                NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],             
+                                                ATS_JobLocationID : jobPreview?.atS_JobLocation,
                                                 ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
                                               });
-                                              fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
                                           }} >  <img src={EditnewIcon}/></span>
                                           <span className="downArrowBtn"  onClick={() => {
                                             setisEditLocation(!iseditLocation);
@@ -2166,8 +2169,8 @@ getSkillList();
                                               JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
                                               FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
                                               IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
-                                              NearByCities : jobPreview?.nearByCities?.split(','),            
-                                              ATS_JobLocationID : jobPreview?.atS_JobLocationID,
+                                              NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],            
+                                              ATS_JobLocationID : jobPreview?.atS_JobLocation,
                                               ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
                                             });
                                             fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
@@ -2240,6 +2243,7 @@ getSkillList();
                                             ATS_JobLocationID:null,
                                             ATS_NearByCities:""
                                           });
+                                          setLocationList([]);
                                         }}
                                       >
                                         <Radio.Button value={1}>
@@ -2284,10 +2288,10 @@ getSkillList();
                                                       let citiesVal = await getCities(option.value);                                                                 
                                                       setEditLocation({...editLocation,
                                                         JobLocation: option.label,
-                                                        ATS_JobLocationID: option.value,
-                                                        NearByCities:[citiesVal?.length>0 && citiesVal[0]?.label]  
-                                                      });                                                                                                                                                                                                                                              
-                                                      setNearByCitiesData(citiesVal);                                                                 
+                                                        ATS_JobLocationID: option.value,                                                        
+                                                      });                               
+                                                      let val = citiesVal?.filter(option => option?.label !== citiesVal[0]?.label) 
+                                                      setNearByCitiesData(val);                            
                                                       setError({...error,['JobLocation'] : ""});                                                           
                                                   }}                       
                                                     onBlur={handleBlur}                                 
@@ -2326,10 +2330,7 @@ getSkillList();
                                                 className="customradio newradiodes small"
                                                 value={editLocation?.IsOpenToWorkNearByCities}
                                                 onChange={async (e) => {
-                                                    setEditLocation({...editLocation,IsOpenToWorkNearByCities:e.target.value})
-                                                    // if(e.target.value && editLocation?.workingModeId === 2){                                                                
-                                                    //     getCities(editLocation?.ATS_JobLocationID);
-                                                    // }
+                                                    setEditLocation({...editLocation,IsOpenToWorkNearByCities:e.target.value})                                                 
                                                     setError({...error,['IsOpenToWorkNearByCities'] : ""});
                                                 }}
                                             >
@@ -2349,36 +2350,126 @@ getSkillList();
                                             <h3>Other cities</h3>
                                             <Select
                                                 mode="tags"
+                                                ref={selectRef}
                                                 style={{ width: "100%" }}
                                                 value={editLocation?.NearByCities}
-                                                options={allCities}
-                                                onChange={(values, _) => {
-                                                    setEditLocation({ ...editLocation, NearByCities: values });
-                                                    setError({...error,['NearByCities'] : ""});
-                                                }}
+                                                options={allCities}                                               
+                                                onChange={(values, _) => {                                                                                                         
+                                                  let filteredValues = values.filter((city) => {
+                                                      const cityOption = allCities.find(
+                                                          (option) => option.label === city || option.value === city
+                                                      );
+                                                      
+                                                      if (city === editLocation?.ATS_JobLocationID) {
+                                                          return false;
+                                                      }
+                                                      if (cityOption) {
+                                                          let cityValue = cityOption.value;
+                                                          return cityValue !== editLocation?.ATS_JobLocationID;
+                                                      }
+                                                      return true;
+                                                  });
+                                          
+                                                  let hasDuplicate = filteredValues.some((city) => {
+                                                      const cityOption = allCities.find(
+                                                          (option) => option.label === city
+                                                      );
+                                                      if (!cityOption) return false; 
+                                                      let cityValue = cityOption.value;
+                                                      return editLocation?.NearByCities?.some(
+                                                          (nearbyCity) => nearbyCity === cityValue
+                                                      );
+                                                  });
+                                          
+                                                  if (hasDuplicate) {
+                                                    setError({
+                                                          ...error,
+                                                          ['NearByCities']: "This city is already added."
+                                                      });
+                                                      if (selectRef.current) {
+                                                          selectRef.current.blur();
+                                                      }
+                                                      setTimeout(() => {
+                                                        setError((prevError) => ({ 
+                                                              ...prevError, 
+                                                              ['NearByCities']: "" 
+                                                          }));
+                                                      }, 5000);
+                                                      return;
+                                                  }
+                                          
+                                                  const invalidCities = filteredValues.filter(
+                                                      (city) =>
+                                                          !allCities.some(
+                                                              (option) => option.value === city || option.label === city
+                                                          )
+                                                  );
+                                          
+                                                  if (invalidCities.length > 0) {
+                                                    setError({
+                                                          ...error,
+                                                          ['NearByCities']: "This city does not exist."
+                                                      });
+                                                      if (selectRef.current) {
+                                                          selectRef.current.blur();
+                                                      }
+                                                      setTimeout(() => {
+                                                        setError((prevError) => ({
+                                                              ...prevError,
+                                                              ['NearByCities']: ""
+                                                          }));
+                                                      }, 5000);
+                                                      return;
+                                                  }
+                                        
+                                                  setEditLocation({
+                                                    ...editLocation,
+                                                    NearByCities: filteredValues.map(city => {
+                                                        const cityOption = allCities.find(
+                                                            (option) => option.value === city || option.label === city
+                                                        );
+                                                        return cityOption ? cityOption.value : city; 
+                                                    })
+                                                });
+                                                setError({ ...error, ['NearByCities']: "" });
+                                              }}
                                                 placeholder="Enter cities"
                                                 tokenSeparators={[","]}
                                                 showSearch={true}
                                                 filterOption={(input, option) => 
                                                   option.label.toLowerCase().includes(input.toLowerCase())
                                                 } 
-                                            />                                                                                                  
-                                            {error?.NearByCities && <span className='error'>{error?.NearByCities}</span>}  
-                                            <ul className="SlillBtnBox">
-                                              {nearByCitiesData
-                                                ?.filter(option => !editLocation?.NearByCities?.includes(option.label))
-                                                .map((option) =>{                                                                                                                   
-                                                  return (
-                                                    <li key={option.value} style={{ cursor: "pointer" }} onClick={() => {  
-                                                      let updatedCities = [...editLocation?.NearByCities, option.value];
-                                                      setEditLocation({...editLocation, NearByCities: updatedCities});
-                                                      setError({...error, ['NearByCities']: ""});
-                                                    }}>
-                                                      <span>{option.label} <img src={plusImage} loading="lazy" alt="star" /></span>
-                                                    </li>
-                                                  )
-                                                } )}
-                                            </ul>                                                              
+                                            />       
+                                            <div style={{display:"flex",flexDirection:"column"}}>                                                                                            
+                                              {error?.NearByCities && <span className='error'>{error?.NearByCities}</span>}  
+                                              <ul className="SlillBtnBox">
+                                                {nearByCitiesData
+                                                  ?.filter(option => {                                                            
+                                                    const cities = editLocation?.NearByCities || [];
+                                                    const valueExists = cities.includes(option?.value);
+                                                    const labelExists = cities.includes(option?.label);
+                                                    return !valueExists && !labelExists;
+                                                  })
+                                                  .map((option) =>{                                                                                                                   
+                                                    return (
+                                                      <li key={option.value} style={{ cursor: "pointer" }} onClick={() => {  
+                                                        let index = editLocation?.NearByCities?.findIndex(val => val === option.label)
+                                                        if(index !== -1){
+                                                          let _valies = [...nearByCitiesData];
+                                                          _valies?.splice(index,1);
+                                                          setNearByCitiesData(_valies);
+                                                          return
+                                                        }                                                                
+                                                        let updatedCities = [...editLocation?.NearByCities, option.value];
+                                                        setEditLocation({...editLocation, NearByCities: updatedCities});
+                                                        setError({...error, ['NearByCities']: ""});
+                                                      }}>
+                                                        <span>{option.label} <img src={plusImage} loading="lazy" alt="star" /></span>
+                                                      </li>
+                                                    )
+                                                  } )}
+                                              </ul>        
+                                            </div>                                                         
                                         </div>
                                     </div>}
                                   </>
@@ -2387,8 +2478,9 @@ getSkillList();
                                   <button
                                     type="button"
                                     class="btnPrimary blank"
-                                    onClick={() => {
+                                    onClick={() => {                                      
                                       setisEditLocation(false);
+                                      setLocationList([]);
                                     }}
                                   >
                                     Cancel
