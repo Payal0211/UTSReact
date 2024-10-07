@@ -3053,7 +3053,7 @@ const EditHRFields = ({
                         }
                         defaultValue="Select availability"
                         options={
-                          companyType?.id === 2 ? JobTypes : availability
+                          companyType?.id === 2 ? JobTypes : watch('hiringPricingType')?.id === 3 ?  availability.filter(i=> i.id !== 1) : availability
                         }
                         name="availability"
                         isError={
