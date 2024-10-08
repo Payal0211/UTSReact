@@ -130,6 +130,7 @@ const AddNewHR = () => {
 									setTabFieldDisabled={setTabFieldDisabled}
 									setEnID={setEnID}
 									setJDParsedSkills={setJDParsedSkills}
+									JDParsedSkills={JDParsedSkills}
 									setJDDumpID={setJDDumpID}
 									jdDumpID={jdDumpID}
 									interviewDetails={interviewDetails}

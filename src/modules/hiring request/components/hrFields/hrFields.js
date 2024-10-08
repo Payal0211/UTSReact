@@ -74,6 +74,7 @@ const HRFields = ({
   tabFieldDisabled,
   setTabFieldDisabled,
   setJDParsedSkills,
+  JDParsedSkills,
   contactID,
   interviewDetails,
   companyName,
@@ -1651,6 +1652,122 @@ const HRFields = ({
     return NearByCitesValues.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",")
   };
 
+  const debriefSubmitHandler = async (d) => {
+		setIsLoading(true);
+		let sameSkillIssue = false
+		let skillList = d.skills.map((item) => {
+			const obj = {
+				skillsID: item?.id ? item?.id : item?.skillsID,
+				skillsName: item?.value ? item?.value : item?.skillsName,
+			};
+			return obj;
+		});
+		// let goodToSkillList =  d.goodToHaveSkills.map((item) => {
+		// 	const obj = {
+		// 		skillsID: item.id || item?.skillsID,
+		// 		skillsName: item.value || item?.skillsName,
+		// 	};
+		// 	return obj;
+		// });
+
+		// let goodtoonlySkillsList = goodToSkillList.map((item) => item.skillsName.toLowerCase())
+		let skillonlyList = skillList.map((item) => item.skillsName.toLowerCase() )
+
+		// goodtoonlySkillsList.forEach(item => {
+		// 	if(skillonlyList.includes(item)){
+		// 		setError('goodToHaveSkills', {
+		// 			type: 'otherSkill',
+		// 			message: 'Same skills are not allowed',
+		// 		});
+		// 		sameSkillIssue = true
+		// 	}
+		// })
+
+		if(d.jobDescription === '' || d.jobDescription === '<p><br></p>'){
+			message.error('Please fill Job Description')
+			setIsLoading(false);
+			return
+		}
+
+
+		let debriefFormDetails = {
+			// roleAndResponsibilites: d.roleAndResponsibilities,
+			// requirements: d.requirements,
+			roleAndResponsibilites: '',
+			requirements: '',
+			JobDescription:d.jobDescription,
+			en_Id: d.en_Id,
+			skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),
+			aboutCompanyDesc: d.aboutCompany,
+			// secondaryInterviewer: d.secondaryInterviewer,
+			interviewerFullName: d.interviewerFullName,
+			interviewerEmail: d.interviewerEmail,
+			interviewerLinkedin: d.interviewerLinkedin,
+			interviewerDesignation: d.interviewerDesignation,
+			JDDumpID: jdDumpID || 0,
+			ActionType: "Save",
+			// IsHrfocused: isFocusedRole,
+			// role: d.role?.id ? d.role?.id : null,
+			role: null,
+			hrTitle: d.hrTitle,
+			allSkills:'',
+			"interviewerDetails":{
+				"primaryInterviewer": {
+					"interviewerId": d.interviewerId,
+					"fullName": d.interviewerFullName,
+					"emailID": d.interviewerEmail,
+					"linkedin": d.interviewerLinkedin,
+					"designation": d.interviewerDesignation,
+					"isUserAddMore": false
+				},
+				"secondaryinterviewerList": d.secondaryInterviewer
+			},
+			isDirectHR:isDirectHR,
+			companyInfo: {
+			  "companyID": getHRdetails?.companyInfo?.companyID,
+				"companyName": getHRdetails?.companyInfo?.companyName,
+				"website": getHRdetails?.companyInfo?.webSite,
+				"linkedInURL": getHRdetails?.companyInfo?.companyLinkedin,
+				"industry": getHRdetails?.companyInfo?.industry,
+				"companySize": getHRdetails?.companyInfo?.companySize,
+				"aboutCompanyDesc": getHRdetails?.companyInfo?.aboutCompany
+			},
+			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
+			PayPerType:  userCompanyTypeID ,
+			ParsingType: getParsingType(isHaveJD,parseType),
+			IsMustHaveSkillschanged : true,
+			IsGoodToHaveSkillschanged: true
+		};
+		if(userCompanyTypeID === 2){
+			debriefFormDetails['companyInfo'] = {
+				"companyID": getHRdetails?.companyInfo?.companyID,
+				"companyName": getHRdetails?.companyInfo?.companyName,
+				"website": getHRdetails?.companyInfo?.webSite,
+				"linkedInURL": getHRdetails?.companyInfo?.companyLinkedin,
+				"industry": getHRdetails?.companyInfo?.industry,
+				"companySize": getHRdetails?.companyInfo?.companySize,
+				"aboutCompanyDesc": getHRdetails?.companyInfo?.aboutCompany
+			}
+
+			debriefFormDetails['interviewerDetails'] = getHRdetails?.interviewerDetails
+		}
+		
+		if(!sameSkillIssue){
+			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+			debriefFormDetails,
+		);
+		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+      setTimeout(() => {
+        navigate("/allhiringrequest");
+      }, 1000);
+		}
+	}else{
+		setIsLoading(false);
+	}
+	
+};
+
+
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
@@ -1886,9 +2003,21 @@ const HRFields = ({
             type: "success",
             content: "HR details has been saved to draft.",
           });
-          setTimeout(() => {
+
+          if(JDParsedSkills.Title && JDParsedSkills.Skills.length > 0){
+             debriefSubmitHandler({jobDescription:JDParsedSkills.JobDescription,
+            hrTitle: JDParsedSkills.Title,
+            skills: JDParsedSkills.Skills,
+            id:addHRRequest.responseBody.details.id,
+            en_Id : addHRRequest.responseBody.details.en_Id,
+          })
+          }else{
+              setTimeout(() => {
             navigate("/allhiringrequest");
           }, 1000);
+          }
+         
+        
           // setTitle('Debriefing HR')
         }
       }
