@@ -4589,6 +4589,14 @@ getSkillList();
                   }
                   defaultValue="30 Days"
                 >
+                  <Radio.Button value="7 Days">
+                    7 Days{" "}
+                    <img
+                      className="checkIcon"
+                      src={CheckRadioIcon}
+                      alt="check"
+                    />{" "}
+                  </Radio.Button>
                   <Radio.Button value="15 Days">
                     15 Days{" "}
                     <img
