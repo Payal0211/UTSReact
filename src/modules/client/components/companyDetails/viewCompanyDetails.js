@@ -383,6 +383,7 @@ export default function ViewCompanyDetails() {
                     display: "flex",
                     alignItems: "center",
                     textAlign: "center",
+                    marginBottom: '24px',
                   }}
                 >
                   {!companyPreviewData?.basicDetails?.companyLogo ? (
@@ -417,38 +418,97 @@ export default function ViewCompanyDetails() {
                     />
                   )}
                 </div>
-                <div
-                  className={AddNewClientStyle.viewHRDetailsBoxWrap}
-                  style={{ marginTop: "10px" }}
-                >
+                <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
                   <div className={AddNewClientStyle.row}>
-                    <div className={AddNewClientStyle.colLg6}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
+                    <div className={AddNewClientStyle.colLg12}>
+                      <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.viewComDetails}`}>
                         <ul>
                           <li>
-                            <span>Company Name:</span>{" "}
+                            <label>Company Name:</label>{" "}
                             {companyPreviewData?.basicDetails?.companyName ?companyPreviewData?.basicDetails?.companyName: "NA"}
                           </li>
 
                           <li>
-                            <span>Founded in:</span>{" "}
+                            <label>Company Website URL:</label>{" "}
+                            {companyPreviewData?.basicDetails?.website ? (
+                              <a
+                                href={"//" + companyPreviewData?.basicDetails?.website}
+                                target="_blank"
+                              >
+                                {/* {companyDetails?.website} */}
+                                {companyPreviewData?.basicDetails?.website}
+                              </a>
+                            ) : (
+                              "NA"
+                            )}
+                          </li>
+
+                          <li>
+                            <label>Founded in:</label>{" "}
                             {companyPreviewData?.basicDetails?.foundedYear ?companyPreviewData?.basicDetails?.foundedYear: "NA"}
                           </li>
 
                           <li>
-                            <span>Industry:</span>{" "}
+                            <label>Team Size:</label>{" "}
+                            {companyPreviewData?.basicDetails?.companySize ?? "NA"}
+                          </li>
+
+                          <li>
+                            <label>Industry:</label>{" "}
                             {companyPreviewData?.basicDetails?.companyIndustry ?companyPreviewData?.basicDetails?.companyIndustry: "NA"}
                           </li>
 
                           <li>
-                            <span>Headquarters:</span>{" "}
+                            <label>Headquarters:</label>{" "}
                             {companyPreviewData?.basicDetails?.headquaters
                               ? companyPreviewData?.basicDetails?.headquaters
                               : "NA"}
                           </li>
 
                           <li>
-                            <span style={{marginBottom:'30px'}}>About Company:</span>{" "}
+                            <label>Company Linkedin URL:</label>{" "}
+                            {companyPreviewData?.basicDetails?.linkedInProfile ? (
+                              <a href={companyPreviewData?.basicDetails?.linkedInProfile}>
+                                {companyPreviewData?.basicDetails?.linkedInProfile}
+                              </a>
+                            ) : (
+                              "NA"
+                            )}
+                          </li>
+
+                          {companyPreviewData?.showWhatsappCTA ? <li>
+                            <button
+                            type="submit"
+                            onClick={() => {
+                              // CreateWhatsAppGroup()
+                              openWhatsAppmodal()
+                            }}
+                            disabled={isGroupCreating}
+                            className={`${AddNewClientStyle.btnPrimaryResendBtn} ${AddNewClientStyle.m0}`}
+                          >
+                            Create Whatsapp Group 
+                          </button>
+
+                          {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+                            {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
+                              </li> : companyPreviewData?.whatsappDetails?.length > 0 && <li>
+                                <button
+                                type="submit"
+                                onClick={() => {
+                                  openEditWhatsAppmodal()
+                                }}
+                                disabled={isGroupCreating}
+                                className={`${AddNewClientStyle.btnPrimaryResendBtn} ${AddNewClientStyle.m0}`}
+                              >
+                                Manage Whatsapp Group 
+                              </button>
+
+                              {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+                            {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
+                          </li>}                         
+
+                          <li className={AddNewClientStyle.aboutComDetails}>
+                            <label>About Company:</label>{" "}
                             {companyPreviewData?.basicDetails?.aboutCompany ? (
                               <div
                               style={{marginTop:'10px'}}
@@ -463,7 +523,8 @@ export default function ViewCompanyDetails() {
                         </ul>
                       </div>
                     </div>
-                    <div className={AddNewClientStyle.colLg6}>
+
+                    <div className={AddNewClientStyle.colLg6} style={{display: 'none'}}>
                       <div className={AddNewClientStyle.viewHRDetailsBox}>
                         <ul>
                           <li>
@@ -542,6 +603,7 @@ export default function ViewCompanyDetails() {
                         </ul>
                       </div>
                     </div>
+                    
                   </div>
                 </div>
               </>
@@ -623,30 +685,30 @@ export default function ViewCompanyDetails() {
             ) : (
               <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
                 <div className={AddNewClientStyle.row}>
-                  <div className={AddNewClientStyle.colLg6}>
+                  <div className={AddNewClientStyle.colLg12}>
                     {companyPreviewData?.basicDetails?.isSelfFunded ===
                         false &&
                     
-                     ( <div className={AddNewClientStyle.viewHRDetailsBox}>
+                     ( <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comFundingDetails}`}>
                         <ul>
                           <li>
-                            <span>Funding Round Series:</span>{" "}
+                            <label>Funding Round Series:</label>{" "}
                             {companyPreviewData?.fundingDetails[0]?.series ? companyPreviewData?.fundingDetails[0]?.series: "NA"}
                           </li>
                           <li>
-                            <span>Funding Amount:</span>{" "}
+                            <label>Funding Amount:</label>{" "}
                             {companyPreviewData?.fundingDetails[0]?.fundingAmount ? companyPreviewData?.fundingDetails[0]?.fundingAmount: "NA"}
                           </li>
                           <li>
-                            <span>Latest Funding Round:</span>{" "}
+                            <label>Latest Funding Round:</label>{" "}
                             {companyPreviewData?.fundingDetails[0]?.lastFundingRound ? companyPreviewData?.fundingDetails[0]?.lastFundingRound : "NA" }
                           </li>
-                          <li>
-                            <span>Investors:</span>{" "}
+                          <li className={AddNewClientStyle.fullWidth}>
+                            <label>Investors:</label>{" "}
                             {companyPreviewData?.fundingDetails[0]?.allInvestors ? companyPreviewData?.fundingDetails[0]?.allInvestors: "NA"}
                           </li>
-                          <li>
-                              <span style={{marginBottom:'30px'}}>Additional Information:</span>{" "}
+                          <li className={AddNewClientStyle.fullWidth}>
+                              <label>Additional Information:</label>{" "}
                               {companyPreviewData?.fundingDetails[0]?.additionalInformation ? (
                                 <div
                                 style={{marginTop:'10px'}}
@@ -662,8 +724,12 @@ export default function ViewCompanyDetails() {
                       </div>)}
                   
                   {companyPreviewData?.basicDetails?.isSelfFunded ===
-                        true && <div className={AddNewClientStyle.viewHRDetailsBox}>
-                    <span>Self-funded (bootstrapped) company without external investments.</span>
+                        true && <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comFundingDetails}`}>
+                          <ul>
+                            <li className={AddNewClientStyle.fullWidth}>
+                              <label className={AddNewClientStyle.m0}>Self-funded (bootstrapped) company without external investments.</label>
+                            </li>
+                          </ul>
                    </div>}
                   </div>
                 </div>
@@ -683,16 +749,13 @@ export default function ViewCompanyDetails() {
             ) : (
               <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
                 <div className={AddNewClientStyle.row}>
-                  <div className={AddNewClientStyle.colLg6}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
+                  <div className={AddNewClientStyle.colLg12}>
+                      <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comCultureDetails}`}>
                         <ul>
                           <li>
-                              <span style={{marginBottom:'30px'}}>
-                              Culture:</span>{" "}
+                              <label>Culture:</label>
                               {companyPreviewData?.basicDetails?.culture ? (
-                                <div
-                                style={{marginTop:'10px'}}
-                                  dangerouslySetInnerHTML={{
+                                <div dangerouslySetInnerHTML={{
                                     __html: companyPreviewData?.basicDetails?.culture,
                                   }}
                                 />
@@ -701,24 +764,38 @@ export default function ViewCompanyDetails() {
                               )}
                           </li>
                           <li>
-                          {companyPreviewData?.cultureDetails?.map((img, index) => (
-                              <img src={img?.cultureImage} alt={index} />
-                          ))}
+                            <div className={AddNewClientStyle.comDetailsImages}>
+                              {companyPreviewData?.cultureDetails?.map((img, index) => (
+                                <>
+                                  <div className={AddNewClientStyle.comDetailsImgItem}>
+                                    <div className={AddNewClientStyle.comDetailsImgInner}>
+                                      <img src={img?.cultureImage} alt={index} />
+                                    </div>
+                                  </div>
+                                </>
+                              ))}
+                            </div>
                           </li>
                           <li>
-                          {companyPreviewData?.youTubeDetails && companyPreviewData?.youTubeDetails?.map((link, index) => (
-                            <YouTubeVideo
-                            videoLink={link?.youtubeLink}
-                            />
-                          ))}
+                            <div className={AddNewClientStyle.comDetailsVideos}>
+                              {companyPreviewData?.youTubeDetails && companyPreviewData?.youTubeDetails?.map((link, index) => (
+                                <>
+                                  <div className={AddNewClientStyle.comDetailsVideoItem}>
+                                    <YouTubeVideo
+                                    videoLink={link?.youtubeLink}
+                                    />
+                                  </div>
+                                </>
+                              ))}
+                            </div>
                           </li>
-                          <li>
-                            <span style={{marginBottom:'30px'}}>Company perks & benefits:</span>
+                          <li className={AddNewClientStyle.comHighlightedLabel}>
+                            <label>Company perks & benefits:</label>
                             <ul>
                               {
                                 companyPreviewData?.perkDetails ? companyPreviewData?.perkDetails?.map((val) => (
                                   <li>
-                                    <span>{val}</span>
+                                    {val}
                                   </li>
                                 )) : "NA"}
                             </ul> 
@@ -748,44 +825,39 @@ export default function ViewCompanyDetails() {
                   // style={{ marginTop: index === 0 ? "0" : "10px" }}
                 >
                   {" "}
-              {companyPreviewData?.contactDetails?.map((contact, index) => (
+             
                   <div className={AddNewClientStyle.row}>
-                    <div className={AddNewClientStyle.colLg6}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
-                        <ul>
-                          <li>
-                            <span>Client Full Name:</span>{" "}
-                            {contact?.fullName ? contact?.fullName : "NA"}
-                          </li>
-                          <li>
-                            <span>Phone Number:</span>{" "}
-                            {contact?.contactNo ? contact?.contactNo : "NA"}
-                          </li>
-                          <li>
-                            <span>Access Type:</span>{" "}
-                            {(contact?.roleID == 1 && "Admin") ||
-                                  (contact?.roleID == 2 && "All Jobs") ||
-                                  (contact?.roleID == 3 && "My Jobs")}
-                          </li>
-                        </ul>
+                    <div className={AddNewClientStyle.colLg12}>
+                      <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comClientDetail}`}>
+                        {companyPreviewData?.contactDetails?.map((contact, index) => (
+                          <ul>
+                            <li>
+                              <label>Client Full Name:</label>
+                              {contact?.fullName ? contact?.fullName : "NA"}
+                            </li>
+                            <li>
+                              <label>Client’s Work Email:</label>
+                              {contact?.emailID ? contact?.emailID : "NA"}
+                            </li>
+                            <li>
+                              <label>Phone Number:</label>
+                              {contact?.contactNo ? contact?.contactNo : "NA"}
+                            </li>
+                            <li>
+                              <label>Designation:</label>
+                              {contact?.designation ? contact?.designation : "NA"}
+                            </li>
+                            <li>
+                              <label>Access Type:</label>
+                              {(contact?.roleID == 1 && "Admin") ||
+                                    (contact?.roleID == 2 && "All Jobs") ||
+                                    (contact?.roleID == 3 && "My Jobs")}
+                            </li>
+                          </ul>
+                         ))}
                       </div>
                     </div>
-                    <div className={AddNewClientStyle.colLg6}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
-                        <ul>
-                          <li>
-                            <span>Client’s Work Email:</span>{" "}
-                            {contact?.emailID ? contact?.emailID : "NA"}
-                          </li>
-                          <li>
-                            <span>Designation:</span>{" "}
-                            {contact?.designation ? contact?.designation : "NA"}
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-              ))}
+                  </div>             
                 </div>
             )}
           </div>
@@ -939,13 +1011,15 @@ export default function ViewCompanyDetails() {
                 <div
                   className={AddNewClientStyle.viewHRDetailsBoxWrap}>
                     <div className={AddNewClientStyle.row}>
-                      <div className={AddNewClientStyle.colLg6}>
+                      <div className={AddNewClientStyle.colLg12}>
                         <div className={AddNewClientStyle.viewHRDetailsBox}>
-                          <ul>
-                            <li>
-                              <span>{companyPreviewData?.pocUserDetailsEdit?.pocName ?? "NA"}</span>
-                            </li>
-                          </ul>
+                          <div className={AddNewClientStyle.comHighlightedLabel}>
+                            <ul>
+                              <li>
+                                {companyPreviewData?.pocUserDetailsEdit?.pocName ?? "NA"}
+                              </li>
+                            </ul>
+                          </div>
                         </div>
                       </div>
                     </div>
