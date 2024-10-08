@@ -444,6 +444,17 @@ export default function ViewCompanyDetails() {
                           </li>
 
                           <li>
+                            <label>Company Linkedin URL:</label>{" "}
+                            {companyPreviewData?.basicDetails?.linkedInProfile ? (
+                              <a href={companyPreviewData?.basicDetails?.linkedInProfile}>
+                                {companyPreviewData?.basicDetails?.linkedInProfile}
+                              </a>
+                            ) : (
+                              "NA"
+                            )}
+                          </li>
+
+                          <li>
                             <label>Founded in:</label>{" "}
                             {companyPreviewData?.basicDetails?.foundedYear ?companyPreviewData?.basicDetails?.foundedYear: "NA"}
                           </li>
@@ -463,17 +474,6 @@ export default function ViewCompanyDetails() {
                             {companyPreviewData?.basicDetails?.headquaters
                               ? companyPreviewData?.basicDetails?.headquaters
                               : "NA"}
-                          </li>
-
-                          <li>
-                            <label>Company Linkedin URL:</label>{" "}
-                            {companyPreviewData?.basicDetails?.linkedInProfile ? (
-                              <a href={companyPreviewData?.basicDetails?.linkedInProfile}>
-                                {companyPreviewData?.basicDetails?.linkedInProfile}
-                              </a>
-                            ) : (
-                              "NA"
-                            )}
                           </li>
 
                           {companyPreviewData?.showWhatsappCTA ? <li>
@@ -523,87 +523,6 @@ export default function ViewCompanyDetails() {
                         </ul>
                       </div>
                     </div>
-
-                    <div className={AddNewClientStyle.colLg6} style={{display: 'none'}}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
-                        <ul>
-                          <li>
-                            <span>Company Website URL:</span>{" "}
-                            {companyPreviewData?.basicDetails?.website ? (
-                              <a
-                                href={"//" + companyPreviewData?.basicDetails?.website}
-                                target="_blank"
-                              >
-                                {/* {companyDetails?.website} */}
-                                {companyPreviewData?.basicDetails?.website}
-                              </a>
-                            ) : (
-                              "NA"
-                            )}
-                          </li>
-                          <li>
-                            <span>Company Linkedin URL:</span>{" "}
-                            {companyPreviewData?.basicDetails?.linkedInProfile ? (
-                              <a href={companyPreviewData?.basicDetails?.linkedInProfile}>
-                                {companyPreviewData?.basicDetails?.linkedInProfile}
-                              </a>
-                            ) : (
-                              "NA"
-                            )}
-                          </li>
-                          <li>
-                            <span>Team Size:</span>{" "}
-                            {companyPreviewData?.basicDetails?.companySize ?? "NA"}
-                          </li>
-                        
-                          {/* <li>
-                            <span>Company Address:</span>{" "}
-                            {companyDetails?.address
-                              ? companyDetails?.address
-                              : "NA"}
-                          </li> */}
-
-                        {companyPreviewData?.showWhatsappCTA ? <li>
-                          <button
-                          type="submit"
-                          onClick={() => {
-                            // CreateWhatsAppGroup()
-                            openWhatsAppmodal()
-                          }}
-                          disabled={isGroupCreating}
-                          className={AddNewClientStyle.btnPrimaryResendBtn}
-                        >
-                          Create Whatsapp Group 
-                        </button>
-
-                        {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
-                       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
-                        </li> : companyPreviewData?.whatsappDetails?.length > 0 && <li>
-                          <button
-                          type="submit"
-                          onClick={() => {
-                            openEditWhatsAppmodal()
-                          }}
-                          disabled={isGroupCreating}
-                          className={AddNewClientStyle.btnPrimaryResendBtn}
-                        >
-                          Manage Whatsapp Group 
-                        </button>
-
-                        {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
-                       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
-                        </li>}
-
-                          {/* <li>
-                            <span>Lead Source:</span>{" "}
-                            {companyDetails?.leadType
-                              ? companyDetails?.leadType
-                              : "NA"}
-                          </li> */}
-                        </ul>
-                      </div>
-                    </div>
-                    
                   </div>
                 </div>
               </>
