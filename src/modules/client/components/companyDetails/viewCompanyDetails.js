@@ -424,12 +424,12 @@ export default function ViewCompanyDetails() {
                       <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.viewComDetails}`}>
                         <ul>
                           <li>
-                            <label>Company Name:</label>{" "}
+                            <label>Company Name:</label>
                             {companyPreviewData?.basicDetails?.companyName ?companyPreviewData?.basicDetails?.companyName: "NA"}
                           </li>
 
                           <li>
-                            <label>Company Website URL:</label>{" "}
+                            <label>Company Website URL:</label>
                             {companyPreviewData?.basicDetails?.website ? (
                               <a
                                 href={"//" + companyPreviewData?.basicDetails?.website}
@@ -444,7 +444,7 @@ export default function ViewCompanyDetails() {
                           </li>
 
                           <li>
-                            <label>Company Linkedin URL:</label>{" "}
+                            <label>Company Linkedin URL:</label>
                             {companyPreviewData?.basicDetails?.linkedInProfile ? (
                               <a href={companyPreviewData?.basicDetails?.linkedInProfile}>
                                 {companyPreviewData?.basicDetails?.linkedInProfile}
@@ -455,22 +455,22 @@ export default function ViewCompanyDetails() {
                           </li>
 
                           <li>
-                            <label>Founded in:</label>{" "}
+                            <label>Founded in:</label>
                             {companyPreviewData?.basicDetails?.foundedYear ?companyPreviewData?.basicDetails?.foundedYear: "NA"}
                           </li>
 
                           <li>
-                            <label>Team Size:</label>{" "}
+                            <label>Team Size:</label>
                             {companyPreviewData?.basicDetails?.companySize ?? "NA"}
                           </li>
 
                           <li>
-                            <label>Industry:</label>{" "}
+                            <label>Industry:</label>
                             {companyPreviewData?.basicDetails?.companyIndustry ?companyPreviewData?.basicDetails?.companyIndustry: "NA"}
                           </li>
 
                           <li>
-                            <label>Headquarters:</label>{" "}
+                            <label>Headquarters:</label>
                             {companyPreviewData?.basicDetails?.headquaters
                               ? companyPreviewData?.basicDetails?.headquaters
                               : "NA"}
@@ -543,49 +543,47 @@ export default function ViewCompanyDetails() {
           >
             
               <div className={AddNewClientStyle.row}>
-              <div className={AddNewClientStyle.viewHRDetailsBox} style={{width:'100%'}}>
                 <div className={AddNewClientStyle.colLg12}>
-                  <ul>
-                  <li>
-                      <span style={{marginBottom:'30px'}}>Group Name :</span>{" "}
-                      {companyPreviewData?.whatsappDetails[0]?.groupName ? companyPreviewData?.whatsappDetails[0]?.groupName : (
-                        "NA"
-                      )}
-                    </li>
-
-                    <li>
-                      <span style={{marginBottom:'30px'}}>Group Created By :</span>{" "}
-                      {companyPreviewData?.whatsappDetails[0]?.groupCreatedBy ? companyPreviewData?.whatsappDetails[0]?.groupCreatedBy : (
-                        "NA"
-                      )}
-                    </li>
-
-                    <li>
-                      <span style={{marginBottom:'30px'}}>Group Creation Date :</span>{" "}
-                      {companyPreviewData?.whatsappDetails[0]?.groupCreatedDate ? companyPreviewData?.whatsappDetails[0]?.groupCreatedDate : (
-                        "NA"
-                      )}
-                    </li>
-
-                    <li>
-                      <span style={{marginBottom:'30px'}}>Group Members :</span>{" "}
-                      <Table 
-                   columns={groupMemberColumns}
-                   bordered={false}
-                   dataSource={
-                    companyPreviewData?.whatsappDetails?.map(val=> ({name: val.groupMember, isAdmin: val.isAdmin}))
-                   }
-                   pagination={false}
-                  />
-                    </li>
-                  </ul>
-
+                  <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comEngDetails}`} style={{width:'100%'}}>
                 
+                    <ul>
+                      <li>
+                        <label>Group Name:</label>
+                        {companyPreviewData?.whatsappDetails[0]?.groupName ? companyPreviewData?.whatsappDetails[0]?.groupName : (
+                          "NA"
+                        )}
+                      </li>
+
+                      <li>
+                        <label>Group Created By:</label>
+                        {companyPreviewData?.whatsappDetails[0]?.groupCreatedBy ? companyPreviewData?.whatsappDetails[0]?.groupCreatedBy : (
+                          "NA"
+                        )}
+                      </li>
+
+                      <li>
+                        <label>Group Creation Date:</label>
+                        {companyPreviewData?.whatsappDetails[0]?.groupCreatedDate ? companyPreviewData?.whatsappDetails[0]?.groupCreatedDate : (
+                          "NA"
+                        )}
+                      </li>
+
+                      <li className={`${AddNewClientStyle.fullWidth} ${AddNewClientStyle.comWAMember}`}>
+                        <label>Group Members:</label>
+                        <Table 
+                    columns={groupMemberColumns}
+                    bordered={false}
+                    dataSource={
+                      companyPreviewData?.whatsappDetails?.map(val=> ({name: val.groupMember, isAdmin: val.isAdmin}))
+                    }
+                    pagination={false}
+                    />
+                      </li>
+                    </ul>                
+                  </div>             
                 </div>
-             
-              </div>
             
-            </div>
+              </div>
             
           </div> }
          
@@ -743,8 +741,6 @@ export default function ViewCompanyDetails() {
                   // key={contact?.fullName}
                   // style={{ marginTop: index === 0 ? "0" : "10px" }}
                 >
-                  {" "}
-             
                   <div className={AddNewClientStyle.row}>
                     <div className={AddNewClientStyle.colLg12}>
                       <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comClientDetail}`}>
@@ -795,38 +791,38 @@ export default function ViewCompanyDetails() {
                 <div
                   className={AddNewClientStyle.viewHRDetailsBoxWrap}>
                     <div className={AddNewClientStyle.row}>
-                      <div className={AddNewClientStyle.colLg6}>
-                        <div className={AddNewClientStyle.viewHRDetailsBox}>
+                      <div className={AddNewClientStyle.colLg12}>
+                        <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comEngDetails}`}>
                           <ul>
                             {/* <li>
                               <span>Model:</span>{" "}
                               {companyTypeMessages ? companyTypeMessages : "NA"}
                             </li> */}
+                            <li className={`${AddNewClientStyle.fullWidth} ${AddNewClientStyle.comEngCheckBox}`}>
+                              <Checkbox
+                                value={2}
+                                checked={companyPreviewData?.engagementDetails?.companyTypeID}
+                                disabled={true}
+                              >
+                                Pay Per Credit
+                              </Checkbox>
+                              <Checkbox
+                                value={1}
+                                checked={companyPreviewData?.engagementDetails?.anotherCompanyTypeID}
+                                disabled={true}
+                              >
+                                Pay Per Hire
+                              </Checkbox>
+                            </li>
                             <li>
-                            <Checkbox
-                              value={2}
-                              checked={companyPreviewData?.engagementDetails?.companyTypeID}
-                              disabled={true}
-                            >
-                              Pay Per Credit
-                            </Checkbox>
-                            <Checkbox
-                              value={1}
-                              checked={companyPreviewData?.engagementDetails?.anotherCompanyTypeID}
-                              disabled={true}
-                            >
-                              Pay Per Hire
-                            </Checkbox>
-                          </li>
-                            <li>
-                              <span>Per Credit Amount:</span>{" "}
+                              <label>Per Credit Amount:</label>
                               {companyPreviewData?.engagementDetails?.creditAmount
                               ? companyPreviewData?.engagementDetails
                                 ?.creditAmount
                               : "NA"}
                             </li>
                             <li>
-                              <span>Credit for viewing vetted profile:</span>{" "}
+                              <label>Credit for viewing vetted profile:</label>
                               {companyPreviewData?.engagementDetails
                               ?.vettedProfileViewCredit
                               ? companyPreviewData?.engagementDetails
@@ -834,7 +830,7 @@ export default function ViewCompanyDetails() {
                               : "NA"}
                             </li>
                             <li>
-                              <span>Credit per post a job:</span>{" "}
+                              <label>Credit per post a job:</label>
                               {companyPreviewData?.engagementDetails?.jobPostCredit
                               ? companyPreviewData?.engagementDetails
                                 ?.jobPostCredit
@@ -842,7 +838,7 @@ export default function ViewCompanyDetails() {
                             </li>
                             {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
                             companyPreviewData?.engagementDetails?.companyTypeID !== null && (
-                              <li>
+                              <li className={AddNewClientStyle.comEngCheckBox}>
                                 <Checkbox
                                   name="IsPostaJob"
                                   checked={companyPreviewData?.engagementDetails?.isPostaJob}
@@ -852,45 +848,44 @@ export default function ViewCompanyDetails() {
                                 </Checkbox>
                               </li>
                             )}
-                          </ul>
-                        </div>
-                      </div>
-                      <div className={AddNewClientStyle.colLg6}>
-                        <div className={AddNewClientStyle.viewHRDetailsBox}>
-                          <ul>
+
                             <li>
-                              <span>Type Of Pricing:</span>{" "}
+                              <label>Type Of Pricing:</label>
                               {companyPreviewData?.engagementDetails?.anotherCompanyTypeID === 1 ?
                                 companyPreviewData?.engagementDetails?.isTransparentPricing ?
                                 "Transparent" : "Non Transparent" 
                               :"NA"}
                             </li>
+
                             <li>
-                              <span>Currency (Credit):</span>{" "}
+                              <label>Currency (Credit):</label>
                               {companyPreviewData?.engagementDetails
                               ?.creditCurrency
                               ? companyPreviewData?.engagementDetails
                                 ?.creditCurrency
                               : "NA"}
                             </li>
+
                             <li>
-                              <span>Total Credit Balance:</span>{" "}
+                              <label>Total Credit Balance:</label>
                               {companyPreviewData?.engagementDetails
                               ?.totalCreditBalance
                               ? companyPreviewData?.engagementDetails
                                 ?.totalCreditBalance
                               : "NA"}
                             </li>
+
                             <li>
-                              <span>Credit for viewing non vetted profile:</span>{" "}
+                              <label>Credit for viewing non vetted profile:</label>
                               {companyPreviewData?.engagementDetails
                               ?.nonVettedProfileViewCredit
                               ? companyPreviewData?.engagementDetails
                                 ?.nonVettedProfileViewCredit
                               : "NA"}
                             </li>
+
                             <li>
-                              <span>Engagement Mode (Pay per hire):</span>{" "}
+                              <label>Engagement Mode (Pay per hire):</label>
                               {companyPreviewData?.engagementDetails
                               ?.hiringTypePricingId === 1
                               ? `Hire a Contractor (${companyPreviewData?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
@@ -907,9 +902,10 @@ export default function ViewCompanyDetails() {
                                     ?.hiringTypePricingId === 5
                                     ? `Hire an employee on Uplers Payroll (${companyPreviewData?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`:"NA"}
                             </li>
+
                           </ul>
                         </div>
-                        </div>
+                      </div>
                     </div>
                   </div>
               </div>
@@ -1418,7 +1414,7 @@ export default function ViewCompanyDetails() {
 
       <div className={AddNewClientStyle.row} style={{marginTop:'24px'}}>
         <div className={AddNewClientStyle.colMd12}>
-          <p className={AddNewClientStyle.titleName}>Selected users to add in the group :</p>
+          <p className={AddNewClientStyle.titleName}>Selected users to add in the group:</p>
           <ul className={AddNewClientStyle.userNameContainer} style={{padding:'8px 0'}}>
             
             {selectedUsers?.map(user =>{
