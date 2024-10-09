@@ -12,6 +12,7 @@ import { allClientsConfig } from "modules/hiring request/screens/allClients/allC
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import greenArrowLeftImage from "assets/svg/greenArrowLeft.svg";
 import redArrowRightImage from "assets/svg/redArrowRight.svg";
+import WhatsAppBTN from 'assets/svg/WhatsApp.svg'
 import UTSRoutes from 'constants/routes';
 import { Link } from "react-router-dom";
 import Star from 'assets/svg/selectStarFill.svg';
@@ -249,22 +250,32 @@ export default function ViewCompanyDetails() {
     let result 
 
     if(companyPreviewData?.whatsappDetails?.length > 0){
-      let addeUsers = selecteUserForGroup.filter(wUser => !wUser.groupID )
-      let removedUsers = companyPreviewData?.whatsappDetails?.filter(user => !selectedUsers.map(user => user.groupMember).includes(user.groupMember))
-    
-      if(addeUsers.length === 0 && removedUsers.length === 0){
+      // let addeUsers = selecteUserForGroup.filter(wUser => !wUser.groupID )
+      // let removedUsers = companyPreviewData?.whatsappDetails?.filter(user => !selectedUsers.map(user => user.groupMember).includes(user.groupMember))
+   
+    let oldIDS = companyPreviewData?.whatsappDetails.map(wUser => wUser.userID).join(',')
+    let newIDS = selectedUsers.map(wUser => wUser.userID).join(',')
+    // console.log("resadsfdsfds",{wUsersToAdd,selectedUsers,prev:companyPreviewData?.whatsappDetails})
+    // console.log(oldIDS, newIDS , oldIDS === newIDS )
+      if(oldIDS === newIDS){
         setIsgroupCreating(false);
         message.error('No change applied to the group')
         return
       }
-      payload["whatsappMemberDetails"] = [...addeUsers?.map(item => ({
+      let removedU =  companyPreviewData?.whatsappDetails?.filter(wUser =>  !selectedUsers.map(wUser => wUser.userID).includes(wUser.userID))
+      let added = wUsersToAdd.filter(wuser => !companyPreviewData?.whatsappDetails?.map(i=> i.userID).includes(wuser.userID)).filter(wuser => selectedUsers.map(wUser => wUser.userID).includes(wuser.userID))
+     
+// console.log(removedU, added )
+
+
+      payload["whatsappMemberDetails"] = [...added?.map(item => ({
         "memberName": item.groupMember,
         "whatsappNumber": item.whatsappNumber,
         "userId": typeof item.userID === "string" ? 0 : item.userID,
         "admin": item.isAdmin,
         "memberFlag": "Add"
       })),
-      ...removedUsers.map(item => ({
+      ...removedU.map(item => ({
         "memberName": item.groupMember,
         "whatsappNumber": item.whatsappNumber,
         "userId": typeof item.userID === "string" ? 0 : item.userID,
@@ -476,18 +487,35 @@ export default function ViewCompanyDetails() {
                               : "NA"}
                           </li>
 
-                          {companyPreviewData?.showWhatsappCTA ? <li>
-                            <button
-                            type="submit"
+                        {companyPreviewData?.showWhatsappCTA ? <li>
+                          <img
+                            src={
+                              WhatsAppBTN
+                            }
+                            style={{height:'40px',cursor:'pointer'}}
+                            alt="icon"
                             onClick={() => {
                               // CreateWhatsAppGroup()
                               openWhatsAppmodal()
                             }}
-                            disabled={isGroupCreating}
-                            className={`${AddNewClientStyle.btnPrimaryResendBtn} ${AddNewClientStyle.m0}`}
-                          >
-                            Create Whatsapp Group 
-                          </button>
+                          />
+                          {/* <button
+                          type="submit"
+                          onClick={() => {
+                            // CreateWhatsAppGroup()
+                            openWhatsAppmodal()
+                          }}
+                          disabled={isGroupCreating}
+                          className={AddNewClientStyle.btnPrimaryResendBtn}
+                        >
+                           <img
+                              src={
+                                WhatsAppBTN
+                              }
+                              alt="icon"
+                            />
+                          {/* Create Whatsapp Group  
+                        </button> */}
 
                           {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
                             {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
