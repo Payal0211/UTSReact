@@ -12,6 +12,7 @@ import { allClientsConfig } from "modules/hiring request/screens/allClients/allC
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import greenArrowLeftImage from "assets/svg/greenArrowLeft.svg";
 import redArrowRightImage from "assets/svg/redArrowRight.svg";
+import WhatsAppBTN from 'assets/svg/WhatsApp.svg'
 import UTSRoutes from 'constants/routes';
 import { Link } from "react-router-dom";
 import Star from 'assets/svg/selectStarFill.svg';
@@ -607,7 +608,18 @@ export default function ViewCompanyDetails() {
                           </li>
 
                         {companyPreviewData?.showWhatsappCTA ? <li>
-                          <button
+                          <img
+                            src={
+                              WhatsAppBTN
+                            }
+                            style={{height:'40px',cursor:'pointer'}}
+                            alt="icon"
+                            onClick={() => {
+                              // CreateWhatsAppGroup()
+                              openWhatsAppmodal()
+                            }}
+                          />
+                          {/* <button
                           type="submit"
                           onClick={() => {
                             // CreateWhatsAppGroup()
@@ -616,8 +628,14 @@ export default function ViewCompanyDetails() {
                           disabled={isGroupCreating}
                           className={AddNewClientStyle.btnPrimaryResendBtn}
                         >
-                          Create Whatsapp Group 
-                        </button>
+                           <img
+          src={
+            WhatsAppBTN
+          }
+          alt="icon"
+        />
+                          {/* Create Whatsapp Group  
+                        </button> */}
 
                         {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
                        {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
