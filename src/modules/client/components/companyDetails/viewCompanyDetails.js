@@ -20,6 +20,7 @@ import spinGif from "assets/gif/RefreshLoader.gif";
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
 import { allCompanyRequestDAO } from "core/company/companyDAO";
+import YouTubeVideo from "../previewClientDetails/youTubeVideo";
 
 const creditColumn = [
   {
@@ -356,6 +357,18 @@ export default function ViewCompanyDetails() {
     setWusersToAdd(prev => [...prev , userObj])
   }
 
+  const companyTypeMessages = [
+    companyPreviewData?.engagementDetails?.anotherCompanyTypeID === 1 &&
+      `Pay per Hire (${
+        companyPreviewData?.engagementDetails?.isTransparentPricing
+          ? "Transparent"
+          : "Non Transparent"
+      })`,
+      companyPreviewData?.engagementDetails?.companyTypeID === 2 && "Pay per Credit",
+  ]
+    .filter(Boolean)
+    .join(", ");
+
   const CompDetails = () => {
     return (
       <>
@@ -364,7 +377,7 @@ export default function ViewCompanyDetails() {
           style={{ marginTop: "32px", marginBottom: "32px" }}
         >
           <div className={AddNewClientStyle.viewHRLeftDetails}>
-            <h2>Company Details</h2>
+            <h2>Basic Company Details</h2>
           </div>
 
           <div className={AddNewClientStyle.viewHRRightDetails}>
@@ -381,6 +394,7 @@ export default function ViewCompanyDetails() {
                     display: "flex",
                     alignItems: "center",
                     textAlign: "center",
+                    marginBottom: '24px',
                   }}
                 >
                   {!companyPreviewData?.basicDetails?.companyLogo ? (
@@ -415,158 +429,18 @@ export default function ViewCompanyDetails() {
                     />
                   )}
                 </div>
-                <div
-                  className={AddNewClientStyle.viewHRDetailsBoxWrap}
-                  style={{ marginTop: "10px" }}
-                >
+                <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
                   <div className={AddNewClientStyle.row}>
-                    <div className={AddNewClientStyle.colLg6}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
+                    <div className={AddNewClientStyle.colLg12}>
+                      <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.viewComDetails}`}>
                         <ul>
                           <li>
-                            <span>Company Name:</span>{" "}
-                            {/* {companyDetails?.companyName ?? "NA"} */}
-                            {companyPreviewData?.basicDetails?.companyName ?? "NA"}
+                            <label>Company Name:</label>
+                            {companyPreviewData?.basicDetails?.companyName ?companyPreviewData?.basicDetails?.companyName: "NA"}
                           </li>
-                          {/* <li>
-                            <span>Company Location:</span>{" "}
-                            {companyDetails?.location
-                              ? companyDetails?.location
-                              : "NA"}
-                          </li> */}
-                          <li>
-                            {/* <span>Client Model:</span>{" "} */}
-                            <Checkbox
-                              value={2}
-                              // onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);
-                              // setIsChecked({...IsChecked,isPostaJob:false,isProfileView:false})}}
-                              // checked={companyDetails?.companyTypeID}
-                              checked={companyPreviewData?.engagementDetails?.companyTypeID}
-                              disabled={true}
-                            >
-                              Pay Per Credit
-                            </Checkbox>
-                            <Checkbox
-                              value={1}
-                              // onChange={(e)=>{setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);setTypeOfPricing(null)}}
-                              // checked={companyDetails?.anotherCompanyTypeID}
-                              checked={companyPreviewData?.engagementDetails?.anotherCompanyTypeID}
-                              disabled={true}
-                            >
-                              Pay Per Hire
-                            </Checkbox>
-                          </li>
-                          {/* {companyDetails?.companyTypeID !== 0 &&
-                            companyDetails?.companyTypeID !== null && (
-                              <li>
-                                <span>Currency:</span>{" "}
-                                {companyDetails?.creditCurrency
-                                  ? companyDetails?.creditCurrency
-                                  : "NA"}
-                              </li>
-                            )} */}
-
-                          {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
-                            companyPreviewData?.engagementDetails?.companyTypeID !== null && (
-                              <li>
-                                <Checkbox
-                                  name="IsPostaJob"
-                                  checked={companyPreviewData?.engagementDetails?.isPostaJob}
-                                  disabled={true}
-                                >
-                                  Credit per post a job.
-                                </Checkbox>
-                                {/* <Checkbox
-                                  name="IsProfileView"
-                                  checked={companyDetails?.isProfileView}
-                                  disabled={true}
-                                >
-                                  Credit per profile view.
-                                </Checkbox> */}
-                              </li>
-                            )}
-
-                          {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
-                            companyPreviewData?.engagementDetails?.companyTypeID !== null && (
-                              <>
-                                <li>
-                                  <span>Per credit amount with currency:</span>{" "}
-                                  {/* {companyDetails?.creditAmount
-                                    ? `${companyDetails?.creditAmount} ${companyDetails?.creditCurrency}`
-                                    : "NA"} */}
-                                    {companyPreviewData?.engagementDetails?.creditAmount
-                                    ? `${companyPreviewData?.engagementDetails?.creditAmount} ${companyPreviewData?.engagementDetails?.creditCurrency}`
-                                    : "NA"}
-                                </li>
-                                <li>
-                                  <span>Credit Balance:</span>{" "}
-                                  {/* {companyDetails?.jpCreditBalance
-                                    ? companyDetails?.jpCreditBalance
-                                    : "NA"} */}
-                                    {companyPreviewData?.engagementDetails?.totalCreditBalance ?? 'NA'}
-                                </li>
-
-                                {companyPreviewData?.engagementDetails?.isProfileView && (
-                                  <>
-                                    {" "}
-                                    <li>
-                                      <span>Vetted Profile Credit:</span>{" "}
-                                      {/* {companyDetails?.vettedProfileViewCredit} */}
-                                      {companyPreviewData?.engagementDetails?.vettedProfileViewCredit}
-                                    </li>
-                                    <li>
-                                      <span>Non Vetted Profile Credit:</span>{" "}
-                                      {/* {
-                                        companyDetails?.nonVettedProfileViewCredit
-                                      } */}
-                                        {
-                                        companyPreviewData?.engagementDetails?.nonVettedProfileViewCredit
-                                      }
-                                    </li>
-                                  </>
-                                )}
-                              </>
-                            )}
-
-                          {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
-                            companyPreviewData?.engagementDetails?.companyTypeID !== null &&
-                            companyPreviewData?.engagementDetails?.isPostaJob && (
-                              <li>
-                                <span>Job post credit:</span>{" "}
-                                {/* {companyDetails?.jobPostCredit
-                                  ? companyDetails?.jobPostCredit
-                                  : "NA"} */}
-                                {companyPreviewData?.engagementDetails?.jobPostCredit ?? 'NA'}
-                              </li>
-                            )}
-
-                            {!(companyPreviewData?.engagementDetails?.companyTypeID === 2 && companyPreviewData?.engagementDetails?.anotherCompanyTypeID === 0) && companyPreviewData?.engagementDetails?.isTransparentPricing !== null && <li>
-                            <span>Type Of Pricing:</span>{" "}
-                            {/* {companyDetails?.isTransparentPricing
-                              ? "Transparent Pricing"
-                              : "Non Transparent Pricing"} */}
-                              {companyPreviewData?.engagementDetails?.isTransparentPricing === true
-                              ? "Transparent Pricing"
-                              : companyPreviewData?.engagementDetails?.isTransparentPricing === false ? "Non Transparent Pricing" : "NA"}
-                          </li>}
-                          
-                        
 
                           <li>
-                            <span>Uplers's Salesperson:</span>{" "}
-                            {/* {companyDetails?.phone
-                              ? companyDetails?.phone
-                              : "NA"} */}
-                              {companyPreviewData?.pocUserDetailsEdit?.pocName ?? "NA"}
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className={AddNewClientStyle.colLg6}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
-                        <ul>
-                          <li>
-                            <span>Company URL:</span>{" "}
+                            <label>Company Website URL:</label>
                             {companyPreviewData?.basicDetails?.website ? (
                               <a
                                 href={"//" + companyPreviewData?.basicDetails?.website}
@@ -579,8 +453,9 @@ export default function ViewCompanyDetails() {
                               "NA"
                             )}
                           </li>
+
                           <li>
-                            <span>Linkedin Profile:</span>{" "}
+                            <label>Company Linkedin URL:</label>
                             {companyPreviewData?.basicDetails?.linkedInProfile ? (
                               <a href={companyPreviewData?.basicDetails?.linkedInProfile}>
                                 {companyPreviewData?.basicDetails?.linkedInProfile}
@@ -589,19 +464,24 @@ export default function ViewCompanyDetails() {
                               "NA"
                             )}
                           </li>
+
                           <li>
-                            <span>Team Size:</span>{" "}
+                            <label>Founded in:</label>
+                            {companyPreviewData?.basicDetails?.foundedYear ?companyPreviewData?.basicDetails?.foundedYear: "NA"}
+                          </li>
+
+                          <li>
+                            <label>Team Size:</label>
                             {companyPreviewData?.basicDetails?.companySize ?? "NA"}
                           </li>
-                        
-                          {/* <li>
-                            <span>Company Address:</span>{" "}
-                            {companyDetails?.address
-                              ? companyDetails?.address
-                              : "NA"}
-                          </li> */}
+
                           <li>
-                            <span>Headquarters:</span>{" "}
+                            <label>Industry:</label>
+                            {companyPreviewData?.basicDetails?.companyIndustry ?companyPreviewData?.basicDetails?.companyIndustry: "NA"}
+                          </li>
+
+                          <li>
+                            <label>Headquarters:</label>
                             {companyPreviewData?.basicDetails?.headquaters
                               ? companyPreviewData?.basicDetails?.headquaters
                               : "NA"}
@@ -629,54 +509,34 @@ export default function ViewCompanyDetails() {
                           className={AddNewClientStyle.btnPrimaryResendBtn}
                         >
                            <img
-          src={
-            WhatsAppBTN
-          }
-          alt="icon"
-        />
+                              src={
+                                WhatsAppBTN
+                              }
+                              alt="icon"
+                            />
                           {/* Create Whatsapp Group  
                         </button> */}
 
-                        {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
-                       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
-                        </li> : companyPreviewData?.whatsappDetails?.length > 0 && <li>
-                          <button
-                          type="submit"
-                          onClick={() => {
-                            openEditWhatsAppmodal()
-                          }}
-                          disabled={isGroupCreating}
-                          className={AddNewClientStyle.btnPrimaryResendBtn}
-                        >
-                          Manage Whatsapp Group 
-                        </button>
+                          {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+                            {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
+                              </li> : companyPreviewData?.whatsappDetails?.length > 0 && <li>
+                                <button
+                                type="submit"
+                                onClick={() => {
+                                  openEditWhatsAppmodal()
+                                }}
+                                disabled={isGroupCreating}
+                                className={`${AddNewClientStyle.btnPrimaryResendBtn} ${AddNewClientStyle.m0}`}
+                              >
+                                Manage Whatsapp Group 
+                              </button>
 
-                        {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
-                       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
-                        </li>}
+                              {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+                            {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
+                          </li>}                         
 
-                          {/* <li>
-                            <span>Lead Source:</span>{" "}
-                            {companyDetails?.leadType
-                              ? companyDetails?.leadType
-                              : "NA"}
-                          </li> */}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-               
-                <div
-                  className={AddNewClientStyle.viewHRDetailsBoxWrap}
-                  style={{ marginTop: "10px" }}
-                >
-                  <div className={AddNewClientStyle.row}>
-                    <div className={AddNewClientStyle.viewHRDetailsBox}>
-                      <div className={AddNewClientStyle.colLg12}>
-                        <ul>
-                          <li>
-                            <span style={{marginBottom:'30px'}}>About Company:</span>{" "}
+                          <li className={AddNewClientStyle.aboutComDetails}>
+                            <label>About Company:</label>{" "}
                             {companyPreviewData?.basicDetails?.aboutCompany ? (
                               <div
                               style={{marginTop:'10px'}}
@@ -711,55 +571,188 @@ export default function ViewCompanyDetails() {
           >
             
               <div className={AddNewClientStyle.row}>
-              <div className={AddNewClientStyle.viewHRDetailsBox} style={{width:'100%'}}>
                 <div className={AddNewClientStyle.colLg12}>
-                  <ul>
-                  <li>
-                      <span style={{marginBottom:'30px'}}>Group Name :</span>{" "}
-                      {companyPreviewData?.whatsappDetails[0]?.groupName ? companyPreviewData?.whatsappDetails[0]?.groupName : (
-                        "NA"
-                      )}
-                    </li>
-
-                    <li>
-                      <span style={{marginBottom:'30px'}}>Group Created By :</span>{" "}
-                      {companyPreviewData?.whatsappDetails[0]?.groupCreatedBy ? companyPreviewData?.whatsappDetails[0]?.groupCreatedBy : (
-                        "NA"
-                      )}
-                    </li>
-
-                    <li>
-                      <span style={{marginBottom:'30px'}}>Group Creation Date :</span>{" "}
-                      {companyPreviewData?.whatsappDetails[0]?.groupCreatedDate ? companyPreviewData?.whatsappDetails[0]?.groupCreatedDate : (
-                        "NA"
-                      )}
-                    </li>
-
-                    <li>
-                      <span style={{marginBottom:'30px'}}>Group Members :</span>{" "}
-                      <Table 
-                   columns={groupMemberColumns}
-                   bordered={false}
-                   dataSource={
-                    companyPreviewData?.whatsappDetails?.map(val=> ({name: val.groupMember, isAdmin: val.isAdmin}))
-                   }
-                   pagination={false}
-                  />
-                    </li>
-                  </ul>
-
+                  <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comEngDetails}`} style={{width:'100%'}}>
                 
+                    <ul>
+                      <li>
+                        <label>Group Name:</label>
+                        {companyPreviewData?.whatsappDetails[0]?.groupName ? companyPreviewData?.whatsappDetails[0]?.groupName : (
+                          "NA"
+                        )}
+                      </li>
+
+                      <li>
+                        <label>Group Created By:</label>
+                        {companyPreviewData?.whatsappDetails[0]?.groupCreatedBy ? companyPreviewData?.whatsappDetails[0]?.groupCreatedBy : (
+                          "NA"
+                        )}
+                      </li>
+
+                      <li>
+                        <label>Group Creation Date:</label>
+                        {companyPreviewData?.whatsappDetails[0]?.groupCreatedDate ? companyPreviewData?.whatsappDetails[0]?.groupCreatedDate : (
+                          "NA"
+                        )}
+                      </li>
+
+                      <li className={`${AddNewClientStyle.fullWidth} ${AddNewClientStyle.comWAMember}`}>
+                        <label>Group Members:</label>
+                        <Table 
+                    columns={groupMemberColumns}
+                    bordered={false}
+                    dataSource={
+                      companyPreviewData?.whatsappDetails?.map(val=> ({name: val.groupMember, isAdmin: val.isAdmin}))
+                    }
+                    pagination={false}
+                    />
+                      </li>
+                    </ul>                
+                  </div>             
                 </div>
-             
-              </div>
             
-            </div>
+              </div>
             
           </div> }
          
         
                 </div>
         </div> }
+
+        <div className={AddNewClientStyle.viewHRDetailsItem}>
+          <div className={AddNewClientStyle.viewHRLeftDetails}>
+            <h2>Funding Details</h2>
+          </div>
+
+          <div className={AddNewClientStyle.viewHRRightDetails}>
+            {isSavedLoading ? (
+              <Skeleton active />
+            ) : (
+              <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
+                <div className={AddNewClientStyle.row}>
+                  <div className={AddNewClientStyle.colLg12}>
+                    {companyPreviewData?.basicDetails?.isSelfFunded ===
+                        false &&
+                    
+                     ( <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comFundingDetails}`}>
+                        <ul>
+                          <li>
+                            <label>Funding Round Series:</label>{" "}
+                            {companyPreviewData?.fundingDetails[0]?.series ? companyPreviewData?.fundingDetails[0]?.series: "NA"}
+                          </li>
+                          <li>
+                            <label>Funding Amount:</label>{" "}
+                            {companyPreviewData?.fundingDetails[0]?.fundingAmount ? companyPreviewData?.fundingDetails[0]?.fundingAmount: "NA"}
+                          </li>
+                          <li>
+                            <label>Latest Funding Round:</label>{" "}
+                            {companyPreviewData?.fundingDetails[0]?.lastFundingRound ? companyPreviewData?.fundingDetails[0]?.lastFundingRound : "NA" }
+                          </li>
+                          <li className={AddNewClientStyle.fullWidth}>
+                            <label>Investors:</label>{" "}
+                            {companyPreviewData?.fundingDetails[0]?.allInvestors ? companyPreviewData?.fundingDetails[0]?.allInvestors: "NA"}
+                          </li>
+                          <li className={AddNewClientStyle.fullWidth}>
+                              <label>Additional Information:</label>{" "}
+                              {companyPreviewData?.fundingDetails[0]?.additionalInformation ? (
+                                <div
+                                style={{marginTop:'10px'}}
+                                  dangerouslySetInnerHTML={{
+                                    __html: companyPreviewData?.fundingDetails[0]?.additionalInformation,
+                                  }}
+                                />
+                              ) : (
+                                "NA"
+                              )}
+                          </li>
+                        </ul>
+                      </div>)}
+                  
+                  {companyPreviewData?.basicDetails?.isSelfFunded ===
+                        true && <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comFundingDetails}`}>
+                          <ul>
+                            <li className={AddNewClientStyle.fullWidth}>
+                              <label className={AddNewClientStyle.m0}>Self-funded (bootstrapped) company without external investments.</label>
+                            </li>
+                          </ul>
+                   </div>}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className={AddNewClientStyle.viewHRDetailsItem}>
+          <div className={AddNewClientStyle.viewHRLeftDetails}>
+            <h2>Culture & Perks</h2>
+          </div>
+
+          <div className={AddNewClientStyle.viewHRRightDetails}>
+            {isSavedLoading ? (
+              <Skeleton active />
+            ) : (
+              <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
+                <div className={AddNewClientStyle.row}>
+                  <div className={AddNewClientStyle.colLg12}>
+                      <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comCultureDetails}`}>
+                        <ul>
+                          <li>
+                              <label>Culture:</label>
+                              {companyPreviewData?.basicDetails?.culture ? (
+                                <div dangerouslySetInnerHTML={{
+                                    __html: companyPreviewData?.basicDetails?.culture,
+                                  }}
+                                />
+                              ) : (
+                                "NA"
+                              )}
+                          </li>
+                          <li>
+                            <div className={AddNewClientStyle.comDetailsImages}>
+                              {companyPreviewData?.cultureDetails?.map((img, index) => (
+                                <>
+                                  <div className={AddNewClientStyle.comDetailsImgItem}>
+                                    <div className={AddNewClientStyle.comDetailsImgInner}>
+                                      <img src={img?.cultureImage} alt={index} />
+                                    </div>
+                                  </div>
+                                </>
+                              ))}
+                            </div>
+                          </li>
+                          <li>
+                            <div className={AddNewClientStyle.comDetailsVideos}>
+                              {companyPreviewData?.youTubeDetails && companyPreviewData?.youTubeDetails?.map((link, index) => (
+                                <>
+                                  <div className={AddNewClientStyle.comDetailsVideoItem}>
+                                    <YouTubeVideo
+                                    videoLink={link?.youtubeLink}
+                                    />
+                                  </div>
+                                </>
+                              ))}
+                            </div>
+                          </li>
+                          <li className={AddNewClientStyle.comHighlightedLabel}>
+                            <label>Company perks & benefits:</label>
+                            <ul>
+                              {
+                                companyPreviewData?.perkDetails ? companyPreviewData?.perkDetails?.map((val) => (
+                                  <li>
+                                    {val}
+                                  </li>
+                                )) : "NA"}
+                            </ul> 
+                          </li>
+                        </ul>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       
 
         <div className={AddNewClientStyle.viewHRDetailsItem}>
@@ -768,88 +761,213 @@ export default function ViewCompanyDetails() {
           </div>
 
           <div className={AddNewClientStyle.viewHRRightDetails}>
-            {/* <div
-style={{
-width: "145px",
-height: "145px",
-backgroundColor: "#EBEBEB",
-borderRadius: "50%",
-display: "flex",
-alignItems: "center",
-textAlign: "center",
-}}
->         
-{!companyDetails?.companyLogo ? (
-<Avatar 
-style={{ width: "100%",
-height: "100%", display: "flex",alignItems: "center"}} 
-size="large">
-{companyDetails?.companyName?.substring(0, 2).toUpperCase()}
-</Avatar>
-) : (
-<img
-style={{
-width: "145px",
-height: "145px",
-borderRadius: "50%",
-}}
-src={
-NetworkInfo.PROTOCOL +
-NetworkInfo.DOMAIN +
-"Media/CompanyLogo/" +
-companyDetails?.companyLogo
-}
-alt="preview"
-/>
-)}
-</div> */}
+            {isSavedLoading ? (
+              <Skeleton active />
+            ) : 
+               ( <div
+                  className={AddNewClientStyle.viewHRDetailsBoxWrap}
+                  // key={contact?.fullName}
+                  // style={{ marginTop: index === 0 ? "0" : "10px" }}
+                >
+                  <div className={AddNewClientStyle.row}>
+                    <div className={AddNewClientStyle.colLg12}>
+                      <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comClientDetail}`}>
+                        {companyPreviewData?.contactDetails?.map((contact, index) => (
+                          <ul>
+                            <li>
+                              <label>Client Full Name:</label>
+                              {contact?.fullName ? contact?.fullName : "NA"}
+                            </li>
+                            <li>
+                              <label>Client’s Work Email:</label>
+                              {contact?.emailID ? contact?.emailID : "NA"}
+                            </li>
+                            <li>
+                              <label>Phone Number:</label>
+                              {contact?.contactNo ? contact?.contactNo : "NA"}
+                            </li>
+                            <li>
+                              <label>Designation:</label>
+                              {contact?.designation ? contact?.designation : "NA"}
+                            </li>
+                            <li>
+                              <label>Access Type:</label>
+                              {(contact?.roleID == 1 && "Admin") ||
+                                    (contact?.roleID == 2 && "All Jobs") ||
+                                    (contact?.roleID == 3 && "My Jobs")}
+                            </li>
+                          </ul>
+                         ))}
+                      </div>
+                    </div>
+                  </div>             
+                </div>
+            )}
+          </div>
+        </div>
 
+        <div className={AddNewClientStyle.viewHRDetailsItem}>
+          <div className={AddNewClientStyle.viewHRLeftDetails}>
+            <h2>Engagement Details</h2>
+          </div>
+
+          <div className={AddNewClientStyle.viewHRRightDetails}>
             {isSavedLoading ? (
               <Skeleton active />
             ) : (
-              companyPreviewData?.contactDetails?.map((contact, index) => (
+              <div className={AddNewClientStyle.viewHRRightDetails}>
                 <div
-                  className={AddNewClientStyle.viewHRDetailsBoxWrap}
-                  key={contact?.fullName}
-                  style={{ marginTop: index === 0 ? "0" : "10px" }}
-                >
-                  {" "}
-                  <div className={AddNewClientStyle.row}>
-                    <div className={AddNewClientStyle.colLg6}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
-                        <ul>
-                          <li>
-                            <span>Full Name:</span>{" "}
-                            {contact?.fullName ? contact?.fullName : "NA"}
-                          </li>
-                          <li>
-                            <span>Phone Number:</span>{" "}
-                            {contact?.contactNo ? contact?.contactNo : "NA"}
-                          </li>
-                          <li>
-                            <span>Linkedin Profile:</span>{" "}
-                            {contact?.linkedIn ? contact?.linkedIn : "NA"}
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className={AddNewClientStyle.colLg6}>
-                      <div className={AddNewClientStyle.viewHRDetailsBox}>
-                        <ul>
-                          <li>
-                            <span>Email ID:</span>{" "}
-                            {contact?.emailID ? contact?.emailID : "NA"}
-                          </li>
-                          <li>
-                            <span>Designation:</span>{" "}
-                            {contact?.designation ? contact?.designation : "NA"}
-                          </li>
-                        </ul>
+                  className={AddNewClientStyle.viewHRDetailsBoxWrap}>
+                    <div className={AddNewClientStyle.row}>
+                      <div className={AddNewClientStyle.colLg12}>
+                        <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comEngDetails}`}>
+                          <ul>
+                            {/* <li>
+                              <span>Model:</span>{" "}
+                              {companyTypeMessages ? companyTypeMessages : "NA"}
+                            </li> */}
+                            <li className={`${AddNewClientStyle.fullWidth} ${AddNewClientStyle.comEngCheckBox}`}>
+                              <Checkbox
+                                value={2}
+                                checked={companyPreviewData?.engagementDetails?.companyTypeID}
+                                disabled={true}
+                              >
+                                Pay Per Credit
+                              </Checkbox>
+                              <Checkbox
+                                value={1}
+                                checked={companyPreviewData?.engagementDetails?.anotherCompanyTypeID}
+                                disabled={true}
+                              >
+                                Pay Per Hire
+                              </Checkbox>
+                            </li>
+                            <li>
+                              <label>Per Credit Amount:</label>
+                              {companyPreviewData?.engagementDetails?.creditAmount
+                              ? companyPreviewData?.engagementDetails
+                                ?.creditAmount
+                              : "NA"}
+                            </li>
+                            <li>
+                              <label>Credit for viewing vetted profile:</label>
+                              {companyPreviewData?.engagementDetails
+                              ?.vettedProfileViewCredit
+                              ? companyPreviewData?.engagementDetails
+                                ?.vettedProfileViewCredit
+                              : "NA"}
+                            </li>
+                            <li>
+                              <label>Credit per post a job:</label>
+                              {companyPreviewData?.engagementDetails?.jobPostCredit
+                              ? companyPreviewData?.engagementDetails
+                                ?.jobPostCredit
+                              : "NA"}
+                            </li>
+                            {companyPreviewData?.engagementDetails?.companyTypeID !== 0 &&
+                            companyPreviewData?.engagementDetails?.companyTypeID !== null && (
+                              <li className={AddNewClientStyle.comEngCheckBox}>
+                                <Checkbox
+                                  name="IsPostaJob"
+                                  checked={companyPreviewData?.engagementDetails?.isPostaJob}
+                                  disabled={true}
+                                >
+                                  Credit per post a job.
+                                </Checkbox>
+                              </li>
+                            )}
+
+                            <li>
+                              <label>Type Of Pricing:</label>
+                              {companyPreviewData?.engagementDetails?.anotherCompanyTypeID === 1 ?
+                                companyPreviewData?.engagementDetails?.isTransparentPricing ?
+                                "Transparent" : "Non Transparent" 
+                              :"NA"}
+                            </li>
+
+                            <li>
+                              <label>Currency (Credit):</label>
+                              {companyPreviewData?.engagementDetails
+                              ?.creditCurrency
+                              ? companyPreviewData?.engagementDetails
+                                ?.creditCurrency
+                              : "NA"}
+                            </li>
+
+                            <li>
+                              <label>Total Credit Balance:</label>
+                              {companyPreviewData?.engagementDetails
+                              ?.totalCreditBalance
+                              ? companyPreviewData?.engagementDetails
+                                ?.totalCreditBalance
+                              : "NA"}
+                            </li>
+
+                            <li>
+                              <label>Credit for viewing non vetted profile:</label>
+                              {companyPreviewData?.engagementDetails
+                              ?.nonVettedProfileViewCredit
+                              ? companyPreviewData?.engagementDetails
+                                ?.nonVettedProfileViewCredit
+                              : "NA"}
+                            </li>
+
+                            <li>
+                              <label>Engagement Mode (Pay per hire):</label>
+                              {companyPreviewData?.engagementDetails
+                              ?.hiringTypePricingId === 1
+                              ? `Hire a Contractor (${companyPreviewData?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
+                              : companyPreviewData?.engagementDetails
+                                ?.hiringTypePricingId === 2
+                                ? `Hire an employee on Uplers Payroll (${companyPreviewData?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
+                                : companyPreviewData?.engagementDetails
+                                  ?.hiringTypePricingId === 3
+                                  ? `Direct-hire (${companyPreviewData?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
+                                  : companyPreviewData?.engagementDetails
+                                    ?.hiringTypePricingId === 4
+                                    ? `Hire a Contractor (${companyPreviewData?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`
+                                    : companyPreviewData?.engagementDetails
+                                    ?.hiringTypePricingId === 5
+                                    ? `Hire an employee on Uplers Payroll (${companyPreviewData?.hiringDetails?.filter((item)=>(item?.isDefault === true))?.[0]?.hiringTypePercentage}) %`:"NA"}
+                            </li>
+
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className={AddNewClientStyle.viewHRDetailsItem}>
+          <div className={AddNewClientStyle.viewHRLeftDetails}>
+            <h2>Salesperson (NBD/AM)</h2>
+          </div>
+
+          <div className={AddNewClientStyle.viewHRRightDetails}>
+            {isSavedLoading ? (
+              <Skeleton active />
+            ) : (
+              <div className={AddNewClientStyle.viewHRRightDetails}>
+                <div
+                  className={AddNewClientStyle.viewHRDetailsBoxWrap}>
+                    <div className={AddNewClientStyle.row}>
+                      <div className={AddNewClientStyle.colLg12}>
+                        <div className={AddNewClientStyle.viewHRDetailsBox}>
+                          <div className={AddNewClientStyle.comHighlightedLabel}>
+                            <ul>
+                              <li>
+                                {companyPreviewData?.pocUserDetailsEdit?.pocName ?? "NA"}
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
             )}
           </div>
         </div>
@@ -1324,7 +1442,7 @@ alt="preview"
 
       <div className={AddNewClientStyle.row} style={{marginTop:'24px'}}>
         <div className={AddNewClientStyle.colMd12}>
-          <p className={AddNewClientStyle.titleName}>Selected users to add in the group :</p>
+          <p className={AddNewClientStyle.titleName}>Selected users to add in the group:</p>
           <ul className={AddNewClientStyle.userNameContainer} style={{padding:'8px 0'}}>
             
             {selectedUsers?.map(user =>{
