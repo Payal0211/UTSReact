@@ -74,6 +74,7 @@ const HRFields = ({
   tabFieldDisabled,
   setTabFieldDisabled,
   setJDParsedSkills,
+  JDParsedSkills,
   contactID,
   interviewDetails,
   companyName,
@@ -1632,23 +1633,140 @@ const HRFields = ({
   };
 
   const getNearByCitiesForAts = () => {
-    if (watch("workingMode").id === 3) {
-      return NearByCitesValues.join(",");
-    } else {
-      let cities = [];
+    // if (watch("workingMode").id === 3) {
+    //   return NearByCitesValues.join(",");
+    // } else {
+    //   let cities = [];
 
-      NearByCitesValues.forEach((val) => {
-        let valFind = nearByCitiesData.filter((c) => c.label === val);
-        if (valFind.length > 0) {
-          cities.push(valFind[0]?.value);
-        } else {
-          cities.push(val);
-        }
-      });
+    //   NearByCitesValues.forEach((val) => {
+    //     let valFind = nearByCitiesData.filter((c) => c.label === val);
+    //     if (valFind.length > 0) {
+    //       cities.push(valFind[0]?.value);
+    //     } else {
+    //       cities.push(val);
+    //     }
+    //   });
 
-      return cities.join(",");
-    }
+    //   return cities.join(",");
+    // }
+    return NearByCitesValues.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",")
   };
+
+  const debriefSubmitHandler = async (d) => {
+		setIsLoading(true);
+		let sameSkillIssue = false
+		let skillList = d.skills.map((item) => {
+			const obj = {
+				skillsID: item?.id ? item?.id : item?.skillsID,
+				skillsName: item?.value ? item?.value : item?.skillsName,
+			};
+			return obj;
+		});
+		// let goodToSkillList =  d.goodToHaveSkills.map((item) => {
+		// 	const obj = {
+		// 		skillsID: item.id || item?.skillsID,
+		// 		skillsName: item.value || item?.skillsName,
+		// 	};
+		// 	return obj;
+		// });
+
+		// let goodtoonlySkillsList = goodToSkillList.map((item) => item.skillsName.toLowerCase())
+		let skillonlyList = skillList.map((item) => item.skillsName.toLowerCase() )
+
+		// goodtoonlySkillsList.forEach(item => {
+		// 	if(skillonlyList.includes(item)){
+		// 		setError('goodToHaveSkills', {
+		// 			type: 'otherSkill',
+		// 			message: 'Same skills are not allowed',
+		// 		});
+		// 		sameSkillIssue = true
+		// 	}
+		// })
+
+		if(d.jobDescription === '' || d.jobDescription === '<p><br></p>'){
+			message.error('Please fill Job Description')
+			setIsLoading(false);
+			return
+		}
+
+
+		let debriefFormDetails = {
+			// roleAndResponsibilites: d.roleAndResponsibilities,
+			// requirements: d.requirements,
+			roleAndResponsibilites: '',
+			requirements: '',
+			JobDescription:d.jobDescription,
+			en_Id: d.en_Id,
+			skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),
+			aboutCompanyDesc: d.aboutCompany,
+			// secondaryInterviewer: d.secondaryInterviewer,
+			interviewerFullName: d.interviewerFullName,
+			interviewerEmail: d.interviewerEmail,
+			interviewerLinkedin: d.interviewerLinkedin,
+			interviewerDesignation: d.interviewerDesignation,
+			JDDumpID: jdDumpID || 0,
+			ActionType: "Save",
+			// IsHrfocused: isFocusedRole,
+			// role: d.role?.id ? d.role?.id : null,
+			role: null,
+			hrTitle: d.hrTitle,
+			allSkills:'',
+			"interviewerDetails":{
+				"primaryInterviewer": {
+					"interviewerId": d.interviewerId,
+					"fullName": d.interviewerFullName,
+					"emailID": d.interviewerEmail,
+					"linkedin": d.interviewerLinkedin,
+					"designation": d.interviewerDesignation,
+					"isUserAddMore": false
+				},
+				"secondaryinterviewerList": d.secondaryInterviewer
+			},
+			isDirectHR:isDirectHR,
+			companyInfo: {
+			  "companyID": getHRdetails?.companyInfo?.companyID,
+				"companyName": getHRdetails?.companyInfo?.companyName,
+				"website": getHRdetails?.companyInfo?.webSite,
+				"linkedInURL": getHRdetails?.companyInfo?.companyLinkedin,
+				"industry": getHRdetails?.companyInfo?.industry,
+				"companySize": getHRdetails?.companyInfo?.companySize,
+				"aboutCompanyDesc": getHRdetails?.companyInfo?.aboutCompany
+			},
+			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
+			PayPerType:  userCompanyTypeID ,
+			ParsingType: getParsingType(isHaveJD,parseType),
+			IsMustHaveSkillschanged : true,
+			IsGoodToHaveSkillschanged: true
+		};
+		if(userCompanyTypeID === 2){
+			debriefFormDetails['companyInfo'] = {
+				"companyID": getHRdetails?.companyInfo?.companyID,
+				"companyName": getHRdetails?.companyInfo?.companyName,
+				"website": getHRdetails?.companyInfo?.webSite,
+				"linkedInURL": getHRdetails?.companyInfo?.companyLinkedin,
+				"industry": getHRdetails?.companyInfo?.industry,
+				"companySize": getHRdetails?.companyInfo?.companySize,
+				"aboutCompanyDesc": getHRdetails?.companyInfo?.aboutCompany
+			}
+
+			debriefFormDetails['interviewerDetails'] = getHRdetails?.interviewerDetails
+		}
+		
+		if(!sameSkillIssue){
+			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+			debriefFormDetails,
+		);
+		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+      setTimeout(() => {
+        navigate("/allhiringrequest");
+      }, 1000);
+		}
+	}else{
+		setIsLoading(false);
+	}
+	
+};
+
 
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
@@ -1885,9 +2003,21 @@ const HRFields = ({
             type: "success",
             content: "HR details has been saved to draft.",
           });
-          setTimeout(() => {
+
+          if(JDParsedSkills.Title && JDParsedSkills.Skills.length > 0){
+             debriefSubmitHandler({jobDescription:JDParsedSkills.JobDescription,
+            hrTitle: JDParsedSkills.Title,
+            skills: JDParsedSkills.Skills,
+            id:addHRRequest.responseBody.details.id,
+            en_Id : addHRRequest.responseBody.details.en_Id,
+          })
+          }else{
+              setTimeout(() => {
             navigate("/allhiringrequest");
           }, 1000);
+          }
+         
+        
           // setTitle('Debriefing HR')
         }
       }
@@ -3235,7 +3365,7 @@ const HRFields = ({
                       userCompanyTypeID === 2 ? "Job Type" : "Availability"
                     }
                     defaultValue="Select availability"
-                    options={userCompanyTypeID === 2 ? JobTypes : availability}
+                    options={userCompanyTypeID === 2 ? JobTypes :  availability}
                     name="availability"
                     isError={errors["availability"] && errors["availability"]}
                     required
@@ -3387,7 +3517,7 @@ const HRFields = ({
                           // label={"Hiring Pricing Type"}
                           label={"Employment Type"}
                           defaultValue="Select Hiring Pricing"
-                          options={hrPricingTypes && hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
+                          options={hrPricingTypes && watch('availability')?.id === 1 ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type })).filter(i=> i.id !== 3) : hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
                           name="hiringPricingType"
                           isError={
                             errors["hiringPricingType"] &&
@@ -5487,20 +5617,23 @@ who have worked in scaled start ups."
                         // getClientNameValue(clientName,_obj)
                         setLocationSelectValidation(false)
                         let citiesVal = await getCities(_obj.id);
-                        if (watch("workingMode").value === WorkingMode.HYBRID) {
-                          let firstCity = citiesVal[0];
-                          setNearByCitesValues([firstCity.label]);
-                          setNearByCitiesData(citiesVal);
-                        } else {
-                          let firstCity = citiesVal[0];
-                          setNearByCitesValues([firstCity.label]);
-                          // setNearByCitiesData([firstCity]);
-                          setNearByCitiesData(citiesVal);
-                        }
+                        setNearByCitiesData(citiesVal.filter(c=> c.value !== _obj.id));
+                        
+                        // if (watch("workingMode").value === WorkingMode.HYBRID) {
+                        //   let firstCity = citiesVal[0];
+                        //   // setNearByCitesValues([firstCity.label]);
+                        //   setNearByCitiesData(citiesVal);
+                        // } else {
+                        //   let firstCity = citiesVal[0];
+                        //   // setNearByCitesValues([firstCity.label]);
+                        //   // setNearByCitiesData([firstCity]);
+                        //   setNearByCitiesData(citiesVal);
+                        // }
                       }}
                       filterOption={true}
                       onSearch={(searchValue) => {
                         // setClientNameSuggestion([]);
+                        setNearByCitesValues([])
                         onChangeLocation(searchValue);
                       }}
                       onChange={(locName) => {
@@ -5632,16 +5765,17 @@ who have worked in scaled start ups."
                   Do you have a preference in candidate's location?
                 </div>
                 <Select
-                  mode="tags"
+                  mode="multiple"
                   style={{ width: "100%" }}
                   value={NearByCitesValues}
                   showSearch={true}
                   filterOption={(input, option) => 
                     option.label.toLowerCase().includes(input.toLowerCase())
                   } 
-                  options={allCities}
+                  options={allCities.filter(cit => cit.value !==  locationList.find(loc => loc.value === watch("location"))?.id)}
                   // options={nearByCitiesData}
-                  onChange={(values, _) => setNearByCitesValues(values)}
+                  onChange={(values, _) => {
+                    setNearByCitesValues(values)}}
                   placeholder="Select Compensation"
                   tokenSeparators={[","]}
                 />

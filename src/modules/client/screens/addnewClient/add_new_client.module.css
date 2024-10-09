@@ -186,7 +186,7 @@
   }
   
   .summaryCard {
-    padding: 15px;
+    padding: 10px 15px;
     border: 1px solid;
     background: white;
     width: fit-content;
@@ -357,6 +357,221 @@
     height: 18px;
   }
 
+/**/
+.viewHRDetailsBoxWrap .viewComDetails ul li > label,
+.viewHRDetailsBoxWrap .comClientDetail ul > li > label,
+.viewHRDetailsBoxWrap .comEngDetails ul > li > label{
+  color: #7c7c7c;
+  display: block;
+  font-weight: 400;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.viewHRDetailsBoxWrap .viewComDetails ul li.fullWidth,
+.viewHRDetailsBoxWrap .comFundingDetails ul li.fullWidth,
+.viewHRDetailsBoxWrap .comEngDetails ul li.fullWidth
+{
+  width: 100%;
+}
+
+.viewHRDetailsBoxWrap .viewComDetails ul li.aboutComDetails{
+  width: 100%;
+  font-weight: normal;
+}
+
+.viewHRDetailsBoxWrap .viewComDetails > ul,
+.viewHRDetailsBoxWrap .comFundingDetails > ul{
+  flex-wrap: wrap;
+  column-gap: 32px;
+  display: flex;
+}
+
+.viewHRDetailsBoxWrap .viewComDetails > ul > li{
+  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #232323;
+}
+
+.viewHRDetailsBoxWrap .viewComDetails > ul > li:last-child,
+.viewHRDetailsBoxWrap .comFundingDetails > ul > li:last-child,
+.viewHRDetailsBoxWrap .comCultureDetails > ul > li:last-child{
+  margin-bottom: 0;
+}
+
+.viewHRDetailsBoxWrap .viewComDetails ul li .m0,
+.viewHRDetailsBoxWrap .comFundingDetails ul li .m0{
+  margin: 0;
+}
+
+.viewHRDetailsBoxWrap .comFundingDetails ul li > label{
+  display: block;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: #232323;
+  margin-bottom: 8px;
+}
+
+.viewHRDetailsBoxWrap .comFundingDetails > ul > li{
+  color: #676767;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  width: calc(33.33% - 22px);
+  margin-bottom: 24px;
+}
+
+.viewHRDetailsBoxWrap .comCultureDetails > ul > li{
+  color: #676767;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  margin-bottom: 32px;
+}
+
+.viewHRDetailsBoxWrap .comCultureDetails ul li > label{
+  display: block;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: #232323;
+  margin-bottom: 8px;
+}
+
+.viewHRDetailsBoxWrap .comClientDetail > ul{
+  flex-wrap: wrap;
+  gap: 24px 32px;
+  display: flex;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #cecccc;
+  margin-bottom: 24px;
+}
+
+.viewHRDetailsBoxWrap .comClientDetail > ul:last-child{
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.viewHRDetailsBoxWrap .comClientDetail > ul > li{
+  width: calc(33.33% - 22px);
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #232323;
+}
+
+.viewHRDetailsBoxWrap .comHighlightedLabel{
+  margin: 0;
+}
+
+.viewHRDetailsBoxWrap .comHighlightedLabel > ul{
+  margin: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+  display: flex;
+}
+
+.viewHRDetailsBoxWrap .comHighlightedLabel > ul > li{
+  padding: 10px 16px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #232323;
+  border: 1px solid #fff8d6;
+  background: #fff8d6;
+  border-radius: 10px;
+  margin-bottom: 0;
+}
+
+
+.comCultureDetails .comDetailsImages,
+.comCultureDetails .comDetailsVideos{
+  margin: 0;
+  flex-wrap: wrap;
+  display: flex;
+  gap: 20px;
+}
+
+.comDetailsImages .comDetailsImgItem,
+.comDetailsVideos .comDetailsVideoItem{
+  margin: 0;
+  width: calc(33.33% - 14px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.comDetailsImages .comDetailsImgInner,
+.comDetailsVideoItem [class*="video-wrapper"]{
+  padding-bottom: 66.66%;
+  background: #f7f7f7;
+  position: relative;
+  border-radius: 16px;
+}
+
+.comDetailsImages .comDetailsImgInner img,
+.comDetailsVideoItem [class*="video-wrapper"] img,
+.comDetailsVideoItem [class*="video-wrapper"] video,
+.comDetailsVideoItem [class*="video-wrapper"] iframe{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  object-fit: contain;
+  border: none;
+  outline: none;
+  margin: 0 !important;
+}
+
+.viewHRDetailsBoxWrap .comEngDetails .comEngCheckBox{
+  gap: 24px;
+  display: flex;
+}
+
+.viewHRDetailsBoxWrap .comEngDetails .comEngCheckBox > label {
+  display: inline-flex;
+  margin: 0;
+  font-weight: 500;
+  color: #7c7c7c;
+}
+
+.viewHRDetailsBoxWrap .comEngDetails .comEngCheckBox > label span{
+  color: #7c7c7c;  
+}
+
+.viewHRDetailsBoxWrap .comEngDetails > ul{
+  flex-wrap: wrap;
+  gap: 24px 32px;
+  display: flex;
+}
+
+.viewHRDetailsBoxWrap .comEngDetails > ul > li{
+  width: calc(33.33% - 22px);
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #232323;
+}
+
+.viewHRDetailsBoxWrap .comEngDetails .comWAMember table > thead > tr:first-child th:first-child,
+.viewHRDetailsBoxWrap .comEngDetails .comWAMember table > tbody > tr > td:first-child{
+  padding-left: 0 !important;
+}
+
+
+/*Responsive*/
 @media screen and (max-width: 1440px) {
   .addNewContainer {
     padding: 16px 24px;
