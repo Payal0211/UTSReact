@@ -1652,8 +1652,8 @@ const HRFields = ({
     return NearByCitesValues.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",")
   };
 
-  const debriefSubmitHandler = async (d) => {
-		setIsLoading(true);
+  const debriefSubmitHandler = async (d, isDraft) => {
+		setIsSavedLoading(true);
 		let sameSkillIssue = false
 		let skillList = d.skills.map((item) => {
 			const obj = {
@@ -1685,7 +1685,7 @@ const HRFields = ({
 
 		if(d.jobDescription === '' || d.jobDescription === '<p><br></p>'){
 			message.error('Please fill Job Description')
-			setIsLoading(false);
+			setIsSavedLoading(false);
 			return
 		}
 
@@ -1757,12 +1757,19 @@ const HRFields = ({
 			debriefFormDetails,
 		);
 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
-      setTimeout(() => {
+      setIsSavedLoading(false);
+      if(isDraft){
+         setTimeout(() => {
         navigate("/allhiringrequest");
       }, 1000);
+      }else{
+        setTitle("Debriefing HR")
+        setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+      }
+     
 		}
 	}else{
-		setIsLoading(false);
+		setIsSavedLoading(false);
 	}
 	
 };
@@ -1993,35 +2000,64 @@ const HRFields = ({
             Responsibility: "",
             Requirements: "",
           });
-        type !== SubmitType.SAVE_AS_DRAFT && setTitle("Debriefing HR");
+        
 
-        type !== SubmitType.SAVE_AS_DRAFT &&
-          setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+        if(type !== SubmitType.SAVE_AS_DRAFT){
+          if(isHaveJD === 1){
+            setIsSavedLoading(false);
+            setTitle("Debriefing HR")
+            setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+          }else{
+            
+            if(JDParsedSkills.Title && JDParsedSkills.Skills.length > 0){
+            setIsSavedLoading(false)
+            debriefSubmitHandler({jobDescription:JDParsedSkills.JobDescription,
+           hrTitle: JDParsedSkills.Title,
+           skills: JDParsedSkills.Skills,
+           id:addHRRequest.responseBody.details.id,
+           en_Id : addHRRequest.responseBody.details.en_Id,
+         }, type === SubmitType.SAVE_AS_DRAFT)
+         }else{
+            setTitle("Debriefing HR")
+            setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+         }   
+          }
+                
+        }
+          
 
         if (type === SubmitType.SAVE_AS_DRAFT) {
           messageAPI.open({
             type: "success",
             content: "HR details has been saved to draft.",
           });
-
-          if(JDParsedSkills.Title && JDParsedSkills.Skills.length > 0){
+          if(isHaveJD === 1){
+            setIsSavedLoading(false);
+            setTimeout(() => {
+              navigate("/allhiringrequest");
+            }, 1000);
+          }else{
+            if(JDParsedSkills.Title && JDParsedSkills.Skills.length > 0){
+              setIsSavedLoading(false)
              debriefSubmitHandler({jobDescription:JDParsedSkills.JobDescription,
             hrTitle: JDParsedSkills.Title,
             skills: JDParsedSkills.Skills,
             id:addHRRequest.responseBody.details.id,
             en_Id : addHRRequest.responseBody.details.en_Id,
-          })
+          }, type === SubmitType.SAVE_AS_DRAFT)
           }else{
               setTimeout(() => {
             navigate("/allhiringrequest");
           }, 1000);
           }
+          }
+          
          
         
           // setTitle('Debriefing HR')
         }
       }
-      setIsSavedLoading(false);
+      
     },
     [
       getHRdetails,
@@ -3517,7 +3553,7 @@ const HRFields = ({
                           // label={"Hiring Pricing Type"}
                           label={"Employment Type"}
                           defaultValue="Select Hiring Pricing"
-                          options={hrPricingTypes && watch('availability')?.id === 1 ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type })).filter(i=> i.id !== 3) : hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
+                          options={hrPricingTypes && watch('availability')?.value === 'Part Time' ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type })).filter(i=> i.id !== 3) : hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
                           name="hiringPricingType"
                           isError={
                             errors["hiringPricingType"] &&
