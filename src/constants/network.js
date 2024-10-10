@@ -233,6 +233,8 @@ export class MastersAPI {
 	static GET_NEAR_BY_CITIES = 'GetNearByCities'
 	static GET_AUTO_COMPLETE_CITY = 'GetAutoCompleteCityWise'
 	static GET_FREQUENCY = 'GetFrequency'
+	static SEND_ATS_UPDATE_ON_EDIT_HR = 'SendATSUpdateOnEditHR'
+
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';

@@ -1080,5 +1080,23 @@ export const MasterAPI = {
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.updateRole');
 		}
+	},
+	updateJobPostDataToATS : async function (data,isAIQue) {
+		let httpService = new HttpServices();
+		if(isAIQue === null){
+			httpService.URL =
+				NetworkInfo.NETWORK + SubDomain.COMPANY + MastersAPI.SEND_ATS_UPDATE_ON_EDIT_HR + `?hrId=${data}`;
+		}else{
+			httpService.URL =
+				NetworkInfo.NETWORK + SubDomain.COMPANY + MastersAPI.SEND_ATS_UPDATE_ON_EDIT_HR + `?hrId=${data}&isAutogenerateQuestions=${isAIQue}`;
+		}
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.updateRole');
+		}
 	}
 };

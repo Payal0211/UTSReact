@@ -2063,9 +2063,9 @@ export const MasterDAO = {
 			);
 		}
 	},
-	updateJobPostDataToATSDAO : async function () {
+	updateJobPostDataToATSDAO : async function (data,isAIQue) {
 		try {
-			const updateJobPostDataToATSResponse = await MasterAPI.getFrequency();
+			const updateJobPostDataToATSResponse = await MasterAPI.updateJobPostDataToATS(data,isAIQue);
 				if (updateJobPostDataToATSResponse) {
 					const statusCode = updateJobPostDataToATSResponse['statusCode'];
 					if (statusCode === HTTPStatusCode.OK) {
