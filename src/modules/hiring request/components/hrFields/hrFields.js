@@ -3275,7 +3275,7 @@ const HRFields = ({
                       value={userCompanyTypeID}
                     >
                       <Radio value={1}>Pay Per Hire</Radio>
-                      <Radio value={2}>Pay Per Credit</Radio>
+                      <Radio value={2} onClick={()=>{unregister('payrollType')}}>Pay Per Credit</Radio>
                     </Radio.Group>
                   </div>
                 </div>
@@ -3686,8 +3686,7 @@ const HRFields = ({
                   )}
                 </>
               )}
-
-              {(watch("hiringPricingType")?.id === 3 ||
+              {userCompanyTypeID !== 2 && (watch("hiringPricingType")?.id === 3 ||
                 watch("hiringPricingType")?.id === 6) && (
                 <>
                   <div className={HRFieldStyle.colMd6}>
@@ -3705,8 +3704,8 @@ const HRFields = ({
                         name="payrollType"
                         isError={errors["payrollType"] && errors["payrollType"]}
                         required={
-                          watch("hiringPricingType")?.id === 3 ||
-                          watch("hiringPricingType")?.id === 6
+                          (userCompanyTypeID !== 2) && ( watch("hiringPricingType")?.id === 3 ||
+                          watch("hiringPricingType")?.id === 6)
                             ? true
                             : false
                         }
