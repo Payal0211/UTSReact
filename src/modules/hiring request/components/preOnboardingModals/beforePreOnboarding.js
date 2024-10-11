@@ -403,7 +403,8 @@ export default function BeforePreOnboarding({
        setValue("netTerm", list[0]);
     setControlledPaymentNetTerm(list[0]);
     }else{
-      let newObj = {
+      if(preONBoardingData?.preOnboardingDetailsForAMAssignment?.payementNetTerm){
+        let newObj = {
         disabled: false,
         group: null,
         selected: false,
@@ -413,6 +414,8 @@ export default function BeforePreOnboarding({
       setNetTerms([...netTerms, newObj]);
       setValue("netTerm", newObj);
       setControlledPaymentNetTerm(newObj);
+      }
+      
     }
    
   }, [preONBoardingData,netTerms])
@@ -1575,7 +1578,7 @@ const calcelMember = () =>{
                                 name
                                   ? netTerms.filter(
                                       (duration) => duration.value == name
-                                    ).length > 0
+                                    ).length > 0 || +name <= 0 || +name  > 99 
                                   : true
                               }
                             >
