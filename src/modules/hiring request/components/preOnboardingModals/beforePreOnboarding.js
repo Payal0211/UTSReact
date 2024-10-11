@@ -9,7 +9,11 @@ import {
   message,
   TimePicker,
   AutoComplete,
+  Divider,
+  Space,
+  Button
 } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import HRDetailStyle from "../../screens/hrdetail/hrdetail.module.css";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
@@ -100,6 +104,8 @@ export default function BeforePreOnboarding({
   const [locationSelectValidation,setLocationSelectValidation] = useState(false);
 
   const [preONBoardingData, setPreONBoardingData] = useState({});
+  const [name, setName] = useState("");
+  const inputRef = useRef(null);
 
   const [dealSource, setDealSource] = useState([]);
   const [dealOwner, setDealowner] = useState([]);
@@ -267,6 +273,27 @@ export default function BeforePreOnboarding({
     })))
   }
 
+  const addItem = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!netTerms.includes(name)) {
+        let newObj = {
+          disabled: false,
+          group: null,
+          selected: false,
+          text: `${name}`,
+          value: `${name}`,
+        };
+        setNetTerms([...netTerms, newObj]);
+        setName("");
+      }
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    },
+    [netTerms, name]
+  );
+
 
   const getReportingToHandler = useCallback(async () => {
     const response = await MasterDAO.getYesNoOptionRequestDAO();
@@ -372,8 +399,22 @@ export default function BeforePreOnboarding({
 
   useEffect(() => {    
     let list = netTerms?.filter((item) => item.value == preONBoardingData?.preOnboardingDetailsForAMAssignment?.payementNetTerm);
-    setValue("netTerm", list[0]);
+    if(list.length){
+       setValue("netTerm", list[0]);
     setControlledPaymentNetTerm(list[0]);
+    }else{
+      let newObj = {
+        disabled: false,
+        group: null,
+        selected: false,
+        text: `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.payementNetTerm}`,
+        value: `${preONBoardingData?.preOnboardingDetailsForAMAssignment?.payementNetTerm}`,
+      };
+      setNetTerms([...netTerms, newObj]);
+      setValue("netTerm", newObj);
+      setControlledPaymentNetTerm(newObj);
+    }
+   
   }, [preONBoardingData,netTerms])
 
   useEffect(() => {    
@@ -1507,6 +1548,43 @@ const calcelMember = () =>{
                       errorMsg={"Please select Payment Net Term"}
                       disabled={actionType==="Legal"?true:false}
                       searchable={true}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          <Divider style={{ margin: "8px 0" }} />
+                          <Space style={{ padding: "0 8px 4px" }}>
+                            <label>Other:</label>
+                            <input
+                              type={InputType.NUMBER}
+                              className={HRDetailStyle.addSalesItem}
+                              placeholder="Ex: 5,6,7..."
+                              ref={inputRef}
+                              value={name}
+                              onChange={(e)=> setName(e.target.value)}
+                              required
+                            />
+                            <Button
+                              style={{
+                                backgroundColor: `var(--uplers-grey)`,
+                              }}
+                              shape="round"
+                              type="text"
+                              icon={<PlusOutlined />}
+                              onClick={addItem}
+                              disabled={
+                                name
+                                  ? netTerms.filter(
+                                      (duration) => duration.value == name
+                                    ).length > 0
+                                  : true
+                              }
+                            >
+                              Add item
+                            </Button>
+                          </Space>
+                          <br />
+                        </>
+                      )}
                     />
                   </div>
 

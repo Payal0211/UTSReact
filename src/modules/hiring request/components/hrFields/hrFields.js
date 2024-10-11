@@ -2386,7 +2386,7 @@ const HRFields = ({
       // setHRdetails(response?.responseBody?.details);
     }
   };
-
+console.log('errors',errors)
   const getValueForMaxBudget = () => {
     if (isFreshersAllowed) {
       return +watch("minimumBudget");
@@ -3275,7 +3275,7 @@ const HRFields = ({
                       value={userCompanyTypeID}
                     >
                       <Radio value={1}>Pay Per Hire</Radio>
-                      <Radio value={2} onClick={()=>{unregister('payrollType')}}>Pay Per Credit</Radio>
+                      <Radio value={2} onClick={()=>{unregister('payrollType');unregister("hiringPricingType");unregister("contractDuration")}}>Pay Per Credit</Radio>
                     </Radio.Group>
                   </div>
                 </div>
@@ -3384,6 +3384,10 @@ const HRFields = ({
                         "Select Hiring Pricing"
                       );
                       if (userCompanyTypeID === 2) {
+                        if(val === "Full Time"){
+                          clearErrors("contractDuration")
+                        }
+                       
                         if (val === "Part Time") {
                           setValue("tempProject", {
                             id: undefined,
@@ -3518,7 +3522,9 @@ const HRFields = ({
                           }
                           required={
                             userCompanyTypeID === 2
-                              ? watch("availability")?.id !== 2 ||
+                              ? (watch("availability")?.id === 2 ||
+                              watch("availability")?.id === 3 ||
+                              watch("availability")?.id === 4) ||
                                 watch("tempProject")?.value === true
                                 ? true
                                 : false

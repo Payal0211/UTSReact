@@ -41,6 +41,13 @@
     font-weight: 500;
 }
 
+.addSalesItem {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid var(--uplers-border-color);
+    width: 90px;
+}
+
 .btnPrimary {
     background: #FFDA30;
     border: 1px solid #FFDA30;
