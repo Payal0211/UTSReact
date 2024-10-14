@@ -13,6 +13,7 @@ import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import greenArrowLeftImage from "assets/svg/greenArrowLeft.svg";
 import redArrowRightImage from "assets/svg/redArrowRight.svg";
 import WhatsAppBTN from 'assets/svg/WhatsApp.svg'
+import ManageWhatsAppBTN from 'assets/svg/ManageWhatsApp.svg'
 import UTSRoutes from 'constants/routes';
 import { Link } from "react-router-dom";
 import Star from 'assets/svg/selectStarFill.svg';
@@ -525,7 +526,18 @@ export default function ViewCompanyDetails() {
                           {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
                             {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
                               </li> : companyPreviewData?.whatsappDetails?.length > 0 && <li>
-                                <button
+                              <img
+                            src={
+                              ManageWhatsAppBTN
+                            }
+                            style={{height:'40px',cursor:'pointer'}}
+                            alt="icon"
+                            onClick={() => {
+                              // CreateWhatsAppGroup()
+                              openEditWhatsAppmodal()
+                            }}
+                          />
+                                {/* <button
                                 type="submit"
                                 onClick={() => {
                                   openEditWhatsAppmodal()
@@ -534,7 +546,7 @@ export default function ViewCompanyDetails() {
                                 className={`${AddNewClientStyle.btnPrimaryResendBtn} ${AddNewClientStyle.m0}`}
                               >
                                 Manage Whatsapp Group 
-                              </button>
+                              </button> */}
 
                               {/* {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
                             {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>} */}
