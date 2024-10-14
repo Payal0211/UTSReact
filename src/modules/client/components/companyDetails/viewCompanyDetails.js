@@ -1315,7 +1315,7 @@ export default function ViewCompanyDetails() {
             <Select
               mode="tags"
               defaultValue={user.groupMember ?? "Select User"}
-              value = {user.groupMember ?? "Select User"}
+              value = {user.groupMember ?? []}
               // style={{ width: 120 }}
               disabled={selectedUsers.map(user => user.userID).includes(user.userID)}
               showSearch={true}
@@ -1325,7 +1325,7 @@ export default function ViewCompanyDetails() {
                   let obj ={
                     ...user,
                     "groupMember": null,
-                    "whatsappNumber": null ,
+                    "whatsappNumber": '+91' ,
                     "userID": null
                 }
                 let usersToAddnewArr = [...wUsersToAdd] 
@@ -1338,7 +1338,7 @@ export default function ViewCompanyDetails() {
                       let obj ={
                         ...user,
                         "groupMember": val[_?.length - 1],
-                        "whatsappNumber": null ,
+                        "whatsappNumber": '+91' ,
                         "userID": val[_?.length - 1]
                     }
                     let usersToAddnewArr = [...wUsersToAdd] 
@@ -1348,7 +1348,7 @@ export default function ViewCompanyDetails() {
                       let obj ={
                         ...user,
                         "groupMember": _[_?.length - 1].value,
-                        "whatsappNumber": _[_?.length - 1].contactNumber ,
+                        "whatsappNumber": _[_?.length - 1].contactNumber === '' ? '+91' : _[_?.length - 1].contactNumber ,
                         "userID": _[_?.length - 1].id
                     }
                     let usersToAddnewArr = [...wUsersToAdd] 
@@ -1360,7 +1360,7 @@ export default function ViewCompanyDetails() {
                     let obj ={
                       ...user,
                       "groupMember": val[0],
-                      "whatsappNumber": null ,
+                      "whatsappNumber": '+91' ,
                       "userID": val[0]
                   }
                   let usersToAddnewArr = [...wUsersToAdd] 
@@ -1370,7 +1370,7 @@ export default function ViewCompanyDetails() {
                     let obj ={
                       ...user,
                       "groupMember": _[0].value,
-                      "whatsappNumber": _[0].contactNumber ,
+                      "whatsappNumber": _[0].contactNumber === '' ? '+91' : _[0].contactNumber ,
                       "userID": _[0].id
                   }
                   let usersToAddnewArr = [...wUsersToAdd] 
