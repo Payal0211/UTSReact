@@ -252,18 +252,23 @@ export default function ViewCompanyDetails() {
     if(companyPreviewData?.whatsappDetails?.length > 0){
       // let addeUsers = selecteUserForGroup.filter(wUser => !wUser.groupID )
       // let removedUsers = companyPreviewData?.whatsappDetails?.filter(user => !selectedUsers.map(user => user.groupMember).includes(user.groupMember))
-   
-    let oldIDS = companyPreviewData?.whatsappDetails.map(wUser => wUser.userID).join(',')
-    let newIDS = selectedUsers.map(wUser => wUser.userID).join(',')
+   let oldWhatsappusers = companyPreviewData?.whatsappDetails.map(user => {
+    if(user.userID === 0){
+      return {...user, userID: user.groupMember}
+    }
+    return user
+   })
+    let oldIDS = oldWhatsappusers?.map(wUser => wUser.userID).join(',')
+    let newIDS = selecteUserForGroup.map(wUser => wUser.userID).join(',')
     // console.log("resadsfdsfds",{wUsersToAdd,selectedUsers,prev:companyPreviewData?.whatsappDetails})
-    // console.log(oldIDS, newIDS , oldIDS === newIDS )
+    // console.log(oldIDS, newIDS , oldIDS === newIDS,companyPreviewData?.whatsappDetails , selecteUserForGroup )
       if(oldIDS === newIDS){
         setIsgroupCreating(false);
         message.error('No change applied to the group')
         return
       }
-      let removedU =  companyPreviewData?.whatsappDetails?.filter(wUser =>  !selectedUsers.map(wUser => wUser.userID).includes(wUser.userID))
-      let added = wUsersToAdd.filter(wuser => !companyPreviewData?.whatsappDetails?.map(i=> i.userID).includes(wuser.userID)).filter(wuser => selectedUsers.map(wUser => wUser.userID).includes(wuser.userID))
+      let removedU =  oldWhatsappusers?.filter(wUser =>  !selectedUsers.map(wUser => wUser.userID).includes(wUser.userID))
+      let added = wUsersToAdd.filter(wuser => !oldWhatsappusers?.map(i=> i.userID).includes(wuser.userID)).filter(wuser => selecteUserForGroup.map(wUser => wUser.userID).includes(wuser.userID))
      
 // console.log(removedU, added )
 
@@ -286,7 +291,7 @@ export default function ViewCompanyDetails() {
       ]
 
       payload["groupId"]  = companyPreviewData?.whatsappDetails[0].groupID 
-
+      payload["inviteLink"]  = companyPreviewData?.whatsappDetails[0].inviteURL
       result = await allCompanyRequestDAO.updateWhatsAppGroupDAO(payload)
     }else{
       payload["whatsappMemberDetails"] = selecteUserForGroup.map(item => ({
@@ -525,14 +530,14 @@ export default function ViewCompanyDetails() {
                                 onClick={() => {
                                   openEditWhatsAppmodal()
                                 }}
-                                disabled={isGroupCreating}
+                                // disabled={isGroupCreating}
                                 className={`${AddNewClientStyle.btnPrimaryResendBtn} ${AddNewClientStyle.m0}`}
                               >
                                 Manage Whatsapp Group 
                               </button>
 
-                              {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
-                            {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
+                              {/* {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+                            {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>} */}
                           </li>}                         
 
                           <li className={AddNewClientStyle.aboutComDetails}>
@@ -1451,7 +1456,7 @@ export default function ViewCompanyDetails() {
           </ul>
         </div>
       </div>
-      {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px',marginLeft:'20px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+      {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px',marginLeft:'20px' }}>{companyPreviewData?.whatsappDetails?.length ? "Updating" : "Createing"} Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold",marginLeft:'20px'}}>{groupError}</p>}
       <div className={AddNewClientStyle.formPanelAction} style={{padding:'20px'}}>
             <button
