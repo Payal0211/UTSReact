@@ -281,7 +281,7 @@ export default function ViewCompanyDetails() {
         "admin": item.isAdmin,
         "memberFlag": "Add"
       })),
-      ...removedU.map(item => ({
+      ...removedU.filter(wu=> wu.groupMember  !== null)?.map(item => ({
         "memberName": item.groupMember,
         "whatsappNumber": item.whatsappNumber,
         "userId": typeof item.userID === "string" ? 0 : item.userID,
@@ -342,7 +342,10 @@ export default function ViewCompanyDetails() {
     setWhatsappModal(true)
     let addedusers = companyPreviewData?.whatsappDetails?.map(user=> ({...user,userID: user.userID ? user.userID : user.groupMember }))
     setWusersToAdd(addedusers)
-    setSelectedUsers(addedusers.map(val=> ({userID: val.userID,groupMember:val.groupMember})))
+    if(addedusers[0].groupMember !== null     ){
+      setSelectedUsers(addedusers.map(val=> ({userID: val.userID,groupMember:val.groupMember})))
+    }
+   
   }
 
   const addNewUserToAdd = () =>{
