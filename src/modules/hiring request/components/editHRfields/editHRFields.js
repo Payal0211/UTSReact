@@ -1674,6 +1674,7 @@ const EditHRFields = ({
     }
     if(getHRdetails?.addHiringRequest?.jdfilename){
        setUploadFileData(getHRdetails?.addHiringRequest?.jdfilename);
+       setIsHaveJD(0)
     }else{
       if(!getHRdetails?.draftDontHaveJD){
         setIsHaveJD(1)
