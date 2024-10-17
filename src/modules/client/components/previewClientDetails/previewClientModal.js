@@ -497,6 +497,7 @@ function PreviewClientModal({
         filesToUpload.append("Files", fileData);
         filesToUpload.append("IsCompanyLogo", true);
         filesToUpload.append("IsCultureImage", false);
+        filesToUpload.append("type","company_logo")
 
         let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
         setValidation({
@@ -598,6 +599,7 @@ function PreviewClientModal({
     }
     filesToUpload.append("IsCompanyLogo", false);
     filesToUpload.append("IsCultureImage", true);
+    filesToUpload.append("type","culture_images")
 
     let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
 

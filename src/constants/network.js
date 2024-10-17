@@ -65,7 +65,8 @@ export class DirectHR {
 
 export class CompanysAPI {
 	static GET_DETAILS = 'GetDetails';
-	static UPLOAD_IMAGE = 'UploadImage';
+	// static UPLOAD_IMAGE = 'UploadImage';
+	static UPLOAD_IMAGE = 'Image/uploadBase64'
 	static DELETE_YOUTUBE_DETAILS = 'DeleteYouTubeDetails';
 	static DELETE_CULTURE_IMAGE = 'DeleteCultureImage'
 	static UPDATE_COMPANY_DETAILS = 'UpdateDetails'

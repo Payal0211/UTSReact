@@ -1181,6 +1181,7 @@ getSkillList();
         filesToUpload.append("Files", file);
         filesToUpload.append("IsCompanyLogo", true);
         filesToUpload.append("IsCultureImage", false);
+        filesToUpload.append("type","company_logo")
 
         let res = await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
         setIsLoading(false);
@@ -1197,9 +1198,11 @@ getSkillList();
           // });
           setBasicDetails({
             ...basicDetails,
-            companyLogo: imgUrls[0],
+            companyLogo: imgUrls[0],         
+            companyLogoAWS:imgUrls[0],
           });
           //to update comp info in BE
+          payload.basicDetails.companyLogo = imgUrls[0]
            allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
           let data = { ...jobPreview };
           data['companyLogo'] = result;
@@ -2722,10 +2725,12 @@ getSkillList();
                         <div className="top-details">
                           <div className="companyDetailsHead">
                             <div className="thumbImages">
-                              {basicDetails?.companyLogo ?
-                                <img src={basicDetails?.companyLogo?.includes(NetworkInfo.PROTOCOL +
-                                  NetworkInfo.DOMAIN)? basicDetails?.companyLogo :  NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN +
-                                  "Media/CompanyLogo/" + basicDetails?.companyLogo} alt="CompanyProfileImg" /> :
+                              {basicDetails?.companyLogoAWS ?
+                                <img src={basicDetails?.companyLogoAWS                                  
+                                  // ?.includes(NetworkInfo.PROTOCOL +
+                                  // NetworkInfo.DOMAIN)? basicDetails?.companyLogo :  NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN +
+                                  // "Media/CompanyLogo/" + basicDetails?.companyLogo
+                                } alt="CompanyProfileImg" /> :
                                 <Avatar
                                   style={{
                                     width: "100%",
