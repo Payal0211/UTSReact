@@ -1199,7 +1199,7 @@ getSkillList();
           setBasicDetails({
             ...basicDetails,
             companyLogo: imgUrls[0],         
-            companyLogoAWS:imgUrls[0],
+            // companyLogoAWS:imgUrls[0],
           });
           //to update comp info in BE
           payload.basicDetails.companyLogo = imgUrls[0]
@@ -2725,8 +2725,8 @@ getSkillList();
                         <div className="top-details">
                           <div className="companyDetailsHead">
                             <div className="thumbImages">
-                              {basicDetails?.companyLogoAWS ?
-                                <img src={basicDetails?.companyLogoAWS                                  
+                              {basicDetails?.companyLogo ?
+                                <img src={basicDetails?.companyLogo                                 
                                   // ?.includes(NetworkInfo.PROTOCOL +
                                   // NetworkInfo.DOMAIN)? basicDetails?.companyLogo :  NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN +
                                   // "Media/CompanyLogo/" + basicDetails?.companyLogo

@@ -49,7 +49,7 @@ function CompanySection({
   });
 
   useEffect(() => {
-    companyDetails?.companyLogoAWS && setUploadFileData(companyDetails?.companyLogoAWS)
+    companyDetails?.companyLogo && setUploadFileData(companyDetails?.companyLogo)
     // companyDetails?.companyLogo.includes(NetworkInfo.PROTOCOL +
     //   NetworkInfo.DOMAIN) ? setUploadFileData(companyDetails?.companyLogo) :  setUploadFileData(  NetworkInfo.PROTOCOL +
     //     NetworkInfo.DOMAIN +
@@ -134,7 +134,7 @@ function CompanySection({
             ...prev,
             basicDetails: {
               companyLogo: imgUrls[0],
-              companyLogoAWS: imgUrls[0],
+              // companyLogoAWS: imgUrls[0],
               ...prev.basicDetails?.companyLogo,
             },
           }));
