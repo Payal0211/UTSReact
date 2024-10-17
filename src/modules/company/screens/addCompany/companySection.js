@@ -49,11 +49,11 @@ function CompanySection({
   });
 
   useEffect(() => {
-    companyDetails?.companyLogo &&
-    companyDetails?.companyLogo.includes(NetworkInfo.PROTOCOL +
-      NetworkInfo.DOMAIN) ? setUploadFileData(companyDetails?.companyLogo) :  setUploadFileData(  NetworkInfo.PROTOCOL +
-        NetworkInfo.DOMAIN +
-        "Media/CompanyLogo/" + companyDetails?.companyLogo);
+    companyDetails?.companyLogoAWS && setUploadFileData(companyDetails?.companyLogoAWS)
+    // companyDetails?.companyLogo.includes(NetworkInfo.PROTOCOL +
+    //   NetworkInfo.DOMAIN) ? setUploadFileData(companyDetails?.companyLogo) :  setUploadFileData(  NetworkInfo.PROTOCOL +
+    //     NetworkInfo.DOMAIN +
+    //     "Media/CompanyLogo/" + companyDetails?.companyLogo);
     companyDetails?.companyName &&
       setValue("companyName", companyDetails?.companyName);
     companyDetails?.website && setValue("companyURL", companyDetails?.website);
@@ -118,6 +118,7 @@ function CompanySection({
         filesToUpload.append("Files", fileData);
         filesToUpload.append("IsCompanyLogo", true);
         filesToUpload.append("IsCultureImage", false);
+        filesToUpload.append("type","company_logo")
 
         let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
 
@@ -133,6 +134,7 @@ function CompanySection({
             ...prev,
             basicDetails: {
               companyLogo: imgUrls[0],
+              companyLogoAWS: imgUrls[0],
               ...prev.basicDetails?.companyLogo,
             },
           }));

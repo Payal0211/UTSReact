@@ -74,6 +74,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
       }
      filesToUpload.append('IsCompanyLogo',false)
      filesToUpload.append('IsCultureImage',true)
+     filesToUpload.append("type","culture_images")
 
      let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload)
    
