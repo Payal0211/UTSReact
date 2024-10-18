@@ -24,7 +24,7 @@ export const CompanyAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
-			SubDomain.COMPANY +
+			// SubDomain.COMPANY +
 			CompanysAPI.UPLOAD_IMAGE ;
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = payload;

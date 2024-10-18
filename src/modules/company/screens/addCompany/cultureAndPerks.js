@@ -74,6 +74,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
       }
      filesToUpload.append('IsCompanyLogo',false)
      filesToUpload.append('IsCultureImage',true)
+     filesToUpload.append("type","culture_images")
 
      let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload)
    
@@ -188,6 +189,70 @@ const addnewYoutubeLink = (e) =>{
        console.error("Error reading the file:", error);
      }
    };
+
+   const base64ToBlob = (base64Data, contentType = '') => {
+    const byteString = atob(base64Data.split(',')[1]);
+    const byteArrays = [];
+  
+    for (let i = 0; i < byteString.length; i++) {
+      byteArrays.push(byteString.charCodeAt(i));
+    }
+  
+    return new Blob([new Uint8Array(byteArrays)], { type: contentType });
+  };
+
+  const base64ToFile = async (base64, filename) => {
+    const mimeType = base64.match(/data:(.*?);base64/)[1]; // Extract MIME type
+    const blob = base64ToBlob(base64, mimeType);
+    const file = new File([blob], filename, { type: mimeType });  
+    return file;
+  };
+
+  async function onHandleBlurImage(content) {
+    const imgTags = content?.match(/<img[^>]*>/g) || [];
+    const list = [];
+    const base64Srcs = []; 
+    
+    for (const imgTag of imgTags) {
+      if (!imgTag) continue;
+  
+      const srcMatch = imgTag.match(/src="([^"]+)"/);
+      if (srcMatch && srcMatch[1]) {
+        const src = srcMatch[1];
+        const filename = src.split('/').pop();
+        const timestamp = new Date().getTime();
+        const name = filename.split(/\.(?=[^\.]+$)/);
+        const uniqueFilename = `${name}_${timestamp}`;
+        if (src.startsWith('data:image/')) {
+          base64Srcs.push(src)
+          const file = await base64ToFile(src, uniqueFilename);
+          list.push(file);
+        }
+      }
+    }
+  
+    if(list.length>0){
+      const formData = new FormData();
+      list.forEach(file => formData.append("Files", file));
+      formData.append('IsCompanyLogo', false);
+      formData.append('IsCultureImage', true);
+      formData.append("Type", "culture_images");
+    
+      let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
+      const uploadedUrls = Result?.responseBody?.details || [];
+    
+      let updatedContent = content;
+      base64Srcs.forEach((src, index) => {
+        if (uploadedUrls[index]) {
+          const escapedSrc = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+          const regex = new RegExp(`src="${escapedSrc}"`, 'g');
+          updatedContent = updatedContent.replace(regex, `src="${uploadedUrls[index]}"`);
+        }
+      });
+      setValue("culture", updatedContent)
+    }
+  }
+
 //  console.log("culture",companyDetails)
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
@@ -218,6 +283,7 @@ const addnewYoutubeLink = (e) =>{
                 // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                 setValue("culture", sanitizedContent)}
               }
+              onBlur={()=>{onHandleBlurImage(watch("culture"))}}
               // onChange={(val) => {
               //   // console.log(val,"dfsdfsdfsdfsdfsdfsdfdsf");
               //   // setValue("culture",val)

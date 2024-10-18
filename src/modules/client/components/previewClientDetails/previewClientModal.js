@@ -247,9 +247,10 @@ function PreviewClientModal({
       setIsAboutUs(data?.basicDetails?.aboutCompany);
       setIsCulture(data?.basicDetails?.culture);
       setIsSelfFunded(data?.basicDetails?.isSelfFunded);
-      setBase64Image(NetworkInfo.PROTOCOL +
-        NetworkInfo.DOMAIN +
-        "Media/CompanyLogo/" + data?.basicDetails?.companyLogo)
+      // setBase64Image(NetworkInfo.PROTOCOL +
+      //   NetworkInfo.DOMAIN +
+      //   "Media/CompanyLogo/" + data?.basicDetails?.companyLogo)
+      setBase64Image(data?.basicDetails?.companyLogo)
     }
     setIsLoading(false);
   };
@@ -497,6 +498,7 @@ function PreviewClientModal({
         filesToUpload.append("Files", fileData);
         filesToUpload.append("IsCompanyLogo", true);
         filesToUpload.append("IsCultureImage", false);
+        filesToUpload.append("type","company_logo")
 
         let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
         setValidation({
@@ -598,6 +600,7 @@ function PreviewClientModal({
     }
     filesToUpload.append("IsCompanyLogo", false);
     filesToUpload.append("IsCultureImage", true);
+    filesToUpload.append("type","culture_images")
 
     let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
 
@@ -1185,6 +1188,78 @@ function PreviewClientModal({
       }   
     }
   };
+
+
+  const base64ToBlob = (base64Data, contentType = '') => {
+    const byteString = atob(base64Data.split(',')[1]);
+    const byteArrays = [];
+  
+    for (let i = 0; i < byteString.length; i++) {
+      byteArrays.push(byteString.charCodeAt(i));
+    }
+  
+    return new Blob([new Uint8Array(byteArrays)], { type: contentType });
+  };
+
+  const base64ToFile = async (base64, filename) => {
+    const mimeType = base64.match(/data:(.*?);base64/)[1]; // Extract MIME type
+    const blob = base64ToBlob(base64, mimeType);
+    const file = new File([blob], filename, { type: mimeType });  
+    return file;
+  };
+
+  async function onHandleBlurImage(content, field) {
+    const imgTags = content?.match(/<img[^>]*>/g) || [];
+    const list = [];
+    const base64Srcs = []; 
+    
+    for (const imgTag of imgTags) {
+      if (!imgTag) continue;
+  
+      const srcMatch = imgTag.match(/src="([^"]+)"/);
+      if (srcMatch && srcMatch[1]) {
+        const src = srcMatch[1];
+        const filename = src.split('/').pop();
+        const timestamp = new Date().getTime();
+        const name = filename.split(/\.(?=[^\.]+$)/);
+        const uniqueFilename = `${name}_${timestamp}`;
+        if (src.startsWith('data:image/')) {
+          base64Srcs.push(src)
+          const file = await base64ToFile(src, uniqueFilename);
+          list.push(file);
+        }
+      }
+    }
+  
+    if(list.length>0){
+      const formData = new FormData();
+      list.forEach(file => formData.append("Files", file));
+      formData.append('IsCompanyLogo', false);
+      formData.append('IsCultureImage', true);
+      formData.append("Type", "culture_images");
+    
+      let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
+      const uploadedUrls = Result?.responseBody || [];
+      let updatedContent = content;
+      base64Srcs.forEach((src, index) => {
+        if (uploadedUrls[index]) {
+          const escapedSrc = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+          const regex = new RegExp(`src="${escapedSrc}"`, 'g');
+          updatedContent = updatedContent.replace(regex, `src="${uploadedUrls[index]}"`);
+        }
+      });
+
+      if(field === 'About company'){      
+        setIsAboutUs(updatedContent)
+      }
+
+      if(field === 'Culture'){
+        setIsCulture(updatedContent)
+      }
+
+    }
+  }
+
   return (
     <>
 
@@ -1408,6 +1483,7 @@ function PreviewClientModal({
                               setIsAboutUs(sanitizedContent)}}
                             className={previewClientStyle.reactQuillEdit}
                             required
+                            onBlur={()=>onHandleBlurImage(isAboutUs,'About company')}
                           />
                           <div
                             className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}
@@ -1746,6 +1822,7 @@ function PreviewClientModal({
                                     className={
                                       previewClientStyle.reactQuillEdit
                                     }
+                                    onBlur={()=>onHandleBlurImage(isCulture,'Culture')}
                                   />
                                 </div>
                               </div>
