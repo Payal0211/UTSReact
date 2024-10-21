@@ -361,7 +361,10 @@ function PreviewHRModal({
           "companyID": previewIDs?.companyID,
           [name]: value,
         },
-        "cultureDetails": cultureDetails,
+        "cultureDetails": cultureDetails.map((culture) => ({
+          cultureID: culture.cultureID,
+          culture_Image: culture.cultureImage,
+        })),
         "youTubeDetails": youTubeDetails
       };
     } else if (name === "teamSize") {
@@ -3277,12 +3280,18 @@ async function onHandleBlurImage(content, field) {
                                       });
                                       reader.readAsDataURL(file);
                                       try {
+                                        let filesToUpload = new FormData();
+
+                                        filesToUpload.append("Files", file);
+                                        filesToUpload.append("IsCompanyLogo", false);
+                                        filesToUpload.append("IsCultureImage", true);
+                                        filesToUpload.append("type","culture_images")
                                         setIsLoading(true);
-                                        const result = await loadEndPromise;
+                                        const result =  await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
                                         setIsLoading(false);
                                         let _culVal = [...cultureDetails];
                                         _culVal.push({
-                                          cultureImage: result,
+                                          cultureImage: result.responseBody[0],
                                           internalId: Math.random(),
                                           cultureID: null,
                                           internalName: file.name,
