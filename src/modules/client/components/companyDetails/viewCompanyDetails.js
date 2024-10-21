@@ -429,9 +429,9 @@ export default function ViewCompanyDetails() {
                         objectFit: "contain"
                       }}
                       src={
-                        NetworkInfo.PROTOCOL +
-                        NetworkInfo.DOMAIN +
-                        "Media/CompanyLogo/" +
+                        // NetworkInfo.PROTOCOL +
+                        // NetworkInfo.DOMAIN +
+                        // "Media/CompanyLogo/" +
                         companyPreviewData?.basicDetails?.companyLogo
                       }
                       alt="preview"
@@ -481,7 +481,7 @@ export default function ViewCompanyDetails() {
 
                           <li>
                             <label>Team Size:</label>
-                            {companyPreviewData?.basicDetails?.companySize ?? "NA"}
+                            {companyPreviewData?.basicDetails?.teamSize ?? "NA"}
                           </li>
 
                           <li>
