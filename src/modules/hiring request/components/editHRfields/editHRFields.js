@@ -1776,8 +1776,8 @@ const EditHRFields = ({
       if (companyType?.id === 2) {
         findAvailability = JobTypes.filter((item) => {
           return (
-            item?.value.trim() ===
-            getHRdetails?.addHiringRequest?.availability.trim()
+            item?.id ===
+            getHRdetails?.addHiringRequest?.jobTypeId
           );
         });
       } else {
