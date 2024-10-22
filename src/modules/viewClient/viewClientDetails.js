@@ -229,7 +229,7 @@ function ViewClientDetails() {
 				{contextHolder}
 					<h1>
 						{viewDetails?.clientDetails?.companyLogo ? <img
-							src={`${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${viewDetails?.clientDetails?.companyLogo}`}
+							src={`${viewDetails?.clientDetails?.companyLogo}`}
 							// alt={viewDetails?.clientDetails?.companyInitial}
 							alt=""
 						/> : 
