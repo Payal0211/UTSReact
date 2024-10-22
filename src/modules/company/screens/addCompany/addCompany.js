@@ -102,7 +102,7 @@ function AddCompany() {
     if (result?.statusCode === HTTPStatusCode.OK) {
       if(result?.responseBody?.basicDetails?.companyLogo !== null) {
          let newresponse = {...result?.responseBody,basicDetails: {...result?.responseBody?.basicDetails,
-        companyLogo: `${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${result?.responseBody?.basicDetails?.companyLogo}`      }      }
+        companyLogo: `${result?.responseBody?.basicDetails?.companyLogo}`      }      }
       setCompanyDetails(newresponse);
       }else{
         message.warn("No Detail Fetched From AI")

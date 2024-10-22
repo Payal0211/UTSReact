@@ -145,7 +145,7 @@ const DealDetails = () => {
 				<div className={dealDetailsStyles.dealDetailsTitle}>
 					<h1>
 						<img
-							src={dealDetails?.getDealCompanydetails[0]?.companylogo ? `${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${dealDetails?.getDealCompanydetails[0]?.companylogo}` : "https://www.w3schools.com/howto/img_avatar.png"}
+							src={dealDetails?.getDealCompanydetails[0]?.companylogo ? `${dealDetails?.getDealCompanydetails[0]?.companylogo}` : "https://www.w3schools.com/howto/img_avatar.png"}
 							alt="companylogo"
 						/>
 						{dealDetails?.getDealCompanydetails[0]?.company}
