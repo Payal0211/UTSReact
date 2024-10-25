@@ -53,6 +53,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
    useEffect(() => {
     companyDetails?.culture &&
     setValue("culture", companyDetails?.culture);
+    // setCultureData(companyDetails?.culture)
    }, [setValue,companyDetails])
    
 
@@ -208,7 +209,8 @@ const addnewYoutubeLink = (e) =>{
     return file;
   };
 
-  async function onHandleBlurImage(content) {
+  async function onHandleBlurImage() {
+    let content = watch("culture")
     const imgTags = content?.match(/<img[^>]*>/g) || [];
     const list = [];
     const base64Srcs = []; 
@@ -239,8 +241,8 @@ const addnewYoutubeLink = (e) =>{
       formData.append("Type", "culture_images");
     
       let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
-      const uploadedUrls = Result?.responseBody?.details || [];
-    
+      const uploadedUrls = Result?.responseBody || [];
+
       let updatedContent = content;
       base64Srcs.forEach((src, index) => {
         if (uploadedUrls[index]) {
@@ -253,7 +255,7 @@ const addnewYoutubeLink = (e) =>{
     }
   }
 
-//  console.log("culture",companyDetails)
+//  console.log("culture",watch("culture"))
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
       {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -281,9 +283,12 @@ const addnewYoutubeLink = (e) =>{
               onChange={(val) => {
                 let sanitizedContent = sanitizeLinks(val);
                 // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                setValue("culture", sanitizedContent)}
-              }
-              onBlur={()=>{onHandleBlurImage(watch("culture"))}}
+                setValue("culture", sanitizedContent)
+
+              }}
+              onBlur={()=>{
+                onHandleBlurImage()
+              }}
               // onChange={(val) => {
               //   // console.log(val,"dfsdfsdfsdfsdfsdfsdfdsf");
               //   // setValue("culture",val)
