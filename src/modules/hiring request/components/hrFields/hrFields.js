@@ -884,8 +884,8 @@ const HRFields = ({
 
     getTransparentEngType(clientData?.companyId , clientData?.hiringTypePricingId,)
     //set availability
-    setValue("availability", {id: userCompanyTypeID === 2 ? 2 : 1, value :"Full Time"})
-    setControlledAvailabilityValue("Full Time")
+    clientData?.companyTypeID && setValue("availability", {id: clientData?.companyTypeID === 2 ? 1 : 2, value :"Full Time"})
+    clientData?.companyTypeID &&  setControlledAvailabilityValue("Full Time")
 
     // setDefault POC
     setControlledPocValue([
@@ -1043,9 +1043,11 @@ const HRFields = ({
               existingClientDetails?.responseBody.CompanyTypes?.find(
                 (item) => item.isActive
               );
+            clearErrors('hiringPricingType')
             setUserCompanyTypeID(companyType.id);
           } else {
             setUserCompanyTypeID(1);
+            clearErrors('hiringPricingType')
           }
 
           if (
@@ -3379,6 +3381,7 @@ console.log('errors',errors)
                     setControlledValue={(val) => {
                       setControlledAvailabilityValue(val);
                       resetField("hiringPricingType");
+                      clearErrors('hiringPricingType')
                       resetField("payrollType");
                       setControlledHiringPricingTypeValue(
                         "Select Hiring Pricing"
