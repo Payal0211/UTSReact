@@ -45,7 +45,7 @@ const AddNewHR = () => {
 	const [isDirectHR, setIsDirectHR] = useState(false)
 	const [isBDRMDRUser ,setIsBDRMDRUser] = useState(false)
 	const [AboutCompanyDesc, setAboutCompanyDesc ] = useState(null)
-	const [userCompanyTypeID, setUserCompanyTypeID] = useState(1)
+	const [userCompanyTypeID, setUserCompanyTypeID] = useState(null)
 	const [isHaveJD, setIsHaveJD] = useState(0);
 	const[parseType,setParseType] = useState('JDFileUpload');
 
