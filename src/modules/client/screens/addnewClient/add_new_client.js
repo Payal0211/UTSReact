@@ -25,7 +25,7 @@ const AddNewClientScreen = () => {
 		Requirements: '',
 	});
 	const [jdDumpID, setJDDumpID] = useState('');
-	const [userCompanyTypeID, setUserCompanyTypeID] = useState(1)
+	const [userCompanyTypeID, setUserCompanyTypeID] = useState(null)
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
