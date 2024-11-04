@@ -1471,7 +1471,7 @@ export default function ViewCompanyDetails() {
           </ul>
         </div>
       </div>
-      {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px',marginLeft:'20px' }}>{companyPreviewData?.whatsappDetails?.length ? "Updating" : "Createing"} Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
+      {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px',marginLeft:'20px' }}>{companyPreviewData?.whatsappDetails?.length ? "Updating" : "Creating"} Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
       {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold",marginLeft:'20px'}}>{groupError}</p>}
       <div className={AddNewClientStyle.formPanelAction} style={{padding:'20px'}}>
             <button
