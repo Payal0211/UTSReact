@@ -275,7 +275,8 @@ function CompanySection({
     return file;
   };
 
-  async function onHandleBlurImage(content) {
+  async function onHandleBlurImage() {
+    let content = watch("aboutCompany")
     const imgTags = content?.match(/<img[^>]*>/g) || [];
     const list = [];
     const base64Srcs = []; 
@@ -306,7 +307,7 @@ function CompanySection({
       formData.append("Type", "culture_images");
     
       let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
-      const uploadedUrls = Result?.responseBody?.details || [];
+      const uploadedUrls = Result?.responseBody || [];
     
       let updatedContent = content;
       base64Srcs.forEach((src, index) => {
@@ -686,7 +687,7 @@ function CompanySection({
                         let sanitizedContent = sanitizeLinks(val);
                         // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                         setValue("aboutCompany", sanitizedContent)}}
-                      onBlur={()=>{onHandleBlurImage(watch("aboutCompany"))}}
+                      onBlur={()=>{onHandleBlurImage()}}
                     />
                     {aboutCompanyError && (
                       <p className={AddNewClientStyle.error}>
