@@ -12,6 +12,7 @@ import { UserAccountRole } from "constants/application";
 import { NetworkInfo } from "constants/network";
 import JOBPostSLA from "./jobPostSLA";
 import infoIcon from 'assets/svg/info.svg'
+import { MasterDAO } from "core/master/masterDAO";
 
 const CompanyProfileCard = ({
   clientDetail,
@@ -40,6 +41,36 @@ const CompanyProfileCard = ({
 
 
   const [avalableTabs, setAvalableTabs] = useState([]);
+
+  const DownloadJDFile = async (URL) => {
+    try { 
+       let payload = {
+      jdFile: URL
+    }
+
+			//   payload.filename = data?.Talent_Resume;
+			//   payload.talentId = data?.ATS_TalentID;
+			//   payload.hiringRequestId = data?.HiringRequest_ID;
+			//   payload.isATSTalentId = true;
+
+			let res = await MasterDAO.downloadJDDAO(payload)
+
+			const blob = new Blob([res?.responseBody], {
+				type: "application/octet-stream",
+			});
+			const link = document.createElement("a");
+			const fileUrl = window.URL.createObjectURL(blob);
+			link.href = fileUrl;
+			let arr = URL?.split("/");
+			let fileName = arr[arr.length - 1];
+			link.download = fileName;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} catch (error) {
+			console.error("Error downloading file:", error);
+		}
+  }
 
 
   useEffect(() => {
@@ -443,7 +474,16 @@ const CompanyProfileCard = ({
                 </span>
               </div>}
               <div className={CompanyProfileCardStyle.jdLink}>
-                <span>JD Link:</span>&nbsp;&nbsp;
+                {clientDetail?.NeedToCallAWSBucket ? <>
+                  <span>Download JD:</span>&nbsp;&nbsp;
+                  <span style={{ fontWeight: "500" }} onClick={()=>{ 
+                    DownloadJDFile(clientDetail.jd_file_aws_url)
+                  }}>
+                    click Here
+                  </span>
+                </> :
+                <>
+                  <span>JD Link:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.JDFileOrURL === "JDFILE" ? (
                     clientDetail?.JobDetail?.split(":")[0] === "http" ||
@@ -484,6 +524,9 @@ const CompanyProfileCard = ({
                     "NA"
                   )}
                 </span>
+                </>
+                }
+              
               </div>
               <div className={CompanyProfileCardStyle.TRParked}>
                 <span>Behavioral Questions:</span>&nbsp;&nbsp;

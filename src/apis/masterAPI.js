@@ -1029,6 +1029,21 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.downloadResumeAPI');
 		}
 	},
+	downloadJDAPI : async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + 'ViewAllHR/DownloadJD' ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = data
+		try {
+			let response = await httpService.sendPostRequestForDownloadFile();
+			// let response = await httpService.sendPostRequest()
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.downloadJDAPI');
+		}
+	},
 	getAutoCompleteCityState: async function (city,{ signal }) {
 		let httpService = new HttpServices();
 		httpService.URL =
