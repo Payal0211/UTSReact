@@ -42,6 +42,8 @@ export const hrUtils = {
 			hrAcceptedSince:item?.hrAcceptedSince,
 			salaryBudget: item?.salaryBudget,
 			isDraftHR: item?.isDraftHR,
+			appActionDoneBy: item?.appActionDoneBy,
+			hrPostedFromPlatform: item?.hrPostedFromPlatform
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {

@@ -30,6 +30,22 @@ export const allHRConfig = {
     getPreviewPostData,
     setRepostHrModal
   ) => {
+
+    const getColorCode = (doneBy)=>{
+      if(doneBy === 2){
+        // ATS
+        return {color: 'rgb(179, 76, 1)', background: 'rgb(249, 231, 218)'}
+      } 
+      if(doneBy === 3){
+        // Sales portal
+        return  {color: 'rgb(23, 98, 10)' , background:'rgb(230, 247, 219)'} 
+      } 
+      if(doneBy === 4){
+        // client portal
+        return {color: 'rgb(0, 112, 224)' , background:'rgb(232, 242, 253)'}
+      } 
+    }
+
     return [
       // {
       //   title: " ",
@@ -207,6 +223,7 @@ export const allHRConfig = {
         align: "left",
         width: "176px",
         render: (text, result) => (
+          <>
           <Link
             target="_blank"
             to={`/allhiringrequest/${result?.key}`}
@@ -214,7 +231,16 @@ export const allHRConfig = {
             onClick={() => localStorage.removeItem("dealID")}
           >
             {text}
-          </Link>
+          </Link><br/>
+          {result?.hrPostedFromPlatform && <p style={{
+            color: getColorCode(result?.appActionDoneBy)?.color,
+            background: getColorCode(result?.appActionDoneBy)?.background,
+            padding:'5px',
+            width:'fit-content',
+            borderRadius: '6px',
+            marginTop:'2px'
+          }} >({result?.hrPostedFromPlatform})</p>}
+          </>
         ),
       },
       {
