@@ -2367,9 +2367,10 @@ async function onHandleBlurImage(content, field) {
                                                       let citiesVal = await getCities(option.value);                                                                 
                                                       setEditLocation({...editLocation,
                                                         JobLocation: option.label,
-                                                        ATS_JobLocationID: option.value,                                                        
+                                                        ATS_JobLocationID: option.value,   
+                                                        NearByCities:[citiesVal[0]?.label]                                                     
                                                       });                               
-                                                      let val = citiesVal?.filter(option => option?.label !== citiesVal[0]?.label) 
+                                                      let val = citiesVal
                                                       setNearByCitiesData(val);                            
                                                       setError({...error,['JobLocation'] : ""});                                                           
                                                   }}                       
@@ -2402,7 +2403,7 @@ async function onHandleBlurImage(content, field) {
                                               {error?.FrequencyOfficeVisitID && <span className='error'>{error?.FrequencyOfficeVisitID}</span>}
                                           </div>
                                     </div>}
-                                    <div className="col-12">
+                                    {/* <div className="col-12">
                                         <div className={`form-group`}>
                                             <h3>Open to applicants from other cities<span>*</span></h3>
                                             <Radio.Group
@@ -2422,11 +2423,11 @@ async function onHandleBlurImage(content, field) {
                                             </Radio.Group>
                                             {error?.IsOpenToWorkNearByCities && <span className='error'>{error?.IsOpenToWorkNearByCities}</span>}
                                         </div>
-                                    </div>
-                                    {editLocation?.IsOpenToWorkNearByCities &&
+                                    </div> */}
+                                    {/* {editLocation?.IsOpenToWorkNearByCities && */}
                                     <div className="col-12">
                                         <div className={`form-group prevSkillTwopart`}>
-                                            <h3>Other cities</h3>
+                                            <h3>Show me candidates from following cities</h3>
                                             <Select
                                                 mode="tags"
                                                 ref={selectRef}
@@ -2550,7 +2551,8 @@ async function onHandleBlurImage(content, field) {
                                               </ul>        
                                             </div>                                                         
                                         </div>
-                                    </div>}
+                                    </div>
+                                    {/* } */}
                                   </>
                                 )}
                                 <div className="buttonEditGroup col-12 mb-2 mt-0">
