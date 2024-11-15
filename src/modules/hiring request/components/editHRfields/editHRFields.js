@@ -5765,6 +5765,11 @@ who have worked in scaled start ups."
                     * Please Select Locations
                   </div>
                 )}
+
+                {nearByCitiesData
+                  ?.filter(
+                    (option) => !NearByCitesValues?.includes(option.label)
+                  ).length > 0 && <p>Here are cities with high probability of candidates open to travel to your specified location</p> }
                 
                 <ul className={HRFieldStyle.selectFieldBox}>
                   {

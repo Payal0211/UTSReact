@@ -2522,6 +2522,15 @@ async function onHandleBlurImage(content, field) {
                                             />       
                                             <div style={{display:"flex",flexDirection:"column"}}>                                                                                            
                                               {error?.NearByCities && <span className='error'>{error?.NearByCities}</span>}  
+                                              {nearByCitiesData
+                                                            ?.filter(option => {                                                            
+                                                              const cities = editLocation?.NearByCities || [];
+                                                              const valueExists = cities.includes(option?.value);
+                                                              const labelExists = cities.includes(option?.label);
+                                                              return !valueExists && !labelExists;
+                                                            }).length > 0 && <p>Here are cities with high probability of candidates open to travel to your specified location</p> }
+
+
                                               <ul className="SlillBtnBox">
                                                 {nearByCitiesData
                                                   ?.filter(option => {                                                            
