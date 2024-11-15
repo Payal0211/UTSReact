@@ -136,7 +136,7 @@ const EditHRFields = ({
   const [locationList, setLocationList] = useState([]);
   const [frequencyData, setFrequencyData] = useState([]);
   const [nearByCitiesData, setNearByCitiesData] = useState([]);
-  const [isRelocate, setIsRelocate] = useState(false);
+  // const [isRelocate, setIsRelocate] = useState(false);
   const [NearByCitesValues, setNearByCitesValues] = useState([]);
   const [controlledFrequencyValue, setControlledFrequencyValue] =
     useState("Select");
@@ -195,6 +195,7 @@ const EditHRFields = ({
   ] = useState("Select Partial Engagement Type");
   const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
   const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
+  const [nearByCityError,setNearByCitesError] = useState(false);
 
   const [getDurationType, setDurationType] = useState([]);
   const [getStartEndTimes, setStaryEndTimes] = useState([]);
@@ -1228,9 +1229,16 @@ const EditHRFields = ({
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
+      setNearByCitesError(false)
 
       if(locationSelectValidation){
         setIsSavedLoading(false);
+        return
+      }
+
+      if(watch("workingMode").value !== WorkingMode.REMOTE && NearByCitesValues.length === 0){
+        setIsSavedLoading(false);
+        setNearByCitesError(true)
         return
       }
 
@@ -1275,22 +1283,18 @@ const EditHRFields = ({
           : null;
       hrFormDetails.FrequencyOfficeVisitID =
         watch("workingMode")?.id === 2 ? watch("officeVisits")?.id : null;
-      hrFormDetails.IsOpenToWorkNearByCities =
-        watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
-          ? isRelocate
-          : null;
+      // hrFormDetails.IsOpenToWorkNearByCities =
+      //   watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
+      //     ? isRelocate
+      //     : null;
 
       const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
       const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value)); 
-      hrFormDetails.NearByCities = isRelocate
-        ?  selectedLabels?.concat(nonNumericValues)?.join(',')
-        : null;
+      hrFormDetails.NearByCities =  selectedLabels?.concat(nonNumericValues)?.join(',') ?? null;
         hrFormDetails.ATS_JobLocationID =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? locationList.length ? locationList?.find((loc) => loc.value === watch("location"))?.id : getHRdetails?.directPlacement?.atsJobLocationId : null;
-      hrFormDetails.ATS_NearByCities = isRelocate
-        ? getNearByCitiesForAts()
-        : null;
+      hrFormDetails.ATS_NearByCities = getNearByCitiesForAts() ?? null;
 
       if (companyType.id === 2) {
 
@@ -1499,7 +1503,7 @@ const EditHRFields = ({
       specificIndustry,
       showHRPOCDetailsToTalents,
       NearByCitesValues,
-      isRelocate,
+      // isRelocate,
       locationList,
       locationList,
       jobPostUsersDetails,
@@ -1642,7 +1646,7 @@ const EditHRFields = ({
     setValue("country", getHRdetails?.directPlacement?.country);
     setValue("address", getHRdetails?.directPlacement?.address);
     setValue("location", getHRdetails?.directPlacement?.jobLocation);
-    setIsRelocate(getHRdetails?.directPlacement?.isOpenToWorkNearByCities);
+    // setIsRelocate(getHRdetails?.directPlacement?.isOpenToWorkNearByCities);
     setNearByCitesValues(
       getHRdetails?.directPlacement?.nearByCities?.split(",")
     );
@@ -3996,7 +4000,7 @@ const EditHRFields = ({
                           resetField("location");
                           resetField("officeVisits");
                           setControlledFrequencyValue("Select");
-                          setIsRelocate(false);
+                          // setIsRelocate(false);
                           setLocationSelectValidation(false)
                           setNearByCitesValues([]);
                           setNearByCitiesData([]);
@@ -5593,8 +5597,9 @@ who have worked in scaled start ups."
                         // getClientNameValue(clientName,_obj)
                         setLocationSelectValidation(false)
                         let citiesVal = await getCities(_obj.id);
-                        setNearByCitiesData(citiesVal.filter(c=> c.value !== _obj.id));
-
+                        setNearByCitiesData(citiesVal);
+                        let firstCity = citiesVal[0];
+                        setNearByCitesValues([firstCity.label]);
                         // if (watch("workingMode").value === WorkingMode.HYBRID) {
                         //   let firstCity = citiesVal[0];
                         //   setNearByCitesValues([firstCity.label]);
@@ -5696,7 +5701,7 @@ who have worked in scaled start ups."
               </div>
             )}
 
-            <div className={HRFieldStyle.colMd12}>
+            {/* <div className={HRFieldStyle.colMd12}>
               <div
                 style={{
                   display: "flex",
@@ -5719,7 +5724,7 @@ who have worked in scaled start ups."
                   </span>
                 </label>
                 {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
-                {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
+                {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  
                 <Radio.Group
                   onChange={(e) => {
                     setIsRelocate(e.target.value);
@@ -5730,15 +5735,15 @@ who have worked in scaled start ups."
                   <Radio value={false}>No</Radio>
                 </Radio.Group>
               </div>
-            </div>
+            </div> */}
 
-            {isRelocate && (
+            {/* {isRelocate && ( */}
               <div
                 className={HRFieldStyle.colMd12}
                 style={{ marginBottom: "12px" }}
               >
                 <div className={HRFieldStyle.labelForSelect}>
-                  Do you have a preference in candidate's location?
+                  Show me candidates from following cities
                 </div>
                 <Select
                   mode="multiple"
@@ -5751,10 +5756,16 @@ who have worked in scaled start ups."
                   options={allCities.filter(cit => cit.value !==  locationList.find(loc => loc.value === watch("location"))?.id)}
                   // options={nearByCitiesData}
                   onChange={(values, _) => setNearByCitesValues(values)}
-                  placeholder="Select Compensation"
+                  placeholder="Select Locations"
                   tokenSeparators={[","]}
                 />
 
+                {nearByCityError && (
+                  <div className={HRFieldStyle.error}>
+                    * Please Select Locations
+                  </div>
+                )}
+                
                 <ul className={HRFieldStyle.selectFieldBox}>
                   {
                     nearByCitiesData
@@ -5780,7 +5791,7 @@ who have worked in scaled start ups."
                       ))}
                 </ul>
               </div>
-            )}
+            {/* )} */}
 
             {/* <div className={HRFieldStyle.colMd6}>
                        <HRInputField
