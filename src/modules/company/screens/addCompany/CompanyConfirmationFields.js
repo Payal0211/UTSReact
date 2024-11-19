@@ -45,12 +45,14 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       errors={errors}
                       label="Company Name"
                       name="companyName"
+                      value={watch("companyName")}
                       type={InputType.TEXT}
-                      validationSchema={{
-                        required: "Please enter the Company Name",
-                      }}
+                    //   validationSchema={{
+                    //     required: "Please enter the Company Name",
+                    //   }}
                       placeholder="Enter Name"
-                      required
+
+                      disabled={true}
                     />
                   </div>
 
@@ -77,6 +79,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       errors={errors}
                       label="Company Logo"
                       name="companyLogo"
+                      value={watch("companyLogo")}
                       type={InputType.TEXT}
                       // validationSchema={{
                       //   required: "Please enter the Company Name",
@@ -116,6 +119,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       errors={errors}
                       label="Company URL"
                       name="companyURL"
+                      value={watch("companyURL")}
                       type={InputType.TEXT}
                       // validationSchema={{
                       //   required: "Please enter the Company Name",
@@ -136,6 +140,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       errors={errors}
                       label="Company Linkedin"
                       name="companyLinkedinURL"
+                      value={watch("companyLinkedinURL")}
                       type={InputType.TEXT}
                       // validationSchema={{
                       //   required: "Please enter the Company Name",
@@ -154,30 +159,30 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       allEmails.push(watch(`clientDetails.[${emailindex}].emailID`)) 
                     } 
                     })
-
-           let emailInclude = allEmails.includes( watch(`clientDetails.[${index}].emailID`))                                                              
+                                                            
                  return <>
                   <div className={AddNewClientStyle.row}>
-                      <div className={AddNewClientStyle.colMd6}>
+                      <div className={AddNewClientStyle.colMd6} key={item.id}>
                         <HRInputField
-                          register={register}
+                          register={()=>{}}
                           // isError={!!errors?.clientDetails?.[index]?.fullName}
                           errors={errors?.clientDetails?.[index]?.fullName}
                           label="Client POC Full Name"
-                          name={`clientDetails.[${index}].fullName`}
+                        //   name={`clientDetails.[${index}].fullName`}
+                          value={watch(`clientDetails.[${index}].fullName`)}
                           type={InputType.TEXT}
-                          validationSchema={{
-                            required: "Please enter the client name",
-                            validate:(value)=>{
-                              const regex = /^[a-zA-Z ]*$/
-                              if(!regex.test(value)){
-                                return 'Invalid input. Special characters and numbers are not allowed.'
-                              }
-                            }
-                          }}
+                        //   validationSchema={{
+                        //     required: "Please enter the client name",
+                        //     validate:(value)=>{
+                        //       const regex = /^[a-zA-Z ]*$/
+                        //       if(!regex.test(value)){
+                        //         return 'Invalid input. Special characters and numbers are not allowed.'
+                        //       }
+                        //     }
+                        //   }}
                           // errorMsg="Please enter the Client Name."
                           placeholder="Enter Client Name"
-                          required={true}
+                        //   required={true}
                           disabled={true}
                           forArrayFields={true}
                         />                   
@@ -187,14 +192,14 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                         <HRInputField
                           register={register}
                           errors={errors?.clientDetails?.[index]?.fullNameAlias}
-                           label="Client POC Full Name Alies"
+                           label="Client POC Full Name Alias"
                           name={`clientDetails.[${index}].fullNameAlias`}
                           type={InputType.TEXT}
-                          validationSchema={{
-                            required: "Please enter the client name alias",
-                          }}
+                        //   validationSchema={{
+                        //     required: "Please enter the client name alias",
+                        //   }}
                           placeholder="Enter Alias"
-                          required
+                        //   required
                           forArrayFields={true}
                         />
                       </div>
@@ -212,6 +217,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       }}
                       label="Client POC Email"
                       name={`clientDetails.[${index}].emailID`}
+                      value={watch(`clientDetails.[${index}].emailID`)}
                     //   onBlurHandler={() => {
                     //     if (
                     //       errors?.clientDetails?.[index]?.emailID &&
@@ -246,23 +252,23 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                         <HRInputField
                           register={register}
                           errors={errors?.clientDetails?.[index]?.emailIDAlias}
-                          validationSchema={{
-                            required: `Please enter the client email alias.`,
-                            // pattern: {
-                            //   value: EmailRegEx.email,
-                            //   message: "Entered value does not match email format",
-                            // },
-                            validate: value => {
-                              if(emailInclude){
-                                return "Client email id is already in use"
-                              }
-                            }
-                          }}
+                        //   validationSchema={{
+                        //     required: `Please enter the client email alias.`,
+                        //     // pattern: {
+                        //     //   value: EmailRegEx.email,
+                        //     //   message: "Entered value does not match email format",
+                        //     // },
+                        //     validate: value => {
+                        //       if(emailInclude){
+                        //         return "Client email id is already in use"
+                        //       }
+                        //     }
+                        //   }}
                           label="Client POC Email Alias"
                           name={`clientDetails.[${index}].emailIDAlias`}
                           type={InputType.TEXT}
                           placeholder="Enter Alias"
-                          required
+                        //   required
                           forArrayFields={true}
                         />
                       </div>
@@ -282,6 +288,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       //   required: "Please enter the Company Name",
                       // }}
                       placeholder="Company Headquarters"
+                      disabled={true}
                       // required
                     />
                   </div>
@@ -293,11 +300,11 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       label="Company Headquarters Alias"
                       name="headquatersAlias"
                       type={InputType.TEXT}
-                      validationSchema={{
-                        required: "Please enter the Company Headquarters Alias",
-                      }}
+                    //   validationSchema={{
+                    //     required: "Please enter the Company Headquarters Alias",
+                    //   }}
                       placeholder="Enter Alias"
-                      required
+                    //   required
                     />
                   </div>
                   </div>
