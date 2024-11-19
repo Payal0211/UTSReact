@@ -323,6 +323,29 @@ export const allCompanyRequestDAO  = {
 			return errorDebug(error, 'ClientDAO.updateWhatsAppGroupDAO');
 		}
 	},
+	updateCompanyConfidentialDAO:async function (payload) {
+		try {
+			const hrPreviewDetails = await  CompanyAPI.updateCompanyConfidential(payload)
+			if (hrPreviewDetails) {
+				const statusCode = hrPreviewDetails['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrPreviewDetails.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return hrPreviewDetails;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return hrPreviewDetails;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.updateCompanyConfidentialDAO');
+		}
+	},
 	updateHrPreviewDetailsDAO: async function (payload) {
 		try {
 			const hrPreviewDetails = await  CompanyAPI.updateHrPreviewDetails(payload)

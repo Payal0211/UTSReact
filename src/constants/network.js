@@ -76,6 +76,7 @@ export class CompanysAPI {
 	static HR_UPDATE_PREVIEW = 'HRUpdatePreviewDetails'
 	static CREATE_WHATSAPP_GROUP = 'CreateWhatsappGroup'
 	static UPDATE_WHATSAPP_GROUP = 'UpdateWhatsappGroupMembers'
+	static UPDATE_COMPANY_CONFIDENTIAL = 'UpdateCompanyConfidentialDetailsBasedonHR'
 }
 export class MethodType {
 	static GET = '/get';
