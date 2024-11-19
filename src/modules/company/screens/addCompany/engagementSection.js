@@ -2,11 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
-import { InputType } from "constants/application";
+import { InputType,EmailRegEx } from "constants/application";
 import { Checkbox, Select, Radio, Skeleton } from "antd";
 import { MasterDAO } from "core/master/masterDAO";
 // import HRInputFieldStyle from '../../../hiring request/components/hrFields/hrInputFields.module.css';
 import classNames from 'classnames';
+import CompanyConfirmationFields from "./CompanyConfirmationFields";
+
 
 function EngagementSection({
   register,
@@ -19,11 +21,12 @@ function EngagementSection({
   hiringDetailsFromGetDetails,
   hooksProps,
   companyID,
-  loadingDetails
+  loadingDetails,
+  fields
 }) {
   const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,
     payPerError,hrPricingTypes, setPayPerError,creditError, setCreditError , manageablePricingType, setManageablePricingType ,getRequiredHRPricingType,
-    pricingTypeErrorPPH, setPricingTypeErrorPPH } = hooksProps  
+    pricingTypeErrorPPH, setPricingTypeErrorPPH, confidentialInfo,setConfidentialInfo } = hooksProps  
 
   const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
   useState("Select Hiring Pricing");
@@ -551,6 +554,14 @@ function EngagementSection({
                 </div>
               </>
             )}
+
+{!(
+                checkPayPer?.anotherCompanyTypeID == 0 &&
+                (checkPayPer?.companyTypeID == 0 ||
+                  checkPayPer?.companyTypeID == 2)
+              ) && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} />
+
+              }
         </div>
       </div>}
       

@@ -27,7 +27,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import HRSelectField from "../hrSelectField/hrSelectField";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { HTTPStatusCode } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
@@ -56,6 +56,7 @@ import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
 
 import debounce from "lodash.debounce";
+import CompanyConfirmationFields from "modules/company/screens/addCompany/CompanyConfirmationFields";
 
 export const secondaryInterviewer = {
   interviewerId: "0",
@@ -209,6 +210,7 @@ const HRFields = ({
     setControlledHiringPricingTypeValue,
   ] = useState("Select Hiring Pricing");
   const [DealHRData, setDealHRData] = useState({});
+  const [confidentialInfo,setConfidentialInfo] = useState(0);
 
   const [showHRPOCDetailsToTalents, setshowHRPOCDetailsToTalents] =
     useState(null);
@@ -245,6 +247,12 @@ const HRFields = ({
       secondaryInterviewer: [],
     },
   });
+
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: "clientDetails",
+  });
+
   const compensationOptions = [
     { value: "Performance Bonuses", label: "Performance Bonuses" },
     {
@@ -875,6 +883,59 @@ const HRFields = ({
     }
   } 
 
+  const secondaryClient = {
+    clientProfilePic: "",
+    companyID: 0,
+    contactNo: "",
+    designation: "",
+    emailID: "",
+    firstName: "",
+    fullName: "",
+    id: 0,
+    isPrimary: false,
+    lastName: "",
+    linkedIn: "",
+    resendInviteEmail: false,
+    roleID: 3,
+    countryCode: "",
+    isNewClient:true
+  };
+
+  const updateCompanyDetails = useCallback(async () => {
+    let payload = {
+      "basicDetails": {
+        "companyID": clientDetails?.companyId,    
+        "isCompanyConfidential": confidentialInfo === 1 ? true : false
+      }, 
+      
+    }
+
+    if(confidentialInfo === 1) {
+      payload["clientDetails"] = [
+        {
+          "clientID": watch('clientDetails')[0]?.id,     
+          "emailId" :watch('clientDetails')[0]?.emailID,
+          "clientPOCNameAlias": watch('clientDetails')[0]?.fullNameAlias,
+          "clientPOCEmailAlias": watch('clientDetails')[0]?.emailIDAlias
+        }
+      ]  
+      payload["companyConfidentialDetails"] = {
+        "companyAlias": watch('companyNameAlias'),
+        "companyURLAlias": null,
+        "companyLinkedInAlias": null,
+        "companyHQAlias": watch('headquatersAlias'),
+        "companyLogoAlias": watch('companyLogoAlias')
+      }
+    }
+
+    const result = await allCompanyRequestDAO.updateCompanyConfidentialDAO(payload)
+
+    if(result.statusCode === 200){
+      message.success('Successfully Updated Company profile details')
+    }
+  },[confidentialInfo,clientDetails]) 
+
+
   const getClientNameValue = (clientName, clientData) => {
     setValue("clientName", clientName);
     setClientDetails(clientData);
@@ -882,6 +943,17 @@ const HRFields = ({
     setIsPostaJob(clientData?.isPostaJob);
     setIsProfileView(clientData?.isProfileView);
     setIsVettedProfile(clientData?.isVettedProfile);
+
+    remove(0)
+    append({...secondaryClient,
+      id: clientData?.contactId,
+      fullName: clientData?.contactName ,
+      fullNameAlias: "",
+      emailID:clientData?.emailId,
+      emailIDAlias:"",
+    })
+    clientData?.companyURL && setValue('companyURL',clientData?.companyURL)
+    clientData?.company && setValue('companyLogoAlias',clientData?.company.slice(0, 2).toUpperCase())
 
     getTransparentEngType(clientData?.companyId , clientData?.hiringTypePricingId,)
     //set availability
@@ -1997,6 +2069,7 @@ const HRFields = ({
         window.scrollTo(0, 0);
         setIsSavedLoading(false);
         setAddHRResponse(addHRRequest?.responseBody?.details);
+        updateCompanyDetails()
         if (params === "addnewhr") {
           interviewDetails(addHRRequest?.responseBody?.details);
         }
@@ -2105,7 +2178,8 @@ const HRFields = ({
       locationList,
       locationList,
       jobPostUsersDetails,
-      locationSelectValidation
+      locationSelectValidation,
+      confidentialInfo
     ]
   );
 
@@ -2393,7 +2467,7 @@ const HRFields = ({
       // setHRdetails(response?.responseBody?.details);
     }
   };
-console.log('errors',errors)
+// console.log('errors',errors)
   const getValueForMaxBudget = () => {
     if (isFreshersAllowed) {
       return +watch("minimumBudget");
@@ -3861,6 +3935,8 @@ console.log('errors',errors)
 							</div>
 						</div> */}
             </div>
+
+            {userCompanyTypeID === 1 && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} /> }
 
             <div className={HRFieldStyle.row}>
               {isHRDirectPlacement ? (

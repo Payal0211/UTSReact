@@ -27,7 +27,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import HRSelectField from "../hrSelectField/hrSelectField";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { HTTPStatusCode } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
@@ -56,6 +56,8 @@ import debounce from "lodash.debounce";
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
 import JobDescriptionComponent from "../jdComponent/jdComponent";
+import CompanyConfirmationFields from "modules/company/screens/addCompany/CompanyConfirmationFields";
+import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -234,6 +236,8 @@ const EditHRFields = ({
   const [timeZoneList, setTimezoneList] = useState([]);
   const [clientDetails, setClientDetails] = useState({});
 
+  const [confidentialInfo,setConfidentialInfo] = useState(0);
+
   // const isGUID = getHRdetails?.addHiringRequest?.guid
   const [showHRPOCDetailsToTalents, setshowHRPOCDetailsToTalents] =
     useState(null);
@@ -263,6 +267,11 @@ const EditHRFields = ({
       secondaryInterviewer: [],
       autocompleteField: "abc",
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "clientDetails",
   });
 
   const isGUID =
@@ -1226,8 +1235,98 @@ const EditHRFields = ({
     }
   };
 
+  const secondaryClient = {
+    clientProfilePic: "",
+    companyID: 0,
+    contactNo: "",
+    designation: "",
+    emailID: "",
+    firstName: "",
+    fullName: "",
+    id: 0,
+    isPrimary: false,
+    lastName: "",
+    linkedIn: "",
+    resendInviteEmail: false,
+    roleID: 3,
+    countryCode: "",
+    isNewClient:true
+  };
+
+  useEffect(()=>{
+   
+    if(getHRdetails?.clientDetails_Result){
+      let companyInfo = getHRdetails?.companyInfo
+    let clientResult = getHRdetails?.clientDetails_Result;
+    
+
+    setConfidentialInfo(clientResult?.isCompanyConfidential === true ? 1 : 0)
+    if(companyInfo?.companyLogo || companyInfo?.companyLogoAwsUrl){
+      setValue("companyLogo",companyInfo?.companyLogoAwsUrl ?  companyInfo?.companyLogoAwsUrl : companyInfo?.companyLogo ?? "")   
+    }
+    clientResult?.companyAlias && setValue('companyNameAlias',clientResult?.companyAlias)
+    clientResult?.companyHQAlias && setValue('headquatersAlias',clientResult?.companyHQAlias)
+    clientResult?.headquaters && setValue('headquaters',clientResult?.headquaters)
+    clientResult?.companyLogoAlias && setValue('companyLogoAlias',clientResult?.companyLogoAlias)
+    clientResult?.companyURL &&  setValue('companyURL',clientResult?.companyURL)
+    clientResult?.linkedInProfile && setValue('companyLinkedinURL',clientResult?.linkedInProfile)
+
+  
+    if(fields.length === 0){
+       append({
+      ...secondaryClient,
+      fullName: clientResult?.clientName ,
+      fullNameAlias: clientResult?.clientPOCNameAlias,
+      emailID:clientResult?.clientEmail,
+      emailIDAlias:clientResult?.clientPOCEmailAlias,
+      id:clientResult?.contactId
+    })
+    }
+   
+    }
+    
+
+  },[getHRdetails,setValue])
+
+  const updateCompanyDetails = useCallback(async () => {
+    let clientResult = getHRdetails?.clientDetails_Result;
+    let payload = {
+      "basicDetails": {
+        "companyID": clientResult?.companyId,    
+        "isCompanyConfidential": confidentialInfo === 1 ? true : false
+      }, 
+      
+    }
+
+    if(confidentialInfo === 1) {
+      payload["clientDetails"] = [
+        {
+          "clientID": watch('clientDetails')[0]?.id,     
+          "emailId" :watch('clientDetails')[0]?.emailID,
+          "clientPOCNameAlias": watch('clientDetails')[0]?.fullNameAlias,
+          "clientPOCEmailAlias": watch('clientDetails')[0]?.emailIDAlias
+        }
+      ]  
+      payload["companyConfidentialDetails"] = {
+        "companyAlias": watch('companyNameAlias'),
+        "companyURLAlias": null,
+        "companyLinkedInAlias": null,
+        "companyHQAlias": watch('headquatersAlias'),
+        "companyLogoAlias": watch('companyLogoAlias')
+      }
+    }
+
+
+    const result = await allCompanyRequestDAO.updateCompanyConfidentialDAO(payload)
+
+    if(result.statusCode === 200){
+      message.success('Successfully Updated Company profile details')
+    }
+  },[confidentialInfo,getHRdetails?.clientDetails_Result]) 
+
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+     
       setIsSavedLoading(true);
       setNearByCitesError(false)
 
@@ -1457,6 +1556,7 @@ const EditHRFields = ({
           ...prev,
           companyInfo: addHRRequest?.responseBody?.details?.companyInfo,
         }));
+        updateCompanyDetails()
         type !== SubmitType.SAVE_AS_DRAFT &&
           setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
         // type !== SubmitType.SAVE_AS_DRAFT &&
@@ -1510,6 +1610,7 @@ const EditHRFields = ({
       locationSelectValidation,
       isHaveJD,
       parseType,
+      confidentialInfo
     ]
   );
   // useEffect(() => {
@@ -3530,6 +3631,8 @@ const EditHRFields = ({
                     </>
                   )}
                 </div>
+
+                {companyType?.id === 1 && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} /> }
 
                 <div className={HRFieldStyle.row}>
                   {companyType?.id === 1 && (
