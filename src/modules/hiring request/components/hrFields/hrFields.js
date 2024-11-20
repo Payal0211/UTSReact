@@ -948,12 +948,21 @@ const HRFields = ({
     append({...secondaryClient,
       id: clientData?.contactId,
       fullName: clientData?.contactName ,
-      fullNameAlias: "",
+      fullNameAlias: clientData?.clientPOCNameAlias,
       emailID:clientData?.emailId,
-      emailIDAlias:"",
+      emailIDAlias: clientData?.clientPOCEmailAlias,
     })
+    setConfidentialInfo(clientData?.isCompanyConfidential === true ? 1 : 0)
     clientData?.companyURL && setValue('companyURL',clientData?.companyURL)
-    clientData?.company && setValue('companyLogoAlias',clientData?.company.slice(0, 2).toUpperCase())
+    clientData?.company && setValue('companyLogoAlias',clientData?.companyLogoAlias)
+    clientData?.companyHQ && setValue('headquaters',clientData?.companyHQ)
+    clientData?.companyHQAlias && setValue('headquatersAlias',clientData?.companyHQAlias)
+    clientData?.companyAlias && setValue('companyNameAlias',clientData?.companyAlias)
+    clientData?.companyLinkedIn && setValue('companyLinkedinURL', clientData?.companyLinkedIn)
+    if(clientData?.companyLogo || clientData?.companyLogoAwsUrl){
+      setValue("companyLogo",clientData?.companyLogoAwsUrl ?  clientData?.companyLogoAwsUrl : clientData?.companyLogo ?? "")   
+    }
+
 
     getTransparentEngType(clientData?.companyId , clientData?.hiringTypePricingId,)
     //set availability
