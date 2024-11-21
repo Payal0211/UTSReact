@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
 import LogoLoader from 'shared/components/loader/logoLoader';
+import { Link } from 'react-router-dom';
 
 const onBoardListConfig = () => {
     return [     
@@ -28,6 +29,13 @@ const onBoardListConfig = () => {
         key: "engagemenID",
         align: "left",
         width: '180px',
+        render:(text,result)=>{
+          console.log('results',result)
+          return  <Link to={`/viewOnboardDetails/${result.id}`} target='_blank'  style={{
+            color: `var(--uplers-black)`,
+            textDecoration: 'underline',
+        }}>{text}</Link>
+      }
       },
       // {
       //   title: "HR #",
