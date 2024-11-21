@@ -5,6 +5,7 @@ import ViewClientDetails from 'modules/viewClient/viewClientDetails';
 import React, { Suspense } from 'react';
 import ChatGPTResponse from 'modules/report/screens/chatGPTResponse/chatGPTResponse';
 import ViewCompanyDetails from 'modules/client/components/companyDetails/viewCompanyDetails';
+import ViewOnBoardDetails from 'modules/onBoardList/viewOnBoardDetails';
 
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
@@ -219,6 +220,7 @@ export default class UTSRoutes {
 	static Edit_HR = '/EditNewHR/:hrID'
 	static ABOUT_CLIENT = '/userDetails';
 	static ONBOARD = '/onBoardList';
+	static VIEWONBOARDDETAILS = '/viewOnboardDetails/:onboardID'
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
 	static REPLACEMENT_REPORT = "/replacementReport";
@@ -467,6 +469,11 @@ export const navigateToComponent = {
 [UTSRoutes.ABOUT_CLIENT]: (
 	<Suspense>
 		<UserDetails />
+	</Suspense>
+),
+[UTSRoutes.VIEWONBOARDDETAILS] : (
+	<Suspense>
+		<ViewOnBoardDetails />
 	</Suspense>
 ),
 [UTSRoutes.ONBOARD] : (

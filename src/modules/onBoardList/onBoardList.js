@@ -1,13 +1,20 @@
 import { InputType } from 'constants/application';
 import onboardList from './onBoard.module.css'
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
+import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
 import { Table } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback, Suspense } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
 import LogoLoader from 'shared/components/loader/logoLoader';
+import { Link, useNavigate } from 'react-router-dom';
+import { allEngagementConfig } from 'modules/engagement/screens/engagementList/allEngagementConfig';
+import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
+import { engagementRequestDAO } from 'core/engagement/engagementDAO';
+import UTSRoutes from 'constants/routes';
+import OnboardFilerList from './OnboardFilterList';
 
 const onBoardListConfig = () => {
     return [     
@@ -28,6 +35,12 @@ const onBoardListConfig = () => {
         key: "engagemenID",
         align: "left",
         width: '180px',
+        render:(text,result)=>{
+          return  <Link to={`/viewOnboardDetails/${result.id}`} target='_blank'  style={{
+            color: `var(--uplers-black)`,
+            textDecoration: 'underline',
+        }}>{text}</Link>
+      }
       },
       // {
       //   title: "HR #",
@@ -207,8 +220,8 @@ const onBoardListConfig = () => {
     ];
 }
 
-function OnBoardList() {
-
+function OnBoardList() { 
+    const navigate = useNavigate();
     const [onBoardListData,setOnBoardListData] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [pageIndex, setPageIndex] = useState(1);
@@ -217,22 +230,50 @@ function OnBoardList() {
     const [totalRecords, setTotalRecords] = useState(0);
     const [searchText,setSearchText] = useState('');
 
+    const [filtersList, setFiltersList] = useState([]);
+    const [filteredTagLength, setFilteredTagLength] = useState(0);
+    const [getHTMLFilter, setHTMLFilter] = useState(false);
+    const [isAllowFilters, setIsAllowFilters] = useState(false);
+    const [appliedFilter, setAppliedFilters] = useState(new Map());
+    const [checkedState, setCheckedState] = useState(new Map());
+    const [tableFilteredState, setTableFilteredState] = useState({
+      totalrecord: 100,
+      pagenumber: 1,
+      filterFields_OnBoard: {
+        clientFeedback: '',
+        typeOfHiring: '',
+        currentStatus: '',
+        tscName: '',
+        company: '',
+        geo: '',
+        position: '',
+        engagementTenure: 0,
+        nbdName: '',
+        amName: '',
+        pending: '',
+        searchMonth: new Date().getMonth() + 1,
+        searchYear: new Date().getFullYear(),
+        searchType: '',
+        islost: '',
+      },
+    });
+
     const tableColumnsMemo = useMemo(
 		() =>
         onBoardListConfig(),
 		[],
 	);
 
-    useEffect(() => {
-    let payload ={
-			"pagenumber": pageIndex,
-			"totalrecord": pageSize,
-            "filterFields_OnBoard":{
-                "search" :searchText
-            }
-		}    
-        getOnBoardListData(payload);
-    },[searchText]);
+    // useEffect(() => {
+    // let payload ={
+		// 	"pagenumber": pageIndex,
+		// 	"totalrecord": pageSize,
+    //         "filterFields_OnBoard":{
+    //             "search" :searchText
+    //         }
+		// }    
+    //     getOnBoardListData(payload);
+    // },[searchText]);
 
     const getOnBoardListData = async (data) => {
         setLoading(true);
@@ -250,6 +291,95 @@ function OnBoardList() {
         setLoading(false)
     }   
 
+    const getEngagementFilterList = useCallback(async () => {
+      setLoading(true); 
+      const response = await engagementRequestDAO.getEngagementFilterListDAO();
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        setLoading(false);
+        setFiltersList(response && response?.responseBody?.details);
+      } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+        setLoading(false);
+        return navigate(UTSRoutes.LOGINROUTE);
+      } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+        setLoading(false);
+        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+      } else {
+        return 'NO DATA FOUND';
+      }
+    }, [navigate]);
+  
+    useEffect(()=>{
+      getEngagementFilterList();
+    },[getEngagementFilterList])
+
+    useEffect(() => {
+      let payload ={
+        "pagenumber": pageIndex,
+        "totalrecord": pageSize,
+        "filterFields_OnBoard":{
+          ...tableFilteredState.filterFields_OnBoard,
+            "search" :searchText
+        }
+      }    
+      console.log('payrole',payload)
+          getOnBoardListData(payload);
+    }, [ tableFilteredState,searchText,pageIndex,pageSize]);
+
+    const toggleHRFilter = useCallback(() => {
+      !getHTMLFilter
+        ? setIsAllowFilters(!isAllowFilters)
+        : setTimeout(() => {
+            setIsAllowFilters(!isAllowFilters);
+          }, 300);
+      setHTMLFilter(!getHTMLFilter);
+    }, [getHTMLFilter, isAllowFilters]);
+
+    const onRemoveHRFilters = () => {
+      setTimeout(() => {
+        setIsAllowFilters(false);
+      }, 300);
+      setHTMLFilter(false);
+    };
+
+    const clearFilters = useCallback(() => {
+      setAppliedFilters(new Map());
+      setCheckedState(new Map());
+      setFilteredTagLength(0);
+  
+      const defaultFilters ={		
+        clientFeedback: '',
+        typeOfHiring: '',
+        currentStatus: '',
+        tscName: '',
+        company: '',
+        geo: '',
+        position: '',
+        engagementTenure: 0,
+        nbdName: '',
+        amName: '',
+        pending: '',
+        searchMonth: new Date().getMonth() +1,
+        searchYear: new Date().getFullYear(),
+        searchType: '',
+        islost: '',
+      }
+      
+      setTableFilteredState({
+        ...tableFilteredState,
+        filterFields_OnBoard: defaultFilters,
+      });
+
+      onRemoveHRFilters();
+      setSearchText('')
+      // setStartDate(new Date());
+    }, [
+      setAppliedFilters,
+      setCheckedState,
+      setFilteredTagLength,
+      setTableFilteredState,
+      tableFilteredState,
+    ]);
+
     return(
       <div className={onboardList.hiringRequestContainer}>
           {/* <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}> */}
@@ -259,6 +389,19 @@ function OnBoardList() {
             </div>
             <div className={onboardList.filterContainer}>
               <div className={onboardList.filterSets}>
+              <div className={onboardList.filterSetsInner} >
+                  <div
+                    className={onboardList.addFilter}
+                    onClick={toggleHRFilter}>
+                    <FunnelSVG style={{ width: '16px', height: '16px' }} />
+
+                    <div className={onboardList.filterLabel}>Add Filters</div>
+                    <div className={onboardList.filterCount}>
+                      {filteredTagLength}
+                    </div>
+                  </div>
+                  <p onClick={()=> clearFilters() }>Reset Filters</p>
+                </div>
                 <div className={onboardList.filterRight}>		      
                     <div className={onboardList.searchFilterSet}>
                     <SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -306,6 +449,28 @@ function OnBoardList() {
               )}
             </div>
       {/* </WithLoader> */}
+
+      {isAllowFilters && (
+					<Suspense fallback={<div>Loading...</div>}>
+						<OnboardFilerList
+							setAppliedFilters={setAppliedFilters}
+							appliedFilter={appliedFilter}
+							setCheckedState={setCheckedState}
+							checkedState={checkedState}
+							// handleHRRequest={handleHRRequest}
+							setTableFilteredState={setTableFilteredState}
+							tableFilteredState={tableFilteredState}
+							setFilteredTagLength={setFilteredTagLength}
+							onRemoveHRFilters={()=>{}}
+							getHTMLFilter={getHTMLFilter}
+							hrFilterList={allHRConfig.hrFilterListConfig()}
+							filtersType={allEngagementConfig.engagementFilterTypeConfig(
+								filtersList && filtersList,
+							)}
+							clearFilters={clearFilters}
+						/>
+					</Suspense>
+				)}
         </div>
     )
 }
