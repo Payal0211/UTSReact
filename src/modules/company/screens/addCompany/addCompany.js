@@ -579,7 +579,7 @@ function AddCompany() {
      
 
       <div className={AddNewClientStyle.formPanelAction}>
-        <button onClick={() => navigate(-1)} className={AddNewClientStyle.btn}>
+        <button onClick={() => navigate('/allClients')} className={AddNewClientStyle.btn}>
           Cancel
         </button>
         <button

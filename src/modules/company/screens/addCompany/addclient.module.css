@@ -425,6 +425,12 @@
     margin-bottom: 24px;
 }
 
+.teansactionMessage {
+    color: #f90;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-weight: 400;
+}
 
 .inputfield {
     text-align: left;
