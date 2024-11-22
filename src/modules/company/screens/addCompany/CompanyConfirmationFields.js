@@ -35,7 +35,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                     <Radio value={1}>Yes</Radio>
                     <Radio value={0}>No</Radio>
                   </Radio.Group>
-                  <p style={{marginTop:'10px',marginBottom:'0'}} className={AddNewClientStyle.teansactionMessage}>Be careful not to use company names in About, Culture, Job description if you choose to keep information confidential. </p>
+                  { confidentialInfo === 1 && <p style={{marginTop:'10px',marginBottom:'0'}} className={AddNewClientStyle.teansactionMessage}>Be careful not to use company names in About, Culture, Job description if you choose to keep information confidential. </p>} 
                 </div>
 
                 { confidentialInfo === 1 && <>
