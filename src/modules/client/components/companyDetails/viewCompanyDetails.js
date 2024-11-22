@@ -1104,7 +1104,9 @@ export default function ViewCompanyDetails() {
         <div className={AddNewClientStyle.summaryCard}>
             Total Credits :{" "}
             <span>
-              {creditUtilize[0].creditBalance}
+              {creditUtilize.length > 0
+                ? creditUtilize[0]?.creditBalance
+                : "NA"}
             </span>
           </div>
         <div className={AddNewClientStyle.summaryCard}>
@@ -1131,21 +1133,21 @@ export default function ViewCompanyDetails() {
             Credit Balance :{" "}
             <span>
               {creditUtilize.length > 0
-                ? creditUtilize[0].jpCreditBalance
+                ? creditUtilize[0]?.jpCreditBalance
                 : "NA"}
             </span>
           </div>     
           <div className={AddNewClientStyle.summaryCard}>
             Price/Credit :{" "}
             <span>
-              {creditUtilize.length > 0 ? creditUtilize[0].currentAmount : "NA"}
+              {creditUtilize.length > 0 ? creditUtilize[0]?.currentAmount : "NA"}
             </span>
           </div>
           <div className={AddNewClientStyle.summaryCard}>
             Current Currency :{" "}
             <span>
               {creditUtilize.length > 0
-                ? creditUtilize[0].currentCurrency
+                ? creditUtilize[0]?.currentCurrency
                 : "NA"}
             </span>
           </div>

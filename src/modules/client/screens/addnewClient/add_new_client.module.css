@@ -33,6 +33,13 @@
   padding: 24px 40px;
 }
 
+.onboardDetailsContainer{
+    margin-top: 10px;
+    padding: 10px;
+    background: white;
+    border-radius: 20px;
+}
+
 .newHR {
     padding: 1px 0;
     background-color: var(--color-sunlight);

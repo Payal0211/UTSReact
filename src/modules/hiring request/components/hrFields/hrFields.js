@@ -27,7 +27,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import HRSelectField from "../hrSelectField/hrSelectField";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { HTTPStatusCode } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
@@ -56,6 +56,7 @@ import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
 
 import debounce from "lodash.debounce";
+import CompanyConfirmationFields from "modules/company/screens/addCompany/CompanyConfirmationFields";
 
 export const secondaryInterviewer = {
   interviewerId: "0",
@@ -209,6 +210,7 @@ const HRFields = ({
     setControlledHiringPricingTypeValue,
   ] = useState("Select Hiring Pricing");
   const [DealHRData, setDealHRData] = useState({});
+  const [confidentialInfo,setConfidentialInfo] = useState(0);
 
   const [showHRPOCDetailsToTalents, setshowHRPOCDetailsToTalents] =
     useState(null);
@@ -216,11 +218,12 @@ const HRFields = ({
   const [activeUserDataList, setActiveUserDataList] = useState([]);
   const [jobPostUsersDetails, setJobPostUsersDetails] = useState([]);
   const [controlledPocValue, setControlledPocValue] = useState([]);
+  const [nearByCityError,setNearByCitesError] = useState(false);
 
   const [locationList, setLocationList] = useState([]);
   const [frequencyData, setFrequencyData] = useState([]);
   const [nearByCitiesData, setNearByCitiesData] = useState([]);
-  const [isRelocate, setIsRelocate] = useState(false);
+  // const [isRelocate, setIsRelocate] = useState(false);
   const [NearByCitesValues, setNearByCitesValues] = useState([]);
   const [controlledFrequencyValue, setControlledFrequencyValue] =
     useState("Select");
@@ -244,6 +247,12 @@ const HRFields = ({
       secondaryInterviewer: [],
     },
   });
+
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: "clientDetails",
+  });
+
   const compensationOptions = [
     { value: "Performance Bonuses", label: "Performance Bonuses" },
     {
@@ -874,6 +883,59 @@ const HRFields = ({
     }
   } 
 
+  const secondaryClient = {
+    clientProfilePic: "",
+    companyID: 0,
+    contactNo: "",
+    designation: "",
+    emailID: "",
+    firstName: "",
+    fullName: "",
+    id: 0,
+    isPrimary: false,
+    lastName: "",
+    linkedIn: "",
+    resendInviteEmail: false,
+    roleID: 3,
+    countryCode: "",
+    isNewClient:true
+  };
+
+  const updateCompanyDetails = useCallback(async () => {
+    let payload = {
+      "basicDetails": {
+        "companyID": clientDetails?.companyId,    
+        "isCompanyConfidential": confidentialInfo === 1 ? true : false
+      }, 
+      
+    }
+
+    if(confidentialInfo === 1) {
+      payload["clientDetails"] = [
+        {
+          "clientID": watch('clientDetails')[0]?.id,     
+          "emailId" :watch('clientDetails')[0]?.emailID,
+          "clientPOCNameAlias": watch('clientDetails')[0]?.fullNameAlias,
+          "clientPOCEmailAlias": watch('clientDetails')[0]?.emailIDAlias
+        }
+      ]  
+      payload["companyConfidentialDetails"] = {
+        "companyAlias": watch('companyNameAlias'),
+        "companyURLAlias": null,
+        "companyLinkedInAlias": null,
+        "companyHQAlias": watch('headquatersAlias'),
+        "companyLogoAlias": watch('companyLogoAlias')
+      }
+    }
+
+    const result = await allCompanyRequestDAO.updateCompanyConfidentialDAO(payload)
+
+    if(result.statusCode === 200){
+      message.success('Successfully Updated Company profile details')
+    }
+  },[confidentialInfo,clientDetails]) 
+
+
   const getClientNameValue = (clientName, clientData) => {
     setValue("clientName", clientName);
     setClientDetails(clientData);
@@ -881,6 +943,26 @@ const HRFields = ({
     setIsPostaJob(clientData?.isPostaJob);
     setIsProfileView(clientData?.isProfileView);
     setIsVettedProfile(clientData?.isVettedProfile);
+
+    remove(0)
+    append({...secondaryClient,
+      id: clientData?.contactId,
+      fullName: clientData?.contactName ,
+      fullNameAlias: clientData?.clientPOCNameAlias,
+      emailID:clientData?.emailId,
+      emailIDAlias: clientData?.clientPOCEmailAlias,
+    })
+    setConfidentialInfo(clientData?.isCompanyConfidential === true ? 1 : 0)
+    clientData?.companyURL && setValue('companyURL',clientData?.companyURL)
+    clientData?.company && setValue('companyLogoAlias',clientData?.companyLogoAlias)
+    clientData?.companyHQ && setValue('headquaters',clientData?.companyHQ)
+    clientData?.companyHQAlias && setValue('headquatersAlias',clientData?.companyHQAlias)
+    clientData?.companyAlias && setValue('companyNameAlias',clientData?.companyAlias)
+    clientData?.companyLinkedIn && setValue('companyLinkedinURL', clientData?.companyLinkedIn)
+    if(clientData?.companyLogo || clientData?.companyLogoAwsUrl){
+      setValue("companyLogo",clientData?.companyLogoAwsUrl ?  clientData?.companyLogoAwsUrl : clientData?.companyLogo ?? "")   
+    }
+
 
     getTransparentEngType(clientData?.companyId , clientData?.hiringTypePricingId,)
     //set availability
@@ -1780,8 +1862,16 @@ const HRFields = ({
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
+      setNearByCitesError(false)
+
       if(locationSelectValidation){
         setIsSavedLoading(false);
+        return
+      }
+
+      if(watch("workingMode").value !== WorkingMode.REMOTE && NearByCitesValues.length === 0){
+        setIsSavedLoading(false);
+        setNearByCitesError(true)
         return
       }
 
@@ -1830,22 +1920,18 @@ const HRFields = ({
           : null;
       hrFormDetails.FrequencyOfficeVisitID =
         watch("workingMode")?.id === 2 ? watch("officeVisits")?.id : null;
-      hrFormDetails.IsOpenToWorkNearByCities =
-        watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
-          ? isRelocate
-          : null;
+      // hrFormDetails.IsOpenToWorkNearByCities =
+      //   watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
+      //     ? isRelocate
+      //     : null;
       const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
       const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value)); 
-      hrFormDetails.NearByCities = isRelocate
-        ?  selectedLabels?.concat(nonNumericValues)?.join(',')
-        : null;
+      hrFormDetails.NearByCities =  selectedLabels?.concat(nonNumericValues)?.join(',') ?? null;
       hrFormDetails.ATS_JobLocationID =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? locationList?.find((loc) => loc.value === watch("location"))?.id
           : null;
-      hrFormDetails.ATS_NearByCities = isRelocate
-        ? getNearByCitiesForAts()
-        : null;
+      hrFormDetails.ATS_NearByCities =  getNearByCitiesForAts() ?? null;
 
       if (userCompanyTypeID === 2) {
 
@@ -1992,6 +2078,7 @@ const HRFields = ({
         window.scrollTo(0, 0);
         setIsSavedLoading(false);
         setAddHRResponse(addHRRequest?.responseBody?.details);
+        updateCompanyDetails()
         if (params === "addnewhr") {
           interviewDetails(addHRRequest?.responseBody?.details);
         }
@@ -2096,11 +2183,12 @@ const HRFields = ({
       specificIndustry,
       showHRPOCDetailsToTalents,
       NearByCitesValues,
-      isRelocate,
+      // isRelocate,
       locationList,
       locationList,
       jobPostUsersDetails,
-      locationSelectValidation
+      locationSelectValidation,
+      confidentialInfo
     ]
   );
 
@@ -2388,7 +2476,7 @@ const HRFields = ({
       // setHRdetails(response?.responseBody?.details);
     }
   };
-console.log('errors',errors)
+// console.log('errors',errors)
   const getValueForMaxBudget = () => {
     if (isFreshersAllowed) {
       return +watch("minimumBudget");
@@ -3857,6 +3945,8 @@ console.log('errors',errors)
 						</div> */}
             </div>
 
+            {userCompanyTypeID === 1 && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} /> }
+
             <div className={HRFieldStyle.row}>
               {isHRDirectPlacement ? (
                 <div className={HRFieldStyle.colMd6}>
@@ -4255,7 +4345,7 @@ console.log('errors',errors)
                       resetField("location");
                       resetField("officeVisits");
                       setControlledFrequencyValue("Select");
-                      setIsRelocate(false);
+                      // setIsRelocate(false);
                       setLocationSelectValidation(false)
                       setNearByCitesValues([]);
                       setNearByCitiesData([]);
@@ -5661,8 +5751,9 @@ who have worked in scaled start ups."
                         // getClientNameValue(clientName,_obj)
                         setLocationSelectValidation(false)
                         let citiesVal = await getCities(_obj.id);
-                        setNearByCitiesData(citiesVal.filter(c=> c.value !== _obj.id));
-                        
+                        setNearByCitiesData(citiesVal);
+                          let firstCity = citiesVal[0];
+                          setNearByCitesValues([firstCity.label]);
                         // if (watch("workingMode").value === WorkingMode.HYBRID) {
                         //   let firstCity = citiesVal[0];
                         //   // setNearByCitesValues([firstCity.label]);
@@ -5764,7 +5855,7 @@ who have worked in scaled start ups."
               </div>
             )}
 
-            <div className={HRFieldStyle.colMd12}>
+            {/* <div className={HRFieldStyle.colMd12}>
               <div
                 style={{
                   display: "flex",
@@ -5787,7 +5878,7 @@ who have worked in scaled start ups."
                   </span>
                 </label>
                 {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
-                {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
+                {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
                 <Radio.Group
                   onChange={(e) => {
                     setIsRelocate(e.target.value);
@@ -5798,15 +5889,15 @@ who have worked in scaled start ups."
                   <Radio value={false}>No</Radio>
                 </Radio.Group>
               </div>
-            </div>
+            </div> */}
 
-            {isRelocate && (
+            {/* {isRelocate && ( */}
               <div
                 className={HRFieldStyle.colMd12}
                 style={{ marginBottom: "12px" }}
               >
                 <div className={HRFieldStyle.labelForSelect}>
-                  Do you have a preference in candidate's location?
+                  Show me candidates from following cities
                 </div>
                 <Select
                   mode="multiple"
@@ -5820,9 +5911,20 @@ who have worked in scaled start ups."
                   // options={nearByCitiesData}
                   onChange={(values, _) => {
                     setNearByCitesValues(values)}}
-                  placeholder="Select Compensation"
+                  placeholder="Select Locations"
                   tokenSeparators={[","]}
                 />
+
+                {nearByCityError && (
+                  <div className={HRFieldStyle.error}>
+                    * Please Select Locations
+                  </div>
+                )}
+
+                {nearByCitiesData
+                  ?.filter(
+                    (option) => !NearByCitesValues?.includes(option.label)
+                  ).length > 0 && <p>Here are cities with high probability of candidates open to travel to your specified location</p> }
 
                 <ul className={HRFieldStyle.selectFieldBox}>
                   {
@@ -5849,7 +5951,7 @@ who have worked in scaled start ups."
                       ))}
                 </ul>
               </div>
-            )}
+            {/* )} */}
 
             {/* <div className={HRFieldStyle.colMd6}>
                        <HRInputField

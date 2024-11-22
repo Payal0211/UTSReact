@@ -53,6 +53,8 @@ function AddCompany() {
     isProfileView: false,
   });
 
+  const [confidentialInfo,setConfidentialInfo] = useState(0);
+  
   const {
     register,
     handleSubmit,
@@ -181,6 +183,31 @@ function AddCompany() {
     }
   }, [companyID]);
 
+  useEffect(()=>{
+    if(getCompanyDetails?.basicDetails){
+      setConfidentialInfo(getCompanyDetails.basicDetails?.isCompanyConfidential === true ? 1 : 0)
+    }
+    if(getCompanyDetails?.confidentialDetails){
+      // getCompanyDetails?.confidentialDetails.companyURLAlias &&  setValue()
+      getCompanyDetails?.confidentialDetails.companyLogoAlias &&  setValue("companyLogoAlias",getCompanyDetails?.confidentialDetails.companyLogoAlias)
+      // getCompanyDetails?.confidentialDetails.companyLinkedInAlias &&  setValue(,getCompanyDetails?.confidentialDetails.companyLinkedInAlias)
+      getCompanyDetails?.confidentialDetails.companyHQAlias &&  setValue("headquatersAlias",getCompanyDetails?.confidentialDetails.companyHQAlias)
+      getCompanyDetails?.confidentialDetails.companyAlias &&  setValue("companyNameAlias",getCompanyDetails?.confidentialDetails.companyAlias)
+    }
+
+    if(getCompanyDetails?.contactDetails    ){
+      remove()
+      getCompanyDetails?.contactDetails.map(client=> {
+        append({
+          ...client,
+          emailIDAlias:client.clientPOCEmail,
+          fullNameAlias:client.clientPOCName
+        })
+      })
+    }
+  },[getCompanyDetails?.confidentialDetails])
+
+
   useEffect(() => {
     if (getCompanyDetails?.pocUserDetailsEdit?.pocUserID && allPocs?.length) {
       // let SelectedPocs = getCompanyDetails?.pocUserIds.map((pocId) => {
@@ -288,7 +315,9 @@ function AddCompany() {
         "phoneNumber": client.contactNo,
         "accessRoleId": client.roleID,
         "password" : password,
-        "encryptedPassword" : encryptedPassword
+        "encryptedPassword" : encryptedPassword,
+        "clientPOCNameAlias": client.fullNameAlias,
+        "clientPOCEmailAlias": client.emailIDAlias
       }
 
     })
@@ -336,7 +365,8 @@ function AddCompany() {
         "aboutCompanyDesc": d?.aboutCompany,
         "culture": d?.culture,
         "linkedInProfile": d?.companyLinkedinURL,
-        "isSelfFunded": isSelfFunded
+        "isSelfFunded": isSelfFunded,
+        "isCompanyConfidential":confidentialInfo === 1 ? true : false
       },
       "fundingDetails": d?.fundingDetails,
       "cultureDetails": modCultureDetails,
@@ -359,6 +389,13 @@ function AddCompany() {
         "hiringTypePricingId": checkPayPer?.anotherCompanyTypeID === 1 ? d?.hiringPricingType?.id : null,
         "hiringTypePricingPercentage": checkPayPer?.anotherCompanyTypeID === 1 ? manageablePricingType.find(itm=> itm.id === d?.hiringPricingType?.id)?.pricingPercent  : undefined
       },
+      "companyConfidentialDetails": {
+                "companyAlias": d.companyNameAlias,
+                "companyURLAlias": null,
+                "companyLinkedInAlias": null,
+                "companyHQAlias": d.headquatersAlias,
+                "companyLogoAlias": d.companyLogoAlias
+              },
       // "pocIds": d.uplersPOCname?.map(poc=> poc.id),
       "companyHiringTypePricing": companyHiringTypePricing ,
       "pocId": d?.uplersPOCname?.id,
@@ -368,7 +405,7 @@ function AddCompany() {
     }
 
 
-    console.log("plaod",payload)
+    // console.log("plaod",payload)
     // setLoadingDetails(false)
     // setIsLogoLoader(false)
     //   setDisableSubmit(false)
@@ -496,9 +533,11 @@ function AddCompany() {
           setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, 
           setPricingTypeError,payPerError, setPayPerError,creditError, 
           setCreditError,manageablePricingType, setManageablePricingType,
-          hrPricingTypes, setHRPricingTypes,getRequiredHRPricingType,pricingTypeErrorPPH, setPricingTypeErrorPPH
+          hrPricingTypes, setHRPricingTypes,getRequiredHRPricingType,pricingTypeErrorPPH,
+          setPricingTypeErrorPPH,confidentialInfo,setConfidentialInfo
         }}
         loadingDetails={loadingDetails}
+        fields={fields}
       />
 
       <div className={AddNewClientStyle.tabsFormItem}>
@@ -540,7 +579,7 @@ function AddCompany() {
      
 
       <div className={AddNewClientStyle.formPanelAction}>
-        <button onClick={() => navigate(-1)} className={AddNewClientStyle.btn}>
+        <button onClick={() => navigate('/allClients')} className={AddNewClientStyle.btn}>
           Cancel
         </button>
         <button

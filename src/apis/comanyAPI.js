@@ -164,6 +164,22 @@ export const CompanyAPI = {
 			return errorDebug(error, 'CompanyAPI.updateWhatsAppGroup');
 		}
 	},
+	updateCompanyConfidential:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			CompanysAPI.UPDATE_COMPANY_CONFIDENTIAL ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'CompanyAPI.updateCompanyConfidential');
+		}
+	},
 	updateHrPreviewDetails:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
