@@ -145,7 +145,7 @@ export default function ViewOnBoardDetails() {
   return (
     <>
       <div className={AddNewClientStyle.addNewContainer}>
-        <div className={AddNewClientStyle.addHRTitle}>OnBoard Details</div>
+        <div className={AddNewClientStyle.addHRTitle}>Engagement Report Details</div>
 
         <Tabs
           onChange={(e) => setTitle(e)}

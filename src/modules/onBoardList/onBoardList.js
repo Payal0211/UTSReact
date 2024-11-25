@@ -1,22 +1,38 @@
 import { InputType } from 'constants/application';
 import onboardList from './onBoard.module.css'
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
-import { Table } from 'antd';
+import { Table, Radio, Modal } from 'antd';
 import { useEffect, useMemo, useState, useCallback, Suspense } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
 import LogoLoader from 'shared/components/loader/logoLoader';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { allEngagementConfig } from 'modules/engagement/screens/engagementList/allEngagementConfig';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import UTSRoutes from 'constants/routes';
 import OnboardFilerList from './OnboardFilterList';
+import Handshake from 'assets/svg/handshake.svg';
+import Rocket from 'assets/svg/rocket.svg';
+import FeedBack from 'assets/svg/feedbackReceived.png';
+import RenewEng from 'assets/svg/renewEng.png'
+import LostEng from 'assets/svg/lostEng.png'
+import Smile from 'assets/svg/smile.svg';
+import Sad from 'assets/svg/sademo.svg';
+import Briefcase from 'assets/svg/briefcase.svg';
+import { downloadToExcel } from 'modules/report/reportUtils';
+import { engagementUtils } from 'modules/engagement/screens/engagementList/engagementUtils';
+import EngagementFeedback from 'modules/engagement/screens/engagementFeedback/engagementFeedback';
+import EngagementAddFeedback from 'modules/engagement/screens/engagementAddFeedback/engagementAddFeedback';
+import { useForm } from 'react-hook-form';
 
-const onBoardListConfig = () => {
+const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId) => {
     return [     
       {
         title: "Created Date",
@@ -30,7 +46,7 @@ const onBoardListConfig = () => {
         }
       },
       {
-        title: "Engagement ID",
+        title: "Eng. Count",
         dataIndex: "engagemenID",
         key: "engagemenID",
         align: "left",
@@ -40,7 +56,110 @@ const onBoardListConfig = () => {
             color: `var(--uplers-black)`,
             textDecoration: 'underline',
         }}>{text}</Link>
+      }},
+      {
+        title: "Eng. ID/HR#",
+        dataIndex: "engagemenID",
+        key: "engagemenID",
+        align: "left",
+        width: '180px',
+        render:(text,result)=>{
+          return <>
+          <Link to={`/viewOnboardDetails/${result.id}`} target='_blank'  style={{
+            color: `var(--uplers-black)`,
+            textDecoration: 'underline',
+        }}>{text}</Link><br/>
+        {result.hR_Number}
+          </> 
       }
+      },
+      {
+        title: "Eng. Type",
+        dataIndex: "typeOfHR",
+        key: "typeOfHR",
+        align: "left",
+        width: '180px',
+      },
+      {
+        title: "Talent",
+        dataIndex: "talent",
+        key: "talent",
+        align: "left",
+      },
+      {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+        align: "left",
+      },
+      {
+        title: "Client",
+        dataIndex: "client",
+        key: "client",
+        align: "left",
+      },
+      {
+        title: "AM",
+        dataIndex: "amAssignmentuser",
+        key: "amAssignmentuser",
+        align: "left",
+      },
+      {
+        title: "Eng. Status",
+        dataIndex: "",
+        key: "",
+        align: "left",
+      },
+      {
+        title: "Joining Date",
+        dataIndex: "",
+        key: "",
+        align: "left",
+      },
+      {
+        title: "Last Working Date",
+        dataIndex: "lastWorkingDate",
+        key: "lastWorkingDate",
+        align: "left",
+      },
+      {
+        title: "Start Date",
+        dataIndex: "",
+        key: "",
+        align: "left",
+      },
+      {
+        title: "End Date",
+        dataIndex: "",
+        key: "",
+        align: "left",
+      },
+      {
+        title: "Actual BR",
+        dataIndex: "",
+        key: "",
+        align: "left",
+      },
+      {
+        title: "Actual PR",
+        dataIndex: "",
+        key: "",
+        align: "left",
+      },
+      {
+        title: "Uplers Fees",
+        dataIndex: "",
+        key: "",
+        align: "left",
+      },
+      {
+        title: "NR / DP (%)",
+        dataIndex: "nrPercentage",
+        key: "nrPercentage",
+        align: "left",
+        render:(text,result)=>{
+          return `${result.nrPercentage} / ${result.dP_Percentage}`
+        }
       },
       // {
       //   title: "HR #",
@@ -56,35 +175,12 @@ const onBoardListConfig = () => {
         width: '180px',
       },
       {
-        title: "Client",
-        dataIndex: "client",
-        key: "client",
-        align: "left",
-      },
-      {
-        title: "Company",
-        dataIndex: "company",
-        key: "company",
-        align: "left",
-      },
-      {
-        title: "Talent",
-        dataIndex: "talent",
-        key: "talent",
-        align: "left",
-      },
-      {
         title: "NBD",
         dataIndex: "salesPerson",
         key: "salesPerson",
         align: "left",
       },      
-      {
-        title: "AM",
-        dataIndex: "amAssignmentuser",
-        key: "amAssignmentuser",
-        align: "left",
-      },
+     
       {
         title:"TSC Name",
         dataIndex:"tscName",
@@ -139,24 +235,24 @@ const onBoardListConfig = () => {
         key: "talent_Cost",
         align: "left",
       },
-      {
-        title: "NR (%)",
-        dataIndex: "nrPercentage",
-        key: "nrPercentage",
-        align: "left",
-      },
+      // {
+      //   title: "NR (%)",
+      //   dataIndex: "nrPercentage",
+      //   key: "nrPercentage",
+      //   align: "left",
+      // },
       {
         title: "DP Amount",
         dataIndex: "dpAmount",
         key: "dpAmount",
         align: "left",
       },
-      {
-        title: "DP (%)",
-        dataIndex: "dP_Percentage",
-        key: "dP_Percentage",
-        align: "left",
-      },
+      // {
+      //   title: "DP (%)",
+      //   dataIndex: "dP_Percentage",
+      //   key: "dP_Percentage",
+      //   align: "left",
+      // },
       {
         title: "Old Talent",
         dataIndex: "oldTalent",
@@ -181,12 +277,12 @@ const onBoardListConfig = () => {
       //   key: "noticePeriod",
       //   align: "left",
       // },
-      {
-        title: "LastWorking Date",
-        dataIndex: "lastWorkingDate",
-        key: "lastWorkingDate",
-        align: "left",
-      },
+      // {
+      //   title: "LastWorking Date",
+      //   dataIndex: "lastWorkingDate",
+      //   key: "lastWorkingDate",
+      //   align: "left",
+      // },
       {
         title: "Is Lost",
         dataIndex: "isLost",
@@ -217,6 +313,75 @@ const onBoardListConfig = () => {
         key: "contractEndDate",
         align: "left",
       },
+      {
+				title: (<>Client Feedback <br />Last Feedback Date</>),
+				dataIndex: 'clientFeedback',
+				key: 'clientFeedback',
+				align: 'left',
+				width: '150px',
+				render: (text, result) =>
+					result?.clientFeedback === 0 && result?.id && result?.hiringId ? (
+						<div style={{display:"flex",flexDirection:"column"}}>
+						<a href="javascript:void(0);"
+							style={{
+								color: engagementUtils.getClientFeedbackColor(
+									result?.feedbackType,
+								),
+								textDecoration: 'underline',
+								display: 'inline-flex',
+								width: 'max-content',
+							}}
+							onClick={() => {
+								setHRAndEngagementId({
+									talentName: result?.talent,
+									engagementID: result?.engagemenID,
+									hrNumber: result?.hR_Number,
+									onBoardId: result?.id,
+									hrId: result?.hiringId,
+								});
+								setEngagementModal({
+									engagementFeedback: false,
+									engagementAddFeedback: true,
+								});
+							}}>
+							{'Add'} 
+						</a>
+						 {result?.lastFeedbackDate}
+						 </div>
+					) : (
+						<div style={{display:"flex",flexDirection:"column"}}>
+							<a href="javascript:void(0);"
+								style={{
+									color: engagementUtils.getClientFeedbackColor(
+										result?.feedbackType,
+									),
+									textDecoration: 'underline',
+									display: 'inline-flex',
+									width: 'max-content',
+								}}
+								onClick={() => {
+									setFeedBackData((prev) => ({
+										...prev,
+										onBoardId: result?.id
+									}));
+									setHRAndEngagementId({
+                    talentName: result?.talent,
+                    engagementID: result?.engagemenID,
+                    hrNumber: result?.hR_Number,
+                    onBoardId: result?.id,
+                    hrId: result?.hiringId,
+                  });
+									setEngagementModal({
+										engagementFeedback: true,
+										engagementAddFeedback: false,
+									});
+								}}>
+								{'View/Add'}  
+							</a>
+							{result?.lastFeedbackDate}
+						</div>
+					),
+			},	
     ];
 }
 
@@ -230,6 +395,7 @@ function OnBoardList() {
     const [totalRecords, setTotalRecords] = useState(0);
     const [searchText,setSearchText] = useState('');
 
+    const [apiData, setAPIdata] = useState([]);
     const [filtersList, setFiltersList] = useState([]);
     const [filteredTagLength, setFilteredTagLength] = useState(0);
     const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -255,14 +421,61 @@ function OnBoardList() {
         searchYear: new Date().getFullYear(),
         searchType: '',
         islost: '',
+        EngType:'A'
       },
     });
+    const [startDate, setStartDate] = useState(new Date());
+
+    const [getEngagementModal, setEngagementModal] = useState({
+      engagementFeedback: false,
+      engagementAddFeedback: false,
+    });
+    const [getFeedbackFormContent, setFeedbackFormContent] = useState({});
+    const [feedBackData, setFeedBackData] = useState({
+      totalRecords: 10,
+      pagenumber: 1,
+      onBoardId: '',
+    });
+    const [getHRAndEngagementId, setHRAndEngagementId] = useState({
+      hrNumber: '',
+      engagementID: '',
+      talentName: '',
+      onBoardId: '',
+      hrId: '',
+    });
+
+    const [getClientFeedbackList, setClientFeedbackList] = useState([]);
+    const [getFeedbackPagination, setFeedbackPagination] = useState({
+      totalRecords: 0,
+      pageIndex: 1,
+      pageSize: 10,
+    });
+    const [feedBackSave, setFeedbackSave] = useState(false);
+    const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
 
     const tableColumnsMemo = useMemo(
 		() =>
-        onBoardListConfig(),
+        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId),
 		[],
-	);
+	  );
+
+    const feedbackTableColumnsMemo = useMemo(
+      () => allEngagementConfig.clientFeedbackTypeConfig(),
+      [],
+    );
+
+    const {
+      register,
+      handleSubmit,
+      setValue,
+      control,
+      setError,
+      getValues,
+      watch,
+      reset,
+      resetField,
+      formState: { errors },
+    } = useForm();
 
     // useEffect(() => {
     // let payload ={
@@ -277,6 +490,8 @@ function OnBoardList() {
 
     const getOnBoardListData = async (data) => {
         setLoading(true);
+        let engpayload = {filterFieldsEngagement:data.filterFields_OnBoard,pagenumber:1,totalrecord:1}
+        getOnboaedRequest(engpayload)
         let result= await MasterDAO.getOnBoardListDAO(data)
         if(result.statusCode === HTTPStatusCode.OK){
             setTotalRecords(result?.responseBody?.details.totalrows);
@@ -290,6 +505,128 @@ function OnBoardList() {
         }
         setLoading(false)
     }   
+
+    const getOnboaedRequest = useCallback(
+      async (pageData) => {
+        setLoading(true);
+        let response = await engagementRequestDAO.getEngagementListDAO(pageData);
+        if (response?.statusCode === HTTPStatusCode.OK) {
+          // setTotalRecords(response?.responseBody?.totalrows);
+          setLoading(false);
+          setAPIdata(
+            engagementUtils.modifyEngagementListData(response && response),
+          );
+        } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+          setAPIdata([]);
+          setLoading(false);
+          // setTotalRecords(0);
+        } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+          setLoading(false);
+          return navigate(UTSRoutes.LOGINROUTE);
+        } else if (
+          response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+        ) {
+          setLoading(false);
+          return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+          setLoading(false);
+          return 'NO DATA FOUND';
+        }
+      },
+      [navigate],
+    );
+
+    const getFeedbackList = async (feedBackData) => {
+      setLoading(true);
+      const response = await engagementRequestDAO.getFeedbackListDAO(
+        feedBackData,
+      );
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        setClientFeedbackList(
+          engagementUtils.modifyEngagementFeedbackData(response && response),
+        );
+        setFeedbackPagination((prev) => ({
+          ...prev,
+          totalRecords: response.responseBody.details.totalrows,
+        }));
+        setLoading(false);
+      } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+        setLoading(false);
+        return navigate(UTSRoutes.LOGINROUTE);
+      } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+        setLoading(false);
+        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+      } else {
+        setLoading(false);
+        setClientFeedbackList([]);
+        return 'NO DATA FOUND';
+      }
+    };
+
+    const getFeedbackFormDetails = async (getHRAndEngagementId) => {
+      setFeedbackFormContent({});
+      const response = await engagementRequestDAO.getFeedbackFormContentDAO(
+        getHRAndEngagementId,
+      );
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        setFeedbackFormContent(response?.responseBody?.details);
+      } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+        return navigate(UTSRoutes.LOGINROUTE);
+      } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+        setLoading(false);
+        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+      } else {
+        return 'NO DATA FOUND';
+      }
+    };
+
+    useEffect(() => {
+      getEngagementModal?.engagementFeedback &&
+        feedBackData?.onBoardId &&
+        getFeedbackList(feedBackData);
+    }, [getEngagementModal?.engagementFeedback]);
+  
+    useEffect(() => {
+      getEngagementModal?.engagementAddFeedback &&
+        getFeedbackFormDetails(getHRAndEngagementId);
+    }, [getEngagementModal?.engagementAddFeedback]);
+
+    const onCalenderFilter = (dates) => {
+      // const [start, end] = dates;
+    const month = dates.getMonth() + 1
+    const year = dates.getFullYear()
+     setStartDate(dates);
+      // setEndDate(end);
+      if (month && year) {
+        // console.log( month, year)
+        setTableFilteredState({
+          ...tableFilteredState,
+          searchText: searchText,
+          filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard ,
+            searchMonth: month,
+            searchYear: year,
+          },
+        });
+
+    };
+  }
+
+  const handleExport = (apiData) => {
+		let DataToExport =  apiData.map(data => {
+			let obj = {}
+			tableColumnsMemo.forEach(val => {if(val.key !== "action"){
+				if(val.key === 'engagementType'){
+					obj[`${val.title}`] = `${data.typeOfHR} ${data.h_Availability && `- ${data.h_Availability}`}`
+				}else{
+					obj[`${val.title}`] = data[`${val.key}`]
+				} }
+			} )
+		return obj;
+			}
+		 )
+		 downloadToExcel(DataToExport)
+
+	}
 
     const getEngagementFilterList = useCallback(async () => {
       setLoading(true); 
@@ -321,7 +658,6 @@ function OnBoardList() {
             "search" :searchText
         }
       }    
-      console.log('payrole',payload)
           getOnBoardListData(payload);
     }, [ tableFilteredState,searchText,pageIndex,pageSize]);
 
@@ -362,6 +698,7 @@ function OnBoardList() {
         searchYear: new Date().getFullYear(),
         searchType: '',
         islost: '',
+        EngType:'A',
       }
       
       setTableFilteredState({
@@ -384,7 +721,7 @@ function OnBoardList() {
       <div className={onboardList.hiringRequestContainer}>
           {/* <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}> */}
             <div className={onboardList.addnewHR}>
-				      <div className={onboardList.hiringRequest}>OnBoard List</div>    
+				      <div className={onboardList.hiringRequest}>Engagement Report</div>    
               <LogoLoader visible={isLoading} />           
             </div>
             <div className={onboardList.filterContainer}>
@@ -401,6 +738,20 @@ function OnBoardList() {
                     </div>
                   </div>
                   <p onClick={()=> clearFilters() }>Reset Filters</p>
+
+                  <Radio.Group
+                   
+                   onChange={(e) => {
+                    setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:e.target.value} }))
+                    //  setEngagementType(e.target.value);
+                    
+                   }}
+                   value={tableFilteredState?.filterFields_OnBoard?.EngType}
+                 >
+                   <Radio value={'A'}>All</Radio>
+                   <Radio value={'C'}>Contract</Radio>
+                   <Radio value={'D'}>DP</Radio>
+                 </Radio.Group>
                 </div>
                 <div className={onboardList.filterRight}>		      
                     <div className={onboardList.searchFilterSet}>
@@ -409,14 +760,127 @@ function OnBoardList() {
                       type={InputType.TEXT}
                       className={onboardList.searchInput}
                       placeholder="Search Table"
+                      value={searchText}
                       onChange={(e) => {
                         setSearchText(e.target.value);									
                       }}
                     />
                   </div>
+
+                  <div className={onboardList.calendarFilterSet}>
+							<div className={onboardList.label}>Month-Year</div>
+							<div className={onboardList.calendarFilter}>
+								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+								<DatePicker
+									style={{ backgroundColor: 'red' }}
+									onKeyDown={(e) => {
+										e.preventDefault();
+										e.stopPropagation();
+									}}
+									className={onboardList.dateFilter}
+									placeholderText="Month - Year"
+									selected={startDate}
+									onChange={onCalenderFilter}
+									// startDate={startDate}
+									// endDate={endDate}
+									dateFormat="MM-yyyy"
+									showMonthYearPicker
+								/>
+							</div>
+						</div>
+
+						<div className={onboardList.priorityFilterSet}>
+							{/* <div className={onboardList.label}>Showing</div> */}
+							<div className={onboardList.paginationFilter} style={{border: 'none', width: 'auto'}}>
+							<button
+								className={onboardList.btnPrimary}
+								
+								onClick={() => handleExport(onBoardListData)}>
+								Export
+							</button>
+				
+							</div>
+						</div>
                 </div>
               </div>
             </div>
+                     
+            <div className={onboardList.filterContainer}>
+                <div
+                  className={`${onboardList.filterSets} ${onboardList.filterDescription}`}>
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={Handshake}
+                      alt="handshaker"
+                    />
+                    <h2>
+                      Active Engagements -{' '}
+                      <span>
+                        {apiData[0]?.activeEngagement
+                          ? apiData[0]?.activeEngagement
+                          : 0}
+                      </span>
+                    </h2>
+                  </div>
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={LostEng}
+                      alt="sad"
+                    />
+                  
+                    <h2>
+                      Lost Engagement  -{' '}
+                      <span>
+                        {apiData[0]?.isLost? apiData[0]?.isLost: 0}
+                      </span>
+                    </h2>
+                  </div>
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={RenewEng}
+                      alt="Smile"
+                    />
+                    <h2>
+                      Renew Engagement -{' '}
+                      <span>{apiData[0]?.avgNR ? apiData[0]?.avgNR : 0}</span>
+                    </h2>
+                  </div>
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={FeedBack}
+                      alt="rocket"
+                    />
+                    <h2>
+                      Feedback Received  -{' '}
+                      <span>{apiData[0]?.feedbcakReceive ? apiData[0]?.feedbcakReceive : 0}</span>
+                    </h2>
+                  </div>
+
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={Briefcase}
+                      alt="briefcase"
+                    />
+                    <h2>
+                      Average NR% -{' '}
+                      <span>{apiData[0]?.avgNR? apiData[0]?.avgNR: 0}</span>
+                    </h2>
+                  </div>}
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={Briefcase}
+                      alt="briefcase"
+                    />
+                    <h2>
+                      Average DP% -{' '}
+                      <span>{apiData[0]?.avgDP ? apiData[0]?.avgDP : 0}</span>
+                    </h2>
+                  </div>}
+                </div>
+            </div>
+            
             <div className={onboardList.tableDetails}>
               {isLoading ? (
                 <TableSkeleton />
@@ -470,6 +934,85 @@ function OnBoardList() {
 							clearFilters={clearFilters}
 						/>
 					</Suspense>
+				)}
+
+{getEngagementModal.engagementFeedback && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementFeedback}
+						// className={allEngagementStyles.engagementModalContainer}
+						className="engagementModalStyle"
+						// onOk={() => setVersantModal(false)}
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementFeedback: false,
+							})
+						}>
+						<EngagementFeedback
+							getHRAndEngagementId={getHRAndEngagementId}
+							feedbackTableColumnsMemo={feedbackTableColumnsMemo}
+							getClientFeedbackList={getClientFeedbackList}
+							isLoading={isLoading}
+							pageFeedbackSizeOptions={[10, 20, 30, 50, 100]}
+							getFeedbackPagination={getFeedbackPagination}
+							setFeedbackPagination={setFeedbackPagination}
+							setFeedBackData={setFeedBackData}
+							feedBackData={feedBackData}
+							setEngagementModal={setEngagementModal}
+							setHRAndEngagementId={setHRAndEngagementId}
+						/>
+					</Modal>
+				)}
+
+        
+				{/** ============ MODAL FOR ENGAGEMENT ADD FEEDBACK ================ */}
+				{getEngagementModal.engagementAddFeedback && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className="engagementAddFeedbackModal"
+						open={getEngagementModal.engagementAddFeedback}
+						onCancel={() =>{
+              setEngagementModal({
+                ...getEngagementModal,
+                engagementAddFeedback: false,
+              })
+              reset()
+            }
+						}>
+						<EngagementAddFeedback
+							getFeedbackFormContent={getFeedbackFormContent}
+							getHRAndEngagementId={getHRAndEngagementId}
+							onCancel={() =>{
+								setEngagementModal({
+									...getEngagementModal,
+									engagementAddFeedback: false,
+								})
+                reset()
+              }
+							}
+							setFeedbackSave={setFeedbackSave}
+							feedBackSave={feedBackSave}
+							register={register}
+							handleSubmit={handleSubmit}
+							setValue={setValue}
+							control={control}
+							setError={setError}
+							getValues={getValues}
+							watch={watch}
+							reset={reset}
+							resetField={resetField}
+							errors={errors}
+							feedBackTypeEdit={feedBackTypeEdit}
+							setFeedbackTypeEdit={setFeedbackTypeEdit}
+						/>
+					</Modal>
 				)}
         </div>
     )
