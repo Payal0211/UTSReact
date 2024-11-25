@@ -1733,7 +1733,7 @@ const HRFields = ({
 
     //   return cities.join(",");
     // }
-    return NearByCitesValues.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",")
+    return  NearByCitesValues.length ? NearByCitesValues.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",") : []
   };
 
   const debriefSubmitHandler = async (d, isDraft) => {
@@ -1931,7 +1931,7 @@ const HRFields = ({
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
           ? locationList?.find((loc) => loc.value === watch("location"))?.id
           : null;
-      hrFormDetails.ATS_NearByCities =  getNearByCitiesForAts() ?? null;
+      hrFormDetails.ATS_NearByCities =  watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3 ? getNearByCitiesForAts() ?? null : null;
 
       if (userCompanyTypeID === 2) {
 
