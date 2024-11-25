@@ -226,6 +226,15 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			branch: [],
 			isVisible: isAccess(usertypeID, 'Engagement')
 		}),
+		
+		new SideBarModels({
+			id: 'engagementReport',
+			title: ' Engagement Report',
+			isActive: false,
+			icon: EngagementDashboard,
+			navigateTo: UTSRoutes.ONBOARD,
+			isVisible: isAccess(usertypeID, 'Engagement Report')
+		}),
 
 		new SideBarModels({
 			id: 'demand_funnel_report',
@@ -375,14 +384,6 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			icon: GPTIcon,
 			navigateTo: UTSRoutes.CHAT_GPT_RESPONSE,
 			isVisible: isAccess(usertypeID, 'Chat GPT Response')
-		}),
-		new SideBarModels({
-			id: 'onBoardList',
-			title: 'OnBoard List',
-			isActive: false,
-			icon: EngagementDashboard,
-			navigateTo: UTSRoutes.ONBOARD,
-			isVisible: isAccess(usertypeID, 'OnBoard List')
 		}),
 		new SideBarModels({
 			id: 'Master',
