@@ -20,6 +20,9 @@ import UTSRoutes from 'constants/routes';
 import OnboardFilerList from './OnboardFilterList';
 import Handshake from 'assets/svg/handshake.svg';
 import Rocket from 'assets/svg/rocket.svg';
+import FeedBack from 'assets/svg/feedbackReceived.png';
+import RenewEng from 'assets/svg/renewEng.png'
+import LostEng from 'assets/svg/lostEng.png'
 import Smile from 'assets/svg/smile.svg';
 import Sad from 'assets/svg/sademo.svg';
 import Briefcase from 'assets/svg/briefcase.svg';
@@ -821,7 +824,7 @@ function OnBoardList() {
                   </div>
                   <div className={onboardList.filterType}>
                     <img
-                      src={Sad}
+                      src={LostEng}
                       alt="sad"
                     />
                   
@@ -834,7 +837,7 @@ function OnBoardList() {
                   </div>
                   <div className={onboardList.filterType}>
                     <img
-                      src={Smile}
+                      src={RenewEng}
                       alt="Smile"
                     />
                     <h2>
@@ -844,7 +847,7 @@ function OnBoardList() {
                   </div>
                   <div className={onboardList.filterType}>
                     <img
-                      src={Rocket}
+                      src={FeedBack}
                       alt="rocket"
                     />
                     <h2>
