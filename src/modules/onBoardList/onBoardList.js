@@ -47,16 +47,11 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       },
       {
         title: "Eng. Count",
-        dataIndex: "engagemenID",
-        key: "engagemenID",
+        dataIndex: "engagementCount",
+        key: "engagementCount",
         align: "left",
         width: '180px',
-        render:(text,result)=>{
-          return  <Link to={`/viewOnboardDetails/${result.id}`} target='_blank'  style={{
-            color: `var(--uplers-black)`,
-            textDecoration: 'underline',
-        }}>{text}</Link>
-      }},
+        },
       {
         title: "Eng. ID/HR#",
         dataIndex: "engagemenID",
@@ -68,8 +63,20 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
           <Link to={`/viewOnboardDetails/${result.id}`} target='_blank'  style={{
             color: `var(--uplers-black)`,
             textDecoration: 'underline',
-        }}>{text}</Link><br/>
-        {result.hR_Number}
+        }}> {result?.engagemenID.slice(
+          0,
+          result?.engagemenID?.indexOf('/'),
+        )}</Link><br/>
+         
+						<Link
+							to={`/allhiringrequest/${result?.hiringId}`}
+							target='_blank'
+							style={{ color: '#006699', textDecoration: 'underline' }}>
+							{result?.engagemenID.slice(
+								result?.engagemenID?.indexOf('/'),
+							)}
+						</Link>
+          
           </> 
       }
       },
@@ -106,14 +113,26 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       },
       {
         title: "Eng. Status",
-        dataIndex: "",
-        key: "",
+        dataIndex: "contractStatus",
+        key: "contractStatus",
         align: "left",
       },
       {
         title: "Joining Date",
-        dataIndex: "",
-        key: "",
+        dataIndex: "Joiningdate",
+        key: "Joiningdate",
+        align: "left",
+      },
+      {
+        title: "Last Feedback Date",
+        dataIndex: "lastFeedbackDate",
+        key: "lastFeedbackDate",
+        align: "left",
+      },
+      {
+        title: "Feedback Type",
+        dataIndex: "feedbackType",
+        key: "feedbackType",
         align: "left",
       },
       {
@@ -124,26 +143,26 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       },
       {
         title: "Start Date",
-        dataIndex: "",
-        key: "",
+        dataIndex: "contractStartDate",
+        key: "contractStartDate",
         align: "left",
       },
       {
         title: "End Date",
-        dataIndex: "",
-        key: "",
+        dataIndex: "contractEndDate",
+        key: "contractEndDate",
         align: "left",
       },
       {
         title: "Actual BR",
-        dataIndex: "",
-        key: "",
+        dataIndex: "final_HR_Cost",
+        key: "final_HR_Cost",
         align: "left",
       },
       {
         title: "Actual PR",
-        dataIndex: "",
-        key: "",
+        dataIndex: "talent_Cost",
+        key: "talent_Cost",
         align: "left",
       },
       {
@@ -151,6 +170,9 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "",
         key: "",
         align: "left",
+        render:(_,result)=>{
+          return (+result.final_HR_Cost - +result.talent_Cost).toFixed(2)
+        }
       },
       {
         title: "NR / DP (%)",
@@ -290,27 +312,9 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         align: "left",
       },
       {
-        title: "Contract Status",
-        dataIndex: "contractStatus",
-        key: "contractStatus",
-        align: "left",
-      },
-      {
         title: "Contract Duration",
         dataIndex: "contractDuration",
         key: "contractDuration",
-        align: "left",
-      },
-      {
-        title: "Contract StartDate",
-        dataIndex: "contractStartDate",
-        key: "contractStartDate",
-        align: "left",
-      },
-      {
-        title: "Contract EndDate",
-        dataIndex: "contractEndDate",
-        key: "contractEndDate",
         align: "left",
       },
       {
@@ -395,7 +399,6 @@ function OnBoardList() {
     const [totalRecords, setTotalRecords] = useState(0);
     const [searchText,setSearchText] = useState('');
 
-    const [apiData, setAPIdata] = useState([]);
     const [filtersList, setFiltersList] = useState([]);
     const [filteredTagLength, setFilteredTagLength] = useState(0);
     const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -490,8 +493,6 @@ function OnBoardList() {
 
     const getOnBoardListData = async (data) => {
         setLoading(true);
-        let engpayload = {filterFieldsEngagement:data.filterFields_OnBoard,pagenumber:1,totalrecord:1}
-        getOnboaedRequest(engpayload)
         let result= await MasterDAO.getOnBoardListDAO(data)
         if(result.statusCode === HTTPStatusCode.OK){
             setTotalRecords(result?.responseBody?.details.totalrows);
@@ -506,35 +507,6 @@ function OnBoardList() {
         setLoading(false)
     }   
 
-    const getOnboaedRequest = useCallback(
-      async (pageData) => {
-        setLoading(true);
-        let response = await engagementRequestDAO.getEngagementListDAO(pageData);
-        if (response?.statusCode === HTTPStatusCode.OK) {
-          // setTotalRecords(response?.responseBody?.totalrows);
-          setLoading(false);
-          setAPIdata(
-            engagementUtils.modifyEngagementListData(response && response),
-          );
-        } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
-          setAPIdata([]);
-          setLoading(false);
-          // setTotalRecords(0);
-        } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-          setLoading(false);
-          return navigate(UTSRoutes.LOGINROUTE);
-        } else if (
-          response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-        ) {
-          setLoading(false);
-          return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-        } else {
-          setLoading(false);
-          return 'NO DATA FOUND';
-        }
-      },
-      [navigate],
-    );
 
     const getFeedbackList = async (feedBackData) => {
       setLoading(true);
@@ -708,7 +680,7 @@ function OnBoardList() {
 
       onRemoveHRFilters();
       setSearchText('')
-      // setStartDate(new Date());
+      setStartDate(new Date());
     }, [
       setAppliedFilters,
       setCheckedState,
@@ -738,22 +710,22 @@ function OnBoardList() {
                     </div>
                   </div>
                   <p onClick={()=> clearFilters() }>Reset Filters</p>
-
-                  <Radio.Group
-                   
-                   onChange={(e) => {
-                    setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:e.target.value} }))
-                    //  setEngagementType(e.target.value);
-                    
-                   }}
-                   value={tableFilteredState?.filterFields_OnBoard?.EngType}
-                 >
-                   <Radio value={'A'}>All</Radio>
-                   <Radio value={'C'}>Contract</Radio>
-                   <Radio value={'D'}>DP</Radio>
-                 </Radio.Group>
                 </div>
-                <div className={onboardList.filterRight}>		      
+                <div className={onboardList.filterRight}>		
+
+                   <Radio.Group                 
+                      onChange={(e) => {
+                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:e.target.value} }))
+                        //  setEngagementType(e.target.value);
+                        
+                      }}
+                      value={tableFilteredState?.filterFields_OnBoard?.EngType}
+                    >
+                      <Radio value={'A'}>All</Radio>
+                      <Radio value={'C'}>Contract</Radio>
+                      <Radio value={'D'}>DP</Radio>
+                    </Radio.Group>   
+
                     <div className={onboardList.searchFilterSet}>
                     <SearchSVG style={{ width: '16px', height: '16px' }} />
                     <input
@@ -816,8 +788,8 @@ function OnBoardList() {
                     <h2>
                       Active Engagements -{' '}
                       <span>
-                        {apiData[0]?.activeEngagement
-                          ? apiData[0]?.activeEngagement
+                        {onBoardListData[0]?.s_TotalActiveEng
+                          ? onBoardListData[0]?.s_TotalActiveEng
                           : 0}
                       </span>
                     </h2>
@@ -831,7 +803,7 @@ function OnBoardList() {
                     <h2>
                       Lost Engagement  -{' '}
                       <span>
-                        {apiData[0]?.isLost? apiData[0]?.isLost: 0}
+                        {onBoardListData[0]?.s_TotalLostEng ? onBoardListData[0]?.s_TotalLostEng : 0}
                       </span>
                     </h2>
                   </div>
@@ -842,7 +814,7 @@ function OnBoardList() {
                     />
                     <h2>
                       Renew Engagement -{' '}
-                      <span>{apiData[0]?.avgNR ? apiData[0]?.avgNR : 0}</span>
+                      <span>{onBoardListData[0]?.s_TotalRenewEng ? onBoardListData[0]?.s_TotalRenewEng : 0}</span>
                     </h2>
                   </div>
                   <div className={onboardList.filterType}>
@@ -852,7 +824,7 @@ function OnBoardList() {
                     />
                     <h2>
                       Feedback Received  -{' '}
-                      <span>{apiData[0]?.feedbcakReceive ? apiData[0]?.feedbcakReceive : 0}</span>
+                      <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? onBoardListData[0]?.s_TotalFeedbackReceived : 0}</span>
                     </h2>
                   </div>
 
@@ -864,7 +836,7 @@ function OnBoardList() {
                     />
                     <h2>
                       Average NR% -{' '}
-                      <span>{apiData[0]?.avgNR? apiData[0]?.avgNR: 0}</span>
+                      <span>{onBoardListData[0]?.s_AvgNR? onBoardListData[0]?.s_AvgNR: 0}</span>
                     </h2>
                   </div>}
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
@@ -875,7 +847,7 @@ function OnBoardList() {
                     />
                     <h2>
                       Average DP% -{' '}
-                      <span>{apiData[0]?.avgDP ? apiData[0]?.avgDP : 0}</span>
+                      <span>{onBoardListData[0]?.s_AvgDP ? onBoardListData[0]?.s_AvgDP : 0}</span>
                     </h2>
                   </div>}
                 </div>
@@ -928,7 +900,7 @@ function OnBoardList() {
 							onRemoveHRFilters={()=>{}}
 							getHTMLFilter={getHTMLFilter}
 							hrFilterList={allHRConfig.hrFilterListConfig()}
-							filtersType={allEngagementConfig.engagementFilterTypeConfig(
+							filtersType={allEngagementConfig.onboardListFilterTypeConfig(
 								filtersList && filtersList,
 							)}
 							clearFilters={clearFilters}

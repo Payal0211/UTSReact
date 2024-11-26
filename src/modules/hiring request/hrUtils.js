@@ -289,10 +289,10 @@ export const hrUtils = {
 			howSoon:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('howSoon'))
-						? null
+						? '30 Days'
 						: watch('howSoon')?.value.toString()
 					: _isNull(d.howSoon)
-					? null
+					? '30 Days'
 					: d.howSoon?.value.toString(),
 			years:
 				draft === SubmitType.SAVE_AS_DRAFT

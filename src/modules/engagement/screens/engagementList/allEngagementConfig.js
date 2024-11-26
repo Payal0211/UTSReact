@@ -810,4 +810,88 @@ export const allEngagementConfig = {
 			},
 		];
 	},
+	onboardListFilterTypeConfig: (filterList) => {
+		return [
+			{
+				label: 'Client Feedback',
+				name: 'clientFeedback',
+				child: filterList?.clientFeedback,
+				isSearch: true,
+			},
+			// {
+			// 	label: 'Hiring',
+			// 	name: 'typeOfHiring',
+			// 	child: filterList?.typeOfHiring,
+			// 	isSearch: true,
+			// },
+			{
+				label: 'Engagement Status',
+				name: 'currentStatus',
+				child: filterList.sproc_UTS_Get_EngmentStatus_Results.map(item=> ({disabled:false,
+					group:null,
+					selected:false,
+					text:item.engagementStatus,
+					value:item.engagementStatus,})),
+				isSearch: false,
+			},
+			{
+				label: 'Eng Type',
+				name: 'TypeOFHR',
+				child: ['DP - Full Time' , 'DP - Part Time' ,'Contractual - Full Time', 'Contractual - Part Time'].map(item=> ({disabled:false,
+					group:null,
+					selected:false,
+					text:item,
+					value:item})),
+				isSearch: true,
+			},
+			{
+				label: 'Job Type',
+				name: 'Position',
+				child: filterList?.postion,
+				isSearch: true,
+			},
+			{
+				label: 'Engagement Tenure',
+				name: 'EngagementTenure',
+				child: filterList?.engagementTenure,
+				isSearch: true,
+			},
+			{
+				label: 'AM',
+				name: 'amName',
+				child: filterList?.amName,
+				isSearch: true,
+			},
+			{
+				label: 'Contract Lost Reasons',
+				name: 'OnBoardLostReasons',
+				child: filterList?.onBoardingLostReasons,
+				isSearch: false,
+			},
+			// {
+			// 	label: 'Deployed Source',
+			// 	name: 'DeployedSource',
+			// 	child: filterList.deployedSource,
+			// 	isSearch: true,
+			// },
+			// {
+			// 	label: 'Months',
+			// 	name: 'months',
+			// 	child: filterList?.months,
+			// 	isSearch: true,
+			// },
+			// {
+			// 	label: 'Search',
+			// 	name: 'searchType',
+			// 	child: filterList?.searchType,
+			// 	isSearch: true,
+			// },
+			// {
+			// 	label: 'Years',
+			// 	name: 'years',
+			// 	child: filterList?.years,
+			// 	isSearch: true,
+			// },
+		];
+	},
 };

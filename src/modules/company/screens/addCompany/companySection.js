@@ -193,7 +193,7 @@ function CompanySection({
 
   const validateCompanyURL = async () => {
     setShowFetchAIButton(false);
-    clearErrors("companyURL");
+    // clearErrors("companyURL");
     setIsViewCompanyurl(false);
     
     if(!watch("companyName")){
