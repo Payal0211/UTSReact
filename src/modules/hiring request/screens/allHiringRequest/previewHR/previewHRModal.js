@@ -193,6 +193,7 @@ function PreviewHRModal({
   const [perkDetails, setPerkDetails] = useState([]);
   const [youTubeDetails, setYouTubeDetails] = useState([]);
   const [youTubeValue, setYoutubeValue] = useState();
+  const [engagementDetails,setEngagementDetails] = useState({});
   const [totalFundingDetails, setTotalFundingDetails] = useState();
   const [showAllInvestors, setShowAllInvestors] = useState(false);
   const [previewLogo, setPreviewLogo] = useState(basicDetails?.companyLogo);
@@ -261,6 +262,7 @@ function PreviewHRModal({
     setCultureDetails(allData?.CompanyDetails?.cultureDetails ? allData?.CompanyDetails?.cultureDetails : []);
     setPerkDetails(allData?.CompanyDetails?.perkDetails ? allData?.CompanyDetails?.perkDetails : []);
     setYouTubeDetails(allData?.CompanyDetails?.youTubeDetails ? allData?.CompanyDetails?.youTubeDetails : []);
+    setEngagementDetails(allData?.CompanyDetails?.engagementDetails ? allData?.CompanyDetails?.engagementDetails : {})
 
   }, [allData]);
   const toolbarOptions = [
@@ -2198,7 +2200,8 @@ async function onHandleBlurImage(content, field) {
                               }}
                             ><img src={EditnewIcon} /></span>
                           </li>
-                          <li>
+
+                          {engagementDetails?.companyTypeID === 1 &&  <li>
                             {" "}
                             <img src={umbrellaIconImage} className="edit" />
                             Notice Period - {jobPreview?.howSoon ? jobPreview?.howSoon : ""}
@@ -2213,7 +2216,8 @@ async function onHandleBlurImage(content, field) {
                                 });
                               }}
                             ><img src={EditnewIcon} /></span>
-                          </li>
+                          </li>}
+                         
                           <li className={`canJobLocInfoBtn ${iseditLocation ? "showInfo" : ""}`}>
                                         <div className="canJobLocInfoInner">
                                           <img src={locationIconImage} className="business" />{" "}
