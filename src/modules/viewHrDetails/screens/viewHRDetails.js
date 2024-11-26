@@ -236,10 +236,11 @@ const ViewHRDetails = () => {
                         {hiringDetails?.responseBody?.details?.timeZone ?? "NA"}
                         <i className={ViewHRDetailsStyle.blueDot} />
                       </li>
-                      <li>
+                      {hiringDetails?.responseBody?.details?.isPayPerHire === true &&   <li>
                         <span>How Soon:</span>{" "}
                         {hiringDetails?.responseBody?.details?.howSoon ?? "NA"}
-                      </li>
+                      </li>}
+                     
 
                       <li>
                         <span>HR Form Link:</span>{" "}

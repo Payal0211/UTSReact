@@ -708,7 +708,7 @@ function OnBoardList() {
 
       onRemoveHRFilters();
       setSearchText('')
-      // setStartDate(new Date());
+      setStartDate(new Date());
     }, [
       setAppliedFilters,
       setCheckedState,

@@ -1127,6 +1127,9 @@ const HRFields = ({
               );
             clearErrors('hiringPricingType')
             setUserCompanyTypeID(companyType.id);
+            if(companyType.id === 2){
+              unregister('howSoon');
+            } 
           } else {
             setUserCompanyTypeID(1);
             clearErrors('hiringPricingType')
@@ -3360,6 +3363,10 @@ const HRFields = ({
                       onChange={(e) => {
                         setUserCompanyTypeID(e.target.value);
                         clearErrors();
+                        if(e.target.value === 2){
+                          clearErrors("howSoon")
+                          unregister('howSoon');
+                        } 
                         resetField("tempProject");
                       }}
                       value={userCompanyTypeID}
@@ -4828,9 +4835,9 @@ const HRFields = ({
                 </div>
               </div>
             </div>
-
+                    {console.log(errors) }
             <div className={HRFieldStyle.row}>
-              <div className={HRFieldStyle.colMd6}>
+              {userCompanyTypeID === 1 &&  <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     mode={"id/value"}
@@ -4841,11 +4848,12 @@ const HRFields = ({
                     options={howSoon}
                     name="howSoon"
                     isError={errors["howSoon"] && errors["howSoon"]}
-                    required
+                    required={userCompanyTypeID === 1 ? true : false}
                     errorMsg={"Please select the how soon."}
                   />
                 </div>
-              </div>
+              </div>}
+             
               {/* {userCompanyTypeID === 1 && <>
               {(removeFields !== null && removeFields?.dealID === true) ? null : <div className={HRFieldStyle.colMd6}>
                 <HRInputField

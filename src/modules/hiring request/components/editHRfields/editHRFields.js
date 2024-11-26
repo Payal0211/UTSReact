@@ -4727,25 +4727,7 @@ const EditHRFields = ({
                 </div>
 
                 <div className={HRFieldStyle.row}>
-                  <div className={HRFieldStyle.colMd6}>
-                    <div className={HRFieldStyle.formGroup}>
-                      <HRSelectField
-                        controlledValue={controlledSoonValue}
-                        setControlledValue={setControlledTimeSoonValue}
-                        isControlled={true}
-                        mode={"id/value"}
-                        setValue={setValue}
-                        register={register}
-                        label={"How soon can they join?"}
-                        defaultValue="Select how soon?"
-                        options={howSoon}
-                        name="howSoon"
-                        isError={errors["howSoon"] && errors["howSoon"]}
-                        required
-                        errorMsg={"Please select the how soon."}
-                      />
-                    </div>
-                  </div>
+                 
                   {/* {companyType?.id=== 1 && <> 
                  {(removeFields !== null && removeFields?.dealID === true) ? null :   <div className={HRFieldStyle.colMd6}>
                   <HRInputField
@@ -4761,7 +4743,28 @@ const EditHRFields = ({
                 </div>
 
                 {companyType?.id === 1 && (
+                  
                   <div className={HRFieldStyle.row}>
+
+                  <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.formGroup}>
+                      <HRSelectField
+                        controlledValue={controlledSoonValue}
+                        setControlledValue={setControlledTimeSoonValue}
+                        isControlled={true}
+                        mode={"id/value"}
+                        setValue={setValue}
+                        register={register}
+                        label={"How soon can they join?"}
+                        defaultValue="Select how soon?"
+                        options={howSoon}
+                        name="howSoon"
+                        isError={errors["howSoon"] && errors["howSoon"]}
+                        required={companyType?.id === 1 ? true : false}
+                        errorMsg={"Please select the how soon."}
+                      />
+                    </div>
+                  </div>
                     {removeFields !== null &&
                     removeFields?.hrFormLink === true ? null : (
                       <div className={HRFieldStyle.colMd6}>
