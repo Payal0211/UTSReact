@@ -568,7 +568,7 @@ const togglePriority = useCallback(
             <br />
           </>
         ) : (
-          apiData?.NextActionsForTalent?.length > 0 && (
+          (apiData?.NextActionsForTalent?.length > 0 && apiData?.ClientDetail?.CompanyTypeID === 1 ) && (
             <Suspense>
               <NextActionItem nextAction={apiData?.NextActionsForTalent} />
             </Suspense>
