@@ -812,12 +812,7 @@ export const allEngagementConfig = {
 	},
 	onboardListFilterTypeConfig: (filterList) => {
 		return [
-			{
-				label: 'Client Feedback',
-				name: 'clientFeedback',
-				child: filterList?.clientFeedback,
-				isSearch: true,
-			},
+
 			// {
 			// 	label: 'Hiring',
 			// 	name: 'typeOfHiring',
@@ -826,8 +821,8 @@ export const allEngagementConfig = {
 			// },
 			{
 				label: 'Engagement Status',
-				name: 'currentStatus',
-				child: filterList.sproc_UTS_Get_EngmentStatus_Results.map(item=> ({disabled:false,
+				name: 'engagementStatus',
+				child: filterList?.sproc_UTS_Get_EngmentStatus_Results?.map(item=> ({disabled:false,
 					group:null,
 					selected:false,
 					text:item.engagementStatus,
@@ -844,22 +839,28 @@ export const allEngagementConfig = {
 					value:item})),
 				isSearch: true,
 			},
-			{
-				label: 'Job Type',
-				name: 'Position',
-				child: filterList?.postion,
-				isSearch: true,
-			},
-			{
-				label: 'Engagement Tenure',
-				name: 'EngagementTenure',
-				child: filterList?.engagementTenure,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Job Type',
+			// 	name: 'Position',
+			// 	child: filterList?.postion,
+			// 	isSearch: true,
+			// },
+			// {
+			// 	label: 'Engagement Tenure',
+			// 	name: 'EngagementTenure',
+			// 	child: filterList?.engagementTenure,
+			// 	isSearch: true,
+			// },
 			{
 				label: 'AM',
 				name: 'amName',
 				child: filterList?.amName,
+				isSearch: true,
+			},
+			{
+				label: 'Client Feedback',
+				name: 'clientFeedback',
+				child: filterList?.clientFeedback,
 				isSearch: true,
 			},
 			{
