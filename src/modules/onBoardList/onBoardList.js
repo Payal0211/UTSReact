@@ -420,14 +420,16 @@ function OnBoardList() {
         nbdName: '',
         amName: '',
         pending: '',
-        searchMonth: new Date().getMonth() + 1,
-        searchYear: new Date().getFullYear(),
+        // searchMonth: new Date().getMonth() + 1,
+        // searchYear: new Date().getFullYear(),
+        searchMonth: 0,
+        searchYear: 0,
         searchType: '',
         islost: '',
         EngType:'A'
       },
     });
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState();
 
     const [getEngagementModal, setEngagementModal] = useState({
       engagementFeedback: false,
@@ -666,8 +668,10 @@ function OnBoardList() {
         nbdName: '',
         amName: '',
         pending: '',
-        searchMonth: new Date().getMonth() +1,
-        searchYear: new Date().getFullYear(),
+        // searchMonth: new Date().getMonth() +1,
+        // searchYear: new Date().getFullYear(),
+        searchMonth: 0,
+        searchYear: 0,
         searchType: '',
         islost: '',
         EngType:'A',
@@ -680,7 +684,7 @@ function OnBoardList() {
 
       onRemoveHRFilters();
       setSearchText('')
-      setStartDate(new Date());
+      setStartDate();
     }, [
       setAppliedFilters,
       setCheckedState,
