@@ -901,7 +901,7 @@ function OnBoardList() {
 							setTableFilteredState={setTableFilteredState}
 							tableFilteredState={tableFilteredState}
 							setFilteredTagLength={setFilteredTagLength}
-							onRemoveHRFilters={()=>{}}
+							onRemoveHRFilters={()=>onRemoveHRFilters()}
 							getHTMLFilter={getHTMLFilter}
 							hrFilterList={allHRConfig.hrFilterListConfig()}
 							filtersType={allEngagementConfig.onboardListFilterTypeConfig(
