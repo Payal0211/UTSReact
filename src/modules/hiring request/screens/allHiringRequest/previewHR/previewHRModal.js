@@ -2217,51 +2217,32 @@ async function onHandleBlurImage(content, field) {
                               }}
                             ><img src={EditnewIcon} /></span>
                           </li>}
-                         
-                          <li className={`canJobLocInfoBtn ${iseditLocation ? "showInfo" : ""}`}>
-                                        <div className="canJobLocInfoInner">
-                                          <img src={locationIconImage} className="business" />{" "}
-                                          {jobPreview?.workingModeId === 1 ? "Work from anywhere" : jobPreview?.workingModeId == 2 ? "Hybrid" :jobPreview?.workingModeId == 3 ?  "On-site" : "-"}
-                                          <span className="editNewIcon" onClick={async () => { 
-                                              setLocationList([]);                                      
-                                              getFrequencyData()
-                                              setisEditLocation(true);                                                                                           
-                                              fetchCities();
-                                              fetchLocations(jobPreview?.jobLocation?.substring(0,3)); 
-                                              let citiesVal = await getCities(jobPreview?.atS_JobLocation);                                                                                                                                 
-                                              let val = citiesVal?.filter(option => option?.label !== citiesVal[0]?.label) 
-                                              setNearByCitiesData(val);                                                                
-                                              setEditLocation({
-                                                ...editLocation,
-                                                workingModeId: jobPreview?.workingModeId,
-                                                JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
-                                                FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
-                                                IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
-                                                NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],             
-                                                ATS_JobLocationID : jobPreview?.atS_JobLocation,
-                                                ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
-                                              });
-                                          }} >  <img src={EditnewIcon}/></span>
-                                          <span className="downArrowBtn"  onClick={() => {
-                                            setisEditLocation(!iseditLocation);
-                                            getFrequencyData()
-                                            fetchCities()
-                                            setEditLocation({
-                                              ...editLocation,
-                                              workingModeId: jobPreview?.workingModeId,
-                                              JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
-                                              FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
-                                              IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
-                                              NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],            
-                                              ATS_JobLocationID : jobPreview?.atS_JobLocation,
-                                              ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
-                                            });
-                                            fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
-                                          }}>
-                                            <img src={SmallDownArrow} alt="small-down-arrow"/>
-                                          </span> 
-                                        </div> 
-                                      </li>
+                          <Tooltip placement="top" title={`India Standard Time ${jobPreview?.isT_TimeZone_FromTime} to ${jobPreview?.isT_TimeZone_EndTime}`}>
+                              <li>
+                                <img src={clockIconImage} className="business" />
+                                {`${jobPreview?.timeZone ? jobPreview?.timeZone : ""} ${jobPreview?.timeZoneFromTime
+                                  ? jobPreview?.timeZoneFromTime
+                                  : ""
+                                  } to ${jobPreview?.timeZoneEndTime
+                                    ? jobPreview?.timeZoneEndTime
+                                    : ""
+                                  } `}
+
+                                <span className="editNewIcon"
+                                  onClick={() => {
+                                    getTimeZoneValues();
+                                    getStartEndTimeData();
+                                      setisEditShift(true);
+                                    setEditShift({
+                                      timeZone: jobPreview?.timeZone,
+                                      timeZoneFromTime: jobPreview?.timeZoneFromTime,
+                                      timeZoneEndTime: jobPreview?.timeZoneEndTime,
+                                    });
+                                  }}
+                                ><img src={EditnewIcon} /></span>
+                              </li>
+                          </Tooltip>
+                        
                           <li>
                             <img src={awardIconImage} className="business" />
                             {jobPreview?.isFresherAllowed ? 'Fresher' : jobPreview?.experienceYears !== ''
@@ -2278,34 +2259,52 @@ async function onHandleBlurImage(content, field) {
                               }}
                             ><img src={EditnewIcon} /></span>
                           </li>
-                          <Tooltip placement="top" title={`India Standard Time ${jobPreview?.isT_TimeZone_FromTime} to ${jobPreview?.isT_TimeZone_EndTime}`}>
-
-                            <li>
-                              <img src={clockIconImage} className="business" />
-                              {`${jobPreview?.timeZone ? jobPreview?.timeZone : ""} ${jobPreview?.timeZoneFromTime
-                                ? jobPreview?.timeZoneFromTime
-                                : ""
-                                } to ${jobPreview?.timeZoneEndTime
-                                  ? jobPreview?.timeZoneEndTime
-                                  : ""
-                                } `}
-
-                              <span className="editNewIcon"
-                                onClick={() => {
-                                  getTimeZoneValues();
-                                  getStartEndTimeData();
-                                    setisEditShift(true);
-                                  setEditShift({
-                                    timeZone: jobPreview?.timeZone,
-                                    timeZoneFromTime: jobPreview?.timeZoneFromTime,
-                                    timeZoneEndTime: jobPreview?.timeZoneEndTime,
-                                  });
-                                }}
-                              ><img src={EditnewIcon} /></span>
-                            </li>
-                          </Tooltip>
+                          <li className={`canJobLocInfoBtn ${iseditLocation ? "showInfo" : ""}`}>
+                                <div className="canJobLocInfoInner">
+                                  <img src={locationIconImage} className="business" />{" "}
+                                  {jobPreview?.workingModeId === 1 ? "Work from anywhere" : jobPreview?.workingModeId == 2 ? "Hybrid" :jobPreview?.workingModeId == 3 ?  "On-site" : "-"}
+                                  <span className="editNewIcon" onClick={async () => { 
+                                      setLocationList([]);                                      
+                                      getFrequencyData()
+                                      setisEditLocation(true);                                                                                           
+                                      fetchCities();
+                                      fetchLocations(jobPreview?.jobLocation?.substring(0,3)); 
+                                      let citiesVal = await getCities(jobPreview?.atS_JobLocation);                                                                                                                                 
+                                      let val = citiesVal?.filter(option => option?.label !== citiesVal[0]?.label) 
+                                      setNearByCitiesData(val);                                                                
+                                      setEditLocation({
+                                        ...editLocation,
+                                        workingModeId: jobPreview?.workingModeId,
+                                        JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
+                                        FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
+                                        IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
+                                        NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],             
+                                        ATS_JobLocationID : jobPreview?.atS_JobLocation,
+                                        ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
+                                      });
+                                  }} >  <img src={EditnewIcon}/></span>
+                                  <span className="downArrowBtn"  onClick={() => {
+                                    setisEditLocation(!iseditLocation);
+                                    getFrequencyData()
+                                    fetchCities()
+                                    setEditLocation({
+                                      ...editLocation,
+                                      workingModeId: jobPreview?.workingModeId,
+                                      JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
+                                      FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
+                                      IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
+                                      NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],            
+                                      ATS_JobLocationID : jobPreview?.atS_JobLocation,
+                                      ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
+                                    });
+                                    fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
+                                  }}>
+                                    <img src={SmallDownArrow} alt="small-down-arrow"/>
+                                  </span> 
+                                </div> 
+                          </li>
                           {iseditLocation && 
-                            <li className="canJobLocInfoBox">
+                            <li className="canJobLocInfoBox" style={{marginTop: '10px'}}>
                               <div className="row">
                                 <div className="col-12">
                                   <div className="form-group">
