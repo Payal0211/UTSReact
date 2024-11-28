@@ -50,14 +50,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "engagementCount",
         key: "engagementCount",
         align: "left",
-        width: '180px',
+        width: '95px',
         },
       {
         title: "Eng. ID/HR#",
         dataIndex: "engagemenID",
         key: "engagemenID",
         align: "left",
-        width: '180px',
+        width: '200px',
         render:(text,result)=>{
           return <>
           <Link to={`/viewOnboardDetails/${result.id}`} target='_blank'  style={{
@@ -116,23 +116,12 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "contractStatus",
         key: "contractStatus",
         align: "left",
+        width: '150px',
       },
       {
         title: "Joining Date",
-        dataIndex: "Joiningdate",
-        key: "Joiningdate",
-        align: "left",
-      },
-      {
-        title: "Last Feedback Date",
-        dataIndex: "lastFeedbackDate",
-        key: "lastFeedbackDate",
-        align: "left",
-      },
-      {
-        title: "Feedback Type",
-        dataIndex: "feedbackType",
-        key: "feedbackType",
+        dataIndex: "joiningdate",
+        key: "joiningdate",
         align: "left",
       },
       {
@@ -140,6 +129,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "lastWorkingDate",
         key: "lastWorkingDate",
         align: "left",
+        width: '200px',
       },
       {
         title: "Start Date",
@@ -214,12 +204,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "onboardingClient",
         key: "onboardingClient",
         align: "left",
+        width: '200px',
       },
       {
         title: "Onboarding Talent",
         dataIndex: "onboardingTalent",
         key: "onboardingTalent",
         align: "left",
+        width: '200px',
       },
       {
         title: "Legal Client",
@@ -316,13 +308,29 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "contractDuration",
         key: "contractDuration",
         align: "left",
+        width: '150px',
       },
+      {
+        title: "Last Feedback Date",
+        dataIndex: "lastFeedbackDate",
+        key: "lastFeedbackDate",
+        align: "left",
+        width: '200px',
+      },
+      {
+        title: "Feedback Type",
+        dataIndex: "feedbackType",
+        key: "feedbackType",
+        align: "left",
+        width: '150px',
+      },
+
       {
 				title: (<>Client Feedback <br />Last Feedback Date</>),
 				dataIndex: 'clientFeedback',
 				key: 'clientFeedback',
 				align: 'left',
-				width: '150px',
+				width: '200px',
 				render: (text, result) =>
 					result?.clientFeedback === 0 && result?.id && result?.hiringId ? (
 						<div style={{display:"flex",flexDirection:"column"}}>
@@ -588,17 +596,20 @@ function OnBoardList() {
   const handleExport = (apiData) => {
 		let DataToExport =  apiData.map(data => {
 			let obj = {}
-			tableColumnsMemo.forEach(val => {if(val.key !== "action"){
-				if(val.key === 'engagementType'){
+			tableColumnsMemo.forEach((val,ind) => {if(val.key !== "action"){
+        if(ind +1 !== tableColumnsMemo.length){
+          	if(val.key === 'engagementType'){
 					obj[`${val.title}`] = `${data.typeOfHR} ${data.h_Availability && `- ${data.h_Availability}`}`
 				}else{
 					obj[`${val.title}`] = data[`${val.key}`]
-				} }
+				}
+        }
+			 }
 			} )
 		return obj;
 			}
 		 )
-		 downloadToExcel(DataToExport)
+		 downloadToExcel(DataToExport,'Engagement Report')
 
 	}
 
