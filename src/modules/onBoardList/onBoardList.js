@@ -88,6 +88,13 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         width: '180px',
       },
       {
+        title: "Job Title",
+        dataIndex: "position",
+        key: "position",
+        align: "left",
+        width: '180px',
+      },
+      {
         title: "Talent",
         dataIndex: "talent",
         key: "talent",
@@ -148,12 +155,18 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "final_HR_Cost",
         key: "final_HR_Cost",
         align: "left",
+        render:(text,result)=>{
+          return   `${text} ${result.currencySign}`
+        }
       },
       {
         title: "Actual PR",
         dataIndex: "talent_Cost",
         key: "talent_Cost",
         align: "left",
+        render:(text,result)=>{
+          return   `${text} ${result.currencySign}`
+        }
       },
       {
         title: "Uplers Fees",
@@ -161,7 +174,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         key: "",
         align: "left",
         render:(_,result)=>{
-          return (+result.final_HR_Cost - +result.talent_Cost).toFixed(2)
+          return (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) + ` ${result.currencySign}`
         }
       },
       {
@@ -170,7 +183,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         key: "nrPercentage",
         align: "left",
         render:(text,result)=>{
-          return `${result.nrPercentage} / ${result.dP_Percentage}`
+          return `${result.nrPercentage !== 0 ? result.nrPercentage : ''}  ${+result.dP_Percentage !== 0 ? result.dP_Percentage : ''}`
         }
       },
       // {
@@ -179,112 +192,105 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       //   key: "hR_Number",
       //   align: "left",
       // },
-      {
-        title: "Position",
-        dataIndex: "position",
-        key: "position",
-        align: "left",
-        width: '180px',
-      },
-      {
-        title: "NBD",
-        dataIndex: "salesPerson",
-        key: "salesPerson",
-        align: "left",
-      },      
+      // {
+      //   title: "NBD",
+      //   dataIndex: "salesPerson",
+      //   key: "salesPerson",
+      //   align: "left",
+      // },      
      
-      {
-        title:"TSC Name",
-        dataIndex:"tscName",
-        key:'tscName',
-        align:"left",
-      },
-      {
-        title: "Onboarding Client",
-        dataIndex: "onboardingClient",
-        key: "onboardingClient",
-        align: "left",
-        width: '200px',
-      },
-      {
-        title: "Onboarding Talent",
-        dataIndex: "onboardingTalent",
-        key: "onboardingTalent",
-        align: "left",
-        width: '200px',
-      },
-      {
-        title: "Legal Client",
-        dataIndex: "legalClient",
-        key: "legalClient",
-        align: "left",
-      },
-      {
-        title: "Legal Talent",
-        dataIndex: "legalTalent",
-        key: "legalTalent",
-        align: "left",
-      },
-      {
-        title: "Kick Off",
-        dataIndex: "kickOff",
-        key: "kickOff",
-        align: "left",
-      },
-      {
-        title: "Type Of HR",
-        dataIndex: "typeOfHR",
-        key: "typeOfHR",
-        align: "left",
-      },
-      {
-        title: "Final HR Cost",
-        dataIndex: "final_HR_Cost",
-        key: "final_HR_Cost",
-        align: "left",
-      },
-      {
-        title: "Talent Cost",
-        dataIndex: "talent_Cost",
-        key: "talent_Cost",
-        align: "left",
-      },
+      // {
+      //   title:"TSC Name",
+      //   dataIndex:"tscName",
+      //   key:'tscName',
+      //   align:"left",
+      // },
+      // {
+      //   title: "Onboarding Client",
+      //   dataIndex: "onboardingClient",
+      //   key: "onboardingClient",
+      //   align: "left",
+      //   width: '200px',
+      // },
+      // {
+      //   title: "Onboarding Talent",
+      //   dataIndex: "onboardingTalent",
+      //   key: "onboardingTalent",
+      //   align: "left",
+      //   width: '200px',
+      // },
+      // {
+      //   title: "Legal Client",
+      //   dataIndex: "legalClient",
+      //   key: "legalClient",
+      //   align: "left",
+      // },
+      // {
+      //   title: "Legal Talent",
+      //   dataIndex: "legalTalent",
+      //   key: "legalTalent",
+      //   align: "left",
+      // },
+      // {
+      //   title: "Kick Off",
+      //   dataIndex: "kickOff",
+      //   key: "kickOff",
+      //   align: "left",
+      // },
+      // {
+      //   title: "Type Of HR",
+      //   dataIndex: "typeOfHR",
+      //   key: "typeOfHR",
+      //   align: "left",
+      // },
+      // {
+      //   title: "Final HR Cost",
+      //   dataIndex: "final_HR_Cost",
+      //   key: "final_HR_Cost",
+      //   align: "left",
+      // },
+      // {
+      //   title: "Talent Cost",
+      //   dataIndex: "talent_Cost",
+      //   key: "talent_Cost",
+      //   align: "left",
+      // },
       // {
       //   title: "NR (%)",
       //   dataIndex: "nrPercentage",
       //   key: "nrPercentage",
       //   align: "left",
       // },
-      {
-        title: "DP Amount",
-        dataIndex: "dpAmount",
-        key: "dpAmount",
-        align: "left",
-      },
+      // {
+      //   title: "DP Amount",
+      //   dataIndex: "dpAmount",
+      //   key: "dpAmount",
+      //   align: "left",
+      // },
       // {
       //   title: "DP (%)",
       //   dataIndex: "dP_Percentage",
       //   key: "dP_Percentage",
       //   align: "left",
       // },
-      {
-        title: "Old Talent",
-        dataIndex: "oldTalent",
-        key: "oldTalent",
-        align: "left",
-      },
-      {
-        title: "Replacement Eng",
-        dataIndex: "replacementEng",
-        key: "replacementEng",
-        align: "left",
-      },
-      {
-        title: "Replacement Date",
-        dataIndex: "replacementDate",
-        key: "replacementDate",
-        align: "left",
-      },
+      // {
+      //   title: "Old Talent",
+      //   dataIndex: "oldTalent",
+      //   key: "oldTalent",
+      //   align: "left",
+      // },
+      // {
+      //   title: "Replacement Eng",
+      //   dataIndex: "replacementEng",
+      //   key: "replacementEng",
+      //   align: "left",
+      // },
+      // {
+      //   title: "Replacement Date",
+      //   dataIndex: "replacementDate",
+      //   key: "replacementDate",
+      //   align: "left",
+      // },
       // {
       //   title: "Notice Period",
       //   dataIndex: "noticePeriod",
@@ -297,33 +303,33 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       //   key: "lastWorkingDate",
       //   align: "left",
       // },
-      {
-        title: "Is Lost",
-        dataIndex: "isLost",
-        key: "isLost",
-        align: "left",
-      },
-      {
-        title: "Contract Duration",
-        dataIndex: "contractDuration",
-        key: "contractDuration",
-        align: "left",
-        width: '150px',
-      },
-      {
-        title: "Last Feedback Date",
-        dataIndex: "lastFeedbackDate",
-        key: "lastFeedbackDate",
-        align: "left",
-        width: '200px',
-      },
-      {
-        title: "Feedback Type",
-        dataIndex: "feedbackType",
-        key: "feedbackType",
-        align: "left",
-        width: '150px',
-      },
+      // {
+      //   title: "Is Lost",
+      //   dataIndex: "isLost",
+      //   key: "isLost",
+      //   align: "left",
+      // },
+      // {
+      //   title: "Contract Duration",
+      //   dataIndex: "contractDuration",
+      //   key: "contractDuration",
+      //   align: "left",
+      //   width: '150px',
+      // },
+      // {
+      //   title: "Last Feedback Date",
+      //   dataIndex: "lastFeedbackDate",
+      //   key: "lastFeedbackDate",
+      //   align: "left",
+      //   width: '200px',
+      // },
+      // {
+      //   title: "Feedback Type",
+      //   dataIndex: "feedbackType",
+      //   key: "feedbackType",
+      //   align: "left",
+      //   width: '150px',
+      // },
 
       {
 				title: (<>Client Feedback <br />Last Feedback Date</>),
@@ -600,7 +606,12 @@ function OnBoardList() {
         if(ind +1 !== tableColumnsMemo.length){
           	if(val.key === 'engagementType'){
 					obj[`${val.title}`] = `${data.typeOfHR} ${data.h_Availability && `- ${data.h_Availability}`}`
-				}else{
+				}else if(val.title === 'Uplers Fees'){
+          obj[`${val.title}`] = (+data.final_HR_Cost - +data.talent_Cost).toFixed(2) + ` ${data.currencySign}`
+        }else if(val.title === 'Actual PR' || val.title === 'Actual BR'){
+          obj[`${val.title}`] = `${data[`${val.key}`]} ${data.currencySign}`
+        }
+        else{
 					obj[`${val.title}`] = data[`${val.key}`]
 				}
         }
