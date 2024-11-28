@@ -99,24 +99,28 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "talent",
         key: "talent",
         align: "left",
+        width: '200px',
       },
       {
         title: "Company",
         dataIndex: "company",
         key: "company",
         align: "left",
+        width: '200px', 
       },
       {
         title: "Client",
         dataIndex: "client",
         key: "client",
         align: "left",
+        width: '200px',
       },
       {
         title: "AM",
         dataIndex: "amAssignmentuser",
         key: "amAssignmentuser",
         align: "left",
+        width: '150px', 
       },
       {
         title: "Eng. Status",
@@ -130,6 +134,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "joiningdate",
         key: "joiningdate",
         align: "left",
+        width: '200px', 
       },
       {
         title: "Last Working Date",
@@ -143,18 +148,21 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
+        width: '150px', 
       },
       {
         title: "End Date",
         dataIndex: "contractEndDate",
         key: "contractEndDate",
         align: "left",
+        width: '150px', 
       },
       {
         title: "Actual BR",
         dataIndex: "final_HR_Cost",
         key: "final_HR_Cost",
         align: "left",
+        width: '150px', 
         render:(text,result)=>{
           return   `${text} ${result.currencySign}`
         }
@@ -164,6 +172,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "talent_Cost",
         key: "talent_Cost",
         align: "left",
+        width: '150px', 
         render:(text,result)=>{
           return   `${text} ${result.currencySign}`
         }
@@ -173,6 +182,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "",
         key: "",
         align: "left",
+        width: '150px', 
         render:(_,result)=>{
           return (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) + ` ${result.currencySign}`
         }
@@ -182,6 +192,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "nrPercentage",
         key: "nrPercentage",
         align: "left",
+        width: '150px', 
         render:(text,result)=>{
           return `${result.nrPercentage !== 0 ? result.nrPercentage : ''}  ${+result.dP_Percentage !== 0 ? result.dP_Percentage : ''}`
         }
@@ -885,7 +896,7 @@ function OnBoardList() {
               ) : (
                 <WithLoader className="mainLoader">
                   <Table
-                    scroll={{ x: '300vw', y: '100vh' }}
+                    scroll={{  y: '100vh' }}
                     id="hrListingTable"
                     columns={tableColumnsMemo}
                     bordered={false}
