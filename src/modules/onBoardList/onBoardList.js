@@ -5,7 +5,7 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
-import { Table, Radio, Modal } from 'antd';
+import { Table, Radio, Modal, message } from 'antd';
 import { useEffect, useMemo, useState, useCallback, Suspense } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
@@ -60,7 +60,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         width: '200px',
         render:(text,result)=>{
           return <>
-          <Link to={`/viewOnboardDetails/${result.id}`} target='_blank'  style={{
+          <Link to={`/viewOnboardDetails/${result.id}/${result.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
             color: `var(--uplers-black)`,
             textDecoration: 'underline',
         }}> {result?.engagemenID.slice(
@@ -137,13 +137,6 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         width: '200px', 
       },
       {
-        title: "Last Working Date",
-        dataIndex: "lastWorkingDate",
-        key: "lastWorkingDate",
-        align: "left",
-        width: '200px',
-      },
-      {
         title: "Start Date",
         dataIndex: "contractStartDate",
         key: "contractStartDate",
@@ -156,6 +149,13 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         key: "contractEndDate",
         align: "left",
         width: '150px', 
+      },
+      {
+        title: "Last Working Date",
+        dataIndex: "lastWorkingDate",
+        key: "lastWorkingDate",
+        align: "left",
+        width: '200px',
       },
       {
         title: "Actual BR",
@@ -752,6 +752,11 @@ function OnBoardList() {
 
                    <Radio.Group                 
                       onChange={(e) => {
+                        if(e.target.value === 'D'){
+                          if(!startDate){
+                            return message.error('Please select Month-Year' )
+                          }
+                        }
                         setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:e.target.value} }))
                         //  setEngagementType(e.target.value);
                         
@@ -817,65 +822,60 @@ function OnBoardList() {
             <div className={onboardList.filterContainer}>
                 <div
                   className={`${onboardList.filterSets} ${onboardList.filterDescription}`}>
-                  <div className={onboardList.filterType}>
-                    <img
-                      src={Handshake}
-                      alt="handshaker"
-                    />
-                    <h2>
-                      Active Engagements -{' '}
-                      <span>
-                        {onBoardListData[0]?.s_TotalActiveEng
-                          ? onBoardListData[0]?.s_TotalActiveEng
-                          : 0}
-                      </span>
-                    </h2>
-                  </div>
-                  <div className={onboardList.filterType}>
-                    <img
-                      src={LostEng}
-                      alt="sad"
-                    />
-                  
-                    <h2>
-                      Lost Engagement  -{' '}
-                      <span>
-                        {onBoardListData[0]?.s_TotalLostEng ? onBoardListData[0]?.s_TotalLostEng : 0}
-                      </span>
-                    </h2>
-                  </div>
-                  <div className={onboardList.filterType}>
-                    <img
-                      src={RenewEng}
-                      alt="Smile"
-                    />
-                    <h2>
-                      Renew Engagement -{' '}
-                      <span>{onBoardListData[0]?.s_TotalRenewEng ? onBoardListData[0]?.s_TotalRenewEng : 0}</span>
-                    </h2>
-                  </div>
-                  <div className={onboardList.filterType}>
-                    <img
-                      src={FeedBack}
-                      alt="rocket"
-                    />
-                    <h2>
-                      Feedback Received  -{' '}
-                      <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? onBoardListData[0]?.s_TotalFeedbackReceived : 0}</span>
-                    </h2>
-                  </div>
+                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <>
+                        <div className={onboardList.filterType}>
+                          <img
+                            src={Handshake}
+                            alt="handshaker"
+                          />
+                          <h2>
+                            Active Contract Eng. :{' '}
+                            <span>
+                              {onBoardListData[0]?.s_TotalActiveEng
+                                ? onBoardListData[0]?.s_TotalActiveEng
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                        <div className={onboardList.filterType}>
+                          <img
+                            src={LostEng}
+                            alt="sad"
+                          />
+                          <h2>
+                            Lost Contract Eng. :{' '}
+                            <span>
+                              {onBoardListData[0]?.s_TotalLostEng
+                                ? onBoardListData[0]?.s_TotalLostEng
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                     </>}
 
-                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&
+                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&
                   <div className={onboardList.filterType}>
                     <img
                       src={Briefcase}
                       alt="briefcase"
                     />
                     <h2>
-                      Average NR% -{' '}
+                      Average NR% :{' '}
                       <span>{onBoardListData[0]?.s_AvgNR? onBoardListData[0]?.s_AvgNR: 0}</span>
                     </h2>
                   </div>}
+
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <div className={onboardList.filterType}>
+                    <img
+                      src={RenewEng}
+                      alt="Smile"
+                    />
+                    <h2>
+                      Renew Eng. :{' '}
+                      <span>{onBoardListData[0]?.s_TotalRenewEng ? onBoardListData[0]?.s_TotalRenewEng : 0}</span>
+                    </h2>
+                  </div>} 
+               
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <div className={onboardList.filterType}>
                     <img
@@ -883,10 +883,57 @@ function OnBoardList() {
                       alt="briefcase"
                     />
                     <h2>
-                      Average DP% -{' '}
+                      Active DP Eng. :{' '}
+                      <span>{onBoardListData[0]?.s_TotalDPActiveEng ? onBoardListData[0]?.s_TotalDPActiveEng : 0}</span>
+                    </h2>
+                  </div>}
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={LostEng}
+                      alt="sad"
+                    />
+                    <h2>
+                      Lost DP Eng. :{' '}
+                      <span>{onBoardListData[0]?.s_TotalDPLostEng ? onBoardListData[0]?.s_TotalDPLostEng : 0}</span>
+                    </h2>
+                  </div>}
+                  {/* <div className={onboardList.filterType}>
+                    <img
+                      src={LostEng}
+                      alt="sad"
+                    />
+                  
+                    <h2>
+                      Lost Engagements  -{' '}
+                      <span>
+                        {onBoardListData[0]?.s_TotalLostEng ? onBoardListData[0]?.s_TotalLostEng : 0}
+                      </span>
+                    </h2>
+                  </div> */}
+                
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={Briefcase}
+                      alt="briefcase"
+                    />
+                    <h2>
+                      Average DP% :{' '}
                       <span>{onBoardListData[0]?.s_AvgDP ? onBoardListData[0]?.s_AvgDP : 0}</span>
                     </h2>
                   </div>}
+
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={FeedBack}
+                      alt="rocket"
+                    />
+                    <h2>
+                      Feedback Received  :{' '}
+                      <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? onBoardListData[0]?.s_TotalFeedbackReceived : 0}</span>
+                    </h2>
+                  </div>
                 </div>
             </div>
             
@@ -1020,6 +1067,7 @@ function OnBoardList() {
 							errors={errors}
 							feedBackTypeEdit={feedBackTypeEdit}
 							setFeedbackTypeEdit={setFeedbackTypeEdit}
+              setClientFeedbackList={setClientFeedbackList}
 						/>
 					</Modal>
 				)}

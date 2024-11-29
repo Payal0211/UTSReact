@@ -479,6 +479,22 @@ export const EngagementRequestAPI = {
 			return errorDebug(error, 'EngagementRequestAPI.getAllBRPRList');
 		}
 	},
+	getTalentOtherDetailsOtherList: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD +
+			EngagementAPI.GET_TALENT_MATCHMAKING  +
+			`?onBoardId=${payload.onboardID}&TalentID=${payload.talentID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.getAllBRPRList');
+		}
+	},
 	updateTSCName: async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =

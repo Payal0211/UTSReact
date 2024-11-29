@@ -18,7 +18,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 
 
 
-const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control, setError, getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit
+const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control, setError, getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit,setClientFeedbackList
 }) => {
     const watchFeedbackDate = watch('feedBackDate')
     const submitFeedbacHandler = async (data) => {
@@ -41,6 +41,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
         if (response.statusCode === HTTPStatusCode.OK) {
             onCancel()
             setFeedbackSave(!feedBackSave)
+            setClientFeedbackList && setClientFeedbackList(prev=> [{...response.responseBody?.details,engagemenID:getFeedbackFormContent?.engagemenID},...prev])
             isLoading(false)
         }
         setIsLoading(false)
