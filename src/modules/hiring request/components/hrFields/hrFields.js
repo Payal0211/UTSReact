@@ -3742,7 +3742,6 @@ const HRFields = ({
                             options={contractDurations
                               .filter((item) => {
                                 if (
-                                  watch("hiringPricingType")?.id === 1 ||
                                   watch("hiringPricingType")?.id === 7
                                 )
                                   return item?.value !== "Indefinite";
