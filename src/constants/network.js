@@ -155,6 +155,7 @@ export class EngagementAPI {
 	static UPDATE_TSC_NAME = 'UpdateTSCName';
 	static AUTO_UPDATE_TSC_NAME = 'TSCAutoAssignment'
 	static GET_ENGAGEMENT_EDIT_ALL_BR_PR = 'Get_engagement_Edit_All_BR_PR'
+	static GET_TALENT_MATCHMAKING  = 'GetTalentMatchmakingDetails'
 	static GET_AM_DETAILS = 'GetAMDetails'
 	static UPDATE_AM_PAY_OUT = 'UpdateAMForPayOut'
 }

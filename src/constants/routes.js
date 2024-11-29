@@ -220,7 +220,7 @@ export default class UTSRoutes {
 	static Edit_HR = '/EditNewHR/:hrID'
 	static ABOUT_CLIENT = '/userDetails';
 	static ONBOARD = '/onBoardList';
-	static VIEWONBOARDDETAILS = '/viewOnboardDetails/:onboardID'
+	static VIEWONBOARDDETAILS = '/viewOnboardDetails/:onboardID/:isOngoing'
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
 	static REPLACEMENT_REPORT = "/replacementReport";
