@@ -3432,7 +3432,6 @@ const EditHRFields = ({
                                 options={contractDurations
                                   .filter((item) => {
                                     if (
-                                      watch("hiringPricingType")?.id === 1 ||
                                       watch("hiringPricingType")?.id === 7
                                     )
                                       return (
@@ -3568,7 +3567,6 @@ const EditHRFields = ({
                                   options={contractDurations
                                     .filter((item) => {
                                       if (
-                                        watch("hiringPricingType")?.id === 1 ||
                                         watch("hiringPricingType")?.id === 7
                                       )
                                         return (
