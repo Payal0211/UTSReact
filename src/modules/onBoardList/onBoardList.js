@@ -445,16 +445,18 @@ function OnBoardList() {
         nbdName: '',
         amName: '',
         pending: '',
-        // searchMonth: new Date().getMonth() + 1,
-        // searchYear: new Date().getFullYear(),
-        searchMonth: 0,
-        searchYear: 0,
+        searchMonth: new Date().getMonth() + 1,
+        searchYear: new Date().getFullYear(),
         searchType: '',
         islost: '',
-        EngType:'A'
+        EngType:'A',
+        toDate:'',
+        fromDate:'',
+        EngagementOption:'All'
       },
     });
     const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState(null);
 
     const [getEngagementModal, setEngagementModal] = useState({
       engagementFeedback: false,
@@ -482,6 +484,7 @@ function OnBoardList() {
     });
     const [feedBackSave, setFeedbackSave] = useState(false);
     const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
+    const [dateTypeFilter , setDateTypeFilter] = useState(0)
 
     const tableColumnsMemo = useMemo(
 		() =>
@@ -591,19 +594,19 @@ function OnBoardList() {
     }, [getEngagementModal?.engagementAddFeedback]);
 
     const onCalenderFilter = (dates) => {
-      // const [start, end] = dates;
-    const month = dates.getMonth() + 1
-    const year = dates.getFullYear()
-     setStartDate(dates);
+      const [start, end] = dates;
+
+      setStartDate(start);
+      setEndDate(end);
       // setEndDate(end);
-      if (month && year) {
+      if (start && end) {
         // console.log( month, year)
         setTableFilteredState({
           ...tableFilteredState,
           searchText: searchText,
           filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard ,
-            searchMonth: month,
-            searchYear: year,
+            fromDate: new Date(start).toLocaleDateString("en-US"),
+          toDate: new Date(end).toLocaleDateString("en-US"),
           },
         });
 
@@ -662,11 +665,15 @@ function OnBoardList() {
         "totalrecord": pageSize,
         "filterFields_OnBoard":{
           ...tableFilteredState.filterFields_OnBoard,
-            "search" :searchText
+            "search" :searchText,
+            toDate: dateTypeFilter === 1 ? tableFilteredState.filterFields_OnBoard?.toDate :'',
+            fromDate:dateTypeFilter === 1 ? tableFilteredState.filterFields_OnBoard?.fromDate :'',
+            searchMonth: dateTypeFilter === 0 ? new Date().getMonth() + 1 : 0,
+            searchYear: dateTypeFilter === 0 ? new Date().getFullYear() : 0,
         }
       }    
           getOnBoardListData(payload);
-    }, [ tableFilteredState,searchText,pageIndex,pageSize]);
+    }, [ tableFilteredState,searchText,pageIndex,pageSize,dateTypeFilter]);
 
     const toggleHRFilter = useCallback(() => {
       !getHTMLFilter
@@ -701,15 +708,16 @@ function OnBoardList() {
         nbdName: '',
         amName: '',
         pending: '',
-        // searchMonth: new Date().getMonth() +1,
-        // searchYear: new Date().getFullYear(),
-        searchMonth: 0,
-        searchYear: 0,
+        searchMonth: new Date().getMonth() +1,
+        searchYear: new Date().getFullYear(),
         searchType: '',
         islost: '',
         EngType:'A',
+        toDate:'',
+        fromDate:'',
+        EngagementOption:'All'
       }
-      
+      setDateTypeFilter(0)
       setTableFilteredState({
         ...tableFilteredState,
         filterFields_OnBoard: defaultFilters,
@@ -718,6 +726,7 @@ function OnBoardList() {
       onRemoveHRFilters();
       setSearchText('')
       setStartDate();
+      setEndDate();
     }, [
       setAppliedFilters,
       setCheckedState,
@@ -749,8 +758,33 @@ function OnBoardList() {
                   <p onClick={()=> clearFilters() }>Reset Filters</p>
                 </div>
                 <div className={onboardList.filterRight}>		
+      <div className={onboardList.dateTypeFilters}>
+                    <Radio.Group                 
+                      onChange={(e) => {
+                       setDateTypeFilter(e.target.value)
+                       setStartDate();
+                       setEndDate();
+                        setTableFilteredState({
+                          ...tableFilteredState,
+                          searchText: searchText,
+                          filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard ,
+                            fromDate: '',
+                          toDate: '',
+                          },
+                        })
+                 
+                        
+                      }}
+                      value={dateTypeFilter}
+                    >
+                      <Radio value={0}>Current Month</Radio>
+                      <Radio value={1}>Search With Date Range</Radio>
+                    </Radio.Group>  
 
-                   <Radio.Group                 
+
+
+
+                    <Radio.Group                 
                       onChange={(e) => {
                         if(e.target.value === 'D'){
                           if(!startDate){
@@ -766,8 +800,10 @@ function OnBoardList() {
                       <Radio value={'A'}>All</Radio>
                       <Radio value={'C'}>Contract</Radio>
                       <Radio value={'D'}>DP</Radio>
-                    </Radio.Group>   
-
+                    </Radio.Group>  
+      </div>
+                     
+                    
                     <div className={onboardList.searchFilterSet}>
                     <SearchSVG style={{ width: '16px', height: '16px' }} />
                     <input
@@ -781,8 +817,11 @@ function OnBoardList() {
                     />
                   </div>
 
-                  <div className={onboardList.calendarFilterSet}>
-							<div className={onboardList.label}>Month-Year</div>
+                    {dateTypeFilter === 1 && 
+                    
+                    <div className={onboardList.calendarFilterSet}>
+							<div className={onboardList.label}>Date</div>
+              <div className={onboardList.dateTypeFilters}>
 							<div className={onboardList.calendarFilter}>
 								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
 								<DatePicker
@@ -792,16 +831,35 @@ function OnBoardList() {
 										e.stopPropagation();
 									}}
 									className={onboardList.dateFilter}
-									placeholderText="Month - Year"
-									selected={startDate}
-									onChange={onCalenderFilter}
-									// startDate={startDate}
-									// endDate={endDate}
-									dateFormat="MM-yyyy"
-									showMonthYearPicker
+                  placeholderText="Start date - End date"
+                  selected={startDate}
+                  onChange={onCalenderFilter}
+                  startDate={startDate}
+                  endDate={endDate}
+                  selectsRange
 								/>
 							</div>
+                  <Radio.Group                 
+                      onChange={(e) => {
+                        if(e.target.value === 'D'){
+                          if(!startDate){
+                            return message.error('Please select Month-Year' )
+                          }
+                        }
+                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngagementOption:e.target.value} }))
+                        //  setEngagementType(e.target.value);
+                        
+                      }}
+                      value={tableFilteredState?.filterFields_OnBoard?.EngagementOption}
+                    >
+                      <Radio value={'All'}>All</Radio>
+                      <Radio value={'Active'}>Active</Radio>
+                      <Radio value={'Closed'}>Closed</Radio>
+                    </Radio.Group>
+              </div>
 						</div>
+          }
+                 
 
 						<div className={onboardList.priorityFilterSet}>
 							{/* <div className={onboardList.label}>Showing</div> */}

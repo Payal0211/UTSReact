@@ -52,6 +52,13 @@
     margin-right: 8px;
 }
 
+.dateTypeFilters{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 5px;
+}
+
 .filterType {
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
