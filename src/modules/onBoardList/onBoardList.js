@@ -31,6 +31,7 @@ import { engagementUtils } from 'modules/engagement/screens/engagementList/engag
 import EngagementFeedback from 'modules/engagement/screens/engagementFeedback/engagementFeedback';
 import EngagementAddFeedback from 'modules/engagement/screens/engagementAddFeedback/engagementAddFeedback';
 import { useForm } from 'react-hook-form';
+import moment from 'moment';
 
 const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId) => {
     return [     
@@ -455,8 +456,23 @@ function OnBoardList() {
         EngagementOption:'All'
       },
     });
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState(null);
+    var date = new Date();
+    const [startDate, setStartDate] = useState(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
+    const [endDate, setEndDate] = useState(new Date(date));
+
+  //   var firstDay =
+  //   startDate !== null
+  //     ? startDate
+  //     : new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()); 
+  // var lastDay =
+  //   endDate !== null
+  //     ? endDate
+  //     : new Date(date);
+
+      // useEffect(() => {
+      //   setStartDate(firstDay)
+      //   setEndDate(lastDay)
+      // }, []);
 
     const [getEngagementModal, setEngagementModal] = useState({
       engagementFeedback: false,
@@ -666,8 +682,8 @@ function OnBoardList() {
         "filterFields_OnBoard":{
           ...tableFilteredState.filterFields_OnBoard,
             "search" :searchText,
-            toDate: dateTypeFilter === 1 ? tableFilteredState.filterFields_OnBoard?.toDate :'',
-            fromDate:dateTypeFilter === 1 ? tableFilteredState.filterFields_OnBoard?.fromDate :'',
+            toDate: dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
+            fromDate:dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
             searchMonth: dateTypeFilter === 0 ? new Date().getMonth() + 1 : 0,
             searchYear: dateTypeFilter === 0 ? new Date().getFullYear() : 0,
         }
@@ -713,8 +729,8 @@ function OnBoardList() {
         searchType: '',
         islost: '',
         EngType:'A',
-        toDate:'',
-        fromDate:'',
+        fromDate: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
+        toDate: new Date(date),
         EngagementOption:'All'
       }
       setDateTypeFilter(0)
@@ -725,8 +741,8 @@ function OnBoardList() {
 
       onRemoveHRFilters();
       setSearchText('')
-      setStartDate();
-      setEndDate();
+      setStartDate(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
+      setEndDate(new Date(date));
     }, [
       setAppliedFilters,
       setCheckedState,
@@ -793,17 +809,19 @@ function OnBoardList() {
                 <Radio.Group                 
                       onChange={(e) => {
                        setDateTypeFilter(e.target.value)
-                       setStartDate();
-                       setEndDate();
+                       setStartDate(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
+                       setEndDate(new Date(date));
+                   
                         setTableFilteredState({
                           ...tableFilteredState,
                           searchText: searchText,
                           filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard ,
-                            fromDate: '',
-                          toDate: '',
+                            fromDate: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
+                          toDate: new Date(date),
+                          EngType:'A',EngagementOption:'All'
                           },
                         })
-                 
+                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:'A',EngagementOption:'All' } }))
                         
                       }}
                       value={dateTypeFilter}
@@ -862,8 +880,8 @@ function OnBoardList() {
                   <Radio.Group                 
                       onChange={(e) => {
                         if(e.target.value === 'D'){
-                          if(!startDate){
-                            return message.error('Please select Month-Year' )
+                          if(!startDate && dateTypeFilter === 1){
+                            return message.error('Please select date range' )
                           }
                         }
                         setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:e.target.value} }))
@@ -879,11 +897,6 @@ function OnBoardList() {
 
                     {dateTypeFilter === 1 &&   <Radio.Group                 
                       onChange={(e) => {
-                        if(e.target.value === 'D'){
-                          if(!startDate){
-                            return message.error('Please select Month-Year' )
-                          }
-                        }
                         setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngagementOption:e.target.value} }))
                         //  setEngagementType(e.target.value);
                         
@@ -977,7 +990,7 @@ function OnBoardList() {
                                 <li>Direct Placement: 1/0</li>
                               </ol>
                             </div>}>
-                              <div className={onboardList.summaryTooltip}>?</div>
+                              <div className={onboardList.summaryTooltip}>!</div>
                             </Tooltip>
                         </div>
                         <div className={onboardList.filterType}>
