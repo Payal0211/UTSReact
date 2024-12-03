@@ -127,7 +127,7 @@
 .searchFilterSet{
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
-    width: 250px;
+    width: 235px;
     height: 44px;
     display: flex;
     justify-content: space-evenly;
@@ -233,6 +233,13 @@
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
     cursor: pointer;
+}
+
+.summaryTooltip {
+    border-radius: 50%;
+    background: var(--color-sunlight);
+    width: 20px;
+    margin-left: 5px;
 }
 
 .btnPrimary {
