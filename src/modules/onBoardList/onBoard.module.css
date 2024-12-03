@@ -240,6 +240,7 @@
     background: var(--color-sunlight);
     width: 20px;
     margin-left: 5px;
+    font-weight: bold;
 }
 
 .btnPrimary {
