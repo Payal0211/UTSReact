@@ -1218,7 +1218,7 @@ const EditHRFields = ({
 
     //   return cities.join(",");
     // }
-    return NearByCitesValues.length ? NearByCitesValues.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",") : []
+    return NearByCitesValues.length ? NearByCitesValues?.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",") : []
   };
 
   const getParsingType = (isHaveJD, parseType) => {
@@ -1335,7 +1335,7 @@ const EditHRFields = ({
         return
       }
 
-      if(watch("workingMode").value !== WorkingMode.REMOTE && NearByCitesValues.length === 0){
+      if(watch("workingMode").value !== WorkingMode.REMOTE && NearByCitesValues?.length === 0){
         setIsSavedLoading(false);
         setNearByCitesError(true)
         return
