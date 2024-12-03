@@ -5,8 +5,8 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
-import { Table, Radio, Modal, message } from 'antd';
-import { useEffect, useMemo, useState, useCallback, Suspense } from 'react';
+import { Table, Radio, Modal, message, Tooltip } from 'antd';
+import { useEffect, useMemo, useState, useCallback, Suspense, useRef } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
 import LogoLoader from 'shared/components/loader/logoLoader';
@@ -735,6 +735,25 @@ function OnBoardList() {
       tableFilteredState,
     ]);
 
+
+    const scrollRef = useRef(null); // Reference for the scrollable container
+
+    // Scroll to the left
+    const scrollLeft = () => {
+      scrollRef.current.scrollBy({
+        left: -300, // Adjust the value based on card width
+        behavior: "smooth",
+      });
+    };
+  
+    // Scroll to the right
+    const scrollRight = () => {
+      scrollRef.current.scrollBy({
+        left: 300, // Adjust the value based on card width
+        behavior: "smooth",
+      });
+    };
+
     return(
       <div className={onboardList.hiringRequestContainer}>
           {/* <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}> */}
@@ -756,10 +775,22 @@ function OnBoardList() {
                     </div>
                   </div>
                   <p onClick={()=> clearFilters() }>Reset Filters</p>
+
+                  <div className={onboardList.searchFilterSet}>
+                    <SearchSVG style={{ width: '16px', height: '16px' }} />
+                    <input
+                      type={InputType.TEXT}
+                      className={onboardList.searchInput}
+                      placeholder="Search Table"
+                      value={searchText}
+                      onChange={(e) => {
+                        setSearchText(e.target.value);									
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className={onboardList.filterRight}>		
-      <div className={onboardList.dateTypeFilters}>
-                    <Radio.Group                 
+                <div className={onboardList.filterRight}>	
+                <Radio.Group                 
                       onChange={(e) => {
                        setDateTypeFilter(e.target.value)
                        setStartDate();
@@ -779,49 +810,12 @@ function OnBoardList() {
                     >
                       <Radio value={0}>Current Month</Radio>
                       <Radio value={1}>Search With Date Range</Radio>
-                    </Radio.Group>  
-
-
-
-
-                    <Radio.Group                 
-                      onChange={(e) => {
-                        if(e.target.value === 'D'){
-                          if(!startDate){
-                            return message.error('Please select Month-Year' )
-                          }
-                        }
-                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:e.target.value} }))
-                        //  setEngagementType(e.target.value);
-                        
-                      }}
-                      value={tableFilteredState?.filterFields_OnBoard?.EngType}
-                    >
-                      <Radio value={'A'}>All</Radio>
-                      <Radio value={'C'}>Contract</Radio>
-                      <Radio value={'D'}>DP</Radio>
-                    </Radio.Group>  
-      </div>
-                     
-                    
-                    <div className={onboardList.searchFilterSet}>
-                    <SearchSVG style={{ width: '16px', height: '16px' }} />
-                    <input
-                      type={InputType.TEXT}
-                      className={onboardList.searchInput}
-                      placeholder="Search Table"
-                      value={searchText}
-                      onChange={(e) => {
-                        setSearchText(e.target.value);									
-                      }}
-                    />
-                  </div>
+                    </Radio.Group>  	                 
 
                     {dateTypeFilter === 1 && 
                     
                     <div className={onboardList.calendarFilterSet}>
 							<div className={onboardList.label}>Date</div>
-              <div className={onboardList.dateTypeFilters}>
 							<div className={onboardList.calendarFilter}>
 								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
 								<DatePicker
@@ -839,24 +833,7 @@ function OnBoardList() {
                   selectsRange
 								/>
 							</div>
-                  <Radio.Group                 
-                      onChange={(e) => {
-                        if(e.target.value === 'D'){
-                          if(!startDate){
-                            return message.error('Please select Month-Year' )
-                          }
-                        }
-                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngagementOption:e.target.value} }))
-                        //  setEngagementType(e.target.value);
-                        
-                      }}
-                      value={tableFilteredState?.filterFields_OnBoard?.EngagementOption}
-                    >
-                      <Radio value={'All'}>All</Radio>
-                      <Radio value={'Active'}>Active</Radio>
-                      <Radio value={'Closed'}>Closed</Radio>
-                    </Radio.Group>
-              </div>
+                 
 						</div>
           }
                  
@@ -876,11 +853,105 @@ function OnBoardList() {
                 </div>
               </div>
             </div>
+
+            <div className={onboardList.filterContainer}>
+                <div
+                  className={`${onboardList.filterSets} ${onboardList.filterDescription}`}>
+                  <p style={{margin:'0', fontWeight:'bold'}}>Add Quick Filters:</p> 
+
+                  <Radio.Group                 
+                      onChange={(e) => {
+                        if(e.target.value === 'D'){
+                          if(!startDate){
+                            return message.error('Please select Month-Year' )
+                          }
+                        }
+                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:e.target.value} }))
+                        //  setEngagementType(e.target.value);
+                        
+                      }}
+                      value={tableFilteredState?.filterFields_OnBoard?.EngType}
+                    >
+                      <Radio value={'A'}>All</Radio>
+                      <Radio value={'C'}>Contract</Radio>
+                      <Radio value={'D'}>DP</Radio>
+                    </Radio.Group>  
+
+                    {dateTypeFilter === 1 &&   <Radio.Group                 
+                      onChange={(e) => {
+                        if(e.target.value === 'D'){
+                          if(!startDate){
+                            return message.error('Please select Month-Year' )
+                          }
+                        }
+                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngagementOption:e.target.value} }))
+                        //  setEngagementType(e.target.value);
+                        
+                      }}
+                      value={tableFilteredState?.filterFields_OnBoard?.EngagementOption}
+                    >
+                      <Radio value={'All'}>All Engagement</Radio>
+                      <Radio value={'Active'}>Active Engagement</Radio>
+                      <Radio value={'Closed'}>Closed Engagement</Radio>
+                    </Radio.Group>}
+
+                </div>
+            </div>
+
+           
                      
             <div className={onboardList.filterContainer}>
                 <div
                   className={`${onboardList.filterSets} ${onboardList.filterDescription}`}>
-                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <>
+                     <div style={{ position: "relative", overflow: "hidden" }}>
+                  {/* Scroll Buttons */}
+                  {/* <button
+                    onClick={scrollLeft}
+                    style={{
+                      position: "absolute",
+                      left: "0",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      zIndex: 1,
+                      backgroundColor: "#fff",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: "10px",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                    }}
+                  >
+                    {"<"}
+                  </button>
+                  <button
+                    onClick={scrollRight}
+                    style={{
+                      position: "absolute",
+                      right: "0",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      zIndex: 1,
+                      backgroundColor: "#fff",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: "10px",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                    }}
+                  >
+                    {">"}
+                  </button> */}
+
+                  {/* Scrollable Container */}
+                  <div
+                    ref={scrollRef}
+                    style={{
+                      display: "flex",
+                      gap: "15px",
+                      overflowX: "auto",
+                      scrollBehavior: "smooth",
+                      padding: "10px 0",
+                    }}
+                  >
+                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <>
                         <div className={onboardList.filterType}>
                           <img
                             src={Handshake}
@@ -893,7 +964,21 @@ function OnBoardList() {
                                 ? onBoardListData[0]?.s_TotalActiveEng
                                 : 0}
                             </span>
+                            
+                            
                           </h2>
+                          <Tooltip  placement="bottomLeft" 
+                            
+                            title={<div>
+                              Active engagements determined by the following count:
+                              <ol>
+                                <li>Full time: 1</li>
+                                <li>Part time: 0.5</li>
+                                <li>Direct Placement: 1/0</li>
+                              </ol>
+                            </div>}>
+                              <div className={onboardList.summaryTooltip}>?</div>
+                            </Tooltip>
                         </div>
                         <div className={onboardList.filterType}>
                           <img
@@ -914,8 +999,8 @@ function OnBoardList() {
                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&
                   <div className={onboardList.filterType}>
                     <img
-                      src={Briefcase}
-                      alt="briefcase"
+                      src={Rocket}
+                      alt="Rocket"
                     />
                     <h2>
                       Average NR% :{' '}
@@ -992,6 +1077,9 @@ function OnBoardList() {
                       <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? onBoardListData[0]?.s_TotalFeedbackReceived : 0}</span>
                     </h2>
                   </div>
+                  </div>
+                </div>
+                  
                 </div>
             </div>
             
