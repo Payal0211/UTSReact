@@ -165,7 +165,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         align: "left",
         width: '150px', 
         render:(text,result)=>{
-          return   `${text} ${result.currencySign}`
+          return   `${result.currencySign} ${text} `
         }
       },
       {
@@ -175,7 +175,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         align: "left",
         width: '150px', 
         render:(text,result)=>{
-          return   `${text} ${result.currencySign}`
+          return   `${result.currencySign} ${text} `
         }
       },
       {
@@ -185,7 +185,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         align: "left",
         width: '150px', 
         render:(_,result)=>{
-          return (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) + ` ${result.currencySign}`
+          return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
         }
       },
       {
