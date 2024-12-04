@@ -655,16 +655,16 @@ function OnBoardList() {
 	}
 
     const getEngagementFilterList = useCallback(async () => {
-      setLoading(true); 
+      // setLoading(true); 
       const response = await engagementRequestDAO.getEngagementFilterListDAO();
       if (response?.statusCode === HTTPStatusCode.OK) {
-        setLoading(false);
+        // setLoading(false);
         setFiltersList(response && response?.responseBody?.details);
       } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-        setLoading(false);
+        // setLoading(false);
         return navigate(UTSRoutes.LOGINROUTE);
       } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-        setLoading(false);
+        // setLoading(false);
         return navigate(UTSRoutes.SOMETHINGWENTWRONG);
       } else {
         return 'NO DATA FOUND';
