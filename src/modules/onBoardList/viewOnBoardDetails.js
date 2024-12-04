@@ -178,7 +178,7 @@ export default function ViewOnBoardDetails() {
         key: "br",
         align: "left",
         render: (value, data) => {
-          return value + ` ${data.currency}`;
+          return `${data.currency} ` + value ;
         },
       },
       {
@@ -187,7 +187,7 @@ export default function ViewOnBoardDetails() {
         key: "pr",
         align: "left",
         render: (value, data) => {
-          return value + ` ${data.currency}`;
+          return `${data.currency} ` + value;
         },
       },
       {
@@ -196,7 +196,7 @@ export default function ViewOnBoardDetails() {
         key: "nR_DP_Value",
         align: "left",
         render: (value, data) => {
-          return value + ` ${data.currency}`;
+          return `${data.currency} ` + value;
         },
       },
       {
