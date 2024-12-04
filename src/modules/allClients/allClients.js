@@ -89,21 +89,21 @@ function AllClients() {
     const [getcompanyID,setcompanyID] = useState();
 
 	const getFilterRequest = useCallback(async () => {
-        setLoading(true);
+        // setLoading(true);
 		// const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
         const  response = await allClientRequestDAO.getClientFilterDAO();
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody?.Data);
-            setLoading(false)
+            // setLoading(false)
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-            setLoading(false)
+            // setLoading(false)
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-            setLoading(false)
+            // setLoading(false)
 			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
 		} else {
-            setLoading(false)
+            // setLoading(false)
 			return 'NO DATA FOUND';
 		}
 	}, [navigate]);
@@ -119,7 +119,7 @@ function AllClients() {
     const spaceName = urlParams.get('clientName')
 
 const updateSpaceIDForClientFun = async () =>{
-    setLoading(true);
+    // setLoading(true);
     let payload = {
         "clientEmail": email,
         "SpaceID": name,
@@ -146,7 +146,7 @@ const updateSpaceIDForClientFun = async () =>{
             1000,
         )
    }
-   setLoading(false);
+//    setLoading(false);
 }
 
     useEffect(() => {
