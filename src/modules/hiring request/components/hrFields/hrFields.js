@@ -3428,7 +3428,9 @@ const HRFields = ({
                   <Radio value={true}>Vetted Profile</Radio>
                 </Radio.Group>
 </div> } */}
-
+              <div className={HRFieldStyle.colMd12}>
+                {userCompanyTypeID === 1 && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} /> }
+              </div>
               {/* Pay per Hire  */}
               {userCompanyTypeID === 1 && (
                 <div className={HRFieldStyle.colMd12}>
@@ -3951,7 +3953,7 @@ const HRFields = ({
 						</div> */}
             </div>
 
-            {userCompanyTypeID === 1 && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} /> }
+           
 
             <div className={HRFieldStyle.row}>
               {isHRDirectPlacement ? (

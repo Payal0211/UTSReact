@@ -33,6 +33,7 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.8.0",
     "react-toastify": "^9.1.1",
+    "swiper": "^11.1.15",
     "web-vitals": "^2.1.4",
     "widget-demo-chat": "^2.0.26",
     "xlsx": "^0.18.5"

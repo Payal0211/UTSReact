@@ -12,6 +12,7 @@ import PreviewClientModal from "modules/client/components/previewClientDetails/p
 import spinGif from "assets/gif/RefreshLoader.gif";
 import ReactQuill from "react-quill";
 import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
+import EngagementSection from "./engagementSection";
 
 function CompanySection({
   companyID,
@@ -30,6 +31,7 @@ function CompanySection({
   loadingCompanyDetails,
   showFetchATButton,
   setShowFetchAIButton,
+  resetField,unregister,fields,hooksProps,engagementDetails,hiringDetailsFromGetDetails
 }) {
   const [getUploadFileData, setUploadFileData] = useState("");
   const [base64Image, setBase64Image] = useState("");
@@ -526,6 +528,21 @@ function CompanySection({
                     {/* )} */}
                   </div>
                 </div>
+
+                <EngagementSection
+                  companyID={companyID}
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  watch={watch}
+                  resetField={resetField}
+                  unregister={unregister}
+                  hiringDetailsFromGetDetails={hiringDetailsFromGetDetails}
+                  engagementDetails={engagementDetails}
+                  hooksProps={hooksProps}
+                  loadingDetails={loadingDetails}
+                  fields={fields}
+                />
 
                 <div className={AddNewClientStyle.row}>
                   <div className={AddNewClientStyle.colMd6}>

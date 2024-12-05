@@ -3070,7 +3070,9 @@ const EditHRFields = ({
                   <Radio value={true}>Vetted Profile</Radio>
                 </Radio.Group>
 </div> } */}
-
+                  <div className={HRFieldStyle.colMd12}>
+                      {companyType?.id === 1 && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} /> }
+                  </div>
                   {companyType?.id === 1 && (
                     <div className={HRFieldStyle.colMd12}>
                       <div className={HRFieldStyle.formGroup}>
@@ -3630,7 +3632,7 @@ const EditHRFields = ({
                   )}
                 </div>
 
-                {companyType?.id === 1 && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} /> }
+                
 
                 <div className={HRFieldStyle.row}>
                   {companyType?.id === 1 && (
