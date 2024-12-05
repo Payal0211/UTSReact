@@ -33,6 +33,13 @@ import EngagementAddFeedback from 'modules/engagement/screens/engagementAddFeedb
 import { useForm } from 'react-hook-form';
 import moment from 'moment';
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Keyboard, Scrollbar, Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/scrollbar';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
 const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId) => {
     return [     
       {
@@ -87,6 +94,16 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         key: "typeOfHR",
         align: "left",
         width: '180px',
+        render:(text,result) => {
+          return <p style={{
+            color: engagementUtils.getClientFeedbackColor(
+              result?.feedbackType,
+            ),
+            // textDecoration: 'underline',
+            // display: 'inline-flex',
+            // width: 'max-content',
+          }}>{text}</p>
+        }
       },
       {
         title: "Job Title",
@@ -915,8 +932,8 @@ function OnBoardList() {
                      
             <div className={onboardList.filterContainer}>
                 <div
-                  className={`${onboardList.filterSets} ${onboardList.filterDescription}`}>
-                     <div style={{ position: "relative", overflow: "hidden" }}>
+                  className={`${onboardList.filterSets} ${onboardList.filterDescription}`} style={{padding:'24px 0'}}>
+                     <div style={{ overflow: "hidden" }}>
                   {/* Scroll Buttons */}
                   {/* <button
                     onClick={scrollLeft}
@@ -954,7 +971,7 @@ function OnBoardList() {
                   </button> */}
 
                   {/* Scrollable Container */}
-                  <div
+                  {/* <div
                     ref={scrollRef}
                     style={{
                       display: "flex",
@@ -963,8 +980,32 @@ function OnBoardList() {
                       scrollBehavior: "smooth",
                       padding: "10px 0",
                     }}
-                  >
+                  > */}
+                     <Swiper
+                          slidesPerView={4}
+                          centeredSlides={false}
+                          slidesPerGroupSkip={1}
+                          grabCursor={true}
+                          keyboard={{
+                            enabled: true,
+                          }}
+                          // breakpoints={{
+                          //   769: {
+                          //     slidesPerView: 4,
+                          //     slidesPerGroup: 4,
+                          //   },
+                          // }}
+                          // scrollbar={true}
+                          navigation={true}
+                          // pagination={{
+                          //   clickable: true,
+                          // }}
+                          modules={[Keyboard, Scrollbar, Navigation, Pagination]}
+                          className="mySwiper"
+                        >
+       
                       {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <>
+                        <SwiperSlide>
                         <div className={onboardList.filterType}>
                           <img
                             src={Handshake}
@@ -993,6 +1034,8 @@ function OnBoardList() {
                               <div className={onboardList.summaryTooltip}>!</div>
                             </Tooltip>
                         </div>
+                        </SwiperSlide>
+                        <SwiperSlide>
                         <div className={onboardList.filterType}>
                           <img
                             src={LostEng}
@@ -1006,10 +1049,11 @@ function OnBoardList() {
                                 : 0}
                             </span>
                           </h2>
-                        </div>
+                        </div></SwiperSlide>
                      </>}
 
-                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&
+                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && 
+                     <SwiperSlide>
                   <div className={onboardList.filterType}>
                     <img
                       src={Rocket}
@@ -1019,9 +1063,9 @@ function OnBoardList() {
                       Average NR% :{' '}
                       <span>{onBoardListData[0]?.s_AvgNR? onBoardListData[0]?.s_AvgNR: 0}</span>
                     </h2>
-                  </div>}
+                  </div></SwiperSlide>}
 
-                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <div className={onboardList.filterType}>
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide><div className={onboardList.filterType}>
                     <img
                       src={RenewEng}
                       alt="Smile"
@@ -1030,9 +1074,10 @@ function OnBoardList() {
                       Renew Eng. :{' '}
                       <span>{onBoardListData[0]?.s_TotalRenewEng ? onBoardListData[0]?.s_TotalRenewEng : 0}</span>
                     </h2>
-                  </div>} 
+                  </div></SwiperSlide>} 
                
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  <SwiperSlide>
                   <div className={onboardList.filterType}>
                     <img
                       src={Briefcase}
@@ -1042,8 +1087,21 @@ function OnBoardList() {
                       Active DP Eng. :{' '}
                       <span>{onBoardListData[0]?.s_TotalDPActiveEng ? onBoardListData[0]?.s_TotalDPActiveEng : 0}</span>
                     </h2>
-                  </div>}
+                  </div></SwiperSlide>}
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  <SwiperSlide>
+                  <div className={onboardList.filterType}>
+                    <img
+                      src={Briefcase}
+                      alt="briefcase"
+                    />
+                    <h2>
+                      Added DP :{' '}
+                      <span>{onBoardListData[0]?.s_AddedDP ? onBoardListData[0]?.s_AddedDP : 0}</span>
+                    </h2>
+                  </div></SwiperSlide>}
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  <SwiperSlide>
                   <div className={onboardList.filterType}>
                     <img
                       src={LostEng}
@@ -1053,7 +1111,7 @@ function OnBoardList() {
                       Lost DP Eng. :{' '}
                       <span>{onBoardListData[0]?.s_TotalDPLostEng ? onBoardListData[0]?.s_TotalDPLostEng : 0}</span>
                     </h2>
-                  </div>}
+                  </div></SwiperSlide>}
                   {/* <div className={onboardList.filterType}>
                     <img
                       src={LostEng}
@@ -1069,6 +1127,7 @@ function OnBoardList() {
                   </div> */}
                 
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  <SwiperSlide>
                   <div className={onboardList.filterType}>
                     <img
                       src={Briefcase}
@@ -1078,8 +1137,9 @@ function OnBoardList() {
                       Average DP% :{' '}
                       <span>{onBoardListData[0]?.s_AvgDP ? onBoardListData[0]?.s_AvgDP : 0}</span>
                     </h2>
-                  </div>}
+                  </div></SwiperSlide>}
 
+                  <SwiperSlide>
                   <div className={onboardList.filterType}>
                     <img
                       src={FeedBack}
@@ -1090,7 +1150,9 @@ function OnBoardList() {
                       <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? onBoardListData[0]?.s_TotalFeedbackReceived : 0}</span>
                     </h2>
                   </div>
-                  </div>
+                  </SwiperSlide>
+                  </Swiper>
+                  {/* </div> */}
                 </div>
                   
                 </div>
