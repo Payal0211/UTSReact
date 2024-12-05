@@ -460,6 +460,8 @@ function AddCompany() {
         clearErrors={clearErrors}
         setError={setError}
         watch={watch}
+        resetField={resetField}
+        unregister={unregister}
         companyDetails={getCompanyDetails?.basicDetails}
         setCompanyDetails={setCompanyDetails}
         loadingDetails={loadingDetails}
@@ -469,6 +471,16 @@ function AddCompany() {
         loadingCompanyDetails={loadingCompanyDetails}
         showFetchATButton={showFetchATButton}
         setShowFetchAIButton={setShowFetchAIButton}
+        hiringDetailsFromGetDetails={getCompanyDetails?.hiringDetails}
+        engagementDetails={getCompanyDetails?.engagementDetails}
+        hooksProps={{checkPayPer, setCheckPayPer, IsChecked, 
+          setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, 
+          setPricingTypeError,payPerError, setPayPerError,creditError, 
+          setCreditError,manageablePricingType, setManageablePricingType,
+          hrPricingTypes, setHRPricingTypes,getRequiredHRPricingType,pricingTypeErrorPPH,
+          setPricingTypeErrorPPH,confidentialInfo,setConfidentialInfo
+        }}
+        fields={fields}
       />
 
       <FundingSection
@@ -519,7 +531,7 @@ function AddCompany() {
         setDisableSubmit={setDisableSubmit}
       />
 
-      <EngagementSection
+      {/* <EngagementSection
         companyID={companyID}
         register={register}
         errors={errors}
@@ -538,7 +550,7 @@ function AddCompany() {
         }}
         loadingDetails={loadingDetails}
         fields={fields}
-      />
+      /> */}
 
       <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>

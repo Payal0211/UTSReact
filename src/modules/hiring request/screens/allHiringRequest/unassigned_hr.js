@@ -303,6 +303,7 @@ const UnassignedHRScreen = () => {
 		const saveEditRole = useCallback(async () => {
 			// if(role){
 				// let e = encodeURIComponent(role)
+        setLoading(true);
         const data = {
           POCID:assignedPOCID,HRID:values?.HRID
         }
@@ -311,10 +312,12 @@ const UnassignedHRScreen = () => {
 				if(result?.statusCode === HTTPStatusCode.OK){
 					message.success(`AM ( ${allPocs.find(item=> item.id === assignedPOCID).value } ) is assigned to ${values?.HR_ID} successfully.`)
 					setIsEdit(false);
+          setLoading(false);
           handleHRRequest(tableFilteredState);
 				}
         else{
 					message.error("POC not Assigned Successfully.")
+          setLoading(false);
 					setIsEdit(false)
 				}	
 			// }	

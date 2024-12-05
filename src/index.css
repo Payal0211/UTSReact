@@ -1495,6 +1495,30 @@ body .jobDescrition h1,body .jobDescrition h2,body .jobDescrition h3,body .jobDe
 /*END Preview Quill Editor*/
 
 
+.swiper {
+  width: 100%;
+  /* height: 100%; */
+}
+
+.swiper-wrapper {
+  margin: 0 10px;
+  margin-left: 35px;
+}
+
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: max-content !important;
+  margin: 0 10px;
+}
+
+.swiper-button-prev, .swiper-button-next {
+  color: var(--color-sunlight) !important;
+}
+
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {

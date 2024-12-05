@@ -24,6 +24,7 @@ const EngagementOnboard = ({
   isLoading,
   scheduleTimezone,
   getOnboardingForm,
+  hideHeader
 }) => {
 
   const [editModal,setEditModal] = useState(false)
@@ -77,7 +78,8 @@ const EngagementOnboard = ({
   return (
     <>
     <div className={allengagementOnboardStyles.engagementModalWrap}>
-      <div className={`${allengagementOnboardStyles.engagementModalTitle} ${allengagementOnboardStyles.syncEng}`}>
+      {  hideHeader === true ? null :
+       <div className={`${allengagementOnboardStyles.engagementModalTitle} ${allengagementOnboardStyles.syncEng}`}>
         <h1>
           Onboarding for {getHRAndEngagementId?.talentName}
           {/* <button
@@ -97,6 +99,8 @@ const EngagementOnboard = ({
         </div>}
        
       </div>
+      }
+     
 
       <div className={allengagementOnboardStyles.engagementBody}>
 

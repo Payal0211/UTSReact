@@ -127,13 +127,15 @@ function EngagementSection({
   }, [getRequiredHRPricingType()])
 
   return (
-    <div className={AddNewClientStyle.tabsFormItem}>
+    <div 
+    // className={AddNewClientStyle.tabsFormItem}
+    >
       {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
-        <div className={AddNewClientStyle.tabsLeftPanel}>
+        {/* <div className={AddNewClientStyle.tabsLeftPanel}>
           <h3>Engagement Details</h3>
-        </div>
+        </div> */}
 
-        <div className={AddNewClientStyle.tabsRightPanel}>
+        <div className={AddNewClientStyle.tabsRightPanel} style={{padding:'0'}}>
           <div className={AddNewClientStyle.row}>
             <div className={AddNewClientStyle.colMd6}>
               <div
@@ -559,7 +561,7 @@ function EngagementSection({
                 checkPayPer?.anotherCompanyTypeID == 0 &&
                 (checkPayPer?.companyTypeID == 0 ||
                   checkPayPer?.companyTypeID == 2)
-              ) && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} />
+              ) && <CompanyConfirmationFields setConfidentialInfo={setConfidentialInfo} confidentialInfo={confidentialInfo} errors={errors} register={register} watch={watch} fields={fields} showPOCMSG={true} />
 
               }
         </div>

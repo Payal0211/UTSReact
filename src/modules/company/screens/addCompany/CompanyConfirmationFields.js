@@ -4,7 +4,7 @@ import HRInputField from "modules/hiring request/components/hrInputFields/hrInpu
 import { InputType,EmailRegEx } from "constants/application";
 import { Checkbox, Select, Radio, Skeleton } from "antd";
 
-export default function CompanyConfirmationFields({setConfidentialInfo,confidentialInfo,errors,register,watch,fields}) {
+export default function CompanyConfirmationFields({setConfidentialInfo,confidentialInfo,errors,register,watch,fields,showPOCMSG}) {
   return (
     <>
               
@@ -151,6 +151,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       placeholder="Company Linkedin"
                       // required
                     />
+                     {showPOCMSG && <p className={AddNewClientStyle.teansactionMessage}>Kindly update the POC details once you add in the client details section.</p>}   
                   </div>
                   </div>
 

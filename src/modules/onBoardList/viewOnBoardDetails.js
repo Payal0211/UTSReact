@@ -104,7 +104,7 @@ export default function ViewOnBoardDetails() {
         align: "left",
       },
       {
-        title: "Talent",
+        title: "Talent Status",
         dataIndex: "talent",
         key: "talent",
         align: "left",
@@ -321,6 +321,7 @@ export default function ViewOnBoardDetails() {
               talentName: `${getOnboardFormDetails?.onboardContractDetails?.talentName} (${getOnboardFormDetails?.onboardContractDetails?.talentEmail})`,
             }}
             getOnboardingForm={getOnboardingForm}
+            hideHeader={true}
           />
         )}
       </div>
@@ -364,7 +365,7 @@ export default function ViewOnBoardDetails() {
   return (
     <>
       <div className={AddNewClientStyle.addNewContainer}>
-        <div className={AddNewClientStyle.addHRTitle}>Engagement Report Details</div>
+        <div className={AddNewClientStyle.addHRTitle}>{getOnboardFormDetails?.onboardContractDetails?.talentName ? `${getOnboardFormDetails?.onboardContractDetails?.talentName} Engagement Details` : ''} </div>
 
         <Tabs
           onChange={(e) => setTitle(e)}
@@ -402,8 +403,8 @@ export default function ViewOnBoardDetails() {
               />,
             },
             {
-              label: "Talents Other Engagement Details",
-              key: "Talents Other Engagement Details",
+              label: "Talent's Other Eng. Details",
+              key: "Talent's Other Eng. Details",
               children: <OtherDetails />,
             },
             // companyPreviewData?.engagementDetails?.companyTypeID && {
