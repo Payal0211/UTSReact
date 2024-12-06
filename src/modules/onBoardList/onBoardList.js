@@ -1004,9 +1004,9 @@ function OnBoardList() {
                           className="mySwiper"
                         >
        
-                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <>
+                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && 
                         <SwiperSlide>
-                        <div className={onboardList.filterType}>
+                        <div className={onboardList.filterType} key={'Active Contract Eng'}>
                           <img
                             src={Handshake}
                             alt="handshaker"
@@ -1035,8 +1035,11 @@ function OnBoardList() {
                             </Tooltip>
                         </div>
                         </SwiperSlide>
-                        <SwiperSlide>
-                        <div className={onboardList.filterType}>
+                       
+                     }
+
+                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide>
+                        <div className={onboardList.filterType} key={'Lost Contract Eng.'}>
                           <img
                             src={LostEng}
                             alt="sad"
@@ -1049,12 +1052,11 @@ function OnBoardList() {
                                 : 0}
                             </span>
                           </h2>
-                        </div></SwiperSlide>
-                     </>}
+                        </div></SwiperSlide>}
 
                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && 
                      <SwiperSlide>
-                  <div className={onboardList.filterType}>
+                  <div className={onboardList.filterType} key={'Average NR% '}>
                     <img
                       src={Rocket}
                       alt="Rocket"
@@ -1065,7 +1067,7 @@ function OnBoardList() {
                     </h2>
                   </div></SwiperSlide>}
 
-                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide><div className={onboardList.filterType}>
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide><div className={onboardList.filterType} key={'Renew Eng.'}>
                     <img
                       src={RenewEng}
                       alt="Smile"
@@ -1078,7 +1080,7 @@ function OnBoardList() {
                
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
-                  <div className={onboardList.filterType}>
+                  <div className={onboardList.filterType} key={'AActive DP Eng.'}>
                     <img
                       src={Briefcase}
                       alt="briefcase"
@@ -1090,7 +1092,7 @@ function OnBoardList() {
                   </div></SwiperSlide>}
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
-                  <div className={onboardList.filterType}>
+                  <div className={onboardList.filterType} key={'Added DP'}>
                     <img
                       src={Briefcase}
                       alt="briefcase"
@@ -1102,7 +1104,7 @@ function OnBoardList() {
                   </div></SwiperSlide>}
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
-                  <div className={onboardList.filterType}>
+                  <div className={onboardList.filterType} key={'Lost DP Eng.'}>
                     <img
                       src={LostEng}
                       alt="sad"
@@ -1128,7 +1130,7 @@ function OnBoardList() {
                 
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
-                  <div className={onboardList.filterType}>
+                  <div className={onboardList.filterType} key={'Average DP%'}>
                     <img
                       src={Briefcase}
                       alt="briefcase"
@@ -1140,7 +1142,7 @@ function OnBoardList() {
                   </div></SwiperSlide>}
 
                   <SwiperSlide>
-                  <div className={onboardList.filterType}>
+                  <div className={onboardList.filterType} key={'Feedback Received'}>
                     <img
                       src={FeedBack}
                       alt="rocket"
