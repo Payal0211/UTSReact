@@ -933,7 +933,7 @@ function OnBoardList() {
             <div className={onboardList.filterContainer}>
                 <div
                   className={`${onboardList.filterSets} ${onboardList.filterDescription}`} style={{padding:'24px 0'}}>
-                     <div style={{ overflow: "hidden" }}>
+                     <div style={{ overflow: "hidden",width:'100%' }}>
                   {/* Scroll Buttons */}
                   {/* <button
                     onClick={scrollLeft}
