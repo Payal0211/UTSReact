@@ -10,6 +10,9 @@ import ViewOnBoardDetails from 'modules/onBoardList/viewOnBoardDetails';
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
 );
+const AMDashboard = React.lazy(() =>
+	import('modules/amDashboard/screens/amdashboard'),
+);
 const AllHiringRequest = React.lazy(() =>
 	import('modules/hiring request/screens/allHiringRequest/mainHRTabs'),
 );
@@ -175,6 +178,7 @@ export default class UTSRoutes {
 	static FORGOTPASSWORDROUTE = '/forgotpassword';
 	static ALLHIRINGREQUESTROUTE = '/allhiringrequest';
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
+	static AMDASHBOARD = '/amdashboard'
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
 	static EDITCLIENT = '/editclient/:CompanyID';
@@ -232,6 +236,11 @@ export const navigateToComponent = {
 	[UTSRoutes.HOMEROUTE]: (
 		<Suspense>
 			<Dashboard />
+		</Suspense>
+	),
+	[UTSRoutes.AMDASHBOARD]: (
+		<Suspense>
+			<AMDashboard />
 		</Suspense>
 	),
 	[UTSRoutes.ALLHIRINGREQUESTROUTE]: (
