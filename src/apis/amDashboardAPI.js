@@ -16,7 +16,7 @@ export const amDashboardAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'ClientAPI.getPOCRequest');
+			return errorDebug(error, 'amDashboardAPI.getPOCRequest');
 		}
 	},
     getDashboardRequest: async function (payload) {
@@ -32,7 +32,23 @@ export const amDashboardAPI = {
 			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'ClientAPI.getPOCRequest');
+			return errorDebug(error, 'amDashboardAPI.getPOCRequest');
+		}
+	},
+    getSummaryRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.AMDASHBOARD +
+			AMDashboardAPI.GET_SUMMARY
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'amDashboardAPI.getSummaryRequest');
 		}
 	},
     getZohoTicketsRequest: async function (payload) {
@@ -48,7 +64,7 @@ export const amDashboardAPI = {
 			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'ClientAPI.getZohoTicketsRequest');
+			return errorDebug(error, 'amDashboardAPI.getZohoTicketsRequest');
 		}
 	},
 }

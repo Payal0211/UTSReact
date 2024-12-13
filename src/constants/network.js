@@ -63,6 +63,7 @@ export class AMDashboardAPI {
 	static FILTERS = 'Filters'
 	static GET_AM_DASHBOARD = 'GetAMDashboard'
 	static GET_ZOHO_TICKETS= 'GetZohoTickets'
+	static GET_SUMMARY = 'GetAMDashboardSummaryCounts'
 }
 
 export class DirectHR {
