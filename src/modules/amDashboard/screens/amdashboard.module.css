@@ -19,7 +19,7 @@
 }
 
 .mainContainerInner{
-    width: 49%;
+    width: 100%;
 }
 
 .engagementListContainer{
@@ -29,6 +29,9 @@
     padding-top: 10px;
     height: 480px;
     overflow: auto;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
 }
 
 .amName{
@@ -55,8 +58,8 @@
     padding: 10px 20px;
 }
 
-.ticketInfo{
-    background: antiquewhite;
+.ticketInfoDash{
+    background: var(--color-sunlight);
     width: 250px;
     padding: 16px;
     justify-content: center;
@@ -64,20 +67,29 @@
     flex-direction: column;
     align-items: center;
     border-radius: 8px;
+    margin: 5px;
 }
 
-.ticketInfo h5, p {
+.ticketInfoDash h5, p {
     margin: 0;
 }
 
-.ticketInfo h5 {
+.ticketInfoDash h5 {
     font-weight: 600;
     font-size: medium;
 }
 
-.ticketInfo p {
+.ticketInfoDash p {
     font-weight: 400;
     font-size: medium;
+}
+
+.clientRenewalsWarning {
+    background: #e74c3c;
+    padding: 10px;
+    color: white;
+    font-weight: 500;
+    border-radius: 8px;
 }
 
 .newHR {
@@ -308,6 +320,10 @@
 .filterSetsInner{
     display: flex;
     align-items: center;
+}
+.filterSetsInner [class*="ant-select"] [class*="ant-select-selector"] {
+    padding-top: 0 !important;
+    padding-bottom: 0px !important;
 }
 
 .filterSetsInner p{

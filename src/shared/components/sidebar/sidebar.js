@@ -10,6 +10,7 @@ import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
 import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
 import ClientHappinessSurveyFunnel from 'assets/svg/Clienthapppy.svg';
+import DDIcon from 'assets/svg/DDIcon.png';
 import Invoice from 'assets/svg/invoice.svg';
 import EngagementDashboard from 'assets/svg/engagementDashboard.svg';
 import EngagementReport from 'assets/svg/engagementReport.png';
@@ -60,7 +61,7 @@ const Sidebar = () => {
 						if(isVisible === false ){
 							return null
 						}
-						if(title === "AM Dashboard" && userData?.LoggedInUserTypeID !== (1 || 4 || 9) ){
+						if(title === "Dashboard" && userData?.LoggedInUserTypeID !== 2 && userData.UserId !== 27 ){
 							return null
 						}
 						return (
@@ -158,7 +159,7 @@ const isAccess = (ID, title) =>{
 	 'Client Report' || 
 	 'I2S Report' ||  'Master' ||  'Deal' ||  'HR Report' ||   'UTM Tracking Report' ||
 	 'Client Happiness Survey' ||  'Team Demand Funnel' ||  'Client Tracking Details'
-	||  'Clients' || title=== 'HR Lost Report' || title=== 'Supply Funnel' ||  "TalentBackout Report" ||  "Replacement Report" || "AM Dashboard")){
+	||  'Clients' || title=== 'HR Lost Report' || title=== 'Supply Funnel' ||  "TalentBackout Report" ||  "Replacement Report" || "Dashboard")){
 
 		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)  
 		
@@ -183,13 +184,13 @@ const getSideBar = (usertypeID,EmployeeID) => {
 	})] : [
 		 new SideBarModels({
 			id: 'UTS_AM_Dashboard',
-			title: 'AM Dashboard',
+			title: 'Dashboard',
 			isActive: false,
-			icon: Briefcase,                                                                                                                    
+			icon: DDIcon ,                                                                                                                    
 			navigateTo: UTSRoutes.AMDASHBOARD,
 			isChildren: false,
 			branch: [],
-			isVisible: isAccess(usertypeID,'AM Dashboard')
+			isVisible: isAccess(usertypeID,'Dashboard')
 		}),
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
