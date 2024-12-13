@@ -40,6 +40,13 @@
     font-size: medium;
 }
 
+.resetText{
+    margin: 0 0 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .engagementList {
     background: white;
     border-radius: 20px;

@@ -14,10 +14,11 @@ import moment from 'moment';
 function AMDashboard() {
     const [ searchText , setSearchText] = useState('');
     const [title, setTitle] = useState("Active engagement");
-    const [ticketTabTitle, setTicketTabTitle] = useState("Active Tickets");
+    const [ticketTabTitle, setTicketTabTitle] = useState("Open");
     const [renewalTabTitle, setRenewalTabTitle] = useState("Active Renewal");
     const [selectedAM, setSelectedAM] = useState([])
     const [userData, setUserData] = useState({});
+    const [summaryCount, setSummaryCount] = useState({});
     const [amList,setAMList] = useState([])
     const [isLoading, setLoading] = useState(false);
     const [engagementList, setEngagementList] = useState([])
@@ -73,17 +74,23 @@ function AMDashboard() {
                 }
                
         } 
-        let zohoPayload = {"userId":  userData?.UserId  }
+        let zohoPayload = {"userId":  userData?.UserId , status: ticketTabTitle[0] === 'O' ? 'A' : ticketTabTitle[0]  }
+        let summaryPayload = {"userId":  userData?.UserId }
         const result = await amDashboardDAO.getDashboardDAO(payload)     
         const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload)
+        const summaryResult = await amDashboardDAO.getSummaryDAO(summaryPayload)
         setLoading(false)
-        console.log('"zohoResult ', zohoResult)
+        // console.log('"zohoResult ', zohoResult)
         if(zohoResult?.statusCode === 200){
             setzohoTicketList(zohoResult.responseBody)
         }
-        console.log('"dd ', result)
+        // console.log('"dd ', result)
         if(result?.statusCode === 200){
             setEngagementList(result.responseBody)
+        }
+        // console.log('summaryResult', summaryResult)
+        if(summaryResult?.statusCode=== 200){
+            setSummaryCount(summaryResult.responseBody)
         }
         }
        
@@ -145,33 +152,39 @@ function AMDashboard() {
 
     const tableColumnsMemo=  useMemo(()=>{
         return [{
-            title: 'Ticket ID',
+            title: 'Ticket #',
             dataIndex: 'ticketNumber',
             key: 'ticketNumber',
             align: 'left',
             width: '60px',
+            render:(text,item)=>{
+                return <a href={item.webUrl} target='_blank' rel="noreferrer"  style={{
+                    color: `var(--uplers-black)`,
+                    textDecoration: 'underline',
+                }}>{text}</a>
+            }
         },
         {
-            title: 'Client Name',
-            dataIndex: 'ticketNumber',
-            key: 'ticketNumber',
+            title: 'Talent',
+            dataIndex: 'talentName',
+            key: 'talentName',
             align: 'left',
             width: '120px',
         },
         {
-            title: 'Issue',
+            title: 'Subjects',
             dataIndex: 'subject',
             key: 'subject',
             align: 'left',
             width: '120px',
         },
-        {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-            align: 'left',
-            width: '120px',
-        },
+        // {
+        //     title: 'Description',
+        //     dataIndex: 'description',
+        //     key: 'description',
+        //     align: 'left',
+        //     width: '120px',
+        // },
         {
             title: 'Status',
             dataIndex: 'status',
@@ -187,13 +200,23 @@ function AMDashboard() {
             width: '60px',
         },
         {
-            title: 'Last Updated',
+            title: 'Created Date',
+            dataIndex: 'createdTime',
+            key: 'createdTime',
+            align: 'left',
+            width: '100px',
+            render:(text)=>{
+                return moment(text).format('DD-MM-YYYY');
+            }
+        },
+        {
+            title: 'Last Updated Date',
             dataIndex: 'modifiedTime',
             key: 'modifiedTime',
             align: 'left',
             width: '100px',
             render:(text)=>{
-                return moment(text).format('DD-MM-YYYY');
+                return text ? moment(text).format('DD-MM-YYYY') : '';
             }
         },
     ]
@@ -205,7 +228,7 @@ function AMDashboard() {
 
     useEffect(()=>{
         getDashboardData()
-    },[userData,selectedAM, title])
+    },[userData,selectedAM, title,ticketTabTitle])
 
     let isAdmin = userData.LoggedInUserTypeID !== ( 4 && 9) // Admin , AM, NBD
 
@@ -220,31 +243,9 @@ function AMDashboard() {
 				<LogoLoader visible={isLoading} />
 			</div>
 
-            <div className={amStyles.filterSets}>
-                        <div className={amStyles.ticketInfoDash}>
-                            <h5>Active Tickets</h5>
-                            <p>25</p>
-                        </div>
-
-                        <div className={amStyles.ticketInfoDash}>
-                            <h5>Resolved Tickets</h5>
-                            <p>25</p>
-                        </div>
-
-                        <div className={amStyles.ticketInfoDash}>
-                            <h5>Pending Renewals</h5>
-                            <p>25</p>
-                        </div>
-
-                        <div className={amStyles.ticketInfoDash}>
-                            <h5>Total Clients</h5>
-                            <p>50</p>
-                        </div>
-            </div>
-
             {isAdmin &&    <div className={amStyles.filterContainer}>
-            <div className={amStyles.filterSets}>
-				<div className={amStyles.filterSetsInner}  style={{width:'50%'}}>
+            <div className={amStyles.filterSets} style={{justifyContent:'left'}}>
+				<div className={amStyles.filterSetsInner}  style={{width:'40%'}}>
                   <Select
 					id="selectedValue"
 					placeholder="select AM" 
@@ -257,7 +258,9 @@ function AMDashboard() {
 					getPopupContainer={(trigger) => trigger.parentElement}
 				/>
 
-					</div>
+               
+
+					</div> <p className={amStyles.resetText} onClick={()=> setSelectedAM([])}>Reset Filter</p>
 					{/* <div className={amStyles.filterRight}>
 						<div className={amStyles.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -277,6 +280,30 @@ function AMDashboard() {
 					</div> */}
 				</div>
             </div>}
+{console.log('summaryCount',summaryCount)}
+            <div className={amStyles.filterSets}>
+                        <div className={amStyles.ticketInfoDash}>
+                            <h5>Active Tickets</h5>
+                            <p>{summaryCount?.activeTickets ?? 0}</p>
+                        </div>
+
+                        <div className={amStyles.ticketInfoDash}>
+                            <h5>Closed Tickets</h5>
+                            <p>{summaryCount?.closedTickets ?? 0}</p>
+                        </div>
+
+                        <div className={amStyles.ticketInfoDash}>
+                            <h5>Upcoming Renewals</h5>
+                            <p>{summaryCount?.upcomingRenewals ?? 0}</p>
+                        </div>
+
+                        <div className={amStyles.ticketInfoDash}>
+                            <h5>Total Clients</h5>
+                            <p>{summaryCount?.totalClients ?? 0}</p>
+                        </div>
+            </div>
+
+           
 
             <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
 				<div className={amStyles.hiringRequest}  >
@@ -294,8 +321,8 @@ function AMDashboard() {
                                     tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
                                     items={[
                                         {
-                                        label: "Active Tickets",
-                                        key: "Active Tickets",
+                                        label: "Open",
+                                        key: "Open",
                                         children: <Table
                                         scroll={{ y: '480px'}}
                                         id="hrListingTable"
@@ -306,8 +333,8 @@ function AMDashboard() {
                                         />,
                                         },
                                             {
-                                            label: "Close Tickets",
-                                            key: "Close Tickets",
+                                            label: "Closed",
+                                            key: "Closed",
                                             children: <Table
                                             scroll={{ y: '480px'}}
                                             id="hrListingTable"
@@ -359,8 +386,8 @@ function AMDashboard() {
                                         />,
                                         },
                                         {
-                                            label: "Close Renewal",
-                                            key: "Close Renewal",
+                                            label: "Closed Renewal",
+                                            key: "Closed Renewal",
                                             children:  <Table
                                             scroll={{ y: '480px'}}
                                             id="hrListingTable"
@@ -379,7 +406,11 @@ function AMDashboard() {
                                     />
 
            
-
+            <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
+				<div className={amStyles.hiringRequest}  >
+					Engagements
+				</div>
+			</div>
       
 
             <div className={amStyles.mainContainer} style={{marginTop:'20px'}}>
