@@ -47,6 +47,7 @@ export class SubDomain {
 	static INTERVIEWER = 'Interviewer/';
 	static SLA_REPORT = 'SLAReport/';
 	static I2S_REPORT = 'InterviewToSuccess/';
+	static AMDASHBOARD = 'AMDashboard/'
 	static HUB_SPOT = 'Hubspot/';
 	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'	
 	static EMAIL_TRACKING = 'AWSSESTrackingDetails/'
@@ -56,6 +57,12 @@ export class SubDomain {
 }
 export class APIType {
 	static USER = '/user';
+}
+
+export class AMDashboardAPI {
+	static FILTERS = 'Filters'
+	static GET_AM_DASHBOARD = 'GetAMDashboard'
+	static GET_ZOHO_TICKETS= 'GetZohoTickets'
 }
 
 export class DirectHR {
