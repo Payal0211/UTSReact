@@ -70,6 +70,38 @@ export const amDashboardDAO  = {
             return errorDebug(error, 'amDashboardDAO.getDashboardDAO');
         }
     },
+    getRenewalDAO: async (payload) => {
+        try {            
+            const allFiltersResult = await amDashboardAPI.getRenewalRequest(payload) ;
+            if (allFiltersResult) {
+				const statusCode = allFiltersResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = allFiltersResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return allFiltersResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return allFiltersResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+        } catch (error) {
+            return errorDebug(error, 'amDashboardDAO.getRenewalDAO');
+        }
+    },
     getSummaryDAO: async (payload) => {
         try {            
             const allFiltersResult = await amDashboardAPI.getSummaryRequest(payload) ;

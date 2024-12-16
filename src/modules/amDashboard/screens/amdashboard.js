@@ -13,9 +13,9 @@ import moment from 'moment';
 
 function AMDashboard() {
     const [ searchText , setSearchText] = useState('');
-    const [title, setTitle] = useState("Active engagement");
+    const [title, setTitle] = useState("Active");
     const [ticketTabTitle, setTicketTabTitle] = useState("Open");
-    const [renewalTabTitle, setRenewalTabTitle] = useState("Active Renewal");
+    const [renewalTabTitle, setRenewalTabTitle] = useState("Active");
     const [selectedAM, setSelectedAM] = useState([])
     const [userData, setUserData] = useState({});
     const [summaryCount, setSummaryCount] = useState({});
@@ -23,6 +23,7 @@ function AMDashboard() {
     const [isLoading, setLoading] = useState(false);
     const [engagementList, setEngagementList] = useState([])
     const [zohoTicketList, setzohoTicketList] = useState([])
+    const [renewalList,setRenewalList] = useState([]);
     const [showTimeline,setShowTimeLine] = useState(false)
 
 	useEffect(() => {
@@ -74,23 +75,47 @@ function AMDashboard() {
                 }
                
         } 
+        let renewalPayload = {
+            "FilterFields_AMDashboard": {
+                amName:selectedAM.join(","),
+                userID: userData?.UserId,
+                EngType: renewalTabTitle[0] 
+            }
+           
+    }
         let zohoPayload = {"userId":  userData?.UserId , status: ticketTabTitle[0] === 'O' ? 'A' : ticketTabTitle[0]  }
         let summaryPayload = {"userId":  userData?.UserId }
-        const result = await amDashboardDAO.getDashboardDAO(payload)     
+        const result = await amDashboardDAO.getDashboardDAO(payload)  
+        const renewalResult = await amDashboardDAO.getRenewalDAO(renewalPayload)   
         const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload)
         const summaryResult = await amDashboardDAO.getSummaryDAO(summaryPayload)
+       
         setLoading(false)
         // console.log('"zohoResult ', zohoResult)
         if(zohoResult?.statusCode === 200){
             setzohoTicketList(zohoResult.responseBody)
+        }else if(zohoResult?.statusCode === 400){
+            setzohoTicketList([])
+        }
+        if(renewalResult?.statusCode === 200){
+            setRenewalList(renewalResult.responseBody)
+        }
+        else if(renewalResult?.statusCode === 400){
+            setRenewalList([])
         }
         // console.log('"dd ', result)
         if(result?.statusCode === 200){
             setEngagementList(result.responseBody)
         }
+        else if(result?.statusCode === 400){
+            setEngagementList([])
+        }
         // console.log('summaryResult', summaryResult)
         if(summaryResult?.statusCode=== 200){
             setSummaryCount(summaryResult.responseBody)
+        }
+        else if(summaryResult?.statusCode === 400){
+            setSummaryCount([])
         }
         }
        
@@ -228,7 +253,7 @@ function AMDashboard() {
 
     useEffect(()=>{
         getDashboardData()
-    },[userData,selectedAM, title,ticketTabTitle])
+    },[userData,selectedAM, title,ticketTabTitle,renewalTabTitle])
 
     let isAdmin = userData.LoggedInUserTypeID !== ( 4 && 9) // Admin , AM, NBD
 
@@ -280,7 +305,7 @@ function AMDashboard() {
 					</div> */}
 				</div>
             </div>}
-{console.log('summaryCount',summaryCount)}
+{console.log('renewalResult',renewalList)}
             <div className={amStyles.filterSets}>
                         <div className={amStyles.ticketInfoDash}>
                             <h5>Active Tickets</h5>
@@ -374,26 +399,26 @@ function AMDashboard() {
                                     tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
                                     items={[
                                         {
-                                        label: "Active Renewal",
-                                        key: "Active Renewal",
+                                        label: "Active",
+                                        key: "Active",
                                         children:  <Table
                                         scroll={{ y: '480px'}}
                                         id="hrListingTable"
                                         columns={engColumnsMemo}
                                         bordered={false}
-                                        dataSource={engagementList}
+                                        dataSource={renewalList}
                                         pagination={false} 
                                         />,
                                         },
                                         {
-                                            label: "Closed Renewal",
-                                            key: "Closed Renewal",
+                                            label: "Closed",
+                                            key: "Closed",
                                             children:  <Table
                                             scroll={{ y: '480px'}}
                                             id="hrListingTable"
                                             columns={engColumnsMemo}
                                             bordered={false}
-                                            dataSource={engagementList}
+                                            dataSource={renewalList}
                                             pagination={false} 
                                             />,
                                             },
@@ -424,13 +449,13 @@ function AMDashboard() {
                                     tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
                                     items={[
                                         {
-                                        label: "Active engagement",
-                                        key: "Active engagement",
+                                        label: "Active",
+                                        key: "Active",
                                         children: <ActiveEngagementList data={engagementList} />,
                                         },
                                         {
-                                        label: "Closed engagement",
-                                        key: "Closed engagement",
+                                        label: "Closed",
+                                        key: "Closed",
                                         children: <ActiveEngagementList data={engagementList} />,
                                         },
                                     ]}

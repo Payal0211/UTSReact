@@ -35,6 +35,22 @@ export const amDashboardAPI = {
 			return errorDebug(error, 'amDashboardAPI.getPOCRequest');
 		}
 	},
+    getRenewalRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.AMDASHBOARD +
+			AMDashboardAPI.GET_AM_RENEWALS
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'amDashboardAPI.getRenewalRequest');
+		}
+	},
     getSummaryRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
