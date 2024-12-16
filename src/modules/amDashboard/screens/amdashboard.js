@@ -88,7 +88,7 @@ function AMDashboard() {
             }
            
     }
-        let zohoPayload = {"userId":  userData?.UserId , status: ticketTabTitle[0] === 'O' ? 'A' : ticketTabTitle[0]  }
+        let zohoPayload = {"userId":  userData?.UserId , status: ticketTabTitle[0] === 'O' ? 'A' : ticketTabTitle[0] ,amNameIds:selectedAM.join(","), }
         let summaryPayload = {"userId":  userData?.UserId }
         const result = await amDashboardDAO.getDashboardDAO(payload)  
         const renewalResult = await amDashboardDAO.getRenewalDAO(renewalPayload)   
