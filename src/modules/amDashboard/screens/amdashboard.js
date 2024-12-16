@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import amStyles from './amdashboard.module.css'
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
+import TicketImg from "assets/tickiteheader.png";
+import Handshake from 'assets/svg/handshake.svg';
+import RenewEng from 'assets/svg/renewEng.png'
+import SparkIcon from 'assets/svg/sparkIcon.png'
 import { InputType } from 'constants/application';
 import { Tabs, Select, Table, Modal } from 'antd';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
@@ -14,6 +18,7 @@ import moment from 'moment';
 function AMDashboard() {
     const [ searchText , setSearchText] = useState('');
     const [title, setTitle] = useState("Active");
+    const [dashboardTabTitle, setDashboardTabTitle] = useState("Tickets");
     const [ticketTabTitle, setTicketTabTitle] = useState("Open");
     const [renewalTabTitle, setRenewalTabTitle] = useState("Active");
     const [selectedAM, setSelectedAM] = useState([])
@@ -269,8 +274,9 @@ function AMDashboard() {
 			</div>
 
             {isAdmin &&    <div className={amStyles.filterContainer}>
-            <div className={amStyles.filterSets} style={{justifyContent:'left'}}>
-				<div className={amStyles.filterSetsInner}  style={{width:'40%'}}>
+            <div className={amStyles.filterSets} style={{justifyContent:'left', background:'none'}}>
+                Select AM
+				<div className={amStyles.filterSetsInner}  style={{width:'40%', marginLeft:'10px'}}>
                   <Select
 					id="selectedValue"
 					placeholder="select AM" 
@@ -305,39 +311,66 @@ function AMDashboard() {
 					</div> */}
 				</div>
             </div>}
-{console.log('renewalResult',renewalList)}
-            <div className={amStyles.filterSets}>
+
+            <div className={amStyles.filterSets} style={{ marginBottom:'20px'}} >
                         <div className={amStyles.ticketInfoDash}>
-                            <h5>Active Tickets</h5>
+                            <img
+                            src={TicketImg}
+                            alt="Ticket"
+                            />
+                            <h5>Active Tickets - </h5>
                             <p>{summaryCount?.activeTickets ?? 0}</p>
                         </div>
 
                         <div className={amStyles.ticketInfoDash}>
-                            <h5>Closed Tickets</h5>
+                        <img
+                            src={SparkIcon}
+                            alt="SparkIcon"
+                            />
+                            <h5>Closed Tickets - </h5>
                             <p>{summaryCount?.closedTickets ?? 0}</p>
                         </div>
 
                         <div className={amStyles.ticketInfoDash}>
-                            <h5>Upcoming Renewals</h5>
+                        <img
+                            src={RenewEng}
+                            alt="renewEngng"
+                            />
+                            <h5>Upcoming Renewals - </h5>
                             <p>{summaryCount?.upcomingRenewals ?? 0}</p>
                         </div>
 
                         <div className={amStyles.ticketInfoDash}>
-                            <h5>Total Clients</h5>
+                        <img
+                            src={Handshake}
+                            alt="handshaker"
+                          />
+                            <h5>Total Clients - </h5>
                             <p>{summaryCount?.totalClients ?? 0}</p>
                         </div>
             </div>
 
-           
-
-            <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
-				<div className={amStyles.hiringRequest}  >
-					Tickets
-				</div>
-			</div>
 
 
-            <Tabs
+            <Tabs 
+              onChange={(e) => setDashboardTabTitle(e)}
+              defaultActiveKey="1"
+              activeKey={dashboardTabTitle}
+              animated={true}
+              tabBarGutter={50}
+              tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
+              items={[
+                {
+                    label: "Tickets",
+                    key: "Tickets",
+                    children: <>
+                        <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
+                            <div className={amStyles.hiringRequest}  >
+                                Tickets
+                            </div>
+                        </div>
+
+                        <Tabs
                                     onChange={(e) => setTicketTabTitle(e)}
                                     defaultActiveKey="1"
                                     activeKey={ticketTabTitle}
@@ -350,7 +383,7 @@ function AMDashboard() {
                                         key: "Open",
                                         children: <Table
                                         scroll={{ y: '480px'}}
-                                        id="hrListingTable"
+                                        id="TicketsOpenListingTable"
                                         columns={tableColumnsMemo}
                                         bordered={false}
                                         dataSource={zohoTicketList}
@@ -362,7 +395,7 @@ function AMDashboard() {
                                             key: "Closed",
                                             children: <Table
                                             scroll={{ y: '480px'}}
-                                            id="hrListingTable"
+                                            id="TicketsClosedListingTable"
                                             columns={tableColumnsMemo}
                                             bordered={false}
                                             dataSource={zohoTicketList}
@@ -376,11 +409,14 @@ function AMDashboard() {
                                         // },
                                     ]}
                                     />
-
-
-            
-
-            <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
+                    </>
+                },
+                
+                {
+                        label: "Client Renewals",
+                        key: "Client Renewals",
+                        children:<>
+                         <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
 				<div className={amStyles.hiringRequest}  >
                     Client Renewals
 				</div>
@@ -403,7 +439,7 @@ function AMDashboard() {
                                         key: "Active",
                                         children:  <Table
                                         scroll={{ y: '480px'}}
-                                        id="hrListingTable"
+                                        id="RenewalsActiveListingTable"
                                         columns={engColumnsMemo}
                                         bordered={false}
                                         dataSource={renewalList}
@@ -415,7 +451,7 @@ function AMDashboard() {
                                             key: "Closed",
                                             children:  <Table
                                             scroll={{ y: '480px'}}
-                                            id="hrListingTable"
+                                            id="RenewalsClosedListingTable"
                                             columns={engColumnsMemo}
                                             bordered={false}
                                             dataSource={renewalList}
@@ -429,8 +465,13 @@ function AMDashboard() {
                                         // },
                                     ]}
                                     />
-
-           
+                        </>
+                },
+                {
+                    label: "Engagements",
+                    key: "Engagements",
+                    children:<>
+                                   
             <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
 				<div className={amStyles.hiringRequest}  >
 					Engagements
@@ -477,6 +518,13 @@ function AMDashboard() {
 
 
             </div>
+                    </>
+                }
+              ]}
+            />
+       
+
+
 
 
                 <Modal

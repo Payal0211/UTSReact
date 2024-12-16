@@ -66,15 +66,23 @@
 }
 
 .ticketInfoDash{
-    background: var(--color-sunlight);
-    width: 250px;
-    padding: 16px;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 8px;
-    margin: 5px;
+     /* background: var(--color-sunlight); */
+     width: 260px;
+     padding: 12px;
+     justify-content: center;
+     display: flex
+ ;
+     /* flex-direction: column; */
+     align-items: center;
+     border: 1px solid gray;
+     border-radius: 8px;
+     margin: 5px;
+}
+
+.ticketInfoDash img{
+    width:24px;
+    height: 24px;
+    margin-right: 5px;
 }
 
 .ticketInfoDash h5, p {
@@ -89,6 +97,7 @@
 .ticketInfoDash p {
     font-weight: 400;
     font-size: medium;
+    margin-left: 5px;
 }
 
 .clientRenewalsWarning {
