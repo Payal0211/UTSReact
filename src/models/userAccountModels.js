@@ -8,5 +8,6 @@ export default class UserAccountModel {
 		this.Token = data.Token;
 		this.EmployeeID = data.EmployeeID;
 		this.Designation = data.Designation;
+		this.UserId = data.UserId;	
 	}
 }
