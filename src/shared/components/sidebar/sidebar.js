@@ -144,27 +144,25 @@ const isAccess = (ID, title) =>{
 	let isVisible = false;
 
 	if(ID === 2){
-		return true
+		isVisible =  true
 	}
 
 	if (title === 'Chat GPT Response' || ID === 1){
-		return true
+		isVisible =  true
 	}
 
-	if(title === ('Hiring Request' || 
-	 'Users' || 
-	 'Engagement' || 
-	 'Demand Funnel' || 
-	 'SLA Report' || 
-	 'Client Report' || 
-	 'I2S Report' ||  'Master' ||  'Deal' ||  'HR Report' ||   'UTM Tracking Report' ||
-	 'Client Happiness Survey' ||  'Team Demand Funnel' ||  'Client Tracking Details'
-	||  'Clients' || title=== 'HR Lost Report' || title=== 'Supply Funnel' ||  "TalentBackout Report" ||  "Replacement Report" || "Dashboard")){
+	if(title === 'Hiring Request' || 
+	  title === 'Users' || 
+	 title === 'Engagement' || 
+	 title === 'Demand Funnel' || 
+	 title === 'SLA Report' || 
+	 title === 'Client Report' || 
+	 title === 'I2S Report' || title === 'Master' || title ===  'Deal' || title === 'HR Report' || title ===  'UTM Tracking Report' ||
+	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details'
+	|| title === 'Clients' || title === 'HR Lost Report' || title === 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report" || title === "Dashboard"){
 
-		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)  
+		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)?true : false;
 		
-	}else{ 
-		return false
 	}
 	return isVisible
 }
@@ -454,4 +452,5 @@ const getSideBar = (usertypeID,EmployeeID) => {
 	return dataList;
 };
 
+console.log('getSideBar',getSideBar())
 export default Sidebar;
