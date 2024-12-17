@@ -89,7 +89,7 @@ function AMDashboard() {
            
     }
         let zohoPayload = {"userId":  userData?.UserId , status: ticketTabTitle[0] === 'O' ? 'A' : ticketTabTitle[0] ,amNameIds:selectedAM.join(","), }
-        let summaryPayload = {"userId":  userData?.UserId }
+        let summaryPayload = {"userId":  userData?.UserId,amNameIds:selectedAM.join(",") }
         const result = await amDashboardDAO.getDashboardDAO(payload)  
         const renewalResult = await amDashboardDAO.getRenewalDAO(renewalPayload)   
         const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload)
@@ -260,7 +260,7 @@ function AMDashboard() {
         getDashboardData()
     },[userData,selectedAM, title,ticketTabTitle,renewalTabTitle])
 
-    let isAdmin = userData.LoggedInUserTypeID !== ( 4 && 9) // Admin , AM, NBD
+    let isAdmin = userData.LoggedInUserTypeID !==  4  //  AM
 
   return (
     <div className={amStyles.hiringRequestContainer}>
