@@ -452,5 +452,4 @@ const getSideBar = (usertypeID,EmployeeID) => {
 	return dataList;
 };
 
-console.log('getSideBar',getSideBar())
 export default Sidebar;
