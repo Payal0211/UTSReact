@@ -20,7 +20,7 @@ function AMDashboard() {
     const [title, setTitle] = useState("Active");
     const [dashboardTabTitle, setDashboardTabTitle] = useState("Tickets");
     const [ticketTabTitle, setTicketTabTitle] = useState("Open");
-    const [renewalTabTitle, setRenewalTabTitle] = useState("Active");
+    const [renewalTabTitle, setRenewalTabTitle] = useState("Upcoming Renewal");
     const [selectedAM, setSelectedAM] = useState([])
     const [userData, setUserData] = useState({});
     const [summaryCount, setSummaryCount] = useState({});
@@ -84,7 +84,7 @@ function AMDashboard() {
             "FilterFields_AMDashboard": {
                 amName:selectedAM.join(","),
                 userID: userData?.UserId,
-                EngType: renewalTabTitle[0] 
+                EngType: renewalTabTitle[0] === 'U' ? 'A' : renewalTabTitle[0]
             }
            
     }
@@ -128,25 +128,21 @@ function AMDashboard() {
 
     const engColumnsMemo = useMemo(()=>{
         return [{
-            title: 'Client Name',
+            title: 'Client ( Email )',
+            dataIndex: 'client',
+            key: 'client',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'Talent ( Email )',
             dataIndex: 'talentName',
             key: 'talentName',
             align: 'left',
             width: '100px',
-        },
-        {
-            title: 'Renewal Date',
-            dataIndex: '',
-            key: '',
-            align: 'left',
-            width: '100px',
-        },
-        {
-            title: 'Status',
-            dataIndex: 'enggementStatus',
-            key: 'enggementStatus',
-            align: 'left',
-            width: '100px',
+            render:(text,result)=>{
+                return `${text ? text : ''} ${result.emailID ? `( ${result.emailID} )` : ''}`;
+            }
         },
         {
             title: 'Engagent ID',
@@ -176,6 +172,21 @@ function AMDashboard() {
             </Link>
             }
         },
+        {
+            title: 'End Date',
+            dataIndex: 'enggementEndate',
+            key: 'enggementEndate',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'enggementStatus',
+            key: 'enggementStatus',
+            align: 'left',
+            width: '100px',
+        },
+       
 
     ]
     },[engagementList])
@@ -195,19 +206,33 @@ function AMDashboard() {
             }
         },
         {
-            title: 'Talent',
-            dataIndex: 'talentName',
-            key: 'talentName',
-            align: 'left',
-            width: '120px',
-        },
-        {
             title: 'Subjects',
             dataIndex: 'subject',
             key: 'subject',
             align: 'left',
             width: '120px',
         },
+        {
+            title: 'Contact',
+            dataIndex: 'contactName',
+            key: 'contactName',
+            align: 'left',
+            width: '120px',
+            render:(text,result)=>{
+                return `${text ? text : ''} ${result.email ? `- ${result.email}` : ''}`;
+            }
+        },
+        {
+            title: 'Talent',
+            dataIndex: 'talentName',
+            key: 'talentName',
+            align: 'left',
+            width: '120px',
+            render:(text,result)=>{
+                return `${text ? text : ''} ${result.talentEmail ? `- ${result.talentEmail}` : ''}`;
+            }
+        },
+      
         // {
         //     title: 'Description',
         //     dataIndex: 'description',
@@ -216,19 +241,19 @@ function AMDashboard() {
         //     width: '120px',
         // },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            align: 'left',
-            width: '60px',
-        },
-        {
             title: 'Priority',
             dataIndex: 'priority',
             key: 'priority',
             align: 'left',
             width: '60px',
         },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            align: 'left',
+            width: '60px',
+        },      
         {
             title: 'Created Date',
             dataIndex: 'createdTime',
@@ -364,12 +389,12 @@ function AMDashboard() {
                     label: "Tickets",
                     key: "Tickets",
                     children: <>
-                        <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
+                        {/* <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
                             <div className={amStyles.hiringRequest}  >
                                 Tickets
                             </div>
-                        </div>
-
+                        </div> */}
+                        <div style={{marginTop:'20px'}}>
                         <Tabs
                                     onChange={(e) => setTicketTabTitle(e)}
                                     defaultActiveKey="1"
@@ -409,24 +434,26 @@ function AMDashboard() {
                                         // },
                                     ]}
                                     />
+                        </div>
                     </>
                 },
                 
                 {
-                        label: "Client Renewals",
-                        key: "Client Renewals",
+                        label: "Engagement Renewal",
+                        key: "Engagement Renewal",
                         children:<>
-                         <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
+                         {/* <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
 				<div className={amStyles.hiringRequest}  >
                     Client Renewals
 				</div>
-			</div>
+			</div> */}
 
-            <div className={amStyles.clientRenewalsWarning} style={{marginBottom:'20px'}}>
-                Client B's renewal is overdue!
-            </div>
-
-            <Tabs
+            {renewalList[0]?.upcomingRenewalText &&      <div className={amStyles.clientRenewalsWarning} style={{marginTop:'20px'}}>
+                {renewalList[0]?.upcomingRenewalText}
+            </div>}
+       
+<div style={{marginTop:'20px'}}>
+ <Tabs
                                     onChange={(e) => setRenewalTabTitle(e)}
                                     defaultActiveKey="1"
                                     activeKey={renewalTabTitle}
@@ -435,8 +462,8 @@ function AMDashboard() {
                                     tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
                                     items={[
                                         {
-                                        label: "Active",
-                                        key: "Active",
+                                        label: "Upcoming Renewal",
+                                        key: "Upcoming Renewal",
                                         children:  <Table
                                         scroll={{ y: '480px'}}
                                         id="RenewalsActiveListingTable"
@@ -447,8 +474,8 @@ function AMDashboard() {
                                         />,
                                         },
                                         {
-                                            label: "Closed",
-                                            key: "Closed",
+                                            label: "Closed Engagements",
+                                            key: "Closed Engagements",
                                             children:  <Table
                                             scroll={{ y: '480px'}}
                                             id="RenewalsClosedListingTable"
@@ -465,6 +492,8 @@ function AMDashboard() {
                                         // },
                                     ]}
                                     />
+</div>
+           
                         </>
                 },
                 {
@@ -472,11 +501,11 @@ function AMDashboard() {
                     key: "Engagements",
                     children:<>
                                    
-            <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
+            {/* <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
 				<div className={amStyles.hiringRequest}  >
 					Engagements
 				</div>
-			</div>
+			</div> */}
       
 
             <div className={amStyles.mainContainer} style={{marginTop:'20px'}}>
