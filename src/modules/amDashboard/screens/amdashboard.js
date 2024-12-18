@@ -10,12 +10,14 @@ import { Tabs, Select, Table, Modal } from 'antd';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { amDashboardDAO } from 'core/amdashboard/amDashboardDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LogoLoader from 'shared/components/loader/logoLoader';
 import TicketModal from '../ticketModal/ticketModal';
 import moment from 'moment';
+import UTSRoutes from 'constants/routes';
 
 function AMDashboard() {
+    const navigate = useNavigate()
     const [ searchText , setSearchText] = useState('');
     const [title, setTitle] = useState("Active");
     const [dashboardTabTitle, setDashboardTabTitle] = useState("Tickets");
@@ -30,6 +32,9 @@ function AMDashboard() {
     const [zohoTicketList, setzohoTicketList] = useState([])
     const [renewalList,setRenewalList] = useState([]);
     const [showTimeline,setShowTimeLine] = useState(false)
+    const [historyData,setHistoryData] = useState({})
+    const [HistoryInfo, setHistoryInfo] = useState([])
+    const [historyLoading,  setHistoryloading] = useState(false)
 
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -39,9 +44,35 @@ function AMDashboard() {
 		getUserResult();
 	}, []);
 
-    const ActiveEngagementList = ({data}) =>{
+    const getHistory = async (id) => {
+        setHistoryloading(true)
+        const historyResult = await amDashboardDAO.getTicketHistoryDAO(id)
+        setHistoryloading(false)
+        console.log('History res',historyResult)
+        if(historyResult.statusCode === 200){
+            setHistoryInfo(historyResult.responseBody)
+        }else{
+            setHistoryInfo([])
+        }
+    }
+
+    const openHistory =  (data)=>{
+        setShowTimeLine(true)
+        setHistoryData(data)
+        getHistory(data.zohoTicketId) 
+    }
+
+    const ActiveEngagementList = ({data, columns}) =>{
         return <div className={amStyles.engagementListContainer}>
-        {data.map(item=>{
+            <Table
+            scroll={{ y: '480px'}}
+            id={"EngagementActiveListingTable" }
+            columns={columns}
+            bordered={false}
+            dataSource={data}
+            pagination={false} 
+            />
+        {/* {data.map(item=>{
             return <div className={amStyles.engagementList}>
                 <span className={amStyles.amName}>{item.talentName}</span>
                 <ul>
@@ -58,7 +89,7 @@ function AMDashboard() {
 						</Link></span></li>
                 </ul>
             </div>
-        })}
+        })} */}
         </div>
     }
     const getFilters = async ()=>{
@@ -94,7 +125,8 @@ function AMDashboard() {
         const renewalResult = await amDashboardDAO.getRenewalDAO(renewalPayload)   
         const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload)
         const summaryResult = await amDashboardDAO.getSummaryDAO(summaryPayload)
-       
+
+       console.log('"zohoResult ', zohoResult,renewalResult,result,summaryResult)
         setLoading(false)
         // console.log('"zohoResult ', zohoResult)
         if(zohoResult?.statusCode === 200){
@@ -102,6 +134,8 @@ function AMDashboard() {
         }else if(zohoResult?.statusCode === 400){
             setzohoTicketList([])
         }
+
+
         if(renewalResult?.statusCode === 200){
             setRenewalList(renewalResult.responseBody)
         }
@@ -189,6 +223,186 @@ function AMDashboard() {
        
 
     ]
+    },[renewalList])
+
+    const engActiveColumnsMemo = useMemo(()=>{
+        return [
+            {
+                title: 'Engagement ID/ HR #',
+                dataIndex: 'engagementID',
+                key: 'engagementID',
+                align: 'left',
+                width: '100px',
+                render:(text,item)=>{
+                    return <>
+                    <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.enggementStatus === "Ongoing" ? true : false }`} target='_blank'  style={{
+                        color: `var(--uplers-black)`,
+                        textDecoration: 'underline',
+                    }}>{item.engagementID}</Link> <br/>
+                    / <Link
+                    to={`/allhiringrequest/${item.hrid}`}
+                    target='_blank'
+                    style={{ color: '#006699', textDecoration: 'underline' }}>
+                    {item.hR_Number}
+                </Link>
+                    </>
+                }
+            },
+            {
+            title: 'Client',
+            dataIndex: 'client',
+            key: 'client',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'Talent',
+            dataIndex: 'talentName',
+            key: 'talentName',
+            align: 'left',
+            width: '100px',
+            render:(text,result)=>{
+                return `${text ? text : ''} ${result.emailID ? `( ${result.emailID} )` : ''}`;
+            }
+        },
+        
+        // {
+        //     title: 'HR #',
+        //     dataIndex: 'hR_Number',
+        //     key: 'hR_Number',
+        //     align: 'left',
+        //     width: '100px',
+        //     render:(text,item)=>{
+        //         return <Link
+        //         to={`/allhiringrequest/${item.hrid}`}
+        //         target='_blank'
+        //         style={{ color: '#006699', textDecoration: 'underline' }}>
+        //         {item.hR_Number}
+        //     </Link>
+        //     }
+        // },
+        {
+            title: 'Eng. Type',
+            dataIndex: 'engType',
+            key: 'engType',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'Start Date',
+            dataIndex: 'contractStartDate',
+            key: 'contractStartDate',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'End Date',
+            dataIndex: 'contractEndDate',
+            key: 'contractEndDate',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'enggementStatus',
+            key: 'enggementStatus',
+            align: 'left',
+            width: '100px',
+        },
+       
+
+    ]
+    },[engagementList])
+    const engClosedColumnsMemo = useMemo(()=>{
+        return [
+            {
+                title: 'Engagement ID/ HR #',
+                dataIndex: 'engagementID',
+                key: 'engagementID',
+                align: 'left',
+                width: '100px',
+                render:(text,item)=>{
+                    return <>
+                    <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.enggementStatus === "Ongoing" ? true : false }`} target='_blank'  style={{
+                        color: `var(--uplers-black)`,
+                        textDecoration: 'underline',
+                    }}>{item.engagementID}</Link> <br/>
+                    / <Link
+                    to={`/allhiringrequest/${item.hrid}`}
+                    target='_blank'
+                    style={{ color: '#006699', textDecoration: 'underline' }}>
+                    {item.hR_Number}
+                </Link>
+                    </>
+                }
+            },
+            {
+            title: 'Client',
+            dataIndex: 'client',
+            key: 'client',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'Talent',
+            dataIndex: 'talentName',
+            key: 'talentName',
+            align: 'left',
+            width: '100px',
+            render:(text,result)=>{
+                return `${text ? text : ''} ${result.emailID ? `( ${result.emailID} )` : ''}`;
+            }
+        },
+        
+        // {
+        //     title: 'HR #',
+        //     dataIndex: 'hR_Number',
+        //     key: 'hR_Number',
+        //     align: 'left',
+        //     width: '100px',
+        //     render:(text,item)=>{
+        //         return <Link
+        //         to={`/allhiringrequest/${item.hrid}`}
+        //         target='_blank'
+        //         style={{ color: '#006699', textDecoration: 'underline' }}>
+        //         {item.hR_Number}
+        //     </Link>
+        //     }
+        // },
+        {
+            title: 'Eng. Type',
+            dataIndex: 'engType',
+            key: 'engType',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'Start Date',
+            dataIndex: 'contractStartDate',
+            key: 'contractStartDate',
+            align: 'left',
+            width: '100px',
+        },
+        {
+            title: 'Actual End Date / End Date',
+            dataIndex: 'contractEndDate',
+            key: 'contractEndDate',
+            align: 'left',
+            width: '200px',
+            render:(text , item)=>{
+                return `${item.actualEndDate} / ${text}`
+            }
+        },
+        {
+            title: 'Status',
+            dataIndex: 'enggementStatus',
+            key: 'enggementStatus',
+            align: 'left',
+            width: '100px',
+        },
+       
+
+    ]
     },[engagementList])
 
     const tableColumnsMemo=  useMemo(()=>{
@@ -211,6 +425,13 @@ function AMDashboard() {
             key: 'subject',
             align: 'left',
             width: '120px',
+            render:(text,item)=>{
+                return  <p onClick={()=> openHistory(item)} style={{
+                    color: `var(--uplers-black)`,
+                    textDecoration: 'underline',
+                    cursor:'pointer',
+                }}>{text}</p>
+            }
         },
         {
             title: 'Contact',
@@ -292,7 +513,7 @@ function AMDashboard() {
         <LogoLoader visible={isLoading} />
 
         <div className={amStyles.addnewHR} style={{ margin: '0px 0 12px 0'}}>
-				<div className={amStyles.hiringRequest} >
+				<div className={amStyles.hiringRequest} onClick={()=>setShowTimeLine(true)}>
 					 Dashboard 
 				</div>
 				<LogoLoader visible={isLoading} />
@@ -521,12 +742,12 @@ function AMDashboard() {
                                         {
                                         label: "Active",
                                         key: "Active",
-                                        children: <ActiveEngagementList data={engagementList} />,
+                                        children: <ActiveEngagementList data={engagementList} columns={engActiveColumnsMemo} />,
                                         },
                                         {
                                         label: "Closed",
                                         key: "Closed",
-                                        children: <ActiveEngagementList data={engagementList} />,
+                                        children: <ActiveEngagementList data={engagementList} columns={engClosedColumnsMemo} />,
                                         },
                                     ]}
                                     />
@@ -565,7 +786,7 @@ function AMDashboard() {
 						onCancel={() =>
 							setShowTimeLine(false)
 						}>
-                <TicketModal />
+                <TicketModal historyLoading={historyLoading} historyData={historyData} HistoryInfo={HistoryInfo} setShowTimeLine={setShowTimeLine} />
                 </Modal>
 
     </div>

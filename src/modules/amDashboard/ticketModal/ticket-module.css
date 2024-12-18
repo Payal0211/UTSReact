@@ -47,6 +47,12 @@
 .ticketStatus.green .upperBorder{
     border: 1px solid #32936F;
 }
+.ticketStatus.blue .upperBorder{
+    border: 1px solid rgb(0, 112, 224);   
+}
+.ticketStatus.red .upperBorder{
+    border: 1px solid rgb(179, 76, 1);   
+}
 .innerBorder {
     display: flex;
     width: 6px;
@@ -56,11 +62,29 @@
 .ticketStatus.green .innerBorder{
     background: #32936F;
 }
+.ticketStatus.blue .innerBorder{
+    background: rgb(0, 112, 224);
+}
+.ticketStatus.red .innerBorder{
+    background: rgb(179, 76, 1);
+}
 .ticketStatus.green {
     background: #EFF7F0;
 }
+.ticketStatus.blue {
+    background: rgb(232, 242, 253);
+}
+.ticketStatus.red {
+    background: rgb(249, 231, 218);
+}
 .ticketStatus.green .ticketStatusText{
     color: #32936F;
+}
+.ticketStatus.blue .ticketStatusText{
+    color: rgb(0, 112, 224);
+}
+.ticketStatus.red .ticketStatusText{
+    color: rgb(179, 76, 1);
 }
 .ticketStatusText {
     font-size: 11px;
@@ -238,4 +262,33 @@
 }
 .notificationDetail.notificationDetailStatus .notificationDetailtext {
     margin-bottom: 0;
+}
+
+.formPanelAction {
+    display: flex;
+    margin-top: 10px;
+}
+
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.formPanelAction button+button {
+    margin-left: 18px;
 }
