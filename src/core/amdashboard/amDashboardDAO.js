@@ -2,7 +2,6 @@ import { amDashboardAPI } from "apis/amDashboardAPI";
 import { HTTPStatusCode } from "constants/network";
 import UTSRoutes from "constants/routes";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
-import { Navigate } from "react-router-dom";
 import { errorDebug } from "shared/utils/error_debug_utils";
 
 export const amDashboardDAO  = {
@@ -26,16 +25,38 @@ export const amDashboardDAO  = {
 					return allFiltersResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
         } catch (error) {
             return errorDebug(error, 'amDashboardDAO.getFiltersDAO');
+        }
+    },
+    getTicketHistoryDAO: async (id)=>{
+        try {            
+            const allFiltersResult = await amDashboardAPI.getTicketHistoryRequest(id) ;
+            if (allFiltersResult) {
+				const statusCode = allFiltersResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = allFiltersResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return allFiltersResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return allFiltersResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+        } catch (error) {
+            return errorDebug(error, 'amDashboardDAO.getTicketHistoryDAO');
         }
     },
     getDashboardDAO: async (payload) => {
@@ -58,12 +79,7 @@ export const amDashboardDAO  = {
 					return allFiltersResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
         } catch (error) {
@@ -90,12 +106,7 @@ export const amDashboardDAO  = {
 					return allFiltersResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
         } catch (error) {
@@ -122,12 +133,7 @@ export const amDashboardDAO  = {
 					return allFiltersResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
         } catch (error) {
@@ -154,12 +160,7 @@ export const amDashboardDAO  = {
 					return allFiltersResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
         } catch (error) {

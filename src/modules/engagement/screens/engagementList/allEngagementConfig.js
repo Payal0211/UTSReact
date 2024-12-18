@@ -604,12 +604,12 @@ export const allEngagementConfig = {
 				width:"180px",
 			},
 			{
-				title: 'Eng. Tenture',
+				title: 'Tenture ( In Month )',
 				dataIndex: 'engagementTenure',
 				key: 'engagementTenure',
 				align: 'left',
-				width:'80px',
-				render: (text) => <p>{text + ' Months'}</p>,
+				width:'180px',
+				render: (text) => <p>{text}</p>,
 			},
 			{
 				title: 'Eng. Start Date',
