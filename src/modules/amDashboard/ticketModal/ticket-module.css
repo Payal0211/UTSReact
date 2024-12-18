@@ -167,6 +167,9 @@
     gap: 16px;
     position: relative;
 }
+.ticketTrackPath.remPath::after{
+    height: fit-content;
+}
 .ticketTrackPath:after {
     content: '';
     width: 1px;
