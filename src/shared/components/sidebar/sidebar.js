@@ -61,9 +61,9 @@ const Sidebar = () => {
 						if(isVisible === false ){
 							return null
 						}
-						if(title === "Dashboard" && userData?.LoggedInUserTypeID !== 2 && userData.UserId !== 27 ){
-							return null
-						}
+						// if(title === "Dashboard" && userData?.LoggedInUserTypeID !== 2 && userData.UserId !== 27 ){
+						// 	return null
+						// }
 						return (
 							<Tooltip
 								key={index}
@@ -145,13 +145,9 @@ const isAccess = (ID, title) =>{
 
 	if(ID === 2){
 		isVisible =  true
-	}
-
-	if (title === 'Chat GPT Response' || ID === 1){
+	}else if (title === 'Chat GPT Response' || ID === 1){
 		isVisible =  true
-	}
-
-	if(title === 'Hiring Request' || 
+	}else if(title === 'Hiring Request' || 
 	  title === 'Users' || 
 	 title === 'Engagement' || 
 	 title === 'Demand Funnel' || 

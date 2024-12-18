@@ -5,6 +5,8 @@ export class NetworkInfo {
 	// static ATS_DOMAIN = '/atsstaging.uplers.com/api/';
 	static ATS_DOMAIN = '/13.233.146.211/api/';
 	static ATS_TOKEN = 'y8sxutshp4gm2u4lsmsmlg';
+	static ZOHO_AUTH = '4b441aae-d361-46e1-ad14-2b2114ffbe17'
+	static ZOHO_DOMAIN = '3.82.177.154:9086/'
 	static DOMAIN = '3.82.177.154:9082/';
 	// static domain = 'https://clientportal.uplers.com/gspace/';
 	static domain = 'https://bb8d-3-218-6-134.ngrok-free.app/';
@@ -13,6 +15,7 @@ export class NetworkInfo {
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
 	static ATS_NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.ATS_DOMAIN
+	static ZOHO_NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.ZOHO_DOMAIN
 	static network =  NetworkInfo.domain;
 	static FILENETWORK = NetworkInfo.PROTOCOL + NetworkInfo.FILEDOMAIN;
 	static ENV = "QA";
@@ -65,6 +68,7 @@ export class AMDashboardAPI {
 	static GET_ZOHO_TICKETS= 'GetZohoTickets'
 	static GET_SUMMARY = 'GetAMDashboardSummaryCounts'
 	static GET_AM_RENEWALS = 'GetAMDashboardRenewals'
+	static GET_TICKET_HISTORY = 'Tickets/GetZohoTicketHistory'
 }
 
 export class DirectHR {

@@ -19,6 +19,19 @@ export const amDashboardAPI = {
 			return errorDebug(error, 'amDashboardAPI.getPOCRequest');
 		}
 	},
+    getTicketHistoryRequest: async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.ZOHO_NETWORK + AMDashboardAPI.GET_TICKET_HISTORY + `?ticketNumber=${id}`
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = NetworkInfo.ZOHO_AUTH;
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'amDashboardAPI.getTicketHistoryRequest');
+		}
+	},
     getDashboardRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
