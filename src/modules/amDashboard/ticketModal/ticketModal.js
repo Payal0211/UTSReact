@@ -20,7 +20,7 @@ export default function TicketModal({historyLoading,historyData,setShowTimeLine,
             <h2>{historyData?.subject}</h2>
             <div className={`ticketStatus ${historyData?.status === 'Open' ? 'blue' : historyData?.status === 'Closed'?  'green' : 'red'}`}>
               <span className='upperBorder'><span className='innerBorder'></span></span>
-              <div className='ticketStatusText'>Status: <span> {historyData?.status}</span></div>
+              <div className='ticketStatusText'> <span> {historyData?.status}</span></div>
             </div>
           </div>
           <div className='subTitleWrapper'>
@@ -50,11 +50,11 @@ export default function TicketModal({historyLoading,historyData,setShowTimeLine,
            
           </div>
             
-            : HistoryInfo?.map(data=>{
-              return <div className='ticketNotidicationBox'>
+            : HistoryInfo?.map((data, mainInd)=>{
+              return <div className='ticketNotidicationBox' >
                   <div className='ticketTrackDate'>{moment(data.eventDate).format('DD MMM, YYYY')}</div>
-                  {data.ticketHistory.map(ticket=>{
-                    return  <div className='ticketTrackPath'>
+                  {data.ticketHistory.map((ticket,ind)=>{
+                    return  <div className={`ticketTrackPath ${ind +1 === data.ticketHistory.length && mainInd + 1 === HistoryInfo.length ? 'remPath' : ''}`}>
                 <div className='notificationImg'>
                   <img src={TicketBag} width='20' height='20' alt="TicketBag" />
                 </div>
