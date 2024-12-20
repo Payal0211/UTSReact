@@ -723,6 +723,136 @@ export const engagementRequestDAO = {
             return errorDebug(error, 'engagementRequestDAO.viewOnboardDetailsDAO');
         }
     },
+	viewDocumentsDetailsDAO: async function (talentID) {
+        try {
+            const onBoardDetails = await EngagementRequestAPI.viewDocumentsDetails(talentID);
+            if (onBoardDetails) {
+                const statusCode = onBoardDetails['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = onBoardDetails.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR || statusCode === HTTPStatusCode.BAD_REQUEST
+                )
+                    return onBoardDetails;
+                // else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+					window.location.reload(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.viewDocumentsDetailsDAO');
+        }
+    },
+	getDocumentTypeDAO: async function () {
+        try {
+            const onBoardDetails = await EngagementRequestAPI.getDocumentTypeRequest();
+            if (onBoardDetails) {
+                const statusCode = onBoardDetails['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = onBoardDetails.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR || statusCode === HTTPStatusCode.BAD_REQUEST
+                )
+                    return onBoardDetails;
+                // else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+					window.location.reload(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.getDocumentTypeDAO');
+        }
+    },
+	verifyDocumentRequestDAO: async function (payload) {
+        try {
+            const onBoardDetails = await EngagementRequestAPI.verifyDocumentRequest(payload);
+            if (onBoardDetails) {
+                const statusCode = onBoardDetails['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = onBoardDetails.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR || statusCode === HTTPStatusCode.BAD_REQUEST
+                )
+                    return onBoardDetails;
+                // else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+					window.location.reload(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.verifyDocumentRequestDAO');
+        }
+    },
+	removeDocumentRequestDAO: async function (payload) {
+        try {
+            const onBoardDetails = await EngagementRequestAPI.removeDocumentRequest(payload);
+            if (onBoardDetails) {
+                const statusCode = onBoardDetails['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = onBoardDetails.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR || statusCode === HTTPStatusCode.BAD_REQUEST
+                )
+                    return onBoardDetails;
+                // else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+					window.location.reload(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.removeDocumentRequestDAO');
+        }
+    },
+	uploadDocumentsDetailsDAO: async function (payload) {
+        try {
+            const onBoardDetails = await EngagementRequestAPI.uploadDocumentsDetails(payload);
+            if (onBoardDetails) {
+                const statusCode = onBoardDetails['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = onBoardDetails.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR || statusCode === HTTPStatusCode.BAD_REQUEST
+                )
+                    return onBoardDetails;
+                // else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+					window.location.reload(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.viewDocumentsDetailsDAO');
+        }
+    },
     getFeedbackFormContentDAO: async function (getHRAndEngagementId) {
         try {
             const feedbackFormContent = await EngagementRequestAPI.feedbackFormContent(getHRAndEngagementId);
