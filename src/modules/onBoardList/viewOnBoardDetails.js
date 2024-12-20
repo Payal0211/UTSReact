@@ -198,8 +198,8 @@ export default function ViewOnBoardDetails() {
         align: "left",
         width:'150px',
         render: (value, data) => {
-          return   <div className={`${AddNewClientStyle.documentStatus} ${value === 'Not Verified' ? AddNewClientStyle.red : value === 'Verified'?  AddNewClientStyle.green :  AddNewClientStyle.red }`}>
-          <div className={`${AddNewClientStyle.documentStatusText} ${value === 'Not Verified' ? AddNewClientStyle.red : value === 'Verified'?  AddNewClientStyle.green :  AddNewClientStyle.red }`}> <span> {value}</span></div>
+          return   <div className={`${AddNewClientStyle.documentStatus} ${value === 'Not Verified' ? AddNewClientStyle.red : value === 'Verified'?  AddNewClientStyle.green :  AddNewClientStyle.darkred }`}>
+          <div className={`${AddNewClientStyle.documentStatusText} ${value === 'Not Verified' ? AddNewClientStyle.red : value === 'Verified'?  AddNewClientStyle.green :  AddNewClientStyle.darkred }`}> <span> {value}</span></div>
         </div>
         },
       },
@@ -210,7 +210,7 @@ export default function ViewOnBoardDetails() {
         align: "left",
         width:'250px',
         render: (value, data) => {
-          return <div>
+          return data.status === 'Inactive'? null : <div>
            
               <IconContext.Provider value={{ color: '#FFDA30', style: { width:'15px',height:'15px' } }}> <Tooltip title="Download" placement="top" >
               <span
