@@ -102,6 +102,9 @@
 .documentStatus.red {
   background: rgb(249, 231, 218);
 }
+.documentStatus.darkred {
+  background: rgb(250, 191, 191);
+}
 
 .documentStatus.green .documentStatusText{
   color: #32936F;
@@ -111,6 +114,9 @@
 }
 .documentStatus.red .documentStatusText{
   color: rgb(179, 76, 1);
+}
+.documentStatus.darkred .documentStatusText{
+  color: red;
 }
 .documentStatusText {
   font-size: 11px;
