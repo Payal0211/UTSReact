@@ -49,6 +49,31 @@
     margin-left: 18px;
 }
 
+.documentActionButton {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.documentActionButton button {
+    color: #FFFFFF;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    padding: 12px 28px;
+    outline: none;
+    border: 1px solid #CECCCC;
+    cursor: pointer;
+    background-color: #87b87f; 
+    margin-left: 5px;
+}
+
+.documentActionButton button.red{
+    background-color: #e43535; 
+}
+
 .calendarFilterSet {
     display: flex;
     justify-content: space-evenly;

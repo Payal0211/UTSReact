@@ -83,7 +83,7 @@ export const allEngagementConfig = {
 			{
 				label: 'AM',
 				name: 'amName',
-				child: filterList?.amName,
+				child: filterList?.amName?.map(item=>({...item,text: item.value,value:item.text})),
 				isSearch: true,
 			},
 
@@ -854,7 +854,7 @@ export const allEngagementConfig = {
 			{
 				label: 'AM',
 				name: 'amName',
-				child: filterList?.amName,
+				child: filterList?.amName?.map(item=>({...item,text: item.value,value:item.text})),
 				isSearch: true,
 			},
 			{

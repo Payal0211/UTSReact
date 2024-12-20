@@ -3,6 +3,7 @@ import {
 	NetworkInfo,
 	OnboardsAPI,
 	SubDomain,
+	TalentDocumentAPI,
 	TalentReplaceAPI,
 } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
@@ -382,6 +383,80 @@ export const EngagementRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'EngagementRequestAPI.onBoardDetails');
+		}
+	},
+	viewDocumentsDetails: async function (talentId) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TALENT_DOCUMENT +
+		    TalentDocumentAPI.GET_DOCUMENT +
+			`?TalentID=${talentId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.viewDocumentsDetails');
+		}
+	},
+	uploadDocumentsDetails: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TALENT_DOCUMENT +
+		    TalentDocumentAPI.UPLOAD_FILE 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendFileDataPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.uploadDocumentsDetails');
+		}
+	},
+	verifyDocumentRequest: async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.TALENT_DOCUMENT +
+			TalentDocumentAPI.VERIFY_DOCUMENT  + `?TalentDocumentID=${id}`
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'amDashboardAPI.verifyDocumentRequest');
+		}
+	},
+	removeDocumentRequest: async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.TALENT_DOCUMENT +
+			TalentDocumentAPI.REMOVE_DOCUMENT + `?TalentDocumentID=${id}`
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'amDashboardAPI.removeDocumentRequest');
+		}
+	},
+	getDocumentTypeRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.TALENT_DOCUMENT +
+			TalentDocumentAPI.GET_FILTER
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'amDashboardAPI.getDocumentTypeRequest');
 		}
 	},
 	feedbackFormContent: async function (getHRAndEngagementId) {
