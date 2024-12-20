@@ -10,7 +10,7 @@ import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
 import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
 import ClientHappinessSurveyFunnel from 'assets/svg/Clienthapppy.svg';
-import DDIcon from 'assets/svg/DDIcon.png';
+import DDIcon from 'assets/svg/DDIcon.webp';
 import Invoice from 'assets/svg/invoice.svg';
 import EngagementDashboard from 'assets/svg/engagementDashboard.svg';
 import EngagementReport from 'assets/svg/engagementReport.png';

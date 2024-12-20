@@ -48,7 +48,7 @@ function AMDashboard() {
         setHistoryloading(true)
         const historyResult = await amDashboardDAO.getTicketHistoryDAO(id)
         setHistoryloading(false)
-        console.log('History res',historyResult)
+        // console.log('History res',historyResult)
         if(historyResult.statusCode === 200){
             setHistoryInfo(historyResult.responseBody)
         }else{
@@ -95,9 +95,8 @@ function AMDashboard() {
     const getFilters = async ()=>{
         const result = await amDashboardDAO.getFiltersDAO()
         if(result.statusCode === 200){
-            setAMList(result.responseBody.amName.map(val=> ({ value: val.value, label: val.text })))
+            setAMList(result.responseBody.amName.map(val=> ({ value: val.text, label: val.value })))
         }
-        console.log('filter', result)
     }
 
     const getDashboardData = async ()=>{
@@ -126,7 +125,7 @@ function AMDashboard() {
         const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload)
         const summaryResult = await amDashboardDAO.getSummaryDAO(summaryPayload)
 
-       console.log('"zohoResult ', zohoResult,renewalResult,result,summaryResult)
+     
         setLoading(false)
         // console.log('"zohoResult ', zohoResult)
         if(zohoResult?.statusCode === 200){
@@ -390,7 +389,7 @@ function AMDashboard() {
             align: 'left',
             width: '200px',
             render:(text , item)=>{
-                return `${item.actualEndDate} / ${text}`
+                return `${item.actualEndDate ? `${item.actualEndDate}` : ''} ${text ?  `/ ${text}` : ''}`
             }
         },
         {

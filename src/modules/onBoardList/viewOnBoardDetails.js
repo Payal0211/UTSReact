@@ -11,6 +11,7 @@ import {
   message,
   Modal,
   Select,
+  Tooltip,
 } from "antd";
 
 import { engagementRequestDAO } from "core/engagement/engagementDAO";
@@ -21,6 +22,11 @@ import { engagementUtils } from "modules/engagement/screens/engagementList/engag
 import { useForm } from "react-hook-form";
 import EngagementAddFeedback from "modules/engagement/screens/engagementAddFeedback/engagementAddFeedback";
 import UTSRoutes from "constants/routes";
+import { FaDownload } from "react-icons/fa";
+import { MdOutlineVerified } from "react-icons/md";
+import { IoIosRemoveCircle } from "react-icons/io";
+import { IconContext } from "react-icons";
+import AddTalentDocuments from "modules/engagement/screens/engagementAddFeedback/addTalentDocuments";
 
 export default function ViewOnBoardDetails() {
   const navigate = useNavigate();
@@ -33,6 +39,8 @@ export default function ViewOnBoardDetails() {
   const [getFeedbackFormContent, setFeedbackFormContent] = useState({});
   const [feedBackSave, setFeedbackSave] = useState(false);
   const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
+  const [documentsList,setDocumentsList] = useState([]);
+  const [docTypeList,setDocTypeList] = useState([]);
   const {
     register,
     handleSubmit,
@@ -68,6 +76,7 @@ export default function ViewOnBoardDetails() {
   const [getEngagementModal, setEngagementModal] = useState({
     engagementFeedback: false,
     engagementAddFeedback: false,
+    addDocumentModal:false
   });
 
   const [getClientFeedbackList, setClientFeedbackList] = useState([]);
@@ -152,6 +161,103 @@ export default function ViewOnBoardDetails() {
     ]
   },[otherDetailsList])
 
+  const documentsColumns = useMemo(() => {
+    return [
+      {
+        title: "Document Name",
+        dataIndex: "documentName",
+        key: "documentName",
+        align: "left",
+        // render: (value, data) => {
+        //   return `${data.monthNames} ( ${data.years} )`;
+        // },
+      },
+      {
+        title: "Document Type",
+        dataIndex: "documentType",
+        key: "documentType",
+        align: "left",
+        render: (value, data) => {
+          return value;
+        },
+      },
+      {
+        title: "Uploaded Date",
+        dataIndex: "uploadDate",
+        key: "uploadDate",
+        align: "left",
+        width:'150px',
+        render: (value, data) => {
+          return  value ;
+        },
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        align: "left",
+        width:'150px',
+        render: (value, data) => {
+          return   <div className={`${AddNewClientStyle.documentStatus} ${value === 'Not Verified' ? AddNewClientStyle.red : value === 'Verified'?  AddNewClientStyle.green :  AddNewClientStyle.red }`}>
+          <div className={`${AddNewClientStyle.documentStatusText} ${value === 'Not Verified' ? AddNewClientStyle.red : value === 'Verified'?  AddNewClientStyle.green :  AddNewClientStyle.red }`}> <span> {value}</span></div>
+        </div>
+        },
+      },
+      {
+        title: "Action",
+        dataIndex: "talentDocumentID",
+        key: "talentDocumentID",
+        align: "left",
+        width:'250px',
+        render: (value, data) => {
+          return <div>
+           
+              <IconContext.Provider value={{ color: '#FFDA30', style: { width:'15px',height:'15px' } }}> <Tooltip title="Download" placement="top" >
+              <span
+              // style={{
+              //   background: 'green'
+              // }}
+              onClick={()=> window.open(`${NetworkInfo.NETWORK}Media/TalentDocuments/${data.documentName}`, '_blank')}
+              className={AddNewClientStyle.feedbackLabel}>
+              {' '}
+              <FaDownload />
+            </span>   </Tooltip>
+            </IconContext.Provider>
+           
+            
+            {data.status !== 'Verified' &&  <IconContext.Provider value={{ color: 'green', style: { width:'15px',height:'15px' } }}><Tooltip title="Verify"  placement="top">
+              <span
+						// style={{
+						// 	background: '#FFDA30'
+						// }}
+            onClick={()=>handleVerifyDocument(data.talentDocumentID)}
+						className={AddNewClientStyle.feedbackLabel}>
+						{' '}
+						<MdOutlineVerified />
+					</span> </Tooltip>
+            </IconContext.Provider>}
+           
+           
+          
+            
+            <IconContext.Provider value={{ color: 'red', style: { width:'15px',height:'15px' } }}><Tooltip title="Remove" placement="top" >
+              <span
+              // style={{
+              //   background: 'red'
+              // }}
+              onClick={()=>handleRemoveDocument(data.talentDocumentID)}
+              className={AddNewClientStyle.feedbackLabel}>
+              {' '}
+              <IoIosRemoveCircle />
+            </span>        </Tooltip>
+            </IconContext.Provider>
+    
+          </div>
+        },
+      },
+    ];
+  }, [documentsList]);
+
   const columns = useMemo(() => {
     return [
       {
@@ -218,7 +324,7 @@ export default function ViewOnBoardDetails() {
 
   const getOtherDetailsTableData = async (payload) => {
     let result = await engagementRequestDAO.getTalentOtherDetailsOtherListDAO(payload);
-    console.log("getOtherDetailsTableData",result)
+
     if (result.statusCode === HTTPStatusCode.OK) {
       setOtherDetailsList(result.responseBody?.Data?.getTalentInfo);
     }
@@ -242,9 +348,11 @@ export default function ViewOnBoardDetails() {
   };
 
   useEffect(() => {
-    getEngagementModal?.engagementAddFeedback &&
-      getFeedbackFormDetails(getHRAndEngagementId);
-  }, [getEngagementModal?.engagementAddFeedback]);
+    if(getEngagementModal?.engagementAddFeedback || getEngagementModal?.addDocumentModal ){
+       getFeedbackFormDetails(getHRAndEngagementId);
+    }
+     
+  }, [getEngagementModal?.engagementAddFeedback, getEngagementModal?.addDocumentModal]);
 
   const getFeedbackList = async (feedBackData) => {
     setLoading(true);
@@ -275,6 +383,45 @@ export default function ViewOnBoardDetails() {
     }
   };
 
+  const getDocumentsDetails = async (talentID) =>{
+    setLoading(true);
+   const  result = await engagementRequestDAO.viewDocumentsDetailsDAO(talentID)
+   setLoading(false);
+  
+   const docTypeRes = await engagementRequestDAO.getDocumentTypeDAO()
+
+   if(docTypeRes.statusCode === HTTPStatusCode.OK){
+      setDocTypeList(docTypeRes.responseBody.details.documentType)
+   }
+
+   if(result.statusCode === HTTPStatusCode.OK){
+    setDocumentsList(result.responseBody.details)
+   }
+   if(result.statusCode === HTTPStatusCode.NOT_FOUND){
+    setDocumentsList([])
+   }
+  }
+
+  const handleVerifyDocument = async (docId)=>{
+    setLoading(true);
+    let result = await engagementRequestDAO.verifyDocumentRequestDAO(docId)
+    setLoading(false);
+    if(result.statusCode === 200){
+      message.success('Document Verify')
+      getDocumentsDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+    }
+  }
+
+  const handleRemoveDocument = async (docId)=>{
+    setLoading(true);
+    let result = await engagementRequestDAO.removeDocumentRequestDAO(docId)
+    setLoading(false);
+    if(result.statusCode === 200){
+      message.success('Document Removed')
+      getDocumentsDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+    }
+  }
+
   const getOnboardingForm = async (getOnboardID) => {
     setOnboardFormDetails({});
     setLoading(true);
@@ -294,6 +441,7 @@ export default function ViewOnBoardDetails() {
       setFeedBackData(prev => ({...prev,onBoardId: getOnboardID}))
       getFeedbackList({...feedBackData,onBoardId: getOnboardID})
       getOtherDetailsTableData({onboardID: getOnboardID,talentID: response?.responseBody?.details?.onboardContractDetails?.talentID})
+      getDocumentsDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
       setLoading(false);
     } else {
       setOnboardFormDetails({});
@@ -344,6 +492,42 @@ export default function ViewOnBoardDetails() {
       </div>
     );
   };
+
+  const DocumentsDetails = () => {
+    return (<>
+    <div className={AddNewClientStyle.engagementModalHeaderButtonContainer}>
+      <button className={AddNewClientStyle.engagementModalHeaderAddBtn} 
+				  onClick={()=> {
+					// setHRAndEngagementId({
+					// 	talentName: getHRAndEngagementId?.talentName,
+					// 	engagementID: getHRAndEngagementId?.engagementID,
+					// 	hrNumber: getHRAndEngagementId?.hrNumber,
+					// 	onBoardId: getHRAndEngagementId?.onBoardId,
+					// 	hrId: getHRAndEngagementId?.hrId,
+					// });
+					setEngagementModal(pre => ({...pre,addDocumentModal:true}));
+				  }}
+				  >Upload Document</button>
+    </div>
+
+
+           <div className={AddNewClientStyle.onboardDetailsContainer}>
+        
+        {isLoading ? (
+          <Skeleton active />
+        ) : (
+          <Table
+            scroll={{ y: "100vh" }}
+            dataSource={documentsList ? documentsList : []}
+            columns={documentsColumns}
+            pagination={false}
+          />         
+        )}
+      </div>
+    </>
+     
+    );
+  };
   
   const OtherDetails = () => {
     return (
@@ -386,6 +570,11 @@ export default function ViewOnBoardDetails() {
               children: <HrsDetails />,
             },
             {
+              label: "Documents",
+              key: "Documents",
+              children: <DocumentsDetails />,
+            },
+            {
               label: "Client Feedback",
               key: "Client Feedback",
               children: <EngagementFeedback 
@@ -414,6 +603,55 @@ export default function ViewOnBoardDetails() {
             // },
           ]}
         />
+
+        {/** Add Document Modal **/}
+          {getEngagementModal.addDocumentModal && 	<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className="engagementAddFeedbackModal"
+						open={getEngagementModal.addDocumentModal}
+						onCancel={() =>{
+              setEngagementModal({
+                ...getEngagementModal,
+                addDocumentModal: false,
+              })
+              reset()
+            }
+						}>
+              <AddTalentDocuments
+                docTypeList={docTypeList.length ? docTypeList.map(item=>({label:item.text,value:item.value})) : []}
+                getDocumentsDetails={getDocumentsDetails}
+                getFeedbackFormContent={getFeedbackFormContent}
+                getHRAndEngagementId={getHRAndEngagementId}
+                onCancel={() =>{
+                  setEngagementModal({
+                    ...getEngagementModal,
+                    addDocumentModal: false,
+                  })
+                  reset()
+                }
+                }
+                setFeedbackSave={setFeedbackSave}
+                feedBackSave={feedBackSave}
+                register={register}
+                handleSubmit={handleSubmit}
+                setValue={setValue}
+                control={control}
+                setError={setError}
+                getValues={getValues}
+                watch={watch}
+                reset={reset}
+                resetField={resetField}
+                errors={errors}
+                feedBackTypeEdit={feedBackTypeEdit}
+                setFeedbackTypeEdit={setFeedbackTypeEdit}
+                setClientFeedbackList={setClientFeedbackList}
+              />
+
+          </Modal> }
+
         {/** ============ MODAL FOR ENGAGEMENT ADD FEEDBACK ================ */}
 				{getEngagementModal.engagementAddFeedback && (
 					<Modal

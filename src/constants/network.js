@@ -56,10 +56,19 @@ export class SubDomain {
 	static EMAIL_TRACKING = 'AWSSESTrackingDetails/'
 	static DIRECT_HR = 'DirectHR/'
 	static SPACE = "space"
+	static TALENT_DOCUMENT = 'TalentDocument/'
 	static MEMBER = "member"
 }
 export class APIType {
 	static USER = '/user';
+}
+
+export class TalentDocumentAPI  {
+	static GET_DOCUMENT = 'GetTalentDocumentList';
+	static UPLOAD_FILE = 'UploadFiles';
+	static VERIFY_DOCUMENT= 'VerifyTalentDocument'
+	static GET_FILTER = 'Filters'
+	static REMOVE_DOCUMENT = 'RemoveTalentDocument'
 }
 
 export class AMDashboardAPI {
