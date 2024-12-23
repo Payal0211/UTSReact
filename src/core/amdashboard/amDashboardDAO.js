@@ -59,6 +59,33 @@ export const amDashboardDAO  = {
             return errorDebug(error, 'amDashboardDAO.getTicketHistoryDAO');
         }
     },
+    getTicketConversationDAO: async (id)=>{
+        try {            
+            const allFiltersResult = await amDashboardAPI.getTicketConversationRequest(id) ;
+            if (allFiltersResult) {
+				const statusCode = allFiltersResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = allFiltersResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return allFiltersResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return allFiltersResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+        } catch (error) {
+            return errorDebug(error, 'amDashboardDAO.getTicketConversationDAO');
+        }
+    },
     getDashboardDAO: async (payload) => {
         try {            
             const allFiltersResult = await amDashboardAPI.getDashboardRequest(payload) ;
