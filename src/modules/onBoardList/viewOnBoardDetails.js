@@ -217,7 +217,7 @@ export default function ViewOnBoardDetails() {
               // style={{
               //   background: 'green'
               // }}
-              onClick={()=> window.open(`${NetworkInfo.NETWORK}Media/TalentDocuments/${data.documentName}`, '_blank')}
+              onClick={()=> window.open(`${NetworkInfo.NETWORK}Media/TalentDocuments/${data.unique_FileName}`, '_blank')}
               className={AddNewClientStyle.feedbackLabel}>
               {' '}
               <FaDownload />

@@ -34,6 +34,7 @@ function AMDashboard() {
     const [showTimeline,setShowTimeLine] = useState(false)
     const [historyData,setHistoryData] = useState({})
     const [HistoryInfo, setHistoryInfo] = useState([])
+    const [conversationInfo,setConversationInfo] = useState([])
     const [historyLoading,  setHistoryloading] = useState(false)
 
 	useEffect(() => {
@@ -47,12 +48,18 @@ function AMDashboard() {
     const getHistory = async (id) => {
         setHistoryloading(true)
         const historyResult = await amDashboardDAO.getTicketHistoryDAO(id)
+        const conversationResult = await amDashboardDAO.getTicketConversationDAO(id)
         setHistoryloading(false)
-        // console.log('History res',historyResult)
         if(historyResult.statusCode === 200){
             setHistoryInfo(historyResult.responseBody)
         }else{
             setHistoryInfo([])
+        }
+
+        if( conversationResult.statusCode === 200){
+          setConversationInfo(conversationResult.responseBody)
+        }else{
+          setConversationInfo([])
         }
     }
 
@@ -125,12 +132,11 @@ function AMDashboard() {
         const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload)
         const summaryResult = await amDashboardDAO.getSummaryDAO(summaryPayload)
 
-     
         setLoading(false)
         // console.log('"zohoResult ', zohoResult)
         if(zohoResult?.statusCode === 200){
             setzohoTicketList(zohoResult.responseBody)
-        }else if(zohoResult?.statusCode === 400){
+        }else if(zohoResult?.statusCode === 404){
             setzohoTicketList([])
         }
 
@@ -138,22 +144,22 @@ function AMDashboard() {
         if(renewalResult?.statusCode === 200){
             setRenewalList(renewalResult.responseBody)
         }
-        else if(renewalResult?.statusCode === 400){
+        else if(renewalResult?.statusCode === 404){
             setRenewalList([])
         }
         // console.log('"dd ', result)
         if(result?.statusCode === 200){
             setEngagementList(result.responseBody)
         }
-        else if(result?.statusCode === 400){
+        else if(result?.statusCode === 404){
             setEngagementList([])
         }
         // console.log('summaryResult', summaryResult)
         if(summaryResult?.statusCode=== 200){
             setSummaryCount(summaryResult.responseBody)
         }
-        else if(summaryResult?.statusCode === 400){
-            setSummaryCount([])
+        else if(summaryResult?.statusCode === 404){
+            setSummaryCount({})
         }
         }
        
@@ -785,7 +791,7 @@ function AMDashboard() {
 						onCancel={() =>
 							setShowTimeLine(false)
 						}>
-                <TicketModal historyLoading={historyLoading} historyData={historyData} HistoryInfo={HistoryInfo} setShowTimeLine={setShowTimeLine} />
+                <TicketModal historyLoading={historyLoading} historyData={historyData} HistoryInfo={HistoryInfo} conversationInfo={conversationInfo} setShowTimeLine={setShowTimeLine} />
                 </Modal>
 
     </div>
