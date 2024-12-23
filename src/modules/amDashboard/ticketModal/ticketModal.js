@@ -179,7 +179,7 @@ export default function TicketModal({historyLoading,historyData,setShowTimeLine,
      
     </div> : conversationInfo.map(con =>{
          return <div className={'conversationContainer'}>
-          <h4>{con.authorName} <span>{moment(con.createdDateTime).format('DD MMM hh:tt a')} ( {moment(con.createdDateTime).fromNow()} )</span> <div /></h4>  
+          <h4>{con.authorName} <span>{moment(con.createdDateTime).format('DD MMM hh:mm a')} ( {moment(con.createdDateTime).fromNow()} )</span> <div /></h4>  
           <h5>to : {con.to}</h5>
           <h5>from : {con.from}</h5>
           <p>{con.summary} <a href={con.url} target='_blank' rel="noreferrer">View Details</a></p>
