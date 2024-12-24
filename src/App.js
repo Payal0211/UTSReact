@@ -62,7 +62,7 @@ function App() {
 						element={
 							<Navigate
 								replace
-								to={isAllowed ?  UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD}
+								to={isAllowed ? userData?.LoggedInUserTypeID === 6 ? UTSRoutes.AMDASHBOARD :  UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD}
 							/>
 						}
 					/>}

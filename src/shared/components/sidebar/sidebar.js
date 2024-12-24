@@ -145,11 +145,20 @@ const isAccess = (ID, title) =>{
 
 	if(ID === 2){
 		isVisible =  true
-	}else if (title === 'Chat GPT Response' || ID === 1){
+		return isVisible	
+	}
+	if (title === 'Chat GPT Response' && ID === 1){
+		isVisible =  true	
+		return isVisible	
+	}
+	if ((title === 'Engagement Report' ||  title === "Dashboard")  && ID === 6){
 		isVisible =  true
-	}else if(title === 'Hiring Request' || 
+		return isVisible		
+	}
+	 if(title === 'Hiring Request' || 
 	  title === 'Users' || 
 	 title === 'Engagement' || 
+	 title === 'Engagement Report' ||
 	 title === 'Demand Funnel' || 
 	 title === 'SLA Report' || 
 	 title === 'Client Report' || 
@@ -157,7 +166,8 @@ const isAccess = (ID, title) =>{
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details'
 	|| title === 'Clients' || title === 'HR Lost Report' || title === 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report" || title === "Dashboard"){
 
-		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)?true : false;
+		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
+		return isVisible
 		
 	}
 	return isVisible
