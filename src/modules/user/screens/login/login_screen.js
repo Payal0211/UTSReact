@@ -52,7 +52,7 @@ const LoginScreen = () => {
 
 			if (result.statusCode === HTTPStatusCode.OK) {
 				setLoading(false);
-				navigate(isAccess(result.responseBody.LoggedInUserTypeID) ? UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD);
+				navigate(isAccess(result.responseBody.LoggedInUserTypeID) ? result.responseBody.LoggedInUserTypeID === 6 ? UTSRoutes.AMDASHBOARD :  UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD);
 				// set cookie uplers_user for 1 year
 				const oneYearFromNow = new Date();
   				oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
