@@ -26,13 +26,22 @@ import { FaDownload } from "react-icons/fa";
 import { MdOutlineVerified } from "react-icons/md";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
+import { RiFolderReceivedFill } from "react-icons/ri";
+import { GrEdit } from "react-icons/gr";
 import AddTalentDocuments from "modules/engagement/screens/engagementAddFeedback/addTalentDocuments";
+import { amDashboardDAO } from "core/amdashboard/amDashboardDAO";
+import AddLeaveModal from "modules/engagement/screens/engagementAddFeedback/addLeave";
+import moment from "moment";
+import MyCalendar from "modules/engagement/screens/engagementAddFeedback/calendarComp";
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
+import RejectLeaveModal from "modules/engagement/screens/engagementAddFeedback/rejectLeave";
 
 export default function ViewOnBoardDetails() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("OnBoard Details");
   const { onboardID , isOngoing} = useParams();
   const [isLoading, setLoading] = useState(false);
+  const [isLeaveLoading,setLeaveLoading] = useState(false);
   const [getOnboardFormDetails, setOnboardFormDetails] = useState({});
   const [allBRPRlist, setAllBRPRList] = useState([]);
   const [otherDetailsList,setOtherDetailsList] = useState([]);
@@ -40,7 +49,9 @@ export default function ViewOnBoardDetails() {
   const [feedBackSave, setFeedbackSave] = useState(false);
   const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
   const [documentsList,setDocumentsList] = useState([]);
+  const [leaveList,setLeaveList] = useState([]);
   const [docTypeList,setDocTypeList] = useState([]);
+  const [editLeaveData, setEditLeaveData] = useState({})
   const {
     register,
     handleSubmit,
@@ -53,6 +64,16 @@ export default function ViewOnBoardDetails() {
     resetField,
     formState: { errors },
   } = useForm();
+
+  const [userData, setUserData] = useState({});
+  
+    useEffect(() => {
+      const getUserResult = async () => {
+        let userData = UserSessionManagementController.getUserSession();
+        if (userData) setUserData(userData);
+      };
+      getUserResult();
+    }, []);
 
   const [getHRAndEngagementId, setHRAndEngagementId] = useState({
     hrNumber: '',
@@ -73,10 +94,14 @@ export default function ViewOnBoardDetails() {
     pagenumber: 1,
     onBoardId: '',
   });
+  const [rejectLeaveData,setRejectLeaveData] = useState({})
+  const [calEvents,setCalEvents] = useState([])
   const [getEngagementModal, setEngagementModal] = useState({
     engagementFeedback: false,
     engagementAddFeedback: false,
-    addDocumentModal:false
+    addDocumentModal:false,
+    addLeaveModal:false,
+    rejectLeaveModal:false
   });
 
   const [getClientFeedbackList, setClientFeedbackList] = useState([]);
@@ -258,6 +283,99 @@ export default function ViewOnBoardDetails() {
     ];
   }, [documentsList]);
 
+  const leaveColumns = useMemo(() => {
+    return [
+
+      {
+        title: "Leave Date",
+        dataIndex: "leaveDate",
+        key: "leaveDate",
+        align: "left",
+        width:'250px',
+        render: (value, data) => {
+          return value.split('/').map(val=>  moment(val).format(' MMM DD, YYYY')).join(' To ');
+        },
+      },
+      {
+        title: "Summary",
+        dataIndex: "leaveReason",
+        key: "leaveReason",
+        align: "left",
+        width:'250px',
+        render: (value, data) => {
+          return  value ;
+        },
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        align: "left",
+        width:'100px',
+        render: (value, data) => {
+          return   <div className={`${AddNewClientStyle.documentStatus} ${value === 'Approved' ? AddNewClientStyle.green: value === 'Rejected'?  AddNewClientStyle.red:  AddNewClientStyle.blue }`}>
+          <div className={`${AddNewClientStyle.documentStatusText} ${value === 'Approved' ? AddNewClientStyle.green : value === 'Rejected'?  AddNewClientStyle.red :  AddNewClientStyle.blue }`}> 
+            {value === 'Rejected' ? <Tooltip title={data.leaveRejectionRemark} ><span style={{cursor:'pointer'}}> {value}</span></Tooltip> : <span> {value}</span>}
+            
+            </div>
+        </div>
+        },
+      },
+      {
+        title: "Action",
+        dataIndex: "talentDocumentID",
+        key: "talentDocumentID",
+        align: "center",
+        width:'200px',
+        render: (value, data) => {
+          return data.status !== 'Pending'? null : <div>
+
+<IconContext.Provider value={{ color: '#FFDA30', style: { width:'15px',height:'15px' } }}> <Tooltip title="Edit" placement="top" >
+              <span
+              onClick={()=> { setEngagementModal(pre => ({...pre,addLeaveModal:true})); setEditLeaveData(data)} }
+              className={AddNewClientStyle.feedbackLabel} style={{padding:'0'}}>
+              {' '}
+              <GrEdit /> 
+            </span>   </Tooltip>
+            </IconContext.Provider>
+           
+              <IconContext.Provider value={{ color: 'blue', style: { width:'15px',height:'15px' } }}> <Tooltip title="Revoke" placement="top" >
+              <span
+              onClick={()=> handleRevokeleave(data)}
+              className={AddNewClientStyle.feedbackLabel} style={{padding:'0'}}>
+              {' '}
+              <RiFolderReceivedFill />
+            </span>   </Tooltip>
+            </IconContext.Provider>
+           
+            
+             <IconContext.Provider value={{ color: 'green', style: { width:'15px',height:'15px' } }}><Tooltip title="Approve"  placement="top">
+              <span
+            onClick={()=>handleApproveleave(data)}
+						className={AddNewClientStyle.feedbackLabel} style={{padding:'0'}}>
+						{' '}
+						<MdOutlineVerified />
+					</span> </Tooltip>
+            </IconContext.Provider>
+                      
+            <IconContext.Provider value={{ color: 'red', style: { width:'15px',height:'15px' } }}><Tooltip title="Reject" placement="top" >
+              <span
+              // style={{
+              //   background: 'red'
+              // }}
+              onClick={()=> {setEngagementModal(pre => ({...pre,rejectLeaveModal:true}));setRejectLeaveData(data)}}
+              className={AddNewClientStyle.feedbackLabel} style={{padding:'0'}}>
+              {' '}
+              <IoIosRemoveCircle />
+            </span>        </Tooltip>
+            </IconContext.Provider>
+    
+          </div>
+        },
+      },
+    ];
+  }, [documentsList]);
+
   const columns = useMemo(() => {
     return [
       {
@@ -402,6 +520,79 @@ export default function ViewOnBoardDetails() {
    }
   }
 
+  const getLeaveDetails = async (talentID) =>{
+    setLeaveLoading(true); 
+   const  result = await amDashboardDAO.getTalentLeaveRequestDAO(talentID)
+   setLeaveLoading(false);
+  
+
+   if(result.statusCode === HTTPStatusCode.OK){
+    setLeaveList(result.responseBody)
+   }
+   if(result.statusCode === HTTPStatusCode.NOT_FOUND){
+    setLeaveList([])
+   }
+  }
+
+  const handleApproveleave = async (data)=>{
+    setLeaveLoading(true)
+    let payload = {
+      "leaveID": data.leaveID,
+      "actionDoneBy":userData.UserId,
+      "isActionDoneByAM": true,  
+      "flag": "Approve"
+    }
+
+    const  result = await amDashboardDAO.approveRejectLeaveDAO(payload)
+    setLeaveLoading(false)
+    if(result?.statusCode === HTTPStatusCode.OK){
+      message.success('Leave Approved')
+      getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+      getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+    }
+  }
+
+  const handleRevokeleave =async (data)=>{
+    setLeaveLoading(true)
+    let payload = {
+      "leaveID": data.leaveID,
+      "actionDoneBy":userData.UserId,
+      "isActionDoneByAM": true,  
+       "flag": "Revoke"
+    }
+
+    const  result = await amDashboardDAO.approveRejectLeaveDAO(payload)
+    setLeaveLoading(false)
+    if(result?.statusCode === HTTPStatusCode.OK){
+      getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+      getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+    }
+  }
+
+
+  const getCalenderLeaveDetails = async (talentID) =>{
+    setLeaveLoading(true); 
+    let payload = {
+      month:new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      talentId:talentID
+    }
+   const  result = await amDashboardDAO.getCalenderLeaveRequestDAO(payload)
+   setLeaveLoading(false);
+  
+   if(result.statusCode === HTTPStatusCode.OK){
+    setCalEvents(result.responseBody.map((leave) => ({         
+      start: leave.actualDate,           
+      title: leave.leaveReason ? leave.leaveReason : leave.leaveType,
+      color : '#E8B689'
+    })))
+    // setLeaveList(result.responseBody)
+   }
+   if(result.statusCode === HTTPStatusCode.NOT_FOUND){
+    // setLeaveList([])
+   }
+  }
+
   const handleVerifyDocument = async (docId)=>{
     setLoading(true);
     let result = await engagementRequestDAO.verifyDocumentRequestDAO(docId)
@@ -442,6 +633,8 @@ export default function ViewOnBoardDetails() {
       getFeedbackList({...feedBackData,onBoardId: getOnboardID})
       getOtherDetailsTableData({onboardID: getOnboardID,talentID: response?.responseBody?.details?.onboardContractDetails?.talentID})
       getDocumentsDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
+      getLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
+      getCalenderLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
       setLoading(false);
     } else {
       setOnboardFormDetails({});
@@ -546,6 +739,51 @@ export default function ViewOnBoardDetails() {
     );
   };
 
+  const LeaveComponent = () =>{
+    return (<>
+      <div className={AddNewClientStyle.engagementModalHeaderButtonContainer}>
+        <button className={AddNewClientStyle.engagementModalHeaderAddBtn} 
+            onClick={()=> {
+            // setHRAndEngagementId({
+            // 	talentName: getHRAndEngagementId?.talentName,
+            // 	engagementID: getHRAndEngagementId?.engagementID,
+            // 	hrNumber: getHRAndEngagementId?.hrNumber,
+            // 	onBoardId: getHRAndEngagementId?.onBoardId,
+            // 	hrId: getHRAndEngagementId?.hrId,
+            // });
+            setEngagementModal(pre => ({...pre,addLeaveModal:true}));
+            }}
+            >Apply Leave</button>
+      </div>
+  
+  
+             {isLeaveLoading && <div className={AddNewClientStyle.onboardDetailsContainer}>
+             <Skeleton active />
+             </div>}
+
+          {!isLeaveLoading && 
+            <div className={AddNewClientStyle.LeaveContainer}>
+              <div className={AddNewClientStyle.onboardDetailsContainer} style={{width:'39%'}}><div>
+                <MyCalendar calEvents={calEvents} />
+                </div></div>
+              <div className={AddNewClientStyle.onboardDetailsContainer} style={{width:'60%',height: 'fit-content'}}>
+            <Table
+              scroll={{y: "100vh" }}
+              dataSource={leaveList ? leaveList : []}
+              columns={leaveColumns}
+              pagination={false}
+            />
+              </div>
+               
+            </div>
+                 
+          }
+     
+      </>
+       
+      );
+  }
+
   return (
     <>
       <div className={AddNewClientStyle.addNewContainer}>
@@ -569,11 +807,17 @@ export default function ViewOnBoardDetails() {
               key: "BR PR Details",
               children: <HrsDetails />,
             },
+            isOngoing === 'false' &&{
+              label: "Leaves",
+              key: "Leaves",
+              children: <LeaveComponent />,
+            },
             {
               label: "Documents",
               key: "Documents",
               children: <DocumentsDetails />,
             },
+          
             {
               label: "Client Feedback",
               key: "Client Feedback",
@@ -603,6 +847,110 @@ export default function ViewOnBoardDetails() {
             // },
           ]}
         />
+
+        {/** add/edit Leave Modal **/}
+        {getEngagementModal.rejectLeaveModal && 	<Modal
+						transitionName=""
+						width="630px"
+						centered
+						footer={null}
+						className="engagementAddFeedbackModal"
+						open={getEngagementModal.rejectLeaveModal}
+						onCancel={() =>{
+              setEngagementModal({
+                ...getEngagementModal,
+                rejectLeaveModal: false,
+              })
+              setRejectLeaveData({})
+              reset()
+            }
+						}>
+            <RejectLeaveModal
+            rejectLeaveData={rejectLeaveData}
+            docTypeList={docTypeList.length ? docTypeList.map(item=>({label:item.text,value:item.value})) : []}
+            getcalendarLeaveDetails={(talentID)=>{getCalenderLeaveDetails(talentID);getLeaveDetails(talentID)}}
+            getFeedbackFormContent={getFeedbackFormContent}
+            getHRAndEngagementId={getHRAndEngagementId}
+            talentID={getOnboardFormDetails.onboardContractDetails.talentID}
+            onCancel={() =>{
+              setEngagementModal({
+                ...getEngagementModal,
+                rejectLeaveModal: false,
+              })
+              setRejectLeaveData({})
+              reset()
+            }
+            }
+            setFeedbackSave={setFeedbackSave}
+            feedBackSave={feedBackSave}
+            register={register}
+            handleSubmit={handleSubmit}
+            setValue={setValue}
+            control={control}
+            setError={setError}
+            getValues={getValues}
+            watch={watch}
+            reset={reset}
+            resetField={resetField}
+            errors={errors}
+            feedBackTypeEdit={feedBackTypeEdit}
+            setFeedbackTypeEdit={setFeedbackTypeEdit}
+            setClientFeedbackList={setClientFeedbackList}
+            />
+
+            </Modal>
+          
+        }
+
+        {/** add/edit Leave Modal **/}
+        {getEngagementModal.addLeaveModal && 	<Modal
+						transitionName=""
+						width="630px"
+						centered
+						footer={null}
+						className="engagementAddFeedbackModal"
+						open={getEngagementModal.addLeaveModal}
+						onCancel={() =>{
+              setEngagementModal({
+                ...getEngagementModal,
+                addLeaveModal: false,
+              })
+              setEditLeaveData({})
+              reset()
+            }
+						}>
+              <AddLeaveModal
+                editLeaveData={editLeaveData}
+                docTypeList={docTypeList.length ? docTypeList.map(item=>({label:item.text,value:item.value})) : []}
+                getcalendarLeaveDetails={(talentID)=>{getCalenderLeaveDetails(talentID);getLeaveDetails(talentID)}}
+                getFeedbackFormContent={getFeedbackFormContent}
+                getHRAndEngagementId={getHRAndEngagementId}
+                talentID={getOnboardFormDetails.onboardContractDetails.talentID}
+                onCancel={() =>{
+                  setEngagementModal({
+                    ...getEngagementModal,
+                    addLeaveModal: false,
+                  })
+                  setEditLeaveData({})
+                }
+                }
+                setFeedbackSave={setFeedbackSave}
+                feedBackSave={feedBackSave}
+                register={register}
+                handleSubmit={handleSubmit}
+                setValue={setValue}
+                control={control}
+                setError={setError}
+                getValues={getValues}
+                watch={watch}
+                reset={reset}
+                resetField={resetField}
+                errors={errors}
+                feedBackTypeEdit={feedBackTypeEdit}
+                setFeedbackTypeEdit={setFeedbackTypeEdit}
+                setClientFeedbackList={setClientFeedbackList} />
+
+              </Modal>}
 
         {/** Add Document Modal **/}
           {getEngagementModal.addDocumentModal && 	<Modal

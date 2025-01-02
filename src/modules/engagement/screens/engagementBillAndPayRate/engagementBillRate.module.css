@@ -80,6 +80,53 @@
     align-items: center;
     gap: 8px;
 }
+.labelReq{
+    color: #E03A3A;
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.calendarFilter{
+    width:250px ;
+    height: 44px;
+    border-radius: 8px;
+    padding: 2px 10px;
+    border: 1px solid var(--background-color-metal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+.calendarFilter [class*="react-datepicker-popper"]{
+    right: 0 !important;
+        left: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        margin: 40px 0 30px;
+}
+.calendarFilter [class*="react-datepicker-popper"] > div > [class*="react-datepicker"] {
+        margin-left: 0;
+        min-width: 100%;
+}
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
+    top: 14px;
+}
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"]{
+    margin-top: 5px;
+}
+.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"]{
+    margin-bottom: 10px;
+}
+
+.dateFilter{
+    cursor: pointer;
+    width: 102%;
+    outline: none;
+    border:none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
 
 .radioFormGroup {
     margin-bottom: 32px;
