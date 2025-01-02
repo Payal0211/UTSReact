@@ -127,6 +127,11 @@
   font-weight: 600;
 }
 
+.LeaveContainer {
+  justify-content: space-between;
+  display: flex;
+}
+
 .newHR {
     padding: 1px 0;
     background-color: var(--color-sunlight);

@@ -55,6 +55,7 @@ export class SubDomain {
 	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'	
 	static EMAIL_TRACKING = 'AWSSESTrackingDetails/'
 	static DIRECT_HR = 'DirectHR/'
+	static LEAVE_REQUEST = 'LeaveRequests/'
 	static SPACE = "space"
 	static TALENT_DOCUMENT = 'TalentDocument/'
 	static MEMBER = "member"
@@ -69,6 +70,12 @@ export class TalentDocumentAPI  {
 	static VERIFY_DOCUMENT= 'VerifyTalentDocument'
 	static GET_FILTER = 'Filters'
 	static REMOVE_DOCUMENT = 'RemoveTalentDocument'
+}
+export class LeaveRequestAPI {
+	static GET_TALENT_LEAVES = 'GetTalentLeaves'
+	static GET_CALENDER_LEAVES = 'GetTalentLeavesMonthlyCalendar'
+	static GET_UPDATE_LEAVE = 'InsertUpdateLeaveRequest'
+	static APPROVE_REJECT_LEAVE = 'ApproveRejectRevokeTalentLeaves'
 }
 
 export class AMDashboardAPI {
