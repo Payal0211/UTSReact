@@ -190,7 +190,7 @@ function AMDashboard() {
             align: 'left',
             width: '100px',
             render:(text,item)=>{
-                return <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.enggementStatus === "Ongoing" ? true : false }`} target='_blank'  style={{
+                return <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
                     color: `var(--uplers-black)`,
                     textDecoration: 'underline',
                 }}>{item.engagementID}</Link>
@@ -240,7 +240,7 @@ function AMDashboard() {
                 width: '100px',
                 render:(text,item)=>{
                     return <>
-                    <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.enggementStatus === "Ongoing" ? true : false }`} target='_blank'  style={{
+                    <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
                         color: `var(--uplers-black)`,
                         textDecoration: 'underline',
                     }}>{item.engagementID}</Link> <br/>
@@ -326,9 +326,9 @@ function AMDashboard() {
                 key: 'engagementID',
                 align: 'left',
                 width: '100px',
-                render:(text,item)=>{
+                render:(text,item)=>{                  
                     return <>
-                    <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.enggementStatus === "Ongoing" ? true : false }`} target='_blank'  style={{
+                    <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
                         color: `var(--uplers-black)`,
                         textDecoration: 'underline',
                     }}>{item.engagementID}</Link> <br/>
