@@ -59,7 +59,14 @@ export class SubDomain {
 	static SPACE = "space"
 	static TALENT_DOCUMENT = 'TalentDocument/'
 	static MEMBER = "member"
+	static TALENT_INVOICE = 'TalentInvoice/'
 }
+
+export class TalentInvoiceAPI {
+	static GET_ENGAGEMENT_ALL_BR_PR = 'Get_engagement_All_BR_PR'
+}
+
+
 export class APIType {
 	static USER = '/user';
 }
