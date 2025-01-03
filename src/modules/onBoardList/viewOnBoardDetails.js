@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback,useRef } from "react";
 import AddNewClientStyle from "../../modules/client/screens/addnewClient/add_new_client.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
@@ -52,6 +52,9 @@ export default function ViewOnBoardDetails() {
   const [leaveList,setLeaveList] = useState([]);
   const [docTypeList,setDocTypeList] = useState([]);
   const [editLeaveData, setEditLeaveData] = useState({})
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const calendarRef = useRef(null);
   const {
     register,
     handleSubmit,
@@ -520,9 +523,14 @@ export default function ViewOnBoardDetails() {
    }
   }
 
-  const getLeaveDetails = async (talentID) =>{
+  const getLeaveDetails = async (talentID,m,y) =>{
     setLeaveLoading(true); 
-   const  result = await amDashboardDAO.getTalentLeaveRequestDAO(talentID)
+    let payload = {
+      month: m !== undefined ? m +1 : currentMonth + 1,
+      year: y !== undefined ? y : currentYear,
+      talentID:talentID
+    }
+   const  result = await amDashboardDAO.getTalentLeaveRequestDAO(payload)
    setLeaveLoading(false);
   
 
@@ -570,11 +578,11 @@ export default function ViewOnBoardDetails() {
   }
 
 
-  const getCalenderLeaveDetails = async (talentID) =>{
+  const getCalenderLeaveDetails = async (talentID,m,y) =>{
     setLeaveLoading(true); 
     let payload = {
-      month:new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
+      month: m !== undefined ? m +1 : currentMonth + 1,
+      year: y !== undefined ? y : currentYear,
       talentId:talentID
     }
    const  result = await amDashboardDAO.getCalenderLeaveRequestDAO(payload)
@@ -742,6 +750,61 @@ export default function ViewOnBoardDetails() {
   const LeaveComponent = () =>{
     return (<>
       <div className={AddNewClientStyle.engagementModalHeaderButtonContainer}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <Select
+          options={[...Array(10)].map((_, index) => {
+            const year = new Date().getFullYear() - 5 + index;
+            return { value: year, label: year }
+          })}
+          value={currentYear}
+          onChange={e=>{setCurrentYear(Number(e))}}
+          />
+        {/* <select value={currentYear} onChange={e=>{setCurrentYear(Number(e.target.value))}}>
+          {[...Array(10)].map((_, index) => {
+            const year = new Date().getFullYear() - 5 + index;
+            return (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            );
+          })}
+        </select> */}
+
+        <Select
+          options={Array.from({ length: 12 }, (_, index) => (
+            { value: index , label: new Date(0, index).toLocaleString('default', { month: 'long' }) }
+          ))}
+          value={currentMonth}
+          onChange={e=>{setCurrentMonth(Number(e))}}
+          />
+
+        {/* <select value={currentMonth} onChange={e=> setCurrentMonth(Number(e.target.value))}>
+          {Array.from({ length: 12 }, (_, index) => (
+            <option key={index} value={index}>
+              {new Date(0, index).toLocaleString('default', { month: 'long' })}
+            </option>
+          ))}
+        </select> */}
+
+        <button className={AddNewClientStyle.engagementModalHeaderAddBtn}  style={{background:'var(--color-sunlight)',color:'#000'}} onClick={()=>{
+          getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID);
+          getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+
+          }}>Go</button>
+
+        <p style={{
+          textDecoration: 'underline',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          margin:'0',
+          alignSelf:'center',
+        }} onClick={()=> {
+          setCurrentMonth(new Date().getMonth())
+          setCurrentYear(new Date().getFullYear())
+          getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID ,new Date().getMonth(),new Date().getFullYear());
+          getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,new Date().getMonth(),new Date().getFullYear())
+        }}>Reset</p>
+      </div>
         <button className={AddNewClientStyle.engagementModalHeaderAddBtn} 
             onClick={()=> {
             // setHRAndEngagementId({
@@ -764,7 +827,7 @@ export default function ViewOnBoardDetails() {
           {!isLeaveLoading && 
             <div className={AddNewClientStyle.LeaveContainer}>
               <div className={AddNewClientStyle.onboardDetailsContainer} style={{width:'39%'}}><div>
-                <MyCalendar calEvents={calEvents} />
+                <MyCalendar calendarRef={calendarRef} calEvents={calEvents} currentYear={currentYear} setCurrentYear={setCurrentYear} currentMonth={currentMonth} setCurrentMonth={setCurrentMonth} />
                 </div></div>
               <div className={AddNewClientStyle.onboardDetailsContainer} style={{width:'60%',height: 'fit-content'}}>
             <Table

@@ -109,12 +109,12 @@ export const amDashboardAPI = {
 			return errorDebug(error, 'amDashboardAPI.getZohoTicketsRequest');
 		}
 	},
-    getTalentLeaveRequest: async function (id) {
+    getTalentLeaveRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
             NetworkInfo.ZOHO_NETWORK +
 			SubDomain.LEAVE_REQUEST +
-			LeaveRequestAPI.GET_TALENT_LEAVES + `?talentID=${id}`
+			LeaveRequestAPI.GET_TALENT_LEAVES + `?talentID=${payload.talentID}&month=${payload.month}&year=${payload.year}`
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = NetworkInfo.ZOHO_AUTH;
 		try {
