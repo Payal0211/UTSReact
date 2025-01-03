@@ -194,9 +194,9 @@ export const amDashboardDAO  = {
             return errorDebug(error, 'amDashboardDAO.getZohoTicketsDAO');
         }
     },
-    getTalentLeaveRequestDAO: async (id) => {
+    getTalentLeaveRequestDAO: async (payload) => {
         try {            
-            const allFiltersResult = await amDashboardAPI.getTalentLeaveRequest(id) ;
+            const allFiltersResult = await amDashboardAPI.getTalentLeaveRequest(payload) ;
             if (allFiltersResult) {
 				const statusCode = allFiltersResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
