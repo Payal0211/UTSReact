@@ -35,6 +35,7 @@ import moment from "moment";
 import MyCalendar from "modules/engagement/screens/engagementAddFeedback/calendarComp";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import RejectLeaveModal from "modules/engagement/screens/engagementAddFeedback/rejectLeave";
+import ApproveLeaveModal from "modules/engagement/screens/engagementAddFeedback/approveLeave";
 
 export default function ViewOnBoardDetails() {
   const navigate = useNavigate();
@@ -98,13 +99,15 @@ export default function ViewOnBoardDetails() {
     onBoardId: '',
   });
   const [rejectLeaveData,setRejectLeaveData] = useState({})
+  const [approveLeaveData,setApproveLeaveData] = useState({})
   const [calEvents,setCalEvents] = useState([])
   const [getEngagementModal, setEngagementModal] = useState({
     engagementFeedback: false,
     engagementAddFeedback: false,
     addDocumentModal:false,
     addLeaveModal:false,
-    rejectLeaveModal:false
+    rejectLeaveModal:false,
+    approveLeaveModal:false,
   });
 
   const [getClientFeedbackList, setClientFeedbackList] = useState([]);
@@ -354,7 +357,7 @@ export default function ViewOnBoardDetails() {
             
              <IconContext.Provider value={{ color: 'green', style: { width:'15px',height:'15px' } }}><Tooltip title="Approve"  placement="top">
               <span
-            onClick={()=>handleApproveleave(data)}
+            onClick={()=>{setApproveLeaveData(data);setEngagementModal(pre => ({...pre,approveLeaveModal:true}))}}
 						className={AddNewClientStyle.feedbackLabel} style={{padding:'0'}}>
 						{' '}
 						<MdOutlineVerified />
@@ -589,11 +592,14 @@ export default function ViewOnBoardDetails() {
       "isActionDoneByAM": true,  
       "flag": "Approve"
     }
-
     const  result = await amDashboardDAO.approveRejectLeaveDAO(payload)
     setLeaveLoading(false)
-    if(result?.statusCode === HTTPStatusCode.OK){
-      message.success('Leave Approved')
+    if(result?.statusCode === HTTPStatusCode.OK){     
+      setEngagementModal({
+        ...getEngagementModal,
+        approveLeaveModal: false,
+      })
+      setApproveLeaveData({})
       getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
       getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
     }
@@ -950,7 +956,37 @@ export default function ViewOnBoardDetails() {
           ]}
         />
 
-        {/** add/edit Leave Modal **/}
+        {/** Approve Leave **/}
+        {getEngagementModal.approveLeaveModal && <Modal
+						transitionName=""
+						width="630px"
+						centered
+						footer={null}
+						className="engagementAddFeedbackModal"
+						open={getEngagementModal.approveLeaveModal}
+						onCancel={() =>{
+              setEngagementModal({
+                ...getEngagementModal,
+                approveLeaveModal: false,
+              })
+              setApproveLeaveData({})
+            }
+						}>
+              <ApproveLeaveModal 
+                  handleApproveleave={handleApproveleave}
+                  approveLeaveData={approveLeaveData}
+                  onCancel={() =>{
+                    setEngagementModal({
+                      ...getEngagementModal,
+                      approveLeaveModal: false,
+                    })
+                    setApproveLeaveData({})
+                  }
+                  }
+              />
+              </Modal>}
+
+        {/** reject Leave Modal **/}
         {getEngagementModal.rejectLeaveModal && 	<Modal
 						transitionName=""
 						width="630px"
@@ -995,9 +1031,6 @@ export default function ViewOnBoardDetails() {
             reset={reset}
             resetField={resetField}
             errors={errors}
-            feedBackTypeEdit={feedBackTypeEdit}
-            setFeedbackTypeEdit={setFeedbackTypeEdit}
-            setClientFeedbackList={setClientFeedbackList}
             />
 
             </Modal>
