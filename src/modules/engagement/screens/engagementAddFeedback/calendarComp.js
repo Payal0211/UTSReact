@@ -4,10 +4,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction'; // for drag-and-drop and date click
 
-const MyCalendar = ({calEvents}) => {
+const MyCalendar = ({calEvents,currentYear, setCurrentYear,currentMonth, setCurrentMonth}) => {
 
-    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     const calendarRef = useRef(null); // Ref for FullCalendar instance
 
 
@@ -31,8 +29,13 @@ const handleDatesSet = (dateInfo) => {
     const calendarApi = calendarRef.current.getApi(); // Access FullCalendar API from ref
     const selectedDate = new Date(currentYear, currentMonth, 1);
     calendarApi.gotoDate(selectedDate);
-   
   };
+
+  useEffect(()=>{
+    const calendarApi = calendarRef.current.getApi(); // Access FullCalendar API from ref
+    const selectedDate = new Date(currentYear, currentMonth, 1);
+    calendarApi.gotoDate(selectedDate);
+  },[currentMonth,currentYear])
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto' }}>
@@ -62,9 +65,14 @@ const handleDatesSet = (dateInfo) => {
 
       <FullCalendar
       ref={calendarRef} // Attach ref to FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, timeGridPlugin]}
         initialView="dayGridMonth"
         editable={true}
+        headerToolbar={{
+          left: '', // Hide navigation buttons on the left
+          center: 'title', // Only display the title in the center
+          right: '' // Hide navigation buttons on the right
+        }}
         selectable={true}
         events={calEvents}
         datesSet={handleDatesSet} // Listen to year and month changes
