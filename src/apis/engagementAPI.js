@@ -4,6 +4,7 @@ import {
 	OnboardsAPI,
 	SubDomain,
 	TalentDocumentAPI,
+	TalentInvoiceAPI,
 	TalentReplaceAPI,
 } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
@@ -643,6 +644,25 @@ export const EngagementRequestAPI = {
 			return errorDebug(
 				error,
 				'EngagementRequestAPI.saveRenewalInitiatedDetail',
+			);
+		}
+	},
+	getallBRPRWithLeave: async function (onBoardId) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TALENT_INVOICE + 
+			TalentInvoiceAPI.GET_ENGAGEMENT_ALL_BR_PR + `?OnBoardId=${onBoardId}`
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		// httpService.dataToSend = details;
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getallBRPRWithLeave',
 			);
 		}
 	},

@@ -400,7 +400,7 @@ export default function ViewOnBoardDetails() {
         },
       },
       {
-        title: "BR",
+        title: "Monthly BR",
         dataIndex: "br",
         key: "br",
         align: "left",
@@ -409,12 +409,51 @@ export default function ViewOnBoardDetails() {
         },
       },
       {
-        title: "PR",
+        title: "Monthly PR",
         dataIndex: "pr",
         key: "pr",
         align: "left",
         render: (value, data) => {
           return `${data.currency} ` + value;
+        },
+      },
+      {
+        title: "Per Day PR",
+        dataIndex: "pR_Per_Day",
+        key: "pR_Per_Day",
+        align: "left",
+        render: (value, data) => {
+          return `${data.currency} ` + value;
+        },
+      },
+      {
+        title: "Exchange Rate",
+        dataIndex: "exchangeRate",
+        key: "exchangeRate",
+        align: "left",
+        render: (value, data) => {
+          return value;
+        },
+      },
+      {
+        title: "Final PR",
+        dataIndex: "final_PR",
+        key: "final_PR",
+        align: "left",
+        render: (value, data) => {
+          const tooltipContent = (
+            <div>
+              <p><strong>Single Day PR:</strong> {`${data.currency} ${data.pR_Per_Day}`}</p>
+              <p><strong>Leaves Taken:</strong> {data.leavesTaken}</p>
+              <p><strong>Total Amount to be Deducted:</strong> {`${data.currency} ${data.amount_To_Be_Deducted}`}</p>
+            </div>
+          );
+  
+          return (
+            <Tooltip title={tooltipContent}>
+              <span>{`${data.currency} ${value}`}</span>
+            </Tooltip>
+          );
         },
       },
       {
@@ -436,7 +475,7 @@ export default function ViewOnBoardDetails() {
   }, [allBRPRlist]);
 
   const getAllBRPRTableData = async (onboardID) => {
-    let result = await engagementRequestDAO.getAllBRPRListDAO(onboardID);
+    let result = await engagementRequestDAO.getAllBRPRListWithLeaveDAO(onboardID);
     // console.log("getAllBRPRTableData",result)
     if (result.statusCode === HTTPStatusCode.OK) {
       setAllBRPRList(result.responseBody);
