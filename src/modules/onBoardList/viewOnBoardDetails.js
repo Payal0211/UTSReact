@@ -572,8 +572,8 @@ export default function ViewOnBoardDetails() {
     const  result = await amDashboardDAO.approveRejectLeaveDAO(payload)
     setLeaveLoading(false)
     if(result?.statusCode === HTTPStatusCode.OK){
-      getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
-      getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+      getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,currentMonth,currentYear)
+      getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,currentMonth,currentYear)
     }
   }
 
@@ -988,7 +988,7 @@ export default function ViewOnBoardDetails() {
                 getcalendarLeaveDetails={(talentID)=>{getCalenderLeaveDetails(talentID);getLeaveDetails(talentID)}}
                 getFeedbackFormContent={getFeedbackFormContent}
                 getHRAndEngagementId={getHRAndEngagementId}
-                talentID={getOnboardFormDetails.onboardContractDetails.talentID}
+                talentID={getOnboardFormDetails?.onboardContractDetails?.talentID}
                 onCancel={() =>{
                   setEngagementModal({
                     ...getEngagementModal,
