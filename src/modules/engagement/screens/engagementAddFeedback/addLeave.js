@@ -62,7 +62,7 @@ const AddLeaveModal = ({
         leaveDate: moment(startDate).format(),
         leaveEndDate: moment(endDate).format(),
         leaveDuration:
-          moment(startDate).format("yyyy-MM-DD") ===
+          moment(startDate).format("yyyy-MM-DD") !==
           moment(endDate).format("yyyy-MM-DD")
             ? "Full Day"
             : startDateRadio,
@@ -73,12 +73,14 @@ const AddLeaveModal = ({
             ? 1
             : (new Date(moment(endDate).format("yyyy-MM-DD")) - new Date(moment(startDate).format("yyyy-MM-DD"))) / (1000 * 60 * 60 * 24) + 1,
       };
-     
       let result = await amDashboardDAO.updateLeaveRequestDAO(payload);
       setIsLoading(false);
-      getcalendarLeaveDetails(talentID);
-      reset();
-      onCancel();
+      if(result.statusCode === 200){
+         getcalendarLeaveDetails(talentID);
+          reset();
+          onCancel();
+      }
+     
 
     } else {
       SetFormError(true);
