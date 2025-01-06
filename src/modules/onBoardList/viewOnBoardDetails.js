@@ -32,6 +32,7 @@ import AddTalentDocuments from "modules/engagement/screens/engagementAddFeedback
 import { amDashboardDAO } from "core/amdashboard/amDashboardDAO";
 import AddLeaveModal from "modules/engagement/screens/engagementAddFeedback/addLeave";
 import moment from "moment";
+import infoSmallIcon from "assets/svg/infoSmallIcon.svg";
 import MyCalendar from "modules/engagement/screens/engagementAddFeedback/calendarComp";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import RejectLeaveModal from "modules/engagement/screens/engagementAddFeedback/rejectLeave";
@@ -452,11 +453,14 @@ export default function ViewOnBoardDetails() {
             </div>
           );
   
-          return (
-            <Tooltip title={tooltipContent}>
-              <span>{`${data.currency} ${value}`}</span>
+          return value ? (
+            <> <span>{`${data.currency} ${value}`}</span>
+            <Tooltip title={tooltipContent} placement="right">
+            <img src={infoSmallIcon} alt="info" style={{marginLeft:'5px',cursor:'pointer'}} />
             </Tooltip>
-          );
+            </>
+           
+          ) : ''
         },
       },
       {
