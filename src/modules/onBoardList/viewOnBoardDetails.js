@@ -427,7 +427,7 @@ export default function ViewOnBoardDetails() {
         key: "pR_Per_Day",
         align: "left",
         render: (value, data) => {
-          return `${data.currency} ` + value;
+          return `₹ ` + value;
         },
       },
       {
@@ -447,14 +447,14 @@ export default function ViewOnBoardDetails() {
         render: (value, data) => {
           const tooltipContent = (
             <div>
-              <p><strong>Single Day PR:</strong> {`${data.currency} ${data.pR_Per_Day}`}</p>
+              <p><strong>Single Day PR:</strong> {`₹ ${data.pR_Per_Day}`}</p>
               <p><strong>Leaves Taken:</strong> {data.leavesTaken}</p>
-              <p><strong>Total Amount to be Deducted:</strong> {`${data.currency} ${data.amount_To_Be_Deducted}`}</p>
+              <p><strong>Total Amount to be Deducted:</strong> {`₹ ${data.amount_To_Be_Deducted}`}</p>
             </div>
           );
   
           return value ? (
-            <> <span>{`${data.currency} ${value}`}</span>
+            <> <span>{`₹  ${value}`}</span>
             <Tooltip title={tooltipContent} placement="right">
             <img src={infoSmallIcon} alt="info" style={{marginLeft:'5px',cursor:'pointer'}} />
             </Tooltip>
