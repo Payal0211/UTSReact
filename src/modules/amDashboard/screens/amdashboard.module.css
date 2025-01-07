@@ -168,6 +168,24 @@
     flex-wrap: wrap;
 }
 
+.ticketStatusChip{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    width: -moz-fit-content;
+    width: fit-content;
+    color: rgb(0, 112, 224);
+    background: rgb(232, 242, 253);
+    font-weight: 500;
+}
+
+.expireDate{
+    color: rgb(179, 76, 1);
+    background: rgb(249, 231, 218);
+}
+
 .searchInput{
     cursor: pointer;
     width: 80%;

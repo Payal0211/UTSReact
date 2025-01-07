@@ -6,7 +6,7 @@ import Handshake from 'assets/svg/handshake.svg';
 import RenewEng from 'assets/svg/renewEng.png'
 import SparkIcon from 'assets/svg/sparkIcon.png'
 import { InputType } from 'constants/application';
-import { Tabs, Select, Table, Modal } from 'antd';
+import { Tabs, Select, Table, Modal, Tooltip } from 'antd';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { amDashboardDAO } from 'core/amdashboard/amDashboardDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
@@ -77,7 +77,12 @@ function AMDashboard() {
             columns={columns}
             bordered={false}
             dataSource={data}
-            pagination={false} 
+            pagination={
+                      {
+                        size: 'small',
+                        total: data.length,
+                      }
+                    }
             />
         {/* {data.map(item=>{
             return <div className={amStyles.engagementList}>
@@ -479,6 +484,18 @@ function AMDashboard() {
             key: 'status',
             align: 'left',
             width: '60px',
+            render:(value,result)=>{
+                if(ticketTabTitle === "Open"){
+                     const isExp = result.dueDate ? new Date(result.dueDate) < new Date()  : false
+                console.log({ isExp, dat:result.dueDate  })
+              return  <div className={`${amStyles.ticketStatusChip} ${isExp && amStyles.expireDate}`}> 
+            {value === 'Rejected' ? <span style={{cursor:'pointer'}}> {value}</span> : <span> {value}</span>}
+            </div>
+                }else{
+                    return value
+                }
+               
+            }
         },      
         {
             title: 'Created Date',
@@ -486,8 +503,18 @@ function AMDashboard() {
             key: 'createdTime',
             align: 'left',
             width: '100px',
+            render:(text,result)=>{
+                return  text ? <Tooltip title={<p>Created on {moment(text).format('DD MMM YYYY hh:mm a')} {result.priority} </p>}>{moment(text).fromNow()}</Tooltip>  : '';
+            }
+        },
+        {
+            title: 'due Date',
+            dataIndex: 'dueDate',
+            key: 'dueDate',
+            align: 'left',
+            width: '100px',
             render:(text)=>{
-                return moment(text).format('DD-MM-YYYY');
+                return text ? moment(text).format('DD-MM-YYYY') : '';
             }
         },
         {
@@ -501,7 +528,7 @@ function AMDashboard() {
             }
         },
     ]
-    },[zohoTicketList])
+    },[zohoTicketList,ticketTabTitle])
 
     useEffect(()=>{
         getFilters()
@@ -696,7 +723,12 @@ function AMDashboard() {
                                         columns={engColumnsMemo}
                                         bordered={false}
                                         dataSource={renewalList}
-                                        pagination={false} 
+                                        pagination={
+                                            {
+                                              size: 'small',
+                                              total: renewalList?.length,
+                                            }
+                                          }
                                         />,
                                         },
                                         {
@@ -708,7 +740,12 @@ function AMDashboard() {
                                             columns={engColumnsMemo}
                                             bordered={false}
                                             dataSource={renewalList}
-                                            pagination={false} 
+                                            pagination={
+                                                {
+                                                  size: 'small',
+                                                  total: renewalList?.length,
+                                                }
+                                              }
                                             />,
                                             },
                                         // {
