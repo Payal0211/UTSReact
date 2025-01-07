@@ -1171,22 +1171,22 @@ function OnBoardList() {
                     columns={tableColumnsMemo}
                     bordered={false}
                     dataSource={onBoardListData}
-                    // pagination={false}
-                    pagination={
-                      {
-                        // onChange: (pageNum, pageSize) => {
-                        //     setPageIndex(pageNum);
-                        //     setPageSize(pageSize);
-                        // },
-                        size: 'small',
-                        // pageSize: pageSize,
-                        // pageSizeOptions: pageSizeOptions,
-                        total: totalRecords,
-                        // showTotal: (total, range) =>
-                        //     `${range[0]}-${range[1]} of ${totalRecords} items`,
-                        // defaultCurrent: pageIndex,
-                      }
-                    }
+                    pagination={false}
+                    // pagination={
+                    //   {
+                    //     // onChange: (pageNum, pageSize) => {
+                    //     //     setPageIndex(pageNum);
+                    //     //     setPageSize(pageSize);
+                    //     // },
+                    //     size: 'small',
+                    //     // pageSize: pageSize,
+                    //     // pageSizeOptions: pageSizeOptions,
+                    //     total: totalRecords,
+                    //     // showTotal: (total, range) =>
+                    //     //     `${range[0]}-${range[1]} of ${totalRecords} items`,
+                    //     // defaultCurrent: pageIndex,
+                    //   }
+                    // }
                   />
                 </WithLoader>
               )}

@@ -520,33 +520,33 @@ export const allEngagementConfig = {
 				align: 'left',
 				width:"150px"
 			},			
-			{
-				title: 'TSC',
-				dataIndex: 'tscName',
-				key: 'tscName',
-				align: 'left',
-				width:"180px",
-				render:(text, data)=>{
-					if(text){
-						return  <div className={allengagementStyles.amName}  onClick={()=>{setISEditTSC(true)
-							setTSCONBoardData({onboardID :data.onboardID, engagementID:data.engagementID, talentName: data.talentName, tscName: data.tscName})}}>{text}</div> 
-					}else{
-						if(data.currentStatus !== "In Replacement"){
-							return	<a href="javascript:void(0);"
-							style={{ color: '#006699', textDecoration: 'underline' }}
-							onClick={()=>{
-								// console.log(data.onboardID)
-								setIsAddTSC(true)
-								setTSCONBoardData({onboardID :data.onboardID, engagementID:data.engagementID, talentName: data.talentName})
-							}}
-							>
-								ADD
-							</a>
-						}
-						return ''
-					}
-				}
-			},
+			// {
+			// 	title: 'TSC',
+			// 	dataIndex: 'tscName',
+			// 	key: 'tscName',
+			// 	align: 'left',
+			// 	width:"180px",
+			// 	render:(text, data)=>{
+			// 		if(text){
+			// 			return  <div className={allengagementStyles.amName}  onClick={()=>{setISEditTSC(true)
+			// 				setTSCONBoardData({onboardID :data.onboardID, engagementID:data.engagementID, talentName: data.talentName, tscName: data.tscName})}}>{text}</div> 
+			// 		}else{
+			// 			if(data.currentStatus !== "In Replacement"){
+			// 				return	<a href="javascript:void(0);"
+			// 				style={{ color: '#006699', textDecoration: 'underline' }}
+			// 				onClick={()=>{
+			// 					// console.log(data.onboardID)
+			// 					setIsAddTSC(true)
+			// 					setTSCONBoardData({onboardID :data.onboardID, engagementID:data.engagementID, talentName: data.talentName})
+			// 				}}
+			// 				>
+			// 					ADD
+			// 				</a>
+			// 			}
+			// 			return ''
+			// 		}
+			// 	}
+			// },
 			{
 				title: 'NBD',
 				dataIndex: 'nbdName',
