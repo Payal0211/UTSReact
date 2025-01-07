@@ -665,7 +665,12 @@ function AMDashboard() {
                                         columns={tableColumnsMemo}
                                         bordered={false}
                                         dataSource={zohoTicketList}
-                                        pagination={false} 
+                                        pagination={
+                                            {
+                                              size: 'small',
+                                              total: renewalList?.length,
+                                            }
+                                          }
                                         />,
                                         },
                                             {
@@ -677,7 +682,12 @@ function AMDashboard() {
                                             columns={tableColumnsMemo}
                                             bordered={false}
                                             dataSource={zohoTicketList}
-                                            pagination={false} 
+                                            pagination={
+                                                {
+                                                  size: 'small',
+                                                  total: renewalList?.length,
+                                                }
+                                              } 
                                             />,
                                             },
                                         // {
