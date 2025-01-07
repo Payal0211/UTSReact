@@ -144,6 +144,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
 
     return (
         <div className={allengagementAddFeedbackStyles.engagementModalWrap}
+        style={{padding:'15px'}}
         >
             <div className={`${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.addFeebackContainer}`}>
                 <h1>Add Feedback</h1>
