@@ -155,6 +155,10 @@ const isAccess = (ID, title) =>{
 		isVisible =  true
 		return isVisible		
 	}
+	if ((title === 'Engagement Report' ||  title === "Dashboard" || title === 'Engagement')  && ID === 3){
+		isVisible =  true
+		return isVisible		
+	}
 	 if(title === 'Hiring Request' || 
 	  title === 'Users' || 
 	 title === 'Engagement' || 
