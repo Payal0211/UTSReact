@@ -487,10 +487,10 @@ function AMDashboard() {
             render:(value,result)=>{
                 if(ticketTabTitle === "Open"){
                      const isExp = result.dueDate ? new Date(result.dueDate) < new Date()  : false
-                console.log({ isExp, dat:result.dueDate  })
-              return  <div className={`${amStyles.ticketStatusChip} ${isExp && amStyles.expireDate}`}> 
-            {value === 'Rejected' ? <span style={{cursor:'pointer'}}> {value}</span> : <span> {value}</span>}
-            </div>
+
+                    return  <div className={`${amStyles.ticketStatusChip} ${isExp && amStyles.expireDate}`}> 
+                    {value === 'Rejected' ? <span style={{cursor:'pointer'}}> {value}</span> : <span> {value}</span>}
+                    </div>
                 }else{
                     return value
                 }
