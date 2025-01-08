@@ -43,6 +43,19 @@ export const userAPI = {
 			return errorDebug(error, 'UserAPI.getUserListRequest');
 		}
 	},
+
+	deactivateUserRequest: async (userID) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.USER + UsersAPI.DEACTIVATE_USER + `?userId=${userID}`;
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.deactivateUserRequest');
+		}
+	},
 	createUserRequest: async (userData) => {
 		try {
 			let httpService = new HttpServices();
