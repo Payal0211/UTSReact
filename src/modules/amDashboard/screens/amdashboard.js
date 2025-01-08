@@ -504,11 +504,11 @@ function AMDashboard() {
             align: 'left',
             width: '100px',
             render:(text,result)=>{
-                return  text ? <Tooltip title={<p>Created on {moment(text).format('DD MMM YYYY hh:mm a')} {result.priority} </p>}>{moment(text).fromNow()}</Tooltip>  : '';
+                return  text ? <Tooltip title={<p>Created on {moment(text).format('DD MMM YYYY hh:mm A')} {result.priority ? `- ${result.priority}` : ''} </p>}>{moment(text).fromNow()}</Tooltip>  : '';
             }
         },
         {
-            title: 'due Date',
+            title: 'Due Date',
             dataIndex: 'dueDate',
             key: 'dueDate',
             align: 'left',
@@ -668,7 +668,7 @@ function AMDashboard() {
                                         pagination={
                                             {
                                               size: 'small',
-                                              total: renewalList?.length,
+                                              total: zohoTicketList?.length,
                                             }
                                           }
                                         />,
@@ -685,7 +685,7 @@ function AMDashboard() {
                                             pagination={
                                                 {
                                                   size: 'small',
-                                                  total: renewalList?.length,
+                                                  total: zohoTicketList?.length,
                                                 }
                                               } 
                                             />,
