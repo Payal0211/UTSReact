@@ -653,19 +653,19 @@ function AMDashboard() {
     <div className={amStyles.hiringRequestContainer}>
         <LogoLoader visible={isLoading} />
 
-        <div className={amStyles.addnewHR} style={{ margin: '0px 0 12px 0'}}>
-				<div className={amStyles.hiringRequest} onClick={()=>setShowTimeLine(true)}>
+        <div className={amStyles.addnewHR} style={{ margin: '0'}}>
+				<div className={amStyles.hiringRequest}>
 					 Dashboard 
 				</div>
 				<LogoLoader visible={isLoading} />
 			</div>
 
             {isAdmin &&    <div className={amStyles.filterContainer}>
-            <div className={amStyles.filterSets} style={{justifyContent:'left', background:'none', paddingLeft:'0'}}>
+            <div className={amStyles.filterSets} style={{justifyContent:'left', background:'none', paddingLeft:'0', paddingTop: '0'}}>
 				<div className={amStyles.filterSetsInner}  style={{width:'40%'}}>
                   <Select
 					id="selectedValue"
-					placeholder="select AM" 
+					placeholder="Select AM" 
 					mode="multiple"
 					value={selectedAM}
 					showSearch={true}
