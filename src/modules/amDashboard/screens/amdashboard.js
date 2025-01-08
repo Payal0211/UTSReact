@@ -193,14 +193,14 @@ function AMDashboard() {
             dataIndex: 'client',
             key: 'client',
             align: 'left',
-            width: '100px',
+            width: '200px',
         },
         {
             title: 'Talent ( Email )',
             dataIndex: 'talentName',
             key: 'talentName',
             align: 'left',
-            width: '100px',
+            width: '200px',
             render:(text,result)=>{
                 return `${text ? text : ''} ${result.emailID ? `( ${result.emailID} )` : ''}`;
             }
@@ -259,7 +259,7 @@ function AMDashboard() {
                 dataIndex: 'engagementID',
                 key: 'engagementID',
                 align: 'left',
-                width: '100px',
+                width: '150px',
                 render:(text,item)=>{
                     return <>
                     <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
@@ -280,14 +280,14 @@ function AMDashboard() {
             dataIndex: 'client',
             key: 'client',
             align: 'left',
-            width: '100px',
+            width: '200px',
         },
         {
             title: 'Talent',
             dataIndex: 'talentName',
             key: 'talentName',
             align: 'left',
-            width: '100px',
+            width: '200px',
             render:(text,result)=>{
                 return `${text ? text : ''} ${result.emailID ? `( ${result.emailID} )` : ''}`;
             }
@@ -347,7 +347,7 @@ function AMDashboard() {
                 dataIndex: 'engagementID',
                 key: 'engagementID',
                 align: 'left',
-                width: '100px',
+                width: '150px',
                 render:(text,item)=>{                  
                     return <>
                     <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
@@ -368,14 +368,14 @@ function AMDashboard() {
             dataIndex: 'client',
             key: 'client',
             align: 'left',
-            width: '100px',
+            width: '200px',
         },
         {
             title: 'Talent',
             dataIndex: 'talentName',
             key: 'talentName',
             align: 'left',
-            width: '100px',
+            width: '200px',
             render:(text,result)=>{
                 return `${text ? text : ''} ${result.emailID ? `( ${result.emailID} )` : ''}`;
             }
@@ -433,6 +433,120 @@ function AMDashboard() {
     },[engagementList])
 
     const tableColumnsMemo=  useMemo(()=>{
+        if(ticketTabTitle === "Open"){
+            return [{
+                title: 'Ticket #',
+                dataIndex: 'ticketNumber',
+                key: 'ticketNumber',
+                align: 'left',
+                width: '60px',
+                render:(text,item)=>{
+                    return <a href={item.webUrl} target='_blank' rel="noreferrer"  style={{
+                        color: `var(--uplers-black)`,
+                        textDecoration: 'underline',
+                    }}>{text}</a>
+                }
+            },
+            {
+                title: 'Subjects',
+                dataIndex: 'subject',
+                key: 'subject',
+                align: 'left',
+                width: '220px',
+                render:(text,item)=>{
+                    return  <p onClick={()=> openHistory(item)} style={{
+                        color: `var(--uplers-black)`,
+                        textDecoration: 'underline',
+                        cursor:'pointer',
+                    }}>{text}</p>
+                }
+            },
+            {
+                title: 'Contact',
+                dataIndex: 'contactName',
+                key: 'contactName',
+                align: 'left',
+                width: '120px',
+                render:(text,result)=>{
+                    return `${text ? text : ''} ${result.email ? `- ${result.email}` : ''}`;
+                }
+            },
+            {
+                title: 'Talent',
+                dataIndex: 'talentName',
+                key: 'talentName',
+                align: 'left',
+                width: '120px',
+                render:(text,result)=>{
+                    return `${text ? text : ''} ${result.talentEmail ? `- ${result.talentEmail}` : ''}`;
+                }
+            },
+          
+            // {
+            //     title: 'Description',
+            //     dataIndex: 'description',
+            //     key: 'description',
+            //     align: 'left',
+            //     width: '120px',
+            // },
+            {
+                title: 'Priority',
+                dataIndex: 'priority',
+                key: 'priority',
+                align: 'left',
+                width: '60px',
+            },
+            {
+                title: 'Status',
+                dataIndex: 'status',
+                key: 'status',
+                align: 'left',
+                width: '60px',
+                render:(value,result)=>{
+                    if(ticketTabTitle === "Open"){
+                         const isExp = result.dueDate ? new Date(result.dueDate) < new Date()  : false
+    
+                        return  <div className={`${amStyles.ticketStatusChip} ${isExp && amStyles.expireDate}`}> 
+                        {value === 'Rejected' ? <span style={{cursor:'pointer'}}> {value}</span> : <span> {value}</span>}
+                        </div>
+                    }else{
+                        return value
+                    }
+                   
+                }
+            },      
+            {
+                title: 'Created Date',
+                dataIndex: 'createdTime',
+                key: 'createdTime',
+                align: 'left',
+                width: '100px',
+                render:(text,result)=>{
+                    return  text ? <Tooltip title={<p>Created on {moment(text).format('DD MMM YYYY hh:mm A')} {result.priority ? `- ${result.priority}` : ''} </p>}>{moment(text).fromNow()}</Tooltip>  : '';
+                }
+            },
+            {
+                title: 'Due Date',
+                dataIndex: 'dueDate',
+                key: 'dueDate',
+                align: 'left',
+                width: '100px',
+                render:(text)=>{
+                    return text ? moment(text).format('DD-MM-YYYY') : '';
+                }
+            } ,
+            {
+                title: 'Last Updated Date',
+                dataIndex: 'modifiedTime',
+                key: 'modifiedTime',
+                align: 'left',
+                width: '100px',
+                render:(text)=>{
+                    return text ? moment(text).format('DD-MM-YYYY') : '';
+                }
+            },
+        ]
+        }
         return [{
             title: 'Ticket #',
             dataIndex: 'ticketNumber',
@@ -451,7 +565,7 @@ function AMDashboard() {
             dataIndex: 'subject',
             key: 'subject',
             align: 'left',
-            width: '120px',
+            width: '220px',
             render:(text,item)=>{
                 return  <p onClick={()=> openHistory(item)} style={{
                     color: `var(--uplers-black)`,
@@ -501,18 +615,6 @@ function AMDashboard() {
             key: 'status',
             align: 'left',
             width: '60px',
-            render:(value,result)=>{
-                if(ticketTabTitle === "Open"){
-                     const isExp = result.dueDate ? new Date(result.dueDate) < new Date()  : false
-
-                    return  <div className={`${amStyles.ticketStatusChip} ${isExp && amStyles.expireDate}`}> 
-                    {value === 'Rejected' ? <span style={{cursor:'pointer'}}> {value}</span> : <span> {value}</span>}
-                    </div>
-                }else{
-                    return value
-                }
-               
-            }
         },      
         {
             title: 'Created Date',
@@ -522,16 +624,6 @@ function AMDashboard() {
             width: '100px',
             render:(text,result)=>{
                 return  text ? <Tooltip title={<p>Created on {moment(text).format('DD MMM YYYY hh:mm A')} {result.priority ? `- ${result.priority}` : ''} </p>}>{moment(text).fromNow()}</Tooltip>  : '';
-            }
-        },
-        {
-            title: 'Due Date',
-            dataIndex: 'dueDate',
-            key: 'dueDate',
-            align: 'left',
-            width: '100px',
-            render:(text)=>{
-                return text ? moment(text).format('DD-MM-YYYY') : '';
             }
         },
         {
@@ -569,9 +661,8 @@ function AMDashboard() {
 			</div>
 
             {isAdmin &&    <div className={amStyles.filterContainer}>
-            <div className={amStyles.filterSets} style={{justifyContent:'left', background:'none'}}>
-                Select AM
-				<div className={amStyles.filterSetsInner}  style={{width:'40%', marginLeft:'10px'}}>
+            <div className={amStyles.filterSets} style={{justifyContent:'left', background:'none', paddingLeft:'0'}}>
+				<div className={amStyles.filterSetsInner}  style={{width:'40%'}}>
                   <Select
 					id="selectedValue"
 					placeholder="select AM" 
