@@ -30,6 +30,10 @@ function AMDashboard() {
     const [isLoading, setLoading] = useState(false);
     const [engagementList, setEngagementList] = useState([])
     const [zohoTicketList, setzohoTicketList] = useState([])
+    const [zohoTicketListDataCount, setzohoTicketListDataCount] = useState([])   
+    const [pageSize, setPageSize] = useState(10);    
+	const [pageIndex, setPageIndex] = useState(1);
+    const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
     const [renewalList,setRenewalList] = useState([]);
     const [showTimeline,setShowTimeLine] = useState(false)
     const [historyData,setHistoryData] = useState({})
@@ -130,7 +134,7 @@ function AMDashboard() {
             }
            
     }
-        let zohoPayload = {"userId":  userData?.UserId , status: ticketTabTitle[0] === 'O' ? 'A' : ticketTabTitle[0] ,amNameIds:selectedAM.join(","), }
+        let zohoPayload = {"userId":  userData?.UserId , status: ticketTabTitle[0] === 'O' ? 'A' : ticketTabTitle[0] ,amNameIds:selectedAM.join(","), "pageIndex": 1, "pageSize": 10 }
         let summaryPayload = {"userId":  userData?.UserId,amNameIds:selectedAM.join(",") }
         const result = await amDashboardDAO.getDashboardDAO(payload)  
         const renewalResult = await amDashboardDAO.getRenewalDAO(renewalPayload)   
@@ -140,7 +144,8 @@ function AMDashboard() {
         setLoading(false)
         // console.log('"zohoResult ', zohoResult)
         if(zohoResult?.statusCode === 200){
-            setzohoTicketList(zohoResult.responseBody)
+            setzohoTicketList(zohoResult.responseBody?.rows);
+            setzohoTicketListDataCount(zohoResult.responseBody?.totalrows);
         }else if(zohoResult?.statusCode === 404){
             setzohoTicketList([])
         }
@@ -168,6 +173,18 @@ function AMDashboard() {
         }
         }
        
+    }
+
+    const getZohoTicketsFromPagination = async(pageIndex, pageSize)=>{
+        let zohoPayload = {"userId":  userData?.UserId , status: ticketTabTitle[0] === 'O' ? 'A' : ticketTabTitle[0] ,amNameIds:selectedAM.join(","), "pageIndex": pageIndex, "pageSize": pageSize }
+        const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload);
+
+        if(zohoResult?.statusCode === 200){
+            setzohoTicketList(zohoResult.responseBody?.rows);
+            setzohoTicketListDataCount(zohoResult.responseBody?.totalrows);
+        }else if(zohoResult?.statusCode === 404){
+            setzohoTicketList([])
+        }
     }
 
     const engColumnsMemo = useMemo(()=>{
@@ -664,13 +681,21 @@ function AMDashboard() {
                                         id="TicketsOpenListingTable"
                                         columns={tableColumnsMemo}
                                         bordered={false}
-                                        dataSource={zohoTicketList}
-                                        pagination={
-                                            {
-                                              size: 'small',
-                                              total: zohoTicketList?.length,
-                                            }
-                                          }
+                                        dataSource={zohoTicketList} 
+                                        pagination={{
+                                            onChange: (pageNum, pageSize) => {                    
+                                                setPageIndex(pageNum);
+                                                setPageSize(pageSize);
+                                                getZohoTicketsFromPagination(pageNum , pageSize);
+                                            },
+                                            size: 'small',
+                                            pageSize: pageSize,
+                                            pageSizeOptions: pageSizeOptions,
+                                            total: zohoTicketListDataCount,
+                                            showTotal: (total, range) =>
+                                                `${range[0]}-${range[1]} of ${zohoTicketListDataCount} items`,
+                                            defaultCurrent: pageIndex,
+                                        }}
                                         />,
                                         },
                                             {
