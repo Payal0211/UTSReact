@@ -57,6 +57,31 @@ export const userDAO = {
 			return errorDebug(error, 'userDAO.getUserDetailsRequestDAO');
 		}
 	},
+	deactivateUserRequestDAO: async function (userId) {
+		try {
+			const userDetailsResponse = await userAPI.deactivateUserRequest(userId);
+			if (userDetailsResponse) {
+				const statusCode = userDetailsResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = userDetailsResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return userDetailsResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return userDetailsResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.deactivateUserRequestDAO');
+		}
+	},
 	addNewUserRequestDAO: async function (userData) {
 		try {
 			const addNewUserResponse = await userAPI.createUserRequest(userData);

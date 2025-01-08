@@ -393,6 +393,7 @@ export class UsersAPI {
 	static LEVEL = 'GetLevel';
 	static GEO = 'GetGeo';
 	static REPORTING_USER = 'GetReportingUser';
+	static DEACTIVATE_USER = 'DeactivateUser'
 }
 
 export class InterviewsAPI {

@@ -84,7 +84,18 @@ const UserList = () => {
 	// 	fetchUserList();
 	// }, []);
 
-	const tableColumnsMemo = useMemo(() => userConfig.tableConfig(), []);
+	const deactivateUser = async (userId) =>{
+		setLoading(true);
+		const result = await userDAO.deactivateUserRequestDAO(userId)
+		setLoading(false);
+
+		if(result.statusCode === 200){
+			fetchUserList()
+			setPageIndex(1)
+		}
+	}
+
+	const tableColumnsMemo = useMemo(() => userConfig.tableConfig(deactivateUser), []);
 
 	return (
 		<div className={allUserStyles.hiringRequestContainer}>
