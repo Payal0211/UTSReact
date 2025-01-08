@@ -165,6 +165,15 @@ export const userConfig = {
 					return text ? text : 'NA';
 				},
 			},
+			{
+				title: 'Active',
+				dataIndex: 'isActive',
+				key: 'isActive',
+				align: 'left',
+				render: (text) => {
+					return text ? 'Yes' : 'No';
+				},
+			},
 		];
 	},
 	userFilterListConfig: () => {
