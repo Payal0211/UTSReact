@@ -198,9 +198,9 @@ export default function TicketModal({historyLoading,historyData,setShowTimeLine,
         <div className='ticketTileWrapper'>
           <div className='ticketTitle'>
             <h2>{historyData?.subject}</h2>
-            <div className={`ticketStatus ${historyData?.status === 'Open' ? 'blue' : historyData?.status === 'Closed'?  'green' : 'red'}`}>
+            <div className={`ticketStatus ${ historyData?.status === 'Open' ? historyData.dueDate ? (new Date(historyData.dueDate) < new Date()) ? 'red' : 'blue'  : 'blue' : historyData?.status === 'Closed'?  'red' : 'green'}`}>
               <span className='upperBorder'><span className='innerBorder'></span></span>
-              <div className='ticketStatusText'> <span> {historyData?.status}</span></div>
+              <div className={'ticketStatusText'}> <span> {historyData?.status}</span></div>
             </div>
           </div>
           <div className='subTitleWrapper'>
