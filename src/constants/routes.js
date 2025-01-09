@@ -124,6 +124,10 @@ const TalentBackoutReport = React.lazy(() =>
 	import('modules/report/screens/talentBackoutReport/talentBackoutReport')
 );
 
+const TalentReport = React.lazy(() =>
+	import('modules/report/screens/talentReport/talentReport')
+);
+
 const HRReport = React.lazy(() =>
 	import('modules/report/screens/hrReport/hrReport')
 );
@@ -230,6 +234,7 @@ export default class UTSRoutes {
 	static REPLACEMENT_REPORT = "/replacementReport";
 	static ADD_NEW_COMPANY = "/addNewCompany/:companyID";
 	static TALENT_BACKOUT_REPORT = "/talentBackoutReport";
+	static TALENT_REPORT = "/talentReport";
 }
 
 export const navigateToComponent = {
@@ -402,6 +407,11 @@ export const navigateToComponent = {
 	[UTSRoutes.TALENT_BACKOUT_REPORT]:(
 		<Suspense>
 			<TalentBackoutReport />
+		</Suspense>
+	),
+	[UTSRoutes.TALENT_REPORT]:(
+		<Suspense>
+			<TalentReport />
 		</Suspense>
 	),
 	[UTSRoutes.HR_REPORT]:(

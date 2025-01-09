@@ -30,7 +30,7 @@ function AMDashboard() {
     const [isLoading, setLoading] = useState(false);
     const [engagementList, setEngagementList] = useState([])
     const [zohoTicketList, setzohoTicketList] = useState([])
-    const [zohoTicketListDataCount, setzohoTicketListDataCount] = useState([])   
+    const [zohoTicketListDataCount, setzohoTicketListDataCount] = useState(0)   
     const [pageSize, setPageSize] = useState(10);    
 	const [pageIndex, setPageIndex] = useState(1);
     const pageSizeOptions = [100, 200, 300, 500, 1000,5000];

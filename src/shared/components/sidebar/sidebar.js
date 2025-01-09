@@ -14,6 +14,7 @@ import DDIcon from 'assets/svg/DDIcon.svg';
 import Invoice from 'assets/svg/invoice.svg';
 import EngagementDashboard from 'assets/svg/engagementDashboard.svg';
 import EngagementReport from 'assets/svg/engagementReport.png';
+import ClipBoardIcon from 'assets/svg/clipboard.svg'
 import JDEfficiencyReport from 'assets/svg/jdEfficiency.svg';
 import MedalIcon from 'assets/svg/medalIcon.svg';
 import GlobIcon from 'assets/svg/globIcon.svg';
@@ -167,7 +168,7 @@ const isAccess = (ID, title) =>{
 	 title === 'SLA Report' || 
 	 title === 'Client Report' || 
 	 title === 'I2S Report' || title === 'Master' || title ===  'Deal' || title === 'HR Report' || title ===  'UTM Tracking Report' ||
-	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details'
+	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Talent Report'
 	|| title === 'Clients' || title === 'HR Lost Report' || title === 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report" || title === "Dashboard"){
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
@@ -260,7 +261,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			navigateTo: UTSRoutes.ONBOARD,
 			isVisible: isAccess(usertypeID, 'Engagement Report')
 		}),
-
+		new SideBarModels({
+			id: 'talentReport',
+			title: 'Talent Report',
+			isActive: false,
+			icon: ClipBoardIcon,
+			navigateTo: UTSRoutes.TALENT_REPORT,
+			isVisible: isAccess(usertypeID, 'Talent Report')
+		}),
 		new SideBarModels({
 			id: 'demand_funnel_report',
 			title: 'Demand Funnel',
