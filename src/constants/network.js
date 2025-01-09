@@ -148,6 +148,8 @@ export class ReportType {
 	static HR_LOST_REPORT = 'HRLostReport/';
 	static REPLACEMENT_REPORT = 'ReplacementReport';
 	static TALENT_BACKOUT_REPORT = 'TalentBackoutReport';
+	static TALENT_REJECT_REPORT = 'TalentRejectReport';
+	static TALENT_ONBOARD_REPORT = 'TalentOnBoardReport';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
