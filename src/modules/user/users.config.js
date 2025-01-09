@@ -3,7 +3,7 @@ import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
 import { Link } from 'react-router-dom';
 import { Tooltip } from 'antd';
 export const userConfig = {
-	tableConfig: () => {
+	tableConfig: (deactivateUser) => {
 		return [
 			{
 				title: '     ',
@@ -170,8 +170,8 @@ export const userConfig = {
 				dataIndex: 'isActive',
 				key: 'isActive',
 				align: 'left',
-				render: (text) => {
-					return text ? 'Yes' : 'No';
+				render: (text,result) => {
+					return text ? <>Yes <p onClick={()=> deactivateUser(result.id)} style={{textDecoration:'underline',color:'blue',cursor:'pointer'}}>Deactivate</p></> : 'No';
 				},
 			},
 		];

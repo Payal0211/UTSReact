@@ -745,7 +745,7 @@ export default function ViewOnBoardDetails() {
 
   const DocumentsDetails = () => {
     return (<>
-    <div className={AddNewClientStyle.engagementModalHeaderButtonContainer}>
+    <div className={AddNewClientStyle.engagementModalHeaderButtonContainer} style={{justifyContent:'end'}}>
       <button className={AddNewClientStyle.engagementModalHeaderAddBtn} 
 				  onClick={()=> {
 					// setHRAndEngagementId({
@@ -934,6 +934,7 @@ export default function ViewOnBoardDetails() {
               label: "Client Feedback",
               key: "Client Feedback",
               children: <EngagementFeedback 
+                  hideTitle={true}
                   getHRAndEngagementId={getHRAndEngagementId}
                   feedbackTableColumnsMemo={feedbackTableColumnsMemo}
                   getClientFeedbackList={getClientFeedbackList}
