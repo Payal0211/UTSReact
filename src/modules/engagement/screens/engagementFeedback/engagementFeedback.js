@@ -15,13 +15,21 @@ const EngagementFeedback = ({
 	feedBackData,
 	setFeedBackData,
 	setEngagementModal,
-	setHRAndEngagementId
+	setHRAndEngagementId,
+	hideTitle
 }) => {
 	return (
 		<div className={allengagementStyles.tableDetails}>
-			<div className={allengagementStyles.engagementModalTitle}>
+			<div className={allengagementStyles.engagementModalTitle} style={{borderTop: hideTitle ? '0' : '', paddingTop: hideTitle ? '0' : '' }}>
 				<div className={allengagementStyles.engagementModalTitleHeader}>
-				<h1>Feedback for {getHRAndEngagementId?.talentName}</h1> 
+				{hideTitle ? <p>
+					<span>HR ID:</span>{' '}
+					{getHRAndEngagementId?.hrNumber ? getHRAndEngagementId?.hrNumber : ''}{' '}
+					| <span>Engagement ID:</span>{' '}
+					{getClientFeedbackList[0]?.engagemenID
+						? getClientFeedbackList[0]?.engagemenID
+						: ''}
+				</p> : <h1>Feedback for {getHRAndEngagementId?.talentName}</h1> }
 				<button className={allengagementStyles.engagementModalHeaderAddBtn} 
 				  onClick={()=> {
 					setHRAndEngagementId({
@@ -46,14 +54,14 @@ const EngagementFeedback = ({
 				  >Add Feedback</button>
 				</div>
 				
-				<p>
+				{!hideTitle && <p>
 					<span>HR ID:</span>{' '}
 					{getHRAndEngagementId?.hrNumber ? getHRAndEngagementId?.hrNumber : ''}{' '}
 					| <span>Engagement ID:</span>{' '}
 					{getClientFeedbackList[0]?.engagemenID
 						? getClientFeedbackList[0]?.engagemenID
 						: ''}
-				</p>
+				</p>}
 			</div>
 
 			{isLoading ? (
