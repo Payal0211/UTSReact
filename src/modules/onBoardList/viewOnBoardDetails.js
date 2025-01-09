@@ -854,6 +854,15 @@ export default function ViewOnBoardDetails() {
           getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,new Date().getMonth(),new Date().getFullYear())
         }}>Reset</p>
       </div>
+      
+
+       <div  style={{  marginLeft: "30%" }}>
+        <h4> Total Leaves Given: {getOnboardFormDetails?.onboardContractDetails?.totalLeavesGiven}</h4>
+        <h4>Total Leave Balance: {getOnboardFormDetails?.onboardContractDetails?.totalLeaveBalance}</h4>
+      </div>
+
+
+
         <button className={AddNewClientStyle.engagementModalHeaderAddBtn} 
             onClick={()=> {
             // setHRAndEngagementId({

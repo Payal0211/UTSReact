@@ -157,8 +157,9 @@ export default function LegalPreOnboarding({
             engagementReplacement?.replacementData === true ||
             d.engagementreplacement === undefined
               ? ""
-              : d.engagementreplacement.id,
-        },
+              : d.engagementreplacement.id
+        },        
+        totalLeavesGiven: d.noofLeaves
       };
       // if(new Date(d.contractStartDate) >= new Date(d.joiningDate)){
       //   isValid = false;
@@ -606,6 +607,44 @@ export default function LegalPreOnboarding({
                             * Please select Date.
                           </div>
                         )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={HRDetailStyle.onboardingProcesBox}>
+              <div className={HRDetailStyle.onboardingProcessLeft}>
+                <div>
+                  <DuringLegalSVG width="32" height="32" />
+                </div>
+                <h3 className={HRDetailStyle.titleLeft}>PL (Talent)</h3>
+              </div>
+
+              <div className={HRDetailStyle.onboardingProcessMid}>
+                <div
+                  className={HRDetailStyle.onboardingFormAlign}
+                  style={{ width: "100%" }}
+                >
+                  <div className={HRDetailStyle.modalFormWrapper}>
+                    <div className={HRDetailStyle.modalFormCol}>                     
+                      <div
+                        className={`${HRDetailStyle.timeSlotItem} ${
+                          errors.sowDate && HRDetailStyle.marginBottom0
+                        }`}>
+                        <HRInputField
+                              register={register}
+                              errors={errors}
+                              validationSchema={{
+                                required: "please enter no of leaves",
+                              }}
+                              label="No of Leaves"
+                              name="noofLeaves"
+                              type={InputType.NUMBER}
+                              placeholder="Enter Leave Count"
+                              required
+                          />
                       </div>
                     </div>
                   </div>

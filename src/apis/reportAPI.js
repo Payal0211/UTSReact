@@ -354,5 +354,39 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getTalentBackoutReport');
 		}
 	},
+	getTalentRejectReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.TALENT_REJECT_REPORT
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getTalentRejectReport');
+		}
+	},
+	getTalentOnboardReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.TALENT_ONBOARD_REPORT
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getTalentOnboardReport');
+		}
+	},
 
 };
