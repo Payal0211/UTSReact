@@ -856,8 +856,8 @@ export default function ViewOnBoardDetails() {
       </div>
       
 
-       <div  style={{  marginLeft: "30%" }}>
-        <h4> Total Leaves Given: {getOnboardFormDetails?.onboardContractDetails?.totalLeavesGiven}</h4>
+       <div  style={{  marginLeft: "30%",display:'flex', alignItems:'center',gap:'15px' }}>
+        <h4>Total Leaves Given: {getOnboardFormDetails?.onboardContractDetails?.totalLeavesGiven}</h4>
         <h4>Total Leave Balance: {getOnboardFormDetails?.onboardContractDetails?.totalLeaveBalance}</h4>
       </div>
 
