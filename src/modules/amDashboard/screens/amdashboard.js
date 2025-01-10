@@ -480,15 +480,14 @@ function AMDashboard() {
                 render:(text,result)=>{
                     return `${text ? text : ''} ${result.talentEmail ? `- ${result.talentEmail}` : ''}`;
                 }
+            },          
+            {
+                title: 'Classification',
+                dataIndex: 'ticketClassification',
+                key: 'ticketClassification',
+                align: 'left',
+                width: '120px',
             },
-          
-            // {
-            //     title: 'Description',
-            //     dataIndex: 'description',
-            //     key: 'description',
-            //     align: 'left',
-            //     width: '120px',
-            // },
             {
                 title: 'Priority',
                 dataIndex: 'priority',
@@ -593,15 +592,14 @@ function AMDashboard() {
             render:(text,result)=>{
                 return `${text ? text : ''} ${result.talentEmail ? `- ${result.talentEmail}` : ''}`;
             }
+        },      
+        {
+            title: 'Classification',
+            dataIndex: 'ticketClassification',
+            key: 'ticketClassification',
+            align: 'left',
+            width: '120px',
         },
-      
-        // {
-        //     title: 'Description',
-        //     dataIndex: 'description',
-        //     key: 'description',
-        //     align: 'left',
-        //     width: '120px',
-        // },
         {
             title: 'Priority',
             dataIndex: 'priority',

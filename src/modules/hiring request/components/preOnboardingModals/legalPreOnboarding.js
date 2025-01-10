@@ -24,6 +24,7 @@ import { ReactComponent as LinkedinClientSVG } from "assets/svg/LinkedinClient.s
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as TelentDetailSVG } from "assets/svg/TelentDetail.svg";
 import { ReactComponent as DuringLegalSVG } from "assets/svg/duringLegal.svg";
+import LeaveCalendarPNG  from "assets/LeaveCalendar.png";
 import dayjs from "dayjs";
 
 import { BsThreeDots } from "react-icons/bs";
@@ -159,7 +160,8 @@ export default function LegalPreOnboarding({
               ? ""
               : d.engagementreplacement.id
         },        
-        totalLeavesGiven: d.noofLeaves
+        totalLeavesGiven: d.noofLeaves,
+        holidayLeaves : d.holidayLeaves
       };
       // if(new Date(d.contractStartDate) >= new Date(d.joiningDate)){
       //   isValid = false;
@@ -617,9 +619,9 @@ export default function LegalPreOnboarding({
             <div className={HRDetailStyle.onboardingProcesBox}>
               <div className={HRDetailStyle.onboardingProcessLeft}>
                 <div>
-                  <DuringLegalSVG width="32" height="32" />
+                <img src={LeaveCalendarPNG} alt="Ticket Image" width="32" height="32" />
                 </div>
-                <h3 className={HRDetailStyle.titleLeft}>PL (Talent)</h3>
+                <h3 className={HRDetailStyle.titleLeft}>Talent Leaves</h3>
               </div>
 
               <div className={HRDetailStyle.onboardingProcessMid}>
@@ -639,7 +641,7 @@ export default function LegalPreOnboarding({
                               validationSchema={{
                                 required: "please enter no of leaves",
                               }}
-                              label="No of Leaves"
+                              label="No. of Paid Leaves"
                               name="noofLeaves"
                               type={InputType.NUMBER}
                               placeholder="Enter Leave Count"
@@ -647,6 +649,27 @@ export default function LegalPreOnboarding({
                           />
                       </div>
                     </div>
+
+                    <div className={HRDetailStyle.modalFormCol}>                     
+                      <div
+                        className={`${HRDetailStyle.timeSlotItem} ${
+                          errors.sowDate && HRDetailStyle.marginBottom0
+                        }`}>
+                        <HRInputField
+                              register={register}
+                              errors={errors}
+                              validationSchema={{
+                                required: "please enter no of holiday leaves",
+                              }}
+                              label="No. of Holiday Leaves"
+                              name="holidayLeaves"
+                              type={InputType.NUMBER}
+                              placeholder="Enter Holiday Leave Count"
+                              required
+                          />
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
