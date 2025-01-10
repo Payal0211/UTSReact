@@ -193,7 +193,7 @@ function AMDashboard() {
             dataIndex: 'client',
             key: 'client',
             align: 'left',
-            width: '200px',
+            width: '180px',
         },
         {
             title: 'Talent ( Email )',
@@ -210,7 +210,7 @@ function AMDashboard() {
             dataIndex: 'engagementID',
             key: 'engagementID',
             align: 'left',
-            width: '100px',
+            width: '105px',
             render:(text,item)=>{
                 return <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
                     color: `var(--uplers-black)`,
@@ -223,7 +223,7 @@ function AMDashboard() {
             dataIndex: 'hR_Number',
             key: 'hR_Number',
             align: 'left',
-            width: '100px',
+            width: '105px',
             render:(text,item)=>{
                 return <Link
                 to={`/allhiringrequest/${item.hrid}`}
@@ -238,7 +238,7 @@ function AMDashboard() {
             dataIndex: 'enggementEndate',
             key: 'enggementEndate',
             align: 'left',
-            width: '100px',
+            width: '80px',
         },
         {
             title: 'Status',
@@ -247,7 +247,13 @@ function AMDashboard() {
             align: 'left',
             width: '100px',
         },
-       
+        {
+            title: 'AM Name',
+            dataIndex: 'amName',
+            key: 'amName',
+            align: 'left',
+            width: '100px',
+        },
 
     ]
     },[renewalList])
@@ -336,7 +342,13 @@ function AMDashboard() {
             align: 'left',
             width: '100px',
         },
-       
+        {
+            title: 'AM Name',
+            dataIndex: 'amName',
+            key: 'amName',
+            align: 'left',
+            width: '100px',
+        },
 
     ]
     },[engagementList])
@@ -411,13 +423,13 @@ function AMDashboard() {
             width: '100px',
         },
         {
-            title: 'Actual End Date / End Date',
+            title: <>Actual End Date <br/>/ End Date</>,
             dataIndex: 'contractEndDate',
             key: 'contractEndDate',
             align: 'left',
-            width: '200px',
+            width: '100px',
             render:(text , item)=>{
-                return `${item.actualEndDate ? `${item.actualEndDate}` : ''} ${text ?  `/ ${text}` : ''}`
+                return <>{item.actualEndDate ?? 'NA'} <br/>/ {text ?? 'NA'}</>
             }
         },
         {
@@ -427,7 +439,13 @@ function AMDashboard() {
             align: 'left',
             width: '100px',
         },
-       
+        {
+            title: 'AM Name',
+            dataIndex: 'amName',
+            key: 'amName',
+            align: 'left',
+            width: '100px',
+        },
 
     ]
     },[engagementList])
@@ -480,15 +498,14 @@ function AMDashboard() {
                 render:(text,result)=>{
                     return `${text ? text : ''} ${result.talentEmail ? `- ${result.talentEmail}` : ''}`;
                 }
+            },          
+            {
+                title: 'Classification',
+                dataIndex: 'ticketClassification',
+                key: 'ticketClassification',
+                align: 'left',
+                width: '120px',
             },
-          
-            // {
-            //     title: 'Description',
-            //     dataIndex: 'description',
-            //     key: 'description',
-            //     align: 'left',
-            //     width: '120px',
-            // },
             {
                 title: 'Priority',
                 dataIndex: 'priority',
@@ -593,15 +610,14 @@ function AMDashboard() {
             render:(text,result)=>{
                 return `${text ? text : ''} ${result.talentEmail ? `- ${result.talentEmail}` : ''}`;
             }
+        },      
+        {
+            title: 'Classification',
+            dataIndex: 'ticketClassification',
+            key: 'ticketClassification',
+            align: 'left',
+            width: '120px',
         },
-      
-        // {
-        //     title: 'Description',
-        //     dataIndex: 'description',
-        //     key: 'description',
-        //     align: 'left',
-        //     width: '120px',
-        // },
         {
             title: 'Priority',
             dataIndex: 'priority',

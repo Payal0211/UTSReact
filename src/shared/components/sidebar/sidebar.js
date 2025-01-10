@@ -102,6 +102,9 @@ const Sidebar = () => {
 													{/* <h3>Masters</h3> */}
 													{branch?.length > 0 &&
 														branch?.map((item) => {
+															if(item.isVisible === false ){
+																return null
+															}
 															return (
 																<Link to={item?.navigateTo}>
 																	<img src={item?.icon} 
@@ -152,11 +155,11 @@ const isAccess = (ID, title) =>{
 		isVisible =  true	
 		return isVisible	
 	}
-	if ((title === 'Engagement Report' ||  title === "Dashboard")  && ID === 6){
+	if ((title === 'Engagement Report' ||  title === "Dashboard" || title === 'Master' || title === 'Currency')  && ID === 6){
 		isVisible =  true
 		return isVisible		
 	}
-	if ((title === 'Engagement Report' ||  title === "Dashboard" || title === 'Engagement')  && ID === 3){
+	if ((title === 'Engagement Report' ||  title === "Dashboard" || title === 'Engagement' || title === 'Master' || title === 'Currency')  && ID === 3){
 		isVisible =  true
 		return isVisible		
 	}
@@ -169,7 +172,8 @@ const isAccess = (ID, title) =>{
 	 title === 'Client Report' || 
 	 title === 'I2S Report' || title === 'Master' || title ===  'Deal' || title === 'HR Report' || title ===  'UTM Tracking Report' ||
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Talent Report'
-	|| title === 'Clients' || title === 'HR Lost Report' || title === 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report" || title === "Dashboard"){
+	|| title === 'Clients' || title === 'HR Lost Report' || title === 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report" || title === "Dashboard"
+    || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency') {
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
 		return isVisible
@@ -435,6 +439,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					navigateTo: UTSRoutes.MASTERCOUNTRYROUTE,
 					isChildren: false,
 					branch: [],
+					isVisible:isAccess(usertypeID,'Country'),
 				}),
 				new SideBarModels({
 					id: 'Master_Currency_List',
@@ -444,6 +449,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					navigateTo: UTSRoutes.MASTERCURRENCYROUTE,
 					isChildren: false,
 					branch: [],
+					isVisible:isAccess(usertypeID,'Currency'),
 				}),
 				new SideBarModels({
 					id: 'Master_Role_List',
@@ -453,6 +459,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					navigateTo: UTSRoutes.MASTERROLE,
 					isChildren: false,
 					branch: [],
+					isVisible:isAccess(usertypeID,'Role'),
 				}),
 				new SideBarModels({
 					id: 'Master_Timezone',
@@ -462,6 +469,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					navigateTo: UTSRoutes.MASTERTIMEZONE,
 					isChildren: false,
 					branch: [],
+					isVisible:isAccess(usertypeID,'TimeZone'),
 				}),
 			],
 		}),

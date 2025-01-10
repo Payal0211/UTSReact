@@ -828,10 +828,10 @@ export const MasterAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MASTERS +
-			MastersAPI.UPDATE_CURRENCY_EXCHANGE_RATE_LIST;
+			MastersAPI.UPDATE_CURRENCY_EXCHANGE_RATE_LIST + `?ID=${currencyDetails.ID}&ExchangeRate=${currencyDetails.ExchangeRate}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-		httpService.dataToSend = currencyDetails;
+		// httpService.dataToSend = currencyDetails;
 		try {
 			let response = await httpService.sendPostRequest();
 			return response;
