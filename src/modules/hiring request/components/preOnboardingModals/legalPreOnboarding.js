@@ -640,6 +640,14 @@ export default function LegalPreOnboarding({
                               errors={errors}
                               validationSchema={{
                                 required: "please enter no of leaves",
+                                max: {
+                                  value: 99,
+                                  message: `please don't enter the value greater than 99`,
+                                },
+                                min: {
+                                  value: 0,
+                                  message: `please don't enter the value less than 1`,
+                                },
                               }}
                               label="No. of Paid Leaves"
                               name="noofLeaves"
@@ -660,6 +668,14 @@ export default function LegalPreOnboarding({
                               errors={errors}
                               validationSchema={{
                                 required: "please enter no of holiday leaves",
+                                max: {
+                                  value: 99,
+                                  message: `please don't enter the value greater than 99`,
+                                },
+                                min: {
+                                  value: 0,
+                                  message: `please don't enter the value less than 1`,
+                                },
                               }}
                               label="No. of Holiday Leaves"
                               name="holidayLeaves"
