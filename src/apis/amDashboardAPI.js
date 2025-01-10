@@ -165,7 +165,7 @@ export const amDashboardAPI = {
 		httpService.setAuthToken = NetworkInfo.ZOHO_AUTH;
         httpService.dataToSend = payload
 		try {
-			let response = await httpService.sendPostRequest();
+			let response = await httpService.sendFileDataPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'amDashboardAPI.approveRejectLeaveRequest');
