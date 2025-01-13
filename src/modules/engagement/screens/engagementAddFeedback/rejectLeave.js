@@ -4,9 +4,10 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 import React, { useCallback, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import allengagementAddFeedbackStyles from '../engagementBillAndPayRate/engagementBillRate.module.css';
-
+import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
+import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import UploadModal from 'shared/components/uploadModal/uploadModal';
 import moment from 'moment';
 import { amDashboardDAO } from 'core/amdashboard/amDashboardDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
@@ -17,6 +18,13 @@ const RejectLeaveModal = ({rejectLeaveData,talentID,getcalendarLeaveDetails, get
     const [isLoading, setIsLoading] = useState(false);
 
     const [formError,SetFormError] = useState(false)
+    const [fileData,setFileData]= useState('')
+    const [showUploadModal,setShowUploadModal] = useState(false)
+    const [getValidation, setValidation] = useState({
+        systemFileUpload: '',
+        googleDriveFileUpload: '',
+        linkValidation: '',
+    })
 
   const [userData, setUserData] = useState({});
   
@@ -44,8 +52,18 @@ const RejectLeaveModal = ({rejectLeaveData,talentID,getcalendarLeaveDetails, get
                 "flag": "Reject"
               }
 
+              let fileDatatoUpload = new FormData()
+
+              Object.keys(payload).forEach(key=>{
+                fileDatatoUpload.append(key,payload[key])
+              })
+
+              if(fileData !== ''){
+                fileDatatoUpload.append('files',fileData)
+              }
+
            setIsLoading(true)
-        const  result = await amDashboardDAO.approveRejectLeaveDAO(payload)
+            const  result = await amDashboardDAO.approveRejectLeaveDAO(fileDatatoUpload)
             setIsLoading(false)
            getcalendarLeaveDetails(talentID)         
            reset()
@@ -58,6 +76,35 @@ const RejectLeaveModal = ({rejectLeaveData,talentID,getcalendarLeaveDetails, get
         setIsLoading(false)
     }
 // console.log({getUploadFileData})
+
+const uploadFileHandler = (e,ind) => {
+    // setIsLoading(true);
+    let fileData = e.target.files[0];
+
+    if (
+        fileData?.type !== 'image/png' &&
+        fileData?.type !== 'image/jpg' &&
+        fileData?.type !== 'image/jpeg'
+    ) {
+        setValidation({
+            ...getValidation,
+            systemFileUpload:
+                'Uploaded file is not a valid, Only jpg, jpeg, png files are allowed',
+        });
+        // setIsLoading(false);
+    } else if (fileData?.size >= 500000) {
+        setValidation({
+            ...getValidation,
+            systemFileUpload:
+                'Upload file size more than 500kb, Please Upload file upto 500kb',
+        });
+        // setIsLoading(false);
+    } else {
+        
+        setFileData(e.target.files[0]);
+        setShowUploadModal(false);
+    }
+}
 
 
     useEffect(() => {
@@ -96,6 +143,60 @@ errorMsg="Please Enter comments."
 />
 {formError && !watch('comment') &&  <span className={allengagementAddFeedbackStyles.error}>please enter reason</span>}
                     </div>
+
+                     <div
+                    className={allengagementAddFeedbackStyles.colMd12}>
+                        {                        fileData === '' ? (
+                            <HRInputField
+                                register={register}
+                                leadingIcon={<UploadSVG />}
+                                label={`Upload File`}
+                                name="jdExport"
+                                type={InputType.BUTTON}
+                                buttonLabel="Upload File"
+                                // value="Upload JD File"
+                                onClickHandler={() => setShowUploadModal(true)}
+                                // required={!jdURLLink && getUploadFileData}
+                                // validationSchema={{
+                                // 	required: 'please select a file.',
+                                // }}
+                                // errors={errors}
+                            />
+                        ) : (
+                            <div className={allengagementAddFeedbackStyles.uploadedJDWrap}>
+                                <label>Upload File </label>
+                                <div className={allengagementAddFeedbackStyles.uploadedJDName}>
+                                    {fileData?.name}{' '}
+                                    <CloseSVG
+                                        className={allengagementAddFeedbackStyles.uploadedJDClose}
+                                        onClick={() => {
+                                            setFileData('')
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        )
+                        }
+                    {showUploadModal && (
+								<UploadModal
+									isGoogleDriveUpload={false}
+									isLoading={isLoading}
+									uploadFileHandler={e=>uploadFileHandler(e)}
+									// googleDriveFileUploader={() => googleDriveFileUploader()}
+									// uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+									modalTitle={'Upload File'}
+									modalSubtitle={'File should be (JPG, PNG)'}
+									isFooter={false}
+									openModal={showUploadModal}
+									setUploadModal={()=>setShowUploadModal(false)}
+									cancelModal={() =>setShowUploadModal(false)}
+									setValidation={setValidation}
+									getValidation={getValidation}
+									// getGoogleDriveLink={getGoogleDriveLink}
+									// setGoogleDriveLink={setGoogleDriveLink}
+								/>
+							)}
+                </div>
             </div>
 
             </div>
