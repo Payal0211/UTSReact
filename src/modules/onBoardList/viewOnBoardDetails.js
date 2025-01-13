@@ -267,11 +267,8 @@ export default function ViewOnBoardDetails() {
 						{' '}
 						<MdOutlineVerified />
 					</span> </Tooltip>
-            </IconContext.Provider>}
-           
-           
-          
-            
+            </IconContext.Provider>}           
+    
             <IconContext.Provider value={{ color: 'red', style: { width:'15px',height:'15px' } }}><Tooltip title="Remove" placement="top" >
               <span
               // style={{
@@ -335,9 +332,18 @@ export default function ViewOnBoardDetails() {
         align: "center",
         width:'200px',
         render: (value, data) => {
-          return data.status !== 'Pending'? null : <div>
+          return data.status !== 'Pending'? <div>
+            {data.actionFileName ? <IconContext.Provider value={{ color: 'green', style: { width:'15px',height:'15px' } }}> <Tooltip title="Download File" placement="top" >
+              <span
+              onClick={()=> { window.open(`${NetworkInfo.NETWORK}media/TalentLeaveDocuments/${data.actionFileName}`,'_blank')} }
+              className={AddNewClientStyle.feedbackLabel} style={{padding:'0'}}>
+              {' '}
+              <FaDownload />
+            </span>   </Tooltip>
+            </IconContext.Provider> : null}
+          </div> : <div>
 
-<IconContext.Provider value={{ color: '#FFDA30', style: { width:'15px',height:'15px' } }}> <Tooltip title="Edit" placement="top" >
+            <IconContext.Provider value={{ color: '#FFDA30', style: { width:'15px',height:'15px' } }}> <Tooltip title="Edit" placement="top" >
               <span
               onClick={()=> { setEngagementModal(pre => ({...pre,addLeaveModal:true})); setEditLeaveData(data)} }
               className={AddNewClientStyle.feedbackLabel} style={{padding:'0'}}>
@@ -588,7 +594,7 @@ export default function ViewOnBoardDetails() {
    }
   }
 
-  const handleApproveleave = async (data)=>{
+  const handleApproveleave = async (data,file)=>{
     setLeaveLoading(true)
     let payload = {
       "leaveID": data.leaveID,
@@ -596,7 +602,16 @@ export default function ViewOnBoardDetails() {
       "isActionDoneByAM": true,  
       "flag": "Approve"
     }
-    const  result = await amDashboardDAO.approveRejectLeaveDAO(payload)
+    let fileDatatoUpload = new FormData()
+
+    Object.keys(payload).forEach(key=>{
+      fileDatatoUpload.append(key,payload[key])
+    })
+
+    if(file !== ''){
+      fileDatatoUpload.append('files',file)
+    }
+    const  result = await amDashboardDAO.approveRejectLeaveDAO(fileDatatoUpload)
     setLeaveLoading(false)
     if(result?.statusCode === HTTPStatusCode.OK){     
       setEngagementModal({
@@ -989,6 +1004,7 @@ export default function ViewOnBoardDetails() {
               <ApproveLeaveModal 
                   handleApproveleave={handleApproveleave}
                   approveLeaveData={approveLeaveData}
+                  isLeaveLoading={isLeaveLoading}
                   onCancel={() =>{
                     setEngagementModal({
                       ...getEngagementModal,

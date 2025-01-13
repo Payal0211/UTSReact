@@ -121,6 +121,26 @@ export default function TalentReport() {
             key: "createdOn",
             align: "left",
           },
+          {
+            title: "Engagement / HR #",
+            dataIndex: "engagemenID",
+            key: "engagemenID",
+            align: "left",
+            width: "200px",
+            render: (text, item) => {
+               return <>
+                                  <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
+                                      color: `var(--uplers-black)`,
+                                      textDecoration: 'underline',
+                                  }}>{text}</Link> <br/>
+                                  / <Link
+                                  to={`/allhiringrequest/${item.id}`}
+                                  target='_blank'
+                                  style={{ color: '#006699', textDecoration: 'underline' }}>
+                                  {item.hR_Number}
+                              </Link></>
+            },
+          },
       {
         title: "Talent",
         dataIndex: "name",
@@ -130,26 +150,7 @@ export default function TalentReport() {
             return <>{text} <br/>( {result.emailID} )</>
         }
       },
-      {
-        title: "Engagement / HR #",
-        dataIndex: "engagemenID",
-        key: "engagemenID",
-        align: "left",
-        width: "200px",
-        render: (text, item) => {
-           return <>
-                              <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
-                                  color: `var(--uplers-black)`,
-                                  textDecoration: 'underline',
-                              }}>{text}</Link> <br/>
-                              / <Link
-                              to={`/allhiringrequest/${item.id}`}
-                              target='_blank'
-                              style={{ color: '#006699', textDecoration: 'underline' }}>
-                              {item.hR_Number}
-                          </Link></>
-        },
-      },
+     
       {
         title: "Client",
         dataIndex: "client",
@@ -164,7 +165,7 @@ export default function TalentReport() {
         width: "200px",
       },
       {
-        title: <>Contract Start Date <br/>/ Contract End Date</>,
+        title: <>Start Date <br/>/ End Date</>,
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
@@ -187,20 +188,25 @@ export default function TalentReport() {
  
       
       {
-        title: "Paid Leaves",
+        title: <>Paid Leaves <br/>/ Leave Balance</>,
         dataIndex: "totalLeavesGiven",
         key: "totalLeavesGiven",
         align: "left",
-      },
-      {
-        title: "Leave Balance",
-        dataIndex: "totalLeaveBalance",
-        key: "totalLeaveBalance",
-        align: "left",
+        width: "150px",
         render:(text,value)=>{
-            return <p style={{textDecoration:'underline',cursor:'pointer'}} onClick={()=>{getLeaveList(value.talentID)}}>{text}</p>
-        }
+            return <div style={{display:'flex'}}>{text} {value.totalLeaveBalance !== null ?  <>/ <p style={{textDecoration:'underline',cursor:'pointer'}} onClick={()=>{getLeaveList(value.talentID)}}>{value.totalLeaveBalance}</p></>: ''} </div> 
+        },
       },
+    //   {
+    //     title: "Leave Balance",
+    //     dataIndex: "totalLeaveBalance",
+    //     key: "totalLeaveBalance",
+    //     align: "left",
+    //     render:(text,value)=>{
+    //         return <p style={{textDecoration:'underline',cursor:'pointer'}} onClick={()=>{getLeaveList(value.talentID)}}>{text}</p>
+    //     },
+    //     width: "120px",
+    //   },
     ];
   }, [onboardList]);
 
@@ -242,6 +248,7 @@ export default function TalentReport() {
         dataIndex: "client",
         key: "client",
         align: "left",
+        width: "240px",
       },
       {
         title: "Reason",
@@ -256,14 +263,14 @@ export default function TalentReport() {
         dataIndex: "lossRemark",
         key: "lossRemark",
         align: "left",
-        width: "150px",
+        width: "250px",
       },
       {
         title: "Stage",
         dataIndex: "rejectionStage",
         key: "rejectionStage",
         align: "left",
-        width: "150px",
+        width: "100px",
       },
     ];
   }, [rejectedList]);
