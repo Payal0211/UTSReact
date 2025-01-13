@@ -120,6 +120,7 @@ export default function TalentReport() {
             dataIndex: "createdOn",
             key: "createdOn",
             align: "left",
+            width: "120px",
           },
           {
             title: "Engagement / HR #",
@@ -169,6 +170,7 @@ export default function TalentReport() {
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
+        width: "150px",
         render:(text,result)=>{
             return <>{text ? text : 'NA'} <br/>/ {result.contractEndDate ? result.contractEndDate: 'NA'}</>
         }
@@ -194,7 +196,7 @@ export default function TalentReport() {
         align: "left",
         width: "150px",
         render:(text,value)=>{
-            return <div style={{display:'flex'}}>{text} {value.totalLeaveBalance !== null ?  <>/ <p style={{textDecoration:'underline',cursor:'pointer'}} onClick={()=>{getLeaveList(value.talentID)}}>{value.totalLeaveBalance}</p></>: ''} </div> 
+            return <div style={{display:'flex'}}>{text} {value.totalLeaveBalance !== null ?  <>/ <p style={{textDecoration:'underline',cursor:'pointer',marginLeft:'5px'}} onClick={()=>{getLeaveList(value.talentID)}}>{`${value.totalLeaveBalance}`}</p></>: ''} </div> 
         },
       },
     //   {
@@ -217,6 +219,7 @@ export default function TalentReport() {
             dataIndex: "createdOn",
             key: "createdOn",
             align: "left",
+            width:'120px'
           },
           {
             title: "Talent",
@@ -417,7 +420,7 @@ export default function TalentReport() {
                   </div>
                 </div>
                 <Table
-                  scroll={{ y: "480px" }}
+                  scroll={{ y: "480px",x:'100vh' }}
                   id="OnboardedListingTable"
                   columns={tableColumnsMemo}
                   bordered={false}
