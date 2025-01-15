@@ -33,9 +33,9 @@ export default function TalentReport() {
   const [rejectedPageSize, setrejectedPageSize] = useState(10);
   const [rejectedPageIndex, setrejectedPageIndex] = useState(1);
   const [rejectedListDataCount, setrejectedListDataCount] = useState(0);
-  const [showLeaves,setshowLeaves] = useState(false)
-  const [leaveList,setLeaveList] = useState([])
-  const [leaveLoading,setLeaveLoading] = useState(false)
+  const [showLeaves, setshowLeaves] = useState(false);
+  const [leaveList, setLeaveList] = useState([]);
+  const [leaveLoading, setLeaveLoading] = useState(false);
 
   const getOnboardData = useCallback(
     async (psize, pInd) => {
@@ -97,61 +97,78 @@ export default function TalentReport() {
     getRejectedData();
   }, [rejectedPageIndex, rejectedSearchText, rejectedPageSize]);
 
-  const getLeaveList = async (talentID) =>{
-    setshowLeaves(true)
-    setLeaveLoading(true)
+  const getLeaveList = async (talentID) => {
+    setshowLeaves(true);
+    setLeaveLoading(true);
     let payload = {
-          talentID:talentID
-        } 
-    const  result = await amDashboardDAO.getTalentLeaveRequestDAO(payload)
-    setLeaveLoading(false)
-    if(result.statusCode === HTTPStatusCode.OK){
-       setLeaveList(result.responseBody)
-      }
-      if(result.statusCode === HTTPStatusCode.NOT_FOUND){
-       setLeaveList([])
-      }
-  }
+      talentID: talentID,
+    };
+    const result = await amDashboardDAO.getTalentLeaveRequestDAO(payload);
+    setLeaveLoading(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setLeaveList(result.responseBody);
+    }
+    if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+      setLeaveList([]);
+    }
+  };
 
   const tableColumnsMemo = useMemo(() => {
     return [
-        {
-            title: "Created On",
-            dataIndex: "createdOn",
-            key: "createdOn",
-            align: "left",
-            width: "120px",
-          },
-          {
-            title: "Engagement / HR #",
-            dataIndex: "engagemenID",
-            key: "engagemenID",
-            align: "left",
-            width: "200px",
-            render: (text, item) => {
-               return <>
-                                  <Link to={`/viewOnboardDetails/${item.onBoardID}/${item.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
-                                      color: `var(--uplers-black)`,
-                                      textDecoration: 'underline',
-                                  }}>{text}</Link> <br/>
-                                  / <Link
-                                  to={`/allhiringrequest/${item.id}`}
-                                  target='_blank'
-                                  style={{ color: '#006699', textDecoration: 'underline' }}>
-                                  {item.hR_Number}
-                              </Link></>
-            },
-          },
+      {
+        title: "Created On",
+        dataIndex: "createdOn",
+        key: "createdOn",
+        align: "left",
+        width: "120px",
+      },
+      {
+        title: "Engagement / HR #",
+        dataIndex: "engagemenID",
+        key: "engagemenID",
+        align: "left",
+        width: "200px",
+        render: (text, item) => {
+          return (
+            <>
+              <Link
+                to={`/viewOnboardDetails/${item.onBoardID}/${
+                  item.isOngoing === "Ongoing" ? true : false
+                }`}
+                target="_blank"
+                style={{
+                  color: `var(--uplers-black)`,
+                  textDecoration: "underline",
+                }}
+              >
+                {text}
+              </Link>{" "}
+              <br />/{" "}
+              <Link
+                to={`/allhiringrequest/${item.id}`}
+                target="_blank"
+                style={{ color: "#006699", textDecoration: "underline" }}
+              >
+                {item.hR_Number}
+              </Link>
+            </>
+          );
+        },
+      },
       {
         title: "Talent",
         dataIndex: "name",
         key: "name",
         align: "left",
-        render: (text,result)=>{
-            return <>{text} <br/>( {result.emailID} )</>
-        }
+        render: (text, result) => {
+          return (
+            <>
+              {text} <br />( {result.emailID} )
+            </>
+          );
+        },
       },
-     
+
       {
         title: "Client",
         dataIndex: "client",
@@ -166,14 +183,23 @@ export default function TalentReport() {
         width: "200px",
       },
       {
-        title: <>Start Date <br/>/ End Date</>,
+        title: (
+          <>
+            Start Date <br />/ End Date
+          </>
+        ),
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
         width: "150px",
-        render:(text,result)=>{
-            return <>{text ? text : 'NA'} <br/>/ {result.contractEndDate ? result.contractEndDate: 'NA'}</>
-        }
+        render: (text, result) => {
+          return (
+            <>
+              {text ? text : "NA"} <br />/{" "}
+              {result.contractEndDate ? result.contractEndDate : "NA"}
+            </>
+          );
+        },
       },
 
       {
@@ -181,77 +207,120 @@ export default function TalentReport() {
         dataIndex: "talentStatus",
         key: "talentStatus",
         align: "left",
-        render:(text,result)=>{
-         return   <div className={`${TalentBackoutStyle.ticketStatusChip} ${text.includes('Rejected') ? TalentBackoutStyle.expireDate : text.includes('Hired') ? TalentBackoutStyle.Hired  :''  }`}> 
-            <span style={{cursor:'pointer'}}> {text}</span>
-            </div> 
-        }
+        render: (text, result) => {
+          return (
+            <div
+              className={`${TalentBackoutStyle.ticketStatusChip} ${
+                text.includes("Rejected")
+                  ? TalentBackoutStyle.expireDate
+                  : text.includes("Hired")
+                  ? TalentBackoutStyle.Hired
+                  : ""
+              }`}
+            >
+              <span style={{ cursor: "pointer" }}> {text}</span>
+            </div>
+          );
+        },
       },
- 
-      
+
       {
-        title: <>Paid Leaves <br/>/ Leave Balance</>,
+        title: (
+          <>
+            Paid Leaves <br />/ Leave Balance
+          </>
+        ),
         dataIndex: "totalLeavesGiven",
         key: "totalLeavesGiven",
         align: "left",
         width: "150px",
-        render:(text,value)=>{
-            return <div style={{display:'flex'}}>{text} {value.totalLeaveBalance !== null ?  <>/ <p style={{textDecoration:'underline',cursor:'pointer',marginLeft:'5px'}} onClick={()=>{getLeaveList(value.talentID)}}>{`${value.totalLeaveBalance}`}</p></>: ''} </div> 
+        render: (text, value) => {
+          return (
+            <div style={{ display: "flex" }}>
+              {text}{" "}
+              {value.totalLeaveBalance !== null ? (
+                <>
+                  /{" "}
+                  <p
+                    style={{
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                      marginLeft: "5px",
+                    }}
+                    onClick={() => {
+                      getLeaveList(value.talentID);
+                    }}
+                  >{`${value.totalLeaveBalance}`}</p>
+                </>
+              ) : (
+                ""
+              )}{" "}
+            </div>
+          );
         },
       },
-    //   {
-    //     title: "Leave Balance",
-    //     dataIndex: "totalLeaveBalance",
-    //     key: "totalLeaveBalance",
-    //     align: "left",
-    //     render:(text,value)=>{
-    //         return <p style={{textDecoration:'underline',cursor:'pointer'}} onClick={()=>{getLeaveList(value.talentID)}}>{text}</p>
-    //     },
-    //     width: "120px",
-    //   },
+      //   {
+      //     title: "Leave Balance",
+      //     dataIndex: "totalLeaveBalance",
+      //     key: "totalLeaveBalance",
+      //     align: "left",
+      //     render:(text,value)=>{
+      //         return <p style={{textDecoration:'underline',cursor:'pointer'}} onClick={()=>{getLeaveList(value.talentID)}}>{text}</p>
+      //     },
+      //     width: "120px",
+      //   },
     ];
   }, [onboardList]);
 
   const tableRejectedColumnsMemo = useMemo(() => {
     return [
-        {
-            title: "Created On",
-            dataIndex: "createdOn",
-            key: "createdOn",
-            align: "left",
-            width:'120px'
-          },
-          {
-            title: "Talent",
-            dataIndex: "name",
-            key: "name",
-            align: "left",
-            render: (text,result)=>{
-                return <>{text} <br/>( {result.emailID} )</>
-            }
-          },
-
+      {
+        title: "Created On",
+        dataIndex: "createdOn",
+        key: "createdOn",
+        align: "left",
+        width: "120px",
+      },
       {
         title: "HR #",
         dataIndex: "hR_Number",
         key: "hR_Number",
         align: "left",
+        width: "170px",
         render: (text, item) => {
-            return <>
-                                <Link
-                               to={`/allhiringrequest/${item.id}`}
-                               target='_blank'
-                               style={{ color: '#006699', textDecoration: 'underline' }}>
-                               {text}
-                           </Link></>
-         },
+          return (
+            <>
+              <Link
+                to={`/allhiringrequest/${item.id}`}
+                target="_blank"
+                style={{ color: "#006699", textDecoration: "underline" }}
+              >
+                {text}
+              </Link>
+            </>
+          );
+        },
       },
-     {
+      {
+        title: "Talent",
+        dataIndex: "name",
+        key: "name",
+        align: "left",
+        render: (text, result) => {
+          return (
+            <>
+              {text} <br />( {result.emailID} )
+            </>
+          );
+        },
+      },
+
+      {
         title: "Client",
         dataIndex: "client",
         key: "client",
         align: "left",
-        width: "240px",
+        // width: "240px",
       },
       {
         title: "Reason",
@@ -260,7 +329,7 @@ export default function TalentReport() {
         align: "left",
         width: "250px",
       },
-     
+
       {
         title: "Remark",
         dataIndex: "lossRemark",
@@ -273,22 +342,24 @@ export default function TalentReport() {
         dataIndex: "rejectionStage",
         key: "rejectionStage",
         align: "left",
-        width: "100px",
+        width: "150px",
       },
     ];
   }, [rejectedList]);
 
   const leaveColumns = useMemo(() => {
     return [
-
       {
         title: "Leave Date",
         dataIndex: "leaveDate",
         key: "leaveDate",
         align: "left",
-        width:'250px',
+        width: "250px",
         render: (value, data) => {
-          return value.split('/').map(val=>   moment(val).format(' MMM DD, YYYY')).join(' To ');
+          return value
+            .split("/")
+            .map((val) => moment(val).format(" MMM DD, YYYY"))
+            .join(" To ");
         },
       },
       {
@@ -296,9 +367,9 @@ export default function TalentReport() {
         dataIndex: "leaveReason",
         key: "leaveReason",
         align: "left",
-        width:'250px',
+        width: "250px",
         render: (value, data) => {
-          return  value ;
+          return value;
         },
       },
       {
@@ -306,17 +377,39 @@ export default function TalentReport() {
         dataIndex: "status",
         key: "status",
         align: "left",
-        width:'100px',
+        width: "100px",
         render: (value, data) => {
-          return   <div className={`${TalentBackoutStyle.documentStatus} ${value === 'Approved' ? TalentBackoutStyle.green: value === 'Rejected'?  TalentBackoutStyle.red:  TalentBackoutStyle.blue }`}>
-          <div className={`${TalentBackoutStyle.documentStatusText} ${value === 'Approved' ? TalentBackoutStyle.green : value === 'Rejected'?  TalentBackoutStyle.red :  TalentBackoutStyle.blue }`}> 
-            {value === 'Rejected' ? <Tooltip title={data.leaveRejectionRemark} ><span style={{cursor:'pointer'}}> {value}</span></Tooltip> : <span> {value}</span>}
-            
+          return (
+            <div
+              className={`${TalentBackoutStyle.documentStatus} ${
+                value === "Approved"
+                  ? TalentBackoutStyle.green
+                  : value === "Rejected"
+                  ? TalentBackoutStyle.red
+                  : TalentBackoutStyle.blue
+              }`}
+            >
+              <div
+                className={`${TalentBackoutStyle.documentStatusText} ${
+                  value === "Approved"
+                    ? TalentBackoutStyle.green
+                    : value === "Rejected"
+                    ? TalentBackoutStyle.red
+                    : TalentBackoutStyle.blue
+                }`}
+              >
+                {value === "Rejected" ? (
+                  <Tooltip title={data.leaveRejectionRemark}>
+                    <span style={{ cursor: "pointer" }}> {value}</span>
+                  </Tooltip>
+                ) : (
+                  <span> {value}</span>
+                )}
+              </div>
             </div>
-        </div>
+          );
         },
       },
-     
     ];
   }, [leaveList]);
 
@@ -331,51 +424,55 @@ export default function TalentReport() {
   }, [rejectedDebounceText]);
 
   const handleOnboardExport = (apiData) => {
-      let DataToExport =  apiData.map(data => {
-          let obj = {}
-          tableColumnsMemo.forEach(val => {if(val.key !== "action"){
-            if(val.title === 'Talent'){
-                obj[`${val.title}`] = `${data.name} ( ${data.emailID} )`
-            }
-             else if(val.key === 'contractStartDate'){
-                  obj[`Contract Start Date / Contract End Date`] = `${data.contractStartDate ? data.contractStartDate : 'NA'} / ${data.contractEndDate ? data.contractEndDate : 'NA'}`
-              }else{
-                  obj[`${val.title}`] = data[`${val.key}`]
-              } }
-          } )
-      return obj;
+    let DataToExport = apiData.map((data) => {
+      let obj = {};
+      tableColumnsMemo.forEach((val) => {
+        if (val.key !== "action") {
+          if (val.title === "Talent") {
+            obj[`${val.title}`] = `${data.name} ( ${data.emailID} )`;
+          } else if (val.key === "contractStartDate") {
+            obj[`Contract Start Date / Contract End Date`] = `${
+              data.contractStartDate ? data.contractStartDate : "NA"
+            } / ${data.contractEndDate ? data.contractEndDate : "NA"}`;
+          } else {
+            obj[`${val.title}`] = data[`${val.key}`];
           }
-       )
-       downloadToExcel(DataToExport,'Talent_Onboard_Report.xlsx')
-  
-  }
+        }
+      });
+      return obj;
+    });
+    downloadToExcel(DataToExport, "Talent_Onboard_Report.xlsx");
+  };
 
   const handleRejectExport = (apiData) => {
-    let DataToExport =  apiData.map(data => {
-        let obj = {}
-        tableRejectedColumnsMemo.forEach(val => {if(val.key !== "action"){
-            if(val.title === 'Talent'){
-                obj[`${val.title}`] = `${data.name} ( ${data.emailID} )`
-            }
-            else if(val.key === 'contractStartDate'){
-                obj[`${val.title}`] = `${data.typeOfHR} ${data.h_Availability && `/ ${data.contractEndDate}`}`
-            }else{
-                obj[`${val.title}`] = data[`${val.key}`]
-            } }
-        } )
-    return obj;
+    let DataToExport = apiData.map((data) => {
+      let obj = {};
+      tableRejectedColumnsMemo.forEach((val) => {
+        if (val.key !== "action") {
+          if (val.title === "Talent") {
+            obj[`${val.title}`] = `${data.name} ( ${data.emailID} )`;
+          } else if (val.key === "contractStartDate") {
+            obj[`${val.title}`] = `${data.typeOfHR} ${
+              data.h_Availability && `/ ${data.contractEndDate}`
+            }`;
+          } else {
+            obj[`${val.title}`] = data[`${val.key}`];
+          }
         }
-     )
-     downloadToExcel(DataToExport,'Talent_Reject_Report.xlsx')
-
-}
+      });
+      return obj;
+    });
+    downloadToExcel(DataToExport, "Talent_Reject_Report.xlsx");
+  };
 
   return (
     <div className={TalentBackoutStyle.dealContainer}>
       <div className={TalentBackoutStyle.header}>
         <div className={TalentBackoutStyle.dealLable}>Talent Report</div>
-        <LogoLoader visible={isLoading} />
+        {/* <LogoLoader visible={isLoading} /> */}
       </div>
+      
+      
       <Tabs
         onChange={(e) => setTalentReportTabTitle(e)}
         defaultActiveKey="1"
@@ -404,23 +501,32 @@ export default function TalentReport() {
                             setonboardDebounceText(e.target.value);
                           }}
                         />
-                        {onboardSearchText && <CloseSVG style={{ width: "16px", height: "16px", cursor:'pointer' }} onClick={()=>{
-                             setonboardSearchText('');
-                             setonboardDebounceText('');
-                        }} />} 
+                        {onboardSearchText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              setonboardSearchText("");
+                              setonboardDebounceText("");
+                            }}
+                          />
+                        )}
                       </div>
                       <button
-                                  type="submit"
-                                  className={TalentBackoutStyle.btnPrimary}
-                                  onClick={() => handleOnboardExport(onboardList)}
-                                >
-                                  Export
-                                </button>
+                        type="submit"
+                        className={TalentBackoutStyle.btnPrimary}
+                        onClick={() => handleOnboardExport(onboardList)}
+                      >
+                        Export
+                      </button>
                     </div>
                   </div>
                 </div>
-                <Table
-                  scroll={{ y: "480px",x:'100vh' }}
+                {isLoading ? <TableSkeleton active /> :  <Table
+                  scroll={{ y: "480px", x: "100vh" }}
                   id="OnboardedListingTable"
                   columns={tableColumnsMemo}
                   bordered={false}
@@ -438,8 +544,9 @@ export default function TalentReport() {
                       `${range[0]}-${range[1]} of ${onboardListDataCount} items`,
                     defaultCurrent: onboardPageIndex,
                   }}
-                />
-                ,
+                />}
+               
+                
               </>
             ),
           },
@@ -463,22 +570,31 @@ export default function TalentReport() {
                             setRejectedDebounceText(e.target.value);
                           }}
                         />
-                         {rejectedDebounceText && <CloseSVG style={{ width: "16px", height: "16px", cursor:'pointer' }} onClick={()=>{
-                            setrejectedSearchText('');
-                            setRejectedDebounceText('');
-                        }} />} 
+                        {rejectedDebounceText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              setrejectedSearchText("");
+                              setRejectedDebounceText("");
+                            }}
+                          />
+                        )}
                       </div>
                       <button
-                                  type="submit"
-                                  className={TalentBackoutStyle.btnPrimary}
-                                  onClick={() => handleRejectExport(rejectedList)}
-                                >
-                                  Export
-                                </button>
+                        type="submit"
+                        className={TalentBackoutStyle.btnPrimary}
+                        onClick={() => handleRejectExport(rejectedList)}
+                      >
+                        Export
+                      </button>
                     </div>
                   </div>
                 </div>
-                <Table
+                {isLoading ? <TableSkeleton active /> : <Table
                   scroll={{ y: "480px" }}
                   id="rejectededListingTable"
                   columns={tableRejectedColumnsMemo}
@@ -497,36 +613,36 @@ export default function TalentReport() {
                       `${range[0]}-${range[1]} of ${rejectedListDataCount} items`,
                     defaultCurrent: rejectedPageIndex,
                   }}
-                />
-                ,
+                />}
+                
+                
               </>
             ),
           },
         ]}
       />
 
-
       <Modal
-                      width="930px"
-                            centered
-                            footer={null}
-                            className="engagementAddFeedbackModal"
-                            open={showLeaves}
-                            onCancel={() =>
-                                setshowLeaves(false)
-                            }><>
-                            {leaveLoading ? <Skeleton active /> :
-                              <Table
-                                    scroll={{y: "100vh" }}
-                                    dataSource={leaveList ? leaveList : []}
-                                    columns={leaveColumns}
-                                    pagination={false}
-                                  />
-                            }
-                            </>
-                      
-                      </Modal>
-      
+        width="930px"
+        centered
+        footer={null}
+        className="engagementAddFeedbackModal"
+        open={showLeaves}
+        onCancel={() => setshowLeaves(false)}
+      >
+        <>
+          {leaveLoading ? (
+            <Skeleton active />
+          ) : (
+            <Table
+              scroll={{ y: "100vh" }}
+              dataSource={leaveList ? leaveList : []}
+              columns={leaveColumns}
+              pagination={false}
+            />
+          )}
+        </>
+      </Modal>
     </div>
   );
 }

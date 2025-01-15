@@ -71,10 +71,14 @@ const HRInputField = ({
 			) : (
 				<div className={HRInputFieldStyle.inputBox}>
 					{leadingIcon && (
-						<div className={HRInputFieldStyle.leadingIcon}>{leadingIcon}</div>
+						<div className={HRInputFieldStyle.leadingIcon} style={{
+							cursor: InputType.BUTTON && 'pointer',
+						}} onClick={InputType.BUTTON && onClickHandler}>{leadingIcon}</div>
 					)}
 					{InputType.BUTTON && (
-						<span className={HRInputFieldStyle.btnLabel}>{buttonLabel}</span>
+						<span className={HRInputFieldStyle.btnLabel} style={{
+							cursor: InputType.BUTTON && 'pointer',
+						}} onClick={InputType.BUTTON && onClickHandler}>{buttonLabel}</span>
 					)}
 					<input
 						style={{
