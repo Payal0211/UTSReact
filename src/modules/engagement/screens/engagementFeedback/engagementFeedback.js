@@ -26,8 +26,8 @@ const EngagementFeedback = ({
 					<span>HR ID:</span>{' '}
 					{getHRAndEngagementId?.hrNumber ? getHRAndEngagementId?.hrNumber : ''}{' '}
 					| <span>Engagement ID:</span>{' '}
-					{getClientFeedbackList[0]?.engagemenID
-						? getClientFeedbackList[0]?.engagemenID
+					{getHRAndEngagementId?.engagementID
+						? getHRAndEngagementId?.engagementID
 						: ''}
 				</p> : <h1>Feedback for {getHRAndEngagementId?.talentName}</h1> }
 				<button className={allengagementStyles.engagementModalHeaderAddBtn} 

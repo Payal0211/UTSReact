@@ -56,6 +56,8 @@ export default function ViewOnBoardDetails() {
   const [editLeaveData, setEditLeaveData] = useState({})
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [calenderCurrentYear, setcalenderCurrentYear] = useState(new Date().getFullYear());
+  const [calenderCurrentMonth, setcalenderCurrentMonth] = useState(new Date().getMonth());
   const calendarRef = useRef(null);
   const {
     register,
@@ -580,7 +582,8 @@ export default function ViewOnBoardDetails() {
     let payload = {
       month: m !== undefined ? m +1 : currentMonth + 1,
       year: y !== undefined ? y : currentYear,
-      talentID:talentID
+      talentID:talentID,
+      onboardID: onboardID
     }
    const  result = await amDashboardDAO.getTalentLeaveRequestDAO(payload)
    setLeaveLoading(false);
@@ -658,6 +661,8 @@ export default function ViewOnBoardDetails() {
       title: leave.leaveReason ? leave.leaveReason : leave.leaveType,
       color : '#E8B689'
     })))
+    setcalenderCurrentMonth(payload.month -1)
+    setcalenderCurrentYear(payload.year)
     // setLeaveList(result.responseBody)
    }
    if(result.statusCode === HTTPStatusCode.NOT_FOUND){
@@ -865,6 +870,8 @@ export default function ViewOnBoardDetails() {
         }} onClick={()=> {
           setCurrentMonth(new Date().getMonth())
           setCurrentYear(new Date().getFullYear())
+          setcalenderCurrentMonth(new Date().getMonth())
+          setcalenderCurrentYear(new Date().getFullYear())
           getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID ,new Date().getMonth(),new Date().getFullYear());
           getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,new Date().getMonth(),new Date().getFullYear())
         }}>Reset</p>
@@ -900,7 +907,7 @@ export default function ViewOnBoardDetails() {
           {!isLeaveLoading && 
             <div className={AddNewClientStyle.LeaveContainer}>
               <div className={AddNewClientStyle.onboardDetailsContainer} style={{width:'39%'}}><div>
-                <MyCalendar calendarRef={calendarRef} calEvents={calEvents} currentYear={currentYear} setCurrentYear={setCurrentYear} currentMonth={currentMonth} setCurrentMonth={setCurrentMonth} />
+                <MyCalendar calendarRef={calendarRef} calEvents={calEvents} currentYear={calenderCurrentYear} setCurrentYear={setcalenderCurrentYear} currentMonth={calenderCurrentMonth} setCurrentMonth={setcalenderCurrentMonth} />
                 </div></div>
               <div className={AddNewClientStyle.onboardDetailsContainer} style={{width:'60%',height: 'fit-content'}}>
             <Table

@@ -93,6 +93,11 @@ const AddLeaveModal = ({
     setValue("feedBackDate", new Date());
   }, [getFeedbackFormContent]);
 
+  const isWeekday = (date) => {
+    const day = date.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
+    return day !== 0 && day !== 6; // Return true for weekdays (Monday to Friday)
+  };
+
   return (
     <div className={allengagementAddFeedbackStyles.engagementModalWrap}>
       <div
@@ -132,6 +137,7 @@ const AddLeaveModal = ({
                     onChange={(date) => setStartDate(date)}
                     startDate={startDate}
                     minDate={new Date()}
+                    filterDate={isWeekday}
                     //   endDate={endDate}
                     //   selectsRange
                   />
@@ -168,6 +174,7 @@ const AddLeaveModal = ({
                     onChange={(date) => setEndDate(date)}
                     startDate={endDate}
                     minDate={startDate}
+                    filterDate={isWeekday}
                     //   endDate={endDate}
                     //   selectsRange
                   />
