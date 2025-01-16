@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import amStyles from "./amdashboard.module.css";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
+import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import TicketImg from "assets/tickiteheader.png";
 import Handshake from "assets/svg/handshake.svg";
 import RenewEng from "assets/svg/renewEng.png";
@@ -40,6 +41,9 @@ function AMDashboard() {
   const [HistoryInfo, setHistoryInfo] = useState([]);
   const [conversationInfo, setConversationInfo] = useState([]);
   const [historyLoading, setHistoryloading] = useState(false);
+
+   const [openTicketSearchText, setopenTicketSearchText] = useState("");
+    const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
 
   useEffect(() => {
     const getUserResult = async () => {
@@ -132,6 +136,7 @@ function AMDashboard() {
         amNameIds: selectedAM.join(","),
         pageIndex: 1,
         pageSize: 10,
+        search:openTicketSearchText
       };
 
       const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload);
@@ -221,6 +226,7 @@ function AMDashboard() {
       amNameIds: selectedAM.join(","),
       pageIndex: pageIndex,
       pageSize: pageSize,
+      search:openTicketSearchText
     };
     const zohoResult = await amDashboardDAO.getZohoTicketsDAO(zohoPayload);
 
@@ -843,7 +849,7 @@ function AMDashboard() {
 
   useEffect(() => {
     getZohoTrackingData();
-  }, [userData, selectedAM, ticketTabTitle]);
+  }, [userData, selectedAM, ticketTabTitle,openTicketSearchText]);
 
   useEffect(() => {
     getDashboardData();
@@ -852,6 +858,11 @@ function AMDashboard() {
   useEffect(() => {
     getRenewalData();
   }, [userData, selectedAM, renewalTabTitle]);
+
+  useEffect(() => {
+      const timer = setTimeout(() => setopenTicketSearchText(openTicketDebounceText), 1000);
+      return () => clearTimeout(timer);
+    }, [openTicketDebounceText]);
 
   let isAdmin = userData.LoggedInUserTypeID !== 4; //  AM
 
@@ -973,8 +984,47 @@ function AMDashboard() {
                       {
                         label: "Open",
                         key: "Open",
-                        children: (
-                          <Table
+                        children: (<>
+                        <div className={amStyles.filterContainer}>
+                  <div className={amStyles.filterSets}>
+                    <div className={amStyles.filterRight}>
+                      <div className={amStyles.searchFilterSet}>
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={amStyles.searchInput}
+                          placeholder="Search Table"
+                          value={openTicketDebounceText}
+                          onChange={(e) => {
+                            // setopenTicketSearchText(e.target.value);
+                            setopenTicketDebounceText(e.target.value);
+                          }}
+                        />
+                        {openTicketDebounceText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                            //   setopenTicketSearchText("");
+                              setopenTicketDebounceText("");
+                            }}
+                          />
+                        )}
+                      </div>
+                      {/* <button
+                        type="submit"
+                        className={amStyles.btnPrimary}
+                        onClick={() => handleOnboardExport(onboardList)}
+                      >
+                        Export
+                      </button> */}
+                    </div>
+                  </div>
+                </div>
+                           <Table
                             scroll={{ y: "480px" }}
                             id="TicketsOpenListingTable"
                             columns={tableColumnsMemo}
@@ -995,13 +1045,55 @@ function AMDashboard() {
                               defaultCurrent: pageIndex,
                             }}
                           />
+                        </>
+                       
                         ),
                       },
                       {
                         label: "Closed",
                         key: "Closed",
                         children: (
-                          <Table
+                            <>
+                                 <div className={amStyles.filterContainer}>
+                  <div className={amStyles.filterSets}>
+                    <div className={amStyles.filterRight}>
+                      <div className={amStyles.searchFilterSet}>
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={amStyles.searchInput}
+                          placeholder="Search Table"
+                          value={openTicketDebounceText}
+                          onChange={(e) => {
+                            // setopenTicketSearchText(e.target.value);
+                            setopenTicketDebounceText(e.target.value);
+                          }}
+                        />
+                        {openTicketDebounceText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                            //   setopenTicketSearchText("");
+                              setopenTicketDebounceText("");
+                            }}
+                          />
+                        )}
+                      </div>
+                      {/* <button
+                        type="submit"
+                        className={amStyles.btnPrimary}
+                        onClick={() => handleOnboardExport(onboardList)}
+                      >
+                        Export
+                      </button> */}
+                    </div>
+                  </div>
+                </div> 
+                <Table
                             scroll={{ y: "480px" }}
                             id="TicketsClosedListingTable"
                             columns={tableColumnsMemo}
@@ -1022,6 +1114,8 @@ function AMDashboard() {
                                 defaultCurrent: pageIndex,
                               }}
                           />
+                            </>
+                         
                         ),
                       },
                       // {
