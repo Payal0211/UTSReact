@@ -705,7 +705,7 @@ function AMDashboard() {
           },
         },
         {
-          title: "Last Updated Date",
+          title: <>Last Updated <br/>Date </>,
           dataIndex: "modifiedTime",
           key: "modifiedTime",
           align: "left",
@@ -759,6 +759,13 @@ function AMDashboard() {
             </p>
           );
         },
+      },
+      {
+        title: "Am name",
+        dataIndex: "amName",
+        key: "amName",
+        align: "left",
+        width: "100px",
       },
       {
         title: "Contact",
@@ -829,7 +836,7 @@ function AMDashboard() {
         },
       },
       {
-        title: "Last Updated Date",
+        title: <>Last Updated <br/>Date </>,
         dataIndex: "modifiedTime",
         key: "modifiedTime",
         align: "left",
