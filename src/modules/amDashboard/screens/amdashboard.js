@@ -591,6 +591,13 @@ function AMDashboard() {
           },
         },
         {
+            title: "Am name",
+            dataIndex: "amName",
+            key: "amName",
+            align: "left",
+            width: "100px",
+          },
+        {
           title: "Contact",
           dataIndex: "contactName",
           key: "contactName",
@@ -1001,9 +1008,19 @@ function AMDashboard() {
                             bordered={false}
                             dataSource={zohoTicketList}
                             pagination={{
-                              size: "small",
-                              total: zohoTicketList?.length,
-                            }}
+                                onChange: (pageNum, pageSize) => {
+                                  setPageIndex(pageNum);
+                                  setPageSize(pageSize);
+                                  getZohoTicketsFromPagination(pageNum, pageSize);
+                                },
+                                size: "small",
+                                pageSize: pageSize,
+                                pageSizeOptions: pageSizeOptions,
+                                total: zohoTicketListDataCount,
+                                showTotal: (total, range) =>
+                                  `${range[0]}-${range[1]} of ${zohoTicketListDataCount} items`,
+                                defaultCurrent: pageIndex,
+                              }}
                           />
                         ),
                       },
