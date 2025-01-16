@@ -156,6 +156,13 @@ export default function TalentReport() {
         },
       },
       {
+        title: "AM Name",
+        dataIndex: "amName",
+        key: "amName",
+        align: "left",
+        width: "120px",
+      },
+      {
         title: "Talent",
         dataIndex: "name",
         key: "name",
