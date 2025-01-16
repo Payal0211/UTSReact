@@ -294,6 +294,15 @@ export const allClientsConfig = {
                     key: 'isActive',
                     width: '100px',                   
                 },
+                {
+                    title: <>Email <br/> Notification</>,
+                    dataIndex: 'isClientNotificationSend',
+                    key: 'isClientNotificationSend',
+                    width: '100px', 
+                    render: (text) => {
+                        return text === false ? 'On' : 'Off'
+                    }                  
+                },
             //     {
             //         title: '',
             //         dataIndex: 'Edit',
@@ -506,6 +515,15 @@ export const allClientsConfig = {
                     key: 'isActive',
                     width: '100px',                   
                 },
+                {
+                    title: <>Email <br/> Notification</>,
+                    dataIndex: 'isClientNotificationSend',
+                    key: 'isClientNotificationSend',
+                    width: '100px', 
+                    render: (text) => {
+                        return text === false ? 'On' : 'Off'
+                    }                  
+                },
                 // {
                 //     title: 'SSO',
                 //     dataIndex: 'ssO_Login',
@@ -699,6 +717,15 @@ export const allClientsConfig = {
                     dataIndex: 'isActive',
                     key: 'isActive',
                     width: '100px',                   
+                },
+                {
+                    title: <>Email <br/> Notification</>,
+                    dataIndex: 'isClientNotificationSend',
+                    key: 'isClientNotificationSend',
+                    width: '100px', 
+                    render: (text) => {
+                        return text === false ? 'On' : 'Off'
+                    }                  
                 },
                 // {
                 //     title: 'SSO',
