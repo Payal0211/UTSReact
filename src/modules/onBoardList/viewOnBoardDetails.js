@@ -58,6 +58,8 @@ export default function ViewOnBoardDetails() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [calenderCurrentYear, setcalenderCurrentYear] = useState(new Date().getFullYear());
   const [calenderCurrentMonth, setcalenderCurrentMonth] = useState(new Date().getMonth());
+  const [totalLeaveBalance, setTotalLeaveBalance] = useState(0)
+  const [totalLeave, setTotalLeave] = useState(0)
   const calendarRef = useRef(null);
   const {
     register,
@@ -591,9 +593,15 @@ export default function ViewOnBoardDetails() {
 
    if(result.statusCode === HTTPStatusCode.OK){
     setLeaveList(result.responseBody)
+    if(result.responseBody.length > 0){
+      setTotalLeave(result.responseBody[0].totalLeavesGiven)
+      setTotalLeaveBalance(result.responseBody[0].totalLeaveBalance)
+    }
    }
    if(result.statusCode === HTTPStatusCode.NOT_FOUND){
     setLeaveList([])
+    setTotalLeave(0)
+    setTotalLeaveBalance(0)
    }
   }
 
@@ -879,8 +887,8 @@ export default function ViewOnBoardDetails() {
       
 
        <div  style={{  marginLeft: "30%",display:'flex', alignItems:'center',gap:'15px' }}>
-        <h4>Total Leaves Given: {getOnboardFormDetails?.onboardContractDetails?.totalLeavesGiven}</h4>
-        <h4>Total Leave Balance: {getOnboardFormDetails?.onboardContractDetails?.totalLeaveBalance}</h4>
+        <h4>Total Leaves Given: {totalLeave > 0 ? totalLeave : getOnboardFormDetails?.onboardContractDetails?.totalLeavesGiven}</h4>
+        <h4>Total Leave Balance: {totalLeaveBalance > 0 ? totalLeaveBalance : getOnboardFormDetails?.onboardContractDetails?.totalLeaveBalance}</h4>
       </div>
 
 
