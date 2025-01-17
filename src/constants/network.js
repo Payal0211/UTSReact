@@ -150,6 +150,7 @@ export class ReportType {
 	static TALENT_BACKOUT_REPORT = 'TalentBackoutReport';
 	static TALENT_REJECT_REPORT = 'TalentRejectReport';
 	static TALENT_ONBOARD_REPORT = 'TalentOnBoardReport';
+	static TALENT_DOCUMENT_REPORT = 'TalentDocumentReport'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

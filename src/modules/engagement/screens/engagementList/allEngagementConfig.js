@@ -169,7 +169,7 @@ export const allEngagementConfig = {
 							},
 						);
 					}
-					if (param?.typeOfHR === 'Contractual') {
+					if (param?.typeOfHR === 'Contractual' && param?.isOngoing === false) {
 						listItemData.push(
 							{
 								label: 'Edit Bill Rate',
