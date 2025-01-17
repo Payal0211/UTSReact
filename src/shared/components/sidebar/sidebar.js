@@ -22,6 +22,7 @@ import MastersIcon from 'assets/svg/mastersIcon.svg';
 import I2sIcon from 'assets/svg/i2sIcon.svg';
 import GPTIcon from 'assets/svg/GPT.svg'
 import clientReport from  'assets/svg/clientReport.svg';
+import TalentDocIcon from 'assets/svg/talent-doc.png'
 import HRReport from 'assets/svg/clientLogs.svg'
 import UTMTrackingIcon from 'assets/UTMtracking report.png'
 import ClientDetailsIcon from 'assets/Clienttracking details.png'
@@ -171,7 +172,7 @@ const isAccess = (ID, title) =>{
 	 title === 'SLA Report' || 
 	 title === 'Client Report' || 
 	 title === 'I2S Report' || title === 'Master' || title ===  'Deal' || title === 'HR Report' || title ===  'UTM Tracking Report' ||
-	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Talent Report'
+	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Talent Report' || title === 'Talent Documents'
 	|| title === 'Clients' || title === 'HR Lost Report' || title === 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report" || title === "Dashboard"
     || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency') {
 
@@ -272,6 +273,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			icon: ClipBoardIcon,
 			navigateTo: UTSRoutes.TALENT_REPORT,
 			isVisible: isAccess(usertypeID, 'Talent Report')
+		}),
+		new SideBarModels({
+			id: 'talentDocuments',
+			title: 'Talent Documents',
+			isActive: false,
+			icon: TalentDocIcon,
+			navigateTo: UTSRoutes.TALENT_DOCUMENTS,
+			isVisible: isAccess(usertypeID, 'Talent Documents')
 		}),
 		new SideBarModels({
 			id: 'demand_funnel_report',
