@@ -156,7 +156,7 @@ export default function TalentReport() {
         },
       },
       {
-        title: "AM Name",
+        title: "AM",
         dataIndex: "amName",
         key: "amName",
         align: "left",
@@ -334,7 +334,7 @@ export default function TalentReport() {
         dataIndex: "reason",
         key: "reason",
         align: "left",
-        width: "250px",
+        width: "230px",
       },
 
       {
@@ -342,7 +342,14 @@ export default function TalentReport() {
         dataIndex: "lossRemark",
         key: "lossRemark",
         align: "left",
-        width: "250px",
+        width: "230px",
+      },
+      {
+        title: "Sales Person",
+        dataIndex: "salesPerson",
+        key: "salesPerson",
+        align: "left",
+        width: "150px",
       },
       {
         title: "Stage",
