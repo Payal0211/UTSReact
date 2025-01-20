@@ -315,7 +315,7 @@ function AMDashboard() {
         width: "100px",
       },
       {
-        title: "AM Name",
+        title: "AM",
         dataIndex: "amName",
         key: "amName",
         align: "left",
@@ -423,7 +423,7 @@ function AMDashboard() {
         width: "100px",
       },
       {
-        title: "AM Name",
+        title: "AM",
         dataIndex: "amName",
         key: "amName",
         align: "left",
@@ -541,7 +541,7 @@ function AMDashboard() {
         width: "100px",
       },
       {
-        title: "AM Name",
+        title: "AM",
         dataIndex: "amName",
         key: "amName",
         align: "left",
@@ -597,7 +597,7 @@ function AMDashboard() {
           },
         },
         {
-            title: "Am name",
+            title: "AM",
             dataIndex: "amName",
             key: "amName",
             align: "left",
@@ -761,7 +761,7 @@ function AMDashboard() {
         },
       },
       {
-        title: "Am name",
+        title: "AM",
         dataIndex: "amName",
         key: "amName",
         align: "left",
