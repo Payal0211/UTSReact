@@ -23,6 +23,7 @@ import UTSRoutes from "constants/routes";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { ReportDAO } from "core/report/reportDAO";
 import { downloadToExcel } from "modules/report/reportUtils";
+import { Link } from "react-router-dom";
 
 export default function TalentDocument() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function TalentDocument() {
   const [pageIndex, setPageIndex] = useState(1);
   const [tableFilteredState, setTableFilteredState] = useState({
     pagenumber: 1,
-    totalrecord: 20,
+    pagesize: 20,
     searchText: "",
   });
   const pageSizeOptions = [20, 100, 200, 300, 500, 1000, 5000];
@@ -95,6 +96,39 @@ export default function TalentDocument() {
         dataIndex: "uploadDate",
         key: "uploadDate",
         width: "80px",
+      },
+      {
+        title: "Engagement / HR #",
+        dataIndex: "engagemenID",
+        key: "engagemenID",
+        align: "left",
+        width: "100px",
+        render: (text, item) => {
+          return (
+            <>
+              <Link
+                to={`/viewOnboardDetails/${item.onBoardID}/${
+                  item.isOngoing === "Ongoing" ? true : false
+                }`}
+                target="_blank"
+                style={{
+                  color: `var(--uplers-black)`,
+                  textDecoration: "underline",
+                }}
+              >
+                {text}
+              </Link>{" "}
+              <br />/{" "}
+              <Link
+                to={`/allhiringrequest/${item.hrid}`}
+                target="_blank"
+                style={{ color: "#006699", textDecoration: "underline" }}
+              >
+                {item.hR_Number}
+              </Link>
+            </>
+          );
+        },
       },
       {
         title: "Talent",
@@ -306,7 +340,7 @@ export default function TalentDocument() {
                         if (pageSize !== parseInt(e.key)) {
                           setTableFilteredState((prevState) => ({
                             ...prevState,
-                            totalrecord: parseInt(e.key),
+                            pagesize: parseInt(e.key),
                             pagenumber: pageIndex,
                           }));
                         }
