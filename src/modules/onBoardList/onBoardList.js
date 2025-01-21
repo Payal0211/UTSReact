@@ -22,6 +22,7 @@ import Handshake from 'assets/svg/handshake.svg';
 import Rocket from 'assets/svg/rocket.svg';
 import FeedBack from 'assets/svg/feedbackReceived.png';
 import RenewEng from 'assets/svg/renewEng.png'
+import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import LostEng from 'assets/svg/lostEng.png'
 import Smile from 'assets/svg/smile.svg';
 import Sad from 'assets/svg/sademo.svg';
@@ -807,9 +808,8 @@ function OnBoardList() {
                       {filteredTagLength}
                     </div>
                   </div>
-                  <p onClick={()=> clearFilters() }>Reset Filters</p>
-
-                  <div className={onboardList.searchFilterSet}>
+                  
+                  <div className={onboardList.searchFilterSet} style={{ marginLeft:'15px' }}>
                     <SearchSVG style={{ width: '16px', height: '16px' }} />
                     <input
                       type={InputType.TEXT}
@@ -820,7 +820,22 @@ function OnBoardList() {
                         setSearchText(e.target.value);									
                       }}
                     />
+                    {searchText && (
+                                              <CloseSVG
+                                                style={{
+                                                  width: "16px",
+                                                  height: "16px",
+                                                  cursor: "pointer",
+                                                }}
+                                                onClick={() => {
+                                                  setSearchText("");
+                                  
+                                                }}
+                                              />
+                                            )}
                   </div>
+                  <p onClick={()=> clearFilters() }>Reset Filters</p>
+
                 </div>
                 <div className={onboardList.filterRight}>	
                 <Radio.Group                 
