@@ -270,6 +270,47 @@
   color: var(--uplers-lightBlack);
 }
 
+.priorityFilterSet{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.priorityFilter{
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 44px;
+}
+
+.paginationFilter {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 71px;
+  height: 44px;
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.paginationFilter .btnPrimary {
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+.tableDetails{
+  margin-top: 24px;
+}
+
+/* Custome Dropdown */
+.priorities_drop_custom {
+margin-right: 15px;
+position: relative;
+}
+
 .calendarFilter {
   width: 250px;
   height: 44px;

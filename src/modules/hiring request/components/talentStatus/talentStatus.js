@@ -408,7 +408,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 										required: 'please enter the loss remark.',
 									}}
 								/>
-								 <div className={TalentStatusStyle.rejectCandNote}>
+								 <div className={TalentStatusStyle.rejectCandNote} style={{margin:'0'}}>
 									<img 
 									src={LockIcon} 
 									alt="lock-icon" />
@@ -574,7 +574,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 										required: 'please enter the loss remark.',
 									}}
 								/>
-								     <div className={TalentStatusStyle.rejectCandNote}>
+								     <div className={TalentStatusStyle.rejectCandNote} style={{margin:'0'}}>
 									<img 
 									src={LockIcon} 
 									alt="lock-icon" />

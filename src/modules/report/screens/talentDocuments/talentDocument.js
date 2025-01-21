@@ -91,28 +91,38 @@ export default function TalentDocument() {
   const allDocumentColumnsMemo = useMemo(() => {
     return [
       {
-        title: "Name",
-        dataIndex: "talentName",
-        key: "talentName",
-        width: "120px",
+        title: "Uploaded On",
+        dataIndex: "uploadDate",
+        key: "uploadDate",
+        width: "80px",
       },
       {
-        title: "Email",
-        dataIndex: "talentEmailID",
-        key: "talentEmailID",
-        width: "120px",
+        title: "Talent",
+        dataIndex: "talentName",
+        key: "talentName",
+        width: "200px",
+        render:(text,value)=>{
+          return `${text} ( ${value.talentEmailID} )`
+        }
       },
       {
         title: "Doc Type",
         dataIndex: "documentType",
         key: "documentType",
-        width: "120px",
+        width: "80px",
+      },
+     
+      {
+        title: "Document",
+        dataIndex: "documentName",
+        key: "documentName",
+        width: "100px",
       },
       {
         title: "Status",
         dataIndex: "status",
         key: "status",
-        width: "100px",
+        width: "80px",
         render: (value, data) => {
           return (
             <div
@@ -141,28 +151,17 @@ export default function TalentDocument() {
         },
       },
       {
-        title: "Doc Name",
-        dataIndex: "documentName",
-        key: "documentName",
-        width: "120px",
-      },
-      {
-        title: "Uploaded On",
-        dataIndex: "uploadDate",
-        key: "uploadDate",
-        width: "120px",
-      },
-      {
-        title: "Action",
+        title: "Download",
         dataIndex: "unique_FileName",
         key: "unique_FileName",
-        width: "80px",
+        width: "50px",
+        align: "center",
         render: (value, data) => {
           return (
             <IconContext.Provider
               value={{
                 color: "green",
-                style: { width: "15px", height: "15px" },
+                style: { width: "15px", height: "15px", cursor:'pointer' },
               }}
             >
               {" "}
@@ -204,6 +203,9 @@ export default function TalentDocument() {
   }, []);
 
   const handleExport = async () => {
+    if(allDocumentList.length === 0){
+      return message.warn('NO data to download')
+    }
     let DataToExport = allDocumentList.map((data) => {
       let obj = {};
       allDocumentColumnsMemo.map((val) => {
@@ -227,7 +229,7 @@ export default function TalentDocument() {
       </div>
 
       <div className={TalentDocStyle.filterContainer}>
-        <div className={TalentDocStyle.filterSets}>
+        <div className={TalentDocStyle.filterSets} style={{justifyContent:'flex-end'}}>
           {/* <div className={TalentDocStyle.filterSetsInner} >
                                 <div className={TalentDocStyle.addFilter} onClick={toggleSurveyFilter}>
                                     <FunnelSVG style={{ width: '16px', height: '16px' }} />
@@ -238,7 +240,31 @@ export default function TalentDocument() {
                                 <p onClick={()=> clearFilters() }>Reset Filters</p>                        
                             </div>  
                                                    */}
-          <div className={TalentDocStyle.searchFilterSet}>
+
+          <div className={TalentDocStyle.filterRight}>
+            {/* <div className={TalentDocStyle.calendarFilterSet}>
+                                    <div className={TalentDocStyle.label}>Date</div>
+                                    <div className={TalentDocStyle.calendarFilter}>
+                                        <CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+                                        <DatePicker
+                                            style={{ backgroundColor: 'red' }}
+                                            onKeyDown={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }}
+                                            className={TalentDocStyle.dateFilter}
+                                            placeholderText="Start date - End date"
+                                            selected={startDate}
+                                            onChange={onCalenderFilter}
+                                            dateFormat='dd/MM/yyyy'
+                                            startDate={startDate}
+                                            endDate={endDate}
+                                            selectsRange
+                                        />
+                                    </div>
+                                </div> */}
+
+<div className={TalentDocStyle.searchFilterSet}>
             <SearchSVG style={{ width: "16px", height: "16px" }} />
             <input
               type={InputType.TEXT}
@@ -266,28 +292,6 @@ export default function TalentDocument() {
               />
             )}
           </div>
-          <div className={TalentDocStyle.filterRight}>
-            {/* <div className={TalentDocStyle.calendarFilterSet}>
-                                    <div className={TalentDocStyle.label}>Date</div>
-                                    <div className={TalentDocStyle.calendarFilter}>
-                                        <CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
-                                        <DatePicker
-                                            style={{ backgroundColor: 'red' }}
-                                            onKeyDown={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                            }}
-                                            className={TalentDocStyle.dateFilter}
-                                            placeholderText="Start date - End date"
-                                            selected={startDate}
-                                            onChange={onCalenderFilter}
-                                            dateFormat='dd/MM/yyyy'
-                                            startDate={startDate}
-                                            endDate={endDate}
-                                            selectsRange
-                                        />
-                                    </div>
-                                </div> */}
 
             <div className={TalentDocStyle.priorityFilterSet}>
               <div className={TalentDocStyle.label}>Showing</div>

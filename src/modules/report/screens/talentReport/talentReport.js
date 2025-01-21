@@ -10,15 +10,16 @@ import { ReportDAO } from "core/report/reportDAO";
 import { HTTPStatusCode } from "constants/network";
 import WithLoader from "shared/components/loader/loader";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
-import { Modal, Skeleton, Table, Tabs, Tooltip } from "antd";
+import { Modal, Skeleton, Table, Tabs, Tooltip, Dropdown , Menu } from "antd";
 import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { IoChevronDownOutline } from "react-icons/io5";
 import { amDashboardDAO } from "core/amdashboard/amDashboardDAO";
 
 export default function TalentReport() {
-  const [talentReportTabTitle, setTalentReportTabTitle] = useState("Onboarded");
+  const [talentReportTabTitle, setTalentReportTabTitle] = useState("Deployed");
   const [isLoading, setIsLoading] = useState(false);
   const [onboardList, setonboardList] = useState([]);
   const [onboardPageSize, setonboardPageSize] = useState(10);
@@ -36,6 +37,8 @@ export default function TalentReport() {
   const [showLeaves, setshowLeaves] = useState(false);
   const [leaveList, setLeaveList] = useState([]);
   const [leaveLoading, setLeaveLoading] = useState(false);
+  const [pageSize, setPageSize] = useState(20);
+
 
   const getOnboardData = useCallback(
     async (psize, pInd) => {
@@ -120,7 +123,14 @@ export default function TalentReport() {
         dataIndex: "createdOn",
         key: "createdOn",
         align: "left",
-        width: "120px",
+        width: "110px",
+      },
+      {
+        title: "Month Year",
+        dataIndex: "createdonMonthYear",
+        key: "createdonMonthYear",
+        align: "left",
+        width: "100px",
       },
       {
         title: "Engagement / HR #",
@@ -167,6 +177,7 @@ export default function TalentReport() {
         dataIndex: "name",
         key: "name",
         align: "left",
+        width: "200px",
         render: (text, result) => {
           return (
             <>
@@ -181,6 +192,7 @@ export default function TalentReport() {
         dataIndex: "client",
         key: "client",
         align: "left",
+        width: "200px",
       },
       {
         title: "Engagement Type",
@@ -198,7 +210,7 @@ export default function TalentReport() {
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
-        width: "150px",
+        width: "120px",
         render: (text, result) => {
           return (
             <>
@@ -489,15 +501,15 @@ export default function TalentReport() {
       
       <Tabs
         onChange={(e) => setTalentReportTabTitle(e)}
-        defaultActiveKey="1"
+        defaultActiveKey="Deployed"
         activeKey={talentReportTabTitle}
         animated={true}
         tabBarGutter={50}
         tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
         items={[
           {
-            label: "Onboarded",
-            key: "Onboarded",
+            label: "Deployed",
+            key: "Deployed",
             children: (
               <>
                 <div className={TalentBackoutStyle.filterContainer}>
@@ -529,6 +541,41 @@ export default function TalentReport() {
                           />
                         )}
                       </div>
+
+                      <div className={TalentBackoutStyle.priorityFilterSet}>
+              <div className={TalentBackoutStyle.label}>Showing</div>
+              <div className={TalentBackoutStyle.paginationFilter}>
+                <Dropdown
+                  trigger={["click"]}
+                  placement="bottom"
+                  overlay={
+                    <Menu
+                      onClick={(e) => {
+                        setonboardPageSize(parseInt(e.key));
+                        // if (pageSize !== parseInt(e.key)) {
+                        //   setTableFilteredState((prevState) => ({
+                        //     ...prevState,
+                        //     totalrecord: parseInt(e.key),
+                        //     pagenumber: pageIndex,
+                        //   }));
+                        // }
+                      }}
+                    >
+                      {pageSizeOptions.map((item) => {
+                        return <Menu.Item key={item}>{item}</Menu.Item>;
+                      })}
+                    </Menu>
+                  }
+                >
+                  <span>
+                    {onboardPageSize}
+                    <IoChevronDownOutline
+                      style={{ paddingTop: "5px", fontSize: "16px" }}
+                    />
+                  </span>
+                </Dropdown>
+              </div>
+            </div>
                       <button
                         type="submit"
                         className={TalentBackoutStyle.btnPrimary}
@@ -540,7 +587,7 @@ export default function TalentReport() {
                   </div>
                 </div>
                 {isLoading ? <TableSkeleton active /> :  <Table
-                  scroll={{ y: "480px", x: "100vh" }}
+                  scroll={{x:'auto', y: "480px", }}
                   id="OnboardedListingTable"
                   columns={tableColumnsMemo}
                   bordered={false}
@@ -598,6 +645,41 @@ export default function TalentReport() {
                           />
                         )}
                       </div>
+
+                      <div className={TalentBackoutStyle.priorityFilterSet}>
+              <div className={TalentBackoutStyle.label}>Showing</div>
+              <div className={TalentBackoutStyle.paginationFilter}>
+                <Dropdown
+                  trigger={["click"]}
+                  placement="bottom"
+                  overlay={
+                    <Menu
+                      onClick={(e) => {
+                        setrejectedPageSize(parseInt(e.key));
+                        // if (pageSize !== parseInt(e.key)) {
+                        //   setTableFilteredState((prevState) => ({
+                        //     ...prevState,
+                        //     totalrecord: parseInt(e.key),
+                        //     pagenumber: pageIndex,
+                        //   }));
+                        // }
+                      }}
+                    >
+                      {pageSizeOptions.map((item) => {
+                        return <Menu.Item key={item}>{item}</Menu.Item>;
+                      })}
+                    </Menu>
+                  }
+                >
+                  <span>
+                    {rejectedPageSize}
+                    <IoChevronDownOutline
+                      style={{ paddingTop: "5px", fontSize: "16px" }}
+                    />
+                  </span>
+                </Dropdown>
+              </div>
+            </div>
                       <button
                         type="submit"
                         className={TalentBackoutStyle.btnPrimary}
