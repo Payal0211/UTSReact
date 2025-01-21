@@ -236,7 +236,7 @@ export default class UTSRoutes {
 	static ADD_NEW_COMPANY = "/addNewCompany/:companyID";
 	static TALENT_BACKOUT_REPORT = "/talentBackoutReport";
 	static TALENT_REPORT = "/talentReport";
-	static TALENT_DOCUMENTS = 'talentDocument'
+	static TALENT_DOCUMENTS = '/talentDocument'
 }
 
 export const navigateToComponent = {
