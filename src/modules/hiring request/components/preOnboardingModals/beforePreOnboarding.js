@@ -1337,7 +1337,7 @@ const calcelMember = () =>{
               </div>
             </div>
 
-            <div className={HRDetailStyle.onboardingProcesBox}>
+            {/* <div className={HRDetailStyle.onboardingProcesBox}>
               <div className={HRDetailStyle.onboardingProcessLeft}>
                 <div>
                   <HireingRequestDetailSVG width="27" height="32" />
@@ -1368,7 +1368,7 @@ const calcelMember = () =>{
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
             
 
             <div className={HRDetailStyle.onboardingProcesBox}>

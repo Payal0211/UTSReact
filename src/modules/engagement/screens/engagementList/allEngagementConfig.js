@@ -160,15 +160,15 @@ export const allEngagementConfig = {
 							IsEnabled: true,
 						},
 					];
-					if(param?.tscName && (param?.currentStatus !== "In Replacement")){
-						listItemData.push(
-							{
-								label: 'Edit TSC Name',
-								key: 'editTSCName',
-								IsEnabled: true,
-							},
-						);
-					}
+					// if(param?.tscName && (param?.currentStatus !== "In Replacement")){
+					// 	listItemData.push(
+					// 		{
+					// 			label: 'Edit TSC Name',
+					// 			key: 'editTSCName',
+					// 			IsEnabled: true,
+					// 		},
+					// 	);
+					// }
 					if (param?.typeOfHR === 'Contractual' && param?.isOngoing === false) {
 						listItemData.push(
 							{
