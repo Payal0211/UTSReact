@@ -200,7 +200,7 @@ export default function LegalPreOnboarding({
           return
         }  
       } 
-
+      console.log('files',SOWDocument,MSADocument)
       if(MSADocument === '' || SOWDocument === ''){
         isValid = false;
         setIsLoading(false);
@@ -217,7 +217,6 @@ export default function LegalPreOnboarding({
 
       }
 
-       
       if(isValid){
         let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
         uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
@@ -231,7 +230,7 @@ export default function LegalPreOnboarding({
         }
       }
     },
-    [getData, engagementReplacement,isIndefiniteHR]
+    [getData, engagementReplacement,isIndefiniteHR,SOWDocument,MSADocument]
   );
 
     const getDocumentsDetails = async (talentID) =>{
