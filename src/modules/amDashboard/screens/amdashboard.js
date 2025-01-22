@@ -921,7 +921,7 @@ function AMDashboard() {
                         className={amStyles.btnPrimary}
                         onClick={() => handleGo()}
                       >
-                        GO
+                        Search
                       </button>
             <p className={amStyles.resetText} onClick={() => setSelectedAM([])}>
               Reset Filter

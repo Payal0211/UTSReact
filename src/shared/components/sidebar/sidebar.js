@@ -172,7 +172,7 @@ const isAccess = (ID, title) =>{
 	 title === 'SLA Report' || 
 	 title === 'Client Report' || 
 	 title === 'I2S Report' || title === 'Master' || title ===  'Deal' || title === 'HR Report' || title ===  'UTM Tracking Report' ||
-	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Talent Report' || title === 'Talent Documents'
+	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent Report' || title === 'Talent Documents'
 	|| title === 'Clients' || title === 'HR Lost Report' || title === 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report" || title === "Dashboard"
     || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency') {
 
