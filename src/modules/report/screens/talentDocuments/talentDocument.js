@@ -95,14 +95,14 @@ export default function TalentDocument() {
         title: "Uploaded On",
         dataIndex: "uploadDate",
         key: "uploadDate",
-        width: "80px",
+        width: "90px",
       },
       {
         title: "Engagement / HR #",
         dataIndex: "engagemenID",
         key: "engagemenID",
         align: "left",
-        width: "100px",
+        width: "120px",
         render: (text, item) => {
           return (
             <>
@@ -131,10 +131,16 @@ export default function TalentDocument() {
         },
       },
       {
+        title: "Client",
+        dataIndex: "client",
+        key: "client",
+        width: "150px"
+      },
+      {
         title: "Talent",
         dataIndex: "talentName",
         key: "talentName",
-        width: "200px",
+        width: "150px",
         render:(text,value)=>{
           return `${text} ( ${value.talentEmailID} )`
         }
@@ -156,7 +162,7 @@ export default function TalentDocument() {
         title: "Status",
         dataIndex: "status",
         key: "status",
-        width: "80px",
+        width: "50px",
         render: (value, data) => {
           return (
             <div
