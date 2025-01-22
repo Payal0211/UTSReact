@@ -65,6 +65,8 @@ import moment from 'moment';
 import { InterviewDAO } from 'core/interview/interviewDAO';
 import EngagementCancel from 'modules/engagement/screens/cancelEngagement/cancelEngagement';
 
+import TalentListDocuments from './talentDocuments';
+
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
 const TalentList = ({
@@ -1312,12 +1314,16 @@ const TalentList = ({
 										style={{ padding: '2px 0', textDecoration: 'underline' }}>
 										Skill Test Results
 									</div> */}
+
+									{item?.Status?.includes('Hired') && <TalentListDocuments talentID={item?.TalentID} />}
+									
 									<Divider
 										style={{
 											margin: '16px 0 10px 0',
 										}}
 									/>
 									<TalentNotesCardComp item={item} />
+									
 									<Divider
 										style={{
 											margin: '10px 0',
