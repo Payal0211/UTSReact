@@ -29,6 +29,7 @@ import dayjs from "dayjs";
 
 import { BsThreeDots } from "react-icons/bs";
 import moment from "moment";
+import { engagementRequestDAO } from "core/engagement/engagementDAO";
 
 export default function LegalPreOnboarding({
   talentDeteils,
@@ -53,13 +54,25 @@ export default function LegalPreOnboarding({
   const [engagementReplacement, setEngagementReplacement] = useState({
     replacementData: false,
   });
+   const [formError,SetFormError] = useState(false)
   const [addLatter, setAddLetter] = useState(false);
   const [controlledEngRep, setControlledEngRep] = useState();
   const [replacementEngHr, setReplacementEngHr] = useState([]);
+  const [getLegalInfo,setLegalInfo] = useState({})
+   const [docTypeList,setDocTypeList] = useState([]);
   const loggedInUserID = JSON.parse(
     localStorage.getItem("userSessionInfo")
   ).LoggedInUserTypeID;
   const [isIndefiniteHR,setIsIndefiniteHR] = useState(false);
+   const [MSADocument,setMSADocument] = useState('')
+   const [showMSAUploadModal,setShowMSAUploadModal] = useState(false)
+   const [SOWDocument,setSOWDocument] = useState('')
+   const [showSOWUploadModal,setShowSOWUploadModal] = useState(false)
+  const [getValidation, setValidation] = useState({
+    systemFileUpload: '',
+    googleDriveFileUpload: '',
+    linkValidation: '',
+  })
 
   const fatchduringOnBoardInfo = useCallback(
     async (req) => {
@@ -69,6 +82,7 @@ export default function LegalPreOnboarding({
         let data = result.responseBody.details;
         setData(data);
         setValue("invoiceRaisinfTo", data?.getLegalInfo?.invoiceRaiseTo);
+        setLegalInfo(data?.getLegalInfo)
         setValue(
           "invoiceRaiseToEmail",
           data?.getLegalInfo?.invoiceRaiseToEmail
@@ -111,6 +125,7 @@ export default function LegalPreOnboarding({
         HRID: HRID,
       };
       fatchduringOnBoardInfo(req);
+      getDocumentsDetails()
     }
   }, [talentDeteils, HRID, actionType, fatchduringOnBoardInfo]);
 
@@ -186,6 +201,13 @@ export default function LegalPreOnboarding({
         }  
       } 
 
+      if(MSADocument === '' || SOWDocument === ''){
+        isValid = false;
+        setIsLoading(false);
+        SetFormError(true)
+        return
+      }
+
 
       if(!isIndefiniteHR){
         if(!d.contractEndDate){
@@ -195,10 +217,11 @@ export default function LegalPreOnboarding({
 
       }
 
-      
        
       if(isValid){
         let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
+        uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
+        uploadDocument(SOWDocument,docTypeList.find(itm => itm.text === "SOW")?.value)
         if (result?.statusCode === HTTPStatusCode.OK) {
           setIsLoading(false);
           setShowAMModal(false);
@@ -210,6 +233,34 @@ export default function LegalPreOnboarding({
     },
     [getData, engagementReplacement,isIndefiniteHR]
   );
+
+    const getDocumentsDetails = async (talentID) =>{
+   
+     const docTypeRes = await engagementRequestDAO.getDocumentTypeDAO()
+  
+     if(docTypeRes.statusCode === HTTPStatusCode.OK){
+        setDocTypeList(docTypeRes.responseBody.details.documentType)
+     }
+  
+    
+    }
+
+   const uploadDocument = async (data,documentType)=>{
+       
+          let formData = new FormData()
+          formData.append('DocumentTypeID',documentType)
+          formData.append('companyid',getLegalInfo?.companyID)
+          formData.append('TalentID',talentDeteils.TalentID)
+          formData.append('DocumentName',data.name)
+          formData.append('Files',data)
+          
+          let result = await engagementRequestDAO.uploadDocumentsDetailsDAO(formData)
+   
+          if(result.statusCode === 200){
+              message.success(`Files ${result.responseBody.details[0].fileName} uploaded successfully.`)
+              
+          }
+      }
 
   const disabledDate = (current) => {
     const today = new Date();
@@ -224,6 +275,82 @@ export default function LegalPreOnboarding({
 
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   const diffInDays = diffInMilliseconds / millisecondsPerDay;
+
+  const uploadFileHandler = (e) => {
+    setIsLoading(true);
+    let fileData = e.target.files[0];
+
+    if (
+        fileData?.type !== 'application/pdf' &&
+        fileData?.type !== 'application/docs' &&
+        fileData?.type !== 'application/msword' &&
+        fileData?.type !== 'text/plain' &&
+        fileData?.type !==
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+        fileData?.type !== 'image/png' &&
+        fileData?.type !== 'image/jpeg'
+    ) {
+        setValidation({
+            ...getValidation,
+            systemFileUpload:
+                'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
+        });
+        setIsLoading(false);
+    } else if (fileData?.size >= 500000) {
+        setValidation({
+            ...getValidation,
+            systemFileUpload:
+                'Upload file size more than 500kb, Please Upload file upto 500kb',
+        });
+        setIsLoading(false);
+    } else {
+        setMSADocument(e.target.files[0])
+        setValidation({
+          ...getValidation,
+          systemFileUpload:'',
+      });
+        setShowMSAUploadModal(false);
+        setIsLoading(false);
+    }
+}
+
+const uploadSOWFileHandler = (e) => {
+  setIsLoading(true);
+  let fileData = e.target.files[0];
+
+  if (
+      fileData?.type !== 'application/pdf' &&
+      fileData?.type !== 'application/docs' &&
+      fileData?.type !== 'application/msword' &&
+      fileData?.type !== 'text/plain' &&
+      fileData?.type !==
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+      fileData?.type !== 'image/png' &&
+      fileData?.type !== 'image/jpeg'
+  ) {
+      setValidation({
+          ...getValidation,
+          systemFileUpload:
+              'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
+      });
+      setIsLoading(false);
+  } else if (fileData?.size >= 500000) {
+      setValidation({
+          ...getValidation,
+          systemFileUpload:
+              'Upload file size more than 500kb, Please Upload file upto 500kb',
+      });
+      setIsLoading(false);
+  } else {
+      setSOWDocument(e.target.files[0])
+      setValidation({
+        ...getValidation,
+        systemFileUpload:'',
+    });
+      setShowSOWUploadModal(false);
+      setIsLoading(false);
+  }
+}
 
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -611,6 +738,141 @@ export default function LegalPreOnboarding({
                         )}
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={HRDetailStyle.onboardingProcesBox}>
+              <div className={HRDetailStyle.onboardingProcessLeft}>
+                <div>
+                <GeneralInformationSVG width="27" height="32" />
+                </div>
+                <h3 className={HRDetailStyle.titleLeft}>Documents</h3>
+              </div>
+
+              <div className={HRDetailStyle.onboardingProcessMid}>
+                <div
+                  className={HRDetailStyle.onboardingFormAlign}
+                  style={{ width: "100%" }}
+                >
+                  <div className={HRDetailStyle.modalFormWrapper}>
+                 
+                <div
+                    className={HRDetailStyle.colMd12}>
+                    {!MSADocument ? (
+									<HRInputField
+										register={register}
+										leadingIcon={<UploadSVG />}
+										label={`Upload MSA Document`}
+										name="MSADocument"
+										type={InputType.BUTTON}
+										buttonLabel="Upload MSA Document"
+										// value="Upload JD File"
+										onClickHandler={() => setShowMSAUploadModal(true)}
+										// required={!jdURLLink && getUploadFileData}
+										// validationSchema={{
+										// 	required: 'please select a file.',
+										// }}
+										errors={errors}
+									/>
+								) : (
+									<div className={HRDetailStyle.uploadedJDWrap}>
+										<label>Upload MSA Document </label>
+										<div className={HRDetailStyle.uploadedJDName}>
+											{MSADocument?.name}{' '}
+											<CloseSVG
+												className={HRDetailStyle.uploadedJDClose}
+												onClick={() => {
+                          setMSADocument('')
+												}}
+											/>
+										</div>
+									</div>
+								)}
+ {formError && MSADocument === '' &&  <span className={HRDetailStyle.error} style={{marginBottom:'5px'}}>please select document</span>}
+                    {showMSAUploadModal && (
+								<UploadModal
+									isGoogleDriveUpload={false}
+									isLoading={isLoading}
+									uploadFileHandler={e=>uploadFileHandler(e)}
+									// googleDriveFileUploader={() => googleDriveFileUploader()}
+									// uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+									modalTitle={'Upload MSA Document'}
+									modalSubtitle={'File should be (JPG, PNG, PDF)'}
+									isFooter={false}
+									openModal={showMSAUploadModal}
+									setUploadModal={()=>setShowMSAUploadModal(false)}
+									cancelModal={() => {setShowMSAUploadModal(false); setValidation({
+                    ...getValidation,
+                    systemFileUpload:'',
+                });}}
+									setValidation={setValidation}
+									getValidation={getValidation}
+									// getGoogleDriveLink={getGoogleDriveLink}
+									// setGoogleDriveLink={setGoogleDriveLink}
+								/>
+							)}
+                </div>
+           
+                <div
+                    className={HRDetailStyle.colMd12}>
+                    {!SOWDocument ? (
+									<HRInputField
+										register={register}
+										leadingIcon={<UploadSVG />}
+										label={`Upload SOW Document`}
+										name="SOWDocument"
+										type={InputType.BUTTON}
+										buttonLabel="Upload SOW Document"
+										// value="Upload JD File"
+										onClickHandler={() => setShowSOWUploadModal(true)}
+										// required={!jdURLLink && getUploadFileData}
+										// validationSchema={{
+										// 	required: 'please select a file.',
+										// }}
+										errors={errors}
+									/>
+								) : (
+									<div className={HRDetailStyle.uploadedJDWrap}>
+										<label>Upload SOW Document </label>
+										<div className={HRDetailStyle.uploadedJDName}>
+											{SOWDocument?.name}{' '}
+											<CloseSVG
+												className={HRDetailStyle.uploadedJDClose}
+												onClick={() => {
+                          setSOWDocument('')
+												}}
+											/>
+										</div>
+									</div>
+								)}
+ {formError && SOWDocument === '' &&  <span className={HRDetailStyle.error}>please select document</span>}
+                    {showSOWUploadModal && (
+								<UploadModal
+									isGoogleDriveUpload={false}
+									isLoading={isLoading}
+									uploadFileHandler={e=>uploadSOWFileHandler(e)}
+									// googleDriveFileUploader={() => googleDriveFileUploader()}
+									// uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+									modalTitle={'Upload SOW Document'}
+									modalSubtitle={'File should be (JPG, PNG, PDF)'}
+									isFooter={false}
+									openModal={showSOWUploadModal}
+									setUploadModal={()=>setShowSOWUploadModal(false)}
+									cancelModal={() => {setShowSOWUploadModal(false); setValidation({
+                    ...getValidation,
+                    systemFileUpload:'',
+                });}}
+									setValidation={setValidation}
+									getValidation={getValidation}
+									// getGoogleDriveLink={getGoogleDriveLink}
+									// setGoogleDriveLink={setGoogleDriveLink}
+								/>
+							)}
+                </div>
+                  
+
                   </div>
                 </div>
               </div>

@@ -852,19 +852,26 @@ function AMDashboard() {
 
   useEffect(() => {
     getSummaryData();
-  }, [userData,selectedAM]);
+  }, [userData]);
 
   useEffect(() => {
     getZohoTrackingData();
-  }, [userData, selectedAM, ticketTabTitle,openTicketSearchText]);
+  }, [userData, ticketTabTitle,openTicketSearchText]);
 
   useEffect(() => {
     getDashboardData();
-  }, [userData, title, selectedAM]);
+  }, [userData, title]);
 
   useEffect(() => {
     getRenewalData();
-  }, [userData, selectedAM, renewalTabTitle]);
+  }, [userData, renewalTabTitle]);
+
+  const handleGo = ()=>{
+    getSummaryData();
+    getZohoTrackingData();
+    getDashboardData();
+    getRenewalData();
+  }
 
   useEffect(() => {
       const timer = setTimeout(() => setopenTicketSearchText(openTicketDebounceText), 1000);
@@ -909,6 +916,13 @@ function AMDashboard() {
                 getPopupContainer={(trigger) => trigger.parentElement}
               />
             </div>{" "}
+            <button style={{marginLeft:'15px'}}
+                        type="submit"
+                        className={amStyles.btnPrimary}
+                        onClick={() => handleGo()}
+                      >
+                        Search
+                      </button>
             <p className={amStyles.resetText} onClick={() => setSelectedAM([])}>
               Reset Filter
             </p>
