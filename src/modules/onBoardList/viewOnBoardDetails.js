@@ -401,22 +401,19 @@ export default function ViewOnBoardDetails() {
         key: "monthNames",
         align: "left",
         render: (value, data) => {
-          return `${data.monthNames} ( ${data.years} )`;
+          //return `${data.monthNames} ( ${data.years} ) <br /> / ${data.contractType}`;
+          return (
+            <>
+              {`${data.monthNames} ( ${data.years} )`} <br />{" "}
+              {data.contractType}
+            </>
+          );
         },
-      },
-      {
-        title: "Contract Type",
-        dataIndex: "contractType",
-        key: "contractType",
-        align: "left",
-        render: (value, data) => {
-          return value;
-        },
-      },
+      },      
       {
         title: "Monthly BR",
-        dataIndex: "br",
-        key: "br",
+        dataIndex: "brStr",
+        key: "brStr",
         align: "left",
         render: (value, data) => {
           return `${data.currency} ` + value ;
@@ -424,42 +421,72 @@ export default function ViewOnBoardDetails() {
       },
       {
         title: "Monthly PR",
-        dataIndex: "pr",
-        key: "pr",
+        dataIndex: "prStr",
+        key: "prStr",
         align: "left",
         render: (value, data) => {
           return `${data.currency} ` + value;
         },
       },
       {
-        title: "Per Day PR",
-        dataIndex: "pR_Per_Day",
-        key: "pR_Per_Day",
-        align: "left",
-        render: (value, data) => {
-          return `₹ ` + value;
-        },
-      },
-      {
-        title: "Exchange Rate",
-        dataIndex: "exchangeRate",
-        key: "exchangeRate",
-        align: "left",
+        title: "No. of days",
+        dataIndex: "totalDaysinMonth",
+        key: "totalDaysinMonth",
+        align: "left",       
         render: (value, data) => {
           return value;
         },
       },
       {
-        title: "Final PR",
-        dataIndex: "final_PR",
-        key: "final_PR",
+        title: "Per Day PR",
+        dataIndex: "pR_Per_DayWithExchangeRate",
+        key: "pR_Per_DayWithExchangeRate",
+        align: "left",
+        render: (value, data) => {
+          return `${data.currency} ` + value;
+        },
+      },
+      {
+        title: (
+          <>
+            Ex. Rate
+          </>
+        ),
+        dataIndex: "exchangeRate",
+        key: "exchangeRate",
+        align: "left",       
+        render: (value, data) => {
+          return value;
+        },
+      },
+      {
+        title: (
+          <>
+            Per Day PR <br /> (INR)
+          </>
+        ),
+        dataIndex: "pR_Per_DayStr",
+        key: "pR_Per_DayStr",
+        align: "left",
+        render: (value, data) => {
+          return `₹ ` + value;
+        },
+      },     
+      {
+        title: (
+          <>
+            Final PR <br /> (INR)
+          </>
+        ),
+        dataIndex: "final_PRStr",
+        key: "final_PRStr",
         align: "left",
         render: (value, data) => {
           const tooltipContent = (
             <div>
-              <p><strong>Single Day PR:</strong> {`₹ ${data.pR_Per_Day}`}</p>
+              <p><strong>Single Day PR:</strong> {`₹ ${data.pR_Per_DayStr}`}</p>
               <p><strong>Leaves Taken:</strong> {data.leavesTaken}</p>
-              <p><strong>Total Amount to be Deducted:</strong> {`₹ ${data.amount_To_Be_Deducted}`}</p>
+              <p><strong>Total Amount to be Deducted:</strong> {`₹ ${data.amount_To_Be_DeductedStr}`}</p>
             </div>
           );
   
@@ -475,8 +502,8 @@ export default function ViewOnBoardDetails() {
       },
       {
         title: "NR",
-        dataIndex: "nR_DP_Value",
-        key: "nR_DP_Value",
+        dataIndex: "nR_DP_ValueStr",
+        key: "nR_DP_ValueStr",
         align: "left",
         render: (value, data) => {
           return `${data.currency} ` + value;
