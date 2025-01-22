@@ -1497,6 +1497,7 @@ body .jobDescrition h1,body .jobDescrition h2,body .jobDescrition h3,body .jobDe
 
 .swiper {
   width: 100%;
+  z-index: 0 !important;
   /* height: 100%; */
 }
 
