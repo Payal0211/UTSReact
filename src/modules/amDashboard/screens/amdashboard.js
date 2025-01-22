@@ -126,14 +126,14 @@ function AMDashboard() {
     }
   };
 
-  const getZohoTrackingData = async () => {
+  const getZohoTrackingData = async (reset) => {
     if (userData?.UserId) {
       setLoading(true);
 
       let zohoPayload = {
         userId: userData?.UserId,
         status: ticketTabTitle[0] === "O" ? "A" : ticketTabTitle[0],
-        amNameIds: selectedAM.join(","),
+        amNameIds: reset ? '' : selectedAM.join(","),
         pageIndex: 1,
         pageSize: 10,
         search:openTicketSearchText
@@ -152,13 +152,13 @@ function AMDashboard() {
     }
   };
 
-  const getSummaryData = async () => {
+  const getSummaryData = async (reset) => {
     if (userData?.UserId) {
       setLoading(true);
 
       let summaryPayload = {
         userId: userData?.UserId,
-        amNameIds: selectedAM.join(","),
+        amNameIds: reset ? '' : selectedAM.join(","),
       };
 
       const summaryResult = await amDashboardDAO.getSummaryDAO(summaryPayload);
@@ -173,13 +173,13 @@ function AMDashboard() {
     }
   };
 
-  const getRenewalData = async () => {
+  const getRenewalData = async (reset) => {
     if (userData?.UserId) {
       setLoading(true);
 
       let renewalPayload = {
         FilterFields_AMDashboard: {
-          amName: selectedAM.join(","),
+          amName: reset ? '' : selectedAM.join(","),
           userID: userData?.UserId,
           EngType: renewalTabTitle[0] === "U" ? "A" : renewalTabTitle[0],
         },
@@ -197,12 +197,12 @@ function AMDashboard() {
     }
   };
 
-  const getDashboardData = async () => {
+  const getDashboardData = async (reset) => {
     if (userData?.UserId) {
       setLoading(true);
       let payload = {
         FilterFields_AMDashboard: {
-          amName: selectedAM.join(","),
+          amName:  reset ? '' : selectedAM.join(","),
           userID: userData?.UserId,
           EngType: title[0],
         },
@@ -873,6 +873,13 @@ function AMDashboard() {
     getRenewalData();
   }
 
+  const handleReset =()=>{
+    getSummaryData(true);
+    getZohoTrackingData(true);
+    getDashboardData(true);
+    getRenewalData(true);
+  }
+
   useEffect(() => {
       const timer = setTimeout(() => setopenTicketSearchText(openTicketDebounceText), 1000);
       return () => clearTimeout(timer);
@@ -923,7 +930,9 @@ function AMDashboard() {
                       >
                         Search
                       </button>
-            <p className={amStyles.resetText} onClick={() => setSelectedAM([])}>
+            <p className={amStyles.resetText} onClick={() => {setSelectedAM([])
+              handleReset()
+            }}>
               Reset Filter
             </p>
             {/* <div className={amStyles.filterRight}>
