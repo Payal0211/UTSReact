@@ -475,6 +475,7 @@ function OnBoardList() {
       },
     });
     var date = new Date();
+    const [monthDate, setMonthDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
     const [endDate, setEndDate] = useState(new Date(date));
 
@@ -647,6 +648,27 @@ function OnBoardList() {
     };
   }
 
+  const onMonthCalenderFilter = (date) => {
+   
+console.log(date)
+    setMonthDate(date);
+    // setEndDate(end);
+    // setEndDate(end);
+    console.log(moment(date).format('M'), moment(date).format('YYYY'))
+    if (date) {
+      // console.log( month, year)
+      setTableFilteredState({
+        ...tableFilteredState,
+        searchText: searchText,
+        filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard ,
+          searchMonth:  +moment(date).format('M') + 1 ?? 0,
+          searchYear: +moment(date).format('YYYY') ?? 0,
+        },
+      });
+
+  };
+}
+
   const handleExport = (apiData) => {
 		let DataToExport =  apiData.map(data => {
 			let obj = {}
@@ -702,8 +724,8 @@ function OnBoardList() {
             "search" :searchText,
             toDate: dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
             fromDate:dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
-            searchMonth: dateTypeFilter === 0 ? new Date().getMonth() + 1 : 0,
-            searchYear: dateTypeFilter === 0 ? new Date().getFullYear() : 0,
+            searchMonth: dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
+            searchYear: dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
         }
       }    
           getOnBoardListData(payload);
@@ -759,6 +781,7 @@ function OnBoardList() {
 
       onRemoveHRFilters();
       setSearchText('')
+      setMonthDate(new Date())
       setStartDate(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
       setEndDate(new Date(date));
     }, [
@@ -838,7 +861,9 @@ function OnBoardList() {
 
                 </div>
                 <div className={onboardList.filterRight}>	
-                <Radio.Group                 
+               
+                <Radio.Group    
+                style={{display: 'flex', flexDirection: 'column', gap:'5px'}}             
                       onChange={(e) => {
                        setDateTypeFilter(e.target.value)
                        setStartDate(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
@@ -862,6 +887,28 @@ function OnBoardList() {
                       <Radio value={1}>Search With Date Range</Radio>
                     </Radio.Group>  	                 
 
+
+            {dateTypeFilter === 0 &&  <div className={onboardList.calendarFilterSet}>
+							<div className={onboardList.label}>Month-Year</div>
+							<div className={onboardList.calendarFilter}>
+								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+								<DatePicker
+									style={{ backgroundColor: 'red' }}
+									onKeyDown={(e) => {
+										e.preventDefault();
+										e.stopPropagation();
+									}}
+									className={onboardList.dateFilter}
+									placeholderText="Month - Year"
+									selected={monthDate}
+									onChange={onMonthCalenderFilter}
+									// startDate={startDate}
+									// endDate={endDate}
+									dateFormat="MM-yyyy"
+									showMonthYearPicker
+								/>
+							</div>
+						</div>}
                     {dateTypeFilter === 1 && 
                     
                     <div className={onboardList.calendarFilterSet}>

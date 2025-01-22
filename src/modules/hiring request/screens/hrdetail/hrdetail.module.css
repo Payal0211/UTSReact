@@ -26,6 +26,12 @@
     flex-wrap: wrap;
 }
 
+.interviewSlots {
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+}
+
 .hrDetailsLeftPart,
 .hrDetailsRightPart {
     gap: 1rem;

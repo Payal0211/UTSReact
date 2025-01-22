@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Skeleton, Dropdown, Menu, message, Checkbox, DatePicker } from "antd";
+import { Skeleton, Dropdown, Menu, message, Checkbox, DatePicker, Tooltip } from "antd";
 import HRDetailStyle from "../../screens/hrdetail/hrdetail.module.css";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
@@ -11,10 +11,12 @@ import {
 } from "constants/application";
 import { OnboardDAO } from "core/onboard/onboardDAO";
 import { MasterDAO } from "core/master/masterDAO";
-import { HTTPStatusCode } from "constants/network";
+import { HTTPStatusCode , NetworkInfo } from "constants/network";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import UploadModal from "shared/components/uploadModal/uploadModal";
+import { FaDownload } from "react-icons/fa";
+import { IconContext } from "react-icons";
 
 import { ReactComponent as GeneralInformationSVG } from "assets/svg/generalInformation.svg";
 import { ReactComponent as EditFieldSVG } from "assets/svg/EditField.svg";
@@ -59,6 +61,7 @@ export default function LegalPreOnboarding({
   const [controlledEngRep, setControlledEngRep] = useState();
   const [replacementEngHr, setReplacementEngHr] = useState([]);
   const [getLegalInfo,setLegalInfo] = useState({})
+  const [getDocuments,setDocuments] = useState()
    const [docTypeList,setDocTypeList] = useState([]);
   const loggedInUserID = JSON.parse(
     localStorage.getItem("userSessionInfo")
@@ -83,6 +86,7 @@ export default function LegalPreOnboarding({
         setData(data);
         setValue("invoiceRaisinfTo", data?.getLegalInfo?.invoiceRaiseTo);
         setLegalInfo(data?.getLegalInfo)
+        setDocuments(data?.documentlist)
         setValue(
           "invoiceRaiseToEmail",
           data?.getLegalInfo?.invoiceRaiseToEmail
@@ -200,8 +204,8 @@ export default function LegalPreOnboarding({
           return
         }  
       } 
-      console.log('files',SOWDocument,MSADocument)
-      if(MSADocument === '' || SOWDocument === ''){
+
+      if((getDocuments?.find(itm=> itm.documentType === 'MSA').documentName ? false : MSADocument === '') || SOWDocument === ''){
         isValid = false;
         setIsLoading(false);
         SetFormError(true)
@@ -219,7 +223,7 @@ export default function LegalPreOnboarding({
 
       if(isValid){
         let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
-        uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
+        !getDocuments?.find(itm=> itm.documentType === 'MSA').documentName && uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
         uploadDocument(SOWDocument,docTypeList.find(itm => itm.text === "SOW")?.value)
         if (result?.statusCode === HTTPStatusCode.OK) {
           setIsLoading(false);
@@ -756,8 +760,48 @@ const uploadSOWFileHandler = (e) => {
                   style={{ width: "100%" }}
                 >
                   <div className={HRDetailStyle.modalFormWrapper}>
+
+                 {getDocuments?.find(itm=> itm.documentType === 'MSA').documentName ? 
+                 <div
+                 className={HRDetailStyle.colMd12}><div className={HRDetailStyle.interviewSlots}>
+                      <span>{getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentType}:</span>&nbsp;&nbsp;
+                      <span style={{ fontWeight: "500" }}>
+                        {getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName}
+                      </span>
+                      <span style={{ marginLeft: "auto" }}>
+                        <IconContext.Provider
+                          value={{
+                            color: "green",
+                            style: {
+                              width: "15px",
+                              height: "15px",
+                              cursor: "pointer",
+                            },
+                          }}
+                        >
+                          {" "}
+                          <Tooltip title="Download" placement="top">
+                            <span
+                              // style={{
+                              //   background: 'green'
+                              // }}
+                              onClick={() =>
+                                window.open(
+                                  `${NetworkInfo.NETWORK}Media/TalentDocuments/${getDocuments?.find(itm=> itm.documentType === 'MSA')?.unique_FileName}`,
+                                  "_blank"
+                                )
+                              }
+                            >
+                              {" "}
+                              <FaDownload />
+                            </span>{" "}
+                          </Tooltip>
+                        </IconContext.Provider>
+                      </span>
+                    </div></div>
+                   : 
                  
-                <div
+                 <div
                     className={HRDetailStyle.colMd12}>
                     {!MSADocument ? (
 									<HRInputField
@@ -813,6 +857,8 @@ const uploadSOWFileHandler = (e) => {
 								/>
 							)}
                 </div>
+                 }
+                
            
                 <div
                     className={HRDetailStyle.colMd12}>
