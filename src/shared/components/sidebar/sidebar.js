@@ -164,7 +164,7 @@ const isAccess = (ID, title) =>{
 		isVisible =  true
 		return isVisible		
 	}
-	 if(title === 'Hiring Request' || 
+	 if(title === 'Hiring Request' || title === "MasterReports" ||
 	  title === 'Users' || 
 	 title === 'Engagement' || 
 	 title === 'Engagement Report' ||
@@ -246,7 +246,6 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			branch: [],
 			isVisible: isAccess(usertypeID, 'Users')
 		}),
-
 		new SideBarModels({
 			id: 'Engagement_List',
 			title: 'Engagement',
@@ -257,180 +256,233 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			branch: [],
 			isVisible: isAccess(usertypeID, 'Engagement')
 		}),
+		new SideBarModels({
+			id: 'Reports',
+			title: 'Reports',
+			isActive: false,
+			icon: HR,			
+			isChildren: true,
+			branch: [
+				new SideBarModels({
+					id: 'engagementReport',
+					title: 'Engagement',
+					isActive: false,
+					icon: EngagementReport,
+					navigateTo: UTSRoutes.ONBOARD,
+					isVisible: isAccess(usertypeID, 'Engagement Report')
+				}),
+				new SideBarModels({
+					id: 'talentReport',
+					title: 'Talent',
+					isActive: false,
+					icon: ClipBoardIcon,
+					navigateTo: UTSRoutes.TALENT_REPORT,
+					isVisible: isAccess(usertypeID, 'Talent Report'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'ReplacementReport',
+					title: 'Replacement',
+					isActive: false,
+					icon: ReplacementIcon,
+					navigateTo: UTSRoutes.REPLACEMENT_REPORT,
+					isVisible: isAccess(usertypeID, 'Replacement Report')
+				}),
+				new SideBarModels({
+					id: 'TalentBackoutReport',
+					title: 'Backout',
+					isActive: false,
+					icon: TalentBackoutIcon,
+					navigateTo: UTSRoutes.TALENT_BACKOUT_REPORT,
+					isVisible: isAccess(usertypeID, 'TalentBackout Report')
+				}),
+				new SideBarModels({
+					id: 'ClientReport',
+					title: 'Client',
+					isActive: false,
+					icon: clientReport,
+					navigateTo: UTSRoutes.CLIENT_REPORT,
+					isVisible: isAccess(usertypeID, 'Client Report')
+				}),
+				new SideBarModels({
+					id: 'HRReport',
+					title: 'HR',
+					isActive: false,
+					icon: HRReport,
+					navigateTo: UTSRoutes.HR_REPORT,
+					isVisible: isAccess(usertypeID, 'HR Report')
+				}),
+				new SideBarModels({
+					id: 'I2SReport',
+					title: 'I2S',
+					isActive: false,
+					icon: I2sIcon,
+					navigateTo: UTSRoutes.I2S_REPORT,
+					isVisible: isAccess(usertypeID, 'I2S Report')
+				}),
+				new SideBarModels({
+					id: 'HRLostReport',
+					title: 'HR Lost',
+					isActive: false,
+					icon: HRLOSTReoprt,
+					navigateTo: UTSRoutes.HRLostReoprt,
+					isVisible: isAccess(usertypeID, 'HR Lost Report')
+				}),
+				new SideBarModels({
+					id: 'incentive_report',
+					title: 'Incentive Report',
+					isActive: false,
+					icon: Invoice,
+					navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
+					isChildren: false,
+					branch: [],
+					isVisible:isAccess(usertypeID,'Incentive Report')
+				}),
+				new SideBarModels({
+					id: 'JD_Efficiency_Report',
+					title: 'JD Efficiency Report',
+					isActive: false,
+					icon: JDEfficiencyReport,
+					navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
+					isChildren: false,
+					branch: [],
+					isVisible:isAccess(usertypeID, 'JD Efficiency Report')
+				}),
+			],
+			isVisible: isAccess(usertypeID, 'MasterReports')
+		}),
+		new SideBarModels({
+			id: 'Analytics',
+			title: 'Analytics',
+			isActive: false,
+			icon: EngagementDashboard,			
+			isChildren: true,			
+			isVisible: isAccess(usertypeID, 'MasterReports'),
+			branch: [
+				new SideBarModels({
+					id: 'demand_funnel_report',
+					title: 'Demand Funnel',
+					isActive: false,
+					icon: DemandFunnel,
+					navigateTo: UTSRoutes.DEMANDFUNNELROUTE,
+					isChildren: false,
+					branch: [],
+					isVisible: isAccess(usertypeID, 'Demand Funnel')
+				}),
+				new SideBarModels({
+					id: 'supply_funnel_report',
+					title: 'Supply Funnel',
+					isActive: false,
+					icon: SupplyFunnel,
+					navigateTo: UTSRoutes.SUPPLYFUNNELROUTE,
+					isChildren: false,
+					branch: [],
+					isVisible:isAccess(usertypeID,'Supply Funnel')
+				}),
+		
+				new SideBarModels({
+					id: 'team_demand_funnel_report',
+					title: 'Team Demand Funnel',
+					isActive: false,
+					icon: TeamDemandFunnel,
+					navigateTo: UTSRoutes.TEAMDEMANDFUNNELROUTE,
+					isChildren: false,
+					branch: [],
+					isVisible:isAccess(usertypeID,'Team Demand Funnel')
+				}),
+				new SideBarModels({
+					id: 'client_happiness_survey',
+					title: 'Client Happiness Survey',
+					isActive: false,
+					icon: ClientHappinessSurveyFunnel,
+					navigateTo: UTSRoutes.CLIENT_HAPPINESS_SURVEY,
+					isChildren: false,
+					branch: [],
+					isVisible:isAccess(usertypeID,'Client Happiness Survey')
+				}),	
+				
+				
+			]
+		}),
+		new SideBarModels({
+			id: 'talentReports',
+			title: 'Documents/SLA',
+			isActive: false,
+			icon: ClipBoardIcon,			
+			isVisible: isAccess(usertypeID, 'MasterReports'),
+			isChildren : true,
+			branch:[
+				
+				new SideBarModels({
+					id: 'talentDocuments',
+					title: 'Documents',
+					isActive: false,
+					icon: TalentDocIcon,
+					navigateTo: UTSRoutes.TALENT_DOCUMENTS,
+					isVisible: isAccess(usertypeID, 'Talent Documents')
+				}),
+				new SideBarModels({
+					id: 'SLA_Report',
+					title: 'SLA Report',
+					isActive: false,
+					icon: SLAReport,
+					navigateTo: UTSRoutes.SLA_REPORT,
+					isVisible: isAccess(usertypeID, 'SLA Report')
+				}),
+				
+			]
+		}),
+		
+		
+		
+		
+		// new SideBarModels({
+				// 	id: 'chatGPTResponse',
+				// 	title: 'Chat GPT Response',
+				// 	isActive: false,
+				// 	icon: GPTIcon,
+				// 	navigateTo: UTSRoutes.CHAT_GPT_RESPONSE,
+				// 	isVisible: isAccess(usertypeID, 'Chat GPT Response')
+				// }),
+		
 		
 		new SideBarModels({
-			id: 'engagementReport',
-			title: ' Engagement Report',
-			isActive: false,
-			icon: EngagementReport,
-			navigateTo: UTSRoutes.ONBOARD,
-			isVisible: isAccess(usertypeID, 'Engagement Report')
-		}),
-		new SideBarModels({
-			id: 'talentReport',
-			title: 'Talent Report',
-			isActive: false,
-			icon: ClipBoardIcon,
-			navigateTo: UTSRoutes.TALENT_REPORT,
-			isVisible: isAccess(usertypeID, 'Talent Report')
-		}),
-		new SideBarModels({
-			id: 'talentDocuments',
-			title: 'Talent Documents',
-			isActive: false,
-			icon: TalentDocIcon,
-			navigateTo: UTSRoutes.TALENT_DOCUMENTS,
-			isVisible: isAccess(usertypeID, 'Talent Documents')
-		}),
-		new SideBarModels({
-			id: 'demand_funnel_report',
-			title: 'Demand Funnel',
-			isActive: false,
-			icon: DemandFunnel,
-			navigateTo: UTSRoutes.DEMANDFUNNELROUTE,
-			isChildren: false,
-			branch: [],
-			isVisible: isAccess(usertypeID, 'Demand Funnel')
-		}),
-		new SideBarModels({
-			id: 'supply_funnel_report',
-			title: 'Supply Funnel',
-			isActive: false,
-			icon: SupplyFunnel,
-			navigateTo: UTSRoutes.SUPPLYFUNNELROUTE,
-			isChildren: false,
-			branch: [],
-			isVisible:isAccess(usertypeID,'Supply Funnel')
-		}),
-
-		new SideBarModels({
-			id: 'team_demand_funnel_report',
-			title: 'Team Demand Funnel',
-			isActive: false,
-			icon: TeamDemandFunnel,
-			navigateTo: UTSRoutes.TEAMDEMANDFUNNELROUTE,
-			isChildren: false,
-			branch: [],
-			isVisible:isAccess(usertypeID,'Team Demand Funnel')
-		}),
-		new SideBarModels({
-			id: 'client_happiness_survey',
-			title: 'Client Happiness Survey',
-			isActive: false,
-			icon: ClientHappinessSurveyFunnel,
-			navigateTo: UTSRoutes.CLIENT_HAPPINESS_SURVEY,
-			isChildren: false,
-			branch: [],
-			isVisible:isAccess(usertypeID,'Client Happiness Survey')
-		}),
-		new SideBarModels({
-			id: 'incentive_report',
-			title: 'Incentive Report',
-			isActive: false,
-			icon: Invoice,
-			navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
-			isChildren: false,
-			branch: [],
-			isVisible:isAccess(usertypeID,'Incentive Report')
-		}),
-		new SideBarModels({
-			id: 'JD_Efficiency_Report',
-			title: 'JD Efficiency Report',
-			isActive: false,
-			icon: JDEfficiencyReport,
-			navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
-			isChildren: false,
-			branch: [],
-			isVisible:isAccess(usertypeID, 'JD Efficiency Report')
-		}),
-		new SideBarModels({
-			id: 'SLA_Report',
-			title: 'SLA Report',
-			isActive: false,
-			icon: SLAReport,
-			navigateTo: UTSRoutes.SLA_REPORT,
-			isVisible: isAccess(usertypeID, 'SLA Report')
-		}),
-		new SideBarModels({
-			id: 'ClientReport',
-			title: 'Client Report',
-			isActive: false,
-			icon: clientReport,
-			navigateTo: UTSRoutes.CLIENT_REPORT,
-			isVisible: isAccess(usertypeID, 'Client Report')
-		}),
-		new SideBarModels({
-			id: 'ReplacementReport',
-			title: 'Replacement Report',
-			isActive: false,
-			icon: ReplacementIcon,
-			navigateTo: UTSRoutes.REPLACEMENT_REPORT,
-			isVisible: isAccess(usertypeID, 'Replacement Report')
-		}),
-		new SideBarModels({
-			id: 'TalentBackoutReport',
-			title: 'Talent Backout Report',
-			isActive: false,
-			icon: TalentBackoutIcon,
-			navigateTo: UTSRoutes.TALENT_BACKOUT_REPORT,
-			isVisible: isAccess(usertypeID, 'TalentBackout Report')
-		}),
-		new SideBarModels({
-			id: 'HRReport',
-			title: 'HR Report',
-			isActive: false,
-			icon: HRReport,
-			navigateTo: UTSRoutes.HR_REPORT,
-			isVisible: isAccess(usertypeID, 'HR Report')
-		}),
-		new SideBarModels({
-			id: 'UTMTrackingReport',
-			title: 'UTM Tracking Report',
+			id: 'TrackingReports',
+			title: 'Tracking Reports',
 			isActive: false,
 			icon: UTMTrackingIcon,
 			navigateTo: UTSRoutes.UTM_TRACKING_REPORT,
-			isVisible: isAccess(usertypeID, 'UTM Tracking Report')
+			isVisible: isAccess(usertypeID, 'UTM Tracking Report'),
+			isChildren: true,
+			branch:[
+				new SideBarModels({
+					id: 'UTMTrackingReport',
+					title: 'UTM',
+					isActive: false,
+					icon: UTMTrackingIcon,
+					navigateTo: UTSRoutes.UTM_TRACKING_REPORT,
+					isVisible: isAccess(usertypeID, 'UTM Tracking Report')
+				}),
+				new SideBarModels({
+					id: 'ClientPortalTrackingReport',
+					title: 'Client',
+					isActive: false,
+					icon: ClientDetailsIcon,
+					navigateTo: UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT,
+					isVisible: isAccess(usertypeID, 'Client Tracking Details')
+				}),
+				new SideBarModels({
+					id: 'EmailTrackingReport',
+					title: 'Email',
+					isActive: false,
+					icon: EmailTracking,
+					navigateTo: UTSRoutes.EMAIL_TRACKING_REOPRT,
+					isVisible: isAccess(usertypeID, 'Email Tracking Details')
+				}),
+			]
 		}),
-		new SideBarModels({
-			id: 'ClientPortalTrackingReport',
-			title: 'Client Tracking Details',
-			isActive: false,
-			icon: ClientDetailsIcon,
-			navigateTo: UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT,
-			isVisible: isAccess(usertypeID, 'Client Tracking Details')
-		}),
-		new SideBarModels({
-			id: 'EmailTrackingReport',
-			title: 'Email Tracking Details',
-			isActive: false,
-			icon: EmailTracking,
-			navigateTo: UTSRoutes.EMAIL_TRACKING_REOPRT,
-			isVisible: isAccess(usertypeID, 'Email Tracking Details')
-		}),
-		new SideBarModels({
-			id: 'I2SReport',
-			title: 'I2S Report',
-			isActive: false,
-			icon: I2sIcon,
-			navigateTo: UTSRoutes.I2S_REPORT,
-			isVisible: isAccess(usertypeID, 'I2S Report')
-		}),
-		new SideBarModels({
-			id: 'HRLostReport',
-			title: 'HR Lost Report',
-			isActive: false,
-			icon: HRLOSTReoprt,
-			navigateTo: UTSRoutes.HRLostReoprt,
-			isVisible: isAccess(usertypeID, 'HR Lost Report')
-		}),
-		new SideBarModels({
-			id: 'chatGPTResponse',
-			title: 'Chat GPT Response',
-			isActive: false,
-			icon: GPTIcon,
-			navigateTo: UTSRoutes.CHAT_GPT_RESPONSE,
-			isVisible: isAccess(usertypeID, 'Chat GPT Response')
-		}),
+		
+		
 		new SideBarModels({
 			id: 'Master',
 			title: 'Master',
