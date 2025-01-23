@@ -105,11 +105,11 @@ const uploadFileHandler = (e,ind) => {
                 'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
         });
         setIsLoading(false);
-    } else if (fileData?.size >= 500000) {
+    } else if (fileData?.size >= 2048000) {
         setValidation({
             ...getValidation,
             systemFileUpload:
-                'Upload file size more than 500kb, Please Upload file upto 500kb',
+                'Upload file size more than 2MB, please upload file upto 2MB',
         });
         setIsLoading(false);
     } else {
