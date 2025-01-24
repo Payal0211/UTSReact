@@ -34,6 +34,9 @@ import EmailTracking from 'assets/svg/emailTrack.svg'
 import ReplacementIcon from 'assets/Talentreplacement.png'
 import TalentBackoutIcon from 'assets/Talentbackout.png'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
+import HandShake from 'assets/svg/postStepIconInterview.svg'
+import TicketIcon from 'assets/tickiteheader.png'
+import ClientCompIcon from 'assets/clientCompany.png'
 
 import SLAReport from 'assets/svg/slaReport.svg';
 import SideBarModels from 'models/sidebar.model';
@@ -61,8 +64,6 @@ const Sidebar = () => {
 		const [isOpen,setIsOpen] = useState(false)
 		const {navigateTo, icon, title, isChildren, branch  } = hookprops
 
-		// const childernSet = sidebarDataSets.filter(item=> item.title === title)
-		// const branch = childernSet.branch
 		const isMenuActive = branch.find(item=> item.navigateTo === switchLocation.pathname)?.navigateTo === switchLocation.pathname
 
         return 		<Tooltip
@@ -122,7 +123,6 @@ const Sidebar = () => {
 																	 width='24px'
 																	 height='24px'/> */}
 																	{item?.title}
-
 																	<div
 																	className={`${
 																		switchLocation.pathname  === item?.navigateTo
@@ -331,7 +331,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'UTS_AM_Dashboard',
 			title: 'Dashboard',
 			isActive: false,
-			icon: DDIcon ,                                                                                                                    
+			icon: TicketIcon ,                                                                                                                    
 			navigateTo: UTSRoutes.AMDASHBOARD,
 			isChildren: false,
 			branch: [],
@@ -361,7 +361,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'UTS_AllClients',
 			title: 'Company/Client',
 			isActive: false,
-			icon:AllClients,
+			icon:ClientCompIcon,
 			navigateTo: UTSRoutes.ALLCLIENTS,
 			isChildren: false,
 			branch: [],
@@ -381,7 +381,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'Engagement_List',
 			title: 'Engagement',
 			isActive: false,
-			icon: EngagementDashboard,
+			icon: HandShake,
 			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
 			isChildren: false,
 			branch: [],
