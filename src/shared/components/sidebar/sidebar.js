@@ -287,24 +287,24 @@ const isAccess = (ID, title) =>{
 		isVisible =  true	
 		return isVisible	
 	}
-	if ((title === 'Engagement Report' ||  title === "Dashboard" || title === 'Master' || title === 'Currency')  && ID === 6){
+	if ((title === 'Engagement' ||  title === "Dashboard" || title === 'Master' || title === 'Reports'  || title === 'Talent' || title === 'Currency')  && ID === 6){
 		isVisible =  true
 		return isVisible		
 	}
-	if ((title === 'Engagement Report' ||  title === "Dashboard" || title === 'Engagement' || title === 'Master' || title === 'Currency')  && ID === 3){
+	if ((title === 'Engagement' ||  title === "Dashboard" || title === 'Reports' ||  title === 'Talent' || title === 'Master' || title === 'Currency')  && ID === 3){
 		isVisible =  true
 		return isVisible		
 	}
 	 if(title === 'Hiring Request' || title === "MasterReports" ||
 	  title === 'Users' || 
-	 title === 'Engagement' || 
-	 title === 'Engagement Report' ||
+	 title === 'Engagement' ||  title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
+	 title === 'Engagement Report' || title === 'Reports' ||
 	 title === 'Demand Funnel' || 
 	 title === 'SLA Report' || 
-	 title === 'Client Report' || 
-	 title === 'I2S Report' || title === 'Master' || title ===  'Deal' || title === 'HR Report' || title ===  'UTM Tracking Report' ||
-	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent Report' || title === 'Talent Documents'
-	|| title === 'Clients' || title === 'HR Lost Report' || title === 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report" || title === "Dashboard"
+	 title === 'Client' || title === 'JD Efficiency Report' || title === 'Incentive Report' ||
+	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
+	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent' || title === 'Talent Documents'
+	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout" || title === "Replacement" || title === "Dashboard"
     || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency') {
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
@@ -400,7 +400,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: EngagementReport,
 					navigateTo: UTSRoutes.ONBOARD,
-					isVisible: isAccess(usertypeID, 'Engagement Report')
+					isVisible: isAccess(usertypeID, 'Engagement')
 				}),
 				new SideBarModels({
 					id: 'talentReport',
@@ -408,7 +408,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: ClipBoardIcon,
 					navigateTo: UTSRoutes.TALENT_REPORT,
-					isVisible: isAccess(usertypeID, 'Talent Report'),
+					isVisible: isAccess(usertypeID, 'Talent'),
 					isChildren : false					
 				}),
 				new SideBarModels({
@@ -417,7 +417,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: ReplacementIcon,
 					navigateTo: UTSRoutes.REPLACEMENT_REPORT,
-					isVisible: isAccess(usertypeID, 'Replacement Report')
+					isVisible: isAccess(usertypeID, 'Replacement')
 				}),
 				new SideBarModels({
 					id: 'TalentBackoutReport',
@@ -425,7 +425,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: TalentBackoutIcon,
 					navigateTo: UTSRoutes.TALENT_BACKOUT_REPORT,
-					isVisible: isAccess(usertypeID, 'TalentBackout Report')
+					isVisible: isAccess(usertypeID, 'Backout')
 				}),
 				new SideBarModels({
 					id: 'ClientReport',
@@ -433,7 +433,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: clientReport,
 					navigateTo: UTSRoutes.CLIENT_REPORT,
-					isVisible: isAccess(usertypeID, 'Client Report')
+					isVisible: isAccess(usertypeID, 'Client')
 				}),
 				new SideBarModels({
 					id: 'HRReport',
@@ -441,7 +441,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: HRReport,
 					navigateTo: UTSRoutes.HR_REPORT,
-					isVisible: isAccess(usertypeID, 'HR Report')
+					isVisible: isAccess(usertypeID, 'HR')
 				}),
 				new SideBarModels({
 					id: 'I2SReport',
@@ -449,7 +449,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: I2sIcon,
 					navigateTo: UTSRoutes.I2S_REPORT,
-					isVisible: isAccess(usertypeID, 'I2S Report')
+					isVisible: isAccess(usertypeID, 'I2S')
 				}),
 				new SideBarModels({
 					id: 'HRLostReport',
@@ -457,7 +457,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: HRLOSTReoprt,
 					navigateTo: UTSRoutes.HRLostReoprt,
-					isVisible: isAccess(usertypeID, 'HR Lost Report')
+					isVisible: isAccess(usertypeID, 'HR Lost')
 				}),
 				new SideBarModels({
 					id: 'incentive_report',
@@ -480,7 +480,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isVisible:isAccess(usertypeID, 'JD Efficiency Report')
 				}),
 			],
-			isVisible: isAccess(usertypeID, 'MasterReports')
+			isVisible: isAccess(usertypeID, 'Reports')
 		}),
 		new SideBarModels({
 			id: 'Analytics',
@@ -488,7 +488,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			isActive: false,
 			icon: EngagementDashboard,			
 			isChildren: true,			
-			isVisible: isAccess(usertypeID, 'MasterReports'),
+			isVisible: isAccess(usertypeID, 'Analytics'),
 			branch: [
 				new SideBarModels({
 					id: 'demand_funnel_report',
@@ -540,7 +540,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			title: 'Documents/SLA',
 			isActive: false,
 			icon: ClipBoardIcon,			
-			isVisible: isAccess(usertypeID, 'MasterReports'),
+			isVisible: isAccess(usertypeID, 'Documents/SLA'),
 			isChildren : true,
 			branch:[
 				
@@ -583,7 +583,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			isActive: false,
 			icon: UTMTrackingIcon,
 			navigateTo: UTSRoutes.UTM_TRACKING_REPORT,
-			isVisible: isAccess(usertypeID, 'UTM Tracking Report'),
+			isVisible: isAccess(usertypeID, 'Tracking Reports'),
 			isChildren: true,
 			branch:[
 				new SideBarModels({
