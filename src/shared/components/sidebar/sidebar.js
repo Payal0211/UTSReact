@@ -4,6 +4,10 @@ import { Link, useLocation } from 'react-router-dom';
 import HR from 'assets/svg/hr.svg';
 import Handshake from 'assets/svg/handshake.svg';
 import AllClients from 'assets/svg/allClients.svg';
+import { InputType } from "constants/application";
+import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
+import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 
 import Briefcase from 'assets/svg/briefcase.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
@@ -42,6 +46,7 @@ const Sidebar = () => {
 
 	const switchLocation = useLocation();
 	const [userData, setUserData] = useState({});
+	// const [searchMenu,setSearchMenu] = useState('');
 
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -51,17 +56,141 @@ const Sidebar = () => {
 		getUserResult();
 	}, []);
 	//let isMenuvisible = (userData?.LoggedInUserTypeID === 1 || userData?.LoggedInUserTypeID === 2) ? true: false;
+
+	const ChildrenList = ({hookprops,index}) =>{
+		const [isOpen,setIsOpen] = useState(false)
+		const {navigateTo, icon, title, isChildren, branch  } = hookprops
+
+		// const childernSet = sidebarDataSets.filter(item=> item.title === title)
+		// const branch = childernSet.branch
+		const isMenuActive = branch.find(item=> item.navigateTo === switchLocation.pathname)?.navigateTo === switchLocation.pathname
+
+        return 		<Tooltip
+								key={index}
+								placement="right"
+								title={!isChildren && title}>
+								<div
+									className={sideBarStyles.sidebarItem}
+									key={index}>
+									<div className={sideBarStyles.atagCop} >
+										{/* <div className={sideBarStyles.}> */}
+										<div className={`${sideBarStyles.iconSet} ${
+												isMenuActive
+													? sideBarStyles.active
+													: ''
+											}`}
+											
+											>
+											<div
+												className={sideBarStyles.sidebarIcon}  onClick={()=>{setIsOpen(prev=> !prev)}}>
+												<img
+													src={icon}
+													alt="mySvgImage"
+													width='24px'
+													height='24px'
+												/>
+												
+													<span>{title}</span>
+													<ArrowDownSVG style={{ width: '16px',marginLeft:'auto',transform: isOpen ? 'rotate(180deg)' :'rotate(0deg)' }} />
+												
+												<div
+													className={`${
+														isMenuActive
+															? sideBarStyles.indicator
+															: sideBarStyles.transparentIndicator
+													}`}>
+												</div>
+											</div>
+											
+										</div>
+										
+									</div>
+
+									{(isChildren && isOpen) && (
+												<div className={sideBarStyles.sideBarSubmenu}>
+													{/* <h3>Masters</h3> */}
+													{branch?.length > 0 &&
+														branch?.map((item) => {
+															if(item.isVisible === false ){
+																return null
+															}
+															return (
+																<Link to={item?.navigateTo}>
+																	{/* <img src={item?.icon} 
+																	 width='24px'
+																	 height='24px'/> */}
+																	{item?.title}
+
+																	<div
+																	className={`${
+																		switchLocation.pathname  === item?.navigateTo
+																			? sideBarStyles.indicator
+																			: sideBarStyles.transparentIndicator
+																	}`}>
+																</div>
+																</Link>
+															);
+														})}
+												</div>
+											)}
+								</div>
+							</Tooltip>
+	}
 	
 	const sidebarDataSets = getSideBar(userData?.LoggedInUserTypeID,userData?.EmployeeID);
 	let urlSplitter = `/${switchLocation.pathname.split('/')[1]}`;
 
+	// const searchedMenueList = sidebarDataSets.filter(menu=>{
+	// 	if(menu.title.toLowerCase().includes(searchMenu.toLowerCase())){
+	// 		return menu
+	// 	}else{
+	// 		if(menu.branch.length > 0){
+	// 			menu.branch.forEach(branch=> {
+	// 				if(branch.title.toLowerCase().includes(searchMenu.toLowerCase())){
+	// 					return menu
+	// 				}
+	// 			})
+	// 		}
+	// 	}
+	// })
+
 	return (
 		<div className={sideBarStyles.sidebar}>
 			<div className={sideBarStyles.sidebarBody}>
+
+			{/* <div className={sideBarStyles.searchFilterSet}>
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={sideBarStyles.searchInput}
+                          placeholder="Search Table"
+                          value={searchMenu}
+                          onChange={(e) => {
+                            // setopenTicketSearchText(e.target.value);
+                            setSearchMenu(e.target.value);
+                          }}
+                        />
+                        {searchMenu && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+							setSearchMenu("");
+                            }}
+                          />
+                        )}
+                      </div> */}
 				{sidebarDataSets?.map(
 					({ navigateTo, icon, title, isChildren, branch , isVisible }, index) => {
 						if(isVisible === false ){
 							return null
+						}
+
+						if(isChildren){
+							return <ChildrenList hookprops={{navigateTo, icon, title, isChildren, branch , isVisible }} index={index} />
 						}
 						// if(title === "Dashboard" && userData?.LoggedInUserTypeID !== 2 && userData.UserId !== 27 ){
 						// 	return null
@@ -98,9 +227,9 @@ const Sidebar = () => {
 													}`}>
 												</div>
 											</div>
-											{isChildren && (
+											{/* {isChildren && (
 												<div className={sideBarStyles.sideBarSubmenu}>
-													{/* <h3>Masters</h3> */}
+													{/* <h3>Masters</h3> 
 													{branch?.length > 0 &&
 														branch?.map((item) => {
 															if(item.isVisible === false ){
@@ -116,7 +245,7 @@ const Sidebar = () => {
 															);
 														})}
 												</div>
-											)}
+											)} */}
 										</div>
 										
 									</Link>
@@ -260,7 +389,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'Reports',
 			title: 'Reports',
 			isActive: false,
-			icon: HR,			
+			icon: HRReport,			
 			isChildren: true,
 			branch: [
 				new SideBarModels({
