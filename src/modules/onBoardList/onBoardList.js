@@ -153,14 +153,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "joiningdate",
         key: "joiningdate",
         align: "left",
-        width: '200px', 
+        width: '150px', 
       },
       {
         title: "Start Date",
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
-        width: '150px', 
+        width: '100px', 
       },
       {
         title: "End Date",
@@ -174,7 +174,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "lastWorkingDate",
         key: "lastWorkingDate",
         align: "left",
-        width: '200px',
+        width: '150px',
       },
       {
         title: "Actual BR",
@@ -195,6 +195,34 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         render:(text,result)=>{
           return   `${result.currencySign} ${text} `
         }
+      },
+      {
+        title: "Exch. Rate",
+        dataIndex: "payout_CurrencyExchangeRate",
+        key: "payout_CurrencyExchangeRate",
+        align: "left",
+        width: '100px',       
+      },
+      {
+        title: "Per Day PR (INR)",
+        dataIndex: "payout_PerDayTalentCost_INR",
+        key: "payout_PerDayTalentCost_INR",
+        align: "left",
+        width: '120px',      
+      },
+      {
+        title: "No. of days",
+        dataIndex: "payout_TotalDaysinMonth",
+        key: "payout_TotalDaysinMonth",
+        align: "left",
+        width: '100px',      
+      },
+      {
+        title: "Final PR (INR)",
+        dataIndex: "payout_Actual_PRStr",
+        key: "payout_Actual_PRStr",
+        align: "left",
+        width: '100px', 
       },
       {
         title: "Uplers Fees",
