@@ -180,7 +180,8 @@ export default function LegalPreOnboarding({
               : d.engagementreplacement.id
         },        
         totalLeavesGiven: d.noofLeaves,
-        holidayLeaves : d.holidayLeaves
+        holidayLeaves : d.holidayLeaves,
+        payoutDays : d.payoutDays
       };
       // if(new Date(d.contractStartDate) >= new Date(d.joiningDate)){
       //   isValid = false;
@@ -576,7 +577,34 @@ const uploadSOWFileHandler = (e) => {
                           )}
                         </div>
                       </div>
- {getData?.getLegalInfo?.isHRTypeDP === false && <div className={HRDetailStyle.modalFormCol}>
+                      <div className={HRDetailStyle.modalFormCol}>                     
+                      <div
+                        className={`${HRDetailStyle.timeSlotItem} ${
+                          errors.sowDate && HRDetailStyle.marginBottom0
+                        }`}>
+                        <HRInputField
+                              register={register}
+                              errors={errors}
+                              validationSchema={{
+                                required: "please enter no of working days in a month",
+                                max: {
+                                  value: 99,
+                                  message: `please don't enter the value greater than 99`,
+                                },
+                                min: {
+                                  value: 0,
+                                  message: `please don't enter the value less than 1`,
+                                },
+                              }}
+                              label="Working Days per Month"
+                              name="payoutDays"
+                              type={InputType.NUMBER}
+                              placeholder="Enter Working Days per Month"
+                              required
+                          />
+                      </div>
+                    </div>
+                    {getData?.getLegalInfo?.isHRTypeDP === false && <div className={HRDetailStyle.modalFormCol}>
                       <div className={HRDetailStyle.onboardingDetailText}>
                         <span>Contract Duration</span>
                         <span className={HRDetailStyle.onboardingTextBold}>
@@ -761,7 +789,7 @@ const uploadSOWFileHandler = (e) => {
                 >
                   <div className={HRDetailStyle.modalFormWrapper}>
 
-                 {getDocuments?.find(itm=> itm.documentType === 'MSA').documentName ? 
+                 {getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName ? 
                  <div
                  className={HRDetailStyle.colMd12}><div className={HRDetailStyle.interviewSlots}>
                       <span>{getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentType}:</span>&nbsp;&nbsp;
