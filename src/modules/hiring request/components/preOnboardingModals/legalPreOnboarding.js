@@ -8,6 +8,7 @@ import {
   HRDeleteType,
   HiringRequestHRStatus,
   InputType,
+  EmailRegEx
 } from "constants/application";
 import { OnboardDAO } from "core/onboard/onboardDAO";
 import { MasterDAO } from "core/master/masterDAO";
@@ -206,7 +207,7 @@ export default function LegalPreOnboarding({
         }  
       } 
 
-      if((getDocuments?.find(itm=> itm.documentType === 'MSA').documentName ? false : MSADocument === '') || SOWDocument === ''){
+      if((getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName ? false : MSADocument === '') || SOWDocument === ''){
         isValid = false;
         setIsLoading(false);
         SetFormError(true)
@@ -222,9 +223,10 @@ export default function LegalPreOnboarding({
 
       }
 
+
       if(isValid){
         let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
-        !getDocuments?.find(itm=> itm.documentType === 'MSA').documentName && uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
+        !getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName && uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
         uploadDocument(SOWDocument,docTypeList.find(itm => itm.text === "SOW")?.value)
         if (result?.statusCode === HTTPStatusCode.OK) {
           setIsLoading(false);
@@ -300,11 +302,11 @@ export default function LegalPreOnboarding({
                 'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
         });
         setIsLoading(false);
-    } else if (fileData?.size >= 500000) {
+    } else if (fileData?.size >= 2048000) {
         setValidation({
             ...getValidation,
             systemFileUpload:
-                'Upload file size more than 500kb, Please Upload file upto 500kb',
+                'Uploaded file size more than 2MB, please upload file upto 2MB',
         });
         setIsLoading(false);
     } else {
@@ -338,11 +340,11 @@ const uploadSOWFileHandler = (e) => {
               'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
       });
       setIsLoading(false);
-  } else if (fileData?.size >= 500000) {
+  } else if (fileData?.size >= 2048000) {
       setValidation({
           ...getValidation,
           systemFileUpload:
-              'Upload file size more than 500kb, Please Upload file upto 500kb',
+              'Uploaded file size more than 2MB, please upload file upto 2MB',
       });
       setIsLoading(false);
   } else {
@@ -398,6 +400,10 @@ const uploadSOWFileHandler = (e) => {
                         validationSchema={{
                           required:
                             "please enter the Invoice Raising to Email.",
+                          pattern: {
+                                      value: EmailRegEx.email,
+                                      message: 'Entered value does not match email format',
+                                    },
                         }}
                         label="Invoice Raising to Email"
                         name="invoiceRaisingToEmail"
@@ -841,10 +847,10 @@ const uploadSOWFileHandler = (e) => {
 										buttonLabel="Upload MSA Document"
 										// value="Upload JD File"
 										onClickHandler={() => setShowMSAUploadModal(true)}
-										// required={!jdURLLink && getUploadFileData}
-										// validationSchema={{
-										// 	required: 'please select a file.',
-										// }}
+										required={!MSADocument}
+										validationSchema={{
+											required: 'please select a file.',
+										}}
 										errors={errors}
 									/>
 								) : (
@@ -900,10 +906,10 @@ const uploadSOWFileHandler = (e) => {
 										buttonLabel="Upload SOW Document"
 										// value="Upload JD File"
 										onClickHandler={() => setShowSOWUploadModal(true)}
-										// required={!jdURLLink && getUploadFileData}
-										// validationSchema={{
-										// 	required: 'please select a file.',
-										// }}
+										required={!SOWDocument}
+										validationSchema={{
+											required: 'please select a file.',
+										}}
 										errors={errors}
 									/>
 								) : (
