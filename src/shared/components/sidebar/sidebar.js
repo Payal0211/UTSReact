@@ -70,9 +70,10 @@ const Sidebar = () => {
 								placement="right"
 								title={!isChildren && title}>
 								<div
-									className={sideBarStyles.sidebarItem}
+									className={`${sideBarStyles.sidebarItem} newSidebarItemClsadding`}
+
 									key={index}>
-									<div className={sideBarStyles.atagCop} >
+									<div className={`${sideBarStyles.atagCop} newSidebarMenuClsadding`}>
 										{/* <div className={sideBarStyles.}> */}
 										<div className={`${sideBarStyles.iconSet} ${
 												isMenuActive
@@ -107,7 +108,8 @@ const Sidebar = () => {
 									</div>
 
 									{(isChildren && isOpen) && (
-												<div className={sideBarStyles.sideBarSubmenu}>
+												<div className={`${sideBarStyles.sideBarSubmenu} newSidebarMenuSubMenuClsadding`}
+												>
 													{/* <h3>Masters</h3> */}
 													{branch?.length > 0 &&
 														branch?.map((item) => {
