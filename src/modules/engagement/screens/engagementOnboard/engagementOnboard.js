@@ -108,7 +108,21 @@ const EngagementOnboard = ({
          
          <br></br>
           <div className={allengagementOnboardStyles.engagementContent}>
-          <h2>Client Information</h2>
+          
+          {hideHeader === true && (userData?.LoggedInUserTypeID === 1 || userData?.LoggedInUserTypeID === 2) ? <div style={{
+            display:'flex',
+            alignItems:'center',
+            justifyContent:'space-between'
+          }}><h2>Client Information</h2>
+          <LogoLoader visible={syncLoading} />
+          <div  className={allengagementOnboardStyles.syncEngagement} style={{marginBottom:'24px'}} onClick={() => syncEngagement()}>
+              <Tooltip title={'Sync Engagement data to ATS'} placement="left"
+                style={{ "zIndex": "9999" }}
+
+                overlayClassName="custom-syntooltip">
+                <RefreshSyncSVG width="17" height="16" style={{ fontSize: '16px' }} />
+              </Tooltip>
+        </div></div>   : <h2>Client Information</h2> }
           <ul>
             <li>
               <span>Company Name : </span>
