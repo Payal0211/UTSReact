@@ -37,6 +37,7 @@ import MyCalendar from "modules/engagement/screens/engagementAddFeedback/calenda
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import RejectLeaveModal from "modules/engagement/screens/engagementAddFeedback/rejectLeave";
 import ApproveLeaveModal from "modules/engagement/screens/engagementAddFeedback/approveLeave";
+import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
 
 export default function ViewOnBoardDetails() {
   const navigate = useNavigate();
@@ -393,6 +394,85 @@ export default function ViewOnBoardDetails() {
     ];
   }, [documentsList]);
 
+    const saveHandler = 
+      async (d) => {   
+        setLoading(true);
+        const response = await engagementRequestDAO.saveDaysandPRDetailsRequestDAO(d);
+        setLoading(false);
+        if (response.statusCode === HTTPStatusCode.OK) {
+          getAllBRPRTableData(onboardID)
+        }
+
+      }
+
+      const CompMonthlyPRColField = ({val,data}) => {
+        const [isEdit,setIsEdit] = useState(false)
+        const [colval,setcolVal]= useState(val)
+    
+        const updateValue= () =>{
+          if(colval < data.br){    
+          let payload = {
+            "billRate": data.br,
+            "payRate": colval,
+            "days": 0,
+            "payoutID": data.id,
+            "currency": data.currency,
+            "isPayRateUpdate": true
+          }
+    
+          saveHandler(payload)
+          }
+          
+        }
+    
+    
+        if(isEdit){
+          return <div style={{display:'flex', alignItems:'center' }}><div style={{display:'flex' ,flexDirection:'column', width:'50px'}}><input type='number' onDoubleClick={()=>{setIsEdit(false);setcolVal(val)}} value={colval} onChange={e=> setcolVal(+e.target.value)} />
+          {colval > data.br && <p style={{ margin:'0', color:'red'}}>PR can not be greater then  BR</p>}
+          </div> <TickMark
+          width={24}
+          height={24}
+          style={{marginLeft:'10px',cursor:'pointer'}}
+          onClick={() => updateValue()}
+        /></div>
+        }else{
+          return <p style={{cursor:'pointer', margin:'0'}} onDoubleClick={()=>setIsEdit(true)}>{`${data.currency} ` + `${data.prStr}`}</p>
+        }
+      }
+    
+
+  const CompNoOfDaysColField = ({val,data}) => {
+    const [isEdit,setIsEdit] = useState(false)
+    const [colval,setcolVal]= useState(val)
+
+    const updateValue= () =>{
+      if(colval > 0){    
+      let payload = { 
+        "days":colval,
+        "payoutID": data.id,  
+        "isPayRateUpdate": false
+      }
+
+      saveHandler(payload)
+      }
+      
+    }
+
+
+    if(isEdit){
+      return <div style={{display:'flex',alignItems:'center'  }}><div style={{display:'flex' ,flexDirection:'column', width:'50px'}}><input type='number' onDoubleClick={()=>{setIsEdit(false);setcolVal(val)}} value={colval} onChange={e=> setcolVal(+e.target.value)} />
+      {colval <= 0 && <p style={{ margin:'0', color:'red'}}>Days can not be 0</p>}
+      </div> <TickMark
+      width={24}
+      height={24}
+      style={{marginLeft:'10px',cursor:'pointer'}}
+      onClick={() => updateValue()}
+    /></div>
+    }else{
+      return <p style={{cursor:'pointer', margin:'0'}} onDoubleClick={()=>setIsEdit(true)}>{val}</p>
+    }
+  }
+
   const columns = useMemo(() => {
     return [
       {
@@ -425,7 +505,7 @@ export default function ViewOnBoardDetails() {
         key: "prStr",
         align: "left",
         render: (value, data) => {
-          return `${data.currency} ` + value;
+          return <CompMonthlyPRColField val={data.pr} data={data} />
         },
       },
       {
@@ -434,7 +514,7 @@ export default function ViewOnBoardDetails() {
         key: "totalDaysinMonth",
         align: "left",       
         render: (value, data) => {
-          return value;
+          return <CompNoOfDaysColField  val={value} data={data} />
         },
       },
       {
@@ -519,7 +599,9 @@ export default function ViewOnBoardDetails() {
   }, [allBRPRlist]);
 
   const getAllBRPRTableData = async (onboardID) => {
+    setLoading(true);
     let result = await engagementRequestDAO.getAllBRPRListWithLeaveDAO(onboardID);
+    setLoading(false);
     // console.log("getAllBRPRTableData",result)
     if (result.statusCode === HTTPStatusCode.OK) {
       setAllBRPRList(result.responseBody);
@@ -787,12 +869,16 @@ export default function ViewOnBoardDetails() {
         {isLoading ? (
           <Skeleton active />
         ) : (
-          <Table
+          <>
+          <div className={AddNewClientStyle.onboardBRPRTableTEXT} >*Double Click on Monthly PR, No. of days to enable edit.</div>
+           <Table
             scroll={{ y: "100vh" }}
             dataSource={allBRPRlist ? allBRPRlist : []}
             columns={columns}
             pagination={false}
           />
+          </>
+         
         )}
       </div>
     );
