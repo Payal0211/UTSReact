@@ -223,19 +223,18 @@ export default function LegalPreOnboarding({
 
       }
 
-      setIsLoading(false);
-      console.log('payload',payload)
+
       if(isValid){
-        // let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
-        // !getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName && uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
-        // uploadDocument(SOWDocument,docTypeList.find(itm => itm.text === "SOW")?.value)
-        // if (result?.statusCode === HTTPStatusCode.OK) {
-        //   setIsLoading(false);
-        //   setShowAMModal(false);
-        //   callAPI(HRID);
-        //   getHrUserData(HRID)
-        //   setIsLoading(false);
-        // }
+        let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
+        !getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName && uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
+        uploadDocument(SOWDocument,docTypeList.find(itm => itm.text === "SOW")?.value)
+        if (result?.statusCode === HTTPStatusCode.OK) {
+          setIsLoading(false);
+          setShowAMModal(false);
+          callAPI(HRID);
+          getHrUserData(HRID)
+          setIsLoading(false);
+        }
       }
     },
     [getData, engagementReplacement,isIndefiniteHR,SOWDocument,MSADocument]
