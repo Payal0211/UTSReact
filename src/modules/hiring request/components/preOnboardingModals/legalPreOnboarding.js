@@ -182,7 +182,7 @@ export default function LegalPreOnboarding({
         },        
         totalLeavesGiven: d.noofLeaves,
         holidayLeaves : d.holidayLeaves,
-        payoutDays : d.payoutDays
+        payoutDays : d.payoutDays ?? null
       };
       // if(new Date(d.contractStartDate) >= new Date(d.joiningDate)){
       //   isValid = false;

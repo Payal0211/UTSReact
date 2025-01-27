@@ -241,6 +241,39 @@ function AMDashboard() {
   const engColumnsMemo = useMemo(() => {
     return [
       {
+        title: "Engagement ID / HR #",
+        dataIndex: "engagementID",
+        key: "engagementID",
+        align: "left",
+        width: "120px",
+        render: (text, item) => {
+          return (
+            <>
+             <Link
+              to={`/viewOnboardDetails/${item.onBoardID}/${
+                item.isOngoing === "Ongoing" ? true : false
+              }`}
+              target="_blank"
+              style={{
+                color: `var(--uplers-black)`,
+                textDecoration: "underline",
+              }}
+            >
+              {item.engagementID}
+            </Link> <br/>
+            /<Link
+              to={`/allhiringrequest/${item.hrid}`}
+              target="_blank"
+              style={{ color: "#006699", textDecoration: "underline" }}
+            >
+              {item.hR_Number}
+            </Link>
+            </>
+           
+          );
+        },
+      },
+      {
         title: "Client ( Email )",
         dataIndex: "client",
         key: "client",
@@ -259,47 +292,24 @@ function AMDashboard() {
           }`;
         },
       },
-      {
-        title: "Engagent ID",
-        dataIndex: "engagementID",
-        key: "engagementID",
-        align: "left",
-        width: "105px",
-        render: (text, item) => {
-          return (
-            <Link
-              to={`/viewOnboardDetails/${item.onBoardID}/${
-                item.isOngoing === "Ongoing" ? true : false
-              }`}
-              target="_blank"
-              style={{
-                color: `var(--uplers-black)`,
-                textDecoration: "underline",
-              }}
-            >
-              {item.engagementID}
-            </Link>
-          );
-        },
-      },
-      {
-        title: "HR #",
-        dataIndex: "hR_Number",
-        key: "hR_Number",
-        align: "left",
-        width: "105px",
-        render: (text, item) => {
-          return (
-            <Link
-              to={`/allhiringrequest/${item.hrid}`}
-              target="_blank"
-              style={{ color: "#006699", textDecoration: "underline" }}
-            >
-              {item.hR_Number}
-            </Link>
-          );
-        },
-      },
+      // {
+      //   title: "HR #",
+      //   dataIndex: "hR_Number",
+      //   key: "hR_Number",
+      //   align: "left",
+      //   width: "105px",
+      //   render: (text, item) => {
+      //     return (
+      //       <Link
+      //         to={`/allhiringrequest/${item.hrid}`}
+      //         target="_blank"
+      //         style={{ color: "#006699", textDecoration: "underline" }}
+      //       >
+      //         {item.hR_Number}
+      //       </Link>
+      //     );
+      //   },
+      // },
       {
         title: "End Date",
         dataIndex: "enggementEndate",

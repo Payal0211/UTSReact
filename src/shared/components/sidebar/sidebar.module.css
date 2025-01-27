@@ -64,6 +64,13 @@
   padding: 10px;
 }
 
+.sidebarItem .atagCop{
+  position: relative;
+  display: block;
+  padding: 10px;
+  cursor: pointer;
+}
+
 .iconSet {
   /* width: 80px; */
   text-align: center;
@@ -146,6 +153,32 @@
 /* .sideBarSubmenu a:hover {
   background: rgba(211, 233, 150, 0.2);
 } */
+
+.sidebar  .searchFilterSet{
+ display: none;
+}
+
+.sidebar:hover  .searchFilterSet{
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  width: 90%;
+  height: 44px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 5px;
+}
+
+
+.searchInput{
+  cursor: pointer;
+  width: 80%;
+  outline: none;
+  border: none;
+  color: var(--uplers-black);
+  font-weight: 500;
+}
 
 @media screen and (max-width: 1440px){
   .sidebarBody {
