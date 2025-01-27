@@ -459,26 +459,26 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					navigateTo: UTSRoutes.HRLostReoprt,
 					isVisible: isAccess(usertypeID, 'HR Lost')
 				}),
-				new SideBarModels({
-					id: 'incentive_report',
-					title: 'Incentive Report',
-					isActive: false,
-					icon: Invoice,
-					navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
-					isChildren: false,
-					branch: [],
-					isVisible:isAccess(usertypeID,'Incentive Report')
-				}),
-				new SideBarModels({
-					id: 'JD_Efficiency_Report',
-					title: 'JD Efficiency Report',
-					isActive: false,
-					icon: JDEfficiencyReport,
-					navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
-					isChildren: false,
-					branch: [],
-					isVisible:isAccess(usertypeID, 'JD Efficiency Report')
-				}),
+				// new SideBarModels({
+				// 	id: 'incentive_report',
+				// 	title: 'Incentive Report',
+				// 	isActive: false,
+				// 	icon: Invoice,
+				// 	navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
+				// 	isChildren: false,
+				// 	branch: [],
+				// 	isVisible:isAccess(usertypeID,'Incentive Report')
+				// }),
+				// new SideBarModels({
+				// 	id: 'JD_Efficiency_Report',
+				// 	title: 'JD Efficiency Report',
+				// 	isActive: false,
+				// 	icon: JDEfficiencyReport,
+				// 	navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
+				// 	isChildren: false,
+				// 	branch: [],
+				// 	isVisible:isAccess(usertypeID, 'JD Efficiency Report')
+				// }),
 			],
 			isVisible: isAccess(usertypeID, 'Reports')
 		}),
