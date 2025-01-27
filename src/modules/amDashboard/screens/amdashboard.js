@@ -241,25 +241,6 @@ function AMDashboard() {
   const engColumnsMemo = useMemo(() => {
     return [
       {
-        title: "Client ( Email )",
-        dataIndex: "client",
-        key: "client",
-        align: "left",
-        width: "180px",
-      },
-      {
-        title: "Talent ( Email )",
-        dataIndex: "talentName",
-        key: "talentName",
-        align: "left",
-        width: "200px",
-        render: (text, result) => {
-          return `${text ? text : ""} ${
-            result.emailID ? `( ${result.emailID} )` : ""
-          }`;
-        },
-      },
-      {
         title: "Engagement ID / HR #",
         dataIndex: "engagementID",
         key: "engagementID",
@@ -290,6 +271,25 @@ function AMDashboard() {
             </>
            
           );
+        },
+      },
+      {
+        title: "Client ( Email )",
+        dataIndex: "client",
+        key: "client",
+        align: "left",
+        width: "180px",
+      },
+      {
+        title: "Talent ( Email )",
+        dataIndex: "talentName",
+        key: "talentName",
+        align: "left",
+        width: "200px",
+        render: (text, result) => {
+          return `${text ? text : ""} ${
+            result.emailID ? `( ${result.emailID} )` : ""
+          }`;
         },
       },
       // {
