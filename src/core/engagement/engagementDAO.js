@@ -556,6 +556,42 @@ export const engagementRequestDAO = {
 			);
 		}
 	},
+	saveDaysandPRDetailsRequestDAO: async function (talentDetails) {
+		try {
+			const saveBillPayRateResponse =
+				await EngagementRequestAPI.saveDaysandPRDetailsRequest(talentDetails);
+			if (saveBillPayRateResponse) {
+				const statusCode = saveBillPayRateResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveBillPayRateResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveBillPayRateResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return saveBillPayRateResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.saveDaysandPRDetailsRequestDAO',
+			);
+		}
+	},
 	getRenewEngagementRequestDAO: async function (talentDetails) {
 		try {
 			const renewEngagementResponse =
