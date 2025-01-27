@@ -291,7 +291,7 @@ const isAccess = (ID, title) =>{
 		isVisible =  true
 		return isVisible		
 	}
-	if ((title === 'Engagement' ||  title === "Dashboard" || title === 'Reports' ||  title === 'Talent' || title === 'Master' || title === 'Currency')  && ID === 3){
+	if ((title === 'Engagement' || title === 'Engagement Report' || title === "Dashboard" || title === 'Reports' ||  title === 'Talent' || title === 'Master' || title === 'Currency')  && ID === 3){
 		isVisible =  true
 		return isVisible		
 	}
@@ -400,7 +400,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: EngagementReport,
 					navigateTo: UTSRoutes.ONBOARD,
-					isVisible: isAccess(usertypeID, 'Engagement')
+					isVisible: isAccess(usertypeID, 'Engagement Report')
 				}),
 				new SideBarModels({
 					id: 'talentReport',
