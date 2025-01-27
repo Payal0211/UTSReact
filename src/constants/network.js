@@ -198,6 +198,7 @@ export class EngagementAPI {
 	static GET_TALENT_MATCHMAKING  = 'GetTalentMatchmakingDetails'
 	static GET_AM_DETAILS = 'GetAMDetails'
 	static UPDATE_AM_PAY_OUT = 'UpdateAMForPayOut'
+	static UPDATE_DAYS_AND_PR = 'UpdateDaysandPRDetails'
 }
 
 export class AllHiringRequestAPI {

@@ -299,6 +299,25 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	saveDaysandPRDetailsRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.UPDATE_DAYS_AND_PR ;
+		httpService.dataToSend = talentDetails;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.saveDaysandPRDetailsRequest',
+			);
+		}
+	},
 	GetRenewEngagementRequest: async function (talentDetails) {
 		let httpService = new HttpServices();
 		httpService.URL =
