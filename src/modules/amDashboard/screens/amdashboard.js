@@ -260,14 +260,15 @@ function AMDashboard() {
         },
       },
       {
-        title: "Engagent ID",
+        title: "Engagement ID / HR #",
         dataIndex: "engagementID",
         key: "engagementID",
         align: "left",
-        width: "105px",
+        width: "120px",
         render: (text, item) => {
           return (
-            <Link
+            <>
+             <Link
               to={`/viewOnboardDetails/${item.onBoardID}/${
                 item.isOngoing === "Ongoing" ? true : false
               }`}
@@ -278,28 +279,37 @@ function AMDashboard() {
               }}
             >
               {item.engagementID}
-            </Link>
-          );
-        },
-      },
-      {
-        title: "HR #",
-        dataIndex: "hR_Number",
-        key: "hR_Number",
-        align: "left",
-        width: "105px",
-        render: (text, item) => {
-          return (
-            <Link
+            </Link> <br/>
+            /<Link
               to={`/allhiringrequest/${item.hrid}`}
               target="_blank"
               style={{ color: "#006699", textDecoration: "underline" }}
             >
               {item.hR_Number}
             </Link>
+            </>
+           
           );
         },
       },
+      // {
+      //   title: "HR #",
+      //   dataIndex: "hR_Number",
+      //   key: "hR_Number",
+      //   align: "left",
+      //   width: "105px",
+      //   render: (text, item) => {
+      //     return (
+      //       <Link
+      //         to={`/allhiringrequest/${item.hrid}`}
+      //         target="_blank"
+      //         style={{ color: "#006699", textDecoration: "underline" }}
+      //       >
+      //         {item.hR_Number}
+      //       </Link>
+      //     );
+      //   },
+      // },
       {
         title: "End Date",
         dataIndex: "enggementEndate",
