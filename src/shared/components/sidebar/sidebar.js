@@ -287,11 +287,13 @@ const isAccess = (ID, title) =>{
 		isVisible =  true	
 		return isVisible	
 	}
-	if ((title === 'Engagement' ||  title === "Dashboard" || title === 'Master' || title === 'Reports'  || title === 'Talent' || title === 'Currency')  && ID === 6){
+	if ((title === 'Engagement' ||  title === "Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
+		  && ID === 6){
 		isVisible =  true
 		return isVisible		
 	}
-	if ((title === 'Engagement' || title === 'Engagement Report' || title === "Dashboard" || title === 'Reports' ||  title === 'Talent' || title === 'Master' || title === 'Currency')  && ID === 3){
+	if ((title === 'Engagement' || title === 'Engagement Report' || title === "Dashboard"  ||  title === 'Talent' || title === 'Master' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
+		  && ID === 3){
 		isVisible =  true
 		return isVisible		
 	}
@@ -368,14 +370,12 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			isVisible: isAccess(usertypeID,'Clients')
 		}),
 		new SideBarModels({
-			id: 'UTS_UserList',
-			title: 'Users',
+			id: 'engagementReport',
+			title: 'Engagement Report',
 			isActive: false,
-			icon: HR,
-			navigateTo: UTSRoutes.USERLISTROUTE,
-			isChildren: false,
-			branch: [],
-			isVisible: isAccess(usertypeID, 'Users')
+			icon: EngagementReport,
+			navigateTo: UTSRoutes.ONBOARD,
+			isVisible: isAccess(usertypeID, 'Engagement Report')
 		}),
 		new SideBarModels({
 			id: 'Engagement_List',
@@ -388,28 +388,38 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			isVisible: isAccess(usertypeID, 'Engagement')
 		}),
 		new SideBarModels({
-			id: 'Reports',
-			title: 'Reports',
+			id: 'UTS_UserList',
+			title: 'Users',
 			isActive: false,
-			icon: HRReport,			
+			icon: HR,
+			navigateTo: UTSRoutes.USERLISTROUTE,
+			isChildren: false,
+			branch: [],
+			isVisible: isAccess(usertypeID, 'Users')
+		}),
+		new SideBarModels({
+			id: 'Talent',
+			title: 'Talent',
+			isActive: false,
+			icon: ClipBoardIcon,			
 			isChildren: true,
-			branch: [
-				new SideBarModels({
-					id: 'engagementReport',
-					title: 'Engagement',
-					isActive: false,
-					icon: EngagementReport,
-					navigateTo: UTSRoutes.ONBOARD,
-					isVisible: isAccess(usertypeID, 'Engagement Report')
-				}),
+			branch:[
 				new SideBarModels({
 					id: 'talentReport',
-					title: 'Talent',
+					title: 'Deployed/Rejected',
 					isActive: false,
 					icon: ClipBoardIcon,
 					navigateTo: UTSRoutes.TALENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Talent'),
 					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'talentDocuments',
+					title: 'Documents',
+					isActive: false,
+					icon: TalentDocIcon,
+					navigateTo: UTSRoutes.TALENT_DOCUMENTS,
+					isVisible: isAccess(usertypeID, 'Talent Documents')
 				}),
 				new SideBarModels({
 					id: 'ReplacementReport',
@@ -427,6 +437,15 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					navigateTo: UTSRoutes.TALENT_BACKOUT_REPORT,
 					isVisible: isAccess(usertypeID, 'Backout')
 				}),
+			]
+		}),
+		new SideBarModels({
+			id: 'Reports',
+			title: 'Reports',
+			isActive: false,
+			icon: HRReport,			
+			isChildren: true,
+			branch: [		
 				new SideBarModels({
 					id: 'ClientReport',
 					title: 'Client',
@@ -458,6 +477,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					icon: HRLOSTReoprt,
 					navigateTo: UTSRoutes.HRLostReoprt,
 					isVisible: isAccess(usertypeID, 'HR Lost')
+				}),
+				new SideBarModels({
+					id: 'SLA_Report',
+					title: 'SLA Report',
+					isActive: false,
+					icon: SLAReport,
+					navigateTo: UTSRoutes.SLA_REPORT,
+					isVisible: isAccess(usertypeID, 'SLA Report')
 				}),
 				// new SideBarModels({
 				// 	id: 'incentive_report',
@@ -535,34 +562,17 @@ const getSideBar = (usertypeID,EmployeeID) => {
 				
 			]
 		}),
-		new SideBarModels({
-			id: 'talentReports',
-			title: 'Documents/SLA',
-			isActive: false,
-			icon: ClipBoardIcon,			
-			isVisible: isAccess(usertypeID, 'Documents/SLA'),
-			isChildren : true,
-			branch:[
-				
-				new SideBarModels({
-					id: 'talentDocuments',
-					title: 'Documents',
-					isActive: false,
-					icon: TalentDocIcon,
-					navigateTo: UTSRoutes.TALENT_DOCUMENTS,
-					isVisible: isAccess(usertypeID, 'Talent Documents')
-				}),
-				new SideBarModels({
-					id: 'SLA_Report',
-					title: 'SLA Report',
-					isActive: false,
-					icon: SLAReport,
-					navigateTo: UTSRoutes.SLA_REPORT,
-					isVisible: isAccess(usertypeID, 'SLA Report')
-				}),
-				
-			]
-		}),
+		// new SideBarModels({
+		// 	id: 'talentReports',
+		// 	title: 'Documents/SLA',
+		// 	isActive: false,
+		// 	icon: ClipBoardIcon,			
+		// 	isVisible: isAccess(usertypeID, 'Documents/SLA'),
+		// 	isChildren : true,
+		// 	branch:[
+						
+		// 	]
+		// }),
 		
 		
 		

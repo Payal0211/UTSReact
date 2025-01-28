@@ -158,6 +158,10 @@ export default function BeforePreOnboarding({
     useState("Please Select");
   const [controlledWorkOption, setControlledWorkOption] =
   useState("Please Select");
+  const [controlledFromDayOption, setControlledFromDayOption] =
+  useState("Please Select");
+  const [controlledToDayOption, setControlledToDayOption] =
+  useState("Please Select");
   const leavePolices = [
     { id: 1, value: "Proceed with Uplers Policies" },
     { id: 2, value: "Upload Your Policies" },
@@ -172,6 +176,7 @@ export default function BeforePreOnboarding({
   });
   const [amUsers,setAMUsers] = useState([]);
   const [workOptions,setWorkOptions] = useState([]);
+  const dayList = [{id:1,value:'Monday'},{id:2,value:'Tuesday'},{id:3,value:'Wednesday'},{id:4,value:'Thursday'},{id:5,value:'Friday'},{id:6,value:'Saturday'},{id:7,value:'Sunday'},]
   const [workingMode, setWorkingMode] = useState([]);
   const [stateList,setStateList] = useState([]);
   const [reportingTo, setReportingTo] = useState([]);
@@ -421,9 +426,16 @@ export default function BeforePreOnboarding({
   }, [preONBoardingData,netTerms])
 
   useEffect(() => {    
-      let data = workOptions?.filter((item) => item?.id === preONBoardingData?.secondTabAMAssignmentOnBoardingDetails?.work_option_id)
-      setControlledWorkOption(data[0]?.value)
-      setValue("workOption",data[0])
+      // let data = workOptions?.filter((item) => item?.id === preONBoardingData?.secondTabAMAssignmentOnBoardingDetails?.work_option_id)
+      const toDay = dayList?.filter((day)=> day.id === preONBoardingData?.secondTabAMAssignmentOnBoardingDetails?.toWorkingDay)
+      const fromDay = dayList?.filter((day)=> day.id === preONBoardingData?.secondTabAMAssignmentOnBoardingDetails?.fromWorkingDay)
+
+      setControlledFromDayOption(fromDay[0]?.value)
+      setValue("fromDay",fromDay[0])
+      setControlledToDayOption(toDay[0]?.value)
+      setValue("toDay",toDay[0])
+      // setControlledWorkOption(data[0]?.value)
+      // setValue("workOption",data[0])
   }, [preONBoardingData,workOptions])
 
   useEffect(() => {
@@ -747,11 +759,41 @@ const calcelMember = () =>{
   memberUnregister('memberBuddy')
   memberUnregister('linkedinLink')
 }
+function calculateDayGap(day1, day2) {
+  const day1Obj = dayList.find((day) => day.id === day1.id);
+  const day2Obj = dayList.find((day) => day.id === day2.id);
 
+  if (!day1Obj || !day2Obj) {
+    throw new Error("Invalid day names provided.");
+  }
+
+  const id1 = day1Obj.id;
+  const id2 = day2Obj.id;
+
+
+  if (id2 >= id1) {
+    return id2 - id1; // Forward gap within the week
+  } else {
+    return 7 - id1 + id2; // Wrap-around gap
+  }
+}
 
   const handleComplete = useCallback(
     async (d) => {   
-      setIsLoading(true);      
+      setIsLoading(true);    
+      
+      if( calculateDayGap(d?.fromDay,d?.toDay) +1 > 6){
+        setIsLoading(false); 
+        message.error('working days in a week can not be more the 6')
+        return 
+      }
+
+      if( calculateDayGap(d?.fromDay,d?.toDay) +1 < 4){
+        setIsLoading(false); 
+        message.error('working days in a week can not be less the 4')
+        return 
+      }
+
       let _payload = {
         "hR_ID": HRID,
         "companyID": data?.companyID,
@@ -774,6 +816,8 @@ const calcelMember = () =>{
         "city": d?.city,
         "stateID": d?.stateID?.id,
         "work_option_id":d?.workOption?d?.workOption?.id:null,
+        'fromWorkingDay': d?.fromDay ? d?.fromDay.id : null,
+        'toWorkingDay':d?.toDay ? d?.toDay.id : null,
         "talent_Designation": d?.talent_Designation,
         "amSalesPersonID": d?.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
@@ -2369,23 +2413,51 @@ const calcelMember = () =>{
                           />
                         </div>
                       </div>
+                      <div className={HRDetailStyle.modalFormCol} style={{display:'flex'}}>
                       <div className={HRDetailStyle.modalFormCol}>
                           <div className={HRDetailStyle.modalFormLeaveUnderLine}>
                           <HRSelectField
-                            controlledValue={controlledWorkOption}
-                            setControlledValue={setControlledWorkOption}
+                            controlledValue={controlledFromDayOption}
+                            setControlledValue={setControlledFromDayOption}
                             isControlled={true}
                             mode="id/value"
                             setValue={setValue}
                             register={register}
                             className="leavePolicylabel"
-                            label={"Work Options"}
-                            placeholder={"Select Work Option"}
-                            options={workOptions}
-                            name="workOption"
+                            label={"From Day"}
+                            placeholder={"Select From Day"}
+                            options={dayList}
+                            name="fromDay"
+                            isError={
+                              errors["fromDay"] && errors["fromDay"]
+                            }
+                            required={!talentDeteils?.IsHRTypeDP}
+                            errorMsg={"please select."}
                             disabled={actionType==="Legal"?true:false}
                           />
-                          </div>
+                          </div></div>
+                          <div className={HRDetailStyle.modalFormCol}>
+                          <div className={HRDetailStyle.modalFormLeaveUnderLine}>
+                          <HRSelectField
+                            controlledValue={controlledToDayOption}
+                            setControlledValue={setControlledToDayOption}
+                            isControlled={true}
+                            mode="id/value"
+                            setValue={setValue}
+                            register={register}
+                            className="leavePolicylabel"
+                            label={"To Day"}
+                            placeholder={"Select To Day"}
+                            options={dayList}
+                            name="toDay" 
+                            isError={
+                              errors["toDay"] && errors["toDay"]
+                            }
+                            required={!talentDeteils?.IsHRTypeDP}
+                            errorMsg={"please select."}
+                            disabled={actionType==="Legal"?true:false}
+                          />
+                          </div></div>
                         </div>
                       {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP=== false && 
                         <div className={HRDetailStyle.colMd12}>

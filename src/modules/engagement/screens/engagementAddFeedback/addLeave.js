@@ -136,8 +136,8 @@ const AddLeaveModal = ({
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
                     startDate={startDate}
-                    minDate={new Date()}
-                    filterDate={isWeekday}
+                    // minDate={new Date()}
+                    // filterDate={isWeekday}
                     //   endDate={endDate}
                     //   selectsRange
                   />
@@ -174,7 +174,7 @@ const AddLeaveModal = ({
                     onChange={(date) => setEndDate(date)}
                     startDate={endDate}
                     minDate={startDate}
-                    filterDate={isWeekday}
+                    // filterDate={isWeekday}
                     //   endDate={endDate}
                     //   selectsRange
                   />
