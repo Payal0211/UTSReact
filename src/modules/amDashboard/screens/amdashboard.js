@@ -1171,8 +1171,8 @@ function AMDashboard() {
           },
 
           {
-            label: "Engagement Renewal",
-            key: "Engagement Renewal",
+            label: "Upcoming Renewal",
+            key: "Upcoming Renewal",
             children: (
               <>
                 {/* <div className={amStyles.addnewHR} style={{margin:'20px 0'}}>
@@ -1191,7 +1191,18 @@ function AMDashboard() {
                 )}
 
                 <div style={{ marginTop: "20px" }}>
-                  <Tabs
+                <Table
+                            scroll={{ y: "480px" }}
+                            id="RenewalsActiveListingTable"
+                            columns={engColumnsMemo}
+                            bordered={false}
+                            dataSource={renewalList}
+                            pagination={{
+                              size: "small",
+                              total: renewalList?.length,
+                            }}
+                          />
+                  {/* <Tabs
                     onChange={(e) => setRenewalTabTitle(e)}
                     defaultActiveKey="1"
                     activeKey={renewalTabTitle}
@@ -1218,30 +1229,30 @@ function AMDashboard() {
                           />
                         ),
                       },
-                      {
-                        label: "Closed Engagements",
-                        key: "Closed Engagements",
-                        children: (
-                          <Table
-                            scroll={{ y: "480px" }}
-                            id="RenewalsClosedListingTable"
-                            columns={engColumnsMemo}
-                            bordered={false}
-                            dataSource={renewalList}
-                            pagination={{
-                              size: "small",
-                              total: renewalList?.length,
-                            }}
-                          />
-                        ),
-                      },
+                      // {
+                      //   label: "Closed Engagements",
+                      //   key: "Closed Engagements",
+                      //   children: (
+                      //     <Table
+                      //       scroll={{ y: "480px" }}
+                      //       id="RenewalsClosedListingTable"
+                      //       columns={engColumnsMemo}
+                      //       bordered={false}
+                      //       dataSource={renewalList}
+                      //       pagination={{
+                      //         size: "small",
+                      //         total: renewalList?.length,
+                      //       }}
+                      //     />
+                      //   ),
+                      // },
                       // {
                       // label: "Closed engagement",
                       // key: "Closed engagement",
                       // children: <ActiveEngagementList />,
                       // },
                     ]}
-                  />
+                  /> */}
                 </div>
               </>
             ),
