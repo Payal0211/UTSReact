@@ -114,12 +114,26 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         width: '180px',
       },
       {
+				title: 'Talent ID',
+				dataIndex: 'talent_UplersID',
+				key: 'talent_UplersID',
+				align: 'left',
+				width:"150px",
+			},
+      {
         title: "Talent",
         dataIndex: "talent",
         key: "talent",
         align: "left",
         width: '200px',
       },
+      {
+				title: 'Talent Email',
+				dataIndex: 'talentEmail',
+				key: 'talentEmail',
+				align: 'left',
+				width:"250px",
+			},
       {
         title: "Company",
         dataIndex: "company",
