@@ -182,7 +182,8 @@ export default function LegalPreOnboarding({
         },        
         totalLeavesGiven: d.noofLeaves,
         holidayLeaves : d.holidayLeaves,
-        payoutDays : d.payoutDays ? d.payoutDays : null
+        // payoutDays : d.payoutDays ? d.payoutDays : null
+        payoutDays:0
       };
       // if(new Date(d.contractStartDate) >= new Date(d.joiningDate)){
       //   isValid = false;
@@ -583,7 +584,7 @@ const uploadSOWFileHandler = (e) => {
                           )}
                         </div>
                       </div>
-                      <div className={HRDetailStyle.modalFormCol}>                     
+                      {/* <div className={HRDetailStyle.modalFormCol}>                     
                       <div
                         className={`${HRDetailStyle.timeSlotItem} ${
                           errors.sowDate && HRDetailStyle.marginBottom0
@@ -609,7 +610,7 @@ const uploadSOWFileHandler = (e) => {
                               required
                           />
                       </div>
-                    </div>
+                    </div> */}
                     {getData?.getLegalInfo?.isHRTypeDP === false && <div className={HRDetailStyle.modalFormCol}>
                       <div className={HRDetailStyle.onboardingDetailText}>
                         <span>Contract Duration</span>

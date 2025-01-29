@@ -202,15 +202,25 @@ export default function TalentReport() {
         width: "200px",
       },
       {
-        title: (
-          <>
-            Start Date <br />/ End Date
-          </>
-        ),
+        title: 'Start Date' ,
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
         width: "120px",
+        render: (text, result) => {
+          return text;
+        },
+      },
+      {
+        title: (
+          <>
+            Last Working date <br />/ Contract End Date
+          </>
+        ),
+        dataIndex: "lastWorkingDate",
+        key: "lastWorkingDate",
+        align: "left",
+        width: "160px",
         render: (text, result) => {
           return (
             <>
@@ -587,7 +597,7 @@ export default function TalentReport() {
                   </div>
                 </div>
                 {isLoading ? <TableSkeleton active /> :  <Table
-                  scroll={{x:'auto', y: "480px", }}
+                  scroll={{x:'1800px', y: "480px", }}
                   id="OnboardedListingTable"
                   columns={tableColumnsMemo}
                   bordered={false}

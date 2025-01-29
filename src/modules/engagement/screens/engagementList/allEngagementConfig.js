@@ -461,13 +461,13 @@ export const allEngagementConfig = {
 				dataIndex: 'engagementId_HRID',
 				key: 'engagementId_HRID',
 				align: 'left',
-				width:"200px",
+				width:"150px",
 				render: (text, result) => (
 					<p>
 						{result?.engagementId_HRID.slice(
 							0,
 							result?.engagementId_HRID?.indexOf('/'),
-						)}
+						)}<br/>
 						<Link
 							to={`/allhiringrequest/${result?.hrID}`}
 							target='_blank'
