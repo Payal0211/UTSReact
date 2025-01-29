@@ -174,22 +174,25 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
-        width: '100px', 
+        width: '120px', 
       },
       {
-        title: "End Date",
+        title: <>End Date / <br/>Last Working Date</>,
         dataIndex: "contractEndDate",
         key: "contractEndDate",
         align: "left",
         width: '150px', 
+        render:(text,result)=>{
+          return <>{text}<br/>/{result?.lastWorkingDate ? result?.lastWorkingDate : 'NA'}</>
+        }
       },
-      {
-        title: "Last Working Date",
-        dataIndex: "lastWorkingDate",
-        key: "lastWorkingDate",
-        align: "left",
-        width: '150px',
-      },
+      // {
+      //   title: "Last Working Date",
+      //   dataIndex: "lastWorkingDate",
+      //   key: "lastWorkingDate",
+      //   align: "left",
+      //   width: '150px',
+      // },
       {
         title: "Actual BR",
         dataIndex: "final_HR_Cost",
@@ -218,11 +221,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         width: '100px',       
       },
       {
-        title: "Per Day PR (INR)",
+        title: <>Per Day PR <br/> (INR)</>,
         dataIndex: "payout_PerDayTalentCost_INR",
         key: "payout_PerDayTalentCost_INR",
         align: "left",
-        width: '120px',      
+        width: '120px', 
+        render:(text,result)=>{
+          return text ? `₹ ${text}` : ''
+        }     
       },
       {
         title: "No. of days",
@@ -232,11 +238,24 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         width: '100px',      
       },
       {
-        title: "Final PR (INR)",
+        title: <>Final PR <br/> (INR)</>,
         dataIndex: "payout_Actual_PRStr",
         key: "payout_Actual_PRStr",
         align: "left",
+        width: '120px', 
+        render:(text,result)=>{
+          return text ? `₹ ${text}` : ''
+        } 
+      },
+      {
+        title: <>NR / DP <br/>(%)</>,
+        dataIndex: "nrPercentage",
+        key: "nrPercentage",
+        align: "left",
         width: '100px', 
+        render:(text,result)=>{
+          return `${result.nrPercentage !== 0 ? result.nrPercentage : ''}  ${+result.dP_Percentage !== 0 ? result.dP_Percentage : ''}`
+        }
       },
       {
         title: "Uplers Fees",
@@ -248,16 +267,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
           return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
         }
       },
-      {
-        title: "NR / DP (%)",
-        dataIndex: "nrPercentage",
-        key: "nrPercentage",
-        align: "left",
-        width: '150px', 
-        render:(text,result)=>{
-          return `${result.nrPercentage !== 0 ? result.nrPercentage : ''}  ${+result.dP_Percentage !== 0 ? result.dP_Percentage : ''}`
-        }
-      },
+
       // {
       //   title: "HR #",
       //   dataIndex: "hR_Number",
@@ -1138,6 +1148,19 @@ console.log(date)
                           modules={[Keyboard, Scrollbar, Navigation, Pagination]}
                           className="mySwiper"
                         >
+
+                      <SwiperSlide>
+                      <div className={onboardList.filterType} key={'Total Talents'}>
+                        <img
+                          src={FeedBack}
+                          alt="rocket"
+                        />
+                        <h2>
+                          Total Talents  :{' '}
+                          <span>{onBoardListData[0]?.totalRecords ? onBoardListData[0]?.totalRecords : 0}</span>
+                        </h2>
+                      </div>
+                      </SwiperSlide>
        
                       {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && 
                         <SwiperSlide>
@@ -1150,7 +1173,7 @@ console.log(date)
                             Active Contract Eng. :{' '}
                             <span>
                               {onBoardListData[0]?.s_TotalActiveEng
-                                ? onBoardListData[0]?.s_TotalActiveEng
+                                ? parseInt(onBoardListData[0]?.s_TotalActiveEng) 
                                 : 0}
                             </span>
                             
@@ -1183,7 +1206,7 @@ console.log(date)
                             Lost Contract Eng. :{' '}
                             <span>
                               {onBoardListData[0]?.s_TotalLostEng
-                                ? onBoardListData[0]?.s_TotalLostEng
+                                ? parseInt(onBoardListData[0]?.s_TotalLostEng) 
                                 : 0}
                             </span>
                           </h2>
@@ -1209,11 +1232,11 @@ console.log(date)
                     />
                     <h2>
                       Renew Eng. :{' '}
-                      <span>{onBoardListData[0]?.s_TotalRenewEng ? onBoardListData[0]?.s_TotalRenewEng : 0}</span>
+                      <span>{onBoardListData[0]?.s_TotalRenewEng ? parseInt(onBoardListData[0]?.s_TotalRenewEng)  : 0}</span>
                     </h2>
                   </div></SwiperSlide>} 
                
-                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  {/* {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
                   <div className={onboardList.filterType} key={'AActive DP Eng.'}>
                     <img
@@ -1224,7 +1247,7 @@ console.log(date)
                       Active DP Eng. :{' '}
                       <span>{onBoardListData[0]?.s_TotalDPActiveEng ? onBoardListData[0]?.s_TotalDPActiveEng : 0}</span>
                     </h2>
-                  </div></SwiperSlide>}
+                  </div></SwiperSlide>} */}
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
                   <div className={onboardList.filterType} key={'Added DP'}>
@@ -1234,10 +1257,10 @@ console.log(date)
                     />
                     <h2>
                       Added DP :{' '}
-                      <span>{onBoardListData[0]?.s_AddedDP ? onBoardListData[0]?.s_AddedDP : 0}</span>
+                      <span>{onBoardListData[0]?.s_AddedDP ? parseInt(onBoardListData[0]?.s_AddedDP)  : 0}</span>
                     </h2>
                   </div></SwiperSlide>}
-                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  {/* {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
                   <div className={onboardList.filterType} key={'Lost DP Eng.'}>
                     <img
@@ -1248,7 +1271,7 @@ console.log(date)
                       Lost DP Eng. :{' '}
                       <span>{onBoardListData[0]?.s_TotalDPLostEng ? onBoardListData[0]?.s_TotalDPLostEng : 0}</span>
                     </h2>
-                  </div></SwiperSlide>}
+                  </div></SwiperSlide>} */}
                   {/* <div className={onboardList.filterType}>
                     <img
                       src={LostEng}
@@ -1284,10 +1307,11 @@ console.log(date)
                     />
                     <h2>
                       Feedback Received  :{' '}
-                      <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? onBoardListData[0]?.s_TotalFeedbackReceived : 0}</span>
+                      <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? parseInt(onBoardListData[0]?.s_TotalFeedbackReceived)  : 0}</span>
                     </h2>
                   </div>
                   </SwiperSlide>
+
                   </Swiper>
                   {/* </div> */}
                 </div>
