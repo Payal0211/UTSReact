@@ -878,7 +878,7 @@ function AMDashboard() {
 
   useEffect(() => {
     getDashboardData();
-  }, [userData, title]);
+  }, [userData, title,engSearchText]);
 
   useEffect(() => {
     getRenewalData();
@@ -1326,8 +1326,77 @@ function AMDashboard() {
 				</div>
 			</div> */}
 
-      
-<div className={amStyles.filterContainer}>
+                <div
+                  className={amStyles.mainContainer}
+                  style={{ marginTop: "20px" }}
+                >
+                  <div className={amStyles.mainContainerInner}>
+                    <Tabs
+                      onChange={(e) => setTitle(e)}
+                      defaultActiveKey="1"
+                      activeKey={title}
+                      animated={true}
+                      tabBarGutter={50}
+                      tabBarStyle={{
+                        borderBottom: `1px solid var(--uplers-border-color)`,
+                      }}
+                      items={[
+                        {
+                          label: "Active",
+                          key: "Active",
+                          children: (<>
+                             <div className={amStyles.filterContainer}>
+                  <div className={amStyles.filterSets}>
+                    <div className={amStyles.filterRight}>
+                      <div className={amStyles.searchFilterSet}>
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={amStyles.searchInput}
+                          placeholder="Search Table"
+                          value={engDebounceText}
+                          onChange={(e) => {
+                            // setopenTicketSearchText(e.target.value);
+                            setEngbounceText(e.target.value);
+                          }}
+                        />
+                        {engDebounceText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                            //   setopenTicketSearchText("");
+                            setEngbounceText("");
+                            }}
+                          />
+                        )}
+                      </div>
+                      {/* <button
+                        type="submit"
+                        className={amStyles.btnPrimary}
+                        onClick={() => handleOnboardExport(onboardList)}
+                      >
+                        Export
+                      </button> */}
+                    </div>
+                  </div>
+                </div> 
+                <ActiveEngagementList
+                              data={engagementList}
+                              columns={engActiveColumnsMemo}
+                            />
+                          </>
+                           
+                          ),
+                        },
+                        {
+                          label: "Closed",
+                          key: "Closed",
+                          children: (<>
+                             <div className={amStyles.filterContainer}>
                   <div className={amStyles.filterSets}>
                     <div className={amStyles.filterRight}>
                       <div className={amStyles.searchFilterSet}>
@@ -1366,40 +1435,12 @@ function AMDashboard() {
                     </div>
                   </div>
                 </div>
-
-                <div
-                  className={amStyles.mainContainer}
-                  style={{ marginTop: "20px" }}
-                >
-                  <div className={amStyles.mainContainerInner}>
-                    <Tabs
-                      onChange={(e) => setTitle(e)}
-                      defaultActiveKey="1"
-                      activeKey={title}
-                      animated={true}
-                      tabBarGutter={50}
-                      tabBarStyle={{
-                        borderBottom: `1px solid var(--uplers-border-color)`,
-                      }}
-                      items={[
-                        {
-                          label: "Active",
-                          key: "Active",
-                          children: (
-                            <ActiveEngagementList
-                              data={engagementList}
-                              columns={engActiveColumnsMemo}
-                            />
-                          ),
-                        },
-                        {
-                          label: "Closed",
-                          key: "Closed",
-                          children: (
-                            <ActiveEngagementList
+                 <ActiveEngagementList
                               data={engagementList}
                               columns={engClosedColumnsMemo}
                             />
+                          </>
+                          
                           ),
                         },
                       ]}
