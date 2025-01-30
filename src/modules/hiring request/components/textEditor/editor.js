@@ -64,7 +64,7 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote }) => {
 		<>
 			{contextHolder}
 			{isShowDropDownList ? (
-				<div className={EditorStyle.dropUp}>
+				<div className={saveNote ? EditorStyle.dropDown :  EditorStyle.dropUp}>
 					{tagUserSearchMemo?.map((item) => (
 						<Fragment key={item?.Value}>
 							<div
