@@ -2048,3 +2048,9 @@ img{
   height: 100%;
 } */
 /* Sidebar related code over here */
+
+/* Border related antd css start here */
+.tabbingBottomClsAdding .ant-tabs-ink-bar {
+  display: none;
+}
+/* Border related antd css over here */
