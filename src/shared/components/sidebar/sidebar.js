@@ -302,7 +302,7 @@ const isAccess = (ID, title) =>{
 	 title === 'Engagement' ||  title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
 	 title === 'Engagement Report' || title === 'Reports' ||
 	 title === 'Demand Funnel' || 
-	 title === 'SLA Report' || 
+	 title === 'SLA Report' || title === 'Notes' ||
 	 title === 'Client' || title === 'JD Efficiency Report' || title === 'Incentive Report' ||
 	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent' || title === 'Talent Documents'
@@ -420,6 +420,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					icon: TalentDocIcon,
 					navigateTo: UTSRoutes.TALENT_DOCUMENTS,
 					isVisible: isAccess(usertypeID, 'Talent Documents')
+				}),
+				new SideBarModels({
+					id: 'talentNotes',
+					title: 'Notes',
+					isActive: false,
+					icon: TalentDocIcon,
+					navigateTo: UTSRoutes.TALENT_NOTES,
+					isVisible: isAccess(usertypeID, 'Notes')
 				}),
 				new SideBarModels({
 					id: 'ReplacementReport',

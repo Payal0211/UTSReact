@@ -7,6 +7,7 @@ import ChatGPTResponse from 'modules/report/screens/chatGPTResponse/chatGPTRespo
 import ViewCompanyDetails from 'modules/client/components/companyDetails/viewCompanyDetails';
 import ViewOnBoardDetails from 'modules/onBoardList/viewOnBoardDetails';
 import TalentDocument from 'modules/report/screens/talentDocuments/talentDocument';
+import AllNOTES from 'modules/report/screens/talentNotes/talentNotes';
 
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
@@ -237,6 +238,7 @@ export default class UTSRoutes {
 	static TALENT_BACKOUT_REPORT = "/talentBackoutReport";
 	static TALENT_REPORT = "/talentReport";
 	static TALENT_DOCUMENTS = '/talentDocument'
+	static TALENT_NOTES = '/talentNotes'
 }
 
 export const navigateToComponent = {
@@ -385,7 +387,11 @@ export const navigateToComponent = {
 			<TimeZoneList />
 		</Suspense>
 	),
-	
+	[UTSRoutes.TALENT_NOTES]: (
+		<Suspense>
+			<AllNOTES />
+		</Suspense>
+	),
 	[UTSRoutes.I2S_REPORT]: (
 		<Suspense>
 			<I2sReport />
