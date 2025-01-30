@@ -1064,6 +1064,7 @@ export default function ViewOnBoardDetails() {
           activeKey={title}
           animated={true}
           tabBarGutter={50}
+          className="tabbingBottomClsAdding"
           tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
           items={[
             {
