@@ -45,6 +45,12 @@ function AMDashboard() {
    const [openTicketSearchText, setopenTicketSearchText] = useState("");
     const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
 
+  const [openUpCommingRenSearchText, setopenUpCommingRenSearchText] = useState("");
+  const [openUpCommingRenDebounceText, setUpCommingRenbounceText] = useState("");
+
+  const [engSearchText, setEngSearchText] = useState("");
+  const [engDebounceText, setEngbounceText] = useState("");
+
   useEffect(() => {
     const getUserResult = async () => {
       let userData = UserSessionManagementController.getUserSession();
@@ -182,6 +188,7 @@ function AMDashboard() {
           amName: reset ? '' : selectedAM.join(","),
           userID: userData?.UserId,
           EngType: renewalTabTitle[0] === "U" ? "A" : renewalTabTitle[0],
+          search:openUpCommingRenSearchText
         },
       };
 
@@ -205,6 +212,7 @@ function AMDashboard() {
           amName:  reset ? '' : selectedAM.join(","),
           userID: userData?.UserId,
           EngType: title[0],
+          search:engSearchText
         },
       };
 
@@ -874,7 +882,7 @@ function AMDashboard() {
 
   useEffect(() => {
     getRenewalData();
-  }, [userData, renewalTabTitle]);
+  }, [userData, renewalTabTitle,openUpCommingRenSearchText]);
 
   const handleGo = ()=>{
     getSummaryData();
@@ -894,6 +902,16 @@ function AMDashboard() {
       const timer = setTimeout(() => setopenTicketSearchText(openTicketDebounceText), 1000);
       return () => clearTimeout(timer);
     }, [openTicketDebounceText]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setopenUpCommingRenSearchText(openUpCommingRenDebounceText), 1000);
+    return () => clearTimeout(timer);
+  }, [openUpCommingRenDebounceText]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setEngSearchText(engDebounceText), 1000);
+    return () => clearTimeout(timer);
+  }, [engDebounceText]);
 
   let isAdmin = userData.LoggedInUserTypeID !== 4; //  AM
 
@@ -1190,6 +1208,46 @@ function AMDashboard() {
                   </div>
                 )}
 
+<div className={amStyles.filterContainer}>
+                  <div className={amStyles.filterSets}>
+                    <div className={amStyles.filterRight}>
+                      <div className={amStyles.searchFilterSet}>
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={amStyles.searchInput}
+                          placeholder="Search Table"
+                          value={openUpCommingRenDebounceText}
+                          onChange={(e) => {
+                            // setopenTicketSearchText(e.target.value);
+                            setUpCommingRenbounceText(e.target.value);
+                          }}
+                        />
+                        {openUpCommingRenDebounceText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                            //   setopenTicketSearchText("");
+                            setUpCommingRenbounceText("");
+                            }}
+                          />
+                        )}
+                      </div>
+                      {/* <button
+                        type="submit"
+                        className={amStyles.btnPrimary}
+                        onClick={() => handleOnboardExport(onboardList)}
+                      >
+                        Export
+                      </button> */}
+                    </div>
+                  </div>
+                </div>
+
                 <div style={{ marginTop: "20px" }}>
                 <Table
                             scroll={{ y: "480px" }}
@@ -1267,6 +1325,47 @@ function AMDashboard() {
 					Engagements
 				</div>
 			</div> */}
+
+      
+<div className={amStyles.filterContainer}>
+                  <div className={amStyles.filterSets}>
+                    <div className={amStyles.filterRight}>
+                      <div className={amStyles.searchFilterSet}>
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={amStyles.searchInput}
+                          placeholder="Search Table"
+                          value={engDebounceText}
+                          onChange={(e) => {
+                            // setopenTicketSearchText(e.target.value);
+                            setEngbounceText(e.target.value);
+                          }}
+                        />
+                        {engDebounceText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                            //   setopenTicketSearchText("");
+                            setEngbounceText("");
+                            }}
+                          />
+                        )}
+                      </div>
+                      {/* <button
+                        type="submit"
+                        className={amStyles.btnPrimary}
+                        onClick={() => handleOnboardExport(onboardList)}
+                      >
+                        Export
+                      </button> */}
+                    </div>
+                  </div>
+                </div>
 
                 <div
                   className={amStyles.mainContainer}

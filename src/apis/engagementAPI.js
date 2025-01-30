@@ -405,6 +405,38 @@ export const EngagementRequestAPI = {
 			return errorDebug(error, 'EngagementRequestAPI.onBoardDetails');
 		}
 	},
+	onBoardNotesDetails: async function (onBoardID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD +
+			OnboardsAPI.TALENT_ONBOARD_NOTES +
+			`?onBoardId=${onBoardID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.onBoardNotesDetails');
+		}
+	},
+	saveOnBoardNotesDetails: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD +
+			OnboardsAPI.SAVE_TALENT_ONBOARD_NOTES 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.saveOnBoardNotesDetails');
+		}
+	},
 	viewDocumentsDetails: async function (talentId) {
 		let httpService = new HttpServices();
 		httpService.URL =

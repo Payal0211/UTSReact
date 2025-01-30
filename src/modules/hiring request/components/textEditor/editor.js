@@ -16,7 +16,7 @@ import { message, Tooltip } from 'antd';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 
-const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
+const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote }) => {
 	const [isStyleEditor, setStyleEditor] = useState(false);
 	const [isShowDropDownList, setShowDropDownList] = useState(false);
 	const [tagUserSearch, setTagUserSearch] = useState('');
@@ -70,7 +70,7 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 							<div
 								onClick={() => {
 									let tempInnerHTML = commentRef.current.innerHTML.split('@');
-									let spanTag = `&nbsp;<span id=${item?.Value} contentEditable="false" class=${EditorStyle.personTaggedValue}>
+									let spanTag = `&nbsp;<span id=${item?.Value} contentEditable="false" class='personTaggedValue'>
 										${item?.Text} </span>&nbsp;`;
 									tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
 									commentRef.current.innerHTML = tempInnerHTML.join('');
@@ -245,6 +245,11 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 								note: commentRef.current.innerHTML,
 							};
 							if (commentRef.current.innerText.replace(/\s/g, '').length) {
+								if(saveNote){
+									saveNote(commentRef.current.innerHTML)
+									commentRef.current.innerText = ''
+									return
+								}
 								await hiringRequestDAO.sendHREditorRequestDAO(editorDetails);
 								callActivityFeedAPI(urlSplitter?.split('HR')[0]);
 								commentRef.current.innerText = '';
