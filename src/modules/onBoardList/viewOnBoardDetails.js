@@ -38,6 +38,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import RejectLeaveModal from "modules/engagement/screens/engagementAddFeedback/rejectLeave";
 import ApproveLeaveModal from "modules/engagement/screens/engagementAddFeedback/approveLeave";
 import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
+import OnboardNotes from "./onboardNotes";
 
 export default function ViewOnBoardDetails() {
   const navigate = useNavigate();
@@ -919,6 +920,10 @@ export default function ViewOnBoardDetails() {
      
     );
   };
+
+  const NotesComp = () =>{
+    return <OnboardNotes onboardID={onboardID} getOnboardFormDetails={getOnboardFormDetails?.onboardContractDetails}/>
+  }
   
   const OtherDetails = () => {
     return (
@@ -1099,6 +1104,11 @@ export default function ViewOnBoardDetails() {
                   setEngagementModal={setEngagementModal}
                   setHRAndEngagementId={setHRAndEngagementId}
               />,
+            },
+            {
+              label: "Notes",
+              key: "Notes",
+              children: <NotesComp    />,
             },
             {
               label: "Talent's Other Eng. Details",

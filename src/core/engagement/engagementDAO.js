@@ -759,6 +759,62 @@ export const engagementRequestDAO = {
             return errorDebug(error, 'engagementRequestDAO.viewOnboardDetailsDAO');
         }
     },
+	viewOnboardNotesDetailsDAO: async function (onBoardID) {
+        try {
+            const onBoardDetails = await EngagementRequestAPI.onBoardNotesDetails(onBoardID);
+            if (onBoardDetails) {
+                const statusCode = onBoardDetails['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = onBoardDetails.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR || statusCode === HTTPStatusCode.BAD_REQUEST
+                )
+                    return onBoardDetails;
+                // else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+                    return (
+                        window.location.replace(UTSRoutes.LOGINROUTE)
+                    );
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.viewOnboardNotesDetailsDAO');
+        }
+    },
+	saveOnboardNotesDetailsDAO: async function (onBoardID) {
+        try {
+            const onBoardDetails = await EngagementRequestAPI.saveOnBoardNotesDetails(onBoardID);
+            if (onBoardDetails) {
+                const statusCode = onBoardDetails['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = onBoardDetails.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR || statusCode === HTTPStatusCode.BAD_REQUEST
+                )
+                    return onBoardDetails;
+                // else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+                    return (
+                       window.location.replace(UTSRoutes.LOGINROUTE)
+                    );
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.saveOnboardNotesDetailsDAO');
+        }
+    },
 	viewDocumentsDetailsDAO: async function (talentID) {
         try {
             const onBoardDetails = await EngagementRequestAPI.viewDocumentsDetails(talentID);

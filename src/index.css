@@ -1126,6 +1126,21 @@ table {
   text-align: center;
 }
 
+.personTaggedValue{
+  border-radius:10px;
+  padding: 5px 5px;
+  font-weight: 600;    
+  background-color: var(--color-champagne); 
+  font-size: .875rem;
+  text-align: center;
+}
+
+.personTaggedValue:hover{
+  box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.4);
+  background-color: var(--color-sunlight);
+  transition: all 0.2s ease-in;
+}
+
 .ant-pagination.ant-pagination-mini .ant-pagination-item{
   min-width: auto;
   margin: 0 4px;

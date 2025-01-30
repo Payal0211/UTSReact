@@ -452,6 +452,8 @@ export class OnboardsAPI {
 	static GET_AM_USER = "GetAMUser";
 	static GET_STATE_LIST = "GetStateList";
 	static SYNC_ENGAGEMENT= 'SyncEngagementDetailToATS'
+	static TALENT_ONBOARD_NOTES = 'TalentOnBoardedNotes'
+	static SAVE_TALENT_ONBOARD_NOTES = 'SaveTalentOnBoardedNotes'
 	static SAVE_RENEWALINITIATED_DETAILS="SaveRenewalInitiatedDetail"
 }
 
