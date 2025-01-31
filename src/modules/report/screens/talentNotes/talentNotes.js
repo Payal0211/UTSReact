@@ -42,7 +42,7 @@ export default function AllNOTES() {
         payload
       );
       setIsLoading(false);
-      console.log('talentOnboardResult',talentOnboardResult)
+      
 
       if (talentOnboardResult?.statusCode === HTTPStatusCode.OK) {
         setonboardList(talentOnboardResult?.responseBody?.rows);
@@ -115,7 +115,7 @@ export default function AllNOTES() {
                 },
       },
       {
-        title: 'Talent Name',
+        title: 'Talent',
         dataIndex: "talentName",
         key: "talentName",
         align: "left",
@@ -169,11 +169,14 @@ export default function AllNOTES() {
       tableColumnsMemo.forEach((val) => {
         if (val.key !== "action") {
           if (val.title === "Talent") {
-            obj[`${val.title}`] = `${data.name} ( ${data.emailID} )`;
-          } else if (val.key === "contractStartDate") {
-            obj[`Contract Start Date / Contract End Date`] = `${
-              data.contractStartDate ? data.contractStartDate : "NA"
-            } / ${data.contractEndDate ? data.contractEndDate : "NA"}`;
+            obj[`${val.title}`] = `${data.talentName} ( ${data.talentEmail} )`;
+          } 
+          else if (val.key === "engagementID") {
+            obj[`${val.title}`] = `${
+              data.engagementID ? data.engagementID : "NA"
+            } / ${data.hrNumber ? data.hrNumber : "NA"}`;
+          } else if (val.key === "createdByDateTime") {
+            obj[`${val.title}`] = `${ moment(data[`${val.key}`]).format("DD/MM/YYYY hh:mm A")}`;
           } else {
             obj[`${val.title}`] = data[`${val.key}`];
           }
@@ -181,7 +184,7 @@ export default function AllNOTES() {
       });
       return obj;
     });
-    downloadToExcel(DataToExport, "Talent_Onboard_Report.xlsx");
+    downloadToExcel(DataToExport, "Notes_Report.xlsx");
   };
 
 
