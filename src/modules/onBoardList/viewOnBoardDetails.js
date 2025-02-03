@@ -1077,7 +1077,7 @@ export default function ViewOnBoardDetails() {
               key: "BR PR Details",
               children: <HrsDetails />,
             },
-            isOngoing === 'false' &&{
+            {
               label: "Leaves",
               key: "Leaves",
               children: <LeaveComponent />,
