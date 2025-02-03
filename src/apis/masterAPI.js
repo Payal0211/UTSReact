@@ -1014,6 +1014,20 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getOnBoardListData');
 		}
 	},
+	getRevenueListData : async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.REPORT + 'RevenueReport' ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = data
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getRevenueListData');
+		}
+	},
 	downloadResumeAPI : async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =
