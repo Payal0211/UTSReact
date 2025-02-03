@@ -8,6 +8,7 @@ import ViewCompanyDetails from 'modules/client/components/companyDetails/viewCom
 import ViewOnBoardDetails from 'modules/onBoardList/viewOnBoardDetails';
 import TalentDocument from 'modules/report/screens/talentDocuments/talentDocument';
 import AllNOTES from 'modules/report/screens/talentNotes/talentNotes';
+import RevenueReport from 'modules/report/screens/revenueReport/revenueReport';
 
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
@@ -237,6 +238,7 @@ export default class UTSRoutes {
 	static ADD_NEW_COMPANY = "/addNewCompany/:companyID";
 	static TALENT_BACKOUT_REPORT = "/talentBackoutReport";
 	static TALENT_REPORT = "/talentReport";
+	static REVENUE_REPORT = "/revenueReport";
 	static TALENT_DOCUMENTS = '/talentDocument'
 	static TALENT_NOTES = '/talentNotes'
 }
@@ -410,6 +412,11 @@ export const navigateToComponent = {
 	[UTSRoutes.REPLACEMENT_REPORT]:(
 		<Suspense>
 			<ReplacementReport />
+		</Suspense>
+	),
+	[UTSRoutes.REVENUE_REPORT]:(
+		<Suspense>
+			<RevenueReport />
 		</Suspense>
 	),
 	[UTSRoutes.TALENT_BACKOUT_REPORT]:(

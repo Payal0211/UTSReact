@@ -301,7 +301,7 @@ const isAccess = (ID, title) =>{
 	  title === 'Users' || 
 	 title === 'Engagement' ||  title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
 	 title === 'Engagement Report' || title === 'Reports' ||
-	 title === 'Demand Funnel' || 
+	 title === 'Demand Funnel' || title === 'Revenue' ||
 	 title === 'SLA Report' || title === 'Notes' ||
 	 title === 'Client' || title === 'JD Efficiency Report' || title === 'Incentive Report' ||
 	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
@@ -455,6 +455,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			isChildren: true,
 			branch: [		
 				new SideBarModels({
+					id: 'Revenue_Report',
+					title: 'Revenue',
+					isActive: false,
+					icon: SLAReport,
+					navigateTo: UTSRoutes.REVENUE_REPORT,
+					isVisible: isAccess(usertypeID, 'Revenue')
+				}),
+				new SideBarModels({
 					id: 'ClientReport',
 					title: 'Client',
 					isActive: false,
@@ -494,6 +502,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					navigateTo: UTSRoutes.SLA_REPORT,
 					isVisible: isAccess(usertypeID, 'SLA Report')
 				}),
+				
 				// new SideBarModels({
 				// 	id: 'incentive_report',
 				// 	title: 'Incentive Report',
