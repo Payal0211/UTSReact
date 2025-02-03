@@ -895,4 +895,14 @@ export const allEngagementConfig = {
 			// },
 		];
 	},
+	revenueListFilterTypeConfig: (filterList) => {
+		return [
+			{
+				label: 'AM',
+				name: 'amName',
+				child: filterList?.amName?.map(item=>({...item,text: item.value,value:item.text})),
+				isSearch: true,
+			},
+		];
+	},
 };
