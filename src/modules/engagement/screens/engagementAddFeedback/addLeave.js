@@ -15,6 +15,7 @@ const AddLeaveModal = ({
   talentID,
   getcalendarLeaveDetails,
   getFeedbackFormContent,
+  getOnboardFormDetails,
   onCancel,
   register,
   setValue,
@@ -72,6 +73,7 @@ const AddLeaveModal = ({
           moment(endDate).format("yyyy-MM-DD")
             ? 1
             : (new Date(moment(endDate).format("yyyy-MM-DD")) - new Date(moment(startDate).format("yyyy-MM-DD"))) / (1000 * 60 * 60 * 24) + 1,
+        companyId:getOnboardFormDetails.onboardContractDetails.companyID
       };
       let result = await amDashboardDAO.updateLeaveRequestDAO(payload);
       setIsLoading(false);

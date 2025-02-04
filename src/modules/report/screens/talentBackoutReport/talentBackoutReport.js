@@ -12,6 +12,7 @@ import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { Table } from 'antd';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import LogoLoader from 'shared/components/loader/logoLoader';
+import { Link } from "react-router-dom";
 
 function TalentBackoutReport() {
     const [getBackoutDetails,setTalentBackoutDetails] = useState([])
@@ -113,25 +114,44 @@ const handleExport = (apiData) => {
     align: 'left',
     width:'150px'
 },{
-    title: 'HR #',				
+    title: "Engagement / HR #",		
     dataIndex: 'hR_Number',
     key: 'hR_Number',
     align: 'left',  
     width: '200px',
+    render: (text, item) => {
+      return (
+        <>
+          <Link
+            to={`/viewOnboardDetails/${item.onBoardID}/${
+              item.isOngoing === "Ongoing" ? true : false
+            }`}
+            target="_blank"
+            style={{
+              color: `var(--uplers-black)`,
+              textDecoration: "underline",
+            }}
+          >
+            {item.engagementID}
+          </Link>{" "}
+          <br />/{" "}
+          <Link
+            to={`/allhiringrequest/${item.hRID}`}
+            target="_blank"
+            style={{ color: "#006699", textDecoration: "underline" }}
+          >
+            {item.hR_Number}
+          </Link>
+        </>
+      );
+    },
 },
 {
-    title: 'Sales Person',				
-    dataIndex: 'salesUser',
-    key: 'salesUser',
-    align: 'left',
-    width: '150px',
-},
-{
-    title: 'Client',				
-    dataIndex: 'client',
-    key: 'client',
-    align: 'left',
-    width: '250px',
+  title: 'Talent',				
+  dataIndex: 'talent',
+  key: 'talent',
+  align: 'left',
+  width: '250px',
 },
 {
   title: 'Company',				
@@ -141,46 +161,32 @@ const handleExport = (apiData) => {
   width: '200px',
 },
 {
-    title: 'Job Title',				
-    dataIndex: 'jobTitle',
-    key: 'jobTitle',
+    title: 'Client',				
+    dataIndex: 'client',
+    key: 'client',
     align: 'left',
-    width: '150px',
+    width: '250px',
 },
 {
-    title: 'Talent',				
-    dataIndex: 'talent',
-    key: 'talent',
-    align: 'left',
-    width: '150px',
-},
-{
-  title: 'Backout Reason',				
-  dataIndex: 'rejectedReason',
-  key: 'rejectedReason',
+  title: 'Talent Status',				
+  dataIndex: 'talentStatus',
+  key: 'talentStatus',
   align: 'left',
-  width: '150px',
+  width: '200px',
 },
 {
-    title: 'PR',				
-    dataIndex: 'pr',
-    key: 'pr',
-    align: 'left',
-    width: '100px',
-},
-{
-    title: 'BR/DP Amount',				
-    dataIndex: 'br',
-    key: 'br',
-    align: 'left',
-    width: '125px',
-},
-{
-  title: 'NR/DP',				
-  dataIndex: 'uplersNRDP',
-  key: 'uplersNRDP',
+  title: 'Last Working Date',				
+  dataIndex: 'lastWorkingDate',
+  key: 'lastWorkingDate',
   align: 'left',
-  width: '100px',
+  width: '200px',
+},
+{
+  title: 'Sales Person',				
+  dataIndex: 'salesUser',
+  key: 'salesUser',
+  align: 'left',
+  width: '200px',
 },
 {
   title: 'HR Status',				
