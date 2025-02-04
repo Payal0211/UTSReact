@@ -45,6 +45,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import OnboardFilerList from "modules/onBoardList/OnboardFilterList";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 
 const onBoardListConfig = (
   getEngagementModal,
@@ -733,6 +734,19 @@ function OnBoardList() {
     tableFilteredState,
   ]);
 
+  const [userData, setUserData] = useState({});
+  
+
+  useEffect(() => {
+    const getUserResult = async () => {
+      let userData = UserSessionManagementController.getUserSession();
+      if (userData) setUserData(userData);
+    };
+    getUserResult();
+  }, []);
+
+  let isAdmin = userData.LoggedInUserTypeID !== 4; //  AM
+
   return (
     <div className={onboardList.hiringRequestContainer}>
       {/* <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}> */}
@@ -743,12 +757,12 @@ function OnBoardList() {
       <div className={onboardList.filterContainer}>
         <div className={onboardList.filterSets}>
           <div className={onboardList.filterSetsInner}>
-            <div className={onboardList.addFilter} onClick={toggleHRFilter}>
+            {isAdmin && <div className={onboardList.addFilter} onClick={toggleHRFilter}>
               <FunnelSVG style={{ width: "16px", height: "16px" }} />
 
               <div className={onboardList.filterLabel}>Add Filters</div>
               <div className={onboardList.filterCount}>{filteredTagLength}</div>
-            </div>
+            </div>}
 
             <div
               className={onboardList.searchFilterSet}
