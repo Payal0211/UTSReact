@@ -815,9 +815,9 @@ export const engagementRequestDAO = {
             return errorDebug(error, 'engagementRequestDAO.saveOnboardNotesDetailsDAO');
         }
     },
-	viewDocumentsDetailsDAO: async function (talentID) {
+	viewDocumentsDetailsDAO: async function (talentID,companyId) {
         try {
-            const onBoardDetails = await EngagementRequestAPI.viewDocumentsDetails(talentID);
+            const onBoardDetails = await EngagementRequestAPI.viewDocumentsDetails(talentID,companyId);
             if (onBoardDetails) {
                 const statusCode = onBoardDetails['statusCode'];
                 if (statusCode === HTTPStatusCode.OK) {
