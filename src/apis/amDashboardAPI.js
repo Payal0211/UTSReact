@@ -114,7 +114,7 @@ export const amDashboardAPI = {
 		httpService.URL =
             NetworkInfo.ZOHO_NETWORK +
 			SubDomain.LEAVE_REQUEST +
-			LeaveRequestAPI.GET_TALENT_LEAVES + `?talentID=${payload.talentID}${payload.month ? `&month=${payload.month}`:''}${payload.year ? `&year=${payload.year}`:''}${payload.onboardID ? `&onboardID=${payload.onboardID}`:''}`
+			LeaveRequestAPI.GET_TALENT_LEAVES + `?talentID=${payload.talentID}${payload.companyId ? `&companyId=${payload.companyId}`:''}${payload.month ? `&month=${payload.month}`:''}${payload.year ? `&year=${payload.year}`:''}${payload.onboardID ? `&onboardID=${payload.onboardID}`:''}`
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = NetworkInfo.ZOHO_AUTH;
 		try {
@@ -129,7 +129,7 @@ export const amDashboardAPI = {
 		httpService.URL =
             NetworkInfo.ZOHO_NETWORK +
 			SubDomain.LEAVE_REQUEST +
-			LeaveRequestAPI.GET_CALENDER_LEAVES + `?talentID=${payload.talentId}&month=${payload.month}&year=${payload.year}`
+			LeaveRequestAPI.GET_CALENDER_LEAVES + `?talentID=${payload.talentId}&month=${payload.month}&year=${payload.year}${payload.companyId ? `&companyId=${payload.companyId}`:''}`
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = NetworkInfo.ZOHO_AUTH;
 		try {
