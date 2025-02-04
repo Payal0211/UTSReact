@@ -44,7 +44,7 @@ export default function TalentReport() {
     async (psize, pInd) => {
       setIsLoading(true);
       let payload = {
-        pageIndex: onboardPageIndex,
+        pageIndex: onboardSearchText ? 1 : onboardPageIndex,
         pageSize: onboardPageSize,
         searchText: onboardSearchText,
       };
@@ -70,7 +70,7 @@ export default function TalentReport() {
     async (psize, pInd) => {
       setIsLoading(true);
       let payload = {
-        pageIndex: rejectedPageIndex,
+        pageIndex: rejectedSearchText? 1 : rejectedPageIndex,
         pageSize: rejectedPageSize,
         searchText: rejectedSearchText,
       };
