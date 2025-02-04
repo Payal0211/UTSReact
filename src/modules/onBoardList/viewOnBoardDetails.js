@@ -689,12 +689,13 @@ export default function ViewOnBoardDetails() {
    }
   }
 
-  const getLeaveDetails = async (talentID,m,y) =>{
+  const getLeaveDetails = async (talentID,companyID,m,y) =>{
     setLeaveLoading(true); 
     let payload = {
       month: m !== undefined ? m +1 : currentMonth + 1,
       year: y !== undefined ? y : currentYear,
       talentID:talentID,
+      companyId:companyID,
       onboardID: onboardID
     }
    const  result = await amDashboardDAO.getTalentLeaveRequestDAO(payload)
@@ -740,8 +741,8 @@ export default function ViewOnBoardDetails() {
         approveLeaveModal: false,
       })
       setApproveLeaveData({})
-      getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
-      getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+      getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID)
+      getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID)
     }
   }
 
@@ -757,17 +758,18 @@ export default function ViewOnBoardDetails() {
     const  result = await amDashboardDAO.approveRejectLeaveDAO(payload)
     setLeaveLoading(false)
     if(result?.statusCode === HTTPStatusCode.OK){
-      getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,currentMonth,currentYear)
-      getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,currentMonth,currentYear)
+      getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID,currentMonth,currentYear)
+      getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID,currentMonth,currentYear)
     }
   }
 
 
-  const getCalenderLeaveDetails = async (talentID,m,y) =>{
+  const getCalenderLeaveDetails = async (talentID,companyID,m,y) =>{
     setLeaveLoading(true); 
     let payload = {
       month: m !== undefined ? m +1 : currentMonth + 1,
       year: y !== undefined ? y : currentYear,
+      companyId: companyID,
       talentId:talentID
     }
    const  result = await amDashboardDAO.getCalenderLeaveRequestDAO(payload)
@@ -828,8 +830,8 @@ export default function ViewOnBoardDetails() {
       getFeedbackList({...feedBackData,onBoardId: getOnboardID})
       getOtherDetailsTableData({onboardID: getOnboardID,talentID: response?.responseBody?.details?.onboardContractDetails?.talentID})
       getDocumentsDetails(response?.responseBody?.details?.onboardContractDetails?.talentID,response?.responseBody?.details?.onboardContractDetails?.companyID)
-      getLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
-      getCalenderLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
+      getLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID,response?.responseBody?.details?.onboardContractDetails?.companyID)
+      getCalenderLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID,response?.responseBody?.details?.onboardContractDetails?.companyID)
       setLoading(false);
     } else {
       setOnboardFormDetails({});
@@ -982,8 +984,8 @@ export default function ViewOnBoardDetails() {
         </select> */}
 
         <button className={AddNewClientStyle.engagementModalHeaderAddBtn}  style={{background:'var(--color-sunlight)',color:'#000'}} onClick={()=>{
-          getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID);
-          getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+          getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID);
+          getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID)
 
           }}>Go</button>
 
@@ -998,8 +1000,8 @@ export default function ViewOnBoardDetails() {
           setCurrentYear(new Date().getFullYear())
           setcalenderCurrentMonth(new Date().getMonth())
           setcalenderCurrentYear(new Date().getFullYear())
-          getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID ,new Date().getMonth(),new Date().getFullYear());
-          getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,new Date().getMonth(),new Date().getFullYear())
+          getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID ,new Date().getMonth(),new Date().getFullYear());
+          getCalenderLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID,new Date().getMonth(),new Date().getFullYear())
         }}>Reset</p>
       </div>
       
@@ -1175,7 +1177,7 @@ export default function ViewOnBoardDetails() {
             <RejectLeaveModal
             rejectLeaveData={rejectLeaveData}
             docTypeList={docTypeList.length ? docTypeList.map(item=>({label:item.text,value:item.value})) : []}
-            getcalendarLeaveDetails={(talentID)=>{getCalenderLeaveDetails(talentID);getLeaveDetails(talentID)}}
+            getcalendarLeaveDetails={(talentID)=>{getCalenderLeaveDetails(talentID,getOnboardFormDetails.onboardContractDetails.companyID);getLeaveDetails(talentID,getOnboardFormDetails.onboardContractDetails.companyID)}}
             getFeedbackFormContent={getFeedbackFormContent}
             getHRAndEngagementId={getHRAndEngagementId}
             talentID={getOnboardFormDetails.onboardContractDetails.talentID}
@@ -1226,7 +1228,8 @@ export default function ViewOnBoardDetails() {
               <AddLeaveModal
                 editLeaveData={editLeaveData}
                 docTypeList={docTypeList.length ? docTypeList.map(item=>({label:item.text,value:item.value})) : []}
-                getcalendarLeaveDetails={(talentID)=>{getCalenderLeaveDetails(talentID);getLeaveDetails(talentID)}}
+                getcalendarLeaveDetails={(talentID)=>{getCalenderLeaveDetails(talentID,getOnboardFormDetails.onboardContractDetails.companyID);getLeaveDetails(talentID,getOnboardFormDetails.onboardContractDetails.companyID)}}
+                getOnboardFormDetails={getOnboardFormDetails}
                 getFeedbackFormContent={getFeedbackFormContent}
                 getHRAndEngagementId={getHRAndEngagementId}
                 talentID={getOnboardFormDetails?.onboardContractDetails?.talentID}
