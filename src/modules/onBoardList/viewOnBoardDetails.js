@@ -670,9 +670,9 @@ export default function ViewOnBoardDetails() {
     }
   };
 
-  const getDocumentsDetails = async (talentID) =>{
+  const getDocumentsDetails = async (talentID,companyID) =>{
     setLoading(true);
-   const  result = await engagementRequestDAO.viewDocumentsDetailsDAO(talentID)
+   const  result = await engagementRequestDAO.viewDocumentsDetailsDAO(talentID,companyID)
    setLoading(false);
   
    const docTypeRes = await engagementRequestDAO.getDocumentTypeDAO()
@@ -794,7 +794,7 @@ export default function ViewOnBoardDetails() {
     setLoading(false);
     if(result.statusCode === 200){
       message.success('Document Verify')
-      getDocumentsDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+      getDocumentsDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID)
     }
   }
 
@@ -804,7 +804,7 @@ export default function ViewOnBoardDetails() {
     setLoading(false);
     if(result.statusCode === 200){
       message.success('Document Removed')
-      getDocumentsDetails(getOnboardFormDetails.onboardContractDetails.talentID)
+      getDocumentsDetails(getOnboardFormDetails.onboardContractDetails.talentID, getOnboardFormDetails.onboardContractDetails.companyID)
     }
   }
 
@@ -827,7 +827,7 @@ export default function ViewOnBoardDetails() {
       setFeedBackData(prev => ({...prev,onBoardId: getOnboardID}))
       getFeedbackList({...feedBackData,onBoardId: getOnboardID})
       getOtherDetailsTableData({onboardID: getOnboardID,talentID: response?.responseBody?.details?.onboardContractDetails?.talentID})
-      getDocumentsDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
+      getDocumentsDetails(response?.responseBody?.details?.onboardContractDetails?.talentID,response?.responseBody?.details?.onboardContractDetails?.companyID)
       getLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
       getCalenderLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID)
       setLoading(false);
@@ -1276,6 +1276,7 @@ export default function ViewOnBoardDetails() {
                 docTypeList={docTypeList.length ? docTypeList.map(item=>({label:item.text,value:item.value})) : []}
                 getDocumentsDetails={getDocumentsDetails}
                 getFeedbackFormContent={getFeedbackFormContent}
+                getOnboardFormDetails={getOnboardFormDetails}
                 getHRAndEngagementId={getHRAndEngagementId}
                 onCancel={() =>{
                   setEngagementModal({

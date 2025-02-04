@@ -18,7 +18,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 
 
 
-const AddTalentDocuments = ({docTypeList,getDocumentsDetails, getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control,  getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit,setClientFeedbackList
+const AddTalentDocuments = ({docTypeList,getDocumentsDetails, getFeedbackFormContent,getOnboardFormDetails, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control,  getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit,setClientFeedbackList
 }) => {
     const watchFeedbackDate = watch('feedBackDate')
    
@@ -43,6 +43,7 @@ const AddTalentDocuments = ({docTypeList,getDocumentsDetails, getFeedbackFormCon
         let formData = new FormData()
         formData.append('DocumentTypeID',data.documentType)
         formData.append('TalentID',getFeedbackFormContent.talentID)
+        formData.append('companyId',getOnboardFormDetails?.onboardContractDetails?.companyID)
         formData.append('DocumentName',data.filedata.name)
         formData.append('Files',data.filedata)
         let result = await engagementRequestDAO.uploadDocumentsDetailsDAO(formData)
@@ -51,7 +52,7 @@ const AddTalentDocuments = ({docTypeList,getDocumentsDetails, getFeedbackFormCon
             message.success(`Files ${result.responseBody.details[0].fileName} uploaded successfully.`)
             if(ind === DocumentList.length - 1){
                 
-                getDocumentsDetails(getFeedbackFormContent.talentID)
+                getDocumentsDetails(getFeedbackFormContent.talentID,getOnboardFormDetails?.onboardContractDetails?.companyID)
                 setDocumentList([{id:1,documentType:'',filedata:'',showUploadModal:false,uploadingFile:false}])
                 onCancel()
             }else{

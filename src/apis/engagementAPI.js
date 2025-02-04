@@ -437,13 +437,13 @@ export const EngagementRequestAPI = {
 			return errorDebug(error, 'EngagementRequestAPI.saveOnBoardNotesDetails');
 		}
 	},
-	viewDocumentsDetails: async function (talentId) {
+	viewDocumentsDetails: async function (talentId,companyId) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TALENT_DOCUMENT +
 		    TalentDocumentAPI.GET_DOCUMENT +
-			`?TalentID=${talentId}`;
+			`?TalentID=${talentId}&companyId=${companyId}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
