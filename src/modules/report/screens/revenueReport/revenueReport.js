@@ -353,7 +353,7 @@ function OnBoardList() {
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [totalRecords, setTotalRecords] = useState(0);
   const [searchText, setSearchText] = useState("");
-  console.log("revenueListData", revenueListData);
+
   const [filtersList, setFiltersList] = useState([]);
   const [filteredTagLength, setFilteredTagLength] = useState(0);
   const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -600,6 +600,18 @@ function OnBoardList() {
               obj[`${val.title}`] = `${data.typeOfHR} ${
                 data.h_Availability && `- ${data.h_Availability}`
               }`;
+            }else if(val.title === "Eng. ID/HR#"){
+              obj[`${val.title}`] = `${data[val.key]}/ ${data.hR_Number} `
+            }else if(val.key === "nrPercentage"){
+              obj[` NR / DP (%)`] = `${data.nrPercentage !== 0 ? data.nrPercentage : ""}  ${
+          +data.dP_Percentage !== 0 ? data.dP_Percentage : ""
+        }`
+            }else if(val.key === "payout_PerDayTalentCost_INR"){
+              obj[`Per Day PR  (INR)`] = `${data[val.key] ?? ''} `
+            }else if(val.key === "payout_Actual_PRStr"){
+              obj[`Final PR  (INR)`] = `${data[val.key] ?? ''}`
+            }else if(val.key === "contractEndDate"){
+              obj[`End Date / Last Working Date`] = `${data[val.key]} / ${data?.lastWorkingDate ? data?.lastWorkingDate : "NA"}`
             } else if (val.title === "Uplers Fees") {
               obj[`${val.title}`] =
                 (+data.final_HR_Cost - +data.talent_Cost).toFixed(2) +

@@ -252,6 +252,9 @@ export default function TalentDocument() {
         if (val.title !== "Action") {
           obj[`${val.title}`] = data[`${val.key}`];
         }
+        if(val.title === "Engagement / HR #"){
+          obj[`${val.title}`] = `${data[val.key]}/ ${data.hR_Number} `
+        }
         if (val.title === "Status") {
           obj[`${val.title}`] = data[`${val.key}`];
         }

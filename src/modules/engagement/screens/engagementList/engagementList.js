@@ -542,17 +542,20 @@ const EngagementList = () => {
 	const handleExport = (apiData) => {
 		let DataToExport =  apiData.map(data => {
 			let obj = {}
-			tableColumnsMemo.forEach(val => {if(val.key !== "action"){
-				if(val.key === 'engagementType'){
+			tableColumnsMemo.forEach(val => {
+				if(val.key === "action" || val.key === "clientFeedback" || val.key === 'ClientLegal_StatusID'){
+					// columns to not add into excel
+				 }else if(val.key === 'engagementType'){
 					obj[`${val.title}`] = `${data.typeOfHR} ${data.h_Availability && `- ${data.h_Availability}`}`
 				}else{
 					obj[`${val.title}`] = data[`${val.key}`]
-				} }
+				}
+				 
 			} )
-		return obj;
+			return obj;
 			}
 		 )
-		 downloadToExcel(DataToExport)
+		 downloadToExcel(DataToExport,'Engagements')
 
 	}
 
