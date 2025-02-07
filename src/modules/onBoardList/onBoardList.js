@@ -268,151 +268,6 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         }
       },
 
-      // {
-      //   title: "HR #",
-      //   dataIndex: "hR_Number",
-      //   key: "hR_Number",
-      //   align: "left",
-      // },
-      // {
-      //   title: "NBD",
-      //   dataIndex: "salesPerson",
-      //   key: "salesPerson",
-      //   align: "left",
-      // },      
-     
-      // {
-      //   title:"TSC Name",
-      //   dataIndex:"tscName",
-      //   key:'tscName',
-      //   align:"left",
-      // },
-      // {
-      //   title: "Onboarding Client",
-      //   dataIndex: "onboardingClient",
-      //   key: "onboardingClient",
-      //   align: "left",
-      //   width: '200px',
-      // },
-      // {
-      //   title: "Onboarding Talent",
-      //   dataIndex: "onboardingTalent",
-      //   key: "onboardingTalent",
-      //   align: "left",
-      //   width: '200px',
-      // },
-      // {
-      //   title: "Legal Client",
-      //   dataIndex: "legalClient",
-      //   key: "legalClient",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Legal Talent",
-      //   dataIndex: "legalTalent",
-      //   key: "legalTalent",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Kick Off",
-      //   dataIndex: "kickOff",
-      //   key: "kickOff",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Type Of HR",
-      //   dataIndex: "typeOfHR",
-      //   key: "typeOfHR",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Final HR Cost",
-      //   dataIndex: "final_HR_Cost",
-      //   key: "final_HR_Cost",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Talent Cost",
-      //   dataIndex: "talent_Cost",
-      //   key: "talent_Cost",
-      //   align: "left",
-      // },
-      // {
-      //   title: "NR (%)",
-      //   dataIndex: "nrPercentage",
-      //   key: "nrPercentage",
-      //   align: "left",
-      // },
-      // {
-      //   title: "DP Amount",
-      //   dataIndex: "dpAmount",
-      //   key: "dpAmount",
-      //   align: "left",
-      // },
-      // {
-      //   title: "DP (%)",
-      //   dataIndex: "dP_Percentage",
-      //   key: "dP_Percentage",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Old Talent",
-      //   dataIndex: "oldTalent",
-      //   key: "oldTalent",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Replacement Eng",
-      //   dataIndex: "replacementEng",
-      //   key: "replacementEng",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Replacement Date",
-      //   dataIndex: "replacementDate",
-      //   key: "replacementDate",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Notice Period",
-      //   dataIndex: "noticePeriod",
-      //   key: "noticePeriod",
-      //   align: "left",
-      // },
-      // {
-      //   title: "LastWorking Date",
-      //   dataIndex: "lastWorkingDate",
-      //   key: "lastWorkingDate",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Is Lost",
-      //   dataIndex: "isLost",
-      //   key: "isLost",
-      //   align: "left",
-      // },
-      // {
-      //   title: "Contract Duration",
-      //   dataIndex: "contractDuration",
-      //   key: "contractDuration",
-      //   align: "left",
-      //   width: '150px',
-      // },
-      // {
-      //   title: "Last Feedback Date",
-      //   dataIndex: "lastFeedbackDate",
-      //   key: "lastFeedbackDate",
-      //   align: "left",
-      //   width: '200px',
-      // },
-      // {
-      //   title: "Feedback Type",
-      //   dataIndex: "feedbackType",
-      //   key: "feedbackType",
-      //   align: "left",
-      //   width: '150px',
-      // },
-
       {
 				title: (<>Client Feedback <br />Last Feedback Date</>),
 				dataIndex: 'clientFeedback',
@@ -724,21 +579,25 @@ console.log(date)
   const handleExport = (apiData) => {
 		let DataToExport =  apiData.map(data => {
 			let obj = {}
-			tableColumnsMemo.forEach((val,ind) => {if(val.key !== "action"){
-        if(ind +1 !== tableColumnsMemo.length){
-          	if(val.key === 'engagementType'){
-					obj[`${val.title}`] = `${data.typeOfHR} ${data.h_Availability && `- ${data.h_Availability}`}`
-				}else if(val.title === 'Uplers Fees'){
-          obj[`${val.title}`] = (+data.final_HR_Cost - +data.talent_Cost).toFixed(2) + ` ${data.currencySign}`
-        }else if(val.title === 'Actual PR' || val.title === 'Actual BR'){
-          obj[`${val.title}`] = `${data[`${val.key}`]} ${data.currencySign}`
-        }
-        else{
-					obj[`${val.title}`] = data[`${val.key}`]
-				}
-        }
+			tableColumnsMemo.forEach((val,ind) => {
+        if(val.key !== "clientFeedback"){
+          if(val.title === "Uplers Fees"){
+            obj[`${val.title}`]  = `${data.currencySign} ` + (+data.final_HR_Cost - +data.talent_Cost).toFixed(2) 
+          }else if(val.key === 'nrPercentage'){
+            obj['NR / DP (%)'] = `${data.nrPercentage !== 0 ? data.nrPercentage : ''}  ${+data.dP_Percentage !== 0 ? data.dP_Percentage : ''}`
+          }else if(val.key === 'payout_Actual_PRStr'){
+            obj['Final PR (INR)'] = `${data.payout_Actual_PRStr ? `₹ ${data.payout_Actual_PRStr}` : ''}`
+          }else if(val.key === 'payout_PerDayTalentCost_INR'){
+            obj['Per Day PR (INR)'] = `${data.payout_PerDayTalentCost_INR ? `₹ ${data.payout_PerDayTalentCost_INR}` : ''}`
+          }else if(val.key === 'contractEndDate'){
+            obj['End Date / Last Working Date'] = `${data.contractEndDate} / ${data?.lastWorkingDate ? data?.lastWorkingDate : 'NA'}`
+          }else{
+            obj[`${val.title}`] = data[`${val.key}`]
+          }
+          
 			 }
-			} )
+			})
+     
 		return obj;
 			}
 		 )

@@ -96,6 +96,8 @@ const handleExport = (apiData) => {
         tableColumnsMemo.forEach(val => {if(val.key !== "action"){
             if(val.key === 'engagementType'){
                 obj[`${val.title}`] = `${data.typeOfHR} ${data.h_Availability && `- ${data.h_Availability}`}`
+            }if(val.title === "Engagement / HR #"){
+              obj[`${val.title}`] = `${data.engagementID}/ ${data.hR_Number} `
             }else{
                 obj[`${val.title}`] = data[`${val.key}`]
             } }

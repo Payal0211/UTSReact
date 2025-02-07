@@ -466,6 +466,12 @@ export default function TalentReport() {
         if (val.key !== "action") {
           if (val.title === "Talent") {
             obj[`${val.title}`] = `${data.name} ( ${data.emailID} )`;
+          } else if(val.title === "Engagement / HR #"){
+            obj[`${val.title}`] = `${data[val.key]}/ ${data.hR_Number} `
+          }else if(val.key === "lastWorkingDate"){
+            obj[`Last Working date / Contract End Date`] = ` ${data.lastWorkingDate ? data.lastWorkingDate : "NA"} / ${data.contractEndDate ? data.contractEndDate : "NA"}`
+          }else if(val.key === 'totalLeavesGiven'){
+            obj['Paid Leaves / Leave Balance'] = `${data.totalLeavesGiven} / ${data.totalLeaveBalance}`
           } else if (val.key === "contractStartDate") {
             obj[`Contract Start Date / Contract End Date`] = `${
               data.contractStartDate ? data.contractStartDate : "NA"
