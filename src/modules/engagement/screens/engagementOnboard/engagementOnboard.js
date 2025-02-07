@@ -17,6 +17,7 @@ import { engagementRequestDAO } from "core/engagement/engagementDAO";
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import LogoLoader from "shared/components/loader/logoLoader";
 import { budgetStringToCommaSeprated } from "shared/utils/basic_utils";
+import { Link } from "react-router-dom";
 
 const EngagementOnboard = ({
   getOnboardFormDetails : gOBFD,
@@ -128,7 +129,7 @@ const EngagementOnboard = ({
               <span>Company Name : </span>
 
               {getOnboardFormDetails?.companyName
-                ? getOnboardFormDetails?.companyName
+                ? <Link to={`/viewCompanyDetails/${getOnboardFormDetails?.companyID}`} target="_blank">{getOnboardFormDetails?.companyName}</Link> 
                 : "NA"}
             </li>
 
