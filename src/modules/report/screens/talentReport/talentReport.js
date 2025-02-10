@@ -218,13 +218,6 @@ export default function TalentReport() {
         width: "200px",
       },
       {
-        title: "Remark",
-        dataIndex: "remarks",
-        key: "remarks",
-        align: "left",
-        width: "200px",
-      },
-      {
         title: 'Start Date' ,
         dataIndex: "contractStartDate",
         key: "contractStartDate",
@@ -631,7 +624,7 @@ export default function TalentReport() {
                   </div>
                 </div>
                 {isLoading ? <TableSkeleton active /> :  <Table
-                  scroll={{x:'2600px', y: "480px", }}
+                  scroll={{x:'2400px', y: "480px", }}
                   id="OnboardedListingTable"
                   columns={tableColumnsMemo}
                   bordered={false}
