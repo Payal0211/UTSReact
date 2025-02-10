@@ -109,7 +109,7 @@ const CompanyProfileCard = ({
           <div className={CompanyProfileCardStyle.partWise}>
             <div style={{ marginBottom: "10px" }}>
               <div className={CompanyProfileCardStyle.clientName}>
-                <span>Client Name:</span>&nbsp;&nbsp;
+                <span>Client:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.ClientName ? clientDetail?.ClientName : "NA"}
                 </span>
@@ -121,9 +121,9 @@ const CompanyProfileCard = ({
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.companyName}>
-                <span>Company Name:</span>&nbsp;&nbsp;
+                <span>Company:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
-                  {clientDetail?.CompanyName ? clientDetail?.CompanyName : "NA"}
+                  {clientDetail?.CompanyName ? <Link to={`/viewCompanyDetails/${clientDetail?.CompanyId}`}  style={{ textDecoration: "underline" }} target="_blank">{clientDetail?.CompanyName}</Link>  : "NA"}
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.companyURL}>
