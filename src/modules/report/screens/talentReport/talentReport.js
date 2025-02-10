@@ -173,24 +173,40 @@ export default function TalentReport() {
         width: "120px",
       },
       {
+        title: "Talent ID",
+        dataIndex: "talentUplersID",
+        key: "talentUplersID",
+        align: "left",
+        width: "80px",
+        
+      },
+      {
         title: "Talent",
         dataIndex: "name",
         key: "name",
         align: "left",
         width: "200px",
-        render: (text, result) => {
-          return (
-            <>
-              {text} <br />( {result.emailID} )
-            </>
-          );
-        },
+        
       },
-
       {
-        title: "Client",
+        title: "Talent Email",
+        dataIndex: "emailID",
+        key: "emailID",
+        align: "left",
+        width: "200px",
+       
+      },
+      {
+        title: "Company",
         dataIndex: "client",
         key: "client",
+        align: "left",
+        width: "200px",
+      },
+      {
+        title: "Client",
+        dataIndex: "clientEmail",
+        key: "clientEmail",
         align: "left",
         width: "200px",
       },
@@ -198,6 +214,13 @@ export default function TalentReport() {
         title: "Engagement Type",
         dataIndex: "hrEngagementType",
         key: "hrEngagementType",
+        align: "left",
+        width: "200px",
+      },
+      {
+        title: "Remark",
+        dataIndex: "remarks",
+        key: "remarks",
         align: "left",
         width: "200px",
       },
@@ -287,6 +310,13 @@ export default function TalentReport() {
             </div>
           );
         },
+      },
+      {
+        title: "Remark",
+        dataIndex: "remarks",
+        key: "remarks",
+        align: "left",
+        width: "200px",
       },
       //   {
       //     title: "Leave Balance",
@@ -464,9 +494,7 @@ export default function TalentReport() {
       let obj = {};
       tableColumnsMemo.forEach((val) => {
         if (val.key !== "action") {
-          if (val.title === "Talent") {
-            obj[`${val.title}`] = `${data.name} ( ${data.emailID} )`;
-          } else if(val.title === "Engagement / HR #"){
+          if(val.title === "Engagement / HR #"){
             obj[`${val.title}`] = `${data[val.key]}/ ${data.hR_Number} `
           }else if(val.key === "lastWorkingDate"){
             obj[`Last Working date / Contract End Date`] = ` ${data.lastWorkingDate ? data.lastWorkingDate : "NA"} / ${data.contractEndDate ? data.contractEndDate : "NA"}`
@@ -603,7 +631,7 @@ export default function TalentReport() {
                   </div>
                 </div>
                 {isLoading ? <TableSkeleton active /> :  <Table
-                  scroll={{x:'1800px', y: "480px", }}
+                  scroll={{x:'2600px', y: "480px", }}
                   id="OnboardedListingTable"
                   columns={tableColumnsMemo}
                   bordered={false}
