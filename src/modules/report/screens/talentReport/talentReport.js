@@ -177,7 +177,7 @@ export default function TalentReport() {
         dataIndex: "talentUplersID",
         key: "talentUplersID",
         align: "left",
-        width: "80px",
+        width: "150px",
         
       },
       {
@@ -309,7 +309,7 @@ export default function TalentReport() {
         dataIndex: "remarks",
         key: "remarks",
         align: "left",
-        width: "200px",
+        width: "300px",
       },
       //   {
       //     title: "Leave Balance",
@@ -624,7 +624,7 @@ export default function TalentReport() {
                   </div>
                 </div>
                 {isLoading ? <TableSkeleton active /> :  <Table
-                  scroll={{x:'2400px', y: "480px", }}
+                  scroll={{x:'2600px', y: "480px", }}
                   id="OnboardedListingTable"
                   columns={tableColumnsMemo}
                   bordered={false}
