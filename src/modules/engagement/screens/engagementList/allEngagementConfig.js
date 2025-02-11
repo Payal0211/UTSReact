@@ -906,8 +906,6 @@ export const allEngagementConfig = {
 		];
 	},
 	deployedListFilterTypeConfig: (filterList) =>{
-		console.log(filterList
-		)
 		return [
 			{
 				label: 'AM',
@@ -930,8 +928,6 @@ export const allEngagementConfig = {
 		];
 	},
 	rejectedListFilterTypeConfig: (filterList) =>{
-		console.log(filterList
-		)
 		return [
 			{
 				label: 'AM',
