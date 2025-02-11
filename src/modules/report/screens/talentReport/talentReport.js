@@ -90,6 +90,11 @@ export default function TalentReport() {
                     : ""
       }
 
+      if(dateTypeFilter === 1 && (payload.fromDate === "Invalid date" || payload.toDate === "Invalid date")){
+        setIsLoading(false);
+        return
+      }
+
       const talentOnboardResult = await ReportDAO.getTalentOnboardReportDRO(
         payload
       );
