@@ -1,6 +1,12 @@
-import React, { useEffect, useState, useCallback, useMemo,Suspense } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  Suspense,
+} from "react";
 import TalentBackoutStyle from "./talentReport.module.css";
-import onboardListStyle from '../revenueReport/revenue.module.css'
+import onboardListStyle from "../revenueReport/revenue.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,7 +17,16 @@ import { ReportDAO } from "core/report/reportDAO";
 import { HTTPStatusCode } from "constants/network";
 import WithLoader from "shared/components/loader/loader";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
-import { Modal, Skeleton, Table, Tabs, Tooltip, Dropdown , Menu, Radio } from "antd";
+import {
+  Modal,
+  Skeleton,
+  Table,
+  Tabs,
+  Tooltip,
+  Dropdown,
+  Menu,
+  Radio,
+} from "antd";
 import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { Link } from "react-router-dom";
@@ -57,42 +72,58 @@ export default function TalentReport() {
   const [appliedFilter, setAppliedFilters] = useState(new Map());
   const [checkedState, setCheckedState] = useState(new Map());
   const [tableFilteredState, setTableFilteredState] = useState({
-    filterFields_OnBoard: {    
+    filterFields_OnBoard: {
       amName: "",
       statusIds: "",
       tagIds: "",
     },
   });
 
+  const [rejectedfilteredTagLength, setRejectedFilteredTagLength] = useState(0);
+  const [getrejectedHTMLFilter, setrejectedHTMLFilter] = useState(false);
+  const [isrejectedAllowFilters, setrejectedIsAllowFilters] = useState(false);
+  const [daterejectedTypeFilter, setrejectedDateTypeFilter] = useState(0);
+  const [rejectedMonthDate, setrejectedMonthDate] = useState(new Date());
+  const [rejectedStartDate, setrejectedStartDate] = useState(
+    new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+  );
+  const [rejectedendDate, setrejectedEndDate] = useState(new Date(date));
+  const [rejectedappliedFilter, setrejectedAppliedFilters] = useState(
+    new Map()
+  );
+  const [rejectedcheckedState, setrejectedCheckedState] = useState(new Map());
+  const [rejectedtableFilteredState, setrejectedTableFilteredState] = useState({
+    filterFields_OnBoard: {
+      amName: "",
+    },
+  });
 
   const getOnboardData = useCallback(
     async (psize, pInd) => {
       setIsLoading(true);
-  
-      let payload = {
-        "pageIndex": onboardSearchText ? 1 : onboardPageIndex,
-        "pageSize": onboardPageSize,
-        "searchText":  onboardSearchText,
-        "amIds": tableFilteredState.filterFields_OnBoard.amName,
-        "statusIds": tableFilteredState.filterFields_OnBoard.statusIds,
-        "tagIds": tableFilteredState.filterFields_OnBoard.tagIds,
-        "month": dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
-        "year": dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
-        "fromDate": dateTypeFilter === 1
-                    ? moment(startDate).format(
-                        "MM/DD/YYYY"
-                      )
-                    : "",
-        "toDate": dateTypeFilter === 1
-                    ? moment(endDate).format(
-                        "MM/DD/YYYY"
-                      )
-                    : ""
-      }
 
-      if(dateTypeFilter === 1 && (payload.fromDate === "Invalid date" || payload.toDate === "Invalid date")){
+      let payload = {
+        pageIndex: onboardSearchText ? 1 : onboardPageIndex,
+        pageSize: onboardPageSize,
+        searchText: onboardSearchText,
+        amIds: tableFilteredState.filterFields_OnBoard.amName,
+        statusIds: tableFilteredState.filterFields_OnBoard.statusIds,
+        tagIds: tableFilteredState.filterFields_OnBoard.tagIds,
+        month: dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
+        year: dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
+        fromDate:
+          dateTypeFilter === 1 ? moment(startDate).format("MM/DD/YYYY") : "",
+        toDate:
+          dateTypeFilter === 1 ? moment(endDate).format("MM/DD/YYYY") : "",
+      };
+
+      if (
+        dateTypeFilter === 1 &&
+        (payload.fromDate === "Invalid date" ||
+          payload.toDate === "Invalid date")
+      ) {
         setIsLoading(false);
-        return
+        return;
       }
 
       const talentOnboardResult = await ReportDAO.getTalentOnboardReportDRO(
@@ -109,17 +140,53 @@ export default function TalentReport() {
         setonboardListDataCount(0);
       }
     },
-    [onboardPageIndex, onboardPageSize, onboardSearchText,monthDate,startDate,endDate,tableFilteredState]
+    [
+      onboardPageIndex,
+      onboardPageSize,
+      onboardSearchText,
+      monthDate,
+      startDate,
+      endDate,
+      tableFilteredState,
+    ]
   );
 
   const getRejectedData = useCallback(
     async (psize, pInd) => {
       setIsLoading(true);
       let payload = {
-        pageIndex: rejectedSearchText? 1 : rejectedPageIndex,
+        pageIndex: rejectedSearchText ? 1 : rejectedPageIndex,
         pageSize: rejectedPageSize,
         searchText: rejectedSearchText,
+        amIds: rejectedtableFilteredState.filterFields_OnBoard.amName,
+        statusIds: rejectedtableFilteredState.filterFields_OnBoard.statusIds,
+        tagIds: rejectedtableFilteredState.filterFields_OnBoard.tagIds,
+        month:
+          daterejectedTypeFilter === 0
+            ? +moment(rejectedMonthDate).format("M")
+            : 0,
+        year:
+          daterejectedTypeFilter === 0
+            ? +moment(rejectedMonthDate).format("YYYY")
+            : 0,
+        fromDate:
+          daterejectedTypeFilter === 1
+            ? moment(rejectedStartDate).format("MM/DD/YYYY")
+            : "",
+        toDate:
+          daterejectedTypeFilter === 1
+            ? moment(rejectedendDate).format("MM/DD/YYYY")
+            : "",
       };
+
+      if (
+        daterejectedTypeFilter === 1 &&
+        (payload.fromDate === "Invalid date" ||
+          payload.toDate === "Invalid date")
+      ) {
+        setIsLoading(false);
+        return;
+      }
 
       const talentrejectedResult = await ReportDAO.getTalentRejectReportDRO(
         payload
@@ -135,16 +202,40 @@ export default function TalentReport() {
         setrejectedListDataCount(0);
       }
     },
-    [rejectedPageIndex, rejectedPageSize, rejectedSearchText]
+    [
+      rejectedPageIndex,
+      rejectedPageSize,
+      rejectedSearchText,
+      rejectedMonthDate,
+      rejectedStartDate,
+      rejectedendDate,
+      rejectedtableFilteredState,
+    ]
   );
 
   useEffect(() => {
     getOnboardData();
-  }, [onboardPageIndex, onboardSearchText, onboardPageSize,monthDate,startDate,endDate,tableFilteredState]);
+  }, [
+    onboardPageIndex,
+    onboardSearchText,
+    onboardPageSize,
+    monthDate,
+    startDate,
+    endDate,
+    tableFilteredState,
+  ]);
 
   useEffect(() => {
     getRejectedData();
-  }, [rejectedPageIndex, rejectedSearchText, rejectedPageSize]);
+  }, [
+    rejectedPageIndex,
+    rejectedSearchText,
+    rejectedPageSize,
+    rejectedMonthDate,
+    rejectedStartDate,
+    rejectedendDate,
+    rejectedtableFilteredState,
+  ]);
 
   const getLeaveList = async (talentID) => {
     setshowLeaves(true);
@@ -162,20 +253,17 @@ export default function TalentReport() {
     }
   };
 
-  const getFilterList = async () =>{
-    let result = await amDashboardDAO.getDeployedFiltersDAO()
+  const getFilterList = async () => {
+    let result = await amDashboardDAO.getDeployedFiltersDAO();
 
-    console.log('res',result)
-
-    if(result.statusCode === HTTPStatusCode.OK){
-      setFiltersList(result.responseBody.Data)
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setFiltersList(result.responseBody.Data);
     }
+  };
 
-  }
-
-  useEffect(()=>{
-    getFilterList()
-  },[])
+  useEffect(() => {
+    getFilterList();
+  }, []);
 
   const toggleHRFilter = useCallback(() => {
     !getHTMLFilter
@@ -186,53 +274,91 @@ export default function TalentReport() {
     setHTMLFilter(!getHTMLFilter);
   }, [getHTMLFilter, isAllowFilters]);
 
-    const onMonthCalenderFilter = (date) => {
-      console.log(date);
-      setMonthDate(date);
-      // setEndDate(end);
-      // setEndDate(end);
-      console.log(moment(date).format("M"), moment(date).format("YYYY"));
-      if (date) {
-        // console.log( month, year)
-       
-      }
-    };
+  const toggleRejectedFilter = useCallback(() => {
+    !getrejectedHTMLFilter
+      ? setrejectedIsAllowFilters(!isAllowFilters)
+      : setTimeout(() => {
+          setrejectedIsAllowFilters(!isAllowFilters);
+        }, 300);
+    setrejectedHTMLFilter(!getHTMLFilter);
+  }, [getrejectedHTMLFilter, isrejectedAllowFilters]);
 
-    const onCalenderFilter = (dates) => {
-      const [start, end] = dates;
-      setStartDate(start);
-      setEndDate(end);
-    };
+  const onMonthCalenderFilter = (date) => {
+   
+    setMonthDate(date);
+  
+  };
 
-    const onRemoveFilters = () => {
-      setTimeout(() => {
-        setIsAllowFilters(false);
-      }, 300);
-      setHTMLFilter(false);
-    };
+  const onCalenderFilter = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
 
-    const clearFilters = useCallback(() => {
-      setAppliedFilters(new Map());
-      setCheckedState(new Map());
-      setFilteredTagLength(0);
-      setDateTypeFilter(0);
-      setTableFilteredState({
-        filterFields_OnBoard: {    
-          amName: "",
-          statusIds: "",
-          tagIds: "",
-        },
-      })
-      setonboardSearchText("");
-      setonboardDebounceText("");
-      setMonthDate(new Date());
-      setStartDate(
-        new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
-      );
-      setEndDate(new Date(date));
-    }, [   
-      setFilteredTagLength,
-    ]);
+  const onRemoveFilters = () => {
+    setTimeout(() => {
+      setIsAllowFilters(false);
+    }, 300);
+    setHTMLFilter(false);
+  };
+
+  const clearFilters = useCallback(() => {
+    setAppliedFilters(new Map());
+    setCheckedState(new Map());
+    setFilteredTagLength(0);
+    setDateTypeFilter(0);
+    setTableFilteredState({
+      filterFields_OnBoard: {
+        amName: "",
+        statusIds: "",
+        tagIds: "",
+      },
+    });
+    setonboardSearchText("");
+    setonboardDebounceText("");
+    setMonthDate(new Date());
+    setStartDate(
+      new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+    );
+    setEndDate(new Date(date));
+  }, [setFilteredTagLength]);
+
+  const onrejectedMonthCalenderFilter = (date) => {
+
+    setrejectedMonthDate(date);
+  };
+
+  const onrejectedCalenderFilter = (dates) => {
+    const [start, end] = dates;
+    setrejectedStartDate(start);
+    setrejectedEndDate(end);
+  };
+
+  const onrejectedRemoveFilters = () => {
+    setTimeout(() => {
+      setrejectedIsAllowFilters(false);
+    }, 300);
+    setrejectedHTMLFilter(false);
+  };
+
+  const clearrejectedFilters = useCallback(() => {
+    setrejectedAppliedFilters(new Map());
+    setrejectedCheckedState(new Map());
+    setRejectedFilteredTagLength(0);
+    setrejectedDateTypeFilter(0);
+    setrejectedTableFilteredState({
+      filterFields_OnBoard: {
+        amName: "",
+      },
+    });
+    setrejectedSearchText("");
+    setRejectedDebounceText("");
+    setrejectedMonthDate(new Date());
+    setrejectedStartDate(
+      new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+    );
+    setrejectedEndDate(new Date(date));
+  }, [setRejectedFilteredTagLength]);
 
   const tableColumnsMemo = useMemo(() => {
     return [
@@ -296,7 +422,6 @@ export default function TalentReport() {
         key: "talentUplersID",
         align: "left",
         width: "150px",
-        
       },
       {
         title: "Talent",
@@ -304,7 +429,6 @@ export default function TalentReport() {
         key: "name",
         align: "left",
         width: "200px",
-        
       },
       {
         title: "Talent Email",
@@ -312,7 +436,6 @@ export default function TalentReport() {
         key: "emailID",
         align: "left",
         width: "200px",
-       
       },
       {
         title: "Company",
@@ -336,7 +459,7 @@ export default function TalentReport() {
         width: "200px",
       },
       {
-        title: 'Start Date' ,
+        title: "Start Date",
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
@@ -591,12 +714,18 @@ export default function TalentReport() {
   }, [leaveList]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setonboardSearchText(onboardDebounceText), 1000);
+    const timer = setTimeout(
+      () => setonboardSearchText(onboardDebounceText),
+      1000
+    );
     return () => clearTimeout(timer);
   }, [onboardDebounceText]);
 
   useEffect(() => {
-    const timer = setTimeout(() => getRejectedData(), 1000);
+    const timer = setTimeout(
+      () => setrejectedSearchText(rejectedDebounceText),
+      1000
+    );
     return () => clearTimeout(timer);
   }, [rejectedDebounceText]);
 
@@ -605,12 +734,16 @@ export default function TalentReport() {
       let obj = {};
       tableColumnsMemo.forEach((val) => {
         if (val.key !== "action") {
-          if(val.title === "Engagement / HR #"){
-            obj[`${val.title}`] = `${data[val.key]}/ ${data.hR_Number} `
-          }else if(val.key === "lastWorkingDate"){
-            obj[`Last Working date / Contract End Date`] = ` ${data.lastWorkingDate ? data.lastWorkingDate : "NA"} / ${data.contractEndDate ? data.contractEndDate : "NA"}`
-          }else if(val.key === 'totalLeavesGiven'){
-            obj['Paid Leaves / Leave Balance'] = `${data.totalLeavesGiven} / ${data.totalLeaveBalance}`
+          if (val.title === "Engagement / HR #") {
+            obj[`${val.title}`] = `${data[val.key]}/ ${data.hR_Number} `;
+          } else if (val.key === "lastWorkingDate") {
+            obj[`Last Working date / Contract End Date`] = ` ${
+              data.lastWorkingDate ? data.lastWorkingDate : "NA"
+            } / ${data.contractEndDate ? data.contractEndDate : "NA"}`;
+          } else if (val.key === "totalLeavesGiven") {
+            obj[
+              "Paid Leaves / Leave Balance"
+            ] = `${data.totalLeavesGiven} / ${data.totalLeaveBalance}`;
           } else if (val.key === "contractStartDate") {
             obj[`Contract Start Date / Contract End Date`] = `${
               data.contractStartDate ? data.contractStartDate : "NA"
@@ -652,8 +785,7 @@ export default function TalentReport() {
         <div className={TalentBackoutStyle.dealLable}>Talent Report</div>
         {/* <LogoLoader visible={isLoading} /> */}
       </div>
-      
-      
+
       <Tabs
         onChange={(e) => setTalentReportTabTitle(e)}
         defaultActiveKey="Deployed"
@@ -667,192 +799,210 @@ export default function TalentReport() {
             key: "Deployed",
             children: (
               <>
+                <div className={onboardListStyle.filterContainer}>
+                  <div className={onboardListStyle.filterSets}>
+                    <div className={onboardListStyle.filterSetsInner}>
+                      <div
+                        className={onboardListStyle.addFilter}
+                        onClick={toggleHRFilter}
+                      >
+                        <FunnelSVG style={{ width: "16px", height: "16px" }} />
 
-<div className={onboardListStyle.filterContainer}>
-        <div className={onboardListStyle.filterSets}>
-          <div className={onboardListStyle.filterSetsInner}>
-           <div className={onboardListStyle.addFilter} onClick={toggleHRFilter}>
-              <FunnelSVG style={{ width: "16px", height: "16px" }} />
+                        <div className={onboardListStyle.filterLabel}>
+                          Add Filters
+                        </div>
+                        <div className={onboardListStyle.filterCount}>
+                          {filteredTagLength}
+                        </div>
+                      </div>
 
-              <div className={onboardListStyle.filterLabel}>Add Filters</div>
-              <div className={onboardListStyle.filterCount}>{filteredTagLength}</div>
-            </div>
+                      <div
+                        className={TalentBackoutStyle.searchFilterSet}
+                        style={{ marginLeft: "15px" }}
+                      >
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={onboardListStyle.searchInput}
+                          placeholder="Search Table"
+                          value={onboardDebounceText}
+                          onChange={(e) => {
+                            setonboardDebounceText(e.target.value);
+                          }}
+                        />
+                        {onboardSearchText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              setonboardDebounceText("");
+                            }}
+                          />
+                        )}
+                      </div>
+                      <p onClick={() => clearFilters()}>Reset Filters</p>
+                    </div>
+                    <div className={onboardListStyle.filterRight}>
+                      <Radio.Group
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "5px",
+                        }}
+                        onChange={(e) => {
+                          setDateTypeFilter(e.target.value);
+                          setStartDate(
+                            new Date(
+                              date.getFullYear(),
+                              date.getMonth() - 1,
+                              date.getDate()
+                            )
+                          );
+                          setEndDate(new Date(date));
+                        }}
+                        value={dateTypeFilter}
+                      >
+                        <Radio value={0}>Current Month</Radio>
+                        <Radio value={1}>Search With Date Range</Radio>
+                      </Radio.Group>
 
-            <div
-              className={TalentBackoutStyle.searchFilterSet}
-              style={{ marginLeft: "15px" }}
-            >
-              <SearchSVG style={{ width: "16px", height: "16px" }} />
-              <input
-                type={InputType.TEXT}
-                className={onboardListStyle.searchInput}
-                placeholder="Search Table"
-                value={onboardDebounceText}
-                onChange={(e) => {
-                  setonboardDebounceText(e.target.value);
-                }}
-              />
-              {onboardSearchText && (
-                <CloseSVG
-                  style={{
-                    width: "16px",
-                    height: "16px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    setonboardDebounceText("");
-                  }}
-                />
-              )}
-            </div>
-            <p onClick={() => clearFilters()}>Reset Filters</p>
-          </div>
-          <div className={onboardListStyle.filterRight}>
-            <Radio.Group
-              style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-              onChange={(e) => {
-                setDateTypeFilter(e.target.value);
-                setStartDate(
-                  new Date(
-                    date.getFullYear(),
-                    date.getMonth() - 1,
-                    date.getDate()
-                  )
-                );
-                setEndDate(new Date(date));
+                      {dateTypeFilter === 0 && (
+                        <div className={onboardListStyle.calendarFilterSet}>
+                          <div className={onboardListStyle.label}>
+                            Month-Year
+                          </div>
+                          <div className={onboardListStyle.calendarFilter}>
+                            <CalenderSVG
+                              style={{ height: "16px", marginRight: "16px" }}
+                            />
+                            <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={onboardListStyle.dateFilter}
+                              placeholderText="Month - Year"
+                              selected={monthDate}
+                              onChange={onMonthCalenderFilter}
+                              // startDate={startDate}
+                              // endDate={endDate}
+                              dateFormat="MM-yyyy"
+                              showMonthYearPicker
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {dateTypeFilter === 1 && (
+                        <div className={onboardListStyle.calendarFilterSet}>
+                          <div className={onboardListStyle.label}>Date</div>
+                          <div className={onboardListStyle.calendarFilter}>
+                            <CalenderSVG
+                              style={{ height: "16px", marginRight: "16px" }}
+                            />
+                            <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={onboardListStyle.dateFilter}
+                              placeholderText="Start date - End date"
+                              selected={startDate}
+                              onChange={onCalenderFilter}
+                              startDate={startDate}
+                              endDate={endDate}
+                              selectsRange
+                            />
+                          </div>
+                        </div>
+                      )}
 
-            
-           
-              }}
-              value={dateTypeFilter}
-            >
-              <Radio value={0}>Current Month</Radio>
-              <Radio value={1}>Search With Date Range</Radio>
-            </Radio.Group>
-
-            {dateTypeFilter === 0 && (
-              <div className={onboardListStyle.calendarFilterSet}>
-                <div className={onboardListStyle.label}>Month-Year</div>
-                <div className={onboardListStyle.calendarFilter}>
-                  <CalenderSVG
-                    style={{ height: "16px", marginRight: "16px" }}
-                  />
-                  <DatePicker
-                    style={{ backgroundColor: "red" }}
-                    onKeyDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    className={onboardListStyle.dateFilter}
-                    placeholderText="Month - Year"
-                    selected={monthDate}
-                    onChange={onMonthCalenderFilter}
-                    // startDate={startDate}
-                    // endDate={endDate}
-                    dateFormat="MM-yyyy"
-                    showMonthYearPicker
-                  />
+                      <div className={onboardListStyle.priorityFilterSet}>
+                        <div className={TalentBackoutStyle.priorityFilterSet}>
+                          <div className={TalentBackoutStyle.label}>
+                            Showing
+                          </div>
+                          <div className={TalentBackoutStyle.paginationFilter}>
+                            <Dropdown
+                              trigger={["click"]}
+                              placement="bottom"
+                              overlay={
+                                <Menu
+                                  onClick={(e) => {
+                                    setonboardPageSize(parseInt(e.key));
+                                    // if (pageSize !== parseInt(e.key)) {
+                                    //   setTableFilteredState((prevState) => ({
+                                    //     ...prevState,
+                                    //     totalrecord: parseInt(e.key),
+                                    //     pagenumber: pageIndex,
+                                    //   }));
+                                    // }
+                                  }}
+                                >
+                                  {pageSizeOptions.map((item) => {
+                                    return (
+                                      <Menu.Item key={item}>{item}</Menu.Item>
+                                    );
+                                  })}
+                                </Menu>
+                              }
+                            >
+                              <span>
+                                {onboardPageSize}
+                                <IoChevronDownOutline
+                                  style={{
+                                    paddingTop: "5px",
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              </span>
+                            </Dropdown>
+                          </div>
+                        </div>
+                        <div
+                          className={onboardListStyle.paginationFilter}
+                          style={{ border: "none", width: "auto" }}
+                        >
+                          <button
+                            className={onboardListStyle.btnPrimary}
+                            onClick={() => handleOnboardExport(onboardList)}
+                          >
+                            Export
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
-            {dateTypeFilter === 1 && (
-              <div className={onboardListStyle.calendarFilterSet}>
-                <div className={onboardListStyle.label}>Date</div>
-                <div className={onboardListStyle.calendarFilter}>
-                  <CalenderSVG
-                    style={{ height: "16px", marginRight: "16px" }}
-                  />
-                  <DatePicker
-                    style={{ backgroundColor: "red" }}
-                    onKeyDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    className={onboardListStyle.dateFilter}
-                    placeholderText="Start date - End date"
-                    selected={startDate}
-                    onChange={onCalenderFilter}
-                    startDate={startDate}
-                    endDate={endDate}
-                    selectsRange
-                  />
-                </div>
-              </div>
-            )}
 
-            <div className={onboardListStyle.priorityFilterSet}>
-            <div className={TalentBackoutStyle.priorityFilterSet}>
-              <div className={TalentBackoutStyle.label}>Showing</div>
-              <div className={TalentBackoutStyle.paginationFilter}>
-                <Dropdown
-                  trigger={["click"]}
-                  placement="bottom"
-                  overlay={
-                    <Menu
-                      onClick={(e) => {
-                        setonboardPageSize(parseInt(e.key));
-                        // if (pageSize !== parseInt(e.key)) {
-                        //   setTableFilteredState((prevState) => ({
-                        //     ...prevState,
-                        //     totalrecord: parseInt(e.key),
-                        //     pagenumber: pageIndex,
-                        //   }));
-                        // }
-                      }}
-                    >
-                      {pageSizeOptions.map((item) => {
-                        return <Menu.Item key={item}>{item}</Menu.Item>;
-                      })}
-                    </Menu>
-                  }
-                >
-                  <span>
-                    {onboardPageSize}
-                    <IoChevronDownOutline
-                      style={{ paddingTop: "5px", fontSize: "16px" }}
-                    />
-                  </span>
-                </Dropdown>
-              </div>
-            </div>
-              <div
-                className={onboardListStyle.paginationFilter}
-                style={{ border: "none", width: "auto" }}
-              >
-                <button
-                  className={onboardListStyle.btnPrimary}
-                  onClick={() => handleOnboardExport(onboardList)}
-                >
-                  Export
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-             
-                {isLoading ? <TableSkeleton active /> :  <Table
-                  scroll={{x:'2600px', y: "480px", }}
-                  id="OnboardedListingTable"
-                  columns={tableColumnsMemo}
-                  bordered={false}
-                  dataSource={onboardList}
-                  pagination={{
-                    onChange: (pageNum, onboardPageSize) => {
-                      setonboardPageIndex(pageNum);
-                      setonboardPageSize(onboardPageSize);
-                    },
-                    size: "small",
-                    pageSize: onboardPageSize,
-                    pageSizeOptions: pageSizeOptions,
-                    total: onboardListDataCount,
-                    showTotal: (total, range) =>
-                      `${range[0]}-${range[1]} of ${onboardListDataCount} items`,
-                    defaultCurrent: onboardPageIndex,
-                  }}
-                />}
-               
-                
+                {isLoading ? (
+                  <TableSkeleton active />
+                ) : (
+                  <Table
+                    scroll={{ x: "2600px", y: "480px" }}
+                    id="OnboardedListingTable"
+                    columns={tableColumnsMemo}
+                    bordered={false}
+                    dataSource={onboardList}
+                    pagination={{
+                      onChange: (pageNum, onboardPageSize) => {
+                        setonboardPageIndex(pageNum);
+                        setonboardPageSize(onboardPageSize);
+                      },
+                      size: "small",
+                      pageSize: onboardPageSize,
+                      pageSizeOptions: pageSizeOptions,
+                      total: onboardListDataCount,
+                      showTotal: (total, range) =>
+                        `${range[0]}-${range[1]} of ${onboardListDataCount} items`,
+                      defaultCurrent: onboardPageIndex,
+                    }}
+                  />
+                )}
               </>
             ),
           },
@@ -861,18 +1011,34 @@ export default function TalentReport() {
             key: "Rejected",
             children: (
               <>
-                <div className={TalentBackoutStyle.filterContainer}>
-                  <div className={TalentBackoutStyle.filterSets}>
-                    <div className={TalentBackoutStyle.filterRight}>
-                      <div className={onboardListStyle.searchFilterSet}>
+                <div className={onboardListStyle.filterContainer}>
+                  <div className={onboardListStyle.filterSets}>
+                    <div className={onboardListStyle.filterSetsInner}>
+                      <div
+                        className={onboardListStyle.addFilter}
+                        onClick={toggleRejectedFilter}
+                      >
+                        <FunnelSVG style={{ width: "16px", height: "16px" }} />
+
+                        <div className={onboardListStyle.filterLabel}>
+                          Add Filters
+                        </div>
+                        <div className={onboardListStyle.filterCount}>
+                          {rejectedfilteredTagLength}
+                        </div>
+                      </div>
+
+                      <div
+                        className={TalentBackoutStyle.searchFilterSet}
+                        style={{ marginLeft: "15px" }}
+                      >
                         <SearchSVG style={{ width: "16px", height: "16px" }} />
                         <input
                           type={InputType.TEXT}
-                          className={TalentBackoutStyle.searchInput}
+                          className={onboardListStyle.searchInput}
                           placeholder="Search Table"
                           value={rejectedDebounceText}
                           onChange={(e) => {
-                            setrejectedSearchText(e.target.value);
                             setRejectedDebounceText(e.target.value);
                           }}
                         />
@@ -884,105 +1050,220 @@ export default function TalentReport() {
                               cursor: "pointer",
                             }}
                             onClick={() => {
-                              setrejectedSearchText("");
                               setRejectedDebounceText("");
                             }}
                           />
                         )}
                       </div>
-
-                      <div className={TalentBackoutStyle.priorityFilterSet}>
-              <div className={TalentBackoutStyle.label}>Showing</div>
-              <div className={TalentBackoutStyle.paginationFilter}>
-                <Dropdown
-                  trigger={["click"]}
-                  placement="bottom"
-                  overlay={
-                    <Menu
-                      onClick={(e) => {
-                        setrejectedPageSize(parseInt(e.key));
-                        // if (pageSize !== parseInt(e.key)) {
-                        //   setTableFilteredState((prevState) => ({
-                        //     ...prevState,
-                        //     totalrecord: parseInt(e.key),
-                        //     pagenumber: pageIndex,
-                        //   }));
-                        // }
-                      }}
-                    >
-                      {pageSizeOptions.map((item) => {
-                        return <Menu.Item key={item}>{item}</Menu.Item>;
-                      })}
-                    </Menu>
-                  }
-                >
-                  <span>
-                    {rejectedPageSize}
-                    <IoChevronDownOutline
-                      style={{ paddingTop: "5px", fontSize: "16px" }}
-                    />
-                  </span>
-                </Dropdown>
-              </div>
-            </div>
-                      <button
-                        type="submit"
-                        className={TalentBackoutStyle.btnPrimary}
-                        onClick={() => handleRejectExport(rejectedList)}
+                      <p onClick={() => clearrejectedFilters()}>
+                        Reset Filters
+                      </p>
+                    </div>
+                    <div className={onboardListStyle.filterRight}>
+                      <Radio.Group
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "5px",
+                        }}
+                        onChange={(e) => {
+                          setrejectedDateTypeFilter(e.target.value);
+                          setrejectedStartDate(
+                            new Date(
+                              date.getFullYear(),
+                              date.getMonth() - 1,
+                              date.getDate()
+                            )
+                          );
+                          setrejectedEndDate(new Date(date));
+                        }}
+                        value={daterejectedTypeFilter}
                       >
-                        Export
-                      </button>
+                        <Radio value={0}>Current Month</Radio>
+                        <Radio value={1}>Search With Date Range</Radio>
+                      </Radio.Group>
+
+                      {daterejectedTypeFilter === 0 && (
+                        <div className={onboardListStyle.calendarFilterSet}>
+                          <div className={onboardListStyle.label}>
+                            Month-Year
+                          </div>
+                          <div className={onboardListStyle.calendarFilter}>
+                            <CalenderSVG
+                              style={{ height: "16px", marginRight: "16px" }}
+                            />
+                            <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={onboardListStyle.dateFilter}
+                              placeholderText="Month - Year"
+                              selected={rejectedMonthDate}
+                              onChange={onrejectedMonthCalenderFilter}
+                              // startDate={startDate}
+                              // endDate={endDate}
+                              dateFormat="MM-yyyy"
+                              showMonthYearPicker
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {daterejectedTypeFilter === 1 && (
+                        <div className={onboardListStyle.calendarFilterSet}>
+                          <div className={onboardListStyle.label}>Date</div>
+                          <div className={onboardListStyle.calendarFilter}>
+                            <CalenderSVG
+                              style={{ height: "16px", marginRight: "16px" }}
+                            />
+                            <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={onboardListStyle.dateFilter}
+                              placeholderText="Start date - End date"
+                              selected={rejectedStartDate}
+                              onChange={onrejectedCalenderFilter}
+                              startDate={rejectedStartDate}
+                              endDate={rejectedendDate}
+                              selectsRange
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <div className={onboardListStyle.priorityFilterSet}>
+                        <div className={TalentBackoutStyle.priorityFilterSet}>
+                          <div className={TalentBackoutStyle.label}>
+                            Showing
+                          </div>
+                          <div className={TalentBackoutStyle.paginationFilter}>
+                            <Dropdown
+                              trigger={["click"]}
+                              placement="bottom"
+                              overlay={
+                                <Menu
+                                  onClick={(e) => {
+                                    setrejectedPageSize(parseInt(e.key));
+                                    // if (pageSize !== parseInt(e.key)) {
+                                    //   setTableFilteredState((prevState) => ({
+                                    //     ...prevState,
+                                    //     totalrecord: parseInt(e.key),
+                                    //     pagenumber: pageIndex,
+                                    //   }));
+                                    // }
+                                  }}
+                                >
+                                  {pageSizeOptions.map((item) => {
+                                    return (
+                                      <Menu.Item key={item}>{item}</Menu.Item>
+                                    );
+                                  })}
+                                </Menu>
+                              }
+                            >
+                              <span>
+                                {rejectedPageSize}
+                                <IoChevronDownOutline
+                                  style={{
+                                    paddingTop: "5px",
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              </span>
+                            </Dropdown>
+                          </div>
+                        </div>
+                        <div
+                          className={onboardListStyle.paginationFilter}
+                          style={{ border: "none", width: "auto" }}
+                        >
+                          <button
+                            className={onboardListStyle.btnPrimary}
+                            onClick={() => handleRejectExport(rejectedList)}
+                          >
+                            Export
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                {isLoading ? <TableSkeleton active /> : <Table
-                  scroll={{ y: "480px" }}
-                  id="rejectededListingTable"
-                  columns={tableRejectedColumnsMemo}
-                  bordered={false}
-                  dataSource={rejectedList}
-                  pagination={{
-                    onChange: (pageNum, rejectedPageSize) => {
-                      setrejectedPageIndex(pageNum);
-                      setrejectedPageSize(rejectedPageSize);
-                    },
-                    size: "small",
-                    pageSize: rejectedPageSize,
-                    pageSizeOptions: pageSizeOptions,
-                    total: rejectedListDataCount,
-                    showTotal: (total, range) =>
-                      `${range[0]}-${range[1]} of ${rejectedListDataCount} items`,
-                    defaultCurrent: rejectedPageIndex,
-                  }}
-                />}
-                
-                
+
+                {isLoading ? (
+                  <TableSkeleton active />
+                ) : (
+                  <Table
+                    scroll={{ y: "480px" }}
+                    id="rejectededListingTable"
+                    columns={tableRejectedColumnsMemo}
+                    bordered={false}
+                    dataSource={rejectedList}
+                    pagination={{
+                      onChange: (pageNum, rejectedPageSize) => {
+                        setrejectedPageIndex(pageNum);
+                        setrejectedPageSize(rejectedPageSize);
+                      },
+                      size: "small",
+                      pageSize: rejectedPageSize,
+                      pageSizeOptions: pageSizeOptions,
+                      total: rejectedListDataCount,
+                      showTotal: (total, range) =>
+                        `${range[0]}-${range[1]} of ${rejectedListDataCount} items`,
+                      defaultCurrent: rejectedPageIndex,
+                    }}
+                  />
+                )}
               </>
             ),
           },
         ]}
       />
 
-<Suspense fallback={<div>Loading...</div>}>
-          <OnboardFilerList
-            setAppliedFilters={setAppliedFilters}
-            appliedFilter={appliedFilter}
-            setCheckedState={setCheckedState}
-            checkedState={checkedState}
-            // handleHRRequest={handleHRRequest}
-            setTableFilteredState={setTableFilteredState}
-            tableFilteredState={tableFilteredState}
-            setFilteredTagLength={setFilteredTagLength}
-            onRemoveHRFilters={() => onRemoveFilters()}
-            getHTMLFilter={getHTMLFilter}
-            // hrFilterList={allHRConfig.hrFilterListConfig()}
-          
-            filtersType={allEngagementConfig.deployedListFilterTypeConfig(
-              filtersList && filtersList
-            )}
-            clearFilters={clearFilters}
-          />
-        </Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
+        <OnboardFilerList
+          setAppliedFilters={setAppliedFilters}
+          appliedFilter={appliedFilter}
+          setCheckedState={setCheckedState}
+          checkedState={checkedState}
+          // handleHRRequest={handleHRRequest}
+          setTableFilteredState={setTableFilteredState}
+          tableFilteredState={tableFilteredState}
+          setFilteredTagLength={setFilteredTagLength}
+          onRemoveHRFilters={() => onRemoveFilters()}
+          getHTMLFilter={getHTMLFilter}
+          // hrFilterList={allHRConfig.hrFilterListConfig()}
+
+          filtersType={allEngagementConfig.deployedListFilterTypeConfig(
+            filtersList && filtersList
+          )}
+          clearFilters={clearFilters}
+        />
+      </Suspense>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <OnboardFilerList
+          setAppliedFilters={setrejectedAppliedFilters}
+          appliedFilter={rejectedappliedFilter}
+          setCheckedState={setrejectedCheckedState}
+          checkedState={rejectedcheckedState}
+          // handleHRRequest={handleHRRequest}
+          setTableFilteredState={setrejectedTableFilteredState}
+          tableFilteredState={rejectedtableFilteredState}
+          setFilteredTagLength={setRejectedFilteredTagLength}
+          onRemoveHRFilters={() => onrejectedRemoveFilters()}
+          getHTMLFilter={getrejectedHTMLFilter}
+          // hrFilterList={allHRConfig.hrFilterListConfig()}
+
+          filtersType={allEngagementConfig.rejectedListFilterTypeConfig(
+            filtersList && filtersList
+          )}
+          clearFilters={clearrejectedFilters}
+        />
+      </Suspense>
 
       <Modal
         width="930px"
