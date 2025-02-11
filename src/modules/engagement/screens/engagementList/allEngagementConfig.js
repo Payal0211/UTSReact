@@ -928,5 +928,18 @@ export const allEngagementConfig = {
 				isSearch: true,
 			},
 		];
+	},
+	rejectedListFilterTypeConfig: (filterList) =>{
+		console.log(filterList
+		)
+		return [
+			{
+				label: 'AM',
+				name: 'amName',
+				child: filterList?.AMList?.map(item=>({...item,text: item.value,value:item.text})),
+				isSearch: true,
+			},
+			
+		];
 	}
 };
