@@ -26,6 +26,7 @@ import {
   Dropdown,
   Menu,
   Radio,
+  Select
 } from "antd";
 import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
@@ -57,11 +58,23 @@ export default function TalentReport() {
   const [leaveList, setLeaveList] = useState([]);
   const [leaveLoading, setLeaveLoading] = useState(false);
   const [pageSize, setPageSize] = useState(20);
+  const dateTypeList = [{
+    value: 2,
+    label: 'No Dates',
+  },
+  {
+    value: 0,
+    label: 'By Month',
+  },
+  {
+    value: 1,
+    label: 'With Date Range',
+  }]
 
   const [filteredTagLength, setFilteredTagLength] = useState(0);
   const [getHTMLFilter, setHTMLFilter] = useState(false);
   const [isAllowFilters, setIsAllowFilters] = useState(false);
-  const [dateTypeFilter, setDateTypeFilter] = useState(0);
+  const [dateTypeFilter, setDateTypeFilter] = useState(2);
   const [filtersList, setFiltersList] = useState({});
   var date = new Date();
   const [monthDate, setMonthDate] = useState(new Date());
@@ -82,7 +95,7 @@ export default function TalentReport() {
   const [rejectedfilteredTagLength, setRejectedFilteredTagLength] = useState(0);
   const [getrejectedHTMLFilter, setrejectedHTMLFilter] = useState(false);
   const [isrejectedAllowFilters, setrejectedIsAllowFilters] = useState(false);
-  const [daterejectedTypeFilter, setrejectedDateTypeFilter] = useState(0);
+  const [daterejectedTypeFilter, setrejectedDateTypeFilter] = useState(2);
   const [rejectedMonthDate, setrejectedMonthDate] = useState(new Date());
   const [rejectedStartDate, setrejectedStartDate] = useState(
     new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
@@ -109,12 +122,12 @@ export default function TalentReport() {
         amIds: tableFilteredState.filterFields_OnBoard.amName,
         statusIds: tableFilteredState.filterFields_OnBoard.statusIds,
         tagIds: tableFilteredState.filterFields_OnBoard.tagIds,
-        month: dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
-        year: dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
+        month: dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
+        year: dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
         fromDate:
-          dateTypeFilter === 1 ? moment(startDate).format("MM/DD/YYYY") : "",
+        dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? moment(startDate).format("MM/DD/YYYY") : "",
         toDate:
-          dateTypeFilter === 1 ? moment(endDate).format("MM/DD/YYYY") : "",
+        dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? moment(endDate).format("MM/DD/YYYY") : "",
       };
 
       if (
@@ -161,19 +174,19 @@ export default function TalentReport() {
         amIds: rejectedtableFilteredState.filterFields_OnBoard.amName,
         statusIds: rejectedtableFilteredState.filterFields_OnBoard.statusIds,
         tagIds: rejectedtableFilteredState.filterFields_OnBoard.tagIds,
-        month:
+        month: dateTypeFilter === 2 ? 0 :
           daterejectedTypeFilter === 0
             ? +moment(rejectedMonthDate).format("M")
             : 0,
-        year:
+        year: dateTypeFilter === 2 ? 0 :
           daterejectedTypeFilter === 0
             ? +moment(rejectedMonthDate).format("YYYY")
             : 0,
-        fromDate:
+        fromDate:dateTypeFilter === 2 ? '' :
           daterejectedTypeFilter === 1
             ? moment(rejectedStartDate).format("MM/DD/YYYY")
             : "",
-        toDate:
+        toDate: dateTypeFilter === 2 ? '' :
           daterejectedTypeFilter === 1
             ? moment(rejectedendDate).format("MM/DD/YYYY")
             : "",
@@ -306,7 +319,7 @@ export default function TalentReport() {
     setAppliedFilters(new Map());
     setCheckedState(new Map());
     setFilteredTagLength(0);
-    setDateTypeFilter(0);
+    setDateTypeFilter(2);
     setTableFilteredState({
       filterFields_OnBoard: {
         amName: "",
@@ -345,7 +358,7 @@ export default function TalentReport() {
     setrejectedAppliedFilters(new Map());
     setrejectedCheckedState(new Map());
     setRejectedFilteredTagLength(0);
-    setrejectedDateTypeFilter(0);
+    setrejectedDateTypeFilter(2);
     setrejectedTableFilteredState({
       filterFields_OnBoard: {
         amName: "",
@@ -568,7 +581,7 @@ export default function TalentReport() {
   const tableRejectedColumnsMemo = useMemo(() => {
     return [
       {
-        title: "Created On",
+        title: "Rejected On",
         dataIndex: "createdOn",
         key: "createdOn",
         align: "left",
@@ -846,7 +859,7 @@ export default function TalentReport() {
                       <p onClick={() => clearFilters()}>Reset Filters</p>
                     </div>
                     <div className={onboardListStyle.filterRight}>
-                      <Radio.Group
+                      {/* <Radio.Group
                         style={{
                           display: "flex",
                           flexDirection: "column",
@@ -867,7 +880,30 @@ export default function TalentReport() {
                       >
                         <Radio value={0}>Current Month</Radio>
                         <Radio value={1}>Search With Date Range</Radio>
-                      </Radio.Group>
+                      </Radio.Group> */}
+
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select"
+                        value={dateTypeFilter}
+                        // showSearch={true}
+                        style={{width:'170px'}}
+                        onChange={(value, option) => {
+                          console.log({ value, option });
+                          setDateTypeFilter(value);
+                                  setStartDate(
+                                    new Date(
+                                      date.getFullYear(),
+                                      date.getMonth() - 1,
+                                      date.getDate()
+                                    )
+                                  );
+                                  setEndDate(new Date(date));
+                        }}
+                        options={dateTypeList}
+                        optionFilterProp="value"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
 
                       {dateTypeFilter === 0 && (
                         <div className={onboardListStyle.calendarFilterSet}>
@@ -1060,14 +1096,14 @@ export default function TalentReport() {
                       </p>
                     </div>
                     <div className={onboardListStyle.filterRight}>
-                      <Radio.Group
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "5px",
-                        }}
-                        onChange={(e) => {
-                          setrejectedDateTypeFilter(e.target.value);
+                      <Select
+                        id="rejectedTalentsValue"
+                        placeholder="Select"
+                        value={daterejectedTypeFilter}
+                        // showSearch={true}
+                        style={{width:'170px'}}
+                        onChange={(value, option) => {
+                          setrejectedDateTypeFilter(value);
                           setrejectedStartDate(
                             new Date(
                               date.getFullYear(),
@@ -1077,11 +1113,10 @@ export default function TalentReport() {
                           );
                           setrejectedEndDate(new Date(date));
                         }}
-                        value={daterejectedTypeFilter}
-                      >
-                        <Radio value={0}>Current Month</Radio>
-                        <Radio value={1}>Search With Date Range</Radio>
-                      </Radio.Group>
+                        options={dateTypeList}
+                        optionFilterProp="value"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
 
                       {daterejectedTypeFilter === 0 && (
                         <div className={onboardListStyle.calendarFilterSet}>
