@@ -124,6 +124,21 @@ export const amDashboardAPI = {
 			return errorDebug(error, 'amDashboardAPI.getTalentLeaveRequest');
 		}
 	},
+	getDeployedFiltersRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+            NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			AMDashboardAPI.DEPLOYED_TALENT_FILTER
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'amDashboardAPI.getDeployedFiltersRequest');
+		}
+	},
     getCalenderLeaveRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
