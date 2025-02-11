@@ -93,6 +93,7 @@ export class AMDashboardAPI {
 	static GET_AM_RENEWALS = 'GetAMDashboardRenewals'
 	static GET_TICKET_HISTORY = 'Tickets/GetZohoTicketHistory'
 	static GET_TICKET_CONVERSATION = 'Tickets/GetZohoTicketConversation'
+	static DEPLOYED_TALENT_FILTER = 'DeployedTalent/Filters'
 }
 
 export class DirectHR {

@@ -905,4 +905,28 @@ export const allEngagementConfig = {
 			},
 		];
 	},
+	deployedListFilterTypeConfig: (filterList) =>{
+		console.log(filterList
+		)
+		return [
+			{
+				label: 'AM',
+				name: 'amName',
+				child: filterList?.AMList?.map(item=>({...item,text: item.value,value:item.text})),
+				isSearch: true,
+			},
+			{
+				label: 'Talent Status',
+				name: 'statusIds',
+				child: filterList?.TalentStatus?.map(item=>({...item,text: item.text,value:item.value})),
+				isSearch: false,
+			},
+			{
+				label: 'Talent Tags',
+				name: 'tagIds',
+				child: filterList?.TalentTags?.map(item=>({...item,text: item.text,value:item.value})),
+				isSearch: true,
+			},
+		];
+	}
 };
