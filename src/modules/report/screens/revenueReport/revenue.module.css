@@ -124,6 +124,12 @@
     flex-wrap: wrap;
     /* width: 100%; */
 }
+
+.filterRight .modifySelect [class*="ant-select-selector"]{
+    height:44px !important;
+    padding:12px !important
+}
+
 .searchFilterSet{
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;

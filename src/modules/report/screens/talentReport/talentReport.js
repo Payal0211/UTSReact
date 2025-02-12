@@ -858,7 +858,7 @@ export default function TalentReport() {
                       </div>
                       <p onClick={() => clearFilters()}>Reset Filters</p>
                     </div>
-                    <div className={onboardListStyle.filterRight}>
+                    <div className={`${onboardListStyle.filterRight}`}>
                       {/* <Radio.Group
                         style={{
                           display: "flex",
@@ -881,29 +881,32 @@ export default function TalentReport() {
                         <Radio value={0}>Current Month</Radio>
                         <Radio value={1}>Search With Date Range</Radio>
                       </Radio.Group> */}
+                      <div className={`${onboardListStyle.modifySelect}`}>
+                        <Select
+                                              id="selectedValue"
+                                              placeholder="Select"
+                                              value={dateTypeFilter}
+                                              // showSearch={true}
+                                              style={{width:'170px'}}
+                                              onChange={(value, option) => {
+                                                console.log({ value, option });
+                                                setDateTypeFilter(value);
+                                                        setStartDate(
+                                                          new Date(
+                                                            date.getFullYear(),
+                                                            date.getMonth() - 1,
+                                                            date.getDate()
+                                                          )
+                                                        );
+                                                        setEndDate(new Date(date));
+                                              }}
+                                              options={dateTypeList}
+                                              optionFilterProp="value"
+                                              // getPopupContainer={(trigger) => trigger.parentElement}
+                                            />
 
-                      <Select
-                        id="selectedValue"
-                        placeholder="Select"
-                        value={dateTypeFilter}
-                        // showSearch={true}
-                        style={{width:'170px'}}
-                        onChange={(value, option) => {
-                          console.log({ value, option });
-                          setDateTypeFilter(value);
-                                  setStartDate(
-                                    new Date(
-                                      date.getFullYear(),
-                                      date.getMonth() - 1,
-                                      date.getDate()
-                                    )
-                                  );
-                                  setEndDate(new Date(date));
-                        }}
-                        options={dateTypeList}
-                        optionFilterProp="value"
-                        // getPopupContainer={(trigger) => trigger.parentElement}
-                      />
+                      </div>
+                    
 
                       {dateTypeFilter === 0 && (
                         <div className={onboardListStyle.calendarFilterSet}>
@@ -1096,28 +1099,29 @@ export default function TalentReport() {
                       </p>
                     </div>
                     <div className={onboardListStyle.filterRight}>
-                      <Select
-                        id="rejectedTalentsValue"
-                        placeholder="Select"
-                        value={daterejectedTypeFilter}
-                        // showSearch={true}
-                        style={{width:'170px'}}
-                        onChange={(value, option) => {
-                          setrejectedDateTypeFilter(value);
-                          setrejectedStartDate(
-                            new Date(
-                              date.getFullYear(),
-                              date.getMonth() - 1,
-                              date.getDate()
-                            )
-                          );
-                          setrejectedEndDate(new Date(date));
-                        }}
-                        options={dateTypeList}
-                        optionFilterProp="value"
-                        // getPopupContainer={(trigger) => trigger.parentElement}
-                      />
-
+                    <div className={`${onboardListStyle.modifySelect}`}>
+                        <Select
+                          id="rejectedTalentsValue"
+                          placeholder="Select"
+                          value={daterejectedTypeFilter}
+                          // showSearch={true}
+                          style={{width:'170px'}}
+                          onChange={(value, option) => {
+                            setrejectedDateTypeFilter(value);
+                            setrejectedStartDate(
+                              new Date(
+                                date.getFullYear(),
+                                date.getMonth() - 1,
+                                date.getDate()
+                              )
+                            );
+                            setrejectedEndDate(new Date(date));
+                          }}
+                          options={dateTypeList}
+                          optionFilterProp="value"
+                          // getPopupContainer={(trigger) => trigger.parentElement}
+                        />
+                      </div>
                       {daterejectedTypeFilter === 0 && (
                         <div className={onboardListStyle.calendarFilterSet}>
                           <div className={onboardListStyle.label}>
