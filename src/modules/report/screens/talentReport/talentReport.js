@@ -174,19 +174,19 @@ export default function TalentReport() {
         amIds: rejectedtableFilteredState.filterFields_OnBoard.amName,
         statusIds: rejectedtableFilteredState.filterFields_OnBoard.statusIds,
         tagIds: rejectedtableFilteredState.filterFields_OnBoard.tagIds,
-        month: dateTypeFilter === 2 ? 0 :
+        month: daterejectedTypeFilter === 2 ? 0 :
           daterejectedTypeFilter === 0
             ? +moment(rejectedMonthDate).format("M")
             : 0,
-        year: dateTypeFilter === 2 ? 0 :
+        year: daterejectedTypeFilter === 2 ? 0 :
           daterejectedTypeFilter === 0
             ? +moment(rejectedMonthDate).format("YYYY")
             : 0,
-        fromDate:dateTypeFilter === 2 ? '' :
+        fromDate:daterejectedTypeFilter === 2 ? '' :
           daterejectedTypeFilter === 1
             ? moment(rejectedStartDate).format("MM/DD/YYYY")
             : "",
-        toDate: dateTypeFilter === 2 ? '' :
+        toDate: daterejectedTypeFilter === 2 ? '' :
           daterejectedTypeFilter === 1
             ? moment(rejectedendDate).format("MM/DD/YYYY")
             : "",
