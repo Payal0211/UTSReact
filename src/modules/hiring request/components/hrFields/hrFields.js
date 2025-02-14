@@ -930,9 +930,9 @@ const HRFields = ({
 
     const result = await allCompanyRequestDAO.updateCompanyConfidentialDAO(payload)
 
-    if(result.statusCode === 200){
-      message.success('Successfully Updated Company profile details')
-    }
+    // if(result.statusCode === 200){
+    //   message.success('Successfully Updated Company profile details')
+    // }
   },[confidentialInfo,clientDetails]) 
 
 
@@ -3643,6 +3643,7 @@ const HRFields = ({
 
               {userCompanyTypeID === 1 && (
                 <>
+                {console.log('hrPricingTypes',hrPricingTypes)}
                   {watch("availability")?.id && (
                     <div className={HRFieldStyle.colMd6}>
                       <div className={HRFieldStyle.formGroup}>
@@ -3659,7 +3660,7 @@ const HRFields = ({
                           // label={"Hiring Pricing Type"}
                           label={"Employment Type"}
                           defaultValue="Select Hiring Pricing"
-                          options={hrPricingTypes && watch('availability')?.value === 'Part Time' ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type })).filter(i=> i.id !== 3) : hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
+                          options={hrPricingTypes && watch('availability')?.value === 'Part Time' ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type ,showPartTime:item.showPartTime})).filter(i=> (i.id !== 3 && i.showPartTime === true )) : hrPricingTypes.map((item) => ({ id: item.id, value: item.type }))}
                           name="hiringPricingType"
                           isError={
                             errors["hiringPricingType"] &&
