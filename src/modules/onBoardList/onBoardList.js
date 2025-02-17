@@ -33,6 +33,8 @@ import EngagementFeedback from 'modules/engagement/screens/engagementFeedback/en
 import EngagementAddFeedback from 'modules/engagement/screens/engagementAddFeedback/engagementAddFeedback';
 import { useForm } from 'react-hook-form';
 import moment from 'moment';
+import HROperator from 'modules/hiring request/components/hroperator/hroperator';
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Keyboard, Scrollbar, Navigation, Pagination } from 'swiper/modules';
@@ -40,9 +42,185 @@ import 'swiper/css';
 import 'swiper/css/scrollbar';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import EngagementInvoice from 'modules/engagement/screens/engagementInvoice/engagementInvoice';
+import EngagementEnd from 'modules/engagement/screens/endEngagement/endEngagement';
+import EngagementCancel from 'modules/engagement/screens/cancelEngagement/cancelEngagement';
+import EngagementBillRateAndPayRate from 'modules/engagement/screens/engagementBillAndPayRate/engagementBillRateAndPayRate';
+import EditAllBRPR from 'modules/engagement/screens/editAllBRPR/editAllBRPR';
+import RenewEngagement from 'modules/engagement/screens/renewEngagement/renewEngagement';
 
-const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId) => {
-    return [     
+const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata) => {
+    return [   
+      {
+				title: '    ',
+				dataIndex: 'action',
+				key: 'action',
+				align: 'left',
+				width: '150px',
+				render: (_, param, index) => {
+					let listItemData = [
+						{
+							label: param.engagemenID,
+							key: 'HRDetails',
+							IsEnabled: false,
+						},
+						{
+							label: 'Add Invoice Details',
+							key: 'addInvoiceDetails',
+							IsEnabled: true,
+						},
+					];
+					// if(param?.tscName && (param?.currentStatus !== "In Replacement")){
+					// 	listItemData.push(
+					// 		{
+					// 			label: 'Edit TSC Name',
+					// 			key: 'editTSCName',
+					// 			IsEnabled: true,
+					// 		},
+					// 	);
+					// }
+					if (param?.typeOfHR === 'Contractual' && param?.isOngoing !== "Ongoing") {
+						listItemData.push(
+							{
+								label: 'Edit Bill Rate',
+								key: 'editRateBillRate',
+								IsEnabled: true,
+							},
+							{
+								label: 'Edit Pay Rate',
+								key: 'editPayRate',
+								IsEnabled: true,
+							},
+							{
+								label: 'Edit All BR PR',
+								key: 'editAllBRPR',
+								IsEnabled: true,
+							},
+						);
+					}
+					if (param?.isRenewalAvailable === 1 && param?.isRenewalContract === 0 && param?.isOngoing !== "Ongoing") {
+						listItemData.push({
+							label: 'Renew Engagement',
+							key: 'reNewEngagement',
+							IsEnabled: true,
+						});
+					}				
+					if (param?.isContractCompleted !== 1) {
+						listItemData.push({
+							label: 'End Engagement',
+							key: 'endEngagement',
+							IsEnabled: true,
+						});
+						listItemData.push({
+							label: 'Cancel Engagement',
+							key: 'cancelEngagement',
+							IsEnabled: true,
+						});
+					}
+					if (
+						param?.talentLegal_StatusID === 2 &&
+						param?.clientLegal_StatusID === 2 &&
+						param?.isContractCompleted !== 1 &&
+						param?.isHRManaged === 0 &&
+						param?.currentStatus !== 'In Replacement' && (param?.replacementID === 0 || param?.replacementID === null)
+					) {
+						listItemData.push({
+							label: 'Replace Engagement',
+							key: 'replaceEngagement',
+							IsEnabled: true,
+						});
+					}
+					return (
+						<HROperator
+							title="Action"
+							icon={<ArrowDownSVG style={{ width: '16px' }} />}
+							backgroundColor={`var(--color-sunlight)`}
+							iconBorder={`1px solid var(--color-sunlight)`}
+							isDropdown={true}
+							listItem={listItemData}
+							menuAction={(item) => {
+								switch (item.key) {
+									case 'Replace Engagement': {
+										setEngagementModal({
+											...getEngagementModal,
+											engagementReplaceTalent: true,
+										});
+										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
+										break;
+									}
+									case 'Edit TSC Name':{
+										setISEditTSC(true)
+										setTSCONBoardData({onboardID :param.onboardID, engagementID:param.engagementID, talentName: param.talentName, tscName: param.tscName})
+										break;
+									}
+									case 'Renew Engagement': {
+										setEngagementModal({
+											...getEngagementModal,
+											engagementRenew: true,
+										});
+										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
+										break;
+									}
+									case 'End Engagement': {
+										setEngagementModal({
+											...getEngagementModal,
+											engagementEnd: true,
+										});
+										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
+										break;
+									}
+									case 'Cancel Engagement': {
+										setEngagementModal({
+											...getEngagementModal,
+											engagementCancel: true,
+										});
+										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
+										break;
+									}
+									case 'Edit Bill Rate': {
+										setEngagementModal({
+											...getEngagementModal,
+											engagementBillRateAndPayRate: true,
+										});
+										setEngagementBillAndPayRateTab('1');
+										setActiveTab('1')
+										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
+										break;
+									}
+									case 'Edit Pay Rate': {
+										setEngagementModal({
+											...getEngagementModal,
+											engagementBillRateAndPayRate: true,
+										});
+										setEngagementBillAndPayRateTab('2');
+										setActiveTab('2')
+										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
+										break;
+									}
+									case 'Edit All BR PR':{
+										setEngagementModal({
+											...getEngagementModal,
+											engagementEditAllBillRateAndPayRate: true,
+										});
+										setAllBRPRdata(param);
+										break;
+									}
+									case 'Add Invoice Details': {
+										setEngagementModal({
+											...getEngagementModal,
+											engagementInvoice: true,
+										});
+										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
+										break;
+									}
+									default:
+										break;
+								}
+							}}
+						/>
+					);
+				},
+			},  
       {
         title: "Created Date",
         dataIndex: "createdByDatetime",
@@ -91,8 +269,8 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       },
       {
         title: "Eng. Type",
-        dataIndex: "typeOfHR",
-        key: "typeOfHR",
+        dataIndex: "engContractType",
+        key: "engContractType",
         align: "left",
         width: '180px',
         render:(text,result) => {
@@ -195,8 +373,8 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       // },
       {
         title: "Actual BR",
-        dataIndex: "final_HR_Cost",
-        key: "final_HR_Cost",
+        dataIndex: "payout_BillRate",
+        key: "payout_BillRate",
         align: "left",
         width: '150px', 
         render:(text,result)=>{
@@ -205,8 +383,8 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       },
       {
         title: "Actual PR",
-        dataIndex: "talent_Cost",
-        key: "talent_Cost",
+        dataIndex: "payout_PayRate",
+        key: "payout_PayRate",
         align: "left",
         width: '150px', 
         render:(text,result)=>{
@@ -386,6 +564,17 @@ function OnBoardList() {
     const [startDate, setStartDate] = useState(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
     const [endDate, setEndDate] = useState(new Date(date));
 
+    const [filteredData, setFilteredData] = useState(null);
+    const [isEditTSC,setISEditTSC] = useState(false);
+    const [TSCONBoardData,setTSCONBoardData] = useState({})
+    const [engagementBillAndPayRateTab, setEngagementBillAndPayRateTab] =
+        useState('1');
+    const [activeTab, setActiveTab] = useState('')
+    const [allBRPRdata,setAllBRPRdata] = useState(null);	
+    const [rateReason, setRateReason] = useState(undefined);
+    const [getBillRate, setBillRate] = useState(0);
+    const [getPayRate, setPayRate] = useState(0);
+    console.log('onboardID',filteredData)
   //   var firstDay =
   //   startDate !== null
   //     ? startDate
@@ -402,7 +591,17 @@ function OnBoardList() {
 
     const [getEngagementModal, setEngagementModal] = useState({
       engagementFeedback: false,
+      engagementRenew: false,
+      engagementBillRate: false,
+      engagementPayRate: false,
+      engagementOnboard: false,
       engagementAddFeedback: false,
+      engagementReplaceTalent: false,
+      engagementBillRateAndPayRate: false,
+      engagementEnd: false,
+      engagementInvoice: false,
+      engagementEditAllBillRateAndPayRate:false,
+      engagementCancel:false
     });
     const [getFeedbackFormContent, setFeedbackFormContent] = useState({});
     const [feedBackData, setFeedBackData] = useState({
@@ -430,7 +629,7 @@ function OnBoardList() {
 
     const tableColumnsMemo = useMemo(
 		() =>
-        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId),
+        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata),
 		[],
 	  );
 
@@ -583,6 +782,8 @@ console.log(date)
         if(val.key !== "clientFeedback"){
           if(val.title === "Uplers Fees"){
             obj[`${val.title}`]  = `${data.currencySign} ` + (+data.final_HR_Cost - +data.talent_Cost).toFixed(2) 
+          }else if(val.key === 'action'){
+            return
           }else if(val.key === 'nrPercentage'){
             obj['NR / DP (%)'] = `${data.nrPercentage !== 0 ? data.nrPercentage : ''}  ${+data.dP_Percentage !== 0 ? data.dP_Percentage : ''}`
           }else if(val.key === 'payout_Actual_PRStr'){
@@ -641,6 +842,22 @@ console.log(date)
       }    
           getOnBoardListData(payload);
     }, [ tableFilteredState,searchText,pageIndex,pageSize,dateTypeFilter]);
+
+    const callListData = () =>{
+      let payload ={
+        "pagenumber": pageIndex,
+        "totalrecord": pageSize,
+        "filterFields_OnBoard":{
+          ...tableFilteredState.filterFields_OnBoard,
+            "search" :searchText,
+            toDate: dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
+            fromDate:dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
+            searchMonth: dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
+            searchYear: dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
+        }
+      }    
+          getOnBoardListData(payload);
+    }
 
     const toggleHRFilter = useCallback(() => {
       !getHTMLFilter
@@ -1232,6 +1449,190 @@ console.log(date)
 						/>
 					</Suspense>
 				)}
+
+        {/** ============ MODAL FOR ENGAGEMENT INVOICE ================ */}
+				{getEngagementModal.engagementInvoice && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementInvoice}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementInvoice: false,
+							})
+						}>
+             
+						<EngagementInvoice
+							isModalOpen={getEngagementModal.engagementInvoice}
+							engagementListHandler={() => callListData()}
+							talentInfo={filteredData}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementInvoice: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
+
+        				{/** ============ MODAL FOR ENGAGEMENT END ================ */}
+				{getEngagementModal.engagementEnd && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementEnd}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementEnd: false,
+							})
+						}>
+						<EngagementEnd
+							engagementListHandler={() => callListData()}
+							talentInfo={filteredData}
+							lostReasons={filtersList?.onBoardingLostReasons}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementEnd: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
+        {/** ============ MODAL FOR RENEW ENGAGEMENT ================ */}
+				{getEngagementModal.engagementRenew && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementRenew}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementRenew: false,
+							})
+						}>
+						<RenewEngagement
+							engagementListHandler={() => callListData()}
+							talentInfo={filteredData}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementRenew: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
+					{/** ============ MODAL FOR CLOSE END ================ */}
+					{getEngagementModal.engagementCancel && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementCancel}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementCancel: false,
+							})
+						}>
+						<EngagementCancel
+							engagementListHandler={() => callListData()}
+							talentInfo={filteredData}
+							lostReasons={filtersList?.onBoardingLostReasons}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementCancel: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
+
+        {/** ============ MODAL FOR ENGAGEMENT BILLRATE AND PAYRATE ================ */}
+				{getEngagementModal.engagementBillRateAndPayRate && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementBillRateAndPayRate}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>{
+							setEngagementModal({
+								...getEngagementModal,
+								engagementBillRateAndPayRate: false,
+							})
+							setRateReason(undefined)
+						}
+						}>
+
+						<EngagementBillRateAndPayRate
+							engagementListHandler={() => callListData()}
+							talentInfo={filteredData}
+							closeModal={() =>{
+								setEngagementModal({
+									...getEngagementModal,
+									engagementBillRateAndPayRate: false,
+								})
+								setRateReason(undefined)}
+							}
+							month={new Date(startDate).getMonth()}
+							year={new Date(startDate).getFullYear()}
+							getBillRate={getBillRate}
+							setBillRate={setBillRate}
+							getPayRate={getPayRate}
+							setPayRate={setPayRate}
+							setEngagementBillAndPayRateTab={setEngagementBillAndPayRateTab}
+							engagementBillAndPayRateTab={engagementBillAndPayRateTab}
+							rateReason={rateReason}
+							activeTab={activeTab}
+							setRateReason={setRateReason}
+						/>
+					</Modal>
+				)}
+
+              {/* ================ MODAL FOR EDIT ALL BR PR ================= */}
+                {getEngagementModal.engagementEditAllBillRateAndPayRate && (
+                  <Modal
+                    transitionName=""
+                    width="930px"
+                    centered
+                    footer={null}
+                    open={getEngagementModal.engagementEditAllBillRateAndPayRate}
+                    className="engagementReplaceTalentModal"
+                    onCancel={() =>
+                      setEngagementModal({
+                        ...getEngagementModal,
+                        engagementEditAllBillRateAndPayRate: false,
+                      })
+                    }>
+                      <EditAllBRPR
+                      closeModal={() =>
+                        setEngagementModal({
+                          ...getEngagementModal,
+                          engagementReplaceTalent: false,
+                        })
+                      }
+                      allBRPRdata={allBRPRdata}
+                      />
+                  </Modal>
+                )}
 
 {getEngagementModal.engagementFeedback && (
 					<Modal
