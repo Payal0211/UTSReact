@@ -283,7 +283,7 @@ align: 'left',
     <div className={allengagementReplceTalentStyles.engagementModalContainer}>
         <div
             className={`${allengagementReplceTalentStyles.headingContainer} ${allengagementReplceTalentStyles.replaceTalentWrapper}`}>
-            <h1> {allBRPRdata?.engagementID} ( {allBRPRdata?.actualBillRate.split(' ')[1]} )</h1>
+           {allBRPRdata?.actualBillRate?.split(' ')[1] && <h1> {allBRPRdata?.engagementID} ( {allBRPRdata?.actualBillRate?.split(' ')[1]} )</h1>} 
             <p>
                 *Double Click on BR, PR to enable edit
             </p>
