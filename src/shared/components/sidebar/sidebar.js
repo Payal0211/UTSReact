@@ -291,20 +291,20 @@ const isAccess = (ID, title) =>{
 		isVisible =  true	
 		return isVisible	
 	}
-	if ((title === 'Engagement' ||  title === "Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
+	if ((  title === "Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
 		  && ID === 6){
 		isVisible =  true
 		return isVisible		
 	}
-	if ((title === 'Engagement' || title === 'Engagement Report' || title === "Dashboard"  ||  title === 'Talent' || title === 'Master' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
+	if (( title === 'Engagement' || title === "Dashboard"  ||  title === 'Talent' || title === 'Master' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
 		  && ID === 3){
 		isVisible =  true
 		return isVisible		
 	}
 	 if(title === 'Hiring Request' || title === "MasterReports" ||
 	  title === 'Users' || 
-	 title === 'Engagement' ||  title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
-	 title === 'Engagement Report' || title === 'Reports' ||
+	   title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
+	 title === 'Engagement' || title === 'Reports' ||
 	 title === 'Demand Funnel' ||
 	 title === 'SLA Report' || title === 'Notes' ||
 	 title === 'Client' || title === 'JD Efficiency Report' || title === 'Incentive Report' ||
@@ -375,21 +375,21 @@ const getSideBar = (usertypeID,EmployeeID) => {
 		}),
 		new SideBarModels({
 			id: 'engagementReport',
-			title: 'Engagement Report',
+			title: 'Engagement',
 			isActive: false,
 			icon: EngagementReport,
 			navigateTo: UTSRoutes.ONBOARD,
-			isVisible: isAccess(usertypeID, 'Engagement Report')
+			isVisible: isAccess(usertypeID, 'Engagement')
 		}),
 		new SideBarModels({
 			id: 'Engagement_List',
-			title: 'Engagement',
+			title: 'Engagement Dashboard',
 			isActive: false,
 			icon: HandShake,
 			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
 			isChildren: false,
 			branch: [],
-			isVisible: isAccess(usertypeID, 'Engagement')
+			isVisible: isAccess(usertypeID, 'Engagement Dashboard')
 		}),
 		new SideBarModels({
 			id: 'UTS_UserList',
