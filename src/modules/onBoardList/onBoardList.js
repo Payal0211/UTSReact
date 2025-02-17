@@ -202,7 +202,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 											...getEngagementModal,
 											engagementEditAllBillRateAndPayRate: true,
 										});
-										setAllBRPRdata(param);
+										setAllBRPRdata({...param,onboardID:param.id, hrID:param.hiringId});
 										break;
 									}
 									case 'Add Invoice Details': {
@@ -574,7 +574,7 @@ function OnBoardList() {
     const [rateReason, setRateReason] = useState(undefined);
     const [getBillRate, setBillRate] = useState(0);
     const [getPayRate, setPayRate] = useState(0);
-    console.log('onboardID',filteredData)
+
   //   var firstDay =
   //   startDate !== null
   //     ? startDate
