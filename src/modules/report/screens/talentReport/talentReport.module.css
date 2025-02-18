@@ -240,7 +240,7 @@
 .searchFilterSet {
   border: 1px solid var(--background-color-metal);
   border-radius: 8px;
-  width: 180px;
+  width: 300px;
   height: 44px;
   display: flex;
   justify-content: space-evenly;
@@ -444,7 +444,7 @@ position: relative;
   }
 
   .searchFilterSet {
-    width: 180px;
+    width: 300px;
     height: 35px;
   }
 
