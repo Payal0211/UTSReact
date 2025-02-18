@@ -527,24 +527,7 @@ function CompanySection({
                       </>
                     {/* )} */}
                   </div>
-                </div>
 
-                <EngagementSection
-                  companyID={companyID}
-                  register={register}
-                  errors={errors}
-                  setValue={setValue}
-                  watch={watch}
-                  resetField={resetField}
-                  unregister={unregister}
-                  hiringDetailsFromGetDetails={hiringDetailsFromGetDetails}
-                  engagementDetails={engagementDetails}
-                  hooksProps={hooksProps}
-                  loadingDetails={loadingDetails}
-                  fields={fields}
-                />
-
-                <div className={AddNewClientStyle.row}>
                   <div className={AddNewClientStyle.colMd6}>
                     <HRInputField
                       register={register}
@@ -592,6 +575,25 @@ function CompanySection({
                       />
                     </div>
                   </div>
+                </div>
+
+                <EngagementSection
+                  companyID={companyID}
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  watch={watch}
+                  resetField={resetField}
+                  unregister={unregister}
+                  hiringDetailsFromGetDetails={hiringDetailsFromGetDetails}
+                  engagementDetails={engagementDetails}
+                  hooksProps={hooksProps}
+                  loadingDetails={loadingDetails}
+                  fields={fields}
+                />
+
+                <div className={AddNewClientStyle.row}>
+                 
 
                   <div className={AddNewClientStyle.colMd6}>
                     <HRInputField

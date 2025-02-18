@@ -5,7 +5,7 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
-import { Table, Radio, Modal, message, Tooltip, Dropdown , Menu } from 'antd';
+import { Table, Radio, Modal, message, Tooltip, Dropdown , Menu, Skeleton } from 'antd';
 import { useEffect, useMemo, useState, useCallback, Suspense, useRef } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
@@ -32,6 +32,8 @@ import { engagementUtils } from 'modules/engagement/screens/engagementList/engag
 import EngagementFeedback from 'modules/engagement/screens/engagementFeedback/engagementFeedback';
 import EngagementAddFeedback from 'modules/engagement/screens/engagementAddFeedback/engagementAddFeedback';
 import { useForm } from 'react-hook-form';
+import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
+import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import moment from 'moment';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
@@ -49,7 +51,7 @@ import EngagementBillRateAndPayRate from 'modules/engagement/screens/engagementB
 import EditAllBRPR from 'modules/engagement/screens/editAllBRPR/editAllBRPR';
 import RenewEngagement from 'modules/engagement/screens/renewEngagement/renewEngagement';
 
-const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata) => {
+const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler) => {
     return [   
       {
 				title: '    ',
@@ -332,6 +334,10 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         key: "amAssignmentuser",
         align: "left",
         width: '150px', 
+        render:(text,data)=>{
+					return <div className={onboardList.amName}  onClick={()=>{editAMModalcontroler(data.id
+          )}}>{text}</div>
+				}
       },
       {
         title: "Eng. Status",
@@ -372,7 +378,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       //   width: '150px',
       // },
       {
-        title: "Actual BR",
+        title: "BR",
         dataIndex: "payout_BillRate",
         key: "payout_BillRate",
         align: "left",
@@ -382,7 +388,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         }
       },
       {
-        title: "Actual PR",
+        title: "PR",
         dataIndex: "payout_PayRate",
         key: "payout_PayRate",
         align: "left",
@@ -575,6 +581,19 @@ function OnBoardList() {
     const [getBillRate, setBillRate] = useState(0);
     const [getPayRate, setPayRate] = useState(0);
 
+      const {
+        register:AMregister,
+        handleSubmit:AMSubmit,
+        setValue:AMsetValue,
+        resetField:resetAMField,	
+        formState: { errors:AMErrors },
+      } = useForm();
+
+    const [editAMModal,setEditAMModal] = useState(false)
+      const [AMLIST, setAMLIST] = useState([])
+      const [AMDetails,setAMDetails] = useState({});
+      const [AMLOADING,setAMLOADING] = useState(false)
+
   //   var firstDay =
   //   startDate !== null
   //     ? startDate
@@ -627,9 +646,21 @@ function OnBoardList() {
     const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
     const [dateTypeFilter , setDateTypeFilter] = useState(0)
 
+    const editAMModalcontroler = async (id) =>{
+        setEditAMModal(true)
+        let result = await engagementRequestDAO.getAMDetailsDAO(id)
+      
+        if(result?.statusCode === HTTPStatusCode.OK) {
+          let data = result.responseBody.details
+          setAMLIST(data.AMList.map(am=> ({id:am.text,value:am.value})))
+          setAMDetails(data.PayOut_Basic_Informtion)
+          AMsetValue('amName', data.PayOut_Basic_Informtion.aM_UserName)
+        }		
+      }
+
     const tableColumnsMemo = useMemo(
 		() =>
-        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata),
+        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler),
 		[],
 	  );
 
@@ -637,6 +668,37 @@ function OnBoardList() {
       () => allEngagementConfig.clientFeedbackTypeConfig(),
       [],
     );
+
+      const saveEditAM = async (d)=>{
+        setAMLOADING(true)
+        let payload = {
+          "payOutID": AMDetails?.payOutID,
+          "onBoardID": AMDetails?.onBoardID,
+          "hiringRequestID": AMDetails?.hiringRequestID,
+          "contactID": AMDetails?.contactID,
+          "talentID": AMDetails?.talentID,
+          "month": new Date(startDate).getMonth() + 1,
+          "year": new Date(startDate).getFullYear(),
+          "oldAMPersonID": AMDetails?.aM_SalesPersonID,
+          "newAMPersonID": +d.newAMName,
+          "comment": d.note,
+          "engagementId_HRID": AMDetails?.engagementId_HRID
+          }
+    
+        const result=  await engagementRequestDAO.saveAMNAMEEDITDAO(payload)
+    
+        if(result.statusCode === HTTPStatusCode.OK) {
+          setEditAMModal(false)
+          setAMLIST([])
+          setAMDetails({})
+          resetAMField('amName')
+          resetAMField('newAMName')
+          resetAMField('note')
+          callListData()
+          setAMLOADING(false)
+        }
+        setAMLOADING(false)
+      }
 
     const {
       register,
@@ -1713,6 +1775,94 @@ console.log(date)
 						/>
 					</Modal>
 				)}
+
+{/* edit AM Name */}
+{editAMModal &&  <Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className={onboardList.engagementaddtscModal}
+						open={editAMModal}
+						onCancel={() =>
+							setEditAMModal(false)
+						}
+						>
+							<div >
+				<h2 className={onboardList.modalTitle}>Edit AM/NBD</h2>
+				<p>Company Name: <b className={onboardList.hadingTitle}>{AMDetails?.companyName?? 'NA'}</b> | Client Name: <b className={onboardList.hadingTitle}>{AMDetails?.clientName?? 'NA'}</b> | Effictive From : <b className={onboardList.hadingTitle}>{moment(startDate).format('MM-YYYY')}</b></p>
+				<p>EN/HR : <b className={onboardList.hadingTitle}>{AMDetails?.engagementId_HRID}</b> </p>
+			</div>
+
+			<>
+				{AMLOADING ? <Skeleton active /> : <><div className={onboardList.row}>
+			<div className={onboardList.colMd6}>
+				<HRInputField
+					register={AMregister}
+					label={'Current AM/NBD '}
+					name={'amName'}
+					type={InputType.TEXT}
+					// value={AMDetails?.aM_UserName}
+					placeholder="Enter AM "
+					disabled
+				/>
+			</div>
+	
+			<div className={`${onboardList.colMd6}  ${onboardList.customSelectAMName}`}>
+				<HRSelectField
+					setValue={(val, _)=>AMsetValue(val,_)}
+					register={AMregister}
+					searchable={true}
+					name="newAMName"
+					label="Select New AM/NBD"
+					defaultValue="Please Select"
+					options={AMLIST?.sort((a, b) => a.value.localeCompare(b.value))}
+					required
+					isError={AMErrors['newAMName'] && AMErrors['newAMName']}
+					errorMsg="Please select AM."
+					className="custom-select-class"
+				/>
+			</div>
+			</div>
+
+			<div className={onboardList.row}>
+			<HRInputField
+
+				label={'Note/Comments'}
+				register={AMregister}
+				name={'note'}
+				type={InputType.TEXT}
+				placeholder="Enter Note/Comment"
+				isTextArea
+				rows={5}
+				required
+				validationSchema={{
+				required: 'please enter Note/Comments.',
+				}}
+				isError={AMErrors['note'] && AMErrors['note']}
+				errorMsg="Please Enter note / comments."
+				/>
+			</div>
+
+			<div className={onboardList.formPanelAction}>
+						<button
+							type="submit"
+							onClick={AMSubmit(saveEditAM)}
+							className={onboardList.btnPrimary}
+							disabled={isLoading}
+							>
+							Save
+						</button>
+						<button
+							onClick={()=>setEditAMModal(false)}
+							className={onboardList.btnCancle}>
+							Cancel
+						</button>
+					</div></>}
+				</>
+
+			
+							</Modal>}
         </div>
     )
 }
