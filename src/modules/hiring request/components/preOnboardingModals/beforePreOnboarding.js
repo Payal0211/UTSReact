@@ -190,6 +190,7 @@ export default function BeforePreOnboarding({
   const [controlledState, setControlledState] = useState([]);
   const [controlledIMOW, setControlledMOW] = useState([]);
   const [data,setData] = useState({});
+  const [workDaysType,setWorkDaysType] = useState(true)
   const getStartEndTimeHandler = useCallback(async () => {
     const durationTypes = await MasterDAO.getStartEndTimeDAO();
     setStaryEndTimes(durationTypes && durationTypes?.responseBody);
@@ -816,8 +817,8 @@ function calculateDayGap(day1, day2) {
         "city": d?.city,
         "stateID": d?.stateID?.id,
         "work_option_id":d?.workOption?d?.workOption?.id:null,
-        'fromWorkingDay': d?.fromDay ? d?.fromDay.id : null,
-        'toWorkingDay':d?.toDay ? d?.toDay.id : null,
+        'fromWorkingDay': workDaysType ? 1 : d?.fromDay ? d?.fromDay.id : null,
+        'toWorkingDay': workDaysType ? 7 : d?.toDay ? d?.toDay.id : null,
         "talent_Designation": d?.talent_Designation,
         "amSalesPersonID": d?.amSalesPersonID?.id,
         "isReplacement": engagementReplacement?.replacementData,
@@ -900,7 +901,8 @@ function calculateDayGap(day1, day2) {
       addLatter,
       assignAM,
       clientTeamMembers,getUploadFileData,deviceMasters,
-      data
+      data,
+      workDaysType
     ]
   );
 
@@ -2413,7 +2415,22 @@ function calculateDayGap(day1, day2) {
                           />
                         </div>
                       </div>
-                      <div className={HRDetailStyle.modalFormCol} style={{display:'flex'}}>
+
+                      <div>
+                      <span>{' Type Of Work Days'}</span>   
+                        <Radio.Group name="assignAM" value={workDaysType}  onChange={(e) => {setWorkDaysType(e.target.value)
+                                          // if(preONBoardingData?.preOnboardingDetailsForAMAssignment?.amUserID === 0){
+                                          //   resetField("amSalesPersonID")
+                                          //   setControlledAssignAM([]);
+                                          // }
+
+                                          }} style={{display:'flex',flexDirection:'column',marginTop:'5px',height:'50px',justifyContent:'space-around'}}>
+                                                <Radio value={true}>Default Selected Full calendar days.</Radio>
+                                                <Radio value={false}>Start Day to End day.</Radio>
+                                          </Radio.Group>          
+                      </div>
+
+{!workDaysType &&  <div className={HRDetailStyle.modalFormCol} style={{display:'flex', padding:'0',width:'100%'}}>
                       <div className={HRDetailStyle.modalFormCol}>
                           <div className={HRDetailStyle.modalFormLeaveUnderLine}>
                           <HRSelectField
@@ -2431,7 +2448,7 @@ function calculateDayGap(day1, day2) {
                             isError={
                               errors["fromDay"] && errors["fromDay"]
                             }
-                            required={!talentDeteils?.IsHRTypeDP}
+                            required={!workDaysType?  !talentDeteils?.IsHRTypeDP : false}
                             errorMsg={"please select."}
                             disabled={actionType==="Legal"?true:false}
                           />
@@ -2453,12 +2470,13 @@ function calculateDayGap(day1, day2) {
                             isError={
                               errors["toDay"] && errors["toDay"]
                             }
-                            required={!talentDeteils?.IsHRTypeDP}
+                            required={!workDaysType?  !talentDeteils?.IsHRTypeDP : false}
                             errorMsg={"please select."}
                             disabled={actionType==="Legal"?true:false}
                           />
                           </div></div>
-                        </div>
+                        </div>}
+                     
                       {preONBoardingData?.preOnboardingDetailsForAMAssignment?.isHRTypeDP=== false && 
                         <div className={HRDetailStyle.colMd12}>
                           <div className={HRDetailStyle.modalFormEdited}>
