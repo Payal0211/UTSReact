@@ -38,7 +38,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                   { confidentialInfo === 1 && <p style={{marginTop:'10px',marginBottom:'0'}} className={AddNewClientStyle.teansactionMessage}>Be careful not to use company names in About, Culture, Job description if you choose to keep information confidential. </p>} 
                 </div>
 
-                { confidentialInfo === 1 && <>
+                { confidentialInfo === 1 && <div className={AddNewClientStyle.confidentialSection}>
                   <div className={AddNewClientStyle.row}>
                   <div className={AddNewClientStyle.colMd6}>
                     <HRInputField
@@ -151,7 +151,8 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                       placeholder="Company Linkedin"
                       // required
                     />
-                     {showPOCMSG && <p className={AddNewClientStyle.teansactionMessage}>Kindly update the POC details once you add in the client details section.</p>}   
+                     {showPOCMSG ? <p className={AddNewClientStyle.teansactionMessage}>Kindly update the POC details once you add the client details section. If not added, the POC details will be considered as "N/A."</p> :
+                     <p className={AddNewClientStyle.teansactionMessage}>If the client POC details are not added then it will be considered as "N/A."</p>}   
                   </div>
                   </div>
 
@@ -311,7 +312,7 @@ export default function CompanyConfirmationFields({setConfidentialInfo,confident
                     />
                   </div>
                   </div>
-                </>}
+                </div>}
               </>
   )
 }

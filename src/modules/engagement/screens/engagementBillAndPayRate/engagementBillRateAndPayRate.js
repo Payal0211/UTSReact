@@ -446,7 +446,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									validationSchema={{
 										required: 'please enter additional comment.',
 									}}
-									label="Additioanl Comment"
+									label="Additional Comment"
 									name="billRateAdditionalComment"
 									type={InputType.TEXT}
 									placeholder="Enter"
@@ -630,7 +630,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									validationSchema={{
 										required: 'please enter additional comment.',
 									}}
-									label="Additioanl Comment"
+									label="Additional Comment"
 									name="payRateAdditionalComment"
 									type={InputType.TEXT}
 									placeholder="Enter"
