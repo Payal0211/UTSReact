@@ -536,7 +536,7 @@ function AMDashboard() {
       {
         title: (
           <>
-            Actual End Date <br />/ End Date
+            LWD <br />- End Date
           </>
         ),
         dataIndex: "contractEndDate",
@@ -546,7 +546,7 @@ function AMDashboard() {
         render: (text, item) => {
           return (
             <>
-              {item.actualEndDate ?? "NA"} <br />/ {text ?? "NA"}
+              {item.actualEndDate ?? "NA"} <br />- {text ?? "NA"}
             </>
           );
         },
