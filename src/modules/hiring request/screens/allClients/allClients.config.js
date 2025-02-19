@@ -10,6 +10,7 @@ import moment from "moment";
 import { result } from "lodash";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
+        console.log(filterList)
         return [
 			// {
 			// 	label: 'Status',
@@ -44,6 +45,12 @@ export const allClientsConfig = {
 				child: filterList?.CompanyCategory,
 				isSearch: false,
             },
+            {
+                label: 'AM',
+				name: 'amIds',
+				child: filterList?.AMList,
+				// isSearch: true,
+            }   ,
             // {
             //     label: 'POC',
 			// 	name: 'poc',
