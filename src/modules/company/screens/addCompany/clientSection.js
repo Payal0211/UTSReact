@@ -389,7 +389,8 @@ function ClientSection({
                           type="submit"
                           onClick={() => {
                             // resendInviteEmailAPI(item?.ID);
-                            setClientID(item?._id);
+                            let cont = contactDetails.find(i=> i.emailID === item.emailID)
+                            setClientID(cont.id);
                             setConfirmationModal(true);
                           }}
                           className={AddNewClientStyle.btnPrimaryResendBtn}
