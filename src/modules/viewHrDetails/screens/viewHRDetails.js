@@ -243,7 +243,7 @@ const ViewHRDetails = () => {
                      
 
                       <li>
-                        <span>HR Form Link:</span>{" "}
+                        <span>CTP Link:</span>{" "}
                         {hiringDetails?.responseBody?.details?.bqLink ? (
                           <a
                             href={hiringDetails?.responseBody?.details?.bqLink}

@@ -304,8 +304,8 @@ const onBoardListConfig = (
     {
       title: (
         <>
-          End Date / <br />
-          Last Working Date
+          LWD - <br />
+          End Date
         </>
       ),
       dataIndex: "contractEndDate",
@@ -315,8 +315,8 @@ const onBoardListConfig = (
       render: (text, result) => {
         return (
           <>
-            {text}
-            <br />/{result?.lastWorkingDate ? result?.lastWorkingDate : "NA"}
+            {result?.lastWorkingDate ? result?.lastWorkingDate : "NA"}
+            <br />-{" "}{text}
           </>
         );
       },
@@ -611,7 +611,7 @@ function OnBoardList() {
             }else if(val.key === "payout_Actual_PRStr"){
               obj[`Final PR  (INR)`] = `${data[val.key] ?? ''}`
             }else if(val.key === "contractEndDate"){
-              obj[`End Date / Last Working Date`] = `${data[val.key]} / ${data?.lastWorkingDate ? data?.lastWorkingDate : "NA"}`
+              obj[`LWD / End Date`] = `${data?.lastWorkingDate ? data?.lastWorkingDate : "NA"} / ${data[val.key]}`
             } else if (val.title === "Uplers Fees") {
               obj[`${val.title}`] =
                 (+data.final_HR_Cost - +data.talent_Cost).toFixed(2) +

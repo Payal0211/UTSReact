@@ -484,7 +484,7 @@ export default function TalentReport() {
       {
         title: (
           <>
-            Last Working date <br />/ Contract End Date
+            LWD <br />- Contract End Date
           </>
         ),
         dataIndex: "lastWorkingDate",
@@ -494,7 +494,7 @@ export default function TalentReport() {
         render: (text, result) => {
           return (
             <>
-              {text ? text : "NA"} <br />/{" "}
+              {text ? text : "NA"} <br />-{" "}
               {result.contractEndDate ? result.contractEndDate : "NA"}
             </>
           );
