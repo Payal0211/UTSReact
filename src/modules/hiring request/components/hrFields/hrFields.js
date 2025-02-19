@@ -4878,14 +4878,14 @@ const HRFields = ({
                     <HRInputField
                       register={register}
                       errors={errors}
-                      validationSchema={{
-                        required: "please enter the HR form link.",
-                      }}
-                      label="HR Form Link"
+                      // validationSchema={{
+                      //   required: "please enter the HR form link.",
+                      // }}
+                      label="CTP Link"
                       name="bqFormLink"
                       type={InputType.TEXT}
-                      placeholder="Enter the link for HR form"
-                      required
+                      placeholder="Enter the CTP link"
+                      // required
                     />
                   </div>
                 )}

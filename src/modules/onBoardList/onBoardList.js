@@ -361,13 +361,13 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         width: '120px', 
       },
       {
-        title: <>End Date / <br/>Last Working Date</>,
+        title: <>LWD - <br/>End Date</>,
         dataIndex: "contractEndDate",
         key: "contractEndDate",
         align: "left",
         width: '150px', 
         render:(text,result)=>{
-          return <>{text}<br/>/{result?.lastWorkingDate ? result?.lastWorkingDate : 'NA'}</>
+          return <>{result?.lastWorkingDate ? result?.lastWorkingDate : 'NA'}<br/>- {" "}{text}</>
         }
       },
       // {
@@ -853,7 +853,7 @@ console.log(date)
           }else if(val.key === 'payout_PerDayTalentCost_INR'){
             obj['Per Day PR (INR)'] = `${data.payout_PerDayTalentCost_INR ? `₹ ${data.payout_PerDayTalentCost_INR}` : ''}`
           }else if(val.key === 'contractEndDate'){
-            obj['End Date / Last Working Date'] = `${data.contractEndDate} / ${data?.lastWorkingDate ? data?.lastWorkingDate : 'NA'}`
+            obj['LWD / End Date'] = `${data?.lastWorkingDate ? data?.lastWorkingDate : 'NA'} / ${data.contractEndDate}`
           }else{
             obj[`${val.title}`] = data[`${val.key}`]
           }

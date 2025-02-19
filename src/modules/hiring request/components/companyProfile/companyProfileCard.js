@@ -529,7 +529,7 @@ const CompanyProfileCard = ({
               
               </div>
               <div className={CompanyProfileCardStyle.TRParked}>
-                <span>Behavioral Questions:</span>&nbsp;&nbsp;
+                <span>CTP Link:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.BQLink ? (
                     <a
