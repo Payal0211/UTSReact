@@ -199,6 +199,21 @@ export const allClientsConfig = {
                     width: '150px',
                 },
                 {
+                    title: 'Engagement Type ( % )',
+                    dataIndex: 'engagementType',
+                    key: 'engagementType',
+                    width: '200px',
+                    render:(text, value)=>{
+                        return`${text ?? ''}   ${value.engPercent ? `( ${value.engPercent} % )` : ''} `
+                    }
+                },
+                // {
+                //     title: 'Eng. %',
+                //     dataIndex: 'engPercent',
+                //     key: 'engPercent',
+                //     width: '100px',
+                // },
+                {
                     title: 'Credit Utilization',
                     dataIndex: 'creditUtilization',
                     key: 'creditUtilization',
