@@ -58,7 +58,8 @@ function AllClients() {
             fromDate: "",
             toDate: "",
             searchText: "",
-            SearchSourceCategory:""
+            SearchSourceCategory:"",
+            amIds:''
         }
 	});
     const [totalRecords, setTotalRecords] = useState(0);
