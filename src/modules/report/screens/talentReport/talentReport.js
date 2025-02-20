@@ -484,7 +484,7 @@ export default function TalentReport() {
       {
         title: (
           <>
-            LWD <br />- Contract End Date
+            LWD <br />- End Date
           </>
         ),
         dataIndex: "lastWorkingDate",
