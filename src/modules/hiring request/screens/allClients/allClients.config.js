@@ -213,12 +213,12 @@ export const allClientsConfig = {
                 //     key: 'engPercent',
                 //     width: '100px',
                 // },
-                {
-                    title: 'Credit Utilization',
-                    dataIndex: 'creditUtilization',
-                    key: 'creditUtilization',
-                    width: '150px',
-                },
+                // {
+                //     title: 'Credit Utilization',
+                //     dataIndex: 'creditUtilization',
+                //     key: 'creditUtilization',
+                //     width: '150px',
+                // },
                 {
                     title: 'Client',
                     dataIndex: 'clientName',
@@ -230,12 +230,16 @@ export const allClientsConfig = {
                     dataIndex: 'clientEmail',
                     key: 'clientEmail',
                     width: '250px',
-                },
+                }, 
                 {
-                    title: 'Access Type',
-                    dataIndex: 'accessType',
-                    key: 'accessType',
-                    width: '250px',
+                    title: 'AM',
+                    dataIndex: 'aM_UserName',
+                    key: 'aM_UserName',
+                    width: '200px',
+                    render:(text,result)=>{
+                        let data = {clientID: result?.clientID, companyID: result?.companyID }
+                        return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
+                    }
                 },
                 {
                     title: 'NBD',
@@ -256,15 +260,11 @@ export const allClientsConfig = {
                     // },
                 },
                 {
-                    title: 'AM',
-                    dataIndex: 'aM_UserName',
-                    key: 'aM_UserName',
-                    width: '200px',
-                    render:(text,result)=>{
-                        let data = {clientID: result?.clientID, companyID: result?.companyID }
-                        return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
-                    }
-                },
+                    title: 'Access Type',
+                    dataIndex: 'accessType',
+                    key: 'accessType',
+                    width: '150px',
+                },           
                 // {
                 //     title: 'Geo',
                 //     dataIndex: 'geo',
