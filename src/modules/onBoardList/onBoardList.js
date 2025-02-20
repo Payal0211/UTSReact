@@ -5,7 +5,7 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
-import { Table, Radio, Modal, message, Tooltip, Dropdown , Menu, Skeleton } from 'antd';
+import { Table, Radio, Modal, message, Tooltip, Dropdown , Menu, Skeleton,Select } from 'antd';
 import { useEffect, useMemo, useState, useCallback, Suspense, useRef } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
@@ -644,7 +644,20 @@ function OnBoardList() {
     });
     const [feedBackSave, setFeedbackSave] = useState(false);
     const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
-    const [dateTypeFilter , setDateTypeFilter] = useState(0)
+    const [dateTypeFilter , setDateTypeFilter] = useState(2)
+
+      const dateTypeList = [{
+        value: 2,
+        label: 'No Dates',
+      },
+      {
+        value: 0,
+        label: 'By Month',
+      },
+      {
+        value: 1,
+        label: 'With Date Range',
+      }]
 
     const editAMModalcontroler = async (id) =>{
         setEditAMModal(true)
@@ -896,10 +909,10 @@ console.log(date)
         "filterFields_OnBoard":{
           ...tableFilteredState.filterFields_OnBoard,
             "search" :searchText,
-            toDate: dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
-            fromDate:dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
-            searchMonth: dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
-            searchYear: dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
+            toDate: dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
+            fromDate: dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
+            searchMonth:dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
+            searchYear:dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
         }
       }    
           getOnBoardListData(payload);
@@ -912,10 +925,10 @@ console.log(date)
         "filterFields_OnBoard":{
           ...tableFilteredState.filterFields_OnBoard,
             "search" :searchText,
-            toDate: dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
-            fromDate:dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
-            searchMonth: dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
-            searchYear: dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
+            toDate:dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
+            fromDate:dateTypeFilter === 2 ? '' :dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
+            searchMonth:dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
+            searchYear: dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
         }
       }    
           getOnBoardListData(payload);
@@ -1052,7 +1065,7 @@ console.log(date)
                 </div>
                 <div className={onboardList.filterRight}>	
                
-                <Radio.Group    
+                {/* <Radio.Group    
                 style={{display: 'flex', flexDirection: 'column', gap:'5px'}}             
                       onChange={(e) => {
                        setDateTypeFilter(e.target.value)
@@ -1075,7 +1088,37 @@ console.log(date)
                     >
                       <Radio value={0}>Current Month</Radio>
                       <Radio value={1}>Search With Date Range</Radio>
-                    </Radio.Group>  	                 
+                    </Radio.Group>  	                  */}
+
+                      <div className={`${onboardList.modifySelect}`}>
+                        <Select
+                          id="rejectedTalentsValue"
+                          placeholder="Select"
+                          value={dateTypeFilter}
+                          // showSearch={true}
+                          style={{width:'170px'}}
+                          onChange={(value, option) => {
+                            setDateTypeFilter(value);
+                            setStartDate(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
+                       setEndDate(new Date(date));
+                   
+                        setTableFilteredState({
+                          ...tableFilteredState,
+                          searchText: searchText,
+                          filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard ,
+                            fromDate: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
+                          toDate: new Date(date),
+                          EngType:'A',EngagementOption:'All'
+                          },
+                        })
+                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:'A',EngagementOption:'All' } }))
+                        
+                          }}
+                          options={dateTypeList}
+                          optionFilterProp="value"
+                          // getPopupContainer={(trigger) => trigger.parentElement}
+                        />
+                      </div>
 
 
             {dateTypeFilter === 0 &&  <div className={onboardList.calendarFilterSet}>

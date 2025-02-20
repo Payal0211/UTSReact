@@ -534,7 +534,7 @@ const updateSpaceIDForClientFun = async () =>{
                <EditAMModal amToFetch={amToFetch} closeModal={() => setEditAM(false)} reloadClientList={reloadClientList} />
             </Modal>}  
 
-            <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal} setcompanyID={setcompanyID} getcompanyID={getcompanyID} />
+            <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal} setcompanyID={setcompanyID} getcompanyID={getcompanyID} filtersList={filtersList} />
             </>
     )
 }

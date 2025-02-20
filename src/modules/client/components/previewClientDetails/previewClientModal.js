@@ -57,6 +57,7 @@ function PreviewClientModal({
   setIsPreviewModal,
   setcompanyID,
   getcompanyID,
+  filtersList
 }) {
   const {
     register,
@@ -85,6 +86,7 @@ function PreviewClientModal({
   const [isEditCompanyIndustry, setIsEditCompanyIndustry] = useState(false);
   const [isEditHeadquarters, setIsEditHeadquarters] = useState(false);
   const [isEditLinkedInURL, setIsEditLinkedInURL] = useState(false);
+  const [isEditUserName, setIsEditUserName] = useState(false);
   const [getCompanyDetails, setCompanyDetails] = useState({});
   const [showAllInvestors, setShowAllInvestors] = useState(false);
   const [isAnotherRound, setAnotherRound] = useState(false);
@@ -101,6 +103,8 @@ function PreviewClientModal({
   const [controlledperk, setControlledperk] = useState([]);
   const [combinedPerkMemo, setCombinedPerkMemo] = useState([]);
   const [controlledFoundedInValue, setControlledFoundedInValue] = useState("");
+  const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
+  const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
     googleDriveFileUpload: "",
@@ -244,6 +248,10 @@ function PreviewClientModal({
       setValue("investors", data?.fundingDetails?.[0]?.investors);
       setValue("fundingMonth", data?.fundingDetails?.[0]?.fundingMonth);
       setValue("fundingYear", data?.fundingDetails?.[0]?.fundingYear);
+      setValue("LeadType", data?.basicDetails?.leadUserType);
+      setControlledLeadTypeValue(data?.basicDetails?.leadUserType)
+      setValue("LeadUser", data?.basicDetails?.leadUserID);
+      setControlledLeadUserValue(data?.basicDetails?.leadUserName)
       setIsAboutUs(data?.basicDetails?.aboutCompany);
       setIsCulture(data?.basicDetails?.culture);
       setIsSelfFunded(data?.basicDetails?.isSelfFunded);
@@ -330,6 +338,27 @@ function PreviewClientModal({
     if (res?.statusCode === HTTPStatusCode.OK) {
       getDetails();
       setIsEditCompanyType(false);
+    }
+    setIsLoading(false);
+  };
+
+  const handleSubmitLeadUserType = async () => {
+    setIsLoading(true);
+    let payload = {
+      basicDetails: {
+        companyID: getcompanyID,
+        companyType: watch("companyType"),
+        "headquaters": watch("headquarters"),
+        "leadUserID" : watch('LeadUser'),
+        "leadUserType":watch('LeadType')
+      },
+      IsUpdateFromPreviewPage: true,
+    };
+
+    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+    if (res?.statusCode === HTTPStatusCode.OK) {
+      getDetails();
+      setIsEditUserName(false)
     }
     setIsLoading(false);
   };
@@ -470,6 +499,15 @@ function PreviewClientModal({
     id: year.toString(),
     value: year.toString(),
   }));
+
+  const leadTupeOptions = [{
+    id: 12,
+    value: 'InBound',
+  },
+  {
+    id: 11,
+    value: 'OutBound',
+  }];
 
   const uploadFileHandler = useCallback(
     async (e) => {
@@ -1443,6 +1481,22 @@ function PreviewClientModal({
                               {getCompanyDetails?.basicDetails?.linkedInProfile
                                 ? getCompanyDetails?.basicDetails
                                   ?.linkedInProfile
+                                : "NA"}{" "}
+                            </p>
+                          </li>
+                          <li>
+
+                            <span onClick={() => setIsEditUserName(true)}>
+                              {" "}
+                              Lead User <EditNewIcon />{" "}
+                            </span>
+
+                            <p>
+                              {" "}
+                              {getCompanyDetails?.basicDetails?.leadUserName
+                                ? `${getCompanyDetails?.basicDetails
+                                  ?.leadUserName} (${getCompanyDetails?.basicDetails
+                                    ?.leadUserType})`
                                 : "NA"}{" "}
                             </p>
                           </li>
@@ -3780,6 +3834,104 @@ function PreviewClientModal({
             type="button"
             className={previewClientStyle.btnPrimary}
             onClick={() => onSubmitField("linkedInProfile")}
+          >
+            {" "}
+            SAVE{" "}
+          </button>
+        </div>
+      </Modal>
+
+       {/* Lead User Modal*/}
+       <Modal
+        centered
+        open={isEditUserName}
+        onCancel={() => {
+          setIsEditUserName(false)
+          setControlledLeadUserValue('')
+          resetField("LeadUser")
+        }}
+        width={300}
+        footer={false}
+        maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
+      >
+
+        <HRSelectField
+              controlledValue={controlledLeadTypeValue}
+              setControlledValue={val=>{
+                setControlledLeadTypeValue(val)
+                setControlledLeadUserValue('')
+                resetField("LeadUser")
+              }}
+              isControlled={true}
+              register={register}
+               errors={errors}
+               isError={
+                errors['LeadType'] && errors['LeadType']
+              }
+              errorMsg="Please select lead type."
+              setValue={setValue}
+              label="Lead Type"
+              name="LeadType"
+              mode={"value"}
+              defaultValue="Select"
+              // searchable={true}
+              //  isError={errors["foundedIn"] && errors["foundedIn"]}
+              required
+              //  errorMsg={"Please select Founded in"}
+              options={leadTupeOptions}
+            />
+
+
+        <HRSelectField
+              controlledValue={controlledLeadUserValue}
+              setControlledValue={setControlledLeadUserValue}
+              isControlled={true}
+              register={register}
+               errors={errors}
+               isError={
+                errors['LeadUser'] && errors['LeadUser']
+              }
+              errorMsg="Please select a user."
+              setValue={setValue}
+              label="Lead User"
+              name="LeadUser"
+              mode={"id"}
+              defaultValue="Select"
+              searchable={true}
+              //  isError={errors["foundedIn"] && errors["foundedIn"]}
+              required
+              //  errorMsg={"Please select Founded in"}
+              options={filtersList?.LeadUsers?.filter(val => {
+                if(watch('LeadType') === 'InBound'){
+                  return val.userTypeId === 12
+                }else{
+                  return val.userTypeId === 11
+                }
+              }).map(item=> ({
+                id: item.id,
+                value: item.fullName,
+              }))}
+            />
+      
+        <div className={`${previewClientStyle.buttonEditGroup}`}>
+          <button
+            type="button"
+            className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
+            onClick={() => {
+              setIsEditUserName(false)
+              setControlledLeadUserValue('')
+              resetField("LeadUser")
+            }}
+          >
+            {" "}
+            Cancel{" "}
+          </button>
+          <button
+            type="button"
+            className={previewClientStyle.btnPrimary}
+            onClick={handleSubmit(handleSubmitLeadUserType) }
           >
             {" "}
             SAVE{" "}
