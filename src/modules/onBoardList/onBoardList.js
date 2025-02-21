@@ -384,7 +384,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         align: "left",
         width: '150px', 
         render:(text,result)=>{
-          return   `${result.currencySign} ${text} `
+          return   `${text} `
         }
       },
       {
@@ -394,7 +394,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         align: "left",
         width: '150px', 
         render:(text,result)=>{
-          return   `${result.currencySign} ${text} `
+          return   `${text} `
         }
       },
       {
@@ -426,7 +426,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "payout_Actual_PRStr",
         key: "payout_Actual_PRStr",
         align: "left",
-        width: '120px', 
+        width: '150px', 
         render:(text,result)=>{
           return text ? `₹ ${text}` : ''
         } 
@@ -443,13 +443,13 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       },
       {
         title: "Uplers Fees",
-        dataIndex: "",
-        key: "",
+        dataIndex: "uplersFees",
+        key: "uplersFees",
         align: "left",
         width: '150px', 
-        render:(_,result)=>{
-          return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
-        }
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
       },
 
       {
