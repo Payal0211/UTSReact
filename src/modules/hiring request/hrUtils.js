@@ -296,12 +296,28 @@ export const hrUtils = {
 					: d.howSoon?.value.toString(),
 			years:
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('years'))
+					? _isNull(watch('years-min'))
 						? 0
-						: parseInt(watch('years'))
-					: _isNull(d.years)
+						: parseInt(watch('years-min'))
+					: _isNull(d['years-min'])
 					? 0
-					: parseInt(d.years),
+					: parseInt(d['years-min']),
+			minExpYears:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('years-min'))
+						? 0
+						: parseInt(watch('years-min'))
+					: _isNull(d['years-min'])
+					? 0
+					: parseInt(d['years-min']),
+			maxExpYears:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('years-max'))
+						? 0
+						: parseInt(watch('years-max'))
+					: _isNull(d['years-max'])
+					? 0
+					: parseInt(d['years-max']),
 			durationType: 
 				draft === SubmitType.SAVE_AS_DRAFT
 					?isHRDirectPlacement ? null : _isNull(watch('getDurationType')?.value)

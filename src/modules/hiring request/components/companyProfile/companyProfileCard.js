@@ -377,9 +377,9 @@ const CompanyProfileCard = ({
 			</div> } */}
 
              {clientDetail?.MinYearOfExp !== 0 && <div className={CompanyProfileCardStyle.minExp}>
-                <span>Minimum Exp Required:</span>&nbsp;&nbsp;
+                <span>Exp Required:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
-                  {clientDetail?.MinYearOfExp ? clientDetail?.MinYearOfExp : 0}{" "}
+                  {clientDetail?.MinYearOfExp ? clientDetail?.MinYearOfExp : 0}{clientDetail?.MaxYearOfExp ? ` - ${clientDetail?.MaxYearOfExp}` : 0} {" "}
                   Years
                 </span>
               </div>} 
