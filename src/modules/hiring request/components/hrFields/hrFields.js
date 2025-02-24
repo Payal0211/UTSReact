@@ -4537,6 +4537,7 @@ const HRFields = ({
                       if (val === "") {
                         setIsExpDisabled(false);
                         setIsFresherDisabled(false);
+                        setValue('years-max',0)
                         return;
                       }
                       if (val === "0") {
@@ -4549,7 +4550,7 @@ const HRFields = ({
                         setIsFresherDisabled(true);
                       }
                     }}
-                    label="Required Experience MIN"
+                    label="Min Experience "
                     errors={errors}
                     validationSchema={{
                       required: "please enter the min years.",
@@ -4580,30 +4581,30 @@ const HRFields = ({
                   <HRInputField
                     required
                     onChangeHandler={(value) => {
-                      let val = value.target.value;
-                      if (val === "") {
-                        setIsExpDisabled(false);
-                        setIsFresherDisabled(false);
-                        return;
-                      }
-                      if (val === "0") {
-                        setIsFreshersAllowed(true);
-                        setIsExpDisabled(true);
-                        setIsFresherDisabled(false);
-                      } else {
-                        setIsFreshersAllowed(false);
-                        setIsExpDisabled(false);
-                        setIsFresherDisabled(true);
-                      }
+                      // let val = value.target.value;
+                      // if (val === "") {
+                      //   setIsExpDisabled(false);
+                      //   setIsFresherDisabled(false);
+                      //   return;
+                      // }
+                      // if (val === "0") {
+                      //   setIsFreshersAllowed(true);
+                      //   setIsExpDisabled(true);
+                      //   setIsFresherDisabled(false);
+                      // } else {
+                      //   setIsFreshersAllowed(false);
+                      //   setIsExpDisabled(false);
+                      //   setIsFresherDisabled(true);
+                      // }
                     }}
-                    label="Required Experience MAX"
+                    label="Max Experience "
                     errors={errors}
                     validationSchema={{
                       required: "please enter the max years.",
                       min: {
-                        value: isFreshersAllowed ? 0 : +watch('year-min'),
+                        value: isFreshersAllowed ? 0 : +watch('years-min'),
                         message: `please don't enter the value less than ${
-                          isFreshersAllowed ? 0 : +watch('year-min')
+                          isFreshersAllowed ? 0 : +watch('years-min')
                         }`,
                       },
                       max: {

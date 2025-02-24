@@ -302,7 +302,15 @@ export const hrUtils = {
 					: _isNull(d['years-min'])
 					? 0
 					: parseInt(d['years-min']),
-			yearsMax:
+			minExpYears:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('years-min'))
+						? 0
+						: parseInt(watch('years-min'))
+					: _isNull(d['years-min'])
+					? 0
+					: parseInt(d['years-min']),
+			maxExpYears:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('years-max'))
 						? 0
