@@ -507,7 +507,16 @@ function PreviewClientModal({
   {
     id: 11,
     value: 'OutBound',
-  }];
+  },
+  {
+    id: 4,
+    value: 'Referral',
+  },
+  {
+    id: 176,
+    value: 'Partnership',
+  }
+];
 
   const uploadFileHandler = useCallback(
     async (e) => {
@@ -3906,6 +3915,12 @@ function PreviewClientModal({
               options={filtersList?.LeadUsers?.filter(val => {
                 if(watch('LeadType') === 'InBound'){
                   return val.userTypeId === 12
+                }
+                else if(watch('LeadType') === 'Referral'){
+                  return val.userTypeId === 4
+                }
+                else if(watch('LeadType') === 'Partnership'){
+                  return val.employeeId === "UP1831"
                 }else{
                   return val.userTypeId === 11
                 }
