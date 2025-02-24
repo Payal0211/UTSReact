@@ -435,7 +435,7 @@ const ViewHRDetails = () => {
                           ?.requiredExperienceYear ?? "NA"}
                           {hiringDetails?.responseBody?.details
                           ?.maxExperienceYears ? ` - ${hiringDetails?.responseBody?.details
-                            ?.maxExperienceYears}` : 'NA'} {" "}
+                            ?.maxExperienceYears}` : ''} {" "}
                         Years
                         <i className={ViewHRDetailsStyle.blueDot} />
                       </li>}
