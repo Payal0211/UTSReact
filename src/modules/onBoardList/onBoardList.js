@@ -81,7 +81,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					// 		},
 					// 	);
 					// }
-					if (param?.typeOfHR === 'Contractual' && param?.isOngoing !== "Ongoing") {
+					if (param?.typeOfHR === 'Contractual' && param?.payout_BillRate > 0 ) {
 						listItemData.push(
 							{
 								label: 'Edit Bill Rate',
@@ -384,7 +384,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         align: "left",
         width: '150px', 
         render:(text,result)=>{
-          return   `${result.currencySign} ${text} `
+          return   `${text} `
         }
       },
       {
@@ -394,7 +394,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         align: "left",
         width: '150px', 
         render:(text,result)=>{
-          return   `${result.currencySign} ${text} `
+          return   `${text} `
         }
       },
       {
@@ -426,7 +426,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         dataIndex: "payout_Actual_PRStr",
         key: "payout_Actual_PRStr",
         align: "left",
-        width: '120px', 
+        width: '150px', 
         render:(text,result)=>{
           return text ? `₹ ${text}` : ''
         } 
@@ -443,13 +443,13 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       },
       {
         title: "Uplers Fees",
-        dataIndex: "",
-        key: "",
+        dataIndex: "uplersFees",
+        key: "uplersFees",
         align: "left",
         width: '150px', 
-        render:(_,result)=>{
-          return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
-        }
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
       },
 
       {
@@ -644,20 +644,8 @@ function OnBoardList() {
     });
     const [feedBackSave, setFeedbackSave] = useState(false);
     const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
-    const [dateTypeFilter , setDateTypeFilter] = useState(2)
+    const [dateTypeFilter , setDateTypeFilter] = useState(0)
 
-      const dateTypeList = [{
-        value: 2,
-        label: 'No Dates',
-      },
-      {
-        value: 0,
-        label: 'By Month',
-      },
-      {
-        value: 1,
-        label: 'With Date Range',
-      }]
 
     const editAMModalcontroler = async (id) =>{
         setEditAMModal(true)
@@ -909,10 +897,10 @@ console.log(date)
         "filterFields_OnBoard":{
           ...tableFilteredState.filterFields_OnBoard,
             "search" :searchText,
-            toDate: dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
-            fromDate: dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
-            searchMonth:dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
-            searchYear:dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
+            toDate: dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
+            fromDate:  dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
+            searchMonth: dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
+            searchYear: dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
         }
       }    
           getOnBoardListData(payload);
@@ -925,10 +913,10 @@ console.log(date)
         "filterFields_OnBoard":{
           ...tableFilteredState.filterFields_OnBoard,
             "search" :searchText,
-            toDate:dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
-            fromDate:dateTypeFilter === 2 ? '' :dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
-            searchMonth:dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
-            searchYear: dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
+            toDate:dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.toDate).format('MM/DD/YYYY') :'',
+            fromDate:dateTypeFilter === 1 ? moment(tableFilteredState.filterFields_OnBoard?.fromDate).format('MM/DD/YYYY') :'',
+            searchMonth: dateTypeFilter === 0 ? +moment(monthDate).format('M') : 0,
+            searchYear:  dateTypeFilter === 0 ? +moment(monthDate).format('YYYY') : 0,
         }
       }    
           getOnBoardListData(payload);
@@ -1065,7 +1053,7 @@ console.log(date)
                 </div>
                 <div className={onboardList.filterRight}>	
                
-                {/* <Radio.Group    
+                <Radio.Group    
                 style={{display: 'flex', flexDirection: 'column', gap:'5px'}}             
                       onChange={(e) => {
                        setDateTypeFilter(e.target.value)
@@ -1088,37 +1076,7 @@ console.log(date)
                     >
                       <Radio value={0}>Current Month</Radio>
                       <Radio value={1}>Search With Date Range</Radio>
-                    </Radio.Group>  	                  */}
-
-                      <div className={`${onboardList.modifySelect}`}>
-                        <Select
-                          id="rejectedTalentsValue"
-                          placeholder="Select"
-                          value={dateTypeFilter}
-                          // showSearch={true}
-                          style={{width:'170px'}}
-                          onChange={(value, option) => {
-                            setDateTypeFilter(value);
-                            setStartDate(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
-                       setEndDate(new Date(date));
-                   
-                        setTableFilteredState({
-                          ...tableFilteredState,
-                          searchText: searchText,
-                          filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard ,
-                            fromDate: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
-                          toDate: new Date(date),
-                          EngType:'A',EngagementOption:'All'
-                          },
-                        })
-                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:'A',EngagementOption:'All' } }))
-                        
-                          }}
-                          options={dateTypeList}
-                          optionFilterProp="value"
-                          // getPopupContainer={(trigger) => trigger.parentElement}
-                        />
-                      </div>
+                    </Radio.Group>  	                                
 
 
             {dateTypeFilter === 0 &&  <div className={onboardList.calendarFilterSet}>
