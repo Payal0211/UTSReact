@@ -73,11 +73,11 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
 				});
 				setIsLoading(false);
-			} else if (fileData?.size >= 500000) {
+			} else if (fileData?.size >= 2000000) {
 				setValidation({
 					...getValidation,
 					systemFileUpload:
-						'Upload file size more than 500kb, Please Upload file upto 500kb',
+						'Upload file size more than 2mb, Please Upload file upto 2mb',
 				});
 				setIsLoading(false);
 			} else {
