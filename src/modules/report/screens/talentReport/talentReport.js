@@ -571,15 +571,15 @@ export default function TalentReport() {
         width: '150px',
         render: (text, result) => {
             let url = text + `&isInternal=${true}`
-            return (
+            return result.show_SSO_Login ? (
               <a
                 href={url}
                 target="_blank"
                 className={onboardListStyle.linkForSSO}
                 >
-                <button  className={onboardListStyle.btnPrimaryResendBtn}>Login with SSO</button>
+                <button  className={TalentBackoutStyle.btnPrimaryResendBtn}>Login with SSO</button>
               </a>                    
-            );
+            ) : ""
         },
     },
     ];
