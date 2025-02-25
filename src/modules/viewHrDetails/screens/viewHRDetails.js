@@ -432,7 +432,10 @@ const ViewHRDetails = () => {
                      {(hiringDetails?.responseBody?.details?.isFresherAllowed === false && hiringDetails?.responseBody?.details?.requiredExperienceYear !== null) &&  <li>
                         <span>Required Experience:</span>{" "}
                         {hiringDetails?.responseBody?.details
-                          ?.requiredExperienceYear ?? "NA"}{" "}
+                          ?.requiredExperienceYear ?? "NA"}
+                          {hiringDetails?.responseBody?.details
+                          ?.maxExperienceYears ? ` - ${hiringDetails?.responseBody?.details
+                            ?.maxExperienceYears}` : ''} {" "}
                         Years
                         <i className={ViewHRDetailsStyle.blueDot} />
                       </li>}

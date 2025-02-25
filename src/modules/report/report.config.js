@@ -1347,6 +1347,16 @@ export const reportConfig = {
 				},
 			},
 			{
+				title: 'TR',
+				dataIndex: 'noOfTalents',
+				key: 'noOfTalents',
+				align: 'left',
+				width:'50px',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
 				title: 'HR Raised Date',
 				dataIndex: 'hrRaisedDate',
 				key: 'hrRaisedDate',
@@ -1356,7 +1366,7 @@ export const reportConfig = {
 				},
 			},
 			{
-				title: 'HR Accepted Date',
+				title: <>HR Accepted<br/> Date </>,
 				dataIndex: 'hrAcceptedDateTime',
 				key: 'hrAcceptedDateTime',
 				align: 'left',
@@ -1365,7 +1375,7 @@ export const reportConfig = {
 				},
 			},
 			{
-				title: '1st Profile Share Date',
+				title: <>1st Profile <br/>Share Date </>,
 				dataIndex: 'firstProfileSharedDate',
 				key: 'firstProfileSharedDate',
 				align: 'left',
@@ -1374,7 +1384,7 @@ export const reportConfig = {
 				},
 			},
 			{
-				title: 'Total Profile Shared',
+				title: <>Total Profile <br/>Shared </>,
 				dataIndex: 'noOfProfileShared',
 				key: 'noOfProfileShared',
 				align: 'left',

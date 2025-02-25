@@ -843,11 +843,18 @@ const TalentList = ({
 									</div>
 			
 									<div className={TalentListStyle.EmailID}>
-										<span>Talent Email:</span>&nbsp;&nbsp;
+										<span>Email:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{item?.EmailID ? item?.EmailID : "-"}
 										</span>
 									</div>
+
+									{item?.ContactNumber && <div className={TalentListStyle.experience}>
+										<span>Contact Number:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{item?.ContactNumber ? item?.ContactNumber : "-"}
+										</span>
+									</div>}
 			
 									<div className={TalentListStyle.experience}>
 										<span>Experience:</span>&nbsp;&nbsp;

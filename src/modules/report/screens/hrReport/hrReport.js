@@ -437,8 +437,22 @@ export default function HRReport() {
     let DataToExport = apiData.map((data) => {
       let obj = {};
       tableColumnsMemo.map(
-        (val) =>
-          val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`])
+        (val) => {
+          if(val.key === 'hrAcceptedDateTime'){
+            obj[`HR Accepted Date`] = data[`${val.key}`]
+          }
+          else if(val.key === 'firstProfileSharedDate'){
+            obj[`1st Profile Share Date`] = data[`${val.key}`]
+          }
+          else if(val.key === 'noOfProfileShared'){
+            obj[`Total Profile Shared`] = data[`${val.key}`]
+          }
+          else{
+            obj[`${val.title}`] = data[`${val.key}`]
+          }
+         
+        }
+          // val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`])
       );
       return obj;
     });

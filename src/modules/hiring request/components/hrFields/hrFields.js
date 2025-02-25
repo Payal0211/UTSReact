@@ -2660,7 +2660,7 @@ const HRFields = ({
           gptDetails?.salesHiringRequest_Details?.budgetTo
         );
       gptDetails?.salesHiringRequest_Details?.yearOfExp &&
-        setValue("years", gptDetails?.salesHiringRequest_Details?.yearOfExp);
+        setValue("years-min", gptDetails?.salesHiringRequest_Details?.yearOfExp);
       gptDetails?.salesHiringRequest_Details?.specificMonth &&
         setValue(
           "months",
@@ -4527,7 +4527,9 @@ const HRFields = ({
               </div> */}
 
               <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
+                <div className={HRFieldStyle.row}>
+                <div className={HRFieldStyle.colMd6}>
+<div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
                     onChangeHandler={(value) => {
@@ -4535,6 +4537,7 @@ const HRFields = ({
                       if (val === "") {
                         setIsExpDisabled(false);
                         setIsFresherDisabled(false);
+                        setValue('years-max',0)
                         return;
                       }
                       if (val === "0") {
@@ -4547,10 +4550,10 @@ const HRFields = ({
                         setIsFresherDisabled(true);
                       }
                     }}
-                    label="Required Experience"
+                    label="Min Experience "
                     errors={errors}
                     validationSchema={{
-                      required: "please enter the years.",
+                      required: "please enter the min years.",
                       min: {
                         value: isFreshersAllowed ? 0 : 1,
                         message: `please don't enter the value less than ${
@@ -4563,12 +4566,67 @@ const HRFields = ({
                       },
                     }}
                     register={register}
-                    name="years"
+                    name="years-min"
                     type={InputType.NUMBER}
-                    placeholder="Enter years"
+                    placeholder="Enter minimum experience"
                     disabled={isExpDisabled}
                   />
+
+                  
                 </div>
+
+                </div>
+                <div className={HRFieldStyle.colMd6}>
+<div className={HRFieldStyle.formGroup}>
+                  <HRInputField
+                    required
+                    onChangeHandler={(value) => {
+                      // let val = value.target.value;
+                      // if (val === "") {
+                      //   setIsExpDisabled(false);
+                      //   setIsFresherDisabled(false);
+                      //   return;
+                      // }
+                      // if (val === "0") {
+                      //   setIsFreshersAllowed(true);
+                      //   setIsExpDisabled(true);
+                      //   setIsFresherDisabled(false);
+                      // } else {
+                      //   setIsFreshersAllowed(false);
+                      //   setIsExpDisabled(false);
+                      //   setIsFresherDisabled(true);
+                      // }
+                    }}
+                    label="Max Experience "
+                    errors={errors}
+                    validationSchema={{
+                      required: "please enter the max years.",
+                      min: {
+                        value: isFreshersAllowed ? 0 : +watch('years-min'),
+                        message: `please don't enter the value less than ${
+                          isFreshersAllowed ? 0 : +watch('years-min')
+                        }`,
+                      },
+                      max: {
+                        value: 60,
+                        message: "please don't enter the value more than 60",
+                      },
+                    }}
+                    register={register}
+                    name="years-max"
+                    type={InputType.NUMBER}
+                    placeholder="Enter maximum experience"
+                    disabled={isExpDisabled}
+                  />
+
+                  
+                </div>
+
+                </div>
+
+                
+                </div>
+                
               </div>
 
               <div className={HRFieldStyle.colMd6}>
@@ -4614,7 +4672,8 @@ const HRFields = ({
                   onClick={() => {
                     setIsFreshersAllowed((prev) => {
                       if (prev === false) {
-                        setValue("years", 0);
+                        setValue("years-min", 0);
+                        setValue("years-max", 0);
                         setIsExpDisabled(true);
                       } else {
                         setIsExpDisabled(false);

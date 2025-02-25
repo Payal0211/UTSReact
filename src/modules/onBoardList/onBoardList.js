@@ -81,7 +81,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					// 		},
 					// 	);
 					// }
-					if (param?.typeOfHR === 'Contractual' && param?.payout_BillRate > 0 ) {
+					if (param?.typeOfHR === 'Contractual' && param?.payout_BillRate !== '' ) {
 						listItemData.push(
 							{
 								label: 'Edit Bill Rate',

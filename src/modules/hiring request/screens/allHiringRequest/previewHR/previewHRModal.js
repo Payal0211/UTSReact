@@ -93,6 +93,7 @@ function PreviewHRModal({
     ATS_NearByCities:""});  
   const [iseditExp, setisEditExp] = useState(false);
   const [editExp, seteditExp] = useState("");
+  const [editMaxExp, seteditMaxExp] = useState("");
   const [iseditSkills, setisEditSkills] = useState(false);
   const selectTopRef = useRef(null);
   const [editTopSkills, setEditTopSkills] = useState([]);
@@ -1724,16 +1725,30 @@ getSkillList();
     //   _errors.editExp = `Please Enter atlest 1.`;
     //   valid = false;
     // }else 
-    if (editExp > 100) {
-      _errors.editExp = `Please Enter maxmimum 100 value.`;
+    if (editExp > 60) {
+      _errors.editExp = `Please Enter maxmimum 60 value.`;
       valid = false;
     } else if (!isFreshersAllowed && editExp == 0) {
       _errors.editExp = `Please enter digits only, eg : 1, 2, 3.`;
       valid = false;
     }
+
+    if (editMaxExp > 60) {
+      _errors.editMaxExp = `Please Enter maxmimum 60 value.`;
+      valid = false;
+    }
+    if (!isFreshersAllowed && editMaxExp == 0) {
+      _errors.editMaxExp = `Please enter digits only, eg : 1, 2, 3.`;
+      valid = false;
+    }
+    if(!isFreshersAllowed && (+editExp >= +editMaxExp )){
+      _errors.editMaxExp = `Max Experience must be greater then Min Experience`;
+      valid = false;
+    }
+console.log({isFreshersAllowed, editExp, editMaxExp})
     setError(_errors);
     if (valid) {
-      let payload = { experienceYears: editExp, isFresherAllowed: isFreshersAllowed };
+      let payload = { experienceYears: editExp,minExperienceYears:editExp, maxExperienceYears:editMaxExp, isFresherAllowed: isFreshersAllowed };
 
       setIsLoading(true);
       let result = await updateJobPostDetail(payload);
@@ -1747,6 +1762,8 @@ getSkillList();
         setJobPreview((prev) => ({
           ...prev,
           experienceYears: editExp,
+          maxExperienceYears :editMaxExp,
+          minExperienceYears :editExp,
           isFresherAllowed: isFreshersAllowed
         }));
         seteditExp("");
@@ -2246,7 +2263,7 @@ async function onHandleBlurImage(content, field) {
                           <li>
                             <img src={awardIconImage} className="business" />
                             {jobPreview?.isFresherAllowed ? 'Fresher' : jobPreview?.experienceYears !== ''
-                              ? `${jobPreview?.experienceYears} Years Exp`
+                              ? `${jobPreview?.experienceYears} ${jobPreview?.maxExperienceYears ? `- ${jobPreview?.maxExperienceYears}` : '' } Years Exp`
                               : ""}
 
 
@@ -2255,6 +2272,7 @@ async function onHandleBlurImage(content, field) {
                                   setisEditExp(true);
                                 setIsExpDisabled(false);
                                 seteditExp(jobPreview?.experienceYears);
+                                seteditMaxExp(jobPreview?.maxExperienceYears)
                                 setIsFreshersAllowed(jobPreview?.isFresherAllowed)
                               }}
                             ><img src={EditnewIcon} /></span>
@@ -4911,7 +4929,7 @@ async function onHandleBlurImage(content, field) {
           setisEditExp(false);
           seteditExp("");
         }}
-        width={338}
+        width={385}
         className="customModal jobPostEditModal"
         maskClosable={false}
         footer={null}
@@ -4921,24 +4939,31 @@ async function onHandleBlurImage(content, field) {
             <div className="col-12">
               <div className="form-group mb-0">
                 <label>
-                  Change years of experience? <span>*</span>
+                  Change years of experience 
                 </label>
 
+                <div className='row formFields' style={{justifyContent:'space-between'}}>
+                <div className="col-12 form-group mb-0">
+                <label>
+                  Min experience <span className='error'>*</span>
+                </label>
                 <input
                   type="number"
                   min={0}
-                  max={100}
+                  max={60}
                   placeholder="Please enter experience"
                   className="form-control"
                   value={editExp}
                   onChange={(e) => {
                     if (e.target.value === "") {
                       seteditExp('');
+                      seteditMaxExp('')
                       setIsFresherDisabled(false);
                       return
                     }
                     if ((e.target.value == 0)) {
                       seteditExp(e.target.value)
+                      seteditMaxExp(e.target.value)
                       setIsFreshersAllowed(true)
                       setIsExpDisabled(true)
                       setIsFresherDisabled(false)
@@ -4959,16 +4984,51 @@ async function onHandleBlurImage(content, field) {
                   }}
                   disabled={isExpDisabled}
                 />
-                {(editExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>}
+                {error?.editExp && <span className='error'>{error.editExp}</span>}
+                {/* {(editExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
+                  </div>
+
+                  <div className="col-12 form-group mb-0">
+                  <label>
+                 Max experience <span className='error'>*</span>
+                </label>
+                  <input
+                  type="number"
+                  min={0}
+                  max={60}
+                  placeholder="Please enter experience"
+                  className="form-control"
+                  value={editMaxExp}
+                  onChange={(e) => {
+                      seteditMaxExp(e.target.value)
+                      setIsFreshersAllowed(false)
+                      setIsExpDisabled(false)
+                      setIsFresherDisabled(true)                     
+                  }}
+                  onKeyPress={(event) => {
+                    if (event.key === "e" || event.key === "E") {
+                      event.preventDefault();
+                    }
+                  }}
+                  disabled={isExpDisabled}
+                />
+                {error?.editMaxExp && <span className='error'>{error.editMaxExp}</span>}
+                {(editMaxExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>}
+                  </div>
+                </div>
+
+
                 <div style={{ margin: '5px 0' }}>
                   <Checkbox checked={isFreshersAllowed} onClick={() => {
                     setIsFreshersAllowed(prev => {
                       if (prev === false) {
                         seteditExp(0)
+                        seteditMaxExp(0)
                         setIsExpDisabled(true)
                       } else {
                         setIsExpDisabled(false)
                         seteditExp('');
+                        seteditMaxExp('')
                       }
                       return !prev
                     })
