@@ -184,15 +184,12 @@ const onBoardListConfig = (
       dataIndex: "uplersfeesAmount",
       key: "uplersfeesAmount",
       align: "left",
-      width: "150px",
-      render: (text, result) => {
-        return `${result.currencySign} ${text}`;
-      },
+      width: "150px"    
     },
     {
       title: "Uplers Fees (₹)",
-      dataIndex: "uplersfeesAmountINR",
-      key: "uplersfeesAmountINR",
+      dataIndex: "uplersfeesAmountINRStr",
+      key: "uplersfeesAmountINRStr",
       align: "left",
       width: "150px",
       render: (text, result) => {
@@ -226,23 +223,17 @@ const onBoardListConfig = (
     // },
     {
       title: "Actual BR",
-      dataIndex: "final_HR_Cost",
-      key: "final_HR_Cost",
+      dataIndex: "payout_BillRate",
+      key: "payout_BillRate",
       align: "left",
-      width: "150px",
-      render: (text, result) => {
-        return `${result.currencySign} ${text} `;
-      },
+      width: "150px"
     },
     {
       title: "Actual PR",
-      dataIndex: "talent_Cost",
-      key: "talent_Cost",
+      dataIndex: "payout_PayRate",
+      key: "payout_PayRate",
       align: "left",
-      width: "150px",
-      render: (text, result) => {
-        return `${result.currencySign} ${text} `;
-      },
+      width: "150px"
     },
     {
       title: "Exch. Rate",
@@ -281,7 +272,7 @@ const onBoardListConfig = (
       dataIndex: "payout_Actual_PRStr",
       key: "payout_Actual_PRStr",
       align: "left",
-      width: "120px",
+      width: "150px",
       render: (text, result) => {
         return text ? `₹ ${text}` : "";
       },
