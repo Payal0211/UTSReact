@@ -1737,11 +1737,11 @@ getSkillList();
       _errors.editMaxExp = `Please Enter maxmimum 60 value.`;
       valid = false;
     }
-    if (!isFreshersAllowed && editMaxExp == 0) {
+    if (editMaxExp == 0) {
       _errors.editMaxExp = `Please enter digits only, eg : 1, 2, 3.`;
       valid = false;
     }
-    if(!isFreshersAllowed && (+editExp >= +editMaxExp )){
+    if( (+editExp >= +editMaxExp )){
       _errors.editMaxExp = `Max Experience must be greater then Min Experience`;
       valid = false;
     }
@@ -4957,13 +4957,11 @@ async function onHandleBlurImage(content, field) {
                   onChange={(e) => {
                     if (e.target.value === "") {
                       seteditExp('');
-                      seteditMaxExp('')
                       setIsFresherDisabled(false);
                       return
                     }
                     if ((e.target.value == 0)) {
-                      seteditExp(e.target.value)
-                      seteditMaxExp(e.target.value)
+                      seteditExp(e.target.value)                    
                       setIsFreshersAllowed(true)
                       setIsExpDisabled(true)
                       setIsFresherDisabled(false)
@@ -5001,19 +4999,17 @@ async function onHandleBlurImage(content, field) {
                   value={editMaxExp}
                   onChange={(e) => {
                       seteditMaxExp(e.target.value)
-                      setIsFreshersAllowed(false)
-                      setIsExpDisabled(false)
-                      setIsFresherDisabled(true)                     
+                                        
                   }}
                   onKeyPress={(event) => {
                     if (event.key === "e" || event.key === "E") {
                       event.preventDefault();
                     }
                   }}
-                  disabled={isExpDisabled}
+                  // disabled={isExpDisabled}
                 />
                 {error?.editMaxExp && <span className='error'>{error.editMaxExp}</span>}
-                {(editMaxExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>}
+                {/* {(editMaxExp === '') ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) >= parseInt(editMaxExp) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
                   </div>
                 </div>
 
@@ -5023,12 +5019,12 @@ async function onHandleBlurImage(content, field) {
                     setIsFreshersAllowed(prev => {
                       if (prev === false) {
                         seteditExp(0)
-                        seteditMaxExp(0)
+                        // seteditMaxExp(0)
                         setIsExpDisabled(true)
                       } else {
                         setIsExpDisabled(false)
                         seteditExp('');
-                        seteditMaxExp('')
+                        // seteditMaxExp('')
                       }
                       return !prev
                     })

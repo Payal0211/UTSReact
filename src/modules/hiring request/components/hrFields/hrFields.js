@@ -4537,7 +4537,7 @@ const HRFields = ({
                       if (val === "") {
                         setIsExpDisabled(false);
                         setIsFresherDisabled(false);
-                        setValue('years-max',0)
+                      
                         return;
                       }
                       if (val === "0") {
@@ -4602,9 +4602,9 @@ const HRFields = ({
                     validationSchema={{
                       required: "please enter the max years.",
                       min: {
-                        value: isFreshersAllowed ? 0 : +watch('years-min'),
+                        value:  +watch('years-min') +1,
                         message: `please don't enter the value less than ${
-                          isFreshersAllowed ? 0 : +watch('years-min')
+                           +watch('years-min')
                         }`,
                       },
                       max: {
@@ -4616,7 +4616,7 @@ const HRFields = ({
                     name="years-max"
                     type={InputType.NUMBER}
                     placeholder="Enter maximum experience"
-                    disabled={isExpDisabled}
+                    // disabled={isExpDisabled}
                   />
 
                   
@@ -4673,7 +4673,6 @@ const HRFields = ({
                     setIsFreshersAllowed((prev) => {
                       if (prev === false) {
                         setValue("years-min", 0);
-                        setValue("years-max", 0);
                         setIsExpDisabled(true);
                       } else {
                         setIsExpDisabled(false);
