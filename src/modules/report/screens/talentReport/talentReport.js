@@ -506,6 +506,7 @@ export default function TalentReport() {
         dataIndex: "talentStatus",
         key: "talentStatus",
         align: "left",
+        width:'200px',
         render: (text, result) => {
           return (
             <div
