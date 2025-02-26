@@ -2262,7 +2262,7 @@ async function onHandleBlurImage(content, field) {
                         
                           <li>
                             <img src={awardIconImage} className="business" />
-                            {jobPreview?.isFresherAllowed ? 'Fresher' : jobPreview?.experienceYears !== ''
+                            { jobPreview?.experienceYears !== ''
                               ? `${jobPreview?.experienceYears} ${jobPreview?.maxExperienceYears ? `- ${jobPreview?.maxExperienceYears}` : '' } Years Exp`
                               : ""}
 
