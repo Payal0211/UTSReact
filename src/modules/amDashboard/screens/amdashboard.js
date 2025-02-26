@@ -319,7 +319,7 @@ function AMDashboard() {
       //   },
       // },
       {
-        title: "End Date",
+        title: "Actual End Date",
         dataIndex: "enggementEndate",
         key: "enggementEndate",
         align: "left",

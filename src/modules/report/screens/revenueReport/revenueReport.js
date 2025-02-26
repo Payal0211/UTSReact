@@ -222,14 +222,14 @@ const onBoardListConfig = (
     //   width: '150px',
     // },
     {
-      title: "Actual BR",
+      title: "BR",
       dataIndex: "payout_BillRate",
       key: "payout_BillRate",
       align: "left",
       width: "150px"
     },
     {
-      title: "Actual PR",
+      title: "PR",
       dataIndex: "payout_PayRate",
       key: "payout_PayRate",
       align: "left",
