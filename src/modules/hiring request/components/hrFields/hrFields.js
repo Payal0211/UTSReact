@@ -1675,6 +1675,9 @@ const HRFields = ({
             JDDATA?.jobDescription ?? "";
         }
 
+        JDDATA?.minExperienceYears && setValue('years-min',JDDATA?.minExperienceYears)
+        JDDATA?.maxExperienceYears && setValue('years-max',JDDATA?.maxExperienceYears)
+
         let newObj = {
           Skills: JDDATA?.skills
             ? JDDATA?.skills
@@ -2605,7 +2608,12 @@ const HRFields = ({
           jdurl: "",
           jdfilename: gptFileDetails.FileName,
         };
+        gptFileDetails?.MinYearsOfExperience && setValue('years-min',gptFileDetails?.MinYearsOfExperience)
+        gptFileDetails?.MaxYearsOfExperience && setValue('years-max',gptFileDetails?.MaxYearsOfExperience)
       } else {
+
+        gptFileDetails?.MinYearsOfExperience && setValue('years-min',gptFileDetails?.MinYearsOfExperience)
+        gptFileDetails?.MaxYearsOfExperience && setValue('years-max',gptFileDetails?.MaxYearsOfExperience)
         _getHrValues.salesHiringRequest_Details.JobDescription =
           gptFileDetails.JobDescription ?? "";
         _getHrValues.salesHiringRequest_Details.requirement =
@@ -5690,6 +5698,9 @@ who have worked in scaled start ups."
                     <h3>File Name : {gptFileDetails?.FileName}</h3>
                     {gptFileDetails?.Title && (
                       <h3>Role Title : {gptFileDetails?.Title}</h3>
+                    )}
+                     {gptFileDetails?.MinYearsOfExperience && (
+                      <h3>Experience : {gptFileDetails?.MinYearsOfExperience} {gptFileDetails?.MaxYearsOfExperience ? ` - ${gptFileDetails?.MaxYearsOfExperience}` : ''} years</h3>
                     )}
 
                     {gptFileDetails?.Skills.length > 0 && (
