@@ -888,6 +888,7 @@ export default function ViewOnBoardDetails() {
   };
 
   const DocumentsDetails = () => {
+    const [docTitle,setDocTitle] = useState('official')
     return (<>
     <div className={AddNewClientStyle.engagementModalHeaderButtonContainer} style={{justifyContent:'end'}}>
       <button className={AddNewClientStyle.engagementModalHeaderAddBtn} 
@@ -905,19 +906,44 @@ export default function ViewOnBoardDetails() {
     </div>
 
 
-           <div className={AddNewClientStyle.onboardDetailsContainer}>
+           
         
         {isLoading ? (
           <Skeleton active />
         ) : (
-          <Table
-            scroll={{ y: "100vh" }}
-            dataSource={documentsList ? documentsList : []}
-            columns={documentsColumns}
-            pagination={false}
-          />         
+          <Tabs
+          onChange={(e) => setDocTitle(e)}
+          defaultActiveKey="1"
+          activeKey={docTitle}
+          animated={true}
+          tabBarGutter={50}
+          className="tabbingBottomClsAdding"
+          tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
+          items={[
+            {
+              label: 'Official',
+              key: 'official',
+              children:
+              <div className={AddNewClientStyle.onboardDetailsContainer}> <Table
+              scroll={{ y: "100vh" }}
+              dataSource={documentsList ? documentsList.filter(item=> item.isOfficial) : []}
+              columns={documentsColumns}
+              pagination={false}
+            /> </div> ,
+            },
+            {
+              label: 'Personal',
+              key: 'personal',
+              children:<div className={AddNewClientStyle.onboardDetailsContainer}> <Table
+              scroll={{ y: "100vh" }}
+              dataSource={documentsList ? documentsList.filter(item=> !item.isOfficial) : []}
+              columns={documentsColumns}
+              pagination={false}
+            /></div>  ,
+            }]} />
+                 
         )}
-      </div>
+      
     </>
      
     );
