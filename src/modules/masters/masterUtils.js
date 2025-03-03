@@ -13,6 +13,7 @@ export const MasterUtils = {
 			currencyCode: item?.currencyCode,
 			currencySign: item?.currencySign,
 			exchangeRate: item?.exchangeRate,
+			usD_ExchangeRate: item?.usD_ExchangeRate
 		}));
 	},
 };
