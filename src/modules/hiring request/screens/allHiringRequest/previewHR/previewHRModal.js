@@ -1747,7 +1747,7 @@ getSkillList();
       _errors.editMaxExp = `Max Experience must be greater then Min Experience`;
       valid = false;
     }
-console.log({isFreshersAllowed, editExp, editMaxExp})
+
     setError(_errors);
     if (valid) {
       let payload = { experienceYears: editExp,minExperienceYears:editExp, maxExperienceYears:editMaxExp, isFresherAllowed: isFreshersAllowed };
@@ -4256,7 +4256,7 @@ async function onHandleBlurImage(content, field) {
                   {error.currency && (
                     <span className="error">{error.currency}</span>
                   )}
-                  {console.log(editBudget)}
+
                   <div className="two-group">
                     <div className="form-group-cus">
                       {(editBudget?.budgetType === 2 ||
@@ -4278,7 +4278,6 @@ async function onHandleBlurImage(content, field) {
                                     minimumFractionDigits: 0,
                                     maximumFractionDigits: 0
                                 }).format(value);
-                                  console.log('up',e.target.value, formattedValue)
                                   setEditBudget((prev) => ({
                                     ...prev,
                                     budgetFrom: value,
