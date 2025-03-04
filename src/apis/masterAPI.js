@@ -828,7 +828,7 @@ export const MasterAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MASTERS +
-			MastersAPI.UPDATE_CURRENCY_EXCHANGE_RATE_LIST + `?ID=${currencyDetails.ID}&ExchangeRate=${currencyDetails.ExchangeRate}`;
+			MastersAPI.UPDATE_CURRENCY_EXCHANGE_RATE_LIST + `?ID=${currencyDetails.ID}&ExchangeRate=${currencyDetails.ExchangeRate}&USD_ExchangeRate=${currencyDetails.USD_ExchangeRate}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		// httpService.dataToSend = currencyDetails;

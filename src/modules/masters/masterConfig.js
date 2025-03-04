@@ -50,9 +50,15 @@ export const MasterConfig = {
 				align: 'left',
 			},
 			{
-				title: 'Exchange Rate',
+				title: 'From Currency to INR',
 				dataIndex: 'exchangeRate',
 				key: 'exchangeRate',
+				align: 'left',
+			},
+			{
+				title: 'From Currency to USD',
+				dataIndex: 'usD_ExchangeRate',
+				key: 'usD_ExchangeRate',
 				align: 'left',
 			},
 		];

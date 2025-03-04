@@ -429,7 +429,8 @@ const ViewHRDetails = () => {
                         {hiringDetails?.responseBody?.details?.currency ??
                           "NA"}
                       </li>
-                     {(hiringDetails?.responseBody?.details?.isFresherAllowed === false && hiringDetails?.responseBody?.details?.requiredExperienceYear !== null) &&  <li>
+                     {/* {(hiringDetails?.responseBody?.details?.isFresherAllowed === false && hiringDetails?.responseBody?.details?.requiredExperienceYear !== null) &&   */}
+                     <li>
                         <span>Required Experience:</span>{" "}
                         {hiringDetails?.responseBody?.details
                           ?.requiredExperienceYear ?? "NA"}
@@ -438,7 +439,7 @@ const ViewHRDetails = () => {
                             ?.maxExperienceYears}` : ''} {" "}
                         Years
                         <i className={ViewHRDetailsStyle.blueDot} />
-                      </li>}
+                      </li>
                      
                       <li>
                         <span>Mode of Work:</span>{" "}

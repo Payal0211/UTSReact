@@ -506,6 +506,7 @@ export default function TalentReport() {
         dataIndex: "talentStatus",
         key: "talentStatus",
         align: "left",
+        width:'200px',
         render: (text, result) => {
           return (
             <div
@@ -561,20 +562,27 @@ export default function TalentReport() {
       {
         title: "Remark",
         dataIndex: "remarks",
-        key: "remarks",
-        align: "left",
+        key: "remarks",        
         width: "300px",
-      },
-      //   {
-      //     title: "Leave Balance",
-      //     dataIndex: "totalLeaveBalance",
-      //     key: "totalLeaveBalance",
-      //     align: "left",
-      //     render:(text,value)=>{
-      //         return <p style={{textDecoration:'underline',cursor:'pointer'}} onClick={()=>{getLeaveList(value.talentID)}}>{text}</p>
-      //     },
-      //     width: "120px",
-      //   },
+      },      
+      {
+        title: 'SSO Login',
+        dataIndex: 'ssO_Login',
+        key: 'ssO_Login',
+        width: '150px',
+        render: (text, result) => {
+            let url = text + `&isInternal=${true}`
+            return result.show_SSO_Login ? (
+              <a
+                href={url}
+                target="_blank"
+                className={onboardListStyle.linkForSSO}
+                >
+                <button  className={TalentBackoutStyle.btnPrimaryResendBtn}>Login with SSO</button>
+              </a>                    
+            ) : ""
+        },
+    },
     ];
   }, [onboardList]);
 

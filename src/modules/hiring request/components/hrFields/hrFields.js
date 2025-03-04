@@ -1675,6 +1675,9 @@ const HRFields = ({
             JDDATA?.jobDescription ?? "";
         }
 
+        JDDATA?.minExperienceYears && setValue('years-min',JDDATA?.minExperienceYears)
+        JDDATA?.maxExperienceYears && setValue('years-max',JDDATA?.maxExperienceYears)
+
         let newObj = {
           Skills: JDDATA?.skills
             ? JDDATA?.skills
@@ -2605,7 +2608,12 @@ const HRFields = ({
           jdurl: "",
           jdfilename: gptFileDetails.FileName,
         };
+        gptFileDetails?.MinYearsOfExperience && setValue('years-min',gptFileDetails?.MinYearsOfExperience)
+        gptFileDetails?.MaxYearsOfExperience && setValue('years-max',gptFileDetails?.MaxYearsOfExperience)
       } else {
+
+        gptFileDetails?.MinYearsOfExperience && setValue('years-min',gptFileDetails?.MinYearsOfExperience)
+        gptFileDetails?.MaxYearsOfExperience && setValue('years-max',gptFileDetails?.MaxYearsOfExperience)
         _getHrValues.salesHiringRequest_Details.JobDescription =
           gptFileDetails.JobDescription ?? "";
         _getHrValues.salesHiringRequest_Details.requirement =
@@ -4537,7 +4545,7 @@ const HRFields = ({
                       if (val === "") {
                         setIsExpDisabled(false);
                         setIsFresherDisabled(false);
-                        setValue('years-max',0)
+                      
                         return;
                       }
                       if (val === "0") {
@@ -4602,9 +4610,9 @@ const HRFields = ({
                     validationSchema={{
                       required: "please enter the max years.",
                       min: {
-                        value: isFreshersAllowed ? 0 : +watch('years-min'),
+                        value:  +watch('years-min') +1,
                         message: `please don't enter the value less than ${
-                          isFreshersAllowed ? 0 : +watch('years-min')
+                           +watch('years-min')
                         }`,
                       },
                       max: {
@@ -4616,7 +4624,7 @@ const HRFields = ({
                     name="years-max"
                     type={InputType.NUMBER}
                     placeholder="Enter maximum experience"
-                    disabled={isExpDisabled}
+                    // disabled={isExpDisabled}
                   />
 
                   
@@ -4673,7 +4681,6 @@ const HRFields = ({
                     setIsFreshersAllowed((prev) => {
                       if (prev === false) {
                         setValue("years-min", 0);
-                        setValue("years-max", 0);
                         setIsExpDisabled(true);
                       } else {
                         setIsExpDisabled(false);
@@ -5691,6 +5698,9 @@ who have worked in scaled start ups."
                     <h3>File Name : {gptFileDetails?.FileName}</h3>
                     {gptFileDetails?.Title && (
                       <h3>Role Title : {gptFileDetails?.Title}</h3>
+                    )}
+                     {gptFileDetails?.MinYearsOfExperience && (
+                      <h3>Experience : {gptFileDetails?.MinYearsOfExperience} {gptFileDetails?.MaxYearsOfExperience ? ` - ${gptFileDetails?.MaxYearsOfExperience}` : ''} years</h3>
                     )}
 
                     {gptFileDetails?.Skills.length > 0 && (

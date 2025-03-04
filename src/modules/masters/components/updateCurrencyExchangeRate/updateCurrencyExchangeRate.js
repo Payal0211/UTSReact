@@ -28,6 +28,7 @@ const UpdateExchangeRate = ({
 				{
 					ID: exchangeRateToEdit?.id,
 					ExchangeRate: d?.exchangeRate,
+					USD_ExchangeRate:d.exchangeRateUSD
 				},
 			);
 			if (response?.statusCode === HTTPStatusCode.OK) {
@@ -60,9 +61,11 @@ const UpdateExchangeRate = ({
 	useEffect(() => {
 		setValue('currencyCode', exchangeRateToEdit?.currencyCode);
 		setValue('exchangeRate', exchangeRateToEdit?.exchangeRate);
+		setValue('exchangeRateUSD', exchangeRateToEdit?.usD_ExchangeRate)
 	}, [
 		exchangeRateToEdit?.currencyCode,
 		exchangeRateToEdit?.exchangeRate,
+		exchangeRateToEdit?.usD_ExchangeRate,
 		setValue,
 	]);
 	return (
@@ -90,10 +93,22 @@ const UpdateExchangeRate = ({
 						register={register}
 						errors={errors}
 						validationSchema={{
-							required: 'please enter the exchange rate.',
+							required: 'please enter the rate.',
 						}}
-						label="Exchange Rate "
+						label="From Currency to INR "
 						name={'exchangeRate'}
+						type={InputType.TEXT}
+						placeholder="Exchange Rate"
+					/>
+						<HRInputField
+						required
+						register={register}
+						errors={errors}
+						validationSchema={{
+							required: 'please enter the  rate.',
+						}}
+						label="From Currency to USD "
+						name={'exchangeRateUSD'}
 						type={InputType.TEXT}
 						placeholder="Exchange Rate"
 					/>

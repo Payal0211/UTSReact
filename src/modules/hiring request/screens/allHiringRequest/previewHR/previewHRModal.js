@@ -69,6 +69,8 @@ function PreviewHRModal({
     budgetFrom: "",
     budgetTo: "",
     convertedFromValue: 2000,
+    budgetToFormatedValue:'',
+    budgetFromFormatedValue:'',
     budgetType: "",
     isConfidentialBudget: false,
   });
@@ -1737,15 +1739,15 @@ getSkillList();
       _errors.editMaxExp = `Please Enter maxmimum 60 value.`;
       valid = false;
     }
-    if (!isFreshersAllowed && editMaxExp == 0) {
+    if (editMaxExp == 0) {
       _errors.editMaxExp = `Please enter digits only, eg : 1, 2, 3.`;
       valid = false;
     }
-    if(!isFreshersAllowed && (+editExp >= +editMaxExp )){
+    if( (+editExp >= +editMaxExp )){
       _errors.editMaxExp = `Max Experience must be greater then Min Experience`;
       valid = false;
     }
-console.log({isFreshersAllowed, editExp, editMaxExp})
+
     setError(_errors);
     if (valid) {
       let payload = { experienceYears: editExp,minExperienceYears:editExp, maxExperienceYears:editMaxExp, isFresherAllowed: isFreshersAllowed };
@@ -2165,12 +2167,26 @@ async function onHandleBlurImage(content, field) {
                               onClick={() => {
                                 setisEditBudget(true);
                                 getCurrencyList();
+                                const formattedValueFrom = new Intl.NumberFormat(jobPreview?.currency === 'INR' ? "en-IN" : "en-US", {
+                                  style: 'decimal',
+                                  currency: jobPreview?.currency,
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits: 0
+                                }).format(jobPreview?.budgetFrom);
+                                const formattedValueTo = new Intl.NumberFormat(jobPreview?.currency === 'INR' ? "en-IN" : "en-US", {
+                                  style: 'decimal',
+                                  currency: jobPreview?.currency,
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits: 0
+                                }).format(jobPreview?.budgetTo);
                                 setEditBudget({
                                   ...editBudget,
                                   currency: jobPreview?.currency,
                                   budgetFrom: jobPreview?.budgetFrom,
                                   budgetTo: jobPreview?.budgetTo,
                                   budgetType: jobPreview?.budgetType,
+                                  budgetFromFormatedValue: formattedValueFrom,
+                                  budgetToFormatedValue:formattedValueTo,
                                   isConfidentialBudget: jobPreview?.isConfidentialBudget,
                                 });
                                 CalculateEstimatedUplersFees(Number(jobPreview?.budgetFrom), Number(jobPreview?.budgetTo))
@@ -2262,7 +2278,7 @@ async function onHandleBlurImage(content, field) {
                         
                           <li>
                             <img src={awardIconImage} className="business" />
-                            {jobPreview?.isFresherAllowed ? 'Fresher' : jobPreview?.experienceYears !== ''
+                            { jobPreview?.experienceYears !== ''
                               ? `${jobPreview?.experienceYears} ${jobPreview?.maxExperienceYears ? `- ${jobPreview?.maxExperienceYears}` : '' } Years Exp`
                               : ""}
 
@@ -4240,6 +4256,7 @@ async function onHandleBlurImage(content, field) {
                   {error.currency && (
                     <span className="error">{error.currency}</span>
                   )}
+
                   <div className="two-group">
                     <div className="form-group-cus">
                       {(editBudget?.budgetType === 2 ||
@@ -4249,14 +4266,22 @@ async function onHandleBlurImage(content, field) {
                               type="text"
                               placeholder="2000"
                               className="form-control"
-                              value={editBudget.budgetFrom}
+                              value={editBudget.budgetFromFormatedValue}
                               // disabled={isNoBudgetBar}
                               onChange={(e) => {
-                                const inputValue = e.target.value;
-                                if (!inputValue || /^[0-9]+$/.test(inputValue)) {
+                               
+                                let value = e.target.value.replace(/[^0-9]/g, '');
+                                if (!value || /^[0-9]+$/.test(value)) {
+                                  const formattedValue = new Intl.NumberFormat(editBudget.currency === 'INR' ? "en-IN" : "en-US", {
+                                    style: 'decimal',
+                                    currency: editBudget.currency,
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                }).format(value);
                                   setEditBudget((prev) => ({
                                     ...prev,
-                                    budgetFrom: e.target.value,
+                                    budgetFrom: value,
+                                    budgetFromFormatedValue:formattedValue
                                   }))
                                 }
                               }
@@ -4284,14 +4309,22 @@ async function onHandleBlurImage(content, field) {
                             type="text"
                             placeholder="5000"
                             className="form-control"
-                            value={editBudget.budgetTo}
+                            value={editBudget.budgetToFormatedValue}
                             // disabled={isNoBudgetBar}
                             onChange={(e) => {
-                              const inputValue = e.target.value;
-                              if (!inputValue || /^[0-9]+$/.test(inputValue)) {
+                              
+                              let value = e.target.value.replace(/[^0-9]/g, '');
+                              if (!value || /^[0-9]+$/.test(value)) {
+                                const formattedValue = new Intl.NumberFormat(editBudget.currency === 'INR' ? "en-IN" : "en-US", {
+                                  style: 'decimal',
+                                  currency: editBudget.currency,
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits: 0
+                              }).format(value);
                                 setEditBudget((prev) => ({
                                   ...prev,
-                                  budgetTo: e.target.value,
+                                  budgetTo: value,
+                                  budgetToFormatedValue:formattedValue ,
                                 }))
                               }
                             }
@@ -4957,13 +4990,11 @@ async function onHandleBlurImage(content, field) {
                   onChange={(e) => {
                     if (e.target.value === "") {
                       seteditExp('');
-                      seteditMaxExp('')
                       setIsFresherDisabled(false);
                       return
                     }
                     if ((e.target.value == 0)) {
-                      seteditExp(e.target.value)
-                      seteditMaxExp(e.target.value)
+                      seteditExp(e.target.value)                    
                       setIsFreshersAllowed(true)
                       setIsExpDisabled(true)
                       setIsFresherDisabled(false)
@@ -5001,19 +5032,17 @@ async function onHandleBlurImage(content, field) {
                   value={editMaxExp}
                   onChange={(e) => {
                       seteditMaxExp(e.target.value)
-                      setIsFreshersAllowed(false)
-                      setIsExpDisabled(false)
-                      setIsFresherDisabled(true)                     
+                                        
                   }}
                   onKeyPress={(event) => {
                     if (event.key === "e" || event.key === "E") {
                       event.preventDefault();
                     }
                   }}
-                  disabled={isExpDisabled}
+                  // disabled={isExpDisabled}
                 />
                 {error?.editMaxExp && <span className='error'>{error.editMaxExp}</span>}
-                {(editMaxExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>}
+                {/* {(editMaxExp === '') ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) >= parseInt(editMaxExp) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
                   </div>
                 </div>
 
@@ -5023,12 +5052,12 @@ async function onHandleBlurImage(content, field) {
                     setIsFreshersAllowed(prev => {
                       if (prev === false) {
                         seteditExp(0)
-                        seteditMaxExp(0)
+                        // seteditMaxExp(0)
                         setIsExpDisabled(true)
                       } else {
                         setIsExpDisabled(false)
                         seteditExp('');
-                        seteditMaxExp('')
+                        // seteditMaxExp('')
                       }
                       return !prev
                     })
