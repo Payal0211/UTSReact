@@ -1309,7 +1309,7 @@ console.log(date)
                             alt="handshaker"
                           />
                           <h2>
-                            Active Contract Eng. :{' '}
+                            Active Contract Eng :{' '}
                             <span>
                               {onBoardListData[0]?.s_TotalActiveEng
                                 ? parseInt(onBoardListData[0]?.s_TotalActiveEng) 
@@ -1335,6 +1335,22 @@ console.log(date)
                        
                      }
 
+                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&  <SwiperSlide>
+                        <div className={onboardList.filterType} key={'Active DP.'}>
+                          <img
+                            src={Handshake}
+                            alt="sad"
+                          />
+                          <h2>
+                          Active DP :{' '}
+                            <span>
+                              {onBoardListData[0]?.s_TotalDPActiveEng
+                                ? parseInt(onBoardListData[0]?.s_TotalDPActiveEng) 
+                                : 0}
+                            </span>
+                          </h2>
+                        </div></SwiperSlide>}
+
                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide>
                         <div className={onboardList.filterType} key={'Lost Contract Eng.'}>
                           <img
@@ -1342,7 +1358,7 @@ console.log(date)
                             alt="sad"
                           />
                           <h2>
-                            Lost Contract Eng. :{' '}
+                            Lost Contract Eng :{' '}
                             <span>
                               {onBoardListData[0]?.s_TotalLostEng
                                 ? parseInt(onBoardListData[0]?.s_TotalLostEng) 
@@ -1370,7 +1386,7 @@ console.log(date)
                       alt="Smile"
                     />
                     <h2>
-                      Renew Eng. :{' '}
+                      Renew Eng :{' '}
                       <span>{onBoardListData[0]?.s_TotalRenewEng ? parseInt(onBoardListData[0]?.s_TotalRenewEng)  : 0}</span>
                     </h2>
                   </div></SwiperSlide>} 

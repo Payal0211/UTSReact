@@ -69,6 +69,8 @@ function PreviewHRModal({
     budgetFrom: "",
     budgetTo: "",
     convertedFromValue: 2000,
+    budgetToFormatedValue:'',
+    budgetFromFormatedValue:'',
     budgetType: "",
     isConfidentialBudget: false,
   });
@@ -1745,7 +1747,7 @@ getSkillList();
       _errors.editMaxExp = `Max Experience must be greater then Min Experience`;
       valid = false;
     }
-console.log({isFreshersAllowed, editExp, editMaxExp})
+
     setError(_errors);
     if (valid) {
       let payload = { experienceYears: editExp,minExperienceYears:editExp, maxExperienceYears:editMaxExp, isFresherAllowed: isFreshersAllowed };
@@ -2165,12 +2167,26 @@ async function onHandleBlurImage(content, field) {
                               onClick={() => {
                                 setisEditBudget(true);
                                 getCurrencyList();
+                                const formattedValueFrom = new Intl.NumberFormat(jobPreview?.currency === 'INR' ? "en-IN" : "en-US", {
+                                  style: 'decimal',
+                                  currency: jobPreview?.currency,
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits: 0
+                                }).format(jobPreview?.budgetFrom);
+                                const formattedValueTo = new Intl.NumberFormat(jobPreview?.currency === 'INR' ? "en-IN" : "en-US", {
+                                  style: 'decimal',
+                                  currency: jobPreview?.currency,
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits: 0
+                                }).format(jobPreview?.budgetTo);
                                 setEditBudget({
                                   ...editBudget,
                                   currency: jobPreview?.currency,
                                   budgetFrom: jobPreview?.budgetFrom,
                                   budgetTo: jobPreview?.budgetTo,
                                   budgetType: jobPreview?.budgetType,
+                                  budgetFromFormatedValue: formattedValueFrom,
+                                  budgetToFormatedValue:formattedValueTo,
                                   isConfidentialBudget: jobPreview?.isConfidentialBudget,
                                 });
                                 CalculateEstimatedUplersFees(Number(jobPreview?.budgetFrom), Number(jobPreview?.budgetTo))
@@ -4240,6 +4256,7 @@ async function onHandleBlurImage(content, field) {
                   {error.currency && (
                     <span className="error">{error.currency}</span>
                   )}
+
                   <div className="two-group">
                     <div className="form-group-cus">
                       {(editBudget?.budgetType === 2 ||
@@ -4249,14 +4266,22 @@ async function onHandleBlurImage(content, field) {
                               type="text"
                               placeholder="2000"
                               className="form-control"
-                              value={editBudget.budgetFrom}
+                              value={editBudget.budgetFromFormatedValue}
                               // disabled={isNoBudgetBar}
                               onChange={(e) => {
-                                const inputValue = e.target.value;
-                                if (!inputValue || /^[0-9]+$/.test(inputValue)) {
+                               
+                                let value = e.target.value.replace(/[^0-9]/g, '');
+                                if (!value || /^[0-9]+$/.test(value)) {
+                                  const formattedValue = new Intl.NumberFormat(editBudget.currency === 'INR' ? "en-IN" : "en-US", {
+                                    style: 'decimal',
+                                    currency: editBudget.currency,
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                }).format(value);
                                   setEditBudget((prev) => ({
                                     ...prev,
-                                    budgetFrom: e.target.value,
+                                    budgetFrom: value,
+                                    budgetFromFormatedValue:formattedValue
                                   }))
                                 }
                               }
@@ -4284,14 +4309,22 @@ async function onHandleBlurImage(content, field) {
                             type="text"
                             placeholder="5000"
                             className="form-control"
-                            value={editBudget.budgetTo}
+                            value={editBudget.budgetToFormatedValue}
                             // disabled={isNoBudgetBar}
                             onChange={(e) => {
-                              const inputValue = e.target.value;
-                              if (!inputValue || /^[0-9]+$/.test(inputValue)) {
+                              
+                              let value = e.target.value.replace(/[^0-9]/g, '');
+                              if (!value || /^[0-9]+$/.test(value)) {
+                                const formattedValue = new Intl.NumberFormat(editBudget.currency === 'INR' ? "en-IN" : "en-US", {
+                                  style: 'decimal',
+                                  currency: editBudget.currency,
+                                  minimumFractionDigits: 0,
+                                  maximumFractionDigits: 0
+                              }).format(value);
                                 setEditBudget((prev) => ({
                                   ...prev,
-                                  budgetTo: e.target.value,
+                                  budgetTo: value,
+                                  budgetToFormatedValue:formattedValue ,
                                 }))
                               }
                             }
