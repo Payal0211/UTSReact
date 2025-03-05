@@ -63,6 +63,7 @@ export default function ViewOnBoardDetails() {
   const [totalLeaveBalance, setTotalLeaveBalance] = useState(0)
   const [totalLeave, setTotalLeave] = useState(0)
   const calendarRef = useRef(null);
+  const [leaveTypes,setLeaveTypes] = useState([])
   const {
     register,
     handleSubmit,
@@ -312,6 +313,16 @@ export default function ViewOnBoardDetails() {
         key: "leaveReason",
         align: "left",
         width:'250px',
+        render: (value, data) => {
+          return  value ;
+        },
+      },
+      {
+        title: "Leave Type",
+        dataIndex: "leaveType",
+        key: "leaveType",
+        align: "left",
+        width:'150px',
         render: (value, data) => {
           return  value ;
         },
@@ -715,6 +726,17 @@ export default function ViewOnBoardDetails() {
     setTotalLeaveBalance(0)
    }
   }
+
+  const fatchLeaveTypes = async () => {
+    let result = await amDashboardDAO.getLeaveTypesRequestDAO()
+    if(result.statusCode === HTTPStatusCode.OK){
+      setLeaveTypes(result.responseBody)
+    }
+  }
+
+  useEffect(()=>{
+    fatchLeaveTypes()
+  },[])
 
   const handleApproveleave = async (data,file)=>{
     setLeaveLoading(true)
@@ -1264,6 +1286,7 @@ export default function ViewOnBoardDetails() {
                     ...getEngagementModal,
                     addLeaveModal: false,
                   })
+                  reset();
                   setEditLeaveData({})
                 }
                 }
@@ -1281,7 +1304,8 @@ export default function ViewOnBoardDetails() {
                 errors={errors}
                 feedBackTypeEdit={feedBackTypeEdit}
                 setFeedbackTypeEdit={setFeedbackTypeEdit}
-                setClientFeedbackList={setClientFeedbackList} />
+                setClientFeedbackList={setClientFeedbackList}
+                leaveTypes={leaveTypes} />
 
               </Modal>}
 

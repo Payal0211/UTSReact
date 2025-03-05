@@ -26,7 +26,8 @@ const HRSelectField = ({
 	extraAction,
 	setOptions,
 	onValueChange,
-	isMustHaveSkillRes
+	isMustHaveSkillRes,
+	compStyles
 }) => {
 	
 	const getChangeHandlerWithValue = (value, option) => {
@@ -110,7 +111,7 @@ const HRSelectField = ({
 	);
 
 	return (
-		<div className={HRSelectFieldStyle.formField}>
+		<div className={HRSelectFieldStyle.formField} style={compStyles && compStyles}>
 			{label && (
 				<label>
 					{label}
