@@ -837,6 +837,10 @@ table {
   background-color: var(--color-sunlight) !important;
 }
 
+.ant-switch span{
+font-weight: bold;
+}
+
 .selectSalesManagerModal .ant-modal-close {
   display: none;
 }
