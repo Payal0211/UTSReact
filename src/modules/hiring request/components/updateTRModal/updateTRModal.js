@@ -211,9 +211,9 @@ const UpdateTR = ({
 										register={register}
 										errors={errors}
 										validationSchema={{
-											required: 'Please enter current TR',
+											required: 'Please enter TR',
 										}}
-										label={`${handleLabel()} Current TR(s)`}
+										label={`${handleLabel()} TR(s)`}
 										name="currentTR"
 										setValue={setValue}
 										value={count}
