@@ -4,13 +4,12 @@ import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
 import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPriorityStar.svg';
 import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg';
 import eyeIcon from 'assets/svg/eye.svg'
-import { Button, Tooltip } from "antd";
+import { Button, Tooltip, Switch } from "antd";
 import dealDetailsStyles from "../../../../modules/viewClient/viewClientDetails.module.css";
 import moment from "moment";
 import { result } from "lodash";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
-        console.log(filterList)
         return [
 			// {
 			// 	label: 'Status',
@@ -65,7 +64,7 @@ export const allClientsConfig = {
             }            		
 		];
     },
-    tableConfig : (editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID) => {
+    tableConfig : (editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID,updateEmailNotification) => {
         // && LoggedInUserTypeID?.LoggedInUserTypeID == 2
         if(isShowAddClientCredit === true){
             return [
@@ -321,8 +320,9 @@ export const allClientsConfig = {
                     dataIndex: 'isClientNotificationSend',
                     key: 'isClientNotificationSend',
                     width: '100px', 
-                    render: (text) => {
-                        return text === false ? 'On' : 'Off'
+                    render: (text,result) => {
+                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="On" unCheckedChildren="Off" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
+                        // return text === false ? 'On' : 'Off'
                     }                  
                 },
             //     {
@@ -543,7 +543,8 @@ export const allClientsConfig = {
                     key: 'isClientNotificationSend',
                     width: '100px', 
                     render: (text) => {
-                        return text === false ? 'On' : 'Off'
+                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="On" unCheckedChildren="Off" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
+                        // return text === false ? 'On' : 'Off'
                     }                  
                 },
                 // {
@@ -746,7 +747,8 @@ export const allClientsConfig = {
                     key: 'isClientNotificationSend',
                     width: '100px', 
                     render: (text) => {
-                        return text === false ? 'On' : 'Off'
+                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="On" unCheckedChildren="Off" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
+                        // return text === false ? 'On' : 'Off'
                     }                  
                 },
                 // {

@@ -338,9 +338,26 @@ const updateSpaceIDForClientFun = async () =>{
             window.open(response?.responseBody?.authUrl, '_blank');
         }
 
+    const updateEmailNotification = async (clientID,companyId,val)=>{
+        let payload = {
+            contactId:clientID,
+            companyId: companyId,
+            val
+        }
+        setLoading(true);
+        const result = await allClientRequestDAO.UpdateEmailNotificationStateDAO(payload)
+        setLoading(false);    
+        if(result.statusCode === HTTPStatusCode.OK){
+            let newArr = [...allClientsList]
+                let ind = newArr.findIndex(item => (item.clientID === clientID && item.companyID === companyId))
+                newArr[ind] = {...newArr[ind],isClientNotificationSend : val}   
+                setAllClientList(newArr)
+        }
+    }
+
     const allClientsColumnsMemo = useMemo(
-		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID),
-		[isShowAddClientCredit],
+		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID,updateEmailNotification),
+		[isShowAddClientCredit, allClientsList],
 	); 
 
     const handleExport = async () => {          

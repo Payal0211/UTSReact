@@ -186,4 +186,20 @@ export const amDashboardAPI = {
 			return errorDebug(error, 'amDashboardAPI.approveRejectLeaveRequest');
 		}
 	},
+	getLeaveTypesRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+            NetworkInfo.ZOHO_NETWORK +
+			SubDomain.LEAVE_REQUEST +
+			LeaveRequestAPI.GET_LEAVE_TYPES
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = NetworkInfo.ZOHO_AUTH;
+
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'amDashboardAPI.getLeaveTypesRequest');
+		}
+	},
 }
