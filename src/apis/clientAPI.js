@@ -326,4 +326,19 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getSyncCompanyProfile');
 		}
 	},
+	UpdateEmailNotificationState:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			ClientsAPI.UPDATE_EMAIL_NOTIFICATION +`?contactId=${payload.contactId}&companyId=${payload.companyId}&onn=${payload.val}` ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getSyncCompanyProfile');
+		}
+	},
 };
