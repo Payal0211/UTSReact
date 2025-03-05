@@ -71,6 +71,38 @@ export const allClientRequestDAO  = {
 			return errorDebug(error,'allClientRequestDAO.getClientFilterDAO');
 		}
 	},
+	UpdateEmailNotificationStateDAO : async function (payload){
+		try {
+			const allClientFilterResult = await ClientAPI.UpdateEmailNotificationState(payload);
+			if (allClientFilterResult) {
+				const statusCode = allClientFilterResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = allClientFilterResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return allClientFilterResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return allClientFilterResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error,'allClientRequestDAO.UpdateEmailNotificationStateDAO');
+		}
+	},
 	getClientDetailsForViewDAO : async function (CompanyID,ClientID){
 		try {
 			const viewClientDetailsResult = await ClientAPI.getViewclientDetailsRequest(CompanyID,ClientID);

@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import moment from "moment";
 import { amDashboardDAO } from "core/amdashboard/amDashboardDAO";
+import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 
 const AddLeaveModal = ({
   editLeaveData,
@@ -22,21 +23,25 @@ const AddLeaveModal = ({
   watch,
   reset,
   errors,
+  leaveTypes
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [startDateRadio, setStartDateRadio] = useState("Full Day");
   const [endDate, setEndDate] = useState(null);
-
+  const [controlledLeaveType, setControlledLeaveType] = useState('')
   const [formError, SetFormError] = useState(false);
 
   useEffect(() => {
     if (editLeaveData?.leaveID) {
       setValue("comment", editLeaveData?.leaveReason);
+      setValue('leaveType', editLeaveData?.leaveTypeID)
+      setControlledLeaveType(editLeaveData?.leaveType)
+      setStartDateRadio(editLeaveData?.leaveDuration)
       let dates = editLeaveData?.leaveDate.split("/");
       setStartDate(new Date(dates[0]));
       // setStartDate(moment(dates[0]).format() )
-      dates[1] && setEndDate(new Date(dates[1]));
+      dates[1] ? setEndDate(new Date(dates[1])) : setEndDate(new Date(dates[0])) ;
     }
   }, [editLeaveData]);
 
@@ -52,7 +57,7 @@ const AddLeaveModal = ({
       isformvalid = false;
     }
 
-    if (watch("comment") === "" || watch("comment") === undefined) {
+    if (watch("comment") === "" || watch("comment") === undefined || watch('leaveType')=== "" || watch("leaveType") === undefined) {
       isformvalid = false;
     }
 
@@ -62,6 +67,7 @@ const AddLeaveModal = ({
         talentID: talentID,
         leaveDate: moment(startDate).format(),
         leaveEndDate: moment(endDate).format(),
+        leaveTypeID: watch('leaveType'),
         leaveDuration:
           moment(startDate).format("yyyy-MM-DD") !==
           moment(endDate).format("yyyy-MM-DD")
@@ -105,7 +111,7 @@ const AddLeaveModal = ({
       <div
         className={`${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.addFeebackContainer}`}
       >
-        <h1>Apply Leave</h1>
+        <h1>{editLeaveData?.leaveID ? "Edit" : "Apply"} Leave</h1>
       </div>
       {isLoading ? (
         <Skeleton />
@@ -210,10 +216,33 @@ const AddLeaveModal = ({
                 ) : null
               ) : null}
            
+           <div  className={allengagementAddFeedbackStyles.row}
+            >  
+            <div className={allengagementAddFeedbackStyles.colMd12}>
+            <HRSelectField 
+            isControlled={true}
+            controlledValue={controlledLeaveType}
+            setControlledValue={setControlledLeaveType} 
+            mode={'id'}
+            setValue={setValue}
+            register={register}
+            name="leaveType"
+            label="Leave Type"
+            defaultValue="Select"
+            compStyles={{marginBottom:'10px'}}
+            options={leaveTypes.map(itm=> ({id:itm.id, value:itm.leaveType}))}
+            />
+           {formError && !watch("leaveType") && (
+                <span className={allengagementAddFeedbackStyles.error}>
+                  please select leave type
+                </span>
+              )}
+             </div>
+            </div>
 
           <div
             className={allengagementAddFeedbackStyles.row}
-            style={{ marginBottom: "10px" }}
+            style={{ marginBottom: "10px",marginTop:'10px' }}
           >
             <div className={allengagementAddFeedbackStyles.colMd12}>
               <HRInputField
@@ -257,6 +286,7 @@ const AddLeaveModal = ({
         <button
           onClick={() => {
             onCancel();
+            reset();
           }}
           className={allengagementAddFeedbackStyles.btn}
         >

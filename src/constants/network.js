@@ -83,6 +83,7 @@ export class LeaveRequestAPI {
 	static GET_CALENDER_LEAVES = 'GetTalentLeavesMonthlyCalendar'
 	static GET_UPDATE_LEAVE = 'InsertUpdateLeaveRequest'
 	static APPROVE_REJECT_LEAVE = 'ApproveRejectRevokeTalentLeaves'
+	static GET_LEAVE_TYPES = 'GetLeaveTypes'
 }
 
 export class AMDashboardAPI {
@@ -316,6 +317,7 @@ export class ClientsAPI {
 	static LIST_CREDIT_UTILIZATION = 'ListCreditUtilization'
 	static RESET_DEMO_TALENT_STATUS = 'ResetAllDemoHRTalentStatus'
 	static SYNC_COMPANY_PROFILE = "SyncCompanyProfile";
+	static UPDATE_EMAIL_NOTIFICATION = "UpdateEmailNotifications"
 }
 
 export class HiringRequestsAPI {
