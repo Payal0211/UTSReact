@@ -321,7 +321,7 @@ export const allClientsConfig = {
                     key: 'isClientNotificationSend',
                     width: '100px', 
                     render: (text,result) => {
-                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="On" unCheckedChildren="Off" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
+                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="ON" unCheckedChildren="OFF" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
                         // return text === false ? 'On' : 'Off'
                     }                  
                 },
@@ -543,7 +543,7 @@ export const allClientsConfig = {
                     key: 'isClientNotificationSend',
                     width: '100px', 
                     render: (text) => {
-                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="On" unCheckedChildren="Off" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
+                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="ON" unCheckedChildren="OFF" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
                         // return text === false ? 'On' : 'Off'
                     }                  
                 },
@@ -747,7 +747,7 @@ export const allClientsConfig = {
                     key: 'isClientNotificationSend',
                     width: '100px', 
                     render: (text) => {
-                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="On" unCheckedChildren="Off" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
+                        return <Switch defaultChecked={!text} disabled={result.companyModel !== "Pay Per Hire"} checkedChildren="ON" unCheckedChildren="OFF" onChange={val=>updateEmailNotification(result.clientID,result.companyID,!val)}/>
                         // return text === false ? 'On' : 'Off'
                     }                  
                 },

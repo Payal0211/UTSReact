@@ -133,12 +133,16 @@ const UpdateTR = ({
 	}, [updateTRDetail?.ClientDetail?.ActiveTR]);
 
 	const increment = () => {
-		setCount(count + 1);
+		let val = count + 1
+		setCount(val);
+		setValue('currentTR', val)
 		setDisable(false);
 	};
 	const decrement = () => {
 		if (count > 0) {
-			setCount(count - 1);
+			let val = count - 1
+			setCount(val);
+		    setValue('currentTR', val)
 			setDisable(false);
 		}
 		if(count == 0){
@@ -149,10 +153,34 @@ const UpdateTR = ({
 	useEffect(() => {
 		return () => setIsLoading(false);
 	}, []);
+
+	const handleLabel = ()=>{
+
+		if(updateTRDetail?.ClientDetail?.Availability === 'Part Time'){
+			if(updateTRDetail?.ClientDetail?.ActiveTR * 2 === count  
+				|| count === 0 ){
+					return	''
+				}
+			if(updateTRDetail?.ClientDetail?.ActiveTR * 2 < count){
+				return 'Increase'
+			}
+			return 'Decrease'
+		}else{
+			if(updateTRDetail?.ClientDetail?.ActiveTR === count){
+				return	''
+			}
+			if(updateTRDetail?.ClientDetail?.ActiveTR < count){
+				return 'Increase'
+			}
+			return 'Decrease'
+		}
+		
+	}
+
 	return (
 		<div className={updateTRStyle.engagementModalContainer}>		
 			<div className={updateTRStyle.updateTRTitle}>
-				<h2>Update TR</h2>
+				<h2>Increase / Decrease TR(s)</h2>
 				<p>
 					{updateTRDetail?.ClientDetail?.HR_Number} | Active TR:{' '}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
@@ -183,9 +211,9 @@ const UpdateTR = ({
 										register={register}
 										errors={errors}
 										validationSchema={{
-											required: 'Please enter current TR',
+											required: 'Please enter TR',
 										}}
-										label="Update Current TR"
+										label={`${handleLabel()} TR(s)`}
 										name="currentTR"
 										setValue={setValue}
 										value={count}
@@ -196,6 +224,7 @@ const UpdateTR = ({
 										type={InputType.NUMBER}
 										placeholder="Enter Current TR"
 										required
+										// disabled={true}
 									/>
 									<button
 										className={updateTRStyle.plusButton}

@@ -104,6 +104,8 @@ export default function LegalPreOnboarding({
           "lwd",
           dayjs(data?.ReplacementDetail?.lastWorkingDay).toDate()
         );
+        data?.getLegalInfo?.totalLeavesGiven && setValue('noofLeaves',data?.getLegalInfo?.totalLeavesGiven)
+        data?.getLegalInfo?.holidayLeaves && setValue('holidayLeaves',data?.getLegalInfo?.holidayLeaves)
         setReplacementEngHr(data?.replacementEngHRs);
         setLegalPreOnboardingAMAssignment(data);
         const _filterData = data?.replacementEngHRs?.filter(
