@@ -378,7 +378,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       //   width: '150px',
       // },
       {
-        title: "BR",
+        title: "BR / DP Amount",
         dataIndex: "payout_BillRate",
         key: "payout_BillRate",
         align: "left",
