@@ -155,11 +155,41 @@ const updateSpaceIDForClientFun = async () =>{
     }, []);
     
     useEffect(() => {
-        getAllClientsList(tableFilteredState);
+        const startDate_parts = new Date(startDate).toLocaleDateString('en-US').split('/'); 
+        const sDate = `${startDate_parts[2]}-${startDate_parts[0].padStart(2, '0')}-${startDate_parts[1].padStart(2, '0')}`;
+        const endDate_parts = new Date(endDate).toLocaleDateString('en-US').split('/'); 
+        const eDate = `${endDate_parts[2]}-${endDate_parts[0].padStart(2, '0')}-${endDate_parts[1].padStart(2, '0')}`;
+        let payload = { ...tableFilteredState,
+            "filterFields_Client":{
+                ...tableFilteredState.filterFields_Client,
+                    fromDate: startDate ? sDate : '',
+                    toDate:endDate ? eDate : '',
+                    SearchSourceCategory:debouncedSearchSourceCategory,
+                    searchText:debouncedSearch
+            }
+        
+
+        }
+        getAllClientsList(payload);
     },[tableFilteredState]);
 
     const reloadClientList = ()=>{
-        getAllClientsList(tableFilteredState);
+        const startDate_parts = new Date(startDate).toLocaleDateString('en-US').split('/'); 
+        const sDate = `${startDate_parts[2]}-${startDate_parts[0].padStart(2, '0')}-${startDate_parts[1].padStart(2, '0')}`;
+        const endDate_parts = new Date(endDate).toLocaleDateString('en-US').split('/'); 
+        const eDate = `${endDate_parts[2]}-${endDate_parts[0].padStart(2, '0')}-${endDate_parts[1].padStart(2, '0')}`;
+        let payload = { ...tableFilteredState,
+            "filterFields_Client":{
+                ...tableFilteredState.filterFields_Client,
+                    fromDate: startDate ? sDate : '',
+                    toDate:endDate ? eDate : '',
+                    SearchSourceCategory:debouncedSearchSourceCategory,
+                    searchText:debouncedSearch
+            }
+        
+
+        }
+        getAllClientsList(payload);
     }
 
     const modifyResponseData = (data) => {
@@ -518,7 +548,7 @@ const updateSpaceIDForClientFun = async () =>{
             {/* </WithLoader> */}
             </div>
            
-
+{console.log('tableFilteredState',tableFilteredState)}
             {isAllowFilters && (
                         <Suspense fallback={<div>Loading...</div>}>
                             <AllClientFiltersLazy				
