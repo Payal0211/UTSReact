@@ -1218,7 +1218,7 @@ const EditHRFields = ({
 
     //   return cities.join(",");
     // }
-    return NearByCitesValues.length ? NearByCitesValues?.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",") : []
+    return NearByCitesValues?.length ? NearByCitesValues?.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",") : []
   };
 
   const getParsingType = (isHaveJD, parseType) => {
@@ -2193,7 +2193,7 @@ const EditHRFields = ({
   } 
 
   useEffect(() =>{
-    hrPricingTypes.length === 0 &&  getTransparentEngType(getHRdetails?.companyInfo?.companyID)
+    hrPricingTypes.length === 0 && getHRdetails?.companyInfo?.companyID &&  getTransparentEngType(getHRdetails?.companyInfo?.companyID)
    
   },[getHRdetails?.companyInfo?.companyID,hrPricingTypes])
 
