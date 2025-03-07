@@ -138,9 +138,10 @@ const OnboardFilerList = ({
 		appliedFilter.forEach((item) => {
 			filters = { ...filters, [item.filterType]: item?.value };
 		});
+
 		setTableFilteredState({
 			...tableFilteredState,
-			filterFields_OnBoard: { ...tableFilteredState.filterFields_OnBoard , ...filters },
+			filterFields_OnBoard: filters ,
 		});
 		const reqFilter = {
 			...tableFilteredState,

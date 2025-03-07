@@ -6,13 +6,13 @@ import React, { useEffect, useState } from "react";
 import { FaDownload } from "react-icons/fa";
 import { IconContext } from "react-icons";
 
-export default function TalentListDocuments({ talentID }) {
+export default function TalentListDocuments({ talentID,companyId }) {
   const [documentsList, setDocumentsList] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
   const getDocumentsDetails = async (talentID) => {
     setLoading(true);
-    const result = await engagementRequestDAO.viewDocumentsDetailsDAO(talentID);
+    const result = await engagementRequestDAO.viewDocumentsDetailsDAO(talentID,companyId);
     setLoading(false);
 
     if (result.statusCode === HTTPStatusCode.OK) {
