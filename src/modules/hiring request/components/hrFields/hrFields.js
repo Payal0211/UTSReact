@@ -964,7 +964,7 @@ const HRFields = ({
     }
 
 
-    getTransparentEngType(clientData?.companyId , clientData?.hiringTypePricingId,)
+    clientData?.companyId && getTransparentEngType(clientData?.companyId , clientData?.hiringTypePricingId)
     //set availability
     clientData?.companyTypeID && setValue("availability", {id: clientData?.companyTypeID === 2 ? 1 : 2, value :"Full Time"})
     clientData?.companyTypeID &&  setControlledAvailabilityValue("Full Time")
