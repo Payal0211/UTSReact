@@ -84,6 +84,7 @@ export class LeaveRequestAPI {
 	static GET_UPDATE_LEAVE = 'InsertUpdateLeaveRequest'
 	static APPROVE_REJECT_LEAVE = 'ApproveRejectRevokeTalentLeaves'
 	static GET_LEAVE_TYPES = 'GetLeaveTypes'
+	static GET_LEAVE_HISTORY = 'GetTalentLeavesHistory'
 }
 
 export class AMDashboardAPI {
