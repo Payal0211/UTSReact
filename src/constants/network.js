@@ -454,6 +454,7 @@ export class OnboardsAPI {
 	// static UPDATE_PRE_ON_BOARD_2ND_TAB = 'UpdateOnBoardingDetailForSecondTabAMAssignment'
 	static UPDATE_PRE_ON_BOARD_2ND_TAB = 'UpdateLegalInfo'
 	static UPLOAD_LEAVE_POLICY = 'UploadLeavePolicy'
+	static UPDATE_LEAVE_BALANCE = 'UpdateLeaveBalance'
 	static GET_AM_USER = "GetAMUser";
 	static GET_STATE_LIST = "GetStateList";
 	static SYNC_ENGAGEMENT= 'SyncEngagementDetailToATS'

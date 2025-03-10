@@ -527,6 +527,22 @@ export const EngagementRequestAPI = {
 			return errorDebug(error, 'EngagementRequestAPI.feedbackFormContent');
 		}
 	},
+	updateLeaveRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD +
+			OnboardsAPI.UPDATE_LEAVE_BALANCE +
+			`?onBoardId=${pl?.onBoardId}&talentID=${pl?.talentID}&leavesGiven=${pl?.leavesGiven}&holidayLeaves=${pl?.holidayLeaves}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.updateLeaveRequest');
+		}
+	},
 	submitFeedBackForm: async function (addFeedBackData) {
 		let httpService = new HttpServices();
 		httpService.URL =

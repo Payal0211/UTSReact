@@ -434,6 +434,7 @@ const EditHRFields = ({
         let formData = new FormData();
         formData.append("File", fileData);
         formData.append("clientemail", getHRdetails?.contact);
+        formData.append('hrid',localStorage.getItem("hrID"))
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         if (uploadFileResponse.statusCode === 400) {
           setValidation({

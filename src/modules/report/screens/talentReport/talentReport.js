@@ -1442,7 +1442,7 @@ export default function TalentReport() {
         footer={null}
         className="engagementAddFeedbackModal"
         open={showLeaves}
-        onCancel={() => setshowLeaves(false)}
+        onCancel={() => {setshowLeaves(false);setTalentLeaveReportTabTitle("Leave Details")}}
       >
         <>
           {leaveLoading ? (
@@ -1467,8 +1467,8 @@ export default function TalentReport() {
             />,
           },
           {
-            label: "Leave Balance History",
-            key: "Leave Balance History",
+            label: "Leave History",
+            key: "Leave History",
             children:  <Table
               scroll={{ y: "100vh" }}
               dataSource={leaveHistoryList ? leaveHistoryList : []}
