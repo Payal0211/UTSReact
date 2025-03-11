@@ -216,6 +216,7 @@ const EditHRFields = ({
   const [creditBaseCheckBoxError, setCreditBaseCheckBoxError] = useState(false);
   const [isPreviewModal, setIsPreviewModal] = useState(false);
   const [getcompanyID, setcompanyID] = useState("");
+  const [forFileUploadTypeId, setForFileUploadTypeId] = useState(getHRdetails?.clientDetails_Result?.jdFileTypeID)
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -434,6 +435,7 @@ const EditHRFields = ({
         let formData = new FormData();
         formData.append("File", fileData);
         formData.append("clientemail", getHRdetails?.contact);
+        formData.append('hrid',localStorage.getItem("hrID"))
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -1218,7 +1220,7 @@ const EditHRFields = ({
 
     //   return cities.join(",");
     // }
-    return NearByCitesValues.length ? NearByCitesValues?.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",") : []
+    return NearByCitesValues?.length ? NearByCitesValues?.map((val) => typeof val === 'string' ? allCities.find(c=> c.label === val)?.value : val ).join(",") : []
   };
 
   const getParsingType = (isHaveJD, parseType) => {
@@ -1374,7 +1376,7 @@ const EditHRFields = ({
       hrFormDetails.prerequisites = watch("parametersHighlight") ?? null;
       hrFormDetails.HRIndustryType = specificIndustry?.join("^");
       hrFormDetails.StringSeparator = "^";
-
+      hrFormDetails.jdFileTypeID = forFileUploadTypeId
       hrFormDetails.JobTypeID = watch("workingMode")?.id;
       hrFormDetails.JobLocation =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
@@ -1555,6 +1557,9 @@ const EditHRFields = ({
         setHRdetails((prev) => ({
           ...prev,
           companyInfo: addHRRequest?.responseBody?.details?.companyInfo,
+          clientDetails_Result: {...getHRdetails?.clientDetails_Result,
+            jdFileTypeID : addHRRequest?.responseBody?.details?.jdFileTypeID
+          }
         }));
         updateCompanyDetails()
         type !== SubmitType.SAVE_AS_DRAFT &&
@@ -1610,7 +1615,8 @@ const EditHRFields = ({
       locationSelectValidation,
       isHaveJD,
       parseType,
-      confidentialInfo
+      confidentialInfo,
+      forFileUploadTypeId
     ]
   );
   // useEffect(() => {
@@ -2193,7 +2199,7 @@ const EditHRFields = ({
   } 
 
   useEffect(() =>{
-    hrPricingTypes.length === 0 &&  getTransparentEngType(getHRdetails?.companyInfo?.companyID)
+    hrPricingTypes.length === 0 && getHRdetails?.companyInfo?.companyID &&  getTransparentEngType(getHRdetails?.companyInfo?.companyID)
    
   },[getHRdetails?.companyInfo?.companyID,hrPricingTypes])
 
@@ -4222,7 +4228,7 @@ const EditHRFields = ({
                     isLoading={isLoading}
                     uploadFileRef={uploadFile}
                     uploadFileHandler={(e) =>
-                      uploadFileHandler(e.target.files[0])
+                      {uploadFileHandler(e.target.files[0]);setForFileUploadTypeId(1)}
                     }
                     // googleDriveFileUploader={() => googleDriveFileUploader()}
                     // uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}

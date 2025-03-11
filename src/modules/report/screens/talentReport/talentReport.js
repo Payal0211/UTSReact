@@ -36,6 +36,8 @@ import moment from "moment";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { amDashboardDAO } from "core/amdashboard/amDashboardDAO";
 import OnboardFilerList from "modules/onBoardList/OnboardFilterList";
+import greenArrowLeftImage from "assets/svg/greenArrowLeft.svg";
+import redArrowRightImage from "assets/svg/redArrowRight.svg";
 import { allEngagementConfig } from "modules/engagement/screens/engagementList/allEngagementConfig";
 
 export default function TalentReport() {
@@ -56,8 +58,10 @@ export default function TalentReport() {
   const [rejectedListDataCount, setrejectedListDataCount] = useState(0);
   const [showLeaves, setshowLeaves] = useState(false);
   const [leaveList, setLeaveList] = useState([]);
+  const [leaveHistoryList, setLeaveHistoryList] = useState([]);
   const [leaveLoading, setLeaveLoading] = useState(false);
   const [pageSize, setPageSize] = useState(20);
+  const [talentLeaveReportTabTitle,setTalentLeaveReportTabTitle] = useState('Leave Details')
   const dateTypeList = [{
     value: 2,
     label: 'No Dates',
@@ -250,19 +254,27 @@ export default function TalentReport() {
     rejectedtableFilteredState,
   ]);
 
-  const getLeaveList = async (talentID) => {
+  const getLeaveList = async (talentID,onBoardID) => {
     setshowLeaves(true);
     setLeaveLoading(true);
     let payload = {
       talentID: talentID,
     };
     const result = await amDashboardDAO.getTalentLeaveRequestDAO(payload);
+    const historyResult = await amDashboardDAO.getLeaveHistoryRequestDAO(talentID,onBoardID)
     setLeaveLoading(false);
     if (result.statusCode === HTTPStatusCode.OK) {
       setLeaveList(result.responseBody);
     }
     if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
       setLeaveList([]);
+    }
+
+    if (historyResult.statusCode === HTTPStatusCode.OK) {
+      setLeaveHistoryList(historyResult.responseBody);
+    }
+    if (historyResult.statusCode === HTTPStatusCode.NOT_FOUND) {
+      setLeaveHistoryList([]);
     }
   };
 
@@ -548,7 +560,7 @@ export default function TalentReport() {
                       marginLeft: "5px",
                     }}
                     onClick={() => {
-                      getLeaveList(value.talentID);
+                      getLeaveList(value.talentID, value.onBoardID);
                     }}
                   >{`${value.totalLeaveBalance}`}</p>
                 </>
@@ -733,6 +745,118 @@ export default function TalentReport() {
       },
     ];
   }, [leaveList]);
+
+  const leaveHistoryColumns = useMemo(() => {
+    return [
+      {
+        title: "Date",
+        dataIndex: "leaveDates",
+        key: "leaveDates",
+        align: "left",
+        width: "150px",
+        render: (value, data) => {
+          let datArr = value
+          .split("/")
+          .map((val) => moment(val).format(" MMM DD, YYYY"))
+
+          return <>{datArr[0]} <br/> {datArr.length > 1 ? <>  To {datArr[1]}</> : ''}</>
+        },
+      },
+      {
+        title: "Summary",
+        dataIndex: "leaveReason",
+        key: "leaveReason",
+        align: "left",
+        width: "250px",
+        render: (value, data) => {
+          return value;
+        },
+      }, 
+      {
+        title: "Duration",
+        dataIndex: "leaveDuration",
+        key: "leaveDuration",
+        align: "left",
+       
+        render: (value, data) => {
+          return value;
+        },
+      },
+      {
+        title: "Type",
+        dataIndex: "leaveType",
+        key: "leaveType",
+        align: "left",
+       
+        render: (value, data) => {
+          return value;
+        },
+      },
+      {
+        title: "Action",
+        dataIndex: "leaveAction",
+        key: "leaveAction",
+        align: "left",
+      
+        render: (value, data) => {
+          return <div>
+            <div>
+            {data?.leavesTaken} {value}  <img
+          src={
+            data?.leaveAction?.toLowerCase() === "credit"
+              ? greenArrowLeftImage
+              : redArrowRightImage
+          }
+          style={{transform: 'rotate(180deg)'}}
+          alt="icon"
+        />
+            </div>
+            <div>
+              Balance : {data?.leaveBalance}
+              </div>
+          </div>;
+        },
+      },
+      // {
+      //   title: "Status",
+      //   dataIndex: "status",
+      //   key: "status",
+      //   align: "left",
+      //   width: "100px",
+      //   render: (value, data) => {
+      //     return (
+      //       <div
+      //         className={`${TalentBackoutStyle.documentStatus} ${
+      //           value === "Approved"
+      //             ? TalentBackoutStyle.green
+      //             : value === "Rejected"
+      //             ? TalentBackoutStyle.red
+      //             : TalentBackoutStyle.blue
+      //         }`}
+      //       >
+      //         <div
+      //           className={`${TalentBackoutStyle.documentStatusText} ${
+      //             value === "Approved"
+      //               ? TalentBackoutStyle.green
+      //               : value === "Rejected"
+      //               ? TalentBackoutStyle.red
+      //               : TalentBackoutStyle.blue
+      //           }`}
+      //         >
+      //           {value === "Rejected" ? (
+      //             <Tooltip title={data.leaveRejectionRemark}>
+      //               <span style={{ cursor: "pointer" }}> {value}</span>
+      //             </Tooltip>
+      //           ) : (
+      //             <span> {value}</span>
+      //           )}
+      //         </div>
+      //       </div>
+      //     );
+      //   },
+      // },
+    ];
+  }, [leaveHistoryList]);
 
   useEffect(() => {
     const timer = setTimeout(
@@ -1318,19 +1442,42 @@ export default function TalentReport() {
         footer={null}
         className="engagementAddFeedbackModal"
         open={showLeaves}
-        onCancel={() => setshowLeaves(false)}
+        onCancel={() => {setshowLeaves(false);setTalentLeaveReportTabTitle("Leave Details")}}
       >
         <>
           {leaveLoading ? (
             <Skeleton active />
-          ) : (
-            <Table
+          ) : <>
+          <Tabs
+        onChange={(e) => setTalentLeaveReportTabTitle(e)}
+        defaultActiveKey="Deployed"
+        activeKey={talentLeaveReportTabTitle}
+        animated={true}
+        tabBarGutter={50}
+        tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
+        items={[
+          {
+            label: "Leave Details",
+            key: "Leave Details",
+            children:  <Table
               scroll={{ y: "100vh" }}
               dataSource={leaveList ? leaveList : []}
               columns={leaveColumns}
               pagination={false}
-            />
-          )}
+            />,
+          },
+          {
+            label: "Leave History",
+            key: "Leave History",
+            children:  <Table
+              scroll={{ y: "100vh" }}
+              dataSource={leaveHistoryList ? leaveHistoryList : []}
+              columns={leaveHistoryColumns}
+              pagination={false}
+            />,
+          }]}
+          />
+          </> }
         </>
       </Modal>
     </div>

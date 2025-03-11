@@ -1322,7 +1322,7 @@ const TalentList = ({
 										Skill Test Results
 									</div> */}
 
-									{item?.Status?.includes('Hired') && <TalentListDocuments talentID={item?.TalentID} />}
+									{item?.Status?.includes('Hired') && <TalentListDocuments talentID={item?.TalentID} companyId={apiData?.ClientDetail?.CompanyId} />}
 									
 									<Divider
 										style={{

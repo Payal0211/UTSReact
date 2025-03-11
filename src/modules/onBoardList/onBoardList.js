@@ -50,8 +50,9 @@ import EngagementCancel from 'modules/engagement/screens/cancelEngagement/cancel
 import EngagementBillRateAndPayRate from 'modules/engagement/screens/engagementBillAndPayRate/engagementBillRateAndPayRate';
 import EditAllBRPR from 'modules/engagement/screens/editAllBRPR/editAllBRPR';
 import RenewEngagement from 'modules/engagement/screens/renewEngagement/renewEngagement';
+import LeaveUppdate from './leaveUppdate';
 
-const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler) => {
+const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails) => {
     return [   
       {
 				title: '    ',
@@ -69,6 +70,11 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 						{
 							label: 'Add Invoice Details',
 							key: 'addInvoiceDetails',
+							IsEnabled: true,
+						},
+            {
+							label: 'Update Leaves',
+							key: 'updateLeaves',
 							IsEnabled: true,
 						},
 					];
@@ -150,6 +156,10 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
 										break;
 									}
+                  case 'Update Leaves':{
+                    setLeaveUpdate(true)
+                    setTalentDetails(param)
+                  }
 									case 'Edit TSC Name':{
 										setISEditTSC(true)
 										setTSCONBoardData({onboardID :param.onboardID, engagementID:param.engagementID, talentName: param.talentName, tscName: param.tscName})
@@ -646,6 +656,8 @@ function OnBoardList() {
     const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
     const [dateTypeFilter , setDateTypeFilter] = useState(0)
 
+    const [leaveUpdate, setLeaveUpdate] = useState(false)
+    const [talentDetails,setTalentDetails] = useState({})
 
     const editAMModalcontroler = async (id) =>{
         setEditAMModal(true)
@@ -661,7 +673,7 @@ function OnBoardList() {
 
     const tableColumnsMemo = useMemo(
 		() =>
-        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler),
+        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails),
 		[],
 	  );
 
@@ -1880,6 +1892,26 @@ console.log(date)
 
 			
 							</Modal>}
+
+
+        {/** ============ MODAL FOR UPDATE LEAVES ================ */}
+				{leaveUpdate && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className="engagementAddFeedbackModal"
+						open={leaveUpdate}
+						onCancel={() =>{
+              setLeaveUpdate(false)
+            }
+						}>
+						<LeaveUppdate talentDetails={talentDetails} callListData={callListData} onCancel={() =>{
+              setLeaveUpdate(false)
+            }} />
+					</Modal>
+				)}
         </div>
     )
 }

@@ -492,6 +492,7 @@ const getParsingType = (isHaveJD,parseType) => {
 					"secondaryinterviewerList": d.secondaryInterviewer
 				},
 				isDirectHR:isDirectHR,
+				jdFileTypeID :  getHRdetails?.clientDetails_Result?.jdFileTypeID,
 				companyInfo: {
 					"companyID": getHRdetails?.companyInfo?.companyID,
 					"companyName": d.companyName,

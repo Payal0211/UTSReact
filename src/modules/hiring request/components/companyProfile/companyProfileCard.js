@@ -485,48 +485,50 @@ const CompanyProfileCard = ({
                     click Here
                   </span>
                 </> :
-                <>
-                  <span>JD Link:</span>&nbsp;&nbsp;
-                <span style={{ fontWeight: "500" }}>
-                  {clientDetail?.JDFileOrURL === "JDFILE" ? (
-                    clientDetail?.JobDetail?.split(":")[0] === "http" ||
-                    clientDetail?.JobDetail?.split(":")[0] === "https" ? (
-                      <a
-                        rel="noreferrer"
-                        href={clientDetail?.JobDetail}
-                        style={{ textDecoration: "underline" }}
-                        target="_blank"
-                      >
-                        Click Here
-                      </a>
-                    ) : clientDetail?.JobDetail ? (
-                      <a
-                        rel="noreferrer"
-                        href={
-                          NetworkInfo.PROTOCOL +
-                          NetworkInfo.DOMAIN +
-                          "Media/JDParsing/JDfiles/" +
-                          clientDetail?.JobDetail
-                        }
-                        style={{ textDecoration: "underline" }}
-                        target="_blank"
-                      >
-                        Click Here
-                      </a>
-                    ) : 'NA'
-                  ): clientDetail?.JDFileOrURL === "JDURL" ? (
-                    <a
-                      rel="noreferrer"
-                      href={clientDetail?.JobDetail}
-                      style={{ textDecoration: "underline" }}
-                      target="_blank"
-                    >
-                      Click Here
-                    </a>
-                  )   : (
-                    "NA"
-                  )}
-                </span>
+                <>{clientDetail?.ShowJDFileLink && <>
+                      <span>JD Link:</span>&nbsp;&nbsp;
+                      <span style={{ fontWeight: "500" }}>
+                        {clientDetail?.JDFileOrURL === "JDFILE" ? (
+                          clientDetail?.JobDetail?.split(":")[0] === "http" ||
+                          clientDetail?.JobDetail?.split(":")[0] === "https" ? (
+                            <a
+                              rel="noreferrer"
+                              href={clientDetail?.JobDetail}
+                              style={{ textDecoration: "underline" }}
+                              target="_blank"
+                            >
+                              Click Here
+                            </a>
+                          ) : clientDetail?.JobDetail ? (
+                            <a
+                              rel="noreferrer"
+                              href={
+                                NetworkInfo.PROTOCOL +
+                                NetworkInfo.DOMAIN +
+                                "Media/JDParsing/JDfiles/" +
+                                clientDetail?.JobDetail
+                              }
+                              style={{ textDecoration: "underline" }}
+                              target="_blank"
+                            >
+                              Click Here
+                            </a>
+                          ) : 'NA'
+                        ): clientDetail?.JDFileOrURL === "JDURL" ? (
+                          <a
+                            rel="noreferrer"
+                            href={clientDetail?.JobDetail}
+                            style={{ textDecoration: "underline" }}
+                            target="_blank"
+                          >
+                            Click Here
+                          </a>
+                        )   : (
+                          "NA"
+                        )}
+                      </span>
+                </>}
+              
                 </>
                 }
               
