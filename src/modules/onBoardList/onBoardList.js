@@ -157,7 +157,6 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 										break;
 									}
                   case 'Update Leaves':{
-                    console.log('param',param)
                     setLeaveUpdate(true)
                     setTalentDetails(param)
                   }

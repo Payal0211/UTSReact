@@ -23,8 +23,14 @@ export default function LeaveUppdate({ talentDetails,onCancel,callListData}) {
   } = useForm();
 
   const increment = () => {
-    let val =  +count + 1;
+    if(isNaN(count)){
+        let val =  0 + 1;
     setValue("paidLeaves", val);
+    }else{
+          let val =  +count + 1;
+    setValue("paidLeaves", val);
+    }
+  
   };
   const decrement = () => {
     if (count > 0) {
@@ -127,7 +133,7 @@ export default function LeaveUppdate({ talentDetails,onCancel,callListData}) {
                 required: "Please enter paid leaves",
                 min:{
                     value:talentDetails?.totalLeavesGiven,
-                    message:`Please enter value more then ${talentDetails?.totalLeavesGiven}`
+                    message:`Please enter value more then ${talentDetails?.totalLeavesGiven ? 1 : talentDetails?.totalLeavesGiven}`
                   }
               }}
               label={`${handleLabel()} Paid Leaves(s)`}
