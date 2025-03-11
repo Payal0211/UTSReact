@@ -501,7 +501,8 @@ const getParsingType = (isHaveJD,parseType) => {
 			PayPerType:  userCompanyTypeID ,
 			ParsingType: getParsingType(isHaveJD,parseType),
 			IsMustHaveSkillschanged : true,
-			IsGoodToHaveSkillschanged: true
+			IsGoodToHaveSkillschanged: true,
+			jdFileTypeID : parseType === 'JDFileUpload' ? 1 : parseType === 'Manual' ? 3 : 2
 		};
 		if(userCompanyTypeID === 2){
 			debriefFormDetails['companyInfo'] = {

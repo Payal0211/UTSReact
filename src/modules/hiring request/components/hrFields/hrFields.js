@@ -1918,6 +1918,7 @@ const HRFields = ({
       hrFormDetails.prerequisites = watch("parametersHighlight") ?? null;
       hrFormDetails.HRIndustryType = specificIndustry?.join("^");
       hrFormDetails.StringSeparator = "^";
+      hrFormDetails.jdFileTypeID =   parseType === 'JDFileUpload' ? 1 : parseType === 'Manual' ? 3 : 2
 
       hrFormDetails.JobTypeID = watch("workingMode")?.id;
       hrFormDetails.JobLocation =

@@ -216,6 +216,7 @@ const EditHRFields = ({
   const [creditBaseCheckBoxError, setCreditBaseCheckBoxError] = useState(false);
   const [isPreviewModal, setIsPreviewModal] = useState(false);
   const [getcompanyID, setcompanyID] = useState("");
+  const [forFileUploadTypeId, setForFileUploadTypeId] = useState(getHRdetails?.clientDetails_Result?.jdFileTypeID)
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -1375,7 +1376,7 @@ const EditHRFields = ({
       hrFormDetails.prerequisites = watch("parametersHighlight") ?? null;
       hrFormDetails.HRIndustryType = specificIndustry?.join("^");
       hrFormDetails.StringSeparator = "^";
-
+      hrFormDetails.jdFileTypeID = forFileUploadTypeId
       hrFormDetails.JobTypeID = watch("workingMode")?.id;
       hrFormDetails.JobLocation =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
@@ -1556,6 +1557,9 @@ const EditHRFields = ({
         setHRdetails((prev) => ({
           ...prev,
           companyInfo: addHRRequest?.responseBody?.details?.companyInfo,
+          clientDetails_Result: {...getHRdetails?.clientDetails_Result,
+            jdFileTypeID : addHRRequest?.responseBody?.details?.jdFileTypeID
+          }
         }));
         updateCompanyDetails()
         type !== SubmitType.SAVE_AS_DRAFT &&
@@ -1611,7 +1615,8 @@ const EditHRFields = ({
       locationSelectValidation,
       isHaveJD,
       parseType,
-      confidentialInfo
+      confidentialInfo,
+      forFileUploadTypeId
     ]
   );
   // useEffect(() => {
@@ -4223,7 +4228,7 @@ const EditHRFields = ({
                     isLoading={isLoading}
                     uploadFileRef={uploadFile}
                     uploadFileHandler={(e) =>
-                      uploadFileHandler(e.target.files[0])
+                      {uploadFileHandler(e.target.files[0]);setForFileUploadTypeId(1)}
                     }
                     // googleDriveFileUploader={() => googleDriveFileUploader()}
                     // uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
