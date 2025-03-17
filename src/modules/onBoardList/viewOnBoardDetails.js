@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback,useRef } from "react";
 import AddNewClientStyle from "../../modules/client/screens/addnewClient/add_new_client.module.css";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import {
   Avatar,
@@ -126,80 +126,88 @@ export default function ViewOnBoardDetails() {
     [],
   );
 
-  const otherDetailsColumns = useMemo(() => {
-    return [
-      {
-        title: "HR #",
-        dataIndex: "hR_Number",
-        key: "hR_Number",
-        align: "left",
-      },
-      {
-        title: "Client Name",
-        dataIndex: "clientName",
-        key: "clientName",
-        align: "left",
-      },
-      {
-        title: "Client Email",
-        dataIndex: "clientEmail",
-        key: "clientEmail",
-        align: "left",
-      },
-      {
-        title: "Company",
-        dataIndex: "company",
-        key: "company",
-        align: "left",
-      },
-      {
-        title: "Talent Status",
-        dataIndex: "talent",
-        key: "talent",
-        align: "left",
-      },
-      {
-        title: "Actual BR",
-        dataIndex: "final_HR_Cost",
-        key: "final_HR_Cost",
-        align: "left",
-        width: '150px', 
-        render:(text,result)=>{
-          return   `${text}`
-        }
-      },
-      {
-        title: "Actual PR",
-        dataIndex: "talent_Cost",
-        key: "talent_Cost",
-        align: "left",
-        width: '150px', 
-        render:(text,result)=>{
-          return   `${text} `
-        }
-      },
-      {
-        title: "Uplers Fees",
-        dataIndex: "",
-        key: "",
-        align: "left",
-        width: '150px', 
-        render:(_,result)=>{
-          return (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
-        }
-      },
-      {
-        title: "NR / DP (%)",
-        dataIndex: "nrPercentage",
-        key: "nrPercentage",
-        align: "left",
-        width: '150px', 
-        render:(text,result)=>{
-          return `${result.nrPercentage !== 0 ? result.nrPercentage : ''}  ${+result.dP_Percentage !== 0 ? result.dP_Percentage : ''}`
-        }
-      },
-    ]
-  },[otherDetailsList])
+ const otherDetailsColumns = useMemo(() => {
+      return [
+        {
+          title: "HR #",
+          dataIndex: "hR_Number",
+          key: "hR_Number",
+          align: "left",
+          render:(text,result)=> {
+            return    <Link
+                        target="_blank"
+                        to={`/allhiringrequest/${result?.hiringRequestID}`}
+                        style={{ color: "rgb(0, 102, 153)", textDecoration: "underline" }}
+                        onClick={() => localStorage.removeItem("dealID")}
+                      >
+                        {text}
+                      </Link>
+          }
+        },
+        {
+          title: "Client Name",
+          dataIndex: "clientName",
+          key: "clientName",
+          align: "left",
+        },
+        {
+          title: "Client Email",
+          dataIndex: "clientEmail",
+          key: "clientEmail",
+          align: "left",
+        },
+        {
+          title: "Company",
+          dataIndex: "company",
+          key: "company",
+          align: "left",
+        },
+        {
+          title: "Talent Status",
+          dataIndex: "talent",
+          key: "talent",
+          align: "left",
+        },
+        {
+          title: "Actual BR",
+          dataIndex: "final_HR_CostStr",
+          key: "final_HR_CostStr",
+          align: "left",
+        //   width: '150px', 
+          render:(text,result)=>{
+            return   `${text}`
+          }
+        },
+        {
+          title: "Actual PR",
+          dataIndex: "talent_CostStr",
+          key: "talent_CostStr",
+          align: "left",
+        //   width: '150px', 
+          render:(text,result)=>{
+            return   `${text} `
+          }
+        },
+        {
+          title: "Uplers Fees",
+          dataIndex: "uplersFees",
+          key: "uplersFees",
+          align: "left",
+        //   width: '150px', 
+         
+        },
+        {
+          title: "NR / DP (%)",
+          dataIndex: "nrPercentage",
+          key: "nrPercentage",
+          align: "left",
+        //   width: '150px', 
+          render:(text,result)=>{
+            return `${result.nrPercentage !== 0 ? result.nrPercentage : ''}  ${+result.dP_Percentage !== 0 ? result.dP_Percentage : ''}`
+          }
+        },
+      ]
+    },[otherDetailsList])
 
   const documentsColumns = useMemo(() => {
     return [
@@ -804,7 +812,8 @@ export default function ViewOnBoardDetails() {
     setCalEvents(result.responseBody.map((leave) => ({         
       start: leave.actualDate,           
       title: leave.leaveReason ? leave.leaveReason : leave.leaveType,
-      color : '#E8B689'
+      color : leave.colorCode,
+      leaveReason: leave.leaveReason
     })))
     setcalenderCurrentMonth(payload.month -1)
     setcalenderCurrentYear(payload.year)

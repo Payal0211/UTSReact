@@ -10,6 +10,8 @@ import { ReactComponent as Trash } from 'assets/svg/trash.svg';
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
+import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
+import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 // import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -98,10 +100,12 @@ const HRDetailScreen = () => {
 		getUserResult();
 		
 	}, []);
+	const [debouncedSearch, setDebouncedSearch] = useState('');
+	const [ talentSearch , setTalentSearch] = useState('')
 
 	useEffect(() => {
 		getHrUserData(Number(urlSplitter?.split('HR')[0]));
-	}, [page])
+	}, [page,talentSearch])
 	
 
 	const {
@@ -134,11 +138,21 @@ const HRDetailScreen = () => {
 		[navigate],
 	);
 
+
+	//   useEffect(()=>{
+	// 	setTimeout(() => {
+	// 		setTalentSearch(debouncedSearch)
+	// 		setPage(1)
+	// 	  }, 2000);
+		
+	//   },[debouncedSearch])
+
 	const getHrUserData = async (hrid) => {
 		setCardLoading(true);
 		const payload = {
 			"totalrecord":2,
 			"pagenumber":page,
+			"search":talentSearch,
 			"filterFields":
 			{
 				"HRID":hrid
@@ -574,7 +588,46 @@ const togglePriority = useCallback(
             </Suspense>
           )
         )}
-
+<div className={HRDetailStyle.searchBoxContainer}> <div className={HRDetailStyle.searchFilterSet}>
+              <SearchSVG style={{ width: "16px", height: "16px" }} />
+              <input
+                type={InputType.TEXT}
+                className={HRDetailStyle.searchInput}
+                placeholder="Search via Talent Name, Email ID .."
+                onChange={e=>setDebouncedSearch(e.target.value)}
+                value={debouncedSearch}
+              />
+			  {debouncedSearch && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                            //   setopenTicketSearchText("");
+							setDebouncedSearch('');
+							setTalentSearch('')
+							setPage(1)
+							// setTimeout(()=>{
+							// 	getHrUserData(Number(urlSplitter?.split('HR')[0]));
+							// },500)
+                            }}
+                          />
+                        )}
+            </div>
+			{debouncedSearch && <div
+                  className={HRDetailStyle.searchBoxSearchText}
+				//   style={{padding:'0 10px', background:'var(--color-sunlight)'}}
+                  onClick={() => {
+                    setTalentSearch(debouncedSearch)
+			        setPage(1)
+                  }}
+                >
+                  Search
+                </div>}
+			
+			</div>
         <div className={HRDetailStyle.portal}>
           <div className={HRDetailStyle.clientPortal}>
             {isLoading ? (

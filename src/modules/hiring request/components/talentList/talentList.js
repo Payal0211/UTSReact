@@ -66,6 +66,8 @@ import { InterviewDAO } from 'core/interview/interviewDAO';
 import EngagementCancel from 'modules/engagement/screens/cancelEngagement/cancelEngagement';
 
 import TalentListDocuments from './talentDocuments';
+import TalentOtherEngagement from '../talentAcceptance/talentOtherEngagement';
+import HighlightedLinks from 'shared/components/animatedLinks/animatedLinks';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -137,6 +139,8 @@ const TalentList = ({
 	const [editPayRate, setEditPayRate] = useState(false);
 
 	const [editDPRate, setEditDPRate] = useState(false);
+	const [showOtherHRStatus,setShowOtherHRStatus] = useState(false)
+	const [hrOtherStatusDetails,setHROtherStatusDetails]= useState({})
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{
@@ -822,10 +826,11 @@ const TalentList = ({
 												<BsThreeDots style={{ fontSize: '1.5rem' }} />
 											</Dropdown>
 										</div>
-									</div>
+									</div>									
 			
 									<div className={TalentListStyle.profileURL} style={{marginBottom:'5px'}}>
 										<span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
+										<div style={{display:'flex', justifyContent:'flex-end', gap:'50px'}}>
 										<span style={{ fontWeight: '500' }}>
 											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Click here</p> : item?.ATSTalentLiveURL ? (
 												<a
@@ -840,6 +845,18 @@ const TalentList = ({
 											)}
 			
 										</span>
+
+										{item?.IsAssociatedWithOtherHR &&  <div className={TalentListStyle.insightText} onClick={()=>{
+										setShowOtherHRStatus(true)
+										setHROtherStatusDetails({TalentID:item?.TalentID, HiringDetailID:item?.HiringDetailID})
+										}}>
+										View Other HR Status.
+											</div>}
+
+											{/* <HighlightedLinks /> */}
+
+									</div>
+
 									</div>
 			
 									<div className={TalentListStyle.EmailID}>
@@ -1998,6 +2015,19 @@ const TalentList = ({
 						scheduleSlotRadio={scheduleSlotRadio}
 						closeModal={() => setInterviewFeedback(false)}
 					/>
+				</Modal>
+			)}
+
+            {showOtherHRStatus && (
+				<Modal
+					transitionName=""
+					width="1200px"
+					className="commonModalWrap"
+					centered
+					footer={false}
+					open={showOtherHRStatus}
+					onCancel={() => setShowOtherHRStatus(false)}>
+					<TalentOtherEngagement talentData={hrOtherStatusDetails} closeModal={() => setShowOtherHRStatus(false)} />
 				</Modal>
 			)}
 
