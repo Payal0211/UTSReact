@@ -3,6 +3,7 @@ import TalentAcceptanceStyle from './talentAcceptance.module.css';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { Table } from 'antd';
+import { Link } from 'react-router-dom';
 
 export default function TalentOtherEngagement({talentData,closeModal}) {
 const [otherDetailsList,setOtherDetailsList] = useState([]);
@@ -26,6 +27,16 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
           dataIndex: "hR_Number",
           key: "hR_Number",
           align: "left",
+          render:(text,result)=> {
+            return    <Link
+                        target="_blank"
+                        to={`/allhiringrequest/${result?.hiringRequestID}`}
+                        style={{ color: "rgb(0, 102, 153)", textDecoration: "underline" }}
+                        onClick={() => localStorage.removeItem("dealID")}
+                      >
+                        {text}
+                      </Link>
+          }
         },
         {
           title: "Client Name",
@@ -53,8 +64,8 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
         },
         {
           title: "Actual BR",
-          dataIndex: "final_HR_Cost",
-          key: "final_HR_Cost",
+          dataIndex: "final_HR_CostStr",
+          key: "final_HR_CostStr",
           align: "left",
         //   width: '150px', 
           render:(text,result)=>{
@@ -63,8 +74,8 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
         },
         {
           title: "Actual PR",
-          dataIndex: "talent_Cost",
-          key: "talent_Cost",
+          dataIndex: "talent_CostStr",
+          key: "talent_CostStr",
           align: "left",
         //   width: '150px', 
           render:(text,result)=>{
@@ -73,13 +84,11 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
         },
         {
           title: "Uplers Fees",
-          dataIndex: "",
-          key: "",
+          dataIndex: "uplersFees",
+          key: "uplersFees",
           align: "left",
         //   width: '150px', 
-          render:(_,result)=>{
-            return (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
-          }
+         
         },
         {
           title: "NR / DP (%)",
