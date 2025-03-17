@@ -16,6 +16,8 @@ import { MasterDAO } from "core/master/masterDAO";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { v4 as uuidv4 } from 'uuid';
 import { encrypt } from 'modules/EncryptionDecryption/encryptiondescryption.js'; 
+import { allClientRequestDAO } from "core/allClients/allClientsDAO";
+import UTSRoutes from "constants/routes";
 
 function AddCompany() {
   const navigate = useNavigate();
@@ -40,6 +42,7 @@ function AddCompany() {
   const [showFetchATButton,setShowFetchAIButton] = useState(false);
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [manageablePricingType, setManageablePricingType] = useState([])
+  const [filtersList, setFiltersList] = useState([]);
 
 
   // engagement Values 
@@ -366,7 +369,9 @@ function AddCompany() {
         "culture": d?.culture,
         "linkedInProfile": d?.companyLinkedinURL,
         "isSelfFunded": isSelfFunded,
-        "isCompanyConfidential":confidentialInfo === 1 ? true : false
+        "isCompanyConfidential":confidentialInfo === 1 ? true : false,
+        "leadUserID" : d.LeadUser,
+        "leadUserType": d.LeadType
       },
       "fundingDetails": d?.fundingDetails,
       "cultureDetails": modCultureDetails,
@@ -439,6 +444,28 @@ function AddCompany() {
       setDisableSubmit(false)
   };
 
+  const getFilterRequest = useCallback(async () => {
+          const  response = await allClientRequestDAO.getClientFilterDAO();
+  
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        setFiltersList(response && response?.responseBody?.Data);
+              // setLoading(false)
+      } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+              // setLoading(false) 
+        return navigate(UTSRoutes.LOGINROUTE);
+      } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+              // setLoading(false)
+        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+      } else {
+              // setLoading(false)
+        return 'NO DATA FOUND';
+      }
+    }, [navigate]);
+  
+    useEffect(()=>{
+      getFilterRequest();
+    },[getFilterRequest])
+
   // When From Create HR page
   useEffect(()=>{
     if(state?.createHR){
@@ -481,6 +508,7 @@ function AddCompany() {
           setPricingTypeErrorPPH,confidentialInfo,setConfidentialInfo
         }}
         fields={fields}
+        filtersList={filtersList}
       />
 
       <FundingSection

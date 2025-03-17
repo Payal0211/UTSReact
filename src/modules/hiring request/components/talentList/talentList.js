@@ -66,6 +66,7 @@ import { InterviewDAO } from 'core/interview/interviewDAO';
 import EngagementCancel from 'modules/engagement/screens/cancelEngagement/cancelEngagement';
 
 import TalentListDocuments from './talentDocuments';
+import TalentOtherEngagement from '../talentAcceptance/talentOtherEngagement';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -137,6 +138,8 @@ const TalentList = ({
 	const [editPayRate, setEditPayRate] = useState(false);
 
 	const [editDPRate, setEditDPRate] = useState(false);
+	const [showOtherHRStatus,setShowOtherHRStatus] = useState(false)
+	const [hrOtherStatusDetails,setHROtherStatusDetails]= useState({})
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{
@@ -823,6 +826,13 @@ const TalentList = ({
 											</Dropdown>
 										</div>
 									</div>
+
+									{item?.IsAssociatedWithOtherHR &&  <div className={TalentListStyle.insightText} onClick={()=>{
+										setShowOtherHRStatus(true)
+										setHROtherStatusDetails({TalentID:item?.TalentID, HiringDetailID:item?.HiringDetailID})
+									}}>
+									View Other HR Status.
+										</div>}
 			
 									<div className={TalentListStyle.profileURL} style={{marginBottom:'5px'}}>
 										<span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
@@ -1998,6 +2008,19 @@ const TalentList = ({
 						scheduleSlotRadio={scheduleSlotRadio}
 						closeModal={() => setInterviewFeedback(false)}
 					/>
+				</Modal>
+			)}
+
+            {showOtherHRStatus && (
+				<Modal
+					transitionName=""
+					width="1200px"
+					className="commonModalWrap"
+					centered
+					footer={false}
+					open={showOtherHRStatus}
+					onCancel={() => setShowOtherHRStatus(false)}>
+					<TalentOtherEngagement talentData={hrOtherStatusDetails} closeModal={() => setShowOtherHRStatus(false)} />
 				</Modal>
 			)}
 

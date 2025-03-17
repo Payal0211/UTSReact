@@ -500,7 +500,7 @@ function PreviewClientModal({
     value: year.toString(),
   }));
 
-  const leadTupeOptions = [{
+  const leadTypeOptions = [{
     id: 12,
     value: 'InBound',
   },
@@ -3889,7 +3889,7 @@ function PreviewClientModal({
               //  isError={errors["foundedIn"] && errors["foundedIn"]}
               required
               //  errorMsg={"Please select Founded in"}
-              options={leadTupeOptions}
+              options={leadTypeOptions}
             />
 
 
