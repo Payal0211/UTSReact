@@ -31,6 +31,7 @@ function CompanySection({
   loadingCompanyDetails,
   showFetchATButton,
   setShowFetchAIButton,
+  filtersList,
   resetField,unregister,fields,hooksProps,engagementDetails,hiringDetailsFromGetDetails
 }) {
   const [getUploadFileData, setUploadFileData] = useState("");
@@ -49,6 +50,27 @@ function CompanySection({
     googleDriveFileUpload: "",
     linkValidation: "",
   });
+
+    const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
+    const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
+
+  const leadTypeOptions = [{
+    id: 12,
+    value: 'InBound',
+  },
+  {
+    id: 11,
+    value: 'OutBound',
+  },
+  {
+    id: 4,
+    value: 'Referral',
+  },
+  {
+    id: 176,
+    value: 'Partnership',
+  }
+];
 
   useEffect(() => {
     companyDetails?.companyLogo && setUploadFileData(companyDetails?.companyLogo)
@@ -75,6 +97,11 @@ function CompanySection({
       setValue("industry", companyDetails?.companyIndustry);
     companyDetails?.linkedInProfile &&
       setValue("companyLinkedinURL", companyDetails?.linkedInProfile);
+
+    setValue("LeadType", companyDetails?.leadUserType);
+    setControlledLeadTypeValue(companyDetails?.leadUserType)
+    setValue("LeadUser", companyDetails?.leadUserID);
+    setControlledLeadUserValue(companyDetails?.leadUserName)
   }, [companyDetails]);
 
   const generateYears = (startYear, endYear) => {
@@ -591,6 +618,75 @@ function CompanySection({
                   loadingDetails={loadingDetails}
                   fields={fields}
                 />
+
+                <div className={AddNewClientStyle.row}>
+                 <div className={AddNewClientStyle.colMd6}>
+                      <HRSelectField
+                                    controlledValue={controlledLeadTypeValue}
+                                    setControlledValue={val=>{
+                                      setControlledLeadTypeValue(val)
+                                      setControlledLeadUserValue('')
+                                      resetField("LeadUser")
+                                    }}
+                                    isControlled={true}
+                                    register={register}
+                                     errors={errors}
+                                     isError={
+                                      errors['LeadType'] && errors['LeadType']
+                                    }
+                                    errorMsg="Please select lead type."
+                                    setValue={setValue}
+                                    label="Lead Type"
+                                    name="LeadType"
+                                    mode={"value"}
+                                    defaultValue="Select"
+                                    // searchable={true}
+                                    //  isError={errors["foundedIn"] && errors["foundedIn"]}
+                                    required
+                                    //  errorMsg={"Please select Founded in"}
+                                    options={leadTypeOptions}
+                                  />
+                  </div>
+
+                  <div className={AddNewClientStyle.colMd6}>
+                       <HRSelectField
+                                    controlledValue={controlledLeadUserValue}
+                                    setControlledValue={setControlledLeadUserValue}
+                                    isControlled={true}
+                                    register={register}
+                                     errors={errors}
+                                     isError={
+                                      errors['LeadUser'] && errors['LeadUser']
+                                    }
+                                    errorMsg="Please select a user."
+                                    setValue={setValue}
+                                    label="Lead User"
+                                    name="LeadUser"
+                                    mode={"id"}
+                                    defaultValue="Select"
+                                    searchable={true}
+                                    //  isError={errors["foundedIn"] && errors["foundedIn"]}
+                                    required
+                                    //  errorMsg={"Please select Founded in"}
+                                    options={filtersList?.LeadUsers?.filter(val => {
+                                      if(watch('LeadType') === 'InBound'){
+                                        return val.userTypeId === 12
+                                      }
+                                      else if(watch('LeadType') === 'Referral'){
+                                        return val.userTypeId === 4
+                                      }
+                                      else if(watch('LeadType') === 'Partnership'){
+                                        return val.employeeId === "UP1831"
+                                      }else{
+                                        return val.userTypeId === 11
+                                      }
+                                    }).map(item=> ({
+                                      id: item.id,
+                                      value: item.fullName,
+                                    }))}
+                                  />
+                  </div>
+                  </div>
 
                 <div className={AddNewClientStyle.row}>
                  

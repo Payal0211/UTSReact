@@ -628,7 +628,7 @@ export const EngagementRequestAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.ONBOARD +
 			EngagementAPI.GET_TALENT_MATCHMAKING  +
-			`?onBoardId=${payload.onboardID}&TalentID=${payload.talentID}`;
+			`?onBoardId=${payload.onboardID}&TalentID=${payload.talentID}${payload?.hrID ? `&hrId=${payload?.hrID}` :'' }`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
