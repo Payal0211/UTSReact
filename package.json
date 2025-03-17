@@ -20,6 +20,7 @@
     "currency-symbol-map": "^5.1.0",
     "dompurify": "^3.1.0",
     "dotenv": "^16.0.3",
+    "framer-motion": "^12.5.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.45",
