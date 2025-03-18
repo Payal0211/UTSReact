@@ -12,15 +12,21 @@ import { ReactComponent as LinkSVG } from 'assets/svg/link.svg';
 import { ReactComponent as UnorderedListSVG } from 'assets/svg/unorderedList.svg';
 import { ReactComponent as OrderedListSVG } from 'assets/svg/orderedList.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import { ReactComponent as AttachmentSVG } from 'assets/svg/attachment.svg';
 import { message, Tooltip } from 'antd';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
+import { allCompanyRequestDAO } from 'core/company/companyDAO';
+import { HTTPStatusCode } from 'constants/network';
+import spinGif from "assets/gif/RefreshLoader.gif";
 
-const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote }) => {
+const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment }) => {
 	const [isStyleEditor, setStyleEditor] = useState(false);
 	const [isShowDropDownList, setShowDropDownList] = useState(false);
 	const [tagUserSearch, setTagUserSearch] = useState('');
 	const commentRef = useRef();
+	const fileRef = useRef();
+	const [docUploading, setDocUploading] = useState(false)
 	const [messageAPI, contextHolder] = message.useMessage();
 	const tagUserSearchMemo = useMemo(() => {
 		if (tagUserSearch) return tagUserSearch;
@@ -59,6 +65,35 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote }) => {
 				setShowDropDownList(false);
 		}
 	};
+
+
+	const onFileChangeCapture = async ( e ) => {
+		/*Selected files data can be collected here.*/
+		let file = e.target.files[0]
+		const formData = new FormData();
+	
+
+		formData.append("Files", file);
+		formData.append('IsCompanyLogo', false);
+		formData.append('IsCultureImage', false);
+		formData.append("Type", "eng_notes");
+		setDocUploading(true)
+		let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
+		setDocUploading(false)
+		if(Result.statusCode === HTTPStatusCode.OK){
+			const uploadedUrl = Result?.responseBody[0];
+		let updatedContent = commentRef.current.innerHTML;
+
+		let fileLink = ` <a href="${uploadedUrl}" target="_blank">${file.name}</a>`
+		let contentWithLink = updatedContent + " " + fileLink + " " 
+
+		commentRef.current.innerHTML = contentWithLink
+		}else{
+			message.error('something went wrong')
+		}
+		
+
+	  };
 
 	return (
 		<>
@@ -168,6 +203,23 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote }) => {
 									<LinkSVG />
 								</button>
 							</div>
+
+							{allowAttachment && <>
+							<button
+									className={EditorStyle.editorBoldBtn}
+									style={{borderRadius:'8px'}}
+									id="editorAttachmentBtn"
+									type="button"
+									onClick={()=>{fileRef?.current?.click()}}
+									>
+									<AttachmentSVG style={{width:'24px', height:'24px'}} />
+								</button>
+
+								<input type='file' ref={fileRef} onChangeCapture={onFileChangeCapture} style={{display:'none'}} />
+							</>
+								
+							}
+							  {docUploading && <div>Please wait while attachment uploading ... <img src={spinGif} alt="loadgif"  width={16} /> </div> }
 						</div>
 					</div>
 				)}

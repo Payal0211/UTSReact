@@ -27,6 +27,7 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
           dataIndex: "hR_Number",
           key: "hR_Number",
           align: "left",
+          width:'200px',
           render:(text,result)=> {
             return    <Link
                         target="_blank"
@@ -38,18 +39,13 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
                       </Link>
           }
         },
-        {
-          title: "Client Name",
-          dataIndex: "clientName",
-          key: "clientName",
-          align: "left",
-        },
-        {
-          title: "Client Email",
-          dataIndex: "clientEmail",
-          key: "clientEmail",
-          align: "left",
-        },
+       
+        // {
+        //   title: "Client Email",
+        //   dataIndex: "clientEmail",
+        //   key: "clientEmail",
+        //   align: "left",
+        // },
         {
           title: "Company",
           dataIndex: "company",
@@ -57,13 +53,23 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
           align: "left",
         },
         {
+            title: "Client",
+            dataIndex: "clientName",
+            key: "clientName",
+            align: "left",
+            width:'200px',
+            render:(text,result)=>{
+              return `${text} ( ${result?.clientEmail} )`
+            }
+          },
+        {
           title: "Talent Status",
           dataIndex: "talent",
           key: "talent",
           align: "left",
         },
         {
-          title: "Actual BR",
+          title: "BR",
           dataIndex: "final_HR_CostStr",
           key: "final_HR_CostStr",
           align: "left",
@@ -73,7 +79,7 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
           }
         },
         {
-          title: "Actual PR",
+          title: "PR",
           dataIndex: "talent_CostStr",
           key: "talent_CostStr",
           align: "left",
@@ -95,7 +101,7 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
           dataIndex: "nrPercentage",
           key: "nrPercentage",
           align: "left",
-        //   width: '150px', 
+          width: '100px', 
           render:(text,result)=>{
             return `${result.nrPercentage !== 0 ? result.nrPercentage : ''}  ${+result.dP_Percentage !== 0 ? result.dP_Percentage : ''}`
           }
@@ -107,7 +113,7 @@ const [otherDetailsList,setOtherDetailsList] = useState([]);
   return (
     <div className={TalentAcceptanceStyle.container} style={{margin:0}}>
 			<div className={TalentAcceptanceStyle.modalTitle}>
-				<h2>Other Engagements</h2>
+				<h2>{talentData?.talentName ? `${talentData?.talentName}'s` : ''} Other HR Details</h2>
 			</div>
             <div className={TalentAcceptanceStyle.panelBody}>
             <Table
