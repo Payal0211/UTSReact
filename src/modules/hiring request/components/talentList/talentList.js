@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space, Tooltip } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -829,29 +829,31 @@ const TalentList = ({
 									</div>									
 			
 									<div className={TalentListStyle.profileURL} style={{marginBottom:'5px'}}>
-										<span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
-										<div style={{display:'flex', justifyContent:'flex-end', gap:'50px'}}>
+										{/* <span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp; */}
+										<div style={{display:'flex', justifyContent:'space-between', gap:'50px',width:'100%'}}>
 										<span style={{ fontWeight: '500' }}>
 											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Click here</p> : item?.ATSTalentLiveURL ? (
+											<Tooltip title={'View Profile Details'}>
 												<a
 													style={{ textDecoration: 'underline' }}
 													href={item?.ATSTalentLiveURL}
 													target="_blank"
 													rel="noreferrer">
-													Click here
+													View Profile URL
 												</a>
+											</Tooltip>	
 											) : (
 												'NA'
 											)}
 			
 										</span>
 
-										{item?.IsAssociatedWithOtherHR &&  <div className={TalentListStyle.insightText} onClick={()=>{
+										{item?.IsAssociatedWithOtherHR && <Tooltip title={"View Other HR's "}><div className={TalentListStyle.insightText} onClick={()=>{
 										setShowOtherHRStatus(true)
-										setHROtherStatusDetails({TalentID:item?.TalentID, HiringDetailID:item?.HiringDetailID})
+										setHROtherStatusDetails({TalentID:item?.TalentID, HiringDetailID:item?.HiringDetailID, talentName: item?.Name})
 										}}>
 										View Other HR Status.
-											</div>}
+											</div></Tooltip> }
 
 											{/* <HighlightedLinks /> */}
 
@@ -2021,7 +2023,7 @@ const TalentList = ({
             {showOtherHRStatus && (
 				<Modal
 					transitionName=""
-					width="1200px"
+					width="1400px"
 					className="commonModalWrap"
 					centered
 					footer={false}

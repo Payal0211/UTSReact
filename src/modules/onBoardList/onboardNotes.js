@@ -26,6 +26,7 @@ import DOMPurify from "dompurify";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { engagementRequestDAO } from "core/engagement/engagementDAO";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
+import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 export default function OnboardNotes({ onboardID, getOnboardFormDetails }) {
   const [loading, setLoading] = useState(false);
@@ -37,7 +38,7 @@ export default function OnboardNotes({ onboardID, getOnboardFormDetails }) {
     setLoading(true);
     const response = await engagementRequestDAO.viewOnboardNotesDetailsDAO(id);
     setLoading(false);
-    console.log(response);
+    // console.log(response);
     if (response.statusCode === 200) {
       setUsersToTag(
         response.responseBody.details.UsersToTag.map((usr) => ({
@@ -61,9 +62,28 @@ export default function OnboardNotes({ onboardID, getOnboardFormDetails }) {
   useEffect(() => {
     getNotes(onboardID);
   }, [onboardID]);
-  console.log("getOnboardFormDetails", getOnboardFormDetails);
+ 
+
+  const base64ToBlob = (base64Data, contentType = '') => {
+    const byteString = atob(base64Data.split(',')[1]);
+    const byteArrays = [];
+  
+    for (let i = 0; i < byteString.length; i++) {
+      byteArrays.push(byteString.charCodeAt(i));
+    }
+  
+    return new Blob([new Uint8Array(byteArrays)], { type: contentType });
+  };
+
+  const base64ToFile = async (base64, filename) => {
+    const mimeType = base64.match(/data:(.*?);base64/)[1]; // Extract MIME type
+    const blob = base64ToBlob(base64, mimeType);
+    const file = new File([blob], filename, { type: mimeType });  
+    return file;
+  };
+
   const saveNote = async (note) => {
-    setLoading(true);
+    setLoading(true); 
     let payload = {
       id: 0,
       notes: note,
@@ -71,6 +91,50 @@ export default function OnboardNotes({ onboardID, getOnboardFormDetails }) {
       talentID: getOnboardFormDetails?.talentID,
       hiringRequestID: getOnboardFormDetails?.hR_ID,
     };
+
+    const imgTags = note?.match(/<img[^>]*>/g) || [];
+    const list = [];
+    const base64Srcs = []; 
+    
+    for (const imgTag of imgTags) {
+      if (!imgTag) continue;
+  
+      const srcMatch = imgTag.match(/src="([^"]+)"/);
+      if (srcMatch && srcMatch[1]) {
+        const src = srcMatch[1];
+        const filename = src.split('/').pop();
+        const timestamp = new Date().getTime();
+        const name = filename.split(/\.(?=[^\.]+$)/);
+        const uniqueFilename = `${name}_${timestamp}`;
+        if (src.startsWith('data:image/')) {
+          base64Srcs.push(src)
+          const file = await base64ToFile(src, uniqueFilename);
+          list.push(file);
+        }
+      }
+    }
+  
+    if(list.length>0){
+      const formData = new FormData();
+      list.forEach(file => formData.append("Files", file));
+      formData.append('IsCompanyLogo', false);
+      formData.append('IsCultureImage', false);
+      formData.append("Type", "eng_notes");
+
+      let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
+      const uploadedUrls = Result?.responseBody || [];
+      let updatedContent = note;
+  
+      base64Srcs.forEach((src, index) => {
+        if (uploadedUrls[index]) {
+          const escapedSrc = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+          const regex = new RegExp(`src="${escapedSrc}"`, 'g');
+          updatedContent = updatedContent.replace(regex, `src="${uploadedUrls[index]}"`);
+        }
+      });
+      payload.notes = updatedContent 
+    }
+
     const response = await engagementRequestDAO.saveOnboardNotesDetailsDAO(
       payload
     );
@@ -140,6 +204,7 @@ export default function OnboardNotes({ onboardID, getOnboardFormDetails }) {
               tagUsers={UsersToTag && UsersToTag}
               hrID={getOnboardFormDetails?.hR_ID}
               saveNote={(note) => saveNote(note)}
+              allowAttachment={true}
             />
           )}
         </div>
