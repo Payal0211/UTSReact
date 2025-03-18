@@ -588,7 +588,8 @@ const togglePriority = useCallback(
             </Suspense>
           )
         )}
-<div className={HRDetailStyle.searchBoxContainer}> <div className={HRDetailStyle.searchFilterSet}>
+
+		{apiData?.HRTalentDetails?.length > 0 && <div className={HRDetailStyle.searchBoxContainer}> <div className={HRDetailStyle.searchFilterSet}>
               <SearchSVG style={{ width: "16px", height: "16px" }} />
               <input
                 type={InputType.TEXT}
@@ -627,8 +628,9 @@ const togglePriority = useCallback(
                   Search
                 </div>}
 			
-			</div>
-        <div className={HRDetailStyle.portal}>
+			</div>}
+
+        <div className={HRDetailStyle.portal} style={{marginTop: apiData?.HRTalentDetails?.length > 0 ? '10px' : '30px'}}>
           <div className={HRDetailStyle.clientPortal}>
             {isLoading ? (
               <Skeleton active />
