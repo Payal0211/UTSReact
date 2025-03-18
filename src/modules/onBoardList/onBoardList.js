@@ -445,11 +445,11 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         }     
       },
       {
-        title: "No. of days",
+        title: <>No. of <br/> days</>,
         dataIndex: "payout_TotalDaysinMonth",
         key: "payout_TotalDaysinMonth",
         align: "left",
-        width: '100px',      
+        width: '80px',      
       },
       {
         title: <>Final PR <br/> (INR)</>,
@@ -863,7 +863,10 @@ console.log(date)
             return
           }else if(val.key === 'nrPercentage'){
             obj['NR / DP (%)'] = `${data.nrPercentage !== 0 ? data.nrPercentage : ''}  ${+data.dP_Percentage !== 0 ? data.dP_Percentage : ''}`
-          }else if(val.key === 'payout_Actual_PRStr'){
+          }else if(val.key === 'payout_TotalDaysinMonth'){
+            obj['No. of days'] = `${data.payout_TotalDaysinMonth ? `${data.payout_TotalDaysinMonth}` : ''}`
+          }
+          else if(val.key === 'payout_Actual_PRStr'){
             obj['Final PR (INR)'] = `${data.payout_Actual_PRStr ? `₹ ${data.payout_Actual_PRStr}` : ''}`
           }else if(val.key === 'payout_PerDayTalentCost_INR'){
             obj['Per Day PR (INR)'] = `${data.payout_PerDayTalentCost_INR ? `₹ ${data.payout_PerDayTalentCost_INR}` : ''}`
