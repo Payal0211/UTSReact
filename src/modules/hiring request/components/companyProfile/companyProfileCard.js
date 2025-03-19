@@ -410,12 +410,18 @@ const CompanyProfileCard = ({
                 {allApiData?.transparentModel?.PayPerHire_I_Info?.length > 0 && <Tooltip
 							placement="bottomLeft"
 							title={<div>
-                {allApiData?.transparentModel?.PayPerHire_I_Info?.map(item=> <p>{item}</p>)}
+                {allApiData?.transparentModel?.PayPerHire_I_Info?.map(item=> <p>{item}</p>).slice(1)}
   
               </div>}>
 								<img src={infoIcon} alt='info' style={{marginLeft:'auto'}} />							
-						</Tooltip>}
-                
+						</Tooltip>}           
+              </div>}
+
+              {allApiData?.transparentModel?.PayPerHire_I_Info?.length > 0 && <div className={CompanyProfileCardStyle.minExp}>
+                <span>{allApiData?.transparentModel?.PayPerHire_I_Info[0].split(':')[0]}:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                 {allApiData?.transparentModel?.PayPerHire_I_Info[0].split(':')[1] ?? "NA"}
+                </span>
               </div>}
               {/* budget for pay per credit */}  
               {allApiData?.IsPayPerCredit &&  <div className={CompanyProfileCardStyle.budget}>
