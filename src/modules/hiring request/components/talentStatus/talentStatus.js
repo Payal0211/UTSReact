@@ -134,6 +134,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 					topSkill: '',
 					improvedSkill: '',
 					messageToTalent: '',
+					otherReason: d?.OtherRejectReason ? d?.OtherRejectReason : null,
 					clientsDecision:  '',
 					comments:  '',
 					en_Id: '',
