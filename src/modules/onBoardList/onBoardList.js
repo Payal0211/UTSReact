@@ -574,6 +574,7 @@ function OnBoardList() {
         EngType:'A',
         toDate:'',
         fromDate:'',
+        SummaryFilterOption:'AT',
         EngagementOption:'All'
       },
     });
@@ -832,12 +833,11 @@ function OnBoardList() {
   }
 
   const onMonthCalenderFilter = (date) => {
-   
-console.log(date)
+
     setMonthDate(date);
     // setEndDate(end);
     // setEndDate(end);
-    console.log(moment(date).format('M'), moment(date).format('YYYY'))
+    
     if (date) {
       // console.log( month, year)
       setTableFilteredState({
@@ -979,6 +979,7 @@ console.log(date)
         EngType:'A',
         fromDate: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
         toDate: new Date(date),
+        SummaryFilterOption:'AT',
         EngagementOption:'All'
       }
       setDateTypeFilter(0)
@@ -1092,7 +1093,7 @@ console.log(date)
                       value={dateTypeFilter}
                     >
                       <Radio value={0}>Current Month</Radio>
-                      <Radio value={1}>Search With Date Range</Radio>
+                      {/* <Radio value={1}>Search With Date Range</Radio> */}
                     </Radio.Group>  	                                
 
 
@@ -1304,8 +1305,8 @@ console.log(date)
                           modules={[Keyboard, Scrollbar, Navigation, Pagination]}
                           className="mySwiper"
                         >
-
-                      <SwiperSlide>
+                          
+                            <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev, filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'AT'}}))}><Tooltip title={"View Total Talents"}>
                       <div className={onboardList.filterType} key={'Total Talents'}>
                         <img
                           src={FeedBack}
@@ -1315,11 +1316,14 @@ console.log(date)
                           Total Talents  :{' '}
                           <span>{onBoardListData[0]?.totalRecords ? onBoardListData[0]?.totalRecords : 0}</span>
                         </h2>
-                      </div>
+                      </div></Tooltip>
                       </SwiperSlide>
+                          
+                      
    
                       {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && 
-                        <SwiperSlide>
+                                          
+                        <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'AC'}}))}><Tooltip title={'View Active Contracts'}> 
                         <div className={onboardList.filterType} key={'Active Contract Eng'}>
                           <img
                             src={Handshake}
@@ -1347,12 +1351,12 @@ console.log(date)
                             </div>}>
                               <div className={onboardList.summaryTooltip}>!</div>
                             </Tooltip>
-                        </div>
+                        </div> </Tooltip>
                         </SwiperSlide>
-                       
+                      
                      }
 
-                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <SwiperSlide>
+                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'ADC'}}))}><Tooltip title={'View Added Contracts'}> 
                         <div className={onboardList.filterType} key={'Added Contracts'}>
                           <img
                             src={Briefcase}
@@ -1362,10 +1366,10 @@ console.log(date)
                           Added Contracts  :{' '}
                             <span>{onBoardListData[0]?.s_TotalAddedContract  ? onBoardListData[0]?.s_TotalAddedContract  : 0}</span>
                           </h2>
-                        </div>
+                        </div></Tooltip>
                       </SwiperSlide>}
                     
-                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&    <SwiperSlide>
+                      {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&   <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'RC'}}))}><Tooltip title={'View Recurring Contracts'}> 
                       <div className={onboardList.filterType} key={'Recurring Contracts'}>
                         <img
                            src={RenewEng}
@@ -1375,27 +1379,27 @@ console.log(date)
                         Recurring Contracts  :{' '}
                           <span>{onBoardListData[0]?.s_TotalRecurringContract ? onBoardListData[0]?.s_TotalRecurringContract : 0}</span>
                         </h2>
-                      </div>
+                      </div></Tooltip>
                       </SwiperSlide>}
                     
 
                     
 
-                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide>
+                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,SummaryFilterOption:'LC'}))}><Tooltip title={'View Lost Contracts'}>
                         <div className={onboardList.filterType} key={'Lost Contract Eng.'}>
                           <img
                             src={LostEng}
                             alt="sad"
                           />
                           <h2>
-                            Lost Contract :{' '}
+                            Lost Contracts :{' '}
                             <span>
                               {onBoardListData[0]?.s_TotalLostEng
                                 ? onBoardListData[0]?.s_TotalLostEng
                                 : 0}
                             </span>
                           </h2>
-                        </div></SwiperSlide>}
+                        </div></Tooltip></SwiperSlide>}
 
                   
 
@@ -1414,7 +1418,7 @@ console.log(date)
                     </h2>
                   </div></SwiperSlide>} */}
 
-                    {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&  <SwiperSlide>
+                    {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&   <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'AD'}}))}><Tooltip title={'View Active DP'}>
                         <div className={onboardList.filterType} key={'Active DP.'}>
                           <img
                             src={Handshake}
@@ -1428,10 +1432,10 @@ console.log(date)
                                 : 0}
                             </span>
                           </h2>
-                    </div></SwiperSlide>}
+                    </div></Tooltip></SwiperSlide>}
 
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
-                  <SwiperSlide>
+                  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'ADD'}}))}><Tooltip title={'View Added DP'}>
                   <div className={onboardList.filterType} key={'Added DP'}>
                     <img
                       src={Briefcase}
@@ -1441,7 +1445,7 @@ console.log(date)
                       Added DP :{' '}
                       <span>{onBoardListData[0]?.s_AddedDP ? onBoardListData[0]?.s_AddedDP  : 0}</span>
                     </h2>
-                  </div></SwiperSlide>}
+                  </div></Tooltip></SwiperSlide>}
                   {/* {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
                   <div className={onboardList.filterType} key={'Lost DP Eng.'}>
@@ -1468,7 +1472,8 @@ console.log(date)
                     </h2>
                   </div> */}
 
-                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide><div className={onboardList.filterType} key={'Renew Eng.'}>
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'RE'}}))}>
+                    <Tooltip title={'View Renew Eng'}><div className={onboardList.filterType} key={'Renew Eng.'}>
                     <img
                       src={RenewEng}
                       alt="Smile"
@@ -1477,11 +1482,24 @@ console.log(date)
                       Renew Eng :{' '}
                       <span>{onBoardListData[0]?.s_TotalRenewEng ? onBoardListData[0]?.s_TotalRenewEng  : 0}</span>
                     </h2>
-                  </div></SwiperSlide>} 
+                  </div></Tooltip></SwiperSlide>} 
+
+                  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'FR'}}))}><Tooltip title={'View Feedback Received'}>
+                  <div className={onboardList.filterType} key={'Feedback Received'}>
+                    <img
+                      src={FeedBack}
+                      alt="rocket"
+                    />
+                    <h2>
+                      Feedback Received  :{' '}
+                      <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? onBoardListData[0]?.s_TotalFeedbackReceived  : 0}</span>
+                    </h2>
+                  </div></Tooltip>
+                  </SwiperSlide>
 
                 {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && 
                      <SwiperSlide>
-                  <div className={onboardList.filterType} key={'Average NR% '}>
+                  <div className={onboardList.filterType} key={'Average NR% '}  style={{cursor:'alias'}}>
                     <img
                       src={Rocket}
                       alt="Rocket"
@@ -1494,7 +1512,7 @@ console.log(date)
                 
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
-                  <div className={onboardList.filterType} key={'Average DP%'}>
+                  <div className={onboardList.filterType} key={'Average DP%'} style={{cursor:'alias'}}>
                     <img
                       src={Briefcase}
                       alt="briefcase"
@@ -1504,20 +1522,6 @@ console.log(date)
                       <span>{onBoardListData[0]?.s_AvgDP ? onBoardListData[0]?.s_AvgDP : 0}</span>
                     </h2>
                   </div></SwiperSlide>}
-
-                  <SwiperSlide>
-                  <div className={onboardList.filterType} key={'Feedback Received'}>
-                    <img
-                      src={FeedBack}
-                      alt="rocket"
-                    />
-                    <h2>
-                      Feedback Received  :{' '}
-                      <span>{onBoardListData[0]?.s_TotalFeedbackReceived ? onBoardListData[0]?.s_TotalFeedbackReceived  : 0}</span>
-                    </h2>
-                  </div>
-                  </SwiperSlide>
-
                   </Swiper>
                   {/* </div> */}
                 </div>

@@ -388,7 +388,7 @@ const ViewHRDetails = () => {
                                   (item) => (
                                     <p>{item}</p>
                                   )
-                                )}
+                                ).slice(1)}
                               </div>
                             }
                           >
@@ -403,6 +403,11 @@ const ViewHRDetails = () => {
                          
                         )}</div>
                       </li>}
+
+                      {hiringDetails?.responseBody?.details?.transparentModel?.payPerHire_I_Info?.length > 0 && <li>
+                          <span>{hiringDetails?.responseBody?.details?.transparentModel?.payPerHire_I_Info[0]?.split(':')[0]}:</span>{" "}
+                          {hiringDetails?.responseBody?.details?.transparentModel?.payPerHire_I_Info[0]?.split(':')[1] ?? "NA"}
+                        </li>}
 
                       {hiringDetails?.responseBody?.details?.isPayPerCredit &&  <li style={{display:'flex'}}>
                         <span>

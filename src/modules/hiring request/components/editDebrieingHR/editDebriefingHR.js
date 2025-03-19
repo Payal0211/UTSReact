@@ -541,6 +541,8 @@ const getParsingType = (isHaveJD,parseType) => {
 			}
 			}else{
 				setIsLoading(false);
+				setShowPublishModal(false)
+				message.error('Something went wrong!')
 			}
 			
 		},
