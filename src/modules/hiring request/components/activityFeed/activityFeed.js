@@ -209,10 +209,10 @@ const ActivityFeed = ({
 
 
 	const sanitizer = DOMPurify.sanitize;
-	const searchMemo = useMemo(() => {
-		if (search) return search;
-		else return activityFeed;
-	}, [search, activityFeed]);	
+	// const searchMemo = useMemo(() => {
+	// 	if (search) return search;
+	// 	else return activityFeed;
+	// }, [search, activityFeed]);	
 
 	const displayNotes = (notes) => {
 		const notesTemplate = new DOMParser().parseFromString(notes, 'text/html');
@@ -401,7 +401,7 @@ const ActivityFeed = ({
 		<div className={ActivityFeedStyle.activityContainer}>
 			<div className={ActivityFeedStyle.activityFeedHeading}>
 				<div className={ActivityFeedStyle.activityLabel}>Activity Feed</div>
-				<div className={ActivityFeedStyle.searchFilterSet}>
+				{/* <div className={ActivityFeedStyle.searchFilterSet}>
 					<AiOutlineSearch style={{ fontSize: '20px', fontWeight: '800' }} />
 					<input
 						onChange={(e) => {
@@ -428,7 +428,7 @@ const ActivityFeed = ({
 						className={ActivityFeedStyle.searchInput}
 						placeholder="Search Activity Feed"
 					/>
-				</div>
+				</div> */}
 			</div>
 
 			<div className={ActivityFeedStyle.activityChannelLibrary}>
