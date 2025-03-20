@@ -49,6 +49,7 @@ export default function LegalPreOnboarding({
     setValue,
     handleSubmit,
     clearErrors,
+    unregister,
     control,
     formState: { errors },
   } = useForm({});
@@ -157,8 +158,8 @@ export default function LegalPreOnboarding({
           ? null
           : isIndefiniteHR ? null : moment(d.contractEndDate).format("yyyy-MM-DD"),
         isIndefiniteHR:isIndefiniteHR,
-        clientSOWSignDate: moment(d.clientSOWSignDate).format("yyyy-MM-DD"),
-        talentSOWSignDate: moment(d.talentSOWSignDate).format("yyyy-MM-DD"),
+        clientSOWSignDate: d.clientSOWSignDate ? moment(d.clientSOWSignDate).format("yyyy-MM-DD") : null,
+        talentSOWSignDate: d.talentSOWSignDate ?  moment(d.talentSOWSignDate).format("yyyy-MM-DD") : null,
         clientMSASignDate: moment(d.msaDate).format("yyyy-MM-DD"),
         talentMSASignDate: null,
         talentReplacement: {
@@ -210,7 +211,7 @@ export default function LegalPreOnboarding({
         }  
       } 
 
-      if((getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName ? false : MSADocument === '') || SOWDocument === ''){
+      if((getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName ? false : MSADocument === '') || (SOWDocument === '' && getData?.getLegalInfo?.isHRTypeDP === false)){
         isValid = false;
         setIsLoading(false);
         SetFormError(true)
@@ -226,11 +227,10 @@ export default function LegalPreOnboarding({
 
       }
 
-
       if(isValid){
         let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
         !getDocuments?.find(itm=> itm.documentType === 'MSA')?.documentName && uploadDocument(MSADocument,docTypeList.find(itm => itm.text === "MSA")?.value)
-        uploadDocument(SOWDocument,docTypeList.find(itm => itm.text === "SOW")?.value)
+        getData?.getLegalInfo?.isHRTypeDP === false && uploadDocument(SOWDocument,docTypeList.find(itm => itm.text === "SOW")?.value)
         if (result?.statusCode === HTTPStatusCode.OK) {
           setIsLoading(false);
           setShowAMModal(false);
@@ -253,6 +253,12 @@ export default function LegalPreOnboarding({
   
     
     }
+
+    useEffect(()=>{
+      if(getData?.getLegalInfo?.isHRTypeDP === true){
+        unregister('SOWDocument')
+      }
+    },[getData?.getLegalInfo?.isHRTypeDP])
 
    const uploadDocument = async (data,documentType)=>{
        
@@ -305,11 +311,11 @@ export default function LegalPreOnboarding({
                 'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
         });
         setIsLoading(false);
-    } else if (fileData?.size >= 2048000) {
+    } else if (fileData?.size >= 5242880) {
         setValidation({
             ...getValidation,
             systemFileUpload:
-                'Uploaded file size more than 2MB, please upload file upto 2MB',
+                'Uploaded file size more than 5MB, please upload file upto 5MB',
         });
         setIsLoading(false);
     } else {
@@ -343,11 +349,11 @@ const uploadSOWFileHandler = (e) => {
               'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
       });
       setIsLoading(false);
-  } else if (fileData?.size >= 2048000) {
+  } else if (fileData?.size >= 5242880) {
       setValidation({
           ...getValidation,
           systemFileUpload:
-              'Uploaded file size more than 2MB, please upload file upto 2MB',
+              'Uploaded file size more than 5MB, please upload file upto 5MB',
       });
       setIsLoading(false);
   } else {
@@ -650,7 +656,7 @@ const uploadSOWFileHandler = (e) => {
                     <div className={HRDetailStyle.modalFormCol}>
                       <div className={HRDetailStyle.timeLabel}>
                         SOW Sign Date{" "}
-                        <span className={HRDetailStyle.reqFieldRed}>*</span>
+                       {getData?.getLegalInfo?.isHRTypeDP === true ? <></> : <span className={HRDetailStyle.reqFieldRed}>*</span> } 
                       </div>
                       <div
                         className={`${HRDetailStyle.timeSlotItem} ${
@@ -673,7 +679,7 @@ const uploadSOWFileHandler = (e) => {
                             />
                           )}
                           name="clientSOWSignDate"
-                          rules={{ required: true }}
+                          rules={{ required: getData?.getLegalInfo?.isHRTypeDP === true ? false : true }}
                           control={control}
                         />
                         {errors.clientSOWSignDate && (
@@ -745,7 +751,7 @@ const uploadSOWFileHandler = (e) => {
                     <div className={HRDetailStyle.modalFormCol}>
                       <label className={HRDetailStyle.timeLabel}>
                         SOW Sign Date{" "}
-                        <span className={HRDetailStyle.reqFieldRed}>*</span>
+                      {getData?.getLegalInfo?.isHRTypeDP === true ? <></> : <span className={HRDetailStyle.reqFieldRed}>*</span> }  
                       </label>
                       <div
                         className={`${HRDetailStyle.timeSlotItem} ${
@@ -768,7 +774,7 @@ const uploadSOWFileHandler = (e) => {
                             />
                           )}
                           name="talentSOWSignDate"
-                          rules={{ required: true }}
+                          rules={{ required: getData?.getLegalInfo?.isHRTypeDP === true ? false : true  }}
                           control={control}
                         />
                         {errors.talentSOWSignDate && (
@@ -909,7 +915,7 @@ const uploadSOWFileHandler = (e) => {
 										buttonLabel="Upload SOW Document"
 										// value="Upload JD File"
 										onClickHandler={() => setShowSOWUploadModal(true)}
-										required={!SOWDocument}
+										required={getData?.getLegalInfo?.isHRTypeDP === true ? false : !SOWDocument}
 										validationSchema={{
 											required: 'please select a file.',
 										}}
@@ -929,7 +935,7 @@ const uploadSOWFileHandler = (e) => {
 										</div>
 									</div>
 								)}
- {formError && SOWDocument === '' &&  <span className={HRDetailStyle.error}>please select document</span>}
+ {(formError && SOWDocument === '' && getData?.getLegalInfo?.isHRTypeDP === false) &&  <span className={HRDetailStyle.error}>please select document</span>}
                     {showSOWUploadModal && (
 								<UploadModal
 									isGoogleDriveUpload={false}
@@ -1153,7 +1159,9 @@ const uploadSOWFileHandler = (e) => {
           type="submit"
           className={HRDetailStyle.btnPrimaryOutline}
           //   onClick={() => setShowAMModal(false)}
-          onClick={() => {callAPI(HRID); getHrUserData(HRID)}}
+          onClick={() => {
+            // callAPI(HRID); 
+            getHrUserData(HRID)}}
         >
           Cancel
         </button>
