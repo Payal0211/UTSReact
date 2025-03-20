@@ -81,12 +81,12 @@ export default function LeaveUppdate({ talentDetails,onCancel,callListData}) {
         onBoardId : talentDetails?.id,
         talentID: talentDetails?.talentID,
         leavesGiven: d.paidLeaves - +talentDetails?.totalLeavesGiven,
-        holidayLeaves: d.holidayLeaves
+        holidayLeaves: d.holidayLeaves === '' ? 0 : d.holidayLeaves
     }
     setIsLoading(true)
     const result = await engagementRequestDAO.updateLeaveRequestDAO(payload)
     setIsLoading(false)
-    console.log("result",result)
+    // console.log("result",result, payload)
     if(result?.statusCode === 200){
         onCancel()
         callListData()
@@ -160,7 +160,7 @@ export default function LeaveUppdate({ talentDetails,onCancel,callListData}) {
             register={register}
             errors={errors}
             validationSchema={{
-              required: "Please enter holiday leaves",
+              // required: "Please enter holiday leaves",
               min:{
                 value:1,
                 message:'Please enter a valid input'
@@ -192,7 +192,7 @@ export default function LeaveUppdate({ talentDetails,onCancel,callListData}) {
       <div className={updateTRStyle.formPanelAction}>
         <button
           onClick={() => {
-            // onCancel();
+            onCancel();
             // window.location.reload();
             // setCount(updateTRDetail?.ClientDetail?.ActiveTR);
             setValue("additionalComments", "");
