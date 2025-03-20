@@ -162,7 +162,7 @@ export default function LeaveUppdate({ talentDetails,onCancel,callListData}) {
             validationSchema={{
               // required: "Please enter holiday leaves",
               min:{
-                value:1,
+                value:0,
                 message:'Please enter a valid input'
               }
             }}
