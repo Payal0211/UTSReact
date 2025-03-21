@@ -3810,6 +3810,13 @@ const HRFields = ({
                         //  controlledValue={controlledAvailabilityValue}
                         //  setControlledValue={setControlledAvailabilityValue}
                         //  isControlled={true}
+                        onValueChange={()=>{
+                          resetField('payrollPartnerName')
+                          resetField('contractDuration')
+                          clearErrors('payrollPartnerName')
+                          clearErrors('contractDuration')
+                          unregister('contractDuration')
+                        }}
                         mode={"id/value"}
                         setValue={setValue}
                         register={register}
@@ -3889,8 +3896,8 @@ const HRFields = ({
                           }
                           // required={!isHRDirectPlacement}
                           required={
-                            userCompanyTypeID === 1 &&
-                            watch("payrollType")?.id === 4
+                            (userCompanyTypeID === 1 &&
+                            watch("payrollType")?.id === 4) ? true : false
                           }
                           errorMsg={
                             "Please select hiring request contract duration"
