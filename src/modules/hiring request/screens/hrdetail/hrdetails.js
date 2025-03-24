@@ -103,6 +103,13 @@ const HRDetailScreen = () => {
 	const [debouncedSearch, setDebouncedSearch] = useState('');
 	const [ talentSearch , setTalentSearch] = useState('')
 
+	const [activitydata, setActivityData] = useState([]);
+    const [activitypage, setActivityPage] = useState(1);
+    const [activityloading, setActivityLoading] = useState(false);
+    const [activityhasMore, setActivityHasMore] = useState(true);
+	const [activitytotalRecords, setActivityTotalRecords] = useState(0); 
+	const activityRrecordsPerPage = 20;
+
 	useEffect(() => {
 		apiData?.ClientDetail?.ProfileSharedCount > 0 && getHrUserData(Number(urlSplitter?.split('HR')[0]));
 	}, [page,talentSearch,apiData])
@@ -168,6 +175,35 @@ const HRDetailScreen = () => {
 		setHrData(data);
 		setCardLoading(false);
 	}
+
+	const fetchData = async (page) => {
+        setActivityLoading(true);
+        try {
+			const payload = {
+				"totalrecord":20,
+				"pagenumber":page,
+				"filterFields":
+				{
+					"HRID":urlSplitter?.split('HR')[0]
+				}
+			}
+				const response = await hiringRequestDAO.getHRActivityUsingPaginationDAO(payload)			
+				const newData = response?.responseBody?.details?.rows;
+				if (newData.length > 0) {
+					setActivityData(prevData => [...prevData, ...newData]);
+					setActivityTotalRecords(response?.responseBody?.details?.totalrows); 
+				}
+	
+				const loadedRecords = (page - 1) * activityRrecordsPerPage + newData.length;
+				if (loadedRecords >= response?.responseBody?.details?.totalrows) {
+					setActivityHasMore(false);  
+				}
+            // setHasMore(newData.length > 0);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        setActivityLoading(false);
+    };
 
 	// console.log(apiData, '--apiData-');
 	// const clientOnLossSubmitHandler = useCallback(
@@ -660,7 +696,7 @@ const togglePriority = useCallback(
                   updatedSplitter={updatedSplitter}
                   apiData={apiData}
                   clientDetail={apiData?.ClientDetail}
-                  callAPI={callAPI}
+                  callAPI={()=>fetchData(activitypage)}
 				  getHrUserData={getHrUserData}
 				  setLoading={setLoading}
                   talentCTA={hrData?.talent_CTAs || []}
@@ -694,6 +730,13 @@ const togglePriority = useCallback(
                 tagUsers={apiData?.UsersToTag}
                 callActivityFeedAPI={callAPI}
 				ChannelID={apiData?.ChannelID}
+				fetchData={fetchData}
+				setLoading={setActivityLoading}
+				loading={activityloading}
+				page={activitypage}
+				setPage={setActivityPage}
+				data={activitydata}
+				hasMore={activityhasMore}
               />
             </Suspense>
           )}
