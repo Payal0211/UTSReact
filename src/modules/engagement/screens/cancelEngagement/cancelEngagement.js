@@ -15,7 +15,7 @@ import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import moment from 'moment/moment';
 import { Checkbox, Skeleton, Radio } from 'antd';
 
-const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostReasons }) => {
+const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const {
 		register,
 		handleSubmit,
@@ -23,6 +23,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 		control,
 		watch,
 		resetField,
+		clearErrors,
 		formState: { errors },
 	} = useForm();
 	const [getEndEngagementDetails, setEndEngagementDetails] = useState(null);
@@ -42,6 +43,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 	})
 	const [closureDate,setClosureDate] = useState('')
 	const [engType,setEngType] = useState('Backout')
+	const [reasonList,setReasonList] = useState([])
 
 
 	const getEndEngagementHandler = useCallback(async () => {
@@ -74,6 +76,13 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 		
 		if(res.statusCode === HTTPStatusCode.OK){
 			setClosureDate(res?.responseBody?.details?.closureDate)
+			setReasonList([...res?.responseBody?.details?.onBoardingLostReasons,{	
+				disabled: false,
+				group: null,
+				selected: false,
+				text: "Other",
+				value: '0'
+			}])
 		}	
 	}, [talentInfo?.onboardID]);
 
@@ -86,7 +95,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 				"LastWorkingDate": d.lastWorkingDate ? moment(d.lastWorkingDate).format("yyyy-MM-DD") : null,
 				"reason": d.endEngagementReason ?? "",
 				"EngcancelType": engType,
-				"LostReasonID": 0
+				"LostReasonID": d.lostReason.id ? d.lostReason.id === '0' ? null : +d.lostReason.id : null
 			}
 	
 
@@ -136,7 +145,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
         setValue('dpAmount', DPAMOUNT.toFixed(2))
     },[watchExpectedCTC,watchDPpercentage, setValue])
 
-
+console.log(talentInfo)
 	return (
 		<div className={allengagementEnd.engagementModalWrap}>
 			<div
@@ -145,12 +154,12 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 				<ul className={allengagementEnd.engModalHeadList}>
 					<li>
 						<span>HR ID:</span>
-						{talentInfo?.hrNumber || talentInfo?.HR_Number}
+						{talentInfo?.hrNumber ? talentInfo?.HR_Number : talentInfo?.hR_Number}
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
 						<span>Engagement ID:</span>
-						{talentInfo?.engagementID || talentInfo?.EngagemenID}
+						{talentInfo?.engagementID || talentInfo?.EngagemenID || talentInfo?.engagemenID.split('/')[0]}
 					</li>
 					{closureDate && <>
 						<li className={allengagementEnd.divider}>|</li>
@@ -162,7 +171,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
 						<span>Talent Name:</span>
-						{talentInfo?.talentName || talentInfo?.Name}
+						{talentInfo?.talentName || talentInfo?.Name || talentInfo?.talent}
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
@@ -176,7 +185,10 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 				<div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
 					<div className={allengagementEnd.colMd12} style={{marginBottom:'10px'}}>
 					<Radio.Group
-                  onChange={e=> {setEngType(e.target.value)}}
+                  onChange={e=> {setEngType(e.target.value);
+					resetField('endEngagementReason')
+					clearErrors('endEngagementReason')
+				  }}
                   value={engType}
                   >
                   <Radio value={'Backout'}>Backout</Radio>
@@ -184,7 +196,11 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
                 </Radio.Group>
 				</div>
 
-				{engType === 'Backout' && <div className={allengagementEnd.colMd6} style={{marginBottom:'10px'}}>
+				{engType === 'Backout' && <>
+				
+
+				<div className={allengagementEnd.row} style={{width:'100%'}}>
+					<div className={allengagementEnd.colMd6} style={{marginBottom:'10px'}} >
 					<div className={allengagementEnd.timeSlotItemField}>
 						<div className={allengagementEnd.timeLabel}>
 							Last Working Day
@@ -217,7 +233,49 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal,lostRe
 							)}
 						</div>
 					</div>
-				</div> }
+				
+				</div>
+				<div className={allengagementEnd.colMd12} >
+				<HRSelectField
+				  compStyles={{marginBottom:'10px'}}
+                  setValue={setValue}
+                  mode={"id/value"}
+				  onValueChange={()=>{
+					resetField('endEngagementReason')
+					clearErrors('endEngagementReason')
+				  }}
+                  register={register}
+                  name="lostReason"
+                  label="Backout Reason"
+                  defaultValue="Select Reason"
+                  options={reasonList ? reasonList.map(item=> ({id: item.value, value:item.text})) : []}
+                  required
+                  isError={
+                    errors["lostReason"] && errors["lostReason"]
+                  }
+                  errorMsg="Please select reason."
+                />
+				</div>
+				
+				{watch('lostReason')?.id === '0' && <div className={allengagementEnd.colMd12} style={{marginBottom:'10px'}}>
+					<HRInputField
+						required
+						isTextArea={true}
+						rows={4}
+						errors={errors}
+						validationSchema={{
+							required: 'Please enter the reason for Closing Engagement.',
+						}}
+						label={'Other Reason'}
+						register={register}
+						name="endEngagementReason"
+						type={InputType.TEXT}
+						placeholder="Enter Reason"
+					/>
+				</div>}
+				
+				</div>
+				</> }
 
 				{engType === 'Other' &&  <>
 				{!closureDate && <div className={allengagementEnd.colMd6} style={{marginBottom:'10px'}}>

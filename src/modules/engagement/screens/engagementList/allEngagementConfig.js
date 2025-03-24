@@ -927,6 +927,22 @@ export const allEngagementConfig = {
 			},
 		];
 	},
+	talentBackoutFilterTypeConfig: (filterList) =>{
+		return [
+			{
+				label: 'AM',
+				name: 'amName',
+				child: filterList?.AMList?.map(item=>({...item,text: item.value,value:item.text})),
+				isSearch: true,
+			},
+			{
+				label: 'Talent Status',
+				name: 'statusIds',
+				child: filterList?.TalentStatus?.map(item=>({...item,text: item.text,value:item.value})),
+				isSearch: false,
+			},
+		];
+	},
 	rejectedListFilterTypeConfig: (filterList) =>{
 		return [
 			{
