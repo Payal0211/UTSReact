@@ -15,7 +15,7 @@ import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import moment from 'moment/moment';
 import { Checkbox, Skeleton } from 'antd';
 
-const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReasons }) => {
+const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const {
 		register,
 		handleSubmit,
@@ -202,17 +202,17 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				<ul className={allengagementEnd.engModalHeadList}>
 					<li>
 						<span>HR ID:</span>
-						{talentInfo?.hrNumber}
+						{talentInfo?.hrNumber ? talentInfo?.hrNumber : talentInfo?.hR_Number}
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
 						<span>Engagement ID:</span>
-						{talentInfo?.engagementID}
+						{talentInfo?.engagementID ||  talentInfo?.engagemenID.split('/')[0]}
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
 						<span>Talent Name:</span>
-						{talentInfo?.talentName}
+						{talentInfo?.talentName || talentInfo?.talent}
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
@@ -316,7 +316,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
                   name="lostReason"
                   label="Contract Lost Reason"
                   defaultValue="Select Reason"
-                  options={lostReasons ? lostReasons.map(item=> ({id: item.value, value:item.text})) : []}
+                  options={getEndEngagementDetails?.onBoardingLostReasons ? getEndEngagementDetails?.onBoardingLostReasons.map(item=> ({id: item.value, value:item.text})) : []}
                   required
                   isError={
                     errors["lostReason"] && errors["lostReason"]

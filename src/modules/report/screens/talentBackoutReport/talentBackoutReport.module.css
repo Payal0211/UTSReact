@@ -149,7 +149,8 @@
   padding: 24px;
   display: flex;
   border-radius: 10px;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 5px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -160,6 +161,51 @@
   gap: 24px;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.filterRight .modifySelect [class*="ant-select-selector"]{
+  height:44px !important;
+  padding:12px !important
+}
+
+.calendarFilterSet {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.priorityFilterSet{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.priorityFilter{
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 44px;
+}
+
+.paginationFilter {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 71px;
+  height: 44px;
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.paginationFilter .btnPrimary {
+  padding-top: 13px;
+  padding-bottom: 13px;
 }
 
 .searchFilterSet {
@@ -180,6 +226,74 @@
   border: none;
   color: var(--uplers-black);
   font-weight: 500;
+}
+
+.addFilter {
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 167px;
+  height: 44px;
+  border: 1px solid var(--background-color-metal);
+}
+
+.filterLabel{
+  font-weight: 500;
+    font-size: 12px;
+}
+
+.filterCount {
+  width: 18px;
+  height: 18px;
+  font-size: 10px;    align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: var(--fontsize-uplers);
+  background-color: var(--color-sunlight);
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.filterSetsInner{
+  display: flex
+  ;
+      align-items: center;
+}
+
+.filterSetsInner p {
+  margin: 0 10px;
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+.ticketStatusChip{
+  display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    width: -moz-fit-content;
+    width: fit-content;
+    color: rgb(0, 112, 224);
+    background: rgb(232, 242, 253);
+    font-weight: 500;
+}
+
+.expireDate{
+  color: rgb(179, 76, 1);
+  background: rgb(249, 231, 218);
+}
+
+.Hired{
+  color: #32936F;
+  background: #EFF7F0;
 }
 
 .calendarFilterSet {
