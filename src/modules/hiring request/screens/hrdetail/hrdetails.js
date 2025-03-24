@@ -104,8 +104,8 @@ const HRDetailScreen = () => {
 	const [ talentSearch , setTalentSearch] = useState('')
 
 	useEffect(() => {
-		getHrUserData(Number(urlSplitter?.split('HR')[0]));
-	}, [page,talentSearch])
+		apiData?.ClientDetail?.ProfileSharedCount > 0 && getHrUserData(Number(urlSplitter?.split('HR')[0]));
+	}, [page,talentSearch,apiData])
 	
 
 	const {
@@ -153,9 +153,14 @@ const HRDetailScreen = () => {
 			"totalrecord":2,
 			"pagenumber":page,
 			"search":talentSearch,
+			Is_HRTypeDP :apiData?.Is_HRTypeDP,
+			IsPayPerHire :apiData?.IsPayPerHire,
+			IsPayPerCredit :apiData?.IsPayPerCredit,
+			HRStatusID :apiData?.HRStatusID,
+			HRRoleStatusID :apiData?.HRRoleStatusID,
 			"filterFields":
 			{
-				"HRID":hrid
+				"HRID":hrid,
 			}
 		}
 		const _response = await hiringRequestDAO.getHRTalentUsingPaginationDAO(payload);
@@ -589,7 +594,7 @@ const togglePriority = useCallback(
           )
         )}
 
-		{apiData?.HRTalentDetails?.length > 0 && <div className={HRDetailStyle.searchBoxContainer}> <div className={HRDetailStyle.searchFilterSet}>
+		{apiData?.ClientDetail?.ProfileSharedCount > 0 && <div className={HRDetailStyle.searchBoxContainer}> <div className={HRDetailStyle.searchFilterSet}>
               <SearchSVG style={{ width: "16px", height: "16px" }} />
               <input
                 type={InputType.TEXT}
@@ -630,7 +635,7 @@ const togglePriority = useCallback(
 			
 			</div>}
 
-        <div className={HRDetailStyle.portal} style={{marginTop: apiData?.HRTalentDetails?.length > 0 ? '10px' : '30px'}}>
+        <div className={HRDetailStyle.portal} style={{marginTop: apiData?.ClientDetail?.ProfileSharedCount > 0 ? '10px' : '30px'}}>
           <div className={HRDetailStyle.clientPortal}>
             {isLoading ? (
               <Skeleton active />
@@ -658,9 +663,9 @@ const togglePriority = useCallback(
                   callAPI={callAPI}
 				  getHrUserData={getHrUserData}
 				  setLoading={setLoading}
-                  talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
+                  talentCTA={hrData?.talent_CTAs || []}
                   HRStatusCode={apiData?.HRStatusCode}
-                  talentDetail={apiData?.HRTalentDetails}
+                  talentDetail={hrData?.FinalResult?.rows}
                   hrId={apiData.HR_Id}
                   miscData={miscData}
                   hiringRequestNumber={updatedSplitter}
@@ -669,7 +674,7 @@ const togglePriority = useCallback(
                   hrStatus={apiData?.HRStatus}
                   callHRapi={callHRapi}
                   setHRapiCall={setHRapiCall}
-                  inteviewSlotDetails={apiData?.InterviewSlotDetails}
+                  inteviewSlotDetails={hrData?.InterviewSlotDetails}
 				  hrData={hrData}
 				  setPage={setPage}
 				  page={page}

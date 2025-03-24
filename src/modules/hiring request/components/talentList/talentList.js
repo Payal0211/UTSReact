@@ -731,13 +731,13 @@ const TalentList = ({
 			<List
 				grid={{ gutter: 16, column: 2 }}
 				size="large"
-				dataSource={hrData?.rows && hrData?.rows}				
+				dataSource={hrData?.FinalResult?.rows && hrData?.FinalResult?.rows}				
 				pagination={{
 					className: TalentListStyle.paginate,
 					size: 'small',
 					pageSize: ROW_SIZE,
 					position: 'top',
-					total:hrData?.totalrows,
+					total:hrData?.FinalResult?.totalrows,
 					current:page,					
 					onChange: (page, pageSize) => {	
 						setPageIndex(page - 1);	
@@ -1355,8 +1355,8 @@ const TalentList = ({
 											margin: '10px 0',
 										}}
 									/>		
-									{talentCTA[ROW_SIZE * (page-1) + listIndex]?.cTAInfoList
-										?.length > 0 && (talentCTA?.[ROW_SIZE * (page-1) + listIndex]
+									{talentCTA.find(it=> it.TalentID === item.TalentID)?.cTAInfoList
+										?.length > 0 && (talentCTA.find(it=> it.TalentID === item.TalentID)
 											?.cTAInfoList[0]?.label === TalentOnboardStatus.CANCEL_ENGAGEMENT ? item?.IsShownTalentStatus === 1 ? true : false : true ) && (
 											<div
 												// style={{
@@ -1369,7 +1369,7 @@ const TalentList = ({
 												<HROperator
 													onClickHandler={() => setTalentIndex(item?.TalentID)}
 													title={
-														talentCTA?.[ROW_SIZE * (page-1) + listIndex]
+														talentCTA.find(it=> it.TalentID === item.TalentID)
 															?.cTAInfoList[0]?.label
 													}
 													isUseKey={true}
