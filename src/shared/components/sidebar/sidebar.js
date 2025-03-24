@@ -427,7 +427,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 				}),
 				new SideBarModels({
 					id: 'talentNotes',
-					title: 'Notes',
+					title: 'Eng. Notes',
 					isActive: false,
 					icon: TalentDocIcon,
 					navigateTo: UTSRoutes.TALENT_NOTES,
