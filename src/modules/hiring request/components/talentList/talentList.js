@@ -1477,7 +1477,7 @@ const TalentList = ({
 															// 	break;
 															// }
 															case TalentOnboardStatus.SUBMIT_AS_HIRE: {
-																console.log("as hire")
+																// console.log("as hire")
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																clientFeedbackHandler(true,item)
@@ -1649,14 +1649,15 @@ const TalentList = ({
 															case TalentOnboardStatus.VIEW_ENGAGEMENT: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
-																setHRAndEngagementId({
-																	talentName: item.Name,
-																	engagementID: item.EngagemenID,
-																	hrNumber: item.HR_Number,
-																	onBoardId: item.OnBoardId,
-																	hrId: hrId,
-																})
-																setShowEngagementOnboard(true)
+																window.open(`/viewOnboardDetails/${item.OnBoardId}/${item.IsOngoing === "Ongoing" ? true : false }`, "_blank")
+																// setHRAndEngagementId({
+																// 	talentName: item.Name,
+																// 	engagementID: item.EngagemenID,
+																// 	hrNumber: item.HR_Number,
+																// 	onBoardId: item.OnBoardId,
+																// 	hrId: hrId,
+																// })
+																// setShowEngagementOnboard(true)
 																break
 															}
 															default:
