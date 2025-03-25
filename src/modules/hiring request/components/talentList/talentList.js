@@ -1201,9 +1201,39 @@ const TalentList = ({
 											margin: '10px 0',
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
-									/>
-								
+									/>							
 									{item?.ContractStartdate ? <>
+
+									<h3>Offer Details : </h3>
+
+										{item?.OfferedCTC && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Talent's Offered CTC:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{budgetStringToCommaSeprated(item?.OfferedCTC)}
+											</span>
+										</div>
+									)}	
+
+
+							{item?.OnBoardUplersFeesPercentage && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Uplers Fees %:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.OnBoardUplersFeesPercentage}
+											</span>
+										</div>
+									)}
+
+
+										{item?.OnBoardUplersFeesAmount && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Uplers Fees (in Amount):</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.OnBoardUplersFeesAmount}
+											</span>
+										</div>
+									)}
 										{item?.JoiningDate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Joining Date:</span>&nbsp;&nbsp;
@@ -1228,14 +1258,7 @@ const TalentList = ({
 											</span>
 										</div>
 									)}		
-									{item?.OfferedCTC && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Talent's Offered CTC:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{budgetStringToCommaSeprated(item?.OfferedCTC)}
-											</span>
-										</div>
-									)}								
+																
 										{item?.LastWorkingDate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Last Working Date:</span>&nbsp;&nbsp;
