@@ -205,6 +205,35 @@ const HRDetailScreen = () => {
         setActivityLoading(false);
     };
 
+	const fetchActivityDataAfterTalentAction = async (page) => {
+        setActivityLoading(true);
+        try {
+			const payload = {
+				"totalrecord":20,
+				"pagenumber":page,
+				"filterFields":
+				{
+					"HRID":urlSplitter?.split('HR')[0]
+				}
+			}
+				const response = await hiringRequestDAO.getHRActivityUsingPaginationDAO(payload)			
+				const newData = response?.responseBody?.details?.rows;
+				if (newData.length > 0) {
+					setActivityData(newData);
+					setActivityTotalRecords(response?.responseBody?.details?.totalrows); 
+				}
+	
+				const loadedRecords = (page - 1) * activityRrecordsPerPage + newData.length;
+				if (loadedRecords >= response?.responseBody?.details?.totalrows) {
+					setActivityHasMore(false);  
+				}
+            // setHasMore(newData.length > 0);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        setActivityLoading(false);
+    };
+
 	// console.log(apiData, '--apiData-');
 	// const clientOnLossSubmitHandler = useCallback(
 	// 	async (d) => {
@@ -696,7 +725,7 @@ const togglePriority = useCallback(
                   updatedSplitter={updatedSplitter}
                   apiData={apiData}
                   clientDetail={apiData?.ClientDetail}
-                  callAPI={()=>fetchData(activitypage)}
+                  callAPI={()=>{setActivityPage(1) ;fetchActivityDataAfterTalentAction(1)}}
 				  getHrUserData={getHrUserData}
 				  setLoading={setLoading}
                   talentCTA={hrData?.talent_CTAs || []}
