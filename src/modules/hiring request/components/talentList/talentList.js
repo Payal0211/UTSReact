@@ -441,6 +441,7 @@ const TalentList = ({
 				if (response?.statusCode === HTTPStatusCode.OK) {
 					 callAPI(hrId)
 					 getHrUserData(hrId)
+					 setLoading(false)
 				}else{
 					 setLoading(false)
 				}	
@@ -556,7 +557,7 @@ const TalentList = ({
 		}
 
 		let result = await hiringRequestDAO.getTalentNotesDAO(payload)
-		if(result.statusCode === 200) {
+		if(result?.statusCode === 200) {
 			setNotes(result.responseBody.notes?.reverse())
 		}else{
 			setNotes([])
