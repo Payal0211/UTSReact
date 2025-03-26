@@ -224,6 +224,7 @@
   padding: 24px;
   display: flex;
   border-radius: 10px;
+  gap: 5px;
   justify-content: flex-end;
   align-items: center;
   flex-wrap: wrap;

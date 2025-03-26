@@ -103,9 +103,16 @@ const HRDetailScreen = () => {
 	const [debouncedSearch, setDebouncedSearch] = useState('');
 	const [ talentSearch , setTalentSearch] = useState('')
 
+	const [activitydata, setActivityData] = useState([]);
+    const [activitypage, setActivityPage] = useState(1);
+    const [activityloading, setActivityLoading] = useState(false);
+    const [activityhasMore, setActivityHasMore] = useState(true);
+	const [activitytotalRecords, setActivityTotalRecords] = useState(0); 
+	const activityRrecordsPerPage = 20;
+
 	useEffect(() => {
-		getHrUserData(Number(urlSplitter?.split('HR')[0]));
-	}, [page,talentSearch])
+		apiData?.ClientDetail?.ProfileSharedCount > 0 && getHrUserData(Number(urlSplitter?.split('HR')[0]));
+	}, [page,talentSearch,apiData])
 	
 
 	const {
@@ -153,9 +160,14 @@ const HRDetailScreen = () => {
 			"totalrecord":2,
 			"pagenumber":page,
 			"search":talentSearch,
+			Is_HRTypeDP :apiData?.Is_HRTypeDP,
+			IsPayPerHire :apiData?.IsPayPerHire,
+			IsPayPerCredit :apiData?.IsPayPerCredit,
+			HRStatusID :apiData?.HRStatusID,
+			HRRoleStatusID :apiData?.HRRoleStatusID,
 			"filterFields":
 			{
-				"HRID":hrid
+				"HRID":hrid,
 			}
 		}
 		const _response = await hiringRequestDAO.getHRTalentUsingPaginationDAO(payload);
@@ -163,6 +175,64 @@ const HRDetailScreen = () => {
 		setHrData(data);
 		setCardLoading(false);
 	}
+
+	const fetchData = async (page) => {
+        setActivityLoading(true);
+        try {
+			const payload = {
+				"totalrecord":20,
+				"pagenumber":page,
+				"filterFields":
+				{
+					"HRID":urlSplitter?.split('HR')[0]
+				}
+			}
+				const response = await hiringRequestDAO.getHRActivityUsingPaginationDAO(payload)			
+				const newData = response?.responseBody?.details?.rows;
+				if (newData.length > 0) {
+					setActivityData(prevData => [...prevData, ...newData]);
+					setActivityTotalRecords(response?.responseBody?.details?.totalrows); 
+				}
+	
+				const loadedRecords = (page - 1) * activityRrecordsPerPage + newData.length;
+				if (loadedRecords >= response?.responseBody?.details?.totalrows) {
+					setActivityHasMore(false);  
+				}
+            // setHasMore(newData.length > 0);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        setActivityLoading(false);
+    };
+
+	const fetchActivityDataAfterTalentAction = async (page) => {
+        setActivityLoading(true);
+        try {
+			const payload = {
+				"totalrecord":20,
+				"pagenumber":page,
+				"filterFields":
+				{
+					"HRID":urlSplitter?.split('HR')[0]
+				}
+			}
+				const response = await hiringRequestDAO.getHRActivityUsingPaginationDAO(payload)			
+				const newData = response?.responseBody?.details?.rows;
+				if (newData.length > 0) {
+					setActivityData(newData);
+					setActivityTotalRecords(response?.responseBody?.details?.totalrows); 
+				}
+	
+				const loadedRecords = (page - 1) * activityRrecordsPerPage + newData.length;
+				if (loadedRecords >= response?.responseBody?.details?.totalrows) {
+					setActivityHasMore(false);  
+				}
+            // setHasMore(newData.length > 0);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        setActivityLoading(false);
+    };
 
 	// console.log(apiData, '--apiData-');
 	// const clientOnLossSubmitHandler = useCallback(
@@ -589,7 +659,7 @@ const togglePriority = useCallback(
           )
         )}
 
-		{apiData?.HRTalentDetails?.length > 0 && <div className={HRDetailStyle.searchBoxContainer}> <div className={HRDetailStyle.searchFilterSet}>
+		{apiData?.ClientDetail?.ProfileSharedCount > 0 && <div className={HRDetailStyle.searchBoxContainer}> <div className={HRDetailStyle.searchFilterSet}>
               <SearchSVG style={{ width: "16px", height: "16px" }} />
               <input
                 type={InputType.TEXT}
@@ -630,7 +700,7 @@ const togglePriority = useCallback(
 			
 			</div>}
 
-        <div className={HRDetailStyle.portal} style={{marginTop: apiData?.HRTalentDetails?.length > 0 ? '10px' : '30px'}}>
+        <div className={HRDetailStyle.portal} style={{marginTop: apiData?.ClientDetail?.ProfileSharedCount > 0 ? '10px' : '30px'}}>
           <div className={HRDetailStyle.clientPortal}>
             {isLoading ? (
               <Skeleton active />
@@ -655,12 +725,12 @@ const togglePriority = useCallback(
                   updatedSplitter={updatedSplitter}
                   apiData={apiData}
                   clientDetail={apiData?.ClientDetail}
-                  callAPI={callAPI}
+                  callAPI={()=>{setActivityPage(1) ;fetchActivityDataAfterTalentAction(1)}}
 				  getHrUserData={getHrUserData}
 				  setLoading={setLoading}
-                  talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
+                  talentCTA={hrData?.talent_CTAs || []}
                   HRStatusCode={apiData?.HRStatusCode}
-                  talentDetail={apiData?.HRTalentDetails}
+                  talentDetail={hrData?.FinalResult?.rows}
                   hrId={apiData.HR_Id}
                   miscData={miscData}
                   hiringRequestNumber={updatedSplitter}
@@ -669,7 +739,7 @@ const togglePriority = useCallback(
                   hrStatus={apiData?.HRStatus}
                   callHRapi={callHRapi}
                   setHRapiCall={setHRapiCall}
-                  inteviewSlotDetails={apiData?.InterviewSlotDetails}
+                  inteviewSlotDetails={hrData?.InterviewSlotDetails}
 				  hrData={hrData}
 				  setPage={setPage}
 				  page={page}
@@ -689,6 +759,13 @@ const togglePriority = useCallback(
                 tagUsers={apiData?.UsersToTag}
                 callActivityFeedAPI={callAPI}
 				ChannelID={apiData?.ChannelID}
+				fetchData={fetchData}
+				setLoading={setActivityLoading}
+				loading={activityloading}
+				page={activitypage}
+				setPage={setActivityPage}
+				data={activitydata}
+				hasMore={activityhasMore}
               />
             </Suspense>
           )}

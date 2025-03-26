@@ -1,4 +1,4 @@
-import React , { useEffect, useState, useCallback } from 'react'
+import React , { useEffect, useState, useCallback, Suspense } from 'react'
 import TalentBackoutStyle from "./talentBackoutReport.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
@@ -9,26 +9,62 @@ import { ReportDAO } from 'core/report/reportDAO';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
-import { Table } from 'antd';
+import { Table,Dropdown,Menu, Select } from 'antd';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import LogoLoader from 'shared/components/loader/logoLoader';
+import { IoChevronDownOutline } from "react-icons/io5";
+import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
+import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { Link } from "react-router-dom";
+import moment from 'moment';
+import OnboardFilerList from 'modules/onBoardList/OnboardFilterList';
+import { amDashboardDAO } from 'core/amdashboard/amDashboardDAO';
+import { allEngagementConfig } from 'modules/engagement/screens/engagementList/allEngagementConfig';
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 
 function TalentBackoutReport() {
-    const [getBackoutDetails,setTalentBackoutDetails] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
+  const [getBackoutDetails,setTalentBackoutDetails] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
-    const [ searchText , setSearchText] = useState('');
+  const [ searchText , setSearchText] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState('');
-    const [totalRecords, setTotalRecords] = useState(0);
-    const [pageSize, setPageSize] = useState(10);    
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [pageSize, setPageSize] = useState(10);    
 	const [pageIndex, setPageIndex] = useState(1);
-    const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
+  const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
+  const [getHTMLFilter, setHTMLFilter] = useState(false);
+  const [isAllowFilters, setIsAllowFilters] = useState(false);
 
-    var date = new Date();
-    const [startDate, setStartDate] = useState(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
-    const [endDate, setEndDate] = useState(new Date(date));
+  var date = new Date();
+  const [startDate, setStartDate] = useState(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
+  const [endDate, setEndDate] = useState(new Date(date));
   const [dateError, setDateError] = useState(false);
+  const [filteredTagLength, setFilteredTagLength] = useState(0);
+  const [dateTypeFilter, setDateTypeFilter] = useState(2);
+  const [monthDate, setMonthDate] = useState(new Date());
+   const [filtersList, setFiltersList] = useState({});
+
+    const [appliedFilter, setAppliedFilters] = useState(new Map());
+    const [checkedState, setCheckedState] = useState(new Map());
+    const [tableFilteredState, setTableFilteredState] = useState({
+      filterFields_OnBoard: {
+        amName: "",
+        statusIds: "",
+      },
+    });
+
+  const dateTypeList = [{
+    value: 2,
+    label: 'No Dates',
+  },
+  {
+    value: 0,
+    label: 'By Month',
+  },
+  {
+    value: 1,
+    label: 'With Date Range',
+  }]
 
   const getBackoutData = useCallback(async (psize,pInd)=>{
     setIsLoading(true)
@@ -36,10 +72,21 @@ function TalentBackoutReport() {
         "totalrecord": psize ? psize : pageSize,
         "pagenumber": pInd ? pInd : pageIndex,
         "FilterFields": {
-            "fromDate": startDate?.toLocaleDateString("en-US"),
-            "toDate": endDate?.toLocaleDateString("en-US"),
-            "searchText":searchText 
+            "fromDate": dateTypeFilter === 2 ? null : dateTypeFilter === 1 ? startDate?.toLocaleDateString("en-US") : null,
+            "toDate": dateTypeFilter === 2 ? null : dateTypeFilter === 1 ? endDate?.toLocaleDateString("en-US") : null,
+            "searchText":searchText,
+            "amIds": tableFilteredState?.filterFields_OnBoard?.amName,
+            "statusIds": tableFilteredState?.filterFields_OnBoard?.statusIds,   
+            "month": dateTypeFilter === 2 ? 0 :
+                      dateTypeFilter === 0
+                        ? +moment(monthDate).format("M")
+                        : 0,
+            "year": dateTypeFilter === 2 ? 0 :
+                      dateTypeFilter === 0
+                        ? +moment(monthDate).format("YYYY")
+                        : 0,
         }
+      
     }
 
     const talentBackoutResult = await ReportDAO.getTalentBackoutReportDRO(payload)
@@ -55,14 +102,27 @@ function TalentBackoutReport() {
         setIsLoading(false)
     }
     setIsLoading(false)
-  } ,[endDate, pageIndex, pageSize, searchText,startDate]) 
+  } ,[endDate, pageIndex, pageSize, searchText,startDate,tableFilteredState,monthDate]) 
 
   useEffect(()=>{
     if(endDate && startDate){
          getBackoutData()
     }
    
-  },[endDate,startDate,debouncedSearch])
+  },[endDate,startDate,debouncedSearch,tableFilteredState,pageSize,monthDate])
+
+  
+  const getFilterList = async () => {
+    let result = await amDashboardDAO.getDeployedFiltersDAO();
+
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setFiltersList(result.responseBody.Data);
+    }
+  }
+
+  useEffect(() => {
+    getFilterList();
+  }, []);
 
   const onCalenderFilter = (dates) => {
     const [start, end] = dates;
@@ -89,7 +149,43 @@ function TalentBackoutReport() {
     return () => clearTimeout(timer);
 }, [debouncedSearch]);
 
+const onRemoveFilters = () => {
+  setTimeout(() => {
+    setIsAllowFilters(false);
+  }, 300);
+  setHTMLFilter(false);
+};
 
+  const toggleHRFilter = useCallback(() => {
+    !getHTMLFilter
+      ? setIsAllowFilters(!isAllowFilters)
+      : setTimeout(() => {
+          setIsAllowFilters(!isAllowFilters);
+        }, 300);
+    setHTMLFilter(!getHTMLFilter);
+  }, [getHTMLFilter, isAllowFilters]);
+
+const clearFilters = ()=>{
+  setTableFilteredState({
+    filterFields_OnBoard: {
+      amName: "",
+      statusIds: "",
+    },
+  })
+
+  setSearchText('')
+  setDebouncedSearch('')
+  setAppliedFilters(new Map());
+  setCheckedState(new Map());
+  setFilteredTagLength(0);
+  setDateTypeFilter(2);
+  setPageSize(10)
+  setMonthDate(new Date());
+  setStartDate(
+    new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+  );
+  setEndDate(new Date(date));
+}
 const handleExport = (apiData) => {
     let DataToExport =  apiData.map(data => {
         let obj = {}
@@ -115,7 +211,15 @@ const handleExport = (apiData) => {
     key: 'createdDateTime',
     align: 'left',
     width:'150px'
-},{
+},
+{
+  title: "Month Year",
+  dataIndex: "monthYearString",
+  key: "monthYearString",
+  align: "left",
+  width: "100px",
+},
+{
     title: "Engagement / HR #",		
     dataIndex: 'hR_Number',
     key: 'hR_Number',
@@ -138,7 +242,7 @@ const handleExport = (apiData) => {
           </Link>{" "}
           <br />/{" "}
           <Link
-            to={`/allhiringrequest/${item.hRID}`}
+            to={`/allhiringrequest/${item.hrid}`}
             target="_blank"
             style={{ color: "#006699", textDecoration: "underline" }}
           >
@@ -149,11 +253,25 @@ const handleExport = (apiData) => {
     },
 },
 {
+  title: "AM",
+  dataIndex: "salesUser",
+  key: "salesUser",
+  align: "left",
+  width: "120px",
+},
+{
   title: 'Talent',				
   dataIndex: 'talent',
   key: 'talent',
   align: 'left',
   width: '250px',
+},
+{
+  title: "Talent Email",
+  dataIndex: "talentEmail",
+  key: "talentEmail",
+  align: "left",
+  width: "200px",
 },
 {
   title: 'Company',				
@@ -170,11 +288,11 @@ const handleExport = (apiData) => {
     width: '250px',
 },
 {
-  title: 'Talent Status',				
-  dataIndex: 'talentStatus',
-  key: 'talentStatus',
-  align: 'left',
-  width: '200px',
+  title: "Engagement Type",
+  dataIndex: "engagementType",
+  key: "engagementType",
+  align: "left",
+  width: "200px",
 },
 {
   title: 'Last Working Date',				
@@ -184,18 +302,41 @@ const handleExport = (apiData) => {
   width: '200px',
 },
 {
-  title: 'Sales Person',				
-  dataIndex: 'salesUser',
-  key: 'salesUser',
+  title: 'Talent Status',				
+  dataIndex: 'talentStatus',
+  key: 'talentStatus',
   align: 'left',
   width: '200px',
+  render: (text, result) => {
+    return (
+      <div
+        className={`${TalentBackoutStyle.ticketStatusChip} ${
+          text.includes("Rejected")
+            ? TalentBackoutStyle.expireDate
+            : text.includes("Hired")
+            ? TalentBackoutStyle.Hired
+            : ""
+        }`}
+      >
+        <span style={{ cursor: "pointer" }}> {text}</span>
+      </div>
+    );
+  },
 },
+
+
 {
   title: 'HR Status',				
   dataIndex: 'hrStatus',
   key: 'hrStatus',
   align: 'left',
   width: '150px',
+  render: (_, param) => {
+    return All_Hiring_Request_Utils.GETHRSTATUS(
+      param?.hrStatusCode ?? 101,
+      param?.hrStatus
+    );
+  },
 }
 ]
 
@@ -208,7 +349,213 @@ const handleExport = (apiData) => {
 
     <div className={TalentBackoutStyle.filterContainer}>
         <div className={TalentBackoutStyle.filterSets}>
-          <div className={TalentBackoutStyle.filterRight}>
+<div className={TalentBackoutStyle.filterSetsInner}>
+                      <div
+                        className={TalentBackoutStyle.addFilter}
+                        onClick={toggleHRFilter}
+                      >
+                        <FunnelSVG style={{ width: "16px", height: "16px" }} />
+
+                        <div className={TalentBackoutStyle.filterLabel}>
+                          Add Filters
+                        </div>
+                        <div className={TalentBackoutStyle.filterCount}>
+                          {filteredTagLength}
+                        </div>
+                      </div>
+
+                      <div
+                        className={TalentBackoutStyle.searchFilterSet}
+                        style={{ marginLeft: "15px" }}
+                      >
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={TalentBackoutStyle.searchInput}
+                          placeholder="Search Table"
+                          value={searchText}
+                          onChange={(e) => {
+                            setSearchText(e.target.value)
+                            return setDebouncedSearch(e.target.value.toLowerCase())
+                          }}
+                        />
+                        {searchText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              setSearchText('')
+                               setDebouncedSearch('')
+                            }}
+                          />
+                        )}
+                      </div>
+                      <p onClick={() => clearFilters()}>Reset Filters</p>
+                    </div>
+
+
+  <div className={`${TalentBackoutStyle.filterRight}`}>
+                      {/* <Radio.Group
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "5px",
+                        }}
+                        onChange={(e) => {
+                          setDateTypeFilter(e.target.value);
+                          setStartDate(
+                            new Date(
+                              date.getFullYear(),
+                              date.getMonth() - 1,
+                              date.getDate()
+                            )
+                          );
+                          setEndDate(new Date(date));
+                        }}
+                        value={dateTypeFilter}
+                      >
+                        <Radio value={0}>Current Month</Radio>
+                        <Radio value={1}>Search With Date Range</Radio>
+                      </Radio.Group> */}
+                      <div className={`${TalentBackoutStyle.modifySelect}`}>
+                        <Select
+                                              id="selectedValue"
+                                              placeholder="Select"
+                                              value={dateTypeFilter}
+                                              // showSearch={true}
+                                              style={{width:'170px'}}
+                                              onChange={(value, option) => {
+                                                console.log({ value, option });
+                                                setDateTypeFilter(value);
+                                                        setStartDate(
+                                                          new Date(
+                                                            date.getFullYear(),
+                                                            date.getMonth() - 1,
+                                                            date.getDate()
+                                                          )
+                                                        );
+                                                        setEndDate(new Date(date));
+                                              }}
+                                              options={dateTypeList}
+                                              optionFilterProp="value"
+                                              // getPopupContainer={(trigger) => trigger.parentElement}
+                                            />
+
+                      </div>
+                    
+
+                      {dateTypeFilter === 0 && (
+                        <div className={TalentBackoutStyle.calendarFilterSet}>
+                          <div className={TalentBackoutStyle.label}>
+                            Month-Year
+                          </div>
+                          <div className={TalentBackoutStyle.calendarFilter}>
+                            <CalenderSVG
+                              style={{ height: "16px", marginRight: "16px" }}
+                            />
+                            <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={TalentBackoutStyle.dateFilter}
+                              placeholderText="Month - Year"
+                              selected={monthDate}
+                              onChange={date=>setMonthDate(date)}
+                              // startDate={startDate}
+                              // endDate={endDate}
+                              dateFormat="MM-yyyy"
+                              showMonthYearPicker
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {dateTypeFilter === 1 && (
+                        <div className={TalentBackoutStyle.calendarFilterSet}>
+                          <div className={TalentBackoutStyle.label}>Date</div>
+                          <div className={TalentBackoutStyle.calendarFilter}>
+                            <CalenderSVG
+                              style={{ height: "16px", marginRight: "16px" }}
+                            />
+                            <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={TalentBackoutStyle.dateFilter}
+                              placeholderText="Start date - End date"
+                              selected={startDate}
+                              onChange={onCalenderFilter}
+                              startDate={startDate}
+                              endDate={endDate}
+                              selectsRange
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <div className={TalentBackoutStyle.priorityFilterSet}>
+                        <div className={TalentBackoutStyle.priorityFilterSet}>
+                          <div className={TalentBackoutStyle.label}>
+                            Showing
+                          </div>
+                          <div className={TalentBackoutStyle.paginationFilter}>
+                            <Dropdown
+                              trigger={["click"]}
+                              placement="bottom"
+                              overlay={
+                                <Menu
+                                  onClick={(e) => {
+                                    setPageSize(parseInt(e.key));
+                                    // if (pageSize !== parseInt(e.key)) {
+                                    //   setTableFilteredState((prevState) => ({
+                                    //     ...prevState,
+                                    //     totalrecord: parseInt(e.key),
+                                    //     pagenumber: pageIndex,
+                                    //   }));
+                                    // }
+                                  }}
+                                >
+                                  {pageSizeOptions.map((item) => {
+                                    return (
+                                      <Menu.Item key={item}>{item}</Menu.Item>
+                                    );
+                                  })}
+                                </Menu>
+                              }
+                            >
+                              <span>
+                                {pageSize}
+                                <IoChevronDownOutline
+                                  style={{
+                                    paddingTop: "5px",
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              </span>
+                            </Dropdown>
+                          </div>
+                        </div>
+                        <div
+                          className={TalentBackoutStyle.paginationFilter}
+                          style={{ border: "none", width: "auto" }}
+                        >
+                          <button
+                            className={TalentBackoutStyle.btnPrimary}
+                            onClick={() =>handleExport(getBackoutDetails)}
+                          >
+                            Export
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+          {/* <div className={TalentBackoutStyle.filterRight}>
           <div className={TalentBackoutStyle.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
 							<input
@@ -254,7 +601,7 @@ const handleExport = (apiData) => {
             >
               Export
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -288,7 +635,27 @@ const handleExport = (apiData) => {
 						</WithLoader>
 					)}
 				</div>
-
+        
+         <Suspense fallback={<div>Loading...</div>}>
+                <OnboardFilerList
+                  setAppliedFilters={setAppliedFilters}
+                  appliedFilter={appliedFilter}
+                  setCheckedState={setCheckedState}
+                  checkedState={checkedState}
+                  // handleHRRequest={handleHRRequest}
+                  setTableFilteredState={setTableFilteredState}
+                  tableFilteredState={tableFilteredState}
+                  setFilteredTagLength={setFilteredTagLength}
+                  onRemoveHRFilters={() => onRemoveFilters()}
+                  getHTMLFilter={getHTMLFilter}
+                  // hrFilterList={allHRConfig.hrFilterListConfig()}
+        
+                  filtersType={allEngagementConfig.talentBackoutFilterTypeConfig(
+                    filtersList && filtersList
+                  )}
+                  clearFilters={clearFilters}
+                />
+              </Suspense>
     </div>
   )
 }

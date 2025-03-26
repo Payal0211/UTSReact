@@ -130,7 +130,8 @@ const ActivityFeed = ({
 	activityFeed,
 	tagUsers,
 	callActivityFeedAPI,
-	ChannelID
+	ChannelID,
+	fetchData,setLoading,loading,page,setPage,data,hasMore
 }) => {
 	const [search, setSearch] = useState('');
 	const [activityFeedList,setActivityFeedList] = useState([]);
@@ -143,43 +144,43 @@ const ActivityFeed = ({
 	const [showActivityDetails,setShowActivityDetails] = useState(false)
 	const [issHistoryLoading,setIsHistoryLoading] = useState(false)
 	const [historyData,sethistoryData] = useState({})
-	const [data, setData] = useState([]);
-    const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
-	const [totalRecords, setTotalRecords] = useState(0); 
-    const recordsPerPage = 20;
+	// const [data, setData] = useState([]);
+    // const [page, setPage] = useState(1);
+    // const [loading, setLoading] = useState(false);
+    // const [hasMore, setHasMore] = useState(true);
+	// const [totalRecords, setTotalRecords] = useState(0); 
+    // const recordsPerPage = 20;
     const observerRef = useRef();
 	
 
-	const fetchData = async (page) => {
-        setLoading(true);
-        try {
-			const payload = {
-				"totalrecord":20,
-				"pagenumber":page,
-				"filterFields":
-				{
-					"HRID":hrID
-				}
-			}
-				const response = await hiringRequestDAO.getHRActivityUsingPaginationDAO(payload)			
-				const newData = response?.responseBody?.details?.rows;
-				if (newData.length > 0) {
-					setData(prevData => [...prevData, ...newData]);
-					setTotalRecords(response?.responseBody?.details?.totalrows); 
-				}
+	// const fetchData = async (page) => {
+    //     setLoading(true);
+    //     try {
+	// 		const payload = {
+	// 			"totalrecord":20,
+	// 			"pagenumber":page,
+	// 			"filterFields":
+	// 			{
+	// 				"HRID":hrID
+	// 			}
+	// 		}
+	// 			const response = await hiringRequestDAO.getHRActivityUsingPaginationDAO(payload)			
+	// 			const newData = response?.responseBody?.details?.rows;
+	// 			if (newData.length > 0) {
+	// 				setData(prevData => [...prevData, ...newData]);
+	// 				setTotalRecords(response?.responseBody?.details?.totalrows); 
+	// 			}
 	
-				const loadedRecords = (page - 1) * recordsPerPage + newData.length;
-				if (loadedRecords >= response?.responseBody?.details?.totalrows) {
-					setHasMore(false);  
-				}
-            // setHasMore(newData.length > 0);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-        setLoading(false);
-    };
+	// 			const loadedRecords = (page - 1) * recordsPerPage + newData.length;
+	// 			if (loadedRecords >= response?.responseBody?.details?.totalrows) {
+	// 				setHasMore(false);  
+	// 			}
+    //         // setHasMore(newData.length > 0);
+    //     } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //     }
+    //     setLoading(false);
+    // };
 
 	useEffect(() => {
         if (hasMore) {

@@ -3499,16 +3499,23 @@ const EditHRFields = ({
                                 controlledValue={controlledPayrollTypeValue}
                                 setControlledValue={(val) => {
                                   setControlledPayrollTypeValue(val);
-                                  if (
-                                    val ==
-                                    "I will pay on contract via payment services"
-                                  ) {
-                                    register("contractDuration", {
-                                      required: true,
-                                    });
-                                  }
+                                  // if (
+                                  //   val ==
+                                  //   "I will pay on contract via payment services"
+                                  // ) {
+                                  //   register("contractDuration", {
+                                  //     required: true,
+                                  //   });
+                                  // }
                                 }}
                                 isControlled={true}
+                                onValueChange={()=>{
+                                  resetField('payrollPartnerName')
+                                  resetField('contractDuration')
+                                  clearErrors('payrollPartnerName')
+                                  clearErrors('contractDuration')
+                                  unregister('contractDuration')
+                                }}
                                 mode={"id/value"}
                                 setValue={setValue}
                                 register={register}
@@ -3605,7 +3612,7 @@ const EditHRFields = ({
                                     errors["contractDuration"] &&
                                     errors["contractDuration"]
                                   }
-                                  required={watch("payrollType")?.id === 4}
+                                  required={watch("payrollType")?.id === 4 ? true : false}
                                   errorMsg={
                                     "Please select hiring request contract duration"
                                   }

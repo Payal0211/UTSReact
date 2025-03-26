@@ -11,6 +11,7 @@ import { ReactComponent as NotesIcon } from 'assets/svg/notesIcon.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/editIcon.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/deleteIcon.svg';
 import { ReactComponent as InfoCircleIcon } from 'assets/svg/infoCircleIcon.svg';
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
 import { useNavigate } from 'react-router-dom'
 
 import {
@@ -441,6 +442,7 @@ const TalentList = ({
 				if (response?.statusCode === HTTPStatusCode.OK) {
 					 callAPI(hrId)
 					 getHrUserData(hrId)
+					 setLoading(false)
 				}else{
 					 setLoading(false)
 				}	
@@ -556,7 +558,7 @@ const TalentList = ({
 		}
 
 		let result = await hiringRequestDAO.getTalentNotesDAO(payload)
-		if(result.statusCode === 200) {
+		if(result?.statusCode === 200) {
 			setNotes(result.responseBody.notes?.reverse())
 		}else{
 			setNotes([])
@@ -606,7 +608,25 @@ const TalentList = ({
 		);
 		}
 
+  const ColapsableTalDetails =({item}) => {
+	const [show,setShow] = useState(false)
+	return  <div>
+	<div onClick={()=>setShow(prev=>!prev)} className={TalentListStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Matchmaking Details</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }}  /></div>
+	{(show && DynamicSalaryInfo.length > 0) && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
+								<div>
+									<span>
+										{info.Title}
+									</span>
+									&nbsp;&nbsp;
+									<span style={{ fontWeight: '500' }}>
+										{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
+									</span>
+								</div>
 
+							</div>)}
+	</div>
+
+  }
 	const TalentNotesCardComp = ({item})=>{
 		const [allNotes , setAllNotes] = useState([])
 		const [showAddNotesModal, setShowAddNotesModal] = useState(false);
@@ -731,13 +751,13 @@ const TalentList = ({
 			<List
 				grid={{ gutter: 16, column: 2 }}
 				size="large"
-				dataSource={hrData?.rows && hrData?.rows}				
+				dataSource={hrData?.FinalResult?.rows && hrData?.FinalResult?.rows}				
 				pagination={{
 					className: TalentListStyle.paginate,
 					size: 'small',
 					pageSize: ROW_SIZE,
 					position: 'top',
-					total:hrData?.totalrows,
+					total:hrData?.FinalResult?.totalrows,
 					current:page,					
 					onChange: (page, pageSize) => {	
 						setPageIndex(page - 1);	
@@ -745,6 +765,7 @@ const TalentList = ({
 					},
 				}}
 				renderItem={(item, listIndex) => {	
+					
 					return (
 						<div
 							key={item?.Name}
@@ -987,53 +1008,56 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-			
-									{DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
-										<div>
-											<span>
-												{info.Title}
-											</span>
-											&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
-											</span>
-										</div>
-										{/* {info.IsEditable && <>
-											{!hrType ? <>
-												{apiData?.JobStatusID !== 2 &&
-													(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') &&
-													<span
-														onClick={() => {
-															// setEditPayRate(true);
-															// setTalentIndex(item?.TalentID);
-															setTalentIndex(item?.TalentID);
-															setEditBillRate(true);
-														}}
-			
-														style={{
-															textDecoration: 'underline',
-															color: `var(--background-color-ebony)`,
-															cursor: 'pointer',
-														}}>
-														Edit
-													</span>}
-											</> : <>
-												{apiData?.JobStatusID !== 2 && <span
-													onClick={() => {
-														setEditDPRate(true);
-														setDPData({ talentId: item?.TalentID, contactPriorityID: item?.ContactPriorityID, allValues: item });
-													}}
-													style={{
-														textDecoration: 'underline',
-														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
-													Edit
-												</span>}
-											</>}
-										</>} */}
-			
-									</div>)}
+
+		{item?.ContractStartdate ?  <ColapsableTalDetails item={item} /> : 
+			DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
+				<div>
+					<span>
+						{info.Title}
+					</span>
+					&nbsp;&nbsp;
+					<span style={{ fontWeight: '500' }}>
+						{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
+					</span>
+				</div>
+				{/* {info.IsEditable && <>
+					{!hrType ? <>
+						{apiData?.JobStatusID !== 2 &&
+							(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') &&
+							<span
+								onClick={() => {
+									// setEditPayRate(true);
+									// setTalentIndex(item?.TalentID);
+									setTalentIndex(item?.TalentID);
+									setEditBillRate(true);
+								}}
+
+								style={{
+									textDecoration: 'underline',
+									color: `var(--background-color-ebony)`,
+									cursor: 'pointer',
+								}}>
+								Edit
+							</span>}
+					</> : <>
+						{apiData?.JobStatusID !== 2 && <span
+							onClick={() => {
+								setEditDPRate(true);
+								setDPData({ talentId: item?.TalentID, contactPriorityID: item?.ContactPriorityID, allValues: item });
+							}}
+							style={{
+								textDecoration: 'underline',
+								color: `var(--background-color-ebony)`,
+								cursor: 'pointer',
+							}}>
+							Edit
+						</span>}
+					</>}
+				</>} */}
+
+			</div>)
+		}
+								
 									{/* {!hrType ? (
 										<>
 											<div className={TalentListStyle.payRate}>
@@ -1200,9 +1224,39 @@ const TalentList = ({
 											margin: '10px 0',
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
-									/>
-								
+									/>							
 									{item?.ContractStartdate ? <>
+
+									<h3 style={{textDecoration:'underline'}}>Offer Details  </h3>
+
+										{item?.OfferedCTC && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Talent's Offered CTC:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{budgetStringToCommaSeprated(item?.OfferedCTC)}
+											</span>
+										</div>
+									)}	
+
+
+							{item?.OnBoardUplersFeesPercentage && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Uplers Fees %:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.OnBoardUplersFeesPercentage}
+											</span>
+										</div>
+									)}
+
+
+										{item?.OnBoardUplersFeesAmount && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Uplers Fees (in Amount):</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.OnBoardUplersFeesAmount}
+											</span>
+										</div>
+									)}
 										{item?.JoiningDate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Joining Date:</span>&nbsp;&nbsp;
@@ -1227,14 +1281,7 @@ const TalentList = ({
 											</span>
 										</div>
 									)}		
-									{item?.OfferedCTC && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Talent's Offered CTC:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{budgetStringToCommaSeprated(item?.OfferedCTC)}
-											</span>
-										</div>
-									)}								
+																
 										{item?.LastWorkingDate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Last Working Date:</span>&nbsp;&nbsp;
@@ -1355,8 +1402,8 @@ const TalentList = ({
 											margin: '10px 0',
 										}}
 									/>		
-									{talentCTA[ROW_SIZE * (page-1) + listIndex]?.cTAInfoList
-										?.length > 0 && (talentCTA?.[ROW_SIZE * (page-1) + listIndex]
+									{talentCTA.find(it=> it.TalentID === item.TalentID)?.cTAInfoList
+										?.length > 0 && (talentCTA.find(it=> it.TalentID === item.TalentID)
 											?.cTAInfoList[0]?.label === TalentOnboardStatus.CANCEL_ENGAGEMENT ? item?.IsShownTalentStatus === 1 ? true : false : true ) && (
 											<div
 												// style={{
@@ -1369,7 +1416,7 @@ const TalentList = ({
 												<HROperator
 													onClickHandler={() => setTalentIndex(item?.TalentID)}
 													title={
-														talentCTA?.[ROW_SIZE * (page-1) + listIndex]
+														talentCTA.find(it=> it.TalentID === item.TalentID)
 															?.cTAInfoList[0]?.label
 													}
 													isUseKey={true}
@@ -1453,7 +1500,7 @@ const TalentList = ({
 															// 	break;
 															// }
 															case TalentOnboardStatus.SUBMIT_AS_HIRE: {
-																console.log("as hire")
+																// console.log("as hire")
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																clientFeedbackHandler(true,item)
@@ -1625,14 +1672,15 @@ const TalentList = ({
 															case TalentOnboardStatus.VIEW_ENGAGEMENT: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
-																setHRAndEngagementId({
-																	talentName: item.Name,
-																	engagementID: item.EngagemenID,
-																	hrNumber: item.HR_Number,
-																	onBoardId: item.OnBoardId,
-																	hrId: hrId,
-																})
-																setShowEngagementOnboard(true)
+																window.open(`/viewOnboardDetails/${item.OnBoardId}/${item.IsOngoing === "Ongoing" ? true : false }`, "_blank")
+																// setHRAndEngagementId({
+																// 	talentName: item.Name,
+																// 	engagementID: item.EngagemenID,
+																// 	hrNumber: item.HR_Number,
+																// 	onBoardId: item.OnBoardId,
+																// 	hrId: hrId,
+																// })
+																// setShowEngagementOnboard(true)
 																break
 															}
 															default:

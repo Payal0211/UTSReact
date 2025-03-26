@@ -192,7 +192,7 @@ export default function AllNOTES() {
   return (
     <div className={TalentNotesStyle.dealContainer}>
       <div className={TalentNotesStyle.header}>
-        <div className={TalentNotesStyle.dealLable}>Notes</div>
+        <div className={TalentNotesStyle.dealLable}>Eng. Notes</div>
         {/* <LogoLoader visible={isLoading} /> */}
       </div>
       
