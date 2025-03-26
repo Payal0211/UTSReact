@@ -5,7 +5,7 @@ import HRFields from 'modules/hiring request/components/hrFields/hrFields';
 import AddNewHRStyle from './add_new_HR.module.css';
 import EditHRFields from 'modules/hiring request/components/editHRfields/editHRFields';
 import EditDebriefingHR from 'modules/hiring request/components/editDebrieingHR/editDebriefingHR';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 
@@ -18,6 +18,7 @@ const AddNewHR = () => {
 	const [addData,setAddData] = useState({});
 
 	const navigateParams = useLocation();
+	const {hrid} = useParams()
 
 	//for isskill change 
 	const [originalDetails , setOriginalDetails ] = useState({})
@@ -52,10 +53,10 @@ const AddNewHR = () => {
 	useEffect(()=>{
 		if(getHRdetails?.addHiringRequest?.hrNumber){
 			setEditTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
-			if(localStorage.getItem('hrID') && localStorage.getItem('fromEditDeBriefing')){
+			if(hrid && localStorage.getItem('fromEditDeBriefing')){
 				setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`)
 			}
-			if(localStorage.getItem('hrID') && !localStorage.getItem('fromEditDeBriefing')) {			
+			if(hrid && !localStorage.getItem('fromEditDeBriefing')) {			
 				setTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
 			}
 			
@@ -75,7 +76,7 @@ const AddNewHR = () => {
 	// },[getHRdetails?.addHiringRequest?.isActive,tabFieldDisabled])
 
 	const [title, setTitle] = useState(
-		localStorage.getItem('hrID')
+		hrid
 			? EditTitle
 			: 'Add New Hiring Requests',
 	);
@@ -111,7 +112,7 @@ const AddNewHR = () => {
 	return (
 		<div className={AddNewHRStyle.addNewContainer}>
 			<div className={AddNewHRStyle.addHRTitle}>{title}</div>
-			{!localStorage.getItem('hrID') && (
+			{!hrid && (
 				<Tabs
 					onChange={(e) => setTitle(e)}
 					defaultActiveKey="1"
@@ -189,7 +190,7 @@ const AddNewHR = () => {
 				/>
 			)}
 
-			{localStorage.getItem('hrID') && (
+			{hrid && (
 				<Tabs
 					onChange={(e) => setTitle(e)}
 					defaultActiveKey="1"

@@ -257,9 +257,9 @@ const AllHiringRequestScreen = () => {
     if (response.statusCode === HTTPStatusCode.OK) {
       setCloneHR(false);
       resetFields && resetFields()
-      localStorage.setItem("hrID", response?.responseBody?.details);
+      // localStorage.setItem("hrID", response?.responseBody?.details);
       localStorage.removeItem("dealID");
-      navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
+      navigate(`${UTSRoutes.ADDNEWHR}/${response?.responseBody?.details}`, { state: { isCloned: true } });
     }
   };
   const miscData = UserSessionManagementController.getUserMiscellaneousData();

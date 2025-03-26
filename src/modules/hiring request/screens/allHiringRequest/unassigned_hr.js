@@ -257,9 +257,9 @@ const UnassignedHRScreen = () => {
     // console.log(response, '--response');
     if (response.statusCode === HTTPStatusCode.OK) {
       setCloneHR(false);
-      localStorage.setItem("hrID", response?.responseBody?.details);
+      // localStorage.setItem("hrID", response?.responseBody?.details);
       localStorage.removeItem("dealID");
-      navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
+      navigate(`${UTSRoutes.ADDNEWHR}/${apiData?.HR_Id}`, { state: { isCloned: true } });
     }
   };
   const miscData = UserSessionManagementController.getUserMiscellaneousData();
