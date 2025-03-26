@@ -29,6 +29,19 @@
     padding-bottom: 75px;
 }
 
+.colHeader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.colHeader h3{
+    margin: 0;
+}
+
 .ResumeLink {
     color: #1890ff;
     text-decoration: none;
