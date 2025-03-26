@@ -611,7 +611,7 @@ const TalentList = ({
   const ColapsableTalDetails =({item}) => {
 	const [show,setShow] = useState(false)
 	return  <div>
-	<div onClick={()=>setShow(prev=>!prev)} className={TalentListStyle.colHeader}><h3>Matchmaking Details</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }}  /></div>
+	<div onClick={()=>setShow(prev=>!prev)} className={TalentListStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Matchmaking Details</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }}  /></div>
 	{(show && DynamicSalaryInfo.length > 0) && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
 								<div>
 									<span>
@@ -1009,7 +1009,7 @@ const TalentList = ({
 										}}
 									/>
 
-		{item?.Status === "Hired" ?  <ColapsableTalDetails item={item} /> : 
+		{item?.ContractStartdate ?  <ColapsableTalDetails item={item} /> : 
 			DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
 				<div>
 					<span>
@@ -1227,7 +1227,7 @@ const TalentList = ({
 									/>							
 									{item?.ContractStartdate ? <>
 
-									<h3>Offer Details  </h3>
+									<h3 style={{textDecoration:'underline'}}>Offer Details  </h3>
 
 										{item?.OfferedCTC && (
 										<div className={TalentListStyle.interviewSlots}>
