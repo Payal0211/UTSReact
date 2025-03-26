@@ -11,6 +11,7 @@ import { ReactComponent as NotesIcon } from 'assets/svg/notesIcon.svg';
 import { ReactComponent as EditIcon } from 'assets/svg/editIcon.svg';
 import { ReactComponent as DeleteIcon } from 'assets/svg/deleteIcon.svg';
 import { ReactComponent as InfoCircleIcon } from 'assets/svg/infoCircleIcon.svg';
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
 import { useNavigate } from 'react-router-dom'
 
 import {
@@ -607,7 +608,25 @@ const TalentList = ({
 		);
 		}
 
+  const ColapsableTalDetails =({item}) => {
+	const [show,setShow] = useState(false)
+	return  <div>
+	<div onClick={()=>setShow(prev=>!prev)} className={TalentListStyle.colHeader}><h3>Matchmaking Details</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }}  /></div>
+	{(show && DynamicSalaryInfo.length > 0) && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
+								<div>
+									<span>
+										{info.Title}
+									</span>
+									&nbsp;&nbsp;
+									<span style={{ fontWeight: '500' }}>
+										{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
+									</span>
+								</div>
 
+							</div>)}
+	</div>
+
+  }
 	const TalentNotesCardComp = ({item})=>{
 		const [allNotes , setAllNotes] = useState([])
 		const [showAddNotesModal, setShowAddNotesModal] = useState(false);
@@ -746,6 +765,7 @@ const TalentList = ({
 					},
 				}}
 				renderItem={(item, listIndex) => {	
+					
 					return (
 						<div
 							key={item?.Name}
@@ -988,53 +1008,56 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-			
-									{DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
-										<div>
-											<span>
-												{info.Title}
-											</span>
-											&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
-											</span>
-										</div>
-										{/* {info.IsEditable && <>
-											{!hrType ? <>
-												{apiData?.JobStatusID !== 2 &&
-													(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') &&
-													<span
-														onClick={() => {
-															// setEditPayRate(true);
-															// setTalentIndex(item?.TalentID);
-															setTalentIndex(item?.TalentID);
-															setEditBillRate(true);
-														}}
-			
-														style={{
-															textDecoration: 'underline',
-															color: `var(--background-color-ebony)`,
-															cursor: 'pointer',
-														}}>
-														Edit
-													</span>}
-											</> : <>
-												{apiData?.JobStatusID !== 2 && <span
-													onClick={() => {
-														setEditDPRate(true);
-														setDPData({ talentId: item?.TalentID, contactPriorityID: item?.ContactPriorityID, allValues: item });
-													}}
-													style={{
-														textDecoration: 'underline',
-														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
-													Edit
-												</span>}
-											</>}
-										</>} */}
-			
-									</div>)}
+
+		{item?.Status === "Hired" ?  <ColapsableTalDetails item={item} /> : 
+			DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
+				<div>
+					<span>
+						{info.Title}
+					</span>
+					&nbsp;&nbsp;
+					<span style={{ fontWeight: '500' }}>
+						{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
+					</span>
+				</div>
+				{/* {info.IsEditable && <>
+					{!hrType ? <>
+						{apiData?.JobStatusID !== 2 &&
+							(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') &&
+							<span
+								onClick={() => {
+									// setEditPayRate(true);
+									// setTalentIndex(item?.TalentID);
+									setTalentIndex(item?.TalentID);
+									setEditBillRate(true);
+								}}
+
+								style={{
+									textDecoration: 'underline',
+									color: `var(--background-color-ebony)`,
+									cursor: 'pointer',
+								}}>
+								Edit
+							</span>}
+					</> : <>
+						{apiData?.JobStatusID !== 2 && <span
+							onClick={() => {
+								setEditDPRate(true);
+								setDPData({ talentId: item?.TalentID, contactPriorityID: item?.ContactPriorityID, allValues: item });
+							}}
+							style={{
+								textDecoration: 'underline',
+								color: `var(--background-color-ebony)`,
+								cursor: 'pointer',
+							}}>
+							Edit
+						</span>}
+					</>}
+				</>} */}
+
+			</div>)
+		}
+								
 									{/* {!hrType ? (
 										<>
 											<div className={TalentListStyle.payRate}>
@@ -1204,7 +1227,7 @@ const TalentList = ({
 									/>							
 									{item?.ContractStartdate ? <>
 
-									<h3>Offer Details : </h3>
+									<h3>Offer Details  </h3>
 
 										{item?.OfferedCTC && (
 										<div className={TalentListStyle.interviewSlots}>
