@@ -1268,7 +1268,14 @@ export default function ViewCompanyDetails() {
   return (
     <>
       <div className={AddNewClientStyle.addNewContainer}>
-        <div className={AddNewClientStyle.addHRTitle}>{companyPreviewData?.basicDetails?.companyName ?? 'Company'} Details</div>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center',marginBottom:'24px'}}>
+          <div className={AddNewClientStyle.addHRTitle}>{companyPreviewData?.basicDetails?.companyName ?? 'Company'} Details </div>  
+        <button className={AddNewClientStyle.btnwhite}
+                                // onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}
+                                onClick={() => navigate(`/addNewCompany/${CompanyID}`)}
+                                >Edit Company</button>
+        </div>
+        
 
         <Tabs
           onChange={(e) => setTitle(e)}

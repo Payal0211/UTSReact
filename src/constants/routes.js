@@ -187,6 +187,7 @@ export default class UTSRoutes {
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static AMDASHBOARD = '/amdashboard'
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
+	static EDITNEWHR = '/allhiringrequest/addnewhr/:hrid';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
 	static EDITCLIENT = '/editclient/:CompanyID';
 	static VIEWCOMPANYDETAILS = '/viewCompanyDetails/:CompanyID'
@@ -270,6 +271,11 @@ export const navigateToComponent = {
 		</Suspense>
 	),
 	[UTSRoutes.ADDNEWHR]: (
+		<Suspense>
+			<AddNewHR />
+		</Suspense>
+	),
+	[UTSRoutes.EDITNEWHR]: (
 		<Suspense>
 			<AddNewHR />
 		</Suspense>

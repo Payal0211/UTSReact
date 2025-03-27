@@ -26,11 +26,11 @@ const CloneHR = ({ updatedSplitter, cloneHR ,hybridInfo}) => {
 
 		const response = await MasterDAO.getCloneHRDAO(data);
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			localStorage.setItem('hrID', response?.responseBody?.details);
+			// localStorage.setItem('hrID', response?.responseBody?.details);
 			localStorage.removeItem('dealID')
 			setCloneHR(false);
 			resetFields && resetFields()
-			navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
+			navigate(`${UTSRoutes.ADDNEWHR}/${response?.responseBody?.details}`, { state: { isCloned: true } });
 		}
 	}, [hrId.hrid, navigate]);
 

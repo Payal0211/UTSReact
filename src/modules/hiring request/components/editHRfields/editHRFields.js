@@ -31,7 +31,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { HTTPStatusCode } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { hrUtils } from "modules/hiring request/hrUtils";
 import { MasterDAO } from "core/master/masterDAO";
 import useDrivePicker from "react-google-drive-picker/dist";
@@ -103,6 +103,7 @@ const EditHRFields = ({
     };
     getUserResult();
   }, []);
+  const {hrid} = useParams()
 
   const [getUploadFileData, setUploadFileData] = useState("");
   const [availability, setAvailability] = useState([]);
@@ -435,7 +436,7 @@ const EditHRFields = ({
         let formData = new FormData();
         formData.append("File", fileData);
         formData.append("clientemail", getHRdetails?.contact);
-        formData.append('hrid',localStorage.getItem("hrID"))
+        formData.append('hrid',hrid)
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -1831,8 +1832,8 @@ const EditHRFields = ({
     }
   }, [getHRdetails?.directPlacement?.frequencyOfficeVisitId, frequencyData]);
   useEffect(() => {
-    if (localStorage.getItem("hrID")) {
-      getHRdetailsHandler(localStorage.getItem("hrID"));
+    if (hrid) {
+      getHRdetailsHandler(hrid);
     }
   }, []);
 

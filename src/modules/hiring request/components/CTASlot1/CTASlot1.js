@@ -38,10 +38,10 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 		// 	navigate(UTSRoutes.ADDNEWHR);
 		// }
 
-		localStorage.setItem('hrID', hrID);
+		// localStorage.setItem('hrID', hrID);
 		localStorage.removeItem('dealID')
 		localStorage.setItem('fromEditDeBriefing', true);
-		navigate(UTSRoutes.ADDNEWHR);
+		navigate(`${UTSRoutes.ADDNEWHR}/${hrID}`, { state: { isCloned: true } });
 	}, [hrID, navigate]);
 
 	const navigateToEditDirectDebriefing = useCallback(async () => {	

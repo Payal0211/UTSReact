@@ -32,9 +32,9 @@ const ViewHRDetails = () => {
   }, [getViewHrDetails]);
 
   const editHr = () => {
-    localStorage.setItem("hrID", id?.id);
+    // localStorage.setItem("hrID", id?.id);
     localStorage.removeItem("dealID");
-    navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
+    navigate(`${UTSRoutes.ADDNEWHR}/${id?.id}`, { state: { isCloned: true } });
   };
 
   function testJSON(text) {

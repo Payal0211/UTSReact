@@ -4,7 +4,7 @@
     font-size: 32px;
     font-weight: 500;
     /* margin-bottom: 35px; */
-    margin-bottom: 24px;
+    /* margin-bottom: 24px; */
 }
 
 /* .addNewContainer {
@@ -288,6 +288,27 @@
     color: #0278e4;
     cursor: pointer;
   }
+
+  .btnwhite{
+    background: #FFF;
+    border: 1px solid#FFDA30;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    padding: 12px 20px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left: 20px;
+}
+
+.btnwhite:hover{
+    background: #FFDA30;
+}
 
   .summaryContainer {
     display: flex;

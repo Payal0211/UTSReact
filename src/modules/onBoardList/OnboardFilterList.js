@@ -139,9 +139,17 @@ const OnboardFilerList = ({
 			filters = { ...filters, [item.filterType]: item?.value };
 		});
 
+		let filterList = {}
+
+		filtersType.forEach(filter=>{
+			filterList[filter.name] = filters[filter.name] ?? ""
+		})
+
+		// console.log({filters,filterList,tol: tableFilteredState.filterFields_OnBoard, filtersType})
+
 		setTableFilteredState({
 			...tableFilteredState,
-			filterFields_OnBoard: filters ,
+			filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard, ...filterList} ,
 		});
 		const reqFilter = {
 			...tableFilteredState,

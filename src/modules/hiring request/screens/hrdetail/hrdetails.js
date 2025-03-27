@@ -389,8 +389,8 @@ const togglePriority = useCallback(
 	}
 
 	const editHR = () => {
-		navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
-		localStorage.setItem('hrID', apiData?.HR_Id);
+		navigate(`${UTSRoutes.ADDNEWHR}/${apiData?.HR_Id}`, { state: { isCloned: true } });
+		// localStorage.setItem('hrID', apiData?.HR_Id);
 		localStorage.removeItem('dealID')
 	};
 
