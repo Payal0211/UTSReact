@@ -1604,19 +1604,19 @@ function OnBoardList() {
                         </h2>
                       </div>
 
-                      <div className={onboardList.filterType} key={'summary_Total_Fees_INR'}>
-                        
-                        <h2>
-                        Total Fees INR  :{' '}
-                          <span>{onBoardListData[0]?.summary_Total_Fees_INR ? onBoardListData[0]?.summary_Total_Fees_INR : 0}</span>
-                        </h2>
-                      </div>
-
                       <div className={onboardList.filterType} key={'summary_Total_Fees_USD'}>
                         
                         <h2>
                         Total Fees :{' '}
                           <span>{onBoardListData[0]?.summary_Total_Fees_USD ? onBoardListData[0]?.summary_Total_Fees_USD : 0}</span>
+                        </h2>
+                      </div>
+
+                      <div className={onboardList.filterType} key={'summary_Total_Fees_INR'}>
+                        
+                        <h2>
+                        Total Fees  :{' '}
+                          <span>{onBoardListData[0]?.summary_Total_Fees_INR ? onBoardListData[0]?.summary_Total_Fees_INR : 0}</span>
                         </h2>
                       </div>
 
