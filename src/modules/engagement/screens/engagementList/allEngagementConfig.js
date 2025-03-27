@@ -831,7 +831,7 @@ export const allEngagementConfig = {
 			},
 			{
 				label: 'Eng Type',
-				name: 'TypeOFHR',
+				name: 'typeOFHR',
 				child: ['DP - Full Time' , 'DP - Part Time' ,'Contractual - Full Time', 'Contractual - Part Time'].map(item=> ({disabled:false,
 					group:null,
 					selected:false,
@@ -865,7 +865,7 @@ export const allEngagementConfig = {
 			},
 			{
 				label: 'Contract Lost Reasons',
-				name: 'OnBoardLostReasons',
+				name: 'onBoardLostReasons',
 				child: filterList?.onBoardingLostReasons,
 				isSearch: false,
 			},

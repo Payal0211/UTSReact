@@ -418,6 +418,26 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         // }
       },
       {
+        title: "Uplers Fees ( INR )",
+        dataIndex: "uplersFees_INR",
+        key: "uplersFees_INR",
+        align: "left",
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
+      },
+      {
+        title: "Uplers Fees ( USD )",
+        dataIndex: "uplersFees_USD",
+        key: "uplersFees_USD",
+        align: "left",
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
+      },
+      {
         title: <>NR / DP <br/>(%)</>,
         dataIndex: "nrPercentage",
         key: "nrPercentage",
@@ -575,7 +595,9 @@ function OnBoardList() {
         toDate:'',
         fromDate:'',
         SummaryFilterOption:'AT',
-        EngagementOption:'All'
+        EngagementOption:'All',
+        onBoardLostReasons:'',
+        engagementStatus:'',
       },
     });
     var date = new Date();
@@ -980,7 +1002,9 @@ function OnBoardList() {
         fromDate: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
         toDate: new Date(date),
         SummaryFilterOption:'AT',
-        EngagementOption:'All'
+        EngagementOption:'All',
+        onBoardLostReasons:'',
+        engagementStatus:'',
       }
       setDateTypeFilter(0)
       setTableFilteredState({
@@ -1070,8 +1094,26 @@ function OnBoardList() {
 
                 </div>
                 <div className={onboardList.filterRight}>	
+
+                <Radio.Group                 
+                      onChange={(e) => {
+                        if(e.target.value === 'D'){
+                          if(!startDate && dateTypeFilter === 1){
+                            return message.error('Please select date range' )
+                          }
+                        }
+                        setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,EngType:e.target.value} }))
+                        //  setEngagementType(e.target.value);
+                        
+                      }}
+                      value={tableFilteredState?.filterFields_OnBoard?.EngType}
+                    >
+                      <Radio value={'A'}>All</Radio>
+                      <Radio value={'C'}>Contract</Radio>
+                      <Radio value={'D'}>DP</Radio>
+                    </Radio.Group>  
                
-                <Radio.Group    
+                {/* <Radio.Group    
                 style={{display: 'flex', flexDirection: 'column', gap:'5px'}}             
                       onChange={(e) => {
                        setDateTypeFilter(e.target.value)
@@ -1093,8 +1135,8 @@ function OnBoardList() {
                       value={dateTypeFilter}
                     >
                       <Radio value={0}>Current Month</Radio>
-                      {/* <Radio value={1}>Search With Date Range</Radio> */}
-                    </Radio.Group>  	                                
+                      <Radio value={1}>Search With Date Range</Radio> 
+                    </Radio.Group>  	                                 */}
 
 
             {dateTypeFilter === 0 &&  <div className={onboardList.calendarFilterSet}>
@@ -1192,7 +1234,7 @@ function OnBoardList() {
             </div>
 
             <div className={onboardList.filterContainer}>
-                <div
+                {/* <div
                   className={`${onboardList.filterSets} ${onboardList.filterDescription}`}>
                   <p style={{margin:'0', fontWeight:'bold'}}>Add Quick Filters:</p> 
 
@@ -1227,7 +1269,7 @@ function OnBoardList() {
                       <Radio value={'Closed'}>Closed Engagement</Radio>
                     </Radio.Group>}
 
-                </div>
+                </div> */}
             </div>
 
            
@@ -1527,6 +1569,57 @@ function OnBoardList() {
                 </div>
                   
                 </div>
+            </div>
+
+            <div className={onboardList.filterContainer}>
+            <div className={onboardList.filterType} key={'summary_Added_Contracts_USD'}>
+                       
+                        <h2>
+                        Added Contracts  :{' '}
+                          <span>{onBoardListData[0]?.summary_Added_Contracts_USD ? onBoardListData[0]?.summary_Added_Contracts_USD : 0}</span>
+                        </h2>
+                      </div>
+
+                      <div className={onboardList.filterType} key={'summary_Added_DP_USD'}>
+                       
+                        <h2>
+                        Added DP :{' '}
+                          <span>{onBoardListData[0]?.summary_Added_DP_USD ? onBoardListData[0]?.summary_Added_DP_USD : 0}</span>
+                        </h2>
+                      </div>
+
+                      <div className={onboardList.filterType} key={'summary_EOR_Fees_USD'}>
+                       
+                        <h2>
+                        EOR Fees :{' '}
+                          <span>{onBoardListData[0]?.summary_EOR_Fees_USD ? onBoardListData[0]?.summary_EOR_Fees_USD : 0}</span>
+                        </h2>
+                      </div>
+
+                      <div className={onboardList.filterType} key={'summary_Recurring_Contracts_USD'}>
+                        
+                        <h2>
+                        Recurring Contracts :{' '}
+                          <span>{onBoardListData[0]?.summary_Recurring_Contracts_USD ? onBoardListData[0]?.summary_Recurring_Contracts_USD : 0}</span>
+                        </h2>
+                      </div>
+
+                      <div className={onboardList.filterType} key={'summary_Total_Fees_INR'}>
+                        
+                        <h2>
+                        Total Fees INR  :{' '}
+                          <span>{onBoardListData[0]?.summary_Total_Fees_INR ? onBoardListData[0]?.summary_Total_Fees_INR : 0}</span>
+                        </h2>
+                      </div>
+
+                      <div className={onboardList.filterType} key={'summary_Total_Fees_USD'}>
+                        
+                        <h2>
+                        Total Fees :{' '}
+                          <span>{onBoardListData[0]?.summary_Total_Fees_USD ? onBoardListData[0]?.summary_Total_Fees_USD : 0}</span>
+                        </h2>
+                      </div>
+
             </div>
             
             <div className={onboardList.tableDetails}>
