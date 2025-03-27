@@ -368,6 +368,7 @@
 
 .historyGridInfo{
     color: #232323;
+    max-width: 450px;
 }
 
 .historyGridInfo span{
