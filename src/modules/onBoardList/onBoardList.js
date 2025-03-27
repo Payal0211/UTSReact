@@ -1571,7 +1571,7 @@ function OnBoardList() {
                 </div>
             </div>
 
-            <div className={onboardList.filterContainer}>
+            <div className={onboardList.filterContainer} style={{display:'flex',padding:'10px',gap:'10px'}}>
             <div className={onboardList.filterType} key={'summary_Added_Contracts_USD'}>
                        
                         <h2>
