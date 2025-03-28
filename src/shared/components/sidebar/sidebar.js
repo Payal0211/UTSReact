@@ -139,7 +139,7 @@ const Sidebar = () => {
 							</Tooltip>
 	}
 	
-	const sidebarDataSets = getSideBar(userData?.LoggedInUserTypeID,userData?.EmployeeID);
+	const sidebarDataSets = getSideBar(userData?.LoggedInUserTypeID,userData?.EmployeeID,userData?.ShowRevenueRelatedData);
 	let urlSplitter = `/${switchLocation.pathname.split('/')[1]}`;
 
 	// const searchedMenueList = sidebarDataSets.filter(menu=>{
@@ -276,7 +276,7 @@ const Sidebar = () => {
 	);
 };
 
-const isAccess = (ID, title) =>{
+const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	let isVisible = false;
 
 	if(ID === 2){
@@ -284,7 +284,8 @@ const isAccess = (ID, title) =>{
 		return isVisible	
 	}
 	if (title === 'Revenue'){
-		isVisible =  (ID === 1 || ID === 4  || ID === 9 )?true : false;
+		// isVisible =  (ID === 1 || ID === 4  || ID === 9 )?true : false;
+		isVisible = ShowRevenueRelatedData
 		return isVisible	
 	}
 	if ((title === 'Chat GPT Response' || title === "Replacement") && ID === 1 ){
@@ -322,7 +323,7 @@ const isAccess = (ID, title) =>{
 
 
 
-const getSideBar = (usertypeID,EmployeeID) => {
+const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 	let dataList = EmployeeID === "UP1302AM" ? [new SideBarModels({
 		id: 'UTS_all_hiring_request',
 		title: 'Hiring Request',
@@ -464,7 +465,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 					isActive: false,
 					icon: SLAReport,
 					navigateTo: UTSRoutes.REVENUE_REPORT,
-					isVisible: isAccess(usertypeID, 'Revenue')
+					isVisible: isAccess(usertypeID, 'Revenue',ShowRevenueRelatedData)
 				}),
 				new SideBarModels({
 					id: 'ClientReport',

@@ -426,18 +426,18 @@ export const reportConfig = {
 					(item, index) => index !== 0 && item,
 				),
 			},
-			{
-				label: 'Company',
-				name: 'companyCategory',
-				child: filterList?.CompanyCategory?.filter(
-					(item, index) => index !== 0 && item,
-				),
-			},
-			{
-				label: 'Replacement',
-				name: 'replacement',
-				child: filterList?.Replacement,
-			},
+			// {
+			// 	label: 'Company',
+			// 	name: 'companyCategory',
+			// 	child: filterList?.CompanyCategory?.filter(
+			// 		(item, index) => index !== 0 && item,
+			// 	),
+			// },
+			// {
+			// 	label: 'Replacement',
+			// 	name: 'replacement',
+			// 	child: filterList?.Replacement,
+			// },
 			{
 				label: 'Head',
 				name: 'head',
@@ -452,47 +452,47 @@ export const reportConfig = {
 				),
 				isSearch: false,
 			},
-			{
-				label: 'Action/HR',
-				name: 'isActionWise',
-				child: [
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '1',
-						value: 'Action Wise Data',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '0',
-						value: 'HR Wise Data',
-					},
-				],
-			},
-			{
-				label: 'Geo',
-				name: 'geos',
-				child: [
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: 'India',
-						value: 'India',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: 'Global',
-						value: 'Global',
-					},
-				],
-				isSearch: false,
-			},
+			// {
+			// 	label: 'Action/HR',
+			// 	name: 'isActionWise',
+			// 	child: [
+			// 		{
+			// 			disabled: false,
+			// 			group: null,
+			// 			selected: false,
+			// 			text: '1',
+			// 			value: 'Action Wise Data',
+			// 		},
+			// 		{
+			// 			disabled: false,
+			// 			group: null,
+			// 			selected: false,
+			// 			text: '0',
+			// 			value: 'HR Wise Data',
+			// 		},
+			// 	],
+			// },
+			// {
+			// 	label: 'Geo',
+			// 	name: 'geos',
+			// 	child: [
+			// 		{
+			// 			disabled: false,
+			// 			group: null,
+			// 			selected: false,
+			// 			text: 'India',
+			// 			value: 'India',
+			// 		},
+			// 		{
+			// 			disabled: false,
+			// 			group: null,
+			// 			selected: false,
+			// 			text: 'Global',
+			// 			value: 'Global',
+			// 		},
+			// 	],
+			// 	isSearch: false,
+			// },
 		];
 	},
 	/**------------- SUPPLY FUNNEL REPORT------------------  */

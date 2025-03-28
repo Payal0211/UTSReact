@@ -9,5 +9,6 @@ export default class UserAccountModel {
 		this.EmployeeID = data.EmployeeID;
 		this.Designation = data.Designation;
 		this.UserId = data.UserId;	
+		this.ShowRevenueRelatedData = data.ShowRevenueRelatedData
 	}
 }

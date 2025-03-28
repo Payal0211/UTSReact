@@ -275,6 +275,26 @@
     align-items: center;
 } */
 
+.AccordionContainer{
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    margin-top: 16px;
+}
+
+.colHeader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.colHeader h3{
+    margin: 0;
+}
+
 .matchmakingLabel {
     margin-top: 40px;
     margin-left: 20px;
