@@ -51,6 +51,7 @@ import EngagementBillRateAndPayRate from 'modules/engagement/screens/engagementB
 import EditAllBRPR from 'modules/engagement/screens/editAllBRPR/editAllBRPR';
 import RenewEngagement from 'modules/engagement/screens/renewEngagement/renewEngagement';
 import LeaveUppdate from './leaveUppdate';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
 const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails) => {
     return [   
@@ -418,26 +419,6 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         // }
       },
       {
-        title: "Uplers Fees ( INR )",
-        dataIndex: "uplersFees_INR",
-        key: "uplersFees_INR",
-        align: "left",
-        width: '150px', 
-        // render:(_,result)=>{
-        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
-        // }
-      },
-      {
-        title: "Uplers Fees ( USD )",
-        dataIndex: "uplersFees_USD",
-        key: "uplersFees_USD",
-        align: "left",
-        width: '150px', 
-        // render:(_,result)=>{
-        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
-        // }
-      },
-      {
         title: <>NR / DP <br/>(%)</>,
         dataIndex: "nrPercentage",
         key: "nrPercentage",
@@ -553,6 +534,27 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 						</div>
 					),
 			},	
+      {
+        title: "Uplers Fees ( USD )",
+        dataIndex: "uplersFees_USD",
+        key: "uplersFees_USD",
+        align: "left",
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
+      },
+      {
+        title: "Uplers Fees ( INR )",
+        dataIndex: "uplersFees_INR",
+        key: "uplersFees_INR",
+        align: "left",
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
+      }
+      
     ];
 }
 
@@ -628,6 +630,17 @@ function OnBoardList() {
       const [AMLIST, setAMLIST] = useState([])
       const [AMDetails,setAMDetails] = useState({});
       const [AMLOADING,setAMLOADING] = useState(false)
+
+    const [userData, setUserData] = useState({});
+    // const [searchMenu,setSearchMenu] = useState('');
+  
+    useEffect(() => {
+      const getUserResult = async () => {
+        let userData = UserSessionManagementController.getUserSession();
+        if (userData) setUserData(userData);
+      };
+      getUserResult();
+    }, []);
 
   //   var firstDay =
   //   startDate !== null
@@ -1460,7 +1473,36 @@ function OnBoardList() {
                     </h2>
                   </div></SwiperSlide>} */}
 
-                    {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&   <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'AD'}}))}><Tooltip title={'View Active DP'}>
+                      <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'EOR'}}))}><Tooltip title={'View EOR'}>
+                        <div className={onboardList.filterType} key={'EOR.'}>
+                          <img
+                            src={Handshake}
+                            alt="sad"
+                          />
+                          <h2>
+                          EOR :{' '}
+                            <span>
+                              {onBoardListData[0]?.s_TotalEOR
+                                ? onBoardListData[0]?.s_TotalEOR
+                                : 0}
+                            </span>
+                          </h2>
+                    </div></Tooltip></SwiperSlide>
+
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
+                  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'ADD'}}))}><Tooltip title={'View Added DP'}>
+                  <div className={onboardList.filterType} key={'Added DP'}>
+                    <img
+                      src={Briefcase}
+                      alt="briefcase"
+                    />
+                    <h2>
+                      Added DP :{' '}
+                      <span>{onBoardListData[0]?.s_AddedDP ? onBoardListData[0]?.s_AddedDP  : 0}</span>
+                    </h2>
+                  </div></Tooltip></SwiperSlide>}
+
+                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&   <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'AD'}}))}><Tooltip title={'View Active DP'}>
                         <div className={onboardList.filterType} key={'Active DP.'}>
                           <img
                             src={Handshake}
@@ -1475,19 +1517,6 @@ function OnBoardList() {
                             </span>
                           </h2>
                     </div></Tooltip></SwiperSlide>}
-
-                  {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
-                  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'ADD'}}))}><Tooltip title={'View Added DP'}>
-                  <div className={onboardList.filterType} key={'Added DP'}>
-                    <img
-                      src={Briefcase}
-                      alt="briefcase"
-                    />
-                    <h2>
-                      Added DP :{' '}
-                      <span>{onBoardListData[0]?.s_AddedDP ? onBoardListData[0]?.s_AddedDP  : 0}</span>
-                    </h2>
-                  </div></Tooltip></SwiperSlide>}
                   {/* {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide>
                   <div className={onboardList.filterType} key={'Lost DP Eng.'}>
@@ -1571,7 +1600,7 @@ function OnBoardList() {
                 </div>
             </div>
 
-            <div className={onboardList.filterContainer} style={{display:'flex',padding:'10px',gap:'10px'}}>
+            {userData?.ShowRevenueRelatedData &&  <div className={onboardList.filterContainer} style={{display:'flex',padding:'10px',gap:'10px'}}>
             <div className={onboardList.filterType} key={'summary_Added_Contracts_USD'}>
                        
                         <h2>
@@ -1620,7 +1649,9 @@ function OnBoardList() {
                         </h2>
                       </div>
 
-            </div>
+            </div>}
+
+            
             
             <div className={onboardList.tableDetails}>
               {isLoading ? (
