@@ -387,42 +387,44 @@ const EditDebriefingHR = ({
 		// 	(getHRdetails?.salesHiringRequest_Details?.requirement), {
 		// 		shouldDirty: true,
 		// 	});
+		if(JDParsedSkills?.Skills?.length > 0){
+			setValue(
+					'skills',
+					JDParsedSkills?.Skills?.map((item) => ({
+						skillsID: item?.id.toString(),
+						skillsName: item?.value,
+					})),
+				);
+				setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
+		}
+		
 
-		setValue(
-			'skills',
-			JDParsedSkills?.Skills?.map((item) => ({
-				skillsID: item?.id.toString(),
-				skillsName: item?.value,
-			})),
-		);
-		setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
+	// 	setCombinedSkillsMemo(prev =>{ 
 
-		setCombinedSkillsMemo(prev =>{ 
+	// 		let newarray = [...prev]
+	// 		if(JDParsedSkills?.Skills?.length > 0){
+	// 			newarray = [...newarray,...JDParsedSkills?.Skills?.map((item) => ({
+	// 				id: item?.id.toString(),
+	// 				value: item?.value,
+	// 			}))];
+	// 		}
 
-			let newarray = [...prev]
-			if(JDParsedSkills?.Skills?.length > 0){
-				newarray = [...newarray,...JDParsedSkills?.Skills?.map((item) => ({
-					id: item?.id.toString(),
-					value: item?.value,
-				}))];
-			}
-
-			if(JDParsedSkills?.AllSkills?.length > 0){
-				newarray = [...newarray,...JDParsedSkills?.AllSkills?.map((item) => ({
-					id: item?.id.toString(),
-					value: item?.value,
-				}))]
-			}
-			return newarray
-		// 	return [...prev, ...JDParsedSkills?.Skills?.map((item) => ({
-		// 	id: item?.id.toString(),
-		// 	value: item?.value,
-		// })),...JDParsedSkills?.AllSkills?.map((item) => ({
-		// 	id: item?.id.toString(),
-		// 	value: item?.value,
-		// }))]
-	}
-	)
+	// 		if(JDParsedSkills?.AllSkills?.length > 0){
+	// 			newarray = [...newarray,...JDParsedSkills?.AllSkills?.map((item) => ({
+	// 				id: item?.id.toString(),
+	// 				value: item?.value,
+	// 			}))]
+	// 		}
+	// 		return newarray
+	// 	// 	return [...prev, ...JDParsedSkills?.Skills?.map((item) => ({
+	// 	// 	id: item?.id.toString(),
+	// 	// 	value: item?.value,
+	// 	// })),...JDParsedSkills?.AllSkills?.map((item) => ({
+	// 	// 	id: item?.id.toString(),
+	// 	// 	value: item?.value,
+	// 	// }))]
+	// }
+	// )
 
 		JDParsedSkills &&	setValue('jobDescription', (getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
 			JDParsedSkills?.jobDescription ||
@@ -430,14 +432,17 @@ const EditDebriefingHR = ({
 					shouldDirty: true,
 				});
 
-		setValue(
-			'goodToHaveSkills',
-			JDParsedSkills?.AllSkills?.map((item) => ({
-				skillsID: item?.id.toString(),
-				skillsName: item?.value,
-			})),
-		);
-		setControlledGoodToHave(JDParsedSkills?.AllSkills?.map((item) => item?.value))
+		if(JDParsedSkills?.AllSkills?.length > 0){
+			setValue(
+				'goodToHaveSkills',
+				JDParsedSkills?.AllSkills?.map((item) => ({
+					skillsID: item?.id.toString(),
+					skillsName: item?.value,
+				})),
+			);
+			setControlledGoodToHave(JDParsedSkills?.AllSkills?.map((item) => item?.value))
+				}
+	
 
 
 		JDParsedSkills?.roleName && setValue('hrTitle',JDParsedSkills?.roleName ?? '')
