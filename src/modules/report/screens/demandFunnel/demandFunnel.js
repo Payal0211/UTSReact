@@ -155,8 +155,18 @@ const DemandFunnelScreen = () => {
 		setEndDate(end);
 
 		if (start && end) {
+			setShowAccordion({
+				talent:true,
+				withoutDates:false,
+				tr:false,
+				profile:false
+			})
+			setProfileListData([])
+			setTRListData([])
+			setWithoutDateListData([])
 			setTableFilteredState({
 				...tableFilteredState,
+				DemandFunnelStages:demandFunnelStages.talent,
 				startDate: new Date(start)
 					.toLocaleDateString('en-UK')
 					.split('/')
@@ -290,6 +300,15 @@ const DemandFunnelScreen = () => {
 		setFilteredTagLength(0);
 		setStartDate(firstDay)
 		setEndDate(date)
+		setShowAccordion({
+			talent:true,
+			withoutDates:false,
+			tr:false,
+			profile:false
+		})
+		setProfileListData([])
+		setTRListData([])
+		setWithoutDateListData([])
 		setTableFilteredState({
 			startDate: moment(firstDay).format('yyyy-MM-DD') ,
 			endDate: moment(date).format('yyyy-MM-DD'),
@@ -301,6 +320,7 @@ const DemandFunnelScreen = () => {
 			head: '',
 			isActionWise: true,
 			geos:'',
+			DemandFunnelStages: demandFunnelStages.talent
 		});
 		setDemandFunnelHRDetailsState({
 			adhocType: '',
@@ -454,16 +474,16 @@ const DemandFunnelScreen = () => {
 			<div className={DemandFunnelStyle.AccordionContainer}>
 			<div onClick={()=>{
 				setShowAccordion(prev=> ({
-					withoutDates:false,
-					tr:false,
-					profile:false,
+					...prev,
 					talent: !prev.talent,
 				}))
-				!showAccordion.talent && setTableFilteredState(prev=>({...prev,DemandFunnelStages: demandFunnelStages.talent}))
+				if(!showAccordion.talent && talentListData.length === 0){
+					 setTableFilteredState(prev=>({...prev,DemandFunnelStages: demandFunnelStages.talent}))
+				}
 				}} className={DemandFunnelStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Talent</h3>   <ArrowDownSVG style={{ rotate: showAccordion.talent ? '180deg' : '' }}  /></div>
 				
 				{showAccordion.talent && <>
-				{isLoading ? (
+				{(isLoading  && tableFilteredState.DemandFunnelStages === demandFunnelStages.talent) ? (
 									<TableSkeleton />
 								) : (
 										<Table
@@ -483,51 +503,20 @@ const DemandFunnelScreen = () => {
 				
 			</div>
 
-			<div className={DemandFunnelStyle.AccordionContainer}>
-			<div onClick={()=>{
-				setShowAccordion(prev=> ({
-					talent:false,
-					tr:false,
-					profile:false,
-					withoutDates:!prev.withoutDates,
-				}))
-				!showAccordion.withoutDates && setTableFilteredState(prev=>({...prev,DemandFunnelStages: demandFunnelStages.withoutDates}))
-				}} className={DemandFunnelStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Without Dates</h3>   <ArrowDownSVG style={{ rotate: showAccordion.withoutDates ? '180deg' : '' }}  /></div>
-				
-				{showAccordion.withoutDates && <>
-					{isLoading ? (
-					<TableSkeleton />
-				) : (
-					<>
-						<Table
-							className="demandTable"
-							scroll={{ x: 150, y: 'calc(100vh - 220px)' }}
-							// scrollToFirstRowOnChange
-							id="hrListingTable"
-							columns={tableColumnsMemo}
-							bordered={false}
-							dataSource={[...withoutDateListData?.slice(1)]}
-							pagination={false}
-						/>
-						
-					</>
-				)}
-				</>}
 			
-			</div>
 
 			<div className={DemandFunnelStyle.AccordionContainer}>
 			<div onClick={()=>{setShowAccordion(prev=> ({
-					talent:false,
-					withoutDates:false,
-					profile:false,
+					...prev,
 					tr:!prev.tr,					
 				}))
-				!showAccordion.tr && setTableFilteredState(prev=>({...prev,DemandFunnelStages: demandFunnelStages.tr}))
+				if(!showAccordion.tr && trListData.length === 0 ){
+					setTableFilteredState(prev=>({...prev,DemandFunnelStages: demandFunnelStages.tr}))
+				} 
 				}} className={DemandFunnelStyle.colHeader}><h3 style={{textDecoration:'underline'}}>TR</h3>   <ArrowDownSVG style={{ rotate: showAccordion.tr ? '180deg' : '' }}  /></div>
 				
 				{showAccordion.tr && <>
-						{isLoading ? (
+						{(isLoading && tableFilteredState.DemandFunnelStages === demandFunnelStages.tr) ? (
 					<TableSkeleton />
 				) : (
 					<>
@@ -550,15 +539,15 @@ const DemandFunnelScreen = () => {
 
 			<div className={DemandFunnelStyle.AccordionContainer}>
 			<div onClick={()=>{setShowAccordion(prev=> ({
-					talent:false,
-					withoutDates:false,
-					tr:false,
+					...prev,
 					profile:!prev.profile,
 				}))
-				!showAccordion.profile && setTableFilteredState(prev=>({...prev,DemandFunnelStages: demandFunnelStages.profile}))
+				if(!showAccordion.profile && profileListData.length === 0){
+					setTableFilteredState(prev=>({...prev,DemandFunnelStages: demandFunnelStages.profile}))
+				} 
 				}} className={DemandFunnelStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Profile</h3>   <ArrowDownSVG style={{ rotate: showAccordion.profile ? '180deg' : '' }}  /></div>
 				{showAccordion.profile && <>
-				{isLoading ? (
+				{(isLoading && tableFilteredState.DemandFunnelStages === demandFunnelStages.profile) ? (
 					<TableSkeleton />
 				) : (
 					<>
@@ -579,12 +568,45 @@ const DemandFunnelScreen = () => {
 
 				
 			</div>
-			<div className={DemandFunnelStyle.tableDetails}>
-				{isLoading ? (
+
+			<div className={DemandFunnelStyle.AccordionContainer}>
+			<div onClick={()=>{
+				setShowAccordion(prev=> ({
+					...prev,
+					withoutDates:!prev.withoutDates,
+				}))
+				if(!showAccordion.withoutDates && withoutDateListData.length === 0){
+					setTableFilteredState(prev=>({...prev,DemandFunnelStages: demandFunnelStages.withoutDates}))
+				} 
+				}} className={DemandFunnelStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Without Dates</h3>   <ArrowDownSVG style={{ rotate: showAccordion.withoutDates ? '180deg' : '' }}  /></div>
+				
+				{showAccordion.withoutDates && <>
+					{(isLoading && tableFilteredState.DemandFunnelStages === demandFunnelStages.withoutDates) ? (
 					<TableSkeleton />
 				) : (
 					<>
-						{/* <Table
+						<Table
+							className="demandTable"
+							scroll={{ x: 150, y: 'calc(100vh - 220px)' }}
+							// scrollToFirstRowOnChange
+							id="hrListingTable"
+							columns={tableColumnsMemo}
+							bordered={false}
+							dataSource={[...withoutDateListData?.slice(1)]}
+							pagination={false}
+						/>
+						
+					</>
+				)}
+				</>}
+			
+			</div>
+			<div className={DemandFunnelStyle.tableDetails}>
+				{/* {isLoading ? (
+					<TableSkeleton />
+				) : (
+					<>
+						<Table
 							className="demandTable"
 							scroll={{ x: 150, y: 'calc(100vh - 220px)' }}
 							// scrollToFirstRowOnChange
@@ -596,7 +618,7 @@ const DemandFunnelScreen = () => {
 								size: 'small',
 								pageSize: apiData?.length,
 							}}
-						/> */}
+						/>
 						<div className={DemandFunnelStyle.formPanelAction}>
 							<button
 								type="submit"
@@ -608,7 +630,18 @@ const DemandFunnelScreen = () => {
 							</button>
 						</div>
 					</>
-				)}
+				)} */}
+
+<div className={DemandFunnelStyle.formPanelAction}>
+							<button
+								type="submit"
+								onClick={() =>
+									viewDemandFunnelSummaryHandler(tableFilteredState)
+								}
+								className={DemandFunnelStyle.btnPrimary}>
+								View Summary
+							</button>
+						</div>
 			</div>
 			{isSummary && (
 				<div className={DemandFunnelStyle.tableDetails} style={{marginTop: '0'}}>
@@ -640,7 +673,18 @@ const DemandFunnelScreen = () => {
 						setCheckedState={setCheckedState}
 						checkedState={checkedState}
 						handleHRRequest={getDemandFunnelListingHandler}
-						setTableFilteredState={setTableFilteredState}
+						setTableFilteredState={newFilterState => {
+							setShowAccordion({
+								talent:true,
+								withoutDates:false,
+								tr:false,
+								profile:false
+							})
+							setProfileListData([])
+							setTRListData([])
+							setWithoutDateListData([])
+							setTableFilteredState({...newFilterState,DemandFunnelStages: demandFunnelStages.talent})
+						}}
 						tableFilteredState={tableFilteredState}
 						setFilteredTagLength={setFilteredTagLength}
 						onRemoveHRFilters={onRemoveFilters}
