@@ -388,11 +388,30 @@ const EditDebriefingHR = ({
 		// 		shouldDirty: true,
 		// 	});
 
+		setValue(
+			'skills',
+			JDParsedSkills?.Skills?.map((item) => ({
+				skillsID: item?.id.toString(),
+				skillsName: item?.value,
+			})),
+		);
+		setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
+
 		JDParsedSkills &&	setValue('jobDescription', (getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
 			JDParsedSkills?.jobDescription ||
 			(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? '' , {
 					shouldDirty: true,
 				});
+
+		setValue(
+			'goodToHaveSkills',
+			JDParsedSkills?.AllSkills?.map((item) => ({
+				skillsID: item?.id.toString(),
+				skillsName: item?.value,
+			})),
+		);
+		setControlledGoodToHave(JDParsedSkills?.AllSkills?.map((item) => item?.value))
+
 
 		JDParsedSkills?.roleName && setValue('hrTitle',JDParsedSkills?.roleName ?? '')
 	}, [JDParsedSkills, setValue]);
