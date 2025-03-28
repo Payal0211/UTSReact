@@ -466,7 +466,9 @@ export default function ViewCompanyDetails() {
                           <li>
                             <label>Company Linkedin URL:</label>
                             {companyPreviewData?.basicDetails?.linkedInProfile ? (
-                              <a href={companyPreviewData?.basicDetails?.linkedInProfile}>
+                              <a href={companyPreviewData?.basicDetails?.linkedInProfile}
+                              target="_blank"
+                              >
                                 {companyPreviewData?.basicDetails?.linkedInProfile}
                               </a>
                             ) : (
