@@ -364,6 +364,18 @@
   font-weight: 500;
 }
 
+.ReasonContainer [class*="ant-tooltip-inner"]  {
+  color: yellow;
+  background-color: green;
+  width: 200px;
+}
+
+.ReasonContainer h4{    color: rgb(0, 112, 224);
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 1440px) {
   .dealContainer {
     padding: 16px 24px;
