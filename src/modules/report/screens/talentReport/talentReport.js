@@ -115,6 +115,31 @@ export default function TalentReport() {
     },
   });
 
+  const [interviewRoundDebounceText, setInterviewRoundDebounceText] = useState("");
+  const [interviewRoundSearchText, setInterviewRoundSearchText] = useState("");
+  const [interviewRoundList, setInterviewRoundList] = useState([]);
+  const [interviewRoundPageSize, setInterviewRoundPageSize] = useState(10);
+  const [interviewRoundPageIndex, setInterviewRoundPageIndex] = useState(1);
+  const [interviewRoundListDataCount, setInterviewRoundListDataCount] = useState(0);
+  const [interviewRoundTagLength, setInterviewRoundTagLength] = useState(0);
+  const [getInterviewRoundHTMLFilter, setInterviewRoundHTMLFilter] = useState(false);
+  const [isInterviewRoundAllowFilters, setInterviewRoundIsAllowFilters] = useState(false);
+  const [dateInterviewRoundTypeFilter, setInterviewRoundDateTypeFilter] = useState(2);
+  const [interviewRoundMonthDate, setInterviewRoundMonthDate] = useState(new Date());
+  const [interviewRoundStartDate, setInterviewRoundStartDate] = useState(
+    new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+  );
+  const [interviewRoundendDate, setInterviewRoundEndDate] = useState(new Date(date));
+  const [interviewRoundappliedFilter, setInterviewRoundAppliedFilters] = useState(
+    new Map()
+  );
+  const [interviewRoundcheckedState, setInterviewRoundCheckedState] = useState(new Map());
+  const [interviewRoundtableFilteredState, setInterviewRoundTableFilteredState] = useState({
+    filterFields_OnBoard: {
+      amName: "",
+    },
+  });
+
   const getOnboardData = useCallback(
     async (psize, pInd) => {
       setIsLoading(true);
@@ -230,6 +255,69 @@ export default function TalentReport() {
     ]
   );
 
+  const getInterviewRoundData = useCallback(
+    async (psize, pInd) => {
+      setIsLoading(true);
+      let payload = {
+        pageIndex: interviewRoundSearchText ? 1 : interviewRoundPageIndex,
+        pageSize: interviewRoundPageSize,
+        searchText: interviewRoundSearchText,
+        amIds: interviewRoundtableFilteredState.filterFields_OnBoard.amName,
+        statusIds: interviewRoundtableFilteredState.filterFields_OnBoard.statusIds,
+        tagIds: interviewRoundtableFilteredState.filterFields_OnBoard.tagIds,
+        month: dateInterviewRoundTypeFilter === 2 ? 0 :
+          dateInterviewRoundTypeFilter === 0
+            ? +moment(interviewRoundMonthDate).format("M")
+            : 0,
+        year: dateInterviewRoundTypeFilter === 2 ? 0 :
+          dateInterviewRoundTypeFilter === 0
+            ? +moment(interviewRoundMonthDate).format("YYYY")
+            : 0,
+        fromDate:dateInterviewRoundTypeFilter === 2 ? '' :
+          dateInterviewRoundTypeFilter === 1
+            ? moment(interviewRoundStartDate).format("MM/DD/YYYY")
+            : "",
+        toDate: dateInterviewRoundTypeFilter === 2 ? '' :
+          dateInterviewRoundTypeFilter === 1
+            ? moment(interviewRoundendDate).format("MM/DD/YYYY")
+            : "",
+      };
+
+      if (
+        dateInterviewRoundTypeFilter === 1 &&
+        (payload.fromDate === "Invalid date" ||
+          payload.toDate === "Invalid date")
+      ) {
+        setIsLoading(false);
+        return;
+      }
+
+      const talentInterviewRoundResult = await ReportDAO.getTalentInterviewRoundReportDRO(
+        payload
+      );
+      setIsLoading(false);
+      // console.log(replacementResult)
+
+      if (talentInterviewRoundResult?.statusCode === HTTPStatusCode.OK) {
+        setInterviewRoundList(talentInterviewRoundResult?.responseBody?.rows);
+        setInterviewRoundListDataCount(talentInterviewRoundResult?.responseBody?.totalrows);
+      } else {
+        setInterviewRoundList([]);
+        setInterviewRoundListDataCount(0);
+      }
+    },
+    [
+      interviewRoundPageIndex,
+      interviewRoundPageSize,
+      interviewRoundSearchText,
+      interviewRoundMonthDate,
+      interviewRoundStartDate,
+      interviewRoundendDate,
+      interviewRoundtableFilteredState,
+    ]
+  );
+
+
   useEffect(() => {
     getOnboardData();
   }, [
@@ -252,6 +340,18 @@ export default function TalentReport() {
     rejectedStartDate,
     rejectedendDate,
     rejectedtableFilteredState,
+  ]);
+
+  useEffect(() => {
+    getInterviewRoundData();
+  }, [
+    interviewRoundPageIndex,
+    interviewRoundSearchText,
+    interviewRoundPageSize,
+    interviewRoundMonthDate,
+    interviewRoundStartDate,
+    interviewRoundendDate,
+    interviewRoundtableFilteredState,
   ]);
 
   const getLeaveList = async (talentID,onBoardID) => {
@@ -308,6 +408,15 @@ export default function TalentReport() {
     setrejectedHTMLFilter(!getHTMLFilter);
   }, [getrejectedHTMLFilter, isrejectedAllowFilters]);
 
+  const toggleInterviewRoundFilter = useCallback(() => {
+    !getInterviewRoundHTMLFilter
+      ? setInterviewRoundIsAllowFilters(!isAllowFilters)
+      : setTimeout(() => {
+          setInterviewRoundIsAllowFilters(!isAllowFilters);
+        }, 300);
+    setInterviewRoundHTMLFilter(!getHTMLFilter);
+  }, [getInterviewRoundHTMLFilter, isInterviewRoundAllowFilters]);
+
   const onMonthCalenderFilter = (date) => {
    
     setMonthDate(date);
@@ -359,11 +468,29 @@ export default function TalentReport() {
     setrejectedEndDate(end);
   };
 
+  const onInterviewRoundMonthCalenderFilter = (date) => {
+
+    setInterviewRoundMonthDate(date);
+  };
+
+  const onInterviewRoundCalenderFilter = (dates) => {
+    const [start, end] = dates;
+    setInterviewRoundStartDate(start);
+    setInterviewRoundEndDate(end);
+  };
+
   const onrejectedRemoveFilters = () => {
     setTimeout(() => {
       setrejectedIsAllowFilters(false);
     }, 300);
     setrejectedHTMLFilter(false);
+  };
+
+  const onInterviewRoundRemoveFilters = () => {
+    setTimeout(() => {
+      setInterviewRoundIsAllowFilters(false);
+    }, 300);
+    setInterviewRoundHTMLFilter(false);
   };
 
   const clearrejectedFilters = useCallback(() => {
@@ -384,6 +511,25 @@ export default function TalentReport() {
     );
     setrejectedEndDate(new Date(date));
   }, [setRejectedFilteredTagLength]);
+
+  const clearInterviewRoundFilters = useCallback(() => {
+    setInterviewRoundAppliedFilters(new Map());
+    setInterviewRoundCheckedState(new Map());
+    setInterviewRoundTagLength(0);
+    setInterviewRoundDateTypeFilter(2);
+    setInterviewRoundTableFilteredState({
+      filterFields_OnBoard: {
+        amName: "",
+      },
+    });
+    setInterviewRoundSearchText("");
+    setInterviewRoundDebounceText("");
+    setInterviewRoundMonthDate(new Date());
+    setInterviewRoundStartDate(
+      new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+    );
+    setInterviewRoundEndDate(new Date(date));
+  }, [setInterviewRoundTagLength]);
 
   const tableColumnsMemo = useMemo(() => {
     return [
@@ -680,6 +826,82 @@ export default function TalentReport() {
     ];
   }, [rejectedList]);
 
+  
+  const tableInterviewRoundColumnsMemo = useMemo(() => {
+    return [
+      {
+        title: "Scheduled On",
+        dataIndex: "createdDateTime",
+        key: "createdDateTime",
+        align: "left",
+        width: "200px",
+      },
+      {
+        title: "Interview #",
+        dataIndex: "interviewRound_Str",
+        key: "interviewRound_Str",
+        align: "left",
+        width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+        align: "left",
+        width: "200px",
+        render: (text, item) => {
+          return (
+            <>
+              <Link
+                to={`/allhiringrequest/${item.hiringRequestID}`}
+                target="_blank"
+                style={{ color: "#006699", textDecoration: "underline" }}
+              >
+                {text}
+              </Link>
+            </>
+          );
+        },
+      },
+      {
+        title: "Job Title",
+        dataIndex: "jobTitle",
+        key: "jobTitle",
+        align: "left",
+        width: "230px",
+      },
+      {
+        title: "Talent",
+        dataIndex: "talentName",
+        key: "talentName",
+        align: "left",
+        width: "200px"        
+      }, 
+      {
+        title: "Talent Email",
+        dataIndex: "talentEmail",
+        key: "talentEmail",
+        align: "left",
+        width: "250px"        
+      },
+     
+      {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+        align: "left",
+        width: "230px",
+      },     
+      {
+        title: "Sales Person",
+        dataIndex: "salesPerson",
+        key: "salesPerson",
+        align: "left",
+        width: "170px",
+      },     
+    ];
+  }, [interviewRoundList]);
+
   const leaveColumns = useMemo(() => {
     return [
       {
@@ -874,6 +1096,14 @@ export default function TalentReport() {
     return () => clearTimeout(timer);
   }, [rejectedDebounceText]);
 
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setInterviewRoundSearchText(interviewRoundDebounceText),
+      1000
+    );
+    return () => clearTimeout(timer);
+  }, [interviewRoundDebounceText]);
+
   const handleOnboardExport = (apiData) => {
     let DataToExport = apiData.map((data) => {
       let obj = {};
@@ -922,6 +1152,17 @@ export default function TalentReport() {
       return obj;
     });
     downloadToExcel(DataToExport, "Talent_Reject_Report.xlsx");
+  };
+
+  const handleInterviewRoundExport = (apiData) => {
+    let DataToExport = apiData.map((data) => {
+      let obj = {};
+      tableInterviewRoundColumnsMemo.forEach((val) => {
+        obj[`${val.title}`] = data[`${val.key}`];
+      });
+      return obj;
+    });
+    downloadToExcel(DataToExport, "Talent_Interview_Round_Report.xlsx");
   };
 
   return (
@@ -1391,6 +1632,220 @@ export default function TalentReport() {
               </>
             ),
           },
+          {
+            label: "2+ Interview Rounds",
+            key: "2+ Interview Rounds",
+            children: (
+              <>
+                <div className={onboardListStyle.filterContainer}>
+                  <div className={onboardListStyle.filterSets}>
+                    <div className={onboardListStyle.filterSetsInner}>
+                      <div
+                        className={onboardListStyle.addFilter}
+                        onClick={toggleInterviewRoundFilter}
+                      >
+                        <FunnelSVG style={{ width: "16px", height: "16px" }} />
+
+                        <div className={onboardListStyle.filterLabel}>
+                          Add Filters
+                        </div>
+                        <div className={onboardListStyle.filterCount}>
+                          {interviewRoundTagLength}
+                        </div>
+                      </div>
+
+                      <div
+                        className={TalentBackoutStyle.searchFilterSet}
+                        style={{ marginLeft: "15px" }}
+                      >
+                        <SearchSVG style={{ width: "16px", height: "16px" }} />
+                        <input
+                          type={InputType.TEXT}
+                          className={onboardListStyle.searchInput}
+                          placeholder="Search Table"
+                          value={interviewRoundDebounceText}
+                          onChange={(e) => {
+                            setInterviewRoundDebounceText(e.target.value);
+                          }}
+                        />
+                        {interviewRoundDebounceText && (
+                          <CloseSVG
+                            style={{
+                              width: "16px",
+                              height: "16px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              setInterviewRoundDebounceText("");
+                            }}
+                          />
+                        )}
+                      </div>
+                      <p onClick={() => clearInterviewRoundFilters()}>
+                        Reset Filters
+                      </p>
+                    </div>
+                    <div className={onboardListStyle.filterRight}>
+                    <div className={`${onboardListStyle.modifySelect}`}>
+                        <Select
+                          id="rejectedTalentsValue"
+                          placeholder="Select"
+                          value={dateInterviewRoundTypeFilter}
+                          // showSearch={true}
+                          style={{width:'170px'}}
+                          onChange={(value, option) => {
+                            setInterviewRoundDateTypeFilter(value);
+                            setInterviewRoundStartDate(
+                              new Date(
+                                date.getFullYear(),
+                                date.getMonth() - 1,
+                                date.getDate()
+                              )
+                            );
+                            setInterviewRoundEndDate(new Date(date));
+                          }}
+                          options={dateTypeList}
+                          optionFilterProp="value"
+                          // getPopupContainer={(trigger) => trigger.parentElement}
+                        />
+                      </div>
+                      {dateInterviewRoundTypeFilter === 0 && (
+                        <div className={onboardListStyle.calendarFilterSet}>
+                          <div className={onboardListStyle.label}>
+                            Month-Year
+                          </div>
+                          <div className={onboardListStyle.calendarFilter}>
+                            <CalenderSVG
+                              style={{ height: "16px", marginRight: "16px" }}
+                            />
+                            <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={onboardListStyle.dateFilter}
+                              placeholderText="Month - Year"
+                              selected={interviewRoundMonthDate}
+                              onChange={onInterviewRoundMonthCalenderFilter}
+                              // startDate={startDate}
+                              // endDate={endDate}
+                              dateFormat="MM-yyyy"
+                              showMonthYearPicker
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {dateInterviewRoundTypeFilter === 1 && (
+                        <div className={onboardListStyle.calendarFilterSet}>
+                          <div className={onboardListStyle.label}>Date</div>
+                          <div className={onboardListStyle.calendarFilter}>
+                            <CalenderSVG
+                              style={{ height: "16px", marginRight: "16px" }}
+                            />
+                            <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={onboardListStyle.dateFilter}
+                              placeholderText="Start date - End date"
+                              selected={interviewRoundStartDate}
+                              onChange={onInterviewRoundCalenderFilter}
+                              startDate={interviewRoundStartDate}
+                              endDate={interviewRoundendDate}
+                              selectsRange
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <div className={onboardListStyle.priorityFilterSet}>
+                        <div className={TalentBackoutStyle.priorityFilterSet}>
+                          <div className={TalentBackoutStyle.label}>
+                            Showing
+                          </div>
+                          <div className={TalentBackoutStyle.paginationFilter}>
+                            <Dropdown
+                              trigger={["click"]}
+                              placement="bottom"
+                              overlay={
+                                <Menu
+                                  onClick={(e) => {
+                                    setInterviewRoundPageSize(parseInt(e.key));
+                                    // if (pageSize !== parseInt(e.key)) {
+                                    //   setTableFilteredState((prevState) => ({
+                                    //     ...prevState,
+                                    //     totalrecord: parseInt(e.key),
+                                    //     pagenumber: pageIndex,
+                                    //   }));
+                                    // }
+                                  }}
+                                >
+                                  {pageSizeOptions.map((item) => {
+                                    return (
+                                      <Menu.Item key={item}>{item}</Menu.Item>
+                                    );
+                                  })}
+                                </Menu>
+                              }
+                            >
+                              <span>
+                                {interviewRoundPageSize}
+                                <IoChevronDownOutline
+                                  style={{
+                                    paddingTop: "5px",
+                                    fontSize: "16px",
+                                  }}
+                                />
+                              </span>
+                            </Dropdown>
+                          </div>
+                        </div>
+                        <div
+                          className={onboardListStyle.paginationFilter}
+                          style={{ border: "none", width: "auto" }}
+                        >
+                          <button
+                            className={onboardListStyle.btnPrimary}
+                            onClick={() => handleInterviewRoundExport(interviewRoundList)}
+                          >
+                            Export
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {isLoading ? (
+                  <TableSkeleton active />
+                ) : (
+                  <Table
+                    scroll={{ y: "480px" }}
+                    id="rejectededListingTable"
+                    columns={tableInterviewRoundColumnsMemo}
+                    bordered={false}
+                    dataSource={interviewRoundList}
+                    pagination={{
+                      onChange: (pageNum, InterviewRoundPageSize) => {
+                        setInterviewRoundPageIndex(pageNum);
+                        setInterviewRoundPageSize(InterviewRoundPageSize);
+                      },
+                      size: "small",
+                      pageSize: interviewRoundPageSize,
+                      pageSizeOptions: pageSizeOptions,
+                      total: interviewRoundListDataCount,
+                      showTotal: (total, range) =>
+                        `${range[0]}-${range[1]} of ${interviewRoundListDataCount} items`,
+                      defaultCurrent: interviewRoundPageIndex,
+                    }}
+                  />
+                )}
+              </>
+            ),
+          },
         ]}
       />
 
@@ -1433,6 +1888,27 @@ export default function TalentReport() {
             filtersList && filtersList
           )}
           clearFilters={clearrejectedFilters}
+        />
+      </Suspense>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <OnboardFilerList
+          setAppliedFilters={setInterviewRoundAppliedFilters}
+          appliedFilter={interviewRoundappliedFilter}
+          setCheckedState={setInterviewRoundCheckedState}
+          checkedState={interviewRoundcheckedState}
+          // handleHRRequest={handleHRRequest}
+          setTableFilteredState={setInterviewRoundTableFilteredState}
+          tableFilteredState={interviewRoundtableFilteredState}
+          setFilteredTagLength={setInterviewRoundTagLength}
+          onRemoveHRFilters={() => onInterviewRoundRemoveFilters()}
+          getHTMLFilter={getInterviewRoundHTMLFilter}
+          // hrFilterList={allHRConfig.hrFilterListConfig()}
+
+          filtersType={allEngagementConfig.interviewRoundListFilterTypeConfig(
+            filtersList && filtersList
+          )}
+          clearFilters={clearInterviewRoundFilters}
         />
       </Suspense>
 

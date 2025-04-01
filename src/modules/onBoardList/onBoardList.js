@@ -1362,7 +1362,7 @@ function OnBoardList() {
                         >
                           
                             <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev, filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'AT'}}))}><Tooltip title={"View Total Talents"}>
-                      <div className={onboardList.filterType} key={'Total Talents'}>
+                      <div className={onboardList.filterType} key={'Total Talents'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "AT" ? '6px solid #FFDA30' : ''}}>
                         <img
                           src={FeedBack}
                           alt="rocket"
@@ -1379,7 +1379,7 @@ function OnBoardList() {
                       {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && 
                                           
                         <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'AC'}}))}><Tooltip title={'View Active Contracts'}> 
-                        <div className={onboardList.filterType} key={'Active Contract Eng'}>
+                        <div className={onboardList.filterType} key={'Active Contract Eng'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "AC" ? '6px solid #FFDA30' : ''}}>
                           <img
                             src={Handshake}
                             alt="handshaker"
@@ -1412,7 +1412,7 @@ function OnBoardList() {
                      }
 
                       {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) && <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'ADC'}}))}><Tooltip title={'View Added Contracts'}> 
-                        <div className={onboardList.filterType} key={'Added Contracts'}>
+                        <div className={onboardList.filterType} key={'Added Contracts'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "ADC" ? '6px solid #FFDA30' : ''}}>
                           <img
                             src={Briefcase}
                             alt="briefcase"
@@ -1425,7 +1425,7 @@ function OnBoardList() {
                       </SwiperSlide>}
                     
                       {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&   <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'RC'}}))}><Tooltip title={'View Recurring Contracts'}> 
-                      <div className={onboardList.filterType} key={'Recurring Contracts'}>
+                      <div className={onboardList.filterType} key={'Recurring Contracts'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "RC" ? '6px solid #FFDA30' : ''}}>
                         <img
                            src={RenewEng}
                            alt="Smile"
@@ -1440,8 +1440,8 @@ function OnBoardList() {
 
                     
 
-                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,SummaryFilterOption:'LC'}))}><Tooltip title={'View Lost Contracts'}>
-                        <div className={onboardList.filterType} key={'Lost Contract Eng.'}>
+                     {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'LC'}}))}><Tooltip title={'View Lost Contracts'}>
+                        <div className={onboardList.filterType} key={'Lost Contract Eng.'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "LC" ? '6px solid #FFDA30' : ''}}>
                           <img
                             src={LostEng}
                             alt="sad"
@@ -1474,7 +1474,7 @@ function OnBoardList() {
                   </div></SwiperSlide>} */}
 
                       <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'EOR'}}))}><Tooltip title={'View EOR'}>
-                        <div className={onboardList.filterType} key={'EOR.'}>
+                        <div className={onboardList.filterType} key={'EOR.'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "EOR" ? '6px solid #FFDA30' : ''}}>
                           <img
                             src={Handshake}
                             alt="sad"
@@ -1491,7 +1491,7 @@ function OnBoardList() {
 
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&
                   <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'ADD'}}))}><Tooltip title={'View Added DP'}>
-                  <div className={onboardList.filterType} key={'Added DP'}>
+                  <div className={onboardList.filterType} key={'Added DP'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "ADD" ? '6px solid #FFDA30' : ''}}>
                     <img
                       src={Briefcase}
                       alt="briefcase"
@@ -1503,7 +1503,7 @@ function OnBoardList() {
                   </div></Tooltip></SwiperSlide>}
 
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' ) &&   <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'AD'}}))}><Tooltip title={'View Active DP'}>
-                        <div className={onboardList.filterType} key={'Active DP.'}>
+                        <div className={onboardList.filterType} key={'Active DP.'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "AD" ? '6px solid #FFDA30' : ''}}>
                           <img
                             src={Handshake}
                             alt="sad"
@@ -1544,7 +1544,7 @@ function OnBoardList() {
                   </div> */}
 
                   {(tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' ) &&  <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'RE'}}))}>
-                    <Tooltip title={'View Renew Eng'}><div className={onboardList.filterType} key={'Renew Eng.'}>
+                    <Tooltip title={'View Renew Eng'}><div className={onboardList.filterType} key={'Renew Eng.'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "RE" ? '6px solid #FFDA30' : ''}}>
                     <img
                       src={RenewEng}
                       alt="Smile"
@@ -1556,7 +1556,7 @@ function OnBoardList() {
                   </div></Tooltip></SwiperSlide>} 
 
                   <SwiperSlide onClick={()=>setTableFilteredState(prev=> ({...prev,filterFields_OnBoard:{...prev.filterFields_OnBoard,SummaryFilterOption:'FR'}}))}><Tooltip title={'View Feedback Received'}>
-                  <div className={onboardList.filterType} key={'Feedback Received'}>
+                  <div className={onboardList.filterType} key={'Feedback Received'} style={{borderBottom: tableFilteredState?.filterFields_OnBoard?.SummaryFilterOption === "FR" ? '6px solid #FFDA30' : ''}}>
                     <img
                       src={FeedBack}
                       alt="rocket"

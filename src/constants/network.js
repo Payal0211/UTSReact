@@ -153,6 +153,7 @@ export class ReportType {
 	static TALENT_BACKOUT_REPORT = 'TalentBackoutReport';
 	static TALENT_REJECT_REPORT = 'TalentRejectReport';
 	static TALENT_ONBOARD_REPORT = 'TalentOnBoardReport';
+	static TALENT_INTERVIEW_ROUNDS_REPORT = 'TalentInterviewRoundsReport'
 	static ALL_TALENTS_NOTES = 'TalentNotesReport'
 	static TALENT_DOCUMENT_REPORT = 'TalentDocumentReport'
 }
@@ -203,6 +204,9 @@ export class EngagementAPI {
 	static GET_AM_DETAILS = 'GetAMDetails'
 	static UPDATE_AM_PAY_OUT = 'UpdateAMForPayOut'
 	static UPDATE_DAYS_AND_PR = 'UpdateDaysandPRDetails'
+	static GET_CUSTOM_EMAIL_TEMPLATE = 'GetCustomEmailTemplates'
+	static GET_EMAIL_MASTER = 'GetEmailMasterDropdownValues'
+	static CUSTOM_EMAIL = 'SendCustomEmail'
 }
 
 export class AllHiringRequestAPI {

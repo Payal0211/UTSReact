@@ -387,12 +387,63 @@ const EditDebriefingHR = ({
 		// 	(getHRdetails?.salesHiringRequest_Details?.requirement), {
 		// 		shouldDirty: true,
 		// 	});
+		if(JDParsedSkills?.Skills?.length > 0){
+			setValue(
+					'skills',
+					JDParsedSkills?.Skills?.map((item) => ({
+						skillsID: item?.id.toString(),
+						skillsName: item?.value,
+					})),
+				);
+				setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
+		}
+		
+
+	// 	setCombinedSkillsMemo(prev =>{ 
+
+	// 		let newarray = [...prev]
+	// 		if(JDParsedSkills?.Skills?.length > 0){
+	// 			newarray = [...newarray,...JDParsedSkills?.Skills?.map((item) => ({
+	// 				id: item?.id.toString(),
+	// 				value: item?.value,
+	// 			}))];
+	// 		}
+
+	// 		if(JDParsedSkills?.AllSkills?.length > 0){
+	// 			newarray = [...newarray,...JDParsedSkills?.AllSkills?.map((item) => ({
+	// 				id: item?.id.toString(),
+	// 				value: item?.value,
+	// 			}))]
+	// 		}
+	// 		return newarray
+	// 	// 	return [...prev, ...JDParsedSkills?.Skills?.map((item) => ({
+	// 	// 	id: item?.id.toString(),
+	// 	// 	value: item?.value,
+	// 	// })),...JDParsedSkills?.AllSkills?.map((item) => ({
+	// 	// 	id: item?.id.toString(),
+	// 	// 	value: item?.value,
+	// 	// }))]
+	// }
+	// )
 
 		JDParsedSkills &&	setValue('jobDescription', (getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
 			JDParsedSkills?.jobDescription ||
 			(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? '' , {
 					shouldDirty: true,
 				});
+
+		if(JDParsedSkills?.AllSkills?.length > 0){
+			setValue(
+				'goodToHaveSkills',
+				JDParsedSkills?.AllSkills?.map((item) => ({
+					skillsID: item?.id.toString(),
+					skillsName: item?.value,
+				})),
+			);
+			setControlledGoodToHave(JDParsedSkills?.AllSkills?.map((item) => item?.value))
+				}
+	
+
 
 		JDParsedSkills?.roleName && setValue('hrTitle',JDParsedSkills?.roleName ?? '')
 	}, [JDParsedSkills, setValue]);
@@ -440,7 +491,7 @@ const getParsingType = (isHaveJD,parseType) => {
 			let goodToSkillList =  d.goodToHaveSkills.map((item) => {
 				const obj = {
 					skillsID: item.id || item?.skillsID,
-					skillsName: item.value || item?.skillName,
+					skillsName: item.value || item?.skillsName ,
 				};
 				return obj;
 			});
@@ -549,47 +600,47 @@ const getParsingType = (isHaveJD,parseType) => {
 		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole,companyType,watchSkills,goodToHaveSkill],
 	);
 
-	const needMoreInforSubmitHandler = useCallback(
-		async (d) => {
-			setIsLoading(true);
-			let skillList = d.skills.map((item) => {
-				const obj = {
-					skillsID: item.id || item?.skillsID,
-					skillsName: item.value || item?.skillName,
-				};
-				return obj;
-			});
-			let debriefFormDetails = {
-				isneedmore: true,
-				roleAndResponsibilites: d.roleAndResponsibilities,
-				requirements: d.requirements,
-				en_Id: enID,
-				skills: skillList?.filter((item) => item?.skillsID !== -1),
-				aboutCompanyDesc: d.aboutCompany,
-				secondaryInterviewer: d.secondaryInterviewer,
-				interviewerFullName: d.interviewerFullName,
-				interviewerEmail: d.interviewerEmail,
-				interviewerLinkedin: d.interviewerLinkedin,
-				interviewerDesignation: d.interviewerDesignation,
-				JDDumpID: getHRdetails?.addHiringRequest?.jddumpId,
-			};
+	// const needMoreInforSubmitHandler = useCallback(
+	// 	async (d) => {
+	// 		setIsLoading(true);
+	// 		let skillList = d.skills.map((item) => {
+	// 			const obj = {
+	// 				skillsID: item.id || item?.skillsID,
+	// 				skillsName: item.value || item?.skillName,
+	// 			};
+	// 			return obj;
+	// 		});
+	// 		let debriefFormDetails = {
+	// 			isneedmore: true,
+	// 			roleAndResponsibilites: d.roleAndResponsibilities,
+	// 			requirements: d.requirements,
+	// 			en_Id: enID,
+	// 			skills: skillList?.filter((item) => item?.skillsID !== -1),
+	// 			aboutCompanyDesc: d.aboutCompany,
+	// 			secondaryInterviewer: d.secondaryInterviewer,
+	// 			interviewerFullName: d.interviewerFullName,
+	// 			interviewerEmail: d.interviewerEmail,
+	// 			interviewerLinkedin: d.interviewerLinkedin,
+	// 			interviewerDesignation: d.interviewerDesignation,
+	// 			JDDumpID: getHRdetails?.addHiringRequest?.jddumpId,
+	// 		};
 
-			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
-				debriefFormDetails,
-			);
+	// 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+	// 			debriefFormDetails,
+	// 		);
 
-			if (debriefResult.statusCode === HTTPStatusCode.OK) {
-				setIsLoading(false);
-				messageAPI.open({
-					type: 'success',
-					content: 'HR Debriefing has been updated successfully..',
-				});
-				// window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
-				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
-			}
-		},
-		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI, navigate],
-	);
+	// 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+	// 			setIsLoading(false);
+	// 			messageAPI.open({
+	// 				type: 'success',
+	// 				content: 'HR Debriefing has been updated successfully..',
+	// 			});
+	// 			// window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+	// 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+	// 		}
+	// 	},
+	// 	[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI, navigate],
+	// );
 
 	let tempArr = [];
 	tempArr.push(getHRdetails?.skillmulticheckbox);

@@ -1375,4 +1375,106 @@ export const engagementRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getAllBRPRListDAO');
 		}
 	},
+	getEmailTemplateDAO: async function (pl) {
+		try {
+			const emailTemplateResult = await EngagementRequestAPI.getEmailTemplate(
+				pl
+			);
+			if (emailTemplateResult) {
+				const statusCode = emailTemplateResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = emailTemplateResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return emailTemplateResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailTemplateResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getEmailTemplateDAO');
+		}
+	},
+	getEmailMasterDAO: async function (id) {
+		try {
+			const emailTemplateResult = await EngagementRequestAPI.getEmailMaster(
+				id
+			);
+			if (emailTemplateResult) {
+				const statusCode = emailTemplateResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = emailTemplateResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return emailTemplateResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailTemplateResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getEmailMasterDAO');
+		}
+	},
+	sendEmailDAO: async function (pl) {
+		try {
+			const emailTemplateResult = await EngagementRequestAPI.sendEmail(
+				pl
+			);
+			if (emailTemplateResult) {
+				const statusCode = emailTemplateResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = emailTemplateResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return emailTemplateResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailTemplateResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.sendEmailDAO');
+		}
+	},
 };

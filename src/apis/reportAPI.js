@@ -371,6 +371,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getTalentRejectReport');
 		}
 	},
+	getTalentInterviewRoundReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.TALENT_INTERVIEW_ROUNDS_REPORT
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getTalentInterviewRoundReport');
+		}
+	},
 	getTalentDocumentReport: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =

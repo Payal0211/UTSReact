@@ -288,10 +288,10 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible = ShowRevenueRelatedData
 		return isVisible	
 	}
-	if ((title === 'Chat GPT Response' || title === "Replacement") && ID === 1 ){
-		isVisible =  true	
-		return isVisible	
-	}
+	// if ((title === 'Chat GPT Response' || title === "Replacement") && ID === 1 ){
+	// 	isVisible =  true	
+	// 	return isVisible	
+	// }
 	if ((  title === "Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
 		  && ID === 6){
 		isVisible =  true
@@ -411,12 +411,20 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			branch:[
 				new SideBarModels({
 					id: 'talentReport',
-					title: 'Deployed/Rejected',
+					title: 'Summary',
 					isActive: false,
 					icon: ClipBoardIcon,
 					navigateTo: UTSRoutes.TALENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Talent'),
 					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'TalentBackoutReport',
+					title: 'Backout',
+					isActive: false,
+					icon: TalentBackoutIcon,
+					navigateTo: UTSRoutes.TALENT_BACKOUT_REPORT,
+					isVisible: isAccess(usertypeID, 'Backout')
 				}),
 				new SideBarModels({
 					id: 'talentDocuments',
@@ -442,14 +450,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.REPLACEMENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Replacement')
 				}),
-				new SideBarModels({
-					id: 'TalentBackoutReport',
-					title: 'Backout',
-					isActive: false,
-					icon: TalentBackoutIcon,
-					navigateTo: UTSRoutes.TALENT_BACKOUT_REPORT,
-					isVisible: isAccess(usertypeID, 'Backout')
-				}),
+			
 			]
 		}),
 		new SideBarModels({
