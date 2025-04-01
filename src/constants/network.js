@@ -153,6 +153,7 @@ export class ReportType {
 	static TALENT_BACKOUT_REPORT = 'TalentBackoutReport';
 	static TALENT_REJECT_REPORT = 'TalentRejectReport';
 	static TALENT_ONBOARD_REPORT = 'TalentOnBoardReport';
+	static TALENT_INTERVIEW_ROUNDS_REPORT = 'TalentInterviewRoundsReport'
 	static ALL_TALENTS_NOTES = 'TalentNotesReport'
 	static TALENT_DOCUMENT_REPORT = 'TalentDocumentReport'
 }
