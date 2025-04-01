@@ -733,4 +733,61 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	getEmailTemplate: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT + 
+			EngagementAPI.GET_CUSTOM_EMAIL_TEMPLATE + `?receiver=${pl.receiver}&templateType=${pl.templateType}&onBoardId=${pl.onBoardId}&talentId=${pl.talentId}&clientId=${pl.clientId}`
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		// httpService.dataToSend = details;
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getEmailTemplate',
+			);
+		}
+	},
+	getEmailMaster: async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT + 
+			EngagementAPI.GET_EMAIL_MASTER + `?onBoardId=${id}`
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		// httpService.dataToSend = details;
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getEmailMaster',
+			);
+		}
+	},
+	sendEmail: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT + 
+			EngagementAPI.CUSTOM_EMAIL
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getEmailMaster',
+			);
+		}
+	},
 };

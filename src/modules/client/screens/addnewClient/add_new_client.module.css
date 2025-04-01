@@ -701,6 +701,36 @@
   padding-left: 0 !important;
 }
 
+.emailHeaderComp{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+}
+
+.emailMainComp{
+  margin: 20px 0
+}
+
+.emailMainComp .ql-toolbar.ql-snow {
+    border-radius: 8px 8px 0px 0;
+}
+
+.emailMainComp .ql-container.ql-snow {
+    border-radius: 0px 0px 8px 8px;
+}
+
+.engagementModalAttachmentBtn{
+      display: flex
+;
+    gap: 5px;
+    background: white;
+    border: 1px solid #CECCCC;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 0 0 8px 8px;
+}
+
 
 /*Responsive*/
 @media screen and (max-width: 1440px) {

@@ -24,6 +24,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal }) => 
 		watch,
 		resetField,
 		clearErrors,
+		unregister,
 		formState: { errors },
 	} = useForm();
 	const [getEndEngagementDetails, setEndEngagementDetails] = useState(null);
@@ -95,7 +96,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal }) => 
 				"LastWorkingDate": d.lastWorkingDate ? moment(d.lastWorkingDate).format("yyyy-MM-DD") : null,
 				"reason": d.endEngagementReason ?? "",
 				"EngcancelType": engType,
-				"LostReasonID": d.lostReason.id ? d.lostReason.id === '0' ? null : +d.lostReason.id : null
+				"LostReasonID": d.lostReason?.id ? d.lostReason?.id === '0' ? null : +d.lostReason.id : null
 			}
 	
 
@@ -145,7 +146,7 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal }) => 
         setValue('dpAmount', DPAMOUNT.toFixed(2))
     },[watchExpectedCTC,watchDPpercentage, setValue])
 
-console.log(talentInfo)
+
 	return (
 		<div className={allengagementEnd.engagementModalWrap}>
 			<div
@@ -188,6 +189,9 @@ console.log(talentInfo)
                   onChange={e=> {setEngType(e.target.value);
 					resetField('endEngagementReason')
 					clearErrors('endEngagementReason')
+					resetField('lostReason')
+					clearErrors('lostReason')
+					unregister('lostReason')
 				  }}
                   value={engType}
                   >
@@ -249,7 +253,7 @@ console.log(talentInfo)
                   label="Backout Reason"
                   defaultValue="Select Reason"
                   options={reasonList ? reasonList.map(item=> ({id: item.value, value:item.text})) : []}
-                  required
+                  required={engType === 'Backout'}
                   isError={
                     errors["lostReason"] && errors["lostReason"]
                   }

@@ -39,6 +39,7 @@ import RejectLeaveModal from "modules/engagement/screens/engagementAddFeedback/r
 import ApproveLeaveModal from "modules/engagement/screens/engagementAddFeedback/approveLeave";
 import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
 import OnboardNotes from "./onboardNotes";
+import EmailComponent from "./emailComponent";
 
 export default function ViewOnBoardDetails() {
   const navigate = useNavigate();
@@ -65,6 +66,9 @@ export default function ViewOnBoardDetails() {
   const [holidayLeave, setHolidayLeave] = useState(0)
   const calendarRef = useRef(null);
   const [leaveTypes,setLeaveTypes] = useState([])
+
+ 
+
   const {
     register,
     handleSubmit,
@@ -1178,6 +1182,11 @@ export default function ViewOnBoardDetails() {
               label: "Talent's Other Eng. Details",
               key: "Talent's Other Eng. Details",
               children: <OtherDetails />,
+            },
+            {
+              label: "Emails",
+              key: "Emails",
+              children: <EmailComponent onboardID={onboardID} getOnboardFormDetails={getOnboardFormDetails} />,
             },
             // companyPreviewData?.engagementDetails?.companyTypeID && {
             //   label: "Credit Utilize",
