@@ -151,7 +151,7 @@ const EmailComponent = ({onboardID,getOnboardFormDetails})=>{
             "toEmail": watch('toEmail'),
             "replyTo": watch('replyTo'),
             "subject": watch('subject'),
-            "emailContent": watch('fromName'),
+            "emailContent": watch('emailContent'),
             "attachmentName": "",
             "onBoardID": onboardID,
             "hiringRequestID": getOnboardFormDetails.onboardContractDetails.hR_ID,

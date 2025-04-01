@@ -953,5 +953,16 @@ export const allEngagementConfig = {
 			},
 			
 		];
+	},
+	interviewRoundListFilterTypeConfig: (filterList) =>{
+		return [
+			{
+				label: 'AM',
+				name: 'amName',
+				child: filterList?.AMList?.map(item=>({...item,text: item.value,value:item.text})),
+				isSearch: true,
+			},
+			
+		];
 	}
 };
