@@ -830,30 +830,30 @@ export default function TalentReport() {
   const tableInterviewRoundColumnsMemo = useMemo(() => {
     return [
       {
-        title: "Name",
-        dataIndex: "talentName",
-        key: "talentName",
+        title: "Scheduled On",
+        dataIndex: "createdDateTime",
+        key: "createdDateTime",
         align: "left",
         width: "200px",
-        render: (text, result) => {
-          return (
-            <>
-              {text} <br />( {result.talentEmail} )
-            </>
-          );
-        },
+      },
+      {
+        title: "Interview #",
+        dataIndex: "interviewRound_Str",
+        key: "interviewRound_Str",
+        align: "left",
+        width: "150px",
       },
       {
         title: "HR #",
         dataIndex: "hR_Number",
         key: "hR_Number",
         align: "left",
-        width: "170px",
+        width: "200px",
         render: (text, item) => {
           return (
             <>
               <Link
-                to={`/allhiringrequest/${item.id}`}
+                to={`/allhiringrequest/${item.hiringRequestID}`}
                 target="_blank"
                 style={{ color: "#006699", textDecoration: "underline" }}
               >
@@ -864,34 +864,6 @@ export default function TalentReport() {
         },
       },
       {
-        title: "Client",
-        dataIndex: "clientName",
-        key: "clientName",
-        align: "left",
-        width: "200px",
-        render: (text, result) => {
-          return (
-            <>
-              {text} <br />( {result.clientEmail} )
-            </>
-          );
-        },
-      },
-      {
-        title: "Created On",
-        dataIndex: "createdDateTime",
-        key: "createdDateTime",
-        align: "left",
-        width: "230px",
-      },
-      {
-        title: "Company",
-        dataIndex: "company",
-        key: "company",
-        align: "left",
-        width: "230px",
-      },
-      {
         title: "Job Title",
         dataIndex: "jobTitle",
         key: "jobTitle",
@@ -899,19 +871,34 @@ export default function TalentReport() {
         width: "230px",
       },
       {
+        title: "Talent",
+        dataIndex: "talentName",
+        key: "talentName",
+        align: "left",
+        width: "200px"        
+      }, 
+      {
+        title: "Talent Email",
+        dataIndex: "talentEmail",
+        key: "talentEmail",
+        align: "left",
+        width: "250px"        
+      },
+     
+      {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+        align: "left",
+        width: "230px",
+      },     
+      {
         title: "Sales Person",
         dataIndex: "salesPerson",
         key: "salesPerson",
         align: "left",
-        width: "150px",
-      },
-      {
-        title: "interview Round",
-        dataIndex: "interviewRound_Str",
-        key: "interviewRound_Str",
-        align: "left",
-        width: "150px",
-      },
+        width: "170px",
+      },     
     ];
   }, [interviewRoundList]);
 
@@ -1171,17 +1158,7 @@ export default function TalentReport() {
     let DataToExport = apiData.map((data) => {
       let obj = {};
       tableInterviewRoundColumnsMemo.forEach((val) => {
-        if (val.key !== "action") {
-          if (val.title === "Talent") {
-            obj[`${val.title}`] = `${data.name} ( ${data.emailID} )`;
-          } else if (val.key === "contractStartDate") {
-            obj[`${val.title}`] = `${data.typeOfHR} ${
-              data.h_Availability && `/ ${data.contractEndDate}`
-            }`;
-          } else {
-            obj[`${val.title}`] = data[`${val.key}`];
-          }
-        }
+        obj[`${val.title}`] = data[`${val.key}`];
       });
       return obj;
     });

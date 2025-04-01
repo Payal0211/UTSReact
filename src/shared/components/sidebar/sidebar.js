@@ -411,7 +411,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			branch:[
 				new SideBarModels({
 					id: 'talentReport',
-					title: 'Deployed/Rejected',
+					title: 'Summary',
 					isActive: false,
 					icon: ClipBoardIcon,
 					navigateTo: UTSRoutes.TALENT_REPORT,
