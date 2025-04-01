@@ -9,7 +9,7 @@ import { ReportDAO } from 'core/report/reportDAO';
 import { HTTPStatusCode, NetworkInfo } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
-import { Table,Dropdown,Menu, Select, Tooltip } from 'antd';
+import { Table,Dropdown,Menu, Select, Tooltip, Modal } from 'antd';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import LogoLoader from 'shared/components/loader/logoLoader';
 import { IoChevronDownOutline } from "react-icons/io5";
@@ -45,6 +45,8 @@ function TalentBackoutReport() {
   const [dateTypeFilter, setDateTypeFilter] = useState(2);
   const [monthDate, setMonthDate] = useState(new Date());
    const [filtersList, setFiltersList] = useState({});
+   const [showReason, setShowReason] = useState(false)
+   const [reasonToShow, setReasonToShow] = useState('')
 
     const [appliedFilter, setAppliedFilters] = useState(new Map());
     const [checkedState, setCheckedState] = useState(new Map());
@@ -311,12 +313,23 @@ const handleExport = (apiData) => {
   align: 'left',
   width: '250px',
   render:(text, result)=>{
-    return <div>{text}  {result.endEngagementFileName && <Tooltip title={result.endEngagementFileName}><a href={NetworkInfo.NETWORK + `Media/ContractEndDate/${result.endEngagementFileName}`} target="_blank" rel="noreferrer">     <IconContext.Provider
-                  value={{
-                    color: "green",
-                    style: { width: "15px", height: "15px", cursor:'pointer' },
-                  }}
-                > <FaDownload /></IconContext.Provider></a></Tooltip>} </div>
+    return <div className={TalentBackoutStyle.ReasonContainer}>{text.length > 100 ? <>{text.substr(0, 99) + '...'} <h4 onClick={()=>{setShowReason(true);setReasonToShow(text)}}>View More</h4></>  : text}   </div>
+  }
+},
+{
+  title: "",
+  dataIndex: "endEngagementFileName",
+  key: "endEngagementFileName",
+  align: "left",
+  width: "30px",
+  render:(text)=>{
+
+    return text ? <Tooltip title={text}><a href={NetworkInfo.NETWORK + `Media/ContractEndDate/${text}`} target="_blank" rel="noreferrer">     <IconContext.Provider
+    value={{
+      color: "green",
+      style: { width: "15px", height: "15px", cursor:'pointer' },
+    }}
+  > <FaDownload /></IconContext.Provider></a></Tooltip> : ''
   }
 },
 {
@@ -663,6 +676,15 @@ const handleExport = (apiData) => {
 						</WithLoader>
 					)}
 				</div>
+
+        <Modal  width="600px"
+        centered
+        footer={null}
+        className="engagementAddFeedbackModal"
+        open={showReason}
+        onCancel={() => {setShowReason(false); setReasonToShow('')}} >
+          <p>{reasonToShow}</p>
+        </Modal>
         
          <Suspense fallback={<div>Loading...</div>}>
                 <OnboardFilerList
