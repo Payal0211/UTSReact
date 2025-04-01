@@ -6,10 +6,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { InputType } from 'constants/application';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReportDAO } from 'core/report/reportDAO';
-import { HTTPStatusCode } from 'constants/network';
+import { HTTPStatusCode, NetworkInfo } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
-import { Table,Dropdown,Menu, Select } from 'antd';
+import { Table,Dropdown,Menu, Select, Tooltip } from 'antd';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import LogoLoader from 'shared/components/loader/logoLoader';
 import { IoChevronDownOutline } from "react-icons/io5";
@@ -21,6 +21,8 @@ import OnboardFilerList from 'modules/onBoardList/OnboardFilterList';
 import { amDashboardDAO } from 'core/amdashboard/amDashboardDAO';
 import { allEngagementConfig } from 'modules/engagement/screens/engagementList/allEngagementConfig';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import { FaDownload } from "react-icons/fa";
+import { IconContext } from "react-icons";
 
 function TalentBackoutReport() {
   const [getBackoutDetails,setTalentBackoutDetails] = useState([])
@@ -205,12 +207,20 @@ const handleExport = (apiData) => {
 
 }
 
-  const tableColumnsMemo = [{
-    title: 'Created Date',				
-    dataIndex: 'createdDateTime',
-    key: 'createdDateTime',
-    align: 'left',
-    width:'150px'
+  const tableColumnsMemo = [
+//     {
+//     title: 'Created Date',				
+//     dataIndex: 'createdDateTime',
+//     key: 'createdDateTime',
+//     align: 'left',
+//     width:'150px'
+// },
+{
+  title: 'Last Working Date',				
+  dataIndex: 'lastWorkingDate',
+  key: 'lastWorkingDate',
+  align: 'left',
+  width: '200px',
 },
 {
   title: "Month Year",
@@ -295,11 +305,19 @@ const handleExport = (apiData) => {
   width: "200px",
 },
 {
-  title: 'Last Working Date',				
-  dataIndex: 'lastWorkingDate',
-  key: 'lastWorkingDate',
+  title: 'Reason',				
+  dataIndex: 'rejectedReason',
+  key: 'rejectedReason',
   align: 'left',
-  width: '200px',
+  width: '250px',
+  render:(text, result)=>{
+    return <div>{text}  {result.endEngagementFileName && <Tooltip title={result.endEngagementFileName}><a href={NetworkInfo.NETWORK + `Media/ContractEndDate/${result.endEngagementFileName}`} target="_blank" rel="noreferrer">     <IconContext.Provider
+                  value={{
+                    color: "green",
+                    style: { width: "15px", height: "15px", cursor:'pointer' },
+                  }}
+                > <FaDownload /></IconContext.Provider></a></Tooltip>} </div>
+  }
 },
 {
   title: 'Talent Status',				
@@ -318,7 +336,7 @@ const handleExport = (apiData) => {
             : ""
         }`}
       >
-        <span style={{ cursor: "pointer" }}> {text}</span>
+        <span style={{ cursor: "pointer" }}> {text} </span>
       </div>
     );
   },
@@ -337,13 +355,23 @@ const handleExport = (apiData) => {
       param?.hrStatus
     );
   },
-}
+},
+// {
+//   title: 'Download',				
+//   dataIndex: 'endEngagementFileName',
+//   key: 'endEngagementFileName',
+//   align: 'left',
+//   width: '200px',
+//   render:(text)=>{
+//     return <a href={NetworkInfo.NETWORK + `Media/ContractEndDate/${text}`} target="_blank" rel="noreferrer">{text}</a>
+//   }
+// },
 ]
 
   return (
     <div className={TalentBackoutStyle.dealContainer}>
     <div className={TalentBackoutStyle.header}>
-      <div className={TalentBackoutStyle.dealLable}>Talent Backout Report</div>
+      <div className={TalentBackoutStyle.dealLable}>Backout Report</div>
       <LogoLoader visible={isLoading} />
     </div>
 
