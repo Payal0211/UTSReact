@@ -38,6 +38,7 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
   const [docUploading, setDocUploading] = useState(false);
   const [fetchingTemplate, setFetchingTemplate] = useState(false);
   const [isPreview, setISPreview] = useState(false);
+  const [attaachments,setAttachments] = useState([])
   const {
     register,
     handleSubmit,
@@ -171,7 +172,7 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
       replyTo: watch("replyTo"),
       subject: watch("subject"),
       emailContent: watch("emailContent"),
-      attachmentName: "",
+      attachmentName: attaachments.join(),
       onBoardID: onboardID,
       hiringRequestID: getOnboardFormDetails.onboardContractDetails.hR_ID,
       contactID: getOnboardFormDetails.onboardContractDetails.contactID,
@@ -221,7 +222,7 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
 
       let fileLink = ` <a href="${uploadedUrl}" target="_blank">${file.name}</a>`;
       let contentWithLink = updatedContent + " " + fileLink + " ";
-
+      setAttachments(prev=> [...prev,file.name])
       setValue("emailContent", contentWithLink);
     } else {
       message.error("something went wrong");
