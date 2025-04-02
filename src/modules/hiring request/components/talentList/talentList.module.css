@@ -42,6 +42,27 @@
     margin: 0;
 }
 
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-right: 10px;
+}
+
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
 .ResumeLink {
     color: #1890ff;
     text-decoration: none;

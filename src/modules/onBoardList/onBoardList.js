@@ -73,11 +73,7 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 							key: 'addInvoiceDetails',
 							IsEnabled: true,
 						},
-            {
-							label: 'Update Leaves',
-							key: 'updateLeaves',
-							IsEnabled: true,
-						},
+            
 					];
 					// if(param?.tscName && (param?.currentStatus !== "In Replacement")){
 					// 	listItemData.push(
@@ -88,6 +84,23 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					// 		},
 					// 	);
 					// }
+          if (!param?.lastWorkingDate ) {
+            listItemData.push({
+							label: 'Update Leaves',
+							key: 'updateLeaves',
+							IsEnabled: true,
+						},);
+						listItemData.push({
+							label: 'End Engagement',
+							key: 'endEngagement',
+							IsEnabled: true,
+						});
+						listItemData.push({
+							label: 'Cancel Engagement',
+							key: 'cancelEngagement',
+							IsEnabled: true,
+						});
+					}
 					if (param?.typeOfHR === 'Contractual' && param?.payout_BillRate !== '' ) {
 						listItemData.push(
 							{
@@ -114,18 +127,6 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 							IsEnabled: true,
 						});
 					}				
-					if (param?.isContractCompleted !== 1) {
-						listItemData.push({
-							label: 'End Engagement',
-							key: 'endEngagement',
-							IsEnabled: true,
-						});
-						listItemData.push({
-							label: 'Cancel Engagement',
-							key: 'cancelEngagement',
-							IsEnabled: true,
-						});
-					}
 					if (
 						param?.talentLegal_StatusID === 2 &&
 						param?.clientLegal_StatusID === 2 &&
@@ -234,17 +235,17 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					);
 				},
 			},  
-      {
-        title: "Created Date",
-        dataIndex: "createdByDatetime",
-        key: "createdByDatetime",
-        align: "left",  
-        width: '150px',          
-        render:(text)=>{
-            let dateArr = text.split(" ")
-            return dateArr[0]
-        }
-      },
+      // {
+      //   title: "Created Date",
+      //   dataIndex: "createdByDatetime",
+      //   key: "createdByDatetime",
+      //   align: "left",  
+      //   width: '150px',          
+      //   render:(text)=>{
+      //       let dateArr = text.split(" ")
+      //       return dateArr[0]
+      //   }
+      // },
       {
         title: "Eng. Count",
         dataIndex: "engagementCount",
