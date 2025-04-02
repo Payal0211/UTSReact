@@ -539,6 +539,16 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					),
 			},	
       {
+        title: "INR Exch. Rate",
+        dataIndex: "payout_Talent_CurrencyExchangeRate",
+        key: "payout_Talent_CurrencyExchangeRate",
+        align: "left",
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
+      },
+      {
         title: "Uplers Fees ( USD )",
         dataIndex: "uplersFees_USD",
         key: "uplersFees_USD",
@@ -557,7 +567,17 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         // render:(_,result)=>{
         //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
         // }
-      }
+      },
+      {
+        title: "Invoice #",
+        dataIndex: "payout_ESales_InvoiceNumber",
+        key: "payout_ESales_InvoiceNumber",
+        align: "left",
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
+      },
       
     ];
 }

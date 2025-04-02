@@ -329,8 +329,8 @@ const EngagementOnboard = ({
 
             <li>
               <span>Job Title : </span>
-              {getOnboardFormDetails?.hRJobTitle
-                ? getOnboardFormDetails?.hRJobTitle
+              {getOnboardFormDetails?.hrJobTitle
+                ? getOnboardFormDetails?.hrJobTitle
                 : "NA"}
             </li>
 
@@ -356,8 +356,7 @@ const EngagementOnboard = ({
               </a>
             </li> */}
             <li>
-              <span>Job Description : </span>
-              {/* <button className={HRDetailStyle.onboardingDownload}><DownloadJDSVG/>Download JD</button> */}
+              <span>Job Description : </span>           
 
               {getOnboardFormDetails?.jobDescription?.split(":")[0] ===
                 "http" ||
@@ -383,8 +382,7 @@ const EngagementOnboard = ({
                   }
                   style={{ textDecoration: "underline" }}
                   target="_blank"
-                >
-                  <DownloadJDSVG />
+                >                  
                   Download JD
                 </a>
               )}
