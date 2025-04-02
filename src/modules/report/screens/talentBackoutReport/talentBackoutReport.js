@@ -113,7 +113,7 @@ function TalentBackoutReport() {
          getBackoutData()
     }
    
-  },[endDate,startDate,debouncedSearch,tableFilteredState,pageSize,monthDate])
+  },[endDate,startDate,debouncedSearch,tableFilteredState,pageSize,monthDate,pageIndex])
 
   
   const getFilterList = async () => {
@@ -148,10 +148,11 @@ function TalentBackoutReport() {
     
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => getBackoutData() , 1000);
-    return () => clearTimeout(timer);
-}, [debouncedSearch]);
+//   useEffect(() => {
+//     console.log('cal2')
+//     const timer = setTimeout(() => getBackoutData() , 1000);
+//     return () => clearTimeout(timer);
+// }, [debouncedSearch]);
 
 const onRemoveFilters = () => {
   setTimeout(() => {
@@ -662,7 +663,7 @@ const handleExport = (apiData) => {
 									onChange: (pageNum, pageSize) => {                    
 										setPageIndex(pageNum);
 										setPageSize(pageSize);
-                    getBackoutData(pageSize , pageNum);
+                    // getBackoutData(pageSize , pageNum);
 									},
 									size: 'small',
 									pageSize: pageSize,
