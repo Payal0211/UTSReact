@@ -36,7 +36,8 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
   const [emailMasterValues, setEmailMasterValues] = useState({});
   const [templateData, setTemplateData] = useState({});
   const [docUploading, setDocUploading] = useState(false);
-  const [fetchingTemplate,setFetchingTemplate] = useState(false)
+  const [fetchingTemplate, setFetchingTemplate] = useState(false);
+  const [isPreview, setISPreview] = useState(false);
   const {
     register,
     handleSubmit,
@@ -129,7 +130,7 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
   }, [onboardID]);
 
   const getEmailTemplate = async () => {
-    setFetchingTemplate(true)
+    setFetchingTemplate(true);
     let pl = {
       receiver: watch("receiver"),
       templateType: watch("templateType"),
@@ -139,8 +140,8 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
     };
 
     const result = await engagementRequestDAO.getEmailTemplateDAO(pl);
-    setFetchingTemplate(false)
-    console.log("res temp", result);
+    setFetchingTemplate(false);
+ 
     if (result.statusCode === 200) {
       setTemplateData(result.responseBody);
 
@@ -155,6 +156,14 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
   };
 
   const sendEmail = async () => {
+    if (
+      watch("emailContent") === "" ||
+      watch("emailContent") === "<p><br></p>"
+    ) {
+      message.error("Please Fill Email content");
+      return;
+    }
+
     let payload = {
       templateID: templateData?.id,
       fromName: watch("fromName"),
@@ -186,12 +195,13 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
       setValue("templateType", "");
       setValue("receiver", "");
       setTemplateData({});
+      setISPreview(false)
     }
   };
 
-//   const showPreview = () =>{
-
-//   }
+  const showPreview = () => {
+    setISPreview(true);
+  };
 
   const onFileChangeCapture = async (e) => {
     /*Selected files data can be collected here.*/
@@ -218,215 +228,276 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
     }
   };
 
-  console.log(
-    "emailContent",
-    templateData,
-    getOnboardFormDetails.onboardContractDetails
-  );
   return (
-    <div className={AddNewClientStyle.onboardDetailsContainer} style={{marginTop:'15px', padding:'15px'}}>
-      <div className={AddNewClientStyle.emailHeaderComp} style={{width:'60%'}}>
-       
-                <div style={{width:'30%'}}>
- <HRSelectField
-          compStyles={{ marginBottom: "0" }}
-          key={"tamplateType"}
-          setValue={setValue}
-          // searchable={true}
-          mode="value"
-          isValue={true}
-          register={register}
-          label={"Template Type"}
-          defaultValue={
-            watch("templateType") ? watch("templateType") : "please select"
-          }
-          options={emailMasterValues?.TemplateTypes?.map((i) => ({
-            id: i.id,
-            value: i.dropdownValue,
-          }))}
-          name="templateType"
-          isError={errors["templateType"] && errors["templateType"]}
-          // required
-          errorMsg={
-            errors?.salesPerson?.message ||
-            "Please select hiring request sales person"
-          }
-        />
-                </div>
-                <div style={{width:'30%'}}>
-    <HRSelectField
-          compStyles={{ marginBottom: "0" }}
-          key={"receiver"}
-          mode="value"
-          setValue={setValue}
-          isValue={true}
-          // searchable={true}
-          register={register}
-          label={"Receiver"}
-          defaultValue={watch("receiver") ? watch("receiver") : "please select"}
-          options={emailMasterValues?.Receivers?.map((i) => ({
-            id: i.id,
-            value: i.dropdownValue,
-          }))}
-          name="receiver"
-          isError={errors["receiver"] && errors["receiver"]}
-          // required
-          errorMsg={
-            errors?.salesPerson?.message ||
-            "Please select hiring request sales person"
-          }
-        />
-                </div>
-                <div style={{display:'flex',alignItems:'center'}}>
- {watch("templateType") && watch("receiver") && (
-          <button
-            className={AddNewClientStyle.engagementModalHeaderAddBtn}
-            style={{ marginTop: "20px" }}
-            onClick={() => {
-              getEmailTemplate();
-            }}
-          >
-            Get Template
-          </button>
-        )}
-                </div>  
-        {console.log(watch("templateType"), watch("receiver"))}
-       
+    <div
+      className={AddNewClientStyle.onboardDetailsContainer}
+      style={{ marginTop: "15px", padding: "15px 25px" }}
+    >
+      <div
+        className={AddNewClientStyle.emailHeaderComp}
+        style={{ width: "60%" }}
+      >
+        <div style={{ width: "30%" }}>
+          <HRSelectField
+            compStyles={{ marginBottom: "0" }}
+            key={"tamplateType"}
+            setValue={setValue}
+            // searchable={true}
+            mode="value"
+            isValue={true}
+            register={register}
+            label={"Template Type"}
+            defaultValue={
+              watch("templateType") ? watch("templateType") : "please select"
+            }
+            options={emailMasterValues?.TemplateTypes?.map((i) => ({
+              id: i.id,
+              value: i.dropdownValue,
+            }))}
+            name="templateType"
+            isError={errors["templateType"] && errors["templateType"]}
+            // required
+            errorMsg={
+              errors?.salesPerson?.message ||
+              "Please select hiring request sales person"
+            }
+          />
+        </div>
+        <div style={{ width: "30%" }}>
+          <HRSelectField
+            compStyles={{ marginBottom: "0" }}
+            key={"receiver"}
+            mode="value"
+            setValue={setValue}
+            isValue={true}
+            // searchable={true}
+            register={register}
+            label={"Receiver"}
+            defaultValue={
+              watch("receiver") ? watch("receiver") : "please select"
+            }
+            options={emailMasterValues?.Receivers?.map((i) => ({
+              id: i.id,
+              value: i.dropdownValue,
+            }))}
+            name="receiver"
+            isError={errors["receiver"] && errors["receiver"]}
+            // required
+            errorMsg={
+              errors?.salesPerson?.message ||
+              "Please select hiring request sales person"
+            }
+          />
+        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {watch("templateType") && watch("receiver") && (
+            <button
+              className={AddNewClientStyle.engagementModalHeaderAddBtn}
+              style={{ marginTop: "20px" }}
+              onClick={() => {
+                getEmailTemplate();
+              }}
+            >
+              Get Template
+            </button>
+          )}
+        </div>
       </div>
 
-        {fetchingTemplate && <div>
-            Fetching Template ...{" "}
-            <img src={spinGif} alt="loadgif" width={16} />{" "}
-          </div>}
+      {fetchingTemplate && (
+        <div>
+          Fetching Template ... <img src={spinGif} alt="loadgif" width={16} />{" "}
+        </div>
+      )}
 
-{templateData?.id && <>
- <div className={AddNewClientStyle.emailMainComp}>
-        <HRInputField
-          register={register}
-          errors={errors}
-          label={"From Name"}
-          name="fromName"
-          type={InputType.TEXT}
-          placeholder="From name"
-          disabled={!templateData?.id}
-          required
-          validationSchema={{
-            required: "Please enter the From Name",
-          }}
-        />
+      {templateData?.id && (
+        <>
+          <div className={AddNewClientStyle.emailMainComp}>
+            <HRInputField
+              register={register}
+              errors={errors}
+              label={"From Name"}
+              name="fromName"
+              type={InputType.TEXT}
+              placeholder="From name"
+              disabled={!templateData?.id}
+              required
+              validationSchema={{
+                required: "Please enter the From Name",
+              }}
+            />
 
-        <HRInputField
-          register={register}
-          errors={errors}
-          label={"To Email"}
-          name="toEmail"
-          type={InputType.TEXT}
-          placeholder="To email"
-          required
-          validationSchema={{
-            required: "Please enter the to email",
-            pattern: {
-              value: EmailRegEx.email,
-              message: "Entered value does not match email format",
-            },
-          }}
-          disabled={!templateData?.id}
-        />
+            <HRInputField
+              register={register}
+              errors={errors}
+              label={"To Email"}
+              name="toEmail"
+              type={InputType.TEXT}
+              placeholder="To email"
+              required
+              validationSchema={{
+                required: "Please enter the to email",
+                pattern: {
+                  value: EmailRegEx.email,
+                  message: "Entered value does not match email format",
+                },
+              }}
+              disabled={!templateData?.id}
+            />
 
-        <HRInputField
-          register={register}
-          errors={errors}
-          label={"Reply To"}
-          name="replyTo"
-          type={InputType.TEXT}
-          placeholder="Reply to"
-          required
-          validationSchema={{
-            required: "Please enter the reply to email",
-            pattern: {
-              value: EmailRegEx.email,
-              message: "Entered value does not match email format",
-            },
-          }}
-          disabled={!templateData?.id}
-        />
+            <HRInputField
+              register={register}
+              errors={errors}
+              label={"Reply To"}
+              name="replyTo"
+              type={InputType.TEXT}
+              placeholder="Reply to"
+              required
+              validationSchema={{
+                required: "Please enter the reply to email",
+                pattern: {
+                  value: EmailRegEx.email,
+                  message: "Entered value does not match email format",
+                },
+              }}
+              disabled={!templateData?.id}
+            />
 
-        <HRInputField
-          register={register}
-          errors={errors}
-          label={"Subject"}
-          name="subject"
-          type={InputType.TEXT}
-          placeholder="subject"
-          required
-          validationSchema={{
-            required: "Please enter the subject",
-          }}
-          disabled={!templateData?.id}
-        />
+            <HRInputField
+              register={register}
+              errors={errors}
+              label={"Subject"}
+              name="subject"
+              type={InputType.TEXT}
+              placeholder="subject"
+              required
+              validationSchema={{
+                required: "Please enter the subject",
+              }}
+              disabled={!templateData?.id}
+            />
 
-        <ReactQuill
-          readOnly={!templateData?.id}
-          theme="snow"
-          className="heightSize"
-          value={watch("emailContent")}
-          onChange={(val) => {
-            let sanitizedContent = sanitizeLinks(val);
-            // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-            setValue("emailContent", sanitizedContent);
-          }}
-          // className={previewClientStyle.reactQuillEdit}
-          // required
-          onBlur={() =>
-            onHandleBlurImage(watch("emailContent"), "About company")
-          }
-        />
+            <ReactQuill
+              readOnly={!templateData?.id}
+              theme="snow"
+              className="heightSize"
+              value={watch("emailContent")}
+              onChange={(val) => {
+                let sanitizedContent = sanitizeLinks(val);
+                // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                setValue("emailContent", sanitizedContent);
+              }}
+              // className={previewClientStyle.reactQuillEdit}
+              // required
+              onBlur={() =>
+                onHandleBlurImage(watch("emailContent"), "About company")
+              }
+            />
 
-        {docUploading ? (
-          <div>
-            Please wait while attachment uploading ...{" "}
-            <img src={spinGif} alt="loadgif" width={16} />{" "}
+            {docUploading ? (
+              <div>
+                Please wait while attachment uploading ...{" "}
+                <img src={spinGif} alt="loadgif" width={16} />{" "}
+              </div>
+            ) : (
+              <button
+                className={AddNewClientStyle.engagementModalAttachmentBtn}
+                onClick={() => {
+                  fileRef?.current?.click();
+                }}
+                disabled={!templateData?.id}
+              >
+                <AttachmentSVG style={{ width: "24px", height: "24px" }} /> Add
+                Attachment
+              </button>
+            )}
+
+            <input
+              type="file"
+              ref={fileRef}
+              onChangeCapture={onFileChangeCapture}
+              style={{ display: "none" }}
+            />
           </div>
-        ) : (
-          <button
-            className={AddNewClientStyle.engagementModalAttachmentBtn}
-            onClick={() => {
-              fileRef?.current?.click();
-            }}
-            disabled={!templateData?.id}
+
+          <div
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
           >
-            <AttachmentSVG style={{ width: "24px", height: "24px" }} /> Add
-            Attachment
-          </button>
-        )}
+            <button
+              className={AddNewClientStyle.engagementModalHeaderAddBtn}
+              disabled={!templateData?.id}
+              style={{ background: "var(--color-sunlight)", color: "#000" }}
+              onClick={handleSubmit(showPreview)}
+            >
+              Preview and Send Email
+            </button>
+            <button
+              className={AddNewClientStyle.engagementModalHeaderAddBtn}
+              disabled={!templateData?.id}
+              onClick={handleSubmit(sendEmail)}
+            >
+              Send Email
+            </button>
+          </div>
+        </>
+      )}
 
-        <input
-          type="file"
-          ref={fileRef}
-          onChangeCapture={onFileChangeCapture}
-          style={{ display: "none" }}
-        />
-      </div>
+      <Modal
+        width="600px"
+        centered
+        footer={null}
+        className="engagementAddFeedbackModal"
+        open={isPreview}
+        onCancel={() => {
+          setISPreview(false);
+        }}
+      >
+        <div>
+          <div>
+            <p>
+              <span style={{ fontWeight: "600" }}>From Name : </span>{" "}
+              {watch("fromName")}{" "}
+            </p>
+            <p>
+              <span style={{ fontWeight: "600" }}>To Email : </span>
+              {watch("toEmail")}{" "}
+            </p>
+            <p>
+              <span style={{ fontWeight: "600" }}>Reply To : </span>{" "}
+              {watch("replyTo")}{" "}
+            </p>
+            <p>
+              <span style={{ fontWeight: "600" }}>Subject : </span>{" "}
+              {watch("subject")}{" "}
+            </p>
+            <div
+              dangerouslySetInnerHTML={{ __html: watch("emailContent") }}
+            ></div>
+          </div>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-        {/* <button
-          className={AddNewClientStyle.engagementModalHeaderAddBtn}
-          disabled={!templateData?.id}
-          style={{ background: "var(--color-sunlight)", color: "#000" }}
-          onClick={() => {handleSubmit(showPreview)}}
-        >
-          Preview and Send Email
-        </button> */}
-        <button
-          className={AddNewClientStyle.engagementModalHeaderAddBtn}
-          disabled={!templateData?.id}
-          onClick={handleSubmit(sendEmail)}
-        >
-          Send Email
-        </button>
-      </div>
-</>}
-     
+          <div
+            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
+          >
+            <button
+              className={AddNewClientStyle.engagementModalHeaderAddBtn}
+              disabled={!templateData?.id}
+              style={{ background: "var(--color-sunlight)", color: "#000" }}
+              onClick={() => {
+                setISPreview(false);
+              }}
+            >
+              Cancel Preview and Edit
+            </button>
+            <button
+              className={AddNewClientStyle.engagementModalHeaderAddBtn}
+              disabled={!templateData?.id}
+              onClick={handleSubmit(sendEmail)}
+            >
+              Send Email
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
