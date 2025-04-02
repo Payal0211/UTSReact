@@ -60,7 +60,8 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 				dataIndex: 'action',
 				key: 'action',
 				align: 'left',
-				width: '150px',
+				width: '180px',
+        fixed: "left", // Fix this column on the left
 				render: (_, param, index) => {
 					let listItemData = [
 						{
@@ -246,19 +247,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
       //       return dateArr[0]
       //   }
       // },
-      {
-        title: "Eng. Count",
-        dataIndex: "engagementCount",
-        key: "engagementCount",
-        align: "left",
-        width: '95px',
-        },
+     
       {
         title: "Eng. ID/HR#",
         dataIndex: "engagemenID",
         key: "engagemenID",
         align: "left",
         width: '200px',
+        fixed: "left", // Fix this column on the left
         render:(text,result)=>{
           return <>
           <Link to={`/viewOnboardDetails/${result.id}/${result.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
@@ -280,6 +276,13 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
           
           </> 
       }
+      },
+      {
+        title: "Eng. Count",
+        dataIndex: "engagementCount",
+        key: "engagementCount",
+        align: "left",
+        width: '95px',
       },
       {
         title: "Eng. Type",
@@ -1660,7 +1663,7 @@ function OnBoardList() {
               ) : (
                 <WithLoader className="mainLoader">
                   <Table
-                    scroll={{  y: '100vh' }}
+                    scroll={{  y: '100vh', x: "max-content"  }}                   
                     id="hrListingTable"
                     columns={tableColumnsMemo}
                     bordered={false}

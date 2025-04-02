@@ -781,12 +781,14 @@ export default function TalentReport() {
         dataIndex: "name",
         key: "name",
         align: "left",
+        width: "200px",
       },
       {
-        title: "Talent",
+        title: "Talent Email",
         dataIndex: "emailID",
         key: "emailID",
         align: "left",     
+        width: "250px",
       },
 
       {
