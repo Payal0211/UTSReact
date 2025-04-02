@@ -218,18 +218,18 @@ const handleExport = (apiData) => {
 //     width:'150px'
 // },
 {
-  title: 'Last Working Date',				
+  title: 'LWD',				
   dataIndex: 'lastWorkingDate',
   key: 'lastWorkingDate',
   align: 'left',
-  width: '200px',
+  width: '150px',
 },
 {
   title: "Month Year",
   dataIndex: "monthYearString",
   key: "monthYearString",
   align: "left",
-  width: "100px",
+  width: "150px",
 },
 {
     title: "Engagement / HR #",		
@@ -269,21 +269,21 @@ const handleExport = (apiData) => {
   dataIndex: "salesUser",
   key: "salesUser",
   align: "left",
-  width: "120px",
+  width: "200px",
 },
 {
   title: 'Talent',				
   dataIndex: 'talent',
   key: 'talent',
   align: 'left',
-  width: '250px',
+  width: '200px',
 },
 {
   title: "Talent Email",
   dataIndex: "talentEmail",
   key: "talentEmail",
   align: "left",
-  width: "200px",
+  width: "250px",
 },
 {
   title: 'Company',				
