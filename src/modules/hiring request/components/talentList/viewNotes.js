@@ -10,7 +10,7 @@ function ViewNotes({onClose,viewNoteData,showAll,deleteNote,onEditNote}) {
 
             <div className={AddNotesStyle.addNotesList}>
                 <div className={`${AddNotesStyle.addNoteItem} ${AddNotesStyle.viewNoteItem}`}>
-                    <div className={AddNotesStyle.addNoteAction}>
+                    <div className={AddNotesStyle.addNoteAction} style={{display:'flex',justifyContent:'space-between',width:'55px'}}>
                         <button type="button" className={AddNotesStyle.addNoteBtn} title='Edit' onClick={()=> onEditNote(viewNoteData)}><EditIcon /></button>
                         <button type="button" className={AddNotesStyle.addNoteBtn} title='Delete' onClick={()=> deleteNote(viewNoteData)}><DeleteIcon /></button>
                     </div>

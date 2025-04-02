@@ -1183,11 +1183,11 @@ export default function ViewOnBoardDetails() {
               key: "Talent's Other Eng. Details",
               children: <OtherDetails />,
             },
-            // {
-            //   label: "Emails",
-            //   key: "Emails",
-            //   children: <EmailComponent onboardID={onboardID} getOnboardFormDetails={getOnboardFormDetails} />,
-            // },
+            {
+              label: "Emails",
+              key: "Emails",
+              children: <EmailComponent onboardID={onboardID} getOnboardFormDetails={getOnboardFormDetails} />,
+            },
             // companyPreviewData?.engagementDetails?.companyTypeID && {
             //   label: "Credit Utilize",
             //   key: "Credit Utilize",

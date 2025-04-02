@@ -115,6 +115,9 @@ export default function TalentReport() {
     },
   });
 
+  const [showReason, setShowReason] = useState(false)
+  const [reasonToShow, setReasonToShow] = useState('')
+
   const [interviewRoundDebounceText, setInterviewRoundDebounceText] = useState("");
   const [interviewRoundSearchText, setInterviewRoundSearchText] = useState("");
   const [interviewRoundList, setInterviewRoundList] = useState([]);
@@ -778,13 +781,12 @@ export default function TalentReport() {
         dataIndex: "name",
         key: "name",
         align: "left",
-        render: (text, result) => {
-          return (
-            <>
-              {text} <br />( {result.emailID} )
-            </>
-          );
-        },
+      },
+      {
+        title: "Talent",
+        dataIndex: "emailID",
+        key: "emailID",
+        align: "left",     
       },
 
       {
@@ -808,6 +810,9 @@ export default function TalentReport() {
         key: "lossRemark",
         align: "left",
         width: "230px",
+        render:(text, result)=>{
+          return <div className={TalentBackoutStyle.ReasonContainer}>{text.length > 100 ? <>{text.substr(0, 99) + '...'} <h4 onClick={()=>{setShowReason(true);setReasonToShow(text)}}>View More</h4></>  : text}   </div>
+        }
       },
       {
         title: "Sales Person",
@@ -1955,6 +1960,15 @@ export default function TalentReport() {
           />
           </> }
         </>
+      </Modal>
+
+      <Modal  width="600px"
+              centered
+              footer={null}
+              className="engagementAddFeedbackModal"
+              open={showReason}
+              onCancel={() => {setShowReason(false); setReasonToShow('')}} >
+                <p>{reasonToShow}</p>
       </Modal>
     </div>
   );
