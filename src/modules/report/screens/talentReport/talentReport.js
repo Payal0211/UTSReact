@@ -796,7 +796,7 @@ export default function TalentReport() {
         dataIndex: "client",
         key: "client",
         align: "left",
-        // width: "240px",
+        width: "240px",
       },
       {
         title: "Reason",
@@ -1180,7 +1180,15 @@ export default function TalentReport() {
       </div>
 
       <Tabs
-        onChange={(e) => setTalentReportTabTitle(e)}
+        onChange={(e) => {
+          setTalentReportTabTitle(e)
+          setrejectedIsAllowFilters(false)
+          setrejectedHTMLFilter(false)
+          setrejectedHTMLFilter(false);
+          setrejectedIsAllowFilters(false);
+          setInterviewRoundIsAllowFilters(false);
+          setInterviewRoundHTMLFilter(false);
+        }}
         defaultActiveKey="Deployed"
         activeKey={talentReportTabTitle}
         animated={true}
