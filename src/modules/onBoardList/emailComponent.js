@@ -197,6 +197,7 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
       setValue("receiver", "");
       setTemplateData({});
       setISPreview(false)
+      setAttachments([])
     }
   };
 
