@@ -1123,7 +1123,7 @@ export default function ViewOnBoardDetails() {
   return (
     <>
       <div className={AddNewClientStyle.addNewContainer}>
-        <div className={AddNewClientStyle.addHRTitle}>{getOnboardFormDetails?.onboardContractDetails?.talentName ? `${getOnboardFormDetails?.onboardContractDetails?.talentName} Engagement Details` : ''} </div>
+        <div className={AddNewClientStyle.addHRTitle} style={{paddingBottom:'25px'}}>{getOnboardFormDetails?.onboardContractDetails?.talentName ? `${getOnboardFormDetails?.onboardContractDetails?.talentName} Engagement Details` : ''} </div>
 
         <Tabs
           onChange={(e) => setTitle(e)}

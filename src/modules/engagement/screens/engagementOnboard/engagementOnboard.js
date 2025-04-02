@@ -133,20 +133,8 @@ const EngagementOnboard = ({
                 : "NA"}
             </li>
 
-            <li>
-              <span>Client Email/Name : </span>
-
-              {getOnboardFormDetails?.client
-                ? getOnboardFormDetails?.client
-                : "NA"}
-            </li>
-            <li>
-              <span>Industry : </span>
-
-              {getOnboardFormDetails?.industry
-                ? getOnboardFormDetails?.industry
-                : "NA"}
-            </li>
+           
+           
 
             {/* <li>
               <span>Country : </span>
@@ -166,6 +154,13 @@ const EngagementOnboard = ({
 
               {getOnboardFormDetails?.client_POC_Name
                 ? getOnboardFormDetails?.client_POC_Name
+                : "NA"}
+            </li>
+            <li>
+              <span>Industry : </span>
+
+              {getOnboardFormDetails?.industry
+                ? getOnboardFormDetails?.industry
                 : "NA"}
             </li>
             <li>
@@ -334,8 +329,8 @@ const EngagementOnboard = ({
 
             <li>
               <span>Job Title : </span>
-              {getOnboardFormDetails?.talentRole
-                ? getOnboardFormDetails?.talentRole
+              {getOnboardFormDetails?.hRJobTitle
+                ? getOnboardFormDetails?.hRJobTitle
                 : "NA"}
             </li>
 
