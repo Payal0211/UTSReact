@@ -97,10 +97,12 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 	);
 
 	const getEndEngagementHandler = useCallback(async () => {
+		setIsSubmit(true);
 		const response =
 			await engagementRequestDAO.getContentEndEngagementRequestDAO({
 				onboardID: talentInfo?.onboardID,
 			});
+		setIsSubmit(false);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setEndEngagementDetails(response?.responseBody?.details)
 			let dateString = response?.responseBody?.details?.contractEndDate

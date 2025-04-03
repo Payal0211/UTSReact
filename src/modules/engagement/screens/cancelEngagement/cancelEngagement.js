@@ -48,13 +48,14 @@ const EngagementCancel = ({ engagementListHandler, talentInfo, closeModal }) => 
 
 
 	const getEndEngagementHandler = useCallback(async () => {
+		setIsSubmit(true)
 		const response = await engagementRequestDAO.getContentEndEngagementRequestDAO({
 				onboardID: talentInfo?.onboardID ?  talentInfo?.onboardID : talentInfo?.OnBoardId ,
 			});
 		const res =	await engagementRequestDAO.getContentCancelEngagementRequestDAO({
 				onboardID: talentInfo?.onboardID ?  talentInfo?.onboardID : talentInfo?.OnBoardId ,
 			});
-		
+		setIsSubmit(false)
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setEndEngagementDetails(response?.responseBody?.details)
 			if(response?.responseBody?.details?.contractEndDate){
