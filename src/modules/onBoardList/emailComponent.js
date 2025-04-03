@@ -39,6 +39,7 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
   const [fetchingTemplate, setFetchingTemplate] = useState(false);
   const [isPreview, setISPreview] = useState(false);
   const [attaachments,setAttachments] = useState([])
+  const [sendingMail, setSendEmail] = useState(false)
   const {
     register,
     handleSubmit,
@@ -70,57 +71,9 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
     return file;
   };
 
-  async function onHandleBlurImage(content, field) {
-    const imgTags = content?.match(/<img[^>]*>/g) || [];
-    const list = [];
-    const base64Srcs = [];
-
-    for (const imgTag of imgTags) {
-      if (!imgTag) continue;
-
-      const srcMatch = imgTag.match(/src="([^"]+)"/);
-      if (srcMatch && srcMatch[1]) {
-        const src = srcMatch[1];
-        const filename = src.split("/").pop();
-        const timestamp = new Date().getTime();
-        const name = filename.split(/\.(?=[^\.]+$)/);
-        const uniqueFilename = `${name}_${timestamp}`;
-        if (src.startsWith("data:image/")) {
-          base64Srcs.push(src);
-          const file = await base64ToFile(src, uniqueFilename);
-          list.push(file);
-        }
-      }
-    }
-
-    if (list.length > 0) {
-      const formData = new FormData();
-      list.forEach((file) => formData.append("Files", file));
-      formData.append("IsCompanyLogo", false);
-      formData.append("IsCultureImage", false);
-      formData.append("Type", "custom_email_attachment");
-
-      let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
-      const uploadedUrls = Result?.responseBody || [];
-      let updatedContent = content;
-      base64Srcs.forEach((src, index) => {
-        if (uploadedUrls[index]) {
-          const escapedSrc = src.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-          const regex = new RegExp(`src="${escapedSrc}"`, "g");
-          updatedContent = updatedContent.replace(
-            regex,
-            `src="${uploadedUrls[index]}"`
-          );
-        }
-      });
-
-      setValue("emailContent", updatedContent);
-    }
-  }
 
   const getEmailMasterValue = async (onboardID) => {
     let result = await engagementRequestDAO.getEmailMasterDAO(onboardID);
-    console.log("em val", result);
     if (result.statusCode === 200) {
       setEmailMasterValues(result.responseBody);
     }
@@ -152,7 +105,6 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
       setValue("subject", result.responseBody.subject);
       setValue("emailContent", result.responseBody.emailContent);
       // setEmailContent(result.responseBody.emailContent)
-      console.log(result.responseBody.emailContent);
     }
   };
 
@@ -165,13 +117,63 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
       return;
     }
 
+    setSendEmail(true)
+    let emailContent = watch("emailContent")
+
+    const imgTags = emailContent?.match(/<img[^>]*>/g) || [];
+    const list = [];
+    const base64Srcs = [];
+
+    for (const imgTag of imgTags) {
+      if (!imgTag) continue;
+
+      const srcMatch = imgTag.match(/src="([^"]+)"/);
+      if (srcMatch && srcMatch[1]) {
+        const src = srcMatch[1];
+        const filename = src.split("/").pop();
+        const timestamp = new Date().getTime();
+        const name = filename.split(/\.(?=[^\.]+$)/);
+        const uniqueFilename = `${name}_${timestamp}`;
+        if (src.startsWith("data:image/")) {
+          base64Srcs.push(src);
+          const file = await base64ToFile(src, uniqueFilename);
+          list.push(file);
+        }
+      }
+    }
+
+    if (list.length > 0) {
+      const formData = new FormData();
+      list.forEach((file) => formData.append("Files", file));
+      formData.append("IsCompanyLogo", false);
+      formData.append("IsCultureImage", false);
+      formData.append("Type", "custom_email_attachment");
+
+      let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
+      const uploadedUrls = Result?.responseBody || [];
+      let updatedContent = emailContent;
+      base64Srcs.forEach((src, index) => {
+        if (uploadedUrls[index]) {
+          const escapedSrc = src.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          const regex = new RegExp(`src="${escapedSrc}"`, "g");
+          updatedContent = updatedContent.replace(
+            regex,
+            `src="${uploadedUrls[index]}"`
+          );
+        }
+      });
+      emailContent = updatedContent
+    //   setValue("emailContent", updatedContent);
+    }
+    
+
     let payload = {
       templateID: templateData?.id,
       fromName: watch("fromName"),
       toEmail: watch("toEmail"),
       replyTo: watch("replyTo"),
       subject: watch("subject"),
-      emailContent: watch("emailContent"),
+      emailContent: emailContent,
       attachmentName: attaachments.join(),
       onBoardID: onboardID,
       hiringRequestID: getOnboardFormDetails.onboardContractDetails.hR_ID,
@@ -181,6 +183,7 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
     };
 
     const result = await engagementRequestDAO.sendEmailDAO(payload);
+    setSendEmail(false)
     console.log("send mail result", result);
 
     if (result.statusCode === 200) {
@@ -198,6 +201,8 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
       setTemplateData({});
       setISPreview(false)
       setAttachments([])
+    }else{
+        message.error('Something went wrong!')
     }
   };
 
@@ -391,9 +396,6 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
               }}
               // className={previewClientStyle.reactQuillEdit}
               // required
-              onBlur={() =>
-                onHandleBlurImage(watch("emailContent"), "About company")
-              }
             />
 
             {docUploading ? (
@@ -427,18 +429,22 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
           >
             <button
               className={AddNewClientStyle.engagementModalHeaderAddBtn}
-              disabled={!templateData?.id}
+              disabled={sendingMail ? sendingMail : !templateData?.id}
               style={{ background: "var(--color-sunlight)", color: "#000" }}
               onClick={handleSubmit(showPreview)}
             >
-              Preview and Send Email
+                {sendingMail ? <> Please wait...{" "}
+                <img src={spinGif} alt="loadgif" width={16} /></>: "Preview and Send Email" }
+              
             </button>
             <button
               className={AddNewClientStyle.engagementModalHeaderAddBtn}
-              disabled={!templateData?.id}
+              disabled={sendingMail ? sendingMail : !templateData?.id}
               onClick={handleSubmit(sendEmail)}
             >
-              Send Email
+                {sendingMail ? <> Please wait...{" "}
+                <img src={spinGif} alt="loadgif" width={16} /></> : "Send Email"}
+              
             </button>
           </div>
         </>
@@ -482,20 +488,23 @@ const EmailComponent = ({ onboardID, getOnboardFormDetails }) => {
           >
             <button
               className={AddNewClientStyle.engagementModalHeaderAddBtn}
-              disabled={!templateData?.id}
+              disabled={sendingMail ? sendingMail : !templateData?.id}
               style={{ background: "var(--color-sunlight)", color: "#000" }}
               onClick={() => {
                 setISPreview(false);
               }}
             >
-              Cancel Preview and Edit
+                 {sendingMail ? <> Please wait...{" "}
+                 <img src={spinGif} alt="loadgif" width={16} /></> : "Cancel Preview and Edit"}
+              
             </button>
             <button
               className={AddNewClientStyle.engagementModalHeaderAddBtn}
-              disabled={!templateData?.id}
+              disabled={sendingMail ? sendingMail : !templateData?.id}
               onClick={handleSubmit(sendEmail)}
             >
-              Send Email
+               {sendingMail ? <> Please wait...{" "}
+               <img src={spinGif} alt="loadgif" width={16} /></> : "Send Email"}
             </button>
           </div>
         </div>
