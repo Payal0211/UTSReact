@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space, Tooltip } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space, Tooltip, Radio, Skeleton } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -235,7 +235,8 @@ const TalentList = ({
 	);
 
 	const [getBillRateInfo, setBillRateInfo] = useState({});
-
+	const [showOfferPosition ,setShowOfferPosition] = useState(false)
+	const [emailLater,setEmailLater] = useState(false)
 	const [showEngagementCancel, setShowEngagementCancel] = useState(false)
 	const [showengagementOnboard, setShowEngagementOnboard] = useState(false);
 	const [getHRAndEngagementId, setHRAndEngagementId] = useState({
@@ -424,6 +425,7 @@ const TalentList = ({
 				hdnRadiovalue: reload ? "Hire" : "AnotherRound",
 				topSkill: '',
 				improvedSkill: '',
+				SendOfferedEmailLater:emailLater,
 				// technicalSkillRating: radioValue2,
 				// communicationSkillRating: radioValue3,
 				// cognitiveSkillRating: radioValue4,
@@ -453,6 +455,7 @@ const TalentList = ({
 			hrId,
 			isAnotherRound,
 			messageAPI,
+			emailLater
 		],
 	);
 
@@ -551,13 +554,14 @@ const TalentList = ({
 
 	// Talents Notes 
 
-	const fetchTalentsNotes =async (item,setNotes)=>{
+	const fetchTalentsNotes =async (item,setNotes,setisNotesLoading)=>{
 		let payload = {
 			"HRID": apiData?.HR_Id,
 			"ATS_TalentID": item?.ATSTalentID
 		}
-
+		setisNotesLoading(true)
 		let result = await hiringRequestDAO.getTalentNotesDAO(payload)
+		setisNotesLoading(false)
 		if(result?.statusCode === 200) {
 			setNotes(result.responseBody.notes?.reverse())
 		}else{
@@ -627,15 +631,37 @@ const TalentList = ({
 	</div>
 
   }
+
+  const ColapsableTalNotesDetails =({item}) => {
+	const [show,setShow] = useState(false)
+	return  <div>
+		<Divider
+			style={{
+				margin: '16px 0 10px 0',
+			}}
+		/>
+	<div onClick={()=>setShow(prev=>!prev)} className={TalentListStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Notes</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }}  /></div>
+	{show &&  <>
+	<Divider
+		style={{
+			margin: '16px 0 10px 0',
+		}}
+	/>
+	<TalentNotesCardComp item={item} />
+	</> }
+	</div>
+
+  }
 	const TalentNotesCardComp = ({item})=>{
 		const [allNotes , setAllNotes] = useState([])
 		const [showAddNotesModal, setShowAddNotesModal] = useState(false);
 	const [showAllNotesModal, setShowAllNotesModal] = useState(false);
 	const [showViewNotesModal, setShowViewNotesModal] = useState(false);
+	const [isNotesLoading,setisNotesLoading] = useState(false)
 	const [viewNoteData,setViewNoteData] = useState({});
 	const [showEditNotesModal, setShowEditNotesModal] = useState(false);
 		useEffect(()=>{
-			fetchTalentsNotes(item,setAllNotes )
+			fetchTalentsNotes(item,setAllNotes, setisNotesLoading )
 		},[item])
 
 		return (
@@ -644,7 +670,9 @@ const TalentList = ({
 				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAddNotesModal(true)} title='Add a note for talent'><NotesIcon />Add a note for talent</button>
 			</div>
 
-			{allNotes?.slice(0,2).map(note=> {
+			{isNotesLoading ? <Skeleton active /> 
+			: allNotes.length === 0 ? <div className={TalentListStyle.addNoteItem} style={{display:'flex', justifyContent:'center'}}><h4 style={{padding:'0'}}>No Notes Available  </h4></div>  
+			: allNotes?.slice(0,2).map(note=> {
 				const regex = /(<([^>]+)>)/gi;
 				const newString = note.Notes.replace(regex, " ")
 			return	<div className={TalentListStyle.addNoteItem} key={note.Note_Id}>
@@ -705,9 +733,11 @@ const TalentList = ({
 				footer={null}
 				className="commonModalWrap"
 				open={showViewNotesModal}
+				cancelButtonProps={{ style: { display: 'none' } }}
 				onCancel={() =>
 					{setShowViewNotesModal(false);setViewNoteData({})}
-				}>
+				}
+				>
 				<ViewNotes viewNoteData={viewNoteData} onClose={()=> {setShowViewNotesModal(false);setViewNoteData({})}} showAll={()=>{setShowAllNotesModal(true);setShowViewNotesModal(false)}}
 				onEditNote={(note)=> {
 					setShowEditNotesModal(true);setViewNoteData(note);setShowViewNotesModal(false);
@@ -871,7 +901,7 @@ const TalentList = ({
 
 										{item?.IsAssociatedWithOtherHR && <Tooltip title={"View Other HR's "}><div className={TalentListStyle.insightText} onClick={()=>{
 										setShowOtherHRStatus(true)
-										setHROtherStatusDetails({TalentID:item?.TalentID, HiringDetailID:item?.HiringDetailID, talentName: item?.Name})
+										setHROtherStatusDetails({TalentID:item?.TalentID, HiringDetailID:hrId, talentName: item?.Name})
 										}}>
 										View Other HR Status.
 											</div></Tooltip> }
@@ -1391,12 +1421,7 @@ const TalentList = ({
 
 									{item?.Status?.includes('Hired') && <TalentListDocuments talentID={item?.TalentID} companyId={apiData?.ClientDetail?.CompanyId} />}
 									
-									<Divider
-										style={{
-											margin: '16px 0 10px 0',
-										}}
-									/>
-									<TalentNotesCardComp item={item} />
+									<ColapsableTalNotesDetails item={item} />
 									
 									<Divider
 										style={{
@@ -1504,7 +1529,10 @@ const TalentList = ({
 																// console.log("as hire")
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
-																clientFeedbackHandler(true,item)
+																setShowOfferPosition(true)
+																setEmailLater(false)
+																setTalentIndex(item?.TalentID);
+																// clientFeedbackHandler(true,item)
 																break;
 															}
 															case TalentOnboardStatus.MOVE_TO_ANOTHER_ROUND:{
@@ -1820,6 +1848,42 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
+            <Modal
+				width="864px"
+				centered
+				footer={null}
+				open={showOfferPosition}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => {setShowOfferPosition(false);setEmailLater(false)}}>
+					<h1>Offer Talent</h1>
+				<div>
+
+				<p style={{marginBottom:'5px'}}>Send Offer Email</p>
+				<Radio.Group
+                        onChange={(e) => {
+                          setEmailLater(e.target.value);
+                        }}
+                        value={emailLater}
+                      >
+                        <Radio value={false}>Now</Radio>
+                        <Radio value={true}>Later</Radio>
+                </Radio.Group>
+
+				<div style={{marginTop:'10px'}}>
+					<p style={{marginBottom:'5px'}}>Now - email will be sent immediately to the Talent</p>
+				<p style={{marginBottom:'10px'}}>Later - you can send email later from custom email section </p>				
+				</div>
+				<div className={TalentListStyle.formPanelAction}>
+				<button className={TalentListStyle.btnPrimary}   onClick={()=>{
+					let item = hrData?.FinalResult?.rows?.find(i=> i.TalentID === talentIndex)
+					clientFeedbackHandler(true,item)
+				
+				}}>Offer</button>
+                <button  onClick={()=>{setShowOfferPosition(false);setEmailLater(false);}}>Cancel</button>
+				</div>
+				</div>
+			</Modal>
 
 			{/** ============ MODAL FOR VERSANT SCORE ================ */}
 			<Modal

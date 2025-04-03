@@ -115,6 +115,9 @@ export default function TalentReport() {
     },
   });
 
+  const [showReason, setShowReason] = useState(false)
+  const [reasonToShow, setReasonToShow] = useState('')
+
   const [interviewRoundDebounceText, setInterviewRoundDebounceText] = useState("");
   const [interviewRoundSearchText, setInterviewRoundSearchText] = useState("");
   const [interviewRoundList, setInterviewRoundList] = useState([]);
@@ -778,13 +781,14 @@ export default function TalentReport() {
         dataIndex: "name",
         key: "name",
         align: "left",
-        render: (text, result) => {
-          return (
-            <>
-              {text} <br />( {result.emailID} )
-            </>
-          );
-        },
+        width: "200px",
+      },
+      {
+        title: "Talent Email",
+        dataIndex: "emailID",
+        key: "emailID",
+        align: "left",     
+        width: "250px",
       },
 
       {
@@ -792,7 +796,7 @@ export default function TalentReport() {
         dataIndex: "client",
         key: "client",
         align: "left",
-        // width: "240px",
+        width: "240px",
       },
       {
         title: "Reason",
@@ -808,6 +812,9 @@ export default function TalentReport() {
         key: "lossRemark",
         align: "left",
         width: "230px",
+        render:(text, result)=>{
+          return <div className={TalentBackoutStyle.ReasonContainer}>{text.length > 100 ? <>{text.substr(0, 99) + '...'} <h4 onClick={()=>{setShowReason(true);setReasonToShow(text)}}>View More</h4></>  : text}   </div>
+        }
       },
       {
         title: "Sales Person",
@@ -1173,7 +1180,15 @@ export default function TalentReport() {
       </div>
 
       <Tabs
-        onChange={(e) => setTalentReportTabTitle(e)}
+        onChange={(e) => {
+          setTalentReportTabTitle(e)
+          setrejectedIsAllowFilters(false)
+          setrejectedHTMLFilter(false)
+          setrejectedHTMLFilter(false);
+          setrejectedIsAllowFilters(false);
+          setInterviewRoundIsAllowFilters(false);
+          setInterviewRoundHTMLFilter(false);
+        }}
         defaultActiveKey="Deployed"
         activeKey={talentReportTabTitle}
         animated={true}
@@ -1955,6 +1970,15 @@ export default function TalentReport() {
           />
           </> }
         </>
+      </Modal>
+
+      <Modal  width="600px"
+              centered
+              footer={null}
+              className="engagementAddFeedbackModal"
+              open={showReason}
+              onCancel={() => {setShowReason(false); setReasonToShow('')}} >
+                <p>{reasonToShow}</p>
       </Modal>
     </div>
   );

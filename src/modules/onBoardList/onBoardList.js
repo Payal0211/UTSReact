@@ -53,14 +53,15 @@ import RenewEngagement from 'modules/engagement/screens/renewEngagement/renewEng
 import LeaveUppdate from './leaveUppdate';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
-const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails) => {
+const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails,navigate) => {
     return [   
       {
 				title: '    ',
 				dataIndex: 'action',
 				key: 'action',
 				align: 'left',
-				width: '150px',
+				width: '180px',
+        fixed: "left", // Fix this column on the left
 				render: (_, param, index) => {
 					let listItemData = [
 						{
@@ -74,8 +75,8 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 							IsEnabled: true,
 						},
             {
-							label: 'Update Leaves',
-							key: 'updateLeaves',
+							label: 'Send Custom Email',
+							key: 'sendCustomEmail',
 							IsEnabled: true,
 						},
 					];
@@ -88,6 +89,23 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					// 		},
 					// 	);
 					// }
+          if (!param?.lastWorkingDate ) {
+            listItemData.push({
+							label: 'Update Leaves',
+							key: 'updateLeaves',
+							IsEnabled: true,
+						},);
+						listItemData.push({
+							label: 'End Engagement',
+							key: 'endEngagement',
+							IsEnabled: true,
+						});
+						listItemData.push({
+							label: 'Cancel Engagement',
+							key: 'cancelEngagement',
+							IsEnabled: true,
+						});
+					}
 					if (param?.typeOfHR === 'Contractual' && param?.payout_BillRate !== '' ) {
 						listItemData.push(
 							{
@@ -114,18 +132,6 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 							IsEnabled: true,
 						});
 					}				
-					if (param?.isContractCompleted !== 1) {
-						listItemData.push({
-							label: 'End Engagement',
-							key: 'endEngagement',
-							IsEnabled: true,
-						});
-						listItemData.push({
-							label: 'Cancel Engagement',
-							key: 'cancelEngagement',
-							IsEnabled: true,
-						});
-					}
 					if (
 						param?.talentLegal_StatusID === 2 &&
 						param?.clientLegal_StatusID === 2 &&
@@ -226,6 +232,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
 										break;
 									}
+                  case 'Send Custom Email':{
+                      navigate(`/viewOnboardDetails/${param.id}/${param.isOngoing === "Ongoing" ? true : false }`,{
+                        state: {
+                          tabToActive: "Custom Email",
+                        }
+                      })
+                    break
+                  }
 									default:
 										break;
 								}
@@ -234,30 +248,25 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					);
 				},
 			},  
-      {
-        title: "Created Date",
-        dataIndex: "createdByDatetime",
-        key: "createdByDatetime",
-        align: "left",  
-        width: '150px',          
-        render:(text)=>{
-            let dateArr = text.split(" ")
-            return dateArr[0]
-        }
-      },
-      {
-        title: "Eng. Count",
-        dataIndex: "engagementCount",
-        key: "engagementCount",
-        align: "left",
-        width: '95px',
-        },
+      // {
+      //   title: "Created Date",
+      //   dataIndex: "createdByDatetime",
+      //   key: "createdByDatetime",
+      //   align: "left",  
+      //   width: '150px',          
+      //   render:(text)=>{
+      //       let dateArr = text.split(" ")
+      //       return dateArr[0]
+      //   }
+      // },
+     
       {
         title: "Eng. ID/HR#",
         dataIndex: "engagemenID",
         key: "engagemenID",
         align: "left",
         width: '200px',
+        fixed: "left", // Fix this column on the left
         render:(text,result)=>{
           return <>
           <Link to={`/viewOnboardDetails/${result.id}/${result.isOngoing === "Ongoing" ? true : false }`} target='_blank'  style={{
@@ -279,6 +288,13 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
           
           </> 
       }
+      },
+      {
+        title: "Eng. Count",
+        dataIndex: "engagementCount",
+        key: "engagementCount",
+        align: "left",
+        width: '95px',
       },
       {
         title: "Eng. Type",
@@ -535,6 +551,16 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					),
 			},	
       {
+        title: "INR Exch. Rate",
+        dataIndex: "payout_Talent_CurrencyExchangeRate",
+        key: "payout_Talent_CurrencyExchangeRate",
+        align: "left",
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
+      },
+      {
         title: "Uplers Fees ( USD )",
         dataIndex: "uplersFees_USD",
         key: "uplersFees_USD",
@@ -553,7 +579,17 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         // render:(_,result)=>{
         //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
         // }
-      }
+      },
+      {
+        title: "Invoice #",
+        dataIndex: "payout_ESales_InvoiceNumber",
+        key: "payout_ESales_InvoiceNumber",
+        align: "left",
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
+      },
       
     ];
 }
@@ -711,7 +747,7 @@ function OnBoardList() {
 
     const tableColumnsMemo = useMemo(
 		() =>
-        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails),
+        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails,navigate),
 		[],
 	  );
 
@@ -1659,7 +1695,7 @@ function OnBoardList() {
               ) : (
                 <WithLoader className="mainLoader">
                   <Table
-                    scroll={{  y: '100vh' }}
+                    scroll={{  y: '100vh', x: "max-content"  }}                   
                     id="hrListingTable"
                     columns={tableColumnsMemo}
                     bordered={false}

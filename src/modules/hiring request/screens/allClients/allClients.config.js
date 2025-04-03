@@ -73,6 +73,7 @@ export const allClientsConfig = {
                     dataIndex: 'ssO_Login',
                     key: 'ssO_Login',
                     width: '150px',
+                    fixed: 'left',
                     render: (text, result) => {
                         let url = text + `&isInternal=${true}`
                         return (
@@ -93,6 +94,7 @@ export const allClientsConfig = {
                     key: 'edit',
                     align: 'center',
                     width: '60px',
+                    fixed: 'left',
                     render:(_,result) => {
                         return (<div style={{display:'flex', alignItems:'center'}}>
                         {isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
@@ -160,12 +162,14 @@ export const allClientsConfig = {
                     dataIndex: 'addedDate',
                     key: 'addedDate',
                     width: '120px',
+                    fixed: 'left',
                 },
                 {
                     title: 'Company',
                     dataIndex: 'companyName',
                     key: 'companyName',
                     width: '210px',
+                    fixed: 'left',
                     render: (text, result) => {
                         if(result.companyID === 0  || result.clientID=== 0){
                             return text

@@ -64,6 +64,7 @@ export const allHRConfig = {
         key: "isHRFocused",
         align: "center",
         width: "60px",
+        fixed: "left",
         render: (val,result) => {
           if(result.isDraftHR){
             return
@@ -80,6 +81,7 @@ export const allHRConfig = {
         dataIndex: "showCloneToDemoAccount",
         key: "showCloneToDemoAccount",
         align: "center",
+        fixed: "left",
         width: showCloneHRToDemoAccount === true ? "32px": "0",     
         render: (text, result) => {
           if(showCloneHRToDemoAccount === true)
@@ -108,6 +110,7 @@ export const allHRConfig = {
         key: "starStatus",
         align: "center",
         width: "42px",
+        fixed: "left",
         render: (_, param) => {
           let response = All_Hiring_Request_Utils.GETHRPRIORITY(
             param?.starStatus,
@@ -125,6 +128,7 @@ export const allHRConfig = {
         key: "reopenHR",
         width: "42px",
         align: "center",
+        fixed: "left",
         render: (text, result) => {
           return (
             <>
@@ -181,6 +185,7 @@ export const allHRConfig = {
         key: "cloneHR",
         width: "42px",
         align: "center",
+        fixed: "left",
         render: (text, result) => {
           // if (LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10) {
           //   return;
@@ -215,6 +220,7 @@ export const allHRConfig = {
         key: "Date",
         align: "left",
         width: "120px",
+        fixed: "left",
       },
       {
         title: "HR ID",
@@ -222,6 +228,7 @@ export const allHRConfig = {
         key: "HR_ID",
         align: "left",
         width: "176px",
+        fixed: "left",
         render: (text, result) => (
           <>
           <Link

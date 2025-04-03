@@ -334,6 +334,11 @@
     padding: 0 25px;
   }
 
+  .colMd4 {
+    width: 33%;
+    /* padding: 0 25px; */
+  }
+
   .userPanelAction button {
     background: var(--text-color-purity);
     border: 1px solid #cecccc;
@@ -703,9 +708,14 @@
 
 .emailHeaderComp{
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     gap: 20px;
     align-items: center;
+}
+
+.emailHeaderComp [class*="ant-select"]  [class*='ant-select-selector']{
+  height: 40px !important;
+  padding: 10px 16px !important;
 }
 
 .emailMainComp{
