@@ -53,7 +53,7 @@ import RenewEngagement from 'modules/engagement/screens/renewEngagement/renewEng
 import LeaveUppdate from './leaveUppdate';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
-const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails) => {
+const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails,navigate) => {
     return [   
       {
 				title: '    ',
@@ -74,7 +74,11 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 							key: 'addInvoiceDetails',
 							IsEnabled: true,
 						},
-            
+            {
+							label: 'Send Custom Email',
+							key: 'sendCustomEmail',
+							IsEnabled: true,
+						},
 					];
 					// if(param?.tscName && (param?.currentStatus !== "In Replacement")){
 					// 	listItemData.push(
@@ -228,6 +232,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 										setFilteredData({...param,onboardID:param.id, hrID:param.hiringId});
 										break;
 									}
+                  case 'Send Custom Email':{
+                      navigate(`/viewOnboardDetails/${param.id}/${param.isOngoing === "Ongoing" ? true : false }`,{
+                        state: {
+                          tabToActive: "Custom Email",
+                        }
+                      })
+                    break
+                  }
 									default:
 										break;
 								}
@@ -735,7 +747,7 @@ function OnBoardList() {
 
     const tableColumnsMemo = useMemo(
 		() =>
-        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails),
+        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails,navigate),
 		[],
 	  );
 

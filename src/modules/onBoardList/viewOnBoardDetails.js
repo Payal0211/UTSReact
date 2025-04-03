@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback,useRef } from "react";
 import AddNewClientStyle from "../../modules/client/screens/addnewClient/add_new_client.module.css";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link ,useLocation} from "react-router-dom";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import {
   Avatar,
@@ -44,6 +44,7 @@ import EmailComponent from "./emailComponent";
 export default function ViewOnBoardDetails() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("OnBoard Details");
+  const { state } = useLocation()
   const { onboardID , isOngoing} = useParams();
   const [isLoading, setLoading] = useState(false);
   const [isLeaveLoading,setLeaveLoading] = useState(false);
@@ -623,6 +624,12 @@ export default function ViewOnBoardDetails() {
     ];
   }, [allBRPRlist]);
 
+  useState(()=>{
+    if(state?.tabToActive){
+      setTitle(state?.tabToActive)
+    }
+  },[state])
+
   const getAllBRPRTableData = async (onboardID) => {
     setLoading(true);
     let result = await engagementRequestDAO.getAllBRPRListWithLeaveDAO(onboardID);
@@ -1184,8 +1191,8 @@ export default function ViewOnBoardDetails() {
               children: <OtherDetails />,
             },
             {
-              label: "Emails",
-              key: "Emails",
+              label: "Custom Email",
+              key: "Custom Email",
               children: <EmailComponent onboardID={onboardID} getOnboardFormDetails={getOnboardFormDetails} />,
             },
             // companyPreviewData?.engagementDetails?.companyTypeID && {
