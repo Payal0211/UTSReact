@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space, Tooltip, Radio } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space, Tooltip, Radio, Skeleton } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -554,13 +554,14 @@ const TalentList = ({
 
 	// Talents Notes 
 
-	const fetchTalentsNotes =async (item,setNotes)=>{
+	const fetchTalentsNotes =async (item,setNotes,setisNotesLoading)=>{
 		let payload = {
 			"HRID": apiData?.HR_Id,
 			"ATS_TalentID": item?.ATSTalentID
 		}
-
+		setisNotesLoading(true)
 		let result = await hiringRequestDAO.getTalentNotesDAO(payload)
+		setisNotesLoading(false)
 		if(result?.statusCode === 200) {
 			setNotes(result.responseBody.notes?.reverse())
 		}else{
@@ -630,15 +631,37 @@ const TalentList = ({
 	</div>
 
   }
+
+  const ColapsableTalNotesDetails =({item}) => {
+	const [show,setShow] = useState(false)
+	return  <div>
+		<Divider
+			style={{
+				margin: '16px 0 10px 0',
+			}}
+		/>
+	<div onClick={()=>setShow(prev=>!prev)} className={TalentListStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Notes</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }}  /></div>
+	{show &&  <>
+	<Divider
+		style={{
+			margin: '16px 0 10px 0',
+		}}
+	/>
+	<TalentNotesCardComp item={item} />
+	</> }
+	</div>
+
+  }
 	const TalentNotesCardComp = ({item})=>{
 		const [allNotes , setAllNotes] = useState([])
 		const [showAddNotesModal, setShowAddNotesModal] = useState(false);
 	const [showAllNotesModal, setShowAllNotesModal] = useState(false);
 	const [showViewNotesModal, setShowViewNotesModal] = useState(false);
+	const [isNotesLoading,setisNotesLoading] = useState(false)
 	const [viewNoteData,setViewNoteData] = useState({});
 	const [showEditNotesModal, setShowEditNotesModal] = useState(false);
 		useEffect(()=>{
-			fetchTalentsNotes(item,setAllNotes )
+			fetchTalentsNotes(item,setAllNotes, setisNotesLoading )
 		},[item])
 
 		return (
@@ -647,7 +670,9 @@ const TalentList = ({
 				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAddNotesModal(true)} title='Add a note for talent'><NotesIcon />Add a note for talent</button>
 			</div>
 
-			{allNotes?.slice(0,2).map(note=> {
+			{isNotesLoading ? <Skeleton active /> 
+			: allNotes.length === 0 ? <div className={TalentListStyle.addNoteItem} style={{display:'flex', justifyContent:'center'}}><h4 style={{padding:'0'}}>No Notes Available  </h4></div>  
+			: allNotes?.slice(0,2).map(note=> {
 				const regex = /(<([^>]+)>)/gi;
 				const newString = note.Notes.replace(regex, " ")
 			return	<div className={TalentListStyle.addNoteItem} key={note.Note_Id}>
@@ -1396,12 +1421,7 @@ const TalentList = ({
 
 									{item?.Status?.includes('Hired') && <TalentListDocuments talentID={item?.TalentID} companyId={apiData?.ClientDetail?.CompanyId} />}
 									
-									<Divider
-										style={{
-											margin: '16px 0 10px 0',
-										}}
-									/>
-									<TalentNotesCardComp item={item} />
+									<ColapsableTalNotesDetails item={item} />
 									
 									<Divider
 										style={{
