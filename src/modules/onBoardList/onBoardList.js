@@ -445,11 +445,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
         }
       },
       {
-        title: "Exch. Rate",
-        dataIndex: "payout_CurrencyExchangeRate",
-        key: "payout_CurrencyExchangeRate",
+        title: "INR Exch. Rate",
+        dataIndex: "payout_Talent_CurrencyExchangeRate",
+        key: "payout_Talent_CurrencyExchangeRate",
         align: "left",
-        width: '100px',       
+        width: '150px', 
+        // render:(_,result)=>{
+        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
+        // }
       },
       {
         title: <>Per Day PR <br/> (INR)</>,
@@ -551,14 +554,11 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 					),
 			},	
       {
-        title: "INR Exch. Rate",
-        dataIndex: "payout_Talent_CurrencyExchangeRate",
-        key: "payout_Talent_CurrencyExchangeRate",
+        title: "Exch. Rate",
+        dataIndex: "payout_CurrencyExchangeRate",
+        key: "payout_CurrencyExchangeRate",
         align: "left",
-        width: '150px', 
-        // render:(_,result)=>{
-        //   return `${result.currencySign} ` + (+result.final_HR_Cost - +result.talent_Cost).toFixed(2) 
-        // }
+        width: '100px',       
       },
       {
         title: "Uplers Fees ( USD )",

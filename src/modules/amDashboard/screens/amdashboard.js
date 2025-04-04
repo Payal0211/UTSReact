@@ -28,6 +28,8 @@ function AMDashboard() {
   const [userData, setUserData] = useState({});
   const [summaryCount, setSummaryCount] = useState({});
   const [amList, setAMList] = useState([]);
+  const [exitTalentInfo,setExitTalentInfo] = useState('')
+  const [showExitDetail,setShowExitDetail] = useState(false)
   const [isLoading, setLoading] = useState(false);
   const [engagementList, setEngagementList] = useState([]);
   const [zohoTicketList, setzohoTicketList] = useState([]);
@@ -129,6 +131,7 @@ function AMDashboard() {
           label: val.value,
         }))
       );
+      setExitTalentInfo(result.responseBody.exitTalentInfo?.talentNames)
     }
   };
 
@@ -929,12 +932,12 @@ function AMDashboard() {
           <div
             className={amStyles.filterSets}
             style={{
-              justifyContent: "left",
+              // justifyContent: "left",
               background: "none",
-              paddingLeft: "0",
-              paddingTop: "0",
+              padding:'0'
             }}
           >
+            {/* <div className={amStyles.filterSetsInner}> */}
             <div className={amStyles.filterSetsInner} style={{ width: "40%" }}>
               <Select
                 id="selectedValue"
@@ -950,37 +953,47 @@ function AMDashboard() {
                 optionFilterProp="label"
                 getPopupContainer={(trigger) => trigger.parentElement}
               />
-            </div>{" "}
-            <button style={{marginLeft:'15px'}}
+               <button style={{marginLeft:'15px'}}
                         type="submit"
                         className={amStyles.btnPrimary}
                         onClick={() => handleGo()}
                       >
                         Search
                       </button>
-            <p className={amStyles.resetText} onClick={() => {setSelectedAM([])
+            <p className={amStyles.resetText} style={{width:'140px'}} onClick={() => {setSelectedAM([])
               handleReset()
             }}>
               Reset Filter
             </p>
-            {/* <div className={amStyles.filterRight}>
-						<div className={amStyles.searchFilterSet}>
-							<SearchSVG style={{ width: '16px', height: '16px' }} />
-							<input
-								type={InputType.TEXT}
-								className={amStyles.searchInput}
-								placeholder="Search Table"
-								value={searchText}
-								onChange={(e) => {
-									 setSearchText(e.target.value)
-									// return setDebouncedSearch(
-									// 	engagementUtils.engagementListSearch(e, apiData),
-									// );
-								}}
-							/>
-						</div>
-					</div> */}
+            </div>{" "}
+           
+            {/* </div> */}
+         
+            <div className={amStyles.filterRight} style={{  width:'50%' }}>
+          {exitTalentInfo && 
+             <div
+                    className={amStyles.clientRenewalsWarning}
+                    style={{ width: "100%" , cursor:'pointer' }}
+                    onClick={()=>{
+                      setShowExitDetail(true)
+                    }}
+                  >
+                     <div class="marquee">
+    <div class="marquee_blur" aria-hidden="true">
+      <p class="marquee_text"> {exitTalentInfo.substring(0,87)+'...'}</p>
+    </div>
+    <div class="marquee_clear">
+      <p class="marquee_text"> {exitTalentInfo.substring(0,87)+'...'}</p>
+    </div>
+  </div>
+                  
+
+                  </div>
+          }
+					</div>
           </div>
+
+
         </div>
       )}
 
@@ -1463,6 +1476,18 @@ function AMDashboard() {
           },
         ]}
       />
+
+         <Modal  width="600px"
+              centered           
+              footer={null}
+              className="engagementAddFeedbackModal"
+              open={showExitDetail}
+              onCancel={() => {setShowExitDetail(false)}} >
+                <div style={{padding:'35px 10px 10px 10px'}}>
+                  <p>{exitTalentInfo}</p>
+                </div>
+                
+              </Modal>
 
       <Modal
         width="930px"
