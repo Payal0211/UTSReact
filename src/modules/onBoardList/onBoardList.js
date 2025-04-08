@@ -1,4 +1,4 @@
-import { InputType } from 'constants/application';
+import { EmailRegEx, InputType } from 'constants/application';
 import onboardList from './onBoard.module.css'
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
@@ -53,7 +53,7 @@ import RenewEngagement from 'modules/engagement/screens/renewEngagement/renewEng
 import LeaveUppdate from './leaveUppdate';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
-const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails,navigate) => {
+const onBoardListConfig = ({getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails,navigate,getInvoiceInfo,ShowInvoiceCreationCTA}) => {
     return [   
       {
 				title: '    ',
@@ -145,6 +145,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
 							IsEnabled: true,
 						});
 					}
+console.log('ShowInvoiceCreationCTA',ShowInvoiceCreationCTA)
+          if(ShowInvoiceCreationCTA){
+            listItemData.push({
+							label: 'Create Invoice',
+							key: 'createInvoice',
+							IsEnabled: true,
+						})
+          }
 					return (
 						<HROperator
 							title="Action"
@@ -240,6 +248,14 @@ const onBoardListConfig = (getEngagementModal, setEngagementModal,setFeedBackDat
                       })
                     break
                   }
+                  case 'Create Invoice':{
+                    setEngagementModal({
+											...getEngagementModal,
+											showInvoice: true,
+										});
+                    getInvoiceInfo(param)
+                  break
+                }
 									default:
 										break;
 								}
@@ -662,6 +678,21 @@ function OnBoardList() {
         formState: { errors:AMErrors },
       } = useForm();
 
+      const {
+        register:invoiceRegister,
+        handleSubmit:invoiceSubmit,
+        setValue:invoiceSetValue,
+        watch:watchInvoice,
+        resetField:resetInvoiceField,	
+        clearErrors:clearInvoiceError,
+        formState: { errors:invoiceErrors },
+      } = useForm();
+      const [invoiceDate, setInvoiceDate] = useState(new Date());
+      const [invData,setInvData] = useState({})
+      const [isLoadingInvoice,setIsLoadingInvoice] = useState(false)
+      const [controlledPaymentTermValue,setControlledPaymentTermValue] = useState('')
+      const [isInvoiceAvailable,setIsInvoiceAvailable] = useState(false)
+console.log('controlledPaymentTermValue',controlledPaymentTermValue)
     const [editAMModal,setEditAMModal] = useState(false)
       const [AMLIST, setAMLIST] = useState([])
       const [AMDetails,setAMDetails] = useState({});
@@ -704,7 +735,8 @@ function OnBoardList() {
       engagementEnd: false,
       engagementInvoice: false,
       engagementEditAllBillRateAndPayRate:false,
-      engagementCancel:false
+      engagementCancel:false,
+      showInvoice:false
     });
     const [getFeedbackFormContent, setFeedbackFormContent] = useState({});
     const [feedBackData, setFeedBackData] = useState({
@@ -733,6 +765,7 @@ function OnBoardList() {
     const [leaveUpdate, setLeaveUpdate] = useState(false)
     const [talentDetails,setTalentDetails] = useState({})
 
+
     const editAMModalcontroler = async (id) =>{
         setEditAMModal(true)
         let result = await engagementRequestDAO.getAMDetailsDAO(id)
@@ -745,10 +778,91 @@ function OnBoardList() {
         }		
       }
 
+      const getInvoiceInfo = async (param)=> {
+        console.log(param, moment(monthDate).format('YYYY'),moment(monthDate).format('M'))
+        let payload = {
+          companyId:param.companyID,
+          year: moment(monthDate).format('YYYY'),
+          month:moment(monthDate).format('M')
+        }
+        setIsLoadingInvoice(true)
+        const result = await engagementRequestDAO.GetInvoiceDetails(payload)
+        setIsLoadingInvoice(false)
+console.log('res',result)
+
+        if(result.statusCode === 200){
+
+          if(result.responseBody.details.length > 0){
+            setIsInvoiceAvailable(true)
+          }
+          let data = result.responseBody.details[0]
+          // let dateValArr = data.invoiceDate.split(' ')
+          // let dateStr = `${dateValArr[0]} ${dateValArr[2]} ${dateValArr[3]}`
+          setInvData(data)
+          invoiceSetValue('company',data.company)
+          invoiceSetValue('client',data.client_EmailID)
+          invoiceSetValue('zohoCustomer',data.zoho_Client_EmailID)
+          invoiceSetValue('currency',data.invoice_CurrencyCode)
+          invoiceSetValue('paymentTerm',data.paymentTerms)
+          setControlledPaymentTermValue(data.paymentTerms)
+          // invoiceSetValue()
+          setInvoiceDate(new Date(data.invoiceDate))
+          // console.log('data',data.invoiceDate,moment(data.invoiceDateStr).format('DD-MM-YYYY'), new Date(data.invoiceDateStr), data )
+        }else{
+          setIsInvoiceAvailable(false)
+        }
+
+      }
+
+      const saveInvoice = async (d)=>{
+        // let payload = {...d, invDate: invoiceDate}
+        let pl ={
+          "invoiceDto": {
+            "id": 0,
+            "invoiceId": 0,
+            "customerName": invData?.zoho_Client, // zoho_Client
+            "customerId": invData?.zoho_CustomerID, // zoho_CustomerID
+            "status": "draft",    
+            "invoiceDate": moment(invoiceDate).format('yyyy-MM-DD') , //invoiceDate  
+            "currencyCode": invData?.invoice_CurrencyCode, //invoice_CurrencyCode
+            "exchangeRate": invData?.exchangeRate, //exchangeRate
+            "paymentTermsId" : invData?.paymentTermsID, //paymentTermsID
+            "invoiceSubtotal": invData?.finalTotal, //finalTotal
+            "invoiceAmount": invData?.finalTotal, //finalTotal  
+            "createdBy": userData?.UserId, // loggedin userid
+            "modifiedBy": userData?.UserId, // loggedin userid    
+            "billingAddress": invData?.billing_Address, //billing_Address
+            "shippingAddress": invData?.billing_Address, //billing_Address    
+            "salespersonId": invData?.salesPersonID, //salesPersonID
+            "salespersonName": invData?.salesPersonName,  //salesPersonName  
+            "companyId": invData?.companyID, //companyID
+            "contactId": invData?.contactID,  //contactID
+            "companyName": d.company, //company  
+            "organizationId": invData?.organizationID,    //organizationID
+            "customerDefaultBillingAddress": invData?.billing_Address, //billing_Address
+            "dueDate": invData?.dueDateStr, //duedate
+            "paymentExpectedDate": invData?.dueDateStr, //duedate
+            "lastPaymentDate": null//duedate
+          },
+          "invoiceLineItemDto": [
+            {
+              "itemName": invData?.itemName,
+              "description": invData?.lineItem, //lineItem     
+              "rate": invData?.rate, //rate
+              "quantity": invData?.qty, //qty     
+              "itemTotal": invData?.lineItemTotal //lineItemTotal 
+            }
+          ]
+        }
+
+        const result = await engagementRequestDAO.UpdateInvoiceDetails(pl)
+        console.log(result , pl)
+      }
+
     const tableColumnsMemo = useMemo(
 		() =>
-        onBoardListConfig(getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails,navigate),
-		[],
+        onBoardListConfig({getEngagementModal, setEngagementModal,setFeedBackData,setHRAndEngagementId,setFilteredData,setISEditTSC,setTSCONBoardData,setEngagementBillAndPayRateTab,setActiveTab,setAllBRPRdata,editAMModalcontroler,setLeaveUpdate,setTalentDetails,navigate,getInvoiceInfo,ShowInvoiceCreationCTA:userData?.ShowInvoiceCreationCTA}),
+		[userData?.ShowInvoiceCreationCTA],
 	  );
 
     const feedbackTableColumnsMemo = useMemo(
@@ -2007,6 +2121,223 @@ function OnBoardList() {
 						/>
 					</Modal>
 				)}
+
+        {/** ============ MODAL FOR ENGAGEMENT ADD FEEDBACK ================ */}
+        {getEngagementModal.showInvoice && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className="engagementAddFeedbackModal"
+						open={getEngagementModal.showInvoice}
+						onCancel={() =>{
+              setEngagementModal({
+                ...getEngagementModal,
+                showInvoice: false,
+              })
+              resetInvoiceField()
+              clearInvoiceError()
+              setControlledPaymentTermValue('')
+              setIsInvoiceAvailable(false)
+            }
+						}>
+              <h2 className={onboardList.modalTitle}>Create Invoice</h2>
+
+              {isLoadingInvoice ? <Skeleton active /> :  isInvoiceAvailable ?
+              <>
+              
+              <HRInputField
+                label={'Company'}
+                register={invoiceRegister}
+                name={'company'}
+                type={InputType.TEXT}
+                placeholder="Enter Company"
+                // isTextArea
+                // rows={5}
+                required
+                validationSchema={{
+                required: 'please enter company.',
+                }}
+                isError={invoiceErrors['company'] && invoiceErrors['company']}
+                errorMsg="please enter client."
+                />
+
+              <HRInputField
+
+                  label={'Client'}
+                  register={invoiceRegister}
+                  name={'client'}
+                  type={InputType.TEXT}
+                  placeholder="Enter Note/Comment"
+                  // isTextArea
+                  // rows={5}
+                  required
+                  validationSchema={{
+                  required: 'please enter client.',
+                   pattern: {
+                              value: EmailRegEx.email,
+                              message: "Entered value does not match email format",
+                            },
+                  }}
+                  isError={invoiceErrors['client'] && invoiceErrors['client']}
+                  errorMsg={invoiceErrors['client']?.message}
+                  />
+                  <HRInputField
+
+                  label={'Zoho Customer Email'}
+                  register={invoiceRegister}
+                  name={'zohoCustomer'}
+                  type={InputType.TEXT}
+                  placeholder="Zoho Customer Email"
+                  // isTextArea
+                  // rows={5}
+                  required
+                  validationSchema={{
+                  required: 'please enter zoho customer email.',
+                   pattern: {
+                              value: EmailRegEx.email,
+                              message: "Entered value does not match email format",
+                            },
+                  }}
+                  isError={invoiceErrors['zohoCustomer'] && invoiceErrors['zohoCustomer']}
+                  errorMsg={invoiceErrors['zohoCustomer']?.message}
+                  />
+
+<div className={onboardList.row}>
+<div className={onboardList.colMd6}>
+    <div className={onboardList.calendarFilterSet} style={{alignItems:'start',flexDirection:'column'}}>
+                  <div className={onboardList.label}>Invoice date</div>
+                  <div className={onboardList.calendarFilter} style={{width:'100%', height:'50px'}}>
+                    <CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+                    <DatePicker
+                      style={{ backgroundColor: 'red' }}
+                      onKeyDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      className={onboardList.dateFilter}
+                      placeholderText="Month - Year"
+                      selected={invoiceDate}
+                      onChange={date => {console.log(date, new Date(), moment(date).format('yyyy-MM-DD'))
+                        setInvoiceDate(date)
+                      }}
+                      // startDate={startDate}
+                      // endDate={endDate}
+                      dateFormat="dd-MM-yyyy"
+                      // showMonthYearPicker
+                    />
+                  </div>
+                </div>
+</div>
+{console.log(watchInvoice('currency') )}
+<div className={onboardList.colMd6}>
+<HRInputField
+
+label={"Currency"}
+register={invoiceRegister}
+name={'currency'}
+type={InputType.TEXT}
+placeholder="Currency"
+disabled={true}
+// isTextArea
+// rows={5}
+required
+validationSchema={{
+required: 'please enter currency.',
+}}
+isError={invoiceErrors['currency'] && invoiceErrors['currency']}
+errorMsg="please enter currency."
+/>
+ {/* <HRSelectField
+					setValue={(val, _)=>AMsetValue(val,_)}
+					register={invoiceRegister}
+					searchable={true}
+					name="currency"
+					label="Currency"
+          disabled={true}
+					defaultValue={watchInvoice('currency') ? watchInvoice('currency') : "Please Select"} 
+					options={AMLIST?.sort((a, b) => a.value.localeCompare(b.value))}
+					// required
+					// isError={invoiceErrors['currency'] && invoiceErrors['currency']}
+					// errorMsg="Please select Currency."
+					className="custom-select-class"
+				/> */}
+</div>    
+
+</div>
+
+
+            {/* <HRInputField
+              label={'Payment term'}
+              register={invoiceRegister}
+              name={'paymentTerm'}
+              type={InputType.TEXT}
+              placeholder="Zoho Customer Email"
+              // isTextArea
+              // rows={5}
+              required
+              validationSchema={{
+              required: 'please enter paymentTerm.',
+              }}
+              isError={invoiceErrors['paymentTerm'] && invoiceErrors['paymentTerm']}
+              errorMsg="Please Enter Payment Term."
+            /> */}
+
+             <HRSelectField
+             controlledValue={controlledPaymentTermValue}
+             setControlledValue={setControlledPaymentTermValue}
+             isControlled={true}
+                                mode={"value"}
+                                setValue={setValue}
+                                register={register}
+                                label={"Payment term"}
+                                defaultValue="Select"
+                                options={[{id: 7, value:7},
+                                  {id: 15, value:15},{id: 20, value:20},{id: 30, value:30},{id: 45, value:45},{id: 60, value:60},{id: 90, value:90},
+
+                                ]}
+                                name="paymentTerm"
+                                required
+                                validationSchema={{
+                                required: 'please enter paymentTerm.',
+                                }}
+                                isError={invoiceErrors['paymentTerm'] && invoiceErrors['paymentTerm']}
+                                errorMsg="Please Enter Payment Term."
+                              />
+
+              <h4>Item & Description : </h4>
+              <div dangerouslySetInnerHTML={{__html: invData?.lineItem}}></div>
+            
+
+            
+                            <div className={onboardList.formPanelAction} style={{marginTop:'15px'}}>
+						<button
+							type="submit"
+							onClick={invoiceSubmit(saveInvoice)}
+							className={onboardList.btnPrimary}
+							disabled={isLoading}
+							>
+							Create Invoice
+						</button>
+						<button
+							onClick={()=>{
+                setEngagementModal({
+                  ...getEngagementModal,
+                  showInvoice: false,
+                })
+                resetInvoiceField()
+                clearInvoiceError()
+                setControlledPaymentTermValue('')
+                setIsInvoiceAvailable(false)
+              }}
+							className={onboardList.btnCancle}>
+							Cancel
+						</button>
+					</div>
+
+          </> : <h2>No Invoice Data Available</h2>}
+            </Modal>)}
 
 {/* edit AM Name */}
 {editAMModal &&  <Modal

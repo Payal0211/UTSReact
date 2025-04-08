@@ -164,6 +164,42 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	getInvoiceDetailsRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			'ZohoInvoice/GetInvoiceDetailToCreateInvoice' +
+			`?CompanyId=241&InvoiceMonth=${payload.month}&InvoiceYear=${payload.year}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getInvoiceDetailsRequest',
+			);
+		}
+	},
+	UpdateInvoiceDetailsRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			'ZohoInvoice/InsertOrUpdateInvoice'
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.UpdateInvoiceDetailsRequest',
+			);
+		}
+	},
 	saveAMNAMEEDITRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
