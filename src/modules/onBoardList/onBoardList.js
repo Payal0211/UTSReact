@@ -1004,7 +1004,7 @@ const calDueDate = (date, term)=>{
       invoiceLineItemDto: lineItems.map(i=>(
         {
               itemName: i?.itemName,
-              itemDescription: i?.itemDescription, //lineItem
+              description: i?.itemDescription, //lineItem
               rate: i?.rate, //rate
               quantity: i?.qty, //qty
               itemTotal: i?.lineItemTotal, //lineItemTotal
