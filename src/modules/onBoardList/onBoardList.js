@@ -188,7 +188,7 @@ const onBoardListConfig = ({
           });
         }
       
-        if (ShowInvoiceCreationCTA) {
+        if (ShowInvoiceCreationCTA && param?.isInvoiceCreated === 0) {
           listItemData.push({
             label: "Create Invoice",
             key: "createInvoice",
@@ -830,6 +830,7 @@ function OnBoardList() {
     formState: { errors: invoiceErrors },
   } = useForm();
   const [invoiceDate, setInvoiceDate] = useState(new Date());
+  const [lineItems,setLineItems] = useState([])
   const [invData, setInvData] = useState({});
   const [isLoadingInvoice, setIsLoadingInvoice] = useState(false);
   const [controlledPaymentTermValue, setControlledPaymentTermValue] =
@@ -946,6 +947,12 @@ function OnBoardList() {
       setControlledPaymentTermValue(data.paymentTermDays);
       // invoiceSetValue()
       setInvoiceDate(new Date(data.invoiceDate));
+
+      setLineItems(result.responseBody.details.map(item=>({itemName:item.itemName,
+         lineItem:item.lineItem,
+         rate:item.rate,
+         qty:item.qty,
+         lineItemTotal:item.lineItemTotal})))
       // console.log('data',data.invoiceDate,moment(data.invoiceDateStr).format('DD-MM-YYYY'), new Date(data.invoiceDateStr), data )
     } else {
       setIsInvoiceAvailable(false);
@@ -992,15 +999,15 @@ const calDueDate = (date, term)=>{
         zohoCustomerEmailID: d.zohoCustomer, //zoho_Client_EmailID
         clientEmailID: d.client, //client_EmailID
       },
-      invoiceLineItemDto: [
+      invoiceLineItemDto: lineItems.map(i=>(
         {
-          itemName: invData?.itemName,
-          description: invData?.lineItem, //lineItem
-          rate: invData?.rate, //rate
-          quantity: invData?.qty, //qty
-          itemTotal: invData?.lineItemTotal, //lineItemTotal
-        },
-      ],
+              itemName: i?.itemName,
+              description: i?.lineItem, //lineItem
+              rate: i?.rate, //rate
+              quantity: i?.qty, //qty
+              itemTotal: i?.lineItemTotal, //lineItemTotal
+            }
+      ))
     };
     setIsLoadingInvoice(true);
     const result = await engagementRequestDAO.UpdateInvoiceDetails(pl);
@@ -1020,6 +1027,55 @@ const calDueDate = (date, term)=>{
       message.error('Something went wrong!')
     }
   };
+
+  const lineItemsColumnsMemo = useMemo(()=>{
+
+    return [
+      {
+        title: "#",
+        dataIndex: '',
+        key: "",
+        align: "left",
+        // width: "95px",
+        render:(text, res,ind)=>{
+          return ind +1
+        }
+      },
+      {
+        title: "Item & Description",
+        dataIndex: "lineItem",
+        key: "lineItem",
+        align: "left",
+        // width: "95px",
+        render:(text)=>{
+          return <div
+          dangerouslySetInnerHTML={{ __html: text }}
+        ></div>
+        }
+      },
+      {
+        title: "Qty",
+        dataIndex: "qty",
+        key: "qty",
+        align: "left",
+        // width: "95px",
+      },
+      {
+        title: "Rate",
+        dataIndex: "rate",
+        key: "rate",
+        align: "left",
+        // width: "95px",
+      },
+      {
+        title: "Amount",
+        dataIndex: "lineItemTotal",
+        key: "lineItemTotal",
+        align: "left",
+        // width: "95px",
+      },
+    ]
+  },[lineItems])
 
   const tableColumnsMemo = useMemo(
     () =>
@@ -2809,10 +2865,20 @@ const calDueDate = (date, term)=>{
                 errorMsg="Please Enter Payment Term."
               />
 
-              <h4>Item & Description : </h4>
+              {/* <h4>Item & Description : </h4>
               <div
                 dangerouslySetInnerHTML={{ __html: invData?.lineItem }}
-              ></div>
+              ></div> */}
+
+              <Table
+                id="hrListingTable"
+                columns={lineItemsColumnsMemo}
+                bordered={false}
+                dataSource={lineItems}
+                pagination={false}
+              />
+
+              <div style={{display:'flex', justifyContent:'end',padding:'20px 20px 0 0'}}> <h4>Total : {invData?.invoice_CurrencyCode} {invData?.invoice_CurrencySign}{invData?.finalTotal}</h4> </div>
 
               <div
                 className={onboardList.formPanelAction}
