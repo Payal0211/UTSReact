@@ -2878,7 +2878,7 @@ const calDueDate = (date, term)=>{
                 pagination={false}
               />
 
-              <div style={{display:'flex', justifyContent:'end',padding:'20px 20px 0 0'}}> <h4>Total : {invData?.invoice_CurrencyCode} {invData?.invoice_CurrencySign}{invData?.finalTotal}</h4> </div>
+              <div style={{display:'flex', justifyContent:'end',padding:'20px 20px 0 0'}}> <h4>Total : {invData?.invoice_CurrencyCode} {invData?.finalTotal}</h4> </div>
 
               <div
                 className={onboardList.formPanelAction}
