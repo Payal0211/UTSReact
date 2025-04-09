@@ -952,7 +952,9 @@ function OnBoardList() {
          lineItem:item.lineItem,
          rate:item.rate,
          qty:item.qty,
-         lineItemTotal:item.lineItemTotal})))
+         lineItemTotal:item.lineItemTotal,
+         itemDescription:item.itemDescription
+        })))
       // console.log('data',data.invoiceDate,moment(data.invoiceDateStr).format('DD-MM-YYYY'), new Date(data.invoiceDateStr), data )
     } else {
       setIsInvoiceAvailable(false);
@@ -1002,7 +1004,7 @@ const calDueDate = (date, term)=>{
       invoiceLineItemDto: lineItems.map(i=>(
         {
               itemName: i?.itemName,
-              description: i?.lineItem, //lineItem
+              itemDescription: i?.itemDescription, //lineItem
               rate: i?.rate, //rate
               quantity: i?.qty, //qty
               itemTotal: i?.lineItemTotal, //lineItemTotal
