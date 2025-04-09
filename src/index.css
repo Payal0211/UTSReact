@@ -1202,6 +1202,102 @@ font-weight: bold;
 }
 
 
+/* .neon-text {
+  font-size: 4rem;
+  color: #fff;
+  text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+  animation: glow 1.5s infinite alternate;
+} */
+
+@keyframes glow {
+  0% {
+      text-shadow: 0 0 5px white, 0 0 10px white, 0 0 20px white, 0 0 40px white, 0 0 80px #ff005e;
+  }
+  100% {
+      text-shadow: 0 0 10px var(--color-sunlight), 0 0 20px var(--color-sunlight), 0 0 40px var(--color-sunlight), 0 0 80px var(--color-sunlight), 0 0 160px var(--color-sunlight);
+  }
+}
+
+@keyframes marquee {
+  from { translate: 70%; }
+  to { translate: -70%; }
+}
+
+.marquee_text {
+  position: absolute;
+  min-width: 100%;
+  text-shadow: 0 0 5px var(--color-sunlight), 0 0 10px var(--color-sunlight), 0 0 20px var(--color-sunlight), 0 0 40px var(--color-sunlight), 0 0 80px var(--color-sunlight);
+  white-space: nowrap;
+  animation: glow 1.5s infinite alternate;
+}
+
+.marquee_blur {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* background-color: black; */
+  /* background-image:
+    linear-gradient(to right, white, 1rem, transparent 50%),
+    linear-gradient(to left, white, 1rem, transparent 50%); */
+  filter: contrast(15);
+  
+  /* p {
+    filter: blur(0.07em);
+  } */
+}
+
+.marquee_clear {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.marquee {
+  position: relative;
+  width: 100%;
+  height: 2em;
+  /* font-size: 5em; */
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+
+  /* &_text {
+    position: absolute;
+    min-width: 100%;
+    white-space: nowrap;
+    animation: marquee 16s infinite linear;
+    
+    @keyframes marquee {
+      from { translate: 70%; }
+      to { translate: -70%; }
+    }
+  }
+
+  &_blur {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background-color: black;
+    background-image:
+      linear-gradient(to right, white, 1rem, transparent 50%),
+      linear-gradient(to left, white, 1rem, transparent 50%);
+    filter: contrast(15);
+    
+    p {
+      filter: blur(0.07em);
+    }
+  }
+  
+  &_clear {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  } */
+}
 
 
 /* Preview Editor css start */
