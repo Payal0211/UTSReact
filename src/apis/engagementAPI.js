@@ -169,7 +169,7 @@ export const EngagementRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			'ZohoInvoice/GetInvoiceDetailToCreateInvoice' +
-			`?CompanyId=241&InvoiceMonth=${payload.month}&InvoiceYear=${payload.year}`;
+			`?CompanyId=${payload.companyId}&InvoiceMonth=${payload.month}&InvoiceYear=${payload.year}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
