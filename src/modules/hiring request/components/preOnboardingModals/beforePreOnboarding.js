@@ -783,7 +783,8 @@ function calculateDayGap(day1, day2) {
     async (d) => {   
       setIsLoading(true);    
       
-      if( calculateDayGap(d?.fromDay,d?.toDay) +1 > 6){
+      if(workDaysType === false){
+        if( calculateDayGap(d?.fromDay,d?.toDay) +1 > 6){
         setIsLoading(false); 
         message.error('working days in a week can not be more the 6')
         return 
@@ -794,7 +795,8 @@ function calculateDayGap(day1, day2) {
         message.error('working days in a week can not be less the 4')
         return 
       }
-
+      }
+      
       let _payload = {
         "hR_ID": HRID,
         "companyID": data?.companyID,
