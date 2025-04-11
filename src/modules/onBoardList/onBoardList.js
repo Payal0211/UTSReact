@@ -2868,6 +2868,7 @@ const calDueDate = (date, term)=>{
                 label={"Payment term"}
                 defaultValue="Select"
                 options={[
+                  { id: 1, value: 'Due on Receipt'},
                   { id: 7, value: 'Net 7' },
                   { id: 15, value: 'Net 15' },
                   { id: 20, value: 'Net 20' },
@@ -2887,38 +2888,38 @@ const calDueDate = (date, term)=>{
                 errorMsg="Please Enter Payment Term."
               />
   </div>
-  <div className={onboardList.colMd6} style={{display:'flex',alignItems:'center'}}>
-  <div className={onboardList.checkbox}>
-                    <Checkbox
-                      name="IGST"
-                      checked={gst?.IGST}
-                      onChange={(e) => {
-                        setGst((prev) => ({
-                          IGST: !prev.IGST,
-                          CGST: false,
-                        }));
-                       
-                      }}
-                    >
-                      IGST
-                    </Checkbox>
-                    <Checkbox                  
-                      name="CGST"
-                      checked={gst?.CGST}
-                      onChange={(e) => {
-                        setGst((prev) => ({
-                          IGST: false,
-                          CGST: !prev.CGST,
-                        }));
-                       
-                      }}
-                    >
-                      CGST/SGST
-                    </Checkbox>
-                              
-                  </div>
-  </div>
-  </div>
+              {watchInvoice('currency') === "INR" && <div className={onboardList.colMd6} style={{display:'flex',alignItems:'center'}}>
+              <div className={onboardList.checkbox}>
+                                <Checkbox
+                                  name="IGST"
+                                  checked={gst?.IGST}
+                                  onChange={(e) => {
+                                    setGst((prev) => ({
+                                      IGST: !prev.IGST,
+                                      CGST: false,
+                                    }));
+                                  
+                                  }}
+                                >
+                                  IGST
+                                </Checkbox>
+                                <Checkbox                  
+                                  name="CGST"
+                                  checked={gst?.CGST}
+                                  onChange={(e) => {
+                                    setGst((prev) => ({
+                                      IGST: false,
+                                      CGST: !prev.CGST,
+                                    }));
+                                  
+                                  }}
+                                >
+                                  CGST / SGST
+                                </Checkbox>
+                                          
+                              </div>
+              </div>}
+              </div>
           
 
               {/* <h4>Item & Description : </h4>
