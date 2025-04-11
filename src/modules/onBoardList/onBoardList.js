@@ -950,7 +950,7 @@ function OnBoardList() {
       invoiceSetValue("zohoCustomer", data.zoho_Client_EmailID);
       invoiceSetValue("currency", data.invoice_CurrencyCode);
       invoiceSetValue("paymentTerm", data.paymentTermDays);
-      setControlledPaymentTermValue(data.paymentTermDays);
+      setControlledPaymentTermValue(data.paymentTerms);
       // invoiceSetValue()
       setInvoiceDate(new Date(data.invoiceDate));
 
@@ -960,7 +960,7 @@ function OnBoardList() {
          qty:item.qty,
          lineItemTotal:item.lineItemTotal,
          itemDescription:item.itemDescription,
-         isIGST:item.isIGST
+         isIGST:item.isIGST,
          payoutId: item.id
         })))
       // console.log('data',data.invoiceDate,moment(data.invoiceDateStr).format('DD-MM-YYYY'), new Date(data.invoiceDateStr), data )
@@ -2862,19 +2862,19 @@ const calDueDate = (date, term)=>{
                 controlledValue={controlledPaymentTermValue}
                 setControlledValue={setControlledPaymentTermValue}
                 isControlled={true}
-                mode={"value"}
+                mode={"id"}
                 setValue={invoiceSetValue}
                 register={invoiceRegister}
                 label={"Payment term"}
                 defaultValue="Select"
                 options={[
-                  { id: 7, value: 7 },
-                  { id: 15, value: 15 },
-                  { id: 20, value: 20 },
-                  { id: 30, value: 30 },
-                  { id: 45, value: 45 },
-                  { id: 60, value: 60 },
-                  { id: 90, value: 90 },
+                  { id: 7, value: 'Net 7' },
+                  { id: 15, value: 'Net 15' },
+                  { id: 20, value: 'Net 20' },
+                  { id: 30, value: 'Net 30' },
+                  { id: 45, value: 'Net 45' },
+                  { id: 60, value: 'Net 60' },
+                  { id: 90, value: 'Net 90' },
                 ]}
                 name="paymentTerm"
                 required
