@@ -961,6 +961,7 @@ function OnBoardList() {
          lineItemTotal:item.lineItemTotal,
          itemDescription:item.itemDescription,
          isIGST:item.isIGST
+         payoutId: item.id
         })))
       // console.log('data',data.invoiceDate,moment(data.invoiceDateStr).format('DD-MM-YYYY'), new Date(data.invoiceDateStr), data )
     } else {
@@ -1015,6 +1016,7 @@ const calDueDate = (date, term)=>{
               rate: i?.rate, //rate
               quantity: i?.qty, //qty
               itemTotal: i?.lineItemTotal, //lineItemTotal
+              payoutId: i?.payoutId
             }
       ))
     };
