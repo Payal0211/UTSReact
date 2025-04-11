@@ -926,6 +926,16 @@ function OnBoardList() {
       AMsetValue("amName", data.PayOut_Basic_Informtion.aM_UserName);
     }
   };
+  const invoicePaymentTermMaster = [
+    { id: 1, value: 'Due on Receipt'},
+    { id: 7, value: 'Net 7' },
+    { id: 15, value: 'Net 15' },
+    { id: 20, value: 'Net 20' },
+    { id: 30, value: 'Net 30' },
+    { id: 45, value: 'Net 45' },
+    { id: 60, value: 'Net 60' },
+    { id: 90, value: 'Net 90' },
+  ]
 
   const getInvoiceInfo = async (param, monthDate) => {
     let payload = {
@@ -1005,7 +1015,7 @@ const calDueDate = (date, term)=>{
         lastPaymentDate: null, //duedate
         zohoContactID: invData?.zohoContactID, //zohoContactID
         paymentTermDays: d.paymentTerm, //paymentTermDays
-        payment_Terms: `Net ${d.paymentTerm}`, // paymentTerms
+        payment_Terms: invoicePaymentTermMaster.find(item => item.id === d.paymentTerm).value, // paymentTerms
         zohoCustomerEmailID: d.zohoCustomer, //zoho_Client_EmailID
         clientEmailID: d.client, //client_EmailID
       },
@@ -2867,16 +2877,7 @@ const calDueDate = (date, term)=>{
                 register={invoiceRegister}
                 label={"Payment term"}
                 defaultValue="Select"
-                options={[
-                  { id: 1, value: 'Due on Receipt'},
-                  { id: 7, value: 'Net 7' },
-                  { id: 15, value: 'Net 15' },
-                  { id: 20, value: 'Net 20' },
-                  { id: 30, value: 'Net 30' },
-                  { id: 45, value: 'Net 45' },
-                  { id: 60, value: 'Net 60' },
-                  { id: 90, value: 'Net 90' },
-                ]}
+                options={invoicePaymentTermMaster}
                 name="paymentTerm"
                 required
                 validationSchema={{
