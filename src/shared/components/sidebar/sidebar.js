@@ -32,6 +32,7 @@ import UTMTrackingIcon from 'assets/UTMtracking report.png'
 import ClientDetailsIcon from 'assets/Clienttracking details.png'
 import EmailTracking from 'assets/svg/emailTrack.svg'
 import ReplacementIcon from 'assets/Talentreplacement.png'
+import AMDashboardIcon from 'assets/svg/amdashboard.png'
 import TalentBackoutIcon from 'assets/Talentbackout.png'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 import HandShake from 'assets/svg/postStepIconInterview.svg'
@@ -292,12 +293,12 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
-	if ((  title === "Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
+	if ((  title === "AM Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
 		  && ID === 6){
 		isVisible =  true
 		return isVisible		
 	}
-	if (( title === 'Engagement' || title === "Dashboard"  ||  title === 'Talent' || title === 'Master' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
+	if (( title === 'Engagement' || title === "AM Dashboard"  ||  title === 'Talent' || title === 'Master' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
 		  && ID === 3){
 		isVisible =  true
 		return isVisible		
@@ -311,7 +312,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	 title === 'Client' || title === 'JD Efficiency Report' || title === 'Incentive Report' ||
 	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent' || title === 'Talent Documents'
-	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout" || title === "Dashboard"
+	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout" || title === "AM Dashboard" || title === 'Invoice'
     || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency') {
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
@@ -336,13 +337,13 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 	})] : [
 		 new SideBarModels({
 			id: 'UTS_AM_Dashboard',
-			title: 'Dashboard',
+			title: 'AM Dashboard',
 			isActive: false,
-			icon: TicketIcon ,                                                                                                                    
+			icon: AMDashboardIcon ,                                                                                                                    
 			navigateTo: UTSRoutes.AMDASHBOARD,
 			isChildren: false,
 			branch: [],
-			isVisible: isAccess(usertypeID,'Dashboard')
+			isVisible: isAccess(usertypeID,'AM Dashboard')
 		}),
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
@@ -476,6 +477,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.CLIENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Client')
 				}),
+				// new SideBarModels({
+				// 	id: 'InvoiceReport',
+				// 	title: 'Invoice',
+				// 	isActive: false,
+				// 	icon: clientReport,
+				// 	navigateTo: UTSRoutes.Invoice,
+				// 	isVisible: isAccess(usertypeID, 'Invoice')
+				// }),
 				new SideBarModels({
 					id: 'HRReport',
 					title: 'HR',

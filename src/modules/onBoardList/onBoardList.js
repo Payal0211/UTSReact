@@ -15,6 +15,7 @@ import {
   Menu,
   Skeleton,
   Select,
+  Checkbox
 } from "antd";
 import {
   useEffect,
@@ -86,6 +87,7 @@ const onBoardListConfig = ({
   setTalentDetails,
   navigate,
   getInvoiceInfo,
+  monthDate,
   ShowInvoiceCreationCTA,
 }) => {
   return [
@@ -337,7 +339,7 @@ const onBoardListConfig = ({
                     ...getEngagementModal,
                     showInvoice: true,
                   });
-                  getInvoiceInfo(param);
+                  getInvoiceInfo(param,monthDate);
                   break;
                 }
                 default:
@@ -759,6 +761,10 @@ function OnBoardList() {
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [totalRecords, setTotalRecords] = useState(0);
   const [searchText, setSearchText] = useState("");
+  const [gst,setGst] = useState({
+    IGST:false,
+    CGST: false,
+  })
 
   const [filtersList, setFiltersList] = useState([]);
   const [filteredTagLength, setFilteredTagLength] = useState(0);
@@ -921,7 +927,7 @@ function OnBoardList() {
     }
   };
 
-  const getInvoiceInfo = async (param) => {
+  const getInvoiceInfo = async (param, monthDate) => {
     let payload = {
       companyId: param.companyID,
       year: moment(monthDate).format("YYYY"),
@@ -953,13 +959,14 @@ function OnBoardList() {
          rate:item.rate,
          qty:item.qty,
          lineItemTotal:item.lineItemTotal,
-         itemDescription:item.itemDescription
+         itemDescription:item.itemDescription,
+         isIGST:item.isIGST
         })))
       // console.log('data',data.invoiceDate,moment(data.invoiceDateStr).format('DD-MM-YYYY'), new Date(data.invoiceDateStr), data )
     } else {
       setIsInvoiceAvailable(false);
     }
-  };
+  }
 
 const calDueDate = (date, term)=>{
   let dueDate = new Date(date);
@@ -1001,7 +1008,7 @@ const calDueDate = (date, term)=>{
         zohoCustomerEmailID: d.zohoCustomer, //zoho_Client_EmailID
         clientEmailID: d.client, //client_EmailID
       },
-      invoiceLineItemDto: lineItems.map(i=>(
+      invoiceLineItemDto: getLineItemsBasedOnGST(lineItems,gst).map(i=>(
         {
               itemName: i?.itemName,
               description: i?.itemDescription, //lineItem
@@ -1011,6 +1018,7 @@ const calDueDate = (date, term)=>{
             }
       ))
     };
+
     setIsLoadingInvoice(true);
     const result = await engagementRequestDAO.UpdateInvoiceDetails(pl);
     setIsLoadingInvoice(false);
@@ -1025,6 +1033,10 @@ const calDueDate = (date, term)=>{
       clearInvoiceError();
       setControlledPaymentTermValue("");
       setIsInvoiceAvailable(false);
+      setGst((prev) => ({
+        IGST: false,
+        CGST: false,
+      }));
     }else{
       message.error('Something went wrong!')
     }
@@ -1097,9 +1109,10 @@ const calDueDate = (date, term)=>{
         setTalentDetails,
         navigate,
         getInvoiceInfo,
+        monthDate,
         ShowInvoiceCreationCTA: userData?.ShowInvoiceCreationCTA,
       }),
-    [userData?.ShowInvoiceCreationCTA]
+    [userData?.ShowInvoiceCreationCTA,monthDate]
   );
 
   const feedbackTableColumnsMemo = useMemo(
@@ -1334,6 +1347,20 @@ const calDueDate = (date, term)=>{
       return "NO DATA FOUND";
     }
   }, [navigate]);
+
+  const getLineItemsBasedOnGST = (lineItems,gst)=>{
+    if(gst.IGST === false && gst.CGST === false){
+      return lineItems.filter(item=> item.isIGST === null)
+    }
+
+    if(gst.IGST === true && gst.CGST === false){
+      return lineItems.filter(item=> item.isIGST === null || item.isIGST === true)
+    }
+
+    if(gst.IGST === false && gst.CGST === true){
+      return lineItems.filter(item=> item.isIGST === null || item.isIGST === false)
+    }
+  }
 
   useEffect(() => {
     getEngagementFilterList();
@@ -2686,6 +2713,10 @@ const calDueDate = (date, term)=>{
             clearInvoiceError();
             setControlledPaymentTermValue("");
             setIsInvoiceAvailable(false);
+            setGst((prev) => ({
+              IGST: false,
+              CGST: false,
+            }));
           }}
         >
           <h2 className={onboardList.modalTitle}>Create Invoice</h2>
@@ -2822,23 +2853,10 @@ const calDueDate = (date, term)=>{
                 </div>
               </div>
 
-              {/* <HRInputField
-              label={'Payment term'}
-              register={invoiceRegister}
-              name={'paymentTerm'}
-              type={InputType.TEXT}
-              placeholder="Zoho Customer Email"
-              // isTextArea
-              // rows={5}
-              required
-              validationSchema={{
-              required: 'please enter paymentTerm.',
-              }}
-              isError={invoiceErrors['paymentTerm'] && invoiceErrors['paymentTerm']}
-              errorMsg="Please Enter Payment Term."
-            /> */}
 
-              <HRSelectField
+<div className={onboardList.row}>
+<div className={onboardList.colMd6}>
+<HRSelectField
                 controlledValue={controlledPaymentTermValue}
                 setControlledValue={setControlledPaymentTermValue}
                 isControlled={true}
@@ -2866,6 +2884,40 @@ const calDueDate = (date, term)=>{
                 }
                 errorMsg="Please Enter Payment Term."
               />
+  </div>
+  <div className={onboardList.colMd6} style={{display:'flex',alignItems:'center'}}>
+  <div className={onboardList.checkbox}>
+                    <Checkbox
+                      name="IGST"
+                      checked={gst?.IGST}
+                      onChange={(e) => {
+                        setGst((prev) => ({
+                          IGST: !prev.IGST,
+                          CGST: false,
+                        }));
+                       
+                      }}
+                    >
+                      IGST
+                    </Checkbox>
+                    <Checkbox                  
+                      name="CGST"
+                      checked={gst?.CGST}
+                      onChange={(e) => {
+                        setGst((prev) => ({
+                          IGST: false,
+                          CGST: !prev.CGST,
+                        }));
+                       
+                      }}
+                    >
+                      CGST
+                    </Checkbox>
+                              
+                  </div>
+  </div>
+  </div>
+          
 
               {/* <h4>Item & Description : </h4>
               <div
@@ -2876,11 +2928,11 @@ const calDueDate = (date, term)=>{
                 id="hrListingTable"
                 columns={lineItemsColumnsMemo}
                 bordered={false}
-                dataSource={lineItems}
+                dataSource={lineItems.length ? getLineItemsBasedOnGST(lineItems,gst) : []}
                 pagination={false}
               />
 
-              <div style={{display:'flex', justifyContent:'end',padding:'20px 20px 0 0'}}> <h4>Total : {invData?.invoice_CurrencyCode} {invData?.finalTotal}</h4> </div>
+              <div style={{display:'flex', justifyContent:'end',padding:'20px 20px 0 0'}}> <h4>Total : {invData?.invoice_CurrencyCode} {(gst.IGST === true || gst.CGST === true) ? invData?.finalTotalWithTax : invData?.finalTotal}</h4> </div>
 
               <div
                 className={onboardList.formPanelAction}
@@ -2904,6 +2956,10 @@ const calDueDate = (date, term)=>{
                     clearInvoiceError();
                     setControlledPaymentTermValue("");
                     setIsInvoiceAvailable(false);
+                    setGst((prev) => ({
+                      IGST: false,
+                      CGST: false,
+                    }));
                   }}
                   className={onboardList.btnCancle}
                 >
