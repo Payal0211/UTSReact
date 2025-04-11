@@ -960,7 +960,7 @@ function OnBoardList() {
          qty:item.qty,
          lineItemTotal:item.lineItemTotal,
          itemDescription:item.itemDescription,
-         isIGST:item.isIGST
+         isIGST:item.isIGST,
          payoutId: item.id
         })))
       // console.log('data',data.invoiceDate,moment(data.invoiceDateStr).format('DD-MM-YYYY'), new Date(data.invoiceDateStr), data )
@@ -2913,7 +2913,7 @@ const calDueDate = (date, term)=>{
                        
                       }}
                     >
-                      CGST
+                      CGST/SGST
                     </Checkbox>
                               
                   </div>
