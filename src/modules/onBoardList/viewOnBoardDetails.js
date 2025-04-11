@@ -1186,15 +1186,16 @@ export default function ViewOnBoardDetails() {
               children: <NotesComp    />,
             },
             {
-              label: "Talent's Other Eng. Details",
-              key: "Talent's Other Eng. Details",
-              children: <OtherDetails />,
-            },
-            {
               label: "Custom Email",
               key: "Custom Email",
               children: <EmailComponent onboardID={onboardID} getOnboardFormDetails={getOnboardFormDetails} />,
             },
+            {
+              label: "Talent's Other Eng. Details",
+              key: "Talent's Other Eng. Details",
+              children: <OtherDetails />,
+            },
+           
             // companyPreviewData?.engagementDetails?.companyTypeID && {
             //   label: "Credit Utilize",
             //   key: "Credit Utilize",
