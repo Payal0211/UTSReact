@@ -15,6 +15,7 @@ import {
   Menu,
   Skeleton,
   Select,
+  Checkbox
 } from "antd";
 import {
   useEffect,
@@ -86,6 +87,7 @@ const onBoardListConfig = ({
   setTalentDetails,
   navigate,
   getInvoiceInfo,
+  monthDate,
   ShowInvoiceCreationCTA,
 }) => {
   return [
@@ -337,7 +339,7 @@ const onBoardListConfig = ({
                     ...getEngagementModal,
                     showInvoice: true,
                   });
-                  getInvoiceInfo(param);
+                  getInvoiceInfo(param,monthDate);
                   break;
                 }
                 default:
@@ -759,6 +761,10 @@ function OnBoardList() {
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [totalRecords, setTotalRecords] = useState(0);
   const [searchText, setSearchText] = useState("");
+  const [gst,setGst] = useState({
+    IGST:false,
+    CGST: false,
+  })
 
   const [filtersList, setFiltersList] = useState([]);
   const [filteredTagLength, setFilteredTagLength] = useState(0);
@@ -920,8 +926,18 @@ function OnBoardList() {
       AMsetValue("amName", data.PayOut_Basic_Informtion.aM_UserName);
     }
   };
+  const invoicePaymentTermMaster = [
+    { id: 1, value: 'Due on Receipt'},
+    { id: 7, value: 'Net 7' },
+    { id: 15, value: 'Net 15' },
+    { id: 20, value: 'Net 20' },
+    { id: 30, value: 'Net 30' },
+    { id: 45, value: 'Net 45' },
+    { id: 60, value: 'Net 60' },
+    { id: 90, value: 'Net 90' },
+  ]
 
-  const getInvoiceInfo = async (param) => {
+  const getInvoiceInfo = async (param, monthDate) => {
     let payload = {
       companyId: param.companyID,
       year: moment(monthDate).format("YYYY"),
@@ -944,7 +960,7 @@ function OnBoardList() {
       invoiceSetValue("zohoCustomer", data.zoho_Client_EmailID);
       invoiceSetValue("currency", data.invoice_CurrencyCode);
       invoiceSetValue("paymentTerm", data.paymentTermDays);
-      setControlledPaymentTermValue(data.paymentTermDays);
+      setControlledPaymentTermValue(data.paymentTerms);
       // invoiceSetValue()
       setInvoiceDate(new Date(data.invoiceDate));
 
@@ -953,13 +969,15 @@ function OnBoardList() {
          rate:item.rate,
          qty:item.qty,
          lineItemTotal:item.lineItemTotal,
-         itemDescription:item.itemDescription
+         itemDescription:item.itemDescription,
+         isIGST:item.isIGST,
+         payoutId: item.id
         })))
       // console.log('data',data.invoiceDate,moment(data.invoiceDateStr).format('DD-MM-YYYY'), new Date(data.invoiceDateStr), data )
     } else {
       setIsInvoiceAvailable(false);
     }
-  };
+  }
 
 const calDueDate = (date, term)=>{
   let dueDate = new Date(date);
@@ -997,20 +1015,22 @@ const calDueDate = (date, term)=>{
         lastPaymentDate: null, //duedate
         zohoContactID: invData?.zohoContactID, //zohoContactID
         paymentTermDays: d.paymentTerm, //paymentTermDays
-        payment_Terms: `Net ${d.paymentTerm}`, // paymentTerms
+        payment_Terms: invoicePaymentTermMaster.find(item => item.id === d.paymentTerm).value, // paymentTerms
         zohoCustomerEmailID: d.zohoCustomer, //zoho_Client_EmailID
         clientEmailID: d.client, //client_EmailID
       },
-      invoiceLineItemDto: lineItems.map(i=>(
+      invoiceLineItemDto: getLineItemsBasedOnGST(lineItems,gst).map(i=>(
         {
               itemName: i?.itemName,
               description: i?.itemDescription, //lineItem
               rate: i?.rate, //rate
               quantity: i?.qty, //qty
               itemTotal: i?.lineItemTotal, //lineItemTotal
+              payoutId: i?.payoutId
             }
       ))
     };
+
     setIsLoadingInvoice(true);
     const result = await engagementRequestDAO.UpdateInvoiceDetails(pl);
     setIsLoadingInvoice(false);
@@ -1025,6 +1045,10 @@ const calDueDate = (date, term)=>{
       clearInvoiceError();
       setControlledPaymentTermValue("");
       setIsInvoiceAvailable(false);
+      setGst((prev) => ({
+        IGST: false,
+        CGST: false,
+      }));
     }else{
       message.error('Something went wrong!')
     }
@@ -1097,9 +1121,10 @@ const calDueDate = (date, term)=>{
         setTalentDetails,
         navigate,
         getInvoiceInfo,
+        monthDate,
         ShowInvoiceCreationCTA: userData?.ShowInvoiceCreationCTA,
       }),
-    [userData?.ShowInvoiceCreationCTA]
+    [userData?.ShowInvoiceCreationCTA,monthDate]
   );
 
   const feedbackTableColumnsMemo = useMemo(
@@ -1334,6 +1359,20 @@ const calDueDate = (date, term)=>{
       return "NO DATA FOUND";
     }
   }, [navigate]);
+
+  const getLineItemsBasedOnGST = (lineItems,gst)=>{
+    if(gst.IGST === false && gst.CGST === false){
+      return lineItems.filter(item=> item.isIGST === null)
+    }
+
+    if(gst.IGST === true && gst.CGST === false){
+      return lineItems.filter(item=> item.isIGST === null || item.isIGST === true)
+    }
+
+    if(gst.IGST === false && gst.CGST === true){
+      return lineItems.filter(item=> item.isIGST === null || item.isIGST === false)
+    }
+  }
 
   useEffect(() => {
     getEngagementFilterList();
@@ -2686,6 +2725,10 @@ const calDueDate = (date, term)=>{
             clearInvoiceError();
             setControlledPaymentTermValue("");
             setIsInvoiceAvailable(false);
+            setGst((prev) => ({
+              IGST: false,
+              CGST: false,
+            }));
           }}
         >
           <h2 className={onboardList.modalTitle}>Create Invoice</h2>
@@ -2822,40 +2865,19 @@ const calDueDate = (date, term)=>{
                 </div>
               </div>
 
-              {/* <HRInputField
-              label={'Payment term'}
-              register={invoiceRegister}
-              name={'paymentTerm'}
-              type={InputType.TEXT}
-              placeholder="Zoho Customer Email"
-              // isTextArea
-              // rows={5}
-              required
-              validationSchema={{
-              required: 'please enter paymentTerm.',
-              }}
-              isError={invoiceErrors['paymentTerm'] && invoiceErrors['paymentTerm']}
-              errorMsg="Please Enter Payment Term."
-            /> */}
 
-              <HRSelectField
+<div className={onboardList.row}>
+<div className={onboardList.colMd6}>
+<HRSelectField
                 controlledValue={controlledPaymentTermValue}
                 setControlledValue={setControlledPaymentTermValue}
                 isControlled={true}
-                mode={"value"}
+                mode={"id"}
                 setValue={invoiceSetValue}
                 register={invoiceRegister}
                 label={"Payment term"}
                 defaultValue="Select"
-                options={[
-                  { id: 7, value: 7 },
-                  { id: 15, value: 15 },
-                  { id: 20, value: 20 },
-                  { id: 30, value: 30 },
-                  { id: 45, value: 45 },
-                  { id: 60, value: 60 },
-                  { id: 90, value: 90 },
-                ]}
+                options={invoicePaymentTermMaster}
                 name="paymentTerm"
                 required
                 validationSchema={{
@@ -2866,6 +2888,40 @@ const calDueDate = (date, term)=>{
                 }
                 errorMsg="Please Enter Payment Term."
               />
+  </div>
+              {watchInvoice('currency') === "INR" && <div className={onboardList.colMd6} style={{display:'flex',alignItems:'center'}}>
+              <div className={onboardList.checkbox}>
+                                <Checkbox
+                                  name="IGST"
+                                  checked={gst?.IGST}
+                                  onChange={(e) => {
+                                    setGst((prev) => ({
+                                      IGST: !prev.IGST,
+                                      CGST: false,
+                                    }));
+                                  
+                                  }}
+                                >
+                                  IGST
+                                </Checkbox>
+                                <Checkbox                  
+                                  name="CGST"
+                                  checked={gst?.CGST}
+                                  onChange={(e) => {
+                                    setGst((prev) => ({
+                                      IGST: false,
+                                      CGST: !prev.CGST,
+                                    }));
+                                  
+                                  }}
+                                >
+                                  CGST / SGST
+                                </Checkbox>
+                                          
+                              </div>
+              </div>}
+              </div>
+          
 
               {/* <h4>Item & Description : </h4>
               <div
@@ -2876,11 +2932,11 @@ const calDueDate = (date, term)=>{
                 id="hrListingTable"
                 columns={lineItemsColumnsMemo}
                 bordered={false}
-                dataSource={lineItems}
+                dataSource={lineItems.length ? getLineItemsBasedOnGST(lineItems,gst) : []}
                 pagination={false}
               />
 
-              <div style={{display:'flex', justifyContent:'end',padding:'20px 20px 0 0'}}> <h4>Total : {invData?.invoice_CurrencyCode} {invData?.finalTotal}</h4> </div>
+              <div style={{display:'flex', justifyContent:'end',padding:'20px 20px 0 0'}}> <h4>Total : {invData?.invoice_CurrencyCode} {(gst.IGST === true || gst.CGST === true) ? invData?.finalTotalWithTax : invData?.finalTotal}</h4> </div>
 
               <div
                 className={onboardList.formPanelAction}
@@ -2904,6 +2960,10 @@ const calDueDate = (date, term)=>{
                     clearInvoiceError();
                     setControlledPaymentTermValue("");
                     setIsInvoiceAvailable(false);
+                    setGst((prev) => ({
+                      IGST: false,
+                      CGST: false,
+                    }));
                   }}
                   className={onboardList.btnCancle}
                 >
