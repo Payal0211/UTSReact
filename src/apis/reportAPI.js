@@ -405,6 +405,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getTalentDocumentReport');
 		}
 	},
+	getZohoInvoiceReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.ZOHO_INVOICE_REPORT
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getZohoInvoiceReport');
+		}
+	},
 	getTalentOnboardReport: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =

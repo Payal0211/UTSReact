@@ -470,6 +470,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'Revenue',ShowRevenueRelatedData)
 				}),
 				new SideBarModels({
+					id: 'InvoiceReport',
+					title: 'Invoice',
+					isActive: false,
+					icon: clientReport,
+					navigateTo: UTSRoutes.Invoice,
+					isVisible: isAccess(usertypeID, 'Invoice')
+				}),
+				new SideBarModels({
 					id: 'ClientReport',
 					title: 'Client',
 					isActive: false,
@@ -477,14 +485,6 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.CLIENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Client')
 				}),
-				// new SideBarModels({
-				// 	id: 'InvoiceReport',
-				// 	title: 'Invoice',
-				// 	isActive: false,
-				// 	icon: clientReport,
-				// 	navigateTo: UTSRoutes.Invoice,
-				// 	isVisible: isAccess(usertypeID, 'Invoice')
-				// }),
 				new SideBarModels({
 					id: 'HRReport',
 					title: 'HR',
