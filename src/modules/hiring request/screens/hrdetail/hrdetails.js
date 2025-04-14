@@ -665,7 +665,16 @@ const togglePriority = useCallback(
                 type={InputType.TEXT}
                 className={HRDetailStyle.searchInput}
                 placeholder="Search via Talent Name, Email ID .."
-                onChange={e=>setDebouncedSearch(e.target.value)}
+                onChange={e=>{
+					if(e.target.value === ''){
+						setDebouncedSearch('');
+						setTalentSearch('')
+						setPage(1)
+					}else{
+						setDebouncedSearch(e.target.value)
+					}
+					
+				}}
                 value={debouncedSearch}
               />
 			  {debouncedSearch && (
