@@ -121,6 +121,9 @@ const ClientReport = React.lazy(() =>
 const InvoiceReport = React.lazy(() => 
 	import('modules/report/screens/invoiceReport/invoiceReport'))
 
+const LeaveReport = React.lazy(() => 
+	import('modules/report/screens/invoiceReport/leaveReport'))
+
 const ReplacementReport = React.lazy(() =>
 	import('modules/report/screens/replacementReport/replacementReport')
 );
@@ -235,6 +238,7 @@ export default class UTSRoutes {
 	static ABOUT_CLIENT = '/userDetails';
 	static ONBOARD = '/onBoardList';
 	static Invoice = '/Invoice'
+	static Leave = '/leave'
 	static VIEWONBOARDDETAILS = '/viewOnboardDetails/:onboardID/:isOngoing'
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
@@ -421,6 +425,11 @@ export const navigateToComponent = {
 	[UTSRoutes.Invoice]:(
 		<Suspense>
 			<InvoiceReport />
+		</Suspense>
+	),
+	[UTSRoutes.Leave]:(
+		<Suspense>
+			<LeaveReport />
 		</Suspense>
 	),
 	[UTSRoutes.REPLACEMENT_REPORT]:(

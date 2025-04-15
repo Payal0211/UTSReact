@@ -313,7 +313,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent' || title === 'Talent Documents'
 	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout" || title === "AM Dashboard" || title === 'Invoice'
-    || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency') {
+    || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency' || title === 'Leave') {
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
 		return isVisible
@@ -476,6 +476,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					icon: clientReport,
 					navigateTo: UTSRoutes.Invoice,
 					isVisible: isAccess(usertypeID, 'Invoice')
+				}),
+				new SideBarModels({
+					id: 'LeaveReport',
+					title: 'Leave',
+					isActive: false,
+					icon: clientReport,
+					navigateTo: UTSRoutes.Leave,
+					isVisible: isAccess(usertypeID, 'Leave')
 				}),
 				new SideBarModels({
 					id: 'ClientReport',
