@@ -12,7 +12,7 @@ export default function InvoiceReport() {
   const [openTicketSearchText, setopenTicketSearchText] = useState("");
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(10);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [invoicetList, setinvoicetList] = useState([]);
   const [isLoading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function InvoiceReport() {
   const tableColumnsMemo = useMemo(() => {
     return [
       {
-        title: "Invoice NO.",
+        title: "Invoice #",
         dataIndex: "invoice_number",
         key: "invoice_number",
         align: "left",

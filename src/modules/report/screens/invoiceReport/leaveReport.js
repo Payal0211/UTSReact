@@ -13,7 +13,7 @@ export default function LeaveReport() {
   const [openTicketSearchText, setopenTicketSearchText] = useState("");
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(10);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [leaveList, setleaveList] = useState([]);
   const [isLoading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ export default function LeaveReport() {
              dataIndex: "engagemenID",
              key: "engagemenID",
              align: "left",
-             width: "150px",
+             width: "200px",
              render: (text, item) => {
                return (
                  <>
@@ -54,44 +54,46 @@ export default function LeaveReport() {
              },
            },
            {
-            title: "Client ( Email )",
+            title: "Client",
             dataIndex: "client",
             key: "client",
             align: "left",
-            width: "180px",
+            width: "150px",
           },
           {
-            title: "Talent ( Email )",
+            title: "Talent",
             dataIndex: "talentName",
             key: "talentName",
             align: "left",
-            width: "180px",
-            render: (text, result) => {
-              return `${text ? text : ""} ${
-                result.talentEmailID ? `( ${result.talentEmailID} )` : ""
-              }`;
-            },
+            width: "150px"            
+          },
+          {
+            title: "Talent Email",
+            dataIndex: "talentEmailID",
+            key: "talentEmailID",
+            align: "left",
+            width: "180px"            
           },
       {
         title: "Apply Date",
         dataIndex: "leaveApplyDate",
         key: "leaveApplyDate",
         align: "left",
-        width: "80px",
+        width: "120px",
       },
       {
         title: "Leave Date",
-        dataIndex: "leaveApplyDate",
-        key: "leaveApplyDate",
+        dataIndex: "leaveDate",
+        key: "leaveDate",
         align: "left",
-        width: "80px",
+        width: "200px",
       },
       {
         title: "Leave Duration ",
         dataIndex: "leaveDuration",
         key: "leaveDuration",
         align: "left",
-        width: "100px",
+        width: "120px",
       },
 
       {
@@ -99,7 +101,7 @@ export default function LeaveReport() {
         dataIndex: "leaveReason",
         key: "leaveReason",
         align: "left",
-        width: "100px",
+        width: "150px",
       },
 
       {
@@ -107,14 +109,18 @@ export default function LeaveReport() {
         dataIndex: "leaveStatus",
         key: "leaveStatus",
         align: "left",
-        width: "80px",
+        width: "120px",
       },
       {
-        title: "Rejected Date",
+        title: "Approved/Rejected Date",
         dataIndex: "rejectedDate",
         key: "rejectedDate",
         align: "left",
-        width: "100px",
+        width: "200px",
+        render: (text, item) => {
+          const dateToShow = item.rejectedDate ?? item.approvedDate;
+          return `${dateToShow ? dateToShow : ""}`;
+        },
       },
     ];
   }, [leaveList]);
