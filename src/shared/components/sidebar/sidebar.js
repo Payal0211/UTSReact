@@ -37,6 +37,7 @@ import TalentBackoutIcon from 'assets/Talentbackout.png'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 import HandShake from 'assets/svg/postStepIconInterview.svg'
 import TicketIcon from 'assets/tickiteheader.png'
+import TADashboardIcon from 'assets/svg/ta-dashboard.svg'
 import ClientCompIcon from 'assets/clientCompany.png'
 
 import SLAReport from 'assets/svg/slaReport.svg';
@@ -293,6 +294,12 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
+
+	if(title === 'TA Dashboard'){
+		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 )?true : false;
+		return isVisible
+	}
+
 	if ((  title === "AM Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
 		  && ID === 6){
 		isVisible =  true
@@ -344,6 +351,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isChildren: false,
 			branch: [],
 			isVisible: isAccess(usertypeID,'AM Dashboard')
+		}),
+		new SideBarModels({
+			id: 'UTS_TA_Dashboard',
+			title: 'TA Dashboard',
+			isActive: false,
+			icon: TADashboardIcon ,                                                                                                                    
+			navigateTo: UTSRoutes.TADASHBOARD,
+			isChildren: false,
+			branch: [],
+			isVisible: isAccess(usertypeID,'TA Dashboard')
 		}),
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',

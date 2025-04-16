@@ -16,6 +16,9 @@ const Dashboard = React.lazy(() =>
 const AMDashboard = React.lazy(() =>
 	import('modules/amDashboard/screens/amdashboard'),
 );
+const TADashboard = React.lazy(() =>
+	import('modules/taDashboard/taDashboard'),
+);
 const AllHiringRequest = React.lazy(() =>
 	import('modules/hiring request/screens/allHiringRequest/mainHRTabs'),
 );
@@ -190,7 +193,8 @@ export default class UTSRoutes {
 	static FORGOTPASSWORDROUTE = '/forgotpassword';
 	static ALLHIRINGREQUESTROUTE = '/allhiringrequest';
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
-	static AMDASHBOARD = '/amdashboard'
+	static AMDASHBOARD = '/amdashboard';
+	static TADASHBOARD = '/tadashboard'
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static EDITNEWHR = '/allhiringrequest/addnewhr/:hrid';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
@@ -260,6 +264,11 @@ export const navigateToComponent = {
 	[UTSRoutes.AMDASHBOARD]: (
 		<Suspense>
 			<AMDashboard />
+		</Suspense>
+	),
+	[UTSRoutes.TADASHBOARD]: (
+		<Suspense>
+			<TADashboard />
 		</Suspense>
 	),
 	[UTSRoutes.ALLHIRINGREQUESTROUTE]: (
