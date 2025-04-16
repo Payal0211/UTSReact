@@ -5,91 +5,125 @@ import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { InputType } from "constants/application";
 import { Tabs, Select, Table, Modal, Tooltip } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
+import{Link} from 'react-router-dom'
 import { downloadToExcel } from "modules/report/reportUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 
-export default function InvoiceReport() {
+export default function LeaveReport() {
   const [openTicketSearchText, setopenTicketSearchText] = useState("");
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
-  const [invoicetList, setinvoicetList] = useState([]);
+  const [leaveList, setleaveList] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [invoicetListDataCount, setinvoicetListDataCount] = useState(0);
+  const [leaveListDataCount, setleaveListDataCount] = useState(0);
   const tableColumnsMemo = useMemo(() => {
     return [
       {
-        title: "Invoice #",
-        dataIndex: "invoice_number",
-        key: "invoice_number",
+             title: "Engagement ID / HR #",
+             dataIndex: "engagemenID",
+             key: "engagemenID",
+             align: "left",
+             width: "200px",
+             render: (text, item) => {
+               return (
+                 <>
+                  <Link
+                   to={`/viewOnboardDetails/${item.onBoardID}/${
+                     item.isOngoing === "Ongoing" ? true : false
+                   }`}
+                   target="_blank"
+                   style={{
+                     color: `var(--uplers-black)`,
+                     textDecoration: "underline",
+                   }}
+                 >
+                   {item.engagemenID}
+                 </Link> <br/>
+                 /<Link
+                   to={`/allhiringrequest/${item.hrid}`}
+                   target="_blank"
+                   style={{ color: "#006699", textDecoration: "underline" }}
+                 >
+                   {item.hR_Number}
+                 </Link>
+                 </>
+                
+               );
+             },
+           },
+           {
+            title: "Client",
+            dataIndex: "client",
+            key: "client",
+            align: "left",
+            width: "150px",
+          },
+          {
+            title: "Talent",
+            dataIndex: "talentName",
+            key: "talentName",
+            align: "left",
+            width: "150px"            
+          },
+          {
+            title: "Talent Email",
+            dataIndex: "talentEmailID",
+            key: "talentEmailID",
+            align: "left",
+            width: "180px"            
+          },
+      {
+        title: "Apply Date",
+        dataIndex: "leaveApplyDate",
+        key: "leaveApplyDate",
         align: "left",
-        width: "100px",
+        width: "120px",
       },
       {
-        title: "Date",
-        dataIndex: "invoice_date",
-        key: "invoice_date",
+        title: "Leave Date",
+        dataIndex: "leaveDate",
+        key: "leaveDate",
         align: "left",
-        width: "80px",
+        width: "200px",
       },
       {
-        title: "Due Date",
-        dataIndex: "due_date",
-        key: "due_date",
-        align: "left",
-        width: "80px",
-      },
-      {
-        title: "Company ",
-        dataIndex: "company_name",
-        key: "company_name",
+        title: "Leave Duration ",
+        dataIndex: "leaveDuration",
+        key: "leaveDuration",
         align: "left",
         width: "120px",
       },
 
       {
-        title: "Customer ",
-        dataIndex: "customer_name",
-        key: "customer_name",
+        title: "Reason",
+        dataIndex: "leaveReason",
+        key: "leaveReason",
         align: "left",
-        width: "100px",
+        width: "150px",
       },
 
       {
         title: "Status",
-        dataIndex: "invoiceStatus",
-        key: "invoiceStatus",
+        dataIndex: "leaveStatus",
+        key: "leaveStatus",
         align: "left",
-        width: "60px",
+        width: "120px",
       },
       {
-        title: "Amount",
-        dataIndex: "invoice_amount",
-        key: "invoice_amount",
+        title: "Approved/Rejected Date",
+        dataIndex: "rejectedDate",
+        key: "rejectedDate",
         align: "left",
-        width: "100px",
-        render: (text, result) => {
-          return `${result.currency_code}  ${text}`;
+        width: "200px",
+        render: (text, item) => {
+          const dateToShow = item.rejectedDate ?? item.approvedDate;
+          return `${dateToShow ? dateToShow : ""}`;
         },
       },
-
-      {
-        title: "Payment Term",
-        dataIndex: "payment_Term",
-        key: "payment_Term",
-        align: "left",
-        width: "80px",
-      },
-      {
-        title: "Sales Person",
-        dataIndex: "salesperson_name",
-        key: "salesperson_name",
-        align: "left",
-        width: "160px",
-      },
     ];
-  }, [invoicetList]);
+  }, [leaveList]);
 
   useEffect(() => {
     const timer = setTimeout(
@@ -99,26 +133,26 @@ export default function InvoiceReport() {
     return () => clearTimeout(timer);
   }, [openTicketDebounceText]);
 
-  const getInvoiceTicketsFromPagination = async (pageIndex, pageSize) => {
+  const getLeaveFromPagination = async (pageIndex, pageSize) => {
     let Payload = {
       pageIndex: pageIndex,
       pageSize: pageSize,
       searchText: openTicketSearchText,
     };
 setLoading(true)
-    const zohoResult = await ReportDAO.getZohoInvoiceDAO(Payload);
+    const zohoResult = await ReportDAO.getLeaveTakenDAO(Payload);
     setLoading(false)
     console.log("result ", zohoResult);
     if (zohoResult?.statusCode === 200) {
-      setinvoicetList(zohoResult.responseBody?.rows);
-      setinvoicetListDataCount(zohoResult.responseBody?.totalrows);
+      setleaveList(zohoResult.responseBody?.rows);
+      setleaveListDataCount(zohoResult.responseBody?.totalrows);
     } else if (zohoResult?.statusCode === 404) {
-      setinvoicetList([]);
+      setleaveList([]);
     }
   };
 
   useEffect(() => {
-    getInvoiceTicketsFromPagination(pageIndex, pageSize);
+    getLeaveFromPagination(pageIndex, pageSize);
   }, [pageIndex, pageSize, openTicketSearchText]);
 
   const handleExport = (data) => {
@@ -143,7 +177,7 @@ setLoading(true)
   return (
     <div className={invoiceStyles.hiringRequestContainer}>
       <div className={invoiceStyles.addnewHR} style={{ margin: "0" }}>
-        <div className={invoiceStyles.hiringRequest}>Invoice Report</div>
+        <div className={invoiceStyles.hiringRequest}>Leave Report</div>
       </div>
 
       <div className={invoiceStyles.filterContainer}>
@@ -178,7 +212,7 @@ setLoading(true)
             <button
               type="submit"
               className={invoiceStyles.btnPrimary}
-              onClick={() => handleExport(invoicetList)}
+              onClick={() => handleExport(leaveList)}
             >
               Export
             </button>
@@ -192,7 +226,7 @@ setLoading(true)
         id="TicketsOpenListingTable"
         columns={tableColumnsMemo}
         bordered={false}
-        dataSource={invoicetList}
+        dataSource={leaveList}
         pagination={{
           onChange: (pageNum, pageSize) => {
             setPageIndex(pageNum);
@@ -202,9 +236,9 @@ setLoading(true)
           size: "small",
           pageSize: pageSize,
           pageSizeOptions: pageSizeOptions,
-          total: invoicetListDataCount,
+          total: leaveListDataCount,
           showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${invoicetListDataCount} items`,
+            `${range[0]}-${range[1]} of ${leaveListDataCount} items`,
           defaultCurrent: pageIndex,
         }}
       />
