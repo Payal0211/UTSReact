@@ -905,6 +905,52 @@ export const allEngagementConfig = {
 			},
 		];
 	},
+	taDashboardFilterTypeConfig: (filterList) => {
+		return [
+			{
+				label: 'Priority',
+				name: 'priority',
+				child: filterList?.priority				
+				?.map(item=>({...item,text: item.text,value:item.text})),
+				// isSearch: true,
+			},
+			{
+				label: 'TA',
+				name: 'taUserIDs',
+				child: filterList?.Users
+				?.map(item=>({...item,text: item.data,value:`${item.id}`})),
+				isSearch: true,
+			},
+			{
+				label: 'HR Status',
+				name: 'hrStatusIDs',
+				child: filterList?.HRStatus
+				?.map(item=>({...item,text: item.data,value:`${item.id}`})),
+				// isSearch: true,
+			},
+			{
+				label: 'Contract / DP',
+				name: 'modelType',
+				child: filterList?.ModelType				
+				?.map(item=>({...item,text: item.text,value:item.text})),
+				// isSearch: true,
+			},
+			{
+				label: 'Inbound / Outbound',
+				name: 'roleTypeIDs',
+				child: filterList?.RoleTypes
+				?.map(item=>({...item,text: item.data,value:`${item.id}`})),
+				// isSearch: true,
+			},
+			{
+				label: 'Status',
+				name: 'taskStatusIDs',
+				child: filterList?.TaskStatus
+				?.map(item=>({...item,text: item.data,value:`${item.id}`})),
+				// isSearch: true,
+			},
+		];
+	},
 	deployedListFilterTypeConfig: (filterList) =>{
 		return [
 			{

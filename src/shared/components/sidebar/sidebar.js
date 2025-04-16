@@ -37,6 +37,7 @@ import TalentBackoutIcon from 'assets/Talentbackout.png'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 import HandShake from 'assets/svg/postStepIconInterview.svg'
 import TicketIcon from 'assets/tickiteheader.png'
+import TADashboardIcon from 'assets/svg/ta-dashboard.svg'
 import ClientCompIcon from 'assets/clientCompany.png'
 
 import SLAReport from 'assets/svg/slaReport.svg';
@@ -293,6 +294,12 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
+
+	if(title === 'TA Dashboard'){
+		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 )?true : false;
+		return isVisible
+	}
+
 	if ((  title === "AM Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
 		  && ID === 6){
 		isVisible =  true
@@ -313,7 +320,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent' || title === 'Talent Documents'
 	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout" || title === "AM Dashboard" || title === 'Invoice'
-    || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency') {
+    || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency' || title === 'Leave') {
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
 		return isVisible
@@ -344,6 +351,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isChildren: false,
 			branch: [],
 			isVisible: isAccess(usertypeID,'AM Dashboard')
+		}),
+		new SideBarModels({
+			id: 'UTS_TA_Dashboard',
+			title: 'TA Dashboard',
+			isActive: false,
+			icon: TADashboardIcon ,                                                                                                                    
+			navigateTo: UTSRoutes.TADASHBOARD,
+			isChildren: false,
+			branch: [],
+			isVisible: isAccess(usertypeID,'TA Dashboard')
 		}),
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
@@ -470,6 +487,22 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'Revenue',ShowRevenueRelatedData)
 				}),
 				new SideBarModels({
+					id: 'InvoiceReport',
+					title: 'Invoice',
+					isActive: false,
+					icon: clientReport,
+					navigateTo: UTSRoutes.Invoice,
+					isVisible: isAccess(usertypeID, 'Invoice')
+				}),
+				new SideBarModels({
+					id: 'LeaveReport',
+					title: 'Leave',
+					isActive: false,
+					icon: clientReport,
+					navigateTo: UTSRoutes.Leave,
+					isVisible: isAccess(usertypeID, 'Leave')
+				}),
+				new SideBarModels({
 					id: 'ClientReport',
 					title: 'Client',
 					isActive: false,
@@ -477,14 +510,6 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.CLIENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Client')
 				}),
-				// new SideBarModels({
-				// 	id: 'InvoiceReport',
-				// 	title: 'Invoice',
-				// 	isActive: false,
-				// 	icon: clientReport,
-				// 	navigateTo: UTSRoutes.Invoice,
-				// 	isVisible: isAccess(usertypeID, 'Invoice')
-				// }),
 				new SideBarModels({
 					id: 'HRReport',
 					title: 'HR',

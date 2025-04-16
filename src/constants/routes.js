@@ -16,6 +16,9 @@ const Dashboard = React.lazy(() =>
 const AMDashboard = React.lazy(() =>
 	import('modules/amDashboard/screens/amdashboard'),
 );
+const TADashboard = React.lazy(() =>
+	import('modules/taDashboard/taDashboard'),
+);
 const AllHiringRequest = React.lazy(() =>
 	import('modules/hiring request/screens/allHiringRequest/mainHRTabs'),
 );
@@ -118,6 +121,11 @@ const I2sReport = React.lazy(() =>
 const ClientReport = React.lazy(() =>
  	import('modules/report/screens/clientReport/clientReport')
 );
+const InvoiceReport = React.lazy(() => 
+	import('modules/report/screens/invoiceReport/invoiceReport'))
+
+const LeaveReport = React.lazy(() => 
+	import('modules/report/screens/invoiceReport/leaveReport'))
 
 const ReplacementReport = React.lazy(() =>
 	import('modules/report/screens/replacementReport/replacementReport')
@@ -185,7 +193,8 @@ export default class UTSRoutes {
 	static FORGOTPASSWORDROUTE = '/forgotpassword';
 	static ALLHIRINGREQUESTROUTE = '/allhiringrequest';
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
-	static AMDASHBOARD = '/amdashboard'
+	static AMDASHBOARD = '/amdashboard';
+	static TADASHBOARD = '/tadashboard'
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static EDITNEWHR = '/allhiringrequest/addnewhr/:hrid';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
@@ -232,6 +241,8 @@ export default class UTSRoutes {
 	static Edit_HR = '/EditNewHR/:hrID'
 	static ABOUT_CLIENT = '/userDetails';
 	static ONBOARD = '/onBoardList';
+	static Invoice = '/Invoice'
+	static Leave = '/leave'
 	static VIEWONBOARDDETAILS = '/viewOnboardDetails/:onboardID/:isOngoing'
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
@@ -253,6 +264,11 @@ export const navigateToComponent = {
 	[UTSRoutes.AMDASHBOARD]: (
 		<Suspense>
 			<AMDashboard />
+		</Suspense>
+	),
+	[UTSRoutes.TADASHBOARD]: (
+		<Suspense>
+			<TADashboard />
 		</Suspense>
 	),
 	[UTSRoutes.ALLHIRINGREQUESTROUTE]: (
@@ -413,6 +429,16 @@ export const navigateToComponent = {
 	[UTSRoutes.CLIENT_REPORT]:(
 		<Suspense>
 			<ClientReport />
+		</Suspense>
+	),
+	[UTSRoutes.Invoice]:(
+		<Suspense>
+			<InvoiceReport />
+		</Suspense>
+	),
+	[UTSRoutes.Leave]:(
+		<Suspense>
+			<LeaveReport />
 		</Suspense>
 	),
 	[UTSRoutes.REPLACEMENT_REPORT]:(
