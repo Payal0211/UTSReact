@@ -60,12 +60,21 @@ export class SubDomain {
 	static TALENT_DOCUMENT = 'TalentDocument/'
 	static MEMBER = "member"
 	static TALENT_INVOICE = 'TalentInvoice/'
+	static TA_DASHBOARD = 'TaDashboard/'
 }
 
 export class TalentInvoiceAPI {
 	static GET_ENGAGEMENT_ALL_BR_PR = 'Get_engagement_All_BR_PR'
 }
 
+
+export class TaDashboardURL {
+	static GET_ALL_MASTER_Data = 'GetAllMastersData'
+	static GET_TA_TASK_DETAILS = 'GetTATaskDetailsListing'
+	static UPDATE_TA_TASK = 'InsertOrUpdateTATasks'
+	static GET_TA_COMPANY_List = 'GetTACompanyList'
+	static GET_HR_LIST_COMPANY = 'GetTAHRListCompanyWise'
+}
 
 export class APIType {
 	static USER = '/user';

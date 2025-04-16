@@ -34,15 +34,20 @@
     align-items: center;
 }
 .filterSetsInner [class*="ant-select"]  {
-    width:200px
+    /* width:200px */
 }
 
 .filterSetsInner [class*="ant-select"] [class*="ant-select-selector"] {
-    padding-top: 0 !important;
-    padding-bottom: 0px !important;
+    padding: 12px 10px;
     height: 46px !important;
     min-height: 44px;
-    width:200px
+    overflow: scroll;
+    /* width:200px */
+}
+
+.tableSelectField  [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 5px 10px !important;
+    height: 30px !important;
 }
 
 
@@ -314,6 +319,30 @@
     margin: 0 -9px;
     flex-wrap: wrap;
     display: flex;
+}
+
+.formGroup {
+    margin: 0 0 32px;
+}
+
+.formGroup [class*="ant-select-selection-search-input"] {
+    height: auto !important;
+    padding: 16px 16px !important;
+}
+
+.formGroup label {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
+.formGroup .ant-select {
+    width: 100%;
 }
 
 .btnCancle {
