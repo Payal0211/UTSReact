@@ -36,7 +36,7 @@ const { Option } = Select;
 export default function TADashboard() {
   const navigate = useNavigate();
   const [filteredInfo, setFilteredInfo] = useState({});
-  const [selectedHead, setSelectedHead] = useState([]);
+  const [selectedHead, setSelectedHead] = useState('');
   const [headList, setHeadList] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +64,7 @@ export default function TADashboard() {
 
   const [newTAUservalue, setNewTAUserValue] = useState("");
   const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
+  const [hrListSuggestion,setHRListSuggestion] = useState([]);
   const [companyautoCompleteValue, setCompanyAutoCompleteValue] = useState("");
   const [newTAHRvalue, setNewTAHRValue] = useState("");
   const [selectedCompanyID, setselectedCompanyID] = useState("");
@@ -107,7 +108,7 @@ export default function TADashboard() {
       talent_AnnualCTC_Budget_INRValue: params.talent_AnnualCTC_Budget_INRValue,
       modelType: params.modelType,
       tA_HR_StatusID: params.tA_HR_StatusID,
-      tA_Head_UserID: `${selectedHead[0]}`,
+      tA_Head_UserID: `${selectedHead}`,
     };
     // for new
     // {
@@ -334,10 +335,25 @@ export default function TADashboard() {
 
   const getHRLISTForComapny = async (id) => {
     const pl = {
-      companyID: 38846,
+      companyID:id,
     };
     let response = await TaDashboardDAO.getHRlistFromCompanyDAO(pl);
     console.log("hr data", response);
+    if (response?.statusCode === HTTPStatusCode.OK) {
+      setHRListSuggestion(
+        response?.responseBody?.map((item) => ({
+          ...item,
+          value: item.hrNumber,
+          id: item.hrid,
+        }))
+      );
+    } else if (
+      response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+      response?.statusCode === HTTPStatusCode.NOT_FOUND
+    ) {
+      setHRListSuggestion([]);
+    }
+
   };
 
   const columns = [
@@ -410,36 +426,7 @@ export default function TADashboard() {
         return <PriorityComp text={text} result={result} index={index} />;
       },
     },
-    {
-      title: (
-        <>
-          Inbound <br />/ Outbound
-        </>
-      ),
-      dataIndex: "role_Type",
-      key: "role_Type",
-      fixed: "left",
-      render: (text, result, index) => {
-        return (
-          <InboundOutboundComp text={text} result={result} index={index} />
-        );
-      },
-    },
-    {
-      title: (
-        <>
-          #Interview <br />
-          Rounds
-        </>
-      ),
-      dataIndex: "no_of_InterviewRounds",
-      key: "no_of_InterviewRounds",
-      fixed: "left",
-      width: "100px",
-      render: (text, result, index) => {
-        return <InterviewRoundComp text={text} result={result} index={index} />;
-      },
-    },
+
 
     {
       title: "Status",
@@ -476,11 +463,7 @@ export default function TADashboard() {
       key: "revenue_On10PerCTC",
       // render: (value) => `₹${value.toLocaleString()}`
     },
-    {
-      title: "Sales",
-      dataIndex: "salesName",
-      key: "salesName",
-    },
+  
     {
       title: (
         <>
@@ -492,6 +475,37 @@ export default function TADashboard() {
       key: "totalRevenue_NoofTalent",
       // render: (value) => `₹${value.toLocaleString()}`
     },
+    {
+      title: (
+        <>
+          Inbound <br />/ Outbound
+        </>
+      ),
+      dataIndex: "role_Type",
+      key: "role_Type",
+      // fixed: "left",
+      render: (text, result, index) => {
+        return (
+          <InboundOutboundComp text={text} result={result} index={index} />
+        );
+      },
+    },
+    {
+      title: (
+        <>
+          #Interview <br />
+          Rounds
+        </>
+      ),
+      dataIndex: "no_of_InterviewRounds",
+      key: "no_of_InterviewRounds",
+      // fixed: "left",
+      width: "100px",
+      render: (text, result, index) => {
+        return <InterviewRoundComp text={text} result={result} index={index} />;
+      },
+    },
+  
     {
       title: "Contract / DP",
       dataIndex: "modelType",
@@ -513,6 +527,11 @@ export default function TADashboard() {
       render: (text, result, index) => {
         return <HRStatusComp text={text} result={result} index={index} />;
       },
+    },
+    {
+      title: "Sales",
+      dataIndex: "salesName",
+      key: "salesName",
     },
     {
       title: "HR Created Date",
@@ -557,6 +576,7 @@ export default function TADashboard() {
       dataIndex: "latestNotes",
       key: "latestNotes",
     },
+   
   ];
   const getFilters = async () => {
     let filterResult = await TaDashboardDAO.getAllMasterDAO();
@@ -613,7 +633,7 @@ export default function TADashboard() {
 
   useEffect(() => {
     if (filtersList?.HeadUsers?.length) {
-      setSelectedHead([filtersList?.HeadUsers[0]?.id]);
+      setSelectedHead(filtersList?.HeadUsers[0]?.id);
     }
   }, [filtersList?.HeadUsers]);
 
@@ -661,6 +681,30 @@ export default function TADashboard() {
       {/* <div className={taStyles.addnewHR} style={{ margin: "0" }}>
         <div className={taStyles.hiringRequest}>TA Dashboard</div>
       </div> */}
+
+<div className={taStyles.filterContainer}>
+<div className={taStyles.filterSets}>
+<Select
+              id="selectedValue"
+              placeholder="Select Head"
+              style={{ marginLeft: "10px", width: "270px" }}
+              // mode="multiple"
+              value={selectedHead}
+              showSearch={true}
+              onChange={(value, option) => {
+                console.log({ value, option });
+                setSelectedHead(value);
+              }}
+              options={filtersList?.HeadUsers?.map((v) => ({
+                label: v.data,
+                value: v.id,
+              }))}
+              optionFilterProp="label"
+              // getPopupContainer={(trigger) => trigger.parentElement}
+            />
+  </div>
+  </div>
+
       <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
           <div className={taStyles.filterSetsInner}>
@@ -715,24 +759,7 @@ export default function TADashboard() {
               Search
             </button> */}
 
-            <Select
-              id="selectedValue"
-              placeholder="Select Head"
-              style={{ marginLeft: "10px", width: "270px" }}
-              mode="multiple"
-              value={selectedHead}
-              showSearch={true}
-              onChange={(value, option) => {
-                console.log({ value, option });
-                setSelectedHead(value);
-              }}
-              options={filtersList?.HeadUsers?.map((v) => ({
-                label: v.data,
-                value: v.id,
-              }))}
-              optionFilterProp="label"
-              // getPopupContainer={(trigger) => trigger.parentElement}
-            />
+   
             <p
               className={taStyles.resetText}
               style={{ width: "190px" }}
@@ -886,8 +913,9 @@ export default function TADashboard() {
                       console.log({ value, option });
                       setNewTAHRValue(value);
                     }}
-                    options={filtersList?.Users?.map((v) => ({
-                      label: v.data,
+                    options={hrListSuggestion.map((v) => ({
+                      ...v,
+                      label: v.value,
                       value: v.id,
                     }))}
                     optionFilterProp="label"
