@@ -50,6 +50,20 @@
     height: 30px !important;
 }
 
+.reqField {
+    /* color: var(--uplers-black); */
+    color: #E03A3A;
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}
+
+
 
 [class*="filterRight"] .ant-select-multiple .ant-select-selector{
     padding-top: 5px;
@@ -344,6 +358,18 @@
 .formGroup .ant-select {
     width: 100%;
 }
+
+.HRINFOCOntainer{
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 5px;
+}
+
+.HRINFOCOntainer span{
+font-weight: 500;
+}
+
+
 
 .btnCancle {
     background: var(--text-color-purity);
