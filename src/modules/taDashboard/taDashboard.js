@@ -19,6 +19,10 @@ import {
 } from "antd";
 import { EmailRegEx, InputType } from "constants/application";
 import UTSRoutes from "constants/routes";
+import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
@@ -66,6 +70,7 @@ export default function TADashboard() {
   });
 
   const [newTAUservalue, setNewTAUserValue] = useState("");
+  const [newTAHeadUservalue, setNewTAHeadUserValue] = useState('')
   const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
   const [hrListSuggestion, setHRListSuggestion] = useState([]);
   const [companyautoCompleteValue, setCompanyAutoCompleteValue] = useState("");
@@ -78,6 +83,11 @@ export default function TADashboard() {
   const [showTalentProfiles, setShowTalentProfiles] = useState(false);
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
   const [hrTalentList, setHRTalentList] = useState([]);
+  const date = new Date()
+  const [startDate, setStartDate] = useState(date);
+  const [showGoal,setShowGoal] = useState(false)
+  const [goalLoading,setgoalLoading] = useState(false)
+  const [goalList,setGoalList] = useState([])
 
   // const groupedData = groupByRowSpan(rawData, 'ta');
 
@@ -317,6 +327,14 @@ export default function TADashboard() {
     console.log("Various parameters", pagination, filters, sorter);
     setFilteredInfo(filters);
 
+//  setTableFilteredState(prev=>({
+//   filterFields_OnBoard: {
+//     ...prev.filterFields_OnBoard,
+//     modelType: filters.modelType !== null ? filters.modelType.toString() : null ,
+//     priority: filters.task_Priority !== null ? filters.task_Priority.toString() : null,
+//   },
+// }))
+
     // setSortedInfo(sorter );
   };
 
@@ -375,6 +393,68 @@ export default function TADashboard() {
     }
   };
 
+  const getGoalsDetails = async (date,head,tA_UserID)=>{
+    let pl = {  
+      "taUserIDs": tA_UserID,
+      "taHeadID": head,
+      "targetDate": moment(date).format('YYYY-MM-DD') 
+    }
+    setgoalLoading(true)
+    const goalResult = await TaDashboardDAO.getGoalsDetailsRequestDAO(pl)
+    setgoalLoading(false)
+
+
+    if(goalResult.statusCode === HTTPStatusCode.OK){
+      setGoalList(goalResult.responseBody)
+    }else{
+      setGoalList([])
+    }
+  }
+
+  useEffect(()=>{
+    if(selectedHead){
+      getGoalsDetails(startDate,selectedHead,tableFilteredState.filterFields_OnBoard.taUserIDs)
+    }
+  },[selectedHead,startDate,tableFilteredState])
+
+  const goalColumns = [
+    {
+      title: "TA",
+      dataIndex: "ta",
+      key: "ta",
+    },
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+    },
+    {
+      title: "HR Title",
+      dataIndex: "hrTitle",
+      key: "hrTitle",
+    },
+    {
+      title: "Profiles Shared Target",
+      dataIndex: "profiles_Shared_Target",
+      key: "profiles_Shared_Target",
+    },
+    {
+      title: "Profiles Shared Achieved",
+      dataIndex: "profiles_Shared_Achieved",
+      key: "profiles_Shared_Achieved",
+    },
+    {
+      title: "Interviews Done Target",
+      dataIndex: "interviews_Done_Target",
+      key: "interviews_Done_Target",
+    },
+    {
+      title: "Interviews Done Achieved",
+      dataIndex: "interviews_Done_Achieved",
+      key: "interviews_Done_Achieved",
+    },
+  ]
+
   const ProfileColumns = [
     {
       title: "Submission Date",
@@ -382,7 +462,7 @@ export default function TADashboard() {
       key: "profileSubmittedDate",
     },
     {
-      title: "Submission By",
+      title: "Submitted By",
       dataIndex: "profileSubmittedBy",
       key: "profileSubmittedBy",
     },
@@ -432,11 +512,17 @@ export default function TADashboard() {
                     onClick={() => {
                       setIsAddNewRow(true);
                       setNewTAUserValue(row.tA_UserID);
+                      setNewTAHeadUserValue(selectedHead)
                     }}
                     className={taStyles.feedbackLabel}
+                    style={{padding:'10px'}}
                   >
                     {" "}
-                    <IoMdAddCircle />
+                    <IoMdAddCircle   onClick={() => {
+                      setIsAddNewRow(true);
+                      setNewTAUserValue(row.tA_UserID);
+                      setNewTAHeadUserValue(selectedHead)
+                    }} />
                   </span>{" "}
                 </Tooltip>
               </IconContext.Provider>
@@ -485,6 +571,11 @@ export default function TADashboard() {
       fixed: "left",
       width: "120px",
       // filters:filtersList?.priority?.map(v=>({text: v.text, value: v.text})),
+      // filteredValue: filteredInfo.task_Priority || null,
+      // onFilter: (value, record) => {
+      //   console.log('filter',value,record)
+      //    return record.task_Priority === value
+      // },
       render: (text, result, index) => {
         return <PriorityComp text={text} result={result} index={index} />;
       },
@@ -507,12 +598,15 @@ export default function TADashboard() {
 
     {
       title: (
-        <>
-          Talent Annual <br /> CTC Budget (INR)
+        <>     
+            Talent Annual <br /> CTC Budget (INR)
         </>
       ),
       dataIndex: "talent_AnnualCTC_Budget_INRValue",
       key: "talent_AnnualCTC_Budget_INRValue",
+      render:(text,result)=>{
+        return <Tooltip title={result.actualCostWithCurrency} >{text}</Tooltip>
+      }
     },
     {
       title: (
@@ -839,6 +933,52 @@ export default function TADashboard() {
       </div>
 
       <div className={taStyles.filterContainer}>
+        <div className={taStyles.filterSets} >
+          <div className={taStyles.filterSetsInner} onClick={()=>setShowGoal(prev=> !prev)} >
+            <p
+              className={taStyles.resetText}
+              style={{ textDecoration:'none' }}
+            >
+              Goal vs Achieved Targets   <ArrowDownSVG  style={{ rotate: showGoal ? '180deg' : '' , marginLeft:'10px'}}  />
+            </p>
+          </div>
+
+          <div className={taStyles.filterRight}>
+          <div className={taStyles.calendarFilterSet}>
+              <div className={taStyles.label}>Date</div>
+              <div className={taStyles.calendarFilter}>
+                <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                <DatePicker
+                  style={{ backgroundColor: "red" }}
+                  onKeyDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className={taStyles.dateFilter}
+                  placeholderText="Start date"
+                  selected={startDate}
+                  onChange={date=> setStartDate(date)}
+                  dateFormat="dd-MM-yyyy"              
+                  minDate={new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)}
+                  maxDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
+                  // selectsRange
+                />
+              </div>
+            </div>
+
+          
+          </div>
+        </div>
+{(showGoal === true) ? goalLoading ? <TableSkeleton  /> :  <Table
+                dataSource={goalList}
+                columns={goalColumns}
+                // bordered
+                pagination={false}
+              /> : null}
+        
+      </div>
+
+      <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
           <div className={taStyles.filterSetsInner}>
             <div className={taStyles.addFilter} onClick={toggleHRFilter}>
@@ -902,6 +1042,7 @@ export default function TADashboard() {
               className={taStyles.btnPrimary}
               onClick={() => {
                 setIsAddNewRow(true);
+                setNewTAHeadUserValue(selectedHead)
               }}
             >
               Add New Task
@@ -951,7 +1092,7 @@ export default function TADashboard() {
       {showTalentProfiles && (
         <Modal
           transitionName=""
-          width="800px"
+          width="950px"
           centered
           footer={null}
           open={showTalentProfiles}
@@ -1025,6 +1166,43 @@ export default function TADashboard() {
             ) : (
               <>
                 <div className={taStyles.row}>
+                <div className={taStyles.colMd6}>
+                    {/* <Select  value={newTAUservalue}  onChange={val=>{
+                      setNewTAUserValue(val);
+                      }}>
+                      {filtersList?.Users?.map(v=> <Option value={v.data}>{v.data}</Option>)}
+                      </Select> */}
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select Head <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select TA"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={newTAHeadUservalue}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                          setNewTAHeadUserValue(value);
+                          setNewTAUserValue('')
+                          setCompanyAutoCompleteValue("");
+                          setCompanyNameSuggestion([]);
+                          setselectedCompanyID("");
+                          setNewTAHRValue("");
+                          setTRAllData({});
+                        }}
+                        options={filtersList?.HeadUsers?.map((v) => ({
+                          label: v.data,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+
+                     
+                    </div>
+                  </div>
                   <div className={taStyles.colMd6}>
                     {/* <Select  value={newTAUservalue}  onChange={val=>{
                       setNewTAUserValue(val);
@@ -1063,7 +1241,11 @@ export default function TADashboard() {
                       )}
                     </div>
                   </div>
-                  <div className={taStyles.colMd6}>
+                 
+                </div>
+
+                <div className={taStyles.row}>
+                <div className={taStyles.colMd6}>
                     <div className={taStyles.formGroup}>
                       <label>
                         Select company{" "}
@@ -1100,9 +1282,6 @@ export default function TADashboard() {
                       )}
                     </div>
                   </div>
-                </div>
-
-                <div className={taStyles.row}>
                   <div className={taStyles.colMd6}>
                     {/* <Select  value={newTAUservalue}  onChange={val=>{
                       setNewTAUserValue(val);

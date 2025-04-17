@@ -104,4 +104,21 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getHRTalentDetailsRequest');
 		}
 	},
+    getGoalsDetailsRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TA_TARGETS
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getGoalsDetailsRequest');
+		}
+	},
 }
