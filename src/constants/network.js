@@ -74,6 +74,7 @@ export class TaDashboardURL {
 	static UPDATE_TA_TASK = 'InsertOrUpdateTATasks'
 	static GET_TA_COMPANY_List = 'GetTACompanyList'
 	static GET_HR_LIST_COMPANY = 'GetTAHRListCompanyWise'
+	static GET_HR_TALENT_DETAILS = 'GetHRRelatedTalentDetails'
 }
 
 export class APIType {

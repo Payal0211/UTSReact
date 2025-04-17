@@ -14,6 +14,8 @@ import {
   Tooltip,
   InputNumber,
   AutoComplete,
+  message,
+  Skeleton,
 } from "antd";
 import { EmailRegEx, InputType } from "constants/application";
 import UTSRoutes from "constants/routes";
@@ -36,9 +38,10 @@ const { Option } = Select;
 export default function TADashboard() {
   const navigate = useNavigate();
   const [filteredInfo, setFilteredInfo] = useState({});
-  const [selectedHead, setSelectedHead] = useState('');
+  const [selectedHead, setSelectedHead] = useState("");
   const [headList, setHeadList] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [debounceSearchText, setDebouncedSearchText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [filtersList, setFiltersList] = useState({});
   const [filteredTagLength, setFilteredTagLength] = useState(0);
@@ -64,10 +67,17 @@ export default function TADashboard() {
 
   const [newTAUservalue, setNewTAUserValue] = useState("");
   const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
-  const [hrListSuggestion,setHRListSuggestion] = useState([]);
+  const [hrListSuggestion, setHRListSuggestion] = useState([]);
   const [companyautoCompleteValue, setCompanyAutoCompleteValue] = useState("");
   const [newTAHRvalue, setNewTAHRValue] = useState("");
+  const [newTRAllData, setTRAllData] = useState({});
   const [selectedCompanyID, setselectedCompanyID] = useState("");
+  const [newTaskError, setNewTaskError] = useState(false);
+  const [isAddingNewTask, setAddingNewTask] = useState(false);
+
+  const [showTalentProfiles, setShowTalentProfiles] = useState(false);
+  const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
+  const [hrTalentList, setHRTalentList] = useState([]);
 
   // const groupedData = groupByRowSpan(rawData, 'ta');
 
@@ -94,6 +104,10 @@ export default function TADashboard() {
 
     return finalData;
   }
+
+  useEffect(() => {
+    setTimeout(() => setSearchText(debounceSearchText), 2000);
+  }, [debounceSearchText]);
 
   const updateTARowValue = async (value, key, params, index) => {
     let pl = {
@@ -166,12 +180,7 @@ export default function TADashboard() {
         return newDS;
       });
     }
-
-    console.log(value, key, params, index, pl);
-
     let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
-
-    console.log("update res", updateresult);
   };
 
   const ContractDPComp = ({ text, result, index }) => {
@@ -255,7 +264,6 @@ export default function TADashboard() {
           onChange={(val) => {
             setValue(val);
             let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
-            console.log("on c", valobj, "task_StatusID", result, index);
             updateTARowValue(valobj, "task_StatusID", result, index);
           }}
         >
@@ -308,6 +316,7 @@ export default function TADashboard() {
   const handleTableFilterChange = (pagination, filters, sorter) => {
     console.log("Various parameters", pagination, filters, sorter);
     setFilteredInfo(filters);
+
     // setSortedInfo(sorter );
   };
 
@@ -335,10 +344,9 @@ export default function TADashboard() {
 
   const getHRLISTForComapny = async (id) => {
     const pl = {
-      companyID:id,
+      companyID: id,
     };
     let response = await TaDashboardDAO.getHRlistFromCompanyDAO(pl);
-    console.log("hr data", response);
     if (response?.statusCode === HTTPStatusCode.OK) {
       setHRListSuggestion(
         response?.responseBody?.map((item) => ({
@@ -353,8 +361,47 @@ export default function TADashboard() {
     ) {
       setHRListSuggestion([]);
     }
-
   };
+
+  const getTalentProfilesDetails = async (ID) => {
+    setShowTalentProfiles(true);
+    setLoadingTalentProfile(true);
+    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(ID);
+    setLoadingTalentProfile(false);
+    if (hrResult.statusCode === HTTPStatusCode.OK) {
+      setHRTalentList(hrResult.responseBody);
+    } else {
+      setHRTalentList([]);
+    }
+  };
+
+  const ProfileColumns = [
+    {
+      title: "Submission Date",
+      dataIndex: "profileSubmittedDate",
+      key: "profileSubmittedDate",
+    },
+    {
+      title: "Submission By",
+      dataIndex: "profileSubmittedBy",
+      key: "profileSubmittedBy",
+    },
+    {
+      title: "Talent Name",
+      dataIndex: "talent",
+      key: "talent",
+    },
+    {
+      title: "status",
+      dataIndex: "talentStatus",
+      key: "talentStatus",
+    },
+    {
+      title: "Detail",
+      dataIndex: "talentStatusDetail",
+      key: "talentStatusDetail",
+    },
+  ];
 
   const columns = [
     {
@@ -367,17 +414,32 @@ export default function TADashboard() {
           children: (
             <div style={{ verticalAlign: "top" }}>
               {value}
-              {/* <br/>   <IconContext.Provider value={{ color: 'green', style: { width:'35px',height:'35px',marginTop:'5px',cursor:'pointer' } }}> <Tooltip title={`Add task for ${value}`} placement="top" >
-                        <span
-                        // style={{
-                        //   background: 'green'
-                        // }}
-                        onClick={()=> {}}
-                        className={taStyles.feedbackLabel}>
-                        {' '}
-                        <IoMdAddCircle />
-                      </span>   </Tooltip>
-                      </IconContext.Provider> */}
+              <br />{" "}
+              <IconContext.Provider
+                value={{
+                  color: "green",
+                  style: {
+                    width: "30px",
+                    height: "30px",
+                    marginTop: "5px",
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                {" "}
+                <Tooltip title={`Add task for ${value}`} placement="top">
+                  <span
+                    onClick={() => {
+                      setIsAddNewRow(true);
+                      setNewTAUserValue(row.tA_UserID);
+                    }}
+                    className={taStyles.feedbackLabel}
+                  >
+                    {" "}
+                    <IoMdAddCircle />
+                  </span>{" "}
+                </Tooltip>
+              </IconContext.Provider>
             </div>
           ),
           props: {
@@ -422,11 +484,11 @@ export default function TADashboard() {
       key: "task_Priority",
       fixed: "left",
       width: "120px",
+      // filters:filtersList?.priority?.map(v=>({text: v.text, value: v.text})),
       render: (text, result, index) => {
         return <PriorityComp text={text} result={result} index={index} />;
       },
     },
-
 
     {
       title: "Status",
@@ -463,7 +525,7 @@ export default function TADashboard() {
       key: "revenue_On10PerCTC",
       // render: (value) => `₹${value.toLocaleString()}`
     },
-  
+
     {
       title: (
         <>
@@ -474,6 +536,36 @@ export default function TADashboard() {
       dataIndex: "totalRevenue_NoofTalent",
       key: "totalRevenue_NoofTalent",
       // render: (value) => `₹${value.toLocaleString()}`
+    },
+    {
+      title: (
+        <>
+          No. of Active
+          <br />
+          /Submitted Profiles <br /> till Date
+        </>
+      ),
+      dataIndex: "noOfProfile_TalentsTillDate",
+      key: "noOfProfile_TalentsTillDate",
+      render: (text, result) => {
+        return +text > 0 ? (
+          <p
+            style={{
+              color: "blue",
+              fontWeight: "bold",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              getTalentProfilesDetails(result?.hiringRequest_ID);
+            }}
+          >
+            {text}
+          </p>
+        ) : (
+          text
+        );
+      },
     },
     {
       title: (
@@ -505,7 +597,7 @@ export default function TADashboard() {
         return <InterviewRoundComp text={text} result={result} index={index} />;
       },
     },
-  
+
     {
       title: "Contract / DP",
       dataIndex: "modelType",
@@ -551,17 +643,6 @@ export default function TADashboard() {
       dataIndex: "hrOpenSinceOneMonths",
       key: "hrOpenSinceOneMonths",
     },
-    {
-      title: (
-        <>
-          No. of Active
-          <br />
-          /Submitted Profiles <br /> till Date
-        </>
-      ),
-      dataIndex: "noOfProfile_TalentsTillDate",
-      key: "noOfProfile_TalentsTillDate",
-    },
     // {
     //   title: <>#Profiles Submitted <br/> Yesterday</>,
     //   dataIndex: '',
@@ -576,11 +657,11 @@ export default function TADashboard() {
       dataIndex: "latestNotes",
       key: "latestNotes",
     },
-   
   ];
   const getFilters = async () => {
+    setIsLoading(true);
     let filterResult = await TaDashboardDAO.getAllMasterDAO();
-    console.log("filter result", filterResult);
+    setIsLoading(false);
     if (filterResult.statusCode === HTTPStatusCode.OK) {
       setFiltersList(filterResult && filterResult?.responseBody);
     } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -610,7 +691,6 @@ export default function TADashboard() {
     setIsLoading(true);
     const result = await TaDashboardDAO.getAllTAListRequestDAO(pl);
     setIsLoading(false);
-    console.log("list", result);
 
     if (result.statusCode === HTTPStatusCode.OK) {
       setTaListData(groupByRowSpan(result.responseBody, "taName"));
@@ -658,7 +738,61 @@ export default function TADashboard() {
         searchText: "",
       },
     });
+    setDebouncedSearchText("");
+
     setSearchText("");
+  };
+
+  const saveNewTask = async () => {
+    if (newTAUservalue === "") {
+      setNewTaskError(true);
+      return;
+    }
+
+    if (selectedCompanyID === "") {
+      setNewTaskError(true);
+      return;
+    }
+
+    if (newTAHRvalue === "") {
+      setNewTaskError(true);
+      return;
+    }
+
+    let pl = {
+      tA_UserID: newTAUservalue,
+      company_ID: selectedCompanyID,
+      hiringRequest_ID: newTAHRvalue,
+      task_Priority: null,
+      no_of_InterviewRounds: null,
+      role_TypeID: null,
+      task_StatusID: null,
+      activeTR: newTRAllData?.activeHR,
+      talent_AnnualCTC_Budget_INRValue: newTRAllData?.totalAnnualBudgetInINR,
+      modelType: newTRAllData?.modelType,
+      revenue_On10PerCTC: newTRAllData?.revenue10Percent,
+      totalRevenue_NoofTalent: 0,
+      noOfProfile_TalentsTillDate: newTRAllData?.noOfProfilesSharedTillDate,
+      tA_HR_StatusID: 2,
+      tA_Head_UserID: `${selectedHead}`,
+    };
+    setAddingNewTask(true);
+    let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+    setAddingNewTask(false);
+
+    if (updateresult.statusCode === HTTPStatusCode.OK) {
+      setNewTAUserValue("");
+      setCompanyAutoCompleteValue("");
+      setselectedCompanyID("");
+      setNewTAHRValue("");
+      setCompanyNameSuggestion([]);
+      setTRAllData({});
+      setNewTaskError(false);
+      setIsAddNewRow(false);
+      getListData();
+    } else {
+      message.error("Something went wrong");
+    }
   };
 
   const toggleHRFilter = useCallback(() => {
@@ -682,28 +816,27 @@ export default function TADashboard() {
         <div className={taStyles.hiringRequest}>TA Dashboard</div>
       </div> */}
 
-<div className={taStyles.filterContainer}>
-<div className={taStyles.filterSets}>
-<Select
-              id="selectedValue"
-              placeholder="Select Head"
-              style={{ marginLeft: "10px", width: "270px" }}
-              // mode="multiple"
-              value={selectedHead}
-              showSearch={true}
-              onChange={(value, option) => {
-                console.log({ value, option });
-                setSelectedHead(value);
-              }}
-              options={filtersList?.HeadUsers?.map((v) => ({
-                label: v.data,
-                value: v.id,
-              }))}
-              optionFilterProp="label"
-              // getPopupContainer={(trigger) => trigger.parentElement}
-            />
-  </div>
-  </div>
+      <div className={taStyles.filterContainer}>
+        <div className={taStyles.filterSets}>
+          <Select
+            id="selectedValue"
+            placeholder="Select Head"
+            style={{ marginLeft: "10px", width: "270px" }}
+            // mode="multiple"
+            value={selectedHead}
+            showSearch={true}
+            onChange={(value, option) => {
+              setSelectedHead(value);
+            }}
+            options={filtersList?.HeadUsers?.map((v) => ({
+              label: v.data,
+              value: v.id,
+            }))}
+            optionFilterProp="label"
+            // getPopupContainer={(trigger) => trigger.parentElement}
+          />
+        </div>
+      </div>
 
       <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
@@ -715,14 +848,6 @@ export default function TADashboard() {
               <div className={taStyles.filterCount}>{filteredTagLength}</div>
             </div>
 
-            {console.log(
-              "fd",
-              filtersList?.HeadUsers?.map((v) => ({
-                label: v.data,
-                value: v.id,
-              })),
-              filtersList?.HeadUsers
-            )}
             <div
               className={taStyles.searchFilterSet}
               style={{ marginLeft: "15px" }}
@@ -732,9 +857,10 @@ export default function TADashboard() {
                 type={InputType.TEXT}
                 className={taStyles.searchInput}
                 placeholder="Search Table"
-                value={searchText}
+                value={debounceSearchText}
                 onChange={(e) => {
-                  setSearchText(e.target.value);
+                  // setSearchText(e.target.value);
+                  setDebouncedSearchText(e.target.value);
                 }}
               />
               {searchText && (
@@ -745,7 +871,8 @@ export default function TADashboard() {
                     cursor: "pointer",
                   }}
                   onClick={() => {
-                    setSearchText("");
+                    // setSearchText("");
+                    setDebouncedSearchText("");
                   }}
                 />
               )}
@@ -759,7 +886,6 @@ export default function TADashboard() {
               Search
             </button> */}
 
-   
             <p
               className={taStyles.resetText}
               style={{ width: "190px" }}
@@ -772,10 +898,15 @@ export default function TADashboard() {
           </div>
 
           <div className={taStyles.filterRight}>
-            {/* <button className={taStyles.btnPrimary} onClick={() => {setIsAddNewRow(true)}}>
-             Add New Task
+            <button
+              className={taStyles.btnPrimary}
+              onClick={() => {
+                setIsAddNewRow(true);
+              }}
+            >
+              Add New Task
             </button>
-            <button className={taStyles.btnPrimary} onClick={() => {}}>
+            {/* <button className={taStyles.btnPrimary} onClick={() => {}}>
               Export
             </button> */}
           </div>
@@ -795,7 +926,6 @@ export default function TADashboard() {
         />
       )}
 
-      {console.log("tableFilteredState", tableFilteredState)}
       {isAllowFilters && (
         <Suspense fallback={<div>Loading...</div>}>
           <OnboardFilerList
@@ -818,6 +948,53 @@ export default function TADashboard() {
         </Suspense>
       )}
 
+      {showTalentProfiles && (
+        <Modal
+          transitionName=""
+          width="800px"
+          centered
+          footer={null}
+          open={showTalentProfiles}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setShowTalentProfiles(false);
+          }}
+        >
+          <>
+            <div style={{ padding: "35px 15px 10px 15px" }}>
+              <h3>Profiles</h3>
+            </div>
+
+            {loadingTalentProfile ? (
+              <div>
+                <Skeleton active />
+              </div>
+            ) : (
+              <Table
+                dataSource={hrTalentList}
+                columns={ProfileColumns}
+                // bordered
+                pagination={false}
+              />
+            )}
+
+            <div style={{ padding: "10px 0" }}>
+              <button
+                className={taStyles.btnCancle}
+                disabled={isAddingNewTask}
+                onClick={() => {
+                  setShowTalentProfiles(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        </Modal>
+      )}
+
       {isAddNewRow && (
         <Modal
           transitionName=""
@@ -828,101 +1005,219 @@ export default function TADashboard() {
           // className={allEngagementStyles.engagementModalContainer}
           className="engagementModalStyle"
           // onOk={() => setVersantModal(false)}
-          onCancel={() => setIsAddNewRow(false)}
+          onCancel={() => {
+            setNewTAUserValue("");
+            setCompanyAutoCompleteValue("");
+            setselectedCompanyID("");
+            setCompanyNameSuggestion([]);
+            setNewTAHRValue("");
+            setTRAllData({});
+            setNewTaskError(false);
+            setIsAddNewRow(false);
+          }}
         >
-          <div style={{ padding: "35px 10px 10px 10px" }}>
-            <div className={taStyles.row}>
-              <div className={taStyles.colMd6}>
-                {/* <Select  value={newTAUservalue}  onChange={val=>{
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Add New Task</h3>
+          </div>
+          <div style={{ padding: "10px 15px" }}>
+            {isAddingNewTask ? (
+              <Skeleton active />
+            ) : (
+              <>
+                <div className={taStyles.row}>
+                  <div className={taStyles.colMd6}>
+                    {/* <Select  value={newTAUservalue}  onChange={val=>{
                       setNewTAUserValue(val);
                       }}>
                       {filtersList?.Users?.map(v=> <Option value={v.data}>{v.data}</Option>)}
                       </Select> */}
-                <div className={taStyles.formGroup}>
-                  <label>Select TA</label>
-                  <Select
-                    id="selectedValue"
-                    placeholder="Select TA"
-                    // style={{marginLeft:'10px',width:'270px'}}
-                    // mode="multiple"
-                    value={newTAUservalue}
-                    showSearch={true}
-                    onChange={(value, option) => {
-                      console.log({ value, option });
-                      setNewTAUserValue(value);
-                    }}
-                    options={filtersList?.Users?.map((v) => ({
-                      label: v.data,
-                      value: v.id,
-                    }))}
-                    optionFilterProp="label"
-                    // getPopupContainer={(trigger) => trigger.parentElement}
-                  />
-                </div>
-              </div>
-              <div className={taStyles.colMd6}>
-                <div className={taStyles.formGroup}>
-                  <label>Select company</label>
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select TA <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select TA"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={newTAUservalue}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                          setNewTAUserValue(value);
+                          setCompanyAutoCompleteValue("");
+                          setCompanyNameSuggestion([]);
+                          setselectedCompanyID("");
+                          setNewTAHRValue("");
+                          setTRAllData({});
+                        }}
+                        options={filtersList?.Users?.map((v) => ({
+                          label: v.data,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
 
-                  <AutoComplete
-                    disabled={newTAUservalue === ""}
-                    dataSource={getCompanyNameSuggestion}
-                    onSelect={(companyName, _obj) => {
-                      console.log("selected com", companyName, _obj);
-                      let comObj = getCompanyNameSuggestion.find(
-                        (i) => i.value === companyName
-                      );
-                      console.log(comObj);
-                      setCompanyAutoCompleteValue(companyName);
-                      setselectedCompanyID(comObj?.id);
-                      getHRLISTForComapny(comObj?.id);
-                    }}
-                    // filterOption={true}
-                    onSearch={(searchValue) => {
-                      getCompanySuggestionHandler(searchValue);
-                    }}
-                    value={companyautoCompleteValue}
-                    onChange={(companyName) => {
-                      setCompanyAutoCompleteValue(companyName);
-                    }}
-                    placeholder="Search Company"
-                    // ref={controllerCompanyRef}
-                  />
-                </div>
-              </div>
-            </div>
+                      {newTaskError && newTAUservalue === "" && (
+                        <p className={taStyles.error}>please select TA</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className={taStyles.colMd6}>
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select company{" "}
+                        <span className={taStyles.reqField}>*</span>
+                      </label>
 
-            <div className={taStyles.row}>
-              <div className={taStyles.colMd6}>
-                {/* <Select  value={newTAUservalue}  onChange={val=>{
+                      <AutoComplete
+                        disabled={newTAUservalue === ""}
+                        dataSource={getCompanyNameSuggestion}
+                        onSelect={(companyName, _obj) => {
+                          let comObj = getCompanyNameSuggestion.find(
+                            (i) => i.value === companyName
+                          );
+
+                          setCompanyAutoCompleteValue(companyName);
+                          setselectedCompanyID(comObj?.id);
+                          getHRLISTForComapny(comObj?.id);
+                          setNewTAHRValue("");
+                          setTRAllData({});
+                        }}
+                        // filterOption={true}
+                        onSearch={(searchValue) => {
+                          getCompanySuggestionHandler(searchValue);
+                        }}
+                        value={companyautoCompleteValue}
+                        onChange={(companyName) => {
+                          setCompanyAutoCompleteValue(companyName);
+                        }}
+                        placeholder="Search Company"
+                        // ref={controllerCompanyRef}
+                      />
+                      {newTaskError && selectedCompanyID === "" && (
+                        <p className={taStyles.error}>please select company</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={taStyles.row}>
+                  <div className={taStyles.colMd6}>
+                    {/* <Select  value={newTAUservalue}  onChange={val=>{
                       setNewTAUserValue(val);
                       }}>
                       {filtersList?.Users?.map(v=> <Option value={v.data}>{v.data}</Option>)}
                       </Select> */}
-                <div className={taStyles.formGroup}>
-                  <label>Select HR</label>
-                  <Select
-                    disabled={selectedCompanyID === ""}
-                    id="selectedValue"
-                    placeholder="Select HR"
-                    // style={{marginLeft:'10px',width:'270px'}}
-                    // mode="multiple"
-                    value={newTAHRvalue}
-                    showSearch={true}
-                    onChange={(value, option) => {
-                      console.log({ value, option });
-                      setNewTAHRValue(value);
-                    }}
-                    options={hrListSuggestion.map((v) => ({
-                      ...v,
-                      label: v.value,
-                      value: v.id,
-                    }))}
-                    optionFilterProp="label"
-                    // getPopupContainer={(trigger) => trigger.parentElement}
-                  />
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select HR <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        disabled={selectedCompanyID === ""}
+                        id="selectedValue"
+                        placeholder="Select HR"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={newTAHRvalue}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                          setNewTAHRValue(value);
+                          setTRAllData(option);
+                        }}
+                        options={hrListSuggestion.map((v) => ({
+                          ...v,
+                          label: v.value,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+                      {newTaskError && newTAHRvalue === "" && (
+                        <p className={taStyles.error}>please select HR</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
+
+                <div className={taStyles.HRINFOCOntainer}>
+                  {Object.keys(newTRAllData).length > 0 && (
+                    <>
+                      <div>
+                        <span>Active HR : </span>
+                        {newTRAllData.activeHR}
+                      </div>
+                      <div>
+                        <span>HR Created Date : </span>
+                        {moment(newTRAllData.hrCreatedDate).format(
+                          "DD-MMM-YYYY"
+                        )}
+                      </div>
+                      <div>
+                        <span>Talent Annual CTC Budget (INR) : </span>
+                        {newTRAllData.totalAnnualBudgetInINR}
+                      </div>
+                      <div>
+                        <span>DP /Contract : </span>
+                        {newTRAllData.modelType}
+                      </div>
+                      <div>
+                        <span>Revenue Opportunity (10% on annual CTC) : </span>
+                        {newTRAllData.revenue10Percent}
+                      </div>
+                      <div>
+                        <span>Sales : </span>
+                        {newTRAllData.salesUser}
+                      </div>
+                      <div>
+                        <span>
+                          Total Revenue Opportunity (NO. of TR x TalentAnnual
+                          CTC budget) :{" "}
+                        </span>
+                        {newTRAllData.totalRevenueOppurtunity}
+                      </div>
+                      <div>
+                        <span>Open Since {">"} 1 Month (Yes/no) : </span>
+                        {newTRAllData.hrOpenSinceOneMonths}
+                      </div>
+                      <div>
+                        <span>
+                          No. of Active/Submitted Profiles till Date :{" "}
+                        </span>
+                        {newTRAllData.noOfProfilesSharedTillDate}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+
+            <div style={{ margin: "10px 0" }}>
+              <button
+                className={taStyles.btnPrimary}
+                disabled={isAddingNewTask}
+                onClick={() => {
+                  saveNewTask();
+                }}
+              >
+                Save
+              </button>
+              <button
+                className={taStyles.btnCancle}
+                disabled={isAddingNewTask}
+                onClick={() => {
+                  setNewTAUserValue("");
+                  setCompanyAutoCompleteValue("");
+                  setselectedCompanyID("");
+                  setNewTAHRValue("");
+                  setTRAllData({});
+                  setCompanyNameSuggestion([]);
+                  setNewTaskError(false);
+                  setIsAddNewRow(false);
+                }}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </Modal>
