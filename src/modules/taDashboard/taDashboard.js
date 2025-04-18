@@ -89,6 +89,10 @@ export default function TADashboard() {
   const [goalLoading, setgoalLoading] = useState(false);
   const [goalList, setGoalList] = useState([]);
 
+  const [showEditTATask,setShowEditTATask] = useState(false)
+  const [editTATaskData,setEditTATaskData] = useState()
+  const [isEditNewTask, setEditNewTask] = useState(false);
+
   // const groupedData = groupByRowSpan(rawData, 'ta');
 
   function groupByRowSpan(data, groupField) {
@@ -420,6 +424,15 @@ export default function TADashboard() {
     }
   }, [selectedHead, startDate, tableFilteredState]);
 
+  const editTAforTask = (task)=> {
+    setShowEditTATask(true)
+    console.log(task)
+    getCompanySuggestionHandler(task.tA_UserID);
+    getHRLISTForComapny(task.company_ID);
+    setNewTAHeadUserValue(selectedHead);
+    setEditTATaskData(task)
+  }
+
   const goalColumns = [
     {
       title: "TA",
@@ -559,7 +572,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          HR Title <br /> ( HR ID )
+          HR Title /<br />  HR ID 
         </>
       ),
       dataIndex: "hrTitle",
@@ -567,7 +580,19 @@ export default function TADashboard() {
       width: "120px",
       fixed: "left",
       render: (text, result) => {
-        return `${text} (${result.hrNumber}) `;
+        return <>{text} /  <p
+          style={{
+            color: "blue",
+            fontWeight: "bold",
+            textDecoration: "underline",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            editTAforTask(result)
+          }}
+        >
+         {result.hrNumber}
+        </p></>;
       },
     },
     {
@@ -871,7 +896,7 @@ export default function TADashboard() {
       talent_AnnualCTC_Budget_INRValue: newTRAllData?.totalAnnualBudgetInINR,
       modelType: newTRAllData?.modelType,
       revenue_On10PerCTC: newTRAllData?.revenue10Percent,
-      totalRevenue_NoofTalent: 0,
+      totalRevenue_NoofTalent: newTRAllData?.totalRevenueOppurtunity,
       noOfProfile_TalentsTillDate: newTRAllData?.noOfProfilesSharedTillDate,
       tA_HR_StatusID: 2,
       tA_Head_UserID: `${newTAHeadUservalue}`,
@@ -889,6 +914,40 @@ export default function TADashboard() {
       setTRAllData({});
       setNewTaskError(false);
       setIsAddNewRow(false);
+      getListData();
+    } else {
+      message.error("Something went wrong");
+    }
+  };
+
+  const saveEditTask = async () => {
+  
+
+    let pl = {
+      id: editTATaskData?.id,
+      tA_UserID: editTATaskData?.tA_UserID,
+      company_ID: editTATaskData?.company_ID,
+      hiringRequest_ID: editTATaskData?.hiringRequest_ID,
+      task_Priority: editTATaskData?.task_Priority,
+      no_of_InterviewRounds: editTATaskData?.no_of_InterviewRounds,
+      role_TypeID: editTATaskData?.role_TypeID,
+      task_StatusID: editTATaskData?.task_StatusID,
+      activeTR: editTATaskData?.activeTR,
+      talent_AnnualCTC_Budget_INRValue: editTATaskData?.talent_AnnualCTC_Budget_INRValue,
+      modelType: editTATaskData?.modelType,
+      revenue_On10PerCTC: editTATaskData?.revenue_On10PerCTC,
+      totalRevenue_NoofTalent:editTATaskData?.totalRevenue_NoofTalent,
+      noOfProfile_TalentsTillDate: editTATaskData?.noOfProfile_TalentsTillDate,
+      tA_HR_StatusID: editTATaskData?.tA_HR_StatusID,
+      tA_Head_UserID: `${newTAHeadUservalue}`,
+    };
+    setEditNewTask(true);
+    let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+    setEditNewTask(false);
+
+    if (updateresult.statusCode === HTTPStatusCode.OK) {
+ 
+      setShowEditTATask(false);
       getListData();
     } else {
       message.error("Something went wrong");
@@ -1428,6 +1487,233 @@ export default function TADashboard() {
                   setCompanyNameSuggestion([]);
                   setNewTaskError(false);
                   setIsAddNewRow(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+{showEditTATask && (
+        <Modal
+          transitionName=""
+          width="930px"
+          centered
+          footer={null}
+          open={showEditTATask}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+           setShowEditTATask(false)
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Edit TA</h3>
+          </div>
+          <div style={{ padding: "10px 15px" }}>
+            {isEditNewTask ? (
+              <Skeleton active />
+            ) : (
+              <>
+                <div className={taStyles.row}>
+                  <div className={taStyles.colMd6}>
+                    {/* <Select  value={newTAUservalue}  onChange={val=>{
+                      setNewTAUserValue(val);
+                      }}>
+                      {filtersList?.Users?.map(v=> <Option value={v.data}>{v.data}</Option>)}
+                      </Select> */}
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select Head <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select TA"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={newTAHeadUservalue}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                          setNewTAHeadUserValue(value);
+                          // setNewTAUserValue('')
+                          // setCompanyAutoCompleteValue("");
+                          // setCompanyNameSuggestion([]);
+                          // setselectedCompanyID("");
+                          // setNewTAHRValue("");
+                          // setTRAllData({});
+                        }}
+                        options={filtersList?.HeadUsers?.map((v) => ({
+                          label: v.data,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+                    </div>
+                  </div>
+                  <div className={taStyles.colMd6}>
+                    {/* <Select  value={newTAUservalue}  onChange={val=>{
+                      setNewTAUserValue(val);
+                      }}>
+                      {filtersList?.Users?.map(v=> <Option value={v.data}>{v.data}</Option>)}
+                      </Select> */}
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select TA <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select TA"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={editTATaskData?.tA_UserID}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                         setEditTATaskData(prev=>({...prev,tA_UserID:value}))
+                        }}
+                        options={filtersList?.Users?.map((v) => ({
+                          label: v.data,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+
+                      {newTaskError && newTAUservalue === "" && (
+                        <p className={taStyles.error}>please select TA</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={taStyles.row}>
+                  <div className={taStyles.colMd6}>
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select company{" "}
+                        <span className={taStyles.reqField}>*</span>
+                      </label>
+
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select Company"
+                        disabled={true}
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={editTATaskData?.company_ID}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                        
+                         
+                        }}
+                        options={getCompanyNameSuggestion}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+                   
+                    </div>
+                  </div>
+                  <div className={taStyles.colMd6}>
+                 
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select HR <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        disabled={true}
+                        id="selectedValue"
+                        placeholder="Select HR"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={editTATaskData?.hiringRequest_ID}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                          // setNewTAHRValue(value);
+                          // setTRAllData(option);
+                        }}
+                        options={hrListSuggestion.map((v) => ({
+                          ...v,
+                          label: v.value,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+                   
+                    </div>
+                  </div>
+                </div>
+
+                <div className={taStyles.HRINFOCOntainer}>
+                  {Object.keys(editTATaskData).length > 0 && (
+                    <>
+                      <div>
+                        <span>Active TR : </span>
+                        {editTATaskData.activeTR}
+                      </div>
+                      <div>
+                        <span>HR Created Date : </span>
+                        {moment(editTATaskData.hrCreatedDate).format(
+                          "DD-MMM-YYYY"
+                        )}
+                      </div>
+                      <div>
+                        <span>Talent Annual CTC Budget (INR) : </span>
+                        {editTATaskData.talent_AnnualCTC_Budget_INRValue}
+                      </div>
+                      <div>
+                        <span>DP /Contract : </span>
+                        {editTATaskData.modelType}
+                      </div>
+                      <div>
+                        <span>Revenue Opportunity (10% on annual CTC) : </span>
+                        {editTATaskData.revenue_On10PerCTC}
+                      </div>
+                      <div>
+                        <span>Sales : </span>
+                        {editTATaskData.salesName}
+                      </div>
+                      <div>
+                        <span>
+                          Total Revenue Opportunity (NO. of TR x TalentAnnual
+                          CTC budget) :{" "}
+                        </span>
+                        {editTATaskData.totalRevenue_NoofTalent}
+                      </div>
+                      <div>
+                        <span>Open Since {">"} 1 Month (Yes/no) : </span>
+                        {editTATaskData.hrOpenSinceOneMonths}
+                      </div>
+                      <div>
+                        <span>
+                          No. of Active/Submitted Profiles till Date :{" "}
+                        </span>
+                        {editTATaskData.noOfProfile_TalentsTillDate}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+
+            <div style={{ margin: "10px 0" }}>
+              <button
+                className={taStyles.btnPrimary}
+                disabled={isEditNewTask}
+                onClick={() => {
+                  saveEditTask();
+                }}
+              >
+                Save
+              </button>
+              <button
+                className={taStyles.btnCancle}
+                disabled={isEditNewTask}
+                onClick={() => {
+                  setShowEditTATask(false)
                 }}
               >
                 Cancel
