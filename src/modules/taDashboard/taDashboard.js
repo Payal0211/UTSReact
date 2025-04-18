@@ -868,7 +868,7 @@ export default function TADashboard() {
       totalRevenue_NoofTalent: 0,
       noOfProfile_TalentsTillDate: newTRAllData?.noOfProfilesSharedTillDate,
       tA_HR_StatusID: 2,
-      tA_Head_UserID: `${selectedHead}`,
+      tA_Head_UserID: `${newTAHeadUservalue}`,
     };
     setAddingNewTask(true);
     let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
@@ -1185,12 +1185,12 @@ export default function TADashboard() {
                         showSearch={true}
                         onChange={(value, option) => {
                           setNewTAHeadUserValue(value);
-                          setNewTAUserValue('')
-                          setCompanyAutoCompleteValue("");
-                          setCompanyNameSuggestion([]);
-                          setselectedCompanyID("");
-                          setNewTAHRValue("");
-                          setTRAllData({});
+                          // setNewTAUserValue('')
+                          // setCompanyAutoCompleteValue("");
+                          // setCompanyNameSuggestion([]);
+                          // setselectedCompanyID("");
+                          // setNewTAHRValue("");
+                          // setTRAllData({});
                         }}
                         options={filtersList?.HeadUsers?.map((v) => ({
                           label: v.data,
