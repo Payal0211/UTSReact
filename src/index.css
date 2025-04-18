@@ -954,6 +954,10 @@ font-weight: bold;
 } */
 /* */
 
+.ant-dropdown-menu-title-content{
+  flex:none
+}
+
 
 /* Ant date picker custom Css Start */
  
