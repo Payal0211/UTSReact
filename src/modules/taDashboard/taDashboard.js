@@ -41,6 +41,7 @@ import { IconContext } from "react-icons";
 import { downloadToExcel } from "modules/report/reportUtils";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { HttpStatusCode } from "axios";
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 const { Option } = Select;
 
 export default function TADashboard() {
@@ -523,9 +524,17 @@ export default function TADashboard() {
       title: "Status",
       dataIndex: "talentStatus",
       key: "talentStatus",
-    },
+      render: (_, item) => (
+        <div>
+          {All_Hiring_Request_Utils.GETTALENTSTATUS(
+            parseInt(item?.talentStatusColor),
+            item?.talentStatus
+          )}
+        </div>
+      ),
+    },    
     {
-      title: "Detail",
+      title: "Interview Detail",
       dataIndex: "talentStatusDetail",
       key: "talentStatusDetail",
     },
@@ -737,6 +746,55 @@ export default function TADashboard() {
     {
       title: (
         <>
+          Latest Communication & Updates <br /> (Matcher to be Accountable)
+        </>
+      ),
+      dataIndex: "latestNotes",
+      width: "250px",
+      key: "latestNotes",
+      render: (text, result, index) => {
+        if (text) {
+          return (
+            <>
+              <div dangerouslySetInnerHTML={{ __html: text }}></div>
+              <p
+                style={{
+                  color: "blue",
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  marginTop: "5px",
+                }}
+                onClick={() => {
+                  AddComment(result, index);
+                }}
+              >
+                View All
+              </p>
+            </>
+          );
+        } else {
+          return (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                AddComment(result, index);
+              }}
+            >
+              Add
+            </p>
+          );
+        }
+      },
+    },
+    {
+      title: (
+        <>
           Inbound <br />/ Outbound
         </>
       ),
@@ -815,55 +873,7 @@ export default function TADashboard() {
     //   dataIndex: '',
     //   key: '',
     // },
-    {
-      title: (
-        <>
-          Latest Communication & Updates <br /> (Matcher to be Accountable)
-        </>
-      ),
-      dataIndex: "latestNotes",
-      width: "250px",
-      key: "latestNotes",
-      render: (text, result, index) => {
-        if (text) {
-          return (
-            <>
-              <div dangerouslySetInnerHTML={{ __html: text }}></div>
-              <p
-                style={{
-                  color: "blue",
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                  marginTop: "5px",
-                }}
-                onClick={() => {
-                  AddComment(result, index);
-                }}
-              >
-                View All
-              </p>
-            </>
-          );
-        } else {
-          return (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                AddComment(result, index);
-              }}
-            >
-              Add
-            </p>
-          );
-        }
-      },
-    },
+    
   ];
   const getFilters = async () => {
     setIsLoading(true);
@@ -1886,7 +1896,7 @@ export default function TADashboard() {
       {showComment && (
         <Modal
           transitionName=""
-          width="930px"
+          width="1000px"
           centered
           footer={null}
           open={showComment}
@@ -1908,6 +1918,7 @@ export default function TADashboard() {
                 position: "relative",
                 marginBottom: "10px",
                 padding: "0 20px",
+                paddingRight: "30px",
               }}
             >
               <Editor

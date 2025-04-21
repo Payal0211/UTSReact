@@ -314,7 +314,7 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment ,
 						}}
 						style={{
 							top: '0',
-							right: '0',
+							right: '10px',
 							position: 'absolute',
 							cursor: 'pointer',
 							display: 'flex',
