@@ -170,4 +170,20 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getALLCommentsRequest');
 		}
 	},
+    removeTasksRequest: async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.REMOVE_TASK + `?taskId=${id}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.removeTasksRequest');
+		}
+	},
 }

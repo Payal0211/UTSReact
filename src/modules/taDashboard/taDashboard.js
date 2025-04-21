@@ -17,6 +17,8 @@ import {
   message,
   Skeleton,
 } from "antd";
+import { IoIosRemoveCircle } from "react-icons/io";
+import { GrEdit } from "react-icons/gr";
 import spinGif from "assets/gif/RefreshLoader.gif";
 import { EmailRegEx, InputType } from "constants/application";
 import UTSRoutes from "constants/routes";
@@ -87,6 +89,7 @@ export default function TADashboard() {
   const [isAddingNewTask, setAddingNewTask] = useState(false);
 
   const [showTalentProfiles, setShowTalentProfiles] = useState(false);
+  const [showConfirmRemove,setShowConfirmRemove] = useState(false)
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
   const [profileInfo,setInfoforProfile] =  useState({})
   const [hrTalentList, setHRTalentList] = useState([]);
@@ -408,6 +411,11 @@ export default function TADashboard() {
     }
   };
 
+  const handleRemoveTask = (result)=>{
+    setShowConfirmRemove(true)
+    setInfoforProfile(result);
+  }
+
   const getTalentProfilesDetails = async (result) => {
     setShowTalentProfiles(true);
     setInfoforProfile(result);
@@ -559,7 +567,7 @@ export default function TADashboard() {
             <div style={{ verticalAlign: "top" }}>
               {value}
               <br />{" "}
-              <IconContext.Provider
+              {/* <IconContext.Provider
                 value={{
                   color: "green",
                   style: {
@@ -592,7 +600,7 @@ export default function TADashboard() {
                     />
                   </span>{" "}
                 </Tooltip>
-              </IconContext.Provider>
+              </IconContext.Provider> */}
             </div>
           ),
           props: {
@@ -608,7 +616,37 @@ export default function TADashboard() {
       key: "companyName",
       fixed: "left",
       width: "120px",
-      render: (text) => <a>{text}</a>,
+      render: (text, row) => <> <a href={'/viewCompanyDetails/' + `${row.company_ID}`}  target="_blank" rel="noreferrer">{text}</a> <br/>  
+       <IconContext.Provider
+      value={{
+        color: "green",
+        style: {
+          width: "30px",
+          height: "30px",
+          marginTop: "5px",
+          cursor: "pointer",
+        },
+      }}
+    >
+      {" "}
+      <Tooltip title={`Add task for TA ${row.taName} in ${text}`} placement="top">
+        <span
+          onClick={() => {
+            setIsAddNewRow(true);
+            setNewTAUserValue(row.tA_UserID);
+            setNewTAHeadUserValue(selectedHead);
+            getCompanySuggestionHandler(row.tA_UserID);
+            setselectedCompanyID(row?.company_ID);
+            getHRLISTForComapny(row?.company_ID);
+          }}
+          className={taStyles.feedbackLabel}
+          style={{ padding: "10px" }}
+        >
+          {" "}
+          <IoMdAddCircle  />
+        </span>{" "}
+      </Tooltip>
+    </IconContext.Provider></>,
     },
     // {
     //   title: 'HR ID',
@@ -639,7 +677,7 @@ export default function TADashboard() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                editTAforTask(result);
+                window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${result.hiringRequest_ID}`,'_blank')
               }}
             >
               {result.hrNumber}
@@ -870,6 +908,38 @@ export default function TADashboard() {
       dataIndex: "hrOpenSinceOneMonths",
       key: "hrOpenSinceOneMonths",
     },
+    {
+      title:"Action",
+      dataIndex: "",
+      key: "",
+      render:(_,row)=>{
+        return <div>
+
+        <IconContext.Provider value={{ color: '#FFDA30', style: { width:'19px',height:'19px' } }}> <Tooltip title="Edit" placement="top" >
+          <span
+          onClick={()=> { editTAforTask(row);} }
+          style={{padding:'0'}}>
+          {' '}
+          <GrEdit /> 
+        </span>   </Tooltip>
+        </IconContext.Provider>
+  
+                  
+        <IconContext.Provider value={{ color: 'red', style: { width:'19px',height:'19px', marginLeft:'10px' } }}><Tooltip title="Remove" placement="top" >
+          <span
+          // style={{
+          //   background: 'red'
+          // }}
+          onClick={()=> {handleRemoveTask(row)}}
+        style={{padding:'0'}}>
+          {' '}
+          <IoIosRemoveCircle />
+        </span>        </Tooltip>
+        </IconContext.Provider>
+
+      </div>
+      }
+    },
     // {
     //   title: <>#Profiles Submitted <br/> Yesterday</>,
     //   dataIndex: '',
@@ -1062,6 +1132,18 @@ export default function TADashboard() {
     setHTMLFilter(false);
   };
 
+  const removeTask = async (id)=>{
+    setLoadingTalentProfile(true)
+    const result = await TaDashboardDAO.removeTaskDAO(id)
+    setLoadingTalentProfile(false)
+    if(result.statusCode === HTTPStatusCode.OK){
+      setShowConfirmRemove(false)
+      getListData();
+    }else{
+      message.error('Something went wrong!')
+    }
+  }
+
   const saveComment = async (note) => {
     let pl = {
       task_ID: commentData?.id,
@@ -1110,7 +1192,7 @@ export default function TADashboard() {
     let DataToExport = apiData.map((data) => {
       let obj = {};
       columns.forEach((val, ind) => {
-        if (val.key !== "clientFeedback") {
+        if (val.title !== "Action") {
           if (val.title === "TA") {
             obj[`${val.title}`] = `${data.taName} `;
           } else if (val.key === "hrTitle") {
@@ -1355,6 +1437,53 @@ export default function TADashboard() {
         </Suspense>
       )}
 
+{showConfirmRemove && (
+        <Modal
+          transitionName=""
+          width="650px"
+          centered
+          footer={null}
+          open={showConfirmRemove}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setShowConfirmRemove(false);
+          }}
+        >
+          <>
+            <div style={{ padding: "35px 15px 10px 15px" }}>
+            {loadingTalentProfile ? (
+              <div>
+                <Skeleton active />
+              </div>
+            ):<h3>Are you sure you want to Remove <strong>{profileInfo?.taName}</strong> for {profileInfo?.hrNumber}  in {profileInfo?.companyName}</h3> }          
+            </div>
+
+            <div style={{ padding: "10px", display:'flex', justifyContent:'end'  }}>
+            <button
+                className={taStyles.btnPrimary}
+                disabled={loadingTalentProfile}
+                onClick={() => {
+                  removeTask(profileInfo?.id);
+                }}
+              >
+               Yes Remove
+              </button>
+              <button
+                className={taStyles.btnCancle}
+                disabled={loadingTalentProfile}
+                onClick={() => {
+                  setShowConfirmRemove(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        </Modal>
+      )}
+
       {showTalentProfiles && (
         <Modal
           transitionName=""
@@ -1393,7 +1522,7 @@ export default function TADashboard() {
               
             )}
 
-            <div style={{ padding: "10px 0" }}>
+            <div style={{ padding: "10px 0"}}>
               <button
                 className={taStyles.btnCancle}
                 disabled={isAddingNewTask}

@@ -79,6 +79,7 @@ export class TaDashboardURL {
 	static ALL_TA_USERS = 'GetAllTAUsers'
 	static INSERT_TASK_COMMENT = 'InsertTaskComment'
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'
+	static REMOVE_TASK ='InactiveTATask'
 }
 
 export class APIType {
