@@ -17,6 +17,9 @@ import {
   message,
   Skeleton,
 } from "antd";
+import { IoIosRemoveCircle } from "react-icons/io";
+import { GrEdit } from "react-icons/gr";
+import spinGif from "assets/gif/RefreshLoader.gif";
 import { EmailRegEx, InputType } from "constants/application";
 import UTSRoutes from "constants/routes";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
@@ -37,6 +40,10 @@ import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import _, { filter } from "lodash";
 import { IoMdAddCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
+import { downloadToExcel } from "modules/report/reportUtils";
+import Editor from "modules/hiring request/components/textEditor/editor";
+import { HttpStatusCode } from "axios";
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 const { Option } = Select;
 
 export default function TADashboard() {
@@ -54,6 +61,7 @@ export default function TADashboard() {
   const [appliedFilter, setAppliedFilters] = useState(new Map());
   const [checkedState, setCheckedState] = useState(new Map());
   const [TaListData, setTaListData] = useState([]);
+  const [allTAUsersList, setAllTAUsersList] = useState([]);
 
   const [isAddNewRow, setIsAddNewRow] = useState(false);
 
@@ -81,13 +89,24 @@ export default function TADashboard() {
   const [isAddingNewTask, setAddingNewTask] = useState(false);
 
   const [showTalentProfiles, setShowTalentProfiles] = useState(false);
+  const [showConfirmRemove,setShowConfirmRemove] = useState(false)
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
+  const [profileInfo,setInfoforProfile] =  useState({})
   const [hrTalentList, setHRTalentList] = useState([]);
   const date = new Date();
   const [startDate, setStartDate] = useState(date);
   const [showGoal, setShowGoal] = useState(false);
   const [goalLoading, setgoalLoading] = useState(false);
   const [goalList, setGoalList] = useState([]);
+
+  const [showEditTATask, setShowEditTATask] = useState(false);
+  const [editTATaskData, setEditTATaskData] = useState();
+  const [isEditNewTask, setEditNewTask] = useState(false);
+
+  const [showComment, setShowComment] = useState(false);
+  const [commentData, setCommentData] = useState({});
+  const [allCommentList, setALLCommentsList] = useState([]);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
 
   // const groupedData = groupByRowSpan(rawData, 'ta');
 
@@ -118,6 +137,17 @@ export default function TADashboard() {
   useEffect(() => {
     setTimeout(() => setSearchText(debounceSearchText), 2000);
   }, [debounceSearchText]);
+
+  const getAllTAUsersList = async () => {
+    let req = await TaDashboardDAO.geAllTAUSERSRequestDAO();
+    if (req.statusCode === HTTPStatusCode.OK) {
+      setAllTAUsersList(req.responseBody);
+    }
+  };
+
+  useEffect(() => {
+    getAllTAUsersList();
+  }, []);
 
   const updateTARowValue = async (value, key, params, index) => {
     let pl = {
@@ -381,10 +411,16 @@ export default function TADashboard() {
     }
   };
 
-  const getTalentProfilesDetails = async (ID) => {
+  const handleRemoveTask = (result)=>{
+    setShowConfirmRemove(true)
+    setInfoforProfile(result);
+  }
+
+  const getTalentProfilesDetails = async (result) => {
     setShowTalentProfiles(true);
+    setInfoforProfile(result);
     setLoadingTalentProfile(true);
-    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(ID);
+    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(result?.hiringRequest_ID);
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
@@ -419,6 +455,31 @@ export default function TADashboard() {
       );
     }
   }, [selectedHead, startDate, tableFilteredState]);
+
+  const editTAforTask = (task) => {
+    setShowEditTATask(true);
+    getCompanySuggestionHandler(task.tA_UserID);
+    getHRLISTForComapny(task.company_ID);
+    setNewTAHeadUserValue(selectedHead);
+    setEditTATaskData(task);
+  };
+
+  const getAllComments = async (id) => {
+    setIsCommentLoading(true);
+    const result = await TaDashboardDAO.getALLCommentsDAO(id);
+    setIsCommentLoading(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setALLCommentsList(result.responseBody);
+    } else {
+      setALLCommentsList([]);
+    }
+  };
+
+  const AddComment = (data, index) => {
+    getAllComments(data.id);
+    setShowComment(true);
+    setCommentData({ ...data, index });
+  };
 
   const goalColumns = [
     {
@@ -465,24 +526,32 @@ export default function TADashboard() {
       key: "profileSubmittedDate",
     },
     {
-      title: "Submitted By",
-      dataIndex: "profileSubmittedBy",
-      key: "profileSubmittedBy",
-    },
-    {
-      title: "Talent Name",
+      title: "Talent",
       dataIndex: "talent",
       key: "talent",
     },
     {
-      title: "status",
+      title: "Status",
       dataIndex: "talentStatus",
       key: "talentStatus",
-    },
+      render: (_, item) => (
+        <div>
+          {All_Hiring_Request_Utils.GETTALENTSTATUS(
+            parseInt(item?.talentStatusColor),
+            item?.talentStatus
+          )}
+        </div>
+      ),
+    },    
     {
-      title: "Detail",
+      title: "Interview Detail",
       dataIndex: "talentStatusDetail",
       key: "talentStatusDetail",
+    },
+    {
+      title: "Submitted By",
+      dataIndex: "profileSubmittedBy",
+      key: "profileSubmittedBy",
     },
   ];
 
@@ -498,7 +567,7 @@ export default function TADashboard() {
             <div style={{ verticalAlign: "top" }}>
               {value}
               <br />{" "}
-              <IconContext.Provider
+              {/* <IconContext.Provider
                 value={{
                   color: "green",
                   style: {
@@ -531,7 +600,7 @@ export default function TADashboard() {
                     />
                   </span>{" "}
                 </Tooltip>
-              </IconContext.Provider>
+              </IconContext.Provider> */}
             </div>
           ),
           props: {
@@ -547,7 +616,37 @@ export default function TADashboard() {
       key: "companyName",
       fixed: "left",
       width: "120px",
-      render: (text) => <a>{text}</a>,
+      render: (text, row) => <> <a href={'/viewCompanyDetails/' + `${row.company_ID}`}  target="_blank" rel="noreferrer">{text}</a> <br/>  
+       <IconContext.Provider
+      value={{
+        color: "green",
+        style: {
+          width: "30px",
+          height: "30px",
+          marginTop: "5px",
+          cursor: "pointer",
+        },
+      }}
+    >
+      {" "}
+      <Tooltip title={`Add task for TA ${row.taName} in ${text}`} placement="top">
+        <span
+          onClick={() => {
+            setIsAddNewRow(true);
+            setNewTAUserValue(row.tA_UserID);
+            setNewTAHeadUserValue(selectedHead);
+            getCompanySuggestionHandler(row.tA_UserID);
+            setselectedCompanyID(row?.company_ID);
+            getHRLISTForComapny(row?.company_ID);
+          }}
+          className={taStyles.feedbackLabel}
+          style={{ padding: "10px" }}
+        >
+          {" "}
+          <IoMdAddCircle  />
+        </span>{" "}
+      </Tooltip>
+    </IconContext.Provider></>,
     },
     // {
     //   title: 'HR ID',
@@ -559,7 +658,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          HR Title <br /> ( HR ID )
+          HR Title /<br /> HR ID
         </>
       ),
       dataIndex: "hrTitle",
@@ -567,7 +666,24 @@ export default function TADashboard() {
       width: "120px",
       fixed: "left",
       render: (text, result) => {
-        return `${text} (${result.hrNumber}) `;
+        return (
+          <>
+            {text} /{" "}
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${result.hiringRequest_ID}`,'_blank')
+              }}
+            >
+              {result.hrNumber}
+            </p>
+          </>
+        );
       },
     },
     {
@@ -657,7 +773,7 @@ export default function TADashboard() {
               cursor: "pointer",
             }}
             onClick={() => {
-              getTalentProfilesDetails(result?.hiringRequest_ID);
+              getTalentProfilesDetails(result);
             }}
           >
             {text}
@@ -665,6 +781,55 @@ export default function TADashboard() {
         ) : (
           text
         );
+      },
+    },
+    {
+      title: (
+        <>
+          Latest Communication & Updates <br /> (Matcher to be Accountable)
+        </>
+      ),
+      dataIndex: "latestNotes",
+      width: "250px",
+      key: "latestNotes",
+      render: (text, result, index) => {
+        if (text) {
+          return (
+            <>
+              <div dangerouslySetInnerHTML={{ __html: text }}></div>
+              <p
+                style={{
+                  color: "blue",
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  marginTop: "5px",
+                }}
+                onClick={() => {
+                  AddComment(result, index);
+                }}
+              >
+                View All
+              </p>
+            </>
+          );
+        } else {
+          return (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                AddComment(result, index);
+              }}
+            >
+              Add
+            </p>
+          );
+        }
       },
     },
     {
@@ -743,20 +908,44 @@ export default function TADashboard() {
       dataIndex: "hrOpenSinceOneMonths",
       key: "hrOpenSinceOneMonths",
     },
+    {
+      title:"Action",
+      dataIndex: "",
+      key: "",
+      render:(_,row)=>{
+        return <div>
+
+        <IconContext.Provider value={{ color: '#FFDA30', style: { width:'19px',height:'19px' } }}> <Tooltip title="Edit" placement="top" >
+          <span
+          onClick={()=> { editTAforTask(row);} }
+          style={{padding:'0'}}>
+          {' '}
+          <GrEdit /> 
+        </span>   </Tooltip>
+        </IconContext.Provider>
+  
+                  
+        <IconContext.Provider value={{ color: 'red', style: { width:'19px',height:'19px', marginLeft:'10px' } }}><Tooltip title="Remove" placement="top" >
+          <span
+          // style={{
+          //   background: 'red'
+          // }}
+          onClick={()=> {handleRemoveTask(row)}}
+        style={{padding:'0'}}>
+          {' '}
+          <IoIosRemoveCircle />
+        </span>        </Tooltip>
+        </IconContext.Provider>
+
+      </div>
+      }
+    },
     // {
     //   title: <>#Profiles Submitted <br/> Yesterday</>,
     //   dataIndex: '',
     //   key: '',
     // },
-    {
-      title: (
-        <>
-          Latest Communication & Updates <br /> (Matcher to be Accountable)
-        </>
-      ),
-      dataIndex: "latestNotes",
-      key: "latestNotes",
-    },
+    
   ];
   const getFilters = async () => {
     setIsLoading(true);
@@ -871,7 +1060,7 @@ export default function TADashboard() {
       talent_AnnualCTC_Budget_INRValue: newTRAllData?.totalAnnualBudgetInINR,
       modelType: newTRAllData?.modelType,
       revenue_On10PerCTC: newTRAllData?.revenue10Percent,
-      totalRevenue_NoofTalent: 0,
+      totalRevenue_NoofTalent: newTRAllData?.totalRevenueOppurtunity,
       noOfProfile_TalentsTillDate: newTRAllData?.noOfProfilesSharedTillDate,
       tA_HR_StatusID: 2,
       tA_Head_UserID: `${newTAHeadUservalue}`,
@@ -895,6 +1084,38 @@ export default function TADashboard() {
     }
   };
 
+  const saveEditTask = async () => {
+    let pl = {
+      id: editTATaskData?.id,
+      tA_UserID: editTATaskData?.tA_UserID,
+      company_ID: editTATaskData?.company_ID,
+      hiringRequest_ID: editTATaskData?.hiringRequest_ID,
+      task_Priority: editTATaskData?.task_Priority,
+      no_of_InterviewRounds: editTATaskData?.no_of_InterviewRounds,
+      role_TypeID: editTATaskData?.role_TypeID,
+      task_StatusID: editTATaskData?.task_StatusID,
+      activeTR: editTATaskData?.activeTR,
+      talent_AnnualCTC_Budget_INRValue:
+        editTATaskData?.talent_AnnualCTC_Budget_INRValue,
+      modelType: editTATaskData?.modelType,
+      revenue_On10PerCTC: editTATaskData?.revenue_On10PerCTC,
+      totalRevenue_NoofTalent: editTATaskData?.totalRevenue_NoofTalent,
+      noOfProfile_TalentsTillDate: editTATaskData?.noOfProfile_TalentsTillDate,
+      tA_HR_StatusID: editTATaskData?.tA_HR_StatusID,
+      tA_Head_UserID: `${newTAHeadUservalue}`,
+    };
+    setEditNewTask(true);
+    let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+    setEditNewTask(false);
+
+    if (updateresult.statusCode === HTTPStatusCode.OK) {
+      setShowEditTATask(false);
+      getListData();
+    } else {
+      message.error("Something went wrong");
+    }
+  };
+
   const toggleHRFilter = useCallback(() => {
     !getHTMLFilter
       ? setIsAllowFilters(!isAllowFilters)
@@ -910,6 +1131,113 @@ export default function TADashboard() {
     }, 300);
     setHTMLFilter(false);
   };
+
+  const removeTask = async (id)=>{
+    setLoadingTalentProfile(true)
+    const result = await TaDashboardDAO.removeTaskDAO(id)
+    setLoadingTalentProfile(false)
+    if(result.statusCode === HTTPStatusCode.OK){
+      setShowConfirmRemove(false)
+      getListData();
+    }else{
+      message.error('Something went wrong!')
+    }
+  }
+
+  const saveComment = async (note) => {
+    let pl = {
+      task_ID: commentData?.id,
+      comments: note,
+    };
+    setIsCommentLoading(true);
+    const res = await TaDashboardDAO.insertTaskCommentRequestDAO(pl);
+    setIsCommentLoading(false);
+    if (res.statusCode === HTTPStatusCode.OK) {
+      setALLCommentsList(res.responseBody);
+      if(commentData?.latestNotes !== null ){
+        let oldComments = commentData?.latestNotes
+        let newItem = `<li>${note}</li>`;
+        setTaListData((prev) => {
+          let newDS = [...prev];
+          newDS[commentData?.index] = {
+            ...newDS[commentData?.index],
+            latestNotes: oldComments.replace('<ul>', `<ul>${newItem}`),
+          };
+          return newDS;
+        });
+      }else{
+        let newItem = `<ul><li>${note}</li></ul>`;
+        setTaListData((prev) => {
+          let newDS = [...prev];
+          newDS[commentData?.index] = {
+            ...newDS[commentData?.index],
+            latestNotes: newItem,
+          };
+          return newDS;
+        });
+      }
+
+      // let newComment = `${note} <br/> ${
+      //   commentData?.latestNotes !== null ? commentData?.latestNotes : ""
+      // }`;
+
+     
+      //  setCommentData(prev=>{
+      //   return {...prev,latestNotes:newComment}})
+     
+    }
+  };
+
+  const hendleExport = (apiData) => {
+    let DataToExport = apiData.map((data) => {
+      let obj = {};
+      columns.forEach((val, ind) => {
+        if (val.title !== "Action") {
+          if (val.title === "TA") {
+            obj[`${val.title}`] = `${data.taName} `;
+          } else if (val.key === "hrTitle") {
+            obj["HR Title / HR ID "] = `${data.hrTitle} / ${data.hrNumber}`;
+          } else if (val.key === "talent_AnnualCTC_Budget_INRValue") {
+            obj["Talent Annual CTC Budget (INR)"] = `${
+              data.talent_AnnualCTC_Budget_INRValue ?? ""
+            }`;
+          } else if (val.key === "revenue_On10PerCTC") {
+            obj["Revenue Opportunity (10% on annual CTC)"] = `${
+              data.revenue_On10PerCTC ?? ""
+            }`;
+          } else if (val.key === "totalRevenue_NoofTalent") {
+            obj[
+              "Total Revenue Opportunity (NO. of TR x Talent <br /> Annual CTC budget)"
+            ] = `${data.totalRevenue_NoofTalent ?? ""}`;
+          } else if (val.key === "noOfProfile_TalentsTillDate") {
+            obj["No. of Active/Submitted Profiles till Date"] = `${
+              data.noOfProfile_TalentsTillDate ?? ""
+            }`;
+          } else if (val.key === "role_Type") {
+            obj["Inbound / Outbound"] = `${data?.role_Type ?? ""}`;
+          } else if (val.key === "no_of_InterviewRounds") {
+            obj["#Interview Rounds"] = `${data?.no_of_InterviewRounds ?? ""}`;
+          } else if (val.key === "hrOpenSinceOneMonths") {
+            obj["Open Since > 1 Month (Yes/no)"] = `${
+              data?.hrOpenSinceOneMonths ?? ""
+            }`;
+          } else if (val.key === "latestNotes") {
+            obj[
+              "Latest Communication & Updates (Matcher to be Accountable)"
+            ] = `${data?.latestNotes ?? ""}`;
+          } else {
+            obj[`${val.title}`] = data[`${val.key}`] ?? "";
+          }
+        }
+      });
+
+      return obj;
+    });
+
+
+    downloadToExcel(DataToExport, "TAReport");
+  };
+
   return (
     <div className={taStyles.hiringRequestContainer}>
       {/* <div className={taStyles.addnewHR} style={{ margin: "0" }}>
@@ -983,12 +1311,14 @@ export default function TADashboard() {
           goalLoading ? (
             <TableSkeleton />
           ) : (
-            <Table
-              dataSource={goalList}
-              columns={goalColumns}
-              // bordered
-              pagination={false}
-            />
+            <div style={{ padding: "0 50px 50px 50px" }}>
+              <Table
+                dataSource={goalList}
+                columns={goalColumns}
+                // bordered
+                pagination={false}
+              />
+            </div>
           )
         ) : null}
       </div>
@@ -1062,9 +1392,12 @@ export default function TADashboard() {
             >
               Add New Task
             </button>
-            {/* <button className={taStyles.btnPrimary} onClick={() => {}}>
+            <button
+              className={taStyles.btnPrimary}
+              onClick={() => hendleExport(TaListData)}
+            >
               Export
-            </button> */}
+            </button>
           </div>
         </div>
       </div>
@@ -1104,6 +1437,53 @@ export default function TADashboard() {
         </Suspense>
       )}
 
+{showConfirmRemove && (
+        <Modal
+          transitionName=""
+          width="650px"
+          centered
+          footer={null}
+          open={showConfirmRemove}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setShowConfirmRemove(false);
+          }}
+        >
+          <>
+            <div style={{ padding: "35px 15px 10px 15px" }}>
+            {loadingTalentProfile ? (
+              <div>
+                <Skeleton active />
+              </div>
+            ):<h3>Are you sure you want to Remove <strong>{profileInfo?.taName}</strong> for {profileInfo?.hrNumber}  in {profileInfo?.companyName}</h3> }          
+            </div>
+
+            <div style={{ padding: "10px", display:'flex', justifyContent:'end'  }}>
+            <button
+                className={taStyles.btnPrimary}
+                disabled={loadingTalentProfile}
+                onClick={() => {
+                  removeTask(profileInfo?.id);
+                }}
+              >
+               Yes Remove
+              </button>
+              <button
+                className={taStyles.btnCancle}
+                disabled={loadingTalentProfile}
+                onClick={() => {
+                  setShowConfirmRemove(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        </Modal>
+      )}
+
       {showTalentProfiles && (
         <Modal
           transitionName=""
@@ -1120,7 +1500,10 @@ export default function TADashboard() {
         >
           <>
             <div style={{ padding: "35px 15px 10px 15px" }}>
-              <h3>Profiles</h3>
+              <h3>Profiles for {profileInfo?.hrNumber}</h3> 
+              {/* <h3>{profileInfo?.taName}</h3>
+              <h3>{profileInfo?.companyName}</h3> */}
+            
             </div>
 
             {loadingTalentProfile ? (
@@ -1128,15 +1511,18 @@ export default function TADashboard() {
                 <Skeleton active />
               </div>
             ) : (
-              <Table
+              <div style={{margin:'5px 10px'}}>
+                <Table
                 dataSource={hrTalentList}
                 columns={ProfileColumns}
                 // bordered
                 pagination={false}
               />
+              </div>
+              
             )}
 
-            <div style={{ padding: "10px 0" }}>
+            <div style={{ padding: "10px 0"}}>
               <button
                 className={taStyles.btnCancle}
                 disabled={isAddingNewTask}
@@ -1242,7 +1628,7 @@ export default function TADashboard() {
                           setNewTAHRValue("");
                           setTRAllData({});
                         }}
-                        options={filtersList?.Users?.map((v) => ({
+                        options={allTAUsersList?.map((v) => ({
                           label: v.data,
                           value: v.id,
                         }))}
@@ -1433,6 +1819,316 @@ export default function TADashboard() {
                 Cancel
               </button>
             </div>
+          </div>
+        </Modal>
+      )}
+
+      {showEditTATask && (
+        <Modal
+          transitionName=""
+          width="930px"
+          centered
+          footer={null}
+          open={showEditTATask}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setShowEditTATask(false);
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Edit TA</h3>
+          </div>
+          <div style={{ padding: "10px 15px" }}>
+            {isEditNewTask ? (
+              <Skeleton active />
+            ) : (
+              <>
+                <div className={taStyles.row}>
+                  <div className={taStyles.colMd6}>
+                    {/* <Select  value={newTAUservalue}  onChange={val=>{
+                      setNewTAUserValue(val);
+                      }}>
+                      {filtersList?.Users?.map(v=> <Option value={v.data}>{v.data}</Option>)}
+                      </Select> */}
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select Head <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select TA"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={newTAHeadUservalue}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                          setNewTAHeadUserValue(value);
+                          // setNewTAUserValue('')
+                          // setCompanyAutoCompleteValue("");
+                          // setCompanyNameSuggestion([]);
+                          // setselectedCompanyID("");
+                          // setNewTAHRValue("");
+                          // setTRAllData({});
+                        }}
+                        options={filtersList?.HeadUsers?.map((v) => ({
+                          label: v.data,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+                    </div>
+                  </div>
+                  <div className={taStyles.colMd6}>
+                    {/* <Select  value={newTAUservalue}  onChange={val=>{
+                      setNewTAUserValue(val);
+                      }}>
+                      {filtersList?.Users?.map(v=> <Option value={v.data}>{v.data}</Option>)}
+                      </Select> */}
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select TA <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select TA"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={editTATaskData?.tA_UserID}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                          setEditTATaskData((prev) => ({
+                            ...prev,
+                            tA_UserID: value,
+                          }));
+                        }}
+                        options={filtersList?.Users?.map((v) => ({
+                          label: v.data,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+
+                      {newTaskError && newTAUservalue === "" && (
+                        <p className={taStyles.error}>please select TA</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={taStyles.row}>
+                  <div className={taStyles.colMd6}>
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select company{" "}
+                        <span className={taStyles.reqField}>*</span>
+                      </label>
+
+                      <Select
+                        id="selectedValue"
+                        placeholder="Select Company"
+                        disabled={true}
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={editTATaskData?.company_ID}
+                        showSearch={true}
+                        onChange={(value, option) => {}}
+                        options={getCompanyNameSuggestion}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+                    </div>
+                  </div>
+                  <div className={taStyles.colMd6}>
+                    <div className={taStyles.formGroup}>
+                      <label>
+                        Select HR <span className={taStyles.reqField}>*</span>
+                      </label>
+                      <Select
+                        disabled={true}
+                        id="selectedValue"
+                        placeholder="Select HR"
+                        // style={{marginLeft:'10px',width:'270px'}}
+                        // mode="multiple"
+                        value={editTATaskData?.hiringRequest_ID}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                          // setNewTAHRValue(value);
+                          // setTRAllData(option);
+                        }}
+                        options={hrListSuggestion.map((v) => ({
+                          ...v,
+                          label: v.value,
+                          value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                        // getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className={taStyles.HRINFOCOntainer}>
+                  {Object.keys(editTATaskData).length > 0 && (
+                    <>
+                      <div>
+                        <span>Active TR : </span>
+                        {editTATaskData.activeTR}
+                      </div>
+                      <div>
+                        <span>HR Created Date : </span>
+                        {moment(editTATaskData.hrCreatedDate).format(
+                          "DD-MMM-YYYY"
+                        )}
+                      </div>
+                      <div>
+                        <span>Talent Annual CTC Budget (INR) : </span>
+                        {editTATaskData.talent_AnnualCTC_Budget_INRValue}
+                      </div>
+                      <div>
+                        <span>DP /Contract : </span>
+                        {editTATaskData.modelType}
+                      </div>
+                      <div>
+                        <span>Revenue Opportunity (10% on annual CTC) : </span>
+                        {editTATaskData.revenue_On10PerCTC}
+                      </div>
+                      <div>
+                        <span>Sales : </span>
+                        {editTATaskData.salesName}
+                      </div>
+                      <div>
+                        <span>
+                          Total Revenue Opportunity (NO. of TR x TalentAnnual
+                          CTC budget) :{" "}
+                        </span>
+                        {editTATaskData.totalRevenue_NoofTalent}
+                      </div>
+                      <div>
+                        <span>Open Since {">"} 1 Month (Yes/no) : </span>
+                        {editTATaskData.hrOpenSinceOneMonths}
+                      </div>
+                      <div>
+                        <span>
+                          No. of Active/Submitted Profiles till Date :{" "}
+                        </span>
+                        {editTATaskData.noOfProfile_TalentsTillDate}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+
+            <div style={{ margin: "10px 0" }}>
+              <button
+                className={taStyles.btnPrimary}
+                disabled={isEditNewTask}
+                onClick={() => {
+                  saveEditTask();
+                }}
+              >
+                Save
+              </button>
+              <button
+                className={taStyles.btnCancle}
+                disabled={isEditNewTask}
+                onClick={() => {
+                  setShowEditTATask(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {showComment && (
+        <Modal
+          transitionName=""
+          width="1000px"
+          centered
+          footer={null}
+          open={showComment}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setShowComment(false);
+            setALLCommentsList([]);
+            setCommentData({});
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Add Comment</h3>
+          </div>
+          <Suspense>
+            <div
+              style={{
+                position: "relative",
+                marginBottom: "10px",
+                padding: "0 20px",
+                paddingRight: "30px",
+              }}
+            >
+              <Editor
+                // tagUsers={UsersToTag && UsersToTag}
+                hrID={""}
+                saveNote={(note) => saveComment(note)}
+                isUsedForComment={true}
+              />
+            </div>
+          </Suspense>
+
+          {allCommentList.length > 0 ? (
+            <div
+              //  dangerouslySetInnerHTML={{__html:commentData?.latestNotes}}
+              style={{ padding: "12px 20px" }}
+            >
+              {isCommentLoading && (
+                <div>
+                  Adding Comment ...{" "}
+                  <img src={spinGif} alt="loadgif" width={16} />{" "}
+                </div>
+              )}
+              <ul>
+                 {allCommentList.map((item) => (
+                <li
+                  key={item.comments}
+                  dangerouslySetInnerHTML={{ __html: item.comments }}
+                ></li>
+              ))}
+              </ul>
+             
+            </div>
+          ) : (
+            <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+              {isCommentLoading ? (
+                <div>
+                  Loading Comments...{" "}
+                  <img src={spinGif} alt="loadgif" width={16} />{" "}
+                </div>
+              ) : (
+                "No Comments yet"
+              )}
+            </h3>
+          )}
+          <div style={{ padding: "10px" }}>
+            <button
+              className={taStyles.btnCancle}
+              disabled={isEditNewTask}
+              onClick={() => {
+                setShowComment(false);
+                setALLCommentsList([]);
+                setCommentData({});
+              }}
+            >
+              Close
+            </button>
           </div>
         </Modal>
       )}

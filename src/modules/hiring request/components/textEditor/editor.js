@@ -20,7 +20,7 @@ import { allCompanyRequestDAO } from 'core/company/companyDAO';
 import { HTTPStatusCode } from 'constants/network';
 import spinGif from "assets/gif/RefreshLoader.gif";
 
-const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment }) => {
+const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment , isUsedForComment }) => {
 	const [isStyleEditor, setStyleEditor] = useState(false);
 	const [isShowDropDownList, setShowDropDownList] = useState(false);
 	const [tagUserSearch, setTagUserSearch] = useState('');
@@ -227,18 +227,18 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment }
 				<div className={EditorStyle.activityFeedBody}>
 					<div className={EditorStyle.activityFeedPost}>
 						<div className={EditorStyle.activityFeedPostBody}>
-							<img
+						{isUsedForComment ? null : <img
 								src="https://www.w3schools.com/howto/img_avatar.png"
 								className={EditorStyle.avatar}
 								alt="avatar"
-							/>
+							/>}	
 
 							<div
 								ref={commentRef}
 								id="commentBox"
 								className={EditorStyle.commentBox}
 								contentEditable={true}
-								placeholder="Comment on this thread by typing here or mention someone with @..."
+								placeholder={isUsedForComment ? "Comment on this thread by typing here " :"Comment on this thread by typing here or mention someone with @..."}
 								onKeyDown={(e) => onKeyPressHandler(e)}
 								onInput={
 									isShowDropDownList
@@ -308,13 +308,13 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment }
 							} else {
 								messageAPI.open({
 									type: 'warning',
-									content: 'Please enter the comment and tag someone.',
+									content: isUsedForComment ? 'Please enter the comment '  : 'Please enter the comment and tag someone.',
 								});
 							}
 						}}
 						style={{
 							top: '0',
-							right: '0',
+							right: '10px',
 							position: 'absolute',
 							cursor: 'pointer',
 							display: 'flex',
