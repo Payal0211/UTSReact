@@ -1930,12 +1930,15 @@ export default function TADashboard() {
                   <img src={spinGif} alt="loadgif" width={16} />{" "}
                 </div>
               )}
-              {allCommentList.map((item) => (
-                <div
+              <ul>
+                 {allCommentList.map((item) => (
+                <li
                   key={item.comments}
                   dangerouslySetInnerHTML={{ __html: item.comments }}
-                ></div>
+                ></li>
               ))}
+              </ul>
+             
             </div>
           ) : (
             <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
