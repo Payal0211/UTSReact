@@ -88,6 +88,7 @@ export default function TADashboard() {
 
   const [showTalentProfiles, setShowTalentProfiles] = useState(false);
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
+  const [profileInfo,setInfoforProfile] =  useState({})
   const [hrTalentList, setHRTalentList] = useState([]);
   const date = new Date();
   const [startDate, setStartDate] = useState(date);
@@ -407,10 +408,11 @@ export default function TADashboard() {
     }
   };
 
-  const getTalentProfilesDetails = async (ID) => {
+  const getTalentProfilesDetails = async (result) => {
     setShowTalentProfiles(true);
+    setInfoforProfile(result);
     setLoadingTalentProfile(true);
-    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(ID);
+    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(result?.hiringRequest_ID);
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
@@ -733,7 +735,7 @@ export default function TADashboard() {
               cursor: "pointer",
             }}
             onClick={() => {
-              getTalentProfilesDetails(result?.hiringRequest_ID);
+              getTalentProfilesDetails(result);
             }}
           >
             {text}
@@ -1069,21 +1071,38 @@ export default function TADashboard() {
     const res = await TaDashboardDAO.insertTaskCommentRequestDAO(pl);
     setIsCommentLoading(false);
     if (res.statusCode === HTTPStatusCode.OK) {
-      let newComment = `${note} <br/> ${
-        commentData?.latestNotes !== null ? commentData?.latestNotes : ""
-      }`;
-
       setALLCommentsList(res.responseBody);
+      if(commentData?.latestNotes !== null ){
+        let oldComments = commentData?.latestNotes
+        let newItem = `<li>${note}</li>`;
+        setTaListData((prev) => {
+          let newDS = [...prev];
+          newDS[commentData?.index] = {
+            ...newDS[commentData?.index],
+            latestNotes: oldComments.replace('<ul>', `<ul>${newItem}`),
+          };
+          return newDS;
+        });
+      }else{
+        let newItem = `<ul><li>${note}</li></ul>`;
+        setTaListData((prev) => {
+          let newDS = [...prev];
+          newDS[commentData?.index] = {
+            ...newDS[commentData?.index],
+            latestNotes: newItem,
+          };
+          return newDS;
+        });
+      }
+
+      // let newComment = `${note} <br/> ${
+      //   commentData?.latestNotes !== null ? commentData?.latestNotes : ""
+      // }`;
+
+     
       //  setCommentData(prev=>{
       //   return {...prev,latestNotes:newComment}})
-      setTaListData((prev) => {
-        let newDS = [...prev];
-        newDS[commentData?.index] = {
-          ...newDS[commentData?.index],
-          latestNotes: newComment,
-        };
-        return newDS;
-      });
+     
     }
   };
 
@@ -1352,7 +1371,10 @@ export default function TADashboard() {
         >
           <>
             <div style={{ padding: "35px 15px 10px 15px" }}>
-              <h3>Profiles</h3>
+              <h3>Profiles for {profileInfo?.hrNumber}</h3> 
+              {/* <h3>{profileInfo?.taName}</h3>
+              <h3>{profileInfo?.companyName}</h3> */}
+            
             </div>
 
             {loadingTalentProfile ? (
@@ -1360,12 +1382,15 @@ export default function TADashboard() {
                 <Skeleton active />
               </div>
             ) : (
-              <Table
+              <div style={{margin:'5px 10px'}}>
+                <Table
                 dataSource={hrTalentList}
                 columns={ProfileColumns}
                 // bordered
                 pagination={false}
               />
+              </div>
+              
             )}
 
             <div style={{ padding: "10px 0" }}>
