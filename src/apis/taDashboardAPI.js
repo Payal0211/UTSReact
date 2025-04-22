@@ -88,12 +88,12 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getTAHRListFromCompanyRequest');
 		}
 	},
-    getHRTalentDetailsRequest: async function (id) {
+    getHRTalentDetailsRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_HR_TALENT_DETAILS + `?hrID=${id}`
+			TaDashboardURL.GET_HR_TALENT_DETAILS + `?hrID=${pl.hrID}&statusID=${pl.statusID}&stageID=${pl.stageID}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
