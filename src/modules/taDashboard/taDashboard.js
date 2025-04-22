@@ -108,6 +108,10 @@ export default function TADashboard() {
   const [allCommentList, setALLCommentsList] = useState([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
 
+  const [showProfileTarget,setShowProfileTarget] = useState(false)
+  const [profileTargetDetails,setProfileTargetDetails] = useState({})
+  const [targetValue,setTargetValue] = useState('')
+
   // const groupedData = groupByRowSpan(rawData, 'ta');
 
   function groupByRowSpan(data, groupField) {
@@ -304,6 +308,12 @@ export default function TADashboard() {
           onChange={(val) => {
             setValue(val);
             let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
+            if(val === 'Fasttrack'){
+              setShowProfileTarget(true)
+              setProfileTargetDetails({...result,index:index})
+              return
+            }
+
             updateTARowValue(valobj, "task_StatusID", result, index);
           }}
         >
@@ -474,6 +484,31 @@ export default function TADashboard() {
       setALLCommentsList([]);
     }
   };
+
+  const handleProfileShearedTarget = async () =>{
+    let pl = {
+      "task_ID": profileTargetDetails?.id,
+      "tA_Head_UserID": selectedHead,
+      "tA_UserID": profileTargetDetails?.tA_UserID,
+      "target_StageID": 1,
+      "target_Number": targetValue,
+      "target_Date": moment().format('YYYY-MM-DD') // today's date
+    }
+    setLoadingTalentProfile(true)
+    let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl)
+    setLoadingTalentProfile(false)
+    if(result.statusCode === HTTPStatusCode.OK){
+      setShowProfileTarget(false)
+      setProfileTargetDetails({})
+      setTargetValue('')
+      setGoalList(result.responseBody)
+      let valobj = filtersList?.TaskStatus?.find((i) => i.data === 'Fasttrack');
+      updateTARowValue(valobj, "task_StatusID", profileTargetDetails, profileTargetDetails?.index);
+    }else{
+      message.error('Something went wrong!')
+    }
+
+  }
 
   const AddComment = (data, index) => {
     getAllComments(data.id);
@@ -915,7 +950,7 @@ export default function TADashboard() {
       render:(_,row)=>{
         return <div>
 
-        <IconContext.Provider value={{ color: '#FFDA30', style: { width:'19px',height:'19px' } }}> <Tooltip title="Edit" placement="top" >
+        <IconContext.Provider value={{ color: '#FFDA30', style: { width:'19px',height:'19px',cursor:'pointer' } }}> <Tooltip title="Edit" placement="top" >
           <span
           onClick={()=> { editTAforTask(row);} }
           style={{padding:'0'}}>
@@ -925,7 +960,7 @@ export default function TADashboard() {
         </IconContext.Provider>
   
                   
-        <IconContext.Provider value={{ color: 'red', style: { width:'19px',height:'19px', marginLeft:'10px' } }}><Tooltip title="Remove" placement="top" >
+        <IconContext.Provider value={{ color: 'red', style: { width:'19px',height:'19px', marginLeft:'10px',cursor:'pointer' } }}><Tooltip title="Remove" placement="top" >
           <span
           // style={{
           //   background: 'red'
@@ -1154,28 +1189,49 @@ export default function TADashboard() {
     setIsCommentLoading(false);
     if (res.statusCode === HTTPStatusCode.OK) {
       setALLCommentsList(res.responseBody);
-      if(commentData?.latestNotes !== null ){
-        let oldComments = commentData?.latestNotes
-        let newItem = `<li>${note}</li>`;
-        setTaListData((prev) => {
+      setTaListData((prev) => {
+        let oldComments = prev[commentData?.index]?.latestNotes
+        if(oldComments !== null ){   
+          let newItem = `<li>${note}</li>`;
+        let newDS = [...prev];
+        newDS[commentData?.index] = {
+          ...newDS[commentData?.index],
+          latestNotes: oldComments.replace('<ul>', `<ul>${newItem}`),
+        };
+        return newDS;
+        }else{
           let newDS = [...prev];
-          newDS[commentData?.index] = {
-            ...newDS[commentData?.index],
-            latestNotes: oldComments.replace('<ul>', `<ul>${newItem}`),
-          };
-          return newDS;
-        });
-      }else{
-        let newItem = `<ul><li>${note}</li></ul>`;
-        setTaListData((prev) => {
-          let newDS = [...prev];
+          let newItem = `<ul><li>${note}</li></ul>`;
           newDS[commentData?.index] = {
             ...newDS[commentData?.index],
             latestNotes: newItem,
           };
           return newDS;
-        });
-      }
+        }
+        
+      });
+      // if(commentData?.latestNotes !== null ){      
+      //   setTaListData((prev) => {
+      //     let oldComments = prev[commentData?.index]?.latestNotes
+      //     let newItem = `<li>${note}</li>`;
+      //     let newDS = [...prev];
+      //     newDS[commentData?.index] = {
+      //       ...newDS[commentData?.index],
+      //       latestNotes: oldComments.replace('<ul>', `<ul>${newItem}`),
+      //     };
+      //     return newDS;
+      //   });
+      // }else{
+      //   let newItem = `<ul><li>${note}</li></ul>`;
+      //   setTaListData((prev) => {
+      //     let newDS = [...prev];
+      //     newDS[commentData?.index] = {
+      //       ...newDS[commentData?.index],
+      //       latestNotes: newItem,
+      //     };
+      //     return newDS;
+      //   });
+      // }
 
       // let newComment = `${note} <br/> ${
       //   commentData?.latestNotes !== null ? commentData?.latestNotes : ""
@@ -1484,6 +1540,70 @@ export default function TADashboard() {
         </Modal>
       )}
 
+{showProfileTarget && (
+        <Modal
+          transitionName=""
+          width="450px"
+          centered
+          footer={null}
+          open={showProfileTarget}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setShowProfileTarget(false);
+          }}
+        >
+          <>
+            <div style={{ padding: "35px 15px 10px 15px" }}>
+           <h3>Profiles Shared Target</h3>         
+            </div>
+
+
+          <div className={taStyles.row} style={{display:'flex',alignItems:'center', padding:'0 10px'}}>
+          {loadingTalentProfile ? <Skeleton active /> : <>
+          <InputNumber
+              value={targetValue}
+              onChange={(v) => {
+                setTargetValue(v)
+              }}
+              min={1}
+              max={9}
+              maxLength={1}
+              placeholder="Enter target"
+             style={{ width: '40%', marginLeft:'10px' }}
+            />
+
+         
+ <div style={{ padding: "10px", display:'flex', justifyContent:'end'  }}>
+            <button
+                className={taStyles.btnPrimary}
+                // disabled={ }
+                onClick={() => {
+                  handleProfileShearedTarget()
+                }}
+              >
+               Proceed
+              </button>
+              <button
+                className={taStyles.btnCancle}
+                onClick={() => {
+                  setShowProfileTarget(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>}
+
+          </div>
+            
+
+           
+          </>
+        </Modal>
+      )}
+
       {showTalentProfiles && (
         <Modal
           transitionName=""
@@ -1499,10 +1619,10 @@ export default function TADashboard() {
           }}
         >
           <>
-            <div style={{ padding: "35px 15px 10px 15px" }}>
+            <div style={{ padding: "35px 15px 10px 15px" , display:'flex',gap:'10px'}}>
               <h3>Profiles for {profileInfo?.hrNumber}</h3> 
-              {/* <h3>{profileInfo?.taName}</h3>
-              <h3>{profileInfo?.companyName}</h3> */}
+              <p><strong>TA : </strong> {profileInfo?.taName}</p>
+              <p><strong>Company : </strong>{profileInfo?.companyName}</p>
             
             </div>
 
