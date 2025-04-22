@@ -43,7 +43,7 @@ import { IconContext } from "react-icons";
 import { downloadToExcel } from "modules/report/reportUtils";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { HttpStatusCode } from "axios";
-import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 const { Option } = Select;
 
 export default function TADashboard() {
@@ -89,10 +89,12 @@ export default function TADashboard() {
   const [isAddingNewTask, setAddingNewTask] = useState(false);
 
   const [showTalentProfiles, setShowTalentProfiles] = useState(false);
-  const [showConfirmRemove,setShowConfirmRemove] = useState(false)
+  const [showConfirmRemove, setShowConfirmRemove] = useState(false);
+  const [profileStatusID, setProfileStatusID] = useState(0);
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
-  const [profileInfo,setInfoforProfile] =  useState({})
+  const [profileInfo, setInfoforProfile] = useState({});
   const [hrTalentList, setHRTalentList] = useState([]);
+  const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
   const date = new Date();
   const [startDate, setStartDate] = useState(date);
   const [showGoal, setShowGoal] = useState(false);
@@ -108,9 +110,9 @@ export default function TADashboard() {
   const [allCommentList, setALLCommentsList] = useState([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
 
-  const [showProfileTarget,setShowProfileTarget] = useState(false)
-  const [profileTargetDetails,setProfileTargetDetails] = useState({})
-  const [targetValue,setTargetValue] = useState('')
+  const [showProfileTarget, setShowProfileTarget] = useState(false);
+  const [profileTargetDetails, setProfileTargetDetails] = useState({});
+  const [targetValue, setTargetValue] = useState("");
 
   // const groupedData = groupByRowSpan(rawData, 'ta');
 
@@ -308,10 +310,10 @@ export default function TADashboard() {
           onChange={(val) => {
             setValue(val);
             let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
-            if(val === 'Fasttrack'){
-              setShowProfileTarget(true)
-              setProfileTargetDetails({...result,index:index})
-              return
+            if (val === "Fasttrack") {
+              setShowProfileTarget(true);
+              setProfileTargetDetails({ ...result, index: index });
+              return;
             }
 
             updateTARowValue(valobj, "task_StatusID", result, index);
@@ -421,16 +423,40 @@ export default function TADashboard() {
     }
   };
 
-  const handleRemoveTask = (result)=>{
-    setShowConfirmRemove(true)
+  const handleRemoveTask = (result) => {
+    setShowConfirmRemove(true);
     setInfoforProfile(result);
-  }
+  };
 
-  const getTalentProfilesDetails = async (result) => {
+  const getTalentProfilesDetailsfromTable = async (result, statusID, stageID) => {
     setShowTalentProfiles(true);
     setInfoforProfile(result);
+    let pl = {
+      hrID: result?.hiringRequest_ID,
+      statusID: statusID,
+      stageID: stageID ? stageID : 0,
+    };
     setLoadingTalentProfile(true);
-    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(result?.hiringRequest_ID);
+    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+    setLoadingTalentProfile(false);
+    if (hrResult.statusCode === HTTPStatusCode.OK) {
+      setHRTalentList(hrResult.responseBody);
+      setHRTalentListFourCount(hrResult.responseBody)
+    } else {
+      setHRTalentList([]);
+    }
+  };
+
+  const getTalentProfilesDetails = async (result, statusID, stageID) => {
+    setShowTalentProfiles(true);
+    setInfoforProfile(result);
+    let pl = {
+      hrID: result?.hiringRequest_ID,
+      statusID: statusID,
+      stageID: stageID ? stageID : 0,
+    };
+    setLoadingTalentProfile(true);
+    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
@@ -485,30 +511,34 @@ export default function TADashboard() {
     }
   };
 
-  const handleProfileShearedTarget = async () =>{
+  const handleProfileShearedTarget = async () => {
     let pl = {
-      "task_ID": profileTargetDetails?.id,
-      "tA_Head_UserID": selectedHead,
-      "tA_UserID": profileTargetDetails?.tA_UserID,
-      "target_StageID": 1,
-      "target_Number": targetValue,
-      "target_Date": moment().format('YYYY-MM-DD') // today's date
+      task_ID: profileTargetDetails?.id,
+      tA_Head_UserID: selectedHead,
+      tA_UserID: profileTargetDetails?.tA_UserID,
+      target_StageID: 1,
+      target_Number: targetValue,
+      target_Date: moment().format("YYYY-MM-DD"), // today's date
+    };
+    setLoadingTalentProfile(true);
+    let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
+    setLoadingTalentProfile(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setShowProfileTarget(false);
+      setProfileTargetDetails({});
+      setTargetValue("");
+      setGoalList(result.responseBody);
+      let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
+      updateTARowValue(
+        valobj,
+        "task_StatusID",
+        profileTargetDetails,
+        profileTargetDetails?.index
+      );
+    } else {
+      message.error("Something went wrong!");
     }
-    setLoadingTalentProfile(true)
-    let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl)
-    setLoadingTalentProfile(false)
-    if(result.statusCode === HTTPStatusCode.OK){
-      setShowProfileTarget(false)
-      setProfileTargetDetails({})
-      setTargetValue('')
-      setGoalList(result.responseBody)
-      let valobj = filtersList?.TaskStatus?.find((i) => i.data === 'Fasttrack');
-      updateTARowValue(valobj, "task_StatusID", profileTargetDetails, profileTargetDetails?.index);
-    }else{
-      message.error('Something went wrong!')
-    }
-
-  }
+  };
 
   const AddComment = (data, index) => {
     getAllComments(data.id);
@@ -577,7 +607,7 @@ export default function TADashboard() {
           )}
         </div>
       ),
-    },    
+    },
     {
       title: "Interview Detail",
       dataIndex: "talentStatusDetail",
@@ -651,37 +681,52 @@ export default function TADashboard() {
       key: "companyName",
       fixed: "left",
       width: "120px",
-      render: (text, row) => <> <a href={'/viewCompanyDetails/' + `${row.company_ID}`}  target="_blank" rel="noreferrer">{text}</a> <br/>  
-       <IconContext.Provider
-      value={{
-        color: "green",
-        style: {
-          width: "30px",
-          height: "30px",
-          marginTop: "5px",
-          cursor: "pointer",
-        },
-      }}
-    >
-      {" "}
-      <Tooltip title={`Add task for TA ${row.taName} in ${text}`} placement="top">
-        <span
-          onClick={() => {
-            setIsAddNewRow(true);
-            setNewTAUserValue(row.tA_UserID);
-            setNewTAHeadUserValue(selectedHead);
-            getCompanySuggestionHandler(row.tA_UserID);
-            setselectedCompanyID(row?.company_ID);
-            getHRLISTForComapny(row?.company_ID);
-          }}
-          className={taStyles.feedbackLabel}
-          style={{ padding: "10px" }}
-        >
+      render: (text, row) => (
+        <>
           {" "}
-          <IoMdAddCircle  />
-        </span>{" "}
-      </Tooltip>
-    </IconContext.Provider></>,
+          <a
+            href={"/viewCompanyDetails/" + `${row.company_ID}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>{" "}
+          <br />
+          <IconContext.Provider
+            value={{
+              color: "green",
+              style: {
+                width: "30px",
+                height: "30px",
+                marginTop: "5px",
+                cursor: "pointer",
+              },
+            }}
+          >
+            {" "}
+            <Tooltip
+              title={`Add task for TA ${row.taName} in ${text}`}
+              placement="top"
+            >
+              <span
+                onClick={() => {
+                  setIsAddNewRow(true);
+                  setNewTAUserValue(row.tA_UserID);
+                  setNewTAHeadUserValue(selectedHead);
+                  getCompanySuggestionHandler(row.tA_UserID);
+                  setselectedCompanyID(row?.company_ID);
+                  getHRLISTForComapny(row?.company_ID);
+                }}
+                className={taStyles.feedbackLabel}
+                style={{ padding: "10px" }}
+              >
+                {" "}
+                <IoMdAddCircle />
+              </span>{" "}
+            </Tooltip>
+          </IconContext.Provider>
+        </>
+      ),
     },
     // {
     //   title: 'HR ID',
@@ -712,7 +757,11 @@ export default function TADashboard() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${result.hiringRequest_ID}`,'_blank')
+                window.open(
+                  UTSRoutes.ALLHIRINGREQUESTROUTE +
+                    `/${result.hiringRequest_ID}`,
+                  "_blank"
+                );
               }}
             >
               {result.hrNumber}
@@ -808,7 +857,9 @@ export default function TADashboard() {
               cursor: "pointer",
             }}
             onClick={() => {
-              getTalentProfilesDetails(result);
+              getTalentProfilesDetailsfromTable(result, 0);
+              setProfileStatusID(0);
+              hrTalentListFourCount([])
             }}
           >
             {text}
@@ -944,43 +995,67 @@ export default function TADashboard() {
       key: "hrOpenSinceOneMonths",
     },
     {
-      title:"Action",
+      title: "Action",
       dataIndex: "",
       key: "",
-      render:(_,row)=>{
-        return <div>
+      render: (_, row) => {
+        return (
+          <div>
+            <IconContext.Provider
+              value={{
+                color: "#FFDA30",
+                style: { width: "19px", height: "19px", cursor: "pointer" },
+              }}
+            >
+              {" "}
+              <Tooltip title="Edit" placement="top">
+                <span
+                  onClick={() => {
+                    editTAforTask(row);
+                  }}
+                  style={{ padding: "0" }}
+                >
+                  {" "}
+                  <GrEdit />
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
 
-        <IconContext.Provider value={{ color: '#FFDA30', style: { width:'19px',height:'19px',cursor:'pointer' } }}> <Tooltip title="Edit" placement="top" >
-          <span
-          onClick={()=> { editTAforTask(row);} }
-          style={{padding:'0'}}>
-          {' '}
-          <GrEdit /> 
-        </span>   </Tooltip>
-        </IconContext.Provider>
-  
-                  
-        <IconContext.Provider value={{ color: 'red', style: { width:'19px',height:'19px', marginLeft:'10px',cursor:'pointer' } }}><Tooltip title="Remove" placement="top" >
-          <span
-          // style={{
-          //   background: 'red'
-          // }}
-          onClick={()=> {handleRemoveTask(row)}}
-        style={{padding:'0'}}>
-          {' '}
-          <IoIosRemoveCircle />
-        </span>        </Tooltip>
-        </IconContext.Provider>
-
-      </div>
-      }
+            <IconContext.Provider
+              value={{
+                color: "red",
+                style: {
+                  width: "19px",
+                  height: "19px",
+                  marginLeft: "10px",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              <Tooltip title="Remove" placement="top">
+                <span
+                  // style={{
+                  //   background: 'red'
+                  // }}
+                  onClick={() => {
+                    handleRemoveTask(row);
+                  }}
+                  style={{ padding: "0" }}
+                >
+                  {" "}
+                  <IoIosRemoveCircle />
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
+          </div>
+        );
+      },
     },
     // {
     //   title: <>#Profiles Submitted <br/> Yesterday</>,
     //   dataIndex: '',
     //   key: '',
     // },
-    
   ];
   const getFilters = async () => {
     setIsLoading(true);
@@ -1167,17 +1242,17 @@ export default function TADashboard() {
     setHTMLFilter(false);
   };
 
-  const removeTask = async (id)=>{
-    setLoadingTalentProfile(true)
-    const result = await TaDashboardDAO.removeTaskDAO(id)
-    setLoadingTalentProfile(false)
-    if(result.statusCode === HTTPStatusCode.OK){
-      setShowConfirmRemove(false)
+  const removeTask = async (id) => {
+    setLoadingTalentProfile(true);
+    const result = await TaDashboardDAO.removeTaskDAO(id);
+    setLoadingTalentProfile(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setShowConfirmRemove(false);
       getListData();
-    }else{
-      message.error('Something went wrong!')
+    } else {
+      message.error("Something went wrong!");
     }
-  }
+  };
 
   const saveComment = async (note) => {
     let pl = {
@@ -1190,16 +1265,16 @@ export default function TADashboard() {
     if (res.statusCode === HTTPStatusCode.OK) {
       setALLCommentsList(res.responseBody);
       setTaListData((prev) => {
-        let oldComments = prev[commentData?.index]?.latestNotes
-        if(oldComments !== null ){   
+        let oldComments = prev[commentData?.index]?.latestNotes;
+        if (oldComments !== null) {
           let newItem = `<li>${note}</li>`;
-        let newDS = [...prev];
-        newDS[commentData?.index] = {
-          ...newDS[commentData?.index],
-          latestNotes: oldComments.replace('<ul>', `<ul>${newItem}`),
-        };
-        return newDS;
-        }else{
+          let newDS = [...prev];
+          newDS[commentData?.index] = {
+            ...newDS[commentData?.index],
+            latestNotes: oldComments.replace("<ul>", `<ul>${newItem}`),
+          };
+          return newDS;
+        } else {
           let newDS = [...prev];
           let newItem = `<ul><li>${note}</li></ul>`;
           newDS[commentData?.index] = {
@@ -1208,9 +1283,8 @@ export default function TADashboard() {
           };
           return newDS;
         }
-        
       });
-      // if(commentData?.latestNotes !== null ){      
+      // if(commentData?.latestNotes !== null ){
       //   setTaListData((prev) => {
       //     let oldComments = prev[commentData?.index]?.latestNotes
       //     let newItem = `<li>${note}</li>`;
@@ -1237,10 +1311,8 @@ export default function TADashboard() {
       //   commentData?.latestNotes !== null ? commentData?.latestNotes : ""
       // }`;
 
-     
       //  setCommentData(prev=>{
       //   return {...prev,latestNotes:newComment}})
-     
     }
   };
 
@@ -1289,7 +1361,6 @@ export default function TADashboard() {
 
       return obj;
     });
-
 
     downloadToExcel(DataToExport, "TAReport");
   };
@@ -1493,7 +1564,7 @@ export default function TADashboard() {
         </Suspense>
       )}
 
-{showConfirmRemove && (
+      {showConfirmRemove && (
         <Modal
           transitionName=""
           width="650px"
@@ -1509,22 +1580,34 @@ export default function TADashboard() {
         >
           <>
             <div style={{ padding: "35px 15px 10px 15px" }}>
-            {loadingTalentProfile ? (
-              <div>
-                <Skeleton active />
-              </div>
-            ):<h3>Are you sure you want to Remove <strong>{profileInfo?.taName}</strong> for {profileInfo?.hrNumber}  in {profileInfo?.companyName}</h3> }          
+              {loadingTalentProfile ? (
+                <div>
+                  <Skeleton active />
+                </div>
+              ) : (
+                <h3>
+                  Are you sure you want to Remove{" "}
+                  <strong>{profileInfo?.taName}</strong> for{" "}
+                  {profileInfo?.hrNumber} in {profileInfo?.companyName}
+                </h3>
+              )}
             </div>
 
-            <div style={{ padding: "10px", display:'flex', justifyContent:'end'  }}>
-            <button
+            <div
+              style={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              <button
                 className={taStyles.btnPrimary}
                 disabled={loadingTalentProfile}
                 onClick={() => {
                   removeTask(profileInfo?.id);
                 }}
               >
-               Yes Remove
+                Yes Remove
               </button>
               <button
                 className={taStyles.btnCancle}
@@ -1540,7 +1623,7 @@ export default function TADashboard() {
         </Modal>
       )}
 
-{showProfileTarget && (
+      {showProfileTarget && (
         <Modal
           transitionName=""
           width="450px"
@@ -1556,50 +1639,61 @@ export default function TADashboard() {
         >
           <>
             <div style={{ padding: "35px 15px 10px 15px" }}>
-           <h3>Profiles Shared Target</h3>         
+              <h3>Profiles Shared Target</h3>
             </div>
 
-
-          <div className={taStyles.row} style={{display:'flex',alignItems:'center', padding:'0 10px'}}>
-          {loadingTalentProfile ? <Skeleton active /> : <>
-          <InputNumber
-              value={targetValue}
-              onChange={(v) => {
-                setTargetValue(v)
+            <div
+              className={taStyles.row}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0 10px",
               }}
-              min={1}
-              max={9}
-              maxLength={1}
-              placeholder="Enter target"
-             style={{ width: '40%', marginLeft:'10px' }}
-            />
+            >
+              {loadingTalentProfile ? (
+                <Skeleton active />
+              ) : (
+                <>
+                  <InputNumber
+                    value={targetValue}
+                    onChange={(v) => {
+                      setTargetValue(v);
+                    }}
+                    min={1}
+                    max={9}
+                    maxLength={1}
+                    placeholder="Enter target"
+                    style={{ width: "40%", marginLeft: "10px" }}
+                  />
 
-         
- <div style={{ padding: "10px", display:'flex', justifyContent:'end'  }}>
-            <button
-                className={taStyles.btnPrimary}
-                // disabled={ }
-                onClick={() => {
-                  handleProfileShearedTarget()
-                }}
-              >
-               Proceed
-              </button>
-              <button
-                className={taStyles.btnCancle}
-                onClick={() => {
-                  setShowProfileTarget(false);
-                }}
-              >
-                Cancel
-              </button>
+                  <div
+                    style={{
+                      padding: "10px",
+                      display: "flex",
+                      justifyContent: "end",
+                    }}
+                  >
+                    <button
+                      className={taStyles.btnPrimary}
+                      // disabled={ }
+                      onClick={() => {
+                        handleProfileShearedTarget();
+                      }}
+                    >
+                      Proceed
+                    </button>
+                    <button
+                      className={taStyles.btnCancle}
+                      onClick={() => {
+                        setShowProfileTarget(false);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
-          </>}
-
-          </div>
-            
-
-           
           </>
         </Modal>
       )}
@@ -1616,14 +1710,192 @@ export default function TADashboard() {
           // onOk={() => setVersantModal(false)}
           onCancel={() => {
             setShowTalentProfiles(false);
+            hrTalentListFourCount([])
           }}
         >
           <>
-            <div style={{ padding: "35px 15px 10px 15px" , display:'flex',gap:'10px'}}>
-              <h3>Profiles for {profileInfo?.hrNumber}</h3> 
-              <p><strong>TA : </strong> {profileInfo?.taName}</p>
-              <p><strong>Company : </strong>{profileInfo?.companyName}</p>
-            
+            <div
+              style={{
+                padding: "35px 15px 10px 15px",
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
+              }}
+            >
+              <h3>
+                Profiles for <strong>{profileInfo?.hrNumber}</strong>
+              </h3>
+              <p style={{ marginBottom: "0.5em" }}>
+                <strong>TA : </strong> {profileInfo?.taName}
+              </p>
+              <p style={{ marginBottom: "0.5em" }}>
+                <strong>Company : </strong>
+                {profileInfo?.companyName}
+              </p>
+            </div>
+
+            <div
+              style={{
+                padding: "10px 15px",
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
+              }}
+            >
+              <div
+                className={taStyles.filterType}
+                key={"Total Talents"}
+                onClick={() => {
+                  getTalentProfilesDetails(profileInfo, 0);
+                  setProfileStatusID(0);
+                }}
+                style={{
+                  borderBottom:
+                    profileStatusID === 0 ? "6px solid #FFDA30" : "",
+                }}
+              >
+                {/* <img src={FeedBack} alt="rocket" /> */}
+                <h2>
+                  Total Talents :{" "}
+                  <span>
+                    {hrTalentListFourCount[0]?.totalTalents
+                      ? hrTalentListFourCount[0]?.totalTalents
+                      : 0}
+                  </span>
+                </h2>
+              </div>
+              <div
+                className={taStyles.filterType}
+                key={"Profile shared"}
+                onClick={() => {
+                  getTalentProfilesDetails(profileInfo, 2);
+                  setProfileStatusID(2);
+                }}
+                style={{
+                  borderBottom:
+                    profileStatusID === 2 ? "6px solid #FFDA30" : "",
+                }}
+              >
+                {/* <img src={FeedBack} alt="rocket" /> */}
+                <h2>
+                  Profile shared :{" "}
+                  <span>
+                    {hrTalentListFourCount[0]?.profileSharedCount
+                      ? hrTalentListFourCount[0]?.profileSharedCount
+                      : 0}
+                  </span>
+                </h2>
+              </div>
+              <div
+                className={taStyles.filterType}
+                key={"In Interview"}
+                onClick={() => {
+                  getTalentProfilesDetails(profileInfo, 3);
+                  setProfileStatusID(3);
+                }}
+                style={{
+                  borderBottom:
+                    profileStatusID === 3 ? "6px solid #FFDA30" : "",
+                }}
+              >
+                {/* <img src={FeedBack} alt="rocket" /> */}
+                <h2>
+                  In Interview :{" "}
+                  <span>
+                    {hrTalentListFourCount[0]?.inInterviewCount
+                      ? hrTalentListFourCount[0]?.inInterviewCount
+                      : 0}
+                  </span>
+                </h2>
+              </div>
+              <div
+                className={taStyles.filterType}
+                key={"Offered"}
+                onClick={() => {
+                  getTalentProfilesDetails(profileInfo, 4);
+                  setProfileStatusID(4);
+                }}
+                style={{
+                  borderBottom:
+                    profileStatusID === 4 ? "6px solid #FFDA30" : "",
+                }}
+              >
+                {/* <img src={FeedBack} alt="rocket" /> */}
+                <h2>
+                  Offered :{" "}
+                  <span>
+                    {hrTalentListFourCount[0]?.offeredCount
+                      ? hrTalentListFourCount[0]?.offeredCount
+                      : 0}
+                  </span>
+                </h2>
+              </div>
+              <div
+                className={taStyles.filterType}
+                key={"Hired"}
+                onClick={() => {
+                  getTalentProfilesDetails(profileInfo, 10);
+                  setProfileStatusID(10);
+                }}
+                style={{
+                  borderBottom:
+                    profileStatusID === 10 ? "6px solid #FFDA30" : "",
+                }}
+              >
+                {/* <img src={FeedBack} alt="rocket" /> */}
+                <h2>
+                  Hired :{" "}
+                  <span>
+                    {hrTalentListFourCount[0]?.hiredCount
+                      ? hrTalentListFourCount[0]?.hiredCount
+                      : 0}
+                  </span>
+                </h2>
+              </div>
+              <div
+                className={taStyles.filterType}
+                key={"Rejected, screening"}
+                onClick={() => {
+                  getTalentProfilesDetails(profileInfo, 7, 1);
+                  setProfileStatusID(71);
+                }}
+                style={{
+                  borderBottom:
+                    profileStatusID === 71 ? "6px solid #FFDA30" : "",
+                }}
+              >
+                {/* <img src={FeedBack} alt="rocket" /> */}
+                <h2>
+                  Rejected, screening :{" "}
+                  <span>
+                    {hrTalentListFourCount[0]?.screeningRejectCount
+                      ? hrTalentListFourCount[0]?.screeningRejectCount
+                      : 0}
+                  </span>
+                </h2>
+              </div>
+              <div
+                className={taStyles.filterType}
+                key={"Rejected, Interview"}
+                onClick={() => {
+                  getTalentProfilesDetails(profileInfo, 7, 2);
+                  setProfileStatusID(72);
+                }}
+                style={{
+                  borderBottom:
+                    profileStatusID === 72 ? "6px solid #FFDA30" : "",
+                }}
+              >
+                {/* <img src={FeedBack} alt="rocket" /> */}
+                <h2>
+                  Rejected, Interview :{" "}
+                  <span>
+                    {hrTalentListFourCount[0]?.interviewRejectCount
+                      ? hrTalentListFourCount[0]?.interviewRejectCount
+                      : 0}
+                  </span>
+                </h2>
+              </div>
             </div>
 
             {loadingTalentProfile ? (
@@ -1631,23 +1903,23 @@ export default function TADashboard() {
                 <Skeleton active />
               </div>
             ) : (
-              <div style={{margin:'5px 10px'}}>
+              <div style={{ margin: "5px 10px" }}>
                 <Table
-                dataSource={hrTalentList}
-                columns={ProfileColumns}
-                // bordered
-                pagination={false}
-              />
+                  dataSource={hrTalentList}
+                  columns={ProfileColumns}
+                  // bordered
+                  pagination={false}
+                />
               </div>
-              
             )}
 
-            <div style={{ padding: "10px 0"}}>
+            <div style={{ padding: "10px 0" }}>
               <button
                 className={taStyles.btnCancle}
                 disabled={isAddingNewTask}
                 onClick={() => {
                   setShowTalentProfiles(false);
+                  hrTalentListFourCount([])
                 }}
               >
                 Cancel
@@ -2216,14 +2488,13 @@ export default function TADashboard() {
                 </div>
               )}
               <ul>
-                 {allCommentList.map((item) => (
-                <li
-                  key={item.comments}
-                  dangerouslySetInnerHTML={{ __html: item.comments }}
-                ></li>
-              ))}
+                {allCommentList.map((item) => (
+                  <li
+                    key={item.comments}
+                    dangerouslySetInnerHTML={{ __html: item.comments }}
+                  ></li>
+                ))}
               </ul>
-             
             </div>
           ) : (
             <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
