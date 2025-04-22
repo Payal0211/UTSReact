@@ -186,4 +186,21 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.removeTasksRequest');
 		}
 	},
+    insertProfileShearedTargetRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.INSERT_TARGET_DETAILS
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.insertProfileShearedTargetRequest');
+		}
+	},
 }

@@ -80,6 +80,7 @@ export class TaDashboardURL {
 	static INSERT_TASK_COMMENT = 'InsertTaskComment'
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'
 	static REMOVE_TASK ='InactiveTATask'
+	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
 }
 
 export class APIType {
