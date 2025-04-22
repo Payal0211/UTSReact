@@ -10,6 +10,7 @@ export default class UserAccountModel {
 		this.Designation = data.Designation;
 		this.UserId = data.UserId;	
 		this.ShowRevenueRelatedData = data.ShowRevenueRelatedData;
-		this.ShowInvoiceCreationCTA = data.ShowInvoiceCreationCTA
+		this.ShowInvoiceCreationCTA = data.ShowInvoiceCreationCTA;
+		this.showTADashboardDropdowns = data.showTADashboardDropdowns
 	}
 }

@@ -41,6 +41,7 @@ import _, { filter } from "lodash";
 import { IoMdAddCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
 import { downloadToExcel } from "modules/report/reportUtils";
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { HttpStatusCode } from "axios";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
@@ -113,6 +114,15 @@ export default function TADashboard() {
   const [showProfileTarget, setShowProfileTarget] = useState(false);
   const [profileTargetDetails, setProfileTargetDetails] = useState({});
   const [targetValue, setTargetValue] = useState("");
+
+  const [userData, setUserData] = useState({});
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
 
   // const groupedData = groupByRowSpan(rawData, 'ta');
 
@@ -576,12 +586,29 @@ export default function TADashboard() {
       title: "Interviews Done Target",
       dataIndex: "interviews_Done_Target",
       key: "interviews_Done_Target",
+      render:(text,result)=>{
+        return +text > 0 ?   <p
+        style={{
+          color: "blue",
+          fontWeight: "bold",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          getTalentProfilesDetailsfromTable({...result,hiringRequest_ID:result.hiringRequestID}, 3);
+          setProfileStatusID(3);
+          hrTalentListFourCount([])
+        }}
+      >
+        {text}
+      </p> : ''
+      }
     },
-    {
-      title: "Interviews Done Achieved",
-      dataIndex: "interviews_Done_Achieved",
-      key: "interviews_Done_Achieved",
-    },
+    // {
+    //   title: "Interviews Done Achieved",
+    //   dataIndex: "interviews_Done_Achieved",
+    //   key: "interviews_Done_Achieved",
+    // },
   ];
 
   const ProfileColumns = [
@@ -691,7 +718,8 @@ export default function TADashboard() {
           >
             {text}
           </a>{" "}
-          <br />
+          {userData?.showTADashboardDropdowns && <>
+            <br />
           <IconContext.Provider
             value={{
               color: "green",
@@ -725,6 +753,8 @@ export default function TADashboard() {
               </span>{" "}
             </Tooltip>
           </IconContext.Provider>
+          </> }
+        
         </>
       ),
     },
@@ -994,6 +1024,7 @@ export default function TADashboard() {
       dataIndex: "hrOpenSinceOneMonths",
       key: "hrOpenSinceOneMonths",
     },
+    userData?.showTADashboardDropdowns ?
     {
       title: "Action",
       dataIndex: "",
@@ -1050,7 +1081,7 @@ export default function TADashboard() {
           </div>
         );
       },
-    },
+    } : {},
     // {
     //   title: <>#Profiles Submitted <br/> Yesterday</>,
     //   dataIndex: '',
@@ -1510,7 +1541,7 @@ export default function TADashboard() {
           </div>
 
           <div className={taStyles.filterRight}>
-            <button
+          {userData?.showTADashboardDropdowns && <button
               className={taStyles.btnPrimary}
               onClick={() => {
                 setIsAddNewRow(true);
@@ -1518,7 +1549,7 @@ export default function TADashboard() {
               }}
             >
               Add New Task
-            </button>
+            </button>}  
             <button
               className={taStyles.btnPrimary}
               onClick={() => hendleExport(TaListData)}
