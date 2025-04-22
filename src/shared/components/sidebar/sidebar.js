@@ -296,7 +296,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// }
 
 	if(title === 'TA Dashboard'){
-		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 )?true : false;
+		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 || ID === 9)?true : false;
 		return isVisible
 	}
 
