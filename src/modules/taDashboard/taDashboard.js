@@ -113,7 +113,7 @@ export default function TADashboard() {
 
   const [showProfileTarget, setShowProfileTarget] = useState(false);
   const [profileTargetDetails, setProfileTargetDetails] = useState({});
-  const [targetValue, setTargetValue] = useState("");
+  const [targetValue, setTargetValue] = useState(5);
 
   const [userData, setUserData] = useState({});
 	useEffect(() => {
@@ -558,9 +558,7 @@ export default function TADashboard() {
     let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
     setLoadingTalentProfile(false);
     if (result.statusCode === HTTPStatusCode.OK) {
-      setShowProfileTarget(false);
-      setProfileTargetDetails({});
-      setTargetValue("");
+      setShowProfileTarget(false);    
       setGoalList(result.responseBody);
       let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
       updateTARowValue(
@@ -569,7 +567,9 @@ export default function TADashboard() {
         profileTargetDetails,
         profileTargetDetails?.index,
         targetValue,
-      );
+      ); 
+      setTargetValue(5)
+      setProfileTargetDetails({});
     } else {
       message.error("Something went wrong!");
     }
@@ -1761,6 +1761,7 @@ export default function TADashboard() {
           // onOk={() => setVersantModal(false)}
           onCancel={() => {
             setShowProfileTarget(false);
+            setTargetValue(5)
           }}
         >
           <>
@@ -1785,7 +1786,7 @@ export default function TADashboard() {
                     onChange={(v) => {
                       setTargetValue(v);
                     }}
-                    min={1}
+                    min={0}
                     max={9}
                     maxLength={1}
                     placeholder="Enter target"
@@ -1812,6 +1813,7 @@ export default function TADashboard() {
                       className={taStyles.btnCancle}
                       onClick={() => {
                         setShowProfileTarget(false);
+                        setTargetValue(5)
                       }}
                     >
                       Cancel
