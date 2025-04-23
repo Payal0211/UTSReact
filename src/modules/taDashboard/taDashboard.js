@@ -595,7 +595,7 @@ export default function TADashboard() {
           cursor: "pointer",
         }}
         onClick={() => {
-          getTalentProfilesDetailsfromTable({...result,hiringRequest_ID:result.hiringRequestID}, 3);
+          getTalentProfilesDetailsfromTable({...result,hiringRequest_ID:result.hiringRequestID,companyName: result.company ,taName: result.ta , hrNumber: result.hrTitle}, 3);
           setProfileStatusID(3);
           hrTalentListFourCount([])
         }}
