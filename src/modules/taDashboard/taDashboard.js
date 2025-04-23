@@ -442,6 +442,26 @@ export default function TADashboard() {
     setInfoforProfile(result);
   };
 
+  const getTalentProfilesDetailsfromGoalsTable = async (result, statusID, stageID) => {
+    setShowTalentProfiles(true);
+    setInfoforProfile(result);
+    let pl = {
+      hrID: result?.hiringRequest_ID,
+      statusID: statusID,
+      stageID: stageID ? stageID : 0,
+      targetDate: moment(startDate).format('YYYY-MM-DD')
+    };
+    setLoadingTalentProfile(true);
+    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+    setLoadingTalentProfile(false);
+    if (hrResult.statusCode === HTTPStatusCode.OK) {
+      setHRTalentList(hrResult.responseBody);
+      setHRTalentListFourCount(hrResult.responseBody)
+    } else {
+      setHRTalentList([]);
+    }
+  };
+
   const getTalentProfilesDetailsfromTable = async (result, statusID, stageID) => {
     setShowTalentProfiles(true);
     setInfoforProfile(result);
@@ -600,7 +620,7 @@ export default function TADashboard() {
           cursor: "pointer",
         }}
         onClick={() => {
-          getTalentProfilesDetailsfromTable({...result,hiringRequest_ID:result.hiringRequestID,companyName: result.company ,taName: result.ta , hrNumber: result.hrTitle}, 3);
+          getTalentProfilesDetailsfromGoalsTable({...result,hiringRequest_ID:result.hiringRequestID,companyName: result.company ,taName: result.ta , hrNumber: result.hrTitle}, 3);
           setProfileStatusID(3);
           hrTalentListFourCount([])
         }}
