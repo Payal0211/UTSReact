@@ -872,7 +872,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Talent Annual <br /> CTC Budget (INR)
+          Talent Annual <br /> Budget (INR)
         </>
       ),
       dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
@@ -884,8 +884,8 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Revenue Opportunity <br />
-          (10% on annual CTC)
+          Revenue <br />
+          Opportunity <br/>(10%)
         </>
       ),
       dataIndex: "revenue_On10PerCTCStr",
@@ -893,15 +893,21 @@ export default function TADashboard() {
       // render: (value) => `₹${value.toLocaleString()}`
     },
     {
-      title: "Active TRs",
+      title: (
+        <>
+          Active
+          <br />
+          TRs
+        </>
+      ),
       dataIndex: "activeTR",
       key: "activeTR",
     },
     {
       title: (
         <>
-          Total Revenue Opportunity <br />
-          (NO. of TR x Talent <br /> Annual CTC budget)
+          Total Revenue <br />
+          Opportunity <br/>(INR)
         </>
       ),
       dataIndex: "totalRevenue_NoofTalentStr",
@@ -911,9 +917,9 @@ export default function TADashboard() {
     {
       title: (
         <>
-          No. of Active
+          Active Profiles
           <br />
-          /Submitted Profiles <br /> till Date
+          till Date
         </>
       ),
       dataIndex: "noOfProfile_TalentsTillDate",
@@ -943,7 +949,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Latest Communication & Updates <br /> (Matcher to be Accountable)
+          Latest Updates
         </>
       ),
       dataIndex: "latestNotes",
