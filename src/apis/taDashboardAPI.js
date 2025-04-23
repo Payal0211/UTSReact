@@ -93,7 +93,7 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_HR_TALENT_DETAILS + `?hrID=${pl.hrID}&statusID=${pl.statusID}&stageID=${pl.stageID}`
+			TaDashboardURL.GET_HR_TALENT_DETAILS + `?hrID=${pl.hrID}&statusID=${pl.statusID}&stageID=${pl.stageID}${pl.targetDate ? `&targetDate=${pl.targetDate}`:''}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
