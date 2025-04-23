@@ -215,9 +215,9 @@ export default function TADashboard() {
           [key]: value?.id,
           taskStatus: value?.data,
         }
-        if(targetValue){
-          nob.profile_Shared_Target = targetValue
-        }
+        // if(targetValue){
+        //   nob.profile_Shared_Target = targetValue
+        // }
         newDS[index] = nob;
         return newDS;
       });
@@ -588,7 +588,7 @@ export default function TADashboard() {
       key: "profiles_Shared_Achieved",
     },
     {
-      title: "Interviews Schedule Target",
+      title: "Interviews Scheduled Target",
       dataIndex: "interviews_Done_Target",
       key: "interviews_Done_Target",
       render:(text,result)=>{
@@ -861,7 +861,7 @@ export default function TADashboard() {
      
     },
     {
-      title: <>Interviews<br/> Schedule <br/> Target</>,
+      title: <>Interviews<br/> Scheduled <br/> Target</>,
       dataIndex: "interview_Scheduled_Target",
       key: "interview_Scheduled_Target",
       fixed: "left",
