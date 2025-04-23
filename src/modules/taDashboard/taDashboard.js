@@ -836,6 +836,7 @@ export default function TADashboard() {
       dataIndex: "profile_Shared_Target",
       key: "profile_Shared_Target",
       fixed: "left",
+      width: "100px",
       render:(text,result,index)=>{
         return result.task_StatusID === 1 ? <p
         style={{
@@ -858,14 +859,14 @@ export default function TADashboard() {
       dataIndex: "profile_Shared_Achieved",
       key: "profile_Shared_Achieved",
       fixed: "left",
-     
+      width: "100px",
     },
     {
       title: <>Interviews<br/> Scheduled <br/> Target</>,
       dataIndex: "interview_Scheduled_Target",
       key: "interview_Scheduled_Target",
       fixed: "left",
-    
+      width: "100px",
     },
 
 
@@ -877,6 +878,7 @@ export default function TADashboard() {
       ),
       dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
       key: "talent_AnnualCTC_Budget_INRValueStr",
+      width: "120px",
       render: (text, result) => {
         return <Tooltip title={result.actualCostWithCurrency}>{text}</Tooltip>;
       },
@@ -890,6 +892,7 @@ export default function TADashboard() {
       ),
       dataIndex: "revenue_On10PerCTCStr",
       key: "revenue_On10PerCTCStr",
+      width: "105px",
       // render: (value) => `₹${value.toLocaleString()}`
     },
     {
@@ -902,6 +905,7 @@ export default function TADashboard() {
       ),
       dataIndex: "activeTR",
       key: "activeTR",
+      width: "80px",
     },
     {
       title: (
@@ -912,6 +916,7 @@ export default function TADashboard() {
       ),
       dataIndex: "totalRevenue_NoofTalentStr",
       key: "totalRevenue_NoofTalentStr",
+      width: "115px",
       // render: (value) => `₹${value.toLocaleString()}`
     },
     {
@@ -924,6 +929,7 @@ export default function TADashboard() {
       ),
       dataIndex: "noOfProfile_TalentsTillDate",
       key: "noOfProfile_TalentsTillDate",
+      width: "115px",
       render: (text, result) => {
         return +text > 0 ? (
           <p
@@ -1003,6 +1009,7 @@ export default function TADashboard() {
       ),
       dataIndex: "role_Type",
       key: "role_Type",
+      width: "100px",
       // fixed: "left",
       render: (text, result, index) => {
         return (
@@ -1057,6 +1064,7 @@ export default function TADashboard() {
       title: "HR Created Date",
       dataIndex: "hrCreatedDate",
       key: "hrCreatedDate",
+      width: "150px",
       render: (text) => {
         return moment(text).format("DD-MMM-YYYY");
       },
@@ -1065,11 +1073,12 @@ export default function TADashboard() {
       title: (
         <>
           Open Since <br />
-          {">"} 1 Month (Yes/no)
+          {">"} 1 Month<br /> (Yes/no)
         </>
       ),
       dataIndex: "hrOpenSinceOneMonths",
       key: "hrOpenSinceOneMonths",
+      width: "100px",
     },
     userData?.showTADashboardDropdowns ?
     {
@@ -1630,7 +1639,7 @@ export default function TADashboard() {
         <TableSkeleton />
       ) : (
         <Table
-          scroll={{ x: "max-content" }}
+          scroll={{ x: "max-content" , y:'1vh'}}
           dataSource={TaListData}
           columns={columns}
           // bordered
