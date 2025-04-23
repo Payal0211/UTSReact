@@ -1403,18 +1403,18 @@ export default function TADashboard() {
             obj[`${val.title}`] = `${data.taName} `;
           } else if (val.key === "hrTitle") {
             obj["HR Title / HR ID "] = `${data.hrTitle} / ${data.hrNumber}`;
-          } else if (val.key === "talent_AnnualCTC_Budget_INRValue") {
+          } else if (val.key === "talent_AnnualCTC_Budget_INRValueStr") {
             obj["Talent Annual CTC Budget (INR)"] = `${
-              data.talent_AnnualCTC_Budget_INRValue ?? ""
+              data.talent_AnnualCTC_Budget_INRValueStr ?? ""
             }`;
-          } else if (val.key === "revenue_On10PerCTC") {
+          } else if (val.key === "revenue_On10PerCTCStr") {
             obj["Revenue Opportunity (10% on annual CTC)"] = `${
-              data.revenue_On10PerCTC ?? ""
+              data.revenue_On10PerCTCStr ?? ""
             }`;
-          } else if (val.key === "totalRevenue_NoofTalent") {
+          } else if (val.key === "totalRevenue_NoofTalentStr") {
             obj[
-              "Total Revenue Opportunity (NO. of TR x Talent <br /> Annual CTC budget)"
-            ] = `${data.totalRevenue_NoofTalent ?? ""}`;
+              "Total Revenue Opportunity (INR)"
+            ] = `${data.totalRevenue_NoofTalentStr ?? ""}`;
           } else if (val.key === "noOfProfile_TalentsTillDate") {
             obj["No. of Active/Submitted Profiles till Date"] = `${
               data.noOfProfile_TalentsTillDate ?? ""
@@ -1431,6 +1431,25 @@ export default function TADashboard() {
             obj[
               "Latest Communication & Updates (Matcher to be Accountable)"
             ] = `${data?.latestNotes ?? ""}`;
+          }
+          else if (val.key === "profile_Shared_Target") {
+            obj[
+              "Profiles Shared  Target"
+            ] = `${data?.profile_Shared_Target ?? ""}`;
+          }
+          else if (val.key === "profile_Shared_Achieved") {
+            obj[
+              "Profiles  Shared  Achieved"
+            ] = `${data?.profile_Shared_Achieved ?? ""}`;
+          }
+          else if (val.key === "interview_Scheduled_Target") {
+            obj[
+              "Interviews Scheduled Target"
+            ] = `${data?.interview_Scheduled_Target ?? ""}`;
+          } else if (val.key === "activeTR") {
+            obj[
+              "Active TRs"
+            ] = `${data?.activeTR ?? ""}`;
           } else {
             obj[`${val.title}`] = data[`${val.key}`] ?? "";
           }
