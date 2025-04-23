@@ -165,7 +165,7 @@ export default function TADashboard() {
     getAllTAUsersList();
   }, []);
 
-  const updateTARowValue = async (value, key, params, index) => {
+  const updateTARowValue = async (value, key, params, index,targetValue) => {
     let pl = {
       tA_UserID: params.tA_UserID,
       company_ID: params.company_ID,
@@ -210,11 +210,15 @@ export default function TADashboard() {
       pl[key] = value?.id;
       setTaListData((prev) => {
         let newDS = [...prev];
-        newDS[index] = {
+        let nob = {
           ...newDS[index],
           [key]: value?.id,
           taskStatus: value?.data,
-        };
+        }
+        // if(targetValue){
+        //   nob.profile_Shared_Target = targetValue
+        // }
+        newDS[index] = nob;
         return newDS;
       });
     } else if (key === "tA_HR_StatusID") {
@@ -543,7 +547,8 @@ export default function TADashboard() {
         valobj,
         "task_StatusID",
         profileTargetDetails,
-        profileTargetDetails?.index
+        profileTargetDetails?.index,
+        targetValue,
       );
     } else {
       message.error("Something went wrong!");
@@ -583,7 +588,7 @@ export default function TADashboard() {
       key: "profiles_Shared_Achieved",
     },
     {
-      title: "Interviews Done Target",
+      title: "Interviews Scheduled Target",
       dataIndex: "interviews_Done_Target",
       key: "interviews_Done_Target",
       render:(text,result)=>{
@@ -827,19 +832,51 @@ export default function TADashboard() {
       },
     },
     {
-      title: "Active TRs",
-      dataIndex: "activeTR",
-      key: "activeTR",
+      title: <>Profiles<br/> Shared<br/>  Target</>,
+      dataIndex: "profile_Shared_Target",
+      key: "profile_Shared_Target",
+      fixed: "left",
+      render:(text,result,index)=>{
+        return result.task_StatusID === 1 ? <p
+        style={{
+          color: "blue",
+          fontWeight: "bold",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          setShowProfileTarget(true);
+          setProfileTargetDetails({ ...result, index: index });
+        }}
+      >
+        {text ?? 0}
+      </p> : text ?? 0
+       }
     },
+    {
+      title: <>Profiles<br/>  Shared<br/>  Achieved</>,
+      dataIndex: "profile_Shared_Achieved",
+      key: "profile_Shared_Achieved",
+      fixed: "left",
+     
+    },
+    {
+      title: <>Interviews<br/> Scheduled <br/> Target</>,
+      dataIndex: "interview_Scheduled_Target",
+      key: "interview_Scheduled_Target",
+      fixed: "left",
+    
+    },
+
 
     {
       title: (
         <>
-          Talent Annual <br /> CTC Budget (INR)
+          Talent Annual <br /> Budget (INR)
         </>
       ),
-      dataIndex: "talent_AnnualCTC_Budget_INRValue",
-      key: "talent_AnnualCTC_Budget_INRValue",
+      dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
+      key: "talent_AnnualCTC_Budget_INRValueStr",
       render: (text, result) => {
         return <Tooltip title={result.actualCostWithCurrency}>{text}</Tooltip>;
       },
@@ -847,32 +884,42 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Revenue Opportunity <br />
-          (10% on annual CTC)
+          Revenue <br />
+          Opportunity <br/>(10%)
         </>
       ),
-      dataIndex: "revenue_On10PerCTC",
-      key: "revenue_On10PerCTC",
-      // render: (value) => `₹${value.toLocaleString()}`
-    },
-
-    {
-      title: (
-        <>
-          Total Revenue Opportunity <br />
-          (NO. of TR x Talent <br /> Annual CTC budget)
-        </>
-      ),
-      dataIndex: "totalRevenue_NoofTalent",
-      key: "totalRevenue_NoofTalent",
+      dataIndex: "revenue_On10PerCTCStr",
+      key: "revenue_On10PerCTCStr",
       // render: (value) => `₹${value.toLocaleString()}`
     },
     {
       title: (
         <>
-          No. of Active
+          Active
           <br />
-          /Submitted Profiles <br /> till Date
+          TRs
+        </>
+      ),
+      dataIndex: "activeTR",
+      key: "activeTR",
+    },
+    {
+      title: (
+        <>
+          Total Revenue <br />
+          Opportunity <br/>(INR)
+        </>
+      ),
+      dataIndex: "totalRevenue_NoofTalentStr",
+      key: "totalRevenue_NoofTalentStr",
+      // render: (value) => `₹${value.toLocaleString()}`
+    },
+    {
+      title: (
+        <>
+          Active Profiles
+          <br />
+          till Date
         </>
       ),
       dataIndex: "noOfProfile_TalentsTillDate",
@@ -902,7 +949,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Latest Communication & Updates <br /> (Matcher to be Accountable)
+          Latest Updates
         </>
       ),
       dataIndex: "latestNotes",
@@ -1356,18 +1403,18 @@ export default function TADashboard() {
             obj[`${val.title}`] = `${data.taName} `;
           } else if (val.key === "hrTitle") {
             obj["HR Title / HR ID "] = `${data.hrTitle} / ${data.hrNumber}`;
-          } else if (val.key === "talent_AnnualCTC_Budget_INRValue") {
+          } else if (val.key === "talent_AnnualCTC_Budget_INRValueStr") {
             obj["Talent Annual CTC Budget (INR)"] = `${
-              data.talent_AnnualCTC_Budget_INRValue ?? ""
+              data.talent_AnnualCTC_Budget_INRValueStr ?? ""
             }`;
-          } else if (val.key === "revenue_On10PerCTC") {
+          } else if (val.key === "revenue_On10PerCTCStr") {
             obj["Revenue Opportunity (10% on annual CTC)"] = `${
-              data.revenue_On10PerCTC ?? ""
+              data.revenue_On10PerCTCStr ?? ""
             }`;
-          } else if (val.key === "totalRevenue_NoofTalent") {
+          } else if (val.key === "totalRevenue_NoofTalentStr") {
             obj[
-              "Total Revenue Opportunity (NO. of TR x Talent <br /> Annual CTC budget)"
-            ] = `${data.totalRevenue_NoofTalent ?? ""}`;
+              "Total Revenue Opportunity (INR)"
+            ] = `${data.totalRevenue_NoofTalentStr ?? ""}`;
           } else if (val.key === "noOfProfile_TalentsTillDate") {
             obj["No. of Active/Submitted Profiles till Date"] = `${
               data.noOfProfile_TalentsTillDate ?? ""
@@ -1384,6 +1431,25 @@ export default function TADashboard() {
             obj[
               "Latest Communication & Updates (Matcher to be Accountable)"
             ] = `${data?.latestNotes ?? ""}`;
+          }
+          else if (val.key === "profile_Shared_Target") {
+            obj[
+              "Profiles Shared  Target"
+            ] = `${data?.profile_Shared_Target ?? ""}`;
+          }
+          else if (val.key === "profile_Shared_Achieved") {
+            obj[
+              "Profiles  Shared  Achieved"
+            ] = `${data?.profile_Shared_Achieved ?? ""}`;
+          }
+          else if (val.key === "interview_Scheduled_Target") {
+            obj[
+              "Interviews Scheduled Target"
+            ] = `${data?.interview_Scheduled_Target ?? ""}`;
+          } else if (val.key === "activeTR") {
+            obj[
+              "Active TRs"
+            ] = `${data?.activeTR ?? ""}`;
           } else {
             obj[`${val.title}`] = data[`${val.key}`] ?? "";
           }
