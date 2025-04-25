@@ -484,10 +484,18 @@ export default function TADashboard() {
   const getTalentProfilesDetails = async (result, statusID, stageID) => {
     setShowTalentProfiles(true);
     setInfoforProfile(result);
+    // statusID = 0 --> Total Talents
+// statusID = 2 --> Profile shared
+// statusID = 3 --> In Interview
+// statusID = 4 --> Offered
+// statusID = 10 --> Hired
+// statusID = 7, stageID = 1 --> Rejected, screening 
+// statusID = 7, stageID = 2 --> Rejected, Interview
     let pl = {
       hrID: result?.hiringRequest_ID,
       statusID: statusID,
       stageID: stageID ? stageID : 0,
+      targetDate: result?.isFromGoal ?  moment(startDate).format('YYYY-MM-DD') : ''
     };
     setLoadingTalentProfile(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
@@ -601,16 +609,13 @@ export default function TADashboard() {
       title: "Profiles Shared Target",
       dataIndex: "profiles_Shared_Target",
       key: "profiles_Shared_Target",
+      align: 'center',
     },
     {
       title: "Profiles Shared Achieved",
       dataIndex: "profiles_Shared_Achieved",
       key: "profiles_Shared_Achieved",
-    },
-    {
-      title: "Interviews Scheduled Target",
-      dataIndex: "interviews_Done_Target",
-      key: "interviews_Done_Target",
+      align: 'center',
       render:(text,result)=>{
         return +text > 0 ?   <p
         style={{
@@ -620,7 +625,30 @@ export default function TADashboard() {
           cursor: "pointer",
         }}
         onClick={() => {
-          getTalentProfilesDetailsfromGoalsTable({...result,hiringRequest_ID:result.hiringRequestID,companyName: result.company ,taName: result.ta , hrNumber: result.hrTitle}, 3);
+          getTalentProfilesDetailsfromGoalsTable({...result,hiringRequest_ID:result.hiringRequestID,companyName: result.company ,taName: result.ta , hrNumber: result.hrTitle, isFromGoal:true}, 2);
+          setProfileStatusID(2);
+          hrTalentListFourCount([])
+        }}
+      >
+        {text}
+      </p> : ''
+      }
+    },
+    {
+      title: "Interviews Scheduled Target",
+      dataIndex: "interviews_Done_Target",
+      key: "interviews_Done_Target",
+      align: 'center',
+      render:(text,result)=>{
+        return +text > 0 ?   <p
+        style={{
+          color: "blue",
+          fontWeight: "bold",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          getTalentProfilesDetailsfromGoalsTable({...result,hiringRequest_ID:result.hiringRequestID,companyName: result.company ,taName: result.ta , hrNumber: result.hrTitle, isFromGoal:true}, 3);
           setProfileStatusID(3);
           hrTalentListFourCount([])
         }}
