@@ -448,7 +448,7 @@ export default function TADashboard() {
     let pl = {
       hrID: result?.hiringRequest_ID,
       statusID: statusID,
-      stageID: stageID ? stageID : 0,
+      stageID: statusID=== 0 ? null : stageID ? stageID : 0,
       targetDate: moment(startDate).format('YYYY-MM-DD')
     };
     setLoadingTalentProfile(true);
@@ -468,7 +468,7 @@ export default function TADashboard() {
     let pl = {
       hrID: result?.hiringRequest_ID,
       statusID: statusID,
-      stageID: stageID ? stageID : 0,
+      stageID: statusID=== 0 ? null : stageID ? stageID : 0,
     };
     setLoadingTalentProfile(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
@@ -494,8 +494,7 @@ export default function TADashboard() {
     let pl = {
       hrID: result?.hiringRequest_ID,
       statusID: statusID,
-      stageID: stageID ? stageID : 0,
-      targetDate: result?.isFromGoal ?  moment(startDate).format('YYYY-MM-DD') : ''
+      stageID: statusID=== 0 ? null : stageID ? stageID : 0,
     };
     setLoadingTalentProfile(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
