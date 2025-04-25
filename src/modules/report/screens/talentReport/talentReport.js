@@ -140,6 +140,7 @@ export default function TalentReport() {
   const [interviewRoundtableFilteredState, setInterviewRoundTableFilteredState] = useState({
     filterFields_OnBoard: {
       amName: "",
+      InterviewRounds:''
     },
   });
 
@@ -268,6 +269,7 @@ export default function TalentReport() {
         amIds: interviewRoundtableFilteredState.filterFields_OnBoard.amName,
         statusIds: interviewRoundtableFilteredState.filterFields_OnBoard.statusIds,
         tagIds: interviewRoundtableFilteredState.filterFields_OnBoard.tagIds,
+        InterviewRounds: interviewRoundtableFilteredState.filterFields_OnBoard.InterviewRounds,
         month: dateInterviewRoundTypeFilter === 2 ? 0 :
           dateInterviewRoundTypeFilter === 0
             ? +moment(interviewRoundMonthDate).format("M")
@@ -322,7 +324,7 @@ export default function TalentReport() {
 
 
   useEffect(() => {
-    getOnboardData();
+    talentReportTabTitle === "Deployed" && getOnboardData();
   }, [
     onboardPageIndex,
     onboardSearchText,
@@ -331,10 +333,11 @@ export default function TalentReport() {
     startDate,
     endDate,
     tableFilteredState,
+    talentReportTabTitle
   ]);
 
   useEffect(() => {
-    getRejectedData();
+    talentReportTabTitle === "Rejected" &&  getRejectedData();
   }, [
     rejectedPageIndex,
     rejectedSearchText,
@@ -343,10 +346,11 @@ export default function TalentReport() {
     rejectedStartDate,
     rejectedendDate,
     rejectedtableFilteredState,
+    talentReportTabTitle
   ]);
 
   useEffect(() => {
-    getInterviewRoundData();
+    talentReportTabTitle === "Interview Rounds" &&  getInterviewRoundData();
   }, [
     interviewRoundPageIndex,
     interviewRoundSearchText,
@@ -355,6 +359,7 @@ export default function TalentReport() {
     interviewRoundStartDate,
     interviewRoundendDate,
     interviewRoundtableFilteredState,
+    talentReportTabTitle
   ]);
 
   const getLeaveList = async (talentID,onBoardID) => {
@@ -454,6 +459,7 @@ export default function TalentReport() {
     setonboardSearchText("");
     setonboardDebounceText("");
     setMonthDate(new Date());
+    setonboardPageIndex(1)
     setStartDate(
       new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
     );
@@ -509,6 +515,7 @@ export default function TalentReport() {
     setrejectedSearchText("");
     setRejectedDebounceText("");
     setrejectedMonthDate(new Date());
+    setrejectedPageIndex(1)
     setrejectedStartDate(
       new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
     );
@@ -523,6 +530,7 @@ export default function TalentReport() {
     setInterviewRoundTableFilteredState({
       filterFields_OnBoard: {
         amName: "",
+        InterviewRounds:''
       },
     });
     setInterviewRoundSearchText("");
@@ -531,6 +539,7 @@ export default function TalentReport() {
     setInterviewRoundStartDate(
       new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
     );
+    setInterviewRoundPageIndex(1);
     setInterviewRoundEndDate(new Date(date));
   }, [setInterviewRoundTagLength]);
 
@@ -841,15 +850,23 @@ export default function TalentReport() {
         dataIndex: "createdDateTime",
         key: "createdDateTime",
         align: "left",
-        width: "200px",
+        width: "130px",
+      },
+      {
+        title: "Slot",
+        dataIndex: "interviewSlot",
+        key: "interviewSlot",
+        align: "left",
+        width: "170px",
       },
       {
         title: "Interview #",
         dataIndex: "interviewRound_Str",
         key: "interviewRound_Str",
         align: "left",
-        width: "150px",
+        width: "120px",
       },
+   
       {
         title: "HR #",
         dataIndex: "hR_Number",
@@ -1648,8 +1665,8 @@ export default function TalentReport() {
             ),
           },
           {
-            label: "2+ Interview Rounds",
-            key: "2+ Interview Rounds",
+            label: "Interview Rounds",
+            key: "Interview Rounds",
             children: (
               <>
                 <div className={onboardListStyle.filterContainer}>

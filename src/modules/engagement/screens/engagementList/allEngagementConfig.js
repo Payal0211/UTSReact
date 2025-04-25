@@ -1008,7 +1008,12 @@ export const allEngagementConfig = {
 				child: filterList?.AMList?.map(item=>({...item,text: item.value,value:item.text})),
 				isSearch: true,
 			},
-			
+			{
+				label: 'Interview Rounds',
+				name: 'InterviewRounds',
+				child: ['Round 1','Round 2','Round 3','Round 4','Round 5']?.map(item=>({text: item,value:item})),
+				// isSearch: true,
+			},
 		];
 	}
 };
