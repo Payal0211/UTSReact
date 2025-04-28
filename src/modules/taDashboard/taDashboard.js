@@ -634,7 +634,7 @@ export default function TADashboard() {
       }
     },
     {
-      title: "Interviews Scheduled Target",
+      title: "L1 Interviews Scheduled",
       dataIndex: "interviews_Done_Target",
       key: "interviews_Done_Target",
       align: 'center',
@@ -879,13 +879,14 @@ export default function TADashboard() {
       },
     },
     {
-      title: <>Profiles<br/> Shared<br/>  Target</>,
+      title: <>Profiles Shared /<br/> Achieved /<br/> L1 Round</>,
       dataIndex: "profile_Shared_Target",
       key: "profile_Shared_Target",
       fixed: "left",
-      width: "100px",
+      width: "150px",
       render:(text,result,index)=>{
-        return result.task_StatusID === 1 ? <p
+        return <>
+        {result.task_StatusID === 1 ? <p
         style={{
           color: "blue",
           fontWeight: "bold",
@@ -898,24 +899,52 @@ export default function TADashboard() {
         }}
       >
         {text ?? 0}
-      </p> : text ?? 0
+      </p> : text ?? 0} / {result.profile_Shared_Achieved ?? 'NA'} / {result.interview_Scheduled_Target ?? 'NA'}
+        </> 
        }
     },
     {
-      title: <>Profiles<br/>  Shared<br/>  Achieved</>,
-      dataIndex: "profile_Shared_Achieved",
-      key: "profile_Shared_Achieved",
+      title: (
+        <>
+          Total Revenue <br />
+          Opportunity <br/>(INR)
+        </>
+      ),
+      dataIndex: "totalRevenue_NoofTalentStr",
+      key: "totalRevenue_NoofTalentStr",
+      width: "115px",
       fixed: "left",
-      width: "100px",
+      // render: (value) => `₹${value.toLocaleString()}`
     },
+    // {
+    //   title: <>Profiles<br/>  Shared<br/>  Achieved</>,
+    //   dataIndex: "profile_Shared_Achieved",
+    //   key: "profile_Shared_Achieved",
+    //   fixed: "left",
+    //   width: "100px",
+    // },
+    // {
+    //   title: <>L1 Interviews<br/> Scheduled <br/></>,
+    //   dataIndex: "interview_Scheduled_Target",
+    //   key: "interview_Scheduled_Target",
+    //   fixed: "left",
+    //   width: "100px",
+    // },
     {
-      title: <>Interviews<br/> Scheduled <br/> Target</>,
-      dataIndex: "interview_Scheduled_Target",
-      key: "interview_Scheduled_Target",
-      fixed: "left",
-      width: "100px",
+      title: "Contract / DP",
+      dataIndex: "modelType",
+      key: "modelType",
+      // fixed: "left",
+      // filters:filtersList?.ModelType?.map(v=>({text: v.text, value: v.text})),
+      // filteredValue: filteredInfo.modelType || null,
+      // onFilter: (value, record) => {
+      //   console.log('filter',value,record)
+      //    return record.modelType === value
+      // },
+      render: (text, result, index) => {
+        return <ContractDPComp text={text} result={result} index={index} />;
+      },
     },
-
 
     {
       title: (
@@ -926,6 +955,7 @@ export default function TADashboard() {
       dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
       key: "talent_AnnualCTC_Budget_INRValueStr",
       width: "120px",
+      // fixed: "left",
       render: (text, result) => {
         return <Tooltip title={result.actualCostWithCurrency}>{text}</Tooltip>;
       },
@@ -940,6 +970,7 @@ export default function TADashboard() {
       dataIndex: "revenue_On10PerCTCStr",
       key: "revenue_On10PerCTCStr",
       width: "105px",
+      // fixed: "left",
       // render: (value) => `₹${value.toLocaleString()}`
     },
     {
@@ -953,19 +984,9 @@ export default function TADashboard() {
       dataIndex: "activeTR",
       key: "activeTR",
       width: "80px",
+      // fixed: "left",
     },
-    {
-      title: (
-        <>
-          Total Revenue <br />
-          Opportunity <br/>(INR)
-        </>
-      ),
-      dataIndex: "totalRevenue_NoofTalentStr",
-      key: "totalRevenue_NoofTalentStr",
-      width: "115px",
-      // render: (value) => `₹${value.toLocaleString()}`
-    },
+   
     {
       title: (
         <>
@@ -1080,20 +1101,7 @@ export default function TADashboard() {
       },
     },
 
-    {
-      title: "Contract / DP",
-      dataIndex: "modelType",
-      key: "modelType",
-      // filters:filtersList?.ModelType?.map(v=>({text: v.text, value: v.text})),
-      // filteredValue: filteredInfo.modelType || null,
-      // onFilter: (value, record) => {
-      //   console.log('filter',value,record)
-      //    return record.modelType === value
-      // },
-      render: (text, result, index) => {
-        return <ContractDPComp text={text} result={result} index={index} />;
-      },
-    },
+
     {
       title: "HR Status",
       dataIndex: "tA_HR_Status",
@@ -1500,7 +1508,7 @@ export default function TADashboard() {
           }
           else if (val.key === "interview_Scheduled_Target") {
             obj[
-              "Interviews Scheduled Target"
+              "L1 Interviews Scheduled"
             ] = `${data?.interview_Scheduled_Target ?? ""}`;
           } else if (val.key === "activeTR") {
             obj[
@@ -1672,12 +1680,12 @@ export default function TADashboard() {
             >
               Add New Task
             </button>}  
-            <button
+            {/* <button
               className={taStyles.btnPrimary}
               onClick={() => hendleExport(TaListData)}
             >
               Export
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
