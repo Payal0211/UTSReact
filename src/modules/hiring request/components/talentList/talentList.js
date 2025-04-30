@@ -490,7 +490,7 @@ const TalentList = ({
 
 	const filterTalentCTAs = useMemo(
 		() =>
-			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},		
+			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || [],		
 		[talentCTA, talentIndex],
 	);
 
@@ -1483,7 +1483,7 @@ const TalentList = ({
 													backgroundColor={`var(--color-sunlight)`}
 													iconBorder={`1px solid var(--color-sunlight)`}
 													isDropdown={true}
-													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
+													listItem={hrUtils.showTalentCTA(filterTalentCTAs,item.Status)}
 													menuAction={(menuItem) => {
 														switch (menuItem.key) {															
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
