@@ -177,4 +177,18 @@ export const InterviewAPI = {
 			return errorDebug(error, 'InterviewAPI.CheckInterviewTimeSlotRequest');
 		}
 	},
+	updateTalentAssessmentRequest: async (pl) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK + `Interview/UpdateTalentAssessmentState`;
+			httpService.setAuthRequired = true;
+			httpService.dataToSend = pl
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'InterviewAPI.updateTalentAssessmentRequest');
+		}
+	},
 };
