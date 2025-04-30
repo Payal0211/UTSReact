@@ -69,6 +69,7 @@ import EngagementCancel from 'modules/engagement/screens/cancelEngagement/cancel
 import TalentListDocuments from './talentDocuments';
 import TalentOtherEngagement from '../talentAcceptance/talentOtherEngagement';
 import HighlightedLinks from 'shared/components/animatedLinks/animatedLinks';
+import MoveToAssessment from './moveToAssessment';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -134,6 +135,14 @@ const TalentList = ({
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 	const [editBillRate, setEditBillRate] = useState(false);
+	const [moveToAssessment ,setMoveToAssessment] = useState(false)
+	const {
+			register :remarkregiter,
+			handleSubmit:remarkSubmit,
+			resetField: resetRemarkField,
+			clearErrors : clearRemarkError,
+			formState: { errors : remarkError},
+		} = useForm();
 
 	const [profileRejectedModal, setProfileRejectedModal] = useState(false);
 
@@ -517,11 +526,35 @@ const TalentList = ({
 	const [showProfileRejectClass, setShowProfileRejectClass] = useState(false);
 	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([]);
 	const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false);
+	const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
 
 	// start preONBoard states and controlers
 	const [showAMModal, setShowAMModal] = useState(false);
 	const [AMFlags, setAMFlags] = useState({})
 	// end preONBoard states and controlers
+
+	const saveRemark = async (d) =>{
+
+		let pl = {
+			HiringRequestId :hrId,
+			CtpId : filterTalentID?.ContactPriorityID,
+			TalentId :filterTalentID?.TalentID,     
+			Remark :d.remark
+		} 
+		setSaveRemarkLoading(true)
+		const result = await InterviewDAO.updateTalentAssessmentDAO(pl)
+		setSaveRemarkLoading(false)
+
+		if(result.statusCode === HTTPStatusCode.OK){
+			setMoveToAssessment(false);
+			resetRemarkField('remark');
+			clearRemarkError('remark')
+			callAPI(hrId)
+			getHrUserData(hrId)
+		}else{
+			message.error('Something went wrong')
+		}
+	}
 
 	const resumeDownload = async (data) => {
 		try {
@@ -1451,12 +1484,17 @@ const TalentList = ({
 													iconBorder={`1px solid var(--color-sunlight)`}
 													isDropdown={true}
 													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
-													menuAction={(menuItem) => {						
+													menuAction={(menuItem) => {
 														switch (menuItem.key) {															
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
 																setActionKey(key)
 																setScheduleInterviewModal(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.MOVE_TO_ASSESSMENT:{
+																setMoveToAssessment(true)
 																setTalentIndex(item?.TalentID);
 																break;
 															}
@@ -1809,6 +1847,29 @@ const TalentList = ({
 						/>
 					</Modal>
 				)}
+
+				{moveToAssessment &&  	<Modal
+					width="992px"
+					centered
+					footer={null}
+					open={moveToAssessment}
+					className="commonModalWrap"
+					// onOk={() => setVersantModal(false)}
+					onCancel={() => {
+						setMoveToAssessment(false);resetRemarkField('remark');clearRemarkError('remark')
+					}}>
+						<MoveToAssessment 
+						onCancel={()=>{setMoveToAssessment(false);resetRemarkField('remark');clearRemarkError('remark')}} 
+						talentInfo={filterTalentID} hrId={hrId}  
+						register={remarkregiter}
+						handleSubmit={remarkSubmit}
+						resetField={resetRemarkField}
+						errors={remarkError}
+						saveRemark={saveRemark}
+						saveRemarkLoading={saveRemarkLoading}
+						/>
+					
+						</Modal>}
 
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
 

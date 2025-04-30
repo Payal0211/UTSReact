@@ -45,6 +45,10 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { HttpStatusCode } from "axios";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
+import { useForm } from 'react-hook-form';
+import { BsClipboard2CheckFill } from "react-icons/bs";
+import MoveToAssessment from "modules/hiring request/components/talentList/moveToAssessment";
+import { InterviewDAO } from "core/interview/interviewDAO";
 const { Option } = Select;
 
 export default function TADashboard() {
@@ -95,10 +99,13 @@ export default function TADashboard() {
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
   const [profileInfo, setInfoforProfile] = useState({});
   const [hrTalentList, setHRTalentList] = useState([]);
+  const [dailyActivityTargets , setDailyActiveTargets ] = useState([]);
+  const [totalRevenueList ,setTotalRevenueList ] = useState([]);
   const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
   const date = new Date();
   const [startDate, setStartDate] = useState(date);
   const [showGoal, setShowGoal] = useState(false);
+  const [showActivePipeline, setShowActivePipeline] = useState(true);
   const [goalLoading, setgoalLoading] = useState(false);
   const [goalList, setGoalList] = useState([]);
 
@@ -115,6 +122,16 @@ export default function TADashboard() {
   const [profileTargetDetails, setProfileTargetDetails] = useState({});
   const [targetValue, setTargetValue] = useState(5);
 
+  const [moveToAssessment,setMoveToAssessment] = useState(false)
+  const [talentToMove,setTalentToMove] = useState({})
+    const {
+        register :remarkregiter,
+        handleSubmit:remarkSubmit,
+        resetField: resetRemarkField,
+        clearErrors : clearRemarkError,
+        formState: { errors : remarkError},
+      } = useForm();
+const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
   const [userData, setUserData] = useState({});
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -506,6 +523,20 @@ export default function TADashboard() {
     }
   };
 
+  const getTotalRevenue = async ()=>{
+   let result = await  TaDashboardDAO.getTotalRevenueRequestDAO()
+   let dailyResult = await TaDashboardDAO.getDailyActiveTargetsDAO()
+  //  console.log(result,dailyResult)
+
+   if(result?.statusCode === HTTPStatusCode.OK){
+    setTotalRevenueList(result.responseBody)
+   }
+
+   if(dailyResult?.statusCode=== HTTPStatusCode.OK){
+    setDailyActiveTargets(dailyResult.responseBody)
+   }
+  }
+
   const getGoalsDetails = async (date, head, tA_UserID) => {
     let pl = {
       taUserIDs: tA_UserID,
@@ -530,6 +561,7 @@ export default function TADashboard() {
         selectedHead,
         tableFilteredState.filterFields_OnBoard.taUserIDs
       );
+      getTotalRevenue()
     }
   }, [selectedHead, startDate, tableFilteredState]);
 
@@ -587,6 +619,90 @@ export default function TADashboard() {
     setShowComment(true);
     setCommentData({ ...data, index });
   };
+
+  const totalRevenueColumns = [
+    {
+      title: "TA",
+      dataIndex: "taName",
+      key: "taName",
+    },
+    {
+      title: "Goal (INR)",
+      dataIndex: "goalRevenueStr",
+      key: "goalRevenueStr",
+    },
+    {
+      title: "Pipeline (INR)",
+      dataIndex: "sumOfTotalRevenueStr",
+      key: "sumOfTotalRevenueStr",
+    },
+    {
+      title: "Band Width(%)",
+      dataIndex: "bandwidthper",
+      key: "bandwidthper",
+    },
+    {
+      title: "Total Pipeline (INR)",
+      dataIndex: "totalRevenuePerUserStr",
+      key: "totalRevenuePerUserStr",
+    },
+  ]
+
+  const daiyTargetColumns =  [
+    {
+      title: <>Active HR Pipeline</>,
+      dataIndex: "activeHRPipeLineStr",
+      key: "activeHRPipeLineStr",
+    },
+    {
+      title: <>Total Profile <br/> Shared Target</> ,
+      dataIndex: "today_ProfilesharedTarget",
+      key: "today_ProfilesharedTarget",
+      render:(text)=>{
+        return<div className={taStyles.todayText}>{text}</div>
+      }
+    },
+    {
+      title: <>Total Profile <br/>Shared Achieved</>,
+      dataIndex: "today_ProfilesharedAchieved",
+      key: "today_ProfilesharedAchieved",
+      render:(text)=>{
+        return<div className={taStyles.todayText}>{text}</div>
+      }
+    },
+    {
+      title: <>Total L1 <br/>Round Scheduled</>,
+      dataIndex: "today_L1Round",
+      key: "today_L1Round",
+      render:(text)=>{
+        return<div className={taStyles.todayText}>{text}</div>
+      }
+    },
+    {
+      title: <>Total Profile <br/>Shared Target</>,
+      dataIndex: "yesterday_ProfilesharedTarget",
+      key: "yesterday_ProfilesharedTarget",
+      render:(text)=>{
+        return<div className={taStyles.yesterdayText}>{text}</div>
+      }
+    },
+    {
+      title: <>Total Profile <br/> Shared Achieved</>,
+      dataIndex: "yesterday_ProfilesharedAchieved",
+      key: "yesterday_ProfilesharedAchieved",
+      render:(text)=>{
+        return<div className={taStyles.yesterdayText}>{text}</div>
+      }
+    },
+    {
+      title: <>Total L1 <br/> Round Scheduled</>,
+      dataIndex: "yesterday_L1Round",
+      key: "yesterday_L1Round",
+      render:(text)=>{
+        return<div className={taStyles.yesterdayText}>{text}</div>
+      }
+    },
+  ]
 
   const goalColumns = [
     {
@@ -679,11 +795,36 @@ export default function TADashboard() {
       dataIndex: "talentStatus",
       key: "talentStatus",
       render: (_, item) => (
-        <div>
+        <div style={{display:'flex',alignItems:'center', justifyContent:'space-between'}}>
           {All_Hiring_Request_Utils.GETTALENTSTATUS(
             parseInt(item?.talentStatusColor),
             item?.talentStatus
           )}
+
+          {(item?.statusID === 2 || item?.statusID === 3) &&  <Tooltip title="Move to Assessment" placement="top" >
+            <IconContext.Provider value={{ color: '#FFDA30', style: { width:'16px',height:'16px' , cursor:'pointer'} }}>
+              <span
+              // style={{
+              //   background: 'red'
+              // }}
+              onClick={()=>{
+                setMoveToAssessment(true)
+                setTalentToMove(prev => ({...prev,ctpID:item.ctpid}));
+              }}
+              style={{padding:'0'}}>
+              {' '}
+              <BsClipboard2CheckFill />
+            </span>       
+            </IconContext.Provider> </Tooltip>}
+         
+          
+        {/* <Tooltip title={"Move to Assessment"}>
+        <BsClipboard2CheckFill style={{width:'16px', height: "16px", margin: "16px",marginRight:'0', cursor:'pointer' }} onClick={()=>{
+          setMoveToAssessment(true)
+          console.log("clicked")
+          setTalentToMove(prev => ({...prev,ctpID:item.ctpid}));
+        }} />
+        </Tooltip> */}
         </div>
       ),
     },
@@ -879,13 +1020,13 @@ export default function TADashboard() {
       },
     },
     {
-      title: <>Profiles Shared /<br/> Achieved /<br/> L1 Round</>,
+      title: <>Profiles Shared <br/>Target / Achieved /<br/> L1 Round</>,
       dataIndex: "profile_Shared_Target",
       key: "profile_Shared_Target",
       fixed: "left",
       width: "150px",
       render:(text,result,index)=>{
-        return <>
+        return <div style={{display:'flex'}}>
         {result.task_StatusID === 1 ? <p
         style={{
           color: "blue",
@@ -899,8 +1040,8 @@ export default function TADashboard() {
         }}
       >
         {text ?? 0}
-      </p> : text ?? 0} / {result.profile_Shared_Achieved ?? 'NA'} / {result.interview_Scheduled_Target ?? 'NA'}
-        </> 
+      </p> : text ?? 0}  / {result.profile_Shared_Achieved ?? 'NA'} / {result.interview_Scheduled_Target ?? 'NA'}
+        </div> 
        }
     },
     {
@@ -1009,6 +1150,7 @@ export default function TADashboard() {
             }}
             onClick={() => {
               getTalentProfilesDetailsfromTable(result, 0);
+              setTalentToMove(result)
               setProfileStatusID(0);
               hrTalentListFourCount([])
             }}
@@ -1336,6 +1478,30 @@ export default function TADashboard() {
     }
   };
 
+    const saveRemark = async (d) =>{
+  
+      let pl = {
+        HiringRequestId :talentToMove?.hiringRequest_ID,
+        CtpId : talentToMove?.ctpID,
+        TalentId :talentToMove?.tA_UserID,     
+        Remark :d.remark
+      } 
+
+      setSaveRemarkLoading(true)
+      const result = await InterviewDAO.updateTalentAssessmentDAO(pl)
+      setSaveRemarkLoading(false)
+      if(result.statusCode === HTTPStatusCode.OK){
+        setMoveToAssessment(false);
+        resetRemarkField('remark');
+        clearRemarkError('remark')
+        getTalentProfilesDetailsfromTable(talentToMove, profileStatusID);
+        // callAPI(hrId)
+        // getHrUserData(hrId)
+      }else{
+        message.error('Something went wrong')
+      }
+    }
+
   const saveEditTask = async () => {
     let pl = {
       id: editTATaskData?.id,
@@ -1531,6 +1697,54 @@ export default function TADashboard() {
       {/* <div className={taStyles.addnewHR} style={{ margin: "0" }}>
         <div className={taStyles.hiringRequest}>TA Dashboard</div>
       </div> */}
+
+<div className={taStyles.filterContainer}>
+        <div className={taStyles.filterSets}>
+          <div
+            className={taStyles.filterSetsInner}
+            onClick={() => setShowActivePipeline((prev) => !prev)}
+          >
+            <p
+              className={taStyles.resetText}
+              style={{ textDecoration: "none" }}
+            >
+              Active Pipeline Total Targets{" "}
+              <ArrowDownSVG
+                style={{ rotate: showActivePipeline ? "180deg" : "", marginLeft: "10px" }}
+              />
+            </p>
+          </div>
+
+          
+        </div>
+        {showActivePipeline === true ? (
+          goalLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+             {userData?.showTADashboardDropdowns &&  <div style={{ padding: "0 20px" }}>
+              <Table
+                dataSource={dailyActivityTargets}
+                columns={daiyTargetColumns}
+                // bordered
+                pagination={false}
+              />
+            </div>}
+          
+             <div style={{ padding: "20px  20px" }}>
+              <Table
+                dataSource={totalRevenueList}
+                columns={totalRevenueColumns}
+                // bordered
+                pagination={false}
+              />
+            </div>
+            
+            </>
+            
+          )
+        ) : null}
+      </div>
 
       <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
@@ -2060,7 +2274,8 @@ export default function TADashboard() {
                 </h2>
               </div>
             </div>
-
+      
+{console.log('hrTalentList',hrTalentList)}
             {loadingTalentProfile ? (
               <div>
                 <Skeleton active />
@@ -2075,6 +2290,28 @@ export default function TADashboard() {
                 />
               </div>
             )}
+
+              {moveToAssessment &&  	<Modal
+                      width="992px"
+                      centered
+                      footer={null}
+                      open={moveToAssessment}
+                      className="commonModalWrap"
+                      // onOk={() => setVersantModal(false)}
+                      onCancel={() => {
+                        setMoveToAssessment(false);resetRemarkField('remark');clearRemarkError('remark')
+                      }}>
+                        <MoveToAssessment 
+                        onCancel={()=>{setMoveToAssessment(false);resetRemarkField('remark');clearRemarkError('remark')}}  
+                        register={remarkregiter}
+                        handleSubmit={remarkSubmit}
+                        resetField={resetRemarkField}
+                        errors={remarkError}
+                        saveRemark={saveRemark}
+                        saveRemarkLoading={saveRemarkLoading}
+                        />
+                      
+                        </Modal>}
 
             <div style={{ padding: "10px 0" }}>
               <button
