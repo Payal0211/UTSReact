@@ -682,15 +682,26 @@ export const hrUtils = {
 			];
 		}
 	},
-	showTalentCTA(item) {
+	showTalentCTA(item,Status) {
 		let tempArray = [];
+		if(Status === 'In Assessment'){
+			item?.cTAInfoList?.filter(item => item.key !== "Assessment").map((item) =>
+				tempArray.push({
+					key: item?.key,
+					label: item?.label,
+					IsEnabled: item?.IsEnabled,
+				}),
+			);
+		}else{
 		item?.cTAInfoList?.map((item) =>
-			tempArray.push({
-				key: item?.key,
-				label: item?.label,
-				IsEnabled: item?.IsEnabled,
-			}),
-		);
+					tempArray.push({
+						key: item?.key,
+						label: item?.label,
+						IsEnabled: item?.IsEnabled,
+					}),
+				);
+		}
+		
 
 		return tempArray;
 	},
