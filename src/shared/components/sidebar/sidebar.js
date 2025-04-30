@@ -300,6 +300,11 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		return isVisible
 	}
 
+	if(title === "AM Dashboard"){
+		isVisible =  (ID === 1 || ID === 4 || ID === 3 || ID === 6 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
+		return isVisible
+	}
+
 	if ((  title === "AM Dashboard" || title === 'Master'   || title === 'Talent' || title === 'Currency' || title === 'Documents/SLA' || title === 'Talent Documents')
 		  && ID === 6){
 		isVisible =  true
@@ -319,7 +324,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	 title === 'Client' || title === 'JD Efficiency Report' || title === 'Incentive Report' ||
 	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent' || title === 'Talent Documents'
-	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout" || title === "AM Dashboard" || title === 'Invoice'
+	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout"  || title === 'Invoice'
     || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency' || title === 'Leave') {
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;

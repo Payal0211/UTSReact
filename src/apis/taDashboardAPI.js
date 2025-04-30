@@ -104,6 +104,38 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getHRTalentDetailsRequest');
 		}
 	},
+	getTotalRevenueRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TOTAL_REVENUE_PER_TA 
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getHRTalentDetailsRequest');
+		}
+	},
+	getDailyActiveTargetsRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_DAILY_ACTIVE_TARGETS 
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getDailyActiveTargetsRequest');
+		}
+	},
     getGoalsDetailsRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =

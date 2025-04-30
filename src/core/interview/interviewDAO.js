@@ -293,5 +293,32 @@ export const InterviewDAO = {
 				'InterviewDAO.CheckInterviewTimeSlotDAO',
 			);
 		}
-	}
+	},
+	updateTalentAssessmentDAO: async function (pl) {
+		try {
+			const checkLinkedinURLResponse =
+				await InterviewAPI.updateTalentAssessmentRequest(pl);
+
+			if (checkLinkedinURLResponse) {
+				const statusCode = checkLinkedinURLResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = checkLinkedinURLResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return checkLinkedinURLResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return checkLinkedinURLResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'InterviewDAO.updateTalentAssessmentDAO');
+		}
+	},
 };
