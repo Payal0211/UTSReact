@@ -529,8 +529,25 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
   //  console.log(result,dailyResult)
 
    if(result?.statusCode === HTTPStatusCode.OK){
-    setTotalRevenueList(result.responseBody)
-   }
+    if(result.responseBody.length){
+         setTotalRevenueList([...result.responseBody,{
+            bandwidthper: '',
+            goalRevenueStr: '',
+            sumOfTotalRevenue:result.responseBody[0].sumOfTotalRevenue,
+            sumOfTotalRevenueStr:result.responseBody[0].sumOfTotalRevenueStr,
+            taName: '',
+            taUserID: result.responseBody[0].taUserID,
+            totalRevenuePerUser:result.responseBody[0].totalRevenuePerUser,
+            totalRevenuePerUserStr: result.responseBody[0].totalRevenuePerUserStr,
+            TOTALROW:true
+          }])
+    }else{
+      setTotalRevenueList([])
+    }
+ 
+   }else{
+    setTotalRevenueList([])
+  }
 
    if(dailyResult?.statusCode=== HTTPStatusCode.OK){
     setDailyActiveTargets(dailyResult.responseBody)
@@ -630,29 +647,44 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       title: "Goal (INR)",
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
+      render:(text,result)=>{
+        if(result.TOTALROW){
+          return <div style={{display:'flex', justifyContent:'end'}}><strong>Total :</strong></div> 
+        }
+        return text
+      }
     },
     {
       title: "Pipeline (INR)",
-      dataIndex: "sumOfTotalRevenueStr",
-      key: "sumOfTotalRevenueStr",
+      dataIndex: "totalRevenuePerUserStr",
+      key: "totalRevenuePerUserStr",
+      render:(text,result)=>{
+        if(result.TOTALROW){
+          return <strong>{result.sumOfTotalRevenueStr}</strong>
+        }
+        return text
+      }
     },
     {
       title: "Band Width(%)",
       dataIndex: "bandwidthper",
       key: "bandwidthper",
     },
-    {
-      title: "Total Pipeline (INR)",
-      dataIndex: "totalRevenuePerUserStr",
-      key: "totalRevenuePerUserStr",
-    },
+    // {
+    //   title: "Total Pipeline (INR)",
+    //   dataIndex: "totalRevenuePerUserStr",
+    //   key: "totalRevenuePerUserStr",
+    // },
   ]
 
   const daiyTargetColumns =  [
     {
-      title: <>Active HR Pipeline</>,
+      title: <>Active HR Pipeline(INR)</>,
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
+      render:(text)=>{
+        return<div className={taStyles.today1Text}>{text}</div>
+      }
     },
     {
       title: <>Total Profile <br/> Shared Target</> ,
@@ -801,8 +833,8 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
             item?.talentStatus
           )}
 
-          {(item?.statusID === 2 || item?.statusID === 3) &&  <Tooltip title="Move to Assessment" placement="top" >
-            <IconContext.Provider value={{ color: '#FFDA30', style: { width:'16px',height:'16px' , cursor:'pointer'} }}>
+          {(item?.statusID === 2 || item?.statusID === 3) &&  
+            <IconContext.Provider value={{ color: '#FFDA30', style: { width:'16px',height:'16px' , cursor:'pointer'} }}><Tooltip title="Move to Assessment" placement="top" >
               <span
               // style={{
               //   background: 'red'
@@ -814,8 +846,8 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               style={{padding:'0'}}>
               {' '}
               <BsClipboard2CheckFill />
-            </span>       
-            </IconContext.Provider> </Tooltip>}
+            </span>       </Tooltip>
+            </IconContext.Provider> }
          
           
         {/* <Tooltip title={"Move to Assessment"}>
