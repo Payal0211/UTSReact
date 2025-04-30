@@ -937,7 +937,7 @@ function OnBoardList() {
     { id: 90, value: 'Net 90' },
   ]
 
-  const getInvoiceInfo = async (param, monthDate) => {
+  const getInvoiceInfo = async (param, monthDate) => {    
     let payload = {
       companyId: param.companyID,
       year: moment(monthDate).format("YYYY"),
@@ -954,6 +954,7 @@ function OnBoardList() {
       let data = result.responseBody.details[0];
       // let dateValArr = data.invoiceDate.split(' ')
       // let dateStr = `${dateValArr[0]} ${dateValArr[2]} ${dateValArr[3]}`
+      data.typeOfHR = param.typeOfHR;
       setInvData(data);
       invoiceSetValue("company", data.company);
       invoiceSetValue("client", data.client_EmailID);
@@ -984,7 +985,7 @@ const calDueDate = (date, term)=>{
   dueDate.setDate(dueDate.getDate() + term);
   return  dueDate
 }
-  const saveInvoice = async (d) => {
+  const saveInvoice = async (d) => {    
     let dueDate = calDueDate(invoiceDate, +d.paymentTerm) ;
     let pl = {
       invoiceDto: {
@@ -1018,6 +1019,7 @@ const calDueDate = (date, term)=>{
         payment_Terms: invoicePaymentTermMaster.find(item => item.id === d.paymentTerm).value, // paymentTerms
         zohoCustomerEmailID: d.zohoCustomer, //zoho_Client_EmailID
         clientEmailID: d.client, //client_EmailID
+        typeOfHR : invData?.typeOfHR,
       },
       invoiceLineItemDto: getLineItemsBasedOnGST(lineItems,gst).map(i=>(
         {
