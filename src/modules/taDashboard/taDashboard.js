@@ -670,6 +670,22 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       dataIndex: "bandwidthper",
       key: "bandwidthper",
     },
+    {
+      title: "Achieve Pipeline (INR)",
+      dataIndex: "achievedPipelineStr",
+      key: "achievedPipelineStr",
+      render:(text)=>{
+        return<div className={taStyles.todayText} >{text}</div>
+      }
+    },
+    {
+      title: "Lost Pipeline (INR)",
+      dataIndex: "lostPipelineStr",
+      key: "lostPipelineStr",
+      render:(text)=>{
+        return<div className={taStyles.todayText} style={{background:'lightsalmon'}}>{text}</div>
+      }
+    },
     // {
     //   title: "Total Pipeline (INR)",
     //   dataIndex: "totalRevenuePerUserStr",
@@ -679,11 +695,19 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
 
   const daiyTargetColumns =  [
     {
-      title: <>Active HR Pipeline(INR)</>,
+      title: <>Active HR Pipeline (INR)</>,
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
       render:(text)=>{
         return<div className={taStyles.today1Text}>{text}</div>
+      }
+    },
+    {
+      title: <>Achieve HR Pipeline (INR)</>,
+      dataIndex: "achievedHRPipeLineStr",
+      key: "achievedHRPipeLineStr",
+      render:(text)=>{
+        return<div className={taStyles.today2Text}>{text}</div>
       }
     },
     {
@@ -2110,7 +2134,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       {showTalentProfiles && (
         <Modal
           transitionName=""
-          width="950px"
+          width="1000px"
           centered
           footer={null}
           open={showTalentProfiles}
@@ -2134,12 +2158,13 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               <h3>
                 Profiles for <strong>{profileInfo?.hrNumber}</strong>
               </h3>
+              
               <p style={{ marginBottom: "0.5em" }}>
-                <strong>TA : </strong> {profileInfo?.taName}
+                Company : <strong>{profileInfo?.companyName} </strong>
+                
               </p>
               <p style={{ marginBottom: "0.5em" }}>
-                <strong>Company : </strong>
-                {profileInfo?.companyName}
+               TA : <strong>{profileInfo?.taName} </strong> 
               </p>
             </div>
 
@@ -2191,6 +2216,28 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
                   <span>
                     {hrTalentListFourCount[0]?.profileSharedCount
                       ? hrTalentListFourCount[0]?.profileSharedCount
+                      : 0}
+                  </span>
+                </h2>
+              </div>
+              <div
+                className={taStyles.filterType}
+                key={"In Assessment"}
+                onClick={() => {
+                  getTalentProfilesDetails(profileInfo, 11);
+                  setProfileStatusID(11);
+                }}
+                style={{
+                  borderBottom:
+                    profileStatusID === 11 ? "6px solid #FFDA30" : "",
+                }}
+              >
+                {/* <img src={FeedBack} alt="rocket" /> */}
+                <h2>
+                  In Assessment :{" "}
+                  <span>
+                    {hrTalentListFourCount[0]?.assessmentCount
+                      ? hrTalentListFourCount[0]?.assessmentCount
                       : 0}
                   </span>
                 </h2>
@@ -2275,7 +2322,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               >
                 {/* <img src={FeedBack} alt="rocket" /> */}
                 <h2>
-                  Rejected, screening :{" "}
+                Screen Reject :{" "}
                   <span>
                     {hrTalentListFourCount[0]?.screeningRejectCount
                       ? hrTalentListFourCount[0]?.screeningRejectCount
@@ -2297,7 +2344,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               >
                 {/* <img src={FeedBack} alt="rocket" /> */}
                 <h2>
-                  Rejected, Interview :{" "}
+                Interview Reject :{" "}
                   <span>
                     {hrTalentListFourCount[0]?.interviewRejectCount
                       ? hrTalentListFourCount[0]?.interviewRejectCount
