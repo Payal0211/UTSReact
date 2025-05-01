@@ -707,7 +707,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
 
   const daiyTargetColumns =  [
     {
-      title: <>Active HR Pipeline (INR)</>,
+      title: <>Active HR <br/>Pipeline (INR)</>,
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
       render:(text)=>{
@@ -715,7 +715,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       }
     },
     {
-      title: <>Achieve HR Pipeline (INR)</>,
+      title: <>Achieve HR <br/>Pipeline (INR)</>,
       dataIndex: "achievedHRPipeLineStr",
       key: "achievedHRPipeLineStr",
       render:(text)=>{
