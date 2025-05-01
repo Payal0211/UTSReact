@@ -7,6 +7,7 @@ import { Tabs, Select, Table, Modal, Tooltip } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { downloadToExcel } from "modules/report/reportUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
+import { Link } from "react-router-dom";
 
 export default function InvoiceReport() {
   const [openTicketSearchText, setopenTicketSearchText] = useState("");
@@ -25,6 +26,18 @@ export default function InvoiceReport() {
         key: "invoice_number",
         align: "left",
         width: "100px",
+        render: (text, result) => ( 
+           <a
+           rel="noreferrer"
+           href={
+             result?.invoiceURL
+           }
+           style={{ textDecoration: "underline" }}
+           target="_blank"
+         >
+          {text}
+         </a>
+        ),
       },
       {
         title: "Date",
