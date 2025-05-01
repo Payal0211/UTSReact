@@ -581,9 +581,12 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
         selectedHead,
         tableFilteredState.filterFields_OnBoard.taUserIDs
       );
-      getTotalRevenue()
     }
   }, [selectedHead, startDate, tableFilteredState]);
+
+  useEffect(()=>{
+    getTotalRevenue()
+  },[])
 
   const editTAforTask = (task) => {
     setShowEditTATask(true);
