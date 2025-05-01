@@ -107,6 +107,7 @@ export default function TADashboard() {
   const [showGoal, setShowGoal] = useState(false);
   const [showActivePipeline, setShowActivePipeline] = useState(true);
   const [goalLoading, setgoalLoading] = useState(false);
+  const [pipelineLoading, setpipelineLoading] = useState(false);
   const [goalList, setGoalList] = useState([]);
 
   const [showEditTATask, setShowEditTATask] = useState(false);
@@ -524,8 +525,10 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
   };
 
   const getTotalRevenue = async ()=>{
+    setpipelineLoading(true)
    let result = await  TaDashboardDAO.getTotalRevenueRequestDAO()
    let dailyResult = await TaDashboardDAO.getDailyActiveTargetsDAO()
+   setpipelineLoading(false)
   //  console.log(result,dailyResult)
 
    if(result?.statusCode === HTTPStatusCode.OK){
@@ -674,7 +677,10 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       title: "Achieve Pipeline (INR)",
       dataIndex: "achievedPipelineStr",
       key: "achievedPipelineStr",
-      render:(text)=>{
+      render:(text,result)=>{
+        if(result.TOTALROW){
+          return ''
+        }
         return<div className={taStyles.todayText} >{text}</div>
       }
     },
@@ -682,7 +688,10 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       title: "Lost Pipeline (INR)",
       dataIndex: "lostPipelineStr",
       key: "lostPipelineStr",
-      render:(text)=>{
+      render:(text,result)=>{
+        if(result.TOTALROW){
+          return ''
+        }
         return<div className={taStyles.todayText} style={{background:'lightsalmon'}}>{text}</div>
       }
     },
@@ -1774,7 +1783,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
           
         </div>
         {showActivePipeline === true ? (
-          goalLoading ? (
+          pipelineLoading ? (
             <TableSkeleton />
           ) : (
             <>
