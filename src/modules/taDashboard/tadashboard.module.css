@@ -126,6 +126,7 @@
     padding: 0 5px;
     justify-content: center;
     border-radius: 3px;
+    width: 150px;
 }
 
 .today2Text{
@@ -138,6 +139,7 @@
     padding: 0 5px;
     justify-content: end;
     border-radius: 3px;
+    width: 150px;
 }
 
 
@@ -151,6 +153,7 @@
     padding: 0 5px;
     justify-content: end;
     border-radius: 3px;
+    width: 150px;
 }
 
 .yesterdayText{
@@ -162,6 +165,7 @@
     align-items: center;
     padding: 0 5px;
     justify-content: end;
+    width: 150px;
     border-radius: 3px;
 }
 
