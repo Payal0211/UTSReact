@@ -36,7 +36,7 @@ export default function InvoiceReport() {
            target="_blank"
          >
           {text}
-         </a> : 'NA'
+         </a> : text
         },
       },
       {
