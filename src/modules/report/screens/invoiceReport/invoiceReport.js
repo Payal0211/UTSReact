@@ -26,8 +26,8 @@ export default function InvoiceReport() {
         key: "invoice_number",
         align: "left",
         width: "100px",
-        render: (text, result) => ( 
-           <a
+        render: (text, result) => {
+          return result?.invoiceURL ?  <a
            rel="noreferrer"
            href={
              result?.invoiceURL
@@ -36,8 +36,8 @@ export default function InvoiceReport() {
            target="_blank"
          >
           {text}
-         </a>
-        ),
+         </a> : 'NA'
+        },
       },
       {
         title: "Date",
