@@ -655,26 +655,27 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       key: "goalRevenueStr",
       render:(text,result)=>{
         if(result.TOTALROW){
-          return <div style={{display:'flex', justifyContent:'end'}}><strong>Total :</strong></div> 
+          return ''
         }
         return text
       }
     },
+    
     {
-      title: "Pipeline (INR)",
-      dataIndex: "totalRevenuePerUserStr",
-      key: "totalRevenuePerUserStr",
+      title: "Actual Pipeline (INR)",
+      dataIndex: "actualPipelineStr",
+      key: "actualPipelineStr",
       render:(text,result)=>{
-        if(result.TOTALROW){
-          return <strong>{result.sumOfTotalRevenueStr}</strong>
-        }
-        return text
+        return parseInt(text) > 0 ? text : ''
       }
     },
     {
-      title: "Band Width(%)",
+      title: "Multiplier",
       dataIndex: "bandwidthper",
       key: "bandwidthper",
+      render:(text,result)=>{
+        return +text > 0 ? text : ''
+      }
     },
     {
       title: "Achieve Pipeline (INR)",
@@ -693,9 +694,20 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       key: "lostPipelineStr",
       render:(text,result)=>{
         if(result.TOTALROW){
-          return ''
-        }
+          return <div style={{display:'flex', justifyContent:'end'}}><strong>Total :</strong></div> 
+       }      
         return<div className={taStyles.todayText} style={{background:'lightsalmon'}}>{text}</div>
+      }
+    },
+    {
+      title: "Pipeline (INR)",
+      dataIndex: "totalRevenuePerUserStr",
+      key: "totalRevenuePerUserStr",
+      render:(text,result)=>{
+        if(result.TOTALROW){
+          return <strong>{result.sumOfTotalRevenueStr}</strong>
+        }
+        return parseInt(text) > 0 ? text : ''
       }
     },
     // {
@@ -723,7 +735,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       }
     },
     {
-      title: <>Total Profile <br/> Shared Target</> ,
+      title: <>Today Total Profile <br/> Shared Target</> ,
       dataIndex: "today_ProfilesharedTarget",
       key: "today_ProfilesharedTarget",
       render:(text)=>{
@@ -731,7 +743,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       }
     },
     {
-      title: <>Total Profile <br/>Shared Achieved</>,
+      title: <>Today Total Profile <br/>Shared Achieved</>,
       dataIndex: "today_ProfilesharedAchieved",
       key: "today_ProfilesharedAchieved",
       render:(text)=>{
@@ -739,7 +751,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       }
     },
     {
-      title: <>Total L1 <br/>Round Scheduled</>,
+      title: <>Today Total L1 <br/>Round Scheduled</>,
       dataIndex: "today_L1Round",
       key: "today_L1Round",
       render:(text)=>{
@@ -747,7 +759,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       }
     },
     {
-      title: <>Total Profile <br/>Shared Target</>,
+      title: <>Yesterday Total Profile <br/>Shared Target</>,
       dataIndex: "yesterday_ProfilesharedTarget",
       key: "yesterday_ProfilesharedTarget",
       render:(text)=>{
@@ -755,7 +767,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       }
     },
     {
-      title: <>Total Profile <br/> Shared Achieved</>,
+      title: <>Yesterday Total Profile <br/> Shared Achieved</>,
       dataIndex: "yesterday_ProfilesharedAchieved",
       key: "yesterday_ProfilesharedAchieved",
       render:(text)=>{
@@ -763,7 +775,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       }
     },
     {
-      title: <>Total L1 <br/> Round Scheduled</>,
+      title: <>Yesterday Total L1 <br/> Round Scheduled</>,
       dataIndex: "yesterday_L1Round",
       key: "yesterday_L1Round",
       render:(text)=>{
