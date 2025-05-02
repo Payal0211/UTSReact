@@ -176,6 +176,7 @@ export class ReportType {
 	static TALENT_DOCUMENT_REPORT = 'TalentDocumentReport'
 	static ZOHO_INVOICE_REPORT = 'ZohoInvoiceReport'
 	static TALENT_LEAVE_TAKEN_REPORT = 'TalentLeaveTakenReport'
+	static RECRUITER_REPORT = 'RecruiterReport'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

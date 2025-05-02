@@ -19,6 +19,11 @@ const AMDashboard = React.lazy(() =>
 const TADashboard = React.lazy(() =>
 	import('modules/taDashboard/taDashboard'),
 );
+
+const RecruiterReport = React.lazy(() =>
+	import('modules/report/screens/recruiterReport/recruiterReport'),
+);
+
 const AllHiringRequest = React.lazy(() =>
 	import('modules/hiring request/screens/allHiringRequest/mainHRTabs'),
 );
@@ -195,6 +200,7 @@ export default class UTSRoutes {
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static AMDASHBOARD = '/amdashboard';
 	static TADASHBOARD = '/tadashboard'
+	static RECRUITERREPORT = '/recruiter'
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static EDITNEWHR = '/allhiringrequest/addnewhr/:hrid';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
@@ -434,6 +440,11 @@ export const navigateToComponent = {
 	[UTSRoutes.Invoice]:(
 		<Suspense>
 			<InvoiceReport />
+		</Suspense>
+	),
+	[UTSRoutes.RECRUITERREPORT]: (
+		<Suspense>
+			<RecruiterReport />
 		</Suspense>
 	),
 	[UTSRoutes.Leave]:(
