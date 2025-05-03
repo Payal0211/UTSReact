@@ -295,7 +295,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
-	if(title === 'Recruiter'){
+	if(title === 'Recruiter' || title === 'ClientDashboard'){
 		isVisible =  true;
 		return isVisible
 	}
@@ -446,7 +446,15 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'Recruiter'),
 					isChildren : false					
 				}),
-
+				new SideBarModels({
+					id: 'ClientDashboard',
+					title: 'Client Dashboard',
+					isActive: false,
+					icon: RecruiterReportIcon,
+					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
+					isVisible: isAccess(usertypeID, 'ClientDashboard'),
+					isChildren : false					
+				}),
 			
 			]
 		}),
