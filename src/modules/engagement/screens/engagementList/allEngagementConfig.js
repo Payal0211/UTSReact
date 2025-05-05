@@ -1015,5 +1015,16 @@ export const allEngagementConfig = {
 				// isSearch: true,
 			},
 		];
-	}
+	},
+	recruiterReportFilterTypeConfig: (filterList) => {
+		return [		
+			{
+				label: 'TA',
+				name: 'taUserIDs',
+				child: filterList?.Users
+				?.map(item=>({...item,text: item.data,value:`${item.id}`})),
+				isSearch: true,
+			},
+		];
+	},
 };

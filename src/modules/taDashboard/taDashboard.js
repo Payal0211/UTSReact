@@ -398,7 +398,6 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
   };
 
   const handleTableFilterChange = (pagination, filters, sorter) => {
-    console.log("Various parameters", pagination, filters, sorter);
     setFilteredInfo(filters);
 
     //  setTableFilteredState(prev=>({
@@ -529,8 +528,6 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
    let result = await  TaDashboardDAO.getTotalRevenueRequestDAO()
    let dailyResult = await TaDashboardDAO.getDailyActiveTargetsDAO()
    setpipelineLoading(false)
-  //  console.log(result,dailyResult)
-
    if(result?.statusCode === HTTPStatusCode.OK){
     if(result.responseBody.length){
          setTotalRevenueList([...result.responseBody,{
@@ -614,7 +611,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       tA_UserID: profileTargetDetails?.tA_UserID,
       target_StageID: 1,
       target_Number: targetValue,
-      target_Date: moment().format("YYYY-MM-DD"), // today's date
+      target_Date: profileTargetDetails?.fromGoalsTable ?  moment(startDate).format('YYYY-MM-DD') : moment().format("YYYY-MM-DD"), // today's date
     };
     setLoadingTalentProfile(true);
     let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
@@ -805,6 +802,23 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       dataIndex: "profiles_Shared_Target",
       key: "profiles_Shared_Target",
       align: 'center',
+      render:(text,result)=>{
+        return <p
+        style={{
+          color: "blue",
+          fontWeight: "bold",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          setShowProfileTarget(true);     
+          console.log(result);                               
+          setProfileTargetDetails({...result,id:result?.taskID,tA_UserID:result?.taUserID,fromGoalsTable:true});
+        }}
+      >
+        {text}
+      </p>
+      }
     },
     {
       title: "Profiles Shared Achieved",
@@ -1115,7 +1129,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
           cursor: "pointer",
         }}
         onClick={() => {
-          setShowProfileTarget(true);
+          setShowProfileTarget(true);          
           setProfileTargetDetails({ ...result, index: index });
         }}
       >
@@ -2378,7 +2392,6 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               </div>
             </div>
       
-{console.log('hrTalentList',hrTalentList)}
             {loadingTalentProfile ? (
               <div>
                 <Skeleton active />
