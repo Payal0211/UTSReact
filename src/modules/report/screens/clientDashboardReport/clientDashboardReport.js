@@ -40,9 +40,12 @@ export default function ClientDashboardReport() {
             align: "left",
             width: "200px",
             fixed: "left",
-            render: (text, row) => {
-              return text === "Total" ? "" : text;
-            },
+            render: (text, result) => {
+                // Check if the value is 'Total', if so return empty string, else return a link
+                return text === "Total" 
+                  ? "" 
+                  : <a href={`/viewCompanyDetails/${result.companyID}`}>{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+              },
           },
           
       {
@@ -52,6 +55,12 @@ export default function ClientDashboardReport() {
         align: "left",
         width: "180px",
         fixed: "left",
+        render: (text, result) => {
+            // Check if the HR ID is not empty and return a link
+            return text 
+              ? <a href={`/allhiringrequest/${result.hrid}`}>{text}</a>  // Replace `/hr/${text}` with the appropriate link you need
+              : text;
+          },
       },
       {
         title: "Recruiter",
