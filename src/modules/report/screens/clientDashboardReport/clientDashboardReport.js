@@ -217,8 +217,7 @@ export default function ClientDashboardReport() {
     const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
     setLoading(false)
     console.log("result ", apiResult);
-    if (apiResult?.statusCode === 200) {
-        debugger;
+    if (apiResult?.statusCode === 200) {        
         setClientData(apiResult.responseBody?.rows);        
         setListDataCount(apiResult.responseBody?.totalrows);      
     } else if (apiResult?.statusCode === 404) {
@@ -250,7 +249,23 @@ export default function ClientDashboardReport() {
         return;
       } else {
         if (start && end) {  
-            getClientDashboardReport();
+            let payload = {
+                "searchText": openTicketSearchText,
+                "fromDate": start.toLocaleDateString("en-US"),
+                "toDate": start.toLocaleDateString("en-US"),
+                "pageIndex": pageIndex,
+                "pageSize": pageSize,
+              };
+            setLoading(true)
+            const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
+            setLoading(false)
+            console.log("result ", apiResult);
+            if (apiResult?.statusCode === 200) {        
+                setClientData(apiResult.responseBody?.rows);        
+                setListDataCount(apiResult.responseBody?.totalrows);      
+            } else if (apiResult?.statusCode === 404) {
+                setClientData([]);
+            }
         }
       }
     },
