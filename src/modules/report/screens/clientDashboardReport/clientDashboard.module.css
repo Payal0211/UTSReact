@@ -1,3 +1,8 @@
+.highlight-total-row {
+    background-color: #fff3cd !important; /* light yellow for emphasis */
+    font-weight: bold;
+}
+
 .hiringRequestContainer {
     padding: 24px 40px;
 }
@@ -611,6 +616,8 @@
         padding: 9px 24px;
     }
   }
+  
+
   
   
   /* Responsive css End */

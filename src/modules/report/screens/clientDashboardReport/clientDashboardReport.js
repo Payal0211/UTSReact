@@ -16,27 +16,42 @@ export default function ClientDashboardReport() {
   const [isLoading, setLoading] = useState(false); 
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [openTicketSearchText, setopenTicketSearchText] = useState("");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const today = new Date();
+  const aWeekAgo = new Date();
+  aWeekAgo.setDate(today.getDate() - 7);
+  
+  const [startDate, setStartDate] = useState(aWeekAgo);
+  const [endDate, setEndDate] = useState(today);
+  
   const [dateError, setDateError] = useState(false);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
+  const [listDataCount, setListDataCount] = useState(0);
 
   var date = new Date();
 
   const tableColumnsMemo = useMemo(() => {
     return [
-      {
-        title: "Client",
-        dataIndex: "client",
-        key: "client",
-        align: "left",
-        width: "200px",
-      },
+        {
+            title: "Client",
+            dataIndex: "client",
+            key: "client",
+            align: "left",
+            width: "200px",
+            fixed: "left",
+            render: (text, row) => {
+              return text === "Total" ? "" : text;
+            },
+          },
+          
       {
         title: "HR ID",
         dataIndex: "hrNumber",
         key: "hrNumber",
         align: "left",
         width: "180px",
+        fixed: "left",
       },
       {
         title: "Recruiter",
@@ -44,6 +59,7 @@ export default function ClientDashboardReport() {
         key: "recruiter",
         align: "left",
         width: "150px",
+         fixed: "left",
       },
       {
         title: "AI Interview",
@@ -192,15 +208,19 @@ export default function ClientDashboardReport() {
   const getClientDashboardReport = async () => {
     let payload = {
         "searchText": openTicketSearchText,
-        "fromDate": "2025-04-28",
-        "toDate": "2025-05-02"
+        "fromDate": startDate.toLocaleDateString("en-US"),
+        "toDate": endDate.toLocaleDateString("en-US"),
+        "pageIndex": pageIndex,
+        "pageSize": pageSize,
       };
     setLoading(true)
     const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
     setLoading(false)
     console.log("result ", apiResult);
     if (apiResult?.statusCode === 200) {
-        setClientData(apiResult.responseBody);      
+        debugger;
+        setClientData(apiResult.responseBody?.rows);        
+        setListDataCount(apiResult.responseBody?.totalrows);      
     } else if (apiResult?.statusCode === 404) {
         setClientData([]);
     }
@@ -230,20 +250,7 @@ export default function ClientDashboardReport() {
         return;
       } else {
         if (start && end) {  
-          let payload = {
-            "searchText": openTicketSearchText,
-             fromDate: start.toLocaleDateString("en-US"),
-            toDate: end.toLocaleDateString("en-US"),
-          };
-        setLoading(true)
-        const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
-        setLoading(false)
-        console.log("result ", apiResult);
-        if (apiResult?.statusCode === 200) {
-            setClientData(apiResult.responseBody);      
-        } else if (apiResult?.statusCode === 404) {
-            setClientData([]);
-        }
+            getClientDashboardReport();
         }
       }
     },
@@ -253,7 +260,7 @@ export default function ClientDashboardReport() {
 
   useEffect(() => {
     getClientDashboardReport();
-  }, [openTicketSearchText]);
+  }, [pageIndex, pageSize, openTicketSearchText]);
 
   useEffect(() => {
     const timer = setTimeout(
@@ -298,7 +305,7 @@ export default function ClientDashboardReport() {
             )}
           </div>
 
-          <div className={ClientReportStyle.label}>Date</div>
+         
               <div className={ClientReportStyle.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                 <DatePicker
@@ -336,7 +343,24 @@ export default function ClientDashboardReport() {
         id="TicketsOpenListingTable"
         columns={tableColumnsMemo}
         bordered={false}
-        dataSource={clientData}        
+        dataSource={clientData}   
+        rowClassName={(row, index) => {
+            return row.client === 'Total' ? clientDashboardStyles["highlight-total-row"] : '';
+          }}   
+          pagination={{
+            onChange: (pageNum, pageSize) => {
+              setPageIndex(pageNum);
+              setPageSize(pageSize);
+              // getInvoiceTicketsFromPagination(pageNum, pageSize);
+            },
+            size: "small",
+            pageSize: pageSize,
+            pageSizeOptions: pageSizeOptions,
+            total: listDataCount,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${listDataCount} items`,
+            defaultCurrent: pageIndex,
+          }}  
       />
       }
 
