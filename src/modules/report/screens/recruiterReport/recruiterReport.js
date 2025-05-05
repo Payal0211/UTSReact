@@ -142,25 +142,30 @@ let headers = [
         dataIndex: "profileStage",
         fixed: "left",    
         width: "150px", 
-      },
-      {
-        title: "Achieved",
-        dataIndex: "finalTotal",
-        fixed: "left",    
-        width: "150px", 
-      },
+    },
+    {
+      title: "Achieved",
+      dataIndex: "finalTotal",
+      fixed: "left",    
+      width: "150px", 
+    },
     
 ]
 let weaks = [{h:'W1',k:'w1'},{h:'W2',k:'w2'},{h:'W3',k:'w3'},{h:'W4',k:'w4'},{h:'W5',k:'w5'}]
 
-weaks.forEach(we=>{
-    headers.push( {
-        title: `${RecruiterListData[0]?.month_Name ? `${RecruiterListData[0]?.month_Name}_`:''}${we.h}`,
-        dataIndex: we.k,
-        fixed: "left",  
-        width: "100px",   
-      },)
-})
+weaks.forEach(we => {
+  headers.push({
+    title: `${RecruiterListData[0]?.month_Name ? `${RecruiterListData[0]?.month_Name}_` : ''}${we.h}`,
+    dataIndex: we.k,
+    fixed: "left",
+    width: "100px",
+    render: (value) => {
+      return value === 0 ? "-" : value || "-";
+    },
+  });
+});
+
+
 
 return headers
 
@@ -285,13 +290,28 @@ return headers
               {isLoading ? (
         <TableSkeleton />
       ) : (
+        // <Table
+        //   scroll={{ x: "max-content" , y:'1vh'}}
+        //   dataSource={RecruiterListData}
+        //   columns={columns()}
+        //   // bordered
+        //   pagination={false}
+        // //   onChange={handleTableFilterChange}
+        // />
         <Table
-          scroll={{ x: "max-content" , y:'1vh'}}
+          scroll={{ x: "max-content", y: '1vh' }}
           dataSource={RecruiterListData}
           columns={columns()}
-          // bordered
           pagination={false}
-        //   onChange={handleTableFilterChange}
+          rowClassName={(record) => {
+            if (record.profileStage === 'Achieved Pipeline') return recruiterStyle.one;
+            if (record.profileStage === 'Pipeline') return recruiterStyle.two;
+            if (record.profileStage === 'Monthly Goal') return recruiterStyle.three;
+            if (record.profileStage === 'Interview to Select %') return recruiterStyle.four;
+            if (record.profileStage === 'Avg Profiles Shared Per Day') return recruiterStyle.five;
+            if (record.profileStage === 'Profiles to Interview %') return recruiterStyle.six;
+            return '';
+          }}
         />
       )}
 
