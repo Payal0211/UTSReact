@@ -432,7 +432,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 		}),
 		new SideBarModels({
 			id: 'taReport',
-			title: 'Ta Report',
+			title: 'TA Report',
 			isActive: false,
 			icon: RecruiterReportIcon,			
 			isChildren: true,
