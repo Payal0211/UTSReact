@@ -611,7 +611,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       tA_UserID: profileTargetDetails?.tA_UserID,
       target_StageID: 1,
       target_Number: targetValue,
-      target_Date: moment().format("YYYY-MM-DD"), // today's date
+      target_Date: startDate ?  moment(startDate).format('YYYY-MM-DD') : moment().format("YYYY-MM-DD"), // today's date
     };
     setLoadingTalentProfile(true);
     let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
@@ -811,7 +811,8 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
           cursor: "pointer",
         }}
         onClick={() => {
-          setShowProfileTarget(true);                          
+          setShowProfileTarget(true);     
+          console.log(result);                               
           setProfileTargetDetails({...result,id:result?.taskID,tA_UserID:result?.taUserID});
         }}
       >
