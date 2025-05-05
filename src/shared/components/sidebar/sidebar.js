@@ -19,6 +19,7 @@ import Invoice from 'assets/svg/invoice.svg';
 import EngagementDashboard from 'assets/svg/engagementDashboard.svg';
 import EngagementReport from 'assets/svg/engagementReport.png';
 import ClipBoardIcon from 'assets/svg/clipboard.svg'
+import RecruiterReportIcon from 'assets/svg/recruiterReport.svg'
 import JDEfficiencyReport from 'assets/svg/jdEfficiency.svg';
 import MedalIcon from 'assets/svg/medalIcon.svg';
 import GlobIcon from 'assets/svg/globIcon.svg';
@@ -294,6 +295,10 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
+	if(title === 'Recruiter' || title === 'ClientDashboard'){
+		isVisible =  true;
+		return isVisible
+	}
 
 	if(title === 'TA Dashboard'){
 		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 || ID === 9)?true : false;
@@ -424,6 +429,34 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isChildren: false,
 			branch: [],
 			isVisible: isAccess(usertypeID, 'Users')
+		}),
+		new SideBarModels({
+			id: 'taReport',
+			title: 'Ta Report',
+			isActive: false,
+			icon: RecruiterReportIcon,			
+			isChildren: true,
+			branch:[
+				new SideBarModels({
+					id: 'Recruiter',
+					title: 'Recruiter',
+					isActive: false,
+					icon: RecruiterReportIcon,
+					navigateTo: UTSRoutes.RECRUITERREPORT,
+					isVisible: isAccess(usertypeID, 'Recruiter'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'ClientDashboard',
+					title: 'Client Dashboard',
+					isActive: false,
+					icon: RecruiterReportIcon,
+					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
+					isVisible: isAccess(usertypeID, 'ClientDashboard'),
+					isChildren : false					
+				}),
+			
+			]
 		}),
 		new SideBarModels({
 			id: 'Talent',

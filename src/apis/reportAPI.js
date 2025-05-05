@@ -439,6 +439,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getLeaveReport');
 		}
 	},
+	getRecruiterReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.RECRUITER_REPORT
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getRecruiterReport');
+		}
+	},
 	getTalentOnboardReport: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -471,6 +488,23 @@ export const ReportAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.getAllNotesReport');
+		}
+	},
+	getClientDashboardReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.CLIENT_DASHBOARD_REPORT
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getClientDashboardReport');
 		}
 	},
 };

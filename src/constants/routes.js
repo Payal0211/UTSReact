@@ -19,6 +19,11 @@ const AMDashboard = React.lazy(() =>
 const TADashboard = React.lazy(() =>
 	import('modules/taDashboard/taDashboard'),
 );
+
+const RecruiterReport = React.lazy(() =>
+	import('modules/report/screens/recruiterReport/recruiterReport'),
+);
+
 const AllHiringRequest = React.lazy(() =>
 	import('modules/hiring request/screens/allHiringRequest/mainHRTabs'),
 );
@@ -183,6 +188,10 @@ const AddCompany = React.lazy(() =>
 	import('modules/company/screens/addCompany/addCompany')
 )
 
+const ClientDashboardReport = React.lazy(() => 
+	import('modules/report/screens/clientDashboardReport/clientDashboardReport')
+)
+
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
 
@@ -195,6 +204,7 @@ export default class UTSRoutes {
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static AMDASHBOARD = '/amdashboard';
 	static TADASHBOARD = '/tadashboard'
+	static RECRUITERREPORT = '/recruiter'
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static EDITNEWHR = '/allhiringrequest/addnewhr/:hrid';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
@@ -252,7 +262,8 @@ export default class UTSRoutes {
 	static TALENT_REPORT = "/talentReport";
 	static REVENUE_REPORT = "/revenueReport";
 	static TALENT_DOCUMENTS = '/talentDocument'
-	static TALENT_NOTES = '/talentNotes'
+	static TALENT_NOTES = '/talentNotes';
+	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 }
 
 export const navigateToComponent = {
@@ -436,6 +447,11 @@ export const navigateToComponent = {
 			<InvoiceReport />
 		</Suspense>
 	),
+	[UTSRoutes.RECRUITERREPORT]: (
+		<Suspense>
+			<RecruiterReport />
+		</Suspense>
+	),
 	[UTSRoutes.Leave]:(
 		<Suspense>
 			<LeaveReport />
@@ -556,7 +572,12 @@ export const navigateToComponent = {
 	<Suspense>
 		<AddCompany />
 	</Suspense>
-)
+),
+[UTSRoutes.CLIENT_DASHBOARD_REPORT]: (
+	<Suspense>
+		<ClientDashboardReport />
+	</Suspense>
+),
 };
 
 export const isAccess = (ID) =>{	
