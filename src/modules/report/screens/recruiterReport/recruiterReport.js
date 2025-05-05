@@ -35,6 +35,7 @@ import { TaDashboardDAO } from 'core/taDashboard/taDashboardDRO';
 import OnboardFilerList from 'modules/onBoardList/OnboardFilterList';
 
 
+
 export default function RecruiterReport() {
 const navigate = useNavigate()
  const [RecruiterListData, setRecruiterListData] = useState([]);
@@ -51,6 +52,7 @@ const navigate = useNavigate()
         taUserIDs: null,
       },
     });
+
   const [isLoading, setIsLoading] = useState(false);
    var date = new Date();
     const [monthDate, setMonthDate] = useState(new Date());
@@ -76,6 +78,7 @@ const navigate = useNavigate()
       });
     });
 // console.log(groupField,grouped,finalData)
+
     return finalData;
   }
   const getReportData= async() => {
@@ -88,7 +91,9 @@ const navigate = useNavigate()
       setIsLoading(true)
      const result = await ReportDAO.getRecruiterReportDAO(pl) 
      setIsLoading(false)
+
     //  console.log(result)
+
 
       if (result.statusCode === HTTPStatusCode.OK) {
            setRecruiterListData(groupByRowSpan(result.responseBody, "taName"));
@@ -246,6 +251,7 @@ return headers
                       <div className={recruiterStyle.filterLabel}> Add Filters</div>
                       <div className={recruiterStyle.filterCount}>{filteredTagLength}</div>
                     </div>
+
         
                     <div
                       className={recruiterStyle.searchFilterSet}
@@ -285,6 +291,7 @@ return headers
                       Search
                     </button> */}
         
+
                     <p
                       className={recruiterStyle.resetText}
                       style={{ width: "190px" }}
@@ -305,7 +312,7 @@ return headers
                                         style={{ height: "16px", marginRight: "16px" }}
                                       />
                                       <DatePicker
-                                        style={{ backgroundColor: "red",zIndex:4 }}
+                                        style={{ backgroundColor: "red" }}
                                         onKeyDown={(e) => {
                                           e.preventDefault();
                                           e.stopPropagation();
@@ -367,8 +374,6 @@ return headers
                 />
               </Suspense>
             )}
-
-
     </div>
   )
 }
