@@ -252,7 +252,7 @@ export default function ClientDashboardReport() {
             let payload = {
                 "searchText": openTicketSearchText,
                 "fromDate": start.toLocaleDateString("en-US"),
-                "toDate": start.toLocaleDateString("en-US"),
+                "toDate": end.toLocaleDateString("en-US"),
                 "pageIndex": pageIndex,
                 "pageSize": pageSize,
               };
