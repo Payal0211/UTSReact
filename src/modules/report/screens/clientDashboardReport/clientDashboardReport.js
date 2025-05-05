@@ -44,7 +44,7 @@ export default function ClientDashboardReport() {
                 // Check if the value is 'Total', if so return empty string, else return a link
                 return text === "Total" 
                   ? "" 
-                  : <a href={`/viewCompanyDetails/${result.companyID}`}>{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+                  : <a href={`/viewCompanyDetails/${result.companyID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
               },
           },
           
@@ -58,7 +58,7 @@ export default function ClientDashboardReport() {
         render: (text, result) => {
             // Check if the HR ID is not empty and return a link
             return text 
-              ? <a href={`/allhiringrequest/${result.hrid}`}>{text}</a>  // Replace `/hr/${text}` with the appropriate link you need
+              ? <a href={`/allhiringrequest/${result.hrid}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>  // Replace `/hr/${text}` with the appropriate link you need
               : text;
           },
       },
