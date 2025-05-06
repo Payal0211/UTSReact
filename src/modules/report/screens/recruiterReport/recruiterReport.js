@@ -77,8 +77,6 @@ const navigate = useNavigate()
         });
       });
     });
-// console.log(groupField,grouped,finalData)
-
     return finalData;
   }
   const getReportData= async() => {
@@ -91,9 +89,6 @@ const navigate = useNavigate()
       setIsLoading(true)
      const result = await ReportDAO.getRecruiterReportDAO(pl) 
      setIsLoading(false)
-
-    //  console.log(result)
-
 
       if (result.statusCode === HTTPStatusCode.OK) {
            setRecruiterListData(groupByRowSpan(result.responseBody, "taName"));
@@ -286,16 +281,7 @@ return headers
                           }}
                         />
                       )}
-                    </div>
-                    {/* <button
-                      style={{ marginLeft: "15px" }}
-                      type="submit"
-                      className={recruiterStyle.btnPrimary}
-                      onClick={() => {}}
-                    >
-                      Search
-                    </button> */}
-        
+                    </div>               
 
                     <p
                       className={recruiterStyle.resetText}
