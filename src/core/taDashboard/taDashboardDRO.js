@@ -6,9 +6,9 @@ import { Navigate } from 'react-router-dom';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const TaDashboardDAO = {
-    getAllMasterDAO: async function () {
+    getAllMasterDAO: async function (type) {
         try {
-            const taResult = await TaDashboardAPI.getAllMasterRequest();
+            const taResult = await TaDashboardAPI.getAllMasterRequest(type);
             if (taResult) {
                 const statusCode = taResult['statusCode'];
                 if (statusCode === HTTPStatusCode.OK) {

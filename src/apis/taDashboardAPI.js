@@ -4,12 +4,12 @@ import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const TaDashboardAPI = {
-	getAllMasterRequest: async function () {
+	getAllMasterRequest: async function (type) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_ALL_MASTER_Data
+			TaDashboardURL.GET_ALL_MASTER_Data + `${type? `?reportType=${type}` : ''}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

@@ -25,7 +25,7 @@ export default function ClientDashboardReport() {
   
   const [dateError, setDateError] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [listDataCount, setListDataCount] = useState(0);
 
@@ -70,13 +70,7 @@ export default function ClientDashboardReport() {
         width: "150px",
          fixed: "left",
       },
-      {
-        title: "AI Interview",
-        dataIndex: "aiInterview",
-        key: "aiInterview",
-        align: "center",
-        width: "120px",
-      },
+     
       {
         title: "Total Profiles",
         dataIndex: "totalProfiles",
@@ -88,13 +82,6 @@ export default function ClientDashboardReport() {
         title: "Profiles",
         dataIndex: "profiles",
         key: "profiles",
-        align: "center",
-        width: "100px",
-      },
-      {
-        title: "Duplicate",
-        dataIndex: "duplicate",
-        key: "duplicate",
         align: "center",
         width: "100px",
       },
@@ -210,6 +197,20 @@ export default function ClientDashboardReport() {
         align: "center",
         width: "100px",
       },
+      {
+        title: "AI Interview",
+        dataIndex: "aiInterview",
+        key: "aiInterview",
+        align: "center",
+        width: "120px",
+      },
+      {
+        title: "Duplicate",
+        dataIndex: "duplicate",
+        key: "duplicate",
+        align: "center",
+        width: "100px",
+      },
     ];
   }, [clientData]);
   
@@ -307,7 +308,7 @@ export default function ClientDashboardReport() {
             <input
               type={InputType.TEXT}
               className={clientDashboardStyles.searchInput}
-              placeholder="Search Table"
+              placeholder="Client, HR ID, Recruiter"
               value={openTicketDebounceText}
               onChange={(e) => {
                 // setopenTicketSearchText(e.target.value);
