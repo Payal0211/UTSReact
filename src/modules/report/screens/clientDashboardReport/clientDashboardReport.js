@@ -288,13 +288,14 @@ export default function ClientDashboardReport() {
                 "searchText": openTicketSearchText,
                 "fromDate": start.toLocaleDateString("en-US"),
                 "toDate": end.toLocaleDateString("en-US"),
-                "pageIndex": pageIndex,
+                "pageIndex": 1,
                 "pageSize": pageSize,
               };
+              setPageIndex(1);
             setLoading(true)
             const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
             setLoading(false)
-            console.log("result ", apiResult);
+
             if (apiResult?.statusCode === 200) {        
                 setClientData(apiResult.responseBody?.rows);        
                 setListDataCount(apiResult.responseBody?.totalrows);      
@@ -304,7 +305,7 @@ export default function ClientDashboardReport() {
         }
       }
     },
-    []
+    [openTicketSearchText,pageSize]
   );
 
   useEffect(() => {
