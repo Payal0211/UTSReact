@@ -345,6 +345,7 @@ export default function TADashboard() {
             let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
             if (val === "Fasttrack") {
               setShowProfileTarget(true);
+              setStartTargetDate(startDate)
               setProfileTargetDetails({ ...result, index: index });
               return;
             }
