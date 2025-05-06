@@ -378,7 +378,34 @@ export default function ClientDashboardReport() {
                       <div className={clientDashboardStyles.filterLabel}> Add Filters</div>
                       <div className={clientDashboardStyles.filterCount}>{filteredTagLength}</div>
                     </div>       
-                                 
+
+                    <div className={clientDashboardStyles.searchFilterSet} style={{marginLeft:'10px'}}>
+                      <SearchSVG style={{ width: "16px", height: "16px" }} />
+                      <input
+                        type={InputType.TEXT}
+                        className={clientDashboardStyles.searchInput}
+                        placeholder="Client, HR ID, Recruiter"
+                        value={openTicketDebounceText}
+                        onChange={(e) => {
+                          // setopenTicketSearchText(e.target.value);
+                          setopenTicketDebounceText(e.target.value);
+                        }}
+                      />
+                      {openTicketDebounceText && (
+                        <CloseSVG
+                          style={{
+                            width: "16px",
+                            height: "16px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            //   setopenTicketSearchText("");
+                            setopenTicketDebounceText("");
+                          }}
+                        />
+                      )}
+                    </div>
+
                     <p
                       className={clientDashboardStyles.resetText}
                       style={{ width: "190px" }}
@@ -389,32 +416,7 @@ export default function ClientDashboardReport() {
                       Reset Filter
                     </p>
                  
-                  <div className={clientDashboardStyles.searchFilterSet}>
-                    <SearchSVG style={{ width: "16px", height: "16px" }} />
-                    <input
-                      type={InputType.TEXT}
-                      className={clientDashboardStyles.searchInput}
-                      placeholder="Client, HR ID, Recruiter"
-                      value={openTicketDebounceText}
-                      onChange={(e) => {
-                        // setopenTicketSearchText(e.target.value);
-                        setopenTicketDebounceText(e.target.value);
-                      }}
-                    />
-                    {openTicketDebounceText && (
-                      <CloseSVG
-                        style={{
-                          width: "16px",
-                          height: "16px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          //   setopenTicketSearchText("");
-                          setopenTicketDebounceText("");
-                        }}
-                      />
-                    )}
-                  </div>
+                 
 
                 </div>
                 <div className={ClientReportStyle.calendarFilter}>              
