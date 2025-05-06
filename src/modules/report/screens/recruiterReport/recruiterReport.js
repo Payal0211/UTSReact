@@ -119,7 +119,7 @@ const navigate = useNavigate()
 
    const getFilters = async () => {
       setIsLoading(true);
-      let filterResult = await TaDashboardDAO.getAllMasterDAO();
+      let filterResult = await TaDashboardDAO.getAllMasterDAO('RR');
       setIsLoading(false);
       if (filterResult.statusCode === HTTPStatusCode.OK) {
         setFiltersList(filterResult && filterResult?.responseBody);
