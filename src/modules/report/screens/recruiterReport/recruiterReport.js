@@ -198,6 +198,13 @@ let headers = [
       dataIndex: "finalTotal",
       fixed: "left",    
       width: "150px", 
+      render: (value) => {
+        const numericValue = Number(value);
+        if (value == null || numericValue === 0) {
+          return "-";
+        }    
+        return value;
+      },
     },
     
 ]
