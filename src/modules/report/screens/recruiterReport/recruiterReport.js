@@ -304,12 +304,13 @@ return headers
           columns={columns()}
           pagination={false}
           rowClassName={(record) => {
-            if (record.profileStage === 'Achieved Pipeline') return recruiterStyle.one;
-            if (record.profileStage === 'Pipeline') return recruiterStyle.two;
-            if (record.profileStage === 'Monthly Goal') return recruiterStyle.three;
-            if (record.profileStage === 'Interview to Select %') return recruiterStyle.four;
-            if (record.profileStage === 'Avg Profiles Shared Per Day') return recruiterStyle.five;
-            if (record.profileStage === 'Profiles to Interview %') return recruiterStyle.six;
+            const stage = record.profileStage || '';            
+            if (stage.includes('Achieved Pipeline')) return recruiterStyle.one;
+            if (stage.includes('Pipeline')) return recruiterStyle.two;
+            if (stage.includes('Monthly Goal')) return recruiterStyle.three;
+            if (stage.includes('Interview to Select %')) return recruiterStyle.four;
+            if (stage.includes('Avg Profiles Shared Per Day')) return recruiterStyle.five;
+            if (stage.includes('Profiles to Interview %')) return recruiterStyle.six;            
             return '';
           }}
         />

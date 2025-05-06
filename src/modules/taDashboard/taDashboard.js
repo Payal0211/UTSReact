@@ -2001,11 +2001,16 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       {isLoading ? (
         <TableSkeleton />
       ) : (
-        <Table
+        TaListData?.length ? <Table
           scroll={{ x: "max-content" , y:'1vh'}}
           dataSource={TaListData}
           columns={columns}
-          // bordered
+          pagination={false}
+          onChange={handleTableFilterChange}
+        /> : 
+        <Table
+          dataSource={[]}
+          columns={columns}
           pagination={false}
           onChange={handleTableFilterChange}
         />
