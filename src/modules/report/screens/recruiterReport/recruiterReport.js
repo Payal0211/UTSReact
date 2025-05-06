@@ -77,8 +77,6 @@ const navigate = useNavigate()
         });
       });
     });
-// console.log(groupField,grouped,finalData)
-
     return finalData;
   }
   const getReportData= async() => {
@@ -91,9 +89,6 @@ const navigate = useNavigate()
       setIsLoading(true)
      const result = await ReportDAO.getRecruiterReportDAO(pl) 
      setIsLoading(false)
-
-    //  console.log(result)
-
 
       if (result.statusCode === HTTPStatusCode.OK) {
            setRecruiterListData(groupByRowSpan(result.responseBody, "taName"));
@@ -119,7 +114,7 @@ const navigate = useNavigate()
 
    const getFilters = async () => {
       setIsLoading(true);
-      let filterResult = await TaDashboardDAO.getAllMasterDAO();
+      let filterResult = await TaDashboardDAO.getAllMasterDAO('RR');
       setIsLoading(false);
       if (filterResult.statusCode === HTTPStatusCode.OK) {
         setFiltersList(filterResult && filterResult?.responseBody);
@@ -197,25 +192,30 @@ let headers = [
         dataIndex: "profileStage",
         fixed: "left",    
         width: "150px", 
-      },
-      {
-        title: "Achieved",
-        dataIndex: "finalTotal",
-        fixed: "left",    
-        width: "150px", 
-      },
+    },
+    {
+      title: "Achieved",
+      dataIndex: "finalTotal",
+      fixed: "left",    
+      width: "150px", 
+    },
     
 ]
 let weaks = [{h:'W1',k:'w1'},{h:'W2',k:'w2'},{h:'W3',k:'w3'},{h:'W4',k:'w4'},{h:'W5',k:'w5'}]
 
-weaks.forEach(we=>{
-    headers.push( {
-        title: `${RecruiterListData[0]?.month_Name ? `${RecruiterListData[0]?.month_Name}_`:''}${we.h}`,
-        dataIndex: we.k,
-        fixed: "left",  
-        width: "100px",   
-      },)
-})
+weaks.forEach(we => {
+  headers.push({
+    title: `${RecruiterListData[0]?.month_Name ? `${RecruiterListData[0]?.month_Name}_` : ''}${we.h}`,
+    dataIndex: we.k,
+    fixed: "left",
+    width: "100px",
+    render: (value) => {
+      return value === 0 ? "-" : value || "-";
+    },
+  });
+});
+
+
 
 return headers
 
@@ -281,16 +281,7 @@ return headers
                           }}
                         />
                       )}
-                    </div>
-                    {/* <button
-                      style={{ marginLeft: "15px" }}
-                      type="submit"
-                      className={recruiterStyle.btnPrimary}
-                      onClick={() => {}}
-                    >
-                      Search
-                    </button> */}
-        
+                    </div>               
 
                     <p
                       className={recruiterStyle.resetText}
@@ -342,13 +333,31 @@ return headers
               {isLoading ? (
         <TableSkeleton />
       ) : (
+        // <Table
+        //   scroll={{ x: "max-content" , y:'1vh'}}
+        //   dataSource={RecruiterListData}
+        //   columns={columns()}
+        //   // bordered
+        //   pagination={false}
+        // //   onChange={handleTableFilterChange}
+        // />
         <Table
-          scroll={{ x: "max-content" , y:'1vh'}}
+          scroll={{ x: "max-content", y: '1vh' }}
           dataSource={RecruiterListData}
           columns={columns()}
-          // bordered
           pagination={false}
-        //   onChange={handleTableFilterChange}
+          rowClassName={(record) => {
+            const stage = record.profileStage || '';  
+            if (stage.includes('Avg Profiles Shared Per Day')) return recruiterStyle.one;
+            if (stage.includes('Profiles to Interview %')) return recruiterStyle.two;            
+            if (stage.includes('Interview to Select %')) return recruiterStyle.three;
+            if (stage.includes('Monthly Goal')) return recruiterStyle.four;
+            if (stage.includes('Achieved Pipeline')) return recruiterStyle.five;
+            if (stage.includes('Actual Pipeline')) return recruiterStyle.six;
+            if (stage.includes('Lost Pipeline')) return recruiterStyle.seven;
+            if (stage.includes('Total Pipeline')) return recruiterStyle.four;
+            return '';
+          }}
         />
       )}
 

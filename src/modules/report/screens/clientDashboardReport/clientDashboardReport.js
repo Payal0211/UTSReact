@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback, Suspense } from "react";
 import clientDashboardStyles from "./clientDashboard.module.css";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
@@ -10,8 +10,18 @@ import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import ClientReportStyle from "../clientReport/clientReport.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
+import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
+import { HTTPStatusCode } from "constants/network";
+import UTSRoutes from "constants/routes";
+import { useNavigate } from "react-router-dom";
+import OnboardFilerList from "modules/onBoardList/OnboardFilterList";
+import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
+import { allHRConfig } from "modules/hiring request/screens/allHiringRequest/allHR.config";
+import { allEngagementConfig } from "modules/engagement/screens/engagementList/allEngagementConfig";
 
 export default function ClientDashboardReport() {  
+
+  const navigate = useNavigate();  
   const [clientData, setClientData] = useState([]);
   const [isLoading, setLoading] = useState(false); 
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
@@ -25,10 +35,26 @@ export default function ClientDashboardReport() {
   
   const [dateError, setDateError] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [listDataCount, setListDataCount] = useState(0);
-
+  const [filtersList, setFiltersList] = useState({});
+  const [isAllowFilters, setIsAllowFilters] = useState(false);
+  const [appliedFilter, setAppliedFilters] = useState(new Map());
+  const [checkedState, setCheckedState] = useState(new Map());
+  const [filteredTagLength, setFilteredTagLength] = useState(0);
+  const [getHTMLFilter, setHTMLFilter] = useState(false);
+  const [tableFilteredState, setTableFilteredState] = useState({
+      filterFields_OnBoard: {
+        taUserIDs: null,
+    },
+  });
+  const onRemoveHRFilters = () => {
+    setTimeout(() => {
+      setIsAllowFilters(false);
+    }, 300);
+    setHTMLFilter(false);
+  };
   var date = new Date();
 
   const tableColumnsMemo = useMemo(() => {
@@ -70,13 +96,7 @@ export default function ClientDashboardReport() {
         width: "150px",
          fixed: "left",
       },
-      {
-        title: "AI Interview",
-        dataIndex: "aiInterview",
-        key: "aiInterview",
-        align: "center",
-        width: "120px",
-      },
+     
       {
         title: "Total Profiles",
         dataIndex: "totalProfiles",
@@ -88,13 +108,6 @@ export default function ClientDashboardReport() {
         title: "Profiles",
         dataIndex: "profiles",
         key: "profiles",
-        align: "center",
-        width: "100px",
-      },
-      {
-        title: "Duplicate",
-        dataIndex: "duplicate",
-        key: "duplicate",
         align: "center",
         width: "100px",
       },
@@ -210,6 +223,20 @@ export default function ClientDashboardReport() {
         align: "center",
         width: "100px",
       },
+      {
+        title: "AI Interview",
+        dataIndex: "aiInterview",
+        key: "aiInterview",
+        align: "center",
+        width: "120px",
+      },
+      {
+        title: "Duplicate",
+        dataIndex: "duplicate",
+        key: "duplicate",
+        align: "center",
+        width: "100px",
+      },
     ];
   }, [clientData]);
   
@@ -221,11 +248,11 @@ export default function ClientDashboardReport() {
         "toDate": endDate.toLocaleDateString("en-US"),
         "pageIndex": pageIndex,
         "pageSize": pageSize,
+        "taUserIDs":tableFilteredState?.filterFields_OnBoard?.taUserIDs,
       };
     setLoading(true)
     const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
     setLoading(false)
-    console.log("result ", apiResult);
     if (apiResult?.statusCode === 200) {        
         setClientData(apiResult.responseBody?.rows);        
         setListDataCount(apiResult.responseBody?.totalrows);      
@@ -233,7 +260,6 @@ export default function ClientDashboardReport() {
         setClientData([]);
     }
   }; 
-
 
   const onCalenderFilter = useCallback(
     async (dates) => {
@@ -262,13 +288,14 @@ export default function ClientDashboardReport() {
                 "searchText": openTicketSearchText,
                 "fromDate": start.toLocaleDateString("en-US"),
                 "toDate": end.toLocaleDateString("en-US"),
-                "pageIndex": pageIndex,
+                "pageIndex": 1,
                 "pageSize": pageSize,
               };
+              setPageIndex(1);
             setLoading(true)
             const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
             setLoading(false)
-            console.log("result ", apiResult);
+
             if (apiResult?.statusCode === 200) {        
                 setClientData(apiResult.responseBody?.rows);        
                 setListDataCount(apiResult.responseBody?.totalrows);      
@@ -278,13 +305,13 @@ export default function ClientDashboardReport() {
         }
       }
     },
-    []
+    [openTicketSearchText,pageSize]
   );
-
 
   useEffect(() => {
     getClientDashboardReport();
-  }, [pageIndex, pageSize, openTicketSearchText]);
+  }, [pageIndex, pageSize, openTicketSearchText,tableFilteredState]);
+
 
   useEffect(() => {
     const timer = setTimeout(
@@ -294,20 +321,81 @@ export default function ClientDashboardReport() {
     return () => clearTimeout(timer);
   }, [openTicketDebounceText]);
 
+
+  const getFilters = async () => {
+    setLoading(true);
+    let filterResult = await TaDashboardDAO.getAllMasterDAO('CR');
+    setLoading(false);
+    if (filterResult.statusCode === HTTPStatusCode.OK) {
+      setFiltersList(filterResult && filterResult?.responseBody);
+    } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+      return navigate(UTSRoutes.LOGINROUTE);
+    } else if (
+      filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+    ) {
+      return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+    } else {
+      return "NO DATA FOUND";
+    }
+  };
+
+  useEffect(()=>{
+    getFilters()
+  },[]);
+
+ const toggleHRFilter = useCallback(() => {
+      !getHTMLFilter
+        ? setIsAllowFilters(!isAllowFilters)
+        : setTimeout(() => {
+            setIsAllowFilters(!isAllowFilters);
+          }, 300);
+      setHTMLFilter(!getHTMLFilter);
+    }, [getHTMLFilter, isAllowFilters]);
+
+  const clearFilters = () =>{
+    setAppliedFilters(new Map());
+      setCheckedState(new Map());
+      setFilteredTagLength(0);
+      setTableFilteredState({
+        filterFields_OnBoard: {
+          taUserIDs: null,
+        },
+      });      
+  }
+
   return (
     <div className={clientDashboardStyles.hiringRequestContainer}>
+      
       <div className={clientDashboardStyles.addnewHR} style={{ margin: "0" }}>
         <div className={clientDashboardStyles.hiringRequest}>Client Dashboard</div>
       </div>
 
       <div className={clientDashboardStyles.filterContainer}>
         <div className={clientDashboardStyles.filterSets}>
+        <div className={clientDashboardStyles.filterSetsInner}>
+                    <div className={clientDashboardStyles.addFilter} onClick={toggleHRFilter}>
+                      <FunnelSVG style={{ width: "16px", height: "16px" }} />
+        
+                      <div className={clientDashboardStyles.filterLabel}> Add Filters</div>
+                      <div className={clientDashboardStyles.filterCount}>{filteredTagLength}</div>
+                    </div>       
+                                 
+                    <p
+                      className={clientDashboardStyles.resetText}
+                      style={{ width: "190px" }}
+                      onClick={() => {
+                        clearFilters();
+                      }}
+                    >
+                      Reset Filter
+                    </p>
+                  </div>
           <div className={clientDashboardStyles.searchFilterSet}>
             <SearchSVG style={{ width: "16px", height: "16px" }} />
             <input
               type={InputType.TEXT}
               className={clientDashboardStyles.searchInput}
-              placeholder="Search Table"
+              placeholder="Client, HR ID, Recruiter"
               value={openTicketDebounceText}
               onChange={(e) => {
                 // setopenTicketSearchText(e.target.value);
@@ -388,7 +476,28 @@ export default function ClientDashboardReport() {
       />
       }
 
-    
+{isAllowFilters && (
+              <Suspense fallback={<div>Loading...</div>}>
+        
+                <OnboardFilerList
+                  setAppliedFilters={setAppliedFilters}
+                  appliedFilter={appliedFilter}
+                  setCheckedState={setCheckedState}
+                  checkedState={checkedState}
+                  // handleHRRequest={handleHRRequest}
+                  setTableFilteredState={setTableFilteredState}
+                  tableFilteredState={tableFilteredState}
+                  setFilteredTagLength={setFilteredTagLength}
+                  onRemoveHRFilters={() => onRemoveHRFilters()}
+                  getHTMLFilter={getHTMLFilter}
+                  hrFilterList={allHRConfig.hrFilterListConfig()}
+                  filtersType={allEngagementConfig.recruiterReportFilterTypeConfig(
+                    filtersList && filtersList
+                  )}
+                  clearFilters={clearFilters}
+                />
+              </Suspense>
+            )}
     </div>
   );
 }

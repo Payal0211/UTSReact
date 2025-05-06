@@ -41,11 +41,11 @@ import _, { filter } from "lodash";
 import { IoMdAddCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
 import { downloadToExcel } from "modules/report/reportUtils";
-import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { HttpStatusCode } from "axios";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { BsClipboard2CheckFill } from "react-icons/bs";
 import MoveToAssessment from "modules/hiring request/components/talentList/moveToAssessment";
 import { InterviewDAO } from "core/interview/interviewDAO";
@@ -99,10 +99,11 @@ export default function TADashboard() {
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
   const [profileInfo, setInfoforProfile] = useState({});
   const [hrTalentList, setHRTalentList] = useState([]);
-  const [dailyActivityTargets , setDailyActiveTargets ] = useState([]);
-  const [totalRevenueList ,setTotalRevenueList ] = useState([]);
+  const [dailyActivityTargets, setDailyActiveTargets] = useState([]);
+  const [totalRevenueList, setTotalRevenueList] = useState([]);
   const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
   const date = new Date();
+  const [startTargetDate, setStartTargetDate] = useState(date);
   const [startDate, setStartDate] = useState(date);
   const [showGoal, setShowGoal] = useState(false);
   const [showActivePipeline, setShowActivePipeline] = useState(true);
@@ -123,24 +124,24 @@ export default function TADashboard() {
   const [profileTargetDetails, setProfileTargetDetails] = useState({});
   const [targetValue, setTargetValue] = useState(5);
 
-  const [moveToAssessment,setMoveToAssessment] = useState(false)
-  const [talentToMove,setTalentToMove] = useState({})
-    const {
-        register :remarkregiter,
-        handleSubmit:remarkSubmit,
-        resetField: resetRemarkField,
-        clearErrors : clearRemarkError,
-        formState: { errors : remarkError},
-      } = useForm();
-const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
+  const [moveToAssessment, setMoveToAssessment] = useState(false);
+  const [talentToMove, setTalentToMove] = useState({});
+  const {
+    register: remarkregiter,
+    handleSubmit: remarkSubmit,
+    resetField: resetRemarkField,
+    clearErrors: clearRemarkError,
+    formState: { errors: remarkError },
+  } = useForm();
+  const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
   const [userData, setUserData] = useState({});
-	useEffect(() => {
-		const getUserResult = async () => {
-			let userData = UserSessionManagementController.getUserSession();
-			if (userData) setUserData(userData);
-		};
-		getUserResult();
-	}, []);
+  useEffect(() => {
+    const getUserResult = async () => {
+      let userData = UserSessionManagementController.getUserSession();
+      if (userData) setUserData(userData);
+    };
+    getUserResult();
+  }, []);
 
   // const groupedData = groupByRowSpan(rawData, 'ta');
 
@@ -183,7 +184,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
     getAllTAUsersList();
   }, []);
 
-  const updateTARowValue = async (value, key, params, index,targetValue) => {
+  const updateTARowValue = async (value, key, params, index, targetValue) => {
     let pl = {
       tA_UserID: params.tA_UserID,
       company_ID: params.company_ID,
@@ -232,7 +233,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
           ...newDS[index],
           [key]: value?.id,
           taskStatus: value?.data,
-        }
+        };
         // if(targetValue){
         //   nob.profile_Shared_Target = targetValue
         // }
@@ -459,40 +460,48 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
     setInfoforProfile(result);
   };
 
-  const getTalentProfilesDetailsfromGoalsTable = async (result, statusID, stageID) => {
+  const getTalentProfilesDetailsfromGoalsTable = async (
+    result,
+    statusID,
+    stageID
+  ) => {
     setShowTalentProfiles(true);
     setInfoforProfile(result);
     let pl = {
       hrID: result?.hiringRequest_ID,
       statusID: statusID,
-      stageID: statusID=== 0 ? null : stageID ? stageID : 0,
-      targetDate: moment(startDate).format('YYYY-MM-DD')
+      stageID: statusID === 0 ? null : stageID ? stageID : 0,
+      targetDate: moment(startDate).format("YYYY-MM-DD"),
     };
     setLoadingTalentProfile(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
-      setHRTalentListFourCount(hrResult.responseBody)
+      setHRTalentListFourCount(hrResult.responseBody);
     } else {
       setHRTalentList([]);
     }
   };
 
-  const getTalentProfilesDetailsfromTable = async (result, statusID, stageID) => {
+  const getTalentProfilesDetailsfromTable = async (
+    result,
+    statusID,
+    stageID
+  ) => {
     setShowTalentProfiles(true);
     setInfoforProfile(result);
     let pl = {
       hrID: result?.hiringRequest_ID,
       statusID: statusID,
-      stageID: statusID=== 0 ? null : stageID ? stageID : 0,
+      stageID: statusID === 0 ? null : stageID ? stageID : 0,
     };
     setLoadingTalentProfile(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
-      setHRTalentListFourCount(hrResult.responseBody)
+      setHRTalentListFourCount(hrResult.responseBody);
     } else {
       setHRTalentList([]);
     }
@@ -502,16 +511,16 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
     setShowTalentProfiles(true);
     setInfoforProfile(result);
     // statusID = 0 --> Total Talents
-// statusID = 2 --> Profile shared
-// statusID = 3 --> In Interview
-// statusID = 4 --> Offered
-// statusID = 10 --> Hired
-// statusID = 7, stageID = 1 --> Rejected, screening 
-// statusID = 7, stageID = 2 --> Rejected, Interview
+    // statusID = 2 --> Profile shared
+    // statusID = 3 --> In Interview
+    // statusID = 4 --> Offered
+    // statusID = 10 --> Hired
+    // statusID = 7, stageID = 1 --> Rejected, screening
+    // statusID = 7, stageID = 2 --> Rejected, Interview
     let pl = {
       hrID: result?.hiringRequest_ID,
       statusID: statusID,
-      stageID: statusID=== 0 ? null : stageID ? stageID : 0,
+      stageID: statusID === 0 ? null : stageID ? stageID : 0,
     };
     setLoadingTalentProfile(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
@@ -523,36 +532,39 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
     }
   };
 
-  const getTotalRevenue = async ()=>{
-    setpipelineLoading(true)
-   let result = await  TaDashboardDAO.getTotalRevenueRequestDAO()
-   let dailyResult = await TaDashboardDAO.getDailyActiveTargetsDAO()
-   setpipelineLoading(false)
-   if(result?.statusCode === HTTPStatusCode.OK){
-    if(result.responseBody.length){
-         setTotalRevenueList([...result.responseBody,{
-            bandwidthper: '',
-            goalRevenueStr: '',
-            sumOfTotalRevenue:result.responseBody[0].sumOfTotalRevenue,
-            sumOfTotalRevenueStr:result.responseBody[0].sumOfTotalRevenueStr,
-            taName: '',
+  const getTotalRevenue = async () => {
+    setpipelineLoading(true);
+    let result = await TaDashboardDAO.getTotalRevenueRequestDAO();
+    let dailyResult = await TaDashboardDAO.getDailyActiveTargetsDAO();
+    setpipelineLoading(false);
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      if (result.responseBody.length) {
+        setTotalRevenueList([
+          ...result.responseBody,
+          {
+            bandwidthper: "",
+            goalRevenueStr: "",
+            sumOfTotalRevenue: result.responseBody[0].sumOfTotalRevenue,
+            sumOfTotalRevenueStr: result.responseBody[0].sumOfTotalRevenueStr,
+            taName: "",
             taUserID: result.responseBody[0].taUserID,
-            totalRevenuePerUser:result.responseBody[0].totalRevenuePerUser,
-            totalRevenuePerUserStr: result.responseBody[0].totalRevenuePerUserStr,
-            TOTALROW:true
-          }])
-    }else{
-      setTotalRevenueList([])
+            totalRevenuePerUser: result.responseBody[0].totalRevenuePerUser,
+            totalRevenuePerUserStr:
+              result.responseBody[0].totalRevenuePerUserStr,
+            TOTALROW: true,
+          },
+        ]);
+      } else {
+        setTotalRevenueList([]);
+      }
+    } else {
+      setTotalRevenueList([]);
     }
- 
-   }else{
-    setTotalRevenueList([])
-  }
 
-   if(dailyResult?.statusCode=== HTTPStatusCode.OK){
-    setDailyActiveTargets(dailyResult.responseBody)
-   }
-  }
+    if (dailyResult?.statusCode === HTTPStatusCode.OK) {
+      setDailyActiveTargets(dailyResult.responseBody);
+    }
+  };
 
   const getGoalsDetails = async (date, head, tA_UserID) => {
     let pl = {
@@ -581,9 +593,9 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
     }
   }, [selectedHead, startDate, tableFilteredState]);
 
-  useEffect(()=>{
-    getTotalRevenue()
-  },[])
+  useEffect(() => {
+    getTotalRevenue();
+  }, []);
 
   const editTAforTask = (task) => {
     setShowEditTATask(true);
@@ -611,13 +623,13 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       tA_UserID: profileTargetDetails?.tA_UserID,
       target_StageID: 1,
       target_Number: targetValue,
-      target_Date: profileTargetDetails?.fromGoalsTable ?  moment(startDate).format('YYYY-MM-DD') : moment().format("YYYY-MM-DD"), // today's date
+      target_Date: moment(startTargetDate).format("YYYY-MM-DD"), // today's date
     };
     setLoadingTalentProfile(true);
     let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
     setLoadingTalentProfile(false);
     if (result.statusCode === HTTPStatusCode.OK) {
-      setShowProfileTarget(false);    
+      setShowProfileTarget(false);
       setGoalList(result.responseBody);
       let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
       updateTARowValue(
@@ -625,9 +637,10 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
         "task_StatusID",
         profileTargetDetails,
         profileTargetDetails?.index,
-        targetValue,
-      ); 
-      setTargetValue(5)
+        targetValue
+      );
+      setTargetValue(5);
+      setStartTargetDate(new Date());
       setProfileTargetDetails({});
     } else {
       message.error("Something went wrong!");
@@ -650,136 +663,184 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       title: "Goal (INR)",
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
-      render:(text,result)=>{
-        if(result.TOTALROW){
-          return ''
+      render: (text, result) => {
+        if (result.TOTALROW) {
+          return "";
         }
-        return text
-      }
+        return text;
+      },
     },
-    
+
     {
       title: "Actual Pipeline (INR)",
       dataIndex: "actualPipelineStr",
       key: "actualPipelineStr",
-      render:(text,result)=>{
-        return parseInt(text) > 0 ? text : ''
-      }
+      render: (text, result) => {
+        return parseInt(text) > 0 ? text : "";
+      },
     },
     {
       title: "Multiplier",
       dataIndex: "bandwidthper",
       key: "bandwidthper",
-      render:(text,result)=>{
-        return +text > 0 ? text : ''
-      }
+      render: (text, result) => {
+        return +text > 0 ? text : "";
+      },
     },
     {
       title: "Achieve Pipeline (INR)",
       dataIndex: "achievedPipelineStr",
       key: "achievedPipelineStr",
-      render:(text,result)=>{
-        if(result.TOTALROW){
-          return ''
+      render: (text, result) => {
+        if (result.TOTALROW) {
+          return "";
         }
-        return<div className={taStyles.todayText} >{text}</div>
-      }
+        return <div className={taStyles.todayText}>{text}</div>;
+      },
     },
     {
       title: "Lost Pipeline (INR)",
       dataIndex: "lostPipelineStr",
       key: "lostPipelineStr",
-      render:(text,result)=>{
-        if(result.TOTALROW){
-          return <div style={{display:'flex', justifyContent:'end'}}><strong>Total :</strong></div> 
-       }      
-        return<div className={taStyles.todayText} style={{background:'lightsalmon'}}>{text}</div>
-      }
+      render: (text, result) => {
+        if (result.TOTALROW) {
+          return (
+            <div style={{ display: "flex", justifyContent: "end" }}>
+              <strong>Total :</strong>
+            </div>
+          );
+        }
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "lightsalmon" }}
+          >
+            {text}
+          </div>
+        );
+      },
     },
     {
       title: "Pipeline (INR)",
       dataIndex: "totalRevenuePerUserStr",
       key: "totalRevenuePerUserStr",
-      render:(text,result)=>{
-        if(result.TOTALROW){
-          return <strong>{result.sumOfTotalRevenueStr}</strong>
+      render: (text, result) => {
+        if (result.TOTALROW) {
+          return <strong>{result.sumOfTotalRevenueStr}</strong>;
         }
-        return parseInt(text) > 0 ? text : ''
-      }
+        return parseInt(text) > 0 ? text : "";
+      },
     },
     // {
     //   title: "Total Pipeline (INR)",
     //   dataIndex: "totalRevenuePerUserStr",
     //   key: "totalRevenuePerUserStr",
     // },
-  ]
+  ];
 
-  const daiyTargetColumns =  [
+  const daiyTargetColumns = [
     {
-      title: <>Active HR <br/>Pipeline (INR)</>,
+      title: (
+        <>
+          Active HR <br />
+          Pipeline (INR)
+        </>
+      ),
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
-      render:(text)=>{
-        return<div className={taStyles.today1Text}>{text}</div>
-      }
+      render: (text) => {
+        return <div className={taStyles.today1Text}>{text}</div>;
+      },
     },
     {
-      title: <>Achieve HR <br/>Pipeline (INR)</>,
+      title: (
+        <>
+          Achieve HR <br />
+          Pipeline (INR)
+        </>
+      ),
       dataIndex: "achievedHRPipeLineStr",
       key: "achievedHRPipeLineStr",
-      render:(text)=>{
-        return<div className={taStyles.today2Text}>{text}</div>
-      }
+      render: (text) => {
+        return <div className={taStyles.today2Text}>{text}</div>;
+      },
     },
     {
-      title: <>Today Total Profile <br/> Shared Target</> ,
+      title: (
+        <>
+          Today Total Profile <br /> Shared Target
+        </>
+      ),
       dataIndex: "today_ProfilesharedTarget",
       key: "today_ProfilesharedTarget",
-      render:(text)=>{
-        return<div className={taStyles.todayText}>{text}</div>
-      }
+      render: (text) => {
+        return <div className={taStyles.todayText}>{text}</div>;
+      },
     },
     {
-      title: <>Today Total Profile <br/>Shared Achieved</>,
+      title: (
+        <>
+          Today Total Profile <br />
+          Shared Achieved
+        </>
+      ),
       dataIndex: "today_ProfilesharedAchieved",
       key: "today_ProfilesharedAchieved",
-      render:(text)=>{
-        return<div className={taStyles.todayText}>{text}</div>
-      }
+      render: (text) => {
+        return <div className={taStyles.todayText}>{text}</div>;
+      },
     },
     {
-      title: <>Today Total L1 <br/>Round Scheduled</>,
+      title: (
+        <>
+          Today Total L1 <br />
+          Round Scheduled
+        </>
+      ),
       dataIndex: "today_L1Round",
       key: "today_L1Round",
-      render:(text)=>{
-        return<div className={taStyles.todayText}>{text}</div>
-      }
+      render: (text) => {
+        return <div className={taStyles.todayText}>{text}</div>;
+      },
     },
     {
-      title: <>Yesterday Total Profile <br/>Shared Target</>,
+      title: (
+        <>
+          Yesterday Total Profile <br />
+          Shared Target
+        </>
+      ),
       dataIndex: "yesterday_ProfilesharedTarget",
       key: "yesterday_ProfilesharedTarget",
-      render:(text)=>{
-        return<div className={taStyles.yesterdayText}>{text}</div>
-      }
+      render: (text) => {
+        return <div className={taStyles.yesterdayText}>{text}</div>;
+      },
     },
     {
-      title: <>Yesterday Total Profile <br/> Shared Achieved</>,
+      title: (
+        <>
+          Yesterday Total Profile <br /> Shared Achieved
+        </>
+      ),
       dataIndex: "yesterday_ProfilesharedAchieved",
       key: "yesterday_ProfilesharedAchieved",
-      render:(text)=>{
-        return<div className={taStyles.yesterdayText}>{text}</div>
-      }
+      render: (text) => {
+        return <div className={taStyles.yesterdayText}>{text}</div>;
+      },
     },
     {
-      title: <>Yesterday Total L1 <br/> Round Scheduled</>,
+      title: (
+        <>
+          Yesterday Total L1 <br /> Round Scheduled
+        </>
+      ),
       dataIndex: "yesterday_L1Round",
       key: "yesterday_L1Round",
-      render:(text)=>{
-        return<div className={taStyles.yesterdayText}>{text}</div>
-      }
+      render: (text) => {
+        return <div className={taStyles.yesterdayText}>{text}</div>;
+      },
     },
-  ]
+  ];
 
   const goalColumns = [
     {
@@ -801,70 +862,106 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       title: "Profiles Shared Target",
       dataIndex: "profiles_Shared_Target",
       key: "profiles_Shared_Target",
-      align: 'center',
-      render:(text,result)=>{
-        return <p
-        style={{
-          color: "blue",
-          fontWeight: "bold",
-          textDecoration: "underline",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          setShowProfileTarget(true);     
-          console.log(result);                               
-          setProfileTargetDetails({...result,id:result?.taskID,tA_UserID:result?.taUserID,fromGoalsTable:true});
-        }}
-      >
-        {text}
-      </p>
-      }
+      align: "center",
+      render: (text, result) => {
+        return (
+          <Tooltip title={"Edit Target"}>
+            <p
+              style={{
+                color: "green",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setShowProfileTarget(true);
+                setProfileTargetDetails({
+                  ...result,
+                  id: result?.taskID,
+                  tA_UserID: result?.taUserID,
+                  fromGoalsTable: true,
+                });
+              }}
+            >
+              {text}
+            </p>
+          </Tooltip>
+        );
+      },
     },
     {
       title: "Profiles Shared Achieved",
       dataIndex: "profiles_Shared_Achieved",
       key: "profiles_Shared_Achieved",
-      align: 'center',
-      render:(text,result)=>{
-        return +text > 0 ?   <p
-        style={{
-          color: "blue",
-          fontWeight: "bold",
-          textDecoration: "underline",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          getTalentProfilesDetailsfromGoalsTable({...result,hiringRequest_ID:result.hiringRequestID,companyName: result.company ,taName: result.ta , hrNumber: result.hrTitle, isFromGoal:true}, 2);
-          setProfileStatusID(2);
-          hrTalentListFourCount([])
-        }}
-      >
-        {text}
-      </p> : ''
-      }
+      align: "center",
+      render: (text, result) => {
+        return +text > 0 ? (
+          <p
+            style={{
+              color: "blue",
+              fontWeight: "bold",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              getTalentProfilesDetailsfromGoalsTable(
+                {
+                  ...result,
+                  hiringRequest_ID: result.hiringRequestID,
+                  companyName: result.company,
+                  taName: result.ta,
+                  hrNumber: result.hrTitle,
+                  isFromGoal: true,
+                },
+                2
+              );
+              setProfileStatusID(2);
+              hrTalentListFourCount([]);
+            }}
+          >
+            {text}
+          </p>
+        ) : (
+          ""
+        );
+      },
     },
     {
       title: "L1 Interviews Scheduled",
       dataIndex: "interviews_Done_Target",
       key: "interviews_Done_Target",
-      align: 'center',
-      render:(text,result)=>{
-        return +text > 0 ?   <p
-        style={{
-          color: "blue",
-          fontWeight: "bold",
-          textDecoration: "underline",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          getTalentProfilesDetailsfromGoalsTable({...result,hiringRequest_ID:result.hiringRequestID,companyName: result.company ,taName: result.ta , hrNumber: result.hrTitle, isFromGoal:true}, 3);
-          setProfileStatusID(3);
-          hrTalentListFourCount([])
-        }}
-      >
-        {text}
-      </p> : ''
-      }
+      align: "center",
+      render: (text, result) => {
+        return +text > 0 ? (
+          <p
+            style={{
+              color: "blue",
+              fontWeight: "bold",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              getTalentProfilesDetailsfromGoalsTable(
+                {
+                  ...result,
+                  hiringRequest_ID: result.hiringRequestID,
+                  companyName: result.company,
+                  taName: result.ta,
+                  hrNumber: result.hrTitle,
+                  isFromGoal: true,
+                },
+                3
+              );
+              setProfileStatusID(3);
+              hrTalentListFourCount([]);
+            }}
+          >
+            {text}
+          </p>
+        ) : (
+          ""
+        );
+      },
     },
     // {
     //   title: "Interviews Done Achieved",
@@ -889,30 +986,44 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       dataIndex: "talentStatus",
       key: "talentStatus",
       render: (_, item) => (
-        <div style={{display:'flex',alignItems:'center', justifyContent:'space-between'}}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           {All_Hiring_Request_Utils.GETTALENTSTATUS(
             parseInt(item?.talentStatusColor),
             item?.talentStatus
           )}
 
-          {(item?.statusID === 2 || item?.statusID === 3) &&  
-            <IconContext.Provider value={{ color: '#FFDA30', style: { width:'16px',height:'16px' , cursor:'pointer'} }}><Tooltip title="Move to Assessment" placement="top" >
-              <span
-              // style={{
-              //   background: 'red'
-              // }}
-              onClick={()=>{
-                setMoveToAssessment(true)
-                setTalentToMove(prev => ({...prev,ctpID:item.ctpid}));
+          {(item?.statusID === 2 || item?.statusID === 3) && (
+            <IconContext.Provider
+              value={{
+                color: "#FFDA30",
+                style: { width: "16px", height: "16px", cursor: "pointer" },
               }}
-              style={{padding:'0'}}>
-              {' '}
-              <BsClipboard2CheckFill />
-            </span>       </Tooltip>
-            </IconContext.Provider> }
-         
-          
-        {/* <Tooltip title={"Move to Assessment"}>
+            >
+              <Tooltip title="Move to Assessment" placement="top">
+                <span
+                  // style={{
+                  //   background: 'red'
+                  // }}
+                  onClick={() => {
+                    setMoveToAssessment(true);
+                    setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
+                  }}
+                  style={{ padding: "0" }}
+                >
+                  {" "}
+                  <BsClipboard2CheckFill />
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
+          )}
+
+          {/* <Tooltip title={"Move to Assessment"}>
         <BsClipboard2CheckFill style={{width:'16px', height: "16px", margin: "16px",marginRight:'0', cursor:'pointer' }} onClick={()=>{
           setMoveToAssessment(true)
           console.log("clicked")
@@ -1005,43 +1116,44 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
           >
             {text}
           </a>{" "}
-          {userData?.showTADashboardDropdowns && <>
-            <br />
-          <IconContext.Provider
-            value={{
-              color: "green",
-              style: {
-                width: "30px",
-                height: "30px",
-                marginTop: "5px",
-                cursor: "pointer",
-              },
-            }}
-          >
-            {" "}
-            <Tooltip
-              title={`Add task for TA ${row.taName} in ${text}`}
-              placement="top"
-            >
-              <span
-                onClick={() => {
-                  setIsAddNewRow(true);
-                  setNewTAUserValue(row.tA_UserID);
-                  setNewTAHeadUserValue(selectedHead);
-                  getCompanySuggestionHandler(row.tA_UserID);
-                  setselectedCompanyID(row?.company_ID);
-                  getHRLISTForComapny(row?.company_ID);
+          {userData?.showTADashboardDropdowns && (
+            <>
+              <br />
+              <IconContext.Provider
+                value={{
+                  color: "green",
+                  style: {
+                    width: "30px",
+                    height: "30px",
+                    marginTop: "5px",
+                    cursor: "pointer",
+                  },
                 }}
-                className={taStyles.feedbackLabel}
-                style={{ padding: "10px" }}
               >
                 {" "}
-                <IoMdAddCircle />
-              </span>{" "}
-            </Tooltip>
-          </IconContext.Provider>
-          </> }
-        
+                <Tooltip
+                  title={`Add task for TA ${row.taName} in ${text}`}
+                  placement="top"
+                >
+                  <span
+                    onClick={() => {
+                      setIsAddNewRow(true);
+                      setNewTAUserValue(row.tA_UserID);
+                      setNewTAHeadUserValue(selectedHead);
+                      getCompanySuggestionHandler(row.tA_UserID);
+                      setselectedCompanyID(row?.company_ID);
+                      getHRLISTForComapny(row?.company_ID);
+                    }}
+                    className={taStyles.feedbackLabel}
+                    style={{ padding: "10px" }}
+                  >
+                    {" "}
+                    <IoMdAddCircle />
+                  </span>{" "}
+                </Tooltip>
+              </IconContext.Provider>
+            </>
+          )}
         </>
       ),
     },
@@ -1114,35 +1226,49 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       },
     },
     {
-      title: <>Profiles Shared <br/>Target / Achieved /<br/> L1 Round</>,
+      title: (
+        <>
+          Profiles Shared <br />
+          Target / Achieved /<br /> L1 Round
+        </>
+      ),
       dataIndex: "profile_Shared_Target",
       key: "profile_Shared_Target",
       fixed: "left",
       width: "150px",
-      render:(text,result,index)=>{
-        return <div style={{display:'flex'}}>
-        {result.task_StatusID === 1 ? <p
-        style={{
-          color: "blue",
-          fontWeight: "bold",
-          textDecoration: "underline",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          setShowProfileTarget(true);          
-          setProfileTargetDetails({ ...result, index: index });
-        }}
-      >
-        {text ?? 0}
-      </p> : text ?? 0}  / {result.profile_Shared_Achieved ?? 'NA'} / {result.interview_Scheduled_Target ?? 'NA'}
-        </div> 
-       }
+      render: (text, result, index) => {
+        return (
+          <div style={{ display: "flex" }}>
+            {result.task_StatusID === 1 ? (
+              <p
+                style={{
+                  color: "blue",
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setShowProfileTarget(true);
+                  setProfileTargetDetails({ ...result, index: index });
+                }}
+              >
+                {text ?? 0}
+              </p>
+            ) : (
+              text ?? 0
+            )}{" "}
+            / {result.profile_Shared_Achieved ?? "NA"} /{" "}
+            {result.interview_Scheduled_Target ?? "NA"}
+          </div>
+        );
+      },
     },
     {
       title: (
         <>
           Total Revenue <br />
-          Opportunity <br/>(INR)
+          Opportunity <br />
+          (INR)
         </>
       ),
       dataIndex: "totalRevenue_NoofTalentStr",
@@ -1199,7 +1325,8 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       title: (
         <>
           Revenue <br />
-          Opportunity <br/>(10%)
+          Opportunity <br />
+          (10%)
         </>
       ),
       dataIndex: "revenue_On10PerCTCStr",
@@ -1221,7 +1348,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       width: "80px",
       // fixed: "left",
     },
-   
+
     {
       title: (
         <>
@@ -1244,9 +1371,9 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
             }}
             onClick={() => {
               getTalentProfilesDetailsfromTable(result, 0);
-              setTalentToMove(result)
+              setTalentToMove(result);
               setProfileStatusID(0);
-              hrTalentListFourCount([])
+              hrTalentListFourCount([]);
             }}
           >
             {text}
@@ -1257,11 +1384,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       },
     },
     {
-      title: (
-        <>
-          Latest Updates
-        </>
-      ),
+      title: <>Latest Updates</>,
       dataIndex: "latestNotes",
       width: "250px",
       key: "latestNotes",
@@ -1337,7 +1460,6 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       },
     },
 
-
     {
       title: "HR Status",
       dataIndex: "tA_HR_Status",
@@ -1364,71 +1486,73 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       title: (
         <>
           Open Since <br />
-          {">"} 1 Month<br /> (Yes/no)
+          {">"} 1 Month
+          <br /> (Yes/no)
         </>
       ),
       dataIndex: "hrOpenSinceOneMonths",
       key: "hrOpenSinceOneMonths",
       width: "100px",
     },
-    userData?.showTADashboardDropdowns ?
-    {
-      title: "Action",
-      dataIndex: "",
-      key: "",
-      render: (_, row) => {
-        return (
-          <div>
-            <IconContext.Provider
-              value={{
-                color: "#FFDA30",
-                style: { width: "19px", height: "19px", cursor: "pointer" },
-              }}
-            >
-              {" "}
-              <Tooltip title="Edit" placement="top">
-                <span
-                  onClick={() => {
-                    editTAforTask(row);
+    userData?.showTADashboardDropdowns
+      ? {
+          title: "Action",
+          dataIndex: "",
+          key: "",
+          render: (_, row) => {
+            return (
+              <div>
+                <IconContext.Provider
+                  value={{
+                    color: "#FFDA30",
+                    style: { width: "19px", height: "19px", cursor: "pointer" },
                   }}
-                  style={{ padding: "0" }}
                 >
                   {" "}
-                  <GrEdit />
-                </span>{" "}
-              </Tooltip>
-            </IconContext.Provider>
+                  <Tooltip title="Edit" placement="top">
+                    <span
+                      onClick={() => {
+                        editTAforTask(row);
+                      }}
+                      style={{ padding: "0" }}
+                    >
+                      {" "}
+                      <GrEdit />
+                    </span>{" "}
+                  </Tooltip>
+                </IconContext.Provider>
 
-            <IconContext.Provider
-              value={{
-                color: "red",
-                style: {
-                  width: "19px",
-                  height: "19px",
-                  marginLeft: "10px",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              <Tooltip title="Remove" placement="top">
-                <span
-                  // style={{
-                  //   background: 'red'
-                  // }}
-                  onClick={() => {
-                    handleRemoveTask(row);
+                <IconContext.Provider
+                  value={{
+                    color: "red",
+                    style: {
+                      width: "19px",
+                      height: "19px",
+                      marginLeft: "10px",
+                      cursor: "pointer",
+                    },
                   }}
-                  style={{ padding: "0" }}
                 >
-                  {" "}
-                  <IoIosRemoveCircle />
-                </span>{" "}
-              </Tooltip>
-            </IconContext.Provider>
-          </div>
-        );
-      },
-    } : {},
+                  <Tooltip title="Remove" placement="top">
+                    <span
+                      // style={{
+                      //   background: 'red'
+                      // }}
+                      onClick={() => {
+                        handleRemoveTask(row);
+                      }}
+                      style={{ padding: "0" }}
+                    >
+                      {" "}
+                      <IoIosRemoveCircle />
+                    </span>{" "}
+                  </Tooltip>
+                </IconContext.Provider>
+              </div>
+            );
+          },
+        }
+      : {},
     // {
     //   title: <>#Profiles Submitted <br/> Yesterday</>,
     //   dataIndex: '',
@@ -1572,29 +1696,28 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
     }
   };
 
-    const saveRemark = async (d) =>{
-  
-      let pl = {
-        HiringRequestId :talentToMove?.hiringRequest_ID,
-        CtpId : talentToMove?.ctpID,
-        TalentId :talentToMove?.tA_UserID,     
-        Remark :d.remark
-      } 
+  const saveRemark = async (d) => {
+    let pl = {
+      HiringRequestId: talentToMove?.hiringRequest_ID,
+      CtpId: talentToMove?.ctpID,
+      TalentId: talentToMove?.tA_UserID,
+      Remark: d.remark,
+    };
 
-      setSaveRemarkLoading(true)
-      const result = await InterviewDAO.updateTalentAssessmentDAO(pl)
-      setSaveRemarkLoading(false)
-      if(result.statusCode === HTTPStatusCode.OK){
-        setMoveToAssessment(false);
-        resetRemarkField('remark');
-        clearRemarkError('remark')
-        getTalentProfilesDetailsfromTable(talentToMove, profileStatusID);
-        // callAPI(hrId)
-        // getHrUserData(hrId)
-      }else{
-        message.error('Something went wrong')
-      }
+    setSaveRemarkLoading(true);
+    const result = await InterviewDAO.updateTalentAssessmentDAO(pl);
+    setSaveRemarkLoading(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setMoveToAssessment(false);
+      resetRemarkField("remark");
+      clearRemarkError("remark");
+      getTalentProfilesDetailsfromTable(talentToMove, profileStatusID);
+      // callAPI(hrId)
+      // getHrUserData(hrId)
+    } else {
+      message.error("Something went wrong");
     }
+  };
 
   const saveEditTask = async () => {
     let pl = {
@@ -1736,9 +1859,9 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               data.revenue_On10PerCTCStr ?? ""
             }`;
           } else if (val.key === "totalRevenue_NoofTalentStr") {
-            obj[
-              "Total Revenue Opportunity (INR)"
-            ] = `${data.totalRevenue_NoofTalentStr ?? ""}`;
+            obj["Total Revenue Opportunity (INR)"] = `${
+              data.totalRevenue_NoofTalentStr ?? ""
+            }`;
           } else if (val.key === "noOfProfile_TalentsTillDate") {
             obj["No. of Active/Submitted Profiles till Date"] = `${
               data.noOfProfile_TalentsTillDate ?? ""
@@ -1755,25 +1878,20 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
             obj[
               "Latest Communication & Updates (Matcher to be Accountable)"
             ] = `${data?.latestNotes ?? ""}`;
-          }
-          else if (val.key === "profile_Shared_Target") {
-            obj[
-              "Profiles Shared  Target"
-            ] = `${data?.profile_Shared_Target ?? ""}`;
-          }
-          else if (val.key === "profile_Shared_Achieved") {
-            obj[
-              "Profiles  Shared  Achieved"
-            ] = `${data?.profile_Shared_Achieved ?? ""}`;
-          }
-          else if (val.key === "interview_Scheduled_Target") {
-            obj[
-              "L1 Interviews Scheduled"
-            ] = `${data?.interview_Scheduled_Target ?? ""}`;
+          } else if (val.key === "profile_Shared_Target") {
+            obj["Profiles Shared  Target"] = `${
+              data?.profile_Shared_Target ?? ""
+            }`;
+          } else if (val.key === "profile_Shared_Achieved") {
+            obj["Profiles  Shared  Achieved"] = `${
+              data?.profile_Shared_Achieved ?? ""
+            }`;
+          } else if (val.key === "interview_Scheduled_Target") {
+            obj["L1 Interviews Scheduled"] = `${
+              data?.interview_Scheduled_Target ?? ""
+            }`;
           } else if (val.key === "activeTR") {
-            obj[
-              "Active TRs"
-            ] = `${data?.activeTR ?? ""}`;
+            obj["Active TRs"] = `${data?.activeTR ?? ""}`;
           } else {
             obj[`${val.title}`] = data[`${val.key}`] ?? "";
           }
@@ -1792,7 +1910,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
         <div className={taStyles.hiringRequest}>TA Dashboard</div>
       </div> */}
 
-<div className={taStyles.filterContainer}>
+      <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
           <div
             className={taStyles.filterSetsInner}
@@ -1804,38 +1922,39 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
             >
               Active Pipeline Total Targets{" "}
               <ArrowDownSVG
-                style={{ rotate: showActivePipeline ? "180deg" : "", marginLeft: "10px" }}
+                style={{
+                  rotate: showActivePipeline ? "180deg" : "",
+                  marginLeft: "10px",
+                }}
               />
             </p>
           </div>
-
-          
         </div>
         {showActivePipeline === true ? (
           pipelineLoading ? (
             <TableSkeleton />
           ) : (
             <>
-             {userData?.showTADashboardDropdowns &&  <div style={{ padding: "0 20px" }}>
-              <Table
-                dataSource={dailyActivityTargets}
-                columns={daiyTargetColumns}
-                // bordered
-                pagination={false}
-              />
-            </div>}
-          
-             <div style={{ padding: "20px  20px" }}>
-              <Table
-                dataSource={totalRevenueList}
-                columns={totalRevenueColumns}
-                // bordered
-                pagination={false}
-              />
-            </div>
-            
+              {userData?.showTADashboardDropdowns && (
+                <div style={{ padding: "0 20px" }}>
+                  <Table
+                    dataSource={dailyActivityTargets}
+                    columns={daiyTargetColumns}
+                    // bordered
+                    pagination={false}
+                  />
+                </div>
+              )}
+
+              <div style={{ padding: "20px  20px" }}>
+                <Table
+                  dataSource={totalRevenueList}
+                  columns={totalRevenueColumns}
+                  // bordered
+                  pagination={false}
+                />
+              </div>
             </>
-            
           )
         ) : null}
       </div>
@@ -1979,15 +2098,17 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
           </div>
 
           <div className={taStyles.filterRight}>
-          {userData?.showTADashboardDropdowns && <button
-              className={taStyles.btnPrimary}
-              onClick={() => {
-                setIsAddNewRow(true);
-                setNewTAHeadUserValue(selectedHead);
-              }}
-            >
-              Add New Task
-            </button>}  
+            {userData?.showTADashboardDropdowns && (
+              <button
+                className={taStyles.btnPrimary}
+                onClick={() => {
+                  setIsAddNewRow(true);
+                  setNewTAHeadUserValue(selectedHead);
+                }}
+              >
+                Add New Task
+              </button>
+            )}
             {/* <button
               className={taStyles.btnPrimary}
               onClick={() => hendleExport(TaListData)}
@@ -2001,11 +2122,16 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       {isLoading ? (
         <TableSkeleton />
       ) : (
-        <Table
+        TaListData?.length ? <Table
           scroll={{ x: "max-content" , y:'1vh'}}
           dataSource={TaListData}
           columns={columns}
-          // bordered
+          pagination={false}
+          onChange={handleTableFilterChange}
+        /> : 
+        <Table
+          dataSource={[]}
+          columns={columns}
           pagination={false}
           onChange={handleTableFilterChange}
         />
@@ -2095,7 +2221,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
       {showProfileTarget && (
         <Modal
           transitionName=""
-          width="450px"
+          width="400px"
           centered
           footer={null}
           open={showProfileTarget}
@@ -2104,7 +2230,8 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
           // onOk={() => setVersantModal(false)}
           onCancel={() => {
             setShowProfileTarget(false);
-            setTargetValue(5)
+            setTargetValue(5);
+            setStartTargetDate(new Date());
           }}
         >
           <>
@@ -2113,54 +2240,112 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
             </div>
 
             <div
-              className={taStyles.row}
+              // className={taStyles.row}
               style={{
-                display: "flex",
-                alignItems: "center",
-                padding: "0 10px",
+                // display: "flex",
+                // alignItems: "center",
+                padding: "0 10px 15px",
               }}
             >
               {loadingTalentProfile ? (
                 <Skeleton active />
               ) : (
                 <>
-                  <InputNumber
-                    value={targetValue}
-                    onChange={(v) => {
-                      setTargetValue(v);
-                    }}
-                    min={0}
-                    max={9}
-                    maxLength={1}
-                    placeholder="Enter target"
-                    style={{ width: "40%", marginLeft: "10px" }}
-                  />
-
-                  <div
-                    style={{
-                      padding: "10px",
-                      display: "flex",
-                      justifyContent: "end",
-                    }}
-                  >
-                    <button
-                      className={taStyles.btnPrimary}
-                      // disabled={ }
-                      onClick={() => {
-                        handleProfileShearedTarget();
-                      }}
-                    >
-                      Proceed
-                    </button>
-                    <button
-                      className={taStyles.btnCancle}
-                      onClick={() => {
-                        setShowProfileTarget(false);
-                        setTargetValue(5)
-                      }}
-                    >
-                      Cancel
-                    </button>
+                  <div className={taStyles.row}>
+                    <div className={taStyles.colMd6}>
+                      <div
+                        className={taStyles.calendarFilterSet}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "self-start",
+                        }}
+                      >
+                        <div className={taStyles.label}>Date</div>
+                        <div className={taStyles.calendarFilter}>
+                          <CalenderSVG
+                            style={{ height: "16px", marginRight: "16px" }}
+                          />
+                          <DatePicker
+                            style={{ backgroundColor: "red" }}
+                            onKeyDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            className={taStyles.dateFilter}
+                            placeholderText="Start date"
+                            selected={startTargetDate}
+                            onChange={(date) => setStartTargetDate(date)}
+                            dateFormat="dd-MM-yyyy"
+                            minDate={new Date()}
+                            maxDate={
+                              new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)
+                            }
+                            // selectsRange
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={taStyles.row} style={{ marginTop: "10px" }}>
+                    <div className={taStyles.colMd6}>
+                      <div
+                        className={taStyles.calendarFilterSet}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "self-start",
+                        }}
+                      >
+                        <div className={taStyles.label}>Target</div>
+                        <InputNumber
+                          value={targetValue}
+                          onChange={(v) => {
+                            setTargetValue(v);
+                          }}
+                          min={0}
+                          max={9}
+                          maxLength={1}
+                          placeholder="Enter target"
+                          style={{
+                            height: "44px",
+                            padding: "8px",
+                            borderRadius: "8px",
+                            width: "115px",
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className={taStyles.colMd6}>
+                      <div
+                        style={{
+                          padding: "10px",
+                          display: "flex",
+                          justifyContent: "end",
+                          marginTop: "18px",
+                        }}
+                      >
+                        <button
+                          className={taStyles.btnPrimary}
+                          // disabled={ }
+                          onClick={() => {
+                            handleProfileShearedTarget();
+                          }}
+                        >
+                          Proceed
+                        </button>
+                        <button
+                          className={taStyles.btnCancle}
+                          onClick={() => {
+                            setShowProfileTarget(false);
+                            setTargetValue(5);
+                            setStartTargetDate(new Date());
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -2181,7 +2366,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
           // onOk={() => setVersantModal(false)}
           onCancel={() => {
             setShowTalentProfiles(false);
-            hrTalentListFourCount([])
+            hrTalentListFourCount([]);
           }}
         >
           <>
@@ -2196,13 +2381,12 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               <h3>
                 Profiles for <strong>{profileInfo?.hrNumber}</strong>
               </h3>
-              
+
               <p style={{ marginBottom: "0.5em" }}>
                 Company : <strong>{profileInfo?.companyName} </strong>
-                
               </p>
               <p style={{ marginBottom: "0.5em" }}>
-               TA : <strong>{profileInfo?.taName} </strong> 
+                TA : <strong>{profileInfo?.taName} </strong>
               </p>
             </div>
 
@@ -2360,7 +2544,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               >
                 {/* <img src={FeedBack} alt="rocket" /> */}
                 <h2>
-                Screen Reject :{" "}
+                  Screen Reject :{" "}
                   <span>
                     {hrTalentListFourCount[0]?.screeningRejectCount
                       ? hrTalentListFourCount[0]?.screeningRejectCount
@@ -2382,7 +2566,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               >
                 {/* <img src={FeedBack} alt="rocket" /> */}
                 <h2>
-                Interview Reject :{" "}
+                  Interview Reject :{" "}
                   <span>
                     {hrTalentListFourCount[0]?.interviewRejectCount
                       ? hrTalentListFourCount[0]?.interviewRejectCount
@@ -2391,7 +2575,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
                 </h2>
               </div>
             </div>
-      
+
             {loadingTalentProfile ? (
               <div>
                 <Skeleton active />
@@ -2407,27 +2591,35 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
               </div>
             )}
 
-              {moveToAssessment &&  	<Modal
-                      width="992px"
-                      centered
-                      footer={null}
-                      open={moveToAssessment}
-                      className="commonModalWrap"
-                      // onOk={() => setVersantModal(false)}
-                      onCancel={() => {
-                        setMoveToAssessment(false);resetRemarkField('remark');clearRemarkError('remark')
-                      }}>
-                        <MoveToAssessment 
-                        onCancel={()=>{setMoveToAssessment(false);resetRemarkField('remark');clearRemarkError('remark')}}  
-                        register={remarkregiter}
-                        handleSubmit={remarkSubmit}
-                        resetField={resetRemarkField}
-                        errors={remarkError}
-                        saveRemark={saveRemark}
-                        saveRemarkLoading={saveRemarkLoading}
-                        />
-                      
-                        </Modal>}
+            {moveToAssessment && (
+              <Modal
+                width="992px"
+                centered
+                footer={null}
+                open={moveToAssessment}
+                className="commonModalWrap"
+                // onOk={() => setVersantModal(false)}
+                onCancel={() => {
+                  setMoveToAssessment(false);
+                  resetRemarkField("remark");
+                  clearRemarkError("remark");
+                }}
+              >
+                <MoveToAssessment
+                  onCancel={() => {
+                    setMoveToAssessment(false);
+                    resetRemarkField("remark");
+                    clearRemarkError("remark");
+                  }}
+                  register={remarkregiter}
+                  handleSubmit={remarkSubmit}
+                  resetField={resetRemarkField}
+                  errors={remarkError}
+                  saveRemark={saveRemark}
+                  saveRemarkLoading={saveRemarkLoading}
+                />
+              </Modal>
+            )}
 
             <div style={{ padding: "10px 0" }}>
               <button
@@ -2435,7 +2627,7 @@ const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
                 disabled={isAddingNewTask}
                 onClick={() => {
                   setShowTalentProfiles(false);
-                  hrTalentListFourCount([])
+                  hrTalentListFourCount([]);
                 }}
               >
                 Cancel

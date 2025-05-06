@@ -447,7 +447,33 @@ font-weight: 500;
     font-weight: 400;
 }
 
+.one td { 
+    background-color: #e6f7ff !important;
+  }
+  .two td {
+    background-color: rgb(250, 224, 243) !important; 
+  }
+  .three td {
+    background-color: rgb(230, 218, 252) !important; 
+  }
+  
+  .four td {
+    background-color: #fde3db !important; 
+  }
+  
+  .five td {
+    background-color: #f5eefa !important;
+  }
+  
+  .six td {
+    background-color: #e6fffb !important;
+  }
+  
+  .seven td {
+    background-color: #befff4 !important;
+  }
 
+  
 @media screen and (max-width: 1440px) {
     .hiringRequestContainer {
         padding: 16px 24px;
