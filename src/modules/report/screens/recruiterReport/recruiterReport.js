@@ -77,8 +77,6 @@ const navigate = useNavigate()
         });
       });
     });
-// console.log(groupField,grouped,finalData)
-
     return finalData;
   }
   const getReportData= async() => {
@@ -91,9 +89,6 @@ const navigate = useNavigate()
       setIsLoading(true)
      const result = await ReportDAO.getRecruiterReportDAO(pl) 
      setIsLoading(false)
-
-    //  console.log(result)
-
 
       if (result.statusCode === HTTPStatusCode.OK) {
            setRecruiterListData(groupByRowSpan(result.responseBody, "taName"));
@@ -286,16 +281,7 @@ return headers
                           }}
                         />
                       )}
-                    </div>
-                    {/* <button
-                      style={{ marginLeft: "15px" }}
-                      type="submit"
-                      className={recruiterStyle.btnPrimary}
-                      onClick={() => {}}
-                    >
-                      Search
-                    </button> */}
-        
+                    </div>               
 
                     <p
                       className={recruiterStyle.resetText}
@@ -361,12 +347,15 @@ return headers
           columns={columns()}
           pagination={false}
           rowClassName={(record) => {
-            if (record.profileStage === 'Achieved Pipeline') return recruiterStyle.one;
-            if (record.profileStage === 'Pipeline') return recruiterStyle.two;
-            if (record.profileStage === 'Monthly Goal') return recruiterStyle.three;
-            if (record.profileStage === 'Interview to Select %') return recruiterStyle.four;
-            if (record.profileStage === 'Avg Profiles Shared Per Day') return recruiterStyle.five;
-            if (record.profileStage === 'Profiles to Interview %') return recruiterStyle.six;
+            const stage = record.profileStage || '';  
+            if (stage.includes('Avg Profiles Shared Per Day')) return recruiterStyle.one;
+            if (stage.includes('Profiles to Interview %')) return recruiterStyle.two;            
+            if (stage.includes('Interview to Select %')) return recruiterStyle.three;
+            if (stage.includes('Monthly Goal')) return recruiterStyle.four;
+            if (stage.includes('Achieved Pipeline')) return recruiterStyle.five;
+            if (stage.includes('Actual Pipeline')) return recruiterStyle.six;
+            if (stage.includes('Lost Pipeline')) return recruiterStyle.seven;
+            if (stage.includes('Total Pipeline')) return recruiterStyle.four;
             return '';
           }}
         />

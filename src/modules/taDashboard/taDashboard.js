@@ -2122,11 +2122,16 @@ export default function TADashboard() {
       {isLoading ? (
         <TableSkeleton />
       ) : (
-        <Table
-          scroll={{ x: "max-content", y: "1vh" }}
+        TaListData?.length ? <Table
+          scroll={{ x: "max-content" , y:'1vh'}}
           dataSource={TaListData}
           columns={columns}
-          // bordered
+          pagination={false}
+          onChange={handleTableFilterChange}
+        /> : 
+        <Table
+          dataSource={[]}
+          columns={columns}
           pagination={false}
           onChange={handleTableFilterChange}
         />

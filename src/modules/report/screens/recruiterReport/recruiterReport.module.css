@@ -450,17 +450,15 @@ font-weight: 500;
 .one td { 
     background-color: #e6f7ff !important;
   }
-  
   .two td {
-    background-color: #f6ffed !important; 
+    background-color: rgb(250, 224, 243) !important; 
   }
-  
   .three td {
-    background-color: #fffbe6 !important; 
+    background-color: rgb(230, 218, 252) !important; 
   }
   
   .four td {
-    background-color: #fce7ea !important; 
+    background-color: #fde3db !important; 
   }
   
   .five td {
@@ -471,6 +469,9 @@ font-weight: 500;
     background-color: #e6fffb !important;
   }
   
+  .seven td {
+    background-color: #befff4 !important;
+  }
 
   
 @media screen and (max-width: 1440px) {
