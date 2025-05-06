@@ -25,7 +25,7 @@ export default function ClientDashboardReport() {
   
   const [dateError, setDateError] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [listDataCount, setListDataCount] = useState(0);
 
@@ -40,9 +40,12 @@ export default function ClientDashboardReport() {
             align: "left",
             width: "200px",
             fixed: "left",
-            render: (text, row) => {
-              return text === "Total" ? "" : text;
-            },
+            render: (text, result) => {
+                // Check if the value is 'Total', if so return empty string, else return a link
+                return text === "Total" 
+                  ? "" 
+                  : <a href={`/viewCompanyDetails/${result.companyID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+              },
           },
           
       {
@@ -52,6 +55,12 @@ export default function ClientDashboardReport() {
         align: "left",
         width: "180px",
         fixed: "left",
+        render: (text, result) => {
+            // Check if the HR ID is not empty and return a link
+            return text 
+              ? <a href={`/allhiringrequest/${result.hrid}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>  // Replace `/hr/${text}` with the appropriate link you need
+              : text;
+          },
       },
       {
         title: "Recruiter",
@@ -61,13 +70,7 @@ export default function ClientDashboardReport() {
         width: "150px",
          fixed: "left",
       },
-      {
-        title: "AI Interview",
-        dataIndex: "aiInterview",
-        key: "aiInterview",
-        align: "center",
-        width: "120px",
-      },
+     
       {
         title: "Total Profiles",
         dataIndex: "totalProfiles",
@@ -79,13 +82,6 @@ export default function ClientDashboardReport() {
         title: "Profiles",
         dataIndex: "profiles",
         key: "profiles",
-        align: "center",
-        width: "100px",
-      },
-      {
-        title: "Duplicate",
-        dataIndex: "duplicate",
-        key: "duplicate",
         align: "center",
         width: "100px",
       },
@@ -201,6 +197,20 @@ export default function ClientDashboardReport() {
         align: "center",
         width: "100px",
       },
+      {
+        title: "AI Interview",
+        dataIndex: "aiInterview",
+        key: "aiInterview",
+        align: "center",
+        width: "120px",
+      },
+      {
+        title: "Duplicate",
+        dataIndex: "duplicate",
+        key: "duplicate",
+        align: "center",
+        width: "100px",
+      },
     ];
   }, [clientData]);
   
@@ -252,7 +262,7 @@ export default function ClientDashboardReport() {
             let payload = {
                 "searchText": openTicketSearchText,
                 "fromDate": start.toLocaleDateString("en-US"),
-                "toDate": start.toLocaleDateString("en-US"),
+                "toDate": end.toLocaleDateString("en-US"),
                 "pageIndex": pageIndex,
                 "pageSize": pageSize,
               };
@@ -298,7 +308,7 @@ export default function ClientDashboardReport() {
             <input
               type={InputType.TEXT}
               className={clientDashboardStyles.searchInput}
-              placeholder="Search Table"
+              placeholder="Client, HR ID, Recruiter"
               value={openTicketDebounceText}
               onChange={(e) => {
                 // setopenTicketSearchText(e.target.value);

@@ -29,6 +29,11 @@ import moment from 'moment';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
+import { allHRConfig } from "modules/hiring request/screens/allHiringRequest/allHR.config";
+import { allEngagementConfig } from "modules/engagement/screens/engagementList/allEngagementConfig";
+import { TaDashboardDAO } from 'core/taDashboard/taDashboardDRO';
+import OnboardFilerList from 'modules/onBoardList/OnboardFilterList';
+
 
 
 export default function RecruiterReport() {
@@ -41,6 +46,13 @@ const navigate = useNavigate()
    const [checkedState, setCheckedState] = useState(new Map());
   const [searchText, setSearchText] = useState("");
   const [debounceSearchText, setDebouncedSearchText] = useState("");
+  const [filtersList, setFiltersList] = useState({});
+   const [tableFilteredState, setTableFilteredState] = useState({
+      filterFields_OnBoard: {
+        taUserIDs: null,
+      },
+    });
+
   const [isLoading, setIsLoading] = useState(false);
    var date = new Date();
     const [monthDate, setMonthDate] = useState(new Date());
@@ -65,19 +77,23 @@ const navigate = useNavigate()
         });
       });
     });
-console.log(groupField,grouped,finalData)
+// console.log(groupField,grouped,finalData)
+
     return finalData;
   }
   const getReportData= async() => {
     let pl = {
         "searchText": searchText,
         "month": +moment(monthDate).format("M")  ?? 0,
-        "year": +moment(monthDate).format("YYYY") ?? 0
+        "year": +moment(monthDate).format("YYYY") ?? 0,
+        taUserIDs:tableFilteredState?.filterFields_OnBoard?.taUserIDs,
       }
       setIsLoading(true)
      const result = await ReportDAO.getRecruiterReportDAO(pl) 
      setIsLoading(false)
-     console.log(result)
+
+    //  console.log(result)
+
 
       if (result.statusCode === HTTPStatusCode.OK) {
            setRecruiterListData(groupByRowSpan(result.responseBody, "taName"));
@@ -94,10 +110,39 @@ console.log(groupField,grouped,finalData)
          }
   }
 
+  const onRemoveHRFilters = () => {
+    setTimeout(() => {
+      setIsAllowFilters(false);
+    }, 300);
+    setHTMLFilter(false);
+  };
+
+   const getFilters = async () => {
+      setIsLoading(true);
+      let filterResult = await TaDashboardDAO.getAllMasterDAO('RR');
+      setIsLoading(false);
+      if (filterResult.statusCode === HTTPStatusCode.OK) {
+        setFiltersList(filterResult && filterResult?.responseBody);
+      } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+        // setLoading(false);
+        return navigate(UTSRoutes.LOGINROUTE);
+      } else if (
+        filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+      ) {
+        // setLoading(false);
+        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+      } else {
+        return "NO DATA FOUND";
+      }
+    };
+
+    useEffect(()=>{
+      getFilters()
+    },[])
 
   useEffect(()=>{
     getReportData()
-  },[searchText,monthDate])
+  },[searchText,monthDate,tableFilteredState])
 
    useEffect(() => {
       setTimeout(() => setSearchText(debounceSearchText), 2000);
@@ -113,7 +158,17 @@ console.log(groupField,grouped,finalData)
     }, [getHTMLFilter, isAllowFilters]);
 
 const clearFilters = () =>{
-
+  setAppliedFilters(new Map());
+    setCheckedState(new Map());
+    setFilteredTagLength(0);
+    setTableFilteredState({
+      filterFields_OnBoard: {
+        taUserIDs: null,
+      },
+    });
+    setDebouncedSearchText("");
+    setMonthDate(new Date())
+    setSearchText("");
 }
 
 const columns = ()=>{
@@ -195,12 +250,13 @@ return headers
          <div className={recruiterStyle.filterContainer}>
                 <div className={recruiterStyle.filterSets}>
                   <div className={recruiterStyle.filterSetsInner}>
-                    {/* <div className={recruiterStyle.addFilter} onClick={toggleHRFilter}>
+                    <div className={recruiterStyle.addFilter} onClick={toggleHRFilter}>
                       <FunnelSVG style={{ width: "16px", height: "16px" }} />
         
                       <div className={recruiterStyle.filterLabel}> Add Filters</div>
                       <div className={recruiterStyle.filterCount}>{filteredTagLength}</div>
-                    </div> */}
+                    </div>
+
         
                     <div
                       className={recruiterStyle.searchFilterSet}
@@ -240,7 +296,8 @@ return headers
                       Search
                     </button> */}
         
-                    {/* <p
+
+                    <p
                       className={recruiterStyle.resetText}
                       style={{ width: "190px" }}
                       onClick={() => {
@@ -248,7 +305,7 @@ return headers
                       }}
                     >
                       Reset Filter
-                    </p> */}
+                    </p>
                   </div>
         
                   <div className={recruiterStyle.filterRight}>
@@ -318,7 +375,28 @@ return headers
         />
       )}
 
-
+       {isAllowFilters && (
+              <Suspense fallback={<div>Loading...</div>}>
+        
+                <OnboardFilerList
+                  setAppliedFilters={setAppliedFilters}
+                  appliedFilter={appliedFilter}
+                  setCheckedState={setCheckedState}
+                  checkedState={checkedState}
+                  // handleHRRequest={handleHRRequest}
+                  setTableFilteredState={setTableFilteredState}
+                  tableFilteredState={tableFilteredState}
+                  setFilteredTagLength={setFilteredTagLength}
+                  onRemoveHRFilters={() => onRemoveHRFilters()}
+                  getHTMLFilter={getHTMLFilter}
+                  hrFilterList={allHRConfig.hrFilterListConfig()}
+                  filtersType={allEngagementConfig.recruiterReportFilterTypeConfig(
+                    filtersList && filtersList
+                  )}
+                  clearFilters={clearFilters}
+                />
+              </Suspense>
+            )}
     </div>
   )
 }
