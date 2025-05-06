@@ -388,63 +388,53 @@ export default function ClientDashboardReport() {
                     >
                       Reset Filter
                     </p>
+                 
+                  <div className={clientDashboardStyles.searchFilterSet}>
+                    <SearchSVG style={{ width: "16px", height: "16px" }} />
+                    <input
+                      type={InputType.TEXT}
+                      className={clientDashboardStyles.searchInput}
+                      placeholder="Client, HR ID, Recruiter"
+                      value={openTicketDebounceText}
+                      onChange={(e) => {
+                        // setopenTicketSearchText(e.target.value);
+                        setopenTicketDebounceText(e.target.value);
+                      }}
+                    />
+                    {openTicketDebounceText && (
+                      <CloseSVG
+                        style={{
+                          width: "16px",
+                          height: "16px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          //   setopenTicketSearchText("");
+                          setopenTicketDebounceText("");
+                        }}
+                      />
+                    )}
                   </div>
-          <div className={clientDashboardStyles.searchFilterSet}>
-            <SearchSVG style={{ width: "16px", height: "16px" }} />
-            <input
-              type={InputType.TEXT}
-              className={clientDashboardStyles.searchInput}
-              placeholder="Client, HR ID, Recruiter"
-              value={openTicketDebounceText}
-              onChange={(e) => {
-                // setopenTicketSearchText(e.target.value);
-                setopenTicketDebounceText(e.target.value);
-              }}
-            />
-            {openTicketDebounceText && (
-              <CloseSVG
-                style={{
-                  width: "16px",
-                  height: "16px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  //   setopenTicketSearchText("");
-                  setopenTicketDebounceText("");
-                }}
-              />
-            )}
-          </div>
 
-         
-              <div className={ClientReportStyle.calendarFilter}>
-                <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                <DatePicker
-                  style={{ backgroundColor: "red" }}
-                  onKeyDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  className={ClientReportStyle.dateFilter}
-                  placeholderText="Start date - End date"
-                  selected={startDate}
-                  onChange={onCalenderFilter}
-                  startDate={startDate}
-                  endDate={endDate}
-                  maxDate={new Date()}
-                  selectsRange
-                />
-              </div>
-
-          {/* <div className={clientDashboardStyles.filterRight}>
-            <button
-              type="submit"
-              className={clientDashboardStyles.btnPrimary}
-              onClick={() => handleExport(clientData)}
-            >
-              Export
-            </button>
-          </div> */}
+                </div>
+                <div className={ClientReportStyle.calendarFilter}>              
+                  <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                  <DatePicker
+                    style={{ backgroundColor: "red" }}
+                    onKeyDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className={ClientReportStyle.dateFilter}
+                    placeholderText="Start date - End date"
+                    selected={startDate}
+                    onChange={onCalenderFilter}
+                    startDate={startDate}
+                    endDate={endDate}
+                    maxDate={new Date()}
+                    selectsRange
+                  />
+                </div>
         </div>
       </div>
 
