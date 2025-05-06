@@ -24,6 +24,10 @@ const RecruiterReport = React.lazy(() =>
 	import('modules/report/screens/recruiterReport/recruiterReport'),
 );
 
+const DailySnapshotReport = React.lazy(() =>
+	import('modules/report/screens/dailySnapshotReport/dailySnapshotReport'),
+)
+
 const AllHiringRequest = React.lazy(() =>
 	import('modules/hiring request/screens/allHiringRequest/mainHRTabs'),
 );
@@ -205,6 +209,7 @@ export default class UTSRoutes {
 	static AMDASHBOARD = '/amdashboard';
 	static TADASHBOARD = '/tadashboard'
 	static RECRUITERREPORT = '/recruiter'
+	static DAILYSNAPSHOT = '/dailysnapshot'
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static EDITNEWHR = '/allhiringrequest/addnewhr/:hrid';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
@@ -450,6 +455,11 @@ export const navigateToComponent = {
 	[UTSRoutes.RECRUITERREPORT]: (
 		<Suspense>
 			<RecruiterReport />
+		</Suspense>
+	),
+	[UTSRoutes.DAILYSNAPSHOT]: (
+		<Suspense>
+			<DailySnapshotReport />
 		</Suspense>
 	),
 	[UTSRoutes.Leave]:(
