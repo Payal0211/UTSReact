@@ -251,15 +251,16 @@ return headers
     <div className={recruiterStyle.hiringRequestContainer}>
          <div className={recruiterStyle.filterContainer}>
                 <div className={recruiterStyle.filterSets}>
+
                   <div className={recruiterStyle.filterSetsInner}>
+
                     <div className={recruiterStyle.addFilter} onClick={toggleHRFilter}>
                       <FunnelSVG style={{ width: "16px", height: "16px" }} />
         
                       <div className={recruiterStyle.filterLabel}> Add Filters</div>
                       <div className={recruiterStyle.filterCount}>{filteredTagLength}</div>
-                    </div>
+                    </div>   
 
-        
                     <div
                       className={recruiterStyle.searchFilterSet}
                       style={{ marginLeft: "15px" }}
@@ -288,7 +289,7 @@ return headers
                           }}
                         />
                       )}
-                    </div>               
+                    </div>              
 
                     <p
                       className={recruiterStyle.resetText}
@@ -299,76 +300,69 @@ return headers
                     >
                       Reset Filter
                     </p>
+
                   </div>
         
                   <div className={recruiterStyle.filterRight}>
-
                      <div className={recruiterStyle.calendarFilterSet}>
-                                    <div className={recruiterStyle.label}>Month-Year</div>
-                                    <div className={recruiterStyle.calendarFilter}>
-                                      <CalenderSVG
-                                        style={{ height: "16px", marginRight: "16px" }}
-                                      />
-                                      <DatePicker
-                                        style={{ backgroundColor: "red" }}
-                                        onKeyDown={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                        }}
-                                        className={recruiterStyle.dateFilter}
-                                        placeholderText="Month - Year"
-                                        selected={monthDate}
-                                        onChange={onMonthCalenderFilter}
-                                        // startDate={startDate}
-                                        // endDate={endDate}
-                                        dateFormat="MM-yyyy"
-                                        showMonthYearPicker
-                                      />
-                                    </div>
-                                  </div>
-{/*                  
-                    <button
-                      className={recruiterStyle.btnPrimary}
-                      onClick={() => {}}
-                    >
-                      Export
-                    </button> */}
+                        <div className={recruiterStyle.label}>Month-Year</div>
+                        <div className={recruiterStyle.calendarFilter}>
+                          <CalenderSVG
+                            style={{ height: "16px", marginRight: "16px" }}
+                          />
+                          <DatePicker
+                            style={{ backgroundColor: "red" }}
+                            onKeyDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            className={recruiterStyle.dateFilter}
+                            placeholderText="Month - Year"
+                            selected={monthDate}
+                            onChange={onMonthCalenderFilter}
+                            // startDate={startDate}
+                            // endDate={endDate}
+                            dateFormat="MM-yyyy"
+                            showMonthYearPicker
+                          />
+                        </div>
+                      </div>
                   </div>
                 </div>
               </div>
 
               {isLoading ? (
-        <TableSkeleton />
-      ) : (
-        // <Table
-        //   scroll={{ x: "max-content" , y:'1vh'}}
-        //   dataSource={RecruiterListData}
-        //   columns={columns()}
-        //   // bordered
-        //   pagination={false}
-        // //   onChange={handleTableFilterChange}
-        // />
-        <Table
-          scroll={{ x: "max-content", y: '1vh' }}
-          dataSource={RecruiterListData}
-          columns={columns()}
-          pagination={false}
-          rowClassName={(record) => {
-            const stage = record.profileStage || '';  
-            if (stage.includes('Avg Profiles Shared Per Day')) return recruiterStyle.one;
-            if (stage.includes('Profiles to Interview %')) return recruiterStyle.two;            
-            if (stage.includes('Interview to Select %')) return recruiterStyle.three;
-            if (stage.includes('Monthly Goal')) return recruiterStyle.four;
-            if (stage.includes('Achieved Pipeline')) return recruiterStyle.five;
-            if (stage.includes('Actual Pipeline')) return recruiterStyle.six;
-            if (stage.includes('Lost Pipeline')) return recruiterStyle.seven;
-            if (stage.includes('Total Pipeline')) return recruiterStyle.four;
-            return '';
-          }}
-        />
-      )}
+                  <TableSkeleton />
+                ) : (
+                  // <Table
+                  //   scroll={{ x: "max-content" , y:'1vh'}}
+                  //   dataSource={RecruiterListData}
+                  //   columns={columns()}
+                  //   // bordered
+                  //   pagination={false}
+                  // //   onChange={handleTableFilterChange}
+                  // />
+                  <Table
+                    scroll={{ x: "max-content", y: '1vh' }}
+                    dataSource={RecruiterListData}
+                    columns={columns()}
+                    pagination={false}
+                    rowClassName={(record) => {
+                      const stage = record.profileStage || '';  
+                      if (stage.includes('Avg Profiles Shared Per Day')) return recruiterStyle.one;
+                      if (stage.includes('Profiles to Interview %')) return recruiterStyle.two;            
+                      if (stage.includes('Interview to Select %')) return recruiterStyle.three;
+                      if (stage.includes('Monthly Goal')) return recruiterStyle.four;
+                      if (stage.includes('Achieved Pipeline')) return recruiterStyle.five;
+                      if (stage.includes('Actual Pipeline')) return recruiterStyle.six;
+                      if (stage.includes('Lost Pipeline')) return recruiterStyle.seven;
+                      if (stage.includes('Total Pipeline')) return recruiterStyle.four;
+                      return '';
+                    }}
+                  />
+                )}
 
-       {isAllowFilters && (
+           {isAllowFilters && (
               <Suspense fallback={<div>Loading...</div>}>
         
                 <OnboardFilerList
