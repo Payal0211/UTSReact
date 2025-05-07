@@ -127,7 +127,27 @@
   .metricCard {
     height: 100%;
   }
-  
+
+.weekendColumn {
+  background-color: #ffe6e6;
+}
+.goalForMonthColumn {
+  background-color: #fff0f0;
+}
+
+.goalTillDateColumn {
+  background-color:  #e6ffe6;
+}
+
+.reachedColumn {
+  background-color: #fff3e6;
+}
+
+.dailyGoalColumn {
+  background-color:  #e6f7ff;
+}
+
+ 
 
 @media only screen and (max-width: 1440px) {
     .hiringRequestContainer {
