@@ -33,6 +33,7 @@ const generateWeekColumns = (year, monthIndex, daysInMonth) => {
   return weeks.map((week, weekIdx) => ({
     title: `Week ${weekIdx + 1}`,
     children: week.filter((d) => d !== null).map((d) => ({
+      key: `day_${d.date}`,
       title: d.day,
       dataIndex: `day_${d.date}`,
       width: 80,
@@ -202,7 +203,7 @@ const DailySnapshot = () => {
       </Card>
 
       <Card bordered={false} title="Key Metrics">
-        <Row gutter={[16, 16]} wrap={false}>
+      <Row gutter={[16, 16]} wrap={true}>
           {metrics.map(renderMetricCol)}
         </Row>
       </Card>
