@@ -12,7 +12,7 @@ import {
 import { MasterDAO } from "core/master/masterDAO";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HTTPStatusCode } from "constants/network";
-import { Skeleton } from "antd";
+import { Skeleton, Switch } from "antd";
 import ConfirmationModal from "modules/client/components/addClient/confirmationResendEmailModal";
 
 export const secondaryClient = {
@@ -30,7 +30,8 @@ export const secondaryClient = {
   resendInviteEmail: false,
   roleID: 3,
   countryCode: "",
-  isNewClient:true
+  isNewClient:true,
+  isClientNotificationSend:true
 };
 
 function ClientSection({
@@ -381,6 +382,10 @@ function ClientSection({
                       {/* </div> */}
                     </div>
                   </div>
+                  <div className={AddNewClientStyle.colMd6} style={{display:'flex',flexDirection:'column',width:'156px',gap:'15px'}}>
+                    <label className={AddNewClientStyle.label}>Email Notification</label>
+                    <Switch defaultChecked={!watch(`clientDetails.[${index}].isClientNotificationSend`)} style={{width:'70px'}}  checkedChildren="ON" unCheckedChildren="OFF" onChange={val=>{setValue(`clientDetails.[${index}].isClientNotificationSend`,!val)}}/>
+                    </div>
 
                   {companyID !== "0" && (
                     <div className={AddNewClientStyle.colMd6}>
