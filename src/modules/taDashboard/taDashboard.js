@@ -99,6 +99,8 @@ export default function TADashboard() {
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
   const [profileInfo, setInfoforProfile] = useState({});
   const [hrTalentList, setHRTalentList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
+  const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const [dailyActivityTargets, setDailyActiveTargets] = useState([]);
   const [totalRevenueList, setTotalRevenueList] = useState([]);
   const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
@@ -479,9 +481,12 @@ export default function TADashboard() {
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
+      setFilteredTalentList(hrResult.responseBody);
       setHRTalentListFourCount(hrResult.responseBody);
     } else {
       setHRTalentList([]);
+      setFilteredTalentList([]);
+
     }
   };
 
@@ -502,11 +507,24 @@ export default function TADashboard() {
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
+      setFilteredTalentList(hrResult.responseBody);
       setHRTalentListFourCount(hrResult.responseBody);
     } else {
       setHRTalentList([]);
+      setFilteredTalentList([]);
+
     }
   };
+
+  const handleSearchInput = (value) => {
+    setSearchTerm(value); // Update search term
+    const filteredData = hrTalentList.filter((talent) =>
+      talent.talent.toLowerCase().includes(value.toLowerCase()) || // Check in 'talent' column
+      (talent.email && talent.email.toLowerCase().includes(value.toLowerCase())) // Check in 'email' column (if email exists)
+    );
+    setFilteredTalentList(filteredData); // Update the filtered list
+  };
+  
 
   const getTalentProfilesDetails = async (result, statusID, stageID) => {
     setShowTalentProfiles(true);
@@ -528,8 +546,12 @@ export default function TADashboard() {
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
+      setFilteredTalentList(hrResult.responseBody);
+
     } else {
       setHRTalentList([]);
+      setFilteredTalentList([]);
+
     }
   };
 
@@ -2369,17 +2391,19 @@ export default function TADashboard() {
           className="engagementModalStyle"
           // onOk={() => setVersantModal(false)}
           onCancel={() => {
+            setSearchTerm('')
             setShowTalentProfiles(false);
             hrTalentListFourCount([]);
           }}
         >
           <>
-            <div
+          <div
               style={{
-                padding: "35px 15px 10px 15px",
+                padding: "45px 15px 10px 15px",
                 display: "flex",
                 gap: "10px",
                 alignItems: "center",
+                flexWrap: "wrap", 
               }}
             >
               <h3>
@@ -2387,12 +2411,28 @@ export default function TADashboard() {
               </h3>
 
               <p style={{ marginBottom: "0.5em" }}>
-                Company : <strong>{profileInfo?.companyName} </strong>
+                Company : <strong>{profileInfo?.companyName}</strong>
               </p>
+
               <p style={{ marginBottom: "0.5em" }}>
-                TA : <strong>{profileInfo?.taName} </strong>
+                TA : <strong>{profileInfo?.taName}</strong>
               </p>
+
+              <input
+                type="text"
+                placeholder="Search talent..."
+                value={searchTerm}
+                onChange={(e) => handleSearchInput(e.target.value)} // Create this function
+                style={{
+                  padding: "6px 10px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  marginLeft: "auto", // optional: pushes search to right
+                  minWidth: "220px",
+                }}
+              />
             </div>
+
 
             <div
               style={{
@@ -2587,7 +2627,7 @@ export default function TADashboard() {
             ) : (
               <div style={{ margin: "5px 10px" }}>
                 <Table
-                  dataSource={hrTalentList}
+                  dataSource={filteredTalentList}
                   columns={ProfileColumns}
                   // bordered
                   pagination={false}
@@ -2630,6 +2670,7 @@ export default function TADashboard() {
                 className={taStyles.btnCancle}
                 disabled={isAddingNewTask}
                 onClick={() => {
+                  setSearchTerm('')
                   setShowTalentProfiles(false);
                   hrTalentListFourCount([]);
                 }}

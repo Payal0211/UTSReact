@@ -320,7 +320,8 @@ function AddCompany() {
         "password" : password,
         "encryptedPassword" : encryptedPassword,
         "clientPOCNameAlias": client.fullNameAlias,
-        "clientPOCEmailAlias": client.emailIDAlias
+        "clientPOCEmailAlias": client.emailIDAlias,
+        "SendEmailNotification":client.isClientNotificationSend,
       }
 
     })
