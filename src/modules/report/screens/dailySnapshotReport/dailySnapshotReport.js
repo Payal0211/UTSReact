@@ -1,9 +1,16 @@
-import React, { useState, useMemo } from "react";
-import { Table, Card, Typography, Row, Col, Divider, Select } from "antd";
-import styles from "./dailySnapshot.module.css"; // Keep your styling here
+import React, { useState, useMemo, useEffect } from "react";
+import { Table, Card, Typography, Row, Col, Divider } from "antd";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import styles from "./dailySnapshot.module.css";
+import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
+import moment from "moment";
+import { ReportDAO } from "core/report/reportDAO";
+import { HTTPStatusCode } from "constants/network";
+import UTSRoutes from "constants/routes";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
-const { Option } = Select;
 
 const generateWeekColumns = (year, monthIndex, daysInMonth, firstDayOfMonth) => {
   const weeks = [];
@@ -12,8 +19,8 @@ const generateWeekColumns = (year, monthIndex, daysInMonth, firstDayOfMonth) => 
 
   for (let i = firstDayOfMonth; i < 7 && currentDate <= daysInMonth; i++) {
     currentWeek[i] = {
-      day: new Date(year, monthIndex, currentDate).toLocaleString('en-us', { weekday: 'short' }),
-      date: currentDate
+      day: new Date(year, monthIndex, currentDate).toLocaleString("en-us", { weekday: "short" }),
+      date: currentDate,
     };
     currentDate++;
   }
@@ -23,8 +30,8 @@ const generateWeekColumns = (year, monthIndex, daysInMonth, firstDayOfMonth) => 
     currentWeek = new Array(7).fill(null);
     for (let i = 0; i < 7 && currentDate <= daysInMonth; i++) {
       currentWeek[i] = {
-        day: new Date(year, monthIndex, currentDate).toLocaleString('en-us', { weekday: 'short' }),
-        date: currentDate
+        day: new Date(year, monthIndex, currentDate).toLocaleString("en-us", { weekday: "short" }),
+        date: currentDate,
       };
       currentDate++;
     }
@@ -33,206 +40,185 @@ const generateWeekColumns = (year, monthIndex, daysInMonth, firstDayOfMonth) => 
 
   return weeks.map((week, weekIdx) => ({
     title: `Week ${weekIdx + 1}`,
-    children: week.map((d, dayIdxInWeek) => ({
-      title: d ? `${d.day} ${d.date}` : "-",
+    children: week.filter(d => d).map((d, dayIdxInWeek) => ({
+      title: d ? `${d.day}` : "-",
       dataIndex: d ? `day_${d.date}` : `placeholder_${dayIdxInWeek}_week_${weekIdx}`,
       width: 80,
       align: "center",
       render: (value) => (value === 0 || value == null ? "-" : value),
     })),
   }));
+  
 };
 
 const columns = (weeks) => [
-  {
-    title: "Stage",
-    dataIndex: "stage",
-    fixed: "left",
-    width: 180,
-  },
-  {
-    title: "Goal for Month",
-    dataIndex: "goalForMonth",
-    width: 120,
-    align: "center",
-  },
-  {
-    title: "Goal till Date",
-    dataIndex: "goalTillDate",
-    width: 120,
-    align: "center",
-  },
-  {
-    title: "Reached",
-    dataIndex: "reached",
-    width: 100,
-    align: "center",
-  },
-  {
-    title: "Daily Goal",
-    dataIndex: "dailyGoal",
-    width: 100,
-    align: "center",
-  },
+  { title: "Stage", dataIndex: "stage", fixed: "left", width: 180 },
+  { title: "Goal for Month", dataIndex: "goalForMonth", width: 120, align: "center",render: (value) => {
+    if (value == null || value === 0) {
+      return "-";
+    }    
+    return value;
+  } },
+  { title: "Goal till Date", dataIndex: "goalTillDate", width: 120, align: "center" ,render: (value) => {
+    if (value == null || value === 0) {
+      return "-";
+    }    
+    return value;
+  }},
+  { title: "Reached", dataIndex: "reached", width: 100, align: "center",render: (value) => {
+    if (value == null || value === 0) {
+      return "-";
+    }    
+    return value;
+  } },
+  { title: "Daily Goal", dataIndex: "dailyGoal", width: 100, align: "center",render: (value) => {
+    if (value == null || value === 0) {
+      return "-";
+    }    
+    return value;
+  } },
   ...weeks,
 ];
 
-const data = [
-  {
-    key: 1,
-    stage: "Profiles Shared",
-    goalForMonth: 1360,
-    goalTillDate: 62,
-    reached: 32,
-    dailyGoal: 62,
-    day_1: 13,
-    day_2: 19,
-    day_3: 0,
-    day_4: 0,
-    day_5: 0,
-    day_6: 0,
-    day_7: 0,
-    day_8: 0,
-    day_9: 0,
-    day_10: 0,
-  },
-  {
-    key: 2,
-    stage: "Interviews Done",
-    goalForMonth: 680,
-    goalTillDate: 31,
-    reached: 5,
-    dailyGoal: 31,
-    day_1: 2,
-    day_2: 3,
-    day_3: 0,
-    day_4: 0,
-    day_5: 0,
-    day_6: 0,
-    day_7: 0,
-    day_8: 0,
-    day_9: 0,
-    day_10: 0,
-  },
-  {
-    key: 3,
-    stage: "Offers",
-    goalForMonth: 272,
-    goalTillDate: 12,
-    reached: 0,
-    dailyGoal: 12,
-    day_1: 0,
-    day_2: 0,
-    day_3: 0,
-    day_4: 0,
-    day_5: 0,
-    day_6: 0,
-    day_7: 0,
-    day_8: 0,
-    day_9: 0,
-    day_10: 0,
-  },
-  {
-    key: 4,
-    stage: "Closures",
-    goalForMonth: 136,
-    goalTillDate: 6,
-    reached: 0,
-    dailyGoal: 6,
-    day_1: 0,
-    day_2: 0,
-    day_3: 0,
-    day_4: 0,
-    day_5: 0,
-    day_6: 0,
-    day_7: 0,
-    day_8: 0,
-    day_9: 0,
-    day_10: 0,
-  },
-];
-
-const availableYears = [2023, 2024, 2025, 2026, 2027];
-
 const DailySnapshot = () => {
-  const [selectedMonth, setSelectedMonth] = useState(4);
-  const [selectedYear, setSelectedYear] = useState(2025);
+  const navigate = useNavigate();
+  const [recruiterListData, setRecruiterListData] = useState([]); 
+  const [metrics, setMetrics] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [monthDate, setMonthDate] = useState(new Date());
 
-  const monthIndex = selectedMonth - 1;
-
-  const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
-
+  const selectedYear = monthDate.getFullYear();
+  const monthIndex = monthDate.getMonth();
+  const daysInMonth = new Date(selectedYear, monthIndex + 1, 0).getDate();
   const firstDayOfMonth = new Date(selectedYear, monthIndex, 1).getDay();
 
   const weeks = useMemo(
     () => generateWeekColumns(selectedYear, monthIndex, daysInMonth, firstDayOfMonth),
-    [selectedYear, monthIndex, daysInMonth, firstDayOfMonth] 
+    [selectedYear, monthIndex, daysInMonth, firstDayOfMonth]
   );
 
+  const onMonthCalenderFilter = (date) => {
+    setMonthDate(date);
+  };
+
+  useEffect(() => {
+    getDailySnapshotData();
+  }, [monthDate]);
+
+  const getDailySnapshotData = async () => {
+    const payload = {
+      month: +moment(monthDate).format("M"),
+      year: +moment(monthDate).format("YYYY"),
+    };
+
+    setIsLoading(true);
+    const result = await ReportDAO.getDailySnapshotDAO(payload);
+    setIsLoading(false);
+
+    if (result.statusCode === HTTPStatusCode.OK) {
+      const rawData = result?.responseBody?.SnapShotInfo || [];
+      const metricsData = result?.responseBody?.MetricsInfo || [];
+      setMetrics(metricsData);
+      const formattedData = rawData.map((item) => {
+        const {
+          stage,
+          stage_ID,
+          goalForMonth,
+          goalTillDate,
+          reached,
+          dailyGoal,
+          dailyCounts = {},
+        } = item;
+
+        // Map dailyCounts to table columns (day_1, day_2, ..., day_31)
+        const dailyMapped = {};
+        for (let i = 1; i <= daysInMonth; i++) {
+          dailyMapped[`day_${i}`] = dailyCounts[`day_${i}`] ?? null;
+        }
+
+        return {
+          key: stage_ID || stage,
+          stage,
+          goalForMonth,
+          goalTillDate,
+          reached,
+          dailyGoal,
+          ...dailyMapped,
+        };
+      });
+      setRecruiterListData(formattedData);
+      
+    } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+      setRecruiterListData([]);
+    } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+      navigate(UTSRoutes.LOGINROUTE);
+    } else if (result?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+      navigate(UTSRoutes.SOMETHINGWENTWRONG);
+    }
+  };
+
+  const renderMetricCol = (metric) => (
+    <Col xs={24} sm={12} md={6} lg={4} xl={4} key={metric.stage_ID}>
+      <Card size="small">
+        <Text strong>{metric.stage}</Text>
+        <Divider style={{ margin: "8px 0" }} />
+        <Text>Goal: <strong>{metric.goalForMonth}%</strong></Text><br />
+        <Text>Achieved: <strong>{metric.reached ? `${metric.reached}%` : "0%"}</strong></Text>
+      </Card>
+    </Col>
+  );
+  
+
+  
   return (
     <div className={styles.snapshotContainer}>
-      <Title level={3} style={{ marginBottom: 24 }}>
-        {`${new Date(selectedYear, monthIndex).toLocaleString('default', { month: 'long' })} ${selectedYear} - Daily Snapshot`}
-      </Title>
-
-      <div style={{ marginBottom: 24 }}>
-        <Select
-          value={selectedMonth}
-          style={{ width: 150, marginRight: 8 }}
-          onChange={(value) => setSelectedMonth(value)}
-        >
-          {[...Array(12).keys()].map((monthKey) => ( 
-            <Option key={monthKey} value={monthKey + 1}> 
-              {new Date(selectedYear, monthKey).toLocaleString('default', { month: 'long' })}
-            </Option>
-          ))}
-        </Select>
-        <Select
-          value={selectedYear}
-          style={{ width: 100 }}
-          onChange={(value) => setSelectedYear(value)}
-        >
-          {availableYears.map(yearOpt => (
-            <Option key={yearOpt} value={yearOpt}>{yearOpt}</Option>
-          ))}
-        </Select>
+      <div className={styles.filterContainer}>
+        <div className={styles.filterSets}>
+          <div className={styles.filterSetsInner}>
+            <Title level={3} style={{ margin: 0 }}>
+              {`${monthDate?.toLocaleString("default", { month: "long" })} ${selectedYear} - Daily Snapshot`}
+            </Title>
+          </div>
+          <div className={styles.filterRight}>
+            <div className={styles.calendarFilterSet}>
+              <div className={styles.label}>Month-Year</div>
+              <div className={styles.calendarFilter}>
+                <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
+                <DatePicker
+                  onKeyDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className={styles.dateFilter}
+                  placeholderText="Month - Year"
+                  selected={monthDate}
+                  onChange={onMonthCalenderFilter}
+                  dateFormat="MM-yyyy"
+                  showMonthYearPicker
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Card bordered={false} style={{ marginBottom: 24 }}>
         <Table
           columns={columns(weeks)}
-          dataSource={data}
+          dataSource={recruiterListData}
           bordered
+          loading={isLoading}
           pagination={false}
           scroll={{ x: "max-content" }}
         />
       </Card>
 
       <Card bordered={false} title="Key Metrics">
-        <Row gutter={16}>
-          <Col span={8}>
-            <Text strong>Profile to Interview %</Text>
-            <Divider style={{ margin: '8px 0' }} />
-            <Text>Goal: <strong>50%</strong></Text>
-            <br />
-            <Text>Achieved: <strong>0.00%</strong></Text>
-          </Col>
-          <Col span={8}>
-            <Text strong>Interview to Offer %</Text>
-            <Divider style={{ margin: '8px 0' }} />
-            <Text>Goal: <strong>20%</strong></Text>
-            <br />
-            <Text>Achieved: <strong>#DIV/0!</strong></Text>
-          </Col>
-          <Col span={8}>
-            <Text strong>Avg profiles shared per rec.</Text>
-            <Divider style={{ margin: '8px 0' }} />
-            <Text>Goal: <strong>3.64</strong></Text>
-            <br />
-            <Text>Achieved: <strong>1.88</strong></Text>
-          </Col>
-        </Row>
+          <Row gutter={[16, 16]} wrap={false}>
+            {metrics.map(renderMetricCol)}
+          </Row>
       </Card>
+
     </div>
   );
 };

@@ -456,6 +456,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getRecruiterReport');
 		}
 	},
+	getDailySnapshotReport: async function (snapshotData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.DAILY_SNAPSHOT_REPORT
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = snapshotData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getDailySnapshotReport');
+		}
+	},
 	getTalentOnboardReport: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =
