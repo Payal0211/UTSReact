@@ -15,75 +15,75 @@ const { Title, Text } = Typography;
 const generateWeekColumns = (year, monthIndex, daysInMonth, firstDayOfMonth) => {
   const weeks = [];
   let currentDate = 1;
-  let currentWeek = new Array(7).fill(null);
-
-  for (let i = firstDayOfMonth; i < 7 && currentDate <= daysInMonth; i++) {
-    currentWeek[i] = {
-      day: new Date(year, monthIndex, currentDate).toLocaleString("en-us", { weekday: "short" }),
-      date: currentDate,
-    };
-    currentDate++;
-  }
-  weeks.push(currentWeek);
 
   while (currentDate <= daysInMonth) {
-    currentWeek = new Array(7).fill(null);
+    const week = new Array(7).fill(null);
     for (let i = 0; i < 7 && currentDate <= daysInMonth; i++) {
-      currentWeek[i] = {
-        day: new Date(year, monthIndex, currentDate).toLocaleString("en-us", { weekday: "short" }),
+      const date = new Date(year, monthIndex, currentDate);
+      week[i] = {
+        day: date.toLocaleString("en-us", { weekday: "short" }),
         date: currentDate,
       };
       currentDate++;
     }
-    weeks.push(currentWeek);
+    weeks.push(week);
   }
 
   return weeks.map((week, weekIdx) => ({
     title: `Week ${weekIdx + 1}`,
-    children: week.filter(d => d).map((d, dayIdxInWeek) => ({
-      title: d ? `${d.day}` : "-",
-      dataIndex: d ? `day_${d.date}` : `placeholder_${dayIdxInWeek}_week_${weekIdx}`,
-      width: 80,
-      align: "center",
-      render: (value) => (value === 0 || value == null ? "-" : value),
-    })),
+    children: week
+      .filter((d) => d !== null)
+      .map((d) => ({
+        title: `${d.day}`,
+        dataIndex: `day_${d.date}`,
+        width: 80,
+        align: "center",
+        render: (value) => (value === 0 || value == null ? "-" : value),
+        className: d.day === "Sat" || d.day === "Sun" ? styles.weekendColumn : "",
+      })),
   }));
-  
 };
-
 const columns = (weeks) => [
   { title: "Stage", dataIndex: "stage", fixed: "left", width: 180 },
-  { title: "Goal for Month", dataIndex: "goalForMonth", width: 120, align: "center",render: (value) => {
-    if (value == null || value === 0) {
-      return "-";
-    }    
-    return value;
-  } },
-  { title: "Goal till Date", dataIndex: "goalTillDate", width: 120, align: "center" ,render: (value) => {
-    if (value == null || value === 0) {
-      return "-";
-    }    
-    return value;
-  }},
-  { title: "Reached", dataIndex: "reached", width: 100, align: "center",render: (value) => {
-    if (value == null || value === 0) {
-      return "-";
-    }    
-    return value;
-  } },
-  { title: "Daily Goal", dataIndex: "dailyGoal", width: 100, align: "center",render: (value) => {
-    if (value == null || value === 0) {
-      return "-";
-    }    
-    return value;
-  } },
+  {
+    title: "Goal for Month",
+    dataIndex: "goalForMonth",
+    width: 120,
+    align: "center",
+    render: (value) => (value == null || value === 0 ? "-" : value),
+    className: styles.goalForMonthColumn,
+  },
+  {
+    title: "Goal till Date",
+    dataIndex: "goalTillDate",
+    width: 120,
+    align: "center",
+    render: (value) => (value == null || value === 0 ? "-" : value),
+    className: styles.goalTillDateColumn,
+  },
+  {
+    title: "Reached",
+    dataIndex: "reached",
+    width: 100,
+    align: "center",
+    render: (value) => (value == null || value === 0 ? "-" : value),
+    className: styles.reachedColumn,
+  },
+  {
+    title: "Daily Goal",
+    dataIndex: "dailyGoal",
+    width: 100,
+    align: "center",
+    render: (value) => (value == null || value === 0 ? "-" : value),
+    className: styles.dailyGoalColumn,
+  },
   ...weeks,
 ];
 
 const DailySnapshot = () => {
   const navigate = useNavigate();
   const [recruiterListData, setRecruiterListData] = useState([]); 
-  const [metrics, setMetrics] = useState([]);
+  const [metrics, setMetrics] = useState([]); 
   const [isLoading, setIsLoading] = useState(false);
   const [monthDate, setMonthDate] = useState(new Date());
 
@@ -118,6 +118,7 @@ const DailySnapshot = () => {
     if (result.statusCode === HTTPStatusCode.OK) {
       const rawData = result?.responseBody?.SnapShotInfo || [];
       const metricsData = result?.responseBody?.MetricsInfo || [];
+      
       setMetrics(metricsData);
       const formattedData = rawData.map((item) => {
         const {
@@ -130,7 +131,6 @@ const DailySnapshot = () => {
           dailyCounts = {},
         } = item;
 
-        // Map dailyCounts to table columns (day_1, day_2, ..., day_31)
         const dailyMapped = {};
         for (let i = 1; i <= daysInMonth; i++) {
           dailyMapped[`day_${i}`] = dailyCounts[`day_${i}`] ?? null;
@@ -145,7 +145,7 @@ const DailySnapshot = () => {
           dailyGoal,
           ...dailyMapped,
         };
-      });
+      });      
       setRecruiterListData(formattedData);
       
     } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
@@ -167,9 +167,7 @@ const DailySnapshot = () => {
       </Card>
     </Col>
   );
-  
 
-  
   return (
     <div className={styles.snapshotContainer}>
       <div className={styles.filterContainer}>
@@ -218,7 +216,6 @@ const DailySnapshot = () => {
             {metrics.map(renderMetricCol)}
           </Row>
       </Card>
-
     </div>
   );
 };
