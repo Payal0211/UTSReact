@@ -178,6 +178,7 @@ export class ReportType {
 	static TALENT_LEAVE_TAKEN_REPORT = 'TalentLeaveTakenReport'
 	static RECRUITER_REPORT = 'RecruiterReport'
 	static CLIENT_DASHBOARD_REPORT = 'ClientDashboardReport'
+	static DAILY_SNAPSHOT_REPORT = 'DailySnapshotReport'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

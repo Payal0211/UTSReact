@@ -251,15 +251,16 @@ return headers
     <div className={recruiterStyle.hiringRequestContainer}>
          <div className={recruiterStyle.filterContainer}>
                 <div className={recruiterStyle.filterSets}>
+
                   <div className={recruiterStyle.filterSetsInner}>
+
                     <div className={recruiterStyle.addFilter} onClick={toggleHRFilter}>
                       <FunnelSVG style={{ width: "16px", height: "16px" }} />
         
                       <div className={recruiterStyle.filterLabel}> Add Filters</div>
                       <div className={recruiterStyle.filterCount}>{filteredTagLength}</div>
-                    </div>
+                    </div>   
 
-        
                     <div
                       className={recruiterStyle.searchFilterSet}
                       style={{ marginLeft: "15px" }}
@@ -288,7 +289,7 @@ return headers
                           }}
                         />
                       )}
-                    </div>               
+                    </div>              
 
                     <p
                       className={recruiterStyle.resetText}
@@ -299,40 +300,33 @@ return headers
                     >
                       Reset Filter
                     </p>
+
                   </div>
         
                   <div className={recruiterStyle.filterRight}>
-
                      <div className={recruiterStyle.calendarFilterSet}>
-                                    <div className={recruiterStyle.label}>Month-Year</div>
-                                    <div className={recruiterStyle.calendarFilter}>
-                                      <CalenderSVG
-                                        style={{ height: "16px", marginRight: "16px" }}
-                                      />
-                                      <DatePicker
-                                        style={{ backgroundColor: "red" }}
-                                        onKeyDown={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                        }}
-                                        className={recruiterStyle.dateFilter}
-                                        placeholderText="Month - Year"
-                                        selected={monthDate}
-                                        onChange={onMonthCalenderFilter}
-                                        // startDate={startDate}
-                                        // endDate={endDate}
-                                        dateFormat="MM-yyyy"
-                                        showMonthYearPicker
-                                      />
-                                    </div>
-                                  </div>
-{/*                  
-                    <button
-                      className={recruiterStyle.btnPrimary}
-                      onClick={() => {}}
-                    >
-                      Export
-                    </button> */}
+                        <div className={recruiterStyle.label}>Month-Year</div>
+                        <div className={recruiterStyle.calendarFilter}>
+                          <CalenderSVG
+                            style={{ height: "16px", marginRight: "16px" }}
+                          />
+                          <DatePicker
+                            style={{ backgroundColor: "red" }}
+                            onKeyDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            className={recruiterStyle.dateFilter}
+                            placeholderText="Month - Year"
+                            selected={monthDate}
+                            onChange={onMonthCalenderFilter}
+                            // startDate={startDate}
+                            // endDate={endDate}
+                            dateFormat="MM-yyyy"
+                            showMonthYearPicker
+                          />
+                        </div>
+                      </div>
                   </div>
                 </div>
               </div>
@@ -371,7 +365,7 @@ return headers
       
       )}
 
-       {isAllowFilters && (
+           {isAllowFilters && (
               <Suspense fallback={<div>Loading...</div>}>
         
                 <OnboardFilerList
