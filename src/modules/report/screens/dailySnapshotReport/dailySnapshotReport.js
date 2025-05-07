@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-const generateWeekColumns = (year, monthIndex, daysInMonth, firstDayOfMonth) => {
+// Generate columns for the weeks of the selected month
+const generateWeekColumns = (year, monthIndex, daysInMonth) => {
   const weeks = [];
   let currentDate = 1;
 
@@ -31,18 +32,17 @@ const generateWeekColumns = (year, monthIndex, daysInMonth, firstDayOfMonth) => 
 
   return weeks.map((week, weekIdx) => ({
     title: `Week ${weekIdx + 1}`,
-    children: week
-      .filter((d) => d !== null)
-      .map((d) => ({
-        title: `${d.day}`,
-        dataIndex: `day_${d.date}`,
-        width: 80,
-        align: "center",
-        render: (value) => (value === 0 || value == null ? "-" : value),
-        className: d.day === "Sat" || d.day === "Sun" ? styles.weekendColumn : "",
-      })),
+    children: week.filter((d) => d !== null).map((d) => ({
+      title: d.day,
+      dataIndex: `day_${d.date}`,
+      width: 80,
+      align: "center",
+      render: (value) => (value === 0 || value == null ? "-" : value),
+      className: d.day === "Sat" || d.day === "Sun" ? styles.weekendColumn : "",
+    })),
   }));
 };
+
 const columns = (weeks) => [
   { title: "Stage", dataIndex: "stage", fixed: "left", width: 180 },
   {
@@ -50,7 +50,7 @@ const columns = (weeks) => [
     dataIndex: "goalForMonth",
     width: 120,
     align: "center",
-    render: (value) => (value == null || value === 0 ? "-" : value),
+    render: (value) => value || "-",
     className: styles.goalForMonthColumn,
   },
   {
@@ -58,7 +58,7 @@ const columns = (weeks) => [
     dataIndex: "goalTillDate",
     width: 120,
     align: "center",
-    render: (value) => (value == null || value === 0 ? "-" : value),
+    render: (value) => value || "-",
     className: styles.goalTillDateColumn,
   },
   {
@@ -66,7 +66,7 @@ const columns = (weeks) => [
     dataIndex: "reached",
     width: 100,
     align: "center",
-    render: (value) => (value == null || value === 0 ? "-" : value),
+    render: (value) => value || "-",
     className: styles.reachedColumn,
   },
   {
@@ -74,7 +74,7 @@ const columns = (weeks) => [
     dataIndex: "dailyGoal",
     width: 100,
     align: "center",
-    render: (value) => (value == null || value === 0 ? "-" : value),
+    render: (value) => value || "-",
     className: styles.dailyGoalColumn,
   },
   ...weeks,
@@ -82,20 +82,17 @@ const columns = (weeks) => [
 
 const DailySnapshot = () => {
   const navigate = useNavigate();
-  const [recruiterListData, setRecruiterListData] = useState([]); 
-  const [metrics, setMetrics] = useState([]); 
+  const [recruiterListData, setRecruiterListData] = useState([]);
+  const [metrics, setMetrics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [monthDate, setMonthDate] = useState(new Date());
 
   const selectedYear = monthDate.getFullYear();
   const monthIndex = monthDate.getMonth();
   const daysInMonth = new Date(selectedYear, monthIndex + 1, 0).getDate();
-  const firstDayOfMonth = new Date(selectedYear, monthIndex, 1).getDay();
 
-  const weeks = useMemo(
-    () => generateWeekColumns(selectedYear, monthIndex, daysInMonth, firstDayOfMonth),
-    [selectedYear, monthIndex, daysInMonth, firstDayOfMonth]
-  );
+  // Memoized week columns for better performance
+  const weeks = useMemo(() => generateWeekColumns(selectedYear, monthIndex, daysInMonth), [selectedYear, monthIndex, daysInMonth]);
 
   const onMonthCalenderFilter = (date) => {
     setMonthDate(date);
@@ -105,55 +102,51 @@ const DailySnapshot = () => {
     getDailySnapshotData();
   }, [monthDate]);
 
+  // Fetch daily snapshot data and handle API responses
   const getDailySnapshotData = async () => {
     const payload = {
-      month: +moment(monthDate).format("M"),
-      year: +moment(monthDate).format("YYYY"),
+      month: moment(monthDate).month() + 1, // Months are 0-indexed in JS
+      year: moment(monthDate).year(),
     };
 
     setIsLoading(true);
-    const result = await ReportDAO.getDailySnapshotDAO(payload);
-    setIsLoading(false);
+    try {
+      const result = await ReportDAO.getDailySnapshotDAO(payload);
+      if (result.statusCode === HTTPStatusCode.OK) {
+        const rawData = result?.responseBody?.SnapShotInfo || [];
+        const metricsData = result?.responseBody?.MetricsInfo || [];
+        
+        setMetrics(metricsData);
 
-    if (result.statusCode === HTTPStatusCode.OK) {
-      const rawData = result?.responseBody?.SnapShotInfo || [];
-      const metricsData = result?.responseBody?.MetricsInfo || [];
-      
-      setMetrics(metricsData);
-      const formattedData = rawData.map((item) => {
-        const {
-          stage,
-          stage_ID,
-          goalForMonth,
-          goalTillDate,
-          reached,
-          dailyGoal,
-          dailyCounts = {},
-        } = item;
+        const formattedData = rawData.map((item) => {
+          const { stage, stage_ID, goalForMonth, goalTillDate, reached, dailyGoal, dailyCounts = {} } = item;
+          const dailyMapped = {};
+          for (let i = 1; i <= daysInMonth; i++) {
+            dailyMapped[`day_${i}`] = dailyCounts[`day_${i}`] ?? null;
+          }
+          return {
+            key: stage_ID || stage,
+            stage,
+            goalForMonth,
+            goalTillDate,
+            reached,
+            dailyGoal,
+            ...dailyMapped,
+          };
+        });
 
-        const dailyMapped = {};
-        for (let i = 1; i <= daysInMonth; i++) {
-          dailyMapped[`day_${i}`] = dailyCounts[`day_${i}`] ?? null;
-        }
-
-        return {
-          key: stage_ID || stage,
-          stage,
-          goalForMonth,
-          goalTillDate,
-          reached,
-          dailyGoal,
-          ...dailyMapped,
-        };
-      });      
-      setRecruiterListData(formattedData);
-      
-    } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
-      setRecruiterListData([]);
-    } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-      navigate(UTSRoutes.LOGINROUTE);
-    } else if (result?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-      navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        setRecruiterListData(formattedData);
+      } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+        setRecruiterListData([]);
+      } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+        navigate(UTSRoutes.LOGINROUTE);
+      } else if (result?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+        navigate(UTSRoutes.SOMETHINGWENTWRONG);
+      }
+    } catch (error) {
+      console.error("Error fetching daily snapshot data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -183,10 +176,7 @@ const DailySnapshot = () => {
               <div className={styles.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
                 <DatePicker
-                  onKeyDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
+                  onKeyDown={(e) => e.preventDefault()} // Prevent key events
                   className={styles.dateFilter}
                   placeholderText="Month - Year"
                   selected={monthDate}
@@ -207,14 +197,14 @@ const DailySnapshot = () => {
           bordered
           loading={isLoading}
           pagination={false}
-          scroll={{ x: "max-content" }}
+          // scroll={{ x: "max-content" }}
         />
       </Card>
 
       <Card bordered={false} title="Key Metrics">
-          <Row gutter={[16, 16]} wrap={false}>
-            {metrics.map(renderMetricCol)}
-          </Row>
+        <Row gutter={[16, 16]} wrap={false}>
+          {metrics.map(renderMetricCol)}
+        </Row>
       </Card>
     </div>
   );
