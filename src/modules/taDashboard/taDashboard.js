@@ -345,6 +345,7 @@ export default function TADashboard() {
             let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
             if (val === "Fasttrack") {
               setShowProfileTarget(true);
+              setStartTargetDate(startDate)
               setProfileTargetDetails({ ...result, index: index });
               return;
             }
@@ -875,6 +876,7 @@ export default function TADashboard() {
               }}
               onClick={() => {
                 setShowProfileTarget(true);
+                setStartTargetDate(startDate)
                 setProfileTargetDetails({
                   ...result,
                   id: result?.taskID,
@@ -1249,6 +1251,7 @@ export default function TADashboard() {
                 }}
                 onClick={() => {
                   setShowProfileTarget(true);
+                  setStartTargetDate(startDate)
                   setProfileTargetDetails({ ...result, index: index });
                 }}
               >
@@ -2014,7 +2017,8 @@ export default function TADashboard() {
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
                   dateFormat="dd-MM-yyyy"
-                  minDate={new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)}
+                  // minDate={new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)}
+                  minDate={new Date()}
                   maxDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
                   // selectsRange
                 />

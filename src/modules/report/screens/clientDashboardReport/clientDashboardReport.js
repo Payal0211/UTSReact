@@ -35,7 +35,7 @@ export default function ClientDashboardReport() {
   
   const [dateError, setDateError] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(10);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [listDataCount, setListDataCount] = useState(0);
   const [filtersList, setFiltersList] = useState({});
@@ -254,10 +254,11 @@ export default function ClientDashboardReport() {
     const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
     setLoading(false)
     if (apiResult?.statusCode === 200) {        
-        setClientData(apiResult.responseBody?.rows);        
+      setClientData(apiResult.responseBody?.rows);      
         setListDataCount(apiResult.responseBody?.totalrows);      
     } else if (apiResult?.statusCode === 404) {
         setClientData([]);
+        setListDataCount(0);     
     }
   }; 
 
@@ -288,23 +289,25 @@ export default function ClientDashboardReport() {
                 "searchText": openTicketSearchText,
                 "fromDate": start.toLocaleDateString("en-US"),
                 "toDate": end.toLocaleDateString("en-US"),
-                "pageIndex": pageIndex,
+                "pageIndex": 1,
                 "pageSize": pageSize,
               };
+              setPageIndex(1);
             setLoading(true)
             const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
             setLoading(false)
-            console.log("result ", apiResult);
+
             if (apiResult?.statusCode === 200) {        
-                setClientData(apiResult.responseBody?.rows);        
+                setClientData(apiResult.responseBody?.rows);       
                 setListDataCount(apiResult.responseBody?.totalrows);      
             } else if (apiResult?.statusCode === 404) {
                 setClientData([]);
+                setListDataCount(0);     
             }
         }
       }
     },
-    []
+    [openTicketSearchText,pageSize]
   );
 
   useEffect(() => {
@@ -314,7 +317,9 @@ export default function ClientDashboardReport() {
 
   useEffect(() => {
     const timer = setTimeout(
-      () => setopenTicketSearchText(openTicketDebounceText),
+      () => {
+        setPageIndex(1)
+        setopenTicketSearchText(openTicketDebounceText)},
       1000
     );
     return () => clearTimeout(timer);
@@ -359,7 +364,11 @@ export default function ClientDashboardReport() {
         filterFields_OnBoard: {
           taUserIDs: null,
         },
-      });      
+      }); 
+      setopenTicketSearchText("");
+      setopenTicketDebounceText("");  
+      setStartDate(aWeekAgo);
+      setEndDate(today);  
   }
 
   return (
@@ -447,22 +456,24 @@ export default function ClientDashboardReport() {
         columns={tableColumnsMemo}
         bordered={false}
         dataSource={clientData}   
+        rowKey={(record, index) => index}
         rowClassName={(row, index) => {
             return row.client === 'Total' ? clientDashboardStyles["highlight-total-row"] : '';
           }}   
+
           pagination={{
             onChange: (pageNum, pageSize) => {
               setPageIndex(pageNum);
-              setPageSize(pageSize);
+              setPageSize(pageSize - 1);
               // getInvoiceTicketsFromPagination(pageNum, pageSize);
             },
             size: "small",
-            pageSize: pageSize,
+            pageSize: pageSize + 1,
             pageSizeOptions: pageSizeOptions,
             total: listDataCount,
             showTotal: (total, range) =>
               `${range[0]}-${range[1]} of ${listDataCount} items`,
-            defaultCurrent: pageIndex,
+            current: pageIndex,
           }}  
       />
       }

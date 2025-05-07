@@ -332,35 +332,38 @@ return headers
               </div>
 
               {isLoading ? (
-                  <TableSkeleton />
-                ) : (
-                  // <Table
-                  //   scroll={{ x: "max-content" , y:'1vh'}}
-                  //   dataSource={RecruiterListData}
-                  //   columns={columns()}
-                  //   // bordered
-                  //   pagination={false}
-                  // //   onChange={handleTableFilterChange}
-                  // />
-                  <Table
-                    scroll={{ x: "max-content", y: '1vh' }}
-                    dataSource={RecruiterListData}
-                    columns={columns()}
-                    pagination={false}
-                    rowClassName={(record) => {
-                      const stage = record.profileStage || '';  
-                      if (stage.includes('Avg Profiles Shared Per Day')) return recruiterStyle.one;
-                      if (stage.includes('Profiles to Interview %')) return recruiterStyle.two;            
-                      if (stage.includes('Interview to Select %')) return recruiterStyle.three;
-                      if (stage.includes('Monthly Goal')) return recruiterStyle.four;
-                      if (stage.includes('Achieved Pipeline')) return recruiterStyle.five;
-                      if (stage.includes('Actual Pipeline')) return recruiterStyle.six;
-                      if (stage.includes('Lost Pipeline')) return recruiterStyle.seven;
-                      if (stage.includes('Total Pipeline')) return recruiterStyle.four;
-                      return '';
-                    }}
-                  />
-                )}
+        <TableSkeleton />
+      ) : (
+        // <Table
+        //   scroll={{ x: "max-content" , y:'1vh'}}
+        //   dataSource={RecruiterListData}
+        //   columns={columns()}
+        //   // bordered
+        //   pagination={false}
+        // //   onChange={handleTableFilterChange}
+        // />
+        <div className={recruiterStyle.customTableWrapper}>
+            <Table
+          scroll={{ x: "max-content", y: '1vh' }}
+          dataSource={RecruiterListData}
+          columns={columns()}
+          pagination={false}
+          rowClassName={(record) => {
+            const stage = record.profileStage || '';  
+            if (stage.includes('Avg Profiles Shared Per Day')) return recruiterStyle.one;
+            if (stage.includes('Profiles to Interview %')) return recruiterStyle.two;            
+            if (stage.includes('Interview to Select %')) return recruiterStyle.three;
+            if (stage.includes('Monthly Goal')) return recruiterStyle.four;
+            if (stage.includes('Achieved Pipeline')) return recruiterStyle.five;
+            if (stage.includes('Actual Pipeline')) return recruiterStyle.six;
+            if (stage.includes('Lost Pipeline')) return recruiterStyle.seven;
+            if (stage.includes('Total Pipeline')) return recruiterStyle.four;
+            return '';
+          }}
+        />
+        </div>
+      
+      )}
 
            {isAllowFilters && (
               <Suspense fallback={<div>Loading...</div>}>
