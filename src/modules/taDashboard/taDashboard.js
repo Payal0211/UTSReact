@@ -2391,6 +2391,7 @@ export default function TADashboard() {
           className="engagementModalStyle"
           // onOk={() => setVersantModal(false)}
           onCancel={() => {
+            setSearchTerm('')
             setShowTalentProfiles(false);
             hrTalentListFourCount([]);
           }}
@@ -2669,6 +2670,7 @@ export default function TADashboard() {
                 className={taStyles.btnCancle}
                 disabled={isAddingNewTask}
                 onClick={() => {
+                  setSearchTerm('')
                   setShowTalentProfiles(false);
                   hrTalentListFourCount([]);
                 }}
