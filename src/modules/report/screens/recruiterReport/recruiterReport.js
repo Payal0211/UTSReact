@@ -348,7 +348,8 @@ return headers
         //   pagination={false}
         // //   onChange={handleTableFilterChange}
         // />
-        <Table
+        <div className={recruiterStyle.customTableWrapper}>
+            <Table
           scroll={{ x: "max-content", y: '1vh' }}
           dataSource={RecruiterListData}
           columns={columns()}
@@ -366,6 +367,8 @@ return headers
             return '';
           }}
         />
+        </div>
+      
       )}
 
        {isAllowFilters && (
