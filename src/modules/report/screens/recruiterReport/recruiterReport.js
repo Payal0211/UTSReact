@@ -249,7 +249,9 @@ return headers
     <div className={recruiterStyle.hiringRequestContainer}>
          <div className={recruiterStyle.filterContainer}>
                 <div className={recruiterStyle.filterSets}>
+
                   <div className={recruiterStyle.filterSetsInner}>
+
                     <div className={recruiterStyle.addFilter} onClick={toggleHRFilter}>
                       <FunnelSVG style={{ width: "16px", height: "16px" }} />
         
@@ -315,35 +317,28 @@ return headers
                       )}
                     </div>   
                      <div className={recruiterStyle.calendarFilterSet}>
-                                    <div className={recruiterStyle.label}>Month-Year</div>
-                                    <div className={recruiterStyle.calendarFilter}>
-                                      <CalenderSVG
-                                        style={{ height: "16px", marginRight: "16px" }}
-                                      />
-                                      <DatePicker
-                                        style={{ backgroundColor: "red" }}
-                                        onKeyDown={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                        }}
-                                        className={recruiterStyle.dateFilter}
-                                        placeholderText="Month - Year"
-                                        selected={monthDate}
-                                        onChange={onMonthCalenderFilter}
-                                        // startDate={startDate}
-                                        // endDate={endDate}
-                                        dateFormat="MM-yyyy"
-                                        showMonthYearPicker
-                                      />
-                                    </div>
-                                  </div>
-{/*                  
-                    <button
-                      className={recruiterStyle.btnPrimary}
-                      onClick={() => {}}
-                    >
-                      Export
-                    </button> */}
+                        <div className={recruiterStyle.label}>Month-Year</div>
+                        <div className={recruiterStyle.calendarFilter}>
+                          <CalenderSVG
+                            style={{ height: "16px", marginRight: "16px" }}
+                          />
+                          <DatePicker
+                            style={{ backgroundColor: "red" }}
+                            onKeyDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            className={recruiterStyle.dateFilter}
+                            placeholderText="Month - Year"
+                            selected={monthDate}
+                            onChange={onMonthCalenderFilter}
+                            // startDate={startDate}
+                            // endDate={endDate}
+                            dateFormat="MM-yyyy"
+                            showMonthYearPicker
+                          />
+                        </div>
+                      </div>
                   </div>
                 </div>
               </div>
@@ -359,7 +354,8 @@ return headers
         //   pagination={false}
         // //   onChange={handleTableFilterChange}
         // />
-        <Table
+        <div className={recruiterStyle.customTableWrapper}>
+            <Table
           scroll={{ x: "max-content", y: '1vh' }}
           dataSource={RecruiterListData}
           columns={columns()}
@@ -377,9 +373,11 @@ return headers
             return '';
           }}
         />
+        </div>
+      
       )}
 
-       {isAllowFilters && (
+           {isAllowFilters && (
               <Suspense fallback={<div>Loading...</div>}>
         
                 <OnboardFilerList

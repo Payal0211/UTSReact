@@ -258,6 +258,10 @@
     color: var(--uplers-lightBlack);
 }
 
+.customTableWrapper [class*="ant-table-body"]{
+    max-height: calc(100vh - 300px) !important
+}
+
 .calendarFilter{
     width:250px ;
     height: 44px;

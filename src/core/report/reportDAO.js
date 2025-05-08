@@ -783,6 +783,33 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.getRecruiterReportDAO');
 		}
 	},
+	getDailySnapshotDAO: async function (snapshotData) {
+		try {
+			const snapshotDataResult = await ReportAPI.getDailySnapshotReport(
+				snapshotData,
+			);
+			if (snapshotDataResult) {
+				const statusCode = snapshotDataResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = snapshotDataResult?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return snapshotDataResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return snapshotDataResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.getDailySnapshotDAO');
+		}
+	},
 	getClientDashboardReportDAO: async function (reportData) {
 		try {
 			const replacementResult = await ReportAPI.getClientDashboardReport(

@@ -365,8 +365,10 @@ export default function ClientDashboardReport() {
           taUserIDs: null,
         },
       }); 
-         setopenTicketSearchText("");
-       setopenTicketDebounceText("");    
+      setopenTicketSearchText("");
+      setopenTicketDebounceText("");  
+      setStartDate(aWeekAgo);
+      setEndDate(today);  
   }
 
   return (
