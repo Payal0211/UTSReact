@@ -39,7 +39,7 @@
 
 .filterSetsInner [class*="ant-select"] [class*="ant-select-selector"] {
     padding: 12px 10px;
-    height: 46px !important;
+    height: 49px !important;
     min-height: 44px;
     overflow: scroll;
     /* width:200px */
