@@ -121,6 +121,11 @@ background-color: #fff3e6;
 background-color:  #e6f7ff;
 }
 
+.ant-table-body{
+  min-height: fit-content !important;
+}
+
+
 @media only screen and (max-width: 1440px) {
   .hiringRequestContainer {
       padding: 16px 24px;
