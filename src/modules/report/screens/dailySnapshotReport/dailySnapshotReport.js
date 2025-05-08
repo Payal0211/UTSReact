@@ -66,7 +66,7 @@ const columns = (weeks) => [
   },
   {
     title: "Reached",
-    dataIndex: "reached",
+    dataIndex: "reachedStr",
     fixed: "left",
     width: 100,
     align: "center",
@@ -124,7 +124,7 @@ const DailySnapshot = () => {
         setMetrics(metricsData);
 
         const formattedData = rawData.map((item) => {
-          const { stage, stage_ID, goalForMonth, goalTillDate, reached, dailyGoal, dailyCounts = {} } = item;
+          const { stage, stage_ID, goalForMonth, goalTillDate, reachedStr, dailyGoal, dailyCounts = {} } = item;
           const dailyMapped = {};
           for (let i = 1; i <= daysInMonth; i++) {
             dailyMapped[`day_${i}`] = dailyCounts[`day_${i}`] ?? null;
@@ -134,7 +134,7 @@ const DailySnapshot = () => {
             stage,
             goalForMonth,
             goalTillDate,
-            reached,
+            reachedStr,
             dailyGoal,
             ...dailyMapped,
           };
@@ -157,27 +157,17 @@ const DailySnapshot = () => {
 
   const renderMetricCol = (metric) => (
     <Col
-    key={metric.stage_ID}
-    xs={24}
-    sm={12}
-    md={8}   // 3 per row at medium screens
-    lg={6}   // 4 per row at large screens
-    xl={4}   // 6 per row at extra-large screens
-    style={{ margin: "10px 0",padding:"10px" }} // vertical margin only
-  >
-    <Card size="small" style={{ height: "100%", width: "100%" }}>
-      <Text strong>{metric.stage}</Text>
-      <Divider style={{ margin: "8px 0" }} />
-      {metric.goalForMonth > 0 && <><Text>
-        Goal: <strong>{metric.goalForMonth}</strong>
-      </Text>
-      <br /></>}
-      <Text>
-        Achieved: <strong>{metric.reachedStr ? `${metric.reachedStr}` : "0"}</strong>
-      </Text>
-    </Card>
-  </Col>
-  
+      key={metric.stage_ID}
+      xs={24} sm={12} md={6} lg={4} xl={3}
+      style={{ minWidth: 250,margin:"10px",padding:"10px" }}
+    >
+      <Card size="small" style={{ height: '100%' }}>
+        <Text strong>{metric.stage}</Text>
+        <Divider style={{ margin: "8px 0" }} />
+        <Text>Goal: <strong>{metric.goalForMonth}%</strong></Text><br />
+        <Text>Achieved: <strong>{metric.reachedStr ? `${metric.reachedStr}%` : "0%"}</strong></Text>
+      </Card>
+    </Col>
   );
   
 
