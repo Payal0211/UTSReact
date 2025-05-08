@@ -66,33 +66,9 @@ export default function ViewOnBoardDetails() {
   const [totalLeave, setTotalLeave] = useState(0)
   const [holidayLeave, setHolidayLeave] = useState(0)
   const calendarRef = useRef(null);
-  const [leaveTypes,setLeaveTypes] = useState([])
-
- 
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    control,
-    setError,
-    getValues,
-    watch,
-    reset,
-    resetField,
-    formState: { errors },
-  } = useForm();
-
+  const [leaveTypes,setLeaveTypes] = useState([]);
+  const {register,handleSubmit,setValue,control,setError,getValues,watch,reset,resetField,formState: { errors }} = useForm();
   const [userData, setUserData] = useState({});
-  
-    useEffect(() => {
-      const getUserResult = async () => {
-        let userData = UserSessionManagementController.getUserSession();
-        if (userData) setUserData(userData);
-      };
-      getUserResult();
-    }, []);
-
   const [getHRAndEngagementId, setHRAndEngagementId] = useState({
     hrNumber: '',
     engagementID: '',
@@ -100,13 +76,11 @@ export default function ViewOnBoardDetails() {
     onBoardId: '',
     hrId: '',
   });
-
   const [getFeedbackPagination, setFeedbackPagination] = useState({
     totalRecords: 0,
     pageIndex: 1,
     pageSize: 10,
   });
-
   const [feedBackData, setFeedBackData] = useState({
     totalRecords: 10,
     pagenumber: 1,
@@ -123,8 +97,15 @@ export default function ViewOnBoardDetails() {
     rejectLeaveModal:false,
     approveLeaveModal:false,
   });
-
   const [getClientFeedbackList, setClientFeedbackList] = useState([]);
+
+  useEffect(() => {
+    const getUserResult = async () => {
+      let userData = UserSessionManagementController.getUserSession();
+      if (userData) setUserData(userData);
+    };
+    getUserResult();
+  }, []); 
 
   const feedbackTableColumnsMemo = useMemo(
     () => allEngagementConfig.clientFeedbackTypeConfig(),
@@ -420,52 +401,49 @@ export default function ViewOnBoardDetails() {
     ];
   }, [documentsList]);
 
-    const saveHandler = 
-      async (d) => {   
-        setLoading(true);
-        const response = await engagementRequestDAO.saveDaysandPRDetailsRequestDAO(d);
-        setLoading(false);
-        if (response.statusCode === HTTPStatusCode.OK) {
-          getAllBRPRTableData(onboardID)
-        }
-
+  const saveHandler = 
+    async (d) => {   
+      setLoading(true);
+      const response = await engagementRequestDAO.saveDaysandPRDetailsRequestDAO(d);
+      setLoading(false);
+      if (response.statusCode === HTTPStatusCode.OK) {
+        getAllBRPRTableData(onboardID)
       }
 
-      const CompMonthlyPRColField = ({val,data}) => {
-        const [isEdit,setIsEdit] = useState(false)
-        const [colval,setcolVal]= useState(val)
-    
-        const updateValue= () =>{
-          if(colval < data.br){    
-          let payload = {
-            "billRate": data.br,
-            "payRate": colval,
-            "days": 0,
-            "payoutID": data.id,
-            "currency": data.currency,
-            "isPayRateUpdate": true
-          }
-    
-          saveHandler(payload)
-          }
-          
-        }
-    
-    
-        if(isEdit){
-          return <div style={{display:'flex', alignItems:'center' }}><div style={{display:'flex' ,flexDirection:'column', width:'50px'}}><input type='number' onDoubleClick={()=>{setIsEdit(false);setcolVal(val)}} value={colval} onChange={e=> setcolVal(+e.target.value)} />
-          {colval > data.br && <p style={{ margin:'0', color:'red'}}>PR can not be greater then  BR</p>}
-          </div> <TickMark
-          width={24}
-          height={24}
-          style={{marginLeft:'10px',cursor:'pointer'}}
-          onClick={() => updateValue()}
-        /></div>
-        }else{
-          return <p style={{cursor:'pointer', margin:'0'}} onDoubleClick={()=>setIsEdit(true)}>{`${data.currency} ` + `${data.prStr}`}</p>
-        }
-      }
-    
+  }
+
+  const CompMonthlyPRColField = ({val,data}) => {
+    const [isEdit,setIsEdit] = useState(false)
+    const [colval,setcolVal]= useState(val)
+
+    const updateValue= () =>{
+      if(colval < data.br){    
+      let payload = {
+        "billRate": data.br,
+        "payRate": colval,
+        "days": 0,
+        "payoutID": data.id,
+        "currency": data.currency,
+        "isPayRateUpdate": true
+      }    
+      saveHandler(payload)
+      }          
+    }
+
+
+    if(isEdit){
+      return <div style={{display:'flex', alignItems:'center' }}><div style={{display:'flex' ,flexDirection:'column', width:'50px'}}><input type='number' onDoubleClick={()=>{setIsEdit(false);setcolVal(val)}} value={colval} onChange={e=> setcolVal(+e.target.value)} />
+      {colval > data.br && <p style={{ margin:'0', color:'red'}}>PR can not be greater then  BR</p>}
+      </div> <TickMark
+      width={24}
+      height={24}
+      style={{marginLeft:'10px',cursor:'pointer'}}
+      onClick={() => updateValue()}
+    /></div>
+    }else{
+      return <p style={{cursor:'pointer', margin:'0'}} onDoubleClick={()=>setIsEdit(true)}>{`${data.currency} ` + `${data.prStr}`}</p>
+    }
+  }    
 
   const CompNoOfDaysColField = ({val,data}) => {
     const [isEdit,setIsEdit] = useState(false)
@@ -948,10 +926,7 @@ export default function ViewOnBoardDetails() {
 					setEngagementModal(pre => ({...pre,addDocumentModal:true}));
 				  }}
 				  >Upload Document</button>
-    </div>
-
-
-           
+    </div>           
         
         {isLoading ? (
           <Skeleton active />
@@ -1233,7 +1208,7 @@ export default function ViewOnBoardDetails() {
                   }
                   }
               />
-              </Modal>}
+         </Modal>}
 
         {/** reject Leave Modal **/}
         {getEngagementModal.rejectLeaveModal && 	<Modal
@@ -1282,8 +1257,7 @@ export default function ViewOnBoardDetails() {
             errors={errors}
             />
 
-            </Modal>
-          
+        </Modal>          
         }
 
         {/** add/edit Leave Modal **/}
@@ -1337,7 +1311,7 @@ export default function ViewOnBoardDetails() {
                 setClientFeedbackList={setClientFeedbackList}
                 leaveTypes={leaveTypes} />
 
-              </Modal>}
+        </Modal>}
 
         {/** Add Document Modal **/}
           {getEngagementModal.addDocumentModal && 	<Modal
