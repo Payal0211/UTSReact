@@ -1102,7 +1102,6 @@ const EngagementOnboard = ({
       onCancel={() => setEditStartDateModal(false)}
     >
       <label className={allengagementOnboardStyles.formLabel}>Edit Engagement Start Date</label>
-          {console.log(startDate,"startDate")}
       <div style={{paddingTop:'10px',paddingBottom:'10px'}}> 
       <DatePicker
         onKeyDown={(e) => {
