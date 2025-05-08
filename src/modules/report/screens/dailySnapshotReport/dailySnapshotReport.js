@@ -45,11 +45,11 @@ const generateWeekColumns = (year, monthIndex, daysInMonth) => {
 };
 
 const columns = (weeks) => [
-  { title: "Stage", dataIndex: "stage", fixed: "left", width: 180 ,},
+  { title: "Stage", dataIndex: "stage", fixed: "left", width: 155 ,},
   {
     title: "Goal for Month",
     dataIndex: "goalForMonth",
-    width: 120,
+    width: 130,
     fixed: "left",
     align: "center",
     render: (value) => value || "-",
@@ -215,16 +215,18 @@ const DailySnapshot = () => {
         </div>
       </div>
 
-      <Card bordered={false} style={{ marginBottom: 24 }}>
-      <Table
-        columns={columns(weeks)}
-        dataSource={recruiterListData}
-        bordered
-        loading={isLoading}
-        pagination={false}       
-        scroll={{ x: "max-content", y: 0 }}
-      />
-      </Card>
+      <div className="custom-table-container">
+        <Card bordered={false} style={{ marginBottom: 24 }}>
+        <Table
+          columns={columns(weeks)}
+          dataSource={recruiterListData}
+          bordered
+          loading={isLoading}
+          pagination={false}       
+          scroll={{ x: "max-content", y: 0 }}
+        />
+        </Card>
+      </div>
 
       <Card bordered={false} title="Key Metrics" style={{
           width: '100%',
