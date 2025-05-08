@@ -382,12 +382,13 @@ function ClientSection({
                       {/* </div> */}
                     </div>
                   </div>
+                 
                   <div className={AddNewClientStyle.colMd6} style={{display:'flex',flexDirection:'column',width:'156px',gap:'15px'}}>
                     <label className={AddNewClientStyle.label}>Email Notification</label>
-                    <Switch defaultChecked={!watch(`clientDetails.[${index}].isClientNotificationSend`)} style={{width:'70px'}}  checkedChildren="ON" unCheckedChildren="OFF" onChange={val=>{setValue(`clientDetails.[${index}].isClientNotificationSend`,!val)}}/>
+                    <Switch checked={!watch(`clientDetails.[${index}].isClientNotificationSend`)} style={{width:'70px'}}  checkedChildren="ON" unCheckedChildren="OFF" onChange={val=>{setValue(`clientDetails.[${index}].isClientNotificationSend`,!val)}}/>
                     </div>
 
-                  {companyID !== "0" && (
+                  {(companyID !== "0" && !watch(`clientDetails.[${index}].isClientNotificationSend`)) && (
                     <div className={AddNewClientStyle.colMd6}>
                       {item?.resendInviteEmail === true && (
                         <button
