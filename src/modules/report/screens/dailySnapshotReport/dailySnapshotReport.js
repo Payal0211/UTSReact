@@ -173,7 +173,7 @@ const DailySnapshot = () => {
       </Text>
       <br /></>}
       <Text>
-        Achieved: <strong>{metric.reached ? `${metric.reached}` : "0"}</strong>
+        Achieved: <strong>{metric.reachedStr ? `${metric.reachedStr}` : "0"}</strong>
       </Text>
     </Card>
   </Col>
