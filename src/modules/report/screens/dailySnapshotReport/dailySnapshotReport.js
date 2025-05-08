@@ -33,6 +33,7 @@ const generateWeekColumns = (year, monthIndex, daysInMonth) => {
   return weeks.map((week, weekIdx) => ({
     title: `Week ${weekIdx + 1}`,
     children: week.filter((d) => d !== null).map((d) => ({
+      key: `day_${d.date}`,
       title: d.day,
       dataIndex: `day_${d.date}`,
       width: 80,
@@ -44,11 +45,12 @@ const generateWeekColumns = (year, monthIndex, daysInMonth) => {
 };
 
 const columns = (weeks) => [
-  { title: "Stage", dataIndex: "stage", fixed: "left", width: 180 },
+  { title: "Stage", dataIndex: "stage", fixed: "left", width: 180 ,},
   {
     title: "Goal for Month",
     dataIndex: "goalForMonth",
     width: 120,
+    fixed: "left",
     align: "center",
     render: (value) => value || "-",
     className: styles.goalForMonthColumn,
@@ -56,6 +58,7 @@ const columns = (weeks) => [
   {
     title: "Goal till Date",
     dataIndex: "goalTillDate",
+    fixed: "left",
     width: 120,
     align: "center",
     render: (value) => value || "-",
@@ -64,6 +67,7 @@ const columns = (weeks) => [
   {
     title: "Reached",
     dataIndex: "reached",
+    fixed: "left",
     width: 100,
     align: "center",
     render: (value) => value || "-",
@@ -72,6 +76,7 @@ const columns = (weeks) => [
   {
     title: "Daily Goal",
     dataIndex: "dailyGoal",
+    fixed: "left",
     width: 100,
     align: "center",
     render: (value) => value || "-",
@@ -151,8 +156,12 @@ const DailySnapshot = () => {
   };
 
   const renderMetricCol = (metric) => (
-    <Col xs={24} sm={12} md={6} lg={4} xl={4} key={metric.stage_ID}>
-      <Card size="small">
+    <Col
+      key={metric.stage_ID}
+      xs={24} sm={12} md={6} lg={4} xl={3}
+      style={{ minWidth: 250,margin:"10px",padding:"10px" }}
+    >
+      <Card size="small" style={{ height: '100%' }}>
         <Text strong>{metric.stage}</Text>
         <Divider style={{ margin: "8px 0" }} />
         <Text>Goal: <strong>{metric.goalForMonth}%</strong></Text><br />
@@ -160,6 +169,7 @@ const DailySnapshot = () => {
       </Card>
     </Col>
   );
+  
 
   return (
     <div className={styles.snapshotContainer}>
@@ -191,20 +201,24 @@ const DailySnapshot = () => {
       </div>
 
       <Card bordered={false} style={{ marginBottom: 24 }}>
-        <Table
-          columns={columns(weeks)}
-          dataSource={recruiterListData}
-          bordered
-          loading={isLoading}
-          pagination={false}
-          // scroll={{ x: "max-content" }}
-        />
+      <Table
+        columns={columns(weeks)}
+        dataSource={recruiterListData}
+        bordered
+        loading={isLoading}
+        pagination={false}       
+        scroll={{ x: "max-content", y: 0 }}
+      />
       </Card>
 
-      <Card bordered={false} title="Key Metrics">
-        <Row gutter={[16, 16]} wrap={false}>
-          {metrics.map(renderMetricCol)}
-        </Row>
+      <Card bordered={false} title="Key Metrics" style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column', 
+        }}> 
+        <div style={{display:'flex',flexWrap:"wrap"}}>
+          {metrics.map(renderMetricCol)}            
+        </div>        
       </Card>
     </div>
   );

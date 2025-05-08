@@ -940,7 +940,7 @@ export default function TADashboard() {
                 2
               );
               setProfileStatusID(2);
-              hrTalentListFourCount([]);
+              setHRTalentListFourCount([]);
             }}
           >
             {text}
@@ -977,7 +977,7 @@ export default function TADashboard() {
                 3
               );
               setProfileStatusID(3);
-              hrTalentListFourCount([]);
+              setHRTalentListFourCount([]);
             }}
           >
             {text}
@@ -1398,7 +1398,7 @@ export default function TADashboard() {
               getTalentProfilesDetailsfromTable(result, 0);
               setTalentToMove(result);
               setProfileStatusID(0);
-              hrTalentListFourCount([]);
+              setHRTalentListFourCount([]);
             }}
           >
             {text}
@@ -2393,7 +2393,7 @@ export default function TADashboard() {
           onCancel={() => {
             setSearchTerm('')
             setShowTalentProfiles(false);
-            hrTalentListFourCount([]);
+            setHRTalentListFourCount([]);
           }}
         >
           <>
@@ -2672,7 +2672,7 @@ export default function TADashboard() {
                 onClick={() => {
                   setSearchTerm('')
                   setShowTalentProfiles(false);
-                  hrTalentListFourCount([]);
+                  setHRTalentListFourCount([]);
                 }}
               >
                 Cancel

@@ -6,28 +6,6 @@
   padding: 20px;
 }
 
-.metricsSection {
-  margin-top: 30px;
-}
-
-.metricsTable {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-  margin-top: 10px;
-}
-
-.metricsTable th,
-.metricsTable td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.metricsTable th {
-  background-color: #f0f0f0;
-  font-weight: bold;
-}
-
 .filterContainer{
   border-radius: 10px;
   margin: 24px auto;
@@ -54,7 +32,6 @@ align-items: center;
   gap:24px;
   align-items: center ; 
   flex-wrap: wrap;
-  /* width: 100%; */
 }
 .calendarFilterSet{
   display: flex;
@@ -124,13 +101,10 @@ margin-bottom: 10px;
   border-radius: 4px;     
 }
 
-.metricCard {
-height: 100%;
-}
-
 .weekendColumn {
 background-color: #ffe6e6;
 }
+
 .goalForMonthColumn {
 background-color: #fff0f0;
 }
@@ -146,6 +120,11 @@ background-color: #fff3e6;
 .dailyGoalColumn {
 background-color:  #e6f7ff;
 }
+
+.ant-table-body{
+  min-height: fit-content !important;
+}
+
 
 @media only screen and (max-width: 1440px) {
   .hiringRequestContainer {
