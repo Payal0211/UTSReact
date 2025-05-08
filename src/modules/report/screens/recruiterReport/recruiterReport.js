@@ -47,15 +47,23 @@ const navigate = useNavigate()
   const [searchText, setSearchText] = useState("");
   const [debounceSearchText, setDebouncedSearchText] = useState("");
   const [filtersList, setFiltersList] = useState({});
-   const [tableFilteredState, setTableFilteredState] = useState({
-      filterFields_OnBoard: {
-        taUserIDs: null,
-      },
-    });
+  const [selectedHead, setSelectedHead] = useState("");
+  const [tableFilteredState, setTableFilteredState] = useState({
+    filterFields_OnBoard: {
+      taUserIDs: null,
+      TA_HeadID:null
+    },
+  });
 
   const [isLoading, setIsLoading] = useState(false);
    var date = new Date();
-    const [monthDate, setMonthDate] = useState(new Date());
+  const [monthDate, setMonthDate] = useState(new Date());
+
+    useEffect(() => {
+      if (filtersList?.HeadUsers?.length) {
+        setSelectedHead(filtersList?.HeadUsers[0]?.id);
+      }
+    }, [filtersList?.HeadUsers]);
     
   function groupByRowSpan(data, groupField) {
     const grouped = {};
@@ -85,6 +93,7 @@ const navigate = useNavigate()
         "month": +moment(monthDate).format("M")  ?? 0,
         "year": +moment(monthDate).format("YYYY") ?? 0,
         taUserIDs:tableFilteredState?.filterFields_OnBoard?.taUserIDs,
+        TA_HeadID:selectedHead
       }
       setIsLoading(true)
      const result = await ReportDAO.getRecruiterReportDAO(pl) 
@@ -136,8 +145,11 @@ const navigate = useNavigate()
     },[])
 
   useEffect(()=>{
-    getReportData()
-  },[searchText,monthDate,tableFilteredState])
+    if (selectedHead.length !== 0) {
+      getReportData()
+    }
+    
+  },[searchText,monthDate,tableFilteredState,selectedHead])
 
    useEffect(() => {
       setTimeout(() => setSearchText(debounceSearchText), 2000);
@@ -164,6 +176,7 @@ const clearFilters = () =>{
     setDebouncedSearchText("");
     setMonthDate(new Date())
     setSearchText("");
+    setSelectedHead(filtersList?.HeadUsers[0]?.id);
 }
 
 const columns = ()=>{
@@ -229,21 +242,6 @@ return headers
 }
   const onMonthCalenderFilter = (date) => {
     setMonthDate(date);
-    // setEndDate(end);
-    // setEndDate(end);
-
-    if (date) {
-      // console.log( month, year)
-    //   setTableFilteredState({
-    //     ...tableFilteredState,
-    //     searchText: searchText,
-    //     filterFields_OnBoard: {
-    //       ...tableFilteredState.filterFields_OnBoard,
-    //       searchMonth: +moment(date).format("M") + 1 ?? 0,
-    //       searchYear: +moment(date).format("YYYY") ?? 0,
-    //     },
-    //   });
-    }
   };
 
 
@@ -259,9 +257,37 @@ return headers
         
                       <div className={recruiterStyle.filterLabel}> Add Filters</div>
                       <div className={recruiterStyle.filterCount}>{filteredTagLength}</div>
-                    </div>   
-
-                    <div
+                    </div>
+                    <Select
+                      id="selectedValue"
+                      placeholder="Select Head"
+                      style={{ marginLeft: "10px", width: "230px" }}
+                      // mode="multiple"
+                      value={selectedHead}
+                      showSearch={true}
+                      onChange={(value, option) => {
+                        setSelectedHead(value);
+                      }}
+                      options={filtersList?.HeadUsers?.map((v) => ({
+                        label: v.data,
+                        value: v.id,
+                      }))}
+                      optionFilterProp="label"
+                      // getPopupContainer={(trigger) => trigger.parentElement}
+                    />              
+                    <p
+                      className={recruiterStyle.resetText}
+                      style={{ width: "190px" }}
+                      onClick={() => {
+                        clearFilters();
+                      }}
+                    >
+                      Reset Filter
+                    </p>
+                  </div>
+        
+                  <div className={recruiterStyle.filterRight}>
+                  <div
                       className={recruiterStyle.searchFilterSet}
                       style={{ marginLeft: "15px" }}
                     >
@@ -289,21 +315,7 @@ return headers
                           }}
                         />
                       )}
-                    </div>              
-
-                    <p
-                      className={recruiterStyle.resetText}
-                      style={{ width: "190px" }}
-                      onClick={() => {
-                        clearFilters();
-                      }}
-                    >
-                      Reset Filter
-                    </p>
-
-                  </div>
-        
-                  <div className={recruiterStyle.filterRight}>
+                    </div>   
                      <div className={recruiterStyle.calendarFilterSet}>
                         <div className={recruiterStyle.label}>Month-Year</div>
                         <div className={recruiterStyle.calendarFilter}>
