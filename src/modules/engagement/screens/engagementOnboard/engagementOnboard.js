@@ -10,7 +10,7 @@ import moment from "moment";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { ReactComponent as DownloadJDSVG } from "assets/svg/downloadJD.svg";
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
-import { Checkbox, Modal, Tooltip, message } from "antd";
+import { Checkbox, DatePicker, Modal, Tooltip, message } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { engagementRequestDAO } from "core/engagement/engagementDAO";
@@ -18,6 +18,7 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import LogoLoader from "shared/components/loader/logoLoader";
 import { budgetStringToCommaSeprated } from "shared/utils/basic_utils";
 import { Link } from "react-router-dom";
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 
 const EngagementOnboard = ({
   getOnboardFormDetails : gOBFD,
@@ -28,7 +29,8 @@ const EngagementOnboard = ({
   hideHeader
 }) => {
 
-  const [editModal,setEditModal] = useState(false)
+  const [editModal,setEditModal] = useState(false);
+  const [editStartDateModal,setEditStartDateModal] = useState(false);
   const [renewalDiscussion,setRenewalDiscussion] = useState({
     IsRenewalInitiated:false
   })
@@ -38,6 +40,7 @@ const EngagementOnboard = ({
 
   const [userData, setUserData] = useState({});
   const [syncLoading,setSyncLoading] = useState(false)
+  const [startDate, setStartDate] = useState(null);
 
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -46,6 +49,7 @@ const EngagementOnboard = ({
 		};
 		getUserResult();
 	}, []);
+
 
   useEffect(()=>{
     setRenewalDiscussion({
@@ -63,6 +67,33 @@ const EngagementOnboard = ({
       setEditModal(false);
     }
   }
+
+  const handleStartDateSubmit = async () => {
+    if (!startDate) {
+      message.warning("Please select a date before saving.");
+      return;
+    }
+    const formattedDate = moment(startDate).format("YYYY-MM-DD");
+    const payload = {
+      onBoardID: getOnboardFormDetails?.onBoardID,
+      contractStartDate: formattedDate,
+    };
+  
+    try {
+      const response = await engagementRequestDAO.updateContractStartDate(payload); // <-- Make sure this function exists
+  
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        message.success("Start date updated successfully.");
+        getOnboardingForm(getHRAndEngagementId?.onBoardId);
+        setEditStartDateModal(false);
+      } else {
+        message.error("Failed to update start date.");
+      }
+    } catch (error) {
+      console.error("Error updating contract start date:", error);
+      message.error("Something went wrong.");
+    }
+  };
 
   const syncEngagement = async () => {
     setSyncLoading(true)
@@ -645,6 +676,15 @@ const EngagementOnboard = ({
                     "DD-MM-YYYY"
                   )
                 : "NA"}
+                 <span
+                    className={allengagementOnboardStyles.editNewIcon}
+                    style={{marginLeft:"10px",cursor:"pointer"}}
+                    onClick={() => {                     
+                      setEditStartDateModal(true);
+                    }}                    
+                  >
+                    <EditNewIcon />
+                  </span>
             </li>
             <li>
               <span>Talent Joining Date : </span>
@@ -1051,6 +1091,40 @@ const EngagementOnboard = ({
         </button>
       </div>
     </Modal>
+
+    <Modal
+      width={400}
+      centered
+      footer={false}
+      open={editStartDateModal}
+      className="editStartDateModal"
+      onOk={() => setEditStartDateModal(false)}
+      onCancel={() => setEditStartDateModal(false)}
+    >
+      <label className={allengagementOnboardStyles.formLabel}>Edit Engagement Start Date</label>
+          {console.log(startDate,"startDate")}
+      <div style={{paddingTop:'10px',paddingBottom:'10px'}}> 
+      <DatePicker
+        onKeyDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        className="datePickerInput"
+        selected={startDate instanceof Date && !isNaN(startDate) ? startDate : null}
+        onChange={(date) => setStartDate(date)}
+        dateFormat="dd/MM/yyyy"
+      />
+        
+      </div>
+      <button
+        type="button"
+        className={allengagementOnboardStyles.btnPrimary}
+        onClick={handleStartDateSubmit}
+      >
+        SAVE
+      </button>
+    </Modal>
+
    </>
   );
 };

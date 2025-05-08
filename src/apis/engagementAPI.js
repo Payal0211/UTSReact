@@ -750,6 +750,25 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	saveEngStartDate:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD + 
+			OnboardsAPI.UPDATE_CONTRACT_START_DATE
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.saveRenewalInitiatedDetail',
+			);
+		}
+	},
 	getallBRPRWithLeave: async function (onBoardId) {
 		let httpService = new HttpServices();
 		httpService.URL =
