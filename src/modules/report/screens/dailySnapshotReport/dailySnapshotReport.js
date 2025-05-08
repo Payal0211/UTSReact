@@ -66,7 +66,7 @@ const columns = (weeks) => [
   },
   {
     title: "Reached",
-    dataIndex: "reached",
+    dataIndex: "reachedStr",
     fixed: "left",
     width: 100,
     align: "center",
@@ -124,7 +124,7 @@ const DailySnapshot = () => {
         setMetrics(metricsData);
 
         const formattedData = rawData.map((item) => {
-          const { stage, stage_ID, goalForMonth, goalTillDate, reached, dailyGoal, dailyCounts = {} } = item;
+          const { stage, stage_ID, goalForMonth, goalTillDate, reachedStr, dailyGoal, dailyCounts = {} } = item;
           const dailyMapped = {};
           for (let i = 1; i <= daysInMonth; i++) {
             dailyMapped[`day_${i}`] = dailyCounts[`day_${i}`] ?? null;
@@ -134,7 +134,7 @@ const DailySnapshot = () => {
             stage,
             goalForMonth,
             goalTillDate,
-            reached,
+            reachedStr,
             dailyGoal,
             ...dailyMapped,
           };
@@ -165,7 +165,7 @@ const DailySnapshot = () => {
         <Text strong>{metric.stage}</Text>
         <Divider style={{ margin: "8px 0" }} />
         <Text>Goal: <strong>{metric.goalForMonth}%</strong></Text><br />
-        <Text>Achieved: <strong>{metric.reached ? `${metric.reached}%` : "0%"}</strong></Text>
+        <Text>Achieved: <strong>{metric.reachedStr ? `${metric.reachedStr}%` : "0%"}</strong></Text>
       </Card>
     </Col>
   );
