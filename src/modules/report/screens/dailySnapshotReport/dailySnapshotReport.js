@@ -61,13 +61,7 @@ const columns = (weeks) => [
     fixed: "left",
     width: 120,
     align: "center",
-    render: (value) => {
-      const numericValue = Number(value);
-      if (value == null || numericValue === 0) {
-        return "-";
-      }    
-      return value;
-    },
+    render: (value) => value || "-",
     className: styles.goalTillDateColumn,
   },
   {
@@ -76,7 +70,13 @@ const columns = (weeks) => [
     fixed: "left",
     width: 100,
     align: "center",
-    render: (value) => value || "-",
+    render: (value) => {
+      const numericValue = Number(value);    
+      if (value == null || numericValue === 0) {
+        return "-";
+      }    
+      return value;
+    },
     className: styles.reachedColumn,
   },
   {
