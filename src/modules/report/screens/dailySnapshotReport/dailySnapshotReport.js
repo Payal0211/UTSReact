@@ -152,8 +152,12 @@ const DailySnapshot = () => {
   };
 
   const renderMetricCol = (metric) => (
-    <Col xs={24} sm={12} md={6} lg={4} xl={4} key={metric.stage_ID}>
-      <Card size="small">
+    <Col
+      key={metric.stage_ID}
+      xs={24} sm={12} md={6} lg={4} xl={3}
+      style={{ minWidth: 250 }}
+    >
+      <Card size="small" style={{ height: '100%' }}>
         <Text strong>{metric.stage}</Text>
         <Divider style={{ margin: "8px 0" }} />
         <Text>Goal: <strong>{metric.goalForMonth}%</strong></Text><br />
@@ -161,6 +165,7 @@ const DailySnapshot = () => {
       </Card>
     </Col>
   );
+  
 
   return (
     <div className={styles.snapshotContainer}>
@@ -202,9 +207,9 @@ const DailySnapshot = () => {
         />
       </Card>
 
-      <Card bordered={false} title="Key Metrics">
-      <Row gutter={[16, 16]} wrap={true}>
-          {metrics.map(renderMetricCol)}
+      <Card bordered={false} title="Key Metrics" >
+        <Row gutter={[16, 16]} wrap style={{ overflowX: 'auto', flexWrap: 'wrap' }}>
+          {metrics.map(renderMetricCol)}                      
         </Row>
       </Card>
     </div>
