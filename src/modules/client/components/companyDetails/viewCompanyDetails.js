@@ -163,6 +163,8 @@ export default function ViewCompanyDetails() {
 
   const [selectedUsers,setSelectedUsers] = useState([]);
   const[clientHistoryData,setClientHistoryData] = useState([]);
+  const[actionHistoryData,setActionHistoryData] = useState([]);
+  const [showActivityDetails,setShowActivityDetails] = useState(false)
 
   const groupMemberColumns = [
     {
@@ -1183,13 +1185,21 @@ export default function ViewCompanyDetails() {
     getClientActionHistory();
   }, [CompanyID])
   
-  const  getClientActionHistory = async () => {
+  const  getClientActionHistory = async () => {    
     let response = await allClientRequestDAO.getClientActionHistoryDAO(CompanyID,1,100);	
     if (response.statusCode === HTTPStatusCode.OK) {      
       setClientHistoryData(response?.responseBody);
     }
   };
+  
 
+  const getActionByIdData = async (id) => {
+    let response = await allClientRequestDAO.getCompanyHistoryByActionDAO(CompanyID,id);	
+    if (response.statusCode === HTTPStatusCode.OK) {             
+      setActionHistoryData(response?.responseBody);
+      setShowActivityDetails(true);      
+    }
+  }
 
   const togglePriority = useCallback(
 		async (payload) => {
@@ -1298,7 +1308,7 @@ export default function ViewCompanyDetails() {
                       <div className={AddNewClientStyle.profileStatus}>
                         <span>
                           {item?.displayName}{item?.client ? ` (${item?.client})` : ''}
-                          {item?.companyActionHistoryID &&  <Tooltip title="View Details"><img src={infoIcon} style={{marginLeft:'5px', cursor:'pointer'}}  alt="info"/></Tooltip>}	
+                          {item?.companyActionHistoryID &&  <Tooltip title="View Details"><img src={infoIcon} style={{marginLeft:'5px', cursor:'pointer'}}  alt="info" onClick={() => getActionByIdData(item?.companyActionHistoryID)}/></Tooltip>}	
                         </span>                             
                       </div>
                                                 
@@ -1735,6 +1745,24 @@ export default function ViewCompanyDetails() {
 					</div> */}
 				</div>
 			</Modal>
+
+
+      {showActivityDetails && <Modal
+						width="930px"
+						centered
+						footer={null}
+						open={showActivityDetails}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>{
+						setShowActivityDetails(false)}
+						}>
+            <div>
+						  <h2>{actionHistoryData?.company}</h2>
+              <p dangerouslySetInnerHTML={{ __html: actionHistoryData?.about_Company_Desc}}></p>					.
+              				
+            </div>
+						</Modal>}
+
     </>
   );
 }

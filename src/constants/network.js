@@ -347,6 +347,7 @@ export class ClientsAPI {
 	static SYNC_COMPANY_PROFILE = "SyncCompanyProfile";
 	static UPDATE_EMAIL_NOTIFICATION = "UpdateEmailNotifications";
 	static GET_COMPANY_HISTORY_INFO = 'GetCompanyHistoryInfo';
+	static GET_COMPANY_HISTORY_BY_ACTION = 'GetCompanyHistoryByAction';
 }
 
 export class HiringRequestsAPI {
