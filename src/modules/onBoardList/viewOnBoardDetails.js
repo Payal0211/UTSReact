@@ -99,13 +99,40 @@ export default function ViewOnBoardDetails() {
   });
   const [getClientFeedbackList, setClientFeedbackList] = useState([]);
 
-  useEffect(() => {
-    const getUserResult = async () => {
-      let userData = UserSessionManagementController.getUserSession();
-      if (userData) setUserData(userData);
-    };
-    getUserResult();
+  useEffect(() => {    
+    getUserResult();    
   }, []); 
+
+  useState(()=>{
+    if(state?.tabToActive){
+      setTitle(state?.tabToActive)
+    }    
+  },[state])
+
+  useEffect(() => {
+    if(title === 'Leaves') fatchLeaveTypes();
+    if (title === 'Documents') getDocumentsDetails(getOnboardFormDetails.onboardContractDetails.talentID, getOnboardFormDetails.onboardContractDetails.companyID)
+    if (title === 'BR PR Details') getAllBRPRTableData(onboardID !== undefined && onboardID );
+  }, [title])
+  
+
+  useEffect(() => {
+    if(getEngagementModal?.engagementAddFeedback || getEngagementModal?.addDocumentModal ){
+       getFeedbackFormDetails(getHRAndEngagementId);
+    }     
+  }, [getEngagementModal?.engagementAddFeedback, getEngagementModal?.addDocumentModal]);
+
+  useEffect(() => {
+    if (onboardID !== undefined) {
+      getOnboardingForm(onboardID);
+      // getAllBRPRTableData(onboardID);
+    }
+  }, [onboardID]);
+
+  const getUserResult = async () => {
+    let userData = UserSessionManagementController.getUserSession();
+    if (userData) setUserData(userData);
+  };
 
   const feedbackTableColumnsMemo = useMemo(
     () => allEngagementConfig.clientFeedbackTypeConfig(),
@@ -602,12 +629,6 @@ export default function ViewOnBoardDetails() {
     ];
   }, [allBRPRlist]);
 
-  useState(()=>{
-    if(state?.tabToActive){
-      setTitle(state?.tabToActive)
-    }
-  },[state])
-
   const getAllBRPRTableData = async (onboardID) => {
     setLoading(true);
     let result = await engagementRequestDAO.getAllBRPRListWithLeaveDAO(onboardID);
@@ -642,13 +663,6 @@ export default function ViewOnBoardDetails() {
       return 'NO DATA FOUND';
     }
   };
-
-  useEffect(() => {
-    if(getEngagementModal?.engagementAddFeedback || getEngagementModal?.addDocumentModal ){
-       getFeedbackFormDetails(getHRAndEngagementId);
-    }
-     
-  }, [getEngagementModal?.engagementAddFeedback, getEngagementModal?.addDocumentModal]);
 
   const getFeedbackList = async (feedBackData) => {
     setLoading(true);
@@ -734,10 +748,6 @@ export default function ViewOnBoardDetails() {
     }
   }
 
-  useEffect(()=>{
-    fatchLeaveTypes()
-  },[])
-
   const handleApproveleave = async (data,file)=>{
     setLeaveLoading(true)
     let payload = {
@@ -784,7 +794,6 @@ export default function ViewOnBoardDetails() {
       getLeaveDetails(getOnboardFormDetails.onboardContractDetails.talentID,getOnboardFormDetails.onboardContractDetails.companyID,currentMonth,currentYear)
     }
   }
-
 
   const getCalenderLeaveDetails = async (talentID,companyID,m,y) =>{
     setLeaveLoading(true); 
@@ -852,7 +861,7 @@ export default function ViewOnBoardDetails() {
       setFeedBackData(prev => ({...prev,onBoardId: getOnboardID}))
       getFeedbackList({...feedBackData,onBoardId: getOnboardID})
       getOtherDetailsTableData({onboardID: getOnboardID,talentID: response?.responseBody?.details?.onboardContractDetails?.talentID})
-      getDocumentsDetails(response?.responseBody?.details?.onboardContractDetails?.talentID,response?.responseBody?.details?.onboardContractDetails?.companyID)
+      // getDocumentsDetails(response?.responseBody?.details?.onboardContractDetails?.talentID,response?.responseBody?.details?.onboardContractDetails?.companyID)
       getLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID,response?.responseBody?.details?.onboardContractDetails?.companyID)
       getCalenderLeaveDetails(response?.responseBody?.details?.onboardContractDetails?.talentID,response?.responseBody?.details?.onboardContractDetails?.companyID)
       setLoading(false);
@@ -861,13 +870,6 @@ export default function ViewOnBoardDetails() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (onboardID !== undefined) {
-      getOnboardingForm(onboardID);
-      getAllBRPRTableData(onboardID);
-    }
-  }, [onboardID]);
 
   const DetailComp = () => {
     return (
