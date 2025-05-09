@@ -1,14 +1,8 @@
-import { InputType } from "constants/application";
-import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
-import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import allengagementOnboardStyles from "../engagementOnboard/engagementOnboard.module.css";
-import { ReactComponent as LinkedInSVG } from "assets/svg/linkedin.svg";
-import WithLoader from "shared/components/loader/loader";
 import moment from "moment";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
-import { ReactComponent as DownloadJDSVG } from "assets/svg/downloadJD.svg";
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
 import { Checkbox, DatePicker, Modal, Tooltip, message } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
@@ -28,7 +22,7 @@ const EngagementOnboard = ({
   getOnboardingForm,
   hideHeader
 }) => {
-
+  const { control } = useForm();
   const [editModal,setEditModal] = useState(false);
   const [editStartDateModal,setEditStartDateModal] = useState(false);
   const [renewalDiscussion,setRenewalDiscussion] = useState({
@@ -677,14 +671,17 @@ const EngagementOnboard = ({
                   )
                 : "NA"}
                  <span
-                    className={allengagementOnboardStyles.editNewIcon}
-                    style={{marginLeft:"10px",cursor:"pointer"}}
-                    onClick={() => {                     
-                      setEditStartDateModal(true);
-                    }}                    
-                  >
-                    <EditNewIcon />
-                  </span>
+                  className={allengagementOnboardStyles.editNewIcon}
+                  style={{ marginLeft: "10px", cursor: "pointer" }}
+                  onClick={() => {
+                    const contractDate = getOnboardFormDetails?.contractStartDate;
+                    const parsedDate = contractDate ? moment(contractDate) : null;
+                    setStartDate(parsedDate);  
+                    setEditStartDateModal(true);
+                  }}
+                >
+                  <EditNewIcon />
+                </span>
             </li>
             <li>
               <span>Talent Joining Date : </span>
@@ -1101,27 +1098,27 @@ const EngagementOnboard = ({
       onOk={() => setEditStartDateModal(false)}
       onCancel={() => setEditStartDateModal(false)}
     >
-      <label className={allengagementOnboardStyles.formLabel}>Edit Engagement Start Date</label>
-      <div style={{paddingTop:'10px',paddingBottom:'10px'}}> 
-      <DatePicker
-        onKeyDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        className="datePickerInput"
-        selected={startDate instanceof Date && !isNaN(startDate) ? startDate : null}
-        onChange={(date) => setStartDate(date)}
-        dateFormat="dd/MM/yyyy"
-      />
-        
+      <label className={allengagementOnboardStyles.formLabel}>Edit Engagement Start Date</label>   
+      <div className={allengagementOnboardStyles.timeSlotItem}>
+        <CalenderSVG />
+        <DatePicker
+          selected={startDate ? startDate.toDate() : null} 
+          onChange={(date) => {
+            console.log("Selected:", date);
+            setStartDate(moment(date));
+          }}
+          placeholderText="Start Date"
+          dateFormat="dd/MM/yyyy"
+          // isClearable
+        />
       </div>
-      <button
-        type="button"
-        className={allengagementOnboardStyles.btnPrimary}
-        onClick={handleStartDateSubmit}
-      >
-        SAVE
-      </button>
+            <button
+              type="button"
+              className={allengagementOnboardStyles.btnPrimary}
+              onClick={handleStartDateSubmit}
+            >
+              SAVE
+            </button>
     </Modal>
 
    </>
