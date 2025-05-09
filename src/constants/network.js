@@ -31,7 +31,7 @@ export class SubDomain {
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
 	static COMPANY = 'Company/'
-	static CLIENT_REPORT = 'ClientReport/';
+	static CLIENT_REPORT = 'ClientReport/';	
 	static HR_REPORT = 'HRReport/';
 	static HIRING = 'Hiring/';
 	static MATCHMAKING = 'Matchmaking/';
@@ -345,7 +345,8 @@ export class ClientsAPI {
 	static LIST_CREDIT_UTILIZATION = 'ListCreditUtilization'
 	static RESET_DEMO_TALENT_STATUS = 'ResetAllDemoHRTalentStatus'
 	static SYNC_COMPANY_PROFILE = "SyncCompanyProfile";
-	static UPDATE_EMAIL_NOTIFICATION = "UpdateEmailNotifications"
+	static UPDATE_EMAIL_NOTIFICATION = "UpdateEmailNotifications";
+	static GET_COMPANY_HISTORY_INFO = 'GetCompanyHistoryInfo';
 }
 
 export class HiringRequestsAPI {

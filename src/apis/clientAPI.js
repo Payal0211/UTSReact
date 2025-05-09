@@ -121,6 +121,22 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getClientFilterList');
 		}
 	},
+	getClientActionHistory:async function (companyID,pageIndex,pageSize) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			ClientsAPI.GET_COMPANY_HISTORY_INFO +
+			`?companyID=${companyID}&pageIndex=${pageIndex}&pageSize=${pageSize}` ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientActionHistory');
+		}
+	},
 	getResetAllDemoHRTalentStatus:async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
