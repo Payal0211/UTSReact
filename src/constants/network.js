@@ -31,7 +31,7 @@ export class SubDomain {
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
 	static COMPANY = 'Company/'
-	static CLIENT_REPORT = 'ClientReport/';
+	static CLIENT_REPORT = 'ClientReport/';	
 	static HR_REPORT = 'HRReport/';
 	static HIRING = 'Hiring/';
 	static MATCHMAKING = 'Matchmaking/';
@@ -345,7 +345,9 @@ export class ClientsAPI {
 	static LIST_CREDIT_UTILIZATION = 'ListCreditUtilization'
 	static RESET_DEMO_TALENT_STATUS = 'ResetAllDemoHRTalentStatus'
 	static SYNC_COMPANY_PROFILE = "SyncCompanyProfile";
-	static UPDATE_EMAIL_NOTIFICATION = "UpdateEmailNotifications"
+	static UPDATE_EMAIL_NOTIFICATION = "UpdateEmailNotifications";
+	static GET_COMPANY_HISTORY_INFO = 'GetCompanyHistoryInfo';
+	static GET_COMPANY_HISTORY_BY_ACTION = 'GetCompanyHistoryByAction';
 }
 
 export class HiringRequestsAPI {
@@ -471,6 +473,7 @@ export class OnboardsAPI {
 	static GET_ONBOARDING_STATUS = 'GetOnboardingStatus';
 	static ONBOARDING_STATUS_UPDATES = 'OnBoardingStatusUpdates';
 	static VIEW_IN_DETAIL = 'ViewInDetail';
+	static UPDATE_CONTRACT_START_DATE= 'UpdateContractStarDate';
 	static FATCH_CLIENT_LEGAL_INFO = 'FetchClientLegalInfo'
 	static FEATCH_TALENT_ON_BOARD_INFO = 'FetchTalentOnBoardInfo'
 	static UPLOAD_FILE = "UploadSOWDocument"

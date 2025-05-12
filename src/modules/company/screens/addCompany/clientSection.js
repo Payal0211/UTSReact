@@ -31,7 +31,7 @@ export const secondaryClient = {
   roleID: 3,
   countryCode: "",
   isNewClient:true,
-  isClientNotificationSend:true
+  isClientNotificationSend:false
 };
 
 function ClientSection({

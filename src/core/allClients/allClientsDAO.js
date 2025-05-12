@@ -135,6 +135,71 @@ export const allClientRequestDAO  = {
 			return errorDebug(error,'allClientRequestDAO.getClientDetailsForViewDAO');
 		}
 	},
+	getClientActionHistoryDAO:async function (companyID,pageIndex,pageSize){
+		try {
+			const viewClientHistoryResult = await ClientAPI.getClientActionHistory(companyID,pageIndex,pageSize);
+			if (viewClientHistoryResult) {
+				const statusCode = viewClientHistoryResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = viewClientHistoryResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return viewClientHistoryResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return viewClientHistoryResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error,'allClientRequestDAO.getClientActionHistoryDAO');
+		}
+	},
+	getCompanyHistoryByActionDAO: async function (companyID,id){
+		try {
+			const viewClientHistoryResult = await ClientAPI.getClientActionById(companyID,id);
+			if (viewClientHistoryResult) {
+				const statusCode = viewClientHistoryResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = viewClientHistoryResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return viewClientHistoryResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return viewClientHistoryResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error,'allClientRequestDAO.getCompanyHistoryByActionDAO');
+		}
+	},
+
 	getResetAllDemoHRTalentStatusDAO : async function (){
 		try {
 			const viewClientDetailsResult = await ClientAPI.getResetAllDemoHRTalentStatus();

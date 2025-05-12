@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, Fragment } from "react";
 import AddNewClientStyle from "../../screens/addnewClient/add_new_client.module.css";
 import dealDetailsStyles from '../../../viewClient/viewClientDetails.module.css';
 import { useParams , useNavigate} from "react-router-dom";
@@ -6,7 +6,7 @@ import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import { MasterDAO } from "core/master/masterDAO";
 import { DateTimeUtils } from "shared/utils/basic_utils";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
-import { Avatar, Tabs, Table, Skeleton, Checkbox, message, Modal, Select } from "antd";
+import { Avatar, Tabs, Table, Skeleton, Checkbox, message, Modal, Select, Tooltip, Divider } from "antd";
 import { allClientRequestDAO } from "core/allClients/allClientsDAO";
 import { allClientsConfig } from "modules/hiring request/screens/allClients/allClients.config";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
@@ -22,6 +22,11 @@ import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import YouTubeVideo from "../previewClientDetails/youTubeVideo";
+import moment from "moment";
+import infoIcon from 'assets/svg/info.svg';
+import { BsTag } from "react-icons/bs";
+import { SlGraph } from "react-icons/sl";
+
 
 const creditColumn = [
   {
@@ -157,6 +162,9 @@ export default function ViewCompanyDetails() {
   const [ wUsersToAdd,setWusersToAdd] = useState([]);
 
   const [selectedUsers,setSelectedUsers] = useState([]);
+  const[clientHistoryData,setClientHistoryData] = useState([]);
+  const[actionHistoryData,setActionHistoryData] = useState([]);
+  const [showActivityDetails,setShowActivityDetails] = useState(false)
 
   const groupMemberColumns = [
     {
@@ -175,15 +183,12 @@ export default function ViewCompanyDetails() {
       },
     },
   ]
-
-
   const getCompanyDetails = async (ID) => {
     setIsSavedLoading(true);
     let companyDetailsData = await HubSpotDAO.getCompanyForEditDetailsDAO(ID);
 
     if (companyDetailsData?.statusCode === HTTPStatusCode.OK) {
       setIsSavedLoading(false);
-      // console.log('companyDetailsData',companyDetailsData)
       let data = companyDetailsData.responseBody;
       // setClientDetailCheckList(contactDetails)
       setCompanyDetails(data.companyDetails);
@@ -209,7 +214,6 @@ export default function ViewCompanyDetails() {
       payload
     );
 
-    // console.log("credit res",response)
     if (response.statusCode === HTTPStatusCode.OK) {
       setCreditUtilize(response.responseBody);
     } else {
@@ -261,8 +265,6 @@ export default function ViewCompanyDetails() {
    })
     let oldIDS = oldWhatsappusers?.map(wUser => wUser.userID).join(',')
     let newIDS = selecteUserForGroup.map(wUser => wUser.userID).join(',')
-    // console.log("resadsfdsfds",{wUsersToAdd,selectedUsers,prev:companyPreviewData?.whatsappDetails})
-    // console.log(oldIDS, newIDS , oldIDS === newIDS,companyPreviewData?.whatsappDetails , selecteUserForGroup )
       if(oldIDS === newIDS){
         setIsgroupCreating(false);
         message.error('No change applied to the group')
@@ -270,9 +272,7 @@ export default function ViewCompanyDetails() {
       }
       let removedU =  oldWhatsappusers?.filter(wUser =>  !selectedUsers.map(wUser => wUser.userID).includes(wUser.userID))
       let added = wUsersToAdd.filter(wuser => !oldWhatsappusers?.map(i=> i.userID).includes(wuser.userID)).filter(wuser => selecteUserForGroup.map(wUser => wUser.userID).includes(wuser.userID))
-     
-// console.log(removedU, added )
-
+    
 
       payload["whatsappMemberDetails"] = [...added?.map(item => ({
         "memberName": item.groupMember,
@@ -1181,6 +1181,26 @@ export default function ViewCompanyDetails() {
     CompanyID, companyPreviewData?.contactDetails
   ])
 
+  useEffect(() => {
+    getClientActionHistory();
+  }, [CompanyID])
+  
+  const  getClientActionHistory = async () => {    
+    let response = await allClientRequestDAO.getClientActionHistoryDAO(CompanyID,1,100);	
+    if (response.statusCode === HTTPStatusCode.OK) {      
+      setClientHistoryData(response?.responseBody);
+    }
+  };
+  
+
+  const getActionByIdData = async (id) => {
+    let response = await allClientRequestDAO.getCompanyHistoryByActionDAO(CompanyID,id);	
+    if (response.statusCode === HTTPStatusCode.OK) {             
+      setActionHistoryData(response?.responseBody);
+      setShowActivityDetails(true);      
+    }
+  }
+
   const togglePriority = useCallback(
 		async (payload) => {
 			setIsSavedLoading(true);
@@ -1258,12 +1278,66 @@ export default function ViewCompanyDetails() {
     {isSavedLoading ? (
               <Skeleton active />
             ) :  <Table 
-				scroll={{  y: '100vh' }}
-				dataSource={viewDetails?.hrList ? viewDetails?.hrList : []} 
-				columns={columns} 
-				pagination={false}
-				/>
-        }       
+                    scroll={{  y: '100vh' }}
+                    dataSource={viewDetails?.hrList ? viewDetails?.hrList : []} 
+                    columns={columns} 
+                    pagination={false}
+                    />
+                    }       
+                </>
+  }
+
+  const ActionHistory = () => {
+    return <>
+     <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
+          <div className={AddNewClientStyle.containerData}>
+          <div className={AddNewClientStyle.activityFeedListBody}>
+            {clientHistoryData?.map((item, index) => {																				
+              return (
+                <Fragment key={index}>
+                  <div className={AddNewClientStyle.activityFeedListItem}>
+                    <div className={AddNewClientStyle.activityFeedTimeDetails}>
+                      <div>
+                        {moment(item?.createdByDatetime).format('DD/MM/YYYY')}
+                      </div>
+                      <div>
+                        {DateTimeUtils.getTimeFromString(item?.createdByDatetime)}
+                      </div>
+                    </div>
+                    <div className={AddNewClientStyle.activityFeedActivities}>														
+                      <div className={AddNewClientStyle.profileStatus}>
+                        <span>
+                          {item?.displayName}{item?.client ? ` (${item?.client})` : ''}
+                          {item?.companyActionHistoryID &&  <Tooltip title="View Details"><img src={infoIcon} style={{marginLeft:'5px', cursor:'pointer'}}  alt="info" onClick={() => getActionByIdData(item?.companyActionHistoryID)}/></Tooltip>}	
+                        </span>                             
+                      </div>
+                                                
+                      <div className={AddNewClientStyle.activityAction} style={{display:'flex', justifyContent:'space-between', width:'100%' }}>
+                        <div>
+                        {item?.isNotes ? <BsTag /> : <SlGraph />}
+                        &nbsp;&nbsp;
+                        <span style={{ fontWeight: '500' }}>																
+                          Action by : 
+                        </span>
+                        <span>
+                          {item?.actionDoneBy}
+                        </span>
+                        </div>												
+                      </div>							
+                    </div>
+                  </div>
+                  <Divider/>
+                </Fragment>
+              );
+            })}		
+
+            {(!clientHistoryData || clientHistoryData?.length === 0) &&  
+            <>
+              <h2>No Data Founded!</h2>
+            </>}					
+          </div>                           
+        </div>
+      </div>
     </>
   }
 
@@ -1302,7 +1376,11 @@ export default function ViewCompanyDetails() {
               key: "Credit Utilize",
               children: <CredUtilize />,
             },
-           
+            {
+              label: "Action History",
+              key: "Action History",
+              children: <ActionHistory />,
+            },
           ]}
         />
       </div>
@@ -1667,6 +1745,134 @@ export default function ViewCompanyDetails() {
 					</div> */}
 				</div>
 			</Modal>
+
+      {showActivityDetails && (
+  <Modal
+    width="1000px"
+    centered
+    footer={null}
+    open={showActivityDetails}
+    className="engagementReplaceTalentModal"
+    onCancel={() => setShowActivityDetails(false)}
+  >
+    <div>
+      <h2>{actionHistoryData?.company}</h2>
+      <div className={AddNewClientStyle.historyGrid}>
+        {actionHistoryData?.website && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Website :</span> <a href={actionHistoryData.website} target="_blank" rel="noopener noreferrer">{actionHistoryData.website}</a>
+          </div>
+        )}
+        {actionHistoryData?.linkedInProfile && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>LinkedIn :</span> <a href={actionHistoryData.linkedInProfile} target="_blank" rel="noopener noreferrer">{actionHistoryData.linkedInProfile}</a>
+          </div>
+        )}       
+        {actionHistoryData?.address && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Address :</span> {actionHistoryData.address}
+          </div>
+        )}
+        {actionHistoryData?.phone && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Phone :</span> {actionHistoryData.phone}
+          </div>
+        )}
+        {actionHistoryData?.industry && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Industry :</span> {actionHistoryData.industry}
+          </div>
+        )}
+        {actionHistoryData?.city && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>City :</span> {actionHistoryData.city}
+          </div>
+        )}
+        {actionHistoryData?.state && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>State :</span> {actionHistoryData.state}
+          </div>
+        )}
+        {actionHistoryData?.country && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Country :</span> {actionHistoryData.country}
+          </div>
+        )}
+        {actionHistoryData?.zip && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Zip :</span> {actionHistoryData.zip}
+          </div>
+        )}
+        {actionHistoryData?.location && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Location :</span> {actionHistoryData.location}
+          </div>
+        )}     
+        {actionHistoryData?.aM_SalesPersonID && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>AM Person :</span> {actionHistoryData.amPerson}
+          </div>
+        )}
+        {actionHistoryData?.nbD_SalesPersonID && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>NBD Person :</span> {actionHistoryData.nbdPerson}
+          </div>
+        )}   
+        {actionHistoryData?.lead_Type && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Lead Type :</span> {actionHistoryData.lead_Type}
+          </div>
+        )}
+        {actionHistoryData?.about_Company_Desc && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>About Company :</span> <div dangerouslySetInnerHTML={{ __html: actionHistoryData.about_Company_Desc }} />
+          </div>
+        )}
+        {actionHistoryData?.industry_Type && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Industry Type :</span> {actionHistoryData.industry_Type}
+          </div>
+        )}
+        {actionHistoryData?.companyTypeID && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Company Type :</span> {actionHistoryData.companyTypeID === "1" ? "Pay per hire" : ""}
+          </div>
+        )}
+        {actionHistoryData?.isTransparentPricing && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Transparent Pricing :</span> {actionHistoryData.isTransparentPricing === "1" ? "Yes" : "No"}
+          </div>
+        )}
+        {actionHistoryData?.anotherCompanyTypeID && actionHistoryData.anotherCompanyTypeID !== "0" && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Another Company Type :</span> {actionHistoryData.anotherCompanyTypeID === "1" ? "Pay per hire" : ""}
+          </div>
+        )}
+        {actionHistoryData?.hiringTypePricingId && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+          <span>Engagement Type :</span> {actionHistoryData.engagementType}
+         </div>
+        )}
+        {actionHistoryData?.hiringTypePercentage && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Hiring Type % :</span> {actionHistoryData.hiringTypePercentage}%
+          </div>
+        )}
+        {actionHistoryData?.isCompanyConfidential && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Confidential Company :</span> {actionHistoryData.isCompanyConfidential === "1" ? "Yes" : "No"}
+          </div>
+        )}
+        {actionHistoryData?.companySize_RangeorAdhoc && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Company Size Range/Adhoc :</span> {actionHistoryData.companySize_RangeorAdhoc}
+          </div>
+        )}            
+      </div>
+    </div>
+  </Modal>
+)}
+
     </>
   );
 }

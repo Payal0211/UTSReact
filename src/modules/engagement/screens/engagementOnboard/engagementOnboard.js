@@ -1,16 +1,11 @@
-import { InputType } from "constants/application";
-import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
-import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import allengagementOnboardStyles from "../engagementOnboard/engagementOnboard.module.css";
-import { ReactComponent as LinkedInSVG } from "assets/svg/linkedin.svg";
-import WithLoader from "shared/components/loader/loader";
 import moment from "moment";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
-import { ReactComponent as DownloadJDSVG } from "assets/svg/downloadJD.svg";
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
 import { Checkbox, Modal, Tooltip, message } from "antd";
+import DatePicker from 'react-datepicker';
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { engagementRequestDAO } from "core/engagement/engagementDAO";
@@ -18,6 +13,7 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import LogoLoader from "shared/components/loader/logoLoader";
 import { budgetStringToCommaSeprated } from "shared/utils/basic_utils";
 import { Link } from "react-router-dom";
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 
 const EngagementOnboard = ({
   getOnboardFormDetails : gOBFD,
@@ -27,11 +23,15 @@ const EngagementOnboard = ({
   getOnboardingForm,
   hideHeader
 }) => {
-
-  const [editModal,setEditModal] = useState(false)
+  const { control } = useForm();
+  const [editModal,setEditModal] = useState(false);
+  const [editStartDateModal,setEditStartDateModal] = useState(false);
   const [renewalDiscussion,setRenewalDiscussion] = useState({
     IsRenewalInitiated:false
   })
+
+  const [startDate, setStartDate] = useState(null);
+
 
   let getOnboardFormDetails = gOBFD?.onboardContractDetails
   let teamMembersDetails = gOBFD?.onBoardClientTeamMembers
@@ -47,6 +47,7 @@ const EngagementOnboard = ({
 		getUserResult();
 	}, []);
 
+
   useEffect(()=>{
     setRenewalDiscussion({
       ...renewalDiscussion,
@@ -54,6 +55,13 @@ const EngagementOnboard = ({
     });
   },[getOnboardFormDetails?.isRenewalInitiated])
 
+  useEffect(() => {
+    if (getOnboardFormDetails?.contractStartDate) {          
+      const parsedDate = new Date(getOnboardFormDetails.contractStartDate);     
+      setStartDate(parsedDate);
+    }
+  }, [getOnboardFormDetails?.contractStartDate]);
+  
   const handleSubmit = async () => {
     const response = await engagementRequestDAO.saveRenewalInitiatedDetailDAO(getOnboardFormDetails?.onBoardID,
       renewalDiscussion?.IsRenewalInitiated == true ? "Yes":"No"
@@ -63,6 +71,33 @@ const EngagementOnboard = ({
       setEditModal(false);
     }
   }
+
+  const handleStartDateSubmit = async () => {
+    if (!startDate) {
+      message.warning("Please select a date before saving.");
+      return;
+    }
+    const formattedDate = moment(startDate).format("YYYY-MM-DD");
+    const payload = {
+      onBoardID: getOnboardFormDetails?.onBoardID,
+      contractStartDate: formattedDate,
+    };
+  
+    try {
+      const response = await engagementRequestDAO.updateContractStartDate(payload); // <-- Make sure this function exists
+  
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        message.success("Start date updated successfully.");
+        getOnboardingForm(getHRAndEngagementId?.onBoardId);
+        setEditStartDateModal(false);
+      } else {
+        message.error("Failed to update start date.");
+      }
+    } catch (error) {
+      console.error("Error updating contract start date:", error);
+      message.error("Something went wrong.");
+    }
+  };
 
   const syncEngagement = async () => {
     setSyncLoading(true)
@@ -74,8 +109,6 @@ const EngagementOnboard = ({
     setSyncLoading(false)
   }
 
-// console.log({getOnboardFormDetails,
-//   getHRAndEngagementId,})
   return (
     <>
     <div className={allengagementOnboardStyles.engagementModalWrap}>
@@ -645,6 +678,18 @@ const EngagementOnboard = ({
                     "DD-MM-YYYY"
                   )
                 : "NA"}
+                 <span
+                  className={allengagementOnboardStyles.editNewIcon}
+                  style={{ marginLeft: "10px", cursor: "pointer" }}
+                  onClick={() => {
+                    // const contractDate = getOnboardFormDetails?.contractStartDate;
+                    // const parsedDate = contractDate ? moment(contractDate) : null;
+                    // setStartDate(parsedDate);  
+                    setEditStartDateModal(true);
+                  }}
+                >
+                  <EditNewIcon />
+                </span>
             </li>
             <li>
               <span>Talent Joining Date : </span>
@@ -1051,6 +1096,38 @@ const EngagementOnboard = ({
         </button>
       </div>
     </Modal>
+
+    {editStartDateModal && startDate !== null && (
+      <Modal
+      width={400}
+      centered
+      footer={false}
+      open={editStartDateModal}
+      className="editStartDateModal"
+      onOk={() => setEditStartDateModal(false)}
+      onCancel={() => setEditStartDateModal(false)}
+    >
+      <label className={allengagementOnboardStyles.formLabel}>Edit Engagement Start Date</label>   
+      <div className={allengagementOnboardStyles.timeSlotItem}>
+        <CalenderSVG />
+        <DatePicker
+          selected={startDate}
+          onChange={(date) => {
+          setStartDate(date)}}
+          placeholderText="Start Date"
+          dateFormat="dd/MM/yyyy"
+        />
+
+      </div>
+            <button
+              type="button"
+              className={allengagementOnboardStyles.btnPrimary}
+              onClick={handleStartDateSubmit}
+            >
+              SAVE
+            </button>
+    </Modal>
+    )}
    </>
   );
 };

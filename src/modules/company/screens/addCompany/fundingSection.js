@@ -219,7 +219,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
 
            
             <div className={AddNewClientStyle.row}>
-                <div className={AddNewClientStyle.colMd6} >
+                <div className={AddNewClientStyle.colMd6}>
                 <HRSelectField
                  isControlled={true}
                  controlledValue={controlledSeries[index]}

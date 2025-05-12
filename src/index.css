@@ -240,6 +240,10 @@ table {
   min-height: 250px;
 }
 
+.custom-table-container .ant-table-body { 
+  min-height: auto !important;
+}
+
 .ant-table-empty .ant-table-tbody > tr.ant-table-placeholder td{
   border-bottom: none;
 }
