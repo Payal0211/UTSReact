@@ -4,7 +4,7 @@ import allengagementOnboardStyles from "../engagementOnboard/engagementOnboard.m
 import moment from "moment";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
-import { Checkbox, Modal, Tooltip, message } from "antd";
+import { Button, Checkbox, Modal, Select, Tooltip, message } from "antd";
 import DatePicker from 'react-datepicker';
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
@@ -14,6 +14,7 @@ import LogoLoader from "shared/components/loader/logoLoader";
 import { budgetStringToCommaSeprated } from "shared/utils/basic_utils";
 import { Link } from "react-router-dom";
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import { CloseOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
 
 const EngagementOnboard = ({
   getOnboardFormDetails : gOBFD,
@@ -31,6 +32,10 @@ const EngagementOnboard = ({
   })
 
   const [startDate, setStartDate] = useState(null);
+  const [replacementEngAndHR, setReplacementEngAndHR] = useState([]);
+  const [replacementValue, setReplacementValue] = useState(null);
+  const [isEditingReplacement, setIsEditingReplacement] = useState(false);
+  
 
 
   let getOnboardFormDetails = gOBFD?.onboardContractDetails
@@ -46,6 +51,23 @@ const EngagementOnboard = ({
 		};
 		getUserResult();
 	}, []);
+
+  const getEndEngagementHandler = async () => {
+    if(getOnboardFormDetails?.onBoardID &&  getOnboardFormDetails?.isReplacement){
+      setSyncLoading(true);
+      const response = await engagementRequestDAO.getContentEndEngagementRequestDAO({
+          onboardID: getOnboardFormDetails?.onBoardID ,
+      });
+      setSyncLoading(false);
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        setReplacementEngAndHR(response?.responseBody?.details?.replacementEngAndHR)       
+      }      
+      }
+  }
+
+  useEffect(() => {
+      getEndEngagementHandler();
+  }, [getOnboardFormDetails?.onBoardID , getOnboardFormDetails?.isReplacement]);
 
 
   useEffect(()=>{
@@ -108,6 +130,20 @@ const EngagementOnboard = ({
     }
     setSyncLoading(false)
   }
+
+  const handleSaveReplacement = async () => { 
+    setSyncLoading(true);   
+    let payload = {
+        "replacementID": getOnboardFormDetails?.replacementID, 
+        "engHRReplacement": replacementValue
+    };    
+    let result = await engagementRequestDAO.getReplacementDetailsDAO(payload);
+    setSyncLoading(false);
+    if(result?.statusCode === HTTPStatusCode.OK) {
+      getOnboardingForm(getHRAndEngagementId?.onBoardId);    
+      setIsEditingReplacement(false);        
+    }	
+  };
 
   return (
     <>
@@ -786,8 +822,7 @@ const EngagementOnboard = ({
             </li>
           
           </ul>
-          <br></br>
-          
+          <br></br>         
           <ul>
 
                 <li>
@@ -899,6 +934,107 @@ const EngagementOnboard = ({
             </li>
           </ul>
         </div>
+
+      {/* {getOnboardFormDetails?.isReplacement && (
+        <div className={allengagementOnboardStyles.engagementContent}>
+          <h2>Replacement Details</h2>
+
+          {getOnboardFormDetails?.replacedHRNumber || getOnboardFormDetails?.replacedEngID ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {getOnboardFormDetails?.replacedHRNumber && <span>HR Number: {getOnboardFormDetails.replacedHRNumber}</span>}
+              {getOnboardFormDetails?.replacedEngID && <span>Eng ID: {getOnboardFormDetails.replacedEngID}</span>}
+              <EditOutlined onClick={() => setIsEditingReplacement(true)} style={{ cursor: 'pointer' }} />
+            </div>
+          ) :
+          isEditingReplacement ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px'}}>
+              <Select
+                value={replacementValue}
+                onChange={(val) => setReplacementValue(val)}
+                options={replacementEngAndHR?.map(val => ({
+                  value: val.stringIdValue,
+                  label: val.value
+                }))}
+                style={{width:"30%"}}
+                placeholder="Select HR/EngID"
+              />
+              <SaveOutlined onClick={handleSaveReplacement} style={{ cursor: 'pointer', fontSize: '24px' }} />
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span>No replacement assigned</span>
+              <EditOutlined onClick={() => setIsEditingReplacement(true)} style={{ cursor: 'pointer' }} />
+            </div>
+          )}
+        </div>
+      )} */}
+
+        {getOnboardFormDetails?.isReplacement && (
+          <div className={allengagementOnboardStyles.engagementContent}>
+            <h2>Replacement Details</h2>
+
+            {isEditingReplacement ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Select
+                  value={replacementValue}
+                  onChange={(val) => setReplacementValue(val)}
+                  options={replacementEngAndHR?.map(val => ({
+                    value: val.stringIdValue,
+                    label: val.value
+                  }))}
+                  style={{ width: "30%" }}
+                  placeholder="Select HR/EngID"
+                />
+                <SaveOutlined
+                  onClick={handleSaveReplacement}
+                  style={{
+                    cursor: 'pointer',
+                    fontSize: '20px',
+                    padding: '4px',
+                    border: '1px solid #d9d9d9',
+                    borderRadius: '4px',
+                    backgroundColor: '#f5f5f5',
+                  }}
+                />
+                <CloseOutlined  
+                onClick={() => setIsEditingReplacement(false)}
+                style={{
+                    cursor: 'pointer',
+                    fontSize: '20px',
+                    padding: '4px',
+                    border: '1px solid #d9d9d9',
+                    borderRadius: '4px',
+                    backgroundColor: '#f5f5f5',
+                  }}/>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                {getOnboardFormDetails?.replacedHRNumber && (
+                  <>
+                  <span>HR Number:</span>
+                  <a
+                    target="_blank"
+                    href={`/allhiringrequest/${getOnboardFormDetails.replacedHRID}`}
+                    rel="noreferrer"
+                  >
+                    {getOnboardFormDetails.replacedHRNumber
+                      ? getOnboardFormDetails.replacedHRNumber
+                      : "NA"}
+                  </a>
+                  </>
+                )}
+                {getOnboardFormDetails?.replacedEngID && (
+                  <span>Eng ID: {getOnboardFormDetails.replacedEngID}</span>
+                )}
+                {!getOnboardFormDetails?.replacedHRNumber && !getOnboardFormDetails?.replacedEngID && <span>No replacement assigned</span>}
+                <EditOutlined
+                  onClick={() => {setIsEditingReplacement(true);setReplacementValue(getOnboardFormDetails.replacedHRNumber) }}
+                  style={{ cursor: 'pointer', fontSize: '18px' }}
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         <div className={allengagementOnboardStyles.engagementContent}>
           <h2>About Company</h2>
@@ -1117,15 +1253,14 @@ const EngagementOnboard = ({
           placeholderText="Start Date"
           dateFormat="dd/MM/yyyy"
         />
-
       </div>
-            <button
-              type="button"
-              className={allengagementOnboardStyles.btnPrimary}
-              onClick={handleStartDateSubmit}
-            >
-              SAVE
-            </button>
+      <button
+        type="button"
+        className={allengagementOnboardStyles.btnPrimary}
+        onClick={handleStartDateSubmit}
+      >
+        SAVE
+      </button>
     </Modal>
     )}
    </>

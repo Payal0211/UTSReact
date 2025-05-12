@@ -230,6 +230,7 @@ export class EngagementAPI {
 	static GET_CUSTOM_EMAIL_TEMPLATE = 'GetCustomEmailTemplates'
 	static GET_EMAIL_MASTER = 'GetEmailMasterDropdownValues'
 	static CUSTOM_EMAIL = 'SendCustomEmail'
+	static UPDATE_REPLACEMENT_DETAILS = 'UpdateReplacementDetails'
 }
 
 export class AllHiringRequestAPI {
