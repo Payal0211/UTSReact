@@ -788,6 +788,21 @@
   margin-bottom: 10px;
 }
 
+.historyGrid {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.historyGridInfo{
+  color: #232323;
+  max-width: 450px;
+}
+
+.historyGridInfo span{
+  color: #7c7c7c;
+  margin-right: 5px;
+}
+
 /*Responsive*/
 @media screen and (max-width: 1440px) {
   .addNewContainer {

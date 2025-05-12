@@ -4,7 +4,8 @@ import allengagementOnboardStyles from "../engagementOnboard/engagementOnboard.m
 import moment from "moment";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
-import { Checkbox, DatePicker, Modal, Tooltip, message } from "antd";
+import { Checkbox, Modal, Tooltip, message } from "antd";
+import DatePicker from 'react-datepicker';
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { engagementRequestDAO } from "core/engagement/engagementDAO";
@@ -29,12 +30,14 @@ const EngagementOnboard = ({
     IsRenewalInitiated:false
   })
 
+  const [startDate, setStartDate] = useState(null);
+
+
   let getOnboardFormDetails = gOBFD?.onboardContractDetails
   let teamMembersDetails = gOBFD?.onBoardClientTeamMembers
 
   const [userData, setUserData] = useState({});
   const [syncLoading,setSyncLoading] = useState(false)
-  const [startDate, setStartDate] = useState(null);
 
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -52,6 +55,13 @@ const EngagementOnboard = ({
     });
   },[getOnboardFormDetails?.isRenewalInitiated])
 
+  useEffect(() => {
+    if (getOnboardFormDetails?.contractStartDate) {          
+      const parsedDate = new Date(getOnboardFormDetails.contractStartDate);     
+      setStartDate(parsedDate);
+    }
+  }, [getOnboardFormDetails?.contractStartDate]);
+  
   const handleSubmit = async () => {
     const response = await engagementRequestDAO.saveRenewalInitiatedDetailDAO(getOnboardFormDetails?.onBoardID,
       renewalDiscussion?.IsRenewalInitiated == true ? "Yes":"No"
@@ -99,8 +109,6 @@ const EngagementOnboard = ({
     setSyncLoading(false)
   }
 
-// console.log({getOnboardFormDetails,
-//   getHRAndEngagementId,})
   return (
     <>
     <div className={allengagementOnboardStyles.engagementModalWrap}>
@@ -674,9 +682,9 @@ const EngagementOnboard = ({
                   className={allengagementOnboardStyles.editNewIcon}
                   style={{ marginLeft: "10px", cursor: "pointer" }}
                   onClick={() => {
-                    const contractDate = getOnboardFormDetails?.contractStartDate;
-                    const parsedDate = contractDate ? moment(contractDate) : null;
-                    setStartDate(parsedDate);  
+                    // const contractDate = getOnboardFormDetails?.contractStartDate;
+                    // const parsedDate = contractDate ? moment(contractDate) : null;
+                    // setStartDate(parsedDate);  
                     setEditStartDateModal(true);
                   }}
                 >
@@ -1089,7 +1097,8 @@ const EngagementOnboard = ({
       </div>
     </Modal>
 
-    <Modal
+    {editStartDateModal && startDate !== null && (
+      <Modal
       width={400}
       centered
       footer={false}
@@ -1102,15 +1111,13 @@ const EngagementOnboard = ({
       <div className={allengagementOnboardStyles.timeSlotItem}>
         <CalenderSVG />
         <DatePicker
-          selected={startDate ? startDate.toDate() : null} 
+          selected={startDate}
           onChange={(date) => {
-            console.log("Selected:", date);
-            setStartDate(moment(date));
-          }}
+          setStartDate(date)}}
           placeholderText="Start Date"
           dateFormat="dd/MM/yyyy"
-          // isClearable
         />
+
       </div>
             <button
               type="button"
@@ -1120,7 +1127,7 @@ const EngagementOnboard = ({
               SAVE
             </button>
     </Modal>
-
+    )}
    </>
   );
 };

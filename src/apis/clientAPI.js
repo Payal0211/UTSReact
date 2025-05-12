@@ -137,6 +137,23 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getClientActionHistory');
 		}
 	},
+	getClientActionById:async function (companyID,CompanyActionHistoryID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			ClientsAPI.GET_COMPANY_HISTORY_BY_ACTION +
+			`?companyID=${companyID}&CompanyActionHistoryID=${CompanyActionHistoryID}` ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientActionById');
+		}
+	},
+
 	getResetAllDemoHRTalentStatus:async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
