@@ -1746,29 +1746,133 @@ export default function ViewCompanyDetails() {
 				</div>
 			</Modal>
 
-      {showActivityDetails && <Modal
-						width="930px"
-						centered
-						footer={null}
-						open={showActivityDetails}
-						className="engagementReplaceTalentModal"
-						onCancel={() =>{
-						setShowActivityDetails(false)}
-						}>
-            <div>
-						  <h2>{actionHistoryData?.company}</h2>
-              <div className={AddNewClientStyle.historyGrid}>
-                <div className={AddNewClientStyle.historyGridInfo}><span>Address :</span> {actionHistoryData?.address ? actionHistoryData?.address : '-'}</div>
-                <div className={AddNewClientStyle.historyGridInfo}><span>State :</span> {actionHistoryData?.state ? actionHistoryData?.state : '-'}</div>
-                <div className={AddNewClientStyle.historyGridInfo}><span>City :</span> {actionHistoryData?.city ? actionHistoryData?.city : '-'}</div>
-                <div className={AddNewClientStyle.historyGridInfo}><span>Zip :</span> {actionHistoryData?.zip ? actionHistoryData?.zip:'-'}</div>
-                <div className={AddNewClientStyle.historyGridInfo}><span>Country :</span> {actionHistoryData?.country ? actionHistoryData?.country :'-'}</div>
-                <div className={AddNewClientStyle.historyGridInfo}><span>Location :</span> {actionHistoryData?.location ? actionHistoryData?.location:'-'}</div>
-                <div className={AddNewClientStyle.historyGridInfo}><span>NbdPerson :</span> {actionHistoryData?.nbdPerson ? actionHistoryData?.nbdPerson : '-'}</div>
-                <div className={AddNewClientStyle.historyGridInfo}><span>Phone :</span> {actionHistoryData?.phone ? actionHistoryData?.phone : '-'}</div>
-              </div>              				
-            </div>
-						</Modal>}
+      {showActivityDetails && (
+  <Modal
+    width="1000px"
+    centered
+    footer={null}
+    open={showActivityDetails}
+    className="engagementReplaceTalentModal"
+    onCancel={() => setShowActivityDetails(false)}
+  >
+    <div>
+      <h2>{actionHistoryData?.company}</h2>
+      <div className={AddNewClientStyle.historyGrid}>
+        {actionHistoryData?.website && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Website :</span> <a href={actionHistoryData.website} target="_blank" rel="noopener noreferrer">{actionHistoryData.website}</a>
+          </div>
+        )}
+        {actionHistoryData?.linkedInProfile && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>LinkedIn :</span> <a href={actionHistoryData.linkedInProfile} target="_blank" rel="noopener noreferrer">{actionHistoryData.linkedInProfile}</a>
+          </div>
+        )}       
+        {actionHistoryData?.address && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Address :</span> {actionHistoryData.address}
+          </div>
+        )}
+        {actionHistoryData?.phone && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Phone :</span> {actionHistoryData.phone}
+          </div>
+        )}
+        {actionHistoryData?.industry && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Industry :</span> {actionHistoryData.industry}
+          </div>
+        )}
+        {actionHistoryData?.city && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>City :</span> {actionHistoryData.city}
+          </div>
+        )}
+        {actionHistoryData?.state && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>State :</span> {actionHistoryData.state}
+          </div>
+        )}
+        {actionHistoryData?.country && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Country :</span> {actionHistoryData.country}
+          </div>
+        )}
+        {actionHistoryData?.zip && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Zip :</span> {actionHistoryData.zip}
+          </div>
+        )}
+        {actionHistoryData?.location && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Location :</span> {actionHistoryData.location}
+          </div>
+        )}     
+        {actionHistoryData?.aM_SalesPersonID && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>AM Person :</span> {actionHistoryData.amPerson}
+          </div>
+        )}
+        {actionHistoryData?.nbD_SalesPersonID && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>NBD Person :</span> {actionHistoryData.nbdPerson}
+          </div>
+        )}   
+        {actionHistoryData?.lead_Type && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Lead Type :</span> {actionHistoryData.lead_Type}
+          </div>
+        )}
+        {actionHistoryData?.about_Company_Desc && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>About Company :</span> <div dangerouslySetInnerHTML={{ __html: actionHistoryData.about_Company_Desc }} />
+          </div>
+        )}
+        {actionHistoryData?.industry_Type && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Industry Type :</span> {actionHistoryData.industry_Type}
+          </div>
+        )}
+        {actionHistoryData?.companyTypeID && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Company Type :</span> {actionHistoryData.companyTypeID === "1" ? "Pay per hire" : ""}
+          </div>
+        )}
+        {actionHistoryData?.isTransparentPricing && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Transparent Pricing :</span> {actionHistoryData.isTransparentPricing === "1" ? "Yes" : "No"}
+          </div>
+        )}
+        {actionHistoryData?.anotherCompanyTypeID && actionHistoryData.anotherCompanyTypeID !== "0" && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Another Company Type :</span> {actionHistoryData.anotherCompanyTypeID === "1" ? "Pay per hire" : ""}
+          </div>
+        )}
+        {actionHistoryData?.hiringTypePricingId && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+          <span>Engagement Type :</span> {actionHistoryData.engagementType}
+         </div>
+        )}
+        {actionHistoryData?.hiringTypePercentage && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Hiring Type % :</span> {actionHistoryData.hiringTypePercentage}%
+          </div>
+        )}
+        {actionHistoryData?.isCompanyConfidential && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Confidential Company :</span> {actionHistoryData.isCompanyConfidential === "1" ? "Yes" : "No"}
+          </div>
+        )}
+        {actionHistoryData?.companySize_RangeorAdhoc && (
+          <div className={AddNewClientStyle.historyGridInfo}>
+            <span>Company Size Range/Adhoc :</span> {actionHistoryData.companySize_RangeorAdhoc}
+          </div>
+        )}            
+      </div>
+    </div>
+  </Modal>
+)}
+
     </>
   );
 }
