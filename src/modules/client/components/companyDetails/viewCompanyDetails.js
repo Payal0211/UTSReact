@@ -1746,7 +1746,6 @@ export default function ViewCompanyDetails() {
 				</div>
 			</Modal>
 
-
       {showActivityDetails && <Modal
 						width="930px"
 						centered
@@ -1758,11 +1757,18 @@ export default function ViewCompanyDetails() {
 						}>
             <div>
 						  <h2>{actionHistoryData?.company}</h2>
-              <p dangerouslySetInnerHTML={{ __html: actionHistoryData?.about_Company_Desc}}></p>					.
-              				
+              <div className={AddNewClientStyle.historyGrid}>
+                <div className={AddNewClientStyle.historyGridInfo}><span>Address :</span> {actionHistoryData?.address ? actionHistoryData?.address : '-'}</div>
+                <div className={AddNewClientStyle.historyGridInfo}><span>State :</span> {actionHistoryData?.state ? actionHistoryData?.state : '-'}</div>
+                <div className={AddNewClientStyle.historyGridInfo}><span>City :</span> {actionHistoryData?.city ? actionHistoryData?.city : '-'}</div>
+                <div className={AddNewClientStyle.historyGridInfo}><span>Zip :</span> {actionHistoryData?.zip ? actionHistoryData?.zip:'-'}</div>
+                <div className={AddNewClientStyle.historyGridInfo}><span>Country :</span> {actionHistoryData?.country ? actionHistoryData?.country :'-'}</div>
+                <div className={AddNewClientStyle.historyGridInfo}><span>Location :</span> {actionHistoryData?.location ? actionHistoryData?.location:'-'}</div>
+                <div className={AddNewClientStyle.historyGridInfo}><span>NbdPerson :</span> {actionHistoryData?.nbdPerson ? actionHistoryData?.nbdPerson : '-'}</div>
+                <div className={AddNewClientStyle.historyGridInfo}><span>Phone :</span> {actionHistoryData?.phone ? actionHistoryData?.phone : '-'}</div>
+              </div>              				
             </div>
 						</Modal>}
-
     </>
   );
 }
