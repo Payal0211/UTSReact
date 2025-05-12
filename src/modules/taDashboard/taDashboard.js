@@ -1929,12 +1929,28 @@ export default function TADashboard() {
     downloadToExcel(DataToExport, "TAReport");
   };
 
-  return (
-    <div className={taStyles.hiringRequestContainer}>
-      {/* <div className={taStyles.addnewHR} style={{ margin: "0" }}>
-        <div className={taStyles.hiringRequest}>TA Dashboard</div>
-      </div> */}
+  const isSelectableDate = (date) => {
+    const today = new Date();
+    const targetDateStr = date.toDateString();
+    const dayOfWeek = today.getDay();
+  
+    if (dayOfWeek === 5) {      
+      const validDates = [0, 1, 2, 3].map(offset => {
+        const d = new Date(today);
+        d.setDate(today.getDate() + offset);
+        return d.toDateString();
+      });
+      return validDates.includes(targetDateStr);
+    } else {
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      return [today.toDateString(), tomorrow.toDateString()].includes(targetDateStr);
+    }
+  };
+  
 
+  return (
+    <div className={taStyles.hiringRequestContainer}>   
       <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
           <div
@@ -2028,7 +2044,7 @@ export default function TADashboard() {
               <div className={taStyles.label}>Date</div>
               <div className={taStyles.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                <DatePicker
+                {/* <DatePicker
                   style={{ backgroundColor: "red" }}
                   onKeyDown={(e) => {
                     e.preventDefault();
@@ -2039,11 +2055,23 @@ export default function TADashboard() {
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
                   dateFormat="dd-MM-yyyy"
-                  // minDate={new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)}
                   minDate={new Date()}
                   maxDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
-                  // selectsRange
-                />
+                /> */}
+
+                  <DatePicker
+                    style={{ backgroundColor: "red" }}
+                    onKeyDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className={taStyles.dateFilter}
+                    placeholderText="Start date"
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    dateFormat="dd-MM-yyyy"
+                    filterDate={isSelectableDate}
+                  />
               </div>
             </div>
           </div>
@@ -2303,11 +2331,7 @@ export default function TADashboard() {
                             selected={startTargetDate}
                             onChange={(date) => setStartTargetDate(date)}
                             dateFormat="dd-MM-yyyy"
-                            minDate={new Date()}
-                            maxDate={
-                              new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)
-                            }
-                            // selectsRange
+                            filterDate={isSelectableDate}
                           />
                         </div>
                       </div>
