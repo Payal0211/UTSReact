@@ -53,7 +53,7 @@ const EngagementOnboard = ({
 	}, []);
 
   const getEndEngagementHandler = async () => {
-    if(getOnboardFormDetails?.onBoardID &&  getOnboardFormDetails?.isReplacement){
+    if(getOnboardFormDetails?.onBoardID &&  getOnboardFormDetails?.isReplacement && isEditingReplacement){
       setSyncLoading(true);
       const response = await engagementRequestDAO.getContentEndEngagementRequestDAO({
           onboardID: getOnboardFormDetails?.onBoardID ,
@@ -67,7 +67,7 @@ const EngagementOnboard = ({
 
   useEffect(() => {
       getEndEngagementHandler();
-  }, [getOnboardFormDetails?.onBoardID , getOnboardFormDetails?.isReplacement]);
+  }, [isEditingReplacement]);
 
 
   useEffect(()=>{
@@ -1024,7 +1024,7 @@ const EngagementOnboard = ({
                   </>
                 )}
                 {getOnboardFormDetails?.replacedEngID && (
-                  <span>EngagementID:<Link to={`/viewOnboardDetails/${getOnboardFormDetails?.onBoardID}/${getOnboardFormDetails?.replacedEngOngoing === "Ongoing" ? true : false}`}
+                  <span>EngagementID:<Link to={`/viewOnboardDetails/${getOnboardFormDetails?.replacedOnBoardID}/${getOnboardFormDetails?.replacedEngOngoing === "Ongoing" ? true : false}`}
                   target="_blank"
                   style={{
                     color: `var(--uplers-black)`,

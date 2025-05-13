@@ -124,7 +124,7 @@
     display: flex;
     align-items: center;
     padding: 0 5px;
-    justify-content: center;
+    justify-content: start;
     border-radius: 3px;
     width: 150px;
 }
@@ -137,7 +137,7 @@
     display: flex;
     align-items: center;
     padding: 0 5px;
-    justify-content: end;
+    justify-content: start;
     border-radius: 3px;
     width: 150px;
 }
@@ -151,7 +151,7 @@
     display: flex;
     align-items: center;
     padding: 0 5px;
-    justify-content: end;
+    justify-content: start;
     border-radius: 3px;
     width: 150px;
 }
@@ -164,7 +164,7 @@
     display: flex;
     align-items: center;
     padding: 0 5px;
-    justify-content: end;
+    justify-content: start;
     width: 150px;
     border-radius: 3px;
 }
