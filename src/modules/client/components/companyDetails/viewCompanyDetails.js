@@ -816,7 +816,9 @@ export default function ViewCompanyDetails() {
                               <label>Access Type:</label>
                               {(contact?.roleID == 1 && "Admin") ||
                                     (contact?.roleID == 2 && "All Jobs") ||
-                                    (contact?.roleID == 3 && "My Jobs")}
+                                    (contact?.roleID == 3 && "My Jobs") || 
+                                    (contact?.roleID == 4 && "Interviewer")
+                                    }
                             </li>
                           </ul>
                          ))}

@@ -1024,7 +1024,12 @@ const EngagementOnboard = ({
                   </>
                 )}
                 {getOnboardFormDetails?.replacedEngID && (
-                  <span>Eng ID: {getOnboardFormDetails.replacedEngID}</span>
+                  <span>EngagementID:<Link to={`/viewOnboardDetails/${getOnboardFormDetails?.onBoardID}/${getOnboardFormDetails?.replacedEngOngoing === "Ongoing" ? true : false}`}
+                  target="_blank"
+                  style={{
+                    color: `var(--uplers-black)`,
+                    textDecoration: "underline",
+                  }}>{getOnboardFormDetails.replacedEngID}</Link></span>                 
                 )}
                 {!getOnboardFormDetails?.replacedHRNumber && !getOnboardFormDetails?.replacedEngID && <span>No replacement assigned</span>}
                 <EditOutlined
@@ -1054,33 +1059,33 @@ const EngagementOnboard = ({
           <h2>Client’s Team Members</h2>
 
           {teamMembersDetails.map(member=>  <div className={allengagementOnboardStyles.modalFormCol}>
-                        <div className={allengagementOnboardStyles.onboardingCurrentTextWrap}>
-                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
-                                <span>Name: </span>
-                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.teamName}</span>
-                            </div>
-                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
-                                <span>Designation: </span>
-                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.designation}</span>
-                            </div>
-                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
-                                <span>Reporting To:</span>
-                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.reportingTo}</span>
-                            </div>
-                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
-                                <span>LinkedIn :</span>
-                                <span className={allengagementOnboardStyles.onboardingTextBold}><a href={member.linkedin} target="_blank" rel="noreferrer" >{member.linkedin}</a>  <LinkedinClientSVG width="16" height="16"/></span>
-                            </div> 
-                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
-                                <span>Email:</span>
-                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.email}</span>
-                            </div> 
-                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
-                                <span>Buddy:</span>
-                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.buddy}</span>
-                            </div>
-                        </div>
-                    </div>)}
+              <div className={allengagementOnboardStyles.onboardingCurrentTextWrap}>
+                  <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                      <span>Name: </span>
+                      <span className={allengagementOnboardStyles.onboardingTextBold}>{member.teamName}</span>
+                  </div>
+                  <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                      <span>Designation: </span>
+                      <span className={allengagementOnboardStyles.onboardingTextBold}>{member.designation}</span>
+                  </div>
+                  <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                      <span>Reporting To:</span>
+                      <span className={allengagementOnboardStyles.onboardingTextBold}>{member.reportingTo}</span>
+                  </div>
+                  <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                      <span>LinkedIn :</span>
+                      <span className={allengagementOnboardStyles.onboardingTextBold}><a href={member.linkedin} target="_blank" rel="noreferrer" >{member.linkedin}</a>  <LinkedinClientSVG width="16" height="16"/></span>
+                  </div> 
+                  <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                      <span>Email:</span>
+                      <span className={allengagementOnboardStyles.onboardingTextBold}>{member.email}</span>
+                  </div> 
+                  <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                      <span>Buddy:</span>
+                      <span className={allengagementOnboardStyles.onboardingTextBold}>{member.buddy}</span>
+                  </div>
+              </div>
+          </div>)}
         </div>}
        
 

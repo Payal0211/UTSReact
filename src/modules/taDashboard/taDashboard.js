@@ -759,7 +759,7 @@ export default function TADashboard() {
     //   dataIndex: "totalRevenuePerUserStr",
     //   key: "totalRevenuePerUserStr",
     // },
-  ];
+  ];  
 
   const daiyTargetColumns = [
     {
@@ -864,7 +864,7 @@ export default function TADashboard() {
       },
     },
   ];
-
+  
   const goalColumns = [
     {
       title: "TA",
@@ -1993,6 +1993,7 @@ export default function TADashboard() {
                   columns={totalRevenueColumns}
                   // bordered
                   pagination={false}
+                  scroll={{ x: "max-content" , y:'1vh'}}
                 />
               </div>
             </>
