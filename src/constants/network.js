@@ -8,6 +8,7 @@ export class NetworkInfo {
     static ZOHO_AUTH = '4b441aae-d361-46e1-ad14-2b2114ffbe17'
     static ZOHO_DOMAIN = '3.82.177.154:9086/'
     static DOMAIN = '3.82.177.154:9082/';
+	// static DOMAIN = '3.82.177.154:9088/';
 	// static domain = 'https://clientportal.uplers.com/gspace/';
     static domain = 'https://bb8d-3-218-6-134.ngrok-free.app/';
     static FILEDOMAIN = '3.82.177.154:90/';
