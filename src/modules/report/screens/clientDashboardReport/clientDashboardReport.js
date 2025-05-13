@@ -27,15 +27,16 @@ export default function ClientDashboardReport() {
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [openTicketSearchText, setopenTicketSearchText] = useState("");
   const today = new Date();
-  const aWeekAgo = new Date();
-  aWeekAgo.setDate(today.getDate() - 7);
+
+  const firstDayOfMonth = new Date();
+  firstDayOfMonth.setDate(1);
   
-  const [startDate, setStartDate] = useState(aWeekAgo);
+  const [startDate, setStartDate] = useState(firstDayOfMonth);
   const [endDate, setEndDate] = useState(today);
   
   const [dateError, setDateError] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [listDataCount, setListDataCount] = useState(0);
   const [filtersList, setFiltersList] = useState({});
@@ -367,7 +368,7 @@ export default function ClientDashboardReport() {
       }); 
       setopenTicketSearchText("");
       setopenTicketDebounceText("");  
-      setStartDate(aWeekAgo);
+      setStartDate(firstDayOfMonth);
       setEndDate(today);  
   }
 
