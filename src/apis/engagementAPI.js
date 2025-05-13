@@ -126,6 +126,22 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	getUpdateReplacementDetails : async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.ENGAGEMENT + EngagementAPI.UPDATE_REPLACEMENT_DETAILS;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.UpdateInvoiceDetailsRequest',
+			);
+		}
+	},
 	getContentCancelEngagementRequest: async function (talentDetails) {
 		let httpService = new HttpServices();
 		httpService.URL =
