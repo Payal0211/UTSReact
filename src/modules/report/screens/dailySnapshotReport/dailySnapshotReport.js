@@ -95,6 +95,7 @@ const DailySnapshot = () => {
   const navigate = useNavigate();
   const [recruiterListData, setRecruiterListData] = useState([]);
   const [metrics, setMetrics] = useState([]);
+  const [extraInfo,setExtraInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [monthDate, setMonthDate] = useState(new Date());
 
@@ -126,9 +127,9 @@ const DailySnapshot = () => {
       if (result.statusCode === HTTPStatusCode.OK) {
         const rawData = result?.responseBody?.SnapShotInfo || [];
         const metricsData = result?.responseBody?.MetricsInfo || [];
-        
+        const extraInfo = result?.responseBody?.ExtraInfo || [];
         setMetrics(metricsData);
-
+        setExtraInfo(extraInfo);
         const formattedData = rawData.map((item) => {
           const { stage, stage_ID, goalForMonth, goalTillDate, reachedStr, dailyGoal, dailyCounts = {} } = item;
           const dailyMapped = {};
@@ -233,6 +234,17 @@ const DailySnapshot = () => {
           display: 'flex',
           flexDirection: 'column', 
         }}> 
+        <div style={{display:'flex',flexWrap:"wrap"}}>
+          {extraInfo.map((item, index) => (
+            <Col key={index} xs={24} sm={12} md={8} lg={6} xl={4} style={{ margin: "10px 0",padding:"10px" }}>
+              <Card size="small" style={{ height: "100%", width: "100%" }}>
+                <Text>
+                {item.stage}: <strong>{item.dailyGoal}</strong>
+                </Text>                            
+              </Card>
+            </Col>
+          ))}
+        </div>
         <div style={{display:'flex',flexWrap:"wrap"}}>
           {metrics.map(renderMetricCol)}            
         </div>        
