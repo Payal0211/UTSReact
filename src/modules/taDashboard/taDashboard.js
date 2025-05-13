@@ -681,42 +681,120 @@ export default function TADashboard() {
       title: "TA",
       dataIndex: "taName",
       key: "taName",
+      width: 140,
+      render: (text, result) => {
+        if (result.TOTALROW) {
+          return (
+            <div style={{ display: "flex", justifyContent: "start" }}>
+              <strong>Total :</strong>
+            </div>
+          );          
+        }
+        return text;
+      },
     },
     {
       title: "Goal (INR)",
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
+      width: 120,
       render: (text, result) => {
         if (result.TOTALROW) {
-          return "";
+          return <strong>{result.total_GoalStr ? result.total_GoalStr : '-'}</strong>;
         }
         return text;
       },
     },
-
     {
-      title: "Actual Pipeline (INR)",
+      title: (
+        <>
+          Assigned <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "totalRevenuePerUserStr",
+      key: "totalRevenuePerUserStr",
+      width: 150,
+      render: (text, result) => {
+        if (result.TOTALROW) {
+          return <strong>{result.sumOfTotalRevenueStr ? result.sumOfTotalRevenueStr : '-'}</strong>;
+        }
+        return parseInt(text) > 0 ? text : "";
+      },
+    },
+    {
+      title: (
+        <>
+          Carry Fwd <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "carryFwdPipelineStr",
+      key: "carryFwdPipelineStr",
+      width: 180,
+      render: (text, result) => {
+        if (result.TOTALROW) {
+          return <strong>{result.total_CarryFwdPipelineStr ? result.total_CarryFwdPipelineStr : '-'}</strong>;
+        }
+        return <div className={taStyles.todayText} style={{ background: "#babaf5"}}>{text}</div>;
+      },
+    },
+    {
+      title: (
+        <>
+          Current Month<br />
+          Active Pipeline (INR)
+        </>
+      ),
+      dataIndex: "currentMonthActualPipelineStr",
+      key: "currentMonthActualPipelineStr",
+      width: 200,
+      render: (text, result) => {
+        if (result.TOTALROW) {
+          return <strong>{result.total_CurrentMonthActualPipelineStr ? result.total_CurrentMonthActualPipelineStr : '-'}</strong>;
+        }
+        return parseInt(text) > 0 ? text : "-";
+      },
+    },
+    {
+      title: (
+        <>
+          Active <br />
+          Pipeline (INR)
+        </>
+      ),
       dataIndex: "actualPipelineStr",
       key: "actualPipelineStr",
+      width: 160,      
       render: (text, result) => {
-        return parseInt(text) > 0 ? text : "";
+        if (result.TOTALROW) {
+          return <strong>{result.total_ActualPipelineStr ? result.total_ActualPipelineStr : '-'}</strong>;
+        }
+        return <div className={taStyles.today1Text}>{text}</div>;
       },
     },
     {
       title: "Multiplier",
       dataIndex: "bandwidthper",
       key: "bandwidthper",
+      width: 100,
       render: (text, result) => {
         return +text > 0 ? text : "";
       },
     },
     {
-      title: "Achieve Pipeline (INR)",
+      title: (
+        <>
+          Achieve <br />
+          Pipeline (INR)
+        </>
+      ),
       dataIndex: "achievedPipelineStr",
       key: "achievedPipelineStr",
+      width: 180,
       render: (text, result) => {
         if (result.TOTALROW) {
-          return "";
+          return <strong>{result.total_AchievedPipelineStr ? result.total_AchievedPipelineStr : '-'}</strong>;
         }
         return <div className={taStyles.todayText}>{text}</div>;
       },
@@ -725,13 +803,10 @@ export default function TADashboard() {
       title: "Lost Pipeline (INR)",
       dataIndex: "lostPipelineStr",
       key: "lostPipelineStr",
+      width: 160,
       render: (text, result) => {
         if (result.TOTALROW) {
-          return (
-            <div style={{ display: "flex", justifyContent: "end" }}>
-              <strong>Total :</strong>
-            </div>
-          );
+          return <strong>{result.total_LostPipelineStr ? result.total_LostPipelineStr : '-'}</strong>;
         }
         return (
           <div
@@ -744,24 +819,39 @@ export default function TADashboard() {
       },
     },
     {
-      title: "Pipeline (INR)",
-      dataIndex: "totalRevenuePerUserStr",
-      key: "totalRevenuePerUserStr",
+      title: "Hold Pipeline (INR)",
+      dataIndex: "holdPipelineStr",
+      key: "holdPipelineStr",
+      width: 150,
       render: (text, result) => {
         if (result.TOTALROW) {
-          return <strong>{result.sumOfTotalRevenueStr}</strong>;
+          return <strong>{result.total_HoldPipelineStr ? result.total_HoldPipelineStr : '-'}</strong>;
         }
-        return parseInt(text) > 0 ? text : "";
-      },
+        return <div className={taStyles.todayText} style={{ background: "#ffc6b3"}}>{text}</div>;
+      },      
     },
+   
     // {
     //   title: "Total Pipeline (INR)",
     //   dataIndex: "totalRevenuePerUserStr",
     //   key: "totalRevenuePerUserStr",
     // },
-  ];
+  ];  
 
   const daiyTargetColumns = [
+    {
+      title: (
+        <>
+          Carry Fwd <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "carryFwdPipeLineStr",
+      key: "carryFwdPipeLineStr",
+      render: (text) => {
+        return <div className={taStyles.today1Text} style={{background:"#babaf5"}}>{text}</div>;
+      },
+    },
     {
       title: (
         <>
@@ -785,7 +875,7 @@ export default function TADashboard() {
       dataIndex: "achievedHRPipeLineStr",
       key: "achievedHRPipeLineStr",
       render: (text) => {
-        return <div className={taStyles.today2Text}>{text}</div>;
+        return <div className={taStyles.todayText}>{text}</div>;
       },
     },
     {
@@ -797,7 +887,7 @@ export default function TADashboard() {
       dataIndex: "today_ProfilesharedTarget",
       key: "today_ProfilesharedTarget",
       render: (text) => {
-        return <div className={taStyles.todayText}>{text}</div>;
+        return <div className={taStyles.today2Text}>{text}</div>;
       },
     },
     {
@@ -810,7 +900,7 @@ export default function TADashboard() {
       dataIndex: "today_ProfilesharedAchieved",
       key: "today_ProfilesharedAchieved",
       render: (text) => {
-        return <div className={taStyles.todayText}>{text}</div>;
+        return <div className={taStyles.today2Text}>{text}</div>;
       },
     },
     {
@@ -823,7 +913,7 @@ export default function TADashboard() {
       dataIndex: "today_L1Round",
       key: "today_L1Round",
       render: (text) => {
-        return <div className={taStyles.todayText}>{text}</div>;
+        return <div className={taStyles.today2Text}>{text}</div>;
       },
     },
     {
@@ -864,7 +954,7 @@ export default function TADashboard() {
       },
     },
   ];
-
+  
   const goalColumns = [
     {
       title: "TA",
@@ -1993,6 +2083,7 @@ export default function TADashboard() {
                   columns={totalRevenueColumns}
                   // bordered
                   pagination={false}
+                  scroll={{ x: "max-content" , y:'1vh'}}
                 />
               </div>
             </>

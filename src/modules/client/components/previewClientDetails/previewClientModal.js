@@ -2719,7 +2719,9 @@ function PreviewClientModal({
                               <p>
                                 {(val?.roleID == 1 && "Admin") ||
                                   (val?.roleID == 2 && "All Jobs") ||
-                                  (val?.roleID == 3 && "My Jobs")}
+                                  (val?.roleID == 3 && "My Jobs") || 
+                                  (val?.roleID == 4 && "Interviewer")
+                                  }
                               </p>
                             </li>
                             <li>

@@ -5,7 +5,7 @@ export class NetworkInfo {
     // static ATS_DOMAIN = '/atsstaging.uplers.com/api/';
     static ATS_DOMAIN = 'ats.uplers.com/api/';
     static ATS_TOKEN = 'y8sxutshp4gm2u4lsmsmlg';
-    static ZOHO_AUTH = '4b441aae-d361-46e1-ad14-2b2114ffbe17'
+    static ZOHO_AUTH = '4b441aae-d361-46e1-ad14-2b2114ffbe17';
     static ZOHO_DOMAIN = 'api-talentsupport.uplers.com/'
     static DOMAIN = 'newbeta-adminapi.uplers.com/';
     // static domain = 'https://clientportal.uplers.com/gspace/';
