@@ -822,7 +822,7 @@ export default function TADashboard() {
       title: "Hold Pipeline (INR)",
       dataIndex: "holdPipelineStr",
       key: "holdPipelineStr",
-      width: 140,
+      width: 150,
       render: (text, result) => {
         if (result.TOTALROW) {
           return <strong>{result.total_HoldPipelineStr ? result.total_HoldPipelineStr : '-'}</strong>;
