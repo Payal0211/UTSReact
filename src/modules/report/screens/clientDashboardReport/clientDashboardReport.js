@@ -219,7 +219,6 @@ export default function ClientDashboardReport() {
             width: "200px",
             fixed: "left",
             render: (text, result) => {
-                // Check if the value is 'Total', if so return empty string, else return a link
                 return text === "Total" 
                   ? "" 
                   : <a href={`/viewCompanyDetails/${result.companyID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
@@ -255,8 +254,11 @@ export default function ClientDashboardReport() {
         key: "totalProfiles",
         align: "center",
         width: "130px",
-        // render: (value) => (value === 0 ? '-' : value),
+        // render: (value) => (value === 0 ? '-' : value),      
         render: (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
           return +text > 0 ? (
             <p
               style={{
@@ -272,10 +274,10 @@ export default function ClientDashboardReport() {
                 setHRTalentListFourCount([]);
               }}
             >
-              {text}
+              {text ? text : '-'}
             </p>
           ) : (
-            text
+            text ? text : '-'
           );
         },
       },
@@ -287,6 +289,9 @@ export default function ClientDashboardReport() {
         width: "100px",
         // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
           return +text > 0 ? (
             <p
               style={{
@@ -302,10 +307,10 @@ export default function ClientDashboardReport() {
                 setHRTalentListFourCount([]);
               }}
             >
-              {text}
+              {text ? text : '-'}
             </p>
           ) : (
-            text
+            text ? text : '-'
           );
         },
       },
@@ -317,6 +322,9 @@ export default function ClientDashboardReport() {
         width: "130px",
         // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
           return +text > 0 ? (
             <p
               style={{
@@ -332,10 +340,10 @@ export default function ClientDashboardReport() {
                 setHRTalentListFourCount([]);
               }}
             >
-              {text}
+              {text ? text : '-'}
             </p>
           ) : (
-            text
+            text ? text : '-'
           );
         },
       },
@@ -347,6 +355,9 @@ export default function ClientDashboardReport() {
         width: "120px",
         // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
           return +text > 0 ? (
             <p
               style={{
@@ -362,10 +373,10 @@ export default function ClientDashboardReport() {
                 setHRTalentListFourCount([]);
               }}
             >
-              {text}
+              {text ? text : '-'}
             </p>
           ) : (
-            text
+            text ? text : '-'
           );
         },
       },
@@ -377,6 +388,9 @@ export default function ClientDashboardReport() {
         width: "140px",
         // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
           return +text > 0 ? (
             <p
               style={{
@@ -392,10 +406,10 @@ export default function ClientDashboardReport() {
                 setHRTalentListFourCount([]);
               }}
             >
-              {text}
+              {text ? text : '-'}
             </p>
           ) : (
-            text
+            text ? text : '-'
           );
         },
       },
@@ -407,6 +421,9 @@ export default function ClientDashboardReport() {
         width: "120px",
         // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
           return +text > 0 ? (
             <p
               style={{
@@ -422,10 +439,10 @@ export default function ClientDashboardReport() {
                 setHRTalentListFourCount([]);
               }}
             >
-              {text}
+              {text ? text : '-'}
             </p>
           ) : (
-            text
+            text ? text : '-'
           );
         },
       },
@@ -437,6 +454,9 @@ export default function ClientDashboardReport() {
         width: "100px",
         // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
           return +text > 0 ? (
             <p
               style={{
@@ -452,10 +472,10 @@ export default function ClientDashboardReport() {
                 setHRTalentListFourCount([]);
               }}
             >
-              {text}
+              {text ? text : '-'}
             </p>
           ) : (
-            text
+            text ? text : '-'
           );
         },
       },
@@ -879,13 +899,12 @@ export default function ClientDashboardReport() {
                           <h3>
                             Profiles for <strong>{profileInfo?.hrNumber}</strong>
                           </h3>
-            
                           <p style={{ marginBottom: "0.5em" }}>
-                            Company : <strong>{profileInfo?.companyName}</strong>
+                            Company : <strong>{profileInfo?.client}</strong>
                           </p>
             
                           <p style={{ marginBottom: "0.5em" }}>
-                            TA : <strong>{profileInfo?.taName}</strong>
+                            TA : <strong>{profileInfo?.recruiter}</strong>
                           </p>
             
                           <input

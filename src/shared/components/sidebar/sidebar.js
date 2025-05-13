@@ -438,6 +438,15 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isChildren: true,
 			branch:[
 				new SideBarModels({
+					id: 'DailySnapshot',
+					title: 'Daily Snapshot',
+					isActive: false,
+					icon: RecruiterReportIcon,
+					navigateTo: UTSRoutes.DAILYSNAPSHOT,
+					isVisible: isAccess(usertypeID, 'DailySnapshot'),
+					isChildren : false					
+				}),
+				new SideBarModels({
 					id: 'Recruiter',
 					title: 'Recruiter',
 					isActive: false,
@@ -454,17 +463,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
 					isVisible: isAccess(usertypeID, 'ClientDashboard'),
 					isChildren : false					
-				}),
-				new SideBarModels({
-					id: 'DailySnapshot',
-					title: 'Daily Snapshot',
-					isActive: false,
-					icon: RecruiterReportIcon,
-					navigateTo: UTSRoutes.DAILYSNAPSHOT,
-					isVisible: isAccess(usertypeID, 'DailySnapshot'),
-					isChildren : false					
-				}),
-			
+				})
 			]
 		}),
 		new SideBarModels({
