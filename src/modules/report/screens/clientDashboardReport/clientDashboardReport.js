@@ -104,6 +104,7 @@ export default function ClientDashboardReport() {
         key: "totalProfiles",
         align: "center",
         width: "130px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Profiles",
@@ -111,6 +112,7 @@ export default function ClientDashboardReport() {
         key: "profiles",
         align: "center",
         width: "100px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Screen Reject",
@@ -118,6 +120,7 @@ export default function ClientDashboardReport() {
         key: "screenReject",
         align: "center",
         width: "130px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Assessment",
@@ -125,6 +128,7 @@ export default function ClientDashboardReport() {
         key: "assessment",
         align: "center",
         width: "120px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Interviews Done",
@@ -132,6 +136,7 @@ export default function ClientDashboardReport() {
         key: "interviewsDone",
         align: "center",
         width: "140px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "R1 Interview",
@@ -139,6 +144,7 @@ export default function ClientDashboardReport() {
         key: "r1Interview",
         align: "center",
         width: "120px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "R1 Reject",
@@ -146,6 +152,7 @@ export default function ClientDashboardReport() {
         key: "r1InterviewReject",
         align: "center",
         width: "100px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "R2 Interview",
@@ -153,6 +160,7 @@ export default function ClientDashboardReport() {
         key: "r2Interview",
         align: "center",
         width: "120px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "R2 Reject",
@@ -160,6 +168,7 @@ export default function ClientDashboardReport() {
         key: "r2InterviewReject",
         align: "center",
         width: "100px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "R3 Interview",
@@ -167,6 +176,7 @@ export default function ClientDashboardReport() {
         key: "r3Interview",
         align: "center",
         width: "120px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "R3 Reject",
@@ -174,6 +184,7 @@ export default function ClientDashboardReport() {
         key: "r3InterviewReject",
         align: "center",
         width: "100px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Offer",
@@ -181,6 +192,7 @@ export default function ClientDashboardReport() {
         key: "offer",
         align: "center",
         width: "100px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Offer Declined",
@@ -188,6 +200,7 @@ export default function ClientDashboardReport() {
         key: "offerDeclined",
         align: "center",
         width: "140px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Pre-Onboarding",
@@ -195,6 +208,7 @@ export default function ClientDashboardReport() {
         key: "preOnboarding",
         align: "center",
         width: "140px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Joined",
@@ -202,6 +216,7 @@ export default function ClientDashboardReport() {
         key: "joined",
         align: "center",
         width: "100px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Joined & Left",
@@ -209,6 +224,7 @@ export default function ClientDashboardReport() {
         key: "joinedandLeft",
         align: "center",
         width: "140px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Position Lost",
@@ -216,6 +232,7 @@ export default function ClientDashboardReport() {
         key: "positionLost",
         align: "center",
         width: "130px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "On Hold",
@@ -223,6 +240,7 @@ export default function ClientDashboardReport() {
         key: "onHold",
         align: "center",
         width: "100px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "AI Interview",
@@ -230,6 +248,7 @@ export default function ClientDashboardReport() {
         key: "aiInterview",
         align: "center",
         width: "120px",
+        render: (value) => (value === 0 ? '-' : value),
       },
       {
         title: "Duplicate",
@@ -237,6 +256,7 @@ export default function ClientDashboardReport() {
         key: "duplicate",
         align: "center",
         width: "100px",
+        render: (value) => (value === 0 ? '-' : value),
       },
     ];
   }, [clientData]);
