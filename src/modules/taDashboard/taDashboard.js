@@ -578,11 +578,15 @@ export default function TADashboard() {
 
         setSummaryData(lastRow);       
         
+        // Set only rows that are not TOTALROW
+        const filteredList = result.responseBody.filter((x) => !x.TOTALROW);
 
-        setTotalRevenueList([
-          ...result.responseBody,
-          lastRow,
-        ]);
+        setTotalRevenueList(filteredList);
+
+        // setTotalRevenueList([
+        //   ...result.responseBody,
+        //   lastRow,
+        // ]);
       } else {
         setTotalRevenueList([]);
       }
