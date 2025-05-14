@@ -710,6 +710,7 @@ export default function ClientDashboardReport() {
       setopenTicketDebounceText("");  
       setStartDate(firstDayOfMonth);
       setEndDate(today);  
+      setDateTypeFilter(2);
   }
   const handleExport = (apiData) => {
       let DataToExport =  apiData.map(data => {
