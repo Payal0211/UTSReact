@@ -553,14 +553,7 @@ const handleExport = (apiData) => {
                               overlay={
                                 <Menu
                                   onClick={(e) => {
-                                    setPageSize(parseInt(e.key));
-                                    // if (pageSize !== parseInt(e.key)) {
-                                    //   setTableFilteredState((prevState) => ({
-                                    //     ...prevState,
-                                    //     totalrecord: parseInt(e.key),
-                                    //     pagenumber: pageIndex,
-                                    //   }));
-                                    // }
+                                    setPageSize(parseInt(e.key));                                   
                                   }}
                                 >
                                   {pageSizeOptions.map((item) => {

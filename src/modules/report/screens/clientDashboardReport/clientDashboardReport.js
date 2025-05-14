@@ -3,7 +3,7 @@ import clientDashboardStyles from "./clientDashboard.module.css";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { InputType } from "constants/application";
-import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message } from "antd";
+import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { downloadToExcel } from "modules/report/reportUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
@@ -25,6 +25,8 @@ import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 import { IconContext } from "react-icons";
 import { BsClipboard2CheckFill } from "react-icons/bs";
 import MoveToAssessment from "modules/hiring request/components/talentList/moveToAssessment";
+import moment from "moment";
+import { IoChevronDownOutline } from "react-icons/io5";
 
 export default function ClientDashboardReport() {  
 
@@ -34,14 +36,15 @@ export default function ClientDashboardReport() {
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [openTicketSearchText, setopenTicketSearchText] = useState("");
   const today = new Date();
+  const [dateTypeFilter, setDateTypeFilter] = useState(2);
 
   const firstDayOfMonth = new Date();
   firstDayOfMonth.setDate(1);
   
+  const [monthDate, setMonthDate] = useState(today);  
   const [startDate, setStartDate] = useState(firstDayOfMonth);
   const [endDate, setEndDate] = useState(today);
   
-  const [dateError, setDateError] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(100);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
@@ -590,11 +593,13 @@ export default function ClientDashboardReport() {
   const getClientDashboardReport = async () => {
     let payload = {
         "searchText": openTicketSearchText,
-        "fromDate": startDate.toLocaleDateString("en-US"),
-        "toDate": endDate.toLocaleDateString("en-US"),
+        "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
+        "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
+        "fromDate": dateTypeFilter === 2 ? null : dateTypeFilter === 1 ? startDate.toLocaleDateString("en-US"): null,
+        "toDate": dateTypeFilter === 2 ? null : dateTypeFilter === 1 ? endDate.toLocaleDateString("en-US"): null ,
         "pageIndex": pageIndex,
         "pageSize": pageSize,
-        "taUserIDs":tableFilteredState?.filterFields_OnBoard?.taUserIDs,
+        "taUserIDs":tableFilteredState?.filterFields_OnBoard?.taUserIDs        
       };
     setLoading(true)
     const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
@@ -629,58 +634,25 @@ export default function ClientDashboardReport() {
       }
     };
 
+  const onCalenderFilter = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
 
-  const onCalenderFilter = useCallback(
-    async (dates) => {
-      const [start, end] = dates;
-
-      setStartDate(start);
-      setEndDate(end);
-
-      if (start.toLocaleDateString() === end.toLocaleDateString()) {
-        let params = {
-          fromDate: new Date(
-            date.getFullYear(),
-            date.getMonth() - 1,
-            date.getDate()
-          ),
-          toDate: new Date(date),
-        };
-        setStartDate(params.fromDate);
-        setEndDate(params.toDate);
-        setDateError(true);
-        setTimeout(() => setDateError(false), 5000);
-        return;
-      } else {
-        if (start && end) {  
-            let payload = {
-                "searchText": openTicketSearchText,
-                "fromDate": start.toLocaleDateString("en-US"),
-                "toDate": end.toLocaleDateString("en-US"),
-                "pageIndex": 1,
-                "pageSize": pageSize,
-              };
-              setPageIndex(1);
-            setLoading(true)
-            const apiResult = await ReportDAO.getClientDashboardReportDAO(payload);
-            setLoading(false)
-
-            if (apiResult?.statusCode === 200) {        
-                setClientData(apiResult.responseBody?.rows);       
-                setListDataCount(apiResult.responseBody?.totalrows);      
-            } else if (apiResult?.statusCode === 404) {
-                setClientData([]);
-                setListDataCount(0);     
-            }
-        }
+    if (start?.toLocaleDateString() === end?.toLocaleDateString()) {
+      let params = {
+        fromDate: firstDayOfMonth,
+        toDate: today,
       }
-    },
-    [openTicketSearchText,pageSize]
-  );
+      setStartDate(params.fromDate);
+      setEndDate(params.toDate);
+      return;
+    }    
+  };
 
   useEffect(() => {
     getClientDashboardReport();
-  }, [pageIndex, pageSize, openTicketSearchText,tableFilteredState]);
+  }, [pageIndex, pageSize, openTicketSearchText,tableFilteredState,monthDate,startDate,endDate]);
 
 
   useEffect(() => {
@@ -738,6 +710,17 @@ export default function ClientDashboardReport() {
       setStartDate(firstDayOfMonth);
       setEndDate(today);  
   }
+  const handleExport = (apiData) => {
+      let DataToExport =  apiData.map(data => {
+          let obj = {}
+          tableColumnsMemo.forEach(val => {     
+            obj[`${val.title}`] = data[`${val.key}`]     
+          })
+          return obj;
+        }
+      )
+      downloadToExcel(DataToExport,'Client_Dashboard_Report.xlsx')  
+  }
 
   return (
     <div className={clientDashboardStyles.hiringRequestContainer}>
@@ -791,29 +774,121 @@ export default function ClientDashboardReport() {
                       }}
                     >
                       Reset Filter
-                    </p>
-                 
-                 
-
+                    </p>             
                 </div>
-                <div className={ClientReportStyle.calendarFilter}>              
-                  <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                  <DatePicker
-                    style={{ backgroundColor: "red" }}
-                    onKeyDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
+
+              <div style={{display:'flex',justifyContent:'center',alignItems:"center"}}>
+                <div style={{display:"flex",justifyContent:'center',marginRight:"10px"}}>
+                  <Select
+                    id="selectedValue"
+                    placeholder="Select"
+                    value={dateTypeFilter}                    
+                    style={{width:"180px",height:"48px"}}
+                    onChange={(value, option) => {
+                      setDateTypeFilter(value);
+                      setStartDate(firstDayOfMonth);
+                      setEndDate(new Date(date));
                     }}
-                    className={ClientReportStyle.dateFilter}
-                    placeholderText="Start date - End date"
-                    selected={startDate}
-                    onChange={onCalenderFilter}
-                    startDate={startDate}
-                    endDate={endDate}
-                    maxDate={new Date()}
-                    selectsRange
+                    options={[{value: 2,label: 'No Dates'},{value: 0,label: 'By Month'},{value: 1,label: 'With Date Range'}]}
+                    optionFilterProp="value"
                   />
                 </div>
+                {dateTypeFilter === 0 && (
+                  <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}> 
+                    <div>
+                      Month-Year
+                    </div>
+                    <div className={ClientReportStyle.calendarFilter}> 
+                      <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                      <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={ClientReportStyle.dateFilter}
+                              placeholderText="Month - Year"
+                              selected={monthDate}
+                              onChange={date=>setMonthDate(date)}
+                              // startDate={startDate}
+                              // endDate={endDate}
+                              dateFormat="MM-yyyy"
+                              showMonthYearPicker
+                            />
+                    </div>
+                  </div>
+                )}
+                {dateTypeFilter === 1 && (
+                  <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}>
+                    <div>Date</div>
+                    <div className={ClientReportStyle.calendarFilter}>                       
+                    <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                    <DatePicker
+                      style={{ backgroundColor: "red" }}
+                      onKeyDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      className={ClientReportStyle.dateFilter}
+                      placeholderText="Start date - End date"
+                      selected={startDate}
+                      onChange={onCalenderFilter}
+                      startDate={startDate}
+                      endDate={endDate}
+                      maxDate={new Date()}
+                      selectsRange
+                    />
+                  </div>
+                  </div>
+                )}                
+              
+                <div className={clientDashboardStyles.priorityFilterSet}>                
+                  <div className={clientDashboardStyles.label}>
+                    Showing
+                  </div>                
+                  <div className={clientDashboardStyles.paginationFilter}>
+                    <Dropdown
+                      trigger={["click"]}
+                      placement="bottom"
+                      overlay={
+                        <Menu
+                          onClick={(e) => {
+                            setPageSize(parseInt(e.key));                                   
+                          }}
+                        >
+                          {pageSizeOptions.map((item) => {
+                            return (
+                              <Menu.Item key={item}>{item}</Menu.Item>
+                            );
+                          })}
+                        </Menu>
+                      }
+                    >
+                      <span>
+                        {pageSize}
+                        <IoChevronDownOutline
+                          style={{
+                            paddingTop: "5px",
+                            fontSize: "16px",
+                          }}
+                        />
+                      </span>
+                    </Dropdown>
+                  </div>                  
+                </div>
+
+                <div
+                  className={clientDashboardStyles.paginationFilter}
+                  style={{ border: "none", width: "auto" }}
+                >
+                  <button
+                    className={clientDashboardStyles.btnPrimary}
+                    onClick={() =>handleExport(clientData)}
+                  >
+                    Export
+                  </button>
+                </div>              
+              </div>              
         </div>
       </div>
 
