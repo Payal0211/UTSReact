@@ -12,35 +12,50 @@ import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
-// Generate columns for the weeks of the selected month
 const generateWeekColumns = (year, monthIndex, daysInMonth) => {
   const weeks = [];
-  let currentDate = 1;
 
-  while (currentDate <= daysInMonth) {
-    const week = new Array(7).fill(null);
-    for (let i = 0; i < 7 && currentDate <= daysInMonth; i++) {
-      const date = new Date(year, monthIndex, currentDate);
-      week[i] = {
-        day: date.toLocaleString("en-us", { weekday: "short" }),
-        date: currentDate,
-      };
-      currentDate++;
+  const firstOfMonth = new Date(year, monthIndex, 1);
+  const lastOfMonth = new Date(year, monthIndex, daysInMonth);
+  const startDate = new Date(firstOfMonth);
+  startDate.setDate(firstOfMonth.getDate() - ((firstOfMonth.getDay() + 6) % 7));
+  const endDate = new Date(lastOfMonth);
+  endDate.setDate(lastOfMonth.getDate() + (7 - endDate.getDay()) % 7);
+  let current = new Date(startDate);
+  while (current <= endDate) {
+    const week = [];
+
+    for (let i = 0; i < 7; i++) {
+      const dateObj = new Date(current);
+      const day = dateObj.getDate();
+      const currentMonth = dateObj.getMonth();
+
+      week.push(
+        currentMonth === monthIndex
+          ? {
+              day: dateObj.toLocaleString("en-us", { weekday: "short" }),
+              date: day,
+            }
+          : null
+      );
+
+      current.setDate(current.getDate() + 1);
     }
+
     weeks.push(week);
   }
 
   return weeks.map((week, weekIdx) => ({
     title: `Week ${weekIdx + 1}`,
     children: week.filter((d) => d !== null).map((d) => ({
-      key: `day_${d.date}`,
-      title: d.day,
-      dataIndex: `day_${d.date}`,
-      width: 80,
-      align: "center",
-      render: (value) => (value === 0 || value == null ? "-" : value),
-      className: d.day === "Sat" || d.day === "Sun" ? styles.weekendColumn : "",
-    })),
+        key: `day_${d.date}`,
+        title: d.day,
+        dataIndex: `day_${d.date}`,
+        width: 80,
+        align: "center",
+        render: (value) => (value === 0 || value == null ? "-" : value),
+        className: d.day === "Sat" || d.day === "Sun" ? styles.weekendColumn : "",
+      })),
   }));
 };
 
