@@ -216,6 +216,17 @@ export default function ClientDashboardReport() {
   const tableColumnsMemo = useMemo(() => {
     return [
         {
+            title: "Created On",
+            dataIndex: "createdByDatetime",
+            key: "createdByDatetime",
+            align: "left",
+            width: "160px",
+            fixed: "left",
+            render: (text) => {
+               return text ? moment(text).format("DD-MM-YYYY") : '-'
+              },
+          },
+        {
             title: "Client",
             dataIndex: "client",
             key: "client",
@@ -305,9 +316,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result, 2,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(2);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -338,9 +349,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result,7,1);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(71);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -373,7 +384,7 @@ export default function ClientDashboardReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 0);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(11);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -404,9 +415,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result,3,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(3);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -437,9 +448,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result,3,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(3);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -470,9 +481,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result,7,2);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(72);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -992,11 +1003,11 @@ export default function ClientDashboardReport() {
                             value={searchTerm}
                             onChange={(e) => handleSearchInput(e.target.value)} // Create this function
                             style={{
-                              padding: "6px 10px",
+                              padding: "12px 14px",
                               border: "1px solid #ccc",
                               borderRadius: "4px",
                               marginLeft: "auto", // optional: pushes search to right
-                              minWidth: "220px",
+                              minWidth: "250px",
                             }}
                           />
                       </div>           
@@ -1199,6 +1210,7 @@ export default function ClientDashboardReport() {
                               columns={ProfileColumns}
                               // bordered
                               pagination={false}
+                              scroll={{ y: "480px" }}
                             />
                           </div>
                         )}

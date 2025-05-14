@@ -576,13 +576,15 @@ export default function TADashboard() {
           TOTALROW: true,
         };       
 
-        setSummaryData(lastRow);       
-        
+        setSummaryData(lastRow);               
+        // Set only rows that are not TOTALROW
+        // const filteredList = result.responseBody.filter((x) => !x.TOTALROW);
+        setTotalRevenueList(result.responseBody);
 
-        setTotalRevenueList([
-          ...result.responseBody,
-          lastRow,
-        ]);
+        // setTotalRevenueList([
+        //   ...result.responseBody,
+        //   lastRow,
+        // ]);
       } else {
         setTotalRevenueList([]);
       }
