@@ -562,20 +562,22 @@ export default function TADashboard() {
     setpipelineLoading(false);
     if (result?.statusCode === HTTPStatusCode.OK) {
       if (result.responseBody.length) {
+        const lastRow = {
+          ...result.responseBody[result.responseBody.length - 1],
+          bandwidthper: "",
+          goalRevenueStr: "",
+          taName: "",
+          sumOfTotalRevenue: result.responseBody[0].sumOfTotalRevenue,
+          sumOfTotalRevenueStr: result.responseBody[0].sumOfTotalRevenueStr,
+          taUserID: result.responseBody[0].taUserID,
+          totalRevenuePerUser: result.responseBody[0].totalRevenuePerUser,
+          totalRevenuePerUserStr: result.responseBody[0].totalRevenuePerUserStr,
+          TOTALROW: true,
+        };       
+
         setTotalRevenueList([
           ...result.responseBody,
-          {
-            bandwidthper: "",
-            goalRevenueStr: "",
-            sumOfTotalRevenue: result.responseBody[0].sumOfTotalRevenue,
-            sumOfTotalRevenueStr: result.responseBody[0].sumOfTotalRevenueStr,
-            taName: "",
-            taUserID: result.responseBody[0].taUserID,
-            totalRevenuePerUser: result.responseBody[0].totalRevenuePerUser,
-            totalRevenuePerUserStr:
-              result.responseBody[0].totalRevenuePerUserStr,
-            TOTALROW: true,
-          },
+          lastRow,
         ]);
       } else {
         setTotalRevenueList([]);
@@ -588,7 +590,7 @@ export default function TADashboard() {
       setDailyActiveTargets(dailyResult.responseBody);
     }
   };
-
+  
   const getGoalsDetails = async (date, head, tA_UserID) => {
     let pl = {
       taUserIDs: tA_UserID,
@@ -698,7 +700,7 @@ export default function TADashboard() {
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
       width: 120,
-      render: (text, result) => {
+      render: (text, result) => {       
         if (result.TOTALROW) {
           return <strong>{result.total_GoalStr ? result.total_GoalStr : '-'}</strong>;
         }
@@ -827,7 +829,7 @@ export default function TADashboard() {
         if (result.TOTALROW) {
           return <strong>{result.total_HoldPipelineStr ? result.total_HoldPipelineStr : '-'}</strong>;
         }
-        return <div className={taStyles.todayText} style={{ background: "#ffc6b3"}}>{text}</div>;
+        return <div className={taStyles.todayText} style={{ background: "lightyellow"}}>{text}</div>;
       },      
     },
    
@@ -1136,14 +1138,6 @@ export default function TADashboard() {
               </Tooltip>
             </IconContext.Provider>
           )}
-
-          {/* <Tooltip title={"Move to Assessment"}>
-        <BsClipboard2CheckFill style={{width:'16px', height: "16px", margin: "16px",marginRight:'0', cursor:'pointer' }} onClick={()=>{
-          setMoveToAssessment(true)
-          console.log("clicked")
-          setTalentToMove(prev => ({...prev,ctpID:item.ctpid}));
-        }} />
-        </Tooltip> */}
         </div>
       ),
     },
@@ -1318,13 +1312,7 @@ export default function TADashboard() {
       dataIndex: "task_Priority",
       key: "task_Priority",
       fixed: "left",
-      width: "120px",
-      // filters:filtersList?.priority?.map(v=>({text: v.text, value: v.text})),
-      // filteredValue: filteredInfo.task_Priority || null,
-      // onFilter: (value, record) => {
-      //   console.log('filter',value,record)
-      //    return record.task_Priority === value
-      // },
+      width: "120px",     
       render: (text, result, index) => {
         return <PriorityComp text={text} result={result} index={index} />;
       },
@@ -1409,14 +1397,7 @@ export default function TADashboard() {
     {
       title: "Contract / DP",
       dataIndex: "modelType",
-      key: "modelType",
-      // fixed: "left",
-      // filters:filtersList?.ModelType?.map(v=>({text: v.text, value: v.text})),
-      // filteredValue: filteredInfo.modelType || null,
-      // onFilter: (value, record) => {
-      //   console.log('filter',value,record)
-      //    return record.modelType === value
-      // },
+      key: "modelType",     
       render: (text, result, index) => {
         return <ContractDPComp text={text} result={result} index={index} />;
       },
