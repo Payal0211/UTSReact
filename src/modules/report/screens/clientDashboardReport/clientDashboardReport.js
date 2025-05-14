@@ -318,7 +318,7 @@ export default function ClientDashboardReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 2,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(2);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -351,7 +351,7 @@ export default function ClientDashboardReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,7,1);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(71);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -384,7 +384,7 @@ export default function ClientDashboardReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 0);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(11);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -417,7 +417,7 @@ export default function ClientDashboardReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,3,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(3);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -450,7 +450,7 @@ export default function ClientDashboardReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,3,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(3);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -483,7 +483,7 @@ export default function ClientDashboardReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,7,2);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(72);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -1209,6 +1209,7 @@ export default function ClientDashboardReport() {
                               columns={ProfileColumns}
                               // bordered
                               pagination={false}
+                              scroll={{ y: "480px" }}
                             />
                           </div>
                         )}
