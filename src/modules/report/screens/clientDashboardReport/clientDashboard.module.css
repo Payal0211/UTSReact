@@ -209,6 +209,7 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--uplers-lightBlack);
+    padding-left: 10px;
 }
 .calendarFilter{
     width:250px ;
@@ -491,6 +492,36 @@
 .customSelectAMName [class*="ant-select-selection-search-input"]{
     padding-left: 15px !important;
 }
+
+.priorityFilterSet{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.paginationFilter {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 71px;
+    height: 44px;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.label{
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--uplers-lightBlack);
+}
+
+.paginationFilter .btnPrimary {
+  padding-top: 13px;
+  padding-bottom: 13px;
+  margin-left: 10px;
+}
+
 
 /* Responsive css start */
 
