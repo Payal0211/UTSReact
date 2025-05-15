@@ -21,7 +21,7 @@ import OnboardFilerList from "modules/onBoardList/OnboardFilterList";
 import { allHRConfig } from "modules/hiring request/screens/allHiringRequest/allHR.config";
 import { allEngagementConfig } from "modules/engagement/screens/engagementList/allEngagementConfig";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
-import _ from "lodash";
+import _, { isBoolean } from "lodash";
 import { IoMdAddCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
 import { downloadToExcel } from "modules/report/reportUtils";
@@ -116,6 +116,8 @@ export default function TADashboard() {
   } = useForm();
   const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
   const [userData, setUserData] = useState({});
+  const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:""});
+  const [allShowDetails, setAllShowDetails] = useState([]);
   useEffect(() => {
     const getUserResult = async () => {
       let userData = UserSessionManagementController.getUserSession();
@@ -641,6 +643,28 @@ export default function TADashboard() {
     }
   };
 
+  const showDetails = async (pipeLineTypeId,data,title,value) => {   
+    setIsLoading(true);
+    const month = moment(new Date()).format("MM");
+    const year = moment(new Date()).format("YYYY");
+    let pl = {
+      pipelineTypeID:pipeLineTypeId,
+      taUserID:data?.taUserID,
+      month:Number(month),
+      year:Number(year)
+    }
+    let result = await TaDashboardDAO.getTAWiseHRPipelineDetailsDAO(pl);
+    setIsLoading(false);
+    if(result?.statusCode === HTTPStatusCode.OK){      
+      setIsShowDetails({
+        isBoolean:true,
+        title:title,
+        value:value
+      });
+      setAllShowDetails(result?.responseBody);
+    }
+  }
+
   const AddComment = (data, index) => {
     getAllComments(data.id);
     setShowComment(true);
@@ -747,9 +771,8 @@ export default function TADashboard() {
       dataIndex: "achievedPipelineStr",
       key: "achievedPipelineStr",
       width: 180,
-      render: (text, result) => {
-        
-        return <div className={taStyles.todayText}>{text}</div>;
+      render: (text, result) => {        
+        return <div className={taStyles.todayText} style={{cursor:"pointer"}} onClick={() => showDetails(3,result,"Achieve Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {
@@ -762,7 +785,8 @@ export default function TADashboard() {
         return (
           <div
             className={taStyles.todayText}
-            style={{ background: "lightsalmon" }}
+            style={{ background: "lightsalmon" ,cursor:"pointer"}}
+            onClick={() => showDetails(4,result,"Lost Pipeline (INR)",text)}
           >
             {text}
           </div>
@@ -774,9 +798,8 @@ export default function TADashboard() {
       dataIndex: "holdPipelineStr",
       key: "holdPipelineStr",
       width: 150,
-      render: (text, result) => {
-      
-        return <div className={taStyles.todayText} style={{ background: "lightyellow"}}>{text}</div>;
+      render: (text, result) => {      
+        return <div className={taStyles.todayText} style={{ background: "lightyellow",cursor:"pointer"}} onClick={() => showDetails(5,result,"Hold Pipeline (INR)",text)}>{text}</div>;
       },      
     },
    
@@ -2565,8 +2588,9 @@ export default function TADashboard() {
                   padding: "6px 10px",
                   border: "1px solid #ccc",
                   borderRadius: "4px",
-                  marginLeft: "auto", // optional: pushes search to right
-                  minWidth: "220px",
+                  marginLeft: "auto", 
+                  marginRight:"20px",
+                  minWidth: "260px",
                 }}
               />
             </div>
@@ -3314,6 +3338,84 @@ export default function TADashboard() {
           </div>
         </Modal>
       )}
+
+
+     {isShowDetails?.isBoolean && (
+        <Modal
+          width="1000px"
+          centered
+          footer={null}
+          open={isShowDetails?.isBoolean}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setIsShowDetails({isBoolean:false,title:"",value:""});
+            setAllShowDetails([]);
+          }}
+        >
+               
+        <div style={{ padding: "20px 15px" }}>
+          <h3><b>{allShowDetails[0]?.taName ? allShowDetails[0]?.taName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
+        </div>
+
+        {allShowDetails.length > 0 ? (
+          <div style={{ padding: "0 20px 20px 20px", overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: 14,
+                textAlign: "left",
+              }}
+            >
+              <thead>
+                <tr style={{ backgroundColor: "#f0f0f0" }}>
+
+                <th style={{ padding: "10px", border: "1px solid #ddd" }}>Action Date</th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>Company Name</th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Number</th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Title</th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pipeline</th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Status</th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>Sales Person</th>                  
+                </tr>
+              </thead>
+
+              <tbody>
+                {allShowDetails.map((detail, index) => (
+                  <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.actionDateStr}</td>
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.companyName}</td>
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrNumber}</td>
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrTitle}</td>
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.pipelineStr}</td>
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.hrStatusCode), detail.hrStatus)}</td>
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.salesPerson}</td>                      
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div style={{ padding: "20px" }}>
+            <p>No details available.</p>
+          </div>
+        )}
+
+        <div style={{ padding: "10px", textAlign: "right" }}>
+          <button
+            className={taStyles.btnCancle}
+            onClick={() => {
+              setIsShowDetails({isBoolean:false,title:"",value:""});
+              setAllShowDetails([]);
+            }}
+          >
+            Close
+          </button>
+        </div>
+                 
+                
+      </Modal>
+    )}
     </div>
   );
 }
