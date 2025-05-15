@@ -361,15 +361,15 @@ return headers
           columns={columns()}
           pagination={false}
           rowClassName={(record) => {
-            const stage = record.profileStage || '';  
-            if (stage.includes('Avg Profiles Shared Per Day')) return recruiterStyle.one;
-            if (stage.includes('Profiles to Interview %')) return recruiterStyle.two;            
-            if (stage.includes('Interview to Select %')) return recruiterStyle.three;
-            if (stage.includes('Monthly Goal')) return recruiterStyle.four;
-            if (stage.includes('Achieved Pipeline')) return recruiterStyle.five;
-            if (stage.includes('Actual Pipeline')) return recruiterStyle.six;
-            if (stage.includes('Lost Pipeline')) return recruiterStyle.seven;
-            if (stage.includes('Total Pipeline')) return recruiterStyle.four;
+            const stage = String(record.profileStatusID || '');
+            if (stage.includes('11')) return recruiterStyle.one;
+            if (stage.includes('12')) return recruiterStyle.two;            
+            if (stage.includes('13')) return recruiterStyle.three;
+            if (stage.includes('14')) return recruiterStyle.four;
+            if (stage.includes('15')) return recruiterStyle.five;
+            if (stage.includes('16')) return recruiterStyle.six;
+            if (stage.includes('17')) return recruiterStyle.seven;
+            if (stage.includes('18')) return recruiterStyle.four;
             return '';
           }}
         />

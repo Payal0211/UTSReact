@@ -382,7 +382,7 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result, 11,null);
                 setTalentToMove(result);
                 setProfileStatusID(11);
                 setHRTalentListFourCount([]);
