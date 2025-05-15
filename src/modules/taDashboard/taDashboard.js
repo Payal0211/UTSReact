@@ -128,6 +128,7 @@ export default function TADashboard() {
 
   const [moveToAssessment, setMoveToAssessment] = useState(false);
   const [talentToMove, setTalentToMove] = useState({});
+  const [summaryData, setSummaryData] = useState({});
   const {
     register: remarkregiter,
     handleSubmit: remarkSubmit,
@@ -575,10 +576,15 @@ export default function TADashboard() {
           TOTALROW: true,
         };       
 
-        setTotalRevenueList([
-          ...result.responseBody,
-          lastRow,
-        ]);
+        setSummaryData(lastRow);               
+        // Set only rows that are not TOTALROW
+        // const filteredList = result.responseBody.filter((x) => !x.TOTALROW);
+        setTotalRevenueList(result.responseBody);
+
+        // setTotalRevenueList([
+        //   ...result.responseBody,
+        //   lastRow,
+        // ]);
       } else {
         setTotalRevenueList([]);
       }
@@ -685,13 +691,7 @@ export default function TADashboard() {
       key: "taName",
       width: 140,
       render: (text, result) => {
-        if (result.TOTALROW) {
-          return (
-            <div style={{ display: "flex", justifyContent: "start" }}>
-              <strong>Total :</strong>
-            </div>
-          );          
-        }
+        
         return text;
       },
     },
@@ -701,9 +701,7 @@ export default function TADashboard() {
       key: "goalRevenueStr",
       width: 120,
       render: (text, result) => {       
-        if (result.TOTALROW) {
-          return <strong>{result.total_GoalStr ? result.total_GoalStr : '-'}</strong>;
-        }
+       
         return text;
       },
     },
@@ -718,9 +716,7 @@ export default function TADashboard() {
       key: "totalRevenuePerUserStr",
       width: 150,
       render: (text, result) => {
-        if (result.TOTALROW) {
-          return <strong>{result.sumOfTotalRevenueStr ? result.sumOfTotalRevenueStr : '-'}</strong>;
-        }
+       
         return parseInt(text) > 0 ? text : "";
       },
     },
@@ -735,9 +731,7 @@ export default function TADashboard() {
       key: "carryFwdPipelineStr",
       width: 180,
       render: (text, result) => {
-        if (result.TOTALROW) {
-          return <strong>{result.total_CarryFwdPipelineStr ? result.total_CarryFwdPipelineStr : '-'}</strong>;
-        }
+        
         return <div className={taStyles.todayText} style={{ background: "#babaf5"}}>{text}</div>;
       },
     },
@@ -752,9 +746,7 @@ export default function TADashboard() {
       key: "currentMonthActualPipelineStr",
       width: 200,
       render: (text, result) => {
-        if (result.TOTALROW) {
-          return <strong>{result.total_CurrentMonthActualPipelineStr ? result.total_CurrentMonthActualPipelineStr : '-'}</strong>;
-        }
+        
         return parseInt(text) > 0 ? text : "-";
       },
     },
@@ -769,9 +761,7 @@ export default function TADashboard() {
       key: "actualPipelineStr",
       width: 160,      
       render: (text, result) => {
-        if (result.TOTALROW) {
-          return <strong>{result.total_ActualPipelineStr ? result.total_ActualPipelineStr : '-'}</strong>;
-        }
+       
         return <div className={taStyles.today1Text}>{text}</div>;
       },
     },
@@ -795,9 +785,7 @@ export default function TADashboard() {
       key: "achievedPipelineStr",
       width: 180,
       render: (text, result) => {
-        if (result.TOTALROW) {
-          return <strong>{result.total_AchievedPipelineStr ? result.total_AchievedPipelineStr : '-'}</strong>;
-        }
+        
         return <div className={taStyles.todayText}>{text}</div>;
       },
     },
@@ -807,9 +795,7 @@ export default function TADashboard() {
       key: "lostPipelineStr",
       width: 160,
       render: (text, result) => {
-        if (result.TOTALROW) {
-          return <strong>{result.total_LostPipelineStr ? result.total_LostPipelineStr : '-'}</strong>;
-        }
+       
         return (
           <div
             className={taStyles.todayText}
@@ -826,9 +812,7 @@ export default function TADashboard() {
       key: "holdPipelineStr",
       width: 150,
       render: (text, result) => {
-        if (result.TOTALROW) {
-          return <strong>{result.total_HoldPipelineStr ? result.total_HoldPipelineStr : '-'}</strong>;
-        }
+      
         return <div className={taStyles.todayText} style={{ background: "lightyellow"}}>{text}</div>;
       },      
     },
@@ -838,7 +822,7 @@ export default function TADashboard() {
     //   dataIndex: "totalRevenuePerUserStr",
     //   key: "totalRevenuePerUserStr",
     // },
-  ];  
+  ];    
 
   const daiyTargetColumns = [
     {
@@ -2058,14 +2042,32 @@ export default function TADashboard() {
                 </div>
               )}
 
-              <div style={{ padding: "20px  20px" }}>
+              <div style={{ padding: "20px  20px" }}>          
                 <Table
-                  dataSource={totalRevenueList}
-                  columns={totalRevenueColumns}
-                  // bordered
-                  pagination={false}
-                  scroll={{ x: "max-content" , y:'1vh'}}
-                />
+                dataSource={totalRevenueList}
+                columns={totalRevenueColumns}
+                pagination={false}
+                scroll={{ x: "max-content", y: "1vh" }}
+                summary={() => {
+                  return (
+                    <Table.Summary fixed>
+                      <Table.Summary.Row>
+                        <Table.Summary.Cell index={0}><strong>Total :</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={1}><strong>{summaryData.total_GoalStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={2}><strong>{summaryData.sumOfTotalRevenueStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={3}><strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={4}><strong>{summaryData.total_CurrentMonthActualPipelineStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={5}><strong>{summaryData.total_ActualPipelineStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={6}></Table.Summary.Cell> {/* Multiplier */}
+                        <Table.Summary.Cell index={7}><strong>{summaryData.total_AchievedPipelineStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={8}><strong>{summaryData.total_LostPipelineStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={9}><strong>{summaryData.total_HoldPipelineStr || '-'}</strong></Table.Summary.Cell>
+                      </Table.Summary.Row>
+                    </Table.Summary>
+                  );
+                }}
+              />
+
               </div>
             </>
           )

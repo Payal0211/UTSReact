@@ -3,7 +3,7 @@ import clientDashboardStyles from "./clientDashboard.module.css";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { InputType } from "constants/application";
-import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu } from "antd";
+import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { downloadToExcel } from "modules/report/reportUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
@@ -33,6 +33,7 @@ export default function ClientDashboardReport() {
   const navigate = useNavigate();  
   const [clientData, setClientData] = useState([]);
   const [isLoading, setLoading] = useState(false); 
+  const [isModalLoading, setIsModalLoading] = useState(false); 
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [openTicketSearchText, setopenTicketSearchText] = useState("");
   const today = new Date();
@@ -215,6 +216,17 @@ export default function ClientDashboardReport() {
   const tableColumnsMemo = useMemo(() => {
     return [
         {
+            title: "Created On",
+            dataIndex: "createdByDatetime",
+            key: "createdByDatetime",
+            align: "left",
+            width: "160px",
+            fixed: "left",
+            render: (text) => {
+               return text ? moment(text).format("DD-MM-YYYY") : '-'
+              },
+          },
+        {
             title: "Client",
             dataIndex: "client",
             key: "client",
@@ -304,9 +316,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result, 2,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(2);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -337,9 +349,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result,7,1);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(71);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -372,7 +384,7 @@ export default function ClientDashboardReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 0);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(11);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -403,9 +415,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result,3,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(3);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -436,9 +448,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result,3,null);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(3);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -469,9 +481,9 @@ export default function ClientDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 0);
+                getTalentProfilesDetailsfromTable(result,7,2);
                 setTalentToMove(result);
-                setProfileStatusID(0);
+                setProfileStatusID(72);
                 setHRTalentListFourCount([]);
               }}
             >
@@ -621,9 +633,9 @@ export default function ClientDashboardReport() {
         statusID: statusID,
         stageID: statusID === 0 ? null : stageID ? stageID : 0,
       };
-      setLoading(true);
+      setIsModalLoading(true);
       const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
-      setLoading(false);
+      setIsModalLoading(false);
       if (hrResult.statusCode === HTTPStatusCode.OK) {
         setHRTalentList(hrResult.responseBody);
         setFilteredTalentList(hrResult.responseBody);  
@@ -709,6 +721,7 @@ export default function ClientDashboardReport() {
       setopenTicketDebounceText("");  
       setStartDate(firstDayOfMonth);
       setEndDate(today);  
+      setDateTypeFilter(2);
   }
   const handleExport = (apiData) => {
       let DataToExport =  apiData.map(data => {
@@ -952,16 +965,18 @@ export default function ClientDashboardReport() {
                       centered
                       footer={null}
                       open={showTalentProfiles}
-                      // className={allEngagementStyles.engagementModalContainer}
                       className="engagementModalStyle"
-                      // onOk={() => setVersantModal(false)}
                       onCancel={() => {
                         setSearchTerm('')
                         setShowTalentProfiles(false);
                         setHRTalentListFourCount([]);
                       }}
                     >
-                      <>
+                      {isModalLoading ?  
+                        <div style={{display:"flex",height:"350px",justifyContent:'center'}}>
+                          <Spin size="large"/>
+                        </div>:
+                      <>                    
                       <div
                           style={{
                             padding: "45px 15px 10px 15px",
@@ -988,202 +1003,201 @@ export default function ClientDashboardReport() {
                             value={searchTerm}
                             onChange={(e) => handleSearchInput(e.target.value)} // Create this function
                             style={{
-                              padding: "6px 10px",
+                              padding: "12px 14px",
                               border: "1px solid #ccc",
                               borderRadius: "4px",
                               marginLeft: "auto", // optional: pushes search to right
-                              minWidth: "220px",
+                              minWidth: "250px",
                             }}
                           />
-                        </div>
+                      </div>           
             
-            
+                      <div
+                        style={{
+                          padding: "10px 15px",
+                          display: "flex",
+                          gap: "10px",
+                          alignItems: "center",
+                        }}
+                      >
                         <div
+                          className={taStyles.filterType}
+                          key={"Total Talents"}
+                          onClick={() => {
+                            getTalentProfilesDetails(profileInfo, 0);
+                            setProfileStatusID(0);
+                          }}
                           style={{
-                            padding: "10px 15px",
-                            display: "flex",
-                            gap: "10px",
-                            alignItems: "center",
+                            borderBottom:
+                              profileStatusID === 0 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          <div
-                            className={taStyles.filterType}
-                            key={"Total Talents"}
-                            onClick={() => {
-                              getTalentProfilesDetails(profileInfo, 0);
-                              setProfileStatusID(0);
-                            }}
-                            style={{
-                              borderBottom:
-                                profileStatusID === 0 ? "6px solid #FFDA30" : "",
-                            }}
-                          >
-                            {/* <img src={FeedBack} alt="rocket" /> */}
-                            <h2>
-                              Total Talents :{" "}
-                              <span>
-                                {hrTalentListFourCount[0]?.totalTalents
-                                  ? hrTalentListFourCount[0]?.totalTalents
-                                  : 0}
-                              </span>
-                            </h2>
-                          </div>
-                          <div
-                            className={taStyles.filterType}
-                            key={"Profile shared"}
-                            onClick={() => {
-                              console.log(profileInfo,"profileInfo");                              
-                              getTalentProfilesDetails(profileInfo, 2);
-                              setProfileStatusID(2);
-                            }}
-                            style={{
-                              borderBottom:
-                                profileStatusID === 2 ? "6px solid #FFDA30" : "",
-                            }}
-                          >
-                            {/* <img src={FeedBack} alt="rocket" /> */}
-                            <h2>
-                              Profile shared :{" "}
-                              <span>
-                                {hrTalentListFourCount[0]?.profileSharedCount
-                                  ? hrTalentListFourCount[0]?.profileSharedCount
-                                  : 0}
-                              </span>
-                            </h2>
-                          </div>
-                          <div
-                            className={taStyles.filterType}
-                            key={"In Assessment"}
-                            onClick={() => {
-                              getTalentProfilesDetails(profileInfo, 11);
-                              setProfileStatusID(11);
-                            }}
-                            style={{
-                              borderBottom:
-                                profileStatusID === 11 ? "6px solid #FFDA30" : "",
-                            }}
-                          >
-                            {/* <img src={FeedBack} alt="rocket" /> */}
-                            <h2>
-                              In Assessment :{" "}
-                              <span>
-                                {hrTalentListFourCount[0]?.assessmentCount
-                                  ? hrTalentListFourCount[0]?.assessmentCount
-                                  : 0}
-                              </span>
-                            </h2>
-                          </div>
-                          <div
-                            className={taStyles.filterType}
-                            key={"In Interview"}
-                            onClick={() => {
-                              getTalentProfilesDetails(profileInfo, 3);
-                              setProfileStatusID(3);
-                            }}
-                            style={{
-                              borderBottom:
-                                profileStatusID === 3 ? "6px solid #FFDA30" : "",
-                            }}
-                          >
-                            {/* <img src={FeedBack} alt="rocket" /> */}
-                            <h2>
-                              In Interview :{" "}
-                              <span>
-                                {hrTalentListFourCount[0]?.inInterviewCount
-                                  ? hrTalentListFourCount[0]?.inInterviewCount
-                                  : 0}
-                              </span>
-                            </h2>
-                          </div>
-                          <div
-                            className={taStyles.filterType}
-                            key={"Offered"}
-                            onClick={() => {
-                              getTalentProfilesDetails(profileInfo, 4);
-                              setProfileStatusID(4);
-                            }}
-                            style={{
-                              borderBottom:
-                                profileStatusID === 4 ? "6px solid #FFDA30" : "",
-                            }}
-                          >
-                            {/* <img src={FeedBack} alt="rocket" /> */}
-                            <h2>
-                              Offered :{" "}
-                              <span>
-                                {hrTalentListFourCount[0]?.offeredCount
-                                  ? hrTalentListFourCount[0]?.offeredCount
-                                  : 0}
-                              </span>
-                            </h2>
-                          </div>
-                          <div
-                            className={taStyles.filterType}
-                            key={"Hired"}
-                            onClick={() => {
-                              getTalentProfilesDetails(profileInfo, 10);
-                              setProfileStatusID(10);
-                            }}
-                            style={{
-                              borderBottom:
-                                profileStatusID === 10 ? "6px solid #FFDA30" : "",
-                            }}
-                          >
-                            {/* <img src={FeedBack} alt="rocket" /> */}
-                            <h2>
-                              Hired :{" "}
-                              <span>
-                                {hrTalentListFourCount[0]?.hiredCount
-                                  ? hrTalentListFourCount[0]?.hiredCount
-                                  : 0}
-                              </span>
-                            </h2>
-                          </div>
-                          <div
-                            className={taStyles.filterType}
-                            key={"Rejected, screening"}
-                            onClick={() => {
-                              getTalentProfilesDetails(profileInfo, 7, 1);
-                              setProfileStatusID(71);
-                            }}
-                            style={{
-                              borderBottom:
-                                profileStatusID === 71 ? "6px solid #FFDA30" : "",
-                            }}
-                          >
-                            {/* <img src={FeedBack} alt="rocket" /> */}
-                            <h2>
-                              Screen Reject :{" "}
-                              <span>
-                                {hrTalentListFourCount[0]?.screeningRejectCount
-                                  ? hrTalentListFourCount[0]?.screeningRejectCount
-                                  : 0}
-                              </span>
-                            </h2>
-                          </div>
-                          <div
-                            className={taStyles.filterType}
-                            key={"Rejected, Interview"}
-                            onClick={() => {
-                              getTalentProfilesDetails(profileInfo, 7, 2);
-                              setProfileStatusID(72);
-                            }}
-                            style={{
-                              borderBottom:
-                                profileStatusID === 72 ? "6px solid #FFDA30" : "",
-                            }}
-                          >
-                            {/* <img src={FeedBack} alt="rocket" /> */}
-                            <h2>
-                              Interview Reject :{" "}
-                              <span>
-                                {hrTalentListFourCount[0]?.interviewRejectCount
-                                  ? hrTalentListFourCount[0]?.interviewRejectCount
-                                  : 0}
-                              </span>
-                            </h2>
-                          </div>
+                          {/* <img src={FeedBack} alt="rocket" /> */}
+                          <h2>
+                            Total Talents :{" "}
+                            <span>
+                              {hrTalentListFourCount[0]?.totalTalents
+                                ? hrTalentListFourCount[0]?.totalTalents
+                                : 0}
+                            </span>
+                          </h2>
                         </div>
+                        <div
+                          className={taStyles.filterType}
+                          key={"Profile shared"}
+                          onClick={() => {
+                            console.log(profileInfo,"profileInfo");                              
+                            getTalentProfilesDetails(profileInfo, 2);
+                            setProfileStatusID(2);
+                          }}
+                          style={{
+                            borderBottom:
+                              profileStatusID === 2 ? "6px solid #FFDA30" : "",
+                          }}
+                        >
+                          {/* <img src={FeedBack} alt="rocket" /> */}
+                          <h2>
+                            Profile shared :{" "}
+                            <span>
+                              {hrTalentListFourCount[0]?.profileSharedCount
+                                ? hrTalentListFourCount[0]?.profileSharedCount
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                        <div
+                          className={taStyles.filterType}
+                          key={"In Assessment"}
+                          onClick={() => {
+                            getTalentProfilesDetails(profileInfo, 11);
+                            setProfileStatusID(11);
+                          }}
+                          style={{
+                            borderBottom:
+                              profileStatusID === 11 ? "6px solid #FFDA30" : "",
+                          }}
+                        >
+                          {/* <img src={FeedBack} alt="rocket" /> */}
+                          <h2>
+                            In Assessment :{" "}
+                            <span>
+                              {hrTalentListFourCount[0]?.assessmentCount
+                                ? hrTalentListFourCount[0]?.assessmentCount
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                        <div
+                          className={taStyles.filterType}
+                          key={"In Interview"}
+                          onClick={() => {
+                            getTalentProfilesDetails(profileInfo, 3);
+                            setProfileStatusID(3);
+                          }}
+                          style={{
+                            borderBottom:
+                              profileStatusID === 3 ? "6px solid #FFDA30" : "",
+                          }}
+                        >
+                          {/* <img src={FeedBack} alt="rocket" /> */}
+                          <h2>
+                            In Interview :{" "}
+                            <span>
+                              {hrTalentListFourCount[0]?.inInterviewCount
+                                ? hrTalentListFourCount[0]?.inInterviewCount
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                        <div
+                          className={taStyles.filterType}
+                          key={"Offered"}
+                          onClick={() => {
+                            getTalentProfilesDetails(profileInfo, 4);
+                            setProfileStatusID(4);
+                          }}
+                          style={{
+                            borderBottom:
+                              profileStatusID === 4 ? "6px solid #FFDA30" : "",
+                          }}
+                        >
+                          {/* <img src={FeedBack} alt="rocket" /> */}
+                          <h2>
+                            Offered :{" "}
+                            <span>
+                              {hrTalentListFourCount[0]?.offeredCount
+                                ? hrTalentListFourCount[0]?.offeredCount
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                        <div
+                          className={taStyles.filterType}
+                          key={"Hired"}
+                          onClick={() => {
+                            getTalentProfilesDetails(profileInfo, 10);
+                            setProfileStatusID(10);
+                          }}
+                          style={{
+                            borderBottom:
+                              profileStatusID === 10 ? "6px solid #FFDA30" : "",
+                          }}
+                        >
+                          {/* <img src={FeedBack} alt="rocket" /> */}
+                          <h2>
+                            Hired :{" "}
+                            <span>
+                              {hrTalentListFourCount[0]?.hiredCount
+                                ? hrTalentListFourCount[0]?.hiredCount
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                        <div
+                          className={taStyles.filterType}
+                          key={"Rejected, screening"}
+                          onClick={() => {
+                            getTalentProfilesDetails(profileInfo, 7, 1);
+                            setProfileStatusID(71);
+                          }}
+                          style={{
+                            borderBottom:
+                              profileStatusID === 71 ? "6px solid #FFDA30" : "",
+                          }}
+                        >
+                          {/* <img src={FeedBack} alt="rocket" /> */}
+                          <h2>
+                            Screen Reject :{" "}
+                            <span>
+                              {hrTalentListFourCount[0]?.screeningRejectCount
+                                ? hrTalentListFourCount[0]?.screeningRejectCount
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                        <div
+                          className={taStyles.filterType}
+                          key={"Rejected, Interview"}
+                          onClick={() => {
+                            getTalentProfilesDetails(profileInfo, 7, 2);
+                            setProfileStatusID(72);
+                          }}
+                          style={{
+                            borderBottom:
+                              profileStatusID === 72 ? "6px solid #FFDA30" : "",
+                          }}
+                        >
+                          {/* <img src={FeedBack} alt="rocket" /> */}
+                          <h2>
+                            Interview Reject :{" "}
+                            <span>
+                              {hrTalentListFourCount[0]?.interviewRejectCount
+                                ? hrTalentListFourCount[0]?.interviewRejectCount
+                                : 0}
+                            </span>
+                          </h2>
+                        </div>
+                      </div>
             
                         {loadingTalentProfile ? (
                           <div>
@@ -1196,6 +1210,7 @@ export default function ClientDashboardReport() {
                               columns={ProfileColumns}
                               // bordered
                               pagination={false}
+                              scroll={{ y: "480px" }}
                             />
                           </div>
                         )}
@@ -1243,7 +1258,7 @@ export default function ClientDashboardReport() {
                             Cancel
                           </button>
                         </div>
-                      </>
+                      </>}
                     </Modal>
                   )}
     </div>
