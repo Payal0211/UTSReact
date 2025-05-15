@@ -446,6 +446,9 @@ font-weight: 500;
     font-weight: 400;
 }
 
+.one td { 
+    background-color: rgb(233, 233, 233) !important;
+}
 
 @media screen and (max-width: 1440px) {
     .hiringRequestContainer {

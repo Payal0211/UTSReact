@@ -235,4 +235,19 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.insertProfileShearedTargetRequest');
 		}
 	},
+	getTAWiseHRPipelineDetailsRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TA_WISE_PIPELINE_DETAILS+ `?pipelineTypeID=${pl?.pipelineTypeID}&taUserID=${pl?.taUserID}&month=${pl?.month}&year=${pl?.year}`			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.insertProfileShearedTargetRequest');
+		}
+	},
 }
