@@ -7,7 +7,7 @@ export class NetworkInfo {
     static ATS_TOKEN = 'y8sxutshp4gm2u4lsmsmlg';
     static ZOHO_AUTH = '4b441aae-d361-46e1-ad14-2b2114ffbe17'
     static ZOHO_DOMAIN = '3.82.177.154:9086/'
-    static DOMAIN = '3.82.177.154:9082/';	
+    static DOMAIN = '3.82.177.154:9088/';	
 	// static domain = 'https://clientportal.uplers.com/gspace/';
     static domain = 'https://bb8d-3-218-6-134.ngrok-free.app/';
     static FILEDOMAIN = '3.82.177.154:90/';
@@ -81,6 +81,7 @@ export class TaDashboardURL {
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'
 	static REMOVE_TASK ='InactiveTATask'
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
+	static GET_TA_WISE_PIPELINE_DETAILS= 'GetTAWiseHRPipelineDetails'
 	static GET_TOTAL_REVENUE_PER_TA = 'GetTotalRevenuePerTAUser'
 	static GET_DAILY_ACTIVE_TARGETS = 'GetDailyActiveHRPipelineAndTotalTarget'
 }
