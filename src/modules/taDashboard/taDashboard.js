@@ -304,7 +304,25 @@ export default function TADashboard() {
         <Select
           defaultValue={value}
           style={{ color: colorCode }}
-          onChange={(val) => {
+          onChange={async (val) => {              
+              if(value === 'Fasttrack' && val !== 'Fasttrack'){
+                let pl = {
+                task_ID: result?.id,
+                tA_Head_UserID: selectedHead,
+                tA_UserID: result?.tA_UserID,
+                target_StageID: 1,
+                target_Number: targetValue,
+                target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
+              };
+              setLoadingTalentProfile(true);
+              let response = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
+              setLoadingTalentProfile(false);
+              if (response.statusCode === HTTPStatusCode.OK) {
+                setGoalList(response.responseBody);                
+                setTargetValue(5);
+                setStartTargetDate(new Date());
+              }
+            }
             setValue(val);
             let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
             if (val === "Fasttrack") {
@@ -2082,6 +2100,10 @@ export default function TADashboard() {
                       </Table.Summary.Row>
                     </Table.Summary>
                   );
+                }}
+                rowClassName={(record) => {                  
+                  if (record.orderSequence === 1) return taStyles.one;                  
+                  return '';
                 }}
               />
 
