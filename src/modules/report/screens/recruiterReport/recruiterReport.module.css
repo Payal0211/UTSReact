@@ -452,31 +452,18 @@ font-weight: 500;
 }
 
 .one td { 
-    background-color: #e6f7ff !important;
+    background-color: rgb(218, 246, 255) !important;
   }
   .two td {
-    background-color: rgb(250, 224, 243) !important; 
+    background-color: rgb(252, 219, 206) !important; 
   }
   .three td {
-    background-color: rgb(230, 218, 252) !important; 
+    background-color: rgb(212, 255, 212) !important; 
   }
   
   .four td {
-    background-color: #fde3db !important; 
+    background-color: rgb(255, 222, 227) !important; 
   }
-  
-  .five td {
-    background-color: #f5eefa !important;
-  }
-  
-  .six td {
-    background-color: #e6fffb !important;
-  }
-  
-  .seven td {
-    background-color: #befff4 !important;
-  }
-
   
 @media screen and (max-width: 1440px) {
     .hiringRequestContainer {

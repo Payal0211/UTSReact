@@ -1,21 +1,13 @@
 import { ReportDAO } from 'core/report/reportDAO';
 import React,{
     useEffect,
-    useMemo,
     useState,
     useCallback,
     Suspense,
   }  from 'react'
   import {
-    Tabs,
     Select,
-    Table,
-    Modal,
-    Tooltip,
-    InputNumber,
-    AutoComplete,
-    message,
-    Skeleton,} from "antd";
+    Table,} from "antd";
     import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import recruiterStyle from './recruiterReport.module.css'
 import { InputType } from "constants/application";
@@ -33,37 +25,33 @@ import { allHRConfig } from "modules/hiring request/screens/allHiringRequest/all
 import { allEngagementConfig } from "modules/engagement/screens/engagementList/allEngagementConfig";
 import { TaDashboardDAO } from 'core/taDashboard/taDashboardDRO';
 import OnboardFilerList from 'modules/onBoardList/OnboardFilterList';
-
-
-
 export default function RecruiterReport() {
 const navigate = useNavigate()
- const [RecruiterListData, setRecruiterListData] = useState([]);
-  const [filteredTagLength, setFilteredTagLength] = useState(0);
-   const [getHTMLFilter, setHTMLFilter] = useState(false);
-   const [isAllowFilters, setIsAllowFilters] = useState(false);
-   const [appliedFilter, setAppliedFilters] = useState(new Map());
-   const [checkedState, setCheckedState] = useState(new Map());
-  const [searchText, setSearchText] = useState("");
-  const [debounceSearchText, setDebouncedSearchText] = useState("");
-  const [filtersList, setFiltersList] = useState({});
-  const [selectedHead, setSelectedHead] = useState("");
-  const [tableFilteredState, setTableFilteredState] = useState({
-    filterFields_OnBoard: {
-      taUserIDs: null,
-      TA_HeadID:null
-    },
-  });
+const [RecruiterListData, setRecruiterListData] = useState([]);
+const [filteredTagLength, setFilteredTagLength] = useState(0);
+const [getHTMLFilter, setHTMLFilter] = useState(false);
+const [isAllowFilters, setIsAllowFilters] = useState(false);
+const [appliedFilter, setAppliedFilters] = useState(new Map());
+const [checkedState, setCheckedState] = useState(new Map());
+const [searchText, setSearchText] = useState("");
+const [debounceSearchText, setDebouncedSearchText] = useState("");
+const [filtersList, setFiltersList] = useState({});
+const [selectedHead, setSelectedHead] = useState("");
+const [tableFilteredState, setTableFilteredState] = useState({
+  filterFields_OnBoard: {
+    taUserIDs: null,
+    TA_HeadID:null
+  },
+});
+const [isLoading, setIsLoading] = useState(false);
+var date = new Date();
+const [monthDate, setMonthDate] = useState(new Date());
 
-  const [isLoading, setIsLoading] = useState(false);
-   var date = new Date();
-  const [monthDate, setMonthDate] = useState(new Date());
-
-    useEffect(() => {
-      if (filtersList?.HeadUsers?.length) {
-        setSelectedHead(filtersList?.HeadUsers[0]?.id);
-      }
-    }, [filtersList?.HeadUsers]);
+useEffect(() => {
+  if (filtersList?.HeadUsers?.length) {
+    setSelectedHead(filtersList?.HeadUsers[0]?.id);
+  }
+}, [filtersList?.HeadUsers]);
     
   function groupByRowSpan(data, groupField) {
     const grouped = {};
@@ -164,82 +152,82 @@ const navigate = useNavigate()
       setHTMLFilter(!getHTMLFilter);
     }, [getHTMLFilter, isAllowFilters]);
 
-const clearFilters = () =>{
-  setAppliedFilters(new Map());
-    setCheckedState(new Map());
-    setFilteredTagLength(0);
-    setTableFilteredState({
-      filterFields_OnBoard: {
-        taUserIDs: null,
-      },
-    });
-    setDebouncedSearchText("");
-    setMonthDate(new Date())
-    setSearchText("");
-    setSelectedHead(filtersList?.HeadUsers[0]?.id);
-}
+  const clearFilters = () =>{
+    setAppliedFilters(new Map());
+      setCheckedState(new Map());
+      setFilteredTagLength(0);
+      setTableFilteredState({
+        filterFields_OnBoard: {
+          taUserIDs: null,
+        },
+      });
+      setDebouncedSearchText("");
+      setMonthDate(new Date())
+      setSearchText("");
+      setSelectedHead(filtersList?.HeadUsers[0]?.id);
+  }
 
-const columns = ()=>{
-let headers = [
-    {
-      title: "Recruiters",
-      dataIndex: "taName",
-      fixed: "left",
-      width: "150px",
-      render: (value, row, index) => {
-        return {
-          children: (
-            <div style={{ verticalAlign: "top" }}>
-              {value}
-            </div>
-          ),
-          props: {
-            rowSpan: row.rowSpan,
-            style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
-          },
-        };
+  const columns = ()=>{
+  let headers = [
+      {
+        title: "Recruiters",
+        dataIndex: "taName",
+        fixed: "left",
+        width: "150px",
+        render: (value, row, index) => {
+          return {
+            children: (
+              <div style={{ verticalAlign: "top" }}>
+                {value}
+              </div>
+            ),
+            props: {
+              rowSpan: row.rowSpan,
+              style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
+            },
+          };
+        },
       },
-    },
-    {
-        title: "Stage",
-        dataIndex: "profileStage",
+      {
+          title: "Stage",
+          dataIndex: "profileStage",
+          fixed: "left",    
+          width: "150px", 
+      },
+      {
+        title: "Achieved",
+        dataIndex: "finalTotal",
         fixed: "left",    
         width: "150px", 
-    },
-    {
-      title: "Achieved",
-      dataIndex: "finalTotal",
-      fixed: "left",    
-      width: "150px", 
-      render: (value) => {
-        const numericValue = Number(value);
-        if (value == null || numericValue === 0) {
-          return "-";
-        }    
-        return value;
+        render: (value) => {
+          const numericValue = Number(value);
+          if (value == null || numericValue === 0) {
+            return "-";
+          }    
+          return value;
+        },
       },
-    },
-    
-]
-let weaks = [{h:'W1',k:'w1'},{h:'W2',k:'w2'},{h:'W3',k:'w3'},{h:'W4',k:'w4'},{h:'W5',k:'w5'}]
+      
+  ]
+  let weaks = [{h:'W1',k:'w1'},{h:'W2',k:'w2'},{h:'W3',k:'w3'},{h:'W4',k:'w4'},{h:'W5',k:'w5'}]
 
-weaks.forEach(we => {
-  headers.push({
-    title: `${RecruiterListData[0]?.month_Name ? `${RecruiterListData[0]?.month_Name}_` : ''}${we.h}`,
-    dataIndex: we.k,
-    fixed: "left",
-    width: "100px",
-    render: (value) => {
-      return value === 0 ? "-" : value || "-";
-    },
+  weaks.forEach(we => {
+    headers.push({
+      title: `${RecruiterListData[0]?.month_Name ? `${RecruiterListData[0]?.month_Name}_` : ''}${we.h}`,
+      dataIndex: we.k,
+      fixed: "left",
+      width: "100px",
+      render: (value) => {
+        return value === 0 ? "-" : value || "-";
+      },
+    });
   });
-});
 
 
 
-return headers
+  return headers
 
-}
+  }
   const onMonthCalenderFilter = (date) => {
     setMonthDate(date);
   };
@@ -355,7 +343,7 @@ return headers
         // //   onChange={handleTableFilterChange}
         // />
         <div className={recruiterStyle.customTableWrapper}>
-            <Table
+        <Table
           scroll={{ x: "max-content", y: '1vh' }}
           dataSource={RecruiterListData}
           columns={columns()}
@@ -366,10 +354,12 @@ return headers
             if (stage.includes('12')) return recruiterStyle.two;            
             if (stage.includes('13')) return recruiterStyle.three;
             if (stage.includes('14')) return recruiterStyle.four;
-            if (stage.includes('15')) return recruiterStyle.five;
-            if (stage.includes('16')) return recruiterStyle.six;
-            if (stage.includes('17')) return recruiterStyle.seven;
+            if (stage.includes('15')) return recruiterStyle.one;
+            if (stage.includes('16')) return recruiterStyle.two;
+            if (stage.includes('17')) return recruiterStyle.three;
             if (stage.includes('18')) return recruiterStyle.four;
+            if (stage.includes('19')) return recruiterStyle.one;
+            if (stage.includes('20')) return recruiterStyle.two;
             return '';
           }}
         />
