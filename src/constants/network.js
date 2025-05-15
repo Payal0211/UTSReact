@@ -81,6 +81,7 @@ export class TaDashboardURL {
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'
 	static REMOVE_TASK ='InactiveTATask'
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
+	static GET_TA_WISE_PIPELINE_DETAILS= 'GetTAWiseHRPipelineDetails'
 	static GET_TOTAL_REVENUE_PER_TA = 'GetTotalRevenuePerTAUser'
 	static GET_DAILY_ACTIVE_TARGETS = 'GetDailyActiveHRPipelineAndTotalTarget'
 }
