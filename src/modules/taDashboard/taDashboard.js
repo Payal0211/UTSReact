@@ -313,6 +313,7 @@ export default function TADashboard() {
                 target_StageID: 1,
                 target_Number: targetValue,
                 target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
+                IsStatusChangedToSlow:true
               };
               setLoadingTalentProfile(true);
               let response = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
