@@ -834,7 +834,7 @@ export default function TADashboard() {
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
       render: (text) => {
-        return <div className={taStyles.today1Text}>{text}</div>;
+        return <div className={taStyles.today1Text}>{summaryData.total_ActualPipelineStr ? summaryData.total_ActualPipelineStr : '-'}</div>;
       },
     },
     {
@@ -847,7 +847,7 @@ export default function TADashboard() {
       dataIndex: "achievedHRPipeLineStr",
       key: "achievedHRPipeLineStr",
       render: (text) => {
-        return <div className={taStyles.todayText}>{text}</div>;
+        return <div className={taStyles.todayText}>{summaryData.total_AchievedPipelineStr ? summaryData.total_AchievedPipelineStr : '-'}</div>;
       },
     },
     {
@@ -2102,7 +2102,7 @@ export default function TADashboard() {
               )}
 
               <div style={{ padding: "20px  20px" }}>          
-                <Table
+              <Table
                 dataSource={totalRevenueList}
                 columns={totalRevenueColumns}
                 pagination={false}
