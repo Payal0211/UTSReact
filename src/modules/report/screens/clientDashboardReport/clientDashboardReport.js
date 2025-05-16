@@ -1003,11 +1003,12 @@ export default function ClientDashboardReport() {
                             value={searchTerm}
                             onChange={(e) => handleSearchInput(e.target.value)} // Create this function
                             style={{
-                              padding: "12px 14px",
-                              border: "1px solid #ccc",
-                              borderRadius: "4px",
-                              marginLeft: "auto", // optional: pushes search to right
-                              minWidth: "250px",
+                                padding: "6px 10px",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                                marginLeft: "auto", 
+                                marginRight:"20px",
+                                minWidth: "260px",
                             }}
                           />
                       </div>           
