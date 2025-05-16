@@ -677,9 +677,8 @@ export default function TADashboard() {
       dataIndex: "taName",
       key: "taName",
       width: 140,
-      render: (text, result) => {
-        
-        return text;
+      render: (text, result) => {        
+        return text ? text : '-';
       },
     },
     {
@@ -687,9 +686,8 @@ export default function TADashboard() {
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
       width: 120,
-      render: (text, result) => {       
-       
-        return text;
+      render: (text, result) => {              
+        return text ? text : '-';
       },
     },
     {
@@ -704,7 +702,7 @@ export default function TADashboard() {
       width: 150,
       render: (text, result) => {
        
-        return parseInt(text) > 0 ? text : "";
+        return text ? text : '-';
       },
     },
     {
@@ -717,8 +715,7 @@ export default function TADashboard() {
       dataIndex: "carryFwdPipelineStr",
       key: "carryFwdPipelineStr",
       width: 180,
-      render: (text, result) => {
-        
+      render: (text, result) => {        
         return <div className={taStyles.todayText} style={{ background: "#babaf5"}}>{text}</div>;
       },
     },
@@ -732,9 +729,8 @@ export default function TADashboard() {
       dataIndex: "currentMonthActualPipelineStr",
       key: "currentMonthActualPipelineStr",
       width: 200,
-      render: (text, result) => {
-        
-        return parseInt(text) > 0 ? text : "-";
+      render: (text, result) => {        
+        return text ? text : "-";
       },
     },
     {
@@ -747,8 +743,7 @@ export default function TADashboard() {
       dataIndex: "actualPipelineStr",
       key: "actualPipelineStr",
       width: 160,      
-      render: (text, result) => {
-       
+      render: (text, result) => {       
         return <div className={taStyles.today1Text}>{text}</div>;
       },
     },
@@ -758,7 +753,7 @@ export default function TADashboard() {
       key: "bandwidthper",
       width: 100,
       render: (text, result) => {
-        return +text > 0 ? text : "";
+        return text ? text : '-'
       },
     },
     {
@@ -780,8 +775,7 @@ export default function TADashboard() {
       dataIndex: "lostPipelineStr",
       key: "lostPipelineStr",
       width: 160,
-      render: (text, result) => {
-       
+      render: (text, result) => {       
         return (
           <div
             className={taStyles.todayText}
