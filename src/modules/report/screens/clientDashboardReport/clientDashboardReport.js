@@ -169,9 +169,9 @@ export default function ClientDashboardReport() {
       statusID: statusID,
       stageID: statusID === 0 ? null : stageID ? stageID : 0,
     };
-    setLoading(true);
+    // setLoading(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
-    setLoading(false);
+    // setLoading(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
       setFilteredTalentList(hrResult.responseBody);

@@ -1,6 +1,12 @@
 .highlight-total-row {
-    background-color: #fff3cd !important; /* light yellow for emphasis */
+    /* background-color: #fff3cd !important;  */
     font-weight: bold;
+
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #fff7d6 !important;
+
 }
 
 .hiringRequestContainer {
