@@ -484,8 +484,8 @@ font-weight: 500;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
   /* Adjust width as needed, e.g., for 3 cards per row on larger screens */
-  width: calc(33.333% - 20px); /* Example for 3 columns with gap */
-  min-width: 350px; /* Minimum width before wrapping or becoming too small */
+  width: calc(33.333% - 20px); 
+  min-width: 350px;
   display: flex;
   flex-direction: column;
 }
@@ -608,5 +608,27 @@ font-weight: 500;
     }
     .calendarFilterSet .label{
         font-size: 13px;
+    }
+
+    .recruitercard{
+        min-width: 450px;
+    }
+
+    .stagetable th,
+    .stagetable td {
+        padding: 2px 4px;
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 1680px) {
+    .recruitercard{
+        min-width: 530px;
+    }
+
+    .stagetable th,
+    .stagetable td {
+       padding: 2px 4px;
+       font-size: 12px;
     }
 }
