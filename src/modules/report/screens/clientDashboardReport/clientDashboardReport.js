@@ -223,7 +223,7 @@ export default function ClientDashboardReport() {
             width: "160px",
             fixed: "left",
             render: (text) => {
-               return text ? moment(text).format("DD-MM-YYYY") : '-'
+               return text ? moment(text).format("DD-MM-YYYY") : ''
               },
           },
         {
