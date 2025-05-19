@@ -464,6 +464,126 @@ font-weight: 500;
   .four td {
     background-color: rgb(255, 222, 227) !important; 
   }
+
+ .cardcontainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9fb;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  border: 1px solid #d1d1d1;
+}
+
+.recruitercard {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  /* Adjust width as needed, e.g., for 3 cards per row on larger screens */
+  width: calc(33.333% - 20px); /* Example for 3 columns with gap */
+  min-width: 350px; /* Minimum width before wrapping or becoming too small */
+  display: flex;
+  flex-direction: column;
+}
+
+.recruitername {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.stagetable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 12px;
+  background-color: #fff;
+}
+
+.stagetable thead {
+  background-color: #f0f2f5;
+}
+
+.stagetable th,
+.stagetable td {
+  border: 1px solid #e0e0e0;
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.stagetable th {
+  background-color: #fafafa;
+  font-weight: 500;
+  color: #595959;
+}
+
+.stagetable td {
+  color: #262626;
+}
+
+/* Styles for the key-value section (MODIFIED for 2 columns) */
+.keyValuePairsContainer {
+  margin-top: 10px; /* Reduced margin if table is present */
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0; /* Separator line */
+  
+  /* CSS Grid for two-column layout */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two equal-width columns */
+  column-gap: 24px; /* Gap between the two columns */
+  row-gap: 4px; /* Smaller gap between rows of key-value pairs */
+}
+
+.keyValuePair {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 2px 0;
+  font-size: 12px; 
+  line-height: 1.4;
+  flex-wrap: wrap;
+}
+
+.kvLabel {
+  color: #595959;
+  margin-right: 8px; /* Space between label and value if not fully spaced apart */
+  flex-shrink: 0; /* Prevent label from shrinking if value is long */
+}
+
+.kvValue {
+  color: #262626;
+  font-weight: 500;
+  text-align: right; /* Align value to the right */
+}
+
+.noDataFound {
+  padding: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #888;
+  width: 100%;
+}
+.one {
+  background-color: #e6f7ff;
+}
+.two {
+  background-color: #f6ffed;
+}
+.three {
+  background-color: #fff0f6;
+}
+.four {
+  background-color: #fffbe6;
+}
+
   
 @media screen and (max-width: 1440px) {
     .hiringRequestContainer {
