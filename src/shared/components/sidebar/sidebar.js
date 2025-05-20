@@ -1,31 +1,20 @@
 import {useState, useEffect} from 'react'
 import { Link, useLocation } from 'react-router-dom';
-
 import HR from 'assets/svg/hr.svg';
-import Handshake from 'assets/svg/handshake.svg';
-import AllClients from 'assets/svg/allClients.svg';
-import { InputType } from "constants/application";
-import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
-import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
-
 import Briefcase from 'assets/svg/briefcase.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
 import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
 import ClientHappinessSurveyFunnel from 'assets/svg/Clienthapppy.svg';
-import DDIcon from 'assets/svg/DDIcon.svg';
-import Invoice from 'assets/svg/invoice.svg';
 import EngagementDashboard from 'assets/svg/engagementDashboard.svg';
 import EngagementReport from 'assets/svg/engagementReport.png';
 import ClipBoardIcon from 'assets/svg/clipboard.svg'
 import RecruiterReportIcon from 'assets/svg/recruiterReport.svg'
-import JDEfficiencyReport from 'assets/svg/jdEfficiency.svg';
 import MedalIcon from 'assets/svg/medalIcon.svg';
 import GlobIcon from 'assets/svg/globIcon.svg';
 import MastersIcon from 'assets/svg/mastersIcon.svg';
 import I2sIcon from 'assets/svg/i2sIcon.svg';
-import GPTIcon from 'assets/svg/GPT.svg'
 import clientReport from  'assets/svg/clientReport.svg';
 import TalentDocIcon from 'assets/svg/talent-doc.png'
 import HRReport from 'assets/svg/clientLogs.svg'
@@ -37,11 +26,10 @@ import AMDashboardIcon from 'assets/svg/amdashboard.png'
 import TalentBackoutIcon from 'assets/Talentbackout.png'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 import HandShake from 'assets/svg/postStepIconInterview.svg'
-import TicketIcon from 'assets/tickiteheader.png'
 import TADashboardIcon from 'assets/svg/ta-dashboard.svg'
 import ClientCompIcon from 'assets/clientCompany.png'
-
 import SLAReport from 'assets/svg/slaReport.svg';
+import AMReportIcon from 'assets/svg/amreport.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -434,7 +422,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			id: 'amReport',
 			title: 'AM Report',
 			isActive: false,
-			icon: RecruiterReportIcon,
+			icon: AMReportIcon,
 			navigateTo: UTSRoutes.AM_REPORT,
 			isChildren: false,
 			branch: [],

@@ -145,6 +145,52 @@
   margin-bottom: 10px;
 }
 
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+.filterSetsInner [class*="ant-select"]  {
+    /* width:200px */
+}
+
+.filterSetsInner [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 12px 10px;
+    height: 49px !important;
+    min-height: 44px;
+    overflow: scroll;
+    /* width:200px */
+}
+
+.addFilter{
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 167px;
+    height: 44px;
+    border: 1px solid var(--background-color-metal);
+}
+
+
+.filterLabel{
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.filterCount{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: var(--fontsize-uplers);
+    background-color: var(--color-sunlight);
+    border-radius: 50%;
+    font-weight: 700;
+}
+
 .dateFilter{
     cursor: pointer;
     width: 102%;
