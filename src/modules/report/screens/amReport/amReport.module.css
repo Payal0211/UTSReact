@@ -120,6 +120,7 @@
     width: 100% !important;
     margin: 40px 0 30px;
     min-width: 220px;
+    z-index: 999 !important;
 }
 .calendarFilter
   [class*="react-datepicker-popper"]
@@ -151,4 +152,13 @@
     border:none;
     color: var(--uplers-black);
     font-weight: 500;
+}
+
+
+.highlighttotalrow {   
+  font-weight: bold !important;
+  position: sticky !important;
+  top: 0;
+  z-index: 4;
+  background-color: #fff7d6 !important;
 }

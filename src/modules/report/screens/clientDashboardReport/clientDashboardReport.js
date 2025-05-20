@@ -915,7 +915,7 @@ export default function ClientDashboardReport() {
         rowKey={(record, index) => index}
         rowClassName={(row, index) => {
             return row.client === 'Total' ? clientDashboardStyles["highlight-total-row"] : '';
-          }}   
+        }}   
 
           pagination={{
             onChange: (pageNum, pageSize) => {

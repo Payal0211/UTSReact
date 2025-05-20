@@ -165,13 +165,17 @@ const AMReport = () => {
 
 
       {isLoading ? <Spin />  : 
-      <Table
-        columns={columns}
-        dataSource={reportData}
-        pagination={{ pageSize: 15 }}
-        className={amReportStyles.amtable}        
-        bordered        
-      />
+        <Table
+          // scroll={{ y: "480px" }}
+          columns={columns}
+          dataSource={reportData}
+          pagination={{ pageSize: 15 }}
+          className={amReportStyles.amtable}        
+          bordered        
+          rowClassName={(row, index) => {
+            return row?.clientName === 'TOTAL' ? amReportStyles.highlighttotalrow : '';
+          }} 
+        />
       }
     </div>
   );
