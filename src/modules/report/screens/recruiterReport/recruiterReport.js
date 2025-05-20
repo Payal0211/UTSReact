@@ -190,41 +190,70 @@ export default function RecruiterReport() {
     return '';
   };
 
-  const transformData = (rawData) => {
-    const groupedByTaName = {};
-  
-    rawData.forEach((item) => {
-      const { taName, profileStage, finalTotal, w1, w2, w3, w4, w5, profileStatusID } = item; 
-  
-      if (!groupedByTaName[taName]) {
-        groupedByTaName[taName] = {
-          taName,
-          tableStages: [],
-          keyValueStages: [],
-        };
-      }
-  
-      const stageEntry = {
-        profileStage,
-        finalTotal,
-        w1,
-        w2,
-        w3,
-        w4,
-        w5,
-        profileStatusID,
+ const transformData = (rawData) => {
+  const groupedByTaName = {};
+
+  const leftOrder = [11, 12, 13, 14, 20];
+  const rightOrder = [15, 16, 17, 18, 19];
+
+  const sortByOrder = (array, order) =>
+    array.sort(
+      (a, b) =>
+        order.indexOf(a.profileStatusID) - order.indexOf(b.profileStatusID)
+    );
+
+  rawData.forEach((item) => {
+    const {
+      taName,
+      profileStage,
+      finalTotal,
+      w1,
+      w2,
+      w3,
+      w4,
+      w5,
+      profileStatusID,
+    } = item;
+
+    if (!groupedByTaName[taName]) {
+      groupedByTaName[taName] = {
+        taName,
+        tableStages: [],
+        leftStages: [],
+        rightStages: [],
       };
-  
-      const id = parseInt(String(profileStatusID), 10);
-      if (id >= 11 && id <= 20) {
-        groupedByTaName[taName].keyValueStages.push(stageEntry);
-      } else {
-        groupedByTaName[taName].tableStages.push(stageEntry);
-      }
-    });
-  
-    return Object.values(groupedByTaName);
-  };
+    }
+
+    const stageEntry = {
+      profileStage,
+      finalTotal,
+      w1,
+      w2,
+      w3,
+      w4,
+      w5,
+      profileStatusID,
+    };
+
+    const id = parseInt(String(profileStatusID), 10);
+    if (leftOrder.includes(id)) {
+      groupedByTaName[taName].leftStages.push(stageEntry);
+    } else if (rightOrder.includes(id)) {
+      groupedByTaName[taName].rightStages.push(stageEntry);
+    } else {
+      groupedByTaName[taName].tableStages.push(stageEntry);
+    }
+  });
+
+  // Sort both groups
+  Object.values(groupedByTaName).forEach((entry) => {
+    entry.leftStages = sortByOrder(entry.leftStages, leftOrder);
+    entry.rightStages = sortByOrder(entry.rightStages, rightOrder);
+  });
+
+  return Object.values(groupedByTaName);
+};
+
 
   const weekHeaders = RecruiterListData[0]?.month_Name 
     ? ['W1', 'W2', 'W3', 'W4', 'W5'].map(w => `${RecruiterListData[0]?.month_Name}_${w}`) 
@@ -355,44 +384,77 @@ export default function RecruiterReport() {
                     </table>
                 )}
 
-                {recruiter.keyValueStages && recruiter.keyValueStages.length > 0 && (
-                    <div className={recruiterStyle.keyValuePairsContainer}>
-                    {recruiter.keyValueStages.map((stage, index) => {
+                {recruiter.leftStages && recruiter.rightStages && (
+                  <div className={recruiterStyle.keyValuePairsContainerTwoCol}>
+                    {/* Left Column */}
+                    <div className={recruiterStyle.kvColumn}>
+                      {recruiter.leftStages.map((stage, index) => {
+                        let displayValue;                    
+                        const val = stage.finalTotal;
+                        const stageLabel = stage.profileStage || "";                       
+                        
+                        if (val === null || val === undefined) {
+                          displayValue = '0.00';
+                        } else if (val === 0 || val === "0") {
+                          displayValue = '0.00';
+                        } else if (val === "-") {
+                          displayValue = "-";
+                        } else if (typeof val === 'number') {
+                          if (stageLabel.includes('%') || stageLabel.toLowerCase().includes('per day')) {
+                            displayValue = val.toFixed(2);
+                          } else {
+                            displayValue = val.toLocaleString('en-IN');
+                          }
+                        } else if (typeof val === 'string') {
+                          displayValue = val.trim() === "0.00" ? "0.00" : val;
+                        } else {
+                          displayValue = String(val);
+                        }
+
+                        return (
+                          <div key={index} className={recruiterStyle.keyValuePair}>
+                            <span className={recruiterStyle.kvLabel}>{stage.profileStage}: </span>
+                            <span className={recruiterStyle.kvValue}><b>{displayValue}</b></span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Right Column */}
+                    <div className={recruiterStyle.kvColumn}>
+                      {recruiter.rightStages.map((stage, index) => {
                         let displayValue;
                         const val = stage.finalTotal;
-                        const stageLabel = stage.profileStage || "";
-
+                        const stageLabel = stage.profileStage || "";                                              
                         if (val === null || val === undefined) {
-                            displayValue = '0.00';
-                        } else if (val === 0 || val === "0") { 
-                            displayValue = '0.00';
-                        } else if (val === "-") { 
-                            displayValue = "-";
-                        } else if (typeof val === 'number') {                            
-                            if (stageLabel.includes('%') || stageLabel.toLowerCase().includes('per day')) {
-                                displayValue = val.toFixed(2);
-                            } else { 
-                                displayValue = val.toLocaleString('en-IN'); 
-                            }
+                          displayValue = '0.00';
+                        } else if (val === 0 || val === "0") {
+                          displayValue = '0.00';
+                        } else if (val === "-") {
+                          displayValue = "-";
+                        } else if (typeof val === 'number') {
+                          if (stageLabel.includes('%') || stageLabel.toLowerCase().includes('per day')) {
+                            displayValue = val.toFixed(2);
+                          } else {
+                            displayValue = val.toLocaleString('en-IN');
+                          }
                         } else if (typeof val === 'string') {
-                            if (val.trim() === "0.00") {
-                                displayValue = "0.00";
-                            } else {                                
-                                displayValue = val;
-                            }
+                          displayValue = val.trim() === "0.00" ? "0.00" : val;
+                        } else {
+                          displayValue = String(val);
                         }
-                         else {
-                            displayValue = String(val);
-                        }
+
                         return (
-                        <div key={index} className={recruiterStyle.keyValuePair}>
-                            <span className={recruiterStyle.kvLabel}>{stage.profileStage}: </span>
-                            <span className={recruiterStyle.kvValue}>{displayValue}</span>
-                        </div>
+                          <div key={index} className={recruiterStyle.keyValuePair}>
+                            <span className={recruiterStyle.kvLabel}>{stage.profileStatusID === 16 ? 'Cur. Month Pipeline (INR)' : stage.profileStage}: </span>
+                            <span className={recruiterStyle.kvValue}><b>{displayValue ? displayValue : '-'}</b></span>
+                          </div>
                         );
-                    })}
+                      })}
                     </div>
+                  </div>
                 )}
+
                 </div>
             ))}
             </div>

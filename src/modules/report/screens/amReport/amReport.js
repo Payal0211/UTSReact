@@ -1,6 +1,6 @@
 import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import amReportStyles from './amReport.module.css';
-import {  Select, Spin, Table } from 'antd';
+import {  Select, Table } from 'antd';
 import { ReportDAO } from 'core/report/reportDAO';
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
@@ -12,17 +12,34 @@ import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
 import OnboardFilerList from 'modules/onBoardList/OnboardFilterList';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import { allEngagementConfig } from 'modules/engagement/screens/engagementList/allEngagementConfig';
+import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 
 const columns = [
   {
     title: 'Client Name',
     dataIndex: 'clientName',
     key: 'clientName',
+    render: (text, result) => {
+        return text === "TOTAL" 
+          ? <b>{text}</b> 
+          : <a href={`/viewCompanyDetails/${result.clientID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;
+      },
   },
   {
     title: 'Position Name',
     dataIndex: 'positionName',
     key: 'positionName',
+    render: (text, result) => {
+      return text 
+        ? <a href={`/allhiringrequest/${result.hrid}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>  
+        : text;
+    },
+  },
+  {
+    title: 'AM Name',
+    dataIndex: 'amName',
+    key: 'amName',
+    render: (value) => value ? value : '-',
   },
   {
     title: 'Revenue (Margin)',
@@ -58,7 +75,7 @@ const columns = [
     dataIndex: 'clientResponseBy',
     key: 'clientResponseBy',
     render: (value) => value ? value : '-',
-  },
+  },    
   ...[1, 2, 3, 4, 5].map((week, i) => ({
     title: `W${week}`,
     dataIndex: ['weekData', i],
@@ -244,19 +261,24 @@ const AMReport = () => {
                       </div>                          
                 </div>
               </div>
-              {isLoading ? <Spin />  : 
-                <Table
-                  columns={columns}
-                  dataSource={reportData}
-                  pagination={{ pageSize: 15 }}
-                  className={amReportStyles.amtable}        
-                  bordered        
-                  rowClassName={(row, index) => {
-                    return row?.clientName === 'TOTAL' ? amReportStyles.highlighttotalrow : '';
-                  }} 
-                />
-              }
 
+              {isLoading ? <TableSkeleton /> :
+                    <Table
+                      scroll={{ y: "480px" }}
+                      id="amReportList"
+                      columns={columns}
+                      bordered={false}
+                      dataSource={reportData}   
+                      rowKey={(record, index) => index}
+                      rowClassName={(row, index) => {
+                        return row?.clientName === 'TOTAL' ? amReportStyles.highlighttotalrow : '';
+                      }}  
+                      pagination={{                       
+                        size: "small",
+                        pageSize: 15                       
+                      }}  
+                  />
+                  }
                {isAllowFilters && (
                   <Suspense fallback={<div>Loading...</div>}>
                     <OnboardFilerList
