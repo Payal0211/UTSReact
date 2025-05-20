@@ -700,9 +700,8 @@ export default function TADashboard() {
       dataIndex: "totalRevenuePerUserStr",
       key: "totalRevenuePerUserStr",
       width: 150,
-      render: (text, result) => {
-       
-        return text ? text : '-';
+       render: (text, result) => {        
+        return <div style={{cursor:"pointer"}} onClick={() => showDetails(0,result,"Assigned Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {
@@ -730,7 +729,7 @@ export default function TADashboard() {
       key: "currentMonthActualPipelineStr",
       width: 200,
       render: (text, result) => {        
-        return text ? text : "-";
+        return <div style={{cursor:"pointer"}} onClick={() => showDetails(1,result,"Current Month Active Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {

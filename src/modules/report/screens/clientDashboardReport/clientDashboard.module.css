@@ -1,12 +1,9 @@
-.highlight-total-row {
-    /* background-color: #fff3cd !important;  */
+.highlight-total-row {   
     font-weight: bold;
-
-    position: sticky;
+    position: sticky !important;
     top: 0;
-    z-index: 2;
+    z-index: 4;
     background-color: #fff7d6 !important;
-
 }
 
 .hiringRequestContainer {

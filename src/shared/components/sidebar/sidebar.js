@@ -295,7 +295,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
-	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'DailySnapshot'){
+	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'DailySnapshot' || title === 'amReport'){
 		isVisible =  true;
 		return isVisible
 	}
@@ -321,7 +321,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		return isVisible		
 	}
 	 if(title === 'Hiring Request' || title === "MasterReports" ||
-	  title === 'Users' || 
+	  title === 'Users'  ||
 	   title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
 	 title === 'Engagement' || title === 'Reports' ||
 	 title === 'Demand Funnel' ||
@@ -429,6 +429,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isChildren: false,
 			branch: [],
 			isVisible: isAccess(usertypeID, 'Users')
+		}),
+		new SideBarModels({
+			id: 'amReport',
+			title: 'AM Report',
+			isActive: false,
+			icon: RecruiterReportIcon,
+			navigateTo: UTSRoutes.AM_REPORT,
+			isChildren: false,
+			branch: [],
+			isVisible: isAccess(usertypeID, 'amReport')
 		}),
 		new SideBarModels({
 			id: 'taReport',
