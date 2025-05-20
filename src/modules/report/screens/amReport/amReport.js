@@ -1,6 +1,6 @@
 import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import amReportStyles from './amReport.module.css';
-import {  Select, Table } from 'antd';
+import { Table } from 'antd';
 import { ReportDAO } from 'core/report/reportDAO';
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
@@ -19,19 +19,21 @@ const columns = [
     title: 'Client Name',
     dataIndex: 'clientName',
     key: 'clientName',
+    width: 160,
     render: (text, result) => {
-        return text === "TOTAL" 
-          ? <b>{text}</b> 
-          : <a href={`/viewCompanyDetails/${result.clientID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;
-      },
+      return text === "TOTAL" 
+        ? <b>{text}</b> 
+        : <a href={`/viewCompanyDetails/${result.clientID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{text}</a>;
+    },
   },
   {
     title: 'Position Name',
     dataIndex: 'positionName',
     key: 'positionName',
+    width: 160,
     render: (text, result) => {
-      return text 
-        ? <a href={`/allhiringrequest/${result.hrid}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>  
+      return text
+        ? <a href={`/allhiringrequest/${result.hrid}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{text}</a>
         : text;
     },
   },
@@ -39,57 +41,65 @@ const columns = [
     title: 'AM Name',
     dataIndex: 'amName',
     key: 'amName',
+    width: 120,
     render: (value) => value ? value : '-',
   },
   {
-    title: 'Revenue (Margin)',
+    title: <>Revenue<br/>(Margin)</>,
     dataIndex: 'revenueMargin',
     key: 'revenueMargin',
+    width: 120,
     render: (value) => value ? value : '-',
   },
   {
-    title: 'Probability Ratio',
+    title: <>Probability <br/> Ratio</>,
     dataIndex: 'probability',
     key: 'probability',
+    width: 100,
   },
   {
     title: 'Average',
     dataIndex: 'average',
     key: 'average',
+    width: 80,
     render: (value) => value ? value : '-',
   },
   {
-    title: 'No. of Interviews',
+    title:<>No. of<br/>Interviews</>,
     dataIndex: 'interviews',
-    key: 'interviews',        
+    key: 'interviews',
+    width: 80,
     render: (value) => Number(value) ? value : '-',
   },
   {
-    title: 'Profiles Needed By',
+    title:<>Profiles<br/> Needed By</>,
     dataIndex: 'profilesNeededBy',
     key: 'profilesNeededBy',
+    width: 120,
     render: (value) => value ? value : '-',
   },
   {
-    title: 'Client Response By',
+    title: <>Client <br/>Response By</>,
     dataIndex: 'clientResponseBy',
     key: 'clientResponseBy',
+    width: 120,
     render: (value) => value ? value : '-',
-  },    
+  },
   ...[1, 2, 3, 4, 5].map((week, i) => ({
     title: `W${week}`,
     dataIndex: ['weekData', i],
     key: `week${week}`,
+    width: 100,
     render: (value) => value ? value : '-',
   })),
 ];
+
 
 const AMReport = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [reportData,setReportData] = useState([]);
     const today = new Date();
-    const [dateTypeFilter, setDateTypeFilter] = useState(2);
     const [monthDate, setMonthDate] = useState(today);  
     const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
     const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -111,7 +121,7 @@ const AMReport = () => {
       
     useEffect(() => {
         getAMReportData();
-    }, [openTicketDebounceText,monthDate,dateTypeFilter,tableFilteredState]);
+    }, [openTicketDebounceText,monthDate,tableFilteredState]);
 
     const getAMReportFilter = async () => {
         setIsLoading(true);
@@ -128,8 +138,8 @@ const AMReport = () => {
     const getAMReportData = async () => {
         let payload = {
             "searchText": openTicketDebounceText,
-            "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
-            "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,            
+            "month":monthDate? +moment(monthDate).format("M") : 0,
+            "year":monthDate ? +moment(monthDate).format("YYYY") : 0,            
             "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text          
         };
         setIsLoading(true);
@@ -221,20 +231,7 @@ const AMReport = () => {
                               )}
                           </div>      
                         </div>     
-                        <div>                              
-                          <Select
-                              id="selectedValue"
-                              placeholder="Select"
-                              value={dateTypeFilter}                    
-                              style={{width:"180px",height:"48px"}}
-                              onChange={(value, option) => {
-                              setDateTypeFilter(value);
-                              }}
-                              options={[{value: 2,label: 'No Dates'},{value: 0,label: 'By Month'}]}
-                              optionFilterProp="value"
-                          />                                           
-                        
-                          {dateTypeFilter === 0 && (
+                        <div>                          
                             <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}> 
                                 <div>
                                 Month-Year
@@ -242,21 +239,20 @@ const AMReport = () => {
                                 <div className={amReportStyles.calendarFilter}> 
                                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                                 <DatePicker
-                                        style={{ backgroundColor: "red" }}
-                                        onKeyDown={(e) => {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                        }}
-                                        className={amReportStyles.dateFilter}
-                                        placeholderText="Month - Year"
-                                        selected={monthDate}
-                                        onChange={date=>setMonthDate(date)}
-                                        dateFormat="MM-yyyy"
-                                        showMonthYearPicker
-                                        />
+                                  style={{ backgroundColor: "red" }}
+                                  onKeyDown={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                  }}
+                                  className={amReportStyles.dateFilter}
+                                  placeholderText="Month - Year"
+                                  selected={monthDate}
+                                  onChange={date=>setMonthDate(date)}
+                                  dateFormat="MM-yyyy"
+                                  showMonthYearPicker
+                                />
                                 </div>
-                            </div>
-                          )}                                                                                                                           
+                            </div>                                                                                                                                              
                         </div>                         
                       </div>                          
                 </div>
@@ -264,7 +260,7 @@ const AMReport = () => {
 
               {isLoading ? <TableSkeleton /> :
                     <Table
-                      scroll={{ y: "480px" }}
+                      scroll={{ x: "1600px" , y: "480px" }}
                       id="amReportList"
                       columns={columns}
                       bordered={false}
