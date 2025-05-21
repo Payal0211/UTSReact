@@ -200,6 +200,32 @@
     font-weight: 500;
     font-size: 12px;
 }
+.keyValuePairsContainerTwoCol {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.kvColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.keyValuePair {
+  display: flex;
+  justify-content: space-between;
+}
+
+.kvLabel {
+  font-weight: 500;
+}
+
+.kvValue {
+  font-weight: 400;
+}
 
 .filterCount{
     align-items: center;
@@ -506,6 +532,7 @@ font-weight: 500;
   background-color: #fff;
 }
 
+
 .stagetable thead {
   background-color: #f0f2f5;
 }
@@ -519,14 +546,13 @@ font-weight: 500;
   font-size: 14px;
 }
 
-.stagetable th {
-  background-color: #fafafa;
-  font-weight: 500;
-  color: #595959;
+/* Alternate row colors for body */
+.stagetable tbody tr:nth-child(odd) {
+  background-color: lightblue;
 }
 
-.stagetable td {
-  color: #262626;
+.stagetable tbody tr:nth-child(even) {
+  background-color: lightcyan;
 }
 
 /* Styles for the key-value section (MODIFIED for 2 columns) */

@@ -863,5 +863,30 @@ export const ReportDAO = {
 		} catch (error) {
 			return errorDebug(error, 'ReportDAO.getAMReportDAO');
 		}
+	},
+	getAMReportFilterDAO : async function () {
+		try {
+			const replacementResult = await ReportAPI.getAMReportFilters();
+			if (replacementResult) {
+				const statusCode = replacementResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = replacementResult?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return replacementResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return replacementResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.getAMReportFilterDAO');
+		}
 	}
 };

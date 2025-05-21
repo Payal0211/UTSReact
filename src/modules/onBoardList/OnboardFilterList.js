@@ -91,47 +91,7 @@ const OnboardFilerList = ({
 		[appliedFilter, checkedState, setFilteredTagLength],
 	);
 
-	// const clearFilters = useCallback(() => {
-	// 	setAppliedFilters(new Map());
-	// 	setCheckedState(new Map());
-	// 	setFilteredTagLength(0);
-
-	// 	const defaultFilters ={		
-	// 		clientFeedback: '',
-	// 		typeOfHiring: '',
-	// 		currentStatus: '',
-	// 		tscName: '',
-	// 		company: '',
-	// 		geo: '',
-	// 		position: '',
-	// 		engagementTenure: 0,
-	// 		nbdName: '',
-	// 		amName: '',
-	// 		pending: '',
-	// 		searchMonth: new Date().getMonth() +1,
-	// 		searchYear: new Date().getFullYear(),
-	// 		searchType: '',
-	// 		islost: '',
-	// 	}
-		
-	// 	setTableFilteredState({
-	// 		...tableFilteredState,
-	// 		filterFields_OnBoard: defaultFilters,
-	// 	});
-	// 	const reqFilter = {
-	// 		...tableFilteredState,
-	// 		filterFields_OnBoard: defaultFilters,
-	// 	};
-	// 	handleHRRequest(reqFilter);
-	// 	onRemoveHRFilters();
-	// }, [
-	// 	handleHRRequest,
-	// 	setAppliedFilters,
-	// 	setCheckedState,
-	// 	setFilteredTagLength,
-	// 	setTableFilteredState,
-	// 	tableFilteredState,
-	// ]);
+	
 
 	const handleFilters = useCallback(() => {
 		let filters = {};
@@ -145,21 +105,13 @@ const OnboardFilerList = ({
 			filterList[filter.name] = filters[filter.name] ?? ""
 		})
 
-		// console.log({filters,filterList,tol: tableFilteredState.filterFields_OnBoard, filtersType})
-
 		setTableFilteredState({
 			...tableFilteredState,
 			filterFields_OnBoard: {...tableFilteredState.filterFields_OnBoard, ...filterList} ,
-		});
-		const reqFilter = {
-			...tableFilteredState,
-			filterFields_OnBoard: { ...tableFilteredState.filterFields_OnBoard , ...filters },
-		};
-		// handleHRRequest(reqFilter);
+		});		
 		onRemoveHRFilters()
 	}, [
 		appliedFilter,
-		// handleHRRequest,
 		setTableFilteredState,
 		tableFilteredState,
 	]);

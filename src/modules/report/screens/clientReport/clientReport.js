@@ -441,10 +441,8 @@ export default function ClientReport() {
     setHTMLFilter(!getHTMLFilter);
   }, [getHTMLFilter, isAllowFilters]);
 
-  //console.log('client', reportList, appliedFilter)
   return (
     <div className={ClientReportStyle.dealContainer}>
-      {/* <WithLoader showLoader={isLoading} className="pageMainLoader"> */}
       <div className={ClientReportStyle.header}>
         <div className={ClientReportStyle.dealLable}>Client Report</div>
         <LogoLoader visible={isLoading} />
@@ -500,13 +498,7 @@ export default function ClientReport() {
                 />
               </div>
             </div>
-            {/* <button
-              type="submit"
-              className={ClientReportStyle.btnPrimary}
-              onClick={() => resetFilter()}
-            >
-              Reset
-            </button> */}
+           
           </div>
         </div>
       </div>
@@ -528,17 +520,7 @@ export default function ClientReport() {
                     <p
                       className={ClientReportStyle.textLink}
                       onClick={() => {
-                        setTableData(report);
-                        // seti2sPopupModal(true);
-                        // setPopupData({
-                        //   ...value,
-                        //   fromDate: new Date(
-                        //     firstDay
-                        //   ).toLocaleDateString("en-US"),
-                        //   toDate: new Date(lastDay).toLocaleDateString(
-                        //     "en-US"
-                        //   ),
-                        // });
+                        setTableData(report);                       
                       }}
                     >
                       {report.stageValue}
