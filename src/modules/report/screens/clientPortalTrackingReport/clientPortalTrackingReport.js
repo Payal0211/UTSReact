@@ -11,23 +11,16 @@ import DatePicker from "react-datepicker";
 import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
 import "react-datepicker/dist/react-datepicker.css";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import { clientReport } from "core/clientReport/clientReportDAO";
 import { reportConfig } from "modules/report/report.config";
 import { HTTPStatusCode } from "constants/network";
 import UTSRoutes from "constants/routes";
-import { Table, Checkbox, Select, Tooltip } from "antd";
+import { Table, Select, Tooltip } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
 import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { clientPortalTrackingReportDAO } from "core/clientPortalTrackingReport/clientPoralTrackingReportDAO";
-import { clientPortalTrackingReportAPI } from "apis/clientPortalTrackingReportAPI";
-import { utmTrackingReportAPI } from "apis/utmTrackingReportAPI";
-import { utmTrackingReportDAO } from "core/utmTrackingReport/utmTrackingReportDAO";
 import infoIcon from "../../../../assets/svg/info.svg"
-import { DealConfig } from "modules/deal/deal.config";
-import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -45,44 +38,25 @@ export default function UTMTrackingReport() {
   const [reportPopupList, setReportPopupList] = useState([]);
 
   const [getHTMLFilter, setHTMLFilter] = useState(false);
-  const [filtersList, setFiltersList] = useState([]);
-  const [pageSize, setPageSize] = useState(100);
   const [isAllowFilters, setIsAllowFilters] = useState(false);
   const [filteredTagLength, setFilteredTagLength] = useState(0);
   const [appliedFilter, setAppliedFilters] = useState(new Map());
   const [checkedState, setCheckedState] = useState(new Map());
   const [isFocusedRole, setIsFocusedRole] = useState(false);
-
-  const [numOfJobs,setNumOfJobs] = useState([]);
-  const [refURL,setRefURL] = useState([]);
-  const [campaign,setCampaign] = useState([]);
-  const [content,setContent] = useState([]);
-  const [medium,setMedium] = useState([]);
-  const [placement,sePlacement] = useState([]);
-  const [source,setSource] = useState([]);
-  const [term,setTerm] = useState([]);
   const [selectedClientName, setSelectClientName] = useState()
   const [ClientNameList,setClientNameList] = useState([])
-  const [filtersSalesRepo, setFiltersSalesRepo] = useState([]);
   const [filtersHRType, setFiltersHRType] = useState([]);
   const [clientid,setClientid] = useState();
-  // const client = localStorage.getItem("clientID");
   const clientID = Number(0);
 
   const location = useLocation();
   const data = location.state; 
 
-  // const [utmTrackingListList, setutmTrackingListList] = useState([]); 
 
   const [tableFilteredState, setTableFilteredState] = useState({
     totalrecord: 100,
     pagenumber: 1,
   });
-
-  // const getUTMTrackingList = async()  =>{
-  //   const res = await utmTrackingReportDAO.getutmTrackingReportDAO(data);
-  //   setutmTrackingListList(res?.responseBody?.details);
-  // }
 
   var date = new Date();
 
@@ -138,37 +112,6 @@ export default function UTMTrackingReport() {
     }
   };
 
-  // const getUTMReportFilterList = async () => {
-  //   setLoading(true);
-  //   const response = await utmTrackingReportAPI.utmTrackingReportFilters();
-  //   if (response.statusCode === HTTPStatusCode.OK) {
-  //     let details = response.responseBody.details?.Data;
-  //     setFiltersList(details);
-  //     setLoading(false);
-  //   } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-  //     setLoading(false);
-  //     return navigate(UTSRoutes.LOGINROUTE);
-  //   } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-  //     setLoading(false);
-  //     return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-  //   } else {
-  //     setLoading(false);
-  //     return "NO DATA FOUND";
-  //   }
-  // };
-
-
-  // const allDropdownsList = () =>{
-  //   setNumOfJobs(filtersList && filtersList?.get_JobPostCount_For_UTM_Tracking_Lead?.map(item=>({id:item?.value,value:item?.value})));
-  //   setRefURL(filtersList && filtersList?.ref_Url?.map((item)=>({id:item?.text,value:item?.value})));
-  //   setCampaign(filtersList && filtersList?.utM_Campaign?.map((item)=>({id:item?.text,value:item?.value})));
-  //   setContent(filtersList && filtersList?.utM_Content?.map((item)=>({id:item?.text,value:item?.value})));
-  //   setMedium(filtersList && filtersList?.utM_Medium?.map((item)=>({id:item?.text,value:item?.value})));
-  //   sePlacement(filtersList && filtersList?.utM_Placement?.map((item)=>({id:item?.text,value:item?.value})));
-  //   setSource(filtersList && filtersList?.utM_Source?.map((item)=>({id:item?.text,value:item?.value})));
-  //   setTerm(filtersList && filtersList?.utM_Term?.map((item)=>({id:item?.text,value:item?.value})));
-  // }
-
   const [typeofHR,setTypeofHR] = useState();
 
   const handleFiltersRequest = useCallback(
@@ -195,24 +138,14 @@ export default function UTMTrackingReport() {
           params.typeOfHR= TypeOfHR;
           params.clientID=selectedClientName ?Number(selectedClientName):0
       }
-      // if (hrStage) {
-        getClientPortalReportList(params);
-      // }
+      getClientPortalReportList(params);
     },
     
     [clientid,clientID,appliedFilter, isFocusedRole,selectedClientName]
   );
 
-  useEffect(() => {
-    let payload = {
-      fromDate: moment(firstDay).format("YYYY-MM-DD"),
-      toDate: moment(lastDay).format("YYYY-MM-DD"),
-        // NoOfJobs: null,
-        clientID:0
-    };
-    // getClientPortalReportList(payload);
-    // getClientNameFilter();
-    // getUTMTrackingList(data);
+  useEffect(() => { 
+   
     if(clientID !== 0){
       setSelectClientName(Number(clientID));
     }else{
@@ -222,11 +155,7 @@ export default function UTMTrackingReport() {
     setEndDate(lastDay);
   }, [clientID]);
 
-  // useEffect(() => {
-  //   allDropdownsList();
-  // }, [filtersList])
-
-  useEffect(() => {
+   useEffect(() => {
       let payload = {
          fromDate: moment(firstDay).format("YYYY-MM-DD"),
          toDate: moment(lastDay).format("YYYY-MM-DD"),
@@ -259,31 +188,6 @@ export default function UTMTrackingReport() {
         };
         getClientPortalReportList(payload);
       }
-
-      // if (start.toLocaleDateString() === end.toLocaleDateString()) {
-      //   let params = {
-      //     fromDate: new Date(
-      //       date.getFullYear(),
-      //       date.getMonth(),
-      //       date.getDate()-7
-      //     ),
-      //     toDate: new Date(date),
-      //   };
-      //   setStartDate(params.fromDate);
-      //   setEndDate(params.toDate);
-      //   setDateError(true);
-      //   setTimeout(() => setDateError(false), 5000);
-      //   return;
-      // } else {
-      //   if (start && end) {
-      //     let payload = {
-      //       fromDate: moment(start).format("YYYY-MM-DD"),
-      //       toDate: moment(end).format("YYYY-MM-DD"),
-      //       clientID:selectedClientName ? Number(selectedClientName) : 0
-      //     };
-      //     getClientPortalReportList(payload);
-      //   }
-      // }
     },
     [hrStage, appliedFilter, isFocusedRole,selectedClientName,typeofHR]
   );
@@ -306,10 +210,7 @@ export default function UTMTrackingReport() {
     setIsFocusedRole(false);
     setTypeofHR("");
 
-    let payload = {
-      // pageIndex: 1,
-      // pageSize: 0,
-  
+    let payload = {  
       fromDate: moment(params.fromDate).format("YYYY-MM-DD"),
       toDate: moment(params.toDate).format("YYYY-MM-DD"),
       clientID:0,
@@ -317,7 +218,6 @@ export default function UTMTrackingReport() {
     };
     getClientPortalReportList(payload);
     onRemoveDealFilters();
-    // getI2SReport(params);
   };
 
   const setTableData = useCallback(
@@ -349,7 +249,6 @@ export default function UTMTrackingReport() {
   };
 
   const toggleClientFilter = useCallback(() => {
-    // getDealFilterRequest();
     !getHTMLFilter
       ? setIsAllowFilters(!isAllowFilters)
       : setTimeout(() => {
@@ -374,8 +273,6 @@ export default function UTMTrackingReport() {
     setLoading(true);
     const response = await clientPortalTrackingReportDAO.clientPortalTrackingReportFilterDAO();
     if (response?.statusCode === HTTPStatusCode.OK) {   
-      // setFiltersList(response && response?.responseBody?.details?.Data);
-      // setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
       setClientNameList(response && response?.responseBody?.details?.ClientList?.map(i=>({value:i?.clientID,label:i?.clientName})))
       setFiltersHRType(response?.responseBody?.details?.model?.hrTypes?.map(item =>{
         return ({
@@ -410,51 +307,7 @@ export default function UTMTrackingReport() {
     setSelectClientName(value)
     getClientPortalReportList(payload);
   }
-
-  // const getHRReportFilterList = async () => {
-  //   setLoading(true);
-  //   const response = await clientReport.getHRReportFilters();
-  //   if (response.statusCode === HTTPStatusCode.OK) {
-  //     let details = response.responseBody.details;
-  //     // console.log("filter data", details)
-  //     setFiltersList(details);
-  //     setLoading(false);
-  //   } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-  //     setLoading(false);
-  //     return navigate(UTSRoutes.LOGINROUTE);
-  //   } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-  //     setLoading(false);
-  //     return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-  //   } else {
-  //     setLoading(false);
-  //     return "NO DATA FOUND";
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getHRReportFilterList();
-  // }, [])
-
-  // const getEngagementFilterList = useCallback(async () => {
-	// 	const res = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
-	// 	if (res?.statusCode === HTTPStatusCode.OK) {
-	// 		setFiltersSalesRepo(res?.responseBody?.details?.Data?.salesReps?.map(item =>({
-	// 			text : item?.text,
-	// 			value : item?.value
-	// 		})))
-
-  //     setFiltersHRType(res?.responseBody?.details?.Data?.hrTypes?.map(item =>{
-  //       return ({
-	// 			text : item?.text,
-	// 			value : item?.value
-	// 		})}))
-	// 	}
-	// }, []);
-
-  // useEffect(()=>{
-	// 	getEngagementFilterList();
-	// },[getEngagementFilterList])
-  
+ 
   return (
     <div className={clientPortalTrackingReportStyle.dealContainer}>
       <div className={clientPortalTrackingReportStyle.header}>
@@ -480,11 +333,7 @@ export default function UTMTrackingReport() {
             </div>
             <div className={clientPortalTrackingReportStyle.filterSetsInner}>
             <Select
-              // defaultValue="lucy"
               style={{ width: 400 }}
-              // onSelect={(value)=>{
-              //   setSelectClientName(value);   
-              // }}
               onChange={(value)=>{
                 changeClientName(value);   
               }}
@@ -500,13 +349,7 @@ export default function UTMTrackingReport() {
             </div>
           </div>
 
-          <div className={clientPortalTrackingReportStyle.filterRight}>
-            {/* <Checkbox
-              checked={isFocusedRole}
-              onClick={() => setIsFocusedRole((prev) => !prev)}
-            >
-              Show only Focused Role
-            </Checkbox> */}
+          <div className={clientPortalTrackingReportStyle.filterRight}>           
             <div className={clientPortalTrackingReportStyle.calendarFilterSet}>
               {dateError && (
                 <p className={clientPortalTrackingReportStyle.error}>
@@ -533,13 +376,6 @@ export default function UTMTrackingReport() {
                 />
               </div>
             </div>
-            {/* <button
-              type="submit"
-              className={clientPortalTrackingReportStyle.btnPrimary}
-              onClick={() => resetFilter()}
-            >
-              Reset
-            </button> */}
           </div>
         </div>
       </div>
@@ -547,7 +383,6 @@ export default function UTMTrackingReport() {
         <div className={clientPortalTrackingReportStyle.cardWrapper}>
           <div className={clientPortalTrackingReportStyle.cardTitle}>
             <div>Actions</div>
-            {/* <div>Value</div> */}
             <div>Value</div>
           </div>
           <ul className={clientPortalTrackingReportStyle.cardInner}>
@@ -633,7 +468,6 @@ export default function UTMTrackingReport() {
             setFilteredTagLength={setFilteredTagLength}
             onRemoveDealFilters={onRemoveDealFilters}
             getHTMLFilter={getHTMLFilter}
-            // hrFilterList={DealConfig.dealFiltersListConfig()}
             filtersType={reportConfig.ClientTrackingReportFilterTypeConfig( filtersHRType && filtersHRType)}
             clearFilters={resetFilter}
           />

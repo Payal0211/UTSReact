@@ -418,16 +418,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			branch: [],
 			isVisible: isAccess(usertypeID, 'Users')
 		}),
-		new SideBarModels({
-			id: 'amReport',
-			title: 'AM Report',
-			isActive: false,
-			icon: AMReportIcon,
-			navigateTo: UTSRoutes.AM_REPORT,
-			isChildren: false,
-			branch: [],
-			isVisible: isAccess(usertypeID, 'amReport')
-		}),
+		
 		new SideBarModels({
 			id: 'taReport',
 			title: 'TA Report',
@@ -514,6 +505,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 				}),
 			
 			]
+		}),
+		new SideBarModels({
+			id: 'amReport',
+			title: 'AM Report',
+			isActive: false,
+			icon: AMReportIcon,
+			navigateTo: UTSRoutes.AM_REPORT,
+			isChildren: false,
+			branch: [],
+			isVisible: isAccess(usertypeID, 'amReport')
 		}),
 		new SideBarModels({
 			id: 'Reports',
