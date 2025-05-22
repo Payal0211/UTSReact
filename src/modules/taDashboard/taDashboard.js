@@ -2074,7 +2074,7 @@ export default function TADashboard() {
                         <Table.Summary.Cell index={0}><strong>Total :</strong></Table.Summary.Cell>
                         <Table.Summary.Cell index={1}><strong>{summaryData.total_GoalStr || '-'}</strong></Table.Summary.Cell>
                         <Table.Summary.Cell index={2}>
-                          <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => showDetails(0, { taUserID: 0 }, "Assigned Pipeline (INR)", '')}>
+                          <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", '')}>
                             {summaryData.sumOfTotalRevenueStr || '-'}
                           </span>
                         </Table.Summary.Cell>                          
@@ -2082,7 +2082,7 @@ export default function TADashboard() {
                           <Table.Summary.Cell index={4}>
                             <span
                               style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                              onClick={() => showDetails(1, { taUserID: 0 }, "Current Month Actual Pipeline (INR)", '')}
+                              onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", '')}
                             >
                               {summaryData.total_CurrentMonthActualPipelineStr || '-'}
                             </span>
@@ -2092,7 +2092,7 @@ export default function TADashboard() {
                         <Table.Summary.Cell index={7}>
                           <span
                             style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => showDetails(3, { taUserID: 0 }, "Achieved Pipeline (INR)", '')}
+                            onClick={() => showDetails(3, { taUserID: 2 }, "Achieved Pipeline (INR)", '')}
                           >
                             {summaryData.total_AchievedPipelineStr || '-'}
                           </span>
@@ -2101,7 +2101,7 @@ export default function TADashboard() {
                         <Table.Summary.Cell index={8}>
                           <span
                             style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => showDetails(4, { taUserID: 0 }, "Lost Pipeline (INR)", '')}
+                            onClick={() => showDetails(4, { taUserID: 2}, "Lost Pipeline (INR)", '')}
                           >
                             {summaryData.total_LostPipelineStr || '-'}
                           </span>
@@ -2110,7 +2110,7 @@ export default function TADashboard() {
                         <Table.Summary.Cell index={9}>
                           <span
                             style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => showDetails(5 ,{ taUserID: 0 }, "Hold Pipeline (INR)", '')}
+                            onClick={() => showDetails(5 ,{ taUserID: 2 }, "Hold Pipeline (INR)", '')}
                           >
                             {summaryData.total_HoldPipelineStr || '-'}
                           </span>
@@ -2119,7 +2119,7 @@ export default function TADashboard() {
                         <Table.Summary.Cell index={10}>
                           <span
                             style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => showDetails(6, { taUserID: 0 }, "Pre-Onboarding Pipeline (INR)", '')}
+                            onClick={() => showDetails(6, { taUserID: 2 }, "Pre-Onboarding Pipeline (INR)", '')}
                           >
                             {summaryData.total_PreOnboardingPipelineStr || '-'}
                           </span>
