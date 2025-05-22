@@ -22,7 +22,7 @@ const columns = [
     width: 160,
     render: (text, result) => {
       return text === "TOTAL" 
-        ? <b>{text}</b> 
+        ? "" 
         : <a href={`/viewCompanyDetails/${result.clientID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{text}</a>;
     },
   },
