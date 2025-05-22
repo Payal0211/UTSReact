@@ -429,9 +429,6 @@ export default function ViewCompanyDetails() {
                         objectFit: "contain"
                       }}
                       src={
-                        // NetworkInfo.PROTOCOL +
-                        // NetworkInfo.DOMAIN +
-                        // "Media/CompanyLogo/" +
                         companyPreviewData?.basicDetails?.companyLogo
                       }
                       alt="preview"
@@ -506,27 +503,9 @@ export default function ViewCompanyDetails() {
                             style={{height:'40px',cursor:'pointer'}}
                             alt="icon"
                             onClick={() => {
-                              // CreateWhatsAppGroup()
                               openWhatsAppmodal()
                             }}
-                          />
-                          {/* <button
-                          type="submit"
-                          onClick={() => {
-                            // CreateWhatsAppGroup()
-                            openWhatsAppmodal()
-                          }}
-                          disabled={isGroupCreating}
-                          className={AddNewClientStyle.btnPrimaryResendBtn}
-                        >
-                           <img
-                              src={
-                                WhatsAppBTN
-                              }
-                              alt="icon"
-                            />
-                          {/* Create Whatsapp Group  
-                        </button> */}
+                          />                          
 
                           {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
                             {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>}
@@ -538,23 +517,9 @@ export default function ViewCompanyDetails() {
                             style={{height:'40px',cursor:'pointer'}}
                             alt="icon"
                             onClick={() => {
-                              // CreateWhatsAppGroup()
                               openEditWhatsAppmodal()
                             }}
-                          />
-                                {/* <button
-                                type="submit"
-                                onClick={() => {
-                                  openEditWhatsAppmodal()
-                                }}
-                                // disabled={isGroupCreating}
-                                className={`${AddNewClientStyle.btnPrimaryResendBtn} ${AddNewClientStyle.m0}`}
-                              >
-                                Manage Whatsapp Group 
-                              </button> */}
-
-                              {/* {isGroupCreating &&  <p style={{ fontWeight: "bold", color: "green",marginTop:'5px' }}>Creating Group ...  <img src={spinGif} alt="loadgif"  width={16} /></p>}
-                            {groupError &&  <p  style={{marginTop:'5px',color:'red',fontWeight: "bold"}}>{groupError}</p>} */}
+                          />                              
                           </li>}                         
 
                           <li className={AddNewClientStyle.aboutComDetails}>
@@ -788,8 +753,6 @@ export default function ViewCompanyDetails() {
             ) : 
                ( <div
                   className={AddNewClientStyle.viewHRDetailsBoxWrap}
-                  // key={contact?.fullName}
-                  // style={{ marginTop: index === 0 ? "0" : "10px" }}
                 >
                   <div className={AddNewClientStyle.row}>
                     <div className={AddNewClientStyle.colLg12}>
@@ -845,11 +808,7 @@ export default function ViewCompanyDetails() {
                     <div className={AddNewClientStyle.row}>
                       <div className={AddNewClientStyle.colLg12}>
                         <div className={`${AddNewClientStyle.viewHRDetailsBox} ${AddNewClientStyle.comEngDetails}`}>
-                          <ul>
-                            {/* <li>
-                              <span>Model:</span>{" "}
-                              {companyTypeMessages ? companyTypeMessages : "NA"}
-                            </li> */}
+                          <ul>                            
                             <li className={`${AddNewClientStyle.fullWidth} ${AddNewClientStyle.comEngCheckBox}`}>
                               <Checkbox
                                 value={2}
@@ -994,109 +953,7 @@ export default function ViewCompanyDetails() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* <div className={AddNewClientStyle.viewHRDetailsItem}>
-          <div className={AddNewClientStyle.viewHRLeftDetails}>
-            <h2>Legal Information</h2>
-          </div>
-
-          <div className={AddNewClientStyle.viewHRRightDetails}>
-            {isSavedLoading ? (
-              <Skeleton active />
-            ) : (
-              <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
-                {" "}
-                <div className={AddNewClientStyle.row}>
-                  <div className={AddNewClientStyle.colLg6}>
-                    <div className={AddNewClientStyle.viewHRDetailsBox}>
-                      <ul>
-                        <li>
-                          <span>Client Full Name:</span>{" "}
-                          {companyContract?.signingAuthorityName
-                            ? companyContract?.signingAuthorityName
-                            : "NA"}
-                        </li>
-                        {/* <li>
-<span>Client's Phone Number:</span>{" "}
-{contact?.contactNo ? contact?.contactNo :
-"NA"}
-</li> 
-                        <li>
-                          <span>Legal Company Name:</span>{" "}
-                          {companyContract?.legalCompanyName
-                            ? companyContract?.legalCompanyName
-                            : "NA"}
-                        </li>
-                        <li>
-                          <span>Legal Company Address:</span>{" "}
-                          {companyContract?.legalCompanyAddress
-                            ? companyContract?.legalCompanyAddress
-                            : "NA"}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className={AddNewClientStyle.colLg6}>
-                    <div className={AddNewClientStyle.viewHRDetailsBox}>
-                      <ul>
-                        <li>
-                          <span>Client Email ID:</span>{" "}
-                          {companyContract?.signingAuthorityEmail
-                            ? companyContract?.signingAuthorityEmail
-                            : "NA"}
-                        </li>
-                        <li>
-                          <span>Designation:</span>{" "}
-                          {companyContract?.signingAuthorityDesignation
-                            ? companyContract?.signingAuthorityDesignation
-                            : "NA"}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div> */}
-
-        {/* <div
-          className={AddNewClientStyle.viewHRDetailsItem}
-          style={{ marginBottom: "30px" }}
-        >
-          <div className={AddNewClientStyle.viewHRLeftDetails}>
-            <h2>Point of Contact</h2>
-          </div>
-
-          <div className={AddNewClientStyle.viewHRRightDetails}>
-            {isSavedLoading ? (
-              <Skeleton active />
-            ) : (
-              <div className={AddNewClientStyle.viewHRDetailsBoxWrap}>
-                {" "}
-                <div className={AddNewClientStyle.row}>
-                  <div className={AddNewClientStyle.colLg6}>
-                    <div className={AddNewClientStyle.viewHRDetailsBox}>
-                      <ul>
-                        {contactPoc?.map((contact, index) => (
-                          <li>
-                            <span>{index + 1} :</span>{" "}
-                            {
-                              salesMan.find(
-                                (item) => item.id === contact.userId
-                              )?.value
-                            }
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div> */}
+        </div>      
       </>
     );
   };
@@ -1213,12 +1070,6 @@ export default function ViewCompanyDetails() {
 				payload.person,
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
-				// const { tempdata, index } = hrUtils.hrTogglePriority(response, viewDetails?.hrList);
-				// setAPIdata([
-				// 	...viewDetails?.hrList.slice(0, index),
-				// 	tempdata,
-				// 	...viewDetails?.hrList.slice(index + 1),
-				// ]);
 				getDataForViewClient(CompanyID,contactDetails[0].id)
 				message.success(`priority has been changed.`)
 				setIsSavedLoading(false);
@@ -1255,12 +1106,10 @@ export default function ViewCompanyDetails() {
 	},[jobpostDraft]);
 	
 	const getJobPostDraftData = async () => {
-		// setLoading(true)
 		let response = await allClientRequestDAO.getDraftJobDetailsDAO(guid,contactDetails[0].id);	
 		if(response.statusCode === HTTPStatusCode.Ok){
 			setDraftJobPostDetails(response.responseBody);
 		}
-		// setLoading(false);
 	}
 
   function testJSON(text) {
@@ -1399,7 +1248,6 @@ export default function ViewCompanyDetails() {
          <div className={AddNewClientStyle.engagementModalContainer}>
       <div className={AddNewClientStyle.updateTRTitle}>
         <h2>{companyPreviewData?.whatsappDetails?.length ? "Edit" : "Create"} Whatsapp Group</h2>
-        {/* <p>{closeHRDetail?.ClientDetail?.HR_Number}</p> */}
       </div>
 
       <div className={AddNewClientStyle.row}>
@@ -1729,22 +1577,7 @@ export default function ViewCompanyDetails() {
 								</div>
 							</div>
 						</div>
-					</div>
-
-					{/* <div className={dealDetailsStyles.jobPostDraftBox}>
-						<div className={dealDetailsStyles.jobPostTopHeading}>
-							<h4>Job Description</h4>
-							<span>Last Edited on: 2-10-2023</span>
-						</div>
-						<div className={dealDetailsStyles.draftInnerContent}>
-							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
-								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Upload your JD</p>
-									<a href="#">Download JD</a>
-								</div>
-							</div>
-						</div>
-					</div> */}
+					</div>					
 				</div>
 			</Modal>
 
