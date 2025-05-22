@@ -676,7 +676,7 @@ export default function TADashboard() {
       title: "TA",
       dataIndex: "taName",
       key: "taName",
-      width: 140,
+      width: 120,
       render: (text, result) => {        
         return text ? text : '-';
       },
@@ -713,7 +713,7 @@ export default function TADashboard() {
       ),
       dataIndex: "carryFwdPipelineStr",
       key: "carryFwdPipelineStr",
-      width: 180,
+      width: 150,
       render: (text, result) => {        
         return <div className={taStyles.todayText} style={{ background: "#babaf5"}}>{text}</div>;
       },
@@ -722,12 +722,13 @@ export default function TADashboard() {
       title: (
         <>
           Current Month<br />
-          Active Pipeline (INR)
+          Active 
+          <br />Pipeline (INR)
         </>
       ),
       dataIndex: "currentMonthActualPipelineStr",
       key: "currentMonthActualPipelineStr",
-      width: 200,
+      width: 150,
       render: (text, result) => {        
         return <div style={{cursor:"pointer"}} onClick={() => showDetails(1,result,"Current Month Active Pipeline (INR)",text)}>{text}</div>;
       },
@@ -741,7 +742,7 @@ export default function TADashboard() {
       ),
       dataIndex: "actualPipelineStr",
       key: "actualPipelineStr",
-      width: 160,      
+      width: 150,      
       render: (text, result) => {       
         return <div className={taStyles.today1Text}>{text}</div>;
       },
@@ -750,7 +751,7 @@ export default function TADashboard() {
       title: "Multiplier",
       dataIndex: "bandwidthper",
       key: "bandwidthper",
-      width: 100,
+      width: 80,
       render: (text, result) => {
         return text ? text : '-'
       },
@@ -793,6 +794,20 @@ export default function TADashboard() {
       width: 150,
       render: (text, result) => {      
         return <div className={taStyles.todayText} style={{ background: "lightyellow",cursor:"pointer"}} onClick={() => showDetails(5,result,"Hold Pipeline (INR)",text)}>{text}</div>;
+      },      
+    },
+    {
+      title: (
+        <>
+          PreOnboarding <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "preOnboardingPipelineStr",
+      key: "preOnboardingPipelineStr",
+      width: 150,
+      render: (text, result) => {      
+        return <div className={taStyles.todayText} style={{ background: "lightpink",cursor:"pointer"}} onClick={() => showDetails(6,result,"PreOnboarding Pipeline (INR)",text)}>{text}</div>;
       },      
     },
    
@@ -2114,6 +2129,7 @@ export default function TADashboard() {
                         <Table.Summary.Cell index={7}><strong>{summaryData.total_AchievedPipelineStr || '-'}</strong></Table.Summary.Cell>
                         <Table.Summary.Cell index={8}><strong>{summaryData.total_LostPipelineStr || '-'}</strong></Table.Summary.Cell>
                         <Table.Summary.Cell index={9}><strong>{summaryData.total_HoldPipelineStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={10}><strong>{summaryData.total_PreOnboardingPipelineStr  || '-'}</strong></Table.Summary.Cell>
                       </Table.Summary.Row>
                     </Table.Summary>
                   );

@@ -88,8 +88,8 @@ export default function RecruiterReport() {
     }
     let pl = {
         "searchText": searchText,
-        "month": +moment(monthDate).format("M")  || 0, // Use || for default
-        "year": +moment(monthDate).format("YYYY") || 0, // Use || for default
+        "month": +moment(monthDate).format("M")  || 0,
+        "year": +moment(monthDate).format("YYYY") || 0,
         taUserIDs:tableFilteredState?.filterFields_OnBoard?.taUserIDs,
         TA_HeadID:selectedHead
       }
@@ -122,7 +122,7 @@ export default function RecruiterReport() {
       let filterResult = await TaDashboardDAO.getAllMasterDAO('RR');
       setIsLoading(false);
       if (filterResult.statusCode === HTTPStatusCode.OK) {
-        setFiltersList(filterResult?.responseBody || {}); // Ensure responseBody is not null
+        setFiltersList(filterResult?.responseBody || {});
       } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
         return navigate(UTSRoutes.LOGINROUTE);
       } else if (
@@ -245,7 +245,6 @@ export default function RecruiterReport() {
     }
   });
 
-  // Sort both groups
   Object.values(groupedByTaName).forEach((entry) => {
     entry.leftStages = sortByOrder(entry.leftStages, leftOrder);
     entry.rightStages = sortByOrder(entry.rightStages, rightOrder);
@@ -254,13 +253,7 @@ export default function RecruiterReport() {
   return Object.values(groupedByTaName);
 };
 
-
-  const weekHeaders = RecruiterListData[0]?.month_Name 
-    ? ['W1', 'W2', 'W3', 'W4', 'W5'].map(w => `${RecruiterListData[0]?.month_Name}_${w}`) 
-    : ['W1', 'W2', 'W3', 'W4', 'W5'];
-
-
-  return (
+return (
     <div className={recruiterStyle.hiringRequestContainer}>
          <div className={recruiterStyle.filterContainer}>
                 <div className={recruiterStyle.filterSets}>
@@ -361,7 +354,6 @@ export default function RecruiterReport() {
                         <tr>
                         <th>Stage</th>
                         <th>Achieved</th>
-                        {/* Use dynamic week headers if RecruiterListData[0]?.month_Name is available */}
                         {(RecruiterListData[0]?.month_Name 
                             ? ['W1', 'W2', 'W3', 'W4', 'W5'].map(w => `${RecruiterListData[0]?.month_Name}_${w}`) 
                             : ['W1', 'W2', 'W3', 'W4', 'W5']
@@ -386,7 +378,6 @@ export default function RecruiterReport() {
 
                 {recruiter.leftStages && recruiter.rightStages && (
                   <div className={recruiterStyle.keyValuePairsContainerTwoCol}>
-                    {/* Left Column */}
                     <div className={recruiterStyle.kvColumn}>
                       {recruiter.leftStages.map((stage, index) => {
                         let displayValue;                    
@@ -420,7 +411,6 @@ export default function RecruiterReport() {
                       })}
                     </div>
 
-                    {/* Right Column */}
                     <div className={recruiterStyle.kvColumn}>
                       {recruiter.rightStages.map((stage, index) => {
                         let displayValue;
@@ -443,7 +433,6 @@ export default function RecruiterReport() {
                         } else {
                           displayValue = String(val);
                         }
-
                         return (
                           <div key={index} className={recruiterStyle.keyValuePair}>
                             <span className={recruiterStyle.kvLabel}>{stage.profileStatusID === 16 ? 'Cur. Month Pipeline (INR)' : stage.profileStage}: </span>

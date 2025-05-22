@@ -38,10 +38,8 @@ const generateWeekColumns = (year, monthIndex, daysInMonth) => {
             }
           : null
       );
-
       current.setDate(current.getDate() + 1);
     }
-
     weeks.push(week);
   }
 
@@ -117,8 +115,6 @@ const DailySnapshot = () => {
   const selectedYear = monthDate.getFullYear();
   const monthIndex = monthDate.getMonth();
   const daysInMonth = new Date(selectedYear, monthIndex + 1, 0).getDate();
-
-  // Memoized week columns for better performance
   const weeks = useMemo(() => generateWeekColumns(selectedYear, monthIndex, daysInMonth), [selectedYear, monthIndex, daysInMonth]);
 
   const onMonthCalenderFilter = (date) => {
@@ -129,13 +125,11 @@ const DailySnapshot = () => {
     getDailySnapshotData();
   }, [monthDate]);
 
-  // Fetch daily snapshot data and handle API responses
   const getDailySnapshotData = async () => {
     const payload = {
-      month: moment(monthDate).month() + 1, // Months are 0-indexed in JS
+      month: moment(monthDate).month() + 1,
       year: moment(monthDate).year(),
     };
-
     setIsLoading(true);
     try {
       const result = await ReportDAO.getDailySnapshotDAO(payload);
@@ -161,7 +155,6 @@ const DailySnapshot = () => {
             ...dailyMapped,
           };
         });
-
         setRecruiterListData(formattedData);
       } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
         setRecruiterListData([]);
@@ -182,10 +175,10 @@ const DailySnapshot = () => {
     key={metric.stage_ID}
     xs={24}
     sm={12}
-    md={8}   // 3 per row at medium screens
-    lg={6}   // 4 per row at large screens
-    xl={4}   // 6 per row at extra-large screens
-    style={{ margin: "10px 0",padding:"10px" }} // vertical margin only
+    md={8}   
+    lg={6}   
+    xl={4}   
+    style={{ margin: "10px 0",padding:"10px" }} 
   >
     <Card size="small" style={{ height: "100%", width: "100%" }}>
       <Text strong>{metric.stage}</Text>
@@ -217,7 +210,7 @@ const DailySnapshot = () => {
               <div className={styles.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
                 <DatePicker
-                  onKeyDown={(e) => e.preventDefault()} // Prevent key events
+                  onKeyDown={(e) => e.preventDefault()}
                   className={styles.dateFilter}
                   placeholderText="Month - Year"
                   selected={monthDate}
