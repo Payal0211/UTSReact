@@ -36,7 +36,6 @@ const { Option } = Select;
 
 export default function TADashboard() {
   const navigate = useNavigate();
-  // const [filteredInfo, setFilteredInfo] = useState({});
   const [selectedHead, setSelectedHead] = useState("");
   const [searchText, setSearchText] = useState("");
   const [debounceSearchText, setDebouncedSearchText] = useState("");
@@ -736,7 +735,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Active <br />
+          Total Active<br />
           Pipeline (INR)
         </>
       ),
@@ -835,7 +834,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Active HR <br />
+          Total Active<br />
           Pipeline (INR)
         </>
       ),
@@ -848,7 +847,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Achieve HR <br />
+          Achieve <br />
           Pipeline (INR)
         </>
       ),
@@ -1397,22 +1396,7 @@ export default function TADashboard() {
       key: "totalRevenue_NoofTalentStr",
       width: "115px",
       fixed: "left",
-      // render: (value) => `₹${value.toLocaleString()}`
-    },
-    // {
-    //   title: <>Profiles<br/>  Shared<br/>  Achieved</>,
-    //   dataIndex: "profile_Shared_Achieved",
-    //   key: "profile_Shared_Achieved",
-    //   fixed: "left",
-    //   width: "100px",
-    // },
-    // {
-    //   title: <>L1 Interviews<br/> Scheduled <br/></>,
-    //   dataIndex: "interview_Scheduled_Target",
-    //   key: "interview_Scheduled_Target",
-    //   fixed: "left",
-    //   width: "100px",
-    // },
+    },   
     {
       title: "Contract / DP",
       dataIndex: "modelType",
@@ -1431,7 +1415,6 @@ export default function TADashboard() {
       dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
       key: "talent_AnnualCTC_Budget_INRValueStr",
       width: "120px",
-      // fixed: "left",
       render: (text, result) => {
         return <Tooltip title={result.actualCostWithCurrency}>{text}</Tooltip>;
       },
@@ -1447,8 +1430,6 @@ export default function TADashboard() {
       dataIndex: "revenue_On10PerCTCStr",
       key: "revenue_On10PerCTCStr",
       width: "105px",
-      // fixed: "left",
-      // render: (value) => `₹${value.toLocaleString()}`
     },
     {
       title: (
@@ -1922,36 +1903,7 @@ export default function TADashboard() {
           };
           return newDS;
         }
-      });
-      // if(commentData?.latestNotes !== null ){
-      //   setTaListData((prev) => {
-      //     let oldComments = prev[commentData?.index]?.latestNotes
-      //     let newItem = `<li>${note}</li>`;
-      //     let newDS = [...prev];
-      //     newDS[commentData?.index] = {
-      //       ...newDS[commentData?.index],
-      //       latestNotes: oldComments.replace('<ul>', `<ul>${newItem}`),
-      //     };
-      //     return newDS;
-      //   });
-      // }else{
-      //   let newItem = `<ul><li>${note}</li></ul>`;
-      //   setTaListData((prev) => {
-      //     let newDS = [...prev];
-      //     newDS[commentData?.index] = {
-      //       ...newDS[commentData?.index],
-      //       latestNotes: newItem,
-      //     };
-      //     return newDS;
-      //   });
-      // }
-
-      // let newComment = `${note} <br/> ${
-      //   commentData?.latestNotes !== null ? commentData?.latestNotes : ""
-      // }`;
-
-      //  setCommentData(prev=>{
-      //   return {...prev,latestNotes:newComment}})
+      });      
     }
   };
 
@@ -2121,15 +2073,57 @@ export default function TADashboard() {
                       <Table.Summary.Row>
                         <Table.Summary.Cell index={0}><strong>Total :</strong></Table.Summary.Cell>
                         <Table.Summary.Cell index={1}><strong>{summaryData.total_GoalStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={2}><strong>{summaryData.sumOfTotalRevenueStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={2}>
+                          <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", '')}>
+                            {summaryData.sumOfTotalRevenueStr || '-'}
+                          </span>
+                        </Table.Summary.Cell>                          
                         <Table.Summary.Cell index={3}><strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={4}><strong>{summaryData.total_CurrentMonthActualPipelineStr || '-'}</strong></Table.Summary.Cell>
+                          <Table.Summary.Cell index={4}>
+                            <span
+                              style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                              onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", '')}
+                            >
+                              {summaryData.total_CurrentMonthActualPipelineStr || '-'}
+                            </span>
+                          </Table.Summary.Cell>                        
                         <Table.Summary.Cell index={5}><strong>{summaryData.total_ActualPipelineStr || '-'}</strong></Table.Summary.Cell>
                         <Table.Summary.Cell index={6}></Table.Summary.Cell> {/* Multiplier */}
-                        <Table.Summary.Cell index={7}><strong>{summaryData.total_AchievedPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={8}><strong>{summaryData.total_LostPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={9}><strong>{summaryData.total_HoldPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={10}><strong>{summaryData.total_PreOnboardingPipelineStr  || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={7}>
+                          <span
+                            style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                            onClick={() => showDetails(3, { taUserID: 2 }, "Achieved Pipeline (INR)", '')}
+                          >
+                            {summaryData.total_AchievedPipelineStr || '-'}
+                          </span>
+                        </Table.Summary.Cell>
+
+                        <Table.Summary.Cell index={8}>
+                          <span
+                            style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                            onClick={() => showDetails(4, { taUserID: 2}, "Lost Pipeline (INR)", '')}
+                          >
+                            {summaryData.total_LostPipelineStr || '-'}
+                          </span>
+                        </Table.Summary.Cell>
+
+                        <Table.Summary.Cell index={9}>
+                          <span
+                            style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                            onClick={() => showDetails(5 ,{ taUserID: 2 }, "Hold Pipeline (INR)", '')}
+                          >
+                            {summaryData.total_HoldPipelineStr || '-'}
+                          </span>
+                        </Table.Summary.Cell>
+
+                        <Table.Summary.Cell index={10}>
+                          <span
+                            style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                            onClick={() => showDetails(6, { taUserID: 2 }, "Pre-Onboarding Pipeline (INR)", '')}
+                          >
+                            {summaryData.total_PreOnboardingPipelineStr || '-'}
+                          </span>
+                        </Table.Summary.Cell>
                       </Table.Summary.Row>
                     </Table.Summary>
                   );
@@ -2163,7 +2157,6 @@ export default function TADashboard() {
               value: v.id,
             }))}
             optionFilterProp="label"
-            // getPopupContainer={(trigger) => trigger.parentElement}
           />
         </div>
       </div>
@@ -2190,21 +2183,6 @@ export default function TADashboard() {
               <div className={taStyles.label}>Date</div>
               <div className={taStyles.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                {/* <DatePicker
-                  style={{ backgroundColor: "red" }}
-                  onKeyDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  className={taStyles.dateFilter}
-                  placeholderText="Start date"
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  dateFormat="dd-MM-yyyy"
-                  minDate={new Date()}
-                  maxDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
-                /> */}
-
                   <DatePicker
                     style={{ backgroundColor: "red" }}
                     onKeyDown={(e) => {
@@ -2277,15 +2255,6 @@ export default function TADashboard() {
                 />
               )}
             </div>
-            {/* <button
-              style={{ marginLeft: "15px" }}
-              type="submit"
-              className={taStyles.btnPrimary}
-              onClick={() => {}}
-            >
-              Search
-            </button> */}
-
             <p
               className={taStyles.resetText}
               style={{ width: "190px" }}
