@@ -685,6 +685,7 @@ export default function TADashboard() {
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
       width: 120,
+      align: 'center',
       render: (text, result) => {              
         return text ? text : '-';
       },
@@ -698,6 +699,7 @@ export default function TADashboard() {
       ),
       dataIndex: "totalRevenuePerUserStr",
       key: "totalRevenuePerUserStr",
+      align: 'center',
       width: 150,
        render: (text, result) => {        
         return <div style={{cursor:"pointer"}} onClick={() => showDetails(0,result,"Assigned Pipeline (INR)",text)}>{text}</div>;
@@ -713,6 +715,7 @@ export default function TADashboard() {
       dataIndex: "carryFwdPipelineStr",
       key: "carryFwdPipelineStr",
       width: 150,
+      align: 'center',
       render: (text, result) => {        
         return <div className={taStyles.todayText} style={{ background: "#babaf5"}}>{text}</div>;
       },
@@ -728,6 +731,7 @@ export default function TADashboard() {
       dataIndex: "currentMonthActualPipelineStr",
       key: "currentMonthActualPipelineStr",
       width: 150,
+      align: 'center',
       render: (text, result) => {        
         return <div style={{cursor:"pointer"}} onClick={() => showDetails(1,result,"Current Month Active Pipeline (INR)",text)}>{text}</div>;
       },
@@ -742,6 +746,7 @@ export default function TADashboard() {
       dataIndex: "actualPipelineStr",
       key: "actualPipelineStr",
       width: 150,      
+      align: 'center',
       render: (text, result) => {       
         return <div className={taStyles.today1Text}>{text}</div>;
       },
@@ -751,6 +756,7 @@ export default function TADashboard() {
       dataIndex: "bandwidthper",
       key: "bandwidthper",
       width: 80,
+      align: 'center',
       render: (text, result) => {
         return text ? text : '-'
       },
@@ -765,6 +771,7 @@ export default function TADashboard() {
       dataIndex: "achievedPipelineStr",
       key: "achievedPipelineStr",
       width: 180,
+      align: 'center',
       render: (text, result) => {        
         return <div className={taStyles.todayText} style={{cursor:"pointer"}} onClick={() => showDetails(3,result,"Achieve Pipeline (INR)",text)}>{text}</div>;
       },
@@ -774,6 +781,7 @@ export default function TADashboard() {
       dataIndex: "lostPipelineStr",
       key: "lostPipelineStr",
       width: 160,
+      align: 'center',
       render: (text, result) => {       
         return (
           <div
@@ -791,6 +799,7 @@ export default function TADashboard() {
       dataIndex: "holdPipelineStr",
       key: "holdPipelineStr",
       width: 150,
+      align: 'center',
       render: (text, result) => {      
         return <div className={taStyles.todayText} style={{ background: "lightyellow",cursor:"pointer"}} onClick={() => showDetails(5,result,"Hold Pipeline (INR)",text)}>{text}</div>;
       },      
@@ -805,16 +814,11 @@ export default function TADashboard() {
       dataIndex: "preOnboardingPipelineStr",
       key: "preOnboardingPipelineStr",
       width: 150,
+      align: 'center',
       render: (text, result) => {      
         return <div className={taStyles.todayText} style={{ background: "lightpink",cursor:"pointer"}} onClick={() => showDetails(6,result,"PreOnboarding Pipeline (INR)",text)}>{text}</div>;
       },      
-    },
-   
-    // {
-    //   title: "Total Pipeline (INR)",
-    //   dataIndex: "totalRevenuePerUserStr",
-    //   key: "totalRevenuePerUserStr",
-    // },
+    }
   ];    
 
   const daiyTargetColumns = [
@@ -827,6 +831,7 @@ export default function TADashboard() {
       ),
       dataIndex: "carryFwdPipeLineStr",
       key: "carryFwdPipeLineStr",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.today1Text} style={{background:"#babaf5"}}>{text}</div>;
       },
@@ -839,6 +844,7 @@ export default function TADashboard() {
       ),
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
+      align: 'center',
       render: (text) => {
         return <div>{text}</div>;
       },
@@ -852,6 +858,7 @@ export default function TADashboard() {
       ),
       dataIndex: "achievedHRPipeLineStr",
       key: "achievedHRPipeLineStr",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.todayText}>{summaryData.total_AchievedPipelineStr ? summaryData.total_AchievedPipelineStr : '-'}</div>;
       },
@@ -863,6 +870,7 @@ export default function TADashboard() {
         </>
       ),
       dataIndex: "lostHRPipeLineStr",
+      align: 'center',
       key: "lostHRPipeLineStr",
       render: (text) => {
         return <div className={taStyles.today2Text} style={{background:'lightsalmon'}}>{text}</div>;
@@ -877,6 +885,7 @@ export default function TADashboard() {
       ),
       dataIndex: "totalActivePipeLineStr",
       key: "totalActivePipeLineStr",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.today1Text}>{text}</div>;
       },
@@ -889,10 +898,24 @@ export default function TADashboard() {
       ),
       dataIndex: "today_ProfilesharedTarget",
       key: "today_ProfilesharedTarget",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.today2Text}>{text}</div>;
       },
     },    
+    {
+      title: (
+        <>
+          Today Total Profile <br />
+          Shared Achieved
+        </>
+      ),
+      dataIndex: "today_ProfilesharedAchieved",
+      key: "today_ProfilesharedAchieved",
+      render: (text) => {
+        return <div className={taStyles.today2Text}>{text}</div>;
+      },
+    },
     {
       title: (
         <>
@@ -902,6 +925,7 @@ export default function TADashboard() {
       ),
       dataIndex: "today_L1Round",
       key: "today_L1Round",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.today2Text}>{text}</div>;
       },
@@ -915,6 +939,7 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_ProfilesharedTarget",
       key: "yesterday_ProfilesharedTarget",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
@@ -927,6 +952,7 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_ProfilesharedAchieved",
       key: "yesterday_ProfilesharedAchieved",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
@@ -939,6 +965,7 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_L1Round",
       key: "yesterday_L1Round",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
@@ -2077,62 +2104,68 @@ export default function TADashboard() {
                 columns={totalRevenueColumns}
                 pagination={false}
                 scroll={{ x: "max-content", y: "1vh" }}
-                summary={() => {
+               summary={() => {
                   return (
                     <Table.Summary fixed>
                       <Table.Summary.Row>
-                        <Table.Summary.Cell index={0}><strong>Total :</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={1}><strong>{summaryData.total_GoalStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={0}>
+                          <div>
+                            <strong>Total :</strong>
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={1}>
+                          <div style={{ textAlign: 'center' }}>
+                            <strong>{summaryData.total_GoalStr || '-'}</strong>
+                          </div>
+                        </Table.Summary.Cell>
                         <Table.Summary.Cell index={2}>
-                          <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", '')}>
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", '')}>
                             {summaryData.sumOfTotalRevenueStr || '-'}
-                          </span>
-                        </Table.Summary.Cell>                          
-                        <Table.Summary.Cell index={3}><strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong></Table.Summary.Cell>
-                          <Table.Summary.Cell index={4}>
-                            <span
-                              style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                              onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", '')}
-                            >
-                              {summaryData.total_CurrentMonthActualPipelineStr || '-'}
-                            </span>
-                          </Table.Summary.Cell>                        
-                        <Table.Summary.Cell index={5}><strong>{summaryData.total_ActualPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={6}></Table.Summary.Cell> {/* Multiplier */}
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={3}>
+                          <div style={{ textAlign: 'center' }}>
+                            <strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong>
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={4}>
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", '')}>
+                            {summaryData.total_CurrentMonthActualPipelineStr || '-'}
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={5}>
+                          <div style={{ textAlign: 'center' }}>
+                            <strong>{summaryData.total_ActualPipelineStr || '-'}</strong>
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={6}>
+                          <div style={{ textAlign: 'center' }}></div>
+                        </Table.Summary.Cell>
                         <Table.Summary.Cell index={7}>
-                          <span
-                            style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => showDetails(3, { taUserID: 2 }, "Achieved Pipeline (INR)", '')}
-                          >
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(3, { taUserID: 2 }, "Achieved Pipeline (INR)", '')}>
                             {summaryData.total_AchievedPipelineStr || '-'}
-                          </span>
+                          </div>
                         </Table.Summary.Cell>
-
                         <Table.Summary.Cell index={8}>
-                          <span
-                            style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => showDetails(4, { taUserID: 2}, "Lost Pipeline (INR)", '')}
-                          >
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(4, { taUserID: 2 }, "Lost Pipeline (INR)", '')}>
                             {summaryData.total_LostPipelineStr || '-'}
-                          </span>
+                          </div>
                         </Table.Summary.Cell>
-
                         <Table.Summary.Cell index={9}>
-                          <span
-                            style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => showDetails(5 ,{ taUserID: 2 }, "Hold Pipeline (INR)", '')}
-                          >
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(5, { taUserID: 2 }, "Hold Pipeline (INR)", '')}>
                             {summaryData.total_HoldPipelineStr || '-'}
-                          </span>
+                          </div>
                         </Table.Summary.Cell>
-
                         <Table.Summary.Cell index={10}>
-                          <span
-                            style={{ cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => showDetails(6, { taUserID: 2 }, "Pre-Onboarding Pipeline (INR)", '')}
-                          >
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(6, { taUserID: 2 }, "Pre-Onboarding Pipeline (INR)", '')}>
                             {summaryData.total_PreOnboardingPipelineStr || '-'}
-                          </span>
+                          </div>
                         </Table.Summary.Cell>
                       </Table.Summary.Row>
                     </Table.Summary>
