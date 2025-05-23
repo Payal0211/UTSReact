@@ -643,7 +643,7 @@ export default function TADashboard() {
   };
 
   const showDetails = async (pipeLineTypeId,data,title,value) => {   
-    setIsLoading(true);
+    setpipelineLoading(true);
     const month = moment(new Date()).format("MM");
     const year = moment(new Date()).format("YYYY");
     let pl = {
@@ -653,7 +653,7 @@ export default function TADashboard() {
       year:Number(year)
     }
     let result = await TaDashboardDAO.getTAWiseHRPipelineDetailsDAO(pl);
-    setIsLoading(false);
+    setpipelineLoading(false);
     if(result?.statusCode === HTTPStatusCode.OK){      
       setIsShowDetails({
         isBoolean:true,
@@ -2055,7 +2055,6 @@ export default function TADashboard() {
                   <Table
                     dataSource={dailyActivityTargets}
                     columns={daiyTargetColumns}
-                    // bordered
                     pagination={false}
                   />
                 </div>
