@@ -834,16 +834,15 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Total Active<br />
-          Pipeline (INR)
+          Added HR (New)
         </>
       ),
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
       render: (text) => {
-        return <div className={taStyles.today1Text}>{summaryData.total_ActualPipelineStr ? summaryData.total_ActualPipelineStr : '-'}</div>;
+        return <div>{text}</div>;
       },
-    },
+    },  
     {
       title: (
         <>
@@ -856,7 +855,32 @@ export default function TADashboard() {
       render: (text) => {
         return <div className={taStyles.todayText}>{summaryData.total_AchievedPipelineStr ? summaryData.total_AchievedPipelineStr : '-'}</div>;
       },
+    },      
+    {
+      title: (
+        <>
+          Lost Pipeline (INR)
+        </>
+      ),
+      dataIndex: "lostHRPipeLineStr",
+      key: "lostHRPipeLineStr",
+      render: (text) => {
+        return <div className={taStyles.today2Text} style={{background:'lightsalmon'}}>{text}</div>;
+      },
     },
+    {
+      title: (
+        <>
+          Total Active<br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "totalActivePipeLineStr",
+      key: "totalActivePipeLineStr",
+      render: (text) => {
+        return <div className={taStyles.today1Text}>{text}</div>;
+      },
+    },  
     {
       title: (
         <>
@@ -868,20 +892,7 @@ export default function TADashboard() {
       render: (text) => {
         return <div className={taStyles.today2Text}>{text}</div>;
       },
-    },
-    {
-      title: (
-        <>
-          Today Total Profile <br />
-          Shared Achieved
-        </>
-      ),
-      dataIndex: "today_ProfilesharedAchieved",
-      key: "today_ProfilesharedAchieved",
-      render: (text) => {
-        return <div className={taStyles.today2Text}>{text}</div>;
-      },
-    },
+    },    
     {
       title: (
         <>
