@@ -32,6 +32,7 @@ import { useForm } from "react-hook-form";
 import { BsClipboard2CheckFill } from "react-icons/bs";
 import MoveToAssessment from "modules/hiring request/components/talentList/moveToAssessment";
 import { InterviewDAO } from "core/interview/interviewDAO";
+import LogoLoader from "shared/components/loader/logoLoader";
 const { Option } = Select;
 
 export default function TADashboard() {
@@ -40,6 +41,7 @@ export default function TADashboard() {
   const [searchText, setSearchText] = useState("");
   const [debounceSearchText, setDebouncedSearchText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [modalLoader, setModalLoader] = useState(false);
   const [filtersList, setFiltersList] = useState({});
   const [filteredTagLength, setFilteredTagLength] = useState(0);
   const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -115,7 +117,7 @@ export default function TADashboard() {
   } = useForm();
   const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
   const [userData, setUserData] = useState({});
-  const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:""});
+  const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:"",isTotal:false});
   const [allShowDetails, setAllShowDetails] = useState([]);
   useEffect(() => {
     const getUserResult = async () => {
@@ -642,8 +644,8 @@ export default function TADashboard() {
     }
   };
 
-  const showDetails = async (pipeLineTypeId,data,title,value) => {   
-    setpipelineLoading(true);
+  const showDetails = async (pipeLineTypeId,data,title,value,isTotal) => {   
+    setModalLoader(true);
     const month = moment(new Date()).format("MM");
     const year = moment(new Date()).format("YYYY");
     let pl = {
@@ -653,12 +655,13 @@ export default function TADashboard() {
       year:Number(year)
     }
     let result = await TaDashboardDAO.getTAWiseHRPipelineDetailsDAO(pl);
-    setpipelineLoading(false);
-    if(result?.statusCode === HTTPStatusCode.OK){      
+    setModalLoader(false);
+    if(result?.statusCode === HTTPStatusCode.OK){         
       setIsShowDetails({
         isBoolean:true,
         title:title,
-        value:value
+        value:value,
+        isTotal:isTotal
       });
       setAllShowDetails(result?.responseBody);
     }
@@ -2065,6 +2068,7 @@ export default function TADashboard() {
     <div className={taStyles.hiringRequestContainer}>   
       <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
+          <LogoLoader visible={modalLoader} />
           <div
             className={taStyles.filterSetsInner}
             onClick={() => setShowActivePipeline((prev) => !prev)}
@@ -2120,7 +2124,7 @@ export default function TADashboard() {
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={2}>
                           <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", '')}>
+                            onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", summaryData.total_CarryFwdPipelineStr,true)}>
                             {summaryData.sumOfTotalRevenueStr || '-'}
                           </div>
                         </Table.Summary.Cell>
@@ -2131,7 +2135,7 @@ export default function TADashboard() {
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={4}>
                           <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", '')}>
+                            onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", summaryData.total_CurrentMonthActualPipelineStr,true)}>
                             {summaryData.total_CurrentMonthActualPipelineStr || '-'}
                           </div>
                         </Table.Summary.Cell>
@@ -2145,25 +2149,25 @@ export default function TADashboard() {
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={7}>
                           <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(3, { taUserID: 2 }, "Achieved Pipeline (INR)", '')}>
+                            onClick={() => showDetails(3, { taUserID: 2 }, "Achieved Pipeline (INR)", summaryData.total_AchievedPipelineStr,true)}>
                             {summaryData.total_AchievedPipelineStr || '-'}
                           </div>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={8}>
                           <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(4, { taUserID: 2 }, "Lost Pipeline (INR)", '')}>
+                            onClick={() => showDetails(4, { taUserID: 2 }, "Lost Pipeline (INR)",summaryData.total_LostPipelineStr,true)}>
                             {summaryData.total_LostPipelineStr || '-'}
                           </div>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={9}>
                           <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(5, { taUserID: 2 }, "Hold Pipeline (INR)", '')}>
+                            onClick={() => showDetails(5, { taUserID: 2 }, "Hold Pipeline (INR)", summaryData.total_HoldPipelineStr,true)}>
                             {summaryData.total_HoldPipelineStr || '-'}
                           </div>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={10}>
                           <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(6, { taUserID: 2 }, "Pre-Onboarding Pipeline (INR)", '')}>
+                            onClick={() => showDetails(6, { taUserID: 2 }, "Pre-Onboarding Pipeline (INR)", summaryData.total_PreOnboardingPipelineStr,true)}>
                             {summaryData.total_PreOnboardingPipelineStr || '-'}
                           </div>
                         </Table.Summary.Cell>
@@ -3369,13 +3373,13 @@ export default function TADashboard() {
           open={isShowDetails?.isBoolean}
           className="engagementModalStyle"
           onCancel={() => {
-            setIsShowDetails({isBoolean:false,title:"",value:""});
+            setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false});
             setAllShowDetails([]);
           }}
         >
                
         <div style={{ padding: "20px 15px" }}>
-          <h3><b>{allShowDetails[0]?.taName ? allShowDetails[0]?.taName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
+          <h3><b>{(allShowDetails[0]?.taName && !isShowDetails?.isTotal) ? allShowDetails[0]?.taName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
         </div>
 
         {allShowDetails.length > 0 ? (
@@ -3426,7 +3430,7 @@ export default function TADashboard() {
           <button
             className={taStyles.btnCancle}
             onClick={() => {
-              setIsShowDetails({isBoolean:false,title:"",value:""});
+              setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false});
               setAllShowDetails([]);
             }}
           >
