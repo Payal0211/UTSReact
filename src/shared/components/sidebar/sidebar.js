@@ -330,7 +330,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent' || title === 'Talent Documents'
 	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout"  || title === 'Invoice'
-    || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency' || title === 'Leave') {
+    || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency' || title === 'Leave'|| title === 'TA Goal') {
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
 		return isVisible
@@ -736,6 +736,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			navigateTo: '/master',
 			isVisible:isAccess(usertypeID,'Master'),
 			branch: [
+				new SideBarModels({
+					id: 'Master_Country_List',
+					title: 'TA Goal',
+					isActive: false,
+					icon: GlobIcon,
+					navigateTo: UTSRoutes.MASTERTAGOAL,
+					isChildren: false,
+					branch: [],
+					isVisible:isAccess(usertypeID,'TA Goal'),
+				}),
 				new SideBarModels({
 					id: 'Master_Country_List',
 					title: 'Country',

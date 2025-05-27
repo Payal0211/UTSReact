@@ -116,7 +116,11 @@ export default function TADashboard() {
   } = useForm();
   const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
   const [userData, setUserData] = useState({});
+<<<<<<< Updated upstream
   const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:""});
+=======
+  const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
+>>>>>>> Stashed changes
   const [allShowDetails, setAllShowDetails] = useState([]);
   useEffect(() => {
     const getUserResult = async () => {
@@ -659,7 +663,13 @@ export default function TADashboard() {
       setIsShowDetails({
         isBoolean:true,
         title:title,
+<<<<<<< Updated upstream
         value:value
+=======
+        value:value,
+        isTotal:isTotal,
+        TAName:data?.taName
+>>>>>>> Stashed changes
       });
       setAllShowDetails(result?.responseBody);
     }
@@ -3342,13 +3352,20 @@ export default function TADashboard() {
           open={isShowDetails?.isBoolean}
           className="engagementModalStyle"
           onCancel={() => {
+<<<<<<< Updated upstream
             setIsShowDetails({isBoolean:false,title:"",value:""});
+=======
+            setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
+>>>>>>> Stashed changes
             setAllShowDetails([]);
           }}
-        >
-               
+        >               
         <div style={{ padding: "20px 15px" }}>
+<<<<<<< Updated upstream
           <h3><b>{allShowDetails[0]?.taName ? allShowDetails[0]?.taName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
+=======
+          <h3><b>{(isShowDetails?.TAName && !isShowDetails?.isTotal) ? isShowDetails?.TAName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
+>>>>>>> Stashed changes
         </div>
 
         {allShowDetails.length > 0 ? (
@@ -3399,7 +3416,11 @@ export default function TADashboard() {
           <button
             className={taStyles.btnCancle}
             onClick={() => {
+<<<<<<< Updated upstream
               setIsShowDetails({isBoolean:false,title:"",value:""});
+=======
+              setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
+>>>>>>> Stashed changes
               setAllShowDetails([]);
             }}
           >

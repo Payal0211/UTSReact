@@ -113,6 +113,10 @@ const CountryList = React.lazy(() =>
 	import('modules/masters/screens/country/countryList'),
 );
 
+const TAGoalList = React.lazy(() =>
+	import('modules/masters/screens/taGoal/taGoalList'),
+);
+
 const CurrencyList = React.lazy(() =>
 	import('modules/masters/screens/currency/currencyList'),
 );
@@ -238,6 +242,7 @@ export default class UTSRoutes {
 	static VIEWHRDETAILS = '/viewHrDetails/:id';
 	static JDDUMPREPORTROUTE = '/jdDump';
 	static MASTERCOUNTRYROUTE = '/master/country';
+	static MASTERTAGOAL = '/master/tagoal';
 	static MASTERCURRENCYROUTE = '/master/currency';
 	static MASTERROLE = '/master/role';
 	static MASTERTIMEZONE = '/master/timezone';
@@ -410,6 +415,11 @@ export const navigateToComponent = {
 	[UTSRoutes.MASTERCOUNTRYROUTE]: (
 		<Suspense>
 			<CountryList />
+		</Suspense>
+	),	
+	[UTSRoutes.MASTERTAGOAL]: (
+		<Suspense>
+			<TAGoalList />
 		</Suspense>
 	),
 	[UTSRoutes.MASTERCURRENCYROUTE]: (

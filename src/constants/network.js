@@ -433,7 +433,10 @@ export class UsersAPI {
 	static LEVEL = 'GetLevel';
 	static GEO = 'GetGeo';
 	static REPORTING_USER = 'GetReportingUser';
-	static DEACTIVATE_USER = 'DeactivateUser'
+	static DEACTIVATE_USER = 'DeactivateUser';
+	static GET_TA_MONTHLY_GOAL = 'GetTAMonthlyGoal';
+	static ADD_UPDATE_TA_MONTHLY_GOAL = 'AddOrUpdateTAMonthlyGoal';
+	static DELETE_TA_MONTHLY_GOAL = 'DeleteTAMonthlyGoal';
 }
 
 export class InterviewsAPI {
