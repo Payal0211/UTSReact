@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Modal, Select, Table, Input, Tooltip } from 'antd';
+import { Modal, Select, Table, Input, Tooltip, Spin } from 'antd';
 import taStyles from './taGoalList.module.css';
 import { GrEdit } from 'react-icons/gr';
 import { IoIosRemoveCircle } from 'react-icons/io';
@@ -121,11 +121,11 @@ const TAGOALList = () => {
 		ID: isEditMode && selectedGoal ? selectedGoal.id : 0,
 		TA_User_ID: newTAUserValue,
 		Goal: parseFloat(goalAmount),
-	};
-
-	setLoading(true);
+	};	
 	try {
+		setLoading(true);
 		const response = await TaDashboardDAO.addOrUpdateTAMonthlyGoalDAO(payload);
+		setLoading(false);
 		if (response && response.statusCode === HTTPStatusCode.OK) {
 			await getTAMonthlyGoal();
 			handleCloseModal();
@@ -135,7 +135,7 @@ const TAGOALList = () => {
 	} catch (error) {
 		console.error('API error:', error);
 	}
-	setLoading(false);
+	
 };
 
 
@@ -155,7 +155,7 @@ const TAGOALList = () => {
 	setLoading(true);
 	try {
 		const response = await TaDashboardDAO.deleteTAMonthlyGoalDAO({
-			id: goalToRemove.id, 
+			ID: goalToRemove.id, 
 		});
 
 		if (response && response.statusCode === HTTPStatusCode.OK) {
@@ -240,21 +240,24 @@ const TAGOALList = () => {
 						Goal Amount
 					</label>
 					<input
-						type="number"
-						min={0}
+						type="text"
+						inputMode="numeric"
+						pattern="[0-9]*"
 						placeholder="Enter goal"
 						className={`${taStyles.formcontrol} ${amountError ? taStyles.inputError : ''}`}
 						value={goalAmount}
 						onChange={(e) => {
-							setGoalAmount(e.target.value);
+							const numericValue = e.target.value.replace(/\D/g, ''); // Allow only digits
+							setGoalAmount(numericValue);
 							setAmountError(false);
 						}}
-						onKeyPress={(event) => {
-							if (event.key === 'e' || event.key === 'E') {
-								event.preventDefault();
-							}
+						onPaste={(e) => {
+						const pasted = e.clipboardData.getData('Text');
+						if (!/^\d+$/.test(pasted)) {
+							e.preventDefault();
+						}
 						}}
-					/>
+						/>
 					{amountError && (
 						<div style={{ color: 'red', fontSize: '12px' }}>
 							Please enter a valid goal.
@@ -271,9 +274,9 @@ const TAGOALList = () => {
 					}}
 				>
 					<button className={taStyles.btnPrimary} onClick={handleSave}>
-						Save
+						{isLoading ? <Spin size="small"/> : 'Save'}
 					</button>
-					<button className={taStyles.btnCancle} onClick={handleCloseModal}>
+					<button className={taStyles.btnCancle} onClick={handleCloseModal} disabled={isLoading}>
 						Cancel
 					</button>
 				</div>

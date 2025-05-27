@@ -275,11 +275,10 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MASTERS +
-			UsersAPI.ADD_UPDATE_TA_MONTHLY_GOAL
+			UsersAPI.ADD_UPDATE_TA_MONTHLY_GOAL+`?ID=${payload?.ID}&TA_User_ID=${payload?.TA_User_ID}&Goal=${payload?.Goal}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-        httpService.dataToSend = payload
 		try {
 			let response = await httpService.sendPostRequest();
 			return response;
@@ -292,11 +291,9 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MASTERS +
-			UsersAPI.DELETE_TA_MONTHLY_GOAL
-			
+			UsersAPI.DELETE_TA_MONTHLY_GOAL+`?ID=${payload?.ID}`			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-        httpService.dataToSend = payload
 		try {
 			let response = await httpService.sendPostRequest();
 			return response;
