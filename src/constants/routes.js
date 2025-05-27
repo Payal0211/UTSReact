@@ -137,6 +137,9 @@ const ClientReport = React.lazy(() =>
 const InvoiceReport = React.lazy(() => 
 	import('modules/report/screens/invoiceReport/invoiceReport'))
 
+const InvoiceCustomer = React.lazy(() => 
+	import('modules/report/screens/invoiceReport/invoiceCustomer')) 
+
 const LeaveReport = React.lazy(() => 
 	import('modules/report/screens/invoiceReport/leaveReport'))
 
@@ -204,6 +207,14 @@ const AMReport = React.lazy(() =>
 	import('modules/report/screens/amReport/amReport')
 )
 
+const DailyBusinessNumbers = React.lazy(() => 
+	import('modules/report/screens/dailyBusinessNumbers/dailyBusinessNumbers')
+)
+
+const PotentialClosuresSheet = React.lazy(() => 
+	import('modules/report/screens/potentialClosuresSheet/potentialClosuresSheet')
+)
+
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
 
@@ -266,6 +277,7 @@ export default class UTSRoutes {
 	static ABOUT_CLIENT = '/userDetails';
 	static ONBOARD = '/onBoardList';
 	static Invoice = '/Invoice'
+	static Customer = '/customer'
 	static Leave = '/leave'
 	static VIEWONBOARDDETAILS = '/viewOnboardDetails/:onboardID/:isOngoing'
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
@@ -279,6 +291,8 @@ export default class UTSRoutes {
 	static TALENT_NOTES = '/talentNotes';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 	static AM_REPORT = '/amReport';
+	static DAILY_BUSINESS_NUMBERS = 'dailyBusinessNumbers';
+	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresSheet'
 }
 
 export const navigateToComponent = {
@@ -466,6 +480,11 @@ export const navigateToComponent = {
 		<Suspense>
 			<InvoiceReport />
 		</Suspense>
+	),	
+	[UTSRoutes.Customer]:(
+		<Suspense>
+			<InvoiceCustomer />
+		</Suspense>
 	),
 	[UTSRoutes.RECRUITERREPORT]: (
 		<Suspense>
@@ -606,6 +625,18 @@ export const navigateToComponent = {
 [UTSRoutes.AM_REPORT]: (
 	<Suspense>
 		<AMReport />
+	</Suspense>
+),
+
+[UTSRoutes.DAILY_BUSINESS_NUMBERS]: (
+	<Suspense>
+		<DailyBusinessNumbers />
+	</Suspense>
+),
+
+[UTSRoutes.POTENTIAL_CLOSURES_SHEET]: (
+	<Suspense>
+		<PotentialClosuresSheet />
 	</Suspense>
 ),
 
