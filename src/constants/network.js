@@ -176,6 +176,7 @@ export class ReportType {
 	static ALL_TALENTS_NOTES = 'TalentNotesReport'
 	static TALENT_DOCUMENT_REPORT = 'TalentDocumentReport'
 	static ZOHO_INVOICE_REPORT = 'ZohoInvoiceReport'
+	static ZOHO_INVOICE_CUSTOMER_REPORT = 'ZohoCustomerReport'
 	static TALENT_LEAVE_TAKEN_REPORT = 'TalentLeaveTakenReport'
 	static RECRUITER_REPORT = 'RecruiterReport'
 	static CLIENT_DASHBOARD_REPORT = 'ClientDashboardReport'
@@ -435,7 +436,10 @@ export class UsersAPI {
 	static LEVEL = 'GetLevel';
 	static GEO = 'GetGeo';
 	static REPORTING_USER = 'GetReportingUser';
-	static DEACTIVATE_USER = 'DeactivateUser'
+	static DEACTIVATE_USER = 'DeactivateUser';
+	static GET_TA_MONTHLY_GOAL = 'GetTAMonthlyGoal';
+	static ADD_UPDATE_TA_MONTHLY_GOAL = 'AddOrUpdateTAMonthlyGoal';
+	static DELETE_TA_MONTHLY_GOAL = 'DeleteTAMonthlyGoal';
 }
 
 export class InterviewsAPI {

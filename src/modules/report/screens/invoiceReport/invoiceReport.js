@@ -3,11 +3,10 @@ import invoiceStyles from "./invoice.module.css";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { InputType } from "constants/application";
-import { Tabs, Select, Table, Modal, Tooltip } from "antd";
+import { Table } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { downloadToExcel } from "modules/report/reportUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
-import { Link } from "react-router-dom";
 
 export default function InvoiceReport() {
   const [openTicketSearchText, setopenTicketSearchText] = useState("");

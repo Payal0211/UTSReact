@@ -30,6 +30,7 @@ import TADashboardIcon from 'assets/svg/ta-dashboard.svg'
 import ClientCompIcon from 'assets/clientCompany.png'
 import SLAReport from 'assets/svg/slaReport.svg';
 import AMReportIcon from 'assets/svg/amreport.svg';
+import InvoiceIcon from 'assets/invoice.png';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -270,6 +271,10 @@ const Sidebar = () => {
 const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	let isVisible = false;
 
+	if(title === 'Invoice' || title === 'invoice' || title === 'Customer' ){
+		isVisible = (ID === 3 || ID === 2 || ID === 1) ? true : false;
+		return isVisible
+	}
 	if(ID === 2){
 		isVisible =  true
 		return isVisible	
@@ -283,7 +288,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
-	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'DailySnapshot' || title === 'amReport'){
+	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'DailySnapshot' || title === 'amReport' || title === 'PotentialClosuresSheet' || title === 'DailyBusinessNumbers'){
 		isVisible =  true;
 		return isVisible
 	}
@@ -317,8 +322,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	 title === 'Client' || title === 'JD Efficiency Report' || title === 'Incentive Report' ||
 	 title === 'I2S' || title === 'Master' || title ===  'Deal' || title === 'HR' || title ===  'UTM Tracking Report' ||
 	 title === 'Client Happiness Survey' ||  title === 'Team Demand Funnel' || title === 'Client Tracking Details' || title === 'Email Tracking Details' || title === 'Talent' || title === 'Talent Documents'
-	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout"  || title === 'Invoice'
-    || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency' || title === 'Leave') {
+	|| title === 'Clients' || title === 'HR Lost' || title === 'Supply Funnel' || title === "Backout"  || title === 'Country' || title === 'Role' || title === 'TimeZone' || title === 'Currency' || title === 'Leave'|| title === 'TA Goal') {
 
 		isVisible =  (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
 		return isVisible
@@ -502,20 +506,69 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					icon: ReplacementIcon,
 					navigateTo: UTSRoutes.REPLACEMENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Replacement')
-				}),
-			
+				}),			
 			]
 		}),
+		
+
 		new SideBarModels({
-			id: 'amReport',
-			title: 'AM Report',
+			id: 'omReport',
+			title: 'OM report',
 			isActive: false,
 			icon: AMReportIcon,
-			navigateTo: UTSRoutes.AM_REPORT,
-			isChildren: false,
-			branch: [],
-			isVisible: isAccess(usertypeID, 'amReport')
+			isChildren: true,
+			branch: [
+				new SideBarModels({
+					id: 'dailyBusinessNumbers',
+					title: 'Daily Business Numbers',
+					isActive: false,
+					navigateTo: UTSRoutes.DAILY_BUSINESS_NUMBERS,
+					isVisible: isAccess(usertypeID, 'DailyBusinessNumbers')
+				}),
+				new SideBarModels({
+					id: 'potentialClosuresSheet',
+					title: 'Potential Closures Sheet',
+					isActive: false,
+					navigateTo: UTSRoutes.POTENTIAL_CLOSURES_SHEET,
+					isVisible: isAccess(usertypeID, 'PotentialClosuresSheet')
+				}),
+				new SideBarModels({
+					id: 'amReport',
+					title: 'AM Report',
+					isActive: false,
+					navigateTo: UTSRoutes.AM_REPORT,
+					isVisible: isAccess(usertypeID, 'amReport')
+				}),
+			],
+			isVisible: isAccess(usertypeID, 'invoice')
 		}),
+
+
+		new SideBarModels({
+			id: 'invoice',
+			title: 'Invoice',
+			isActive: false,
+			icon: InvoiceIcon,
+			isChildren: true,
+			branch: [
+				new SideBarModels({
+					id: 'InvoiceReport',
+					title: 'Zoho Invoices',
+					isActive: false,
+					navigateTo: UTSRoutes.Invoice,
+					isVisible: isAccess(usertypeID, 'Invoice')
+				}),
+				new SideBarModels({
+					id: 'customer',
+					title: 'Zoho Customer',
+					isActive: false,
+					navigateTo: UTSRoutes.Customer,
+					isVisible: isAccess(usertypeID, 'Customer')
+				}),
+			],
+			isVisible: isAccess(usertypeID, 'invoice')
+		}),
+
 		new SideBarModels({
 			id: 'Reports',
 			title: 'Reports',
@@ -531,14 +584,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.REVENUE_REPORT,
 					isVisible: isAccess(usertypeID, 'Revenue',ShowRevenueRelatedData)
 				}),
-				new SideBarModels({
-					id: 'InvoiceReport',
-					title: 'Invoice',
-					isActive: false,
-					icon: clientReport,
-					navigateTo: UTSRoutes.Invoice,
-					isVisible: isAccess(usertypeID, 'Invoice')
-				}),
+				
 				new SideBarModels({
 					id: 'LeaveReport',
 					title: 'Leave',
@@ -735,6 +781,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			navigateTo: '/master',
 			isVisible:isAccess(usertypeID,'Master'),
 			branch: [
+				new SideBarModels({
+					id: 'Master_Country_List',
+					title: 'TA Goal',
+					isActive: false,
+					icon: GlobIcon,
+					navigateTo: UTSRoutes.MASTERTAGOAL,
+					isChildren: false,
+					branch: [],
+					isVisible:isAccess(usertypeID,'TA Goal'),
+				}),
 				new SideBarModels({
 					id: 'Master_Country_List',
 					title: 'Country',
