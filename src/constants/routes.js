@@ -200,6 +200,10 @@ const ClientDashboardReport = React.lazy(() =>
 	import('modules/report/screens/clientDashboardReport/clientDashboardReport')
 )
 
+const AMReport = React.lazy(() => 
+	import('modules/report/screens/amReport/amReport')
+)
+
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
 
@@ -274,6 +278,7 @@ export default class UTSRoutes {
 	static TALENT_DOCUMENTS = '/talentDocument'
 	static TALENT_NOTES = '/talentNotes';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
+	static AM_REPORT = '/amReport';
 }
 
 export const navigateToComponent = {
@@ -598,6 +603,12 @@ export const navigateToComponent = {
 		<ClientDashboardReport />
 	</Suspense>
 ),
+[UTSRoutes.AM_REPORT]: (
+	<Suspense>
+		<AMReport />
+	</Suspense>
+),
+
 };
 
 export const isAccess = (ID) =>{	

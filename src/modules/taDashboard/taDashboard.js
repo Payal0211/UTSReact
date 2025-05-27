@@ -32,15 +32,16 @@ import { useForm } from "react-hook-form";
 import { BsClipboard2CheckFill } from "react-icons/bs";
 import MoveToAssessment from "modules/hiring request/components/talentList/moveToAssessment";
 import { InterviewDAO } from "core/interview/interviewDAO";
+import LogoLoader from "shared/components/loader/logoLoader";
 const { Option } = Select;
 
 export default function TADashboard() {
   const navigate = useNavigate();
-  // const [filteredInfo, setFilteredInfo] = useState({});
   const [selectedHead, setSelectedHead] = useState("");
   const [searchText, setSearchText] = useState("");
   const [debounceSearchText, setDebouncedSearchText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [modalLoader, setModalLoader] = useState(false);
   const [filtersList, setFiltersList] = useState({});
   const [filteredTagLength, setFilteredTagLength] = useState(0);
   const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -116,11 +117,7 @@ export default function TADashboard() {
   } = useForm();
   const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
   const [userData, setUserData] = useState({});
-<<<<<<< Updated upstream
-  const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:""});
-=======
   const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
->>>>>>> Stashed changes
   const [allShowDetails, setAllShowDetails] = useState([]);
   useEffect(() => {
     const getUserResult = async () => {
@@ -647,8 +644,8 @@ export default function TADashboard() {
     }
   };
 
-  const showDetails = async (pipeLineTypeId,data,title,value) => {   
-    setIsLoading(true);
+  const showDetails = async (pipeLineTypeId,data,title,value,isTotal) => {   
+    setModalLoader(true);
     const month = moment(new Date()).format("MM");
     const year = moment(new Date()).format("YYYY");
     let pl = {
@@ -658,18 +655,14 @@ export default function TADashboard() {
       year:Number(year)
     }
     let result = await TaDashboardDAO.getTAWiseHRPipelineDetailsDAO(pl);
-    setIsLoading(false);
-    if(result?.statusCode === HTTPStatusCode.OK){      
+    setModalLoader(false);
+    if(result?.statusCode === HTTPStatusCode.OK){         
       setIsShowDetails({
         isBoolean:true,
         title:title,
-<<<<<<< Updated upstream
-        value:value
-=======
         value:value,
         isTotal:isTotal,
         TAName:data?.taName
->>>>>>> Stashed changes
       });
       setAllShowDetails(result?.responseBody);
     }
@@ -686,7 +679,7 @@ export default function TADashboard() {
       title: "TA",
       dataIndex: "taName",
       key: "taName",
-      width: 140,
+      width: 120,
       render: (text, result) => {        
         return text ? text : '-';
       },
@@ -696,6 +689,7 @@ export default function TADashboard() {
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
       width: 120,
+      align: 'center',
       render: (text, result) => {              
         return text ? text : '-';
       },
@@ -709,10 +703,10 @@ export default function TADashboard() {
       ),
       dataIndex: "totalRevenuePerUserStr",
       key: "totalRevenuePerUserStr",
+      align: 'center',
       width: 150,
-      render: (text, result) => {
-       
-        return text ? text : '-';
+       render: (text, result) => {        
+        return <div style={{cursor:"pointer"}} onClick={() => showDetails(0,result,"Assigned Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {
@@ -724,7 +718,8 @@ export default function TADashboard() {
       ),
       dataIndex: "carryFwdPipelineStr",
       key: "carryFwdPipelineStr",
-      width: 180,
+      width: 150,
+      align: 'center',
       render: (text, result) => {        
         return <div className={taStyles.todayText} style={{ background: "#babaf5"}}>{text}</div>;
       },
@@ -733,26 +728,29 @@ export default function TADashboard() {
       title: (
         <>
           Current Month<br />
-          Active Pipeline (INR)
+          Active 
+          <br />Pipeline (INR)
         </>
       ),
       dataIndex: "currentMonthActualPipelineStr",
       key: "currentMonthActualPipelineStr",
-      width: 200,
+      width: 150,
+      align: 'center',
       render: (text, result) => {        
-        return text ? text : "-";
+        return <div style={{cursor:"pointer"}} onClick={() => showDetails(1,result,"Current Month Active Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {
       title: (
         <>
-          Active <br />
+          Total Active<br />
           Pipeline (INR)
         </>
       ),
       dataIndex: "actualPipelineStr",
       key: "actualPipelineStr",
-      width: 160,      
+      width: 150,      
+      align: 'center',
       render: (text, result) => {       
         return <div className={taStyles.today1Text}>{text}</div>;
       },
@@ -761,7 +759,8 @@ export default function TADashboard() {
       title: "Multiplier",
       dataIndex: "bandwidthper",
       key: "bandwidthper",
-      width: 100,
+      width: 80,
+      align: 'center',
       render: (text, result) => {
         return text ? text : '-'
       },
@@ -776,6 +775,7 @@ export default function TADashboard() {
       dataIndex: "achievedPipelineStr",
       key: "achievedPipelineStr",
       width: 180,
+      align: 'center',
       render: (text, result) => {        
         return <div className={taStyles.todayText} style={{cursor:"pointer"}} onClick={() => showDetails(3,result,"Achieve Pipeline (INR)",text)}>{text}</div>;
       },
@@ -785,6 +785,7 @@ export default function TADashboard() {
       dataIndex: "lostPipelineStr",
       key: "lostPipelineStr",
       width: 160,
+      align: 'center',
       render: (text, result) => {       
         return (
           <div
@@ -802,16 +803,26 @@ export default function TADashboard() {
       dataIndex: "holdPipelineStr",
       key: "holdPipelineStr",
       width: 150,
+      align: 'center',
       render: (text, result) => {      
         return <div className={taStyles.todayText} style={{ background: "lightyellow",cursor:"pointer"}} onClick={() => showDetails(5,result,"Hold Pipeline (INR)",text)}>{text}</div>;
       },      
     },
-   
-    // {
-    //   title: "Total Pipeline (INR)",
-    //   dataIndex: "totalRevenuePerUserStr",
-    //   key: "totalRevenuePerUserStr",
-    // },
+    {
+      title: (
+        <>
+          PreOnboarding <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "preOnboardingPipelineStr",
+      key: "preOnboardingPipelineStr",
+      width: 150,
+      align: 'center',
+      render: (text, result) => {      
+        return <div className={taStyles.todayText} style={{ background: "lightpink",cursor:"pointer"}} onClick={() => showDetails(6,result,"PreOnboarding Pipeline (INR)",text)}>{text}</div>;
+      },      
+    }
   ];    
 
   const daiyTargetColumns = [
@@ -824,6 +835,7 @@ export default function TADashboard() {
       ),
       dataIndex: "carryFwdPipeLineStr",
       key: "carryFwdPipeLineStr",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.today1Text} style={{background:"#babaf5"}}>{text}</div>;
       },
@@ -831,29 +843,57 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Active HR <br />
-          Pipeline (INR)
+          Added HR (New)
         </>
       ),
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
+      align: 'center',
       render: (text) => {
-        return <div className={taStyles.today1Text}>{summaryData.total_ActualPipelineStr ? summaryData.total_ActualPipelineStr : '-'}</div>;
+        return <div>{text}</div>;
       },
-    },
+    },  
     {
       title: (
         <>
-          Achieve HR <br />
+          Achieve <br />
           Pipeline (INR)
         </>
       ),
       dataIndex: "achievedHRPipeLineStr",
       key: "achievedHRPipeLineStr",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.todayText}>{summaryData.total_AchievedPipelineStr ? summaryData.total_AchievedPipelineStr : '-'}</div>;
       },
+    },      
+    {
+      title: (
+        <>
+          Lost Pipeline (INR)
+        </>
+      ),
+      dataIndex: "lostHRPipeLineStr",
+      align: 'center',
+      key: "lostHRPipeLineStr",
+      render: (text) => {
+        return <div className={taStyles.today2Text} style={{background:'lightsalmon'}}>{text}</div>;
+      },
     },
+    {
+      title: (
+        <>
+          Total Active<br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "totalActivePipeLineStr",
+      key: "totalActivePipeLineStr",
+      align: 'center',
+      render: (text) => {
+        return <div className={taStyles.today1Text}>{text}</div>;
+      },
+    },  
     {
       title: (
         <>
@@ -862,10 +902,11 @@ export default function TADashboard() {
       ),
       dataIndex: "today_ProfilesharedTarget",
       key: "today_ProfilesharedTarget",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.today2Text}>{text}</div>;
       },
-    },
+    },    
     {
       title: (
         <>
@@ -888,6 +929,7 @@ export default function TADashboard() {
       ),
       dataIndex: "today_L1Round",
       key: "today_L1Round",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.today2Text}>{text}</div>;
       },
@@ -901,6 +943,7 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_ProfilesharedTarget",
       key: "yesterday_ProfilesharedTarget",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
@@ -913,6 +956,7 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_ProfilesharedAchieved",
       key: "yesterday_ProfilesharedAchieved",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
@@ -925,6 +969,7 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_L1Round",
       key: "yesterday_L1Round",
+      align: 'center',
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
@@ -1393,22 +1438,7 @@ export default function TADashboard() {
       key: "totalRevenue_NoofTalentStr",
       width: "115px",
       fixed: "left",
-      // render: (value) => `₹${value.toLocaleString()}`
-    },
-    // {
-    //   title: <>Profiles<br/>  Shared<br/>  Achieved</>,
-    //   dataIndex: "profile_Shared_Achieved",
-    //   key: "profile_Shared_Achieved",
-    //   fixed: "left",
-    //   width: "100px",
-    // },
-    // {
-    //   title: <>L1 Interviews<br/> Scheduled <br/></>,
-    //   dataIndex: "interview_Scheduled_Target",
-    //   key: "interview_Scheduled_Target",
-    //   fixed: "left",
-    //   width: "100px",
-    // },
+    },   
     {
       title: "Contract / DP",
       dataIndex: "modelType",
@@ -1427,7 +1457,6 @@ export default function TADashboard() {
       dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
       key: "talent_AnnualCTC_Budget_INRValueStr",
       width: "120px",
-      // fixed: "left",
       render: (text, result) => {
         return <Tooltip title={result.actualCostWithCurrency}>{text}</Tooltip>;
       },
@@ -1443,8 +1472,6 @@ export default function TADashboard() {
       dataIndex: "revenue_On10PerCTCStr",
       key: "revenue_On10PerCTCStr",
       width: "105px",
-      // fixed: "left",
-      // render: (value) => `₹${value.toLocaleString()}`
     },
     {
       title: (
@@ -1918,36 +1945,7 @@ export default function TADashboard() {
           };
           return newDS;
         }
-      });
-      // if(commentData?.latestNotes !== null ){
-      //   setTaListData((prev) => {
-      //     let oldComments = prev[commentData?.index]?.latestNotes
-      //     let newItem = `<li>${note}</li>`;
-      //     let newDS = [...prev];
-      //     newDS[commentData?.index] = {
-      //       ...newDS[commentData?.index],
-      //       latestNotes: oldComments.replace('<ul>', `<ul>${newItem}`),
-      //     };
-      //     return newDS;
-      //   });
-      // }else{
-      //   let newItem = `<ul><li>${note}</li></ul>`;
-      //   setTaListData((prev) => {
-      //     let newDS = [...prev];
-      //     newDS[commentData?.index] = {
-      //       ...newDS[commentData?.index],
-      //       latestNotes: newItem,
-      //     };
-      //     return newDS;
-      //   });
-      // }
-
-      // let newComment = `${note} <br/> ${
-      //   commentData?.latestNotes !== null ? commentData?.latestNotes : ""
-      // }`;
-
-      //  setCommentData(prev=>{
-      //   return {...prev,latestNotes:newComment}})
+      });      
     }
   };
 
@@ -2071,6 +2069,7 @@ export default function TADashboard() {
     <div className={taStyles.hiringRequestContainer}>   
       <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
+          <LogoLoader visible={modalLoader} />
           <div
             className={taStyles.filterSetsInner}
             onClick={() => setShowActivePipeline((prev) => !prev)}
@@ -2099,7 +2098,6 @@ export default function TADashboard() {
                   <Table
                     dataSource={dailyActivityTargets}
                     columns={daiyTargetColumns}
-                    // bordered
                     pagination={false}
                   />
                 </div>
@@ -2111,20 +2109,69 @@ export default function TADashboard() {
                 columns={totalRevenueColumns}
                 pagination={false}
                 scroll={{ x: "max-content", y: "1vh" }}
-                summary={() => {
+               summary={() => {
                   return (
                     <Table.Summary fixed>
                       <Table.Summary.Row>
-                        <Table.Summary.Cell index={0}><strong>Total :</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={1}><strong>{summaryData.total_GoalStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={2}><strong>{summaryData.sumOfTotalRevenueStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={3}><strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={4}><strong>{summaryData.total_CurrentMonthActualPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={5}><strong>{summaryData.total_ActualPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={6}></Table.Summary.Cell> {/* Multiplier */}
-                        <Table.Summary.Cell index={7}><strong>{summaryData.total_AchievedPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={8}><strong>{summaryData.total_LostPipelineStr || '-'}</strong></Table.Summary.Cell>
-                        <Table.Summary.Cell index={9}><strong>{summaryData.total_HoldPipelineStr || '-'}</strong></Table.Summary.Cell>
+                        <Table.Summary.Cell index={0}>
+                          <div>
+                            <strong>Total :</strong>
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={1}>
+                          <div style={{ textAlign: 'center' }}>
+                            <strong>{summaryData.total_GoalStr || '-'}</strong>
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={2}>
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", summaryData.total_CarryFwdPipelineStr,true)}>
+                            {summaryData.sumOfTotalRevenueStr || '-'}
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={3}>
+                          <div style={{ textAlign: 'center' }}>
+                            <strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong>
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={4}>
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", summaryData.total_CurrentMonthActualPipelineStr,true)}>
+                            {summaryData.total_CurrentMonthActualPipelineStr || '-'}
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={5}>
+                          <div style={{ textAlign: 'center' }}>
+                            <strong>{summaryData.total_ActualPipelineStr || '-'}</strong>
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={6}>
+                          <div style={{ textAlign: 'center' }}></div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={7}>
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(3, { taUserID: 2 }, "Achieved Pipeline (INR)", summaryData.total_AchievedPipelineStr,true)}>
+                            {summaryData.total_AchievedPipelineStr || '-'}
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={8}>
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(4, { taUserID: 2 }, "Lost Pipeline (INR)",summaryData.total_LostPipelineStr,true)}>
+                            {summaryData.total_LostPipelineStr || '-'}
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={9}>
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(5, { taUserID: 2 }, "Hold Pipeline (INR)", summaryData.total_HoldPipelineStr,true)}>
+                            {summaryData.total_HoldPipelineStr || '-'}
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={10}>
+                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(6, { taUserID: 2 }, "Pre-Onboarding Pipeline (INR)", summaryData.total_PreOnboardingPipelineStr,true)}>
+                            {summaryData.total_PreOnboardingPipelineStr || '-'}
+                          </div>
+                        </Table.Summary.Cell>
                       </Table.Summary.Row>
                     </Table.Summary>
                   );
@@ -2158,7 +2205,6 @@ export default function TADashboard() {
               value: v.id,
             }))}
             optionFilterProp="label"
-            // getPopupContainer={(trigger) => trigger.parentElement}
           />
         </div>
       </div>
@@ -2185,21 +2231,6 @@ export default function TADashboard() {
               <div className={taStyles.label}>Date</div>
               <div className={taStyles.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                {/* <DatePicker
-                  style={{ backgroundColor: "red" }}
-                  onKeyDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  className={taStyles.dateFilter}
-                  placeholderText="Start date"
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  dateFormat="dd-MM-yyyy"
-                  minDate={new Date()}
-                  maxDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
-                /> */}
-
                   <DatePicker
                     style={{ backgroundColor: "red" }}
                     onKeyDown={(e) => {
@@ -2272,15 +2303,6 @@ export default function TADashboard() {
                 />
               )}
             </div>
-            {/* <button
-              style={{ marginLeft: "15px" }}
-              type="submit"
-              className={taStyles.btnPrimary}
-              onClick={() => {}}
-            >
-              Search
-            </button> */}
-
             <p
               className={taStyles.resetText}
               style={{ width: "190px" }}
@@ -3352,20 +3374,12 @@ export default function TADashboard() {
           open={isShowDetails?.isBoolean}
           className="engagementModalStyle"
           onCancel={() => {
-<<<<<<< Updated upstream
-            setIsShowDetails({isBoolean:false,title:"",value:""});
-=======
             setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
->>>>>>> Stashed changes
             setAllShowDetails([]);
           }}
         >               
         <div style={{ padding: "20px 15px" }}>
-<<<<<<< Updated upstream
-          <h3><b>{allShowDetails[0]?.taName ? allShowDetails[0]?.taName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
-=======
           <h3><b>{(isShowDetails?.TAName && !isShowDetails?.isTotal) ? isShowDetails?.TAName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
->>>>>>> Stashed changes
         </div>
 
         {allShowDetails.length > 0 ? (
@@ -3416,11 +3430,7 @@ export default function TADashboard() {
           <button
             className={taStyles.btnCancle}
             onClick={() => {
-<<<<<<< Updated upstream
-              setIsShowDetails({isBoolean:false,title:"",value:""});
-=======
               setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
->>>>>>> Stashed changes
               setAllShowDetails([]);
             }}
           >

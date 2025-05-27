@@ -180,6 +180,8 @@ export class ReportType {
 	static RECRUITER_REPORT = 'RecruiterReport'
 	static CLIENT_DASHBOARD_REPORT = 'ClientDashboardReport'
 	static DAILY_SNAPSHOT_REPORT = 'DailySnapshotReport'
+	static AM_WEEK_WISE_REPORT = 'AMWeekWiseReport'
+	static AM_WEEK_WISE_REPORT_FILTERS = 'AMWeekWiseReportFilters'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

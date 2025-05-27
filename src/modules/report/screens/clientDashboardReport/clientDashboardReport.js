@@ -169,9 +169,7 @@ export default function ClientDashboardReport() {
       statusID: statusID,
       stageID: statusID === 0 ? null : stageID ? stageID : 0,
     };
-    // setLoading(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
-    // setLoading(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
       setFilteredTalentList(hrResult.responseBody);
@@ -184,12 +182,12 @@ export default function ClientDashboardReport() {
   };
 
   const handleSearchInput = (value) => {
-    setSearchTerm(value); // Update search term
+    setSearchTerm(value); 
     const filteredData = hrTalentList.filter((talent) =>
-      talent.talent.toLowerCase().includes(value.toLowerCase()) || // Check in 'talent' column
-      (talent.email && talent.email.toLowerCase().includes(value.toLowerCase())) // Check in 'email' column (if email exists)
+      talent.talent.toLowerCase().includes(value.toLowerCase()) || 
+      (talent.email && talent.email.toLowerCase().includes(value.toLowerCase())) 
     );
-    setFilteredTalentList(filteredData); // Update the filtered list
+    setFilteredTalentList(filteredData); 
   };
 
   const saveRemark = async (d) => {
@@ -223,7 +221,7 @@ export default function ClientDashboardReport() {
             width: "160px",
             fixed: "left",
             render: (text) => {
-               return text ? moment(text).format("DD-MM-YYYY") : '-'
+               return text ? moment(text).format("DD-MM-YYYY") : ''
               },
           },
         {
@@ -248,7 +246,6 @@ export default function ClientDashboardReport() {
         width: "180px",
         fixed: "left",
         render: (text, result) => {
-            // Check if the HR ID is not empty and return a link
             return text 
               ? <a href={`/allhiringrequest/${result.hrid}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>  // Replace `/hr/${text}` with the appropriate link you need
               : text;
@@ -269,7 +266,6 @@ export default function ClientDashboardReport() {
         key: "totalProfiles",
         align: "center",
         width: "130px",
-        // render: (value) => (value === 0 ? '-' : value),      
         render: (text, result) => {
           if (result.client === 'Total') {
             return <span>{text}</span>; 
@@ -302,7 +298,6 @@ export default function ClientDashboardReport() {
         key: "profiles",
         align: "center",
         width: "100px",
-        // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
           if (result.client === 'Total') {
             return <span>{text}</span>; 
@@ -335,7 +330,6 @@ export default function ClientDashboardReport() {
         key: "screenReject",
         align: "center",
         width: "130px",
-        // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
           if (result.client === 'Total') {
             return <span>{text}</span>; 
@@ -368,7 +362,6 @@ export default function ClientDashboardReport() {
         key: "assessment",
         align: "center",
         width: "120px",
-        // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
           if (result.client === 'Total') {
             return <span>{text}</span>; 
@@ -401,7 +394,6 @@ export default function ClientDashboardReport() {
         key: "interviewsDone",
         align: "center",
         width: "140px",
-        // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
           if (result.client === 'Total') {
             return <span>{text}</span>; 
@@ -434,7 +426,6 @@ export default function ClientDashboardReport() {
         key: "r1Interview",
         align: "center",
         width: "120px",
-        // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
           if (result.client === 'Total') {
             return <span>{text}</span>; 
@@ -760,7 +751,6 @@ export default function ClientDashboardReport() {
                         placeholder="Client, HR ID, Recruiter"
                         value={openTicketDebounceText}
                         onChange={(e) => {
-                          // setopenTicketSearchText(e.target.value);
                           setopenTicketDebounceText(e.target.value);
                         }}
                       />
@@ -772,7 +762,6 @@ export default function ClientDashboardReport() {
                             cursor: "pointer",
                           }}
                           onClick={() => {
-                            //   setopenTicketSearchText("");
                             setopenTicketDebounceText("");
                           }}
                         />
@@ -823,8 +812,6 @@ export default function ClientDashboardReport() {
                               placeholderText="Month - Year"
                               selected={monthDate}
                               onChange={date=>setMonthDate(date)}
-                              // startDate={startDate}
-                              // endDate={endDate}
                               dateFormat="MM-yyyy"
                               showMonthYearPicker
                             />
@@ -915,13 +902,12 @@ export default function ClientDashboardReport() {
         rowKey={(record, index) => index}
         rowClassName={(row, index) => {
             return row.client === 'Total' ? clientDashboardStyles["highlight-total-row"] : '';
-          }}   
+        }}   
 
           pagination={{
             onChange: (pageNum, pageSize) => {
               setPageIndex(pageNum);
               setPageSize(pageSize - 1);
-              // getInvoiceTicketsFromPagination(pageNum, pageSize);
             },
             size: "small",
             pageSize: pageSize + 1,
@@ -942,7 +928,6 @@ export default function ClientDashboardReport() {
                   appliedFilter={appliedFilter}
                   setCheckedState={setCheckedState}
                   checkedState={checkedState}
-                  // handleHRRequest={handleHRRequest}
                   setTableFilteredState={setTableFilteredState}
                   tableFilteredState={tableFilteredState}
                   setFilteredTagLength={setFilteredTagLength}
@@ -1001,13 +986,14 @@ export default function ClientDashboardReport() {
                             type="text"
                             placeholder="Search talent..."
                             value={searchTerm}
-                            onChange={(e) => handleSearchInput(e.target.value)} // Create this function
+                            onChange={(e) => handleSearchInput(e.target.value)}
                             style={{
-                              padding: "12px 14px",
-                              border: "1px solid #ccc",
-                              borderRadius: "4px",
-                              marginLeft: "auto", // optional: pushes search to right
-                              minWidth: "250px",
+                                padding: "6px 10px",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                                marginLeft: "auto", 
+                                marginRight:"20px",
+                                minWidth: "260px",
                             }}
                           />
                       </div>           
@@ -1032,7 +1018,6 @@ export default function ClientDashboardReport() {
                               profileStatusID === 0 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          {/* <img src={FeedBack} alt="rocket" /> */}
                           <h2>
                             Total Talents :{" "}
                             <span>
@@ -1055,7 +1040,6 @@ export default function ClientDashboardReport() {
                               profileStatusID === 2 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          {/* <img src={FeedBack} alt="rocket" /> */}
                           <h2>
                             Profile shared :{" "}
                             <span>
@@ -1077,7 +1061,6 @@ export default function ClientDashboardReport() {
                               profileStatusID === 11 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          {/* <img src={FeedBack} alt="rocket" /> */}
                           <h2>
                             In Assessment :{" "}
                             <span>
@@ -1099,7 +1082,6 @@ export default function ClientDashboardReport() {
                               profileStatusID === 3 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          {/* <img src={FeedBack} alt="rocket" /> */}
                           <h2>
                             In Interview :{" "}
                             <span>
@@ -1121,7 +1103,6 @@ export default function ClientDashboardReport() {
                               profileStatusID === 4 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          {/* <img src={FeedBack} alt="rocket" /> */}
                           <h2>
                             Offered :{" "}
                             <span>
@@ -1143,7 +1124,6 @@ export default function ClientDashboardReport() {
                               profileStatusID === 10 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          {/* <img src={FeedBack} alt="rocket" /> */}
                           <h2>
                             Hired :{" "}
                             <span>
@@ -1165,7 +1145,6 @@ export default function ClientDashboardReport() {
                               profileStatusID === 71 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          {/* <img src={FeedBack} alt="rocket" /> */}
                           <h2>
                             Screen Reject :{" "}
                             <span>
@@ -1187,7 +1166,6 @@ export default function ClientDashboardReport() {
                               profileStatusID === 72 ? "6px solid #FFDA30" : "",
                           }}
                         >
-                          {/* <img src={FeedBack} alt="rocket" /> */}
                           <h2>
                             Interview Reject :{" "}
                             <span>
@@ -1208,7 +1186,6 @@ export default function ClientDashboardReport() {
                             <Table
                               dataSource={filteredTalentList}
                               columns={ProfileColumns}
-                              // bordered
                               pagination={false}
                               scroll={{ y: "480px" }}
                             />

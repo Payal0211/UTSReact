@@ -1027,4 +1027,14 @@ export const allEngagementConfig = {
 			},
 		];
 	},
+	amReportFilterTypeConfig: (filterList) => {
+		return [		
+			{
+				label: 'AM',
+				name: 'text',
+				child: filterList?.map(item=>({...item,text: item.value,value:`${item.text}`})),
+				isSearch: true,
+			},
+		];
+	},
 };

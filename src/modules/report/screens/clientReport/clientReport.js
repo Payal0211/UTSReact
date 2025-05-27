@@ -1,17 +1,10 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  Suspense,
-} from "react";
+import React, {useEffect,useState, useMemo, useCallback, Suspense} from "react";
 import ClientReportStyle from "./clientReport.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
 import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
-
 import { clientReport } from "core/clientReport/clientReportDAO";
 import { reportConfig } from "modules/report/report.config";
 import { HTTPStatusCode } from "constants/network";
@@ -19,8 +12,8 @@ import UTSRoutes from "constants/routes";
 import { Table, Checkbox } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
-import WithLoader from "shared/components/loader/loader";
 import LogoLoader from "shared/components/loader/logoLoader";
+
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -38,7 +31,6 @@ export default function ClientReport() {
 
   const [getHTMLFilter, setHTMLFilter] = useState(false);
   const [filtersList, setFiltersList] = useState([]);
-  const [pageSize, setPageSize] = useState(100);
   const [isAllowFilters, setIsAllowFilters] = useState(false);
   const [filteredTagLength, setFilteredTagLength] = useState(0);
   const [appliedFilter, setAppliedFilters] = useState(new Map());
@@ -83,14 +75,9 @@ export default function ClientReport() {
 
   const getClientPopUpReportList = useCallback(async (params) => {
     setLoading(true);
-    // const response = await clientReport.getClienPopUpRequestList({
-    //   ...params,
-    //   isHrfocused: isFocusedRole,
-    // });
      const response = await clientReport.getClienPopUpRequestList(params);
     if (response?.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details;
-      // console.log("popup data", details)
       setReportPopupList(details);
       setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -110,7 +97,6 @@ export default function ClientReport() {
     const response = await clientReport.getClientReportFilters();
     if (response?.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details.Data;
-      // console.log("filter data", details)
       setFiltersList(details);
       setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -125,7 +111,6 @@ export default function ClientReport() {
     }
   };
 
-  // when isFocusedRole Change
   useEffect(() => {
     let fd = {};
     appliedFilter.forEach((item) => {
@@ -177,19 +162,9 @@ export default function ClientReport() {
   const handleFiltersRequest = useCallback(
     (reqFilter) => {
       let fd = reqFilter.filterFields_DealList;
-
       let companyCategory = fd["CompanyCategory"] ? fd["CompanyCategory"] : "";
       let SalesManager = fd["SalesManager"] ? fd["SalesManager"] : "";
-      let leadUserID = fd["LeadType"] ? parseInt(fd["LeadType"]) : 0;
-      //  console.log("companyCategory", companyCategory , SalesManager, {reqFilter})
-
-      // let payload = {
-      //   "startDate": firstDay.toLocaleDateString("en-US"),
-      //   "endDate": lastDay.toLocaleDateString("en-US"),
-      //   "companyCategory": companyCategory,
-      //   "salesManagerID": SalesManager
-      // }
-
+      let leadUserID = fd["LeadType"] ? parseInt(fd["LeadType"]) : 0;      
       let payload = {
         fromDate: firstDay.toLocaleDateString("en-US"),
         toDate: lastDay.toLocaleDateString("en-US"),
@@ -200,22 +175,6 @@ export default function ClientReport() {
         leadUserId: leadUserID,
       };
       getClientReportList(payload);
-
-      //   let params ={
-      //     "client": "",
-      //     "company": "",
-      //     "salesUser": "",
-      //     "hr_Number": "",
-      //     "talent": "",
-      //     "status": "",
-      //     "clientStage": clientStage,
-      //     "reportFilter": {
-      //       "startDate": firstDay.toLocaleDateString("en-US"),
-      //       "endDate": lastDay.toLocaleDateString("en-US"),
-      //       "companyCategory": companyCategory,
-      //       "salesManagerID": SalesManager
-      //   }
-      // }
 
       let params = {
         fromDate: firstDay.toLocaleDateString("en-US"),
@@ -243,12 +202,6 @@ export default function ClientReport() {
   );
 
   useEffect(() => {
-    // let payload = {
-    //     "startDate": firstDay.toLocaleDateString("en-US"),
-    //     "endDate": lastDay.toLocaleDateString("en-US"),
-    //     "companyCategory": "",
-    //     "salesManagerID": ''
-    //   }
     let payload = {
       fromDate: firstDay.toLocaleDateString("en-US"),
       toDate: lastDay.toLocaleDateString("en-US"),
@@ -260,7 +213,6 @@ export default function ClientReport() {
     };
     getClientReportList(payload);
     getClientReportFilterList();
-    //  console.log( payload)
     setStartDate(firstDay);
     setEndDate(lastDay);
   }, []);
@@ -305,13 +257,7 @@ export default function ClientReport() {
             : "";
           let leadUserID = filters["LeadType"]
             ? parseInt(filters["LeadType"])
-            : 0;
-          // let payload = {
-          //             "startDate": start.toLocaleDateString("en-US"),
-          //             "endDate": end.toLocaleDateString("en-US"),
-          //             "companyCategory": companyCategory,
-          //             "salesManagerID": SalesManager
-          //           }
+            : 0;          
           let payload = {
             fromDate: start.toLocaleDateString("en-US"),
             toDate: end.toLocaleDateString("en-US"),
@@ -341,13 +287,7 @@ export default function ClientReport() {
     setIsFocusedRole(false)
     setAppliedFilters(new Map());
     setCheckedState(new Map());
-    setFilteredTagLength(0);
-    // let payload = {
-    //   "startDate": params.fromDate,
-    //   "endDate": params.toDate,
-    //   "companyCategory": '',
-    //   "salesManagerID": ''
-    // }
+    setFilteredTagLength(0);    
     let payload = {
       fromDate: params.fromDate,
       toDate: params.toDate,
@@ -359,7 +299,6 @@ export default function ClientReport() {
     };
     getClientReportList(payload);
     onRemoveDealFilters();
-    // getI2SReport(params);
   };
 
   const setTableData = useCallback(
@@ -378,24 +317,8 @@ export default function ClientReport() {
         : "";
       let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
       let leadUserID = filters["LeadType"] ? parseInt(filters["LeadType"]) : 0;
-      // console.log(reportData);
       setClientStage(reportData.stageName);
-      // let params ={
-      //     "client": "",
-      //     "company": "",
-      //     "salesUser": "",
-      //     "hr_Number": "",
-      //     "talent": "",
-      //     "status": "",
-      //     "clientStage": reportData.stageName,
-      //     "reportFilter": {
-      //       "startDate": firstDay.toLocaleDateString("en-US"),
-      //       "endDate": lastDay.toLocaleDateString("en-US"),
-      //       "companyCategory": companyCategory,
-      //       "salesManagerID": SalesManager
-      //   }
-      // }
-
+     
       let params = {
         fromDate: moment(firstDay).format("yyyy-MM-DD"),
         toDate: moment(lastDay).format("yyyy-MM-DD"),
@@ -432,7 +355,6 @@ export default function ClientReport() {
   };
 
   const toggleClientFilter = useCallback(() => {
-    // getDealFilterRequest();
     !getHTMLFilter
       ? setIsAllowFilters(!isAllowFilters)
       : setTimeout(() => {
@@ -441,10 +363,8 @@ export default function ClientReport() {
     setHTMLFilter(!getHTMLFilter);
   }, [getHTMLFilter, isAllowFilters]);
 
-  //console.log('client', reportList, appliedFilter)
   return (
     <div className={ClientReportStyle.dealContainer}>
-      {/* <WithLoader showLoader={isLoading} className="pageMainLoader"> */}
       <div className={ClientReportStyle.header}>
         <div className={ClientReportStyle.dealLable}>Client Report</div>
         <LogoLoader visible={isLoading} />
@@ -500,13 +420,7 @@ export default function ClientReport() {
                 />
               </div>
             </div>
-            {/* <button
-              type="submit"
-              className={ClientReportStyle.btnPrimary}
-              onClick={() => resetFilter()}
-            >
-              Reset
-            </button> */}
+           
           </div>
         </div>
       </div>
@@ -528,17 +442,7 @@ export default function ClientReport() {
                     <p
                       className={ClientReportStyle.textLink}
                       onClick={() => {
-                        setTableData(report);
-                        // seti2sPopupModal(true);
-                        // setPopupData({
-                        //   ...value,
-                        //   fromDate: new Date(
-                        //     firstDay
-                        //   ).toLocaleDateString("en-US"),
-                        //   toDate: new Date(lastDay).toLocaleDateString(
-                        //     "en-US"
-                        //   ),
-                        // });
+                        setTableData(report);                       
                       }}
                     >
                       {report.stageValue}
@@ -592,7 +496,6 @@ export default function ClientReport() {
             setFilteredTagLength={setFilteredTagLength}
             onRemoveDealFilters={onRemoveDealFilters}
             getHTMLFilter={getHTMLFilter}
-            // hrFilterList={DealConfig.dealFiltersListConfig()}
             filtersType={reportConfig.clientReportFilterTypeConfig(
               filtersList && filtersList
             )}
@@ -600,7 +503,6 @@ export default function ClientReport() {
           />
         </Suspense>
       )}
-    {/* </WithLoader> */}
     </div>
   );
 }
