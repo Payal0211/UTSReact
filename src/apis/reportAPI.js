@@ -5,6 +5,7 @@ import {
 	ReportsType,
 	SubDomain,
 	UserAPI,
+	UsersAPI,
 } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
@@ -573,6 +574,22 @@ export const ReportAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.getAMReportFilters');
+		}
+	},
+	MapZohoCustomerToUTSCompanyAPI: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			UsersAPI.MASTER_ZOHO_CUSTOMER_TO_UTS_COMPANY+`?CompanyID=${payload?.CompanyID}&ZohoCustmerID=${payload?.ZohoCustmerID}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.addOrUpdateTAMonthlyGoalAPI');
 		}
 	},
 };
