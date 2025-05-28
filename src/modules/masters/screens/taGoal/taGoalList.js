@@ -205,6 +205,7 @@ const TAGOALList = () => {
 				open={isModalVisible}
 				footer={null}
 				onCancel={handleCloseModal}
+				centered
 			>
 				<div className="col-12 form-group mb-0">
 					<label

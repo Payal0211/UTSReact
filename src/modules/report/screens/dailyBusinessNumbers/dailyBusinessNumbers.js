@@ -25,16 +25,14 @@ export default function DailyBusinessNumbersPage() {
             return {
             children: <strong style={{ paddingLeft: '5px' }}>{text}</strong>,
             props: {
-                colSpan: 15, // Total number of sub-columns (5 Rec + 5 OneOff + 4 Num + 1 Stage = 15 is wrong. It's sum of all leaf columns)
-                            // Stages (1) + Rec (5) + OneOff (5) + Numbers (4) = 15 leaf columns.
-                            // So this cell should span 15.
+                colSpan: 15, 
                 style: { backgroundColor: '#FFC000', fontWeight: 'bold', borderRight: '1px solid #d9d9d9', padding: '8px' }
             },
             };
         }
         if (record.isSpacer) {
             return {
-            children: <div style={{ height: '10px' }}> </div>, // Add height to spacer
+            children: <div style={{ height: '10px' }}> </div>,
             props: {
                 colSpan: 15,
                 style: { padding: '0px', backgroundColor: '#ffffff', border: 'none' }
@@ -43,10 +41,10 @@ export default function DailyBusinessNumbersPage() {
         }
         
         let cellStyle = { padding: '8px', margin: '-8px -8px', display: 'flex', alignItems: 'center', height: 'calc(100% + 16px)', width: 'calc(100% + 16px)'};
-        let content = text || '\u00A0'; // Use non-breaking space for empty cells
+        let content = text || '\u00A0';
 
         if (record.stage === 'Closures') cellStyle = { ...cellStyle, backgroundColor: '#70AD47', color: 'white', fontWeight:'bold' };
-        else if (record.stage === 'Churn') cellStyle = { ...cellStyle, backgroundColor: '#ED7D31', color: 'white', fontWeight:'bold' }; // Orange/Red for Churn
+        else if (record.stage === 'Churn') cellStyle = { ...cellStyle, backgroundColor: '#ED7D31', color: 'white', fontWeight:'bold' };
         else if (record.stage === 'C2H') cellStyle = { ...cellStyle, backgroundColor: '#595959', color: 'white', fontWeight:'bold' };
         else if (record.isPipelineRow) cellStyle = { ...cellStyle, backgroundColor: '#FFFF00', fontWeight: 'bold', color: 'black' };
 
@@ -60,9 +58,30 @@ export default function DailyBusinessNumbersPage() {
         title: 'Recurring',
         className: `${styles.recurringGroupHeader} ${styles.headerCommonConfig}`,
         children: [
-        { title: 'Goal', dataIndex: ['recurring', 'goal'], key: 'recurring_goal', width: 100, className: styles.headerCommonConfig, render: (v, rec) => renderCell(v, rec, { align: 'right', isCurrency: true, isC2S: rec.stage === 'C2S%' }) },
-        { title: 'Goal till date', dataIndex: ['recurring', 'goalTillDate'], key: 'recurring_goalTillDate', width: 110, className: styles.headerCommonConfig, render: (v, rec) => renderCell(v, rec, { align: 'right', isCurrency: true }) },
-        { title: 'Potential', dataIndex: ['recurring', 'potential'], key: 'recurring_potential', width: 100, className: styles.headerCommonConfig, render: (v, rec) => renderCell(v, rec, { align: rec.key === 'inbound_desc' ? 'left' : 'center', isPotential: true, isItalic: rec.key === 'inbound_desc' }) },
+        { 
+            title: 'Goal', 
+            dataIndex: ['recurring', 'goal'],
+            key: 'recurring_goal',
+            width: 100,
+            className: styles.headerCommonConfig,
+            render: (v, rec) => renderCell(v, rec, { align: 'right', isCurrency: true, isC2S: rec.stage === 'C2S%' }) 
+        },
+        { 
+            title: 'Goal till date',
+            dataIndex: ['recurring', 'goalTillDate'],
+            key: 'recurring_goalTillDate',
+            width: 110, 
+            className: styles.headerCommonConfig, 
+            render: (v, rec) => renderCell(v, rec, { align: 'right', isCurrency: true }) 
+        },
+        { 
+            title: 'Potential', 
+            dataIndex: ['recurring', 'potential'], 
+            key: 'recurring_potential', 
+            width: 100, 
+            className: styles.headerCommonConfig, 
+            render: (v, rec) => renderCell(v, rec, { align: rec.key === 'inbound_desc' ? 'left' : 'center', isPotential: true, isItalic: rec.key === 'inbound_desc' }) 
+        },
         { title: 'Achieved', dataIndex: ['recurring', 'achieved'], key: 'recurring_achieved', width: 100, className: styles.headerCommonConfig, render: (v, rec) => renderCell(v, rec, { align: 'right', isCurrency: true, isC2S: rec.stage === 'C2S%' }) },
         { title: 'Achieved%', dataIndex: ['recurring', 'achievedPercent'], key: 'recurring_achievedPercent', width: 100, className: styles.headerCommonConfig, render: (v, rec) => renderCell(v, rec, { align: 'center', isPercent: true, isYellow: rec.isPipelineRow }) },
         ],
@@ -90,7 +109,6 @@ export default function DailyBusinessNumbersPage() {
     },
     ];
 
-    // Helper function to render common cell types
     const renderCell = (value, record, { align = 'left', isCurrency = false, isPercent = false, isPotential = false, isYellow = false, isItalic = false, isC2S = false } = {}) => {
     if (record.isCategory || record.isSpacer) {
         return { props: { colSpan: 0 } };
@@ -104,20 +122,17 @@ export default function DailyBusinessNumbersPage() {
 
     if (isPotential && value === '-') {
         cellStyle.backgroundColor = '#BFBFBF'; // Gray background
-        // cellStyle.color = '#BFBFBF'; // Optional: make hyphen blend
     } else if (value === null || value === undefined || value === "") {
-        content = (isPotential || record.stage === 'Churn') ? '-' : '\u00A0'; // Show '-' for potential/churn, else non-breaking space
+        content = (isPotential || record.stage === 'Churn') ? '-' : '\u00A0';
     }
 
     if (isYellow) cellStyle = { ...cellStyle, backgroundColor: '#FFFF00', fontWeight: 'bold', color: 'black' };
     if (isItalic) cellStyle.fontStyle = 'italic';
     
-    // For C2S% rows, "Goal" and "Achieved" display percentages directly
-    if (isC2S && (align === 'right' || align === 'center')) { // Typically for 'Goal'/'Achieved' columns if they are percentages
+    if (isC2S && (align === 'right' || align === 'center')) { 
         // no specific style needed unless different from regular numbers/percentages
     }
 
-    // Make sure content is not an object (e.g. from a bad dataIndex)
     if (typeof content === 'object' && content !== null) content = '-';
 
     return <div style={cellStyle}>{(align === 'left' || align === 'center') ? <span style={{paddingLeft: align === 'left' ? '5px': '0px'}}>{content}</span> : content}</div>;
@@ -197,35 +212,34 @@ export default function DailyBusinessNumbersPage() {
         setMonthDate(date);
     };
   return (
-   <div className={styles.snapshotContainer}>
+        <div className={styles.snapshotContainer}>
 
-                <div className={styles.filterContainer}>
-                    <div className={styles.filterSets}>
-                    <div className={styles.filterSetsInner}>
-                        <Title level={3} style={{ margin: 0 }}>
-                        {`${monthDate?.toLocaleString("default", { month: "long" })} ${selectedYear} - Daily Business Numbers`}
-                        </Title>
-                    </div>
-                    <div className={styles.filterRight}>
-                        <div className={styles.calendarFilterSet}>
-                        <div className={styles.label}>Month-Year</div>
-                        <div className={styles.calendarFilter}>
-                            <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
-                            <DatePicker
-                                onKeyDown={(e) => e.preventDefault()}
-                                className={styles.dateFilter}
-                                placeholderText="Month - Year"
-                                selected={monthDate}
-                                onChange={onMonthCalenderFilter}
-                                dateFormat="MM-yyyy"
-                                showMonthYearPicker
-                            />
-                        </div>
-                        </div>
+            <div className={styles.filterContainer}>
+                <div className={styles.filterSets}>
+                <div className={styles.filterSetsInner}>
+                    <Title level={3} style={{ margin: 0 }}>
+                    {`${monthDate?.toLocaleString("default", { month: "long" })} ${selectedYear} - Daily Business Numbers`}
+                    </Title>
+                </div>
+                <div className={styles.filterRight}>
+                    <div className={styles.calendarFilterSet}>
+                    <div className={styles.label}>Month-Year</div>
+                    <div className={styles.calendarFilter}>
+                        <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
+                        <DatePicker
+                            onKeyDown={(e) => e.preventDefault()}
+                            className={styles.dateFilter}
+                            placeholderText="Month - Year"
+                            selected={monthDate}
+                            onChange={onMonthCalenderFilter}
+                            dateFormat="MM-yyyy"
+                            showMonthYearPicker
+                        />
                     </div>
                     </div>
                 </div>
-
+                </div>
+            </div>
 
             <Card bordered={false}>
                 <div className={styles.customTableContainer}>
