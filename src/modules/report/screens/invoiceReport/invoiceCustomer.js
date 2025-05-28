@@ -3,10 +3,11 @@ import invoiceStyles from "./invoice.module.css";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { InputType } from "constants/application";
-import { Table } from "antd";
+import { Table, Modal, AutoComplete, Spin } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { downloadToExcel } from "modules/report/reportUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
+import { MasterDAO } from "core/master/masterDAO";
 
 export default function InvoicCustomer() {
   const [searchText, setSearchText] = useState("");
@@ -17,6 +18,13 @@ export default function InvoicCustomer() {
   const [customerList, setCustomerList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+
+  const [companyAutoCompleteValue, setCompanyAutoCompleteValue] = useState("");
+  const [companyNameSuggestion, setCompanyNameSuggestion] = useState([]);
+  const [companyID, setCompanyID] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setSearchText(debounceText), 1000);
@@ -30,7 +38,7 @@ export default function InvoicCustomer() {
       searchText,
     };
     setIsLoading(true);
-    const response = await ReportDAO.getZohoInvoiceCustomerDAO(payload); 
+    const response = await ReportDAO.getZohoInvoiceCustomerDAO(payload);
     setIsLoading(false);
     if (response?.statusCode === 200) {
       setCustomerList(response.responseBody?.rows || []);
@@ -44,65 +52,76 @@ export default function InvoicCustomer() {
     fetchCustomerList(pageIndex, pageSize);
   }, [pageIndex, pageSize, searchText]);
 
-const columns = useMemo(() => [
-  {
-    title: "Customer ID",
-    dataIndex: "customer_id",
-    key: "customer_id",
-    align: "left",
-    width: "200px",
-  },
-  {
-    title: "Email ID",
-    dataIndex: "email",
-    key: "email",
-    align: "left",
-    width: "220px",
-  },
-  {
-    title: "Display Name",
-    dataIndex: "display_name",
-    key: "display_name",
-    align: "left",
-    width: "200px",
-  },
-  {
-    title: "Company Name",
-    dataIndex: "company_name",
-    key: "company_name",
-    align: "left",
-    width: "200px",
-  },
-  {
-    title: "UTS Company Name",
-    dataIndex: "uts_company_name",
-    key: "uts_company_name",
-    align: "left",
-    width: "200px",
-  },
-  {
-    title: "Currency Code",
-    dataIndex: "currency_code",
-    key: "currency_code",
-    align: "center",
-    width: "120px",
-  },
-  {
-    title: "Payment Terms",
-    dataIndex: "payment_terms_label",
-    key: "payment_terms_label",
-    align: "center",
-    width: "130px",
-  },
-  {
-    title: "Total Records",
-    dataIndex: "total_records",
-    key: "total_records",
-    align: "center",
-    width: "130px",
-  },
-], []);
-
+  const columns = useMemo(
+    () => [
+      {
+        title: "Customer ID",
+        dataIndex: "customer_ID",
+        key: "customer_ID",
+        align: "left",
+        width: "200px",
+      },
+      {
+        title: "Zoho Email ID",
+        dataIndex: "emailID",
+        key: "emailID",
+        align: "left",
+        width: "220px",
+        render: (text) => (text ? text : "-"),
+      },
+      {
+        title: "Zoho Customer",
+        dataIndex: "display_Name",
+        key: "display_Name",
+        align: "left",
+        width: "200px",
+        render: (text) => (text ? text : "-"),
+      },
+      {
+        title: "Zoho Company Name",
+        dataIndex: "company_Name",
+        key: "company_Name",
+        align: "left",
+        width: "200px",
+        render: (text) => (text ? text : "-"),
+      },
+      {
+        title: "UTS Company Name",
+        dataIndex: "utS_CompanyName",
+        key: "utS_CompanyName",
+        align: "left",
+        width: "200px",
+        render: (text) => (text ? text : "-"),
+        // render: (text, record) => {
+        //   return (
+        //     <span
+        //       style={{ color: "#1890ff", cursor: "pointer" }}
+        //       onClick={() => handleOpenModal(record)}
+        //     >
+        //       {text ? text : "Map UTS Company"}
+        //     </span>
+        //   );
+        // },
+      },
+      {
+        title: "Currency Code",
+        dataIndex: "currency_Code",
+        key: "currency_Code",
+        align: "center",
+        width: "120px",
+        render: (text) => (text ? text : "-"),
+      },
+      {
+        title: "Payment Terms",
+        dataIndex: "payment_Terms_Label",
+        key: "payment_Terms_Label",
+        align: "center",
+        width: "130px",
+        render: (text) => (text ? text : "-"),
+      },
+    ],
+    []
+  );
 
   const handleExport = (data) => {
     const exportData = data.map((item) => {
@@ -117,10 +136,68 @@ const columns = useMemo(() => [
     downloadToExcel(exportData, "Invoice_Customer_Report.xlsx");
   };
 
+  const getCompanyNameSuggestionHandler = async (companyName) => {
+    setCompanyNameSuggestion([]);
+    try {
+      const response = await MasterDAO.getCompanySuggestionDAO(companyName);
+      if (response?.statusCode === 200) {
+        const suggestions = response.responseBody.map((item) => ({
+          value: item.companyName,
+          label: item.companyName,
+          companyID: item.companyID,
+        }));
+        setCompanyNameSuggestion(suggestions);
+      } else {
+        setCompanyNameSuggestion([]);
+      }
+    } catch (error) {
+      console.error("Company search failed", error);
+      setCompanyNameSuggestion([]);
+    }
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (companyAutoCompleteValue) {
+        getCompanyNameSuggestionHandler(companyAutoCompleteValue);
+      }
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [companyAutoCompleteValue]);
+
+  const handleOpenModal = (record) => {
+    setSelectedRecord(record);
+    setSelectedCompany(null);
+    setCompanyAutoCompleteValue("");
+    setCompanyNameSuggestion([]);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRecord(null);
+    setSelectedCompany(null);
+    setCompanyAutoCompleteValue("");
+    setCompanyNameSuggestion([]);
+  };
+
+  const handleSaveCompany = () => {
+    if (selectedRecord && selectedCompany) {
+      console.log("Saving company:", selectedCompany, "for:", selectedRecord);
+      const updatedList = customerList.map((item) =>
+        item.customer_ID === selectedRecord.customer_ID
+          ? { ...item, utS_CompanyName: selectedCompany }
+          : item
+      );
+      setCustomerList(updatedList);
+    }
+    handleCloseModal();
+  };
+
   return (
     <div className={invoiceStyles.hiringRequestContainer}>
       <div className={invoiceStyles.addnewHR} style={{ margin: "0" }}>
-        <div className={invoiceStyles.hiringRequest}>Invoice Customer</div>
+        <div className={invoiceStyles.hiringRequest}> Zoho Customers</div>
       </div>
 
       <div className={invoiceStyles.filterContainer}>
@@ -180,6 +257,48 @@ const columns = useMemo(() => [
           }}
         />
       )}
+
+      <Modal
+        title={`Map UTS Company - ${selectedRecord?.customer_ID}`}
+        open={isModalOpen}
+        footer={null}
+        onCancel={handleCloseModal}
+        centered
+      >
+        <AutoComplete
+          style={{ width: "100%" }}
+          placeholder="Search and select a company"
+          value={companyAutoCompleteValue}
+          options={companyNameSuggestion}
+          onSearch={setCompanyAutoCompleteValue}
+          onSelect={(value, option) => {
+            setCompanyAutoCompleteValue(value);
+            setSelectedCompany(option.label);
+            setCompanyID(option.companyID);
+          }}
+          filterOption={false}
+        />
+
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+          }}
+        >
+          <button className={invoiceStyles.btnPrimary} onClick={handleSaveCompany}>
+            {isLoading ? <Spin size="small" /> : "Save"}
+          </button>
+          <button
+            className={invoiceStyles.btnCancle}
+            onClick={handleCloseModal}
+            disabled={isLoading}
+          >
+            Cancel
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -439,6 +439,7 @@ export class UsersAPI {
 	static DEACTIVATE_USER = 'DeactivateUser';
 	static GET_TA_MONTHLY_GOAL = 'GetTAMonthlyGoal';
 	static ADD_UPDATE_TA_MONTHLY_GOAL = 'AddOrUpdateTAMonthlyGoal';
+	static MASTER_ZOHO_CUSTOMER_TO_UTS_COMPANY = 'MapZohoCustomerToUTSCompany';
 	static DELETE_TA_MONTHLY_GOAL = 'DeleteTAMonthlyGoal';
 }
 
