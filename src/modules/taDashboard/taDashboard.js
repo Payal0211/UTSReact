@@ -117,7 +117,7 @@ export default function TADashboard() {
   } = useForm();
   const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
   const [userData, setUserData] = useState({});
-  const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:"",isTotal:false});
+  const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
   const [allShowDetails, setAllShowDetails] = useState([]);
   useEffect(() => {
     const getUserResult = async () => {
@@ -661,7 +661,8 @@ export default function TADashboard() {
         isBoolean:true,
         title:title,
         value:value,
-        isTotal:isTotal
+        isTotal:isTotal,
+        TAName:data?.taName
       });
       setAllShowDetails(result?.responseBody);
     }
@@ -3373,13 +3374,12 @@ export default function TADashboard() {
           open={isShowDetails?.isBoolean}
           className="engagementModalStyle"
           onCancel={() => {
-            setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false});
+            setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
             setAllShowDetails([]);
           }}
-        >
-               
+        >               
         <div style={{ padding: "20px 15px" }}>
-          <h3><b>{(allShowDetails[0]?.taName && !isShowDetails?.isTotal) ? allShowDetails[0]?.taName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
+          <h3><b>{(isShowDetails?.TAName && !isShowDetails?.isTotal) ? isShowDetails?.TAName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
         </div>
 
         {allShowDetails.length > 0 ? (
@@ -3430,7 +3430,7 @@ export default function TADashboard() {
           <button
             className={taStyles.btnCancle}
             onClick={() => {
-              setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false});
+              setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
               setAllShowDetails([]);
             }}
           >

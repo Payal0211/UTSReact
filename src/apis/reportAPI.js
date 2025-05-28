@@ -422,6 +422,24 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getZohoInvoiceReport');
 		}
 	},
+	getZohoInvoiceCustomerReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.ZOHO_INVOICE_CUSTOMER_REPORT
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getZohoInvoiceCustomerReport');
+		}
+	},
+
 	getLeaveTakenReport: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =

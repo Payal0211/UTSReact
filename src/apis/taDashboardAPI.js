@@ -1,4 +1,4 @@
-import { NetworkInfo, SubDomain, TaDashboardURL } from 'constants/network';
+import { NetworkInfo, SubDomain, TaDashboardURL, UsersAPI } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
@@ -169,6 +169,8 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.geAllTAUSERSRequest');
 		}
 	},
+
+
     insertTaskCommentRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -250,4 +252,53 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.insertProfileShearedTargetRequest');
 		}
 	},
+	getTAGoalListAPI: async function () {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.MASTERS +
+				UsersAPI.GET_TA_MONTHLY_GOAL +
+				'?PageIndex=1&PageSize=100&SortExpression=TA&SortDirection=ASC';
+
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.getTAGoalListAPI');
+		}
+	},
+	addOrUpdateTAMonthlyGoalAPI: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			UsersAPI.ADD_UPDATE_TA_MONTHLY_GOAL+`?ID=${payload?.ID}&TA_User_ID=${payload?.TA_User_ID}&Goal=${payload?.Goal}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.addOrUpdateTAMonthlyGoalAPI');
+		}
+	},
+    deleteTAGoalAPI: async function (payload) {
+        let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			UsersAPI.DELETE_TA_MONTHLY_GOAL+`?ID=${payload?.ID}`			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.deleteTAGoalAPI');
+		}
+    },
 }

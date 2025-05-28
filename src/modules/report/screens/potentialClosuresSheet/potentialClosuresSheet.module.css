@@ -1,0 +1,37 @@
+.hiringRequestContainer {
+    padding: 24px 40px;
+}
+
+.snapshotContainer {
+  padding: 20px;
+}
+
+.filterContainer{
+  border-radius: 10px;
+  margin: 24px auto;
+  background-color: var(--background-color-light);
+}
+.filterSets{
+margin-left: auto;
+margin-right: auto;
+padding: 24px;
+display: flex;
+border-radius: 10px;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;    
+}
+.filterSetsInner{
+display: flex;
+align-items: center;
+}
+
+
+@media only screen and (max-width: 1440px) {
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
+    .hiringRequest {
+        font-size: 26px;
+    }
+}

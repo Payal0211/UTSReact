@@ -1,0 +1,137 @@
+.taGoalContainer {
+	padding: 20px;
+	background: #fff;
+	border-radius: 8px;
+}
+.formcontrol {  
+    font-weight: 500;
+    line-height: 16px;
+    color: #232323;
+    border: 1px solid rgba(35, 35, 35, 0.2);
+    transition: all 0.35s ease 0s;
+    border-radius: 7px !important;
+    background-color: #fff;
+    height: 54px;
+    width: 100%;
+    padding: 8px 16px 8px 16px;
+}
+
+/* Hover and Focus states */
+.formcontrol:focus,
+.formcontrol:hover {
+  border-color: #ffda30;
+  box-shadow: 0 0 0 1px #ffda30;
+  outline: none;
+}
+
+/* Placeholder styles */
+.formcontrol::placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+/* Compatibility for other browsers */
+.formcontrol::-webkit-input-placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.formcontrol::-moz-placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.formcontrol:-ms-input-placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+.formcontrol:-moz-placeholder {
+  color: rgba(107, 107, 107, 0.6);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}
+
+
+.headerRow {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.label {
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 15px;
+    color: #232323;
+    margin-bottom: 10px;
+}
+
+.goalAmountInput {
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  border: 1px solid #cecccc;
+  height: 54px;
+  padding: 0 12px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.goalAmountInput:hover {
+  border: 1px solid #FFDA30;
+}
+
+.btnPrimary {
+    background: #FFDA30;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    height:44px;
+    padding: 8px 28px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.btnPrimary:hover {
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+}
+
+
+.btnCancle {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left: 10px;
+}
