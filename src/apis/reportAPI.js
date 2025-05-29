@@ -592,4 +592,38 @@ export const ReportAPI = {
 			return errorDebug(error, 'TaDashboardAPI.addOrUpdateTAMonthlyGoalAPI');
 		}
 	},
+	DailyBusinessNumbersAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.DAILY_BUSINESS_NUMBERS
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.DailyBusinessNumbersAPI');
+		}
+	},	
+	PotentialClosuresListAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.POTENTIAL_CLOSURES_LIST
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.PotentialClosuresListAPI');
+		}
+	},
 };
