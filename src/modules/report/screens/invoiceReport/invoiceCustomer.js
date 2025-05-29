@@ -17,6 +17,7 @@ export default function InvoicCustomer() {
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [customerList, setCustomerList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalLoading, setIsModalLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -184,7 +185,9 @@ export default function InvoicCustomer() {
     };
 
     try {
+      setIsModalLoading(true);
       const response = await ReportDAO.mapCompanyToCustomerDAO(payload);
+      setIsModalLoading(false);
       if (response?.statusCode === 200) {       
         handleCloseModal();
         fetchCustomerList(pageIndex, pageSize);
@@ -305,12 +308,12 @@ export default function InvoicCustomer() {
           }}
         >
           <button className={invoiceStyles.btnPrimary} onClick={handleSaveCompany}>
-            {isLoading ? <Spin size="small" /> : "Save"}
+            {isModalLoading ? <Spin size="small" /> : "Save"}
           </button>
           <button
             className={invoiceStyles.btnCancle}
             onClick={handleCloseModal}
-            disabled={isLoading}
+            disabled={isModalLoading}
           >
             Cancel
           </button>
