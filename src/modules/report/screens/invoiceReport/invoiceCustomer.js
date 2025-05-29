@@ -3,7 +3,7 @@ import invoiceStyles from "./invoice.module.css";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { InputType } from "constants/application";
-import { Table, Modal, AutoComplete, Spin } from "antd";
+import { Table, Modal, AutoComplete, Spin, message } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { downloadToExcel } from "modules/report/reportUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
@@ -17,6 +17,7 @@ export default function InvoicCustomer() {
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
   const [customerList, setCustomerList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalLoading, setIsModalLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -24,7 +25,8 @@ export default function InvoicCustomer() {
 
   const [companyAutoCompleteValue, setCompanyAutoCompleteValue] = useState("");
   const [companyNameSuggestion, setCompanyNameSuggestion] = useState([]);
-  const [companyID, setCompanyID] = useState(null);
+
+  const [companyError, setCompanyError] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() => setSearchText(debounceText), 1000);
@@ -91,17 +93,7 @@ export default function InvoicCustomer() {
         key: "utS_CompanyName",
         align: "left",
         width: "200px",
-        render: (text) => (text ? text : "-"),
-        // render: (text, record) => {
-        //   return (
-        //     <span
-        //       style={{ color: "#1890ff", cursor: "pointer" }}
-        //       onClick={() => handleOpenModal(record)}
-        //     >
-        //       {text ? text : "Map UTS Company"}
-        //     </span>
-        //   );
-        // },
+        render: (text,record) => (text ? text :  <span style={{ color: "#1890ff", cursor: "pointer" }}   onClick={() => handleOpenModal(record)}>Map UTS Company</span>),        
       },
       {
         title: "Currency Code",
@@ -141,10 +133,9 @@ export default function InvoicCustomer() {
     try {
       const response = await MasterDAO.getCompanySuggestionDAO(companyName);
       if (response?.statusCode === 200) {
-        const suggestions = response.responseBody.map((item) => ({
-          value: item.companyName,
+        const suggestions = response?.responseBody?.details.map((item) => ({
+          value: item.companyID,
           label: item.companyName,
-          companyID: item.companyID,
         }));
         setCompanyNameSuggestion(suggestions);
       } else {
@@ -181,18 +172,34 @@ export default function InvoicCustomer() {
     setCompanyNameSuggestion([]);
   };
 
-  const handleSaveCompany = () => {
-    if (selectedRecord && selectedCompany) {
-      console.log("Saving company:", selectedCompany, "for:", selectedRecord);
-      const updatedList = customerList.map((item) =>
-        item.customer_ID === selectedRecord.customer_ID
-          ? { ...item, utS_CompanyName: selectedCompany }
-          : item
-      );
-      setCustomerList(updatedList);
+  const handleSaveCompany = async () => {
+  if (!selectedCompany) {
+    setCompanyError('Please select a valid company.');
+    return;
+  }
+
+  if (selectedRecord && selectedCompany) {
+    const payload = {
+      ZohoCustmerID: selectedRecord.customer_ID,
+      CompanyID: selectedCompany,
+    };
+
+    try {
+      setIsModalLoading(true);
+      const response = await ReportDAO.mapCompanyToCustomerDAO(payload);
+      setIsModalLoading(false);
+      if (response?.statusCode === 200) {       
+        handleCloseModal();
+        fetchCustomerList(pageIndex, pageSize);
+      } else {
+        console.error("Mapping failed");
+      }
+    } catch (err) {
+      console.error("Error during mapping:", err);
     }
-    handleCloseModal();
-  };
+  }
+};
+
 
   return (
     <div className={invoiceStyles.hiringRequestContainer}>
@@ -265,19 +272,32 @@ export default function InvoicCustomer() {
         onCancel={handleCloseModal}
         centered
       >
-        <AutoComplete
-          style={{ width: "100%" }}
-          placeholder="Search and select a company"
-          value={companyAutoCompleteValue}
-          options={companyNameSuggestion}
-          onSearch={setCompanyAutoCompleteValue}
-          onSelect={(value, option) => {
-            setCompanyAutoCompleteValue(value);
-            setSelectedCompany(option.label);
-            setCompanyID(option.companyID);
-          }}
-          filterOption={false}
-        />
+        <div>
+          <AutoComplete
+            style={{
+              width: "100%",
+              borderColor: companyError ? "red" : undefined,
+            }}
+            placeholder="Search and select a company"
+            value={companyAutoCompleteValue}
+            options={companyNameSuggestion}
+            onSearch={(value) => {
+              setCompanyAutoCompleteValue(value);
+              setCompanyError(''); 
+            }}
+            onSelect={(value, option) => {
+              setCompanyAutoCompleteValue(option.label);
+              setSelectedCompany(option.value);
+              setCompanyError('');
+            }}
+            filterOption={false}
+          />
+          {companyError && (
+            <div style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+              {companyError}
+            </div>
+          )}
+        </div>
 
         <div
           style={{
@@ -288,12 +308,12 @@ export default function InvoicCustomer() {
           }}
         >
           <button className={invoiceStyles.btnPrimary} onClick={handleSaveCompany}>
-            {isLoading ? <Spin size="small" /> : "Save"}
+            {isModalLoading ? <Spin size="small" /> : "Save"}
           </button>
           <button
             className={invoiceStyles.btnCancle}
             onClick={handleCloseModal}
-            disabled={isLoading}
+            disabled={isModalLoading}
           >
             Cancel
           </button>
