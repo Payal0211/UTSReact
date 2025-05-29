@@ -705,8 +705,8 @@ export default function TADashboard() {
       key: "totalRevenuePerUserStr",
       align: 'center',
       width: 150,
-       render: (text, result) => {        
-        return <div style={{cursor:"pointer"}} onClick={() => showDetails(0,result,"Assigned Pipeline (INR)",text)}>{text}</div>;
+       render: (text, result) => {                
+        return text ? <div style={{cursor:"pointer"}} onClick={() => showDetails(0,result,"Assigned Pipeline (INR)",text)}>{text}</div> : '-';
       },
     },
     {
@@ -864,7 +864,7 @@ export default function TADashboard() {
       key: "achievedHRPipeLineStr",
       align: 'center',
       render: (text) => {
-        return <div className={taStyles.todayText}>{summaryData.total_AchievedPipelineStr ? summaryData.total_AchievedPipelineStr : '-'}</div>;
+        return <div className={taStyles.todayText}>{text ? text : '-'}</div>;
       },
     },      
     {

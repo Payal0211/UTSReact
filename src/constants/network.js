@@ -183,6 +183,8 @@ export class ReportType {
 	static DAILY_SNAPSHOT_REPORT = 'DailySnapshotReport'
 	static AM_WEEK_WISE_REPORT = 'AMWeekWiseReport'
 	static AM_WEEK_WISE_REPORT_FILTERS = 'AMWeekWiseReportFilters'
+	static DAILY_BUSINESS_NUMBERS = ''
+	static POTENTIAL_CLOSURES_LIST = ''
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
