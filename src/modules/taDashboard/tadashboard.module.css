@@ -103,6 +103,11 @@
     gap: 5px;
 }
 
+.totalrow td {
+  background-color: #f0f0f0 !important; 
+  font-weight: bolder !important;
+}
+
 .filterType {
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
