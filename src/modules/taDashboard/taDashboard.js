@@ -1029,7 +1029,8 @@ export default function TADashboard() {
   dataIndex: "profiles_Shared_Target",
   key: "profiles_Shared_Target",
   align: "center",
-  render: (text, result) => {
+  render: (text, result) => {    
+    if(result?.hrTitle === 'TOTAL') return text
     const today = new Date();
     const selected = new Date(startDate);
     
@@ -1071,6 +1072,7 @@ export default function TADashboard() {
       key: "profiles_Shared_Achieved",
       align: "center",
       render: (text, result) => {
+        if(result?.hrTitle === 'TOTAL') return text
         return +text > 0 ? (
           <p
             style={{
@@ -1108,6 +1110,7 @@ export default function TADashboard() {
       key: "interviews_Done_Target",
       align: "center",
       render: (text, result) => {
+        if(result?.hrTitle === 'TOTAL') return text
         return +text > 0 ? (
           <p
             style={{
