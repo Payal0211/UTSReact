@@ -246,30 +246,44 @@ export default function PotentialClosuresSheet() {
         );
     };
 
-    const renderInputField = (value, record, index, dataIndex, handleChange) => {
+   const renderInputField = (value, record, index, dataIndex, handleChange) => {
     return (
         <Input
-        value={value}
-        onChange={(e) => handleChange(e.target.value, record, index, dataIndex)}
-        style={{ width: '100%' }}
-        size="small"
+            value={value}
+            onChange={(e) => handleChange(e.target.value, record, index, dataIndex)}
+            onBlur={() => {
+                if (dataIndex === 'closurebyWeekend' || dataIndex === 'closurebyMonth') {
+                    updatePotentialClosuresRowValue(data[index]);
+                }
+            }}
+            style={{ width: '100%' }}
+            size="small"
         />
-    );
+        );
     };
+
     
     const handleFieldChange = (newValue, record, index, field) => {
         const updatedData = [...data];
         updatedData[index] = { ...record, [field]: newValue };
         setData(updatedData);
-        // updatePotentialClosuresRowValue();
-    };  
 
-    const updatePotentialClosuresRowValue = async () => {
-        let pl = {
-        
+        if (field === 'productType' || field === 'potentialType') {
+            updatePotentialClosuresRowValue(updatedData[index]);
+        }
+    };
+
+    const updatePotentialClosuresRowValue = async (updatedData) => {
+        const pl = {
+            HRID: updatedData?.hiringRequest_ID,
+            ProductType: updatedData?.productType,
+            PotentialType: updatedData?.potentialType,
+            ClosurebyWeekend: updatedData?.closurebyWeekend,
+            ClosurebyMonth: updatedData?.closurebyMonth,
         };
-        let updateresult = await ReportDAO.PotentialClosuresUpdateDAO(pl);
-    }
+
+        await ReportDAO.PotentialClosuresUpdateDAO(pl);
+    };
 
     return (
         <div className={pcsStyles.snapshotContainer}>
