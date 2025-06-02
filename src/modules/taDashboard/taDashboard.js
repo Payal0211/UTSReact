@@ -724,7 +724,7 @@ export default function TADashboard() {
       width: 150,
       align: 'center',
       render: (text, result) => {        
-        return <div className={taStyles.todayText} style={{ background: "#babaf5"}}>{text}</div>;
+        return <div className={taStyles.todayText} style={{ background: "#babaf5",cursor:"pointer"}} onClick={() => showDetails(7,result,"Carry Fwd Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {
@@ -755,7 +755,9 @@ export default function TADashboard() {
       width: 150,      
       align: 'center',
       render: (text, result) => {       
-        return <div className={taStyles.today1Text}>{text}</div>;
+        return <div className={taStyles.today1Text} style={{cursor:"pointer"}}  
+        onClick={() => showDetails(8,result,"Total Active Pipeline (INR)",text)}
+        >{text}</div>;
       },
     },
     {
