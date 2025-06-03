@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Card, Typography, Select, Input } from 'antd';
+import { Table, Card, Typography, Select, Input, Tabs } from 'antd';
 import pcsStyles from './potentialClosuresSheet.module.css';
 import { ReportDAO } from 'core/report/reportDAO';
 import moment from 'moment';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import Diamond from 'assets/svg/diamond.svg';
+import TabPane from 'antd/lib/tabs/TabPane';
+
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -12,6 +16,7 @@ export default function PotentialClosuresSheet() {
     
     const [data, setData] = useState([]);
     const [isLoading, setLoading] = useState(false); 
+    const [activeTab, setActiveTab] = useState("G"); 
 
     const columns = [
         {
@@ -64,9 +69,15 @@ export default function PotentialClosuresSheet() {
             title: 'HR Status',
             dataIndex: 'hrStatus',
             key: 'hrStatus',
-            width: 100,
             fixed: 'left',
             className: pcsStyles.headerCell,
+            width: "180px",
+            render: (_, param) => {
+                return All_Hiring_Request_Utils.GETHRSTATUS(
+                param?.hrStatusCode,
+                param?.hrStatus
+                );
+            },
         },
         {
             title: <>Engagement <br/> Model</>,
@@ -91,8 +102,13 @@ export default function PotentialClosuresSheet() {
             width: 150,
             fixed: 'left',
             className: pcsStyles.headerCell,
-            render: (text, record) => {                
-                return text;
+            render: (text, record) => {                                                
+                return record?.companyCategory === 'Diamond' ?
+                        <>
+                            <span>{text}</span>
+                            &nbsp;<img src={Diamond} alt="info" style={{ width: "16px", height: "16px" }} />
+                        </>
+                        : text
             },
         },
         {
@@ -153,7 +169,7 @@ export default function PotentialClosuresSheet() {
             className: pcsStyles.headerCell,
         },        
         {
-            title: <>Avg. MRR<br/>(USD)</>,
+            title: <>Average Value<br/>(USD)</>,
             dataIndex: 'averageValue',
             key: 'averageValue',
             width: 120,
@@ -189,7 +205,7 @@ export default function PotentialClosuresSheet() {
             dataIndex: 'uplersFeeStr',
             key: 'uplersFeeStr',
             width: 150,
-            align: 'right',
+            align: 'left',
             className: pcsStyles.headerCell,
         },
         {
@@ -211,16 +227,20 @@ export default function PotentialClosuresSheet() {
     ];
     
     useEffect(() => {
-        fetchPotentialClosuresListData();
-    }, [])
+        fetchPotentialClosuresListData(activeTab);
+    }, [activeTab])
 
-    const fetchPotentialClosuresListData = async () => {
+     const handleTabChange = (key) => {
+        setActiveTab(key);
+    };
+
+     const fetchPotentialClosuresListData = async (businessType) => {
         let payload = {
-            "hR_BusinessType": "G",
+            "hR_BusinessType": businessType,
             "searchText": "",
             "hrStatusIDs": "",
             "modelType": ""
-            }
+        }
 
         setLoading(true)
         const apiResult = await ReportDAO.PotentialClosuresListDAO(payload);
@@ -296,21 +316,57 @@ export default function PotentialClosuresSheet() {
                    
                     </div>
                 </div>
+            
+            <Tabs activeKey={activeTab}             
+                onChange={handleTabChange} 
+                style={{ marginBottom: 16 }} 
+                destroyInactiveTabPane={false} 
+                animated={true}
+                tabBarGutter={50}
+                tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}>
+                <TabPane tab="Global" key="G" />
+                <TabPane tab="India" key="I" />
+            </Tabs>
 
-            <Card bordered={false}>
+            {/* <Card bordered={false}>
                 <div className={pcsStyles.tableContainer}>
                 {isLoading ? <TableSkeleton /> :
                     <Table
                         columns={columns}
                         dataSource={data}
                         bordered
-                        pagination={{ pageSize: 15 }}
+                        pagination={{ pageSize: 10 }}
                         size="middle"
                         scroll={{ x: 'max-content', y: 500 }}
                         rowClassName={(record, index) => index % 2 === 0 ? pcsStyles.evenRow : pcsStyles.oddRow}
                     />
                 }
                 </div>
+            </Card> */}
+            <Card bordered={false}>
+            <div className={pcsStyles.tableContainer}>
+                {isLoading ? (
+                <TableSkeleton />
+                ) : (
+                data?.length > 0 ? 
+                <Table
+                    columns={columns}
+                    dataSource={data}
+                    bordered
+                    pagination={{ pageSize: 500 }}
+                    size="middle"
+                    scroll={{ x: 'max-content',y:1000 }}
+                    rowClassName={(record, index) => index % 2 === 0 ? pcsStyles.evenRow : pcsStyles.oddRow}                    
+                />:
+                <Table
+                    columns={columns}
+                    dataSource={[]}
+                    bordered
+                    size="middle"                 
+                />
+
+                )}
+            </div>
             </Card>
         </div>
     );
