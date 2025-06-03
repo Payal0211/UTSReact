@@ -31,7 +31,7 @@ const TADashboardReport = () => {
           title: "TA",
           dataIndex: "taName",
           key: "taName",
-          width: 120,
+          width: 120,          
           render: (text, result) => {        
             return text ? text : '-';
           },
@@ -190,7 +190,7 @@ const TADashboardReport = () => {
         key: "carryFwdPipeLineStr",
         align: 'center',
         render: (text) => {
-            return <div className={styles.today1Text} style={{background:"#babaf5"}}>{text}</div>;
+            return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today1Text} style={{background:"#babaf5"}}>{text}</div></div>;
         },
         },
         {
@@ -203,7 +203,7 @@ const TADashboardReport = () => {
         key: "activeHRPipeLineStr",
         align: 'center',
         render: (text) => {
-            return <div>{text}</div>;
+            return <div style={{display:"flex",justifyContent:"center"}}><div>{text}</div></div>;
         },
         },  
         {
@@ -217,7 +217,7 @@ const TADashboardReport = () => {
         key: "achievedHRPipeLineStr",
         align: 'center',
         render: (text) => {
-            return <div className={styles.todayText}>{text ? text : '-'}</div>;
+            return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.todayText}>{text ? text : '-'}</div></div>;
         },
         },      
         {
@@ -230,7 +230,7 @@ const TADashboardReport = () => {
         align: 'center',
         key: "lostHRPipeLineStr",
         render: (text) => {
-            return <div className={styles.today2Text} style={{background:'lightsalmon'}}>{text}</div>;
+            return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today2Text} style={{background:'lightsalmon'}}>{text}</div></div>;
         },
         },
         {
@@ -244,7 +244,7 @@ const TADashboardReport = () => {
         key: "totalActivePipeLineStr",
         align: 'center',
         render: (text) => {
-            return <div className={styles.today1Text}>{text}</div>;
+            return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today1Text}>{text}</div></div>;
         },
         }    
     ];
