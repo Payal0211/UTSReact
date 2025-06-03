@@ -184,7 +184,8 @@ export class ReportType {
 	static AM_WEEK_WISE_REPORT = 'AMWeekWiseReport'
 	static AM_WEEK_WISE_REPORT_FILTERS = 'AMWeekWiseReportFilters'
 	static DAILY_BUSINESS_NUMBERS = ''
-	static POTENTIAL_CLOSURES_LIST = ''
+	static POTENTIAL_CLOSURES_LIST = 'PotentialClosureList'
+	static POTENTIAL_CLOSURES_UPDATE = 'UpdatePotentialClosureHRDetails'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

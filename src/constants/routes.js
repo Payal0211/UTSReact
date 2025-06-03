@@ -292,7 +292,7 @@ export default class UTSRoutes {
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 	static AM_REPORT = '/amReport';
 	static DAILY_BUSINESS_NUMBERS = 'dailyBusinessNumbers';
-	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresSheet'
+	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresList'
 }
 
 export const navigateToComponent = {

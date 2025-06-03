@@ -626,4 +626,22 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.PotentialClosuresListAPI');
 		}
 	},
+	PotentialClosuresUpdateAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			ReportType.POTENTIAL_CLOSURES_UPDATE + `?HRID=${payload?.HRID}&ProductType=${payload?.ProductType}&PotentialType=${payload?.PotentialType}&ClosurebyWeekend=${payload?.ClosurebyWeekend}&ClosurebyMonth=${payload?.ClosurebyMonth}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.PotentialClosuresUpdateAPI');
+		}
+	},
+
 };

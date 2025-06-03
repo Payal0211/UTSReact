@@ -169,7 +169,9 @@ export default function ClientDashboardReport() {
       statusID: statusID,
       stageID: statusID === 0 ? null : stageID ? stageID : 0,
     };
+    setLoadingTalentProfile(true);
     const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+    setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
       setFilteredTalentList(hrResult.responseBody);
@@ -625,8 +627,10 @@ export default function ClientDashboardReport() {
         stageID: statusID === 0 ? null : stageID ? stageID : 0,
       };
       setIsModalLoading(true);
+      setLoadingTalentProfile(true);
       const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
       setIsModalLoading(false);
+      setLoadingTalentProfile(false);
       if (hrResult.statusCode === HTTPStatusCode.OK) {
         setHRTalentList(hrResult.responseBody);
         setFilteredTalentList(hrResult.responseBody);  
@@ -955,6 +959,7 @@ export default function ClientDashboardReport() {
                         setSearchTerm('')
                         setShowTalentProfiles(false);
                         setHRTalentListFourCount([]);
+                        setFilteredTalentList([]);
                       }}
                     >
                       {isModalLoading ?  
@@ -1230,6 +1235,7 @@ export default function ClientDashboardReport() {
                               setSearchTerm('')
                               setShowTalentProfiles(false);
                               setHRTalentListFourCount([]);
+                              setFilteredTalentList([]);
                             }}
                           >
                             Cancel

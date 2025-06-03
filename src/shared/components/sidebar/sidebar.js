@@ -513,7 +513,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 
 		new SideBarModels({
 			id: 'omReport',
-			title: 'OM report',
+			title: 'OM Report',
 			isActive: false,
 			icon: AMReportIcon,
 			isChildren: true,
@@ -527,7 +527,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 				}),
 				new SideBarModels({
 					id: 'potentialClosuresSheet',
-					title: 'Potential Closures Sheet',
+					title: 'Potential Closures List',
 					isActive: false,
 					navigateTo: UTSRoutes.POTENTIAL_CLOSURES_SHEET,
 					isVisible: isAccess(usertypeID, 'PotentialClosuresSheet')

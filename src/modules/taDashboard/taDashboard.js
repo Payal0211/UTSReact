@@ -33,7 +33,10 @@ import { BsClipboard2CheckFill } from "react-icons/bs";
 import MoveToAssessment from "modules/hiring request/components/talentList/moveToAssessment";
 import { InterviewDAO } from "core/interview/interviewDAO";
 import LogoLoader from "shared/components/loader/logoLoader";
+import Diamond from 'assets/svg/diamond.svg';
+
 const { Option } = Select;
+
 
 export default function TADashboard() {
   const navigate = useNavigate();
@@ -721,7 +724,7 @@ export default function TADashboard() {
       width: 150,
       align: 'center',
       render: (text, result) => {        
-        return <div className={taStyles.todayText} style={{ background: "#babaf5"}}>{text}</div>;
+        return <div className={taStyles.todayText} style={{ background: "#babaf5",cursor:"pointer"}} onClick={() => showDetails(7,result,"Carry Fwd Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {
@@ -752,7 +755,9 @@ export default function TADashboard() {
       width: 150,      
       align: 'center',
       render: (text, result) => {       
-        return <div className={taStyles.today1Text}>{text}</div>;
+        return <div className={taStyles.today1Text} style={{cursor:"pointer"}}  
+        onClick={() => showDetails(8,result,"Total Active Pipeline (INR)",text)}
+        >{text}</div>;
       },
     },
     {
@@ -992,80 +997,49 @@ export default function TADashboard() {
       dataIndex: "hrTitle",
       key: "hrTitle",
     },
-    // {
-    //   title: "Profiles Shared Target",
-    //   dataIndex: "profiles_Shared_Target",
-    //   key: "profiles_Shared_Target",
-    //   align: "center",
-    //   render: (text, result) => {
-    //     return (
-    //       <Tooltip title={"Edit Target"}>
-    //         <p
-    //           style={{
-    //             color: "green",
-    //             fontWeight: "bold",
-    //             textDecoration: "underline",
-    //             cursor: "pointer",
-    //           }}
-    //           onClick={() => {
-    //             setShowProfileTarget(true);
-    //             setStartTargetDate(startDate)
-    //             setProfileTargetDetails({
-    //               ...result,
-    //               id: result?.taskID,
-    //               tA_UserID: result?.taUserID,
-    //               fromGoalsTable: true,
-    //             });
-    //           }}
-    //         >
-    //           {text}
-    //         </p>
-    //       </Tooltip>
-    //     );
-    //   },
-    // },
+ 
     {
-  title: "Profiles Shared Target",
-  dataIndex: "profiles_Shared_Target",
-  key: "profiles_Shared_Target",
-  align: "center",
-  render: (text, result) => {    
-    if(result?.hrTitle === 'TOTAL') return text
-    const today = new Date();
-    const selected = new Date(startDate);
-    
-    // Clear time for comparison
-    today.setHours(0, 0, 0, 0);
-    selected.setHours(0, 0, 0, 0);
+      title: "Profiles Shared Target",
+      dataIndex: "profiles_Shared_Target",
+      key: "profiles_Shared_Target",
+      align: "center",
+      render: (text, result) => {    
+        if(result?.hrTitle === 'TOTAL') return text
+        const today = new Date();
+        const selected = new Date(startDate);
+        
+        // Clear time for comparison
+        today.setHours(0, 0, 0, 0);
+        selected.setHours(0, 0, 0, 0);
 
-    const isPastDate = selected < today;
-    if (isPastDate) return text
-    return (
-      <Tooltip title={"Edit Target"}>
-        <p
-          style={{
-            color: "green",
-            fontWeight: "bold",
-            textDecoration: "underline",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            setShowProfileTarget(true);
-            setStartTargetDate(startDate);
-            setProfileTargetDetails({
-              ...result,
-              id: result?.taskID,
-              tA_UserID: result?.taUserID,
-              fromGoalsTable: true,
-            });
-          }}
-        >
-          {text}
-        </p>
-      </Tooltip>
-    );
-  },
-},
+        const isPastDate = selected < today;
+        if (isPastDate) return text
+        return (
+          <Tooltip title={"Edit Target"}>
+            <p
+              style={{
+                color: "green",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setShowProfileTarget(true);
+                setStartTargetDate(startDate);
+                setProfileTargetDetails({
+                  ...result,
+                  id: result?.taskID,
+                  tA_UserID: result?.taUserID,
+                  fromGoalsTable: true,
+                });
+              }}
+            >
+              {text}
+            </p>
+          </Tooltip>
+        );
+      },
+    },
     {
       title: "Profiles Shared Achieved",
       dataIndex: "profiles_Shared_Achieved",
@@ -1271,25 +1245,96 @@ export default function TADashboard() {
         };
       },
     },
+    // {
+    //   title: "Company",
+    //   dataIndex: "companyName",
+    //   key: "companyName",
+    //   fixed: "left",
+    //   width: "120px",
+    //   render: (text, row) => (
+    //     <>
+    //       {" "}
+    //       <a
+    //         href={"/viewCompanyDetails/" + `${row.company_ID}`}
+    //         target="_blank"
+    //         rel="noreferrer"
+    //       >
+    //         {text}
+    //       </a>{" "}
+    //       {
+    //         <>
+    //           <img src={Diamond} alt="info" style={{ width: '20px', height: '20px' }} />
+    //         </>
+    //       }
+    //       {userData?.showTADashboardDropdowns && (
+    //         <>
+    //           <br />
+    //           <IconContext.Provider
+    //             value={{
+    //               color: "green",
+    //               style: {
+    //                 width: "30px",
+    //                 height: "30px",
+    //                 marginTop: "5px",
+    //                 cursor: "pointer",
+    //               },
+    //             }}
+    //           >
+    //             {" "}
+    //             <Tooltip
+    //               title={`Add task for TA ${row.taName} in ${text}`}
+    //               placement="top"
+    //             >
+    //               <span
+    //                 onClick={() => {
+    //                   setIsAddNewRow(true);
+    //                   setNewTAUserValue(row.tA_UserID);
+    //                   setNewTAHeadUserValue(selectedHead);
+    //                   getCompanySuggestionHandler(row.tA_UserID);
+    //                   setselectedCompanyID(row?.company_ID);
+    //                   getHRLISTForComapny(row?.company_ID);
+    //                 }}
+    //                 className={taStyles.feedbackLabel}
+    //                 style={{ padding: "10px" }}
+    //               >
+    //                 {" "}
+    //                 <IoMdAddCircle />
+    //               </span>{" "}
+    //             </Tooltip>
+    //           </IconContext.Provider>
+    //         </>
+    //       )}
+          
+    //     </>
+    //   ),
+    // },
     {
-      title: "Company",
-      dataIndex: "companyName",
-      key: "companyName",
-      fixed: "left",
-      width: "120px",
-      render: (text, row) => (
-        <>
-          {" "}
-          <a
-            href={"/viewCompanyDetails/" + `${row.company_ID}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {text}
-          </a>{" "}
-          {userData?.showTADashboardDropdowns && (
+  title: "Company",
+  dataIndex: "companyName",
+  key: "companyName",
+  fixed: "left",
+  width: "180px",
+  render: (text, row) => (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+      {/* Company Name + Diamond Icon */}
+      <div style={{ display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
+        <a
+          href={`/viewCompanyDetails/${row.company_ID}`}
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: "#1890ff", fontWeight: 500 }}
+        >
+          {text}
+        </a>
+
+        {row?.companyCategory === 'Diamond' &&
+          <img src={Diamond} alt="info" style={{ width: "16px", height: "16px" }} />
+        }
+      </div>
+
+      {userData?.showTADashboardDropdowns && (
             <>
-              <br />
+              {/* <br /> */}
               <IconContext.Provider
                 value={{
                   color: "green",
@@ -1325,9 +1370,10 @@ export default function TADashboard() {
               </IconContext.Provider>
             </>
           )}
-        </>
-      ),
-    },
+    </div>
+  ),
+},
+
     // {
     //   title: 'HR ID',
     //   dataIndex: 'hrNumber',
@@ -2261,6 +2307,7 @@ export default function TADashboard() {
                 columns={goalColumns}
                 // bordered
                 pagination={false}
+                rowClassName={(record) => (record?.hrTitle === 'TOTAL' ? taStyles.totalrow : '')}
               />
             </div>
           )
