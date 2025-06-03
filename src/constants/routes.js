@@ -24,6 +24,10 @@ const RecruiterReport = React.lazy(() =>
 	import('modules/report/screens/recruiterReport/recruiterReport'),
 );
 
+const TADashboardReport = React.lazy(() => 
+	import('modules/report/screens/taDashboardReport/taDashboardReport'),
+)
+
 const DailySnapshotReport = React.lazy(() =>
 	import('modules/report/screens/dailySnapshotReport/dailySnapshotReport'),
 )
@@ -227,6 +231,7 @@ export default class UTSRoutes {
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static AMDASHBOARD = '/amdashboard';
 	static TADASHBOARD = '/tadashboard'
+	static TADASHBOARDREPORT = '/tadashboardReport'
 	static RECRUITERREPORT = '/recruiter'
 	static DAILYSNAPSHOT = '/dailysnapshot'
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
@@ -489,6 +494,11 @@ export const navigateToComponent = {
 	[UTSRoutes.RECRUITERREPORT]: (
 		<Suspense>
 			<RecruiterReport />
+		</Suspense>
+	),
+	[UTSRoutes.TADASHBOARDREPORT]: (
+		<Suspense>
+			<TADashboardReport />
 		</Suspense>
 	),
 	[UTSRoutes.DAILYSNAPSHOT]: (

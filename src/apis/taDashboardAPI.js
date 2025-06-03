@@ -105,11 +105,11 @@ export const TaDashboardAPI = {
 		}
 	},
 	getTotalRevenueRequest: async function (pl) {
-		let httpService = new HttpServices();
+		let httpService = new HttpServices();		
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_TOTAL_REVENUE_PER_TA 
+			TaDashboardURL.GET_TOTAL_REVENUE_PER_TA + `?month=${pl?.month}&year=${pl?.year}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -125,7 +125,7 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_DAILY_ACTIVE_TARGETS 
+			TaDashboardURL.GET_DAILY_ACTIVE_TARGETS + `?month=${pl?.month}&year=${pl?.year}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
