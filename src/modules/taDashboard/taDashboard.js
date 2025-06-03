@@ -1327,8 +1327,7 @@ export default function TADashboard() {
           {text}
         </a>
 
-        {/* Conditionally show diamond icon */}
-        {row?.companyCategory === 'diamond' &&
+        {row?.companyCategory === 'Diamond' &&
           <img src={Diamond} alt="info" style={{ width: "16px", height: "16px" }} />
         }
       </div>

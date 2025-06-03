@@ -630,11 +630,11 @@ export const ReportAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
-			SubDomain.REPORT +
-			ReportType.POTENTIAL_CLOSURES_UPDATE
+			SubDomain.MASTERS +
+			ReportType.POTENTIAL_CLOSURES_UPDATE + `?HRID=${payload?.HRID}&ProductType=${payload?.ProductType}&PotentialType=${payload?.PotentialType}&ClosurebyWeekend=${payload?.ClosurebyWeekend}&ClosurebyMonth=${payload?.ClosurebyMonth}`
 
 		httpService.setAuthRequired = true;
-		httpService.dataToSend = payload;
+		// httpService.dataToSend = payload;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendPostRequest();
