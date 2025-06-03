@@ -288,7 +288,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
-	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'DailySnapshot' || title === 'amReport' || title === 'PotentialClosuresSheet' || title === 'DailyBusinessNumbers'){
+	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'amReport' || title === 'PotentialClosuresSheet' || title === 'DailyBusinessNumbers'){
 		isVisible =  true;
 		return isVisible
 	}
@@ -431,10 +431,18 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isChildren: true,
 			branch:[
 				new SideBarModels({
+					id: 'taDashboardReport',
+					title: 'TA Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.TADASHBOARDREPORT,
+					isVisible: isAccess(usertypeID, 'taDashboardReport'),
+					isChildren : false					
+				}),
+
+				new SideBarModels({
 					id: 'DailySnapshot',
 					title: 'Daily Snapshot',
 					isActive: false,
-					icon: RecruiterReportIcon,
 					navigateTo: UTSRoutes.DAILYSNAPSHOT,
 					isVisible: isAccess(usertypeID, 'DailySnapshot'),
 					isChildren : false					
@@ -443,7 +451,6 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					id: 'Recruiter',
 					title: 'Recruiter',
 					isActive: false,
-					icon: RecruiterReportIcon,
 					navigateTo: UTSRoutes.RECRUITERREPORT,
 					isVisible: isAccess(usertypeID, 'Recruiter'),
 					isChildren : false					
@@ -452,7 +459,6 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					id: 'ClientDashboard',
 					title: 'Client Dashboard',
 					isActive: false,
-					icon: RecruiterReportIcon,
 					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
 					isVisible: isAccess(usertypeID, 'ClientDashboard'),
 					isChildren : false					
