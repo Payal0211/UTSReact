@@ -2174,12 +2174,13 @@ export default function TADashboard() {
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={2}>
                           <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", summaryData.total_CarryFwdPipelineStr,true)}>
+                            onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", summaryData.sumOfTotalRevenueStr,true)}>
                             {summaryData.sumOfTotalRevenueStr || '-'}
                           </div>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={3}>
-                          <div style={{ textAlign: 'center' }}>
+                          <div style={{ textAlign: 'center' , fontWeight: 'bold', cursor: 'pointer'}}
+                          onClick={() => showDetails(7, { taUserID: 2 }, "Carry Fwd Pipeline (INR)", summaryData.total_CarryFwdPipelineStr,true)}>
                             <strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong>
                           </div>
                         </Table.Summary.Cell>
@@ -2190,7 +2191,8 @@ export default function TADashboard() {
                           </div>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={5}>
-                          <div style={{ textAlign: 'center' }}>
+                          <div style={{ textAlign: 'center' , fontWeight: 'bold', cursor: 'pointer' }}
+                            onClick={() => showDetails(8, { taUserID: 2 }, "Total Active Pipeline (INR)", summaryData.total_ActualPipelineStr,true)}> 
                             <strong>{summaryData.total_ActualPipelineStr || '-'}</strong>
                           </div>
                         </Table.Summary.Cell>
