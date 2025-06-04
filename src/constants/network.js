@@ -186,6 +186,7 @@ export class ReportType {
 	static DAILY_BUSINESS_NUMBERS = ''
 	static POTENTIAL_CLOSURES_LIST = 'PotentialClosureList'
 	static POTENTIAL_CLOSURES_UPDATE = 'UpdatePotentialClosureHRDetails'
+	static AM_WISE_INTERVIEW_COUNTS = 'GetDailyAMWiseInterviewCounts'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
