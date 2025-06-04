@@ -275,7 +275,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible = (ID === 3 || ID === 2 || ID === 1) ? true : false;
 		return isVisible
 	}
-	if(ID === 2){
+	if(ID === 2 || title ==='amInterviews'){
 		isVisible =  true
 		return isVisible	
 	}
@@ -471,7 +471,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isActive: false,
 			icon: ClipBoardIcon,			
 			isChildren: true,
-			branch:[
+			branch:[				
 				new SideBarModels({
 					id: 'talentReport',
 					title: 'Deployed/Rejected',
@@ -524,6 +524,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			icon: AMReportIcon,
 			isChildren: true,
 			branch: [
+				new SideBarModels({
+					id: 'amInterviews',
+					title: 'AM Wise Interview Count',
+					isActive: false,
+					navigateTo: UTSRoutes.AM_INTERVIEW,
+					isVisible: isAccess(usertypeID, 'amInterviews'),
+					isChildren : false					
+				}),
 				new SideBarModels({
 					id: 'dailyBusinessNumbers',
 					title: 'Daily Business Numbers',

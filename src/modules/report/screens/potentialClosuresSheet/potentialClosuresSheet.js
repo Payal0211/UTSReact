@@ -398,7 +398,7 @@ export default function PotentialClosuresSheet() {
             
             <Card bordered={false}>           
 
-            <div className={pcsStyles.tableContainer}>
+            <div>
                 {isLoading ? (
                 <TableSkeleton />
                 ) : (
