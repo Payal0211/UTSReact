@@ -194,6 +194,20 @@ const TADashboardReport = () => {
         },
         },
         {
+              title: (
+                <>
+                  Carry Fwd Not <br />
+                  Included Pipeline (INR)
+                </>
+              ),
+              dataIndex: "carryFwdHoldPipelineStr",
+              key: "carryFwdHoldPipelineStr",
+              align: 'center',
+              render: (text) => {
+                return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today1Text} style={{background:"lightyellow"}}>{text}</div></div>;
+              },
+            },
+        {
         title: (
             <>
             Added HR (New)
@@ -203,8 +217,8 @@ const TADashboardReport = () => {
         key: "activeHRPipeLineStr",
         align: 'center',
         render: (text) => {
-            return <div style={{display:"flex",justifyContent:"center"}}><div>{text}</div></div>;
-        },
+                return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today1Text} style={{background:"#f0f0f0"}}>{text}</div></div>;
+              },
         },  
         {
         title: (
@@ -391,7 +405,7 @@ const TADashboardReport = () => {
                                                 </div>
                                             </Table.Summary.Cell>
                                            <Table.Summary.Cell index={3}>
-                                                <div style={{ textAlign: 'center' , fontWeight: 'bold', cursor: 'pointer'}}
+                                                <div style={{ textAlign: 'center' , cursor: 'pointer'}}
                                                 onClick={() => showDetails(7, { taUserID: 2 }, "Carry Fwd Pipeline (INR)", summaryData.total_CarryFwdPipelineStr,true)}>
                                                   <strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong>
                                                 </div>
@@ -403,7 +417,7 @@ const TADashboardReport = () => {
                                                 </div>
                                             </Table.Summary.Cell>
                                             <Table.Summary.Cell index={5}>
-                                              <div style={{ textAlign: 'center' , fontWeight: 'bold', cursor: 'pointer' }}
+                                              <div style={{ textAlign: 'center' , cursor: 'pointer' }}
                                                 onClick={() => showDetails(8, { taUserID: 2 }, "Total Active Pipeline (INR)", summaryData.total_ActualPipelineStr,true)}> 
                                                 <strong>{summaryData.total_ActualPipelineStr || '-'}</strong>
                                               </div>

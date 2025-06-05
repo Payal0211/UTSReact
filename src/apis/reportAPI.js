@@ -643,5 +643,21 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.PotentialClosuresUpdateAPI');
 		}
 	},
+	AMWiseInterviewCountsAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.AM_WISE_INTERVIEW_COUNTS + `?targetDate=${payload?.targetDate}`
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.PotentialClosuresListAPI');
+		}
+	},
 
 };
