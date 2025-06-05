@@ -122,6 +122,7 @@ export default function TADashboard() {
   const [userData, setUserData] = useState({});
   const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
   const [allShowDetails, setAllShowDetails] = useState([]);
+  const [isCarryFwdStatus, setIsCarryFwdStatus] = useState(false);
   useEffect(() => {
     const getUserResult = async () => {
       let userData = UserSessionManagementController.getUserSession();
@@ -647,7 +648,9 @@ export default function TADashboard() {
     }
   };
 
-  const showDetails = async (pipeLineTypeId,data,title,value,isTotal) => {   
+  const showDetails = async (pipeLineTypeId,data,title,value,isTotal) => { 
+    if(pipeLineTypeId == 7 || pipeLineTypeId == 8) setIsCarryFwdStatus(true);
+    else setIsCarryFwdStatus(false);
     setModalLoader(true);
     const month = moment(new Date()).format("MM");
     const year = moment(new Date()).format("YYYY");
@@ -691,7 +694,7 @@ export default function TADashboard() {
       title: "Goal (INR)",
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
-      width: 120,
+      width: 130,
       align: 'center',
       render: (text, result) => {              
         return text ? text : '-';
@@ -730,6 +733,21 @@ export default function TADashboard() {
     {
       title: (
         <>
+          Carry Fwd <br />
+         Not Included <br />Pipeline (INR)
+        </>
+      ),
+      dataIndex: "carryFwdHoldPipelineStr",
+      key: "carryFwdHoldPipelineStr",
+      width: 170,
+      align: 'center',
+      render: (text, result) => {        
+        return <div className={taStyles.todayText} style={{ background: "lightyellow",cursor:"pointer"}} onClick={() => showDetails(8,result,"Carry Fwd Not Included Pipeline (INR)",text)}>{text}</div>;
+      },
+    },
+    {
+      title: (
+        <>
           Current Month<br />
           Active 
           <br />Pipeline (INR)
@@ -756,7 +774,7 @@ export default function TADashboard() {
       align: 'center',
       render: (text, result) => {       
         return <div className={taStyles.today1Text} style={{cursor:"pointer"}}  
-        onClick={() => showDetails(8,result,"Total Active Pipeline (INR)",text)}
+        onClick={() => showDetails(10,result,"Total Active Pipeline (INR)",text)}
         >{text}</div>;
       },
     },
@@ -2199,14 +2217,20 @@ export default function TADashboard() {
                           </div>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={4}>
+                          <div style={{ textAlign: 'center' , cursor: 'pointer'}}
+                          onClick={() => showDetails(8, { taUserID: 2 }, "Carry Fwd Not Included Pipeline (INR)", summaryData.total_CarryFwdHoldPipelineStr,true)}>
+                            <strong>{summaryData.total_CarryFwdHoldPipelineStr || '-'}</strong>
+                          </div>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={5}>
                           <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
                             onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", summaryData.total_CurrentMonthActualPipelineStr,true)}>
                             {summaryData.total_CurrentMonthActualPipelineStr || '-'}
                           </div>
                         </Table.Summary.Cell>
-                        <Table.Summary.Cell index={5}>
+                        <Table.Summary.Cell index={6}>
                           <div style={{ textAlign: 'center', cursor: 'pointer' }}
-                            onClick={() => showDetails(8, { taUserID: 2 }, "Total Active Pipeline (INR)", summaryData.total_ActualPipelineStr,true)}> 
+                            onClick={() => showDetails(10, { taUserID: 2 }, "Total Active Pipeline (INR)", summaryData.total_ActualPipelineStr,true)}> 
                             <strong>{summaryData.total_ActualPipelineStr || '-'}</strong>
                           </div>
                         </Table.Summary.Cell>
@@ -3466,6 +3490,7 @@ export default function TADashboard() {
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Number</th>
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Title</th>
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pipeline</th>
+                  {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Carry Forward Status</th>}
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Status</th>
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>Sales Person</th>                  
                 </tr>
@@ -3479,7 +3504,8 @@ export default function TADashboard() {
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrNumber}</td>
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrTitle}</td>
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.pipelineStr}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.hrStatusCode), detail.hrStatus)}</td>
+                    {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.carryFwd_HRStatusCode), detail.carryFwd_HRStatus)}</th>}
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.hrStatusCode), detail.hrStatus)}</td>                    
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.salesPerson}</td>                      
                   </tr>
                 ))}
