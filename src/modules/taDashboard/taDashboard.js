@@ -869,7 +869,7 @@ export default function TADashboard() {
       key: "activeHRPipeLineStr",
       align: 'center',
       render: (text) => {
-        return <div>{text}</div>;
+        return <div className={taStyles.today1Text} style={{background:"#f0f0f0"}}>{text}</div>;
       },
     },  
     {
