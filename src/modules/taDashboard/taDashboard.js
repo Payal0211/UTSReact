@@ -845,6 +845,20 @@ export default function TADashboard() {
         return <div className={taStyles.today1Text} style={{background:"#babaf5"}}>{text}</div>;
       },
     },
+     {
+      title: (
+        <>
+          Carry Fwd Not <br />
+          Included Pipeline (INR)
+        </>
+      ),
+      dataIndex: "carryFwdHoldPipelineStr",
+      key: "carryFwdHoldPipelineStr",
+      align: 'center',
+      render: (text) => {
+        return <div className={taStyles.today1Text} style={{background:"lightyellow"}}>{text}</div>;
+      },
+    },
     {
       title: (
         <>
@@ -855,7 +869,7 @@ export default function TADashboard() {
       key: "activeHRPipeLineStr",
       align: 'center',
       render: (text) => {
-        return <div>{text}</div>;
+        return <div className={taStyles.today1Text} style={{background:"#f0f0f0"}}>{text}</div>;
       },
     },  
     {
@@ -2179,7 +2193,7 @@ export default function TADashboard() {
                           </div>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={3}>
-                          <div style={{ textAlign: 'center' , fontWeight: 'bold', cursor: 'pointer'}}
+                          <div style={{ textAlign: 'center' , cursor: 'pointer'}}
                           onClick={() => showDetails(7, { taUserID: 2 }, "Carry Fwd Pipeline (INR)", summaryData.total_CarryFwdPipelineStr,true)}>
                             <strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong>
                           </div>
@@ -2191,7 +2205,7 @@ export default function TADashboard() {
                           </div>
                         </Table.Summary.Cell>
                         <Table.Summary.Cell index={5}>
-                          <div style={{ textAlign: 'center' , fontWeight: 'bold', cursor: 'pointer' }}
+                          <div style={{ textAlign: 'center', cursor: 'pointer' }}
                             onClick={() => showDetails(8, { taUserID: 2 }, "Total Active Pipeline (INR)", summaryData.total_ActualPipelineStr,true)}> 
                             <strong>{summaryData.total_ActualPipelineStr || '-'}</strong>
                           </div>
