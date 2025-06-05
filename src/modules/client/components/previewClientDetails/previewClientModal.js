@@ -87,6 +87,7 @@ function PreviewClientModal({
   const [isEditHeadquarters, setIsEditHeadquarters] = useState(false);
   const [isEditLinkedInURL, setIsEditLinkedInURL] = useState(false);
   const [isEditUserName, setIsEditUserName] = useState(false);
+  const [isEditCategory, setIsEditCategory] = useState(false);
   const [getCompanyDetails, setCompanyDetails] = useState({});
   const [showAllInvestors, setShowAllInvestors] = useState(false);
   const [isAnotherRound, setAnotherRound] = useState(false);
@@ -105,6 +106,7 @@ function PreviewClientModal({
   const [controlledFoundedInValue, setControlledFoundedInValue] = useState("");
   const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
   const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
+  const [controlledCategoryValue, setControlledCategoryValue] = useState("");
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
     googleDriveFileUpload: "",
@@ -517,6 +519,19 @@ function PreviewClientModal({
     value: 'Partnership',
   }
 ];
+
+const categoryOptions = [{
+    id: 'Diamond',
+    value: 'Diamond',
+  },
+  {
+    id: 'Gold',
+    value: 'Gold',
+  },
+  {
+    id: 'Silver',
+    value: 'Silver',
+  },]
 
   const uploadFileHandler = useCallback(
     async (e) => {
@@ -1507,6 +1522,22 @@ function PreviewClientModal({
                                   ?.leadUserName} (${getCompanyDetails?.basicDetails
                                     ?.leadUserType})`
                                 : "NA"}{" "}
+                            </p>
+                          </li>
+                          <li>
+
+                            <span onClick={() => setIsEditCategory(true)}>
+                              {" "}
+                              Category <EditNewIcon />{" "}
+                            </span>
+
+                            <p>
+                              {" "}Diamond
+                              {/* {getCompanyDetails?.basicDetails?.leadUserName
+                                ? `${getCompanyDetails?.basicDetails
+                                  ?.leadUserName} (${getCompanyDetails?.basicDetails
+                                    ?.leadUserType})`
+                                : "NA"}{" "} */}
                             </p>
                           </li>
                         </ul>
@@ -3955,6 +3986,70 @@ function PreviewClientModal({
           </button>
         </div>
       </Modal>
+
+
+      {/* Category Modal*/}
+       <Modal
+        centered
+        open={isEditCategory}
+        onCancel={() => {
+          setIsEditCategory(false)
+          setControlledCategoryValue('')
+          resetField("Cateory")
+        }}
+        width={300}
+        footer={false}
+        maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
+      >
+
+        <HRSelectField
+              controlledValue={controlledCategoryValue}
+              setControlledValue={val=>{
+                setControlledCategoryValue(val)
+                resetField("Category")
+              }}
+              isControlled={true}
+              register={register}
+               errors={errors}
+               isError={
+                errors['Category'] && errors['Category']
+              }
+              errorMsg="Please select category."
+              setValue={setValue}
+              label="Category"
+              name="Category"
+              mode={"value"}
+              defaultValue="Select"              
+              required              
+              options={categoryOptions}
+          />       
+      
+        <div className={`${previewClientStyle.buttonEditGroup}`}>
+          <button
+            type="button"
+            className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
+            onClick={() => {
+              setIsEditCategory(false)
+              setControlledCategoryValue('')
+              resetField("Category")
+            }}
+          >
+            {" "}
+            Cancel{" "}
+          </button>
+          <button
+            type="button"
+            className={previewClientStyle.btnPrimary}
+            onClick={handleSubmit(handleSubmitLeadUserType) }
+          >
+            {" "}
+            SAVE{" "}
+          </button>
+        </div>
+      </Modal>
+
       {showUploadModal && (
         <UploadModal
           isFooter={false}

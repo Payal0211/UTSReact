@@ -53,6 +53,7 @@ function CompanySection({
 
     const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
     const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
+    const [controlledCategoryValue, setControlledCategoryValue] = useState("");
 
   const leadTypeOptions = [{
     id: 12,
@@ -778,6 +779,44 @@ function CompanySection({
                       placeholder="Search location"
                       // required
                     />
+                  </div>
+
+
+
+
+                  <div className={AddNewClientStyle.colMd6}>
+                           <HRSelectField
+                              controlledValue={controlledCategoryValue}
+                              setControlledValue={val=>{
+                                setControlledCategoryValue(val)
+                                resetField("Category")
+                              }}
+                              isControlled={true}
+                              register={register}
+                              errors={errors}
+                              isError={
+                                errors['Category'] && errors['Category']
+                              }
+                              errorMsg="Please select category."
+                              setValue={setValue}
+                              label="Category"
+                              name="Category"
+                              mode={"value"}
+                              defaultValue="Select"              
+                              required              
+                              options={[{
+                                id: 'Diamond',
+                                value: 'Diamond',
+                              },
+                              {
+                                id: 'Gold',
+                                value: 'Gold',
+                              },
+                              {
+                                id: 'Silver',
+                                value: 'Silver',
+                              },]}
+                          />  
                   </div>
                 </div>
 
