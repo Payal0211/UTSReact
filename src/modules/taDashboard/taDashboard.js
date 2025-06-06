@@ -859,8 +859,8 @@ export default function TADashboard() {
       dataIndex: "carryFwdPipeLineStr",
       key: "carryFwdPipeLineStr",
       align: 'center',
-      render: (text) => {
-        return <div className={taStyles.today1Text} style={{background:"#babaf5"}}>{text}</div>;
+      render: (text,result) => {
+        return <div className={taStyles.today1Text} style={{background:"#babaf5",cursor:"pointer"}} onClick={() => showDetails(7, { taUserID: 2 },"Carry Fwd Pipeline (INR)",text)}>{text}</div>;
       },
     },
      {
@@ -873,8 +873,8 @@ export default function TADashboard() {
       dataIndex: "carryFwdHoldPipelineStr",
       key: "carryFwdHoldPipelineStr",
       align: 'center',
-      render: (text) => {
-        return <div className={taStyles.today1Text} style={{background:"lightyellow"}}>{text}</div>;
+      render: (text,result) => {
+        return <div className={taStyles.today1Text} style={{background:"lightyellow",cursor:"pointer"}} onClick={() => showDetails(8, { taUserID: 2 },"Carry Fwd Not Included Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {
@@ -886,8 +886,8 @@ export default function TADashboard() {
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
       align: 'center',
-      render: (text) => {
-        return <div className={taStyles.today1Text} style={{background:"#f0f0f0"}}>{text}</div>;
+      render: (text,result) => {
+        return <div className={taStyles.today1Text} style={{background:"#f0f0f0",cursor:"pointer"}} onClick={() => showDetails(9, { taUserID: 2 },"Added HR (New)",text)}>{text}</div>;
       },
     },  
     {
@@ -900,8 +900,8 @@ export default function TADashboard() {
       dataIndex: "achievedHRPipeLineStr",
       key: "achievedHRPipeLineStr",
       align: 'center',
-      render: (text) => {
-        return <div className={taStyles.todayText}>{text ? text : '-'}</div>;
+      render: (text,result) => {
+        return <div className={taStyles.todayText} style={{cursor:"pointer"}} onClick={() => showDetails(3, { taUserID: 2 },"Achieve Pipeline (INR)",text)}>{text ? text : '-'}</div>;
       },
     },      
     {
@@ -913,8 +913,8 @@ export default function TADashboard() {
       dataIndex: "lostHRPipeLineStr",
       align: 'center',
       key: "lostHRPipeLineStr",
-      render: (text) => {
-        return <div className={taStyles.today2Text} style={{background:'lightsalmon'}}>{text}</div>;
+      render: (text, result) => {
+        return <div className={taStyles.today2Text} style={{background:'lightsalmon',cursor:"pointer"}} onClick={() => showDetails(4, { taUserID: 2 },"Lost Pipeline (INR)",text)}>{text}</div>;
       },
     },
     {
@@ -927,8 +927,8 @@ export default function TADashboard() {
       dataIndex: "totalActivePipeLineStr",
       key: "totalActivePipeLineStr",
       align: 'center',
-      render: (text) => {
-        return <div className={taStyles.today1Text}>{text}</div>;
+      render: (text,result) => {
+        return <div className={taStyles.today1Text} style={{cursor:"pointer"}}  onClick={() => showDetails(10, { taUserID: 2 },"Total Active Pipeline (INR)",text)}>{text}</div>;
       },
     },  
     {
