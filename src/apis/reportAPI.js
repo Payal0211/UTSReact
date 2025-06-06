@@ -656,8 +656,24 @@ export const ReportAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'ReportAPI.PotentialClosuresListAPI');
+			return errorDebug(error, 'ReportAPI.AMWiseInterviewCountsAPI');
 		}
+	},
+	GetAMWiseTalentInterviewDetails:async function (payload) {
+	let httpService = new HttpServices();
+	httpService.URL =
+		NetworkInfo.NETWORK +
+		SubDomain.REPORT +
+		ReportType.GET_DAILY_AM_WISE_HR_TALENT_INTERVIEW_DETAILS + `?targetDate=${payload?.targetDate}&amId=${payload?.amId}&Round=${payload?.Round}`
+
+	httpService.setAuthRequired = true;
+	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	try {
+		let response = await httpService.sendGetRequest();
+		return response;
+	} catch (error) {
+		return errorDebug(error, 'ReportAPI.GetAMWiseTalentInterviewDetails');
+	}
 	},
 
 };
