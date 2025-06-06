@@ -103,6 +103,7 @@ function CompanySection({
     setControlledLeadTypeValue(companyDetails?.leadUserType)
     setValue("LeadUser", companyDetails?.leadUserID);
     setControlledLeadUserValue(companyDetails?.leadUserName)
+    setControlledCategoryValue(companyDetails?.company_Category)
   }, [companyDetails]);
 
   const generateYears = (startYear, endYear) => {
@@ -787,10 +788,7 @@ function CompanySection({
                   <div className={AddNewClientStyle.colMd6}>
                            <HRSelectField
                               controlledValue={controlledCategoryValue}
-                              setControlledValue={val=>{
-                                setControlledCategoryValue(val)
-                                resetField("Category")
-                              }}
+                              setControlledValue={setControlledCategoryValue}
                               isControlled={true}
                               register={register}
                               errors={errors}

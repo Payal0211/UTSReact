@@ -327,6 +327,23 @@ function PreviewClientModal({
     setIsLoading(false);
   }
 
+  const handleSubmitCategory = async () => {
+    setIsLoading(true);
+    let payload = {
+      basicDetails: {
+        companyID: getcompanyID,
+        company_Category: controlledCategoryValue,
+      },
+      IsUpdateFromPreviewPage: true,
+    };
+    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+    if (res?.statusCode === HTTPStatusCode.OK) {
+      getDetails();
+      setIsEditCategory(false);
+    }
+    setIsLoading(false);
+  };
+
   const handleSubmitCompanyType = async () => {
     setIsLoading(true);
     let payload = {
@@ -344,6 +361,7 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
+  
   const handleSubmitLeadUserType = async () => {
     setIsLoading(true);
     let payload = {
@@ -1532,12 +1550,10 @@ const categoryOptions = [{
                             </span>
 
                             <p>
-                              {" "}Diamond
-                              {/* {getCompanyDetails?.basicDetails?.leadUserName
-                                ? `${getCompanyDetails?.basicDetails
-                                  ?.leadUserName} (${getCompanyDetails?.basicDetails
-                                    ?.leadUserType})`
-                                : "NA"}{" "} */}
+                              {getCompanyDetails?.basicDetails?.company_Category
+                                ? getCompanyDetails?.basicDetails
+                                  ?.company_Category
+                                : "NA"}{" "}
                             </p>
                           </li>
                         </ul>
@@ -3995,7 +4011,7 @@ const categoryOptions = [{
         onCancel={() => {
           setIsEditCategory(false)
           setControlledCategoryValue('')
-          resetField("Cateory")
+          resetField("Category")
         }}
         width={300}
         footer={false}
@@ -4006,15 +4022,12 @@ const categoryOptions = [{
 
         <HRSelectField
               controlledValue={controlledCategoryValue}
-              setControlledValue={val=>{
-                setControlledCategoryValue(val)
-                resetField("Category")
-              }}
+              setControlledValue={setControlledCategoryValue}
               isControlled={true}
               register={register}
                errors={errors}
                isError={
-                errors['Category'] && errors['Category']
+                errors["Category"] && errors["Category"]
               }
               errorMsg="Please select category."
               setValue={setValue}
@@ -4042,7 +4055,7 @@ const categoryOptions = [{
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={handleSubmit(handleSubmitLeadUserType) }
+            onClick={handleSubmit(handleSubmitCategory) }
           >
             {" "}
             SAVE{" "}
