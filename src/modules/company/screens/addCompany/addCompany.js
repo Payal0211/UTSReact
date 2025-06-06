@@ -352,8 +352,9 @@ function AddCompany() {
     if(!valid){
       return
     }
+    console.log(d,"company_Category");
     
-
+    
     let payload = {
       "basicDetails": {
         "companyID": companyID,
@@ -361,6 +362,7 @@ function AddCompany() {
         "companyLogo": getCompanyDetails?.basicDetails?.companyLogo,
         "websiteUrl": d?.companyURL,
         "foundedYear": d?.foundedIn,
+        "company_Category":d?.Category,
         // "companySize": +d.teamSize,
         "teamSize": d?.teamSize,
         "companyType": d?.companyType,
