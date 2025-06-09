@@ -543,13 +543,10 @@ const categoryOptions = [{
     value: 'Diamond',
   },
   {
-    id: 'Gold',
-    value: 'Gold',
+    id: 'None',
+    value: 'None',
   },
-  {
-    id: 'Silver',
-    value: 'Silver',
-  },]
+]
 
   const uploadFileHandler = useCallback(
     async (e) => {
@@ -1544,7 +1541,10 @@ const categoryOptions = [{
                           </li>
                           <li>
 
-                            <span onClick={() => setIsEditCategory(true)}>
+                            <span onClick={() =>{ setIsEditCategory(true)
+                              setControlledCategoryValue(getCompanyDetails?.basicDetails?.company_Category ? getCompanyDetails?.basicDetails?.company_Category : 'None')
+                              setValue('Category',getCompanyDetails?.basicDetails?.company_Category ? getCompanyDetails?.basicDetails?.company_Category : 'None')
+                            }}>
                               {" "}
                               Category <EditNewIcon />{" "}
                             </span>

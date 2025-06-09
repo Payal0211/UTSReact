@@ -53,7 +53,7 @@ function CompanySection({
 
     const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
     const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
-    const [controlledCategoryValue, setControlledCategoryValue] = useState("");
+    const [controlledCategoryValue, setControlledCategoryValue] = useState("None");
 
   const leadTypeOptions = [{
     id: 12,
@@ -103,7 +103,8 @@ function CompanySection({
     setControlledLeadTypeValue(companyDetails?.leadUserType)
     setValue("LeadUser", companyDetails?.leadUserID);
     setControlledLeadUserValue(companyDetails?.leadUserName)
-    setControlledCategoryValue(companyDetails?.company_Category)
+    setControlledCategoryValue(companyDetails?.company_Category ? companyDetails?.company_Category :  'None')
+    setValue('Category',companyDetails?.company_Category ? companyDetails?.company_Category : 'None')
   }, [companyDetails]);
 
   const generateYears = (startYear, endYear) => {
@@ -783,7 +784,7 @@ function CompanySection({
                   </div>
 
 
-
+{console.log('Category',watch('Category'))}
 
                   <div className={AddNewClientStyle.colMd6}>
                            <HRSelectField
@@ -807,13 +808,10 @@ function CompanySection({
                                 value: 'Diamond',
                               },
                               {
-                                id: 'Gold',
-                                value: 'Gold',
+                                id: 'None',
+                                value: 'None',
                               },
-                              {
-                                id: 'Silver',
-                                value: 'Silver',
-                              },]}
+                             ]}
                           />  
                   </div>
                 </div>

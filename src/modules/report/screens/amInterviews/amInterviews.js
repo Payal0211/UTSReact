@@ -12,6 +12,7 @@ import moment from "moment";
 const AmInterviews = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [isLoading, setIsLoading] = useState(false);
+    const [isModalLoading, setIsModalLoading] = useState(false);
     const [data, setData] = useState([]);
     const [pageSize, setPageSize] = useState(100);
 
@@ -31,7 +32,22 @@ const AmInterviews = () => {
             dataIndex: "allRound",
             key: "allRound",
             align: "center",
-            render: (value) => (value ? value : '-')
+            render: (value,record) => {
+                const isClickable = record?.am !== 'TOTAL' && value;
+                return <span
+                style={{
+                color: isClickable ? '#1890ff' : 'inherit',
+                cursor: isClickable ? 'pointer' : 'default',
+                }}
+                onClick={() => {
+                if (isClickable) {
+                    getAMWiseTalentInterviewDetails(0, record);
+                }
+                }}
+            >
+                {value ? value : '-'}
+            </span>
+            }
         },
        ...[1, 2, 3, 4, 5, 6].map((round) => ({
         title: `L${round} Round`,
@@ -92,14 +108,15 @@ const AmInterviews = () => {
             amId: record?.amid || '',
             Round: round
         };
-        setIsLoading(true);
+        setModalVisible(true);
+        setIsModalLoading(true);
         const apiResult = await ReportDAO.AMWiseTalentInterviewDetailsDAO(payload);
-        setIsLoading(false);
+        setIsModalLoading(false);
 
         if (apiResult?.statusCode === 200) {
             setModalData(apiResult.responseBody);
-            setModalTitle(`L${round} Round - ${record?.am || ''}`);
-            setModalVisible(true);
+            setModalTitle(`${round === 0 ? 'All Rounds' : `L${round} Round`}  - ${record?.am || ''}`);
+            // setModalVisible(true);
         } else {
             setModalData([]);
             setModalVisible(false);
@@ -169,13 +186,15 @@ const AmInterviews = () => {
                 centered
                 onCancel={() => setModalVisible(false)}
             >
-                <Table
+
+                {isModalLoading ? <TableSkeleton /> :  <Table
                     dataSource={modalData}
                     columns={modalColumns}
                     pagination={false}
                     rowKey={(record, idx) => idx}
                     size="middle"
-                />
+                />}
+               
             </Modal>
         </div>
     );
