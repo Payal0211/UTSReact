@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback, Suspense} from "react";
 import taStyles from "./tadashboard.module.css";
-import {Select,Table,Modal,Tooltip,InputNumber,message,Skeleton} from "antd";
+import {Select,Table,Modal,Tooltip,InputNumber,message,Skeleton, Checkbox} from "antd";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import spinGif from "assets/gif/RefreshLoader.gif";
@@ -34,6 +34,7 @@ import MoveToAssessment from "modules/hiring request/components/talentList/moveT
 import { InterviewDAO } from "core/interview/interviewDAO";
 import LogoLoader from "shared/components/loader/logoLoader";
 import Diamond from 'assets/svg/diamond.svg';
+import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 const { Option } = Select;
 
@@ -1222,6 +1223,36 @@ export default function TADashboard() {
     },
   ];
 
+  //  const handleSubmitCompanyType = async () => {
+  //     setIsLoading(true);
+  //     let payload = {
+  //       basicDetails: {
+  //         companyID: getcompanyID,
+  //         companyType: watch("companyType"),
+  //       },
+  //       IsUpdateFromPreviewPage: true,
+  //     };
+  //     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+  //     if (res?.statusCode === HTTPStatusCode.OK) {
+  //       getDetails();
+  //       setIsEditCompanyType(false);
+  //     }
+  //     setIsLoading(false);
+  //   };
+
+  const setDiamondCompany = async (row,index)=>{
+      let payload = {
+            basicDetails: {
+              companyID: row.company_ID,
+              companyType: 'Diamond',
+            },
+            IsUpdateFromPreviewPage: true,
+          };
+      updateTARowValue("Diamond", "companyCategory", row, index);
+      let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
+      
+  }
+
   const columns = [
     {
       title: "TA",
@@ -1346,7 +1377,7 @@ export default function TADashboard() {
   key: "companyName",
   fixed: "left",
   width: "180px",
-  render: (text, row) => (
+  render: (text, row,index) => (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
       {/* Company Name + Diamond Icon */}
       <div style={{ display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
@@ -1362,6 +1393,7 @@ export default function TADashboard() {
         {row?.companyCategory === 'Diamond' &&
           <img src={Diamond} alt="info" style={{ width: "16px", height: "16px" }} />
         }
+        {row?.companyCategory !== 'Diamond' && <Checkbox onChange={()=> setDiamondCompany(row,index)}>Make Diamond</Checkbox>}
       </div>
 
       {userData?.showTADashboardDropdowns && (
@@ -3491,6 +3523,7 @@ export default function TADashboard() {
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Title</th>
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pipeline</th>
                   {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Carry Forward Status</th>}
+                  {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pre Onboarding Pipeline (INR)</th>}
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Status</th>
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>Sales Person</th>                  
                 </tr>
@@ -3505,6 +3538,7 @@ export default function TADashboard() {
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrTitle}</td>
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.pipelineStr}</td>
                     {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.carryFwd_HRStatusCode), detail.carryFwd_HRStatus)}</th>}
+                    {isCarryFwdStatus &&  <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.preOnboardingPipelineStr}</td>}
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.hrStatusCode), detail.hrStatus)}</td>                    
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.salesPerson}</td>                      
                   </tr>
