@@ -117,6 +117,22 @@ export const CompanyAPI = {
 			return errorDebug(error, 'CompanyAPI.updateCompanyDetailsRequest');
 		}
 	},
+	removeCompanyCategoryRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			CompanysAPI.REMOVE_COMPANY_CATEGORY ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'CompanyAPI.removeCompanyCategoryRequest');
+		}
+	},
 	validateClientCompanyRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
