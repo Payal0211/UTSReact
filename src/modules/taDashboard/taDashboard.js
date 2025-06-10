@@ -124,6 +124,7 @@ export default function TADashboard() {
   const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
   const [allShowDetails, setAllShowDetails] = useState([]);
   const [isCarryFwdStatus, setIsCarryFwdStatus] = useState(false);
+  const [PipelineTupeId,setPipelineTupeId] = useState(0)
   useEffect(() => {
     const getUserResult = async () => {
       let userData = UserSessionManagementController.getUserSession();
@@ -650,8 +651,9 @@ export default function TADashboard() {
   };
 
   const showDetails = async (pipeLineTypeId,data,title,value,isTotal) => { 
-    if(pipeLineTypeId == 7 || pipeLineTypeId == 8) setIsCarryFwdStatus(true);
+    if(pipeLineTypeId == 7 || pipeLineTypeId == 8) setIsCarryFwdStatus(true);  
     else setIsCarryFwdStatus(false);
+    setPipelineTupeId(pipeLineTypeId)
     setModalLoader(true);
     const month = moment(new Date()).format("MM");
     const year = moment(new Date()).format("YYYY");
@@ -1244,12 +1246,12 @@ export default function TADashboard() {
       let payload = {
             basicDetails: {
               companyID: row.company_ID,
-              companyType: 'Diamond',
+              companyCategory: 'Diamond',
             },
-            IsUpdateFromPreviewPage: true,
+            // IsUpdateFromPreviewPage: true,
           };
       updateTARowValue("Diamond", "companyCategory", row, index);
-      let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
+      let res = await allCompanyRequestDAO.updateCompanyCategoryDAO(payload)
       
   }
 
@@ -1393,7 +1395,7 @@ export default function TADashboard() {
         {row?.companyCategory === 'Diamond' &&
           <img src={Diamond} alt="info" style={{ width: "16px", height: "16px" }} />
         }
-        {row?.companyCategory !== 'Diamond' && <Checkbox onChange={()=> setDiamondCompany(row,index)}>Make Diamond</Checkbox>}
+        {(row?.companyCategory !== 'Diamond' && (userData?.UserId === 2 || userData?.UserId === 333 )) && <Checkbox onChange={()=> setDiamondCompany(row,index)}>Make Diamond</Checkbox>}
       </div>
 
       {userData?.showTADashboardDropdowns && (
@@ -3522,8 +3524,8 @@ export default function TADashboard() {
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Number</th>
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Title</th>
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pipeline</th>
-                  {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Carry Forward Status</th>}
-                  {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pre Onboarding Pipeline (INR)</th>}
+                  {(isCarryFwdStatus && PipelineTupeId === 8) && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pre Onboarding Pipeline (INR)</th>}
+                  {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Carry Forward Status</th>}      
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Status</th>
                   <th style={{ padding: "10px", border: "1px solid #ddd" }}>Sales Person</th>                  
                 </tr>
@@ -3537,8 +3539,8 @@ export default function TADashboard() {
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrNumber}</td>
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrTitle}</td>
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.pipelineStr}</td>
+                    {(isCarryFwdStatus && PipelineTupeId === 8) &&  <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.preOnboardingPipelineStr}</td>}
                     {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.carryFwd_HRStatusCode), detail.carryFwd_HRStatus)}</th>}
-                    {isCarryFwdStatus &&  <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.preOnboardingPipelineStr}</td>}
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.hrStatusCode), detail.hrStatus)}</td>                    
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.salesPerson}</td>                      
                   </tr>
