@@ -1,6 +1,15 @@
-import React, {useEffect, useState, useCallback, Suspense} from "react";
+import React, { useEffect, useState, useCallback, Suspense } from "react";
 import taStyles from "./tadashboard.module.css";
-import {Select,Table,Modal,Tooltip,InputNumber,message,Skeleton, Checkbox} from "antd";
+import {
+  Select,
+  Table,
+  Modal,
+  Tooltip,
+  InputNumber,
+  message,
+  Skeleton,
+  Checkbox,
+} from "antd";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import spinGif from "assets/gif/RefreshLoader.gif";
@@ -33,11 +42,12 @@ import { BsClipboard2CheckFill } from "react-icons/bs";
 import MoveToAssessment from "modules/hiring request/components/talentList/moveToAssessment";
 import { InterviewDAO } from "core/interview/interviewDAO";
 import LogoLoader from "shared/components/loader/logoLoader";
-import Diamond from 'assets/svg/diamond.svg';
+import Diamond from "assets/svg/diamond.svg";
+import PowerIcon from "assets/svg/power.svg";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
+import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 
 const { Option } = Select;
-
 
 export default function TADashboard() {
   const navigate = useNavigate();
@@ -101,6 +111,20 @@ export default function TADashboard() {
   const [isEditNewTask, setEditNewTask] = useState(false);
 
   const [showComment, setShowComment] = useState(false);
+  const [showDiamondRemark, setShowDiamondRemark] = useState(false);
+  const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
+
+  const {
+    watch,
+    register,
+    setError,
+    handleSubmit,
+    resetField,
+    clearErrors,
+    formState: { errors },
+  } = useForm();
+  const [remDiamondLoading, setRemDiamondLoading] = useState(false);
+
   const [commentData, setCommentData] = useState({});
   const [allCommentList, setALLCommentsList] = useState([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
@@ -121,10 +145,16 @@ export default function TADashboard() {
   } = useForm();
   const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
   const [userData, setUserData] = useState({});
-  const [isShowDetails, setIsShowDetails] = useState({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
+  const [isShowDetails, setIsShowDetails] = useState({
+    isBoolean: false,
+    title: "",
+    value: "",
+    isTotal: false,
+    TAName: "",
+  });
   const [allShowDetails, setAllShowDetails] = useState([]);
   const [isCarryFwdStatus, setIsCarryFwdStatus] = useState(false);
-  const [PipelineTupeId,setPipelineTupeId] = useState(0)
+  const [PipelineTupeId, setPipelineTupeId] = useState(0);
   useEffect(() => {
     const getUserResult = async () => {
       let userData = UserSessionManagementController.getUserSession();
@@ -189,7 +219,7 @@ export default function TADashboard() {
       tA_HR_StatusID: params.tA_HR_StatusID,
       tA_Head_UserID: `${selectedHead}`,
     };
-  
+
     if (key === "role_TypeID") {
       pl[key] = value?.id;
       setTaListData((prev) => {
@@ -313,22 +343,24 @@ export default function TADashboard() {
         <Select
           defaultValue={value}
           style={{ color: colorCode }}
-          onChange={async (val) => {              
-              if(value === 'Fasttrack' && val !== 'Fasttrack'){
-                let pl = {
+          onChange={async (val) => {
+            if (value === "Fasttrack" && val !== "Fasttrack") {
+              let pl = {
                 task_ID: result?.id,
                 tA_Head_UserID: selectedHead,
                 tA_UserID: result?.tA_UserID,
                 target_StageID: 1,
                 target_Number: targetValue,
                 target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
-                IsStatusChangedToSlow:true
+                IsStatusChangedToSlow: true,
               };
               setLoadingTalentProfile(true);
-              let response = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
+              let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
+                pl
+              );
               setLoadingTalentProfile(false);
               if (response.statusCode === HTTPStatusCode.OK) {
-                setGoalList(response.responseBody);                
+                setGoalList(response.responseBody);
                 setTargetValue(5);
                 setStartTargetDate(new Date());
               }
@@ -337,7 +369,7 @@ export default function TADashboard() {
             let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
             if (val === "Fasttrack") {
               setShowProfileTarget(true);
-              setStartTargetDate(startDate)
+              setStartTargetDate(startDate);
               setProfileTargetDetails({ ...result, index: index });
               return;
             }
@@ -393,7 +425,6 @@ export default function TADashboard() {
 
   const handleTableFilterChange = (pagination, filters, sorter) => {
     // setFilteredInfo(filters);
-
     //  setTableFilteredState(prev=>({
     //   filterFields_OnBoard: {
     //     ...prev.filterFields_OnBoard,
@@ -401,7 +432,6 @@ export default function TADashboard() {
     //     priority: filters.task_Priority !== null ? filters.task_Priority.toString() : null,
     //   },
     // }))
-
     // setSortedInfo(sorter );
   };
 
@@ -476,7 +506,6 @@ export default function TADashboard() {
     } else {
       setHRTalentList([]);
       setFilteredTalentList([]);
-
     }
   };
 
@@ -502,23 +531,23 @@ export default function TADashboard() {
     } else {
       setHRTalentList([]);
       setFilteredTalentList([]);
-
     }
   };
 
   const handleSearchInput = (value) => {
     setSearchTerm(value);
-    const filteredData = hrTalentList.filter((talent) =>
-      talent.talent.toLowerCase().includes(value.toLowerCase()) || 
-      (talent.email && talent.email.toLowerCase().includes(value.toLowerCase())) 
+    const filteredData = hrTalentList.filter(
+      (talent) =>
+        talent.talent.toLowerCase().includes(value.toLowerCase()) ||
+        (talent.email &&
+          talent.email.toLowerCase().includes(value.toLowerCase()))
     );
     setFilteredTalentList(filteredData);
   };
-  
 
   const getTalentProfilesDetails = async (result, statusID, stageID) => {
     setShowTalentProfiles(true);
-    setInfoforProfile(result);    
+    setInfoforProfile(result);
     let pl = {
       hrID: result?.hiringRequest_ID,
       statusID: statusID,
@@ -554,9 +583,9 @@ export default function TADashboard() {
           totalRevenuePerUser: result.responseBody[0].totalRevenuePerUser,
           totalRevenuePerUserStr: result.responseBody[0].totalRevenuePerUserStr,
           TOTALROW: true,
-        };       
+        };
 
-        setSummaryData(lastRow);               
+        setSummaryData(lastRow);
         setTotalRevenueList(result.responseBody);
       } else {
         setTotalRevenueList([]);
@@ -568,7 +597,7 @@ export default function TADashboard() {
       setDailyActiveTargets(dailyResult.responseBody);
     }
   };
-  
+
   const getGoalsDetails = async (date, head, tA_UserID) => {
     let pl = {
       taUserIDs: tA_UserID,
@@ -650,32 +679,32 @@ export default function TADashboard() {
     }
   };
 
-  const showDetails = async (pipeLineTypeId,data,title,value,isTotal) => { 
-    if(pipeLineTypeId == 7 || pipeLineTypeId == 8) setIsCarryFwdStatus(true);  
+  const showDetails = async (pipeLineTypeId, data, title, value, isTotal) => {
+    if (pipeLineTypeId == 7 || pipeLineTypeId == 8) setIsCarryFwdStatus(true);
     else setIsCarryFwdStatus(false);
-    setPipelineTupeId(pipeLineTypeId)
+    setPipelineTupeId(pipeLineTypeId);
     setModalLoader(true);
     const month = moment(new Date()).format("MM");
     const year = moment(new Date()).format("YYYY");
     let pl = {
-      pipelineTypeID:pipeLineTypeId,
-      taUserID:data?.taUserID,
-      month:Number(month),
-      year:Number(year)
-    }
+      pipelineTypeID: pipeLineTypeId,
+      taUserID: data?.taUserID,
+      month: Number(month),
+      year: Number(year),
+    };
     let result = await TaDashboardDAO.getTAWiseHRPipelineDetailsDAO(pl);
     setModalLoader(false);
-    if(result?.statusCode === HTTPStatusCode.OK){         
+    if (result?.statusCode === HTTPStatusCode.OK) {
       setIsShowDetails({
-        isBoolean:true,
-        title:title,
-        value:value,
-        isTotal:isTotal,
-        TAName:data?.taName
+        isBoolean: true,
+        title: title,
+        value: value,
+        isTotal: isTotal,
+        TAName: data?.taName,
       });
       setAllShowDetails(result?.responseBody);
     }
-  }
+  };
 
   const AddComment = (data, index) => {
     getAllComments(data.id);
@@ -689,8 +718,8 @@ export default function TADashboard() {
       dataIndex: "taName",
       key: "taName",
       width: 120,
-      render: (text, result) => {        
-        return text ? text : '-';
+      render: (text, result) => {
+        return text ? text : "-";
       },
     },
     {
@@ -698,9 +727,9 @@ export default function TADashboard() {
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
       width: 130,
-      align: 'center',
-      render: (text, result) => {              
-        return text ? text : '-';
+      align: "center",
+      render: (text, result) => {
+        return text ? text : "-";
       },
     },
     {
@@ -712,10 +741,21 @@ export default function TADashboard() {
       ),
       dataIndex: "totalRevenuePerUserStr",
       key: "totalRevenuePerUserStr",
-      align: 'center',
+      align: "center",
       width: 150,
-       render: (text, result) => {                
-        return text ? <div style={{cursor:"pointer"}} onClick={() => showDetails(0,result,"Assigned Pipeline (INR)",text)}>{text}</div> : '-';
+      render: (text, result) => {
+        return text ? (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showDetails(0, result, "Assigned Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        ) : (
+          "-"
+        );
       },
     },
     {
@@ -728,57 +768,108 @@ export default function TADashboard() {
       dataIndex: "carryFwdPipelineStr",
       key: "carryFwdPipelineStr",
       width: 150,
-      align: 'center',
-      render: (text, result) => {        
-        return <div className={taStyles.todayText} style={{ background: "#babaf5",cursor:"pointer"}} onClick={() => showDetails(7,result,"Carry Fwd Pipeline (INR)",text)}>{text}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "#babaf5", cursor: "pointer" }}
+            onClick={() =>
+              showDetails(7, result, "Carry Fwd Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
       },
     },
     {
       title: (
         <>
           Carry Fwd <br />
-         Not Included <br />Pipeline (INR)
+          Not Included <br />
+          Pipeline (INR)
         </>
       ),
       dataIndex: "carryFwdHoldPipelineStr",
       key: "carryFwdHoldPipelineStr",
       width: 170,
-      align: 'center',
-      render: (text, result) => {        
-        return <div className={taStyles.todayText} style={{ background: "lightyellow",cursor:"pointer"}} onClick={() => showDetails(8,result,"Carry Fwd Not Included Pipeline (INR)",text)}>{text}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "lightyellow", cursor: "pointer" }}
+            onClick={() =>
+              showDetails(
+                8,
+                result,
+                "Carry Fwd Not Included Pipeline (INR)",
+                text
+              )
+            }
+          >
+            {text}
+          </div>
+        );
       },
     },
     {
       title: (
         <>
-          Current Month<br />
-          Active 
-          <br />Pipeline (INR)
+          Current Month
+          <br />
+          Active
+          <br />
+          Pipeline (INR)
         </>
       ),
       dataIndex: "currentMonthActualPipelineStr",
       key: "currentMonthActualPipelineStr",
       width: 150,
-      align: 'center',
-      render: (text, result) => {        
-        return <div style={{cursor:"pointer"}} onClick={() => showDetails(1,result,"Current Month Active Pipeline (INR)",text)}>{text}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showDetails(
+                1,
+                result,
+                "Current Month Active Pipeline (INR)",
+                text
+              )
+            }
+          >
+            {text}
+          </div>
+        );
       },
     },
     {
       title: (
         <>
-          Total Active<br />
+          Total Active
+          <br />
           Pipeline (INR)
         </>
       ),
       dataIndex: "actualPipelineStr",
       key: "actualPipelineStr",
-      width: 150,      
-      align: 'center',
-      render: (text, result) => {       
-        return <div className={taStyles.today1Text} style={{cursor:"pointer"}}  
-        onClick={() => showDetails(10,result,"Total Active Pipeline (INR)",text)}
-        >{text}</div>;
+      width: 150,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.today1Text}
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showDetails(10, result, "Total Active Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
       },
     },
     {
@@ -786,9 +877,9 @@ export default function TADashboard() {
       dataIndex: "bandwidthper",
       key: "bandwidthper",
       width: 80,
-      align: 'center',
+      align: "center",
       render: (text, result) => {
-        return text ? text : '-'
+        return text ? text : "-";
       },
     },
     {
@@ -801,9 +892,19 @@ export default function TADashboard() {
       dataIndex: "achievedPipelineStr",
       key: "achievedPipelineStr",
       width: 180,
-      align: 'center',
-      render: (text, result) => {        
-        return <div className={taStyles.todayText} style={{cursor:"pointer"}} onClick={() => showDetails(3,result,"Achieve Pipeline (INR)",text)}>{text}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showDetails(3, result, "Achieve Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
       },
     },
     {
@@ -811,13 +912,13 @@ export default function TADashboard() {
       dataIndex: "lostPipelineStr",
       key: "lostPipelineStr",
       width: 160,
-      align: 'center',
-      render: (text, result) => {       
+      align: "center",
+      render: (text, result) => {
         return (
           <div
             className={taStyles.todayText}
-            style={{ background: "lightsalmon" ,cursor:"pointer"}}
-            onClick={() => showDetails(4,result,"Lost Pipeline (INR)",text)}
+            style={{ background: "lightsalmon", cursor: "pointer" }}
+            onClick={() => showDetails(4, result, "Lost Pipeline (INR)", text)}
           >
             {text}
           </div>
@@ -829,10 +930,18 @@ export default function TADashboard() {
       dataIndex: "holdPipelineStr",
       key: "holdPipelineStr",
       width: 150,
-      align: 'center',
-      render: (text, result) => {      
-        return <div className={taStyles.todayText} style={{ background: "lightyellow",cursor:"pointer"}} onClick={() => showDetails(5,result,"Hold Pipeline (INR)",text)}>{text}</div>;
-      },      
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "lightyellow", cursor: "pointer" }}
+            onClick={() => showDetails(5, result, "Hold Pipeline (INR)", text)}
+          >
+            {text}
+          </div>
+        );
+      },
     },
     {
       title: (
@@ -844,12 +953,22 @@ export default function TADashboard() {
       dataIndex: "preOnboardingPipelineStr",
       key: "preOnboardingPipelineStr",
       width: 150,
-      align: 'center',
-      render: (text, result) => {      
-        return <div className={taStyles.todayText} style={{ background: "lightpink",cursor:"pointer"}} onClick={() => showDetails(6,result,"PreOnboarding Pipeline (INR)",text)}>{text}</div>;
-      },      
-    }
-  ];    
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "lightpink", cursor: "pointer" }}
+            onClick={() =>
+              showDetails(6, result, "PreOnboarding Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+  ];
 
   const daiyTargetColumns = [
     {
@@ -861,12 +980,22 @@ export default function TADashboard() {
       ),
       dataIndex: "carryFwdPipeLineStr",
       key: "carryFwdPipeLineStr",
-      align: 'center',
-      render: (text,result) => {
-        return <div className={taStyles.today1Text} style={{background:"#babaf5",cursor:"pointer"}} onClick={() => showDetails(7, { taUserID: 2 },"Carry Fwd Pipeline (INR)",text)}>{text}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.today1Text}
+            style={{ background: "#babaf5", cursor: "pointer" }}
+            onClick={() =>
+              showDetails(7, { taUserID: 2 }, "Carry Fwd Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
       },
     },
-     {
+    {
       title: (
         <>
           Carry Fwd Not <br />
@@ -875,24 +1004,45 @@ export default function TADashboard() {
       ),
       dataIndex: "carryFwdHoldPipelineStr",
       key: "carryFwdHoldPipelineStr",
-      align: 'center',
-      render: (text,result) => {
-        return <div className={taStyles.today1Text} style={{background:"lightyellow",cursor:"pointer"}} onClick={() => showDetails(8, { taUserID: 2 },"Carry Fwd Not Included Pipeline (INR)",text)}>{text}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.today1Text}
+            style={{ background: "lightyellow", cursor: "pointer" }}
+            onClick={() =>
+              showDetails(
+                8,
+                { taUserID: 2 },
+                "Carry Fwd Not Included Pipeline (INR)",
+                text
+              )
+            }
+          >
+            {text}
+          </div>
+        );
       },
     },
     {
-      title: (
-        <>
-          Added HR (New)
-        </>
-      ),
+      title: <>Added HR (New)</>,
       dataIndex: "activeHRPipeLineStr",
       key: "activeHRPipeLineStr",
-      align: 'center',
-      render: (text,result) => {
-        return <div className={taStyles.today1Text} style={{background:"#f0f0f0",cursor:"pointer"}} onClick={() => showDetails(9, { taUserID: 2 },"Added HR (New)",text)}>{text}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.today1Text}
+            style={{ background: "#f0f0f0", cursor: "pointer" }}
+            onClick={() =>
+              showDetails(9, { taUserID: 2 }, "Added HR (New)", text)
+            }
+          >
+            {text}
+          </div>
+        );
       },
-    },  
+    },
     {
       title: (
         <>
@@ -902,38 +1052,70 @@ export default function TADashboard() {
       ),
       dataIndex: "achievedHRPipeLineStr",
       key: "achievedHRPipeLineStr",
-      align: 'center',
-      render: (text,result) => {
-        return <div className={taStyles.todayText} style={{cursor:"pointer"}} onClick={() => showDetails(3, { taUserID: 2 },"Achieve Pipeline (INR)",text)}>{text ? text : '-'}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showDetails(3, { taUserID: 2 }, "Achieve Pipeline (INR)", text)
+            }
+          >
+            {text ? text : "-"}
+          </div>
+        );
       },
-    },      
+    },
     {
-      title: (
-        <>
-          Lost Pipeline (INR)
-        </>
-      ),
+      title: <>Lost Pipeline (INR)</>,
       dataIndex: "lostHRPipeLineStr",
-      align: 'center',
+      align: "center",
       key: "lostHRPipeLineStr",
       render: (text, result) => {
-        return <div className={taStyles.today2Text} style={{background:'lightsalmon',cursor:"pointer"}} onClick={() => showDetails(4, { taUserID: 2 },"Lost Pipeline (INR)",text)}>{text}</div>;
+        return (
+          <div
+            className={taStyles.today2Text}
+            style={{ background: "lightsalmon", cursor: "pointer" }}
+            onClick={() =>
+              showDetails(4, { taUserID: 2 }, "Lost Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
       },
     },
     {
       title: (
         <>
-          Total Active<br />
+          Total Active
+          <br />
           Pipeline (INR)
         </>
       ),
       dataIndex: "totalActivePipeLineStr",
       key: "totalActivePipeLineStr",
-      align: 'center',
-      render: (text,result) => {
-        return <div className={taStyles.today1Text} style={{cursor:"pointer"}}  onClick={() => showDetails(10, { taUserID: 2 },"Total Active Pipeline (INR)",text)}>{text}</div>;
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.today1Text}
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showDetails(
+                10,
+                { taUserID: 2 },
+                "Total Active Pipeline (INR)",
+                text
+              )
+            }
+          >
+            {text}
+          </div>
+        );
       },
-    },  
+    },
     {
       title: (
         <>
@@ -942,11 +1124,11 @@ export default function TADashboard() {
       ),
       dataIndex: "today_ProfilesharedTarget",
       key: "today_ProfilesharedTarget",
-      align: 'center',
+      align: "center",
       render: (text) => {
         return <div className={taStyles.today2Text}>{text}</div>;
       },
-    },    
+    },
     {
       title: (
         <>
@@ -969,7 +1151,7 @@ export default function TADashboard() {
       ),
       dataIndex: "today_L1Round",
       key: "today_L1Round",
-      align: 'center',
+      align: "center",
       render: (text) => {
         return <div className={taStyles.today2Text}>{text}</div>;
       },
@@ -983,7 +1165,7 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_ProfilesharedTarget",
       key: "yesterday_ProfilesharedTarget",
-      align: 'center',
+      align: "center",
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
@@ -996,7 +1178,7 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_ProfilesharedAchieved",
       key: "yesterday_ProfilesharedAchieved",
-      align: 'center',
+      align: "center",
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
@@ -1009,13 +1191,13 @@ export default function TADashboard() {
       ),
       dataIndex: "yesterday_L1Round",
       key: "yesterday_L1Round",
-      align: 'center',
+      align: "center",
       render: (text) => {
         return <div className={taStyles.yesterdayText}>{text}</div>;
       },
     },
   ];
-  
+
   const goalColumns = [
     {
       title: "TA",
@@ -1032,23 +1214,23 @@ export default function TADashboard() {
       dataIndex: "hrTitle",
       key: "hrTitle",
     },
- 
+
     {
       title: "Profiles Shared Target",
       dataIndex: "profiles_Shared_Target",
       key: "profiles_Shared_Target",
       align: "center",
-      render: (text, result) => {    
-        if(result?.hrTitle === 'TOTAL') return text
+      render: (text, result) => {
+        if (result?.hrTitle === "TOTAL") return text;
         const today = new Date();
         const selected = new Date(startDate);
-        
+
         // Clear time for comparison
         today.setHours(0, 0, 0, 0);
         selected.setHours(0, 0, 0, 0);
 
         const isPastDate = selected < today;
-        if (isPastDate) return text
+        if (isPastDate) return text;
         return (
           <Tooltip title={"Edit Target"}>
             <p
@@ -1081,7 +1263,7 @@ export default function TADashboard() {
       key: "profiles_Shared_Achieved",
       align: "center",
       render: (text, result) => {
-        if(result?.hrTitle === 'TOTAL') return text
+        if (result?.hrTitle === "TOTAL") return text;
         return +text > 0 ? (
           <p
             style={{
@@ -1119,7 +1301,7 @@ export default function TADashboard() {
       key: "interviews_Done_Target",
       align: "center",
       render: (text, result) => {
-        if(result?.hrTitle === 'TOTAL') return text
+        if (result?.hrTitle === "TOTAL") return text;
         return +text > 0 ? (
           <p
             style={{
@@ -1242,18 +1424,40 @@ export default function TADashboard() {
   //     setIsLoading(false);
   //   };
 
-  const setDiamondCompany = async (row,index)=>{
-      let payload = {
-            basicDetails: {
-              companyID: row.company_ID,
-              companyCategory: 'Diamond',
-            },
-            // IsUpdateFromPreviewPage: true,
-          };
-      updateTARowValue("Diamond", "companyCategory", row, index);
-      let res = await allCompanyRequestDAO.updateCompanyCategoryDAO(payload)
-      
-  }
+  const setDiamondCompany = async (row, index) => {
+    let payload = {
+      basicDetails: {
+        companyID: row.company_ID,
+        companyCategory: "Diamond",
+      },
+      // IsUpdateFromPreviewPage: true,
+    };
+    updateTARowValue("Diamond", "companyCategory", row, index);
+    let res = await allCompanyRequestDAO.updateCompanyCategoryDAO(payload);
+  };
+  const handleRemoveDiamond = async (d) => {
+    let payload = {
+      CompanyID: companyIdForRemark.company_ID,
+      DiamondCategoryRemoveRemark: d.diamondCategoryRemoveRemark,
+    };
+    setRemDiamondLoading(true);
+    let res = await allCompanyRequestDAO.removeCompanyCategoryDAO(payload);
+    setRemDiamondLoading(false);
+    console.log("response", res);
+    if (res.statusCode === 200) {
+      updateTARowValue(
+        "None",
+        "companyCategory",
+        companyIdForRemark,
+        companyIdForRemark.index
+      );
+      setShowDiamondRemark(false);
+      resetField("diamondCategoryRemoveRemark");
+      clearErrors("diamondCategoryRemoveRemark");
+    } else {
+      message.error("Something Went Wrong!");
+    }
+  };
 
   const columns = [
     {
@@ -1369,36 +1573,80 @@ export default function TADashboard() {
     //           </IconContext.Provider>
     //         </>
     //       )}
-          
+
     //     </>
     //   ),
     // },
     {
-  title: "Company",
-  dataIndex: "companyName",
-  key: "companyName",
-  fixed: "left",
-  width: "180px",
-  render: (text, row,index) => (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-      {/* Company Name + Diamond Icon */}
-      <div style={{ display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
-        <a
-          href={`/viewCompanyDetails/${row.company_ID}`}
-          target="_blank"
-          rel="noreferrer"
-          style={{ color: "#1890ff", fontWeight: 500 }}
+      title: "Company",
+      dataIndex: "companyName",
+      key: "companyName",
+      fixed: "left",
+      width: "180px",
+      render: (text, row, index) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
         >
-          {text}
-        </a>
+          {/* Company Name + Diamond Icon */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              flexWrap: "wrap",
+            }}
+          >
+            <a
+              href={`/viewCompanyDetails/${row.company_ID}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "#1890ff", fontWeight: 500 }}
+            >
+              {text}
+            </a>
 
-        {row?.companyCategory === 'Diamond' &&
-          <img src={Diamond} alt="info" style={{ width: "16px", height: "16px" }} />
-        }
-        {(row?.companyCategory !== 'Diamond' && (userData?.UserId === 2 || userData?.UserId === 333 )) && <Checkbox onChange={()=> setDiamondCompany(row,index)}>Make Diamond</Checkbox>}
-      </div>
+            {row?.companyCategory === "Diamond" && (
+              <>
+                <img
+                  src={Diamond}
+                  alt="info"
+                  style={{ width: "16px", height: "16px" }}
+                />
+                <div
+                  onClick={() => {
+                    setShowDiamondRemark(true);
+                    setCompanyIdForRemark({ ...row, index: index });
+                  }}
+                >
+                  <Tooltip title="Remove Diamond">
+                    <img
+                      src={PowerIcon}
+                      alt="info"
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </Tooltip>
+                </div>
+              </>
+            )}
+            {row?.companyCategory !== "Diamond" &&
+              (userData?.UserId === 2 ||
+                userData?.UserId === 333 ||
+                userData?.UserId === 190) && (
+                <Checkbox onChange={() => setDiamondCompany(row, index)}>
+                  Make Diamond
+                </Checkbox>
+              )}
+          </div>
 
-      {userData?.showTADashboardDropdowns && (
+          {userData?.showTADashboardDropdowns && (
             <>
               {/* <br /> */}
               <IconContext.Provider
@@ -1436,9 +1684,9 @@ export default function TADashboard() {
               </IconContext.Provider>
             </>
           )}
-    </div>
-  ),
-},
+        </div>
+      ),
+    },
 
     // {
     //   title: 'HR ID',
@@ -1487,7 +1735,7 @@ export default function TADashboard() {
       dataIndex: "task_Priority",
       key: "task_Priority",
       fixed: "left",
-      width: "120px",     
+      width: "120px",
       render: (text, result, index) => {
         return <PriorityComp text={text} result={result} index={index} />;
       },
@@ -1526,7 +1774,7 @@ export default function TADashboard() {
                 }}
                 onClick={() => {
                   setShowProfileTarget(true);
-                  setStartTargetDate(startDate)
+                  setStartTargetDate(startDate);
                   setProfileTargetDetails({ ...result, index: index });
                 }}
               >
@@ -1553,11 +1801,11 @@ export default function TADashboard() {
       key: "totalRevenue_NoofTalentStr",
       width: "115px",
       fixed: "left",
-    },   
+    },
     {
       title: "Contract / DP",
       dataIndex: "modelType",
-      key: "modelType",     
+      key: "modelType",
       render: (text, result, index) => {
         return <ContractDPComp text={text} result={result} index={index} />;
       },
@@ -2060,7 +2308,7 @@ export default function TADashboard() {
           };
           return newDS;
         }
-      });      
+      });
     }
   };
 
@@ -2131,9 +2379,9 @@ export default function TADashboard() {
     const today = new Date();
     const targetDateStr = date.toDateString();
     const dayOfWeek = today.getDay();
-  
-    if (dayOfWeek === 5) {      
-      const validDates = [0, 1, 2, 3].map(offset => {
+
+    if (dayOfWeek === 5) {
+      const validDates = [0, 1, 2, 3].map((offset) => {
         const d = new Date(today);
         d.setDate(today.getDate() + offset);
         return d.toDateString();
@@ -2142,46 +2390,47 @@ export default function TADashboard() {
     } else {
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
-      return [today.toDateString(), tomorrow.toDateString()].includes(targetDateStr);
+      return [today.toDateString(), tomorrow.toDateString()].includes(
+        targetDateStr
+      );
     }
   };
 
   const isSelectableDate = (date) => {
-  const today = new Date();
-  const targetDateStr = date.toDateString();
-  const dayOfWeek = today.getDay();
+    const today = new Date();
+    const targetDateStr = date.toDateString();
+    const dayOfWeek = today.getDay();
 
-  // Allow selection of 5 previous days
-  const pastValidDates = [-5, -4, -3, -2, -1].map(offset => {
-    const d = new Date(today);
-    d.setDate(today.getDate() + offset);
-    return d.toDateString();
-  });
+    // Allow selection of 5 previous days
+    const pastValidDates = [-5, -4, -3, -2, -1].map((offset) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() + offset);
+      return d.toDateString();
+    });
 
-  // Add today and tomorrow logic
-  const futureValidDates = (() => {
-    if (dayOfWeek === 5) { // If today is Friday
-      return [0, 1, 2, 3].map(offset => {
-        const d = new Date(today);
-        d.setDate(today.getDate() + offset);
-        return d.toDateString();
-      });
-    } else {
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      return [today.toDateString(), tomorrow.toDateString()];
-    }
-  })();
+    // Add today and tomorrow logic
+    const futureValidDates = (() => {
+      if (dayOfWeek === 5) {
+        // If today is Friday
+        return [0, 1, 2, 3].map((offset) => {
+          const d = new Date(today);
+          d.setDate(today.getDate() + offset);
+          return d.toDateString();
+        });
+      } else {
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        return [today.toDateString(), tomorrow.toDateString()];
+      }
+    })();
 
-  const allValidDates = [...pastValidDates, ...futureValidDates];
+    const allValidDates = [...pastValidDates, ...futureValidDates];
 
-  return allValidDates.includes(targetDateStr);
-};
-
-  
+    return allValidDates.includes(targetDateStr);
+  };
 
   return (
-    <div className={taStyles.hiringRequestContainer}>   
+    <div className={taStyles.hiringRequestContainer}>
       <div className={taStyles.filterContainer}>
         <div className={taStyles.filterSets}>
           <LogoLoader visible={modalLoader} />
@@ -2218,93 +2467,217 @@ export default function TADashboard() {
                 </div>
               )}
 
-              <div style={{ padding: "20px  20px" }}>          
-              <Table
-                dataSource={totalRevenueList}
-                columns={totalRevenueColumns}
-                pagination={false}
-                scroll={{ x: "max-content", y: "1vh" }}
-               summary={() => {
-                  return (
-                    <Table.Summary fixed>
-                      <Table.Summary.Row>
-                        <Table.Summary.Cell index={0}>
-                          <div>
-                            <strong>Total :</strong>
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={1}>
-                          <div style={{ textAlign: 'center' }}>
-                            <strong>{summaryData.total_GoalStr || '-'}</strong>
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={2}>
-                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(0, { taUserID: 2 }, "Assigned Pipeline (INR)", summaryData.sumOfTotalRevenueStr,true)}>
-                            {summaryData.sumOfTotalRevenueStr || '-'}
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={3}>
-                          <div style={{ textAlign: 'center' , cursor: 'pointer'}}
-                          onClick={() => showDetails(7, { taUserID: 2 }, "Carry Fwd Pipeline (INR)", summaryData.total_CarryFwdPipelineStr,true)}>
-                            <strong>{summaryData.total_CarryFwdPipelineStr || '-'}</strong>
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={4}>
-                          <div style={{ textAlign: 'center' , cursor: 'pointer'}}
-                          onClick={() => showDetails(8, { taUserID: 2 }, "Carry Fwd Not Included Pipeline (INR)", summaryData.total_CarryFwdHoldPipelineStr,true)}>
-                            <strong>{summaryData.total_CarryFwdHoldPipelineStr || '-'}</strong>
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={5}>
-                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(1, { taUserID: 2 }, "Current Month Actual Pipeline (INR)", summaryData.total_CurrentMonthActualPipelineStr,true)}>
-                            {summaryData.total_CurrentMonthActualPipelineStr || '-'}
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={6}>
-                          <div style={{ textAlign: 'center', cursor: 'pointer' }}
-                            onClick={() => showDetails(10, { taUserID: 2 }, "Total Active Pipeline (INR)", summaryData.total_ActualPipelineStr,true)}> 
-                            <strong>{summaryData.total_ActualPipelineStr || '-'}</strong>
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={6}>
-                          <div style={{ textAlign: 'center' }}></div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={7}>
-                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(3, { taUserID: 2 }, "Achieved Pipeline (INR)", summaryData.total_AchievedPipelineStr,true)}>
-                            {summaryData.total_AchievedPipelineStr || '-'}
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={8}>
-                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(4, { taUserID: 2 }, "Lost Pipeline (INR)",summaryData.total_LostPipelineStr,true)}>
-                            {summaryData.total_LostPipelineStr || '-'}
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={9}>
-                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(5, { taUserID: 2 }, "Hold Pipeline (INR)", summaryData.total_HoldPipelineStr,true)}>
-                            {summaryData.total_HoldPipelineStr || '-'}
-                          </div>
-                        </Table.Summary.Cell>
-                        <Table.Summary.Cell index={10}>
-                          <div style={{ textAlign: 'center', fontWeight: 'bold', cursor: 'pointer' }}
-                            onClick={() => showDetails(6, { taUserID: 2 }, "Pre-Onboarding Pipeline (INR)", summaryData.total_PreOnboardingPipelineStr,true)}>
-                            {summaryData.total_PreOnboardingPipelineStr || '-'}
-                          </div>
-                        </Table.Summary.Cell>
-                      </Table.Summary.Row>
-                    </Table.Summary>
-                  );
-                }}
-                rowClassName={(record) => {                  
-                  if (record.orderSequence === 1) return taStyles.one;                  
-                  return '';
-                }}
-              />
-
+              <div style={{ padding: "20px  20px" }}>
+                <Table
+                  dataSource={totalRevenueList}
+                  columns={totalRevenueColumns}
+                  pagination={false}
+                  scroll={{ x: "max-content", y: "1vh" }}
+                  summary={() => {
+                    return (
+                      <Table.Summary fixed>
+                        <Table.Summary.Row>
+                          <Table.Summary.Cell index={0}>
+                            <div>
+                              <strong>Total :</strong>
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={1}>
+                            <div style={{ textAlign: "center" }}>
+                              <strong>
+                                {summaryData.total_GoalStr || "-"}
+                              </strong>
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={2}>
+                            <div
+                              style={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                showDetails(
+                                  0,
+                                  { taUserID: 2 },
+                                  "Assigned Pipeline (INR)",
+                                  summaryData.sumOfTotalRevenueStr,
+                                  true
+                                )
+                              }
+                            >
+                              {summaryData.sumOfTotalRevenueStr || "-"}
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={3}>
+                            <div
+                              style={{ textAlign: "center", cursor: "pointer" }}
+                              onClick={() =>
+                                showDetails(
+                                  7,
+                                  { taUserID: 2 },
+                                  "Carry Fwd Pipeline (INR)",
+                                  summaryData.total_CarryFwdPipelineStr,
+                                  true
+                                )
+                              }
+                            >
+                              <strong>
+                                {summaryData.total_CarryFwdPipelineStr || "-"}
+                              </strong>
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={4}>
+                            <div
+                              style={{ textAlign: "center", cursor: "pointer" }}
+                              onClick={() =>
+                                showDetails(
+                                  8,
+                                  { taUserID: 2 },
+                                  "Carry Fwd Not Included Pipeline (INR)",
+                                  summaryData.total_CarryFwdHoldPipelineStr,
+                                  true
+                                )
+                              }
+                            >
+                              <strong>
+                                {summaryData.total_CarryFwdHoldPipelineStr ||
+                                  "-"}
+                              </strong>
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={5}>
+                            <div
+                              style={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                showDetails(
+                                  1,
+                                  { taUserID: 2 },
+                                  "Current Month Actual Pipeline (INR)",
+                                  summaryData.total_CurrentMonthActualPipelineStr,
+                                  true
+                                )
+                              }
+                            >
+                              {summaryData.total_CurrentMonthActualPipelineStr ||
+                                "-"}
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={6}>
+                            <div
+                              style={{ textAlign: "center", cursor: "pointer" }}
+                              onClick={() =>
+                                showDetails(
+                                  10,
+                                  { taUserID: 2 },
+                                  "Total Active Pipeline (INR)",
+                                  summaryData.total_ActualPipelineStr,
+                                  true
+                                )
+                              }
+                            >
+                              <strong>
+                                {summaryData.total_ActualPipelineStr || "-"}
+                              </strong>
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={6}>
+                            <div style={{ textAlign: "center" }}></div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={7}>
+                            <div
+                              style={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                showDetails(
+                                  3,
+                                  { taUserID: 2 },
+                                  "Achieved Pipeline (INR)",
+                                  summaryData.total_AchievedPipelineStr,
+                                  true
+                                )
+                              }
+                            >
+                              {summaryData.total_AchievedPipelineStr || "-"}
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={8}>
+                            <div
+                              style={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                showDetails(
+                                  4,
+                                  { taUserID: 2 },
+                                  "Lost Pipeline (INR)",
+                                  summaryData.total_LostPipelineStr,
+                                  true
+                                )
+                              }
+                            >
+                              {summaryData.total_LostPipelineStr || "-"}
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={9}>
+                            <div
+                              style={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                showDetails(
+                                  5,
+                                  { taUserID: 2 },
+                                  "Hold Pipeline (INR)",
+                                  summaryData.total_HoldPipelineStr,
+                                  true
+                                )
+                              }
+                            >
+                              {summaryData.total_HoldPipelineStr || "-"}
+                            </div>
+                          </Table.Summary.Cell>
+                          <Table.Summary.Cell index={10}>
+                            <div
+                              style={{
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                showDetails(
+                                  6,
+                                  { taUserID: 2 },
+                                  "Pre-Onboarding Pipeline (INR)",
+                                  summaryData.total_PreOnboardingPipelineStr,
+                                  true
+                                )
+                              }
+                            >
+                              {summaryData.total_PreOnboardingPipelineStr ||
+                                "-"}
+                            </div>
+                          </Table.Summary.Cell>
+                        </Table.Summary.Row>
+                      </Table.Summary>
+                    );
+                  }}
+                  rowClassName={(record) => {
+                    if (record.orderSequence === 1) return taStyles.one;
+                    return "";
+                  }}
+                />
               </div>
             </>
           )
@@ -2354,19 +2727,19 @@ export default function TADashboard() {
               <div className={taStyles.label}>Date</div>
               <div className={taStyles.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                  <DatePicker
-                    style={{ backgroundColor: "red" }}
-                    onKeyDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    className={taStyles.dateFilter}
-                    placeholderText="Start date"
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    dateFormat="dd-MM-yyyy"
-                    filterDate={isSelectableDate}
-                  />
+                <DatePicker
+                  style={{ backgroundColor: "red" }}
+                  onKeyDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className={taStyles.dateFilter}
+                  placeholderText="Start date"
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  dateFormat="dd-MM-yyyy"
+                  filterDate={isSelectableDate}
+                />
               </div>
             </div>
           </div>
@@ -2381,7 +2754,9 @@ export default function TADashboard() {
                 columns={goalColumns}
                 // bordered
                 pagination={false}
-                rowClassName={(record) => (record?.hrTitle === 'TOTAL' ? taStyles.totalrow : '')}
+                rowClassName={(record) =>
+                  record?.hrTitle === "TOTAL" ? taStyles.totalrow : ""
+                }
               />
             </div>
           )
@@ -2462,14 +2837,15 @@ export default function TADashboard() {
 
       {isLoading ? (
         <TableSkeleton />
-      ) : (
-        TaListData?.length ? <Table
-          scroll={{ x: "max-content" , y:'1vh'}}
+      ) : TaListData?.length ? (
+        <Table
+          scroll={{ x: "max-content", y: "1vh" }}
           dataSource={TaListData}
           columns={columns}
           pagination={false}
           onChange={handleTableFilterChange}
-        /> : 
+        />
+      ) : (
         <Table
           dataSource={[]}
           columns={columns}
@@ -2702,19 +3078,19 @@ export default function TADashboard() {
           className="engagementModalStyle"
           // onOk={() => setVersantModal(false)}
           onCancel={() => {
-            setSearchTerm('')
+            setSearchTerm("");
             setShowTalentProfiles(false);
             setHRTalentListFourCount([]);
           }}
         >
           <>
-          <div
+            <div
               style={{
                 padding: "45px 15px 10px 15px",
                 display: "flex",
                 gap: "10px",
                 alignItems: "center",
-                flexWrap: "wrap", 
+                flexWrap: "wrap",
               }}
             >
               <h3>
@@ -2738,13 +3114,12 @@ export default function TADashboard() {
                   padding: "6px 10px",
                   border: "1px solid #ccc",
                   borderRadius: "4px",
-                  marginLeft: "auto", 
-                  marginRight:"20px",
+                  marginLeft: "auto",
+                  marginRight: "20px",
                   minWidth: "260px",
                 }}
               />
             </div>
-
 
             <div
               style={{
@@ -2977,7 +3352,7 @@ export default function TADashboard() {
                 className={taStyles.btnCancle}
                 disabled={isAddingNewTask}
                 onClick={() => {
-                  setSearchTerm('')
+                  setSearchTerm("");
                   setShowTalentProfiles(false);
                   setHRTalentListFourCount([]);
                 }}
@@ -3016,7 +3391,7 @@ export default function TADashboard() {
             ) : (
               <>
                 <div className={taStyles.row}>
-                  <div className={taStyles.colMd6}>                  
+                  <div className={taStyles.colMd6}>
                     <div className={taStyles.formGroup}>
                       <label>
                         Select Head <span className={taStyles.reqField}>*</span>
@@ -3049,7 +3424,7 @@ export default function TADashboard() {
                         showSearch={true}
                         onChange={(value, option) => {
                           setNewTAUserValue(value);
-                          getCompanySuggestionHandler(value);                          
+                          getCompanySuggestionHandler(value);
                           setCompanyNameSuggestion([]);
                           setselectedCompanyID("");
                           setNewTAHRValue("");
@@ -3095,7 +3470,7 @@ export default function TADashboard() {
                         options={getCompanyNameSuggestion}
                         optionFilterProp="label"
                       />
-                      
+
                       {newTaskError && selectedCompanyID === "" && (
                         <p className={taStyles.error}>please select company</p>
                       )}
@@ -3233,7 +3608,7 @@ export default function TADashboard() {
             ) : (
               <>
                 <div className={taStyles.row}>
-                  <div className={taStyles.colMd6}>                    
+                  <div className={taStyles.colMd6}>
                     <div className={taStyles.formGroup}>
                       <label>
                         Select Head <span className={taStyles.reqField}>*</span>
@@ -3443,9 +3818,7 @@ export default function TADashboard() {
           </Suspense>
 
           {allCommentList.length > 0 ? (
-            <div
-              style={{ padding: "12px 20px" }}
-            >
+            <div style={{ padding: "12px 20px" }}>
               {isCommentLoading && (
                 <div>
                   Adding Comment ...{" "}
@@ -3489,8 +3862,68 @@ export default function TADashboard() {
         </Modal>
       )}
 
+      {showDiamondRemark && (
+        <Modal
+          transitionName=""
+          width="1000px"
+          centered
+          footer={null}
+          open={showDiamondRemark}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowDiamondRemark(false);
+            resetField("diamondCategoryRemoveRemark");
+            clearErrors("diamondCategoryRemoveRemark");
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Add Remark</h3>
+          </div>
 
-     {isShowDetails?.isBoolean && (
+          <div style={{ padding: "10px 20px" }}>
+            {remDiamondLoading ? (
+              <Skeleton active />
+            ) : (
+              <HRInputField
+                isTextArea={true}
+                register={register}
+                errors={errors}
+                label="Remark"
+                name="diamondCategoryRemoveRemark"
+                type={InputType.TEXT}
+                placeholder="Enter Remark"
+                validationSchema={{
+                  required: "please enter remark",
+                }}
+                required
+              />
+            )}
+          </div>
+
+          <div style={{ padding: "10px 20px" }}>
+            <button
+              className={taStyles.btnPrimary}
+              onClick={handleSubmit(handleRemoveDiamond)}
+              disabled={remDiamondLoading}
+            >
+              Save
+            </button>
+            <button
+              className={taStyles.btnCancle}
+              disabled={remDiamondLoading}
+              onClick={() => {
+                setShowDiamondRemark(false);
+                resetField("diamondCategoryRemoveRemark");
+                clearErrors("diamondCategoryRemoveRemark");
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {isShowDetails?.isBoolean && (
         <Modal
           width="1000px"
           centered
@@ -3498,77 +3931,148 @@ export default function TADashboard() {
           open={isShowDetails?.isBoolean}
           className="engagementModalStyle"
           onCancel={() => {
-            setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
+            setIsShowDetails({
+              isBoolean: false,
+              title: "",
+              value: "",
+              isTotal: false,
+              TAName: "",
+            });
             setAllShowDetails([]);
           }}
-        >               
-        <div style={{ padding: "20px 15px" }}>
-          <h3><b>{(isShowDetails?.TAName && !isShowDetails?.isTotal) ? isShowDetails?.TAName + ' - ' : ''}{isShowDetails?.title} {isShowDetails?.value ? " - " + isShowDetails?.value : ''}</b></h3>
-        </div>
+        >
+          <div style={{ padding: "20px 15px" }}>
+            <h3>
+              <b>
+                {isShowDetails?.TAName && !isShowDetails?.isTotal
+                  ? isShowDetails?.TAName + " - "
+                  : ""}
+                {isShowDetails?.title}{" "}
+                {isShowDetails?.value ? " - " + isShowDetails?.value : ""}
+              </b>
+            </h3>
+          </div>
 
-        {allShowDetails.length > 0 ? (
-          <div style={{ padding: "0 20px 20px 20px", overflowX: "auto" }}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                fontSize: 14,
-                textAlign: "left",
+          {allShowDetails.length > 0 ? (
+            <div style={{ padding: "0 20px 20px 20px", overflowX: "auto" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: 14,
+                  textAlign: "left",
+                }}
+              >
+                <thead>
+                  <tr style={{ backgroundColor: "#f0f0f0" }}>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      Action Date
+                    </th>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      Company Name
+                    </th>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      HR Number
+                    </th>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      HR Title
+                    </th>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      Pipeline
+                    </th>
+                    {isCarryFwdStatus && PipelineTupeId === 8 && (
+                      <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                        Pre Onboarding Pipeline (INR)
+                      </th>
+                    )}
+                    {isCarryFwdStatus && (
+                      <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                        Carry Forward Status
+                      </th>
+                    )}
+                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      HR Status
+                    </th>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      Sales Person
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {allShowDetails.map((detail, index) => (
+                    <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {detail.actionDateStr}
+                      </td>
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {detail.companyName}
+                      </td>
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {detail.hrNumber}
+                      </td>
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {detail.hrTitle}
+                      </td>
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {detail.pipelineStr}
+                      </td>
+                      {isCarryFwdStatus && PipelineTupeId === 8 && (
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.preOnboardingPipelineStr}
+                        </td>
+                      )}
+                      {isCarryFwdStatus && (
+                        <th
+                          style={{ padding: "10px", border: "1px solid #ddd" }}
+                        >
+                          {All_Hiring_Request_Utils.GETHRSTATUS(
+                            Number(detail.carryFwd_HRStatusCode),
+                            detail.carryFwd_HRStatus
+                          )}
+                        </th>
+                      )}
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {All_Hiring_Request_Utils.GETHRSTATUS(
+                          Number(detail.hrStatusCode),
+                          detail.hrStatus
+                        )}
+                      </td>
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {detail.salesPerson}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{ padding: "20px" }}>
+              <p>No details available.</p>
+            </div>
+          )}
+
+          <div style={{ padding: "10px", textAlign: "right" }}>
+            <button
+              className={taStyles.btnCancle}
+              onClick={() => {
+                setIsShowDetails({
+                  isBoolean: false,
+                  title: "",
+                  value: "",
+                  isTotal: false,
+                  TAName: "",
+                });
+                setAllShowDetails([]);
               }}
             >
-              <thead>
-                <tr style={{ backgroundColor: "#f0f0f0" }}>
-
-                <th style={{ padding: "10px", border: "1px solid #ddd" }}>Action Date</th>
-                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>Company Name</th>
-                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Number</th>
-                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Title</th>
-                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pipeline</th>
-                  {(isCarryFwdStatus && PipelineTupeId === 8) && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Pre Onboarding Pipeline (INR)</th>}
-                  {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>Carry Forward Status</th>}      
-                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>HR Status</th>
-                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>Sales Person</th>                  
-                </tr>
-              </thead>
-
-              <tbody>
-                {allShowDetails.map((detail, index) => (
-                  <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
-                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.actionDateStr}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.companyName}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrNumber}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.hrTitle}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.pipelineStr}</td>
-                    {(isCarryFwdStatus && PipelineTupeId === 8) &&  <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.preOnboardingPipelineStr}</td>}
-                    {isCarryFwdStatus && <th style={{ padding: "10px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.carryFwd_HRStatusCode), detail.carryFwd_HRStatus)}</th>}
-                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{All_Hiring_Request_Utils.GETHRSTATUS(Number(detail.hrStatusCode), detail.hrStatus)}</td>                    
-                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>{detail.salesPerson}</td>                      
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              Close
+            </button>
           </div>
-        ) : (
-          <div style={{ padding: "20px" }}>
-            <p>No details available.</p>
-          </div>
-        )}
-
-        <div style={{ padding: "10px", textAlign: "right" }}>
-          <button
-            className={taStyles.btnCancle}
-            onClick={() => {
-              setIsShowDetails({isBoolean:false,title:"",value:"",isTotal:false,TAName:""});
-              setAllShowDetails([]);
-            }}
-          >
-            Close
-          </button>
-        </div>
-                 
-                
-      </Modal>
-    )}
+        </Modal>
+      )}
     </div>
   );
 }
