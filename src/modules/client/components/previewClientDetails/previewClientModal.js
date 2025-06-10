@@ -332,11 +332,11 @@ function PreviewClientModal({
     let payload = {
       basicDetails: {
         companyID: getcompanyID,
-        company_Category: controlledCategoryValue,
+        companyCategory: controlledCategoryValue,
       },
       IsUpdateFromPreviewPage: true,
     };
-    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+    let res = await allCompanyRequestDAO.updateCompanyCategoryDAO(payload);
     if (res?.statusCode === HTTPStatusCode.OK) {
       getDetails();
       setIsEditCategory(false);
