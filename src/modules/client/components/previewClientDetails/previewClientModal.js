@@ -332,7 +332,7 @@ function PreviewClientModal({
     let payload = {
       basicDetails: {
         companyID: getcompanyID,
-        company_Category: controlledCategoryValue,
+        companyCategory: controlledCategoryValue,
       },
       IsUpdateFromPreviewPage: true,
     };
