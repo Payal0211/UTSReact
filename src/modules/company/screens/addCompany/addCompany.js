@@ -326,7 +326,7 @@ function AddCompany() {
 
     })
 
-    let modCultureDetails = getCompanyDetails?.cultureDetails.map((culture) =>({
+    let modCultureDetails = getCompanyDetails?.cultureDetails?.map((culture) =>({
       cultureID:culture.cultureID,
       culture_Image: culture.cultureImage
     }))

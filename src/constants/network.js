@@ -129,6 +129,7 @@ export class CompanysAPI {
 	static DELETE_YOUTUBE_DETAILS = 'DeleteYouTubeDetails';
 	static DELETE_CULTURE_IMAGE = 'DeleteCultureImage'
 	static UPDATE_COMPANY_DETAILS = 'UpdateDetails'
+	static UPDATE_COMPANY_CATEGORY = 'UpdateCompanyCategory'
 	static VALIDATE_COMPANY_CLIENT = 'ValidateCompanyClient'
 	static DELETE_FUNDING = "DeleteFundingDetails"
 	static PREVIEW = 'Preview'
