@@ -493,7 +493,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 				}),
 				new SideBarModels({
 					id: 'dailyBusinessNumbers',
-					title: 'Daily Business Numbers',
+					title: 'Monthly Revenue Report',
 					isActive: false,
 					navigateTo: UTSRoutes.DAILY_BUSINESS_NUMBERS,
 					isVisible: isAccess(usertypeID, 'DailyBusinessNumbers')
