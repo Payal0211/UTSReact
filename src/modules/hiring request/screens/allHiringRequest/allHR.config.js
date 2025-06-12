@@ -599,6 +599,81 @@ export const allHRConfig = {
       },
     ];
   },
+   potentialFilterTypeConfig: (filterList) => {
+    return [
+      {
+        label: "HR Status",
+        name: "hrStatus",
+        child: filterList?.hrStatusList?.map(it=>( {
+              disabled: false,
+              group: null,
+              selected: false,
+              statusCode: it.statusCode,
+              label: it.title,
+              value: it.title,
+              text:  it.statusCode.toString(),
+            })),
+        isSearch: false,
+      },
+ 
+      {
+        label: 'Lead Type',
+        name: 'leadUserId',
+        child: filterList?.leadTypeList,
+        isSearch: false,
+        isSingleSelect:true
+    },
+      {
+        label: "Sales Representative",
+        name: "salesRep",
+        child: filterList?.salesReps,
+        isSearch: true,
+      },
+      {
+        label: "Engagement Method",
+        name: "HRType",
+        child: [
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "Contractual",
+            value: "Contractual",
+          },
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "Direct Placement",
+            value: "Direct Placement",
+          },
+        ],
+        isSearch: false,
+      },
+      {
+        label: "Team",
+        name: "team",
+        isSearch: false,
+         isSingleSelect:true,
+          child: [
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "AM",
+            value: "AM",
+          },
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "NBD",
+            value: "NBD",
+          },
+        ],
+      },
+    ];
+  },
   profileLogConfig: (profileLog) => {
     return [
       {
