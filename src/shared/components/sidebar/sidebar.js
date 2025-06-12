@@ -276,7 +276,8 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		return isVisible
 	}
 	if(title ==='amInterviews' || title ==='omReport' || title ==='amReport' || title ==='PotentialClosuresSheet'|| title ==='DailyBusinessNumbers'  ){
-		isVisible =  (ID === 4 || ID===9 ) ? true : false
+		isVisible =  (ID === 4 || ID===9 || ID===1 || ID===2) ? true : false
+		// isVisible = true
 		return isVisible	
 	}
 	if (title === 'Revenue'){
@@ -424,6 +425,91 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 		}),
 		
 		
+		
+		
+		  new SideBarModels({
+			id: 'taReport',
+			title: 'TA Report',
+			isActive: false,
+			icon: RecruiterReportIcon,			
+			isChildren: true,
+			branch:[
+				new SideBarModels({
+					id: 'taDashboardReport',
+					title: 'TA Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.TADASHBOARDREPORT,
+					isVisible: isAccess(usertypeID, 'taDashboardReport'),
+					isChildren : false					
+				}),
+
+				new SideBarModels({
+					id: 'DailySnapshot',
+					title: 'Daily Snapshot',
+					isActive: false,
+					navigateTo: UTSRoutes.DAILYSNAPSHOT,
+					isVisible: isAccess(usertypeID, 'DailySnapshot'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'Recruiter',
+					title: 'Recruiter',
+					isActive: false,
+					navigateTo: UTSRoutes.RECRUITERREPORT,
+					isVisible: isAccess(usertypeID, 'Recruiter'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'ClientDashboard',
+					title: 'Client Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
+					isVisible: isAccess(usertypeID, 'ClientDashboard'),
+					isChildren : false					
+				})
+			]
+		}),
+
+		new SideBarModels({
+			id: 'omReport',
+			title: 'OM Report',
+			isActive: false,
+			icon: AMReportIcon,
+			isChildren: true,
+			branch: [
+				new SideBarModels({
+					id: 'amInterviews',
+					title: 'AM Wise Interview Count',
+					isActive: false,
+					navigateTo: UTSRoutes.AM_INTERVIEW,
+					isVisible: isAccess(usertypeID, 'amInterviews'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'dailyBusinessNumbers',
+					title: 'Revenue Report',
+					isActive: false,
+					navigateTo: UTSRoutes.DAILY_BUSINESS_NUMBERS,
+					isVisible: isAccess(usertypeID, 'DailyBusinessNumbers')
+				}),
+				new SideBarModels({
+					id: 'potentialClosuresSheet',
+					title: 'Potential Closures List',
+					isActive: false,
+					navigateTo: UTSRoutes.POTENTIAL_CLOSURES_SHEET,
+					isVisible: isAccess(usertypeID, 'PotentialClosuresSheet')
+				}),
+				new SideBarModels({
+					id: 'amReport',
+					title: 'AM Report',
+					isActive: false,
+					navigateTo: UTSRoutes.AM_REPORT,
+					isVisible: isAccess(usertypeID, 'amReport')
+				}),
+			],
+			isVisible: isAccess(usertypeID, 'omReport')
+		}),
+      
 		new SideBarModels({
 			id: 'Talent',
 			title: 'Talent',
@@ -472,89 +558,6 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.REPLACEMENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Replacement')
 				}),			
-			]
-		}),
-		
-
-		new SideBarModels({
-			id: 'omReport',
-			title: 'OM Report',
-			isActive: false,
-			icon: AMReportIcon,
-			isChildren: true,
-			branch: [
-				new SideBarModels({
-					id: 'amInterviews',
-					title: 'AM Wise Interview Count',
-					isActive: false,
-					navigateTo: UTSRoutes.AM_INTERVIEW,
-					isVisible: isAccess(usertypeID, 'amInterviews'),
-					isChildren : false					
-				}),
-				new SideBarModels({
-					id: 'dailyBusinessNumbers',
-					title: 'Monthly Revenue Report',
-					isActive: false,
-					navigateTo: UTSRoutes.DAILY_BUSINESS_NUMBERS,
-					isVisible: isAccess(usertypeID, 'DailyBusinessNumbers')
-				}),
-				new SideBarModels({
-					id: 'potentialClosuresSheet',
-					title: 'Potential Closures List',
-					isActive: false,
-					navigateTo: UTSRoutes.POTENTIAL_CLOSURES_SHEET,
-					isVisible: isAccess(usertypeID, 'PotentialClosuresSheet')
-				}),
-				new SideBarModels({
-					id: 'amReport',
-					title: 'AM Report',
-					isActive: false,
-					navigateTo: UTSRoutes.AM_REPORT,
-					isVisible: isAccess(usertypeID, 'amReport')
-				}),
-			],
-			isVisible: isAccess(usertypeID, 'omReport')
-		}),
-        new SideBarModels({
-			id: 'taReport',
-			title: 'TA Report',
-			isActive: false,
-			icon: RecruiterReportIcon,			
-			isChildren: true,
-			branch:[
-				new SideBarModels({
-					id: 'taDashboardReport',
-					title: 'TA Dashboard',
-					isActive: false,
-					navigateTo: UTSRoutes.TADASHBOARDREPORT,
-					isVisible: isAccess(usertypeID, 'taDashboardReport'),
-					isChildren : false					
-				}),
-
-				new SideBarModels({
-					id: 'DailySnapshot',
-					title: 'Daily Snapshot',
-					isActive: false,
-					navigateTo: UTSRoutes.DAILYSNAPSHOT,
-					isVisible: isAccess(usertypeID, 'DailySnapshot'),
-					isChildren : false					
-				}),
-				new SideBarModels({
-					id: 'Recruiter',
-					title: 'Recruiter',
-					isActive: false,
-					navigateTo: UTSRoutes.RECRUITERREPORT,
-					isVisible: isAccess(usertypeID, 'Recruiter'),
-					isChildren : false					
-				}),
-				new SideBarModels({
-					id: 'ClientDashboard',
-					title: 'Client Dashboard',
-					isActive: false,
-					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
-					isVisible: isAccess(usertypeID, 'ClientDashboard'),
-					isChildren : false					
-				})
 			]
 		}),
 
