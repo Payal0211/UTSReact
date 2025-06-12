@@ -275,8 +275,8 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible = (ID === 3 || ID === 2 || ID === 1) ? true : false;
 		return isVisible
 	}
-	if(ID === 2 || title ==='amInterviews'){
-		isVisible =  true
+	if(title ==='amInterviews' || title ==='omReport' || title ==='amReport' || title ==='PotentialClosuresSheet'|| title ==='DailyBusinessNumbers'  ){
+		isVisible =  (ID === 4 || ID===9 ) ? true : false
 		return isVisible	
 	}
 	if (title === 'Revenue'){
@@ -288,7 +288,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
-	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'amReport' || title === 'PotentialClosuresSheet' || title === 'DailyBusinessNumbers'){
+	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' ){
 		isVisible =  true;
 		return isVisible
 	}
@@ -423,48 +423,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isVisible: isAccess(usertypeID, 'Users')
 		}),
 		
-		new SideBarModels({
-			id: 'taReport',
-			title: 'TA Report',
-			isActive: false,
-			icon: RecruiterReportIcon,			
-			isChildren: true,
-			branch:[
-				new SideBarModels({
-					id: 'taDashboardReport',
-					title: 'TA Dashboard',
-					isActive: false,
-					navigateTo: UTSRoutes.TADASHBOARDREPORT,
-					isVisible: isAccess(usertypeID, 'taDashboardReport'),
-					isChildren : false					
-				}),
-
-				new SideBarModels({
-					id: 'DailySnapshot',
-					title: 'Daily Snapshot',
-					isActive: false,
-					navigateTo: UTSRoutes.DAILYSNAPSHOT,
-					isVisible: isAccess(usertypeID, 'DailySnapshot'),
-					isChildren : false					
-				}),
-				new SideBarModels({
-					id: 'Recruiter',
-					title: 'Recruiter',
-					isActive: false,
-					navigateTo: UTSRoutes.RECRUITERREPORT,
-					isVisible: isAccess(usertypeID, 'Recruiter'),
-					isChildren : false					
-				}),
-				new SideBarModels({
-					id: 'ClientDashboard',
-					title: 'Client Dashboard',
-					isActive: false,
-					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
-					isVisible: isAccess(usertypeID, 'ClientDashboard'),
-					isChildren : false					
-				})
-			]
-		}),
+		
 		new SideBarModels({
 			id: 'Talent',
 			title: 'Talent',
@@ -554,9 +513,50 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'amReport')
 				}),
 			],
-			isVisible: isAccess(usertypeID, 'invoice')
+			isVisible: isAccess(usertypeID, 'omReport')
 		}),
+        new SideBarModels({
+			id: 'taReport',
+			title: 'TA Report',
+			isActive: false,
+			icon: RecruiterReportIcon,			
+			isChildren: true,
+			branch:[
+				new SideBarModels({
+					id: 'taDashboardReport',
+					title: 'TA Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.TADASHBOARDREPORT,
+					isVisible: isAccess(usertypeID, 'taDashboardReport'),
+					isChildren : false					
+				}),
 
+				new SideBarModels({
+					id: 'DailySnapshot',
+					title: 'Daily Snapshot',
+					isActive: false,
+					navigateTo: UTSRoutes.DAILYSNAPSHOT,
+					isVisible: isAccess(usertypeID, 'DailySnapshot'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'Recruiter',
+					title: 'Recruiter',
+					isActive: false,
+					navigateTo: UTSRoutes.RECRUITERREPORT,
+					isVisible: isAccess(usertypeID, 'Recruiter'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'ClientDashboard',
+					title: 'Client Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
+					isVisible: isAccess(usertypeID, 'ClientDashboard'),
+					isChildren : false					
+				})
+			]
+		}),
 
 		new SideBarModels({
 			id: 'invoice',
