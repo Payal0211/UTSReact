@@ -43,7 +43,7 @@ import MoveToAssessment from "modules/hiring request/components/talentList/moveT
 import { InterviewDAO } from "core/interview/interviewDAO";
 import LogoLoader from "shared/components/loader/logoLoader";
 import Diamond from "assets/svg/diamond.svg";
-import PowerIcon from "assets/svg/power.svg";
+import PowerIcon from "assets/svg/powerRed.svg";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 
