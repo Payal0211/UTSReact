@@ -643,6 +643,41 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.PotentialClosuresUpdateAPI');
 		}
 	},
+
+	revenueBusinessReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_MONTHLY_REVENUE_BUSINESS_REPORT + `?hrBusinessType=${payload?.hrBusinessType}&month=${payload?.month}&year=${payload?.year}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.PotentialClosuresUpdateAPI');
+		}
+	},
+		getHrTAWiseReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_HR_TALENT_WISE_REPORT+ `?hrBusinessType=${payload?.hrBusinessType}&month=${payload?.month}&year=${payload?.year}&userCategory=${payload?.userCategory}&businessType=${payload?.businessType}&stageID=${payload?.stageID}&amID=${payload?.amID}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.PotentialClosuresUpdateAPI');
+		}
+	},
 	AMWiseInterviewCountsAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
