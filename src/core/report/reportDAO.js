@@ -1008,6 +1008,52 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.PotentialClosuresUpdateDAO');
 		}
 	},	
+	revenueBusinessReportDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.revenueBusinessReportAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.revenueBusinessReportDAO');
+		}
+	},	
+	getHrTAWiseReportDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.getHrTAWiseReportAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getHrTAWiseReportDAO');
+		}
+	},	
 	AMWiseInterviewCountsDAO:async function (payload) {
 		try {
 			const taResult = await ReportAPI.AMWiseInterviewCountsAPI(payload);

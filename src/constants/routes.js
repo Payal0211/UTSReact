@@ -300,7 +300,7 @@ export default class UTSRoutes {
 	static TALENT_NOTES = '/talentNotes';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 	static AM_REPORT = '/amReport';
-	static DAILY_BUSINESS_NUMBERS = 'dailyBusinessNumbers';
+	static DAILY_BUSINESS_NUMBERS = 'RevenueBusinessReport';
 	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresList'
 	static AM_INTERVIEW = 'amInterviews'
 }
