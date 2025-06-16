@@ -350,10 +350,11 @@ export default function DailyBusinessNumbersPage() {
     };
     let content = value;
 
+
     if (isPotential && value === "-") {
       cellStyle.backgroundColor = "#BFBFBF"; // Gray background
-    } else if (value === null || value === undefined || value === "") {
-      content = isPotential || record.stage === "Churn" ? "-" : "\u00A0";
+    } else if (value === null || value === undefined || value === "" || value === 0) {
+      content = isPotential || record.stage === "Churn" ? "" : "\u00A0";
     }
 
     if (isYellow)
@@ -369,7 +370,7 @@ export default function DailyBusinessNumbersPage() {
       // no specific style needed unless different from regular numbers/percentages
     }
 
-    if (typeof content === "object" && content !== null) content = "-";
+    if (typeof content === "object" && content !== null) content = "";
 
     return (
       <div style={cellStyle}>
