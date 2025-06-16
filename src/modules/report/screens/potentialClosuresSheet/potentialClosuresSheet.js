@@ -459,7 +459,7 @@ export default function PotentialClosuresSheet() {
     setFilteredTagLength(0);
     setTableFilteredState(defaaultFilterState);
     setIsAllowFilters(false);
-    setPageSize(20);
+    setPageSize(100);
   }, [
     // handleHRRequest,
     setAppliedFilters,
@@ -632,7 +632,7 @@ export default function PotentialClosuresSheet() {
             setTableFilteredState={setTableFilteredState}
             tableFilteredState={tableFilteredState}
             setFilteredTagLength={setFilteredTagLength}
-            onRemoveHRFilters={() => onRemoveHRFilters()}
+            onRemoveSurveyFilters={() => onRemoveHRFilters()}
             getHTMLFilter={getHTMLFilter}
             hrFilterList={allHRConfig.hrFilterListConfig()}
             filtersType={allHRConfig.potentialFilterTypeConfig(
