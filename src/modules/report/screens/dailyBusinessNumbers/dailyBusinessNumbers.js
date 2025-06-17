@@ -114,6 +114,7 @@ export default function DailyBusinessNumbersPage() {
           title: "Goal",
           dataIndex: ["recurring", "goal"],
           key: "recurring_goal",
+           align: "center",
           width: 100,
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
@@ -131,6 +132,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["recurring", "goalTillDate"],
           key: "recurring_goalTillDate",
           width: 110,
+           align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
           }),
@@ -151,6 +153,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["recurring", "achieved"],
           key: "recurring_achieved",
           width: 100,
+           align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
@@ -161,12 +164,15 @@ export default function DailyBusinessNumbersPage() {
               return { props: { colSpan: 0 } };
             }
             return (
-              <span
+               <div style={{display:'flex',alignItems:'center',justifyContent:'right'}}>
+                <span
                 onClick={() => getHRTalentWiseReport(rec, "C")}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
                 {v}
               </span>
+               </div>
+              
             );
           },
         },
@@ -175,13 +181,14 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["recurring", "achievedPercent"],
           key: "recurring_achievedPercent",
           width: 100,
+           align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
           className: `${styles.headerCommonConfig} `,
           render: (v, rec) =>
             renderCell(v, rec, {
-              align: "center",
+              align:"right",
               isPercent: true,
               isYellow: rec.isPipelineRow,
             }),
@@ -197,6 +204,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["oneOff", "goal"],
           key: "oneOff_goal",
           width: 100,
+           align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
           }),
@@ -209,6 +217,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["oneOff", "goalTillDate"],
           key: "oneOff_goalTillDate",
           width: 110,
+           align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
           }),
@@ -222,6 +231,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["oneOff", "achieved"],
           key: "oneOff_achieved",
           width: 110,
+           align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
@@ -231,12 +241,15 @@ export default function DailyBusinessNumbersPage() {
               return { props: { colSpan: 0 } };
             }
             return (
-              <span
+               <div style={{display:'flex',alignItems:'center',justifyContent:'right'}}>
+                <span
                 onClick={() => getHRTalentWiseReport(rec, "D")}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
                 {v}
               </span>
+               </div>
+              
             );
           },
         },
@@ -245,13 +258,14 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["oneOff", "achievedPercent"],
           key: "oneOff_achievedPercent",
           width: 100,
+           align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
           className: `${styles.headerCommonConfig} `,
           render: (v, rec) =>
             renderCell(v, rec, {
-              align: "center",
+              align: "end",
               isPercent: true,
               isYellow: rec.isPipelineRow,
             }),
@@ -266,29 +280,32 @@ export default function DailyBusinessNumbersPage() {
           title: "Goal",
           dataIndex: ["numbers", "goal"],
           key: "numbers_goal",
-          width: 80,
+          width: 100,
+           align: "center",
           className: `${styles.headerCommonConfig} `,
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
           }),
-          render: (v, rec) => renderCell(v, rec, { align: "center" }),
+          render: (v, rec) => renderCell(v, rec, { align: "end" }),
         },
         {
           title: "Goal till date",
           dataIndex: ["numbers", "goalTillDate"],
           key: "numbers_goalTillDate",
-          width: 100,
+          width: 110,
+           align: "center",
           className: `${styles.headerCommonConfig} `,
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
           }),
-          render: (v, rec) => renderCell(v, rec, { align: "center" }),
+          render: (v, rec) => renderCell(v, rec, { align: "end" }),
         },
         {
           title: "Achieved",
           dataIndex: ["numbers", "achieved"],
           key: "numbers_achieved",
-          width: 80,
+          width: 100,
+           align: "center",
           className: `${styles.headerCommonConfig} `,
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
@@ -298,12 +315,15 @@ export default function DailyBusinessNumbersPage() {
               return { props: { colSpan: 0 } };
             }
             return (
-              <span
+               <div style={{display:'flex',alignItems:'center',justifyContent:'right'}}>
+                <span
                 onClick={() => getHRTalentWiseReport(rec, "N")}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
                 {v}
               </span>
+               </div>
+              
             );
           },
         },
@@ -312,12 +332,13 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["numbers", "achievedPercent"],
           key: "numbers_achievedPercent",
           width: 100,
+           align: "center",
           className: `${styles.headerCommonConfig} `,
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
           render: (v, rec) =>
-            renderCell(v, rec, { align: "center", isPercent: true }),
+            renderCell(v, rec, { align: "end", isPercent: true }),
         },
       ],
     },
@@ -327,7 +348,7 @@ export default function DailyBusinessNumbersPage() {
     value,
     record,
     {
-      align = "left",
+      align = "right",
       isCurrency = false,
       isPercent = false,
       isPotential = false,
