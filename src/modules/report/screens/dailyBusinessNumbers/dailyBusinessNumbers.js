@@ -25,7 +25,7 @@ export default function DailyBusinessNumbersPage() {
       title: "Stages",
       dataIndex: "stage",
       key: "stage",
-      fixed: "left",
+      // fixed: "left",
       width: 200,
       className: `${styles.stagesHeaderCell} ${styles.headerCommonConfig} `,
       render: (text, record) => {
