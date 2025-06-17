@@ -276,7 +276,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		return isVisible
 	}
 	if(title ==='amInterviews' || title ==='omReport' || title ==='amReport' || title ==='PotentialClosuresSheet'|| title ==='DailyBusinessNumbers'  ){
-		isVisible =  (ID === 4 || ID===9 || ID===1 || ID===2) ? true : false
+		isVisible =  (ID === 4 || ID===9 || ID=== 10 || ID===1 || ID===2) ? true : false
 		// isVisible = true
 		return isVisible	
 	}
