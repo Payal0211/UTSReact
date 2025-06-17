@@ -18,6 +18,7 @@ export default function DailyBusinessNumbersPage() {
   const [showAchievedReport, setShowAchievedReport] = useState(false);
   const [listAchievedData, setListAchievedData] = useState([]);
   const [achievedLoading, setAchievedLoading] = useState(false);
+  const [showTalentCol,setShowTalentCol] = useState(0)
 
   const getColumns = () => [
     {
@@ -386,7 +387,7 @@ export default function DailyBusinessNumbersPage() {
   };
 
   const convertDataSource = (data) => {
-    const list = [];
+    const list = [{ key: `spacer00`, stage: "", isSpacer: true }];
 
     data.forEach((item, index) => {
       switch (item.stage_ID) {
@@ -703,6 +704,7 @@ export default function DailyBusinessNumbersPage() {
       stageID: row.stage_ID,
       amID: null,
     };
+    setShowTalentCol(row.isTalentShow)
     setAchievedLoading(true);
     const result = await ReportDAO.getHrTAWiseReportDAO(pl);
     setAchievedLoading(false);
@@ -763,7 +765,7 @@ export default function DailyBusinessNumbersPage() {
               bordered
               pagination={false}
               size="middle"
-              scroll={{ x: "max-content" }}
+              scroll={{ x: "max-content" , y: "1vh"}}
               rowClassName={(record) =>
                 record.isSpacer ? styles.spacerRow : ""
               }
@@ -780,7 +782,7 @@ export default function DailyBusinessNumbersPage() {
             <Card size="small" style={{ height: "100%", width: "100%" }}>
               <Text>
                 No. of working days:{" "}
-                <strong>{listData[0]?.workingDaysTillNow}</strong>
+                <strong>{listData[1]?.workingDaysTillNow}</strong>
               </Text>
             </Card>
           </Col>
@@ -833,9 +835,9 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                       HR Title
                     </th>
-                     <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    {showTalentCol === 1 && <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                       Talent
-                    </th>
+                    </th>} 
                     <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                       Uplers Fees
                     </th>
@@ -863,9 +865,9 @@ export default function DailyBusinessNumbersPage() {
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}
                       </td>
-                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      {showTalentCol === 1 && <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.talent}
-                      </td>
+                      </td>} 
                        <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.uplersFeesStr}
                       </td>
