@@ -54,11 +54,11 @@ align-items: center;
 }
 
 .headerCommonGoalHeaderConfig{
-  background-color: #b7d7ab !important;
+  background-color: #9ec7e6 !important;
 }
 
 .headerCommonAchievedHeaderConfig{
-  background-color: #9ec7e6!important;
+  background-color: #b7d7ab!important;
 }
 
 .onOffDPHeadConfig{
@@ -66,7 +66,7 @@ align-items: center;
 }
 
 .NumberHeadConfig{
-  background-color: lightyellow !important;
+  background-color: #eeec90 !important;
 }
 
 .btnCancle {
