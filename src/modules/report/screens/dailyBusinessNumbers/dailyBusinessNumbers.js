@@ -81,7 +81,7 @@ export default function DailyBusinessNumbersPage() {
             color: "white",
             fontWeight: "bold",
           };
-        else if (record.stage === "C2H")
+        else if (record.stage === "C2H" || record.stage === 'C2S%')
           cellStyle = {
             ...cellStyle,
             backgroundColor: "#595959",
