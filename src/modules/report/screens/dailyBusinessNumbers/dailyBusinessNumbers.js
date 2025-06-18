@@ -3,9 +3,12 @@ import { Table, Card, Typography, Modal, Row, Col } from "antd";
 import DatePicker from "react-datepicker";
 import styles from "./dailyBusinessNumbers.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
+import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
+import { ReactComponent as ArrowDownSVG } from "assets/svg/arrowDown.svg";
 import { ReportDAO } from "core/report/reportDAO";
 import moment from "moment";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
+import LogoLoader from "shared/components/loader/logoLoader";
 
 const { Title, Text } = Typography;
 
@@ -18,27 +21,64 @@ export default function DailyBusinessNumbersPage() {
   const [showAchievedReport, setShowAchievedReport] = useState(false);
   const [listAchievedData, setListAchievedData] = useState([]);
   const [achievedLoading, setAchievedLoading] = useState(false);
-  const [showTalentCol,setShowTalentCol] = useState(0)
+  const [showTalentCol, setShowTalentCol] = useState(0);
+
+  const [showNBDorAMRevenueReport, setNBDorAMRevenueReport] = useState(false);
+  const [listNBDorAMRevenueData, setListNBDorAMRevenueData] = useState([]);
+  const [NBDorAMRevenueLoading, setNBDorAMRevenueLoading] = useState(false);
+  const [NBDorAMRevenueType, setNBDorAMRevenueType] = useState("");
 
   const getColumns = () => [
     {
       title: "Stages",
       dataIndex: "stage",
       key: "stage",
-      // fixed: "left",
+      fixed: "left",
       width: 200,
       className: `${styles.stagesHeaderCell} ${styles.headerCommonConfig} `,
       render: (text, record) => {
         if (record.isCategory) {
           return {
-            children: <strong style={{ paddingLeft: "5px" }}>{text}</strong>,
+            children: (
+              <strong
+                style={{
+                  paddingLeft: "5px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                {text}{" "}
+                {(record.stage === "Existing (Total)" ||
+                  record.stage === "NBD (Total)") && (
+                  <div
+                    className={styles.showMoreNBDAMBTN}
+                    onClick={(val, obj) => {
+                      if (
+                        record.stage === "Existing (Total)" ||
+                        record.stage === "NBD (Total)"
+                      ) {
+                        getNBDorAMRevenueReport(
+                          record,
+                          record.stage === "Existing (Total)" ? "AM" : "NBD"
+                        );
+                      }
+                    }}
+                  >
+                    Show Details
+                  </div>
+                )}
+              </strong>
+            ),
             props: {
-              colSpan: 13,
+              colSpan: 14,
               style: {
                 backgroundColor: "#FFC000",
                 fontWeight: "500",
                 borderRight: "1px solid #d9d9d9",
                 padding: "8px",
+              },
+              onclick: (val, obj) => {
+                console.log(val, obj);
               },
             },
           };
@@ -47,7 +87,7 @@ export default function DailyBusinessNumbersPage() {
           return {
             children: <div style={{ height: "10px" }}> </div>,
             props: {
-              colSpan: 13,
+              colSpan: 14,
               style: {
                 padding: "0px",
                 backgroundColor: "#ffffff",
@@ -81,7 +121,7 @@ export default function DailyBusinessNumbersPage() {
             color: "white",
             fontWeight: "bold",
           };
-        else if (record.stage === "C2H" || record.stage === 'C2S%')
+        else if (record.stage === "C2H" || record.stage === "C2S%")
           cellStyle = {
             ...cellStyle,
             backgroundColor: "#595959",
@@ -99,6 +139,7 @@ export default function DailyBusinessNumbersPage() {
         if (record.key === "inbound_desc" && text === "") {
           return <div style={cellStyle}> </div>;
         }
+
         return (
           <div style={cellStyle}>
             <span style={{ paddingLeft: "5px" }}>{content}</span>
@@ -114,7 +155,7 @@ export default function DailyBusinessNumbersPage() {
           title: "Goal",
           dataIndex: ["recurring", "goal"],
           key: "recurring_goal",
-           align: "center",
+          align: "center",
           width: 100,
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
@@ -132,7 +173,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["recurring", "goalTillDate"],
           key: "recurring_goalTillDate",
           width: 110,
-           align: "center",
+          align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
           }),
@@ -153,7 +194,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["recurring", "achieved"],
           key: "recurring_achieved",
           width: 100,
-           align: "center",
+          align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
@@ -164,15 +205,20 @@ export default function DailyBusinessNumbersPage() {
               return { props: { colSpan: 0 } };
             }
             return (
-               <div style={{display:'flex',alignItems:'center',justifyContent:'right'}}>
-                <span
-                onClick={() => getHRTalentWiseReport(rec, "C")}
-                style={{ cursor: "pointer", color: "#1890ff" }}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
               >
-                {v}
-              </span>
-               </div>
-              
+                <span
+                  onClick={() => getHRTalentWiseReport(rec, "C")}
+                  style={{ cursor: "pointer", color: "#1890ff" }}
+                >
+                  {v}
+                </span>
+              </div>
             );
           },
         },
@@ -181,14 +227,14 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["recurring", "achievedPercent"],
           key: "recurring_achievedPercent",
           width: 100,
-           align: "center",
+          align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
           className: `${styles.headerCommonConfig} `,
           render: (v, rec) =>
             renderCell(v, rec, {
-              align:"right",
+              align: "right",
               isPercent: true,
               isYellow: rec.isPipelineRow,
             }),
@@ -204,7 +250,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["oneOff", "goal"],
           key: "oneOff_goal",
           width: 100,
-           align: "center",
+          align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
           }),
@@ -217,7 +263,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["oneOff", "goalTillDate"],
           key: "oneOff_goalTillDate",
           width: 110,
-           align: "center",
+          align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
           }),
@@ -231,7 +277,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["oneOff", "achieved"],
           key: "oneOff_achieved",
           width: 110,
-           align: "center",
+          align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
@@ -241,15 +287,20 @@ export default function DailyBusinessNumbersPage() {
               return { props: { colSpan: 0 } };
             }
             return (
-               <div style={{display:'flex',alignItems:'center',justifyContent:'right'}}>
-                <span
-                onClick={() => getHRTalentWiseReport(rec, "D")}
-                style={{ cursor: "pointer", color: "#1890ff" }}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
               >
-                {v}
-              </span>
-               </div>
-              
+                <span
+                  onClick={() => getHRTalentWiseReport(rec, "D")}
+                  style={{ cursor: "pointer", color: "#1890ff" }}
+                >
+                  {v}
+                </span>
+              </div>
             );
           },
         },
@@ -258,7 +309,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["oneOff", "achievedPercent"],
           key: "oneOff_achievedPercent",
           width: 100,
-           align: "center",
+          align: "center",
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
           }),
@@ -281,7 +332,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["numbers", "goal"],
           key: "numbers_goal",
           width: 100,
-           align: "center",
+          align: "center",
           className: `${styles.headerCommonConfig} `,
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
@@ -293,7 +344,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["numbers", "goalTillDate"],
           key: "numbers_goalTillDate",
           width: 110,
-           align: "center",
+          align: "center",
           className: `${styles.headerCommonConfig} `,
           onHeaderCell: () => ({
             className: styles.headerCommonGoalHeaderConfig,
@@ -305,7 +356,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["numbers", "achieved"],
           key: "numbers_achieved",
           width: 100,
-           align: "center",
+          align: "center",
           className: `${styles.headerCommonConfig} `,
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
@@ -315,15 +366,20 @@ export default function DailyBusinessNumbersPage() {
               return { props: { colSpan: 0 } };
             }
             return (
-               <div style={{display:'flex',alignItems:'center',justifyContent:'right'}}>
-                <span
-                onClick={() => getHRTalentWiseReport(rec, "N")}
-                style={{ cursor: "pointer", color: "#1890ff" }}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
               >
-                {v}
-              </span>
-               </div>
-              
+                <span
+                  onClick={() => getHRTalentWiseReport(rec, "N")}
+                  style={{ cursor: "pointer", color: "#1890ff" }}
+                >
+                  {v}
+                </span>
+              </div>
             );
           },
         },
@@ -332,7 +388,7 @@ export default function DailyBusinessNumbersPage() {
           dataIndex: ["numbers", "achievedPercent"],
           key: "numbers_achievedPercent",
           width: 100,
-           align: "center",
+          align: "center",
           className: `${styles.headerCommonConfig} `,
           onHeaderCell: () => ({
             className: styles.headerCommonAchievedHeaderConfig,
@@ -372,10 +428,14 @@ export default function DailyBusinessNumbersPage() {
     };
     let content = value;
 
-
     if (isPotential && value === "-") {
       cellStyle.backgroundColor = "#BFBFBF"; // Gray background
-    } else if (value === null || value === undefined || value === "" || value === 0) {
+    } else if (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      value === 0
+    ) {
       content = isPotential || record.stage === "Churn" ? "" : "\u00A0";
     }
 
@@ -480,6 +540,520 @@ export default function DailyBusinessNumbersPage() {
 
     return list;
   };
+
+  const convertDataSourceForNBDAM = (data) => {
+    const list = [];
+
+    data.forEach((item, index) => {
+      switch (item.stage_ID) {
+        case 0: {
+          list.push({ key: `spacer1${index}`, stage: "", isSpacer: true });
+          list.push({
+            key: `cat${index}`,
+            stage: item.stage,
+            isCategory: true,
+            ...item,
+          });
+          break;
+        }
+        case 6: {
+          list.push({
+            ...item,
+            key: `row${index}`,
+            stage: item.stage,
+            isPipelineRow: true,
+            recurring: {
+              goal: item.recurring_GoalStr,
+              goalTillDate: item.recurring_TillDateStr,
+              achieved: item.recurring_AchievedStr,
+              achievedPercent: item.recurring_AchievedPer,
+            },
+            oneOff: {
+              goal: item.dP_GoalStr,
+              goalTillDate: item.dP_TillDateStr,
+              achieved: item.dP_AchievedStr,
+              achievedPercent: item.dP_AchievedPer,
+            },
+            numbers: {
+              goal: item.trOrHR_Goal,
+              goalTillDate: item.trOrHR_TillDate,
+              achieved: item.trOrHR_Achieved,
+              achievedPercent: item.trOrHR_AchievedPer,
+            },
+          });
+
+          // list.push({ key: `spacer1${index}`, stage: "", isSpacer: true });
+          break;
+        }
+        default: {
+          list.push({
+            ...item,
+            key: `row${index}`,
+            stage: item.stage,
+            recurring: {
+              goal: item.recurring_GoalStr,
+              goalTillDate: item.recurring_TillDateStr,
+              achieved: item.recurring_AchievedStr,
+              achievedPercent: item.recurring_AchievedPer,
+            },
+            oneOff: {
+              goal: item.dP_GoalStr,
+              goalTillDate: item.dP_TillDateStr,
+              achieved: item.dP_AchievedStr,
+              achievedPercent: item.dP_AchievedPer,
+            },
+            numbers: {
+              goal: item.trOrHR_Goal,
+              goalTillDate: item.trOrHR_TillDate,
+              achieved: item.trOrHR_Achieved,
+              achievedPercent: item.trOrHR_AchievedPer,
+            },
+          });
+        }
+      }
+    });
+
+    return list;
+  };
+
+  const renderCellAMNBD = (
+    value,
+    record,
+    {
+      align = "right",
+      isCurrency = false,
+      isPercent = false,
+      isPotential = false,
+      isYellow = false,
+      isItalic = false,
+      isC2S = false,
+    } = {}
+  ) => {
+    if (record.isCategory || record.isSpacer) {
+      return { props: { colSpan: 0 } };
+    }
+
+    let cellStyle = {
+      padding: "8px",
+      margin: "-8px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: align,
+      // backgroundColor:'rgb(233, 233, 233)',
+      height: "calc(100% + 16px)",
+      width: "calc(100% + 16px)", // Fill cell
+    };
+    let content = value;
+
+    if (isPotential && value === "-") {
+      cellStyle.backgroundColor = "#BFBFBF"; // Gray background
+    } else if (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      value === 0
+    ) {
+      content = isPotential || record.stage === "Churn" ? "" : "\u00A0";
+    }
+
+    if (isYellow)
+      cellStyle = {
+        ...cellStyle,
+        backgroundColor: "#FFFF00",
+        fontWeight: "bold",
+        color: "black",
+      };
+    if (isItalic) cellStyle.fontStyle = "italic";
+
+    if (isC2S && (align === "right" || align === "center")) {
+      // no specific style needed unless different from regular numbers/percentages
+    }
+
+    if (typeof content === "object" && content !== null) content = "";
+
+    return (
+      <div style={cellStyle}>
+        {align === "left" || align === "center" ? (
+          <span style={{ paddingLeft: align === "left" ? "5px" : "0px" }}>
+            {content}
+          </span>
+        ) : (
+          content
+        )}
+      </div>
+    );
+  };
+
+  const getNBDAMColumns = () => [
+    {
+      title: "Stages",
+      dataIndex: "stage",
+      key: "stage",
+      fixed: "left",
+      width: 200,
+      className: `${styles.stagesHeaderCell} ${styles.headerCommonConfig} `,
+      render: (text, record) => {
+        if (record.isCategory) {
+          return {
+            children: (
+              <strong
+                style={{
+                  paddingLeft: "5px",
+                  cursor:
+                    record.stage === "Existing (Total)" ||
+                    record.stage === "NBD (Total)"
+                      ? "pointer"
+                      : "",
+                  color:
+                    record.stage === "Existing (Total)" ||
+                    record.stage === "NBD (Total)"
+                      ? "rgb(24, 144, 255)"
+                      : "",
+                }}
+                onClick={(val, obj) => {
+                 
+                  if (
+                    record.stage === "Existing (Total)" ||
+                    record.stage === "NBD (Total)"
+                  ) {
+                    getNBDorAMRevenueReport(
+                      record,
+                      record.stage === "Existing (Total)" ? "AM" : "NBD"
+                    );
+                  }
+                }}
+              >
+                {text}
+              </strong>
+            ),
+            props: {
+              colSpan: 14,
+              style: {
+                backgroundColor: "rgb(233, 233, 233)",
+                fontWeight: "500",
+                borderRight: "1px solid #d9d9d9",
+                padding: "8px",
+              },
+            },
+          };
+        }
+        if (record.isSpacer) {
+          return {
+            children: <div style={{ height: "10px" }}> </div>,
+            props: {
+              colSpan: 14,
+              style: {
+                padding: "0px",
+                backgroundColor: "#ffffff",
+                border: "none",
+              },
+            },
+          };
+        }
+
+        let cellStyle = {
+          padding: "8px",
+          margin: "-8px -8px",
+          display: "flex",
+          alignItems: "center",
+          height: "calc(100% + 16px)",
+          width: "calc(100% + 16px)",
+          // backgroundColor:'rgb(233, 233, 233)'
+        };
+        let content = text || "\u00A0";
+
+        if (record.stage === "Closures")
+          cellStyle = {
+            ...cellStyle,
+            backgroundColor: "#70AD47",
+            color: "white",
+            fontWeight: "bold",
+          };
+        else if (record.stage === "Churn")
+          cellStyle = {
+            ...cellStyle,
+            backgroundColor: "#ED7D31",
+            color: "white",
+            fontWeight: "bold",
+          };
+        else if (record.stage === "C2H" || record.stage === "C2S%")
+          cellStyle = {
+            ...cellStyle,
+            backgroundColor: "#595959",
+            color: "white",
+            fontWeight: "bold",
+          };
+        else if (record.isPipelineRow)
+          cellStyle = {
+            ...cellStyle,
+            backgroundColor: "#FFFF00",
+            fontWeight: "bold",
+            color: "black",
+          };
+
+        if (record.key === "inbound_desc" && text === "") {
+          return <div style={cellStyle}> </div>;
+        }
+
+        return (
+          <div style={cellStyle}>
+            <span style={{ paddingLeft: "5px" }}>{content}</span>
+          </div>
+        );
+      },
+    },
+    {
+      title: "Recurring",
+      className: `${styles.recurringGroupHeader} ${styles.headerCommonConfig} ${styles.recunningHeadConfig}`,
+      children: [
+        {
+          title: "Goal",
+          dataIndex: ["recurring", "goal"],
+          key: "recurring_goal",
+          align: "center",
+          width: 100,
+          onHeaderCell: () => ({
+            className: styles.headerCommonGoalHeaderConfig,
+          }),
+          className: `${styles.headerCommonConfig} `,
+          render: (v, rec) =>
+            renderCellAMNBD(v, rec, {
+              align: "right",
+              isCurrency: true,
+              isC2S: rec.stage === "C2S%",
+            }),
+        },
+        {
+          title: "Goal till date",
+          dataIndex: ["recurring", "goalTillDate"],
+          key: "recurring_goalTillDate",
+          width: 110,
+          align: "center",
+          onHeaderCell: () => ({
+            className: styles.headerCommonGoalHeaderConfig,
+          }),
+          className: `${styles.headerCommonConfig}`,
+          render: (v, rec) =>
+            renderCellAMNBD(v, rec, { align: "right", isCurrency: true }),
+        },
+        // {
+        //     title: 'Potential',
+        //     dataIndex: ['recurring', 'potential'],
+        //     key: 'recurring_potential',
+        //     width: 100,
+        //     className: styles.headerCommonConfig,
+        //     render: (v, rec) => renderCell(v, rec, { align: rec.key === 'inbound_desc' ? 'left' : 'center', isPotential: true, isItalic: rec.key === 'inbound_desc' })
+        // },
+        {
+          title: "Achieved",
+          dataIndex: ["recurring", "achieved"],
+          key: "recurring_achieved",
+          width: 100,
+          align: "center",
+          onHeaderCell: () => ({
+            className: styles.headerCommonAchievedHeaderConfig,
+          }),
+          className: `${styles.headerCommonConfig}`,
+          render: (v, rec) => {
+            // renderCell(v, rec, { align: 'right', isCurrency: true, isC2S: rec.stage === 'C2S%' })
+            if (rec.isCategory || rec.isSpacer) {
+              return { props: { colSpan: 0 } };
+            }
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
+              >
+                <span
+                  onClick={() => getHRTalentWiseReport(rec, "C")}
+                  style={{ cursor: "pointer", color: "#1890ff" }}
+                >
+                  {v}
+                </span>
+              </div>
+            );
+          },
+        },
+        {
+          title: "Achieved%",
+          dataIndex: ["recurring", "achievedPercent"],
+          key: "recurring_achievedPercent",
+          width: 100,
+          align: "center",
+          onHeaderCell: () => ({
+            className: styles.headerCommonAchievedHeaderConfig,
+          }),
+          className: `${styles.headerCommonConfig} `,
+          render: (v, rec) =>
+            renderCellAMNBD(v, rec, {
+              align: "right",
+              isPercent: true,
+              isYellow: rec.isPipelineRow,
+            }),
+        },
+      ],
+    },
+    {
+      title: "One-Off (DP)",
+      className: `${styles.oneOffGroupHeader} ${styles.headerCommonConfig} ${styles.onOffDPHeadConfig}`,
+      children: [
+        {
+          title: "Goal",
+          dataIndex: ["oneOff", "goal"],
+          key: "oneOff_goal",
+          width: 100,
+          align: "center",
+          onHeaderCell: () => ({
+            className: styles.headerCommonGoalHeaderConfig,
+          }),
+          className: `${styles.headerCommonConfig}`,
+          render: (v, rec) =>
+            renderCellAMNBD(v, rec, { align: "right", isCurrency: true }),
+        },
+        {
+          title: "Goal till date",
+          dataIndex: ["oneOff", "goalTillDate"],
+          key: "oneOff_goalTillDate",
+          width: 110,
+          align: "center",
+          onHeaderCell: () => ({
+            className: styles.headerCommonGoalHeaderConfig,
+          }),
+          className: `${styles.headerCommonConfig} `,
+          render: (v, rec) =>
+            renderCellAMNBD(v, rec, { align: "right", isCurrency: true }),
+        },
+        // { title: 'Potential', dataIndex: ['oneOff', 'potential'], key: 'oneOff_potential', width: 100, className: styles.headerCommonConfig, render: (v, rec) => renderCell(v, rec, { align: 'center', isPotential: true }) },
+        {
+          title: "Achieved",
+          dataIndex: ["oneOff", "achieved"],
+          key: "oneOff_achieved",
+          width: 110,
+          align: "center",
+          onHeaderCell: () => ({
+            className: styles.headerCommonAchievedHeaderConfig,
+          }),
+          className: `${styles.headerCommonConfig} `,
+          render: (v, rec) => {
+            if (rec.isCategory || rec.isSpacer) {
+              return { props: { colSpan: 0 } };
+            }
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
+              >
+                <span
+                  onClick={() => getHRTalentWiseReport(rec, "D")}
+                  style={{ cursor: "pointer", color: "#1890ff" }}
+                >
+                  {v}
+                </span>
+              </div>
+            );
+          },
+        },
+        {
+          title: "Achieved%",
+          dataIndex: ["oneOff", "achievedPercent"],
+          key: "oneOff_achievedPercent",
+          width: 100,
+          align: "center",
+          onHeaderCell: () => ({
+            className: styles.headerCommonAchievedHeaderConfig,
+          }),
+          className: `${styles.headerCommonConfig} `,
+          render: (v, rec) =>
+            renderCellAMNBD(v, rec, {
+              align: "end",
+              isPercent: true,
+              isYellow: rec.isPipelineRow,
+            }),
+        },
+      ],
+    },
+    {
+      title: "Numbers",
+      className: `${styles.numbersGroupHeader} ${styles.headerCommonConfig} ${styles.NumberHeadConfig}`,
+      children: [
+        {
+          title: "Goal",
+          dataIndex: ["numbers", "goal"],
+          key: "numbers_goal",
+          width: 100,
+          align: "center",
+          className: `${styles.headerCommonConfig} `,
+          onHeaderCell: () => ({
+            className: styles.headerCommonGoalHeaderConfig,
+          }),
+          render: (v, rec) => renderCellAMNBD(v, rec, { align: "end" }),
+        },
+        {
+          title: "Goal till date",
+          dataIndex: ["numbers", "goalTillDate"],
+          key: "numbers_goalTillDate",
+          width: 110,
+          align: "center",
+          className: `${styles.headerCommonConfig} `,
+          onHeaderCell: () => ({
+            className: styles.headerCommonGoalHeaderConfig,
+          }),
+          render: (v, rec) => renderCellAMNBD(v, rec, { align: "end" }),
+        },
+        {
+          title: "Achieved",
+          dataIndex: ["numbers", "achieved"],
+          key: "numbers_achieved",
+          width: 100,
+          align: "center",
+          className: `${styles.headerCommonConfig} `,
+          onHeaderCell: () => ({
+            className: styles.headerCommonAchievedHeaderConfig,
+          }),
+          render: (v, rec) => {
+            if (rec.isCategory || rec.isSpacer) {
+              return { props: { colSpan: 0 } };
+            }
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
+              >
+                <span
+                  onClick={() => getHRTalentWiseReport(rec, "N")}
+                  style={{ cursor: "pointer", color: "#1890ff" }}
+                >
+                  {v}
+                </span>
+              </div>
+            );
+          },
+        },
+        {
+          title: "Achieved%",
+          dataIndex: ["numbers", "achievedPercent"],
+          key: "numbers_achievedPercent",
+          width: 100,
+          align: "center",
+          className: `${styles.headerCommonConfig} `,
+          onHeaderCell: () => ({
+            className: styles.headerCommonAchievedHeaderConfig,
+          }),
+          render: (v, rec) =>
+            renderCellAMNBD(v, rec, { align: "end", isPercent: true }),
+        },
+      ],
+    },
+  ];
 
   const revenueDataSource = [
     { key: "cat1", stage: "Uplers Business (Total)", isCategory: true },
@@ -713,32 +1287,66 @@ export default function DailyBusinessNumbersPage() {
   };
 
   const getHRTalentWiseReport = async (row, BT) => {
-    try{
-    setShowAchievedReport(true);
+    try {
+      setShowAchievedReport(true);
 
-    const pl = {
-      hrBusinessType: "Global",
-      month: moment(monthDate).format("M"),
-      year: moment(monthDate).format("YYYY"),
-      userCategory: row.userCategory,
-      businessType: BT,
-      stageID: row.stage_ID,
-      amID: null,
-    };
-    setShowTalentCol(row.isTalentShow)
-    setAchievedLoading(true);
-    const result = await ReportDAO.getHrTAWiseReportDAO(pl);
-    setAchievedLoading(false);
-    if (result.statusCode === 200) {
-      setListAchievedData(result.responseBody);
-    } else {
+      const pl = {
+        hrBusinessType: "Global",
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        userCategory: row.userCategory,
+        businessType: BT,
+        stageID: row.stage_ID,
+        amID: null,
+      };
+      setShowTalentCol(row.isTalentShow);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getHrTAWiseReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
       setListAchievedData([]);
     }
-    }catch(err){
-      console.log(err)
-      setListAchievedData([]);
+  };
+
+  const getNBDorAMRevenueReport = async (row, category) => {
+    try {
+      setNBDorAMRevenueReport(true);
+
+      const pl = {
+        hrBusinessType: "Global",
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        userCategory: category,
+      };
+
+      setNBDorAMRevenueLoading(true);
+      setNBDorAMRevenueType(category);
+      const result = await ReportDAO.getNBDorAMRevenueDAO(pl);
+      setNBDorAMRevenueLoading(false);
+      if (result.statusCode === 200) {
+        //    const targetElement = document.getElementById('nbd-am-able');
+        //    targetElement.scrollIntoView({
+        //     behavior: 'smooth', // For smooth scrolling animation
+        //     block: 'center',    // Aligns the element to the center of the viewport vertically
+        //     inline: 'nearest'   // Aligns the element to the nearest edge horizontally
+        // });
+        window.scrollTo(0, document.body.scrollHeight);
+        setListNBDorAMRevenueData(
+          convertDataSourceForNBDAM(result.responseBody)
+        );
+      } else {
+        setListNBDorAMRevenueData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListNBDorAMRevenueData([]);
     }
-    
   };
 
   useEffect(() => {
@@ -786,7 +1394,7 @@ export default function DailyBusinessNumbersPage() {
               bordered
               pagination={false}
               size="middle"
-              scroll={{ x: "max-content" , y: "1vh"}}
+              scroll={{ x: "max-content", y: "1vh" }}
               rowClassName={(record) =>
                 record.isSpacer ? styles.spacerRow : ""
               }
@@ -809,6 +1417,74 @@ export default function DailyBusinessNumbersPage() {
           </Col>
         </div>
       </Card>
+      <LogoLoader visible={NBDorAMRevenueLoading} />
+      {showNBDorAMRevenueReport && (
+        <Card bordered={false} style={{ marginTop: "15px" }}>
+          <div className={styles.customTableContainer}>
+            <div
+              id="nbd-am-able"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <p style={{ fontSize: "15px", fontWeight: "bold", margin: "0" }}>
+                {NBDorAMRevenueType === "AM"
+                  ? "Existing (Total)"
+                  : "NBD (Total)"}
+              </p>
+              {/* <Col
+            xs={24}
+            sm={12}
+            md={8}
+            lg={6}
+            xl={4}
+            style={{ margin: "10px 0", cursor:'pointer'  }}
+            onClick={()=>{setNBDorAMRevenueReport(false);setListNBDorAMRevenueData([])}}
+          >
+            <Card size="small" style={{ height: "100%", width: "100%" }}>
+              <Text style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+               Close {" "}
+                <CloseSVG  onClick={()=>{setNBDorAMRevenueReport(false);setListNBDorAMRevenueData([])}} style={{ height: "16px", marginRight: "8px" }} />
+              </Text>
+            </Card>
+          </Col> */}
+
+              <CloseSVG
+                onClick={() => {
+                  setNBDorAMRevenueReport(false);
+                  setListNBDorAMRevenueData([]);
+                }}
+                style={{
+                  height: "25px",
+                  marginRight: "8px",
+                  cursor: "pointer",
+                }}
+              />
+            </div>
+            {NBDorAMRevenueLoading ? (
+              <TableSkeleton />
+            ) : (
+              <Table
+                columns={getNBDAMColumns()}
+                dataSource={listNBDorAMRevenueData}
+                bordered
+                pagination={false}
+                size="middle"
+                scroll={{ x: "max-content", y: "1vh" }}
+                rowClassName={(record) =>
+                  record.isSpacer ? styles.spacerRow : ""
+                }
+                // onRow={(record) => ({
+                // style: { backgroundColor: 'rgb(233, 233, 233)' }
+                // })}
+              />
+            )}
+          </div>
+        </Card>
+      )}
 
       {showAchievedReport && (
         <Modal
@@ -844,7 +1520,7 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                       HR Created Date
                     </th>
-                      <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                       Closure Date
                     </th>
                     <th style={{ padding: "10px", border: "1px solid #ddd" }}>
@@ -856,9 +1532,11 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                       HR Title
                     </th>
-                    {showTalentCol === 1 && <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                      Talent
-                    </th>} 
+                    {showTalentCol === 1 && (
+                      <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                        Talent
+                      </th>
+                    )}
                     <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                       Uplers Fees
                     </th>
@@ -874,7 +1552,7 @@ export default function DailyBusinessNumbersPage() {
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrCreatedDateStr}
                       </td>
-                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.closureDateStr}
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
@@ -886,10 +1564,14 @@ export default function DailyBusinessNumbersPage() {
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}
                       </td>
-                      {showTalentCol === 1 && <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.talent}
-                      </td>} 
-                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      {showTalentCol === 1 && (
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.talent}
+                        </td>
+                      )}
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.uplersFeesStr}
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
@@ -901,7 +1583,15 @@ export default function DailyBusinessNumbersPage() {
               </table>
             </div>
           ) : (
-            <div style={{ padding: "10px", display:'flex',justifyContent:'center',fontSize:'20px',fontWeight:500 }}>
+            <div
+              style={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "20px",
+                fontWeight: 500,
+              }}
+            >
               <p>No details available.</p>
             </div>
           )}
