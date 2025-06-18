@@ -675,7 +675,24 @@ export const ReportAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'ReportAPI.PotentialClosuresUpdateAPI');
+			return errorDebug(error, 'ReportAPI.getHrTAWiseReportAPI');
+		}
+	},
+	getNBDorAMRevenueAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.NBD_AM_REVENUE_BUSINESS + `?hrBusinessType=${payload?.hrBusinessType}&month=${payload?.month}&year=${payload?.year}&userCategory=${payload?.userCategory}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getNBDorAMRevenueAPI');
 		}
 	},
 	AMWiseInterviewCountsAPI:async function (payload) {
