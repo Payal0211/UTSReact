@@ -1506,7 +1506,8 @@ export default function DailyBusinessNumbersPage() {
           {achievedLoading ? (
             <TableSkeleton />
           ) : listAchievedData.length > 0 ? (
-            <div style={{ padding: "0 20px 20px 20px", overflowX: "auto" }}>
+            <>        
+             <div style={{ padding: "0 20px 20px 20px", overflowX: "auto", maxHeight:'500px' }}>
               <table
                 style={{
                   width: "100%",
@@ -1515,46 +1516,46 @@ export default function DailyBusinessNumbersPage() {
                   textAlign: "left",
                 }}
               >
-                <thead>
+                <thead className={styles.overwriteTableColor} style={{position:'sticky',top:'0'}}>
                   <tr style={{ backgroundColor: "#f0f0f0" }}>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    <th style={{ padding: "10px", border: "1px solid #ddd", background:'rgb(233, 233, 233) !important'}}>
                       HR Created Date
                     </th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                     {showTalentCol === 1 && <th style={{ padding: "10px", border: "1px solid #ddd",background:'rgb(233, 233, 233) !important' }}>
                       Closure Date
+                    </th>}
+                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
+                      Company
                     </th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                      Company Name
-                    </th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
                       HR Number
                     </th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
                       HR Title
                     </th>
                     {showTalentCol === 1 && (
-                      <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
                         Talent
                       </th>
                     )}
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
                       Uplers Fees
                     </th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       Sales Person
                     </th>
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody style={{maxHeight:'500px'}}>
                   {listAchievedData.map((detail, index) => (
                     <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrCreatedDateStr}
                       </td>
-                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      {showTalentCol === 1 && <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.closureDateStr}
-                      </td>
+                      </td>} 
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.company}
                       </td>
@@ -1571,7 +1572,7 @@ export default function DailyBusinessNumbersPage() {
                           {detail.talent}
                         </td>
                       )}
-                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      <td style={{ padding: "8px",  display:'flex',alignItems:'center',justifyContent:'right',height:'100%' }}>
                         {detail.uplersFeesStr}
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
@@ -1582,6 +1583,8 @@ export default function DailyBusinessNumbersPage() {
                 </tbody>
               </table>
             </div>
+            </>
+           
           ) : (
             <div
               style={{
