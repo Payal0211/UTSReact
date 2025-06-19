@@ -21,7 +21,8 @@ export default function DailyBusinessNumbersPage() {
   const [showAchievedReport, setShowAchievedReport] = useState(false);
   const [listAchievedData, setListAchievedData] = useState([]);
   const [achievedLoading, setAchievedLoading] = useState(false);
-  const [showTalentCol, setShowTalentCol] = useState(0);
+  const [showTalentCol, setShowTalentCol] = useState({});
+  const [achievedTotal,setAchievedTotal] = useState('')
 
   const [showNBDorAMRevenueReport, setNBDorAMRevenueReport] = useState(false);
   const [listNBDorAMRevenueData, setListNBDorAMRevenueData] = useState([]);
@@ -213,7 +214,7 @@ export default function DailyBusinessNumbersPage() {
                 }}
               >
                 <span
-                  onClick={() => getHRTalentWiseReport(rec, "C")}
+                  onClick={() => getHRTalentWiseReport(rec, "C", v)}
                   style={{ cursor: "pointer", color: "#1890ff" }}
                 >
                   {v}
@@ -295,7 +296,7 @@ export default function DailyBusinessNumbersPage() {
                 }}
               >
                 <span
-                  onClick={() => getHRTalentWiseReport(rec, "D")}
+                  onClick={() => getHRTalentWiseReport(rec, "D", v)}
                   style={{ cursor: "pointer", color: "#1890ff" }}
                 >
                   {v}
@@ -374,7 +375,7 @@ export default function DailyBusinessNumbersPage() {
                 }}
               >
                 <span
-                  onClick={() => getHRTalentWiseReport(rec, "N")}
+                  onClick={() => getHRTalentWiseReport(rec, "N", v)}
                   style={{ cursor: "pointer", color: "#1890ff" }}
                 >
                   {v}
@@ -868,7 +869,7 @@ export default function DailyBusinessNumbersPage() {
                 }}
               >
                 <span
-                  onClick={() => getHRTalentWiseReport(rec, "C")}
+                  onClick={() => getHRTalentWiseReport(rec, "C", v)}
                   style={{ cursor: "pointer", color: "#1890ff" }}
                 >
                   {v}
@@ -950,7 +951,7 @@ export default function DailyBusinessNumbersPage() {
                 }}
               >
                 <span
-                  onClick={() => getHRTalentWiseReport(rec, "D")}
+                  onClick={() => getHRTalentWiseReport(rec, "D", v)}
                   style={{ cursor: "pointer", color: "#1890ff" }}
                 >
                   {v}
@@ -1029,7 +1030,7 @@ export default function DailyBusinessNumbersPage() {
                 }}
               >
                 <span
-                  onClick={() => getHRTalentWiseReport(rec, "N")}
+                  onClick={() => getHRTalentWiseReport(rec, "N", v)}
                   style={{ cursor: "pointer", color: "#1890ff" }}
                 >
                   {v}
@@ -1286,7 +1287,7 @@ export default function DailyBusinessNumbersPage() {
     }
   };
 
-  const getHRTalentWiseReport = async (row, BT) => {
+  const getHRTalentWiseReport = async (row, BT, v) => {
     try {
       setShowAchievedReport(true);
 
@@ -1299,7 +1300,8 @@ export default function DailyBusinessNumbersPage() {
         stageID: row.stage_ID,
         amID: null,
       };
-      setShowTalentCol(row.isTalentShow);
+      setShowTalentCol(row);
+      setAchievedTotal(v)
       setAchievedLoading(true);
       const result = await ReportDAO.getHrTAWiseReportDAO(pl);
       setAchievedLoading(false);
@@ -1499,8 +1501,10 @@ export default function DailyBusinessNumbersPage() {
         >
           <div style={{ padding: "20px 15px" }}>
             <h3>
-              <b></b>
+              <b>{showTalentCol?.stage}</b>  <b> : {achievedTotal}</b>
             </h3>
+
+        
           </div>
 
           {achievedLoading ? (
@@ -1521,7 +1525,7 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd", background:'rgb(233, 233, 233) !important'}}>
                       HR Created Date
                     </th>
-                     {showTalentCol === 1 && <th style={{ padding: "10px", border: "1px solid #ddd",background:'rgb(233, 233, 233) !important' }}>
+                     {showTalentCol?.isTalentShow === 1 && <th style={{ padding: "10px", border: "1px solid #ddd",background:'rgb(233, 233, 233) !important' }}>
                       Closure Date
                     </th>}
                     <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
@@ -1533,7 +1537,7 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
                       HR Title
                     </th>
-                    {showTalentCol === 1 && (
+                    {showTalentCol?.isTalentShow  === 1 && (
                       <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
                         Talent
                       </th>
@@ -1553,7 +1557,7 @@ export default function DailyBusinessNumbersPage() {
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrCreatedDateStr}
                       </td>
-                      {showTalentCol === 1 && <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      {showTalentCol?.isTalentShow  === 1 && <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.closureDateStr}
                       </td>} 
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
@@ -1565,7 +1569,7 @@ export default function DailyBusinessNumbersPage() {
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}
                       </td>
-                      {showTalentCol === 1 && (
+                      {showTalentCol?.isTalentShow  === 1 && (
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
