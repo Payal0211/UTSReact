@@ -9,6 +9,7 @@ import { ReportDAO } from "core/report/reportDAO";
 import moment from "moment";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import LogoLoader from "shared/components/loader/logoLoader";
+import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 
 const { Title, Text } = Typography;
 
@@ -1548,6 +1549,9 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       Sales Person
                     </th>
+                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
+                      HR Status
+                    </th>
                   </tr>
                 </thead>
 
@@ -1581,6 +1585,12 @@ export default function DailyBusinessNumbersPage() {
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.salesPerson}
+                      </td>
+                        <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                         {All_Hiring_Request_Utils.GETHRSTATUS(
+                                                    Number(detail.hrStatusCode),
+                                                    detail.hrStatus
+                                                  )}
                       </td>
                     </tr>
                   ))}
