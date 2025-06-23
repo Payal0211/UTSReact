@@ -598,6 +598,12 @@ export default function TADashboard() {
     }
   };
 
+  const HRTextCol = ({hrText}) =>{
+    let formatted = hrText?.replace(/\(([^)]+)\)/g, (_, name) => `( <div style="color:rgb(179, 76, 1);font-weight: 600" >${name.trim()}</div> )`)
+
+    return <div dangerouslySetInnerHTML={{__html:formatted}} ></div>
+  }
+
   const getGoalsDetails = async (date, head, tA_UserID) => {
     let pl = {
       taUserIDs: tA_UserID,
@@ -4009,7 +4015,8 @@ export default function TADashboard() {
                         {detail.companyName}
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.hrNumber}
+                        {/* {detail.hrNumber} */}
+                        <HRTextCol hrText={detail.hrNumber} />
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}
