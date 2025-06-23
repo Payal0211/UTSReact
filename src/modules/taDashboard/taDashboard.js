@@ -598,10 +598,14 @@ export default function TADashboard() {
     }
   };
 
-  const HRTextCol = ({hrText}) =>{
+  const HRTextCol = ({hrText, title}) =>{
     let formatted = hrText?.replace(/\(([^)]+)\)/g, (_, name) => `( <div style="color:rgb(179, 76, 1);font-weight: 600" >${name.trim()}</div> )`)
 
-    return <div dangerouslySetInnerHTML={{__html:formatted}} ></div>
+    if(title === 'Achieve Pipeline (INR)' || title === 'PreOnboarding Pipeline (INR)'){
+      return <div dangerouslySetInnerHTML={{__html:formatted}} ></div>
+    }
+    
+    return hrText
   }
 
   const getGoalsDetails = async (date, head, tA_UserID) => {
@@ -4016,7 +4020,7 @@ export default function TADashboard() {
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {/* {detail.hrNumber} */}
-                        <HRTextCol hrText={detail.hrNumber} />
+                        <HRTextCol hrText={detail.hrNumber} title={isShowDetails?.title}  />
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}
