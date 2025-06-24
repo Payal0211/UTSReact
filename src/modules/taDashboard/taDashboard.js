@@ -1649,7 +1649,7 @@ export default function TADashboard() {
             {row?.companyCategory !== "Diamond" &&
               (userData?.UserId === 2 ||
                 userData?.UserId === 333 ||
-                userData?.UserId === 190) && (
+                userData?.UserId === 190 || userData?.UserId === 96 ) && (
                 <Checkbox onChange={() => setDiamondCompany(row, index)}>
                   Make Diamond
                 </Checkbox>

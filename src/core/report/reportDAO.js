@@ -1100,6 +1100,52 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.AMWiseInterviewCountsDAO');
 		}
 	},
+	ScreenInterviewRejectCountsDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.ScreenInterviewRejectCountsAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.ScreenInterviewRejectCountsDAO');
+		}
+	},
+	rejectedTalentsDetailsDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.rejectedTalentsDetailsAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.rejectedTalentsDetailsDAO');
+		}
+	},
 	AMWiseTalentInterviewDetailsDAO:async function (payload) {
 		try {
 			const taResult = await ReportAPI.GetAMWiseTalentInterviewDetails(payload);
