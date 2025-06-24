@@ -711,6 +711,38 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.AMWiseInterviewCountsAPI');
 		}
 	},
+	ScreenInterviewRejectCountsAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.SCREEN_INTERVIEW_REJECT_COUNT + `${payload?.searchText ? `?searchText=${payload?.searchText}` : ''}`
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.ScreenInterviewRejectCountsAPI');
+		}
+	},
+	rejectedTalentsDetailsAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_REJECTED_TALENTS + `?companyID=${payload.companyID}&rejectType=${payload.rejectType}`
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.rejectedTalentsDetailsAPI');
+		}
+	},
 	GetAMWiseTalentInterviewDetails:async function (payload) {
 	let httpService = new HttpServices();
 	httpService.URL =

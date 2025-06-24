@@ -525,7 +525,31 @@ export default function ClientDashboardReport() {
         key: "offer",
         align: "center",
         width: "100px",
-        render: (value) => (value === 0 ? '-' : value),
+        render: (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,4,null);
+                setTalentToMove(result);
+                setProfileStatusID(4);
+                setHRTalentListFourCount([]);
+              }}
+            >
+              {text ? text : '-'}
+            </p>
+          ) : (
+            text ? text : '-'
+          );
+        },
       },
       {
         title: "Offer Declined",
@@ -549,7 +573,31 @@ export default function ClientDashboardReport() {
         key: "joined",
         align: "center",
         width: "100px",
-        render: (value) => (value === 0 ? '-' : value),
+        render:  (text, result) => {
+          if (result.client === 'Total') {
+            return <span>{text}</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,10,null);
+                setTalentToMove(result);
+                setProfileStatusID(10);
+                setHRTalentListFourCount([]);
+              }}
+            >
+              {text ? text : '-'}
+            </p>
+          ) : (
+            text ? text : '-'
+          );
+        },
       },
       {
         title: "Joined & Left",

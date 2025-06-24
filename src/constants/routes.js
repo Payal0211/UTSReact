@@ -219,6 +219,10 @@ const PotentialClosuresSheet = React.lazy(() =>
 	import('modules/report/screens/potentialClosuresSheet/potentialClosuresSheet')
 )
 
+const ScreeningInterviewReject = React.lazy(() => 
+	import('modules/report/screens/screenInterviewReject/ScreenInterviewReject')
+)
+
 const AmInterviews = React.lazy(() => 
 	import('modules/report/screens/amInterviews/amInterviews')
 )
@@ -302,6 +306,7 @@ export default class UTSRoutes {
 	static AM_REPORT = '/amReport';
 	static DAILY_BUSINESS_NUMBERS = 'RevenueBusinessReport';
 	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresList'
+	static SCREENING_INTERVIEW_REJECT = '/screeningInterviewReject'
 	static AM_INTERVIEW = 'amInterviews'
 }
 
@@ -654,7 +659,11 @@ export const navigateToComponent = {
 		<PotentialClosuresSheet />
 	</Suspense>
 ),
-
+[UTSRoutes.SCREENING_INTERVIEW_REJECT]: (
+	<Suspense>
+		<ScreeningInterviewReject />
+	</Suspense>
+),
 [UTSRoutes.AM_INTERVIEW]: (
 	<Suspense>
 		<AmInterviews />

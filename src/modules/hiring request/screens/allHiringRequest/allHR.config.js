@@ -649,6 +649,7 @@ export const allHRConfig = {
           },
         ],
         isSearch: false,
+        isSingleSelect:true
       },
       {
         label: "Team",

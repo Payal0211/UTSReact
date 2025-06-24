@@ -598,6 +598,16 @@ export default function TADashboard() {
     }
   };
 
+  const HRTextCol = ({hrText, title}) =>{
+    let formatted = hrText?.replace(/\(([^)]+)\)/g, (_, name) => `( <div style="color:rgb(179, 76, 1);font-weight: 600" >${name.trim()}</div> )`)
+
+    if(title === 'Achieve Pipeline (INR)' || title === 'PreOnboarding Pipeline (INR)'){
+      return <div dangerouslySetInnerHTML={{__html:formatted}} ></div>
+    }
+    
+    return hrText
+  }
+
   const getGoalsDetails = async (date, head, tA_UserID) => {
     let pl = {
       taUserIDs: tA_UserID,
@@ -1639,7 +1649,7 @@ export default function TADashboard() {
             {row?.companyCategory !== "Diamond" &&
               (userData?.UserId === 2 ||
                 userData?.UserId === 333 ||
-                userData?.UserId === 190) && (
+                userData?.UserId === 190 || userData?.UserId === 96 ) && (
                 <Checkbox onChange={() => setDiamondCompany(row, index)}>
                   Make Diamond
                 </Checkbox>
@@ -4009,7 +4019,8 @@ export default function TADashboard() {
                         {detail.companyName}
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.hrNumber}
+                        {/* {detail.hrNumber} */}
+                        <HRTextCol hrText={detail.hrNumber} title={isShowDetails?.title}  />
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}
