@@ -275,7 +275,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible = (ID === 3 || ID === 2 || ID === 1) ? true : false;
 		return isVisible
 	}
-	if(title ==='amInterviews' || title ==='omReport' || title ==='amReport' || title ==='PotentialClosuresSheet'|| title ==='DailyBusinessNumbers'  ){
+	if(title ==='amInterviews' || title ==='omReport' || title ==='amReport' || title ==='PotentialClosuresSheet'|| title ==='DailyBusinessNumbers'  || title ==='Screen & Interview Reject Count' ){
 		isVisible =  (ID === 4 || ID===9 || ID=== 10 || ID===1 || ID===2) ? true : false
 		// isVisible = true
 		return isVisible	
@@ -484,6 +484,13 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.AM_INTERVIEW,
 					isVisible: isAccess(usertypeID, 'amInterviews'),
 					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'screenInterviewReject',
+					title: 'Screen & Interview Reject Count',
+					isActive: false,
+					navigateTo: UTSRoutes.SCREENING_INTERVIEW_REJECT,
+					isVisible: isAccess(usertypeID, 'Screen & Interview Reject Count')
 				}),
 				new SideBarModels({
 					id: 'dailyBusinessNumbers',
