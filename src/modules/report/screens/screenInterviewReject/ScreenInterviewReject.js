@@ -7,6 +7,7 @@ import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { InputType } from "constants/application";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import Diamond from "assets/svg/diamond.svg";
+import { downloadToExcel } from "modules/report/reportUtils";
 
 export default function ScreenInterviewReject() {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,16 +37,18 @@ export default function ScreenInterviewReject() {
     setIsLoading(false);
 
     if (apiResult?.statusCode === 200) {
-      setData(apiResult.responseBody);
+      setData(groupByRowSpan(apiResult.responseBody, "company"));
     } else {
       setData([]);
     }
   };
 
-  const getRejectedTalents = async (companyID, type) => {
+  const getRejectedTalents = async (record, type) => {
     setRejectionType(type);
+    setCompanyDetails(record);
     let payload = {
-      companyID: companyID,
+      companyID: record.companyID,
+      hrID:record.hiringRequest_ID,
       rejectType: type,
     };
     setShowRejectedTalents(true);
@@ -59,6 +62,29 @@ export default function ScreenInterviewReject() {
       setTalentData([]);
     }
   };
+    function groupByRowSpan(data, groupField) {
+    const grouped = {};
+
+    // Step 1: Group by the field (e.g., 'ta')
+    data.forEach((item) => {
+      const key = item[groupField];
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(item);
+    });
+
+    // Step 2: Add rowSpan metadata
+    const finalData = [];
+    Object.entries(grouped).forEach(([key, rows]) => {
+      rows.forEach((row, index) => {
+        finalData.push({
+          ...row,
+          rowSpan: index === 0 ? rows.length : 0,
+        });
+      });
+    });
+
+    return finalData;
+  }
 
   const columns = [
     {
@@ -67,8 +93,11 @@ export default function ScreenInterviewReject() {
       key: "company",
       align: "left",
       width: "400px",
-      render: (text, row, index) => (
-        <div
+       render: (value, row, index) => {
+        return {
+          children: (
+            <div style={{ verticalAlign: "top" }}>
+              <div
           style={{
             display: "flex",
             flexDirection: "column",
@@ -90,7 +119,7 @@ export default function ScreenInterviewReject() {
               rel="noreferrer"
               style={{ color: "#1890ff", fontWeight: 500 }}
             >
-              {text}
+              {value}
             </a>
 
             {row?.companyCategory === "Diamond" && (
@@ -104,13 +133,182 @@ export default function ScreenInterviewReject() {
             )}
           </div>
         </div>
-      ),
+              <br />{" "}
+            </div>
+          ),
+          props: {
+            rowSpan: row.rowSpan,
+            style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
+          },
+        };
+      },
+    //   render: (text, row, index) => (
+    //     <div
+    //       style={{
+    //         display: "flex",
+    //         flexDirection: "column",
+    //         alignItems: "flex-start",
+    //       }}
+    //     >
+    //       {/* Company Name + Diamond Icon */}
+    //       <div
+    //         style={{
+    //           display: "flex",
+    //           alignItems: "center",
+    //           gap: "4px",
+    //           flexWrap: "wrap",
+    //         }}
+    //       >
+    //         <a
+    //           href={`/viewCompanyDetails/${row.companyID}`}
+    //           target="_blank"
+    //           rel="noreferrer"
+    //           style={{ color: "#1890ff", fontWeight: 500 }}
+    //         >
+    //           {text}
+    //         </a>
+
+    //         {row?.companyCategory === "Diamond" && (
+    //           <>
+    //             <img
+    //               src={Diamond}
+    //               alt="info"
+    //               style={{ width: "16px", height: "16px" }}
+    //             />
+    //           </>
+    //         )}
+    //       </div>
+    //     </div>
+    //   ),
+    },
+      {
+      title: "Created",
+      dataIndex: "createdByDatetime",
+      key: "createdByDatetime",
+      align: "center",
+    },
+      {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      align: "center",
+    },
+        {
+      title: "Screen Reject",
+      dataIndex: "screenRejects",
+      key: "screenRejects",
+      align: "center",
+      render: (value, record) => {
+        const isClickable = record?.am !== "TOTAL" && value;
+        return (
+          <span
+            style={{
+              color: isClickable ? "#1890ff" : "inherit",
+              cursor: isClickable ? "pointer" : "default",
+            }}
+            onClick={() => {
+              getRejectedTalents(record, "S");
+              
+            }}
+          >
+            {value ? value : "-"}
+          </span>
+        );
+      },
+    },
+    {
+      title: "R1 Reject",
+      dataIndex: "r1_InterviewRejects",
+      key: "r1_InterviewRejects",
+      align: "center",
+      render: (value, record) => {
+        const isClickable = record?.am !== "TOTAL" && value;
+        return (
+          <span
+            style={{
+              color: isClickable ? "#1890ff" : "inherit",
+              cursor: isClickable ? "pointer" : "default",
+            }}
+            onClick={() => {
+              getRejectedTalents(record, "I");
+            }}
+          >
+            {value ? value : "-"}
+          </span>
+        );
+      },
+    },
+    {
+      title: "R2 Reject",
+      dataIndex: "r2_InterviewRejects",
+      key: "r2_InterviewRejects",
+      align: "center",
+      render: (value, record) => {
+        const isClickable = record?.am !== "TOTAL" && value;
+        return (
+          <span
+            style={{
+              color: isClickable ? "#1890ff" : "inherit",
+              cursor: isClickable ? "pointer" : "default",
+            }}
+            onClick={() => {
+              getRejectedTalents(record, "I");
+            }}
+          >
+            {value ? value : "-"}
+          </span>
+        );
+      },
+    },
+    {
+      title: "R3 Reject",
+      dataIndex: "r3_InterviewRejects",
+      key: "r3_InterviewRejects",
+      align: "center",
+      render: (value, record) => {
+        const isClickable = record?.am !== "TOTAL" && value;
+        return (
+          <span
+            style={{
+              color: isClickable ? "#1890ff" : "inherit",
+              cursor: isClickable ? "pointer" : "default",
+            }}
+            onClick={() => {
+              getRejectedTalents(record, "I");
+            }}
+          >
+            {value ? value : "-"}
+          </span>
+        );
+      },
+    },
+    {
+      title: "R4 Reject",
+      dataIndex: "r4_InterviewRejects",
+      key: "r4_InterviewRejects",
+      align: "center",
+      render: (value, record) => {
+        const isClickable = record?.am !== "TOTAL" && value;
+        return (
+          <span
+            style={{
+              color: isClickable ? "#1890ff" : "inherit",
+              cursor: isClickable ? "pointer" : "default",
+            }}
+            onClick={() => {
+              getRejectedTalents(record, "I");
+            }}
+          >
+            {value ? value : "-"}
+          </span>
+        );
+      },
     },
     {
       title: "Company Size",
       dataIndex: "companySize",
       key: "companySize",
-      align: "left",
+      align: "center",
     },
     {
       title: "Lead Type",
@@ -124,53 +322,20 @@ export default function ScreenInterviewReject() {
       key: "am",
       align: "left",
     },
-    {
-      title: "Screen Reject",
-      dataIndex: "screenRejects",
-      key: "screenRejects",
-      align: "right",
-      render: (value, record) => {
-        const isClickable = record?.am !== "TOTAL" && value;
-        return (
-          <span
-            style={{
-              color: isClickable ? "#1890ff" : "inherit",
-              cursor: isClickable ? "pointer" : "default",
-            }}
-            onClick={() => {
-              getRejectedTalents(record.companyID, "S");
-              setCompanyDetails(record);
-            }}
-          >
-            {value ? value : "-"}
-          </span>
-        );
-      },
-    },
-    {
-      title: "Interview Reject",
-      dataIndex: "interviewRejects",
-      key: "interviewRejects",
-      align: "right",
-      render: (value, record) => {
-        const isClickable = record?.am !== "TOTAL" && value;
-        return (
-          <span
-            style={{
-              color: isClickable ? "#1890ff" : "inherit",
-              cursor: isClickable ? "pointer" : "default",
-            }}
-            onClick={() => {
-              getRejectedTalents(record.companyID, "I");
-              setCompanyDetails(record);
-            }}
-          >
-            {value ? value : "-"}
-          </span>
-        );
-      },
-    },
+
   ];
+
+  const handleExport = (data)=>{
+        let dataToExport = data.map(record=>{
+            let obj = {}
+            columns.forEach((val)=>{
+                obj[val.title] = record[val.key]
+            })
+            return obj
+        })
+
+        downloadToExcel(dataToExport, "Screen Interview Reject Counts");
+  }
   return (
     <div className={SIStyles.snapshotContainer}>
       <div className={SIStyles.addnewHR} style={{ margin: "0" }}>
@@ -181,8 +346,7 @@ export default function ScreenInterviewReject() {
 
       <div className={SIStyles.filterContainer}>
         <div className={SIStyles.filterRow}>
-          <div className={SIStyles.filterRightRow}>
-            <div className={SIStyles.searchFilterSet}>
+              <div className={SIStyles.searchFilterSet}>
               <SearchSVG style={{ width: "16px", height: "16px" }} />
               <input
                 type={InputType.TEXT}
@@ -206,6 +370,8 @@ export default function ScreenInterviewReject() {
                 />
               )}
             </div>
+          <div className={SIStyles.filterRightRow}>
+          
             {/*  <div className={SIStyles.filterItem}>
                             <span className={SIStyles.label}>Date</span>
                             <div className={SIStyles.calendarFilter}>
@@ -223,9 +389,9 @@ export default function ScreenInterviewReject() {
                                 />
                             </div>
                         </div> */}
-            {/* <button className={SIStyles.btnPrimary} onClick={() => handleExport(data)}>
+            <button className={SIStyles.btnPrimary} onClick={() => handleExport(data)}>
                             Export
-                        </button> */}
+                        </button>
           </div>
         </div>
       </div>
@@ -256,7 +422,7 @@ export default function ScreenInterviewReject() {
           <div style={{ padding: "20px 15px" }}>
             <h3>
               <b>
-                {companyDetails?.company} -{" "}
+                {companyDetails?.company} -{" "}{`${companyDetails?.hR_Number} ( ${companyDetails?.hrTitle} )`} -{" "}
                 {rejectionType === "I" ? "Interview" : "Screen"}
               </b>
             </h3>
@@ -286,7 +452,16 @@ export default function ScreenInterviewReject() {
                     style={{ position: "sticky", top: "0" }}
                   >
                     <tr style={{ backgroundColor: "#f0f0f0" }}>
-                      <th
+                         <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Action Date
+                      </th>
+                      {/* <th
                         style={{
                           padding: "10px",
                           border: "1px solid #ddd",
@@ -303,7 +478,7 @@ export default function ScreenInterviewReject() {
                         }}
                       >
                         HR Title
-                      </th>
+                      </th> */}
                       <th
                         style={{
                           padding: "10px",
@@ -313,7 +488,17 @@ export default function ScreenInterviewReject() {
                       >
                         Talent
                       </th>
-
+                      {rejectionType === "I" && (
+                        <th
+                          style={{
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "rgb(233, 233, 233) !important",
+                          }}
+                        >
+                          Slot Detail
+                        </th>
+                      )}
                       <th
                         style={{
                           padding: "10px",
@@ -333,17 +518,7 @@ export default function ScreenInterviewReject() {
                       >
                         Other Reason
                       </th>
-                      {rejectionType === "I" && (
-                        <th
-                          style={{
-                            padding: "10px",
-                            border: "1px solid #ddd",
-                            backgroundColor: "rgb(233, 233, 233) !important",
-                          }}
-                        >
-                          Slot Detail
-                        </th>
-                      )}
+                      
                     </tr>
                   </thead>
 
@@ -353,7 +528,12 @@ export default function ScreenInterviewReject() {
                         key={index}
                         style={{ borderBottom: "1px solid #ddd" }}
                       >
-                        <td
+                         <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.actionDate}
+                        </td>
+                        {/* <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.hR_Number}
@@ -362,12 +542,19 @@ export default function ScreenInterviewReject() {
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.hrTitle}
-                        </td>
+                        </td> */}
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.talent}
                         </td>
+                         {rejectionType === "I" && (
+                          <td
+                            style={{ padding: "8px", border: "1px solid #ddd" }}
+                          >
+                            {detail.slotDetail}
+                          </td>
+                        )}
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
@@ -379,13 +566,7 @@ export default function ScreenInterviewReject() {
                         >
                           {detail.otherRejectReason}
                         </td>
-                        {rejectionType === "I" && (
-                          <td
-                            style={{ padding: "8px", border: "1px solid #ddd" }}
-                          >
-                            {detail.slotDetail}
-                          </td>
-                        )}
+                       
                       </tr>
                     ))}
                   </tbody>

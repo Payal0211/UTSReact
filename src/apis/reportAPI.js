@@ -731,8 +731,9 @@ export const ReportAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
-			SubDomain.REPORT +
-			ReportType.GET_REJECTED_TALENTS + `?companyID=${payload.companyID}&rejectType=${payload.rejectType}`
+			SubDomain.REPORT + ReportType.GET_HR_REJECTED_TALENT_FOR_COMPANY
+			// ReportType.GET_REJECTED_TALENTS 
+			+ `?companyID=${payload.companyID}&rejectType=${payload.rejectType}&hrID=${payload.hrID}`
 
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
