@@ -193,6 +193,7 @@ export class ReportType {
 	static SCREEN_INTERVIEW_REJECT_COUNT = 'GetCompanyListwithScreenAndInterviewRejectCounts'
 	static GET_REJECTED_TALENTS = 'GetHRRejectedTalentDetailsFromCompany'
 	static NBD_AM_REVENUE_BUSINESS = 'GetNBDorAMMonthlyRevenueBusinessReport'
+	static GET_HR_REJECTED_TALENT_FOR_COMPANY = 'GetHRRejectedTalentDetailsFromCompany'
 	static AM_WISE_INTERVIEW_COUNTS = 'GetDailyAMWiseInterviewCounts'
 	static GET_DAILY_AM_WISE_HR_TALENT_INTERVIEW_DETAILS = 'GetDailyAMWiseHRTalentInterviewDetails'
 }
