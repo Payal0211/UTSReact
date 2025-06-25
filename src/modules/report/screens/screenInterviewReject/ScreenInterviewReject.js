@@ -313,7 +313,17 @@ export default function ScreenInterviewReject() {
                       >
                         Talent
                       </th>
-
+                      {rejectionType === "I" && (
+                        <th
+                          style={{
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "rgb(233, 233, 233) !important",
+                          }}
+                        >
+                          Slot Detail
+                        </th>
+                      )}
                       <th
                         style={{
                           padding: "10px",
@@ -333,17 +343,7 @@ export default function ScreenInterviewReject() {
                       >
                         Other Reason
                       </th>
-                      {rejectionType === "I" && (
-                        <th
-                          style={{
-                            padding: "10px",
-                            border: "1px solid #ddd",
-                            backgroundColor: "rgb(233, 233, 233) !important",
-                          }}
-                        >
-                          Slot Detail
-                        </th>
-                      )}
+                      
                     </tr>
                   </thead>
 
@@ -368,6 +368,13 @@ export default function ScreenInterviewReject() {
                         >
                           {detail.talent}
                         </td>
+                         {rejectionType === "I" && (
+                          <td
+                            style={{ padding: "8px", border: "1px solid #ddd" }}
+                          >
+                            {detail.slotDetail}
+                          </td>
+                        )}
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
@@ -379,13 +386,7 @@ export default function ScreenInterviewReject() {
                         >
                           {detail.otherRejectReason}
                         </td>
-                        {rejectionType === "I" && (
-                          <td
-                            style={{ padding: "8px", border: "1px solid #ddd" }}
-                          >
-                            {detail.slotDetail}
-                          </td>
-                        )}
+                       
                       </tr>
                     ))}
                   </tbody>
