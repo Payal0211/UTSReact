@@ -716,7 +716,7 @@ export const ReportAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
-			ReportType.SCREEN_INTERVIEW_REJECT_COUNT + `${payload?.searchText ? `?searchText=${payload?.searchText}` : ''}`
+			ReportType.SCREEN_INTERVIEW_REJECT_COUNT + `?searchText=${payload?.searchText}&rejectionCount=${payload.rejectionCount}&rejectionCountOption=${payload.rejectionCountOption}`
 
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
