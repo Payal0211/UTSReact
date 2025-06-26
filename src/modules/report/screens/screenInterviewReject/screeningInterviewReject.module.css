@@ -68,13 +68,23 @@
 .searchFilterSet{
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
-    width: 300px;
+    width: 200px;
     height: 44px;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     flex-wrap: wrap;
 }
+
+.filterRow [class*="ant-select"] [class*="ant-select-selector"]{
+        height: 44px !important;
+    padding: 11px 16px !important;
+}
+
+.filterRow [class*='ant-input-number-input']{
+        padding: 6px 11px !important;
+}
+
 
 .searchInput{
     cursor: pointer;
@@ -95,6 +105,13 @@
   border: 1px solid var(--background-color-metal);
   border-radius: 8px;
   cursor: pointer;
+}
+
+.resetText {
+    margin: 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .label{
