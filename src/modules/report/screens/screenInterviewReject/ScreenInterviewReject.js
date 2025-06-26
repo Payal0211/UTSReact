@@ -43,13 +43,15 @@ export default function ScreenInterviewReject() {
     }
   };
 
-  const getRejectedTalents = async (record, type) => {
+  const getRejectedTalents = async (record, type,count) => {
     setRejectionType(type);
     setCompanyDetails(record);
     let payload = {
-      companyID: record.companyID,
+    //   companyID: record.companyID,
+     companyID: 0,
       hrID:record.hiringRequest_ID,
       rejectType: type,
+      roundCount: type === 'I' ? count : ''
     };
     setShowRejectedTalents(true);
     setRejectLoading(true);
@@ -92,7 +94,7 @@ export default function ScreenInterviewReject() {
       dataIndex: "company",
       key: "company",
       align: "left",
-      width: "400px",
+      width: "230px",
        render: (value, row, index) => {
         return {
           children: (
@@ -182,22 +184,25 @@ export default function ScreenInterviewReject() {
     //   ),
     },
       {
-      title: "Created",
+      title: "Action date",
       dataIndex: "createdByDatetime",
       key: "createdByDatetime",
-      align: "center",
+      align: "left",
+       width: "150px",
     },
       {
       title: "HR #",
       dataIndex: "hR_Number",
       key: "hR_Number",
       align: "center",
+       width: "180px",
     },
         {
       title: "Screen Reject",
       dataIndex: "screenRejects",
       key: "screenRejects",
       align: "center",
+       width: "120px",
       render: (value, record) => {
         const isClickable = record?.am !== "TOTAL" && value;
         return (
@@ -221,6 +226,7 @@ export default function ScreenInterviewReject() {
       dataIndex: "r1_InterviewRejects",
       key: "r1_InterviewRejects",
       align: "center",
+      width: "80px",
       render: (value, record) => {
         const isClickable = record?.am !== "TOTAL" && value;
         return (
@@ -230,7 +236,7 @@ export default function ScreenInterviewReject() {
               cursor: isClickable ? "pointer" : "default",
             }}
             onClick={() => {
-              getRejectedTalents(record, "I");
+              getRejectedTalents(record, "I",'R1');
             }}
           >
             {value ? value : "-"}
@@ -243,6 +249,7 @@ export default function ScreenInterviewReject() {
       dataIndex: "r2_InterviewRejects",
       key: "r2_InterviewRejects",
       align: "center",
+      width: "80px",
       render: (value, record) => {
         const isClickable = record?.am !== "TOTAL" && value;
         return (
@@ -252,7 +259,7 @@ export default function ScreenInterviewReject() {
               cursor: isClickable ? "pointer" : "default",
             }}
             onClick={() => {
-              getRejectedTalents(record, "I");
+              getRejectedTalents(record, "I",'R2');
             }}
           >
             {value ? value : "-"}
@@ -265,6 +272,7 @@ export default function ScreenInterviewReject() {
       dataIndex: "r3_InterviewRejects",
       key: "r3_InterviewRejects",
       align: "center",
+      width: "80px",
       render: (value, record) => {
         const isClickable = record?.am !== "TOTAL" && value;
         return (
@@ -274,7 +282,7 @@ export default function ScreenInterviewReject() {
               cursor: isClickable ? "pointer" : "default",
             }}
             onClick={() => {
-              getRejectedTalents(record, "I");
+              getRejectedTalents(record, "I",'R3');
             }}
           >
             {value ? value : "-"}
@@ -287,6 +295,7 @@ export default function ScreenInterviewReject() {
       dataIndex: "r4_InterviewRejects",
       key: "r4_InterviewRejects",
       align: "center",
+       width: "80px",
       render: (value, record) => {
         const isClickable = record?.am !== "TOTAL" && value;
         return (
@@ -296,7 +305,7 @@ export default function ScreenInterviewReject() {
               cursor: isClickable ? "pointer" : "default",
             }}
             onClick={() => {
-              getRejectedTalents(record, "I");
+              getRejectedTalents(record, "I",'R4');
             }}
           >
             {value ? value : "-"}
@@ -309,18 +318,21 @@ export default function ScreenInterviewReject() {
       dataIndex: "companySize",
       key: "companySize",
       align: "center",
+       width: "150px",
     },
     {
       title: "Lead Type",
       dataIndex: "leadType",
       key: "leadType",
       align: "left",
+       width: "120px",
     },
     {
       title: "AM",
       dataIndex: "am",
       key: "am",
       align: "left",
+       width: "120px",
     },
 
   ];
@@ -400,6 +412,7 @@ export default function ScreenInterviewReject() {
         <TableSkeleton />
       ) : (
         <Table
+        scroll={{y:'100vh'}}
           dataSource={data}
           columns={columns}
           pagination={false}
