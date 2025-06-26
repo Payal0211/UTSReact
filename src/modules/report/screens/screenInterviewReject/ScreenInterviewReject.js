@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import SIStyles from "./screeningInterviewReject.module.css";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
-import { Dropdown, Menu, Table, Modal } from "antd";
+import { Dropdown, Menu, Table, Modal,Select, InputNumber } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { InputType } from "constants/application";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import Diamond from "assets/svg/diamond.svg";
 import { downloadToExcel } from "modules/report/reportUtils";
+
+const { Option } = Select;
 
 export default function ScreenInterviewReject() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,19 +20,22 @@ export default function ScreenInterviewReject() {
   const [rejectionType, setRejectionType] = useState("");
   const [companyDetails, setCompanyDetails] = useState({});
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
-  const [searchText,setSearchText] = useState('')
+  const [reportListType,setReportListType] = useState('All')
+  const [countValue,setCountNo] = useState(1)
 
   useEffect(() => {
     fetchInterviews();
-  }, [searchText]);
+  }, []);
 
-  useEffect(()=>{
-   setTimeout(()=> setSearchText(openTicketDebounceText),2000)
-  },[openTicketDebounceText])
+//   useEffect(()=>{
+//    setTimeout(()=> setSearchText(openTicketDebounceText),2000)
+//   },[openTicketDebounceText])
 
-  const fetchInterviews = async () => {
+  const fetchInterviews = async (reset) => {
     let payload = {
-      searchText: searchText,
+      searchText: reset? '': openTicketDebounceText,
+      rejectionCountOption: reset? 'All': reportListType,
+      rejectionCount: reset? 1:countValue
     };
     setIsLoading(true);
     const apiResult = await ReportDAO.ScreenInterviewRejectCountsDAO(payload);
@@ -198,7 +203,7 @@ export default function ScreenInterviewReject() {
        width: "180px",
     },
         {
-      title: "Screen Reject",
+      title: <>Screen<br/>  Reject </>,
       dataIndex: "screenRejects",
       key: "screenRejects",
       align: "center",
@@ -222,9 +227,9 @@ export default function ScreenInterviewReject() {
       },
     },
     {
-      title: "R1 Reject",
-      dataIndex: "r1_InterviewRejects",
-      key: "r1_InterviewRejects",
+      title:  <>Interview <br/> Reject</>,
+      dataIndex: "interviewRejects",
+      key: "interviewRejects",
       align: "center",
       width: "80px",
       render: (value, record) => {
@@ -245,11 +250,34 @@ export default function ScreenInterviewReject() {
       },
     },
     {
-      title: "R2 Reject",
+      title: <>R1 <br/>  Reject</> ,
+      dataIndex: "r1_InterviewRejects",
+      key: "r1_InterviewRejects",
+      align: "center",
+      width: "60px",
+      render: (value, record) => {
+        const isClickable = record?.am !== "TOTAL" && value;
+        return (
+          <span
+            style={{
+              color: isClickable ? "#1890ff" : "inherit",
+              cursor: isClickable ? "pointer" : "default",
+            }}
+            onClick={() => {
+              getRejectedTalents(record, "I",'R1');
+            }}
+          >
+            {value ? value : "-"}
+          </span>
+        );
+      },
+    },
+    {
+      title: <>R2  <br/>Reject</>,
       dataIndex: "r2_InterviewRejects",
       key: "r2_InterviewRejects",
       align: "center",
-      width: "80px",
+      width: "60px",
       render: (value, record) => {
         const isClickable = record?.am !== "TOTAL" && value;
         return (
@@ -268,11 +296,11 @@ export default function ScreenInterviewReject() {
       },
     },
     {
-      title: "R3 Reject",
+      title: <>R3  <br/>Reject </>,
       dataIndex: "r3_InterviewRejects",
       key: "r3_InterviewRejects",
       align: "center",
-      width: "80px",
+      width: "60px",
       render: (value, record) => {
         const isClickable = record?.am !== "TOTAL" && value;
         return (
@@ -291,11 +319,11 @@ export default function ScreenInterviewReject() {
       },
     },
     {
-      title: "R4 Reject",
+      title: <>R4 <br/>Reject</>,
       dataIndex: "r4_InterviewRejects",
       key: "r4_InterviewRejects",
       align: "center",
-       width: "80px",
+       width: "60px",
       render: (value, record) => {
         const isClickable = record?.am !== "TOTAL" && value;
         return (
@@ -328,7 +356,7 @@ export default function ScreenInterviewReject() {
        width: "120px",
     },
     {
-      title: "AM",
+      title: "Sales Person",
       dataIndex: "am",
       key: "am",
       align: "left",
@@ -341,13 +369,40 @@ export default function ScreenInterviewReject() {
         let dataToExport = data.map(record=>{
             let obj = {}
             columns.forEach((val)=>{
-                obj[val.title] = record[val.key]
+                if(val.key === 'screenRejects'){
+                    obj['Screen Reject'] = record[val.key]
+                }else  if(val.key === 'interviewRejects'){
+                    obj['Interview Reject'] = record[val.key]
+                }else  if(val.key === 'r1_InterviewRejects'){
+                    obj['R1 Reject'] = record[val.key]
+                }else  if(val.key === 'r2_InterviewRejects'){
+                    obj['R2 Reject'] = record[val.key]
+                }else  if(val.key === 'r3_InterviewRejects'){
+                    obj['R3 Reject'] = record[val.key]
+                }else  if(val.key === 'r4_InterviewRejects'){
+                    obj['R4 Reject'] = record[val.key]
+                }
+                else{
+                     obj[val.title] = record[val.key]
+                }
+               
             })
             return obj
         })
 
         downloadToExcel(dataToExport, "Screen Interview Reject Counts");
   }
+
+  const clearFilters = () =>{
+    setopenTicketDebounceText('')
+    setReportListType('All')
+    setCountNo(1)
+
+
+    fetchInterviews(true)
+
+  }
+
   return (
     <div className={SIStyles.snapshotContainer}>
       <div className={SIStyles.addnewHR} style={{ margin: "0" }}>
@@ -382,6 +437,22 @@ export default function ScreenInterviewReject() {
                 />
               )}
             </div>
+
+            <Select defaultValue="All" value={reportListType} style={{ width: 120 }} onChange={value => {console.log(value);setReportListType(value)}}>
+                <Option value="All">All</Option>
+                <Option value="RS">Screen Reject (more than)</Option>
+
+                <Option value="RI">Interview Reject (more than)</Option>
+            </Select>
+
+          {reportListType !== 'All' && <InputNumber value={countValue} min={1} max={999} defaultValue={3} onChange={val=>setCountNo(val)} style={{height:'44px',borderRadius:'8px'}} />}  
+<button className={SIStyles.btnPrimary} onClick={() => fetchInterviews()}>
+                           search
+                        </button>
+
+                        <p className={SIStyles.resetText} onClick={()=>clearFilters()}>Reset Filters</p>
+            
+   
           <div className={SIStyles.filterRightRow}>
           
             {/*  <div className={SIStyles.filterItem}>
