@@ -733,7 +733,7 @@ export const ReportAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT + ReportType.GET_HR_REJECTED_TALENT_FOR_COMPANY
 			// ReportType.GET_REJECTED_TALENTS 
-			+ `?companyID=${payload.companyID}&rejectType=${payload.rejectType}&hrID=${payload.hrID}`
+			+ `?companyID=${payload.companyID}&rejectType=${payload.rejectType}&hrID=${payload.hrID}${payload.roundCount ? `&roundCount=${payload.roundCount}` : ''}`
 
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
