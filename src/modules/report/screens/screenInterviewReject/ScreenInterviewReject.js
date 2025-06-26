@@ -233,16 +233,8 @@ export default function ScreenInterviewReject() {
       align: "center",
       width: "80px",
       render: (value, record) => {
-        const isClickable = record?.am !== "TOTAL" && value;
         return (
           <span
-            style={{
-              color: isClickable ? "#1890ff" : "inherit",
-              cursor: isClickable ? "pointer" : "default",
-            }}
-            onClick={() => {
-              getRejectedTalents(record, "I",'R1');
-            }}
           >
             {value ? value : "-"}
           </span>
