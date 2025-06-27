@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SIStyles from "./screeningInterviewReject.module.css";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
-import { Dropdown, Menu, Table, Modal,Select, InputNumber } from "antd";
+import { Dropdown, Menu, Table, Modal,Select, InputNumber, message } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { InputType } from "constants/application";
@@ -21,7 +21,7 @@ export default function ScreenInterviewReject() {
   const [companyDetails, setCompanyDetails] = useState({});
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [reportListType,setReportListType] = useState('All')
-  const [countValue,setCountNo] = useState(1)
+  const [countValue,setCountNo] = useState()
 
   useEffect(() => {
     fetchInterviews();
@@ -37,6 +37,12 @@ export default function ScreenInterviewReject() {
       rejectionCountOption: reset? 'All': reportListType,
       rejectionCount: reset? 1:countValue
     };
+
+    if(!reset &&  reportListType !== 'All' && countValue === undefined){
+        message.error('Please enter a value greater than 0 ')
+        return
+    }
+
     setIsLoading(true);
     const apiResult = await ReportDAO.ScreenInterviewRejectCountsDAO(payload);
     setIsLoading(false);
@@ -388,7 +394,7 @@ export default function ScreenInterviewReject() {
   const clearFilters = () =>{
     setopenTicketDebounceText('')
     setReportListType('All')
-    setCountNo(1)
+    setCountNo()
 
 
     fetchInterviews(true)
@@ -430,14 +436,14 @@ export default function ScreenInterviewReject() {
               )}
             </div>
 
-            <Select defaultValue="All" value={reportListType} style={{ width: 120 }} onChange={value => {console.log(value);setReportListType(value)}}>
+            <Select defaultValue="All" value={reportListType} style={{ width: 220 }} onChange={value => {console.log(value);setReportListType(value)}}>
                 <Option value="All">All</Option>
                 <Option value="RS">Screen Reject (more than)</Option>
 
                 <Option value="RI">Interview Reject (more than)</Option>
             </Select>
 
-          {reportListType !== 'All' && <InputNumber value={countValue} min={1} max={999} defaultValue={3} onChange={val=>setCountNo(val)} style={{height:'44px',borderRadius:'8px'}} />}  
+          {reportListType !== 'All' && <InputNumber value={countValue} min={1} max={999}  onChange={val=>setCountNo(val)} style={{height:'44px',borderRadius:'8px'}} />}  
 <button className={SIStyles.btnPrimary} onClick={() => fetchInterviews()}>
                            search
                         </button>
