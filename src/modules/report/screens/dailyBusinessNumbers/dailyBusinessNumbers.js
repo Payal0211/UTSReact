@@ -1527,7 +1527,7 @@ export default function DailyBusinessNumbersPage() {
                       HR Created Date
                     </th>
                      {showTalentCol?.isTalentShow === 1 && <th style={{ padding: "10px", border: "1px solid #ddd",background:'rgb(233, 233, 233) !important' }}>
-                      Closure Date
+                      Action Date
                     </th>}
                     <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       Company
@@ -1540,7 +1540,7 @@ export default function DailyBusinessNumbersPage() {
                     </th>
                     {showTalentCol?.isTalentShow  === 1 && (
                       <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
-                        Talent
+                         TR / HR / Talent
                       </th>
                     )}
                     <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
@@ -1549,9 +1549,19 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       Sales Person
                     </th>
+                    {showTalentCol?.stage === 'HRs (Carry Fwd)' && <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
+                      Carry Fwd Status
+                    </th>}  
                     <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       HR Status
                     </th>
+                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
+                       Client Business Type
+                    </th>
+                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
+                      Lead Type
+                    </th>
+                  
                   </tr>
                 </thead>
 
@@ -1586,12 +1596,25 @@ export default function DailyBusinessNumbersPage() {
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.salesPerson}
                       </td>
+                     {showTalentCol?.stage === 'HRs (Carry Fwd)' && <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                         {All_Hiring_Request_Utils.GETHRSTATUS(
+                                                    Number(detail.carryFwd_HRStatusCode),
+                                                    detail.carryFwd_HRStatus
+                                                  )}
+                      </td>}  
                         <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                          {All_Hiring_Request_Utils.GETHRSTATUS(
                                                     Number(detail.hrStatusCode),
                                                     detail.hrStatus
                                                   )}
                       </td>
+                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {detail.clientBusinessType}
+                      </td>
+                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                        {detail.lead_Type}
+                      </td>
+                       
                     </tr>
                   ))}
                 </tbody>
