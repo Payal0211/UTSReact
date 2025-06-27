@@ -116,7 +116,21 @@ export default function DailyBusinessNumbersPage() {
             color: "white",
             fontWeight: "bold",
           };
-        else if (record.stage === "Churn")
+        else if (record.stage === "Current Active")
+          cellStyle = {
+            ...cellStyle,
+            backgroundColor: "#9ec7e6",
+            color: "white",
+            fontWeight: "bold",
+          };
+           else if (record.stage === "Current Month Lost")
+          cellStyle = {
+            ...cellStyle,
+            backgroundColor: "#ED7D31",
+            color: "white",
+            fontWeight: "bold",
+          };
+           else if (record.stage === "Churn")
           cellStyle = {
             ...cellStyle,
             backgroundColor: "#ED7D31",
@@ -206,6 +220,18 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
+
+            if(rec.stage === 'Current Active'){
+              return  <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
+              >             
+                  {v}              
+              </div>
+            }
             return (
               <div
                 style={{
@@ -288,6 +314,17 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
+            if(rec.stage === 'Current Active'){
+              return  <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
+              >             
+                  {v}              
+              </div>
+            }
             return (
               <div
                 style={{
@@ -366,6 +403,17 @@ export default function DailyBusinessNumbersPage() {
           render: (v, rec) => {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
+            }
+            if(rec.stage === 'Current Active'){
+              return  <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "right",
+                }}
+              >             
+                  {v}              
+              </div>
             }
             return (
               <div
