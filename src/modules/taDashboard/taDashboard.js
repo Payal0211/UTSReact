@@ -2033,7 +2033,7 @@ export default function TADashboard() {
                   </Tooltip>
                 </IconContext.Provider>
 
-                <IconContext.Provider
+                {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 ) && <IconContext.Provider
                   value={{
                     color: "red",
                     style: {
@@ -2058,7 +2058,9 @@ export default function TADashboard() {
                       <IoIosRemoveCircle />
                     </span>{" "}
                   </Tooltip>
-                </IconContext.Provider>
+                </IconContext.Provider>}
+
+                
               </div>
             );
           },
