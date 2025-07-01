@@ -565,7 +565,8 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.REPLACEMENT_REPORT,
 					isVisible: isAccess(usertypeID, 'Replacement')
 				}),			
-			]
+			],
+			isVisible: isAccess(usertypeID, 'Talent'),
 		}),
 
 		new SideBarModels({

@@ -1,7 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SIStyles from "./screeningInterviewReject.module.css";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
-import { Dropdown, Menu, Table, Modal,Select, InputNumber, message } from "antd";
+import {
+  Dropdown,
+  Menu,
+  Table,
+  Modal,
+  Select,
+  InputNumber,
+  message,
+  Tabs,
+} from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { InputType } from "constants/application";
@@ -20,27 +29,32 @@ export default function ScreenInterviewReject() {
   const [rejectionType, setRejectionType] = useState("");
   const [companyDetails, setCompanyDetails] = useState({});
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
-  const [reportListType,setReportListType] = useState('All')
-  const [countValue,setCountNo] = useState()
-
+  const [reportListType, setReportListType] = useState("All");
+  const [countValue, setCountNo] = useState();
+  const [tabTitle, setTabTitle] = useState("A");
+  const [openLostDebounceText, setopenLostDebounceText] = useState("");
+  const [reportLostListType, setReportLostListType] = useState("All");
+  const [countLostValue, setLostCountNo] = useState();
+  const [lostData, setLostData] = useState([]);
   useEffect(() => {
     fetchInterviews();
   }, []);
 
-//   useEffect(()=>{
-//    setTimeout(()=> setSearchText(openTicketDebounceText),2000)
-//   },[openTicketDebounceText])
+  //   useEffect(()=>{
+  //    setTimeout(()=> setSearchText(openTicketDebounceText),2000)
+  //   },[openTicketDebounceText])
 
   const fetchInterviews = async (reset) => {
     let payload = {
-      searchText: reset? '': openTicketDebounceText,
-      rejectionCountOption: reset? 'All': reportListType,
-      rejectionCount: reset? 1:countValue
+      searchText: reset ? "" : openTicketDebounceText,
+      rejectionCountOption: reset ? "All" : reportListType,
+      rejectionCount: reset ? 1 : countValue,
+      reportTabs: "A",
     };
 
-    if(!reset &&  reportListType !== 'All' && countValue === undefined){
-        message.error('Please enter a value greater than 0 ')
-        return
+    if (!reset && reportListType !== "All" && countValue === undefined) {
+      message.error("Please enter a value greater than 0 ");
+      return;
     }
 
     setIsLoading(true);
@@ -54,15 +68,43 @@ export default function ScreenInterviewReject() {
     }
   };
 
-  const getRejectedTalents = async (record, type,count) => {
+  const fetchLostInterviews = async (reset) => {
+    let payload = {
+      searchText: reset ? "" : openLostDebounceText,
+      rejectionCountOption: reset ? "All" : reportLostListType,
+      rejectionCount: reset ? 1 : countLostValue,
+      reportTabs: "L",
+    };
+
+    if (
+      !reset &&
+      reportLostListType !== "All" &&
+      countLostValue === undefined
+    ) {
+      message.error("Please enter a value greater than 0 ");
+      return;
+    }
+
+    setIsLoading(true);
+    const apiResult = await ReportDAO.ScreenInterviewRejectCountsDAO(payload);
+    setIsLoading(false);
+
+    if (apiResult?.statusCode === 200) {
+      setLostData(groupByRowSpan(apiResult.responseBody, "company"));
+    } else {
+      setLostData([]);
+    }
+  };
+
+  const getRejectedTalents = async (record, type, count) => {
     setRejectionType(type);
     setCompanyDetails(record);
     let payload = {
-    //   companyID: record.companyID,
-     companyID: 0,
-      hrID:record.hiringRequest_ID,
+      //   companyID: record.companyID,
+      companyID: 0,
+      hrID: record.hiringRequest_ID,
       rejectType: type,
-      roundCount: type === 'I' ? count : ''
+      roundCount: type === "I" ? count : "",
     };
     setShowRejectedTalents(true);
     setRejectLoading(true);
@@ -75,7 +117,7 @@ export default function ScreenInterviewReject() {
       setTalentData([]);
     }
   };
-    function groupByRowSpan(data, groupField) {
+  function groupByRowSpan(data, groupField) {
     const grouped = {};
 
     // Step 1: Group by the field (e.g., 'ta')
@@ -99,361 +141,532 @@ export default function ScreenInterviewReject() {
     return finalData;
   }
 
-  const columns = [
-    {
-      title: "Company",
-      dataIndex: "company",
-      key: "company",
-      align: "left",
-      width: "230px",
-       render: (value, row, index) => {
-        return {
-          children: (
-            <div style={{ verticalAlign: "top" }}>
-              <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-          }}
-        >
-          {/* Company Name + Diamond Icon */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              flexWrap: "wrap",
-            }}
-          >
-            <a
-              href={`/viewCompanyDetails/${row.companyID}`}
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: "#1890ff", fontWeight: 500 }}
+  const columns = useMemo(() => {
+    return [
+      {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+        align: "left",
+        width: "230px",
+        render: (value, row, index) => {
+          return {
+            children: (
+              <div style={{ verticalAlign: "top" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  {/* Company Name + Diamond Icon */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <a
+                      href={`/viewCompanyDetails/${row.companyID}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: "#1890ff", fontWeight: 500 }}
+                    >
+                      {value}
+                    </a>
+
+                    {row?.companyCategory === "Diamond" && (
+                      <>
+                        <img
+                          src={Diamond}
+                          alt="info"
+                          style={{ width: "16px", height: "16px" }}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+                <br />{" "}
+              </div>
+            ),
+            props: {
+              rowSpan: row.rowSpan,
+              style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
+            },
+          };
+        },
+        //   render: (text, row, index) => (
+        //     <div
+        //       style={{
+        //         display: "flex",
+        //         flexDirection: "column",
+        //         alignItems: "flex-start",
+        //       }}
+        //     >
+        //       {/* Company Name + Diamond Icon */}
+        //       <div
+        //         style={{
+        //           display: "flex",
+        //           alignItems: "center",
+        //           gap: "4px",
+        //           flexWrap: "wrap",
+        //         }}
+        //       >
+        //         <a
+        //           href={`/viewCompanyDetails/${row.companyID}`}
+        //           target="_blank"
+        //           rel="noreferrer"
+        //           style={{ color: "#1890ff", fontWeight: 500 }}
+        //         >
+        //           {text}
+        //         </a>
+
+        //         {row?.companyCategory === "Diamond" && (
+        //           <>
+        //             <img
+        //               src={Diamond}
+        //               alt="info"
+        //               style={{ width: "16px", height: "16px" }}
+        //             />
+        //           </>
+        //         )}
+        //       </div>
+        //     </div>
+        //   ),
+      },
+      {
+        title: "Action Date",
+        dataIndex: "createdByDatetime",
+        key: "createdByDatetime",
+        align: "left",
+        width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+        align: "center",
+        width: "180px",
+      },
+      {
+        title: (
+          <>
+            Screen
+            <br /> Reject{" "}
+          </>
+        ),
+        dataIndex: "screenRejects",
+        key: "screenRejects",
+        align: "center",
+        width: "120px",
+        render: (value, record) => {
+          const isClickable = record?.am !== "TOTAL" && value;
+          return (
+            <span
+              style={{
+                color: isClickable ? "#1890ff" : "inherit",
+                cursor: isClickable ? "pointer" : "default",
+              }}
+              onClick={() => {
+                getRejectedTalents(record, "S");
+              }}
             >
-              {value}
-            </a>
-
-            {row?.companyCategory === "Diamond" && (
-              <>
-                <img
-                  src={Diamond}
-                  alt="info"
-                  style={{ width: "16px", height: "16px" }}
-                />
-              </>
-            )}
-          </div>
-        </div>
-              <br />{" "}
-            </div>
-          ),
-          props: {
-            rowSpan: row.rowSpan,
-            style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
-          },
-        };
+              {value ? value : "-"}
+            </span>
+          );
+        },
       },
-    //   render: (text, row, index) => (
-    //     <div
-    //       style={{
-    //         display: "flex",
-    //         flexDirection: "column",
-    //         alignItems: "flex-start",
-    //       }}
-    //     >
-    //       {/* Company Name + Diamond Icon */}
-    //       <div
-    //         style={{
-    //           display: "flex",
-    //           alignItems: "center",
-    //           gap: "4px",
-    //           flexWrap: "wrap",
-    //         }}
-    //       >
-    //         <a
-    //           href={`/viewCompanyDetails/${row.companyID}`}
-    //           target="_blank"
-    //           rel="noreferrer"
-    //           style={{ color: "#1890ff", fontWeight: 500 }}
-    //         >
-    //           {text}
-    //         </a>
-
-    //         {row?.companyCategory === "Diamond" && (
-    //           <>
-    //             <img
-    //               src={Diamond}
-    //               alt="info"
-    //               style={{ width: "16px", height: "16px" }}
-    //             />
-    //           </>
-    //         )}
-    //       </div>
-    //     </div>
-    //   ),
-    },
       {
-      title: "Action date",
-      dataIndex: "createdByDatetime",
-      key: "createdByDatetime",
-      align: "left",
-       width: "150px",
-    },
+        title: (
+          <>
+            Interview <br /> Reject
+          </>
+        ),
+        dataIndex: "interviewRejects",
+        key: "interviewRejects",
+        align: "center",
+        width: "80px",
+        render: (value, record) => {
+          return <span>{value ? value : "-"}</span>;
+        },
+      },
       {
-      title: "HR #",
-      dataIndex: "hR_Number",
-      key: "hR_Number",
-      align: "center",
-       width: "180px",
-    },
-        {
-      title: <>Screen<br/>  Reject </>,
-      dataIndex: "screenRejects",
-      key: "screenRejects",
-      align: "center",
-       width: "120px",
-      render: (value, record) => {
-        const isClickable = record?.am !== "TOTAL" && value;
-        return (
-          <span
-            style={{
-              color: isClickable ? "#1890ff" : "inherit",
-              cursor: isClickable ? "pointer" : "default",
-            }}
-            onClick={() => {
-              getRejectedTalents(record, "S");
-              
-            }}
-          >
-            {value ? value : "-"}
-          </span>
-        );
+        title: (
+          <>
+            R1 <br /> Reject
+          </>
+        ),
+        dataIndex: "r1_InterviewRejects",
+        key: "r1_InterviewRejects",
+        align: "center",
+        width: "60px",
+        render: (value, record) => {
+          const isClickable = record?.am !== "TOTAL" && value;
+          return (
+            <span
+              style={{
+                color: isClickable ? "#1890ff" : "inherit",
+                cursor: isClickable ? "pointer" : "default",
+              }}
+              onClick={() => {
+                getRejectedTalents(record, "I", "R1");
+              }}
+            >
+              {value ? value : "-"}
+            </span>
+          );
+        },
       },
-    },
-    {
-      title:  <>Interview <br/> Reject</>,
-      dataIndex: "interviewRejects",
-      key: "interviewRejects",
-      align: "center",
-      width: "80px",
-      render: (value, record) => {
-        return (
-          <span
-          >
-            {value ? value : "-"}
-          </span>
-        );
+      {
+        title: (
+          <>
+            R2 <br />
+            Reject
+          </>
+        ),
+        dataIndex: "r2_InterviewRejects",
+        key: "r2_InterviewRejects",
+        align: "center",
+        width: "60px",
+        render: (value, record) => {
+          const isClickable = record?.am !== "TOTAL" && value;
+          return (
+            <span
+              style={{
+                color: isClickable ? "#1890ff" : "inherit",
+                cursor: isClickable ? "pointer" : "default",
+              }}
+              onClick={() => {
+                getRejectedTalents(record, "I", "R2");
+              }}
+            >
+              {value ? value : "-"}
+            </span>
+          );
+        },
       },
-    },
-    {
-      title: <>R1 <br/>  Reject</> ,
-      dataIndex: "r1_InterviewRejects",
-      key: "r1_InterviewRejects",
-      align: "center",
-      width: "60px",
-      render: (value, record) => {
-        const isClickable = record?.am !== "TOTAL" && value;
-        return (
-          <span
-            style={{
-              color: isClickable ? "#1890ff" : "inherit",
-              cursor: isClickable ? "pointer" : "default",
-            }}
-            onClick={() => {
-              getRejectedTalents(record, "I",'R1');
-            }}
-          >
-            {value ? value : "-"}
-          </span>
-        );
+      {
+        title: (
+          <>
+            R3 <br />
+            Reject{" "}
+          </>
+        ),
+        dataIndex: "r3_InterviewRejects",
+        key: "r3_InterviewRejects",
+        align: "center",
+        width: "60px",
+        render: (value, record) => {
+          const isClickable = record?.am !== "TOTAL" && value;
+          return (
+            <span
+              style={{
+                color: isClickable ? "#1890ff" : "inherit",
+                cursor: isClickable ? "pointer" : "default",
+              }}
+              onClick={() => {
+                getRejectedTalents(record, "I", "R3");
+              }}
+            >
+              {value ? value : "-"}
+            </span>
+          );
+        },
       },
-    },
-    {
-      title: <>R2  <br/>Reject</>,
-      dataIndex: "r2_InterviewRejects",
-      key: "r2_InterviewRejects",
-      align: "center",
-      width: "60px",
-      render: (value, record) => {
-        const isClickable = record?.am !== "TOTAL" && value;
-        return (
-          <span
-            style={{
-              color: isClickable ? "#1890ff" : "inherit",
-              cursor: isClickable ? "pointer" : "default",
-            }}
-            onClick={() => {
-              getRejectedTalents(record, "I",'R2');
-            }}
-          >
-            {value ? value : "-"}
-          </span>
-        );
+      {
+        title: (
+          <>
+            R4 <br />
+            Reject
+          </>
+        ),
+        dataIndex: "r4_InterviewRejects",
+        key: "r4_InterviewRejects",
+        align: "center",
+        width: "60px",
+        render: (value, record) => {
+          const isClickable = record?.am !== "TOTAL" && value;
+          return (
+            <span
+              style={{
+                color: isClickable ? "#1890ff" : "inherit",
+                cursor: isClickable ? "pointer" : "default",
+              }}
+              onClick={() => {
+                getRejectedTalents(record, "I", "R4");
+              }}
+            >
+              {value ? value : "-"}
+            </span>
+          );
+        },
       },
-    },
-    {
-      title: <>R3  <br/>Reject </>,
-      dataIndex: "r3_InterviewRejects",
-      key: "r3_InterviewRejects",
-      align: "center",
-      width: "60px",
-      render: (value, record) => {
-        const isClickable = record?.am !== "TOTAL" && value;
-        return (
-          <span
-            style={{
-              color: isClickable ? "#1890ff" : "inherit",
-              cursor: isClickable ? "pointer" : "default",
-            }}
-            onClick={() => {
-              getRejectedTalents(record, "I",'R3');
-            }}
-          >
-            {value ? value : "-"}
-          </span>
-        );
+      {
+        title: "Company Size",
+        dataIndex: "companySize",
+        key: "companySize",
+        align: "center",
+        width: "150px",
       },
-    },
-    {
-      title: <>R4 <br/>Reject</>,
-      dataIndex: "r4_InterviewRejects",
-      key: "r4_InterviewRejects",
-      align: "center",
-       width: "60px",
-      render: (value, record) => {
-        const isClickable = record?.am !== "TOTAL" && value;
-        return (
-          <span
-            style={{
-              color: isClickable ? "#1890ff" : "inherit",
-              cursor: isClickable ? "pointer" : "default",
-            }}
-            onClick={() => {
-              getRejectedTalents(record, "I",'R4');
-            }}
-          >
-            {value ? value : "-"}
-          </span>
-        );
+      {
+        title: "Lead Type",
+        dataIndex: "leadType",
+        key: "leadType",
+        align: "left",
+        width: "120px",
       },
-    },
-    {
-      title: "Company Size",
-      dataIndex: "companySize",
-      key: "companySize",
-      align: "center",
-       width: "150px",
-    },
-    {
-      title: "Lead Type",
-      dataIndex: "leadType",
-      key: "leadType",
-      align: "left",
-       width: "120px",
-    },
-    {
-      title: "Sales Person",
-      dataIndex: "am",
-      key: "am",
-      align: "left",
-       width: "120px",
-    },
+      {
+        title: "Sales Person",
+        dataIndex: "am",
+        key: "am",
+        align: "left",
+        width: "120px",
+      },
+    ];
+  }, []);
 
-  ];
+  const handleExport = (data) => {
+    let dataToExport = data.map((record) => {
+      let obj = {};
+      columns.forEach((val) => {
+        if (val.key === "screenRejects") {
+          obj["Screen Reject"] = record[val.key];
+        } else if (val.key === "interviewRejects") {
+          obj["Interview Reject"] = record[val.key];
+        } else if (val.key === "r1_InterviewRejects") {
+          obj["R1 Reject"] = record[val.key];
+        } else if (val.key === "r2_InterviewRejects") {
+          obj["R2 Reject"] = record[val.key];
+        } else if (val.key === "r3_InterviewRejects") {
+          obj["R3 Reject"] = record[val.key];
+        } else if (val.key === "r4_InterviewRejects") {
+          obj["R4 Reject"] = record[val.key];
+        } else {
+          obj[val.title] = record[val.key];
+        }
+      });
+      return obj;
+    });
 
-  const handleExport = (data)=>{
-        let dataToExport = data.map(record=>{
-            let obj = {}
-            columns.forEach((val)=>{
-                if(val.key === 'screenRejects'){
-                    obj['Screen Reject'] = record[val.key]
-                }else  if(val.key === 'interviewRejects'){
-                    obj['Interview Reject'] = record[val.key]
-                }else  if(val.key === 'r1_InterviewRejects'){
-                    obj['R1 Reject'] = record[val.key]
-                }else  if(val.key === 'r2_InterviewRejects'){
-                    obj['R2 Reject'] = record[val.key]
-                }else  if(val.key === 'r3_InterviewRejects'){
-                    obj['R3 Reject'] = record[val.key]
-                }else  if(val.key === 'r4_InterviewRejects'){
-                    obj['R4 Reject'] = record[val.key]
-                }
-                else{
-                     obj[val.title] = record[val.key]
-                }
-               
-            })
-            return obj
-        })
+    downloadToExcel(dataToExport, "Screen Interview Reject Counts");
+  };
 
-        downloadToExcel(dataToExport, "Screen Interview Reject Counts");
-  }
+  const clearFilters = () => {
+    setopenTicketDebounceText("");
+    setReportListType("All");
+    setCountNo();
+    fetchInterviews(true);
+  };
 
-  const clearFilters = () =>{
-    setopenTicketDebounceText('')
-    setReportListType('All')
-    setCountNo()
-
-
-    fetchInterviews(true)
-
-  }
+  const clearLostFilters = () => {
+    setopenLostDebounceText("");
+    setReportLostListType("All");
+    setLostCountNo();
+    fetchLostInterviews(true);
+  };
 
   return (
     <div className={SIStyles.snapshotContainer}>
-      <div className={SIStyles.addnewHR} style={{ margin: "0" }}>
+      <div
+        className={SIStyles.addnewHR}
+        style={{ margin: "0", marginBottom: "10px" }}
+      >
         <div className={SIStyles.hiringRequest}>
           Screen & Interview Reject Count
         </div>
       </div>
 
-      <div className={SIStyles.filterContainer}>
-        <div className={SIStyles.filterRow}>
-              <div className={SIStyles.searchFilterSet}>
-              <SearchSVG style={{ width: "16px", height: "16px" }} />
-              <input
-                type={InputType.TEXT}
-                className={SIStyles.searchInput}
-                placeholder="Search Here...!"
-                value={openTicketDebounceText}
-                onChange={(e) => {
-                  setopenTicketDebounceText(e.target.value);
-                }}
-              />
-              {openTicketDebounceText && (
-                <CloseSVG
-                  style={{
-                    width: "16px",
-                    height: "16px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    setopenTicketDebounceText("");
-                  }}
-                />
-              )}
-            </div>
+      <Tabs
+        onChange={(e) => {
+          setTabTitle(e);
+          console.log("ta", e);
+          if (e === "L") {
+            fetchLostInterviews();
+          } else {
+            fetchInterviews();
+          }
+        }}
+        defaultActiveKey="A"
+        activeKey={tabTitle}
+        animated={true}
+        tabBarGutter={50}
+        tabBarStyle={{
+          borderBottom: `1px solid var(--uplers-border-color)`,
+        }}
+        items={[
+          {
+            label: "Active",
+            key: "A",
+            children: (
+              <>
+                <div className={SIStyles.filterContainer}>
+                  <div className={SIStyles.filterRow}>
+                    <div className={SIStyles.searchFilterSet}>
+                      <SearchSVG style={{ width: "16px", height: "16px" }} />
+                      <input
+                        type={InputType.TEXT}
+                        className={SIStyles.searchInput}
+                        placeholder="Search Here...!"
+                        value={openTicketDebounceText}
+                        onChange={(e) => {
+                          setopenTicketDebounceText(e.target.value);
+                        }}
+                      />
+                      {openTicketDebounceText && (
+                        <CloseSVG
+                          style={{
+                            width: "16px",
+                            height: "16px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            setopenTicketDebounceText("");
+                          }}
+                        />
+                      )}
+                    </div>
 
-            <Select defaultValue="All" value={reportListType} style={{ width: 220 }} onChange={value => {console.log(value);setReportListType(value)}}>
-                <Option value="All">All</Option>
-                <Option value="RS">Screen Reject (more than)</Option>
+                    <Select
+                      defaultValue="All"
+                      value={reportListType}
+                      style={{ width: 220 }}
+                      onChange={(value) => {
+                        console.log(value);
+                        setReportListType(value);
+                      }}
+                    >
+                      <Option value="All">All</Option>
+                      <Option value="RS">Screen Reject (more than)</Option>
 
-                <Option value="RI">Interview Reject (more than)</Option>
-            </Select>
+                      <Option value="RI">Interview Reject (more than)</Option>
+                    </Select>
 
-          {reportListType !== 'All' && <InputNumber value={countValue} min={1} max={999}  onChange={val=>setCountNo(val)} style={{height:'44px',borderRadius:'8px'}} />}  
-<button className={SIStyles.btnPrimary} onClick={() => fetchInterviews()}>
-                           search
-                        </button>
+                    {reportListType !== "All" && (
+                      <InputNumber
+                        value={countValue}
+                        min={1}
+                        max={999}
+                        onChange={(val) => setCountNo(val)}
+                        style={{ height: "44px", borderRadius: "8px" }}
+                      />
+                    )}
+                    <button
+                      className={SIStyles.btnPrimary}
+                      onClick={() => fetchInterviews()}
+                    >
+                      Search
+                    </button>
 
-                        <p className={SIStyles.resetText} onClick={()=>clearFilters()}>Reset Filters</p>
-            
-   
-          <div className={SIStyles.filterRightRow}>
-          
-            {/*  <div className={SIStyles.filterItem}>
+                    <p
+                      className={SIStyles.resetText}
+                      onClick={() => clearFilters()}
+                    >
+                      Reset Filters
+                    </p>
+
+                    <div className={SIStyles.filterRightRow}>
+                      <button
+                        className={SIStyles.btnPrimary}
+                        onClick={() => handleExport(data)}
+                      >
+                        Export
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {isLoading ? (
+                  <TableSkeleton />
+                ) : (
+                  <div className={SIStyles.tableWrapperCustom}>
+                    <Table
+                      scroll={{ y: "100vh" }}
+                      dataSource={data}
+                      columns={columns}
+                      pagination={false}
+                      rowClassName={(record) =>
+                        record?.am === "TOTAL" ? SIStyles.totalrow : ""
+                      }
+                    />
+                  </div>
+                )}
+              </>
+            ),
+          },
+          {
+            label: "Lost",
+            key: "L",
+            children: (
+              <>
+                <div className={SIStyles.filterContainer}>
+                  <div className={SIStyles.filterRow}>
+                    <div className={SIStyles.searchFilterSet}>
+                      <SearchSVG style={{ width: "16px", height: "16px" }} />
+                      <input
+                        type={InputType.TEXT}
+                        className={SIStyles.searchInput}
+                        placeholder="Search Here...!"
+                        value={openLostDebounceText}
+                        onChange={(e) => {
+                          setopenLostDebounceText(e.target.value);
+                        }}
+                      />
+                      {openLostDebounceText && (
+                        <CloseSVG
+                          style={{
+                            width: "16px",
+                            height: "16px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            setopenLostDebounceText("");
+                          }}
+                        />
+                      )}
+                    </div>
+
+                    <Select
+                      defaultValue="All"
+                      value={reportLostListType}
+                      style={{ width: 220 }}
+                      onChange={(value) => {
+                        setReportLostListType(value);
+                      }}
+                    >
+                      <Option value="All">All</Option>
+                      <Option value="RS">Screen Reject (more than)</Option>
+
+                      <Option value="RI">Interview Reject (more than)</Option>
+                    </Select>
+
+                    {reportLostListType !== "All" && (
+                      <InputNumber
+                        value={countLostValue}
+                        min={1}
+                        max={999}
+                        onChange={(val) => setLostCountNo(val)}
+                        style={{ height: "44px", borderRadius: "8px" }}
+                      />
+                    )}
+                    <button
+                      className={SIStyles.btnPrimary}
+                      onClick={() => fetchLostInterviews()}
+                    >
+                      Search
+                    </button>
+
+                    <p
+                      className={SIStyles.resetText}
+                      onClick={() => clearLostFilters()}
+                    >
+                      Reset Filters
+                    </p>
+
+                    <div className={SIStyles.filterRightRow}>
+                      {/*  <div className={SIStyles.filterItem}>
                             <span className={SIStyles.label}>Date</span>
                             <div className={SIStyles.calendarFilter}>
                                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
@@ -470,26 +683,37 @@ export default function ScreenInterviewReject() {
                                 />
                             </div>
                         </div> */}
-            <button className={SIStyles.btnPrimary} onClick={() => handleExport(data)}>
-                            Export
-                        </button>
-          </div>
-        </div>
-      </div>
+                      <button
+                        className={SIStyles.btnPrimary}
+                        onClick={() => handleExport(lostData)}
+                      >
+                        Export
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-      {isLoading ? (
-        <TableSkeleton />
-      ) : (
-        <Table
-        scroll={{y:'100vh'}}
-          dataSource={data}
-          columns={columns}
-          pagination={false}
-          rowClassName={(record) =>
-            record?.am === "TOTAL" ? SIStyles.totalrow : ""
-          }
-        />
-      )}
+                {isLoading ? (
+                  <TableSkeleton />
+                ) : (
+                  <div className={SIStyles.tableWrapperCustom}>
+                    <Table
+                      scroll={{ y: "100vh" }}
+                      dataSource={lostData}
+                      columns={columns}
+                      pagination={false}
+                      rowClassName={(record) =>
+                        record?.am === "TOTAL" ? SIStyles.totalrow : ""
+                      }
+                    />
+                  </div>
+                )}
+              </>
+            ),
+          },
+        ]}
+      />
+
       {showRejectedTlents && (
         <Modal
           width="1200px"
@@ -504,8 +728,9 @@ export default function ScreenInterviewReject() {
           <div style={{ padding: "20px 15px" }}>
             <h3>
               <b>
-                {companyDetails?.company} -{" "}{`${companyDetails?.hR_Number} ( ${companyDetails?.hrTitle} )`} -{" "}
-                {rejectionType === "I" ? "Interview" : "Screen"}
+                {companyDetails?.company} -{" "}
+                {`${companyDetails?.hR_Number} ( ${companyDetails?.hrTitle} )`}{" "}
+                - {rejectionType === "I" ? "Interview" : "Screen"}
               </b>
             </h3>
           </div>
@@ -534,7 +759,7 @@ export default function ScreenInterviewReject() {
                     style={{ position: "sticky", top: "0" }}
                   >
                     <tr style={{ backgroundColor: "#f0f0f0" }}>
-                         <th
+                      <th
                         style={{
                           padding: "10px",
                           border: "1px solid #ddd",
@@ -600,7 +825,6 @@ export default function ScreenInterviewReject() {
                       >
                         Other Reason
                       </th>
-                      
                     </tr>
                   </thead>
 
@@ -610,7 +834,7 @@ export default function ScreenInterviewReject() {
                         key={index}
                         style={{ borderBottom: "1px solid #ddd" }}
                       >
-                         <td
+                        <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.actionDate}
@@ -630,7 +854,7 @@ export default function ScreenInterviewReject() {
                         >
                           {detail.talent}
                         </td>
-                         {rejectionType === "I" && (
+                        {rejectionType === "I" && (
                           <td
                             style={{ padding: "8px", border: "1px solid #ddd" }}
                           >
@@ -648,7 +872,6 @@ export default function ScreenInterviewReject() {
                         >
                           {detail.otherRejectReason}
                         </td>
-                       
                       </tr>
                     ))}
                   </tbody>
