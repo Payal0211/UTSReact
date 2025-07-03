@@ -518,7 +518,7 @@ export default function DailyBusinessNumbersPage() {
   };
 
   const convertDataSource = (data) => {
-    const list = [{ key: `spacer00`, stage: "", isSpacer: true }];
+    const list = [];
 
     data.forEach((item, index) => {
       switch (item.stage_ID) {
