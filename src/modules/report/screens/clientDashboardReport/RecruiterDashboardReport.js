@@ -96,7 +96,7 @@ export default function RecruiterDashboardReport() {
         title: "Action Date",
         dataIndex: "actionDate",
         key: "actionDate",
-         width: "120px",
+         width: "150px",
         render:(text)=>{
           return moment(text).format('DD-MM-YYYY')
         }
@@ -630,7 +630,7 @@ export default function RecruiterDashboardReport() {
     setLoading(false)
     if (apiResult?.statusCode === 200) {        
       setClientData(groupByRowSpan(apiResult.responseBody?.rows, "recruiterHead") );      
-      setListDataCount(apiResult.responseBody?.totalrows + 1);      
+      setListDataCount(apiResult.responseBody?.totalrows);      
     } else if (apiResult?.statusCode === 404) {
         setClientData([]);
         setListDataCount(0);     
