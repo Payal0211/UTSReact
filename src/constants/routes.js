@@ -207,6 +207,9 @@ const ClientDashboardReport = React.lazy(() =>
 	import('modules/report/screens/clientDashboardReport/clientDashboardReport')
 )
 
+const RecruiterDashboardReport = React.lazy(() => 
+	import('modules/report/screens/clientDashboardReport/RecruiterDashboardReport')
+)
 const AMReport = React.lazy(() => 
 	import('modules/report/screens/amReport/amReport')
 )
@@ -302,6 +305,7 @@ export default class UTSRoutes {
 	static REVENUE_REPORT = "/revenueReport";
 	static TALENT_DOCUMENTS = '/talentDocument'
 	static TALENT_NOTES = '/talentNotes';
+	static RECRUITER_DASHBOARD_REPORT = '/RevenueDashboardReport';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 	static AM_REPORT = '/amReport';
 	static DAILY_BUSINESS_NUMBERS = 'RevenueBusinessReport';
@@ -640,6 +644,11 @@ export const navigateToComponent = {
 [UTSRoutes.CLIENT_DASHBOARD_REPORT]: (
 	<Suspense>
 		<ClientDashboardReport />
+	</Suspense>
+),
+[UTSRoutes.RECRUITER_DASHBOARD_REPORT]: (
+	<Suspense>
+		<RecruiterDashboardReport />
 	</Suspense>
 ),
 [UTSRoutes.AM_REPORT]: (
