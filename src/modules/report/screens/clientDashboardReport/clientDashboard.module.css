@@ -189,6 +189,11 @@
     font-weight: 500;
 }
 
+.tableWrapperCustom [class*="ant-table-thead"] > tr > th:first-child,
+.tableWrapperCustom  [class*="ant-table-tbody"] > tr > td:first-child {
+  padding-left: 10px !important;
+}
+
 .expireDate{
     color: rgb(179, 76, 1);
     background: rgb(249, 231, 218);

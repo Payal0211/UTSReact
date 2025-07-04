@@ -1,4 +1,4 @@
-import { NetworkInfo, SubDomain, TaDashboardURL, UsersAPI } from 'constants/network';
+import { NetworkInfo, SubDomain, TaDashboardURL, UsersAPI, ReportsAPI } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
@@ -134,6 +134,22 @@ export const TaDashboardAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'TaDashboardAPI.getDailyActiveTargetsRequest');
+		}
+	},
+	getHRTalentsWiseRecruiterDashboardRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportsAPI.GET_HR_TALENTS_WISE_DESHBOARD + `?month=${pl?.month}&year=${pl?.year}&fromDate=${pl?.fromDate}&toDate=${pl?.toDate}&tAUserID=${pl?.tAUserID}&optiontype=${pl?.optiontype}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getHRTalentsWiseRecruiterDashboardRequest');
 		}
 	},
     getGoalsDetailsRequest: async function (pl) {
