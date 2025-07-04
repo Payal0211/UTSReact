@@ -182,6 +182,7 @@ export class ReportType {
 	static TALENT_LEAVE_TAKEN_REPORT = 'TalentLeaveTakenReport'
 	static RECRUITER_REPORT = 'RecruiterReport'
 	static CLIENT_DASHBOARD_REPORT = 'ClientDashboardReport'
+	static RECRUITER_DASHBOARD_REPORT = 'RecruiterDashboardReport'
 	static DAILY_SNAPSHOT_REPORT = 'DailySnapshotReport'
 	static AM_WEEK_WISE_REPORT = 'AMWeekWiseReport'
 	static AM_WEEK_WISE_REPORT_FILTERS = 'AMWeekWiseReportFilters'
@@ -207,6 +208,7 @@ export class ReportsAPI {
 	static SLA_DETAILED_DATA = 'GetSLAReport';
 	static SLA_FILTER = 'GETSLAFilters';
 	static TALENT_DETAIL_POPUP = 'TalentDetailPopup';
+	static GET_HR_TALENTS_WISE_DESHBOARD = 'GetHRTalentsWiseRecruiterDashboard'
 }
 
 export class HubspotsAPI {
