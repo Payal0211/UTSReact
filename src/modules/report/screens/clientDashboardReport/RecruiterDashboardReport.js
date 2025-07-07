@@ -96,7 +96,7 @@ export default function RecruiterDashboardReport() {
         title: "Action Date",
         dataIndex: "actionDate",
         key: "actionDate",
-         width: "120px",
+         width: "150px",
         render:(text)=>{
           return moment(text).format('DD-MM-YYYY')
         }
@@ -322,7 +322,7 @@ export default function RecruiterDashboardReport() {
        width: "100px",
        render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_Profiles}</span>; 
+            return <span>{result.total_NoAction}</span>; 
           }
           return  text ?? text 
         },
@@ -630,7 +630,7 @@ export default function RecruiterDashboardReport() {
     setLoading(false)
     if (apiResult?.statusCode === 200) {        
       setClientData(groupByRowSpan(apiResult.responseBody?.rows, "recruiterHead") );      
-      setListDataCount(apiResult.responseBody?.totalrows + 1);      
+      setListDataCount(apiResult.responseBody?.totalrows);      
     } else if (apiResult?.statusCode === 404) {
         setClientData([]);
         setListDataCount(0);     
@@ -753,7 +753,7 @@ export default function RecruiterDashboardReport() {
           return obj;
         }
       )
-      downloadToExcel(DataToExport,'Client_Dashboard_Report.xlsx')  
+      downloadToExcel(DataToExport,'Recruiter_Dashboard_Report.xlsx')  
   }
 
   return (
