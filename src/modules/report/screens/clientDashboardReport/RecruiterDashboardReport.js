@@ -96,7 +96,7 @@ export default function RecruiterDashboardReport() {
         title: "Action Date",
         dataIndex: "actionDate",
         key: "actionDate",
-         width: "120px",
+         width: "150px",
         render:(text)=>{
           return moment(text).format('DD-MM-YYYY')
         }
@@ -322,9 +322,26 @@ export default function RecruiterDashboardReport() {
        width: "100px",
        render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_Profiles}</span>; 
+            return <span>{result.total_NoAction}</span>; 
           }
-          return  text ?? text 
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'NA');
+              
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          ); 
         },
       },
     
@@ -378,7 +395,7 @@ export default function RecruiterDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'SL');
+                getTalentProfilesDetailsfromTable(result,'S');
               
               }}
             >
@@ -408,7 +425,7 @@ export default function RecruiterDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'ID');
+                getTalentProfilesDetailsfromTable(result,'I');
               
               }}
             >
@@ -438,7 +455,7 @@ export default function RecruiterDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'R1I');
+                getTalentProfilesDetailsfromTable(result,'R1');
              
               }}
             >
@@ -486,8 +503,28 @@ export default function RecruiterDashboardReport() {
         key: "r2Interview",
         align: "center",
        width: "120px",
-        render: (value, result) => {
-          return result.recruiter === 'Total' ? result.total_R2Interview : (value === 0 ? '' : value)
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <span>{result.total_R2Interview}</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'R2');
+             
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
         } 
       },
       {
@@ -496,8 +533,28 @@ export default function RecruiterDashboardReport() {
         key: "r2InterviewReject",
         align: "center",
         width: "100px",
-        render: (value, result) => {
-          return result.recruiter === 'Total' ? result.total_R2InterviewReject : (value === 0 ? '' : value)
+        render: (text, result) => {
+          if (result.recruiter === 'Total') {
+            return <span>{result.total_R2InterviewReject}</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'R2R');
+             
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
         } 
       },
       {
@@ -506,8 +563,28 @@ export default function RecruiterDashboardReport() {
         key: "r3Interview",
         align: "center",
         width: "120px",
-        render: (value, result) => {
-          return result.recruiter === 'Total' ? result.total_R3Interview : (value === 0 ? '' : value)
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <span>{result.total_R3Interview}</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'R3');
+             
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
         } 
       },
       {
@@ -516,8 +593,28 @@ export default function RecruiterDashboardReport() {
         key: "r3InterviewReject",
         align: "center",
         width: "100px",
-       render: (value, result) => {
-          return result.recruiter === 'Total' ? result.total_R3InterviewReject : (value === 0 ? '' : value)
+       render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <span>{result.total_R3InterviewReject}</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'R3R');
+             
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
         } 
       },
       {
@@ -556,9 +653,29 @@ export default function RecruiterDashboardReport() {
         key: "offerDeclined",
         align: "center",
        width: "120px",
-       render: (value, result) => {
-          return result.recruiter === 'Total' ? result.total_OfferDeclined : (value === 0 ? '' : value)
-        } 
+       render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <span>{result.total_OfferDeclined}</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'OD');
+            
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        },
       },
       {
         title: "Pre-Onboarding",
@@ -566,9 +683,29 @@ export default function RecruiterDashboardReport() {
         key: "preOnboarding",
         align: "center",
         width: "120px",
-       render: (value, result) => {
-          return result.recruiter === 'Total' ? result.total_PreOnboarding : (value === 0 ? '' : value)
-        } 
+       render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <span>{result.total_PreOnboarding }</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'P');
+            
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        },
       },
       {
         title: "Joined",
@@ -606,9 +743,29 @@ export default function RecruiterDashboardReport() {
         key: "joinedLost",
         align: "center",
        width: "120px",
-       render: (value, result) => {
-          return result.recruiter === 'Total' ? result.total_JoinedLost : (value === 0 ? '' : value)
-        } 
+       render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <span>{result.total_JoinedLost}</span>; 
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'JL');
+            
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        },
       },
     ];
   }, [clientData]);
@@ -621,8 +778,8 @@ export default function RecruiterDashboardReport() {
         "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
         "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? startDate.toLocaleDateString("en-US"): '',
         "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? endDate.toLocaleDateString("en-US"): '' ,
-        "pageIndex": pageIndex,
-        "pageSize": pageSize,
+        // "pageIndex": pageIndex,
+        // "pageSize": pageSize,
         "taUserIDs":tableFilteredState?.filterFields_OnBoard?.taUserIDs   ??''     
       };
     setLoading(true)
@@ -630,7 +787,7 @@ export default function RecruiterDashboardReport() {
     setLoading(false)
     if (apiResult?.statusCode === 200) {        
       setClientData(groupByRowSpan(apiResult.responseBody?.rows, "recruiterHead") );      
-      setListDataCount(apiResult.responseBody?.totalrows + 1);      
+      setListDataCount(apiResult.responseBody?.totalrows);      
     } else if (apiResult?.statusCode === 404) {
         setClientData([]);
         setListDataCount(0);     
@@ -753,7 +910,7 @@ export default function RecruiterDashboardReport() {
           return obj;
         }
       )
-      downloadToExcel(DataToExport,'Client_Dashboard_Report.xlsx')  
+      downloadToExcel(DataToExport,'Recruiter_Dashboard_Report.xlsx')  
   }
 
   return (
@@ -874,7 +1031,7 @@ export default function RecruiterDashboardReport() {
                   </div>
                 )}                
               
-                <div className={clientDashboardStyles.priorityFilterSet}>                
+                {/* <div className={clientDashboardStyles.priorityFilterSet}>                
                   <div className={clientDashboardStyles.label}>
                     Showing
                   </div>                
@@ -907,7 +1064,7 @@ export default function RecruiterDashboardReport() {
                       </span>
                     </Dropdown>
                   </div>                  
-                </div>
+                </div> */}
 
                 <div
                   className={clientDashboardStyles.paginationFilter}
@@ -936,20 +1093,20 @@ export default function RecruiterDashboardReport() {
         rowClassName={(row, index) => {
             return row.recruiter === 'Total' ? clientDashboardStyles["highlight-total-row"] : '';
         }}   
-
-          pagination={{
-            onChange: (pageNum, pageSize) => {
-              setPageIndex(pageNum);
-              setPageSize(pageSize - 1);
-            },
-            size: "small",
-            pageSize: pageSize + 1,
-            pageSizeOptions: pageSizeOptions,
-            total: listDataCount,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${listDataCount} items`,
-            current: pageIndex,
-          }}  
+ pagination={false}
+          // pagination={{
+          //   onChange: (pageNum, pageSize) => {
+          //     setPageIndex(pageNum);
+          //     setPageSize(pageSize - 1);
+          //   },
+          //   size: "small",
+          //   pageSize: pageSize + 1,
+          //   pageSizeOptions: pageSizeOptions,
+          //   total: listDataCount,
+          //   showTotal: (total, range) =>
+          //     `${range[0]}-${range[1]} of ${listDataCount} items`,
+          //   current: pageIndex,
+          // }}  
       />
       </div>
       }

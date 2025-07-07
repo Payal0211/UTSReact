@@ -1643,6 +1643,10 @@ body .jobDescrition h1,body .jobDescrition h2,body .jobDescrition h3,body .jobDe
   color: var(--color-sunlight) !important;
 }
 
+[class*="react-datepicker-popper"]{
+  z-index: 9999 !important;
+}
+
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
@@ -1708,9 +1712,7 @@ body .jobDescrition h1,body .jobDescrition h2,body .jobDescrition h3,body .jobDe
     padding-right: 26px !important;
   }
 
-  [class*="react-datepicker-popper"]{
-    z-index: 9999 !important;
-  }
+
 
 
   [class*="filterRight"] .ant-select-multiple .ant-select-selector{
