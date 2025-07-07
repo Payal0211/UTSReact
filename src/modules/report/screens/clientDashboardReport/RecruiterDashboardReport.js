@@ -322,7 +322,7 @@ export default function RecruiterDashboardReport() {
        width: "100px",
        render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_Profiles}</span>; 
+            return <span>{result.total_NoAction}</span>; 
           }
           return  text ?? text 
         },
@@ -753,7 +753,7 @@ export default function RecruiterDashboardReport() {
           return obj;
         }
       )
-      downloadToExcel(DataToExport,'Client_Dashboard_Report.xlsx')  
+      downloadToExcel(DataToExport,'Recruiter_Dashboard_Report.xlsx')  
   }
 
   return (
