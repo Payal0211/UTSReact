@@ -105,9 +105,9 @@ export default function RecruiterDashboardReport() {
         title: "HR #",
         dataIndex: "hR_Number",
         key: "hR_Number",
-         width: "150px",
+         width: "170px",
         render:(text,value)=>{
-           return <a href={`/viewCompanyDetails/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+           return <a href={`/viewHrDetails/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
            
         }
       },
@@ -935,7 +935,7 @@ export default function RecruiterDashboardReport() {
                       <input
                         type={InputType.TEXT}
                         className={clientDashboardStyles.searchInput}
-                        placeholder="Client, HR ID, Recruiter"
+                        placeholder="Search, Recruiter"
                         value={openTicketDebounceText}
                         onChange={(e) => {
                           setopenTicketDebounceText(e.target.value);

@@ -503,7 +503,7 @@ export default function BeforePreOnboarding({
         setValue(
           "payRate",
           result.responseBody.details?.preOnboardingDetailsForAMAssignment
-            ?.talentCost
+            ?.expectedSalary
         );
         setValue(
           "uplersFee",
