@@ -107,7 +107,7 @@ export default function RecruiterDashboardReport() {
         key: "hR_Number",
          width: "170px",
         render:(text,value)=>{
-           return <a href={`/viewHrDetails/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+           return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
            
         }
       },
@@ -696,7 +696,7 @@ export default function RecruiterDashboardReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'P');
+                getTalentProfilesDetailsfromTable(result,'PO');
             
               }}
             >
@@ -822,15 +822,15 @@ export default function RecruiterDashboardReport() {
     setStartDate(start);
     setEndDate(end);
 
-    if (start?.toLocaleDateString() === end?.toLocaleDateString()) {
-      let params = {
-        fromDate: firstDayOfMonth,
-        toDate: today,
-      }
-      setStartDate(params.fromDate);
-      setEndDate(params.toDate);
-      return;
-    }    
+    // if (start?.toLocaleDateString() === end?.toLocaleDateString()) {
+    //   let params = {
+    //     fromDate: firstDayOfMonth,
+    //     toDate: today,
+    //   }
+    //   setStartDate(params.fromDate);
+    //   setEndDate(params.toDate);
+    //   return;
+    // }    
   };
 
   useEffect(() => {

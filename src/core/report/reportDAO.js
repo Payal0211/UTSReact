@@ -729,6 +729,60 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.getZohoInvoiceDAO');
 		}
 	},
+	getCompanyCategoryListDAO: async function (reportData) {
+		try {
+			const replacementResult = await ReportAPI.getCompanyCategoryListRequest(
+				reportData,
+			);
+			if (replacementResult) {
+				const statusCode = replacementResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = replacementResult?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return replacementResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return replacementResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.getCompanyCategoryListDAO');
+		}
+	},
+	GetCompanywiseActiveHRListDAO:async function (reportData) {
+		try {
+			const replacementResult = await ReportAPI.getCompanywiseActiveHRListRequest(
+				reportData,
+			);
+			if (replacementResult) {
+				const statusCode = replacementResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = replacementResult?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return replacementResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return replacementResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.GetCompanywiseActiveHRListDAO');
+		}
+	},
 	getZohoInvoiceCustomerDAO: async function (reportData) {
 		try {
 			const replacementResult = await ReportAPI.getZohoInvoiceCustomerReport(

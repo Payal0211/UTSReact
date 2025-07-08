@@ -197,6 +197,8 @@ export class ReportType {
 	static GET_HR_REJECTED_TALENT_FOR_COMPANY = 'GetHRRejectedTalentDetailsFromCompany'
 	static AM_WISE_INTERVIEW_COUNTS = 'GetDailyAMWiseInterviewCounts'
 	static GET_DAILY_AM_WISE_HR_TALENT_INTERVIEW_DETAILS = 'GetDailyAMWiseHRTalentInterviewDetails'
+	static COMPANY_WISE_CATEGORY= 'CompanyListWithCompanyCategory'
+	static COMPANY_WISE_CATEGORY_DETAILS = 'GetCompanywiseActiveHRList'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

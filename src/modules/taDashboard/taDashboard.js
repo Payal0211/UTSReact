@@ -598,14 +598,21 @@ export default function TADashboard() {
     }
   };
 
-  const HRTextCol = ({hrText, title}) =>{
+  const HRTextCol = ({hrText, title,row}) =>{
     let formatted = hrText?.replace(/\(([^)]+)\)/g, (_, name) => `( <div style="color:rgb(179, 76, 1);font-weight: 600" >${name.trim()}</div> )`)
 
     if(title === 'Achieve Pipeline (INR)' || title === 'PreOnboarding Pipeline (INR)'){
-      return <div dangerouslySetInnerHTML={{__html:formatted}} ></div>
+      return <div dangerouslySetInnerHTML={{__html:formatted}}  style={{ textDecoration: "underline", cursor:'pointer' }} onClick={()=> window.open(`/allhiringrequest/${row.hiringRequest_ID}`, '_blank', 'noopener,noreferrer')} ></div>
     }
     
-    return hrText
+    return   <a
+            href={`/allhiringrequest/${row.hiringRequest_ID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {hrText}
+          </a>
   }
 
   const getGoalsDetails = async (date, head, tA_UserID) => {
@@ -4022,7 +4029,7 @@ export default function TADashboard() {
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {/* {detail.hrNumber} */}
-                        <HRTextCol hrText={detail.hrNumber} title={isShowDetails?.title}  />
+                        <HRTextCol hrText={detail.hrNumber} title={isShowDetails?.title} row={detail} />
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}

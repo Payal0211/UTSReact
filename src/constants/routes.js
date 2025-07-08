@@ -214,6 +214,10 @@ const AMReport = React.lazy(() =>
 	import('modules/report/screens/amReport/amReport')
 )
 
+const CompanyCategory = React.lazy(() => 
+	import('modules/report/screens/companyCategory/companyCategory')
+)
+
 const DailyBusinessNumbers = React.lazy(() => 
 	import('modules/report/screens/dailyBusinessNumbers/dailyBusinessNumbers')
 )
@@ -308,6 +312,7 @@ export default class UTSRoutes {
 	static RECRUITER_DASHBOARD_REPORT = '/RevenueDashboardReport';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 	static AM_REPORT = '/amReport';
+	static COMPANY_CATEGORY = '/companyCategory'
 	static DAILY_BUSINESS_NUMBERS = 'RevenueBusinessReport';
 	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresList'
 	static SCREENING_INTERVIEW_REJECT = '/screeningInterviewReject'
@@ -654,6 +659,11 @@ export const navigateToComponent = {
 [UTSRoutes.AM_REPORT]: (
 	<Suspense>
 		<AMReport />
+	</Suspense>
+),
+[UTSRoutes.COMPANY_CATEGORY]: (
+	<Suspense>
+		<CompanyCategory />
 	</Suspense>
 ),
 
