@@ -9,6 +9,7 @@ import { ReportDAO } from "core/report/reportDAO";
 import moment from "moment";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import LogoLoader from "shared/components/loader/logoLoader";
+import Diamond from "assets/svg/diamond.svg";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 
 const { Title, Text } = Typography;
@@ -1670,10 +1671,22 @@ export default function DailyBusinessNumbersPage() {
                         {detail.closureDateStr}
                       </td>} 
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.company}
+                        {detail.company} {detail.company_Category === 'Diamond' &&   <img
+                    src={Diamond}
+                    alt="info"
+                    style={{ width: "16px", height: "16px" }}
+                  />}
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.hR_Number}
+                        {detail.hiringRequestID > 0 ?  <a
+            href={`/allhiringrequest/${detail.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {detail.hR_Number}
+          </a> : detail.hR_Number}
+                      
                       </td>
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}
