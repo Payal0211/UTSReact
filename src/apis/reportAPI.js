@@ -423,6 +423,38 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getZohoInvoiceReport');
 		}
 	},
+	getCompanyCategoryListRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.COMPANY_WISE_CATEGORY +`?searchText=${reportData}`
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getCompanyCategoryListRequest');
+		}
+	},
+	getCompanywiseActiveHRListRequest:async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.COMPANY_WISE_CATEGORY_DETAILS +`?companyID=${id}`
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getCompanywiseActiveHRListRequest');
+		}
+	},
 	getZohoInvoiceCustomerReport: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =
