@@ -319,7 +319,7 @@ const AMReport = () => {
       render: (text, value) => {
         return (
           <a
-            href={`/allhiringrequest/${value.hiringRequestID}`}
+            href={`/allhiringrequest/${value.hirignRequestID}`}
             style={{ textDecoration: "underline" }}
             target="_blank"
             rel="noreferrer"
