@@ -822,15 +822,15 @@ export default function RecruiterDashboardReport() {
     setStartDate(start);
     setEndDate(end);
 
-    if (start?.toLocaleDateString() === end?.toLocaleDateString()) {
-      let params = {
-        fromDate: firstDayOfMonth,
-        toDate: today,
-      }
-      setStartDate(params.fromDate);
-      setEndDate(params.toDate);
-      return;
-    }    
+    // if (start?.toLocaleDateString() === end?.toLocaleDateString()) {
+    //   let params = {
+    //     fromDate: firstDayOfMonth,
+    //     toDate: today,
+    //   }
+    //   setStartDate(params.fromDate);
+    //   setEndDate(params.toDate);
+    //   return;
+    // }    
   };
 
   useEffect(() => {
