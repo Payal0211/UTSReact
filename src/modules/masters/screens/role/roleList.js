@@ -198,7 +198,7 @@ const RoleList = () => {
 			return obj;
 			}
 		 )
-		downloadToExcel(DataToExport);
+		downloadToExcel(DataToExport,'RoleList');
 	}
 
 	return (

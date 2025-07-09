@@ -98,8 +98,13 @@ export default function RecruiterDashboardReport() {
         key: "actionDate",
          width: "150px",
         render:(text)=>{
-          return moment(text).format('DD-MM-YYYY')
+          return text
         }
+      },  {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+         width: "100px",
       },
       {
         title: "HR #",
@@ -115,11 +120,16 @@ export default function RecruiterDashboardReport() {
         title: "HR Title",
         dataIndex: "hrTitle",
         key: "hrTitle",
-      },
+      },  
       {
         title: "Talent",
         dataIndex: "talent",
         key: "talent",
+      },
+      {
+        title: "Slot/Remark",
+        dataIndex: "slotOrRemarkDetails",
+        key: "slotOrRemarkDetails",
       },
       // {
       //   title: "Status",
@@ -290,7 +300,19 @@ export default function RecruiterDashboardReport() {
         width: "100px",
         render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_Profiles}</span>; 
+            return    <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_P');
+              }}
+            >
+              {result.total_Profiles ? result.total_Profiles : '-'}
+            </p>
+         
           }
           return +text > 0 ? (
             <p
@@ -322,7 +344,18 @@ export default function RecruiterDashboardReport() {
        width: "100px",
        render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_NoAction}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_NA');
+              }}
+            >
+              {result.total_NoAction ? result.total_NoAction : '-'}
+            </p> 
           }
           return +text > 0 ? (
             <p
@@ -354,7 +387,18 @@ export default function RecruiterDashboardReport() {
         width: "100px",
         render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_ScreenReject}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_SR');
+              }}
+            >
+              {result.total_ScreenReject ? result.total_ScreenReject : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -384,7 +428,18 @@ export default function RecruiterDashboardReport() {
         width: "100px",
         render: (text, result) => {
          if (result.recruiter === 'Total') {
-            return <span>{result.total_Shortlist}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_S');
+              }}
+            >
+              {result.total_Shortlist ? result.total_Shortlist : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -414,7 +469,18 @@ export default function RecruiterDashboardReport() {
         width: "100px",
         render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_NoofInterviews}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_I');
+              }}
+            >
+              {result.total_NoofInterviews ? result.total_NoofInterviews : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -444,7 +510,18 @@ export default function RecruiterDashboardReport() {
         width: "120px",
         render: (text, result) => {
          if (result.recruiter === 'Total') {
-            return <span>{result.total_R1Interview}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R1');
+              }}
+            >
+              {result.total_R1Interview ? result.total_R1Interview : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -475,7 +552,18 @@ export default function RecruiterDashboardReport() {
         // render: (value) => (value === 0 ? '-' : value),
         render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_R1InterviewReject}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R1R');
+              }}
+            >
+              {result.total_R1InterviewReject ? result.total_R1InterviewReject : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -505,7 +593,18 @@ export default function RecruiterDashboardReport() {
        width: "120px",
         render: (text, result) => {
            if (result.recruiter === 'Total') {
-            return <span>{result.total_R2Interview}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R2');
+              }}
+            >
+              {result.total_R2Interview ? result.total_R2Interview : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -535,7 +634,18 @@ export default function RecruiterDashboardReport() {
         width: "100px",
         render: (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_R2InterviewReject}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R2R');
+              }}
+            >
+              {result.total_R2InterviewReject ? result.total_R2InterviewReject : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -565,7 +675,18 @@ export default function RecruiterDashboardReport() {
         width: "120px",
         render: (text, result) => {
            if (result.recruiter === 'Total') {
-            return <span>{result.total_R3Interview}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R3');
+              }}
+            >
+              {result.total_R3Interview ? result.total_R3Interview : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -595,7 +716,18 @@ export default function RecruiterDashboardReport() {
         width: "100px",
        render: (text, result) => {
            if (result.recruiter === 'Total') {
-            return <span>{result.total_R3InterviewReject}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R3R');
+              }}
+            >
+              {result.total_R3InterviewReject ? result.total_R3InterviewReject : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -625,7 +757,18 @@ export default function RecruiterDashboardReport() {
         width: "100px",
         render: (text, result) => {
            if (result.recruiter === 'Total') {
-            return <span>{result.total_Offer}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_O');
+              }}
+            >
+              {result.total_Offer ? result.total_Offer : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -655,7 +798,18 @@ export default function RecruiterDashboardReport() {
        width: "120px",
        render: (text, result) => {
            if (result.recruiter === 'Total') {
-            return <span>{result.total_OfferDeclined}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_OD');
+              }}
+            >
+              {result.total_OfferDeclined ? result.total_OfferDeclined : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -685,7 +839,18 @@ export default function RecruiterDashboardReport() {
         width: "120px",
        render: (text, result) => {
            if (result.recruiter === 'Total') {
-            return <span>{result.total_PreOnboarding }</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_PO');
+              }}
+            >
+              {result.total_PreOnboarding ? result.total_PreOnboarding : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -715,7 +880,18 @@ export default function RecruiterDashboardReport() {
         width: "100px",
         render:  (text, result) => {
           if (result.recruiter === 'Total') {
-            return <span>{result.total_Joined}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_J');
+              }}
+            >
+              {result.total_Joined ? result.total_Joined : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p
@@ -745,7 +921,18 @@ export default function RecruiterDashboardReport() {
        width: "120px",
        render: (text, result) => {
            if (result.recruiter === 'Total') {
-            return <span>{result.total_JoinedLost}</span>; 
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_JL');
+              }}
+            >
+              {result.total_JoinedLost ? result.total_JoinedLost : '-'}
+            </p>
           }
           return +text > 0 ? (
             <p

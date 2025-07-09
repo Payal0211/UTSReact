@@ -445,7 +445,7 @@ export default function UTMTrackingReport() {
       );
       return obj;
     });
-    downloadToExcel(DataToExport, `UTMTrackingReport: ${hrStage} => ${moment(startDate).format("YYYY-MM-DD")}/${ moment(endDate).format("YYYY-MM-DD")}.xlsx`);
+    downloadToExcel(DataToExport, `UTMTrackingReport: ${hrStage} => ${moment(startDate).format("YYYY-MM-DD")}/${ moment(endDate).format("YYYY-MM-DD")}`);
   };
 
   return (

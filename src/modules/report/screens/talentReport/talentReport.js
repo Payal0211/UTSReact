@@ -1154,7 +1154,7 @@ export default function TalentReport() {
       });
       return obj;
     });
-    downloadToExcel(DataToExport, "Talent_Onboard_Report.xlsx");
+    downloadToExcel(DataToExport, "Talent_Onboard_Report");
   };
 
   const handleRejectExport = (apiData) => {
@@ -1175,7 +1175,7 @@ export default function TalentReport() {
       });
       return obj;
     });
-    downloadToExcel(DataToExport, "Talent_Reject_Report.xlsx");
+    downloadToExcel(DataToExport, "Talent_Reject_Report");
   };
 
   const handleInterviewRoundExport = (apiData) => {
@@ -1186,7 +1186,7 @@ export default function TalentReport() {
       });
       return obj;
     });
-    downloadToExcel(DataToExport, "Talent_Interview_Round_Report.xlsx");
+    downloadToExcel(DataToExport, "Talent_Interview_Round_Report");
   };
 
   return (
