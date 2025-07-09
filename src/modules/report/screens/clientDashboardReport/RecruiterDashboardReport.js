@@ -104,7 +104,7 @@ export default function RecruiterDashboardReport() {
         title: "Company",
         dataIndex: "company",
         key: "company",
-         width: "100px",
+         width: "150px",
       },
       {
         title: "HR #",
@@ -310,7 +310,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_P');
               }}
             >
-              {result.total_Profiles ? result.total_Profiles : '-'}
+              {result.total_Profiles ? result.total_Profiles : ''}
             </p>
          
           }
@@ -354,7 +354,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_NA');
               }}
             >
-              {result.total_NoAction ? result.total_NoAction : '-'}
+              {result.total_NoAction ? result.total_NoAction : ''}
             </p> 
           }
           return +text > 0 ? (
@@ -397,7 +397,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_SR');
               }}
             >
-              {result.total_ScreenReject ? result.total_ScreenReject : '-'}
+              {result.total_ScreenReject ? result.total_ScreenReject : ''}
             </p>
           }
           return +text > 0 ? (
@@ -438,7 +438,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_S');
               }}
             >
-              {result.total_Shortlist ? result.total_Shortlist : '-'}
+              {result.total_Shortlist ? result.total_Shortlist : ''}
             </p>
           }
           return +text > 0 ? (
@@ -479,7 +479,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_I');
               }}
             >
-              {result.total_NoofInterviews ? result.total_NoofInterviews : '-'}
+              {result.total_NoofInterviews ? result.total_NoofInterviews : ''}
             </p>
           }
           return +text > 0 ? (
@@ -520,7 +520,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_R1');
               }}
             >
-              {result.total_R1Interview ? result.total_R1Interview : '-'}
+              {result.total_R1Interview ? result.total_R1Interview : ''}
             </p>
           }
           return +text > 0 ? (
@@ -562,7 +562,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_R1R');
               }}
             >
-              {result.total_R1InterviewReject ? result.total_R1InterviewReject : '-'}
+              {result.total_R1InterviewReject ? result.total_R1InterviewReject : ''}
             </p>
           }
           return +text > 0 ? (
@@ -603,7 +603,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_R2');
               }}
             >
-              {result.total_R2Interview ? result.total_R2Interview : '-'}
+              {result.total_R2Interview ? result.total_R2Interview : ''}
             </p>
           }
           return +text > 0 ? (
@@ -644,7 +644,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_R2R');
               }}
             >
-              {result.total_R2InterviewReject ? result.total_R2InterviewReject : '-'}
+              {result.total_R2InterviewReject ? result.total_R2InterviewReject : ''}
             </p>
           }
           return +text > 0 ? (
@@ -685,7 +685,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_R3');
               }}
             >
-              {result.total_R3Interview ? result.total_R3Interview : '-'}
+              {result.total_R3Interview ? result.total_R3Interview : ''}
             </p>
           }
           return +text > 0 ? (
@@ -726,7 +726,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_R3R');
               }}
             >
-              {result.total_R3InterviewReject ? result.total_R3InterviewReject : '-'}
+              {result.total_R3InterviewReject ? result.total_R3InterviewReject : ''}
             </p>
           }
           return +text > 0 ? (
@@ -767,7 +767,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_O');
               }}
             >
-              {result.total_Offer ? result.total_Offer : '-'}
+              {result.total_Offer ? result.total_Offer : ''}
             </p>
           }
           return +text > 0 ? (
@@ -808,7 +808,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_OD');
               }}
             >
-              {result.total_OfferDeclined ? result.total_OfferDeclined : '-'}
+              {result.total_OfferDeclined ? result.total_OfferDeclined : ''}
             </p>
           }
           return +text > 0 ? (
@@ -849,7 +849,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_PO');
               }}
             >
-              {result.total_PreOnboarding ? result.total_PreOnboarding : '-'}
+              {result.total_PreOnboarding ? result.total_PreOnboarding : ''}
             </p>
           }
           return +text > 0 ? (
@@ -890,7 +890,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_J');
               }}
             >
-              {result.total_Joined ? result.total_Joined : '-'}
+              {result.total_Joined ? result.total_Joined : ''}
             </p>
           }
           return +text > 0 ? (
@@ -931,7 +931,7 @@ export default function RecruiterDashboardReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_JL');
               }}
             >
-              {result.total_JoinedLost ? result.total_JoinedLost : '-'}
+              {result.total_JoinedLost ? result.total_JoinedLost : ''}
             </p>
           }
           return +text > 0 ? (
@@ -1324,7 +1324,7 @@ export default function RecruiterDashboardReport() {
               {showTalentProfiles && (
                     <Modal
                       transitionName=""
-                      width="1000px"
+                      width="1020px"
                       centered
                       footer={null}
                       open={showTalentProfiles}
