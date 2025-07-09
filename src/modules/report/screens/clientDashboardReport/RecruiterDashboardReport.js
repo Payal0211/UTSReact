@@ -104,7 +104,7 @@ export default function RecruiterDashboardReport() {
         title: "Company",
         dataIndex: "company",
         key: "company",
-         width: "100px",
+         width: "150px",
       },
       {
         title: "HR #",
@@ -1324,7 +1324,7 @@ export default function RecruiterDashboardReport() {
               {showTalentProfiles && (
                     <Modal
                       transitionName=""
-                      width="1000px"
+                      width="1020px"
                       centered
                       footer={null}
                       open={showTalentProfiles}
