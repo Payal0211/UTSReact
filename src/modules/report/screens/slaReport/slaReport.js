@@ -464,7 +464,7 @@ const SlaReports = () => {
 			'Expected SLA': data.expected_SLA_day, 'Actual SLA': data.actual_SLA_day , 'SLA diff': data.slA_diff, 'Action': data.actionFilter, 'Sales Person':data.sales_Person, 'Sales Manager':data.sales_Manager, 'OPS Lead':data.ops_Lead
  		}))
 
-		downloadToExcel(dataToDownload)
+		downloadToExcel(dataToDownload,"SLA Report")
 	}
 
 	const clearFilters = useCallback(() => {

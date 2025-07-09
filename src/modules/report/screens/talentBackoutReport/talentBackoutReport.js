@@ -206,7 +206,7 @@ const handleExport = (apiData) => {
     return obj;
         }
      )
-     downloadToExcel(DataToExport,'Talent_Backout_Report.xlsx')
+     downloadToExcel(DataToExport,'Talent_Backout_Report')
 
 }
 

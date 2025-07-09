@@ -44,7 +44,7 @@ const SupplyFunnelModal = ({
 			return obj;
 		}
 			 )
-			downloadToExcel(DataToExport);
+			downloadToExcel(DataToExport,'SupplyFunnel');
 			// setDemandFunnelModal(false);`
 		}
 	}, [demandFunnelHRDetailsState]);

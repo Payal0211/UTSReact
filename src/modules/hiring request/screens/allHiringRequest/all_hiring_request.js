@@ -534,7 +534,7 @@ const AllHiringRequestScreen = () => {
       );
       return obj;
     });
-    downloadToExcel(DataToExport);
+    downloadToExcel(DataToExport,'HR');
   };
 
   useEffect(()=>{

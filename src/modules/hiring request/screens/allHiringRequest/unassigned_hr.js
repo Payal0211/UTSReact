@@ -589,7 +589,7 @@ const UnassignedHRScreen = () => {
       );
       return obj;
     });
-    downloadToExcel(DataToExport);
+    downloadToExcel(DataToExport,'Unassigned_HR');
   };
 
   // useEffect(()=>{

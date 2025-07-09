@@ -184,7 +184,7 @@ export default function AllNOTES() {
       });
       return obj;
     });
-    downloadToExcel(DataToExport, "Notes_Report.xlsx");
+    downloadToExcel(DataToExport, "Notes_Report");
   };
 
 

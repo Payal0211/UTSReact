@@ -135,7 +135,7 @@ const JDDumpReportScreen = () => {
 	  }
 		 )
 	
-		downloadToExcel(DataToExport)
+		downloadToExcel(DataToExport,'JDDump')
 	  }
 
 	return (
