@@ -38,7 +38,7 @@ const DemandFunnelModal = ({
 			).map(val => obj[`${val.title}`] = data[`${val.key}`])
 		  return obj;
 		})
-		downloadToExcel(dataToDownload);
+		downloadToExcel(dataToDownload,'DemandFunnel');
 		
 	}, [demandFunnelValue?.stage]);
 

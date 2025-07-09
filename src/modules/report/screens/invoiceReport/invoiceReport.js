@@ -149,7 +149,7 @@ setLoading(true)
       });
       return obj;
     });
-    downloadToExcel(DataToExport, "Invoice_Report.xlsx");
+    downloadToExcel(DataToExport, "Invoice_Report");
   };
 
   return (

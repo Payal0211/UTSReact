@@ -134,7 +134,7 @@ const TimeZoneList = () => {
 			return obj;
 			}
 		 )
-		downloadToExcel(DataToExport);
+		downloadToExcel(DataToExport,'Time Zone');
 	}
     return (
 		<div className={CurrencyListStyle.hiringRequestContainer}>

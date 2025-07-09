@@ -102,7 +102,7 @@ const handleExport = (apiData) => {
     return obj;
         }
      )
-     downloadToExcel(DataToExport,'replacement report.xlsx')
+     downloadToExcel(DataToExport,'replacement report')
 
 }
 

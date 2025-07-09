@@ -441,7 +441,7 @@ export default function PotentialClosuresSheet() {
       });
       return obj;
     });
-    downloadToExcel(DataToExport, "Potential_Closures_Report.xlsx");
+    downloadToExcel(DataToExport, "Potential_Closures_Report");
   };
 
   const toggleHRFilter = useCallback(() => {

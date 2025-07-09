@@ -368,7 +368,7 @@ const AMReport = () => {
       });
       return obj;
     });
-    downloadToExcel(DataToExport, "company_Report.xlsx");
+    downloadToExcel(DataToExport, "Companylist");
   };
 
   return (

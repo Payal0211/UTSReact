@@ -296,7 +296,7 @@ if(talentID?.id){
 		return obj;
 			}
 		 )
-		 downloadToExcel(DataToExport)
+		 downloadToExcel(DataToExport,"HR Lost Report")
 	}
 
 	const clearFilters = useCallback(() => {
