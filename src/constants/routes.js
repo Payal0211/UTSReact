@@ -210,6 +210,9 @@ const ClientDashboardReport = React.lazy(() =>
 const RecruiterDashboardReport = React.lazy(() => 
 	import('modules/report/screens/clientDashboardReport/RecruiterDashboardReport')
 )
+const InterviewReschedule = React.lazy(() => 
+	import('modules/report/screens/clientDashboardReport/interviewReschedule')
+)
 const AMReport = React.lazy(() => 
 	import('modules/report/screens/amReport/amReport')
 )
@@ -287,6 +290,7 @@ export default class UTSRoutes {
 	static HRLostReoprt = '/hrlostreport'
 	static HR_REPORT = "/hrReport";
 	static CLIENT_HAPPINESS_SURVEY = '/ClientHappinessSurvey';
+	static  CLIENT_INTERVIEW_RESCHEDULE= '/interviewReschedule' 
 	static ALLCLIENTS = '/allClients';
 	static VIEWCLIENT = '/viewClient/:companyID/:clientID';
 	static CHANGE_PASSOWRD = '/changepassword'
@@ -583,6 +587,11 @@ export const navigateToComponent = {
 [UTSRoutes.CLIENT_HAPPINESS_SURVEY]:(
 	<Suspense>
 			<ClienthappinessSurvey />
+	</Suspense>
+),
+[UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE]:(
+	<Suspense>
+			<InterviewReschedule />
 	</Suspense>
 ),
 [UTSRoutes.ALLCLIENTS]:(
