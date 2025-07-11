@@ -220,7 +220,7 @@ export default function InterviewReschedule() {
             dataIndex: "recruiterHead",
             key: "recruiterHead",
             align: "left",
-            width: "160px",
+            width: "150px",
             fixed: "left",
             render: (text,row, index) => {
              if( row.recruiter === 'Total'){return ''} 
@@ -288,48 +288,7 @@ export default function InterviewReschedule() {
           );
         },
       },
-      {
-        title: "R1 Reject",
-        dataIndex: "r1InterviewReject",
-        key: "r1InterviewReject",
-        align: "center",
-        width: "100px",
-        // render: (value) => (value === 0 ? '-' : value),
-        render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_R1R');
-              }}
-            >
-              {result.total_R1InterviewReject ? result.total_R1InterviewReject : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'R1R');
-             
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
+     
       {
         title: "R2 Interview",
         dataIndex: "r2Interview",
@@ -371,47 +330,7 @@ export default function InterviewReschedule() {
           );
         } 
       },
-      {
-        title: "R2 Reject",
-        dataIndex: "r2InterviewReject",
-        key: "r2InterviewReject",
-        align: "center",
-        width: "100px",
-        render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_R2R');
-              }}
-            >
-              {result.total_R2InterviewReject ? result.total_R2InterviewReject : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'R2R');
-             
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        } 
-      },
+     
       {
         title: "R3 Interview",
         dataIndex: "r3Interview",
@@ -453,47 +372,7 @@ export default function InterviewReschedule() {
           );
         } 
       },
-      {
-        title: "R3 Reject",
-        dataIndex: "r3InterviewReject",
-        key: "r3InterviewReject",
-        align: "center",
-        width: "100px",
-       render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_R3R');
-              }}
-            >
-              {result.total_R3InterviewReject ? result.total_R3InterviewReject : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'R3R');
-             
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        } 
-      },
+     
      
     ];
   }, [clientData]);
@@ -832,10 +711,7 @@ export default function InterviewReschedule() {
                             alignItems: "center",
                             flexWrap: "wrap", 
                           }}
-                        >
-                          {console.log('profileInfo',profileInfo)}
-                         
-            
+                        >          
                           <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
                             TA : <strong>{profileInfo?.recruiter}</strong>
                           </p>
