@@ -597,7 +597,7 @@ export const ReportAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
-			ReportType.INTERVIEW_RESCHEDULE_DASHBOARD + `?fromDate=${reportData.fromDate}&month=${reportData.month}&searchText=${reportData.searchText}&taUserIDs=${reportData.taUserIDs}&toDate=${reportData.toDate}&year=${reportData.toDate}`
+			ReportType.INTERVIEW_RESCHEDULE_DASHBOARD + `?fromDate=${reportData.fromDate}&month=${reportData.month}&searchText=${reportData.searchText}&taUserIDs=${reportData.taUserIDs}&toDate=${reportData.toDate}&year=${reportData.year}`
 
 		httpService.setAuthRequired = true;
 		// httpService.dataToSend = reportData;
