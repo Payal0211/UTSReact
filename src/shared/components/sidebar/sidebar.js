@@ -289,13 +289,13 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
-	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'RecruiterDashboard' ){
+	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'RecruiterDashboard' || title === 'interviewReschedule' ){
 		isVisible =  true;
 		return isVisible
 	}
 
 	if(title === 'TA Dashboard'){
-		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 || ID === 9)?true : false;
+		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 || ID === 9 || ID === 11)?true : false;
 		return isVisible
 	}
 
@@ -465,6 +465,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isActive: false,
 					navigateTo: UTSRoutes.RECRUITER_DASHBOARD_REPORT,
 					isVisible: isAccess(usertypeID, 'RecruiterDashboard'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'interviewReschedule',
+					title: 'Interview Reschedule',
+					isActive: false,
+					navigateTo: UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE,
+					isVisible: isAccess(usertypeID, 'interviewReschedule'),
 					isChildren : false					
 				}),
 				new SideBarModels({

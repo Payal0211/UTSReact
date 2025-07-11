@@ -592,6 +592,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getRecruiterDashboardReport');
 		}
 	},
+	getInterviewRescheduleDashboardReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.INTERVIEW_RESCHEDULE_DASHBOARD + `?fromDate=${reportData.fromDate}&month=${reportData.month}&searchText=${reportData.searchText}&taUserIDs=${reportData.taUserIDs}&toDate=${reportData.toDate}&year=${reportData.toDate}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getInterviewRescheduleDashboardReport');
+		}
+	},
 	getAMReport:async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =

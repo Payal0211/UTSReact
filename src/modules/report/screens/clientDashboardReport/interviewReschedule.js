@@ -21,14 +21,11 @@ import { allEngagementConfig } from "modules/engagement/screens/engagementList/a
 import taStyles from "../../../../modules/taDashboard/tadashboard.module.css";
 import { InterviewDAO } from "core/interview/interviewDAO";
 import { useForm } from "react-hook-form";
-import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
-import { IconContext } from "react-icons";
-import { BsClipboard2CheckFill } from "react-icons/bs";
 import MoveToAssessment from "modules/hiring request/components/talentList/moveToAssessment";
 import moment from "moment";
-import { IoChevronDownOutline } from "react-icons/io5";
 
-export default function RecruiterDashboardReport() {  
+
+export default function InterviewReschedule() {  
 
   const navigate = useNavigate();  
   const [clientData, setClientData] = useState([]);
@@ -130,51 +127,7 @@ export default function RecruiterDashboardReport() {
         title: "Slot/Remark",
         dataIndex: "slotOrRemarkDetails",
         key: "slotOrRemarkDetails",
-      },
-      // {
-      //   title: "Status",
-      //   dataIndex: "talentStatus",
-      //   key: "talentStatus",
-      //   render: (_, item) => (
-      //     <div
-      //       style={{
-      //         display: "flex",
-      //         alignItems: "center",
-      //         justifyContent: "space-between",
-      //       }}
-      //     >
-      //       {All_Hiring_Request_Utils.GETTALENTSTATUS(
-      //         parseInt(item?.talentStatusColor),
-      //         item?.talentStatus
-      //       )}
-  
-      //       {(item?.statusID === 2 || item?.statusID === 3) && (
-      //         <IconContext.Provider
-      //           value={{
-      //             color: "#FFDA30",
-      //             style: { width: "16px", height: "16px", cursor: "pointer" },
-      //           }}
-      //         >
-      //           <Tooltip title="Move to Assessment" placement="top">
-      //             <span                  
-      //               onClick={() => {
-      //                 setMoveToAssessment(true);
-      //                 setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
-      //               }}
-      //               style={{ padding: "0" }}
-      //             >
-      //               {" "}
-      //               <BsClipboard2CheckFill />
-      //             </span>{" "}
-      //           </Tooltip>
-      //         </IconContext.Provider>
-      //       )}
-          
-      //     </div>
-      //   ),
-      // },
-    
-     
+      },     
     ];
   var date = new Date();
 
@@ -267,7 +220,7 @@ export default function RecruiterDashboardReport() {
             dataIndex: "recruiterHead",
             key: "recruiterHead",
             align: "left",
-            width: "160px",
+            width: "150px",
             fixed: "left",
             render: (text,row, index) => {
              if( row.recruiter === 'Total'){return ''} 
@@ -292,216 +245,8 @@ export default function RecruiterDashboardReport() {
               },
           },
           
-  {
-        title: "Profiles",
-        dataIndex: "profiles",
-        key: "profiles",
-        align: "center",
-        width: "100px",
-        render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return    <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_P');
-              }}
-            >
-              {result.total_Profiles ? result.total_Profiles : ''}
-            </p>
-         
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'P');
-                // setTalentToMove(result);
-                // setProfileStatusID(2);
-                // setHRTalentListFourCount([]);
-              }}
-            >
-              {text ? text : '-'}
-            </p>
-          ) : (
-            text ? text : '-'
-          );
-        },
-      },
-      {
-        title: "No Actions",
-        dataIndex: "noAction",
-        key: "noAction",
-        align: "center",
-       width: "100px",
-       render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_NA');
-              }}
-            >
-              {result.total_NoAction ? result.total_NoAction : ''}
-            </p> 
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'NA');
-              
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          ); 
-        },
-      },
-    
      
-      {
-        title: <>Screen <br/> Reject </>,
-        dataIndex: "screenReject",
-        key: "screenReject",
-        align: "center",
-        width: "100px",
-        render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_SR');
-              }}
-            >
-              {result.total_ScreenReject ? result.total_ScreenReject : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'SR');
-             
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
-      {
-        title: "Shortlist",
-        dataIndex: "shortlist",
-        key: "shortlist",
-        align: "center",
-        width: "100px",
-        render: (text, result) => {
-         if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_S');
-              }}
-            >
-              {result.total_Shortlist ? result.total_Shortlist : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'S');
-              
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
-      {
-        title: <>Interviews <br/> Done</>,
-        dataIndex: "noofInterviews",
-        key: "noofInterviews",
-        align: "center",
-        width: "100px",
-        render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_I');
-              }}
-            >
-              {result.total_NoofInterviews ? result.total_NoofInterviews : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'I');
-              
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
+
       {
         title: "R1 Interview",
         dataIndex: "r1Interview",
@@ -543,48 +288,7 @@ export default function RecruiterDashboardReport() {
           );
         },
       },
-      {
-        title: "R1 Reject",
-        dataIndex: "r1InterviewReject",
-        key: "r1InterviewReject",
-        align: "center",
-        width: "100px",
-        // render: (value) => (value === 0 ? '-' : value),
-        render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_R1R');
-              }}
-            >
-              {result.total_R1InterviewReject ? result.total_R1InterviewReject : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'R1R');
-             
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
+     
       {
         title: "R2 Interview",
         dataIndex: "r2Interview",
@@ -626,47 +330,7 @@ export default function RecruiterDashboardReport() {
           );
         } 
       },
-      {
-        title: "R2 Reject",
-        dataIndex: "r2InterviewReject",
-        key: "r2InterviewReject",
-        align: "center",
-        width: "100px",
-        render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_R2R');
-              }}
-            >
-              {result.total_R2InterviewReject ? result.total_R2InterviewReject : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'R2R');
-             
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        } 
-      },
+     
       {
         title: "R3 Interview",
         dataIndex: "r3Interview",
@@ -708,273 +372,27 @@ export default function RecruiterDashboardReport() {
           );
         } 
       },
-      {
-        title: "R3 Reject",
-        dataIndex: "r3InterviewReject",
-        key: "r3InterviewReject",
-        align: "center",
-        width: "100px",
-       render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_R3R');
-              }}
-            >
-              {result.total_R3InterviewReject ? result.total_R3InterviewReject : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'R3R');
-             
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        } 
-      },
-      {
-        title: "Offer",
-        dataIndex: "offer",
-        key: "offer",
-        align: "center",
-        width: "100px",
-        render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_O');
-              }}
-            >
-              {result.total_Offer ? result.total_Offer : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'O');
-            
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
-      {
-        title: "Offer Declined",
-        dataIndex: "offerDeclined",
-        key: "offerDeclined",
-        align: "center",
-       width: "120px",
-       render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_OD');
-              }}
-            >
-              {result.total_OfferDeclined ? result.total_OfferDeclined : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'OD');
-            
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
-      {
-        title: "Pre-Onboarding",
-        dataIndex: "preOnboarding",
-        key: "preOnboarding",
-        align: "center",
-        width: "120px",
-       render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_PO');
-              }}
-            >
-              {result.total_PreOnboarding ? result.total_PreOnboarding : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'PO');
-            
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
-      {
-        title: "Joined",
-        dataIndex: "joined",
-        key: "joined",
-        align: "center",
-        width: "100px",
-        render:  (text, result) => {
-          if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_J');
-              }}
-            >
-              {result.total_Joined ? result.total_Joined : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'J');
-             
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
-      {
-        title: "Joined & Left",
-        dataIndex: "joinedLost",
-        key: "joinedLost",
-        align: "center",
-       width: "120px",
-       render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_JL');
-              }}
-            >
-              {result.total_JoinedLost ? result.total_JoinedLost : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'JL');
-            
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
+     
+     
     ];
   }, [clientData]);
   
 
-  const getClientDashboardReport = async () => {
+  const getDashboardReport = async () => {
     let payload = {
         "searchText": openTicketSearchText,
         "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
         "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
         "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? startDate.toLocaleDateString("en-US"): '',
         "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? endDate.toLocaleDateString("en-US"): '' ,
-        // "pageIndex": pageIndex,
-        // "pageSize": pageSize,
         "taUserIDs":tableFilteredState?.filterFields_OnBoard?.taUserIDs   ??''     
       };
     setLoading(true)
-    const apiResult = await ReportDAO.getRecruiterDashboardReportDAO(payload);
+    const apiResult = await ReportDAO.getInterviewRescheduleDashboardReportDAO(payload);
     setLoading(false)
     if (apiResult?.statusCode === 200) {        
-      setClientData(groupByRowSpan(apiResult.responseBody?.rows, "recruiterHead") );      
-      setListDataCount(apiResult.responseBody?.totalrows);      
+      setClientData(groupByRowSpan(apiResult.responseBody, "recruiterHead") );      
+    //   setListDataCount(apiResult.responseBody?.totalrows);      
     } else if (apiResult?.statusCode === 404) {
         setClientData([]);
         setListDataCount(0);     
@@ -1007,21 +425,11 @@ export default function RecruiterDashboardReport() {
   const onCalenderFilter = (dates) => {
     const [start, end] = dates;
     setStartDate(start);
-    setEndDate(end);
-
-    // if (start?.toLocaleDateString() === end?.toLocaleDateString()) {
-    //   let params = {
-    //     fromDate: firstDayOfMonth,
-    //     toDate: today,
-    //   }
-    //   setStartDate(params.fromDate);
-    //   setEndDate(params.toDate);
-    //   return;
-    // }    
+    setEndDate(end);   
   };
 
   useEffect(() => {
-    getClientDashboardReport();
+    getDashboardReport();
   }, [pageIndex, pageSize, openTicketSearchText,tableFilteredState,monthDate,startDate,endDate]);
 
 
@@ -1097,14 +505,14 @@ export default function RecruiterDashboardReport() {
           return obj;
         }
       )
-      downloadToExcel(DataToExport,'Recruiter_Dashboard_Report')  
+      downloadToExcel(DataToExport,'Interview_Reschedule')  
   }
 
   return (
     <div className={clientDashboardStyles.hiringRequestContainer}>
       
       <div className={clientDashboardStyles.addnewHR} style={{ margin: "0" }}>
-        <div className={clientDashboardStyles.hiringRequest}>Recruiter Dashboard</div>
+        <div className={clientDashboardStyles.hiringRequest}>Interview Reschedule</div>
       </div>
 
       <div className={clientDashboardStyles.filterContainer}>
@@ -1218,40 +626,7 @@ export default function RecruiterDashboardReport() {
                   </div>
                 )}                
               
-                {/* <div className={clientDashboardStyles.priorityFilterSet}>                
-                  <div className={clientDashboardStyles.label}>
-                    Showing
-                  </div>                
-                  <div className={clientDashboardStyles.paginationFilter}>
-                    <Dropdown
-                      trigger={["click"]}
-                      placement="bottom"
-                      overlay={
-                        <Menu
-                          onClick={(e) => {
-                            setPageSize(parseInt(e.key));                                   
-                          }}
-                        >
-                          {pageSizeOptions.map((item) => {
-                            return (
-                              <Menu.Item key={item}>{item}</Menu.Item>
-                            );
-                          })}
-                        </Menu>
-                      }
-                    >
-                      <span>
-                        {pageSize}
-                        <IoChevronDownOutline
-                          style={{
-                            paddingTop: "5px",
-                            fontSize: "16px",
-                          }}
-                        />
-                      </span>
-                    </Dropdown>
-                  </div>                  
-                </div> */}
+            
 
                 <div
                   className={clientDashboardStyles.paginationFilter}
@@ -1280,20 +655,7 @@ export default function RecruiterDashboardReport() {
         rowClassName={(row, index) => {
             return row.recruiter === 'Total' ? clientDashboardStyles["highlight-total-row"] : '';
         }}   
- pagination={false}
-          // pagination={{
-          //   onChange: (pageNum, pageSize) => {
-          //     setPageIndex(pageNum);
-          //     setPageSize(pageSize - 1);
-          //   },
-          //   size: "small",
-          //   pageSize: pageSize + 1,
-          //   pageSizeOptions: pageSizeOptions,
-          //   total: listDataCount,
-          //   showTotal: (total, range) =>
-          //     `${range[0]}-${range[1]} of ${listDataCount} items`,
-          //   current: pageIndex,
-          // }}  
+ pagination={false} 
       />
       </div>
       }
@@ -1349,10 +711,7 @@ export default function RecruiterDashboardReport() {
                             alignItems: "center",
                             flexWrap: "wrap", 
                           }}
-                        >
-                          {console.log('profileInfo',profileInfo)}
-                         
-            
+                        >          
                           <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
                             TA : <strong>{profileInfo?.recruiter}</strong>
                           </p>
@@ -1372,185 +731,7 @@ export default function RecruiterDashboardReport() {
                             }}
                           />
                       </div>           
-            
-                      {/* <div
-                        style={{
-                          padding: "10px 15px",
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div
-                          className={taStyles.filterType}
-                          key={"Total Talents"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 0);
-                            setProfileStatusID(0);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 0 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Total Talents :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.totalTalents
-                                ? hrTalentListFourCount[0]?.totalTalents
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Profile shared"}
-                          onClick={() => {
-                            console.log(profileInfo,"profileInfo");                              
-                            getTalentProfilesDetails(profileInfo, 2);
-                            setProfileStatusID(2);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 2 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Profile shared :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.profileSharedCount
-                                ? hrTalentListFourCount[0]?.profileSharedCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"In Assessment"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 11);
-                            setProfileStatusID(11);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 11 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            In Assessment :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.assessmentCount
-                                ? hrTalentListFourCount[0]?.assessmentCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"In Interview"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 3);
-                            setProfileStatusID(3);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 3 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            In Interview :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.inInterviewCount
-                                ? hrTalentListFourCount[0]?.inInterviewCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Offered"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 4);
-                            setProfileStatusID(4);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 4 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Offered :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.offeredCount
-                                ? hrTalentListFourCount[0]?.offeredCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Hired"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 10);
-                            setProfileStatusID(10);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 10 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Hired :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.hiredCount
-                                ? hrTalentListFourCount[0]?.hiredCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Rejected, screening"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 7, 1);
-                            setProfileStatusID(71);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 71 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Screen Reject :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.screeningRejectCount
-                                ? hrTalentListFourCount[0]?.screeningRejectCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Rejected, Interview"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 7, 2);
-                            setProfileStatusID(72);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 72 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Interview Reject :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.interviewRejectCount
-                                ? hrTalentListFourCount[0]?.interviewRejectCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                      </div> */}
+
             
                         {loadingTalentProfile ? (
                           <div>
