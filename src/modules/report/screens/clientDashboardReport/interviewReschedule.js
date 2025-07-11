@@ -626,7 +626,7 @@ export default function InterviewReschedule() {
           return obj;
         }
       )
-      downloadToExcel(DataToExport,'Recruiter_Dashboard_Report.xlsx')  
+      downloadToExcel(DataToExport,'Interview_Reschedule')  
   }
 
   return (

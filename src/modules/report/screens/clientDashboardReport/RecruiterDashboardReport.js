@@ -1097,7 +1097,7 @@ export default function RecruiterDashboardReport() {
           return obj;
         }
       )
-      downloadToExcel(DataToExport,'Recruiter_Dashboard_Report.xlsx')  
+      downloadToExcel(DataToExport,'Recruiter_Dashboard_Report')  
   }
 
   return (
