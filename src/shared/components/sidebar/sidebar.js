@@ -289,7 +289,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// 	isVisible =  true	
 	// 	return isVisible	
 	// }
-	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'RecruiterDashboard' || title === 'interviewReschedule' ){
+	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'RecruiterDashboard' || title === 'interviewReschedule' || title  === 'averageSLA' ){
 		isVisible =  true;
 		return isVisible
 	}
@@ -473,6 +473,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isActive: false,
 					navigateTo: UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE,
 					isVisible: isAccess(usertypeID, 'interviewReschedule'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'averageSLA',
+					title: 'Average SLA',
+					isActive: false,
+					navigateTo: UTSRoutes.AVERAGE_SLA,
+					isVisible: isAccess(usertypeID, 'averageSLA'),
 					isChildren : false					
 				}),
 				new SideBarModels({
