@@ -609,6 +609,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getInterviewRescheduleDashboardReport');
 		}
 	},
+	getAverageSLAdReportReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.AVERAGE_SLA + `?fromDate=${reportData.fromDate}&month=${reportData.month}&searchText=${reportData.searchText}&taUserIDs=${reportData.taUserIDs}&toDate=${reportData.toDate}&year=${reportData.year}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getAverageSLAdReportReport');
+		}
+	},
 	getAMReport:async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =
