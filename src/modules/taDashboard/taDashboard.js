@@ -1633,7 +1633,9 @@ export default function TADashboard() {
                   alt="info"
                   style={{ width: "16px", height: "16px" }}
                 />
-                <div
+                {(userData?.UserId === 2 ||
+                userData?.UserId === 333 ||
+                userData?.UserId === 190 || userData?.UserId === 96 ) &&    <div
                   onClick={() => {
                     setShowDiamondRemark(true);
                     setCompanyIdForRemark({ ...row, index: index });
@@ -1650,7 +1652,8 @@ export default function TADashboard() {
                       }}
                     />
                   </Tooltip>
-                </div>
+                </div>}
+             
               </>
             )}
             {row?.companyCategory !== "Diamond" &&

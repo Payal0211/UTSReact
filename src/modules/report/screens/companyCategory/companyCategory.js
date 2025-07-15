@@ -209,7 +209,10 @@ const AMReport = () => {
                     alt="info"
                     style={{ width: "16px", height: "16px" }}
                   />
-                  <div
+                  {(userData?.UserId === 2 ||
+                  userData?.UserId === 333 ||
+                  userData?.UserId === 190 ||
+                  userData?.UserId === 96) &&    <div
                     onClick={() => {
                       setShowDiamondRemark(true);
                       setCompanyIdForRemark({ ...row, index: index });
@@ -226,7 +229,8 @@ const AMReport = () => {
                         }}
                       />
                     </Tooltip>
-                  </div>
+                  </div>}
+               
                 </>
               )}
               {row?.company_Category !== "Diamond" &&
