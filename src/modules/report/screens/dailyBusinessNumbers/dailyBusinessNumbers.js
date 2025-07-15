@@ -1620,7 +1620,7 @@ export default function DailyBusinessNumbersPage() {
                 <thead className={styles.overwriteTableColor} style={{position:'sticky',top:'0'}}>
                   <tr style={{ backgroundColor: "#f0f0f0" }}>
                     <th style={{ padding: "10px", border: "1px solid #ddd", background:'rgb(233, 233, 233) !important'}}>
-                      HR Created Date
+                     {showTalentCol?.stage === 'New Clients' ? 'Created Date': 'HR Created Date'} 
                     </th>
                      {showTalentCol?.isTalentShow === 1 && <th style={{ padding: "10px", border: "1px solid #ddd",background:'rgb(233, 233, 233) !important' }}>
                       Action Date
@@ -1628,7 +1628,8 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       Company
                     </th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
+                    {showTalentCol?.stage !== 'New Clients' && <>
+                       <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
                       HR Number
                     </th>
                     <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
@@ -1642,15 +1643,18 @@ export default function DailyBusinessNumbersPage() {
                     <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
                       Uplers Fees
                     </th>
+                    </>}
+                 
                     <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       Sales Person
                     </th>
                     {showTalentCol?.stage === 'HRs (Carry Fwd)' && <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       Carry Fwd Status
                     </th>}  
-                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
+                    {showTalentCol?.stage !== 'New Clients' && <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                       HR Status
-                    </th>
+                    </th>}
+                    
                     <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
                        Client Business Type
                     </th>
@@ -1677,7 +1681,8 @@ export default function DailyBusinessNumbersPage() {
                     style={{ width: "16px", height: "16px" }}
                   />}
                       </td>
-                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      {showTalentCol?.stage !== 'New Clients' && <>
+                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hiringRequestID > 0 ?  <a
             href={`/allhiringrequest/${detail.hiringRequestID}`}
             style={{ textDecoration: "underline" }}
@@ -1688,7 +1693,7 @@ export default function DailyBusinessNumbersPage() {
           </a> : detail.hR_Number}
                       
                       </td>
-                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.hrTitle}
                       </td>
                       {showTalentCol?.isTalentShow  === 1 && (
@@ -1701,6 +1706,10 @@ export default function DailyBusinessNumbersPage() {
                       <td style={{ padding: "8px",  display:'flex',alignItems:'center',justifyContent:'right',height:'100%' }}>
                         {detail.uplersFeesStr}
                       </td>
+                      </>}
+                     
+                     
+                      
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.salesPerson}
                       </td>
@@ -1710,12 +1719,13 @@ export default function DailyBusinessNumbersPage() {
                                                     detail.carryFwd_HRStatus
                                                   )}
                       </td>}  
-                        <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      {showTalentCol?.stage !== 'New Clients' &&   <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                          {All_Hiring_Request_Utils.GETHRSTATUS(
                                                     Number(detail.hrStatusCode),
                                                     detail.hrStatus
                                                   )}
-                      </td>
+                      </td>}
+                      
                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                         {detail.clientBusinessType}
                       </td>
