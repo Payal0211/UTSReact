@@ -288,16 +288,17 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 	// if ((title === 'Chat GPT Response' || title === "Replacement") && ID === 1 ){
 	// 	isVisible =  true	
 	// 	return isVisible	
-	// }
+	// }	
+	if(title === 'TA Dashboard'){
+		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 || ID === 9 || ID === 11 || ID === 4)?true : false;
+		return isVisible
+	}
 	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'RecruiterDashboard' || title === 'interviewReschedule' || title  === 'averageSLA' ){
 		isVisible =  true;
 		return isVisible
 	}
 
-	if(title === 'TA Dashboard'){
-		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 || ID === 9 || ID === 11)?true : false;
-		return isVisible
-	}
+
 
 	if(title === "AM Dashboard"){
 		isVisible =  (ID === 1 || ID === 4 || ID === 3 || ID === 6 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )?true : false;
