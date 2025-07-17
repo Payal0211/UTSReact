@@ -450,7 +450,7 @@ const ViewHRDetails = () => {
                         <span>Mode of Work:</span>{" "}
                         {/* {hiringDetails?.responseBody?.details?.dealID !== 0  ? hiringDetails?.responseBody?.details?.dealID : 'NA'} */}
                         {hiringDetails?.responseBody?.details
-                          ?.directHRModeOfWork ?? "Remote"}
+                          ?.directHRModeOfWork ?? "NA"}
                       </li>
                       {(hiringDetails?.responseBody?.details
                         ?.directHRModeOfWork === "Office" ||
