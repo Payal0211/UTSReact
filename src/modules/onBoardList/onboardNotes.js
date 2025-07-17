@@ -87,7 +87,7 @@ export default function OnboardNotes({ onboardID, getOnboardFormDetails }) {
     let payload = {
       id: 0,
       notes: note,
-      onBoardID: onboardID,
+      onBoardID: +onboardID,
       talentID: getOnboardFormDetails?.talentID,
       hiringRequestID: getOnboardFormDetails?.hR_ID,
     };

@@ -220,6 +220,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.insertTaskCommentRequest');
 		}
 	},
+	insertRecruiterCommentRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			TaDashboardURL.INSERT_REVENUE_COMMENT
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.insertRecruiterCommentRequest');
+		}
+	},
     getALLCommentsRequest: async function (id) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -234,6 +251,22 @@ export const TaDashboardAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'TaDashboardAPI.getALLCommentsRequest');
+		}
+	},
+	getALLRevenueCommentsRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			TaDashboardURL.GET_ALL_REVENUE_COMMENTS + `?hR_BusinessType=${pl.hR_BusinessType}&month=${pl.month}&year=${pl.year}&userCategory=${pl.userCategory}&hR_Model=${pl.hR_Model}&stage_ID=${pl.stage_ID}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getALLRevenueCommentsRequest');
 		}
 	},
     removeTasksRequest: async function (id) {

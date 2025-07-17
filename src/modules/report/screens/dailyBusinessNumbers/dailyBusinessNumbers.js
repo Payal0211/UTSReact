@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Table, Card, Typography, Modal, Row, Col } from "antd";
+import React, { useEffect, useState, Suspense } from "react";
+import { Table, Card, Typography, Modal, Row, Col, Tooltip } from "antd";
 import DatePicker from "react-datepicker";
 import styles from "./dailyBusinessNumbers.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { ReactComponent as ArrowDownSVG } from "assets/svg/arrowDown.svg";
 import { ReportDAO } from "core/report/reportDAO";
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import moment from "moment";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import LogoLoader from "shared/components/loader/logoLoader";
+import { HTTPStatusCode } from "constants/network";
+import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import Diamond from "assets/svg/diamond.svg";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
+import { IoMdAddCircle } from "react-icons/io";
+import { IconContext } from "react-icons";
+import spinGif from "assets/gif/RefreshLoader.gif";
+import Editor from "modules/hiring request/components/textEditor/editor";
 
 const { Title, Text } = Typography;
 
@@ -24,12 +31,50 @@ export default function DailyBusinessNumbersPage() {
   const [listAchievedData, setListAchievedData] = useState([]);
   const [achievedLoading, setAchievedLoading] = useState(false);
   const [showTalentCol, setShowTalentCol] = useState({});
-  const [achievedTotal,setAchievedTotal] = useState('')
+  const [achievedTotal, setAchievedTotal] = useState("");
 
   const [showNBDorAMRevenueReport, setNBDorAMRevenueReport] = useState(false);
   const [listNBDorAMRevenueData, setListNBDorAMRevenueData] = useState([]);
   const [NBDorAMRevenueLoading, setNBDorAMRevenueLoading] = useState(false);
   const [NBDorAMRevenueType, setNBDorAMRevenueType] = useState("");
+  const [showComment, setShowComment] = useState(false);
+
+  const [commentData, setCommentData] = useState({});
+  const [allCommentList, setALLCommentsList] = useState([]);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
+  const [userData, setUserData] = useState({});
+  useEffect(() => {
+    const getUserResult = async () => {
+      let userData = UserSessionManagementController.getUserSession();
+      if (userData) setUserData(userData);
+    };
+    getUserResult();
+  }, []);
+
+  const getAllComments = async (d, modal) => {
+    setIsCommentLoading(true);
+    const pl = {
+      month: moment(monthDate).format("M"),
+      year: moment(monthDate).format("YYYY"),
+      userCategory: d.userCategory,
+      hR_Model: modal,
+      stage_ID: d.stage_ID,
+      hR_BusinessType: "Global",
+    };
+    const result = await TaDashboardDAO.getALLRevenueCommentsDAO(pl);
+    setIsCommentLoading(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setALLCommentsList(result.responseBody);
+    } else {
+      setALLCommentsList([]);
+    }
+  };
+
+  const AddComment = (data, modal, index) => {
+    getAllComments(data, modal);
+    setShowComment(true);
+    setCommentData({ ...data, hR_Model: modal });
+  };
 
   const getColumns = () => [
     {
@@ -124,14 +169,14 @@ export default function DailyBusinessNumbersPage() {
             color: "white",
             fontWeight: "bold",
           };
-           else if (record.stage === "Current Month Lost")
+        else if (record.stage === "Current Month Lost")
           cellStyle = {
             ...cellStyle,
             backgroundColor: "#ED7D31",
             color: "white",
             fontWeight: "bold",
           };
-           else if (record.stage === "Churn")
+        else if (record.stage === "Churn")
           cellStyle = {
             ...cellStyle,
             backgroundColor: "#ED7D31",
@@ -222,16 +267,61 @@ export default function DailyBusinessNumbersPage() {
               return { props: { colSpan: 0 } };
             }
 
-            if(rec.stage === 'Current Active'){
-              return  <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "right",
-                }}
-              >             
-                  {v}              
-              </div>
+            if (rec.stage === "Current Active") {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "right",
+                  }}
+                >
+                  {v}
+                </div>
+              );
+            }
+            if (rec.stage === "HRs (New)" || rec.stage === "Closures") {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <IconContext.Provider
+                    value={{
+                      color: "green",
+                      style: {
+                        width: "20px",
+                        height: "20px",
+                        marginRight: "5px",
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    {" "}
+                    <Tooltip title={`Add/View comment`} placement="top">
+                      <span
+                        onClick={() => {
+                          AddComment(rec, "C");
+                        }}
+                        // className={taStyles.feedbackLabel}
+                      >
+                        {" "}
+                        <IoMdAddCircle />
+                      </span>{" "}
+                    </Tooltip>
+                  </IconContext.Provider>
+
+                  <span
+                    onClick={() => getHRTalentWiseReport(rec, "C", v)}
+                    style={{ cursor: "pointer", color: "#1890ff" }}
+                  >
+                    {v}
+                  </span>
+                </div>
+              );
             }
             return (
               <div
@@ -315,16 +405,61 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
-            if(rec.stage === 'Current Active'){
-              return  <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "right",
-                }}
-              >             
-                  {v}              
-              </div>
+            if (rec.stage === "Current Active") {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "right",
+                  }}
+                >
+                  {v}
+                </div>
+              );
+            }
+            if (rec.stage === "HRs (New)" || rec.stage === "Closures") {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <IconContext.Provider
+                    value={{
+                      color: "green",
+                      style: {
+                        width: "20px",
+                        height: "20px",
+                        marginRight: "5px",
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    {" "}
+                    <Tooltip title={`Add/View comment`} placement="top">
+                      <span
+                        onClick={() => {
+                          AddComment(rec, "D");
+                        }}
+                        // className={taStyles.feedbackLabel}
+                      >
+                        {" "}
+                        <IoMdAddCircle />
+                      </span>{" "}
+                    </Tooltip>
+                  </IconContext.Provider>
+
+                  <span
+                    onClick={() => getHRTalentWiseReport(rec, "D", v)}
+                    style={{ cursor: "pointer", color: "#1890ff" }}
+                  >
+                    {v}
+                  </span>
+                </div>
+              );
             }
             return (
               <div
@@ -405,16 +540,18 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
-            if(rec.stage === 'Current Active'){
-              return  <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "right",
-                }}
-              >             
-                  {v}              
-              </div>
+            if (rec.stage === "Current Active") {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "right",
+                  }}
+                >
+                  {v}
+                </div>
+              );
             }
             return (
               <div
@@ -762,7 +899,6 @@ export default function DailyBusinessNumbersPage() {
                       : "",
                 }}
                 onClick={(val, obj) => {
-                 
                   if (
                     record.stage === "Existing (Total)" ||
                     record.stage === "NBD (Total)"
@@ -820,14 +956,14 @@ export default function DailyBusinessNumbersPage() {
             color: "white",
             fontWeight: "bold",
           };
-            else if (record.stage === "Current Active")
+        else if (record.stage === "Current Active")
           cellStyle = {
             ...cellStyle,
             backgroundColor: "#9ec7e6",
             color: "white",
             fontWeight: "bold",
           };
-           else if (record.stage === "Current Month Lost")
+        else if (record.stage === "Current Month Lost")
           cellStyle = {
             ...cellStyle,
             backgroundColor: "#ED7D31",
@@ -924,16 +1060,18 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
-             if(rec.stage === 'Current Active'){
-              return  <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "right",
-                }}
-              >             
-                  {v}              
-              </div>
+            if (rec.stage === "Current Active") {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "right",
+                  }}
+                >
+                  {v}
+                </div>
+              );
             }
             return (
               <div
@@ -1017,16 +1155,18 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
-             if(rec.stage === 'Current Active'){
-              return  <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "right",
-                }}
-              >             
-                  {v}              
-              </div>
+            if (rec.stage === "Current Active") {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "right",
+                  }}
+                >
+                  {v}
+                </div>
+              );
             }
             return (
               <div
@@ -1107,16 +1247,18 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
-             if(rec.stage === 'Current Active'){
-              return  <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "right",
-                }}
-              >             
-                  {v}              
-              </div>
+            if (rec.stage === "Current Active") {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "right",
+                  }}
+                >
+                  {v}
+                </div>
+              );
             }
             return (
               <div
@@ -1363,6 +1505,25 @@ export default function DailyBusinessNumbersPage() {
     },
   ];
 
+  const saveComment = async (note) => {
+    let pl = {
+      hR_BusinessType: "Global",
+      month: moment(monthDate).format("M"),
+      year: moment(monthDate).format("YYYY"),
+      userCategory: commentData.userCategory,
+      hR_Model: commentData.hR_Model,
+      stage_ID: commentData.stage_ID,
+      loggedInUserID: userData?.UserId,
+      comments: note,
+    };
+    setIsCommentLoading(true);
+    const res = await TaDashboardDAO.insertRecruiterCommentRequestDAO(pl);
+    setIsCommentLoading(false);
+    if (res.statusCode === HTTPStatusCode.OK) {
+      setALLCommentsList(res.responseBody);
+    }
+  };
+
   const onMonthCalenderFilter = (date) => {
     setMonthDate(date);
   };
@@ -1398,7 +1559,7 @@ export default function DailyBusinessNumbersPage() {
         amID: null,
       };
       setShowTalentCol(row);
-      setAchievedTotal(v)
+      setAchievedTotal(v);
       setAchievedLoading(true);
       const result = await ReportDAO.getHrTAWiseReportDAO(pl);
       setAchievedLoading(false);
@@ -1447,6 +1608,26 @@ export default function DailyBusinessNumbersPage() {
       setListNBDorAMRevenueData([]);
     }
   };
+
+  const commentColumn = [
+    {title:"Created By",
+      dataIndex: "createdByDatetime",
+      key: "createdByDatetime",
+       width:'200px'
+    },
+    {title:"Comment",
+      dataIndex: "comments",
+      key: "comments",
+      render:(text)=>{
+        return <div  dangerouslySetInnerHTML={{ __html: text }}></div>
+      }
+    },
+     {title:"Added By",
+      dataIndex: "addedBy",
+      key: "addedBy",
+      width:'200px'
+    },
+  ]
 
   useEffect(() => {
     getReport();
@@ -1598,148 +1779,287 @@ export default function DailyBusinessNumbersPage() {
         >
           <div style={{ padding: "20px 15px" }}>
             <h3>
-              <b>{showTalentCol?.stage}</b>  <b> : {achievedTotal}</b>
+              <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
-
-        
           </div>
 
           {achievedLoading ? (
             <TableSkeleton />
           ) : listAchievedData.length > 0 ? (
-            <>        
-             <div style={{ padding: "0 20px 20px 20px", overflowX: "auto", maxHeight:'500px' }}>
-              <table
+            <>
+              <div
                 style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  fontSize: 14,
-                  textAlign: "left",
+                  padding: "0 20px 20px 20px",
+                  overflowX: "auto",
+                  maxHeight: "500px",
                 }}
               >
-                <thead className={styles.overwriteTableColor} style={{position:'sticky',top:'0'}}>
-                  <tr style={{ backgroundColor: "#f0f0f0" }}>
-                    <th style={{ padding: "10px", border: "1px solid #ddd", background:'rgb(233, 233, 233) !important'}}>
-                     {showTalentCol?.stage === 'New Clients' ? 'Created Date': 'HR Created Date'} 
-                    </th>
-                     {showTalentCol?.isTalentShow === 1 && <th style={{ padding: "10px", border: "1px solid #ddd",background:'rgb(233, 233, 233) !important' }}>
-                      Action Date
-                    </th>}
-                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
-                      Company
-                    </th>
-                    {showTalentCol?.stage !== 'New Clients' && <>
-                       <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
-                      HR Number
-                    </th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
-                      HR Title
-                    </th>
-                    {showTalentCol?.isTalentShow  === 1 && (
-                      <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
-                         TR / HR / Talent
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 14,
+                    textAlign: "left",
+                  }}
+                >
+                  <thead
+                    className={styles.overwriteTableColor}
+                    style={{ position: "sticky", top: "0" }}
+                  >
+                    <tr style={{ backgroundColor: "#f0f0f0" }}>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        {showTalentCol?.stage === "New Clients"
+                          ? "Created Date"
+                          : "HR Created Date"}
                       </th>
-                    )}
-                    <th style={{ padding: "10px", border: "1px solid #ddd" ,backgroundColor:'rgb(233, 233, 233) !important'}}>
-                      Uplers Fees
-                    </th>
-                    </>}
-                 
-                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
-                      Sales Person
-                    </th>
-                    {showTalentCol?.stage === 'HRs (Carry Fwd)' && <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
-                      Carry Fwd Status
-                    </th>}  
-                    {showTalentCol?.stage !== 'New Clients' && <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
-                      HR Status
-                    </th>}
-                    
-                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
-                       Client Business Type
-                    </th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd",backgroundColor:'rgb(233, 233, 233) !important' }}>
-                      Lead Type
-                    </th>
-                  
-                  </tr>
-                </thead>
+                      {showTalentCol?.isTalentShow === 1 && (
+                        <th
+                          style={{
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            background: "rgb(233, 233, 233) !important",
+                          }}
+                        >
+                          Action Date
+                        </th>
+                      )}
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Company
+                      </th>
+                      {showTalentCol?.stage !== "New Clients" && (
+                        <>
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            HR Number
+                          </th>
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            HR Title
+                          </th>
+                          {showTalentCol?.isTalentShow === 1 && (
+                            <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              TR / HR / Talent
+                            </th>
+                          )}
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Uplers Fees
+                          </th>
+                        </>
+                      )}
 
-                <tbody style={{maxHeight:'500px'}}>
-                  {listAchievedData.map((detail, index) => (
-                    <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
-                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.hrCreatedDateStr}
-                      </td>
-                      {showTalentCol?.isTalentShow  === 1 && <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.closureDateStr}
-                      </td>} 
-                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.company} {detail.company_Category === 'Diamond' &&   <img
-                    src={Diamond}
-                    alt="info"
-                    style={{ width: "16px", height: "16px" }}
-                  />}
-                      </td>
-                      {showTalentCol?.stage !== 'New Clients' && <>
-                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.hiringRequestID > 0 ?  <a
-            href={`/allhiringrequest/${detail.hiringRequestID}`}
-            style={{ textDecoration: "underline" }}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {detail.hR_Number}
-          </a> : detail.hR_Number}
-                      
-                      </td>
-                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.hrTitle}
-                      </td>
-                      {showTalentCol?.isTalentShow  === 1 && (
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Sales Person
+                      </th>
+                      {showTalentCol?.stage === "HRs (Carry Fwd)" && (
+                        <th
+                          style={{
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "rgb(233, 233, 233) !important",
+                          }}
+                        >
+                          Carry Fwd Status
+                        </th>
+                      )}
+                      {showTalentCol?.stage !== "New Clients" && (
+                        <th
+                          style={{
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "rgb(233, 233, 233) !important",
+                          }}
+                        >
+                          HR Status
+                        </th>
+                      )}
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Client Business Type
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Lead Type
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody style={{ maxHeight: "500px" }}>
+                    {listAchievedData.map((detail, index) => (
+                      <tr
+                        key={index}
+                        style={{ borderBottom: "1px solid #ddd" }}
+                      >
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.talent}
+                          {detail.hrCreatedDateStr}
                         </td>
-                      )}
-                      <td style={{ padding: "8px",  display:'flex',alignItems:'center',justifyContent:'right',height:'100%' }}>
-                        {detail.uplersFeesStr}
-                      </td>
-                      </>}
-                     
-                     
-                      
-                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.salesPerson}
-                      </td>
-                     {showTalentCol?.stage === 'HRs (Carry Fwd)' && <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                         {All_Hiring_Request_Utils.GETHRSTATUS(
-                                                    Number(detail.carryFwd_HRStatusCode),
-                                                    detail.carryFwd_HRStatus
-                                                  )}
-                      </td>}  
-                      {showTalentCol?.stage !== 'New Clients' &&   <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                         {All_Hiring_Request_Utils.GETHRSTATUS(
-                                                    Number(detail.hrStatusCode),
-                                                    detail.hrStatus
-                                                  )}
-                      </td>}
-                      
-                      <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.clientBusinessType}
-                      </td>
-                       <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                        {detail.lead_Type}
-                      </td>
-                       
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        {showTalentCol?.isTalentShow === 1 && (
+                          <td
+                            style={{ padding: "8px", border: "1px solid #ddd" }}
+                          >
+                            {detail.closureDateStr}
+                          </td>
+                        )}
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.company}{" "}
+                          {detail.company_Category === "Diamond" && (
+                            <img
+                              src={Diamond}
+                              alt="info"
+                              style={{ width: "16px", height: "16px" }}
+                            />
+                          )}
+                        </td>
+                        {showTalentCol?.stage !== "New Clients" && (
+                          <>
+                            <td
+                              style={{
+                                padding: "8px",
+                                border: "1px solid #ddd",
+                              }}
+                            >
+                              {detail.hiringRequestID > 0 ? (
+                                <a
+                                  href={`/allhiringrequest/${detail.hiringRequestID}`}
+                                  style={{ textDecoration: "underline" }}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  {detail.hR_Number}
+                                </a>
+                              ) : (
+                                detail.hR_Number
+                              )}
+                            </td>
+                            <td
+                              style={{
+                                padding: "8px",
+                                border: "1px solid #ddd",
+                              }}
+                            >
+                              {detail.hrTitle}
+                            </td>
+                            {showTalentCol?.isTalentShow === 1 && (
+                              <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {detail.talent}
+                              </td>
+                            )}
+                            <td
+                              style={{
+                                padding: "8px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "right",
+                                height: "100%",
+                              }}
+                            >
+                              {detail.uplersFeesStr}
+                            </td>
+                          </>
+                        )}
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.salesPerson}
+                        </td>
+                        {showTalentCol?.stage === "HRs (Carry Fwd)" && (
+                          <td
+                            style={{ padding: "8px", border: "1px solid #ddd" }}
+                          >
+                            {All_Hiring_Request_Utils.GETHRSTATUS(
+                              Number(detail.carryFwd_HRStatusCode),
+                              detail.carryFwd_HRStatus
+                            )}
+                          </td>
+                        )}
+                        {showTalentCol?.stage !== "New Clients" && (
+                          <td
+                            style={{ padding: "8px", border: "1px solid #ddd" }}
+                          >
+                            {All_Hiring_Request_Utils.GETHRSTATUS(
+                              Number(detail.hrStatusCode),
+                              detail.hrStatus
+                            )}
+                          </td>
+                        )}
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.clientBusinessType}
+                        </td>
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.lead_Type}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </>
-           
           ) : (
             <div
               style={{
@@ -1759,6 +2079,95 @@ export default function DailyBusinessNumbersPage() {
               className={styles.btnCancle}
               onClick={() => {
                 setShowAchievedReport(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {showComment && (
+        <Modal
+          transitionName=""
+          width="1000px"
+          centered
+          footer={null}
+          open={showComment}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowComment(false);
+            setALLCommentsList([]);
+            setCommentData({});
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Add Comment</h3>
+          </div>
+          <Suspense>
+            <div
+              style={{
+                position: "relative",
+                marginBottom: "10px",
+                padding: "0 20px",
+                paddingRight: "30px",
+              }}
+            >
+              <Editor
+                hrID={""}
+                saveNote={(note) => saveComment(note)}
+                isUsedForComment={true}
+              />
+            </div>
+          </Suspense>
+
+          {allCommentList.length > 0 ? (
+            <div style={{ padding: "12px 20px" }}>
+              {isCommentLoading && (
+                <div>
+                  Adding Comment ...{" "}
+                  <img src={spinGif} alt="loadgif" width={16} />{" "}
+                </div>
+              )}
+              {!isCommentLoading && <Table 
+               dataSource={allCommentList}
+                    columns={commentColumn}
+                    pagination={false}
+              />}
+              {/* <ul>
+                {allCommentList.map((item) => (
+                  <li
+                    key={item.comments}
+                   
+                  >
+                    <div style={{display:'flex',justifyContent:'space-between'}}>
+                      <strong>{item.addedBy}</strong><p>{item.createdByDatetime}</p>
+                    </div>
+                    <div  dangerouslySetInnerHTML={{ __html: item.comments }}></div>
+                  </li>
+                ))}
+              </ul> */}
+            </div>
+          ) : (
+            <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+              {isCommentLoading ? (
+                <div>
+                  Loading Comments...{" "}
+                  <img src={spinGif} alt="loadgif" width={16} />{" "}
+                </div>
+              ) : (
+                "No Comments yet"
+              )}
+            </h3>
+          )}
+          <div style={{ padding: "10px" }}>
+            <button
+              className={styles.btnCancle}
+              // disabled={isEditNewTask}
+              onClick={() => {
+                setShowComment(false);
+                setALLCommentsList([]);
+                setCommentData({});
               }}
             >
               Close

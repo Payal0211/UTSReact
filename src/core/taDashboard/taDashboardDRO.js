@@ -306,6 +306,29 @@ export const TaDashboardDAO = {
             return errorDebug(error, 'TaDashboardDAO.insertTaskCommentRequestDAO');
         }
     },
+        insertRecruiterCommentRequestDAO:async function (pl) {
+        try {
+            const taResult = await TaDashboardAPI.insertRecruiterCommentRequest(pl);
+            if (taResult) {
+                const statusCode = taResult['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = taResult.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult.details,
+                    };
+                } else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    let deletedResponse =
+                        UserSessionManagementController.deleteAllSession();
+                    if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'TaDashboardDAO.insertRecruiterCommentRequestDAO');
+        }
+    },
     getALLCommentsDAO:async function (id) {
         try {
             const taResult = await TaDashboardAPI.getALLCommentsRequest(id);
@@ -327,6 +350,29 @@ export const TaDashboardDAO = {
             }
         } catch (error) {
             return errorDebug(error, 'TaDashboardDAO.getALLCommentsDAO');
+        }
+    },
+    getALLRevenueCommentsDAO:async function (pl) {
+        try {
+            const taResult = await TaDashboardAPI.getALLRevenueCommentsRequest(pl);
+            if (taResult) {
+                const statusCode = taResult['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = taResult.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult.details,
+                    };
+                } else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    let deletedResponse =
+                        UserSessionManagementController.deleteAllSession();
+                    if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'TaDashboardDAO.getALLRevenueCommentsDAO');
         }
     },
     removeTaskDAO:async function (id) {
