@@ -552,6 +552,48 @@ export default function DailyBusinessNumbersPage() {
                   {v}
                 </div>
               );
+            } if (rec.stage === "TRs" || rec.stage === "New Clients" || rec.stage === 'Closures'|| rec.stage === 'Current Month Lost') {
+              return v ? (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <IconContext.Provider
+                    value={{
+                      color: "green",
+                      style: {
+                        width: "20px",
+                        height: "20px",
+                        marginRight: "5px",
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    {" "}
+                    <Tooltip title={`Add/View comment`} placement="top">
+                      <span
+                        onClick={() => {
+                          AddComment(rec, "N");
+                        }}
+                        // className={taStyles.feedbackLabel}
+                      >
+                        {" "}
+                        <IoMdAddCircle />
+                      </span>{" "}
+                    </Tooltip>
+                  </IconContext.Provider>
+
+                  <span
+                    onClick={() => getHRTalentWiseReport(rec, "N", v)}
+                    style={{ cursor: "pointer", color: "#1890ff" }}
+                  >
+                    {v}
+                  </span>
+                </div>
+              ) : ''
             }
             return (
               <div
