@@ -1102,6 +1102,9 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
+            if(v === '' || +v === 0){
+              return
+            }
             if (rec.stage === "Current Active") {
               return (
                 <div
@@ -1239,6 +1242,9 @@ export default function DailyBusinessNumbersPage() {
           render: (v, rec) => {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
+            }
+             if(v === '' || +v === 0){
+              return
             }
             if (rec.stage === "Current Active") {
               return (
