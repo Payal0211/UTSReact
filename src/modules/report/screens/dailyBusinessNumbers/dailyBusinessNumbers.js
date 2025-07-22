@@ -552,7 +552,7 @@ export default function DailyBusinessNumbersPage() {
                   {v}
                 </div>
               );
-            } if (rec.stage === "TRs" || rec.stage === "New Clients" || rec.stage === 'Closures'|| rec.stage === 'Current Month Lost') {
+            } if (rec.stage === "TRs" || rec.stage === "HRs (New)"  || rec.stage === "TRs (New)" || rec.stage === "New Clients" || rec.stage === 'Closures'|| rec.stage === 'Current Month Lost') {
               return v ? (
                 <div
                   style={{
@@ -1393,7 +1393,7 @@ export default function DailyBusinessNumbersPage() {
                 </div>
               );
             }
-            if (rec.stage === "TRs" || rec.stage === "New Clients" || rec.stage === 'Closures'|| rec.stage === 'Current Month Lost') {
+            if (rec.stage === "TRs" || rec.stage === "HRs (New)"  || rec.stage === "TRs (New)" || rec.stage === "New Clients" || rec.stage === 'Closures'|| rec.stage === 'Current Month Lost') {
               return v ? (
                 <div
                   style={{
