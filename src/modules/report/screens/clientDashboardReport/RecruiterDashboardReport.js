@@ -291,9 +291,53 @@ export default function RecruiterDashboardReport() {
                   : text
               },
           },
+      {
+        title: "Profile Target",
+        dataIndex: "profileSharedTarget",
+        key: "profileSharedTarget",
+        align: "center",
+        width: "120px",
+        render: (text, result) => {
+          if (result.recruiter === 'Total') {
+            return    <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_PS');
+              }}
+            >
+              {result.total_ProfileSharedTarget ? result.total_ProfileSharedTarget : ''}
+            </p>
+         
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'PS');
+                // setTalentToMove(result);
+                // setProfileStatusID(2);
+                // setHRTalentListFourCount([]);
+              }}
+            >
+              {text ? text : '-'}
+            </p>
+          ) : (
+            text ? text : '-'
+          );
+        },
+      },
           
   {
-        title: "Profiles",
+        title: "Submission",
         dataIndex: "profiles",
         key: "profiles",
         align: "center",
