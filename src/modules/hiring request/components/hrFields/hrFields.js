@@ -4124,7 +4124,7 @@ const HRFields = ({
                           watch("availability")?.value === "Contract" ||
                           watch("availability")?.value === "Contract to Hire"
                         ? watch("currency")?.value === "INR"
-                          ? 100000
+                          ? 10000
                           : 1000
                         : 1,
                       message: `please enter the value ${
@@ -4132,7 +4132,7 @@ const HRFields = ({
                         watch("availability")?.value === "Contract" ||
                         watch("availability")?.value === "Contract to Hire"
                           ? watch("currency")?.value === "INR"
-                            ? "atlest 6 digits"
+                            ? "atlest 5 digits"
                             : "atlest 4 digits"
                           : `atlest 1`
                       }`,
@@ -4169,7 +4169,7 @@ const HRFields = ({
                           watch("availability")?.value === "Contract" ||
                           watch("availability")?.value === "Contract to Hire"
                         ? watch("currency")?.value === "INR"
-                          ? 100000
+                          ? 10000
                           : 1000
                         : 1,
                       message: `please enter the value ${
@@ -4177,7 +4177,7 @@ const HRFields = ({
                         watch("availability")?.value === "Contract" ||
                         watch("availability")?.value === "Contract to Hire"
                           ? watch("currency")?.value === "INR"
-                            ? "atlest 6 digits"
+                            ? "atlest 5 digits"
                             : "atlest 4 digits"
                           : `atlest 1`
                       }`,

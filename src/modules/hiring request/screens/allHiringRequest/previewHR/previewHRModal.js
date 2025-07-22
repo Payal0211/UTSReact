@@ -937,8 +937,8 @@ getSkillList();
 
     if(!isFreshersAllowed && editBudget?.employmentType?.toLocaleLowerCase() !== 'part time'){
       if(editBudget.currency === 'INR'){
-        if(Number(editBudget?.budgetFrom) < 100000){
-           _errors.budgetFrom = "Minimum valid value should be 6 digits."
+        if(Number(editBudget?.budgetFrom) < 10000){
+           _errors.budgetFrom = "Minimum valid value should be 5 digits."
         valid = false;
         }
        
