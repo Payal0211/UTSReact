@@ -123,7 +123,7 @@ export default function ImmediateJoiners() {
     stageID
   ) => {
     setShowTalentProfiles(true);
-    setInfoforProfile(result);
+    setInfoforProfile({...result,statusID});
     let pl = {
       hrID: result.hrid,
       optiontype: statusID,
@@ -551,6 +551,25 @@ export default function ImmediateJoiners() {
       downloadToExcel(DataToExport,'Client_Dashboard_Report.xlsx')  
   }
 
+  const showStageType = (stage)=>{
+    console.log(stage)
+   if(stage === 'I' || stage === 'T_I'){
+    return 'Immediate'
+   }
+    if(stage === '15' || stage === 'T_15'){
+    return '15 Days'
+   }
+   if(stage === '30' || stage === 'T_30'){
+    return '30 Days'
+   }
+   if(stage === '60' || stage === 'T_60'){
+    return '60 Days'
+   }
+   if(stage === 'M' || stage === 'T_M'){
+    return 'More then 8 weeks'
+   }
+  }
+
   return (
     <div className={clientDashboardStyles.hiringRequestContainer}>
       
@@ -792,16 +811,17 @@ export default function ImmediateJoiners() {
                             flexWrap: "wrap", 
                           }}
                         >
-                          <h3>
+                        {profileInfo?.client !== 'Total' ? <h3>
                             Profiles for <strong>{profileInfo?.hrNumber}</strong>
-                          </h3>
-                          <p style={{ marginBottom: "0.5em" }}>
-                            Company : <strong>{profileInfo?.client}</strong>
-                          </p>
-            
-                          <p style={{ marginBottom: "0.5em" }}>
+                          </h3> : <h3>Total <strong>{showStageType(profileInfo?.statusID)}</strong></h3>}  
+                        {profileInfo?.client !== 'Total' && <p style={{ marginBottom: "0.5em" }}>
+                        Company : <strong>{profileInfo?.client}</strong>
+                        </p>}
+                          
+                        {profileInfo?.client !== 'Total' && <p style={{ marginBottom: "0.5em" }}>
                             Sales : <strong>{profileInfo?.salesperson}</strong>
-                          </p>
+                          </p>}
+                          
             
                           <input
                             type="text"
