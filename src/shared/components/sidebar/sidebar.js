@@ -293,7 +293,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible =  (ID === 1 || ID === 5 ||  ID === 10 || ID === 2 || ID === 9 || ID === 11 || ID === 4)?true : false;
 		return isVisible
 	}
-	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'RecruiterDashboard' || title === 'interviewReschedule' || title  === 'averageSLA' ){
+	if(title === 'Recruiter' || title === 'ClientDashboard' || title === 'immediateJoiner' || title === 'taDashboardReport' || title === 'DailySnapshot' || title === 'RecruiterDashboard' || title === 'interviewReschedule' || title  === 'averageSLA' ){
 		isVisible =  true;
 		return isVisible
 	}
@@ -435,6 +435,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			icon: RecruiterReportIcon,			
 			isChildren: true,
 			branch:[
+				new SideBarModels({
+					id: 'immediateJoiner',
+					title: 'Talent Joining',
+					isActive: false,
+					navigateTo: UTSRoutes.IMMEDIATEJOINER,
+					isVisible: isAccess(usertypeID, 'immediateJoiner'),
+					isChildren : false					
+				}),
 				new SideBarModels({
 					id: 'taDashboardReport',
 					title: 'TA Dashboard',
