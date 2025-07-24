@@ -575,6 +575,22 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getClientDashboardReport');
 		}
 	},
+	getImmediateJoinerReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_IMMEDIATE_JOINERS + `?searchText=${reportData.searchText}&fromDate=${reportData.fromDate}&toDate=${reportData.toDate}&month=${reportData.month}&year=${reportData.year}`
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getImmediateJoinerReport');
+		}
+	},
 	getRecruiterDashboardReport: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =
