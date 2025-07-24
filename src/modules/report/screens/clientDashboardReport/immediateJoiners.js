@@ -723,20 +723,20 @@ export default function ImmediateJoiners() {
         rowClassName={(row, index) => {
             return row.client === 'Total' ? clientDashboardStyles["highlight-total-row"] : '';
         }}   
-
-          pagination={{
-            onChange: (pageNum, pageSize) => {
-              setPageIndex(pageNum);
-              setPageSize(pageSize - 1);
-            },
-            size: "small",
-            pageSize: pageSize + 1,
-            pageSizeOptions: pageSizeOptions,
-            total: listDataCount,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${listDataCount} items`,
-            current: pageIndex,
-          }}  
+        pagination={false}
+        //   pagination={{
+        //     onChange: (pageNum, pageSize) => {
+        //       setPageIndex(pageNum);
+        //       setPageSize(pageSize - 1);
+        //     },
+        //     size: "small",
+        //     pageSize: pageSize + 1,
+        //     pageSizeOptions: pageSizeOptions,
+        //     total: listDataCount,
+        //     showTotal: (total, range) =>
+        //       `${range[0]}-${range[1]} of ${listDataCount} items`,
+        //     current: pageIndex,
+        //   }}  
       />
       }
 
