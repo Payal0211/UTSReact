@@ -436,14 +436,6 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isChildren: true,
 			branch:[
 				new SideBarModels({
-					id: 'immediateJoiner',
-					title: 'Talent Joining',
-					isActive: false,
-					navigateTo: UTSRoutes.IMMEDIATEJOINER,
-					isVisible: isAccess(usertypeID, 'immediateJoiner'),
-					isChildren : false					
-				}),
-				new SideBarModels({
 					id: 'taDashboardReport',
 					title: 'TA Dashboard',
 					isActive: false,
@@ -451,7 +443,6 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'taDashboardReport'),
 					isChildren : false					
 				}),
-
 				new SideBarModels({
 					id: 'DailySnapshot',
 					title: 'Daily Snapshot',
@@ -474,6 +465,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isActive: false,
 					navigateTo: UTSRoutes.RECRUITER_DASHBOARD_REPORT,
 					isVisible: isAccess(usertypeID, 'RecruiterDashboard'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'immediateJoiner',
+					title: 'Talent Joining',
+					isActive: false,
+					navigateTo: UTSRoutes.IMMEDIATEJOINER,
+					isVisible: isAccess(usertypeID, 'immediateJoiner'),
 					isChildren : false					
 				}),
 				new SideBarModels({
