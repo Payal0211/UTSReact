@@ -104,6 +104,22 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getHRTalentDetailsRequest');
 		}
 	},
+	getImmediateTalentDetailsRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			TaDashboardURL.GET_IMMEDIATE_TALENT_DETAILS + `?hrID=${pl.hrID}&optiontype=${pl.optiontype}&month=${pl?.month}&year=${pl?.year}&fromDate=${pl?.fromDate}&toDate=${pl?.toDate}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getImmediateTalentDetailsRequest');
+		}
+	},
 	getTotalRevenueRequest: async function (pl) {
 		let httpService = new HttpServices();		
 		httpService.URL =

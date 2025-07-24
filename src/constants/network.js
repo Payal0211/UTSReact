@@ -84,6 +84,7 @@ export class TaDashboardURL {
 	static INSERT_REVENUE_COMMENT = 'InsertRevenueReportComment'
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
 	static GET_TA_WISE_PIPELINE_DETAILS= 'GetTAWiseHRPipelineDetails'
+	static GET_IMMEDIATE_TALENT_DETAILS = 'GetImmediateJinerDetails'
 	static GET_TOTAL_REVENUE_PER_TA = 'GetTotalRevenuePerTAUser'
 	static GET_DAILY_ACTIVE_TARGETS = 'GetDailyActiveHRPipelineAndTotalTarget'
 }
@@ -201,6 +202,7 @@ export class ReportType {
 	static AM_WISE_INTERVIEW_COUNTS = 'GetDailyAMWiseInterviewCounts'
 	static GET_DAILY_AM_WISE_HR_TALENT_INTERVIEW_DETAILS = 'GetDailyAMWiseHRTalentInterviewDetails'
 	static COMPANY_WISE_CATEGORY= 'CompanyListWithCompanyCategory'
+	static GET_IMMEDIATE_JOINERS = 'GetImmediateJoinerList'
 	static AVERAGE_SLA  = 'RecruiterAverageSLAReport'
 	static COMPANY_WISE_CATEGORY_DETAILS = 'GetCompanywiseActiveHRList'
 }
