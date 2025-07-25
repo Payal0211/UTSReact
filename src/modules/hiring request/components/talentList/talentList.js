@@ -13,6 +13,7 @@ import { ReactComponent as DeleteIcon } from 'assets/svg/deleteIcon.svg';
 import { ReactComponent as InfoCircleIcon } from 'assets/svg/infoCircleIcon.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
 import { useNavigate } from 'react-router-dom'
+import infoIcon from 'assets/svg/info.svg'
 
 import {
 	InterviewFeedbackStatus,
@@ -989,6 +990,14 @@ const TalentList = ({
 												: item?.PreferredAvailability}
 										</span>
 									</div>
+									<div className={TalentListStyle.availability}>
+										<span>TA :</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{_isNull(item?.TalentPOCName)
+												? 'NA'
+												: item?.TalentPOCName}
+										</span>
+									</div>
 									{/* <div className={TalentListStyle.profileSource}>
 										<span>Profile Source:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -1082,6 +1091,16 @@ const TalentList = ({
 					<span style={{ fontWeight: '500' }}>
 						{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
 					</span>
+					{info?.Title === "Talent's Current Pay:" && <Tooltip
+				
+							placement="bottomLeft"
+							title={<div>
+									<span>Fixed : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Fixed_str ?? 'NA'}</span><br/>
+									<span>Variable : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Variable_str ?? 'NA'}</span><br/>
+									<span>Stock : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Stock_str ?? 'NA'}</span>
+								</div>}>
+								<img src={infoIcon} alt='info' style={{marginLeft:'10px'}} />							
+						</Tooltip>}
 				</div>
 				{/* {info.IsEditable && <>
 					{!hrType ? <>
@@ -1116,11 +1135,11 @@ const TalentList = ({
 							Edit
 						</span>}
 					</>}
-				</>} */}
+				</>} */}				
 
 			</div>)
 		}
-								
+
 									{/* {!hrType ? (
 										<>
 											<div className={TalentListStyle.payRate}>
@@ -1321,6 +1340,14 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
+										{item?.Onboard_BillRate_str && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Client's Bill Amount:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.Onboard_BillRate_str}
+											</span>
+										</div>
+									)}
 										{item?.JoiningDate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Joining Date:</span>&nbsp;&nbsp;
@@ -1417,7 +1444,8 @@ const TalentList = ({
 											)}
 										</span>
 									</div>
-									{item?.Slotconfirmed && (
+									
+									{item?.Onboard_BillRate_str && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Slot Confirmed:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500' }}>
