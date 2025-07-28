@@ -181,19 +181,19 @@ export default function PotentialClosuresSheet() {
           text
         ),
     },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Company
-          <br />
-          Size
-        </div>
-      ),
-      dataIndex: "companySize",
-      key: "companySize",
-      width: 90,
-      className: pcsStyles.headerCell,
-    },
+    // {
+    //   title: (
+    //     <div style={{ textAlign: "center" }}>
+    //       Company
+    //       <br />
+    //       Size
+    //     </div>
+    //   ),
+    //   dataIndex: "companySize",
+    //   key: "companySize",
+    //   width: 90,
+    //   className: pcsStyles.headerCell,
+    // },
     {
       title: (
         <div style={{ textAlign: "center" }}>
