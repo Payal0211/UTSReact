@@ -576,7 +576,7 @@ export default function PotentialClosuresSheet() {
         tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
       >
         <TabPane tab="Global" key="G" />
-         <TabPane tab="Global Report" key="GR" />
+         {/* <TabPane tab="Global Report" key="GR" /> */}
         <TabPane tab="India" key="I" />
       </Tabs>
 
@@ -622,7 +622,7 @@ export default function PotentialClosuresSheet() {
 
 
           <div className={pcsStyles.priorityFilterSet}>
-            <div className={pcsStyles.calendarFilterSet}>
+            {/* <div className={pcsStyles.calendarFilterSet}>
 							<div className={pcsStyles.label}>Month-Year</div>
 							<div className={pcsStyles.calendarFilter}>
 								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
@@ -642,7 +642,7 @@ export default function PotentialClosuresSheet() {
 									showMonthYearPicker
 								/>
 							</div>
-						</div>
+						</div> */}
             <div className={pcsStyles.label}>Showing</div>
             <div className={pcsStyles.paginationFilter}>
               <Dropdown

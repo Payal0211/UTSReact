@@ -1397,7 +1397,7 @@ const TalentList = ({
 											{/* { inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList?.length === 0 } */}
 											{inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID)?.SlotList?.length === 0 ? (
 												'NA'
-											) : item.InterViewStatusId !== 1 ? 'NA' : (
+											) : item.InterViewStatusId === 3 ? 'NA' : (
 												<Dropdown
 													trigger={['click']}
 													placement="bottom"
