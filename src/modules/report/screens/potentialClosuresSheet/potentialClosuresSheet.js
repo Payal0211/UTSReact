@@ -10,12 +10,15 @@ import TabPane from "antd/lib/tabs/TabPane";
 import { downloadToExcel } from "modules/report/reportUtils";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { InputType } from "constants/application";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
 import { allHRConfig } from "modules/hiring request/screens/allHiringRequest/allHR.config";
 import { HTTPStatusCode } from "constants/network";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const AllClientFiltersLazy = React.lazy(() =>
   import("modules/allClients/components/allClients/allClientsFilter")
@@ -49,6 +52,21 @@ export default function PotentialClosuresSheet() {
   const [filtersList, setFiltersList] = useState([]);
   const [tableFilteredState, setTableFilteredState] =
     useState(defaaultFilterState);
+  const [startDate, setStartDate] = useState(new Date());
+  
+
+  const columnsReport =[
+    {
+      title: <div style={{ textAlign: "center" }}>Team</div>,
+      dataIndex: "hR_Team",
+      key: "hR_Team",
+      fixed: "left",
+      width: 100,
+      className: pcsStyles.headerCell,
+    },
+  ]
+
+
   const columns = [
     {
       title: <div style={{ textAlign: "center" }}>Team</div>,
@@ -220,17 +238,17 @@ export default function PotentialClosuresSheet() {
     {
       title: (
         <div style={{ textAlign: "center" }}>
-          Closure by
+          Expected 
           <br />
-          Weekend
+        Closure Week
         </div>
       ),
       dataIndex: "closurebyWeekend",
       key: "closurebyWeekend",
-      width: 100,
+      width: 110,
       align: "center",
       render: (value, record, index) =>
-        renderInputField(
+        renderWeekSelect(
           value,
           record,
           index,
@@ -241,17 +259,17 @@ export default function PotentialClosuresSheet() {
     {
       title: (
         <div style={{ textAlign: "center" }}>
-          Closure by
+          Actual by
           <br />
-          EOM
+          Closure Week
         </div>
       ),
       dataIndex: "closurebyMonth",
       key: "closurebyMonth",
-      width: 100,
+      width: 110,
       align: "center",
       render: (value, record, index) =>
-        renderInputField(
+        renderWeekSelect(
           value,
           record,
           index,
@@ -347,7 +365,7 @@ export default function PotentialClosuresSheet() {
 
   useEffect(() => {
     fetchPotentialClosuresListData(activeTab);
-  }, [activeTab, openTicketSearchText, tableFilteredState]);
+  }, [activeTab, openTicketSearchText, tableFilteredState,startDate]);
 
   const handleTabChange = (key) => {
     setActiveTab(key);
@@ -364,6 +382,8 @@ export default function PotentialClosuresSheet() {
       salesRep: tableFilteredState?.filterFields_Client?.salesRep,
       HRType: tableFilteredState?.filterFields_Client?.HRType,
       team: tableFilteredState?.filterFields_Client?.team,
+      month: moment(startDate).format('MM'),
+      year:moment(startDate).format('YYYY')
     };
 
     setLoading(true);
@@ -377,6 +397,43 @@ export default function PotentialClosuresSheet() {
   };
 
   const renderYesNoSelect = (value, record, index, dataIndex, handleChange) => {
+     return (
+      <Select
+        value={value}
+        onChange={(newValue) =>
+          handleChange(newValue, record, index, dataIndex)
+        }
+        style={{ width: "100%" }}
+        size="small"
+      >      
+        <Option value="100%">100%</Option>
+         <Option value="75%">75%</Option>
+        <Option value="50%">50%</Option>
+         <Option value="25%">25%</Option>
+        <Option value="0%">0%</Option>
+        <Option value="Preonboarding">Preonboarding</Option>
+         <Option value="Lost">Lost</Option>
+        <Option value="Won">Won</Option>
+
+      
+      </Select>
+    );
+    // return (
+    //   <Select
+    //     value={value}
+    //     onChange={(newValue) =>
+    //       handleChange(newValue, record, index, dataIndex)
+    //     }
+    //     style={{ width: "100%" }}
+    //     size="small"
+    //   >
+    //     <Option value="Yes">Yes</Option>
+    //     <Option value="No">No</Option>
+    //   </Select>
+    // );
+  };
+
+   const renderWeekSelect = (value, record, index, dataIndex, handleChange) => {
     return (
       <Select
         value={value}
@@ -386,8 +443,12 @@ export default function PotentialClosuresSheet() {
         style={{ width: "100%" }}
         size="small"
       >
-        <Option value="Yes">Yes</Option>
-        <Option value="No">No</Option>
+        <Option value="W1">W1</Option>
+        <Option value="W2">W2</Option>
+         <Option value="W3">W3</Option>
+        <Option value="W4">W4</Option>
+         <Option value="W5">W5</Option>
+      
       </Select>
     );
   };
@@ -416,9 +477,9 @@ export default function PotentialClosuresSheet() {
     updatedData[index] = { ...record, [field]: newValue };
     setData(updatedData);
 
-    if (field === "productType" || field === "potentialType") {
+    // if (field === "productType" || field === "potentialType") {
       updatePotentialClosuresRowValue(updatedData[index]);
-    }
+    // }
   };
 
   const updatePotentialClosuresRowValue = async (updatedData) => {
@@ -452,6 +513,14 @@ export default function PotentialClosuresSheet() {
         }, 300);
     setHTMLFilter(!getHTMLFilter);
   }, [getHTMLFilter]);
+
+  	const onCalenderFilter = (dates) => {
+		// const [start, end] = dates;
+	// const month = dates.getMonth() + 1
+	// const year = dates.getFullYear()
+	 setStartDate(dates);			
+		}
+
 
   const clearFilters = useCallback(() => {
     setAppliedFilters(new Map());
@@ -507,6 +576,7 @@ export default function PotentialClosuresSheet() {
         tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
       >
         <TabPane tab="Global" key="G" />
+         <TabPane tab="Global Report" key="GR" />
         <TabPane tab="India" key="I" />
       </Tabs>
 
@@ -549,7 +619,30 @@ export default function PotentialClosuresSheet() {
             </div>
           </div>
 
+
+
           <div className={pcsStyles.priorityFilterSet}>
+            <div className={pcsStyles.calendarFilterSet}>
+							<div className={pcsStyles.label}>Month-Year</div>
+							<div className={pcsStyles.calendarFilter}>
+								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+								<DatePicker
+									style={{ backgroundColor: 'red' }}
+									onKeyDown={(e) => {
+										e.preventDefault();
+										e.stopPropagation();
+									}}
+									className={pcsStyles.dateFilter}
+									placeholderText="Month - Year"
+									selected={startDate}
+									onChange={onCalenderFilter}
+									// startDate={startDate}
+									// endDate={endDate}
+									dateFormat="MM-yyyy"
+									showMonthYearPicker
+								/>
+							</div>
+						</div>
             <div className={pcsStyles.label}>Showing</div>
             <div className={pcsStyles.paginationFilter}>
               <Dropdown
@@ -600,7 +693,7 @@ export default function PotentialClosuresSheet() {
             <TableSkeleton />
           ) : data?.length > 0 ? (
             <Table
-              columns={columns}
+              columns={activeTab !== 'GR' ? columns : columnsReport}
               dataSource={data}
               bordered
               pagination={{
