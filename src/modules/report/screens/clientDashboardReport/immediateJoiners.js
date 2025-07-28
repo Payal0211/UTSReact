@@ -178,11 +178,16 @@ export default function ImmediateJoiners() {
             width: "200px",
             fixed: "left",
             render: (text, result) => {
-                return result.client  === "Total" 
+                  return { props: {
+              rowSpan: result.rowSpan,
+              style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
+            },
+          children: (result.client  === "Total" 
                   ? "" 
                   : text === "Total" 
                   ? "" 
-                  : <a href={`/viewCompanyDetails/${result.companyID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+                  : <a href={`/viewCompanyDetails/${result.companyID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>)}
+             
               },
           },
           
@@ -445,6 +450,31 @@ export default function ImmediateJoiners() {
      
     ];
   }, [clientData]);
+
+  
+  function groupByRowSpan(data, groupField) {
+    const grouped = {};
+
+    // Step 1: Group by the field (e.g., 'ta')
+    data.forEach((item) => {
+      const key = item[groupField];
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(item);
+    });
+
+    // Step 2: Add rowSpan metadata
+    const finalData = [];
+    Object.entries(grouped).forEach(([key, rows]) => {
+      rows.forEach((row, index) => {
+        finalData.push({
+          ...row,
+          rowSpan: index === 0 ? rows.length : 0,
+        });
+      });
+    });
+
+    return finalData;
+  }
   
 
   const getClientDashboardReport = async () => {
@@ -459,7 +489,7 @@ export default function ImmediateJoiners() {
     const apiResult = await ReportDAO.getImmediateJoinerReportDAO(payload);
     setLoading(false)
     if (apiResult?.statusCode === 200) {        
-      setClientData([{ ...apiResult.responseBody[0],client:'Total'},...apiResult.responseBody]);      
+      setClientData(groupByRowSpan([{ ...apiResult.responseBody[0],client:'Total'},...apiResult.responseBody], "client"));      
         // setListDataCount(apiResult.responseBody?.totalrows);      
     } else if (apiResult?.statusCode === 404) {
         setClientData([]);
@@ -539,16 +569,31 @@ export default function ImmediateJoiners() {
       setEndDate(today);  
       setDateTypeFilter(0);
   }
+
+  
   const handleExport = (apiData) => {
       let DataToExport =  apiData.map(data => {
           let obj = {}
-          tableColumnsMemo.forEach(val => {     
-            obj[`${val.title}`] = data[`${val.key}`]     
+          if(data.client === 'Total'){
+            return {
+                "Client":'', 
+                "HR ID": "",
+                "Job Title": "",
+                "Sales Person": "",
+                "Immediate": data.total_ImmediateJoiners,
+                "15 Days": data.total_J_15Days,
+                "30 Days": data.total_J_30Days,
+                "60 Days": data.total_J_60Days,
+                "More then 8 weeks": data.total_Morethan8Weeks,
+                        }
+                    }
+        tableColumnsMemo.forEach(val => {     
+            obj[`${val.title}`] = data[`${val.key}`] !== 0 ? data[`${val.key}`] : ""     
           })
           return obj;
         }
       )
-      downloadToExcel(DataToExport,'Client_Dashboard_Report.xlsx')  
+      downloadToExcel(DataToExport,'immediate joiners')  
   }
 
   const showStageType = (stage)=>{
@@ -732,6 +777,7 @@ export default function ImmediateJoiners() {
       </div>
 
       {isLoading ? <TableSkeleton /> :
+        <div className={clientDashboardStyles.tableWrapperCustom}>
         <Table
         scroll={{ y: "480px" }}
         id="TicketsOpenListingTable"
@@ -756,7 +802,7 @@ export default function ImmediateJoiners() {
         //       `${range[0]}-${range[1]} of ${listDataCount} items`,
         //     current: pageIndex,
         //   }}  
-      />
+      /></div>
       }
 
 {isAllowFilters && (

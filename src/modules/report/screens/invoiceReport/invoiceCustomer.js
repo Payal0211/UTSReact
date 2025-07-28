@@ -125,7 +125,7 @@ export default function InvoicCustomer() {
       });
       return row;
     });
-    downloadToExcel(exportData, "Invoice_Customer_Report.xlsx");
+    downloadToExcel(exportData, "Invoice_Customer_Report");
   };
 
   const getCompanyNameSuggestionHandler = async (companyName) => {

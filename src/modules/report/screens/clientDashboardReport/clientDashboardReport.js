@@ -775,7 +775,7 @@ export default function ClientDashboardReport() {
           return obj;
         }
       )
-      downloadToExcel(DataToExport,'Client_Dashboard_Report.xlsx')  
+      downloadToExcel(DataToExport,'Client_Dashboard_Report')  
   }
 
   return (
