@@ -456,7 +456,7 @@ export default function HRReport() {
       );
       return obj;
     });
-    downloadToExcel(DataToExport, `HRReport: ${hrStage}.xlsx`);
+    downloadToExcel(DataToExport, `HRReport: ${hrStage}`);
   };
 
   // console.log('client', reportList, appliedFilter)

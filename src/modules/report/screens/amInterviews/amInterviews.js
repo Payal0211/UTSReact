@@ -131,7 +131,7 @@ const AmInterviews = () => {
             });
             return obj;
         });
-        downloadToExcel(DataToExport, 'AM_Interviews.xlsx');
+        downloadToExcel(DataToExport, 'AM_Interviews');
     };
 
     return (
