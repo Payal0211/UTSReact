@@ -205,6 +205,9 @@ export class ReportType {
 	static GET_IMMEDIATE_JOINERS = 'GetImmediateJoinerList'
 	static AVERAGE_SLA  = 'RecruiterAverageSLAReport'
 	static COMPANY_WISE_CATEGORY_DETAILS = 'GetCompanywiseActiveHRList'
+	static GET_POTENTIAL_COMMENTS = 'GetPotentialListComments'
+	static INSERT_POTENTIAL_COMMENTS = 'InsertPotentialListComment'
+	static ACTIVE_OWNER_USER = 'GetActiveOwner_UserList'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

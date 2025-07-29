@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, Suspense } from "react";
-import { Table, Card, Select, Input, Tabs, Dropdown, Menu } from "antd";
+import { Table, Card, Select, Input, Tabs, Dropdown, Menu, Tooltip, Modal } from "antd";
 import pcsStyles from "./potentialClosuresSheet.module.css";
 import { ReportDAO } from "core/report/reportDAO";
 import moment from "moment";
@@ -17,8 +17,13 @@ import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
 import { allHRConfig } from "modules/hiring request/screens/allHiringRequest/allHR.config";
 import { HTTPStatusCode } from "constants/network";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
+import { IoMdAddCircle } from "react-icons/io";
+import { IconContext } from "react-icons";
+import spinGif from "assets/gif/RefreshLoader.gif";
+import Editor from "modules/hiring request/components/textEditor/editor";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 
 const AllClientFiltersLazy = React.lazy(() =>
   import("modules/allClients/components/allClients/allClientsFilter")
@@ -53,7 +58,43 @@ export default function PotentialClosuresSheet() {
   const [tableFilteredState, setTableFilteredState] =
     useState(defaaultFilterState);
   const [startDate, setStartDate] = useState(new Date());
-  
+  const [ownersList,setOwnersList]=useState([])
+
+   const [showComment, setShowComment] = useState(false);
+    const [commentData, setCommentData] = useState({});
+ const [allCommentList, setALLCommentsList] = useState([]);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
+
+  const [userData, setUserData] = useState({});
+    
+    useEffect(() => {
+      const getUserResult = async () => {
+        let userData = UserSessionManagementController.getUserSession();
+        if (userData) setUserData(userData);
+      };
+      getUserResult();
+    }, []);
+
+  const getAllComments = async (d, modal) => {
+    setIsCommentLoading(true);
+    const pl = {  
+      potentialCloserListID: d.potentialCloserList_ID,
+      hrID  :d.hiringRequest_ID,
+    };
+    const result = await ReportDAO.getALLPotentialClosuresCommentsDAO(pl);
+    setIsCommentLoading(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setALLCommentsList(result.responseBody);
+    } else {
+      setALLCommentsList([]);
+    }
+  };
+
+    const AddComment = (data, modal, index) => {
+    getAllComments(data, modal);
+    setShowComment(true);
+    setCommentData(data);
+  };
 
   const columnsReport =[
     {
@@ -194,90 +235,25 @@ export default function PotentialClosuresSheet() {
     //   width: 90,
     //   className: pcsStyles.headerCell,
     // },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Product /<br />
-          Non Product
-        </div>
-      ),
-      dataIndex: "productType",
-      key: "productType",
-      width: 120,
-      align: "center",
-      render: (value, record, index) =>
-        renderYesNoSelect(
-          value,
-          record,
-          index,
-          "productType",
-          handleFieldChange
-        ),
-    },
-    {
+      {
       title: <div style={{ textAlign: "center" }}>Position</div>,
       dataIndex: "position",
       key: "position",
       width: 180,
     },
-    {
-      title: <div style={{ textAlign: "center" }}>Potential</div>,
-      dataIndex: "potentialType",
-      key: "potentialType",
-      width: 100,
-      align: "center",
-      render: (value, record, index) =>
-        renderYesNoSelect(
-          value,
-          record,
-          index,
-          "potentialType",
-          handleFieldChange
-        ),
+      {
+      title: <div style={{ textAlign: "center" }}>CTP Link</div>,
+      dataIndex: "ctP_Link",
+      key: "ctP_Link",
+      width: 120,
+      render:(text,result)=>{
+        if(text === '' || text ==='NA'){
+          return ''
+        }
+        return <div style={{display:'flex', justifyContent:'center'}}><a href={text} style={{textDecoration:'underline'}} target="_blank"  rel="noreferrer" >Click</a></div> 
+      }
     },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Expected 
-          <br />
-        Closure Week
-        </div>
-      ),
-      dataIndex: "closurebyWeekend",
-      key: "closurebyWeekend",
-      width: 110,
-      align: "center",
-      render: (value, record, index) =>
-        renderWeekSelect(
-          value,
-          record,
-          index,
-          "closurebyWeekend",
-          handleFieldChange
-        ),
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Actual by
-          <br />
-          Closure Week
-        </div>
-      ),
-      dataIndex: "closurebyMonth",
-      key: "closurebyMonth",
-      width: 110,
-      align: "center",
-      render: (value, record, index) =>
-        renderWeekSelect(
-          value,
-          record,
-          index,
-          "closurebyMonth",
-          handleFieldChange
-        ),
-    },
-    {
+     {
       title: (
         <div style={{ textAlign: "center" }}>
           Number of
@@ -305,19 +281,7 @@ export default function PotentialClosuresSheet() {
       align: "right",
       className: pcsStyles.headerCell,
     },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Talent Pay Rate/ <br />
-          Client Budget
-        </div>
-      ),
-      dataIndex: "talentPayStr",
-      key: "talentPayStr",
-      width: 280,
-      className: pcsStyles.headerCell,
-    },
-    {
+     {
       title: <div style={{ textAlign: "center" }}>Uplers Fees %</div>,
       dataIndex: "uplersFeesPer",
       key: "uplersFeesPer",
@@ -333,6 +297,137 @@ export default function PotentialClosuresSheet() {
       align: "left",
       className: pcsStyles.headerCell,
     },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Product /<br />
+          Non Product
+        </div>
+      ),
+      dataIndex: "productType",
+      key: "productType",
+      width: 120,
+      align: "center",
+      render: (value, record, index) =>
+        renderYesNoSelect(
+          value,
+          record,
+          index,
+          "productType",
+          handleFieldChange
+        ),
+    },
+   {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Expected 
+          <br />
+        Closure Week
+        </div>
+      ),
+      dataIndex: "closurebyWeekend",
+      key: "closurebyWeekend",
+      width: 110,
+      align: "center",
+      render: (value, record, index) =>
+        renderWeekSelect(
+          value,
+          record,
+          index,
+          "closurebyWeekend",
+          handleFieldChange
+        ),
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Actual
+          <br />
+          Closure Week
+        </div>
+      ),
+      dataIndex: "closurebyMonth",
+      key: "closurebyMonth",
+      width: 110,
+      align: "center",
+      render: (value, record, index) =>
+        renderWeekSelect(
+          value,
+          record,
+          index,
+          "closurebyMonth",
+          handleFieldChange
+        ),
+    },
+    //,   Next Action Point (Add / View), Owner1
+      {
+      title: (
+        <div style={{ textAlign: "center" }}>
+           Pushed 
+          <br /> Closure Week
+        </div>
+      ),
+      dataIndex: "pushed_Closure_Week",
+      key: "pushed_Closure_Week",
+      width: 100,
+      align: "center",
+      className: pcsStyles.headerCell,
+    },
+   {
+      title: (
+        <div style={{ textAlign: "center" }}>
+         Talent's 
+          <br /> Notice Period
+        </div>
+      ),
+      dataIndex: "talent_NoticePeriod",
+      key: "talent_NoticePeriod",
+      width: 100,
+      align: "center",
+      className: pcsStyles.headerCell,
+    },
+       {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Back Up
+        
+        </div>
+      ),
+      dataIndex: "talent_Backup",
+      key: "talent_Backup",
+      width: 100,
+      align: "center",
+      className: pcsStyles.headerCell,
+    },
+    // {
+    //   title: <div style={{ textAlign: "center" }}>Potential</div>,
+    //   dataIndex: "potentialType",
+    //   key: "potentialType",
+    //   width: 100,
+    //   align: "center",
+    //   render: (value, record, index) =>
+    //     renderYesNoSelect(
+    //       value,
+    //       record,
+    //       index,
+    //       "potentialType",
+    //       handleFieldChange
+    //     ),
+    // },
+   
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Talent Pay Rate/ <br />
+          Client Budget
+        </div>
+      ),
+      dataIndex: "talentPayStr",
+      key: "talentPayStr",
+      width: 280,
+      className: pcsStyles.headerCell,
+    },
+   
     {
       title: (
         <div style={{ textAlign: "center" }}>
@@ -354,7 +449,78 @@ export default function PotentialClosuresSheet() {
       align: "center",
       className: pcsStyles.headerCell,
     },
+    {
+      title: <div style={{ textAlign: "center" }}>Next Action <br/> Point</div>,
+      dataIndex: "leadType",
+      key: "leadType",
+      width: 100,
+      align: "center",
+      className: pcsStyles.headerCell,
+      render:(text,record)=>{
+        return  <IconContext.Provider
+                    value={{
+                      color: "green",
+                      style: {
+                        width: "20px",
+                        height: "20px",
+                        marginRight: "5px",
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    {" "}
+                    <Tooltip title={`Add/View comment`} placement="top">
+                      <span
+                        onClick={() => {
+                          AddComment(record);
+                        }}
+                        // className={taStyles.feedbackLabel}
+                      >
+                        {" "}
+                        <IoMdAddCircle />
+                      </span>{" "}
+                    </Tooltip>
+                  </IconContext.Provider>
+      }
+    },
+       {
+      title: <div style={{ textAlign: "center" }}>Owner</div>,
+      dataIndex: "owner_UserID",
+      key: "owner_UserID",
+      width: 100,
+      align: "center",
+      className: pcsStyles.headerCell,
+      render:(value, record,index)=>{
+        return  renderOwnerSelect(
+          value,
+          record,
+          index,
+          "owner_UserID",
+          handleFieldChange
+        )
+      }
+    },
   ];
+
+    const commentColumn = [
+    {title:"Created By",
+      dataIndex: "createdByDatetime",
+      key: "createdByDatetime",
+       width:'200px'
+    },
+    {title:"Comment",
+      dataIndex: "comments",
+      key: "comments",
+      render:(text)=>{
+        return <div  dangerouslySetInnerHTML={{ __html: text }}></div>
+      }
+    },
+     {title:"Added By",
+      dataIndex: "addedBy",
+      key: "addedBy",
+      width:'200px'
+    },
+  ]
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -433,6 +599,26 @@ export default function PotentialClosuresSheet() {
     // );
   };
 
+    const renderOwnerSelect = (value, record, index, dataIndex, handleChange) => {
+     return (
+      <Select
+        value={value}
+        onChange={(newValue) =>
+          handleChange(newValue, record, index, dataIndex)
+        }
+        style={{ width: "100%" }}
+        size="small"
+        showSearch={true}
+        filterOption={(input, option) =>
+        option?.children?.toLowerCase().includes(input.toLowerCase())
+      }
+      >      
+      {ownersList.map(owner=> <Option value={owner.id}>{owner.fullName}</Option>)}      
+      </Select>
+    );
+
+  };
+
    const renderWeekSelect = (value, record, index, dataIndex, handleChange) => {
     return (
       <Select
@@ -484,15 +670,49 @@ export default function PotentialClosuresSheet() {
 
   const updatePotentialClosuresRowValue = async (updatedData) => {
     const pl = {
+      PotentialCloserList_ID: updatedData.potentialCloserList_ID,
       HRID: updatedData?.hiringRequest_ID,
-      ProductType: updatedData?.productType,
-      PotentialType: updatedData?.potentialType,
-      ClosurebyWeekend: updatedData?.closurebyWeekend,
-      ClosurebyMonth: updatedData?.closurebyMonth,
+      ProbabiltyRatio_thismonth:updatedData?.probabiltyRatio_thismonth,
+      Expected_Closure_Week:updatedData?.expected_Closure_Week,
+      Actual_Closure_Week:updatedData?.actual_Closure_Week,
+      Pushed_Closure_Week:updatedData?.pushed_Closure_Week,
+      Talent_NoticePeriod:updatedData?.talent_NoticePeriod,
+      Talent_Backup:updatedData?.talent_Backup,
+      OwnerID:updatedData?.owner_UserID
     };
 
     await ReportDAO.PotentialClosuresUpdateDAO(pl);
   };
+
+   const getOwnerUserList = async () => {
+  
+   const response = await ReportDAO.PotentialOwnerUserDAO();
+
+   if(response.statusCode === 200){
+    setOwnersList(response.responseBody)
+   }
+  };
+
+   const saveComment = async (note) => {
+      let pl = {
+      PotentialCloserList_ID: commentData.potentialCloserList_ID,
+      HR_ID   :commentData.hiringRequest_ID,
+
+        loggedInUserID: userData?.UserId,
+        comments: note,
+      };
+      setIsCommentLoading(true);
+      const res = await ReportDAO.insertPotentialClosureCommentRequestDAO(pl);
+      setIsCommentLoading(false);
+      if (res.statusCode === HTTPStatusCode.OK) {
+        setALLCommentsList(res.responseBody);
+      }
+    };
+
+
+  useEffect(()=>{
+    getOwnerUserList()
+  },[])
 
   const handleExport = (apiData) => {
     let DataToExport = apiData.map((data) => {
@@ -735,6 +955,95 @@ export default function PotentialClosuresSheet() {
           />
         </Suspense>
       )}
+
+         {showComment && (
+              <Modal
+                transitionName=""
+                width="1000px"
+                centered
+                footer={null}
+                open={showComment}
+                className="engagementModalStyle"
+                onCancel={() => {
+                  setShowComment(false);
+                  setALLCommentsList([]);
+                  setCommentData({});
+                }}
+              >
+                <div style={{ padding: "35px 15px 10px 15px" }}>
+                  <h3>Add Comment</h3>
+                </div>
+                <Suspense>
+                  <div
+                    style={{
+                      position: "relative",
+                      marginBottom: "10px",
+                      padding: "0 20px",
+                      paddingRight: "30px",
+                    }}
+                  >
+                    <Editor
+                      hrID={""}
+                      saveNote={(note) => saveComment(note)}
+                      isUsedForComment={true}
+                    />
+                  </div>
+                </Suspense>
+      
+                {allCommentList.length > 0 ? (
+                  <div style={{ padding: "12px 20px" }}>
+                    {isCommentLoading && (
+                      <div>
+                        Adding Comment ...{" "}
+                        <img src={spinGif} alt="loadgif" width={16} />{" "}
+                      </div>
+                    )}
+                    {!isCommentLoading && <Table 
+                     dataSource={allCommentList}
+                          columns={commentColumn}
+                          pagination={false}
+                    />}
+                    {/* <ul>
+                      {allCommentList.map((item) => (
+                        <li
+                          key={item.comments}
+                         
+                        >
+                          <div style={{display:'flex',justifyContent:'space-between'}}>
+                            <strong>{item.addedBy}</strong><p>{item.createdByDatetime}</p>
+                          </div>
+                          <div  dangerouslySetInnerHTML={{ __html: item.comments }}></div>
+                        </li>
+                      ))}
+                    </ul> */}
+                  </div>
+                ) : (
+                  <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+                    {isCommentLoading ? (
+                      <div>
+                        Loading Comments...{" "}
+                        <img src={spinGif} alt="loadgif" width={16} />{" "}
+                      </div>
+                    ) : (
+                      "No Comments yet"
+                    )}
+                  </h3>
+                )}
+                <div style={{ padding: "10px" }}>
+                  <button
+                    className={pcsStyles.btnCancle}
+                    // disabled={isEditNewTask}
+                    onClick={() => {
+                      setShowComment(false);
+                      setALLCommentsList([]);
+                      setCommentData({});
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </Modal>
+            )}
     </div>
   );
 }
