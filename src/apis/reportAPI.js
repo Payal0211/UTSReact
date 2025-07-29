@@ -730,7 +730,15 @@ export const ReportAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MASTERS +
-			ReportType.POTENTIAL_CLOSURES_UPDATE + `?HRID=${payload?.HRID}&ProductType=${payload?.ProductType}&PotentialType=${payload?.PotentialType}&ClosurebyWeekend=${payload?.ClosurebyWeekend}&ClosurebyMonth=${payload?.ClosurebyMonth}&owner_UserID=${payload?.owner_UserID}`
+			ReportType.POTENTIAL_CLOSURES_UPDATE + `?HRID=${payload?.HRID}
+			&PotentialCloserList_ID=${payload?.PotentialCloserList_ID}
+			&ProbabiltyRatio_thismonth=${payload?.ProbabiltyRatio_thismonth}
+			&Expected_Closure_Week=${payload?.Expected_Closure_Week}
+			&Actual_Closure_Week=${payload?.Actual_Closure_Week}
+			&Pushed_Closure_Week=${payload?.Pushed_Closure_Week}
+			&Talent_NoticePeriod=${payload?.Talent_NoticePeriod}
+			&Talent_Backup=${payload?.Talent_Backup}
+			&OwnerID=${payload?.OwnerID}`
 
 		httpService.setAuthRequired = true;
 		// httpService.dataToSend = payload;

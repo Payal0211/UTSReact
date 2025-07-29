@@ -670,12 +670,15 @@ export default function PotentialClosuresSheet() {
 
   const updatePotentialClosuresRowValue = async (updatedData) => {
     const pl = {
+      PotentialCloserList_ID: updatedData.potentialCloserList_ID,
       HRID: updatedData?.hiringRequest_ID,
-      ProductType: updatedData?.productType,
-      PotentialType: updatedData?.potentialType,
-      ClosurebyWeekend: updatedData?.closurebyWeekend,
-      ClosurebyMonth: updatedData?.closurebyMonth,
-      owner_UserID:updatedData?.owner_UserID
+      ProbabiltyRatio_thismonth:updatedData?.probabiltyRatio_thismonth,
+      Expected_Closure_Week:updatedData?.expected_Closure_Week,
+      Actual_Closure_Week:updatedData?.actual_Closure_Week,
+      Pushed_Closure_Week:updatedData?.pushed_Closure_Week,
+      Talent_NoticePeriod:updatedData?.talent_NoticePeriod,
+      Talent_Backup:updatedData?.talent_Backup,
+      OwnerID:updatedData?.owner_UserID
     };
 
     await ReportDAO.PotentialClosuresUpdateDAO(pl);
