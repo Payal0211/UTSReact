@@ -1170,6 +1170,75 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.PotentialClosuresUpdateDAO');
 		}
 	},	
+	PotentialOwnerUserDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.PotentialOwnerUserAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.PotentialOwnerUserDAO');
+		}
+	},	
+	getALLPotentialClosuresCommentsDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.getALLPotentialClosuresCommentsAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getALLPotentialClosuresCommentsDAO');
+		}
+	},
+	insertPotentialClosureCommentRequestDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.insertPotentialClosuresCommentsAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.insertPotentialClosureCommentRequestDAO');
+		}
+	},
 	revenueBusinessReportDAO:async function (payload) {
 		try {
 			const taResult = await ReportAPI.revenueBusinessReportAPI(payload);

@@ -730,7 +730,7 @@ export const ReportAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MASTERS +
-			ReportType.POTENTIAL_CLOSURES_UPDATE + `?HRID=${payload?.HRID}&ProductType=${payload?.ProductType}&PotentialType=${payload?.PotentialType}&ClosurebyWeekend=${payload?.ClosurebyWeekend}&ClosurebyMonth=${payload?.ClosurebyMonth}`
+			ReportType.POTENTIAL_CLOSURES_UPDATE + `?HRID=${payload?.HRID}&ProductType=${payload?.ProductType}&PotentialType=${payload?.PotentialType}&ClosurebyWeekend=${payload?.ClosurebyWeekend}&ClosurebyMonth=${payload?.ClosurebyMonth}&owner_UserID=${payload?.owner_UserID}`
 
 		httpService.setAuthRequired = true;
 		// httpService.dataToSend = payload;
@@ -742,7 +742,57 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.PotentialClosuresUpdateAPI');
 		}
 	},
+	PotentialOwnerUserAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.ACTIVE_OWNER_USER
 
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.PotentialOwnerUserAPI');
+		}
+	},
+getALLPotentialClosuresCommentsAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_POTENTIAL_COMMENTS + `?potentialCloserListID=${payload.potentialCloserListID}&hrID=${payload.hrID}`
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getALLPotentialClosuresCommentsAPI');
+		}
+	},
+	insertPotentialClosuresCommentsAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.INSERT_POTENTIAL_COMMENTS
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.insertPotentialClosuresCommentsAPI');
+		}
+	},
 	revenueBusinessReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
