@@ -43,6 +43,7 @@ let defaaultFilterState = {
 
 export default function PotentialClosuresSheet() {
   const [data, setData] = useState([]);
+  const [ monthWiseData,setMonthWiseData] = useState([])
   const [isLoading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("G");
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
@@ -60,20 +61,25 @@ export default function PotentialClosuresSheet() {
   const [startDate, setStartDate] = useState(new Date());
   const [ownersList,setOwnersList]=useState([])
 
-   const [showComment, setShowComment] = useState(false);
-    const [commentData, setCommentData] = useState({});
- const [allCommentList, setALLCommentsList] = useState([]);
+  const [showComment, setShowComment] = useState(false);
+  const [commentData, setCommentData] = useState({});
+  const [allCommentList, setALLCommentsList] = useState([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
+
+  const [showAchievedReport, setShowProbabilityReport] = useState(false);
+  const [listAchievedData, setListAchievedData] = useState([]);
+  const [achievedLoading, setAchievedLoading] = useState(false);
+  const [showTalentCol, setShowTalentCol] = useState({});
 
   const [userData, setUserData] = useState({});
     
-    useEffect(() => {
-      const getUserResult = async () => {
-        let userData = UserSessionManagementController.getUserSession();
-        if (userData) setUserData(userData);
-      };
-      getUserResult();
-    }, []);
+  useEffect(() => {
+    const getUserResult = async () => {
+      let userData = UserSessionManagementController.getUserSession();
+      if (userData) setUserData(userData);
+    };
+    getUserResult();
+  }, []);
 
   const getAllComments = async (d, modal) => {
     setIsCommentLoading(true);
@@ -96,14 +102,94 @@ export default function PotentialClosuresSheet() {
     setCommentData(data);
   };
 
+  const getWNo = (W)=>{
+    let week = 'W1'
+    if(W === 'Week 1') {week = 'W1'}
+    if(W === 'Week 2') {week = 'W2'}
+    if(W === 'Week 3') {week = 'W3'}
+    if(W === 'Week 4') {week = 'W4'}
+    if(W === 'Week 5') {week = 'W5'}
+    return week
+  }
+  
+    const getProbabilityReport = async (row, OT) => {
+      try {
+        setShowProbabilityReport(true);
+  
+        const pl = {
+          hr_BusinessType : "Global",    
+          optiontype : OT,
+          weekno : getWNo(row.weekNo) ,
+        };
+        setShowTalentCol(row);
+        setAchievedLoading(true);
+        const result = await ReportDAO.getProbabilityReportDAO(pl);
+        setAchievedLoading(false);
+        if (result.statusCode === 200) {
+          setListAchievedData(result.responseBody);
+        } else {
+          setListAchievedData([]);
+        }
+      } catch (err) {
+        console.log(err);
+        setListAchievedData([]);
+      }
+    };
+
   const columnsReport =[
     {
-      title: <div style={{ textAlign: "center" }}>Team</div>,
-      dataIndex: "hR_Team",
-      key: "hR_Team",
-      fixed: "left",
+      title: <div style={{ textAlign: "center" }}>Week NO</div>,
+      dataIndex: "weekNo",
+      key: "weekNo",
       width: 100,
-      className: pcsStyles.headerCell,
+      align:'center',
+      // className: pcsStyles.headerCell,
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Week Wise Expected</div>,
+      dataIndex: "weekWiseExpected",
+      key: "weekWiseExpected",
+      width: 100,
+      // className: pcsStyles.headerCell,
+      render:(text,row)=>{
+        return text ? <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  onClick={() => getProbabilityReport(row,'E')}
+                  style={{ cursor: "pointer", color: "#1890ff" }}
+                >
+                  {text}
+                </span>
+              </div> : ''
+      }
+    },
+    {
+      title: <div style={{ textAlign: "center" }}> Week Wise Actual</div>,
+      dataIndex: "weekWiseActual",
+      key: "weekWiseActual",
+      width: 100,
+      // className: pcsStyles.headerCell,
+        render:(text,row)=>{
+        return text ?  <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  onClick={() => getProbabilityReport(row,'A')}
+                  style={{ cursor: "pointer", color: "#1890ff" }}
+                >
+                  {text}
+                </span>
+              </div> : ''
+      }
     },
   ]
 
@@ -250,7 +336,7 @@ export default function PotentialClosuresSheet() {
         if(text === '' || text ==='NA'){
           return ''
         }
-        return <div style={{display:'flex', justifyContent:'center'}}><a href={text} style={{textDecoration:'underline'}} target="_blank"  rel="noreferrer" >Click</a></div> 
+        return <div style={{display:'flex', justifyContent:'center'}}><a href={text} style={{textDecoration:'underline'}} target="_blank"  rel="noreferrer" >Link</a></div> 
       }
     },
      {
@@ -265,6 +351,20 @@ export default function PotentialClosuresSheet() {
       key: "noofTR",
       width: 100,
       align: "center",
+      className: pcsStyles.headerCell,
+    },
+     {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Revenue  
+          <br />
+         Opportunity
+        </div>
+      ),
+      dataIndex: "hrRevenueAnnualCTC_INR_Str",
+      key: "hrRevenueAnnualCTC_INR_Str",
+      width: 120,
+      align: "right",
       className: pcsStyles.headerCell,
     },
     {
@@ -300,20 +400,20 @@ export default function PotentialClosuresSheet() {
     {
       title: (
         <div style={{ textAlign: "center" }}>
-          Product /<br />
-          Non Product
+         Probability Ratio  <br />
+          this month
         </div>
       ),
-      dataIndex: "productType",
-      key: "productType",
-      width: 120,
+      dataIndex: "probabiltyRatio_thismonth",
+      key: "probabiltyRatio_thismonth",
+      width: 135,
       align: "center",
       render: (value, record, index) =>
-        renderYesNoSelect(
+        renderDDSelect(
           value,
           record,
           index,
-          "productType",
+          "probabiltyRatio_thismonth",
           handleFieldChange
         ),
     },
@@ -327,7 +427,7 @@ export default function PotentialClosuresSheet() {
       ),
       dataIndex: "closurebyWeekend",
       key: "closurebyWeekend",
-      width: 110,
+      width: 115,
       align: "center",
       render: (value, record, index) =>
         renderWeekSelect(
@@ -338,27 +438,27 @@ export default function PotentialClosuresSheet() {
           handleFieldChange
         ),
     },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Actual
-          <br />
-          Closure Week
-        </div>
-      ),
-      dataIndex: "closurebyMonth",
-      key: "closurebyMonth",
-      width: 110,
-      align: "center",
-      render: (value, record, index) =>
-        renderWeekSelect(
-          value,
-          record,
-          index,
-          "closurebyMonth",
-          handleFieldChange
-        ),
-    },
+    // {
+    //   title: (
+    //     <div style={{ textAlign: "center" }}>
+    //       Actual
+    //       <br />
+    //       Closure Week
+    //     </div>
+    //   ),
+    //   dataIndex: "closurebyMonth",
+    //   key: "closurebyMonth",
+    //   width: 110,
+    //   align: "center",
+    //   render: (value, record, index) =>
+    //     renderWeekSelect(
+    //       value,
+    //       record,
+    //       index,
+    //       "closurebyMonth",
+    //       handleFieldChange
+    //     ),
+    // },
     //,   Next Action Point (Add / View), Owner1
       {
       title: (
@@ -369,9 +469,17 @@ export default function PotentialClosuresSheet() {
       ),
       dataIndex: "pushed_Closure_Week",
       key: "pushed_Closure_Week",
-      width: 100,
+      width: 105,
       align: "center",
       className: pcsStyles.headerCell,
+       render: (value, record, index) =>
+        renderWeekSelect(
+          value,
+          record,
+          index,
+          "pushed_Closure_Week",
+          handleFieldChange
+        ),
     },
    {
       title: (
@@ -382,9 +490,17 @@ export default function PotentialClosuresSheet() {
       ),
       dataIndex: "talent_NoticePeriod",
       key: "talent_NoticePeriod",
-      width: 100,
+      width: 105,
       align: "center",
       className: pcsStyles.headerCell,
+      //  render: (value, record, index) =>
+      //   renderInputField(
+      //     value,
+      //     record,
+      //     index,
+      //     "talent_NoticePeriod",
+      //     handleFieldChange
+      //   ),
     },
        {
       title: (
@@ -398,6 +514,14 @@ export default function PotentialClosuresSheet() {
       width: 100,
       align: "center",
       className: pcsStyles.headerCell,
+        render: (value, record, index) =>
+        renderYesNoSelect(
+          value,
+          record,
+          index,
+          "talent_Backup",
+          handleFieldChange
+        ),
     },
     // {
     //   title: <div style={{ textAlign: "center" }}>Potential</div>,
@@ -406,7 +530,7 @@ export default function PotentialClosuresSheet() {
     //   width: 100,
     //   align: "center",
     //   render: (value, record, index) =>
-    //     renderYesNoSelect(
+    //     renderDDSelect(
     //       value,
     //       record,
     //       index,
@@ -415,32 +539,32 @@ export default function PotentialClosuresSheet() {
     //     ),
     // },
    
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Talent Pay Rate/ <br />
-          Client Budget
-        </div>
-      ),
-      dataIndex: "talentPayStr",
-      key: "talentPayStr",
-      width: 280,
-      className: pcsStyles.headerCell,
-    },
+    // {
+    //   title: (
+    //     <div style={{ textAlign: "center" }}>
+    //       Talent Pay Rate/ <br />
+    //       Client Budget
+    //     </div>
+    //   ),
+    //   dataIndex: "talentPayStr",
+    //   key: "talentPayStr",
+    //   width: 280,
+    //   className: pcsStyles.headerCell,
+    // },
    
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Above 35
-          <br /> LPA
-        </div>
-      ),
-      dataIndex: "above35LPA",
-      key: "above35LPA",
-      width: 100,
-      align: "center",
-      className: pcsStyles.headerCell,
-    },
+    // {
+    //   title: (
+    //     <div style={{ textAlign: "center" }}>
+    //       Above 35
+    //       <br /> LPA
+    //     </div>
+    //   ),
+    //   dataIndex: "above35LPA",
+    //   key: "above35LPA",
+    //   width: 100,
+    //   align: "center",
+    //   className: pcsStyles.headerCell,
+    // },
     {
       title: <div style={{ textAlign: "center" }}>Lead</div>,
       dataIndex: "leadType",
@@ -451,8 +575,8 @@ export default function PotentialClosuresSheet() {
     },
     {
       title: <div style={{ textAlign: "center" }}>Next Action <br/> Point</div>,
-      dataIndex: "leadType",
-      key: "leadType",
+      dataIndex: "nextAction",
+      key: "nextAction",
       width: 100,
       align: "center",
       className: pcsStyles.headerCell,
@@ -530,7 +654,12 @@ export default function PotentialClosuresSheet() {
   }, [openTicketDebounceText]);
 
   useEffect(() => {
-    fetchPotentialClosuresListData(activeTab);
+    if(activeTab === 'PR'){
+      getMonthWiseReport()
+    }else{
+      fetchPotentialClosuresListData(activeTab);
+    }
+    
   }, [activeTab, openTicketSearchText, tableFilteredState,startDate]);
 
   const handleTabChange = (key) => {
@@ -562,7 +691,26 @@ export default function PotentialClosuresSheet() {
     }
   };
 
-  const renderYesNoSelect = (value, record, index, dataIndex, handleChange) => {
+  const getMonthWiseReport = async ()=>{
+    let payload = {
+    hr_BusinessType:'Global',
+      // month: moment(startDate).format('MM'),
+      // year:moment(startDate).format('YYYY')
+      month: '07',
+      year: '2025'
+    };
+
+    setLoading(true);
+    const apiResult = await ReportDAO.monthwisePotentialClosuresListDAO(payload);
+    setLoading(false);
+    if (apiResult?.statusCode === 200) {
+      setMonthWiseData(apiResult.responseBody);
+    } else if (apiResult?.statusCode === 404) {
+      setMonthWiseData([]);
+    }
+  }
+
+  const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
      return (
       <Select
         value={value}
@@ -599,10 +747,26 @@ export default function PotentialClosuresSheet() {
     // );
   };
 
+   const renderYesNoSelect = (value, record, index, dataIndex, handleChange) => {
+    return (
+      <Select
+        value={value}
+        onChange={(newValue) =>
+          handleChange(newValue, record, index, dataIndex)
+        }
+        style={{ width: "100%" }}
+        size="small"
+      >
+        <Option value="Yes">Yes</Option>
+        <Option value="No">No</Option>
+      </Select>
+    );
+  };
+
     const renderOwnerSelect = (value, record, index, dataIndex, handleChange) => {
      return (
       <Select
-        value={value}
+        value={value === 0 ? '' : value}
         onChange={(newValue) =>
           handleChange(newValue, record, index, dataIndex)
         }
@@ -718,7 +882,65 @@ export default function PotentialClosuresSheet() {
     let DataToExport = apiData.map((data) => {
       let obj = {};
       columns.forEach((val) => {
-        obj[`${val.title}`] = data[`${val.key}`];
+
+        if(val.key === "hR_Team"){
+           obj[`Team`] = data[`${val.key}`];
+        }else if(val.key === "createdByDatetime"){
+           obj[`Date Created`] = data[`${val.key}`] ? moment(data[`${val.key}`]).format("DD/MM/YYYY") : "-" ;
+        }else if(val.key === "hrOpenSinceDays"){
+           obj[`Open since how many days`] = data[`${val.key}`] 
+        }else if(val.key === "hR_Number"){
+           obj[`HR ID`] = data[`${val.key}`] 
+        }else if(val.key === "hrStatus"){
+           obj[`HR Status`] = data[`${val.key}`] 
+        }else if(val.key === "hrModel"){
+           obj[`Engagement Model`] = data[`${val.key}`] 
+        }else if(val.key === "salesPerson"){
+           obj[`Sales Rep`] = data[`${val.key}`] 
+        }else if(val.key === "company"){
+           obj[`Company`] = data[`${val.key}`] 
+        }else if(val.key === "position"){
+           obj[`Position`] = data[`${val.key}`] 
+        }else if(val.key === "ctP_Link"){
+           obj[`CTP Link`] = data[`${val.key}`] 
+        }else if(val.key === "noofTR"){
+           obj[` Number of TRs`] = data[`${val.key}`] 
+        }else if(val.key === "hrRevenueAnnualCTC_INR_Str"){
+           obj[`Revenue Opportunity`] = data[`${val.key}`] 
+        }else if(val.key === "averageValue"){
+           obj[`Average Value (USD)`] = data[`${val.key}`] 
+        }
+        else if(val.key === "uplersFeesPer"){
+           obj[`Uplers Fees %`] = data[`${val.key}`] 
+        }
+        else if(val.key === "uplersFeeStr"){
+           obj[`Uplers Fees`] = data[`${val.key}`] 
+        }else if(val.key === "probabiltyRatio_thismonth"){
+           obj[`Probability Ratio this month`] = data[`${val.key}`] 
+        }else if(val.key === 'closurebyWeekend'){
+           obj[`Expected Closure Week`] = data[`${val.key}`] 
+        }
+        else if(val.key === 'pushed_Closure_Week'){
+           obj[`Pushed Closure Week`] = data[`${val.key}`] 
+        }
+        else if(val.key === 'talent_NoticePeriod'){
+           obj[` Talent's Notice Period`] = data[`${val.key}`] 
+        }
+        else if(val.key === 'talent_Backup'){
+           obj[`Back Up`] = data[`${val.key}`] 
+        }
+        else if(val.key === 'leadType'){
+           obj[`Lead`] = data[`${val.key}`] 
+        }
+        else if(val.key === 'nextAction'){
+           
+        }
+        else if(val.key === 'owner_UserID'){
+           obj[`Owner`] = data[`${val.key}`] === 0 ? '' : ownersList.find(owner=> owner.id === data[`${val.key}`]).fullName
+        }else{
+           obj[`${val.title}`] = data[`${val.key}`];
+        }
+       
       });
       return obj;
     });
@@ -796,11 +1018,12 @@ export default function PotentialClosuresSheet() {
         tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
       >
         <TabPane tab="Global" key="G" />
-         {/* <TabPane tab="Global Report" key="GR" /> */}
+        <TabPane tab="Probability Ration" key="PR" />
         <TabPane tab="India" key="I" />
       </Tabs>
 
-      <div className={pcsStyles.filterContainer}>
+
+{activeTab !== 'PR' &&  <div className={pcsStyles.filterContainer}>
         <div className={pcsStyles.filterSets}>
           <div className={pcsStyles.filterSetsInner}>
             <div className={pcsStyles.addFilter} onClick={toggleHRFilter}>
@@ -809,7 +1032,7 @@ export default function PotentialClosuresSheet() {
               <div className={pcsStyles.filterLabel}>Add Filters</div>
               <div className={pcsStyles.filterCount}>{filteredTagLength}</div>
             </div>
-            <p onClick={() => clearFilters()}>Reset Filters</p>
+           
             <div
               className={pcsStyles.searchFilterSet}
               style={{ marginLeft: "10px" }}
@@ -837,6 +1060,7 @@ export default function PotentialClosuresSheet() {
                 />
               )}
             </div>
+            <p onClick={() => clearFilters()}>Reset Filters</p>
           </div>
 
 
@@ -905,7 +1129,8 @@ export default function PotentialClosuresSheet() {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
+     
 
       <Card bordered={false}>
         <div>
@@ -913,8 +1138,8 @@ export default function PotentialClosuresSheet() {
             <TableSkeleton />
           ) : data?.length > 0 ? (
             <Table
-              columns={activeTab !== 'GR' ? columns : columnsReport}
-              dataSource={data}
+              columns={activeTab !== 'PR' ? columns : columnsReport}
+              dataSource={activeTab !== 'PR' ? data : monthWiseData}
               bordered
               pagination={{
                 pageSize: pageSize,
@@ -1044,6 +1269,178 @@ export default function PotentialClosuresSheet() {
                 </div>
               </Modal>
             )}
+
+
+               {showAchievedReport && (
+        <Modal
+          width="1200px"
+          centered
+          footer={null}
+          open={showAchievedReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowProbabilityReport(false);
+          }}
+        >
+          <div style={{ padding: "20px 15px" }}>
+            <h3>
+              <b>{showTalentCol?.weekNo  }</b> 
+            </h3>
+          </div>
+
+          {achievedLoading ? (
+            <TableSkeleton />
+          ) : listAchievedData.length > 0 ? (
+            <>
+              <div
+                style={{
+                  padding: "0 20px 20px 20px",
+                  overflowX: "auto",
+                  maxHeight: "500px",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 14,
+                    textAlign: "left",
+                  }}
+                >
+                  <thead
+                    className={pcsStyles.overwriteTableColor}
+                    style={{ position: "sticky", top: "0" }}
+                  >
+                    <tr style={{ backgroundColor: "#f0f0f0" }}>
+                      <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Company
+                          </th>
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            HR Number
+                          </th>
+                       <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            HR Title
+                          </th>
+
+                           <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Sales Person
+                          </th>
+
+                           <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Owner Name
+                          </th>
+
+                           <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                           Talent
+                          </th>
+                    </tr>
+                  </thead>
+
+                  <tbody style={{ maxHeight: "500px" }}>
+                    {listAchievedData.map((detail, index) => (
+                      <tr
+                        key={index}
+                        style={{ borderBottom: "1px solid #ddd" }}
+                      >
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.Company }
+                        </td>
+                           <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.HR_Number }
+                        </td>
+                           <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.HRTitle  }
+                        </td>
+                           <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.SalesPerson  }
+                        </td>
+                           <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.OwnerName  }
+                        </td>
+                           <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.Talent }
+                        </td>
+                      
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <div
+              style={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "20px",
+                fontWeight: 500,
+              }}
+            >
+              <p>No details available.</p>
+            </div>
+          )}
+
+          <div style={{ padding: "10px", textAlign: "right" }}>
+            <button
+              className={pcsStyles.btnCancle}
+              onClick={() => {
+                setShowProbabilityReport(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -725,6 +725,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.PotentialClosuresListAPI');
 		}
 	},
+	PotentialClosuresMonthWiseListAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.POTENTIAL_MONTH_WISE_CLOSURES_LIST + `?month=${payload.month}&year=${payload.year}&hr_BusinessType=${payload.hr_BusinessType}`
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.PotentialClosuresMonthWiseListAPI');
+		}
+	},
 	PotentialClosuresUpdateAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -773,6 +790,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
 			ReportType.GET_POTENTIAL_COMMENTS + `?potentialCloserListID=${payload.potentialCloserListID}&hrID=${payload.hrID}`
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getALLPotentialClosuresCommentsAPI');
+		}
+	},
+	getProbabilityReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_PROBABILITY_RATIO_DETAILS + `?hr_BusinessType=${payload.hr_BusinessType}&optiontype=${payload.optiontype}&weekno=${payload.weekno}`
 
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = payload;
