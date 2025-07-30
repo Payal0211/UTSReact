@@ -169,6 +169,16 @@ flex-wrap: wrap;
     box-shadow: none;
 }
 
+.overwriteTableColor{
+  background-color: rgb(233, 233, 233) !important;
+}
+
+.overwriteTableColor tr th{
+   background-color: rgb(233, 233, 233) !important;
+   border-radius: 0px !important;
+   text-align: center;
+}
+
 .btnCancle {
     background: var(--text-color-purity);
     border: 1px solid #CECCCC;

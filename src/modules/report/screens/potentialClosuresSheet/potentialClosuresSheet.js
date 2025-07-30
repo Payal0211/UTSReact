@@ -1018,7 +1018,7 @@ export default function PotentialClosuresSheet() {
         tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
       >
         <TabPane tab="Global" key="G" />
-        <TabPane tab="Probability Ration" key="PR" />
+        <TabPane tab="Probability Ratio" key="PR" />
         <TabPane tab="India" key="I" />
       </Tabs>
 
@@ -1312,6 +1312,15 @@ export default function PotentialClosuresSheet() {
                     style={{ position: "sticky", top: "0" }}
                   >
                     <tr style={{ backgroundColor: "#f0f0f0" }}>
+                       <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Closure Date
+                          </th>
                       <th
                             style={{
                               padding: "10px",
@@ -1357,7 +1366,7 @@ export default function PotentialClosuresSheet() {
                               backgroundColor: "rgb(233, 233, 233) !important",
                             }}
                           >
-                            Owner Name
+                            Owner
                           </th>
 
                            <th
@@ -1381,32 +1390,37 @@ export default function PotentialClosuresSheet() {
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.Company }
+                          {detail.clientClosureDateStr }
+                        </td>
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.company }
                         </td>
                            <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.HR_Number }
+                          {detail.hR_Number }
                         </td>
                            <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.HRTitle  }
+                          {detail.hrTitle  }
                         </td>
                            <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.SalesPerson  }
+                          {detail.salesPerson  }
                         </td>
                            <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.OwnerName  }
+                          {detail.ownerName  }
                         </td>
                            <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.Talent }
+                          {detail.talent }
                         </td>
                       
                       </tr>
