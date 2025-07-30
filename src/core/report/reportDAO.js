@@ -1147,6 +1147,29 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.PotentialClosuresListDAO');
 		}
 	},	
+	monthwisePotentialClosuresListDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.PotentialClosuresMonthWiseListAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.monthwisePotentialClosuresListDAO');
+		}
+	},	
 	PotentialClosuresUpdateDAO:async function (payload) {
 		try {
 			const taResult = await ReportAPI.PotentialClosuresUpdateAPI(payload);
@@ -1214,6 +1237,29 @@ export const ReportDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'TaDashboardDAO.getALLPotentialClosuresCommentsDAO');
+		}
+	},
+	getProbabilityReportDAO: async function (payload) {
+		try {
+			const taResult = await ReportAPI.getProbabilityReportAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getProbabilityReportDAO');
 		}
 	},
 	insertPotentialClosureCommentRequestDAO:async function (payload) {
