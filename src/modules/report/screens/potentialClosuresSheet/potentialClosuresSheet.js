@@ -1150,6 +1150,41 @@ export default function PotentialClosuresSheet() {
               rowClassName={(record, index) =>
                 index % 2 === 0 ? pcsStyles.evenRow : pcsStyles.oddRow
               }
+                summary={() => { if(activeTab === 'PR'){
+                   return (
+                                    <Table.Summary fixed>
+                                      <Table.Summary.Row>
+                                        <Table.Summary.Cell index={0}>
+                                          <div style={{ textAlign: "center" }}>
+                                            <strong>Total :</strong>
+                                          </div>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell index={1}>
+                                          <div style={{ textAlign: "center" }}>
+                                            <strong>
+                                             {monthWiseData.reduce((acc, curr) => acc + curr.weekWiseExpected, 0)}
+                                            </strong>
+                                          </div>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell index={2}>
+                                          <div
+                                            style={{
+                                              textAlign: "center",
+                                              fontWeight: "bold",
+                                              cursor: "pointer",
+                                            }}
+                                           
+                                          >
+                                           {monthWiseData.reduce((acc, curr) => acc + curr.weekWiseActual, 0)}
+                                          </div>
+                                        </Table.Summary.Cell>
+                                       
+                                      </Table.Summary.Row>
+                                    </Table.Summary>
+                                  );
+                }
+                                 
+                                }}
             />
           ) : (
             <Table columns={columns} dataSource={[]} bordered size="middle" />
