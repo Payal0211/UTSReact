@@ -3856,7 +3856,7 @@ const EditHRFields = ({
                               ? 10000
                               : 1000
                             : 1,
-                          message: `please enter the value ${
+                          message: `please enter the budget ${
                             watch("availability")?.value === "Full Time" ||
                             watch("availability")?.value === "Contract" ||
                             watch("availability")?.value === "Contract to Hire"
@@ -3896,7 +3896,7 @@ const EditHRFields = ({
                               ? 10000
                               : 1000
                             : 1,
-                          message: `please enter the value ${
+                          message: `please enter the budget ${
                             watch("availability")?.value === "Full Time" ||
                             watch("availability")?.value === "Contract" ||
                             watch("availability")?.value === "Contract to Hire"
