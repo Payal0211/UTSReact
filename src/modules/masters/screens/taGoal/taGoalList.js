@@ -222,6 +222,10 @@ const TAGOALList = () => {
 							setNewTAUserValue(value);
 							setTaError(false);
 						}}
+						showSearch={true}
+						filterOption={(input, option) =>
+							(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+						}
 						options={allTAUsersList.map((v) => ({
 							label: v.data,
 							value: v.id,
