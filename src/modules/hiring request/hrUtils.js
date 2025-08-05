@@ -43,7 +43,8 @@ export const hrUtils = {
 			salaryBudget: item?.salaryBudget,
 			isDraftHR: item?.isDraftHR,
 			appActionDoneBy: item?.appActionDoneBy,
-			hrPostedFromPlatform: item?.hrPostedFromPlatform
+			hrPostedFromPlatform: item?.hrPostedFromPlatform,
+			timeZone: item?.timeZone
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {

@@ -552,8 +552,8 @@ export default function DailyBusinessNumbersPage() {
                   {v}
                 </div>
               );
-            } if (rec.stage === "TRs" || rec.stage === "HRs (New)"  || rec.stage === "TRs (New)" || rec.stage === "New Clients" || rec.stage === 'Closures'|| rec.stage === 'Current Month Lost') {
-              return v ? (
+            } if (rec.stage === "TRs" || rec.stage === "HRs (New)"  || rec.stage === "TRs (New)" || rec.stage === "New Clients" || rec.stage === 'Closures') {
+              return (
                 <div
                   style={{
                     display: "flex",
@@ -585,15 +585,15 @@ export default function DailyBusinessNumbersPage() {
                       </span>{" "}
                     </Tooltip>
                   </IconContext.Provider>
-
-                  <span
+                        {v ? <span
                     onClick={() => getHRTalentWiseReport(rec, "N", v)}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
-                  </span>
+                  </span>: ''}
+                  
                 </div>
-              ) : ''
+              ) 
             }
             return (
               <div
@@ -1102,9 +1102,9 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
-            if(v === '' || +v === 0){
-              return
-            }
+            // if(v === '' || +v === 0){
+            //   return
+            // }
             if (rec.stage === "Current Active") {
               return (
                 <div
@@ -1151,13 +1151,13 @@ export default function DailyBusinessNumbersPage() {
                       </span>{" "}
                     </Tooltip>
                   </IconContext.Provider>
-
-                  <span
+                  {v === '' || +v === 0 ? '' :   <span
                     onClick={() => getHRTalentWiseReport(rec, "C", v)}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
-                  </span>
+                  </span>}
+                
                 </div>
               );
             }
@@ -1243,9 +1243,6 @@ export default function DailyBusinessNumbersPage() {
             if (rec.isCategory || rec.isSpacer) {
               return { props: { colSpan: 0 } };
             }
-             if(v === '' || +v === 0){
-              return
-            }
             if (rec.stage === "Current Active") {
               return (
                 <div
@@ -1291,13 +1288,13 @@ export default function DailyBusinessNumbersPage() {
                       </span>{" "}
                     </Tooltip>
                   </IconContext.Provider>
-
-                  <span
+                        {v === '' || +v === 0 ? '' :     <span
                     onClick={() => getHRTalentWiseReport(rec, "D", v)}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
-                  </span>
+                  </span>}
+              
                 </div>
               );
             }
@@ -1393,8 +1390,8 @@ export default function DailyBusinessNumbersPage() {
                 </div>
               );
             }
-            if (rec.stage === "TRs" || rec.stage === "HRs (New)"  || rec.stage === "TRs (New)" || rec.stage === "New Clients" || rec.stage === 'Closures'|| rec.stage === 'Current Month Lost') {
-              return v ? (
+            if (rec.stage === "TRs" || rec.stage === "HRs (New)"  || rec.stage === "TRs (New)" || rec.stage === "New Clients" || rec.stage === 'Closures') {
+              return  (
                 <div
                   style={{
                     display: "flex",
@@ -1426,15 +1423,14 @@ export default function DailyBusinessNumbersPage() {
                       </span>{" "}
                     </Tooltip>
                   </IconContext.Provider>
-
-                  <span
+{v ? <span
                     onClick={() => getHRTalentWiseReport(rec, "N", v)}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
-                  </span>
+                  </span> : ''}
                 </div>
-              ) : ''
+              ) 
             }
             return (
               <div
