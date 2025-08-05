@@ -7,6 +7,7 @@ import { ReactComponent as CloseHR } from "assets/svg/power.svg";
 import { ReactComponent as FocusedRole } from "assets/svg/FocusRole.svg";
 import { Tooltip, message, Checkbox } from "antd";
 import eyeIcon from 'assets/svg/eye.svg'
+import Diamond from "assets/svg/diamond.svg";
 import moment from "moment";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { HTTPStatusCode } from "constants/network";
@@ -270,6 +271,17 @@ export const allHRConfig = {
         key: "company",
         align: "left",
         width: "200px",
+          render: (text, result) => {
+        	return (
+        		<div>
+              {text}{result.companyCategory === "Diamond" &&  <img
+              src={Diamond}
+              alt="info"
+              style={{ width: "16px", height: "16px",marginLeft:'5px' }}
+            />}
+            </div>
+        	);
+        },
         // render: (text) => {
         // 	return (
         // 		<a
@@ -304,6 +316,13 @@ export const allHRConfig = {
         key: "hrEngagementType",
         align: "left",
         width: "180px",
+      },
+       {
+        title: "Margin %",
+        dataIndex: "timeZone",
+        key: "timeZone",
+        align: "left",
+        width: "120px",
       },
       {
         title: "Salary/Client Budget",
