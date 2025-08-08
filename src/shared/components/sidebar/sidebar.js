@@ -28,6 +28,7 @@ import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 import HandShake from 'assets/svg/postStepIconInterview.svg'
 import TADashboardIcon from 'assets/svg/ta-dashboard.svg'
 import ClientCompIcon from 'assets/clientCompany.png'
+import ADDHRSVG from 'assets/svg/addHR.svg'
 import SLAReport from 'assets/svg/slaReport.svg';
 import AMReportIcon from 'assets/svg/amreport.svg';
 import InvoiceIcon from 'assets/invoice.png';
@@ -538,13 +539,13 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.POTENTIAL_CLOSURES_SHEET,
 					isVisible: isAccess(usertypeID, 'PotentialClosuresSheet')
 				}),
-				new SideBarModels({
-					id: 'amReport',
-					title: 'AM Report',
-					isActive: false,
-					navigateTo: UTSRoutes.AM_REPORT,
-					isVisible: isAccess(usertypeID, 'amReport')
-				}),
+				// new SideBarModels({
+				// 	id: 'amReport',
+				// 	title: 'AM Report',
+				// 	isActive: false,
+				// 	navigateTo: UTSRoutes.AM_REPORT,
+				// 	isVisible: isAccess(usertypeID, 'amReport')
+				// }),
 				new SideBarModels({
 					id: 'companyCategory',
 					title: 'Company Category',
@@ -554,6 +555,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 				}),
 			],
 			isVisible: isAccess(usertypeID, 'omReport')
+		}),
+			new SideBarModels({
+			id: 'amReport',
+			title: 'AM Report',
+			isActive: false,
+			icon: ADDHRSVG ,                                                                                                                    
+			isChildren: false,
+			branch: [],
+			navigateTo: UTSRoutes.AM_REPORT,
+			isVisible: isAccess(usertypeID, 'amReport')
 		}),
       
 		new SideBarModels({
