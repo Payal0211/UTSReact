@@ -208,3 +208,75 @@
   z-index: 4;
   background-color: #fff7d6 !important;
 }
+
+ .cardcontainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9fb;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  border: 1px solid #d1d1d1;
+}
+
+.recruitercard {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  /* Adjust width as needed, e.g., for 3 cards per row on larger screens */
+  width: calc(33.333% - 20px); 
+  min-width: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+.recruitername {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.summeryContainer{
+  display: flex;
+    gap: 30px;
+    margin: 20px 0;
+    width: 100%;
+    overflow-x: scroll;
+}
+
+.stagetable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 12px;
+  background-color: #fff;
+}
+
+
+.stagetable thead {
+  background-color: #f0f2f5;
+}
+
+.stagetable th,
+.stagetable td {
+  border: 1px solid #e0e0e0;
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+/* Alternate row colors for body */
+.stagetable tbody tr:nth-child(odd) {
+  background-color: lightblue;
+}
+
+.stagetable tbody tr:nth-child(even) {
+  background-color: lightcyan;
+}
