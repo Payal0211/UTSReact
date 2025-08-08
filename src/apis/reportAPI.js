@@ -647,7 +647,7 @@ export const ReportAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
-			ReportType.AM_WEEK_WISE_REPORT
+			ReportType.AM_WEEK_WISE_REPORT_NEW + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}&hrType=${reportData?.hrType}`
 
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = reportData;
@@ -657,6 +657,23 @@ export const ReportAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.getAMReport');
+		}
+	},
+	getSummeryAMReport:async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.AM_WISE_CLOSURES_SUMMARY  + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}`
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getSummeryAMReport');
 		}
 	},
 	getAMReportFilters : async function () {
