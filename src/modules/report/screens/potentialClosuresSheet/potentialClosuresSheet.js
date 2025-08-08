@@ -728,8 +728,8 @@ export default function PotentialClosuresSheet() {
         <Option value="Preonboarding">Preonboarding</Option>
          <Option value="Lost">Lost</Option>
         <Option value="Won">Won</Option>
-
-      
+ <Option value="Pause">Pause</Option>
+       <Option value="Backed out">Backed out</Option>
       </Select>
     );
     // return (
