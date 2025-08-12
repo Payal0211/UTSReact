@@ -212,8 +212,8 @@
  .cardcontainer {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
+  /* gap: 20px; */
+  padding: 10px;
   background-color: #f9f9fb;
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
@@ -270,6 +270,7 @@
   text-align: left;
   vertical-align: middle;
   font-size: 14px;
+  max-width: 80px;
 }
 
 /* Alternate row colors for body */
@@ -279,4 +280,21 @@
 
 .stagetable tbody tr:nth-child(even) {
   background-color: lightcyan;
+}
+
+
+.btnCancle {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left: 10px;
 }
