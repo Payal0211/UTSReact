@@ -1,19 +1,24 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react';
-import amReportStyles from './amReport.module.css';
-import { Table, Radio, message } from 'antd';
-import { ReportDAO } from 'core/report/reportDAO';
+import React, { Suspense, useCallback, useEffect, useState } from "react";
+import amReportStyles from "./amReport.module.css";
+import { Table, Radio, message, Select, Tooltip, Modal, Skeleton } from "antd";
+import { ReportDAO } from "core/report/reportDAO";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { InputType } from "constants/application";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import DatePicker from "react-datepicker";
-import moment from 'moment';
+import moment from "moment";
 import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
-import OnboardFilerList from 'modules/onBoardList/OnboardFilterList';
-import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
-import { allEngagementConfig } from 'modules/engagement/screens/engagementList/allEngagementConfig';
-import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
+import OnboardFilerList from "modules/onBoardList/OnboardFilterList";
+import { allHRConfig } from "modules/hiring request/screens/allHiringRequest/allHR.config";
+import { allEngagementConfig } from "modules/engagement/screens/engagementList/allEngagementConfig";
+import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import Diamond from "assets/svg/diamond.svg";
+import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
+import { IoMdAddCircle } from "react-icons/io";
+import { IconContext } from "react-icons";
+import { HTTPStatusCode } from "constants/network";
+import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 
 // const columns = [
 //   {
@@ -22,8 +27,8 @@ import Diamond from "assets/svg/diamond.svg";
 //     key: 'clientName',
 //     width: 160,
 //     render: (text, result) => {
-//       return text === "TOTAL" 
-//         ? "" 
+//       return text === "TOTAL"
+//         ? ""
 //         : <a href={`/viewCompanyDetails/${result.clientID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{text}</a>;
 //     },
 //   },
@@ -95,7 +100,253 @@ import Diamond from "assets/svg/diamond.svg";
 //   })),
 // ];
 
-const columns = [
+const { Option } = Select;
+
+const AMReport = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [reportData, setReportData] = useState([]);
+  const [isSummeryLoading, setIsSummeryLoading] = useState(false);
+  const [summeryReportData, setSummeryReportData] = useState([]);
+  const [summeryGroupsNames, setSummeryGroupsName] = useState([]);
+  const today = new Date();
+  const [monthDate, setMonthDate] = useState(today);
+  const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
+  const [getHTMLFilter, setHTMLFilter] = useState(false);
+  const [isAllowFilters, setIsAllowFilters] = useState(false);
+  const [filteredTagLength, setFilteredTagLength] = useState(0);
+  const [appliedFilter, setAppliedFilters] = useState(new Map());
+  const [checkedState, setCheckedState] = useState(new Map());
+  const [tableFilteredState, setTableFilteredState] = useState({
+    filterFields_OnBoard: {
+      text: null,
+      EngType: "",
+    },
+  });
+  var date = new Date();
+  const [startDate, setStartDate] = useState(
+    new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+  );
+  const [dateTypeFilter, setDateTypeFilter] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filtersList, setFiltersList] = useState([]);
+  const [showTalentProfiles, setShowTalentProfiles] = useState(false);
+  const [profileInfo, setInfoforProfile] = useState({});
+  const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
+  const [hrTalentList, setHRTalentList] = useState([]);
+  const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
+  const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
+  const [profileStatusID, setProfileStatusID] = useState(0);
+  const [talentToMove, setTalentToMove] = useState({});
+
+  const [summeryDetails, setSummeryDetails] = useState([]);
+  const [showSummeryDetails, setShowSummeryDetails] = useState(false);
+  useEffect(() => {
+    getAMReportFilter();
+  }, []);
+
+  useEffect(() => {
+    getAMReportData();
+  }, [openTicketDebounceText, monthDate, tableFilteredState]);
+
+  const getAMReportFilter = async () => {
+    setIsLoading(true);
+    const filterResult = await ReportDAO.getAMReportFilterDAO();
+    setIsLoading(false);
+    if (filterResult.statusCode === 200) {
+      setFiltersList(filterResult?.responseBody || []);
+    } else if (filterResult?.statusCode === 404) {
+      setFiltersList({});
+    }
+  };
+
+  const getAMReportData = async () => {
+    let payload = {
+      searchText: openTicketDebounceText,
+      month: monthDate ? +moment(monthDate).format("M") : 0,
+      year: monthDate ? +moment(monthDate).format("YYYY") : 0,
+      // "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
+      hrType: tableFilteredState?.filterFields_OnBoard?.EngType,
+      hrStatus: "",
+      salesRep: tableFilteredState?.filterFields_OnBoard?.text ?? "",
+      leadType: "",
+      hr_BusinessType: "G",
+    };
+    setIsLoading(true);
+    const apiResult = await ReportDAO.getAMReportDAO(payload);
+    setIsLoading(false);
+    if (apiResult?.statusCode === 200) {
+      setReportData(apiResult.responseBody);
+    } else if (apiResult?.statusCode === 404) {
+      setReportData([]);
+    }
+  };
+
+  const getAMSummary = async () => {
+    let pl = {
+      hr_BusinessType: "G",
+      month: monthDate ? +moment(monthDate).format("M") : 0,
+      year: monthDate ? +moment(monthDate).format("YYYY") : 0,
+    };
+
+    setIsSummeryLoading(true);
+    const apiResult = await ReportDAO.getAMSummeryReportDAO(pl);
+    setIsSummeryLoading(false);
+    if (apiResult?.statusCode === 200) {
+      setSummeryReportData(apiResult.responseBody);
+      let groups = [];
+      apiResult.responseBody.forEach((element) => {
+        if (!groups.includes(element.groupName)) {
+          groups.push(element.groupName);
+        }
+      });
+      setSummeryGroupsName(groups);
+    } else if (apiResult?.statusCode === 404) {
+      setSummeryReportData([]);
+    }
+  };
+
+  useEffect(() => {
+    getAMSummary();
+  }, [monthDate]);
+
+  const toggleHRFilter = useCallback(() => {
+    !getHTMLFilter
+      ? setIsAllowFilters(!isAllowFilters)
+      : setTimeout(() => {
+          setIsAllowFilters(!isAllowFilters);
+        }, 300);
+    setHTMLFilter(!getHTMLFilter);
+  }, [getHTMLFilter, isAllowFilters]);
+
+  const clearFilters = () => {
+    setAppliedFilters(new Map());
+    setCheckedState(new Map());
+    setFilteredTagLength(0);
+    setopenTicketDebounceText("");
+    setMonthDate(new Date());
+    setTableFilteredState({
+      filterFields_OnBoard: {
+        text: null,
+      },
+    });
+  };
+
+  const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
+    return (
+      <Select
+        value={value}
+        onChange={(newValue) =>
+          handleChange(newValue, record, index, dataIndex)
+        }
+        style={{ width: "100%" }}
+        size="small"
+      >
+        <Option value="100%">100%</Option>
+        <Option value="75%">75%</Option>
+        <Option value="50%">50%</Option>
+        <Option value="25%">25%</Option>
+        <Option value="0%">0%</Option>
+        <Option value="Preonboarding">Preonboarding</Option>
+        <Option value="Lost">Lost</Option>
+        <Option value="Won">Won</Option>
+        <Option value="Pause">Pause</Option>
+        <Option value="Backed out">Backed out</Option>
+      </Select>
+    );
+  };
+
+  const renderWeekSelect = (value, record, index, dataIndex, handleChange) => {
+    return (
+      <Select
+        value={value}
+        onChange={(newValue) =>
+          handleChange(newValue, record, index, dataIndex)
+        }
+        style={{ width: "100%" }}
+        size="small"
+      >
+        <Option value="W1">W1</Option>
+        <Option value="W2">W2</Option>
+        <Option value="W3">W3</Option>
+        <Option value="W4">W4</Option>
+        <Option value="W5">W5</Option>
+      </Select>
+    );
+  };
+
+  const renderYesNoSelect = (value, record, index, dataIndex, handleChange) => {
+    return (
+      <Select
+        value={value}
+        onChange={(newValue) =>
+          handleChange(newValue, record, index, dataIndex)
+        }
+        style={{ width: "100%" }}
+        size="small"
+      >
+        <Option value="Yes">Yes</Option>
+        <Option value="No">No</Option>
+      </Select>
+    );
+  };
+
+  const handleFieldChange = (newValue, record, index, field) => {
+    // const updatedData = [...data];
+    // updatedData[index] = { ...record, [field]: newValue };
+    // setData(updatedData);
+    // // if (field === "productType" || field === "potentialType") {
+    //   updatePotentialClosuresRowValue(updatedData[index]);
+    // // }
+  };
+
+  const getTalentProfilesDetailsfromTable = async (
+    result,
+    statusID,
+    stageID
+  ) => {
+    setShowTalentProfiles(true);
+    setInfoforProfile(result);
+    let pl = {
+      hrID: result?.hiringRequest_ID,
+      statusID: statusID,
+      stageID: statusID === 0 ? null : stageID ? stageID : 0,
+    };
+    setLoadingTalentProfile(true);
+    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+    setLoadingTalentProfile(false);
+
+    if (hrResult.statusCode === HTTPStatusCode.OK) {
+      setHRTalentList(hrResult.responseBody);
+      setFilteredTalentList(hrResult.responseBody);
+      setHRTalentListFourCount(hrResult.responseBody);
+    } else {
+      setHRTalentList([]);
+      setFilteredTalentList([]);
+    }
+  };
+
+  const getSummeryDetails = async (val, col) => {
+    let pl = {
+      hr_BusinessType: "G",
+      month: monthDate ? +moment(monthDate).format("M") : 0,
+      year: monthDate ? +moment(monthDate).format("YYYY") : 0,
+      groupName: val.groupName,
+      am_ColumnName: col,
+      stage_ID: val.stage_ID,
+    };
+    setShowSummeryDetails(true);
+    setLoadingTalentProfile(true);
+    const res = await ReportDAO.getTAReportSummeryDetailsDAO(pl);
+    setLoadingTalentProfile(false);
+    console.log(res);
+    if (res.statusCode === HTTPStatusCode.OK) {
+      setSummeryDetails(res.responseBody);
+    } else {
+      setSummeryDetails([]);
+    }
+  };
+
+  const columns = [
     {
       title: <div style={{ textAlign: "center" }}>Team</div>,
       dataIndex: "hR_Team",
@@ -113,7 +364,7 @@ const columns = [
       dataIndex: "createdByDatetime",
       key: "createdByDatetime",
       fixed: "left",
-      width: 110,
+      width: 120,
       className: amReportStyles.headerCell,
       render: (text) => (text ? moment(text).format("DD/MM/YYYY") : "-"),
     },
@@ -161,11 +412,12 @@ const columns = [
       fixed: "left",
       className: amReportStyles.headerCell,
       width: "180px",
-      // render: (_, param) =>
-      //   All_Hiring_Request_Utils.GETHRSTATUS(
-      //     param?.hrStatusCode,
-      //     param?.hrStatus
-      //   ),
+      align: "center",
+      render: (_, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          param?.hrStatusCode,
+          param?.hrStatus
+        ),
     },
     {
       title: (
@@ -222,25 +474,93 @@ const columns = [
     //   width: 90,
     //   className: amReportStyles.headerCell,
     // },
-      {
+    {
       title: <div style={{ textAlign: "center" }}>Position</div>,
       dataIndex: "position",
       key: "position",
       width: 180,
     },
-      {
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Client Response <br />
+          needed By
+        </div>
+      ),
+      dataIndex: "clientResponseneededBy",
+      key: "clientResponseneededBy",
+      width: 180,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          No Of Profile <br />
+          Talents Till Date
+        </div>
+      ),
+      dataIndex: "noOfProfile_TalentsTillDate",
+      key: "noOfProfile_TalentsTillDate",
+      width: 180,
+      align: "center",
+      render: (text, result) => {
+        return +text > 0 ? (
+          <p
+            style={{
+              color: "blue",
+              fontWeight: "bold",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              getTalentProfilesDetailsfromTable(result, 0);
+              setTalentToMove(result);
+              setProfileStatusID(0);
+              setHRTalentListFourCount([]);
+            }}
+          >
+            {text}
+          </p>
+        ) : (
+          text
+        );
+      },
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          No Of <br />
+          Interview Rounds
+        </div>
+      ),
+      dataIndex: "noifInterviewRounds",
+      key: "noifInterviewRounds",
+      align: "center",
+      width: 180,
+    },
+    {
       title: <div style={{ textAlign: "center" }}>CTP Link</div>,
       dataIndex: "ctP_Link",
       key: "ctP_Link",
       width: 120,
-      render:(text,result)=>{
-        if(text === '' || text ==='NA'){
-          return ''
+      render: (text, result) => {
+        if (text === "" || text === "NA") {
+          return "";
         }
-        return <div style={{display:'flex', justifyContent:'center'}}><a href={text} style={{textDecoration:'underline'}} target="_blank"  rel="noreferrer" >Link</a></div> 
-      }
+        return (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <a
+              href={text}
+              style={{ textDecoration: "underline" }}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Link
+            </a>
+          </div>
+        );
+      },
     },
-     {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
           Number of
@@ -254,12 +574,12 @@ const columns = [
       align: "center",
       className: amReportStyles.headerCell,
     },
-     {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
-          Revenue  
+          Revenue
           <br />
-         Opportunity
+          Opportunity
         </div>
       ),
       dataIndex: "hrRevenueAnnualCTC_INR_Str",
@@ -282,7 +602,7 @@ const columns = [
       align: "right",
       className: amReportStyles.headerCell,
     },
-     {
+    {
       title: <div style={{ textAlign: "center" }}>Uplers Fees %</div>,
       dataIndex: "uplersFeesPer",
       key: "uplersFeesPer",
@@ -301,7 +621,7 @@ const columns = [
     {
       title: (
         <div style={{ textAlign: "center" }}>
-         Probability Ratio  <br />
+          Probability Ratio <br />
           this month
         </div>
       ),
@@ -309,35 +629,35 @@ const columns = [
       key: "probabiltyRatio_thismonth",
       width: 135,
       align: "center",
-      // render: (value, record, index) =>
-      //   renderDDSelect(
-      //     value,
-      //     record,
-      //     index,
-      //     "probabiltyRatio_thismonth",
-      //     handleFieldChange
-      //   ),
+      render: (value, record, index) =>
+        renderDDSelect(
+          value,
+          record,
+          index,
+          "probabiltyRatio_thismonth",
+          handleFieldChange
+        ),
     },
-   {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
-          Expected 
+          Expected
           <br />
-        Closure Week
+          Closure Week
         </div>
       ),
       dataIndex: "closurebyWeekend",
       key: "closurebyWeekend",
       width: 115,
       align: "center",
-      // render: (value, record, index) =>
-      //   renderWeekSelect(
-      //     value,
-      //     record,
-      //     index,
-      //     "closurebyWeekend",
-      //     handleFieldChange
-      //   ),
+      render: (value, record, index) =>
+        renderWeekSelect(
+          value,
+          record,
+          index,
+          "closurebyWeekend",
+          handleFieldChange
+        ),
     },
     // {
     //   title: (
@@ -361,37 +681,37 @@ const columns = [
     //     ),
     // },
     //,   Next Action Point (Add / View), Owner1
-      {
+    //   {
+    //   title: (
+    //     <div style={{ textAlign: "center" }}>
+    //        Pushed
+    //       <br /> Closure Week
+    //     </div>
+    //   ),
+    //   dataIndex: "pushed_Closure_Week",
+    //   key: "pushed_Closure_Week",
+    //   width: 105,
+    //   align: "center",
+    //   className: amReportStyles.headerCell,
+    //   //  render: (value, record, index) =>
+    //   //   renderWeekSelect(
+    //   //     value,
+    //   //     record,
+    //   //     index,
+    //   //     "pushed_Closure_Week",
+    //   //     handleFieldChange
+    //   //   ),
+    // },
+    {
       title: (
         <div style={{ textAlign: "center" }}>
-           Pushed 
-          <br /> Closure Week
-        </div>
-      ),
-      dataIndex: "pushed_Closure_Week",
-      key: "pushed_Closure_Week",
-      width: 105,
-      align: "center",
-      className: amReportStyles.headerCell,
-      //  render: (value, record, index) =>
-      //   renderWeekSelect(
-      //     value,
-      //     record,
-      //     index,
-      //     "pushed_Closure_Week",
-      //     handleFieldChange
-      //   ),
-    },
-   {
-      title: (
-        <div style={{ textAlign: "center" }}>
-         Talent's 
+          Talent's
           <br /> Notice Period
         </div>
       ),
       dataIndex: "talent_NoticePeriod",
       key: "talent_NoticePeriod",
-      width: 105,
+      width: 150,
       align: "center",
       className: amReportStyles.headerCell,
       //  render: (value, record, index) =>
@@ -403,69 +723,23 @@ const columns = [
       //     handleFieldChange
       //   ),
     },
-       {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Back Up
-        
-        </div>
-      ),
+    {
+      title: <div style={{ textAlign: "center" }}>Back Up</div>,
       dataIndex: "talent_Backup",
       key: "talent_Backup",
       width: 100,
       align: "center",
       className: amReportStyles.headerCell,
-        // render: (value, record, index) =>
-        // renderYesNoSelect(
-        //   value,
-        //   record,
-        //   index,
-        //   "talent_Backup",
-        //   handleFieldChange
-        // ),
+      render: (value, record, index) =>
+        renderYesNoSelect(
+          value,
+          record,
+          index,
+          "talent_Backup",
+          handleFieldChange
+        ),
     },
-    // {
-    //   title: <div style={{ textAlign: "center" }}>Potential</div>,
-    //   dataIndex: "potentialType",
-    //   key: "potentialType",
-    //   width: 100,
-    //   align: "center",
-    //   render: (value, record, index) =>
-    //     renderDDSelect(
-    //       value,
-    //       record,
-    //       index,
-    //       "potentialType",
-    //       handleFieldChange
-    //     ),
-    // },
-   
-    // {
-    //   title: (
-    //     <div style={{ textAlign: "center" }}>
-    //       Talent Pay Rate/ <br />
-    //       Client Budget
-    //     </div>
-    //   ),
-    //   dataIndex: "talentPayStr",
-    //   key: "talentPayStr",
-    //   width: 280,
-    //   className: amReportStyles.headerCell,
-    // },
-   
-    // {
-    //   title: (
-    //     <div style={{ textAlign: "center" }}>
-    //       Above 35
-    //       <br /> LPA
-    //     </div>
-    //   ),
-    //   dataIndex: "above35LPA",
-    //   key: "above35LPA",
-    //   width: 100,
-    //   align: "center",
-    //   className: amReportStyles.headerCell,
-    // },
+
     {
       title: <div style={{ textAlign: "center" }}>Lead</div>,
       dataIndex: "leadType",
@@ -474,40 +748,46 @@ const columns = [
       align: "center",
       className: amReportStyles.headerCell,
     },
-    // {
-    //   title: <div style={{ textAlign: "center" }}>Next Action <br/> Point</div>,
-    //   dataIndex: "nextAction",
-    //   key: "nextAction",
-    //   width: 100,
-    //   align: "center",
-    //   className: amReportStyles.headerCell,
-    //   render:(text,record)=>{
-    //     return  <IconContext.Provider
-    //                 value={{
-    //                   color: "green",
-    //                   style: {
-    //                     width: "20px",
-    //                     height: "20px",
-    //                     marginRight: "5px",
-    //                     cursor: "pointer",
-    //                   },
-    //                 }}
-    //               >
-    //                 {" "}
-    //                 <Tooltip title={`Add/View comment`} placement="top">
-    //                   <span
-    //                     onClick={() => {
-    //                       AddComment(record);
-    //                     }}
-    //                     // className={taStyles.feedbackLabel}
-    //                   >
-    //                     {" "}
-    //                     <IoMdAddCircle />
-    //                   </span>{" "}
-    //                 </Tooltip>
-    //               </IconContext.Provider>
-    //   }
-    // },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Next Action <br /> Point
+        </div>
+      ),
+      dataIndex: "nextAction",
+      key: "nextAction",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+      render: (text, record) => {
+        return (
+          <IconContext.Provider
+            value={{
+              color: "green",
+              style: {
+                width: "20px",
+                height: "20px",
+                marginRight: "5px",
+                cursor: "pointer",
+              },
+            }}
+          >
+            {" "}
+            <Tooltip title={`Add/View comment`} placement="top">
+              <span
+                onClick={() => {
+                  // AddComment(record);
+                }}
+                // className={taStyles.feedbackLabel}
+              >
+                {" "}
+                <IoMdAddCircle />
+              </span>{" "}
+            </Tooltip>
+          </IconContext.Provider>
+        );
+      },
+    },
     //    {
     //   title: <div style={{ textAlign: "center" }}>Owner</div>,
     //   dataIndex: "owner_UserID",
@@ -527,327 +807,660 @@ const columns = [
     // },
   ];
 
-
-const AMReport = () => {
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [reportData,setReportData] = useState([]);
-     const [isSummeryLoading, setIsSummeryLoading] = useState(false);
-    const [summeryReportData,setSummeryReportData] = useState([]);
-    const [summeryGroupsNames,setSummeryGroupsName] = useState([]);
-    const today = new Date();
-    const [monthDate, setMonthDate] = useState(today);  
-    const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
-    const [getHTMLFilter, setHTMLFilter] = useState(false);
-    const [isAllowFilters, setIsAllowFilters] = useState(false);
-    const [filteredTagLength, setFilteredTagLength] = useState(0);
-    const [appliedFilter, setAppliedFilters] = useState(new Map());
-    const [checkedState, setCheckedState] = useState(new Map());
-    const [tableFilteredState, setTableFilteredState] = useState({
-        filterFields_OnBoard: {
-          text: null,
-          EngType: "",
-        },
-      });
-    var date = new Date();
-    const [startDate, setStartDate] = useState(
-      new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+  const handleSearchInput = (value) => {
+    setSearchTerm(value);
+    const filteredData = hrTalentList.filter(
+      (talent) =>
+        talent.talent.toLowerCase().includes(value.toLowerCase()) ||
+        (talent.email &&
+          talent.email.toLowerCase().includes(value.toLowerCase()))
     );
-    const [dateTypeFilter, setDateTypeFilter] = useState(0);
+    setFilteredTalentList(filteredData);
+  };
 
-    const [filtersList, setFiltersList] = useState([]);
+  const SummeryColumns = [
+    {
+      title: "Created Date",
+      dataIndex: "hrCreatedDateStr",
+      key: "hrCreatedDateStr",
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      render: (text, result) =>
+        text ? (
+          <a
+            href={`/allhiringrequest/${result.hiringRequest_ID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        ) : (
+          text
+        ),
+    },
+    {
+      title: "HR Title",
+      dataIndex: "hrTitle",
+      key: "hrTitle",
+    },
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      render: (text, record) =>
+        record?.companyCategory === "Diamond" ? (
+          <>
+            <span>{text}</span>
+            &nbsp;
+            <img
+              src={Diamond}
+              alt="info"
+              style={{ width: "16px", height: "16px" }}
+            />
+          </>
+        ) : (
+          text
+        ),
+    },
 
-    useEffect(() => {
-      getAMReportFilter();
-    }, [])
-    
-      
-    useEffect(() => {
-        getAMReportData();
-    }, [openTicketDebounceText,monthDate,tableFilteredState]);
+    {
+      title: "Business Type",
+      dataIndex: "businessType",
+      key: "businessType",
+    },
+    {
+      title: "Status",
+      dataIndex: "hrStatus",
+      key: "hrStatus",
+      width: "200px",
+      render: (_, item) => (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            maxWidth: "150px",
+          }}
+        >
+          {All_Hiring_Request_Utils.GETHRSTATUS(
+            parseInt(item?.hrStatusCode),
+            item?.hrStatus
+          )}
+        </div>
+      ),
+    },
+    {
+      title: "Lead Type",
+      dataIndex: "leadType",
+      key: "leadType",
+    },
+    {
+      title: "Sales Person",
+      dataIndex: "salesPerson",
+      key: "salesPerson",
+    },
+  ];
 
-    const getAMReportFilter = async () => {
-        setIsLoading(true);
-        const filterResult = await ReportDAO.getAMReportFilterDAO();
-        setIsLoading(false);
-        if (filterResult.statusCode === 200) {
-          setFiltersList(filterResult?.responseBody || []);
-        } else if (filterResult?.statusCode === 404) {
-          setFiltersList({});
-        }
-      };
+  const ProfileColumns = [
+    {
+      title: "Submission Date",
+      dataIndex: "profileSubmittedDate",
+      key: "profileSubmittedDate",
+    },
+    {
+      title: "Talent",
+      dataIndex: "talent",
+      key: "talent",
+    },
+    {
+      title: "Status",
+      dataIndex: "talentStatus",
+      key: "talentStatus",
+      render: (_, item) => (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {All_Hiring_Request_Utils.GETTALENTSTATUS(
+            parseInt(item?.talentStatusColor),
+            item?.talentStatus
+          )}
 
+          {(item?.statusID === 2 || item?.statusID === 3) && (
+            <IconContext.Provider
+              value={{
+                color: "#FFDA30",
+                style: { width: "16px", height: "16px", cursor: "pointer" },
+              }}
+            >
+              <Tooltip title="Move to Assessment" placement="top">
+                <span
+                  // style={{
+                  //   background: 'red'
+                  // }}
+                  onClick={() => {
+                    // setMoveToAssessment(true);
+                    // setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
+                  }}
+                  style={{ padding: "0" }}
+                >
+                  {" "}
+                  {/* <BsClipboard2CheckFill /> */}
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: "Interview Detail",
+      dataIndex: "talentStatusDetail",
+      key: "talentStatusDetail",
+    },
+    {
+      title: "Submitted By",
+      dataIndex: "profileSubmittedBy",
+      key: "profileSubmittedBy",
+    },
+  ];
 
-    const getAMReportData = async () => {
-        let payload = {
-            "searchText": openTicketDebounceText,
-            "month":monthDate? +moment(monthDate).format("M") : 0,
-            "year":monthDate ? +moment(monthDate).format("YYYY") : 0,            
-            // "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
-            'hrType':tableFilteredState?.filterFields_OnBoard?.EngType,
-             'hrStatus':"",
-            'salesRep':tableFilteredState?.filterFields_OnBoard?.text ?? '',  
-            'leadType':'',
-            hr_BusinessType:'G'    
-        };
-        setIsLoading(true);
-        const apiResult = await ReportDAO.getAMReportDAO(payload);
-        setIsLoading(false);
-        if (apiResult?.statusCode === 200) {
-            setReportData(apiResult.responseBody);
-        } else if (apiResult?.statusCode === 404) {
-            setReportData([]);
-        }
-    };
+  const onRemoveHRFilters = () => {
+    setTimeout(() => {
+      setIsAllowFilters(false);
+    }, 300);
+    setHTMLFilter(false);
+  };
 
-    const getAMSummary = async ()=>{
-      let pl  = {
-        hr_BusinessType:'G',
-        "month":monthDate? +moment(monthDate).format("M") : 0,
-          "year":monthDate ? +moment(monthDate).format("YYYY") : 0,     
-      }
-
-        setIsSummeryLoading(true);
-        const apiResult = await ReportDAO.getAMSummeryReportDAO(pl);
-        setIsSummeryLoading(false);
-        if (apiResult?.statusCode === 200) {
-            setSummeryReportData(apiResult.responseBody);
-            let groups = [] 
-            apiResult.responseBody.forEach(element => {
-              if(!groups.includes(element.groupName)){
-                 groups.push(element.groupName)
-              }
-            });
-            setSummeryGroupsName(groups)
-        } else if (apiResult?.statusCode === 404) {
-            setSummeryReportData([]);
-        }
+  const gN = (name) => {
+    switch (name) {
+      case "1_AM_Recurring":
+        return "AM Recurring";
+      case "1_NBD_Recurring":
+        return "NBD Recurring";
+      case "2_AM_DP":
+        return "AM One Time";
+      case "2_NBD_DP":
+        return "NBD One Time";
+      default:
+        return "";
     }
-
-    useEffect(()=>{
-      getAMSummary()
-    },[monthDate])
-
-    const toggleHRFilter = useCallback(() => {
-      !getHTMLFilter
-        ? setIsAllowFilters(!isAllowFilters)
-        : setTimeout(() => {
-            setIsAllowFilters(!isAllowFilters);
-          }, 300);
-      setHTMLFilter(!getHTMLFilter);
-    }, [getHTMLFilter, isAllowFilters]);
-
-
-    const clearFilters = () =>{
-      setAppliedFilters(new Map());
-      setCheckedState(new Map());
-      setFilteredTagLength(0);     
-      setopenTicketDebounceText("");
-      setMonthDate(new Date())
-      setTableFilteredState({
-        filterFields_OnBoard: {
-          text: null,
-        },
-      })      
-    }
-
-    const onRemoveHRFilters = () => {
-      setTimeout(() => {
-        setIsAllowFilters(false);
-      }, 300);
-      setHTMLFilter(false);
-    };
-
-    const gN = (name)=>{
-      switch(name){
-        case '1_AM_Recurring': return 'AM Recurring';
-         case '1_NBD_Recurring': return 'NBD Recurring';
-          case '2_AM_DP': return 'AM One Time';
-           case '2_NBD_DP': return 'NBD One Time';
-        default: return ''
-      }
-    }
+  };
 
   return (
     <div className={amReportStyles.container}>
       {/* <h1 className={amReportStyles.title}>Pipeline to bring closures from</h1> */}
-    <h1 className={amReportStyles.title}>AM Potential Closures List </h1>
-        <div className={amReportStyles.filterContainer}>
-                <div className={amReportStyles.filterSets}>                                                
-                        
-                 <div style={{display:"flex",justifyContent:'space-between'}}>
-
-                        <div className={amReportStyles.filterSetsInner}>                     
-                          <div className={amReportStyles.addFilter} onClick={toggleHRFilter}>
-                            <FunnelSVG style={{ width: "16px", height: "16px" }} />
-                            <div className={amReportStyles.filterLabel}> Add Filters</div>
-                            <div className={amReportStyles.filterCount}>{filteredTagLength}</div>
-                          </div>                           
-
-                        
-
-                          <div className={amReportStyles.searchFilterSet} style={{marginLeft:'5px'}}>
-                              <SearchSVG style={{ width: "16px", height: "16px" }} />
-                              <input
-                                  type={InputType.TEXT}
-                                  className={amReportStyles.searchInput}
-                                  placeholder="Search Here...!"
-                                  value={openTicketDebounceText}
-                                  onChange={(e) => {
-                                      setopenTicketDebounceText(e.target.value);
-                                  }}
-                              />
-                              {openTicketDebounceText && (
-                                  <CloseSVG
-                                  style={{
-                                      width: "16px",
-                                      height: "16px",
-                                      cursor: "pointer",
-                                  }}
-                                  onClick={() => {
-                                      setopenTicketDebounceText("");
-                                  }}
-                                  />
-                              )}
-                          </div>      
-                            <p
-                            className={amReportStyles.resetText}
-                            style={{ width: "120px" }}
-                            onClick={clearFilters}
-                          >
-                            Reset Filter
-                          </p>
-                        </div>     
-                            
-                          <div className={amReportStyles.filterRight} style={{display:'flex'}} >
-                              <Radio.Group
-                                        onChange={(e) => {
-                                          if (e.target.value === "D") {
-                                            if (!startDate && dateTypeFilter === 1) {
-                                              return message.error("Please select date range");
-                                            }
-                                          }
-                                          setTableFilteredState((prev) => ({
-                                            ...prev,
-                                            filterFields_OnBoard: {
-                                              ...prev.filterFields_OnBoard,
-                                              EngType: e.target.value,
-                                            },
-                                          }));
-                                          //  setEngagementType(e.target.value);
-                                        }}
-                                        style={{display:'flex',alignItems:'center'}}
-                                        value={tableFilteredState?.filterFields_OnBoard?.EngType}
-                                      >
-                                        <Radio value={""}>All</Radio>
-                                        <Radio value={"Contract"}>Contract</Radio>
-                                        <Radio value={"DP"}>DP</Radio>
-                                      </Radio.Group>                 
-                            <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}> 
-                                <div>
-                                Month-Year
-                                </div>
-                                <div className={amReportStyles.calendarFilter}> 
-                                <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                                <DatePicker
-                                  style={{ backgroundColor: "red" }}
-                                  onKeyDown={(e) => {
-                                      e.preventDefault();
-                                      e.stopPropagation();
-                                  }}
-                                  className={amReportStyles.dateFilter}
-                                  placeholderText="Month - Year"
-                                  selected={monthDate}
-                                  onChange={date=>setMonthDate(date)}
-                                  dateFormat="MM-yyyy"
-                                  showMonthYearPicker
-                                />
-                                </div>
-                            </div> 
-                          </div>
-                                                                                                                                                                        
-                                              
-                      </div>                          
+      <h1 className={amReportStyles.title}>AM Potential Closures List </h1>
+      <div className={amReportStyles.filterContainer}>
+        <div className={amReportStyles.filterSets}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div className={amReportStyles.filterSetsInner}>
+              <div
+                className={amReportStyles.addFilter}
+                onClick={toggleHRFilter}
+              >
+                <FunnelSVG style={{ width: "16px", height: "16px" }} />
+                <div className={amReportStyles.filterLabel}> Add Filters</div>
+                <div className={amReportStyles.filterCount}>
+                  {filteredTagLength}
                 </div>
               </div>
 
-                    <div className={amReportStyles.summeryContainer}>
-                    {summeryGroupsNames.map(gName=>{
-                      let data = summeryReportData.filter(item=> item.groupName === gName)
-                      return <div className={amReportStyles.cardcontainer}>
-                              <h3 className={amReportStyles.recruitername}>{gN(gName)}</h3>
-                         <table className={amReportStyles.stagetable}>
-                                            <thead>
-                                                <tr>
-                                                <th>Stage</th>
-                                                 <th>Sappy</th>
-                                                  <th>Nikita</th>
-                                                   <th>Nandini</th>
-                                                    <th>Gayatri</th>
-                                                     <th>Deepsikha</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                               {data.map(val=> <tr key={gName}
-                                                //  className={getStageClass(stage.profileStatusID)}
-                                                 >
-                                                    <td>{val.stage}</td>
-                                                    <td>{val.sappy_str}</td>
-                                                     <td>{val.nikita_str}</td>
-                                                      <td>{val.nandni_str}</td>
-                                                       <td>{val.gayatri_str}</td>
-                                                        <td>{val.deepshikha_str}</td>
-                                                </tr>)} 
-                                               
-                                             
-                                            </tbody>
-                                            </table>
-                      </div>
-                    })}
-                  </div>
-
-              {isLoading ? <TableSkeleton /> :
-                    <Table
-                      scroll={{ x: "1600px" , y: "100vh" }}
-                      id="amReportList"
-                      columns={columns}
-                      bordered={false}
-                      dataSource={reportData}   
-                      rowKey={(record, index) => index}
-                      rowClassName={(row, index) => {
-                        return row?.clientName === 'TOTAL' ? amReportStyles.highlighttotalrow : '';
-                      }}  
-                      pagination={false}
-                      // pagination={{                       
-                      //   size: "small",
-                      //   pageSize: 15                       
-                      // }}  
+              <div
+                className={amReportStyles.searchFilterSet}
+                style={{ marginLeft: "5px" }}
+              >
+                <SearchSVG style={{ width: "16px", height: "16px" }} />
+                <input
+                  type={InputType.TEXT}
+                  className={amReportStyles.searchInput}
+                  placeholder="Search Here...!"
+                  value={openTicketDebounceText}
+                  onChange={(e) => {
+                    setopenTicketDebounceText(e.target.value);
+                  }}
+                />
+                {openTicketDebounceText && (
+                  <CloseSVG
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setopenTicketDebounceText("");
+                    }}
                   />
-                  }
-
-            
-
-
-               {isAllowFilters && (
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <OnboardFilerList
-                      setAppliedFilters={setAppliedFilters}
-                      appliedFilter={appliedFilter}
-                      setCheckedState={setCheckedState}
-                      checkedState={checkedState}
-                      setTableFilteredState={setTableFilteredState}
-                      tableFilteredState={tableFilteredState}
-                      setFilteredTagLength={setFilteredTagLength}
-                      onRemoveHRFilters={onRemoveHRFilters}
-                      getHTMLFilter={getHTMLFilter}
-                      hrFilterList={allHRConfig.hrFilterListConfig()}
-                      filtersType={allEngagementConfig.amReportFilterTypeConfig(
-                        filtersList
-                      )}
-                      clearFilters={clearFilters}
-                    />
-                  </Suspense>
                 )}
+              </div>
+              <p
+                className={amReportStyles.resetText}
+                style={{ width: "120px" }}
+                onClick={clearFilters}
+              >
+                Reset Filter
+              </p>
+            </div>
+
+            <div
+              className={amReportStyles.filterRight}
+              style={{ display: "flex" }}
+            >
+              <Radio.Group
+                onChange={(e) => {
+                  if (e.target.value === "D") {
+                    if (!startDate && dateTypeFilter === 1) {
+                      return message.error("Please select date range");
+                    }
+                  }
+                  setTableFilteredState((prev) => ({
+                    ...prev,
+                    filterFields_OnBoard: {
+                      ...prev.filterFields_OnBoard,
+                      EngType: e.target.value,
+                    },
+                  }));
+                  //  setEngagementType(e.target.value);
+                }}
+                style={{ display: "flex", alignItems: "center" }}
+                value={tableFilteredState?.filterFields_OnBoard?.EngType}
+              >
+                <Radio value={""}>All</Radio>
+                <Radio value={"Contract"}>Contract</Radio>
+                <Radio value={"DP"}>DP</Radio>
+              </Radio.Group>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <div>Month-Year</div>
+                <div className={amReportStyles.calendarFilter}>
+                  <CalenderSVG
+                    style={{ height: "16px", marginRight: "16px" }}
+                  />
+                  <DatePicker
+                    style={{ backgroundColor: "red" }}
+                    onKeyDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className={amReportStyles.dateFilter}
+                    placeholderText="Month - Year"
+                    selected={monthDate}
+                    onChange={(date) => setMonthDate(date)}
+                    dateFormat="MM-yyyy"
+                    showMonthYearPicker
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={amReportStyles.summeryContainer}>
+        {summeryGroupsNames.map((gName) => {
+          let data = summeryReportData.filter(
+            (item) => item.groupName === gName
+          );
+          return (
+            <div className={amReportStyles.cardcontainer}>
+              <h3 className={amReportStyles.recruitername}>{gN(gName)}</h3>
+              <table className={amReportStyles.stagetable} style={{width:'650px'}}>
+                <thead>
+                  <tr>
+                    <th>Stage</th>
+                    <th>Sappy</th>
+                    <th>Nikita</th>
+                    <th>Deepsikha</th>
+                    <th>Nandini</th>
+                    <th>Gayatri</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((val) => (
+                    <tr
+                      key={gName}
+                      //  className={getStageClass(stage.profileStatusID)}
+                    >
+                      {console.log(val)}
+                      <td>{val.stage}</td>
+                      <td style={{textAlign:'end'}}>
+                        {val.stage === "Recurring Goal" ? (
+                          val.sappy_str
+                        ) : (
+                          <p
+                            style={{
+                              margin: 0,
+                              textDecoration: "underline",
+                              color: "blue",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              getSummeryDetails(val, "sappy_str");
+                            }}
+                          >
+                            {val.sappy_str}
+                          </p>
+                        )}
+                      </td>
+                      <td style={{textAlign:'end'}}>
+                        {val.stage === "Recurring Goal" ? (
+                          val.nikita_str
+                        ) : (
+                          <p
+                            style={{
+                              margin: 0,
+                              textDecoration: "underline",
+                              color: "blue",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              getSummeryDetails(val, "nikita_str");
+                            }}
+                          >
+                            {val.nikita_str}
+                          </p>
+                        )}
+                      </td>
+                      <td style={{textAlign:'end'}}>
+                        {val.stage === "Recurring Goal" ? (
+                          val.deepshikha_str
+                        ) : (
+                          <p
+                            style={{
+                              margin: 0,
+                              textDecoration: "underline",
+                              color: "blue",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              getSummeryDetails(val, "deepshikha_str");
+                            }}
+                          >
+                            {val.deepshikha_str}
+                          </p>
+                        )}
+                      </td>
+                      <td style={{textAlign:'end'}}>
+                        {val.stage === "Recurring Goal" ? (
+                          val.nandni_str
+                        ) : (
+                          <p
+                            style={{
+                              margin: 0,
+                              textDecoration: "underline",
+                              color: "blue",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              getSummeryDetails(val, "nandni_str");
+                            }}
+                          >
+                            {val.nandni_str}
+                          </p>
+                        )}
+                      </td>
+                      <td style={{textAlign:'end'}}>
+                        {val.stage === "Recurring Goal" ? (
+                          val.gayatri_str
+                        ) : (
+                          <p
+                            style={{
+                              margin: 0,
+                              textDecoration: "underline",
+                              color: "blue",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              getSummeryDetails(val, "gayatri_str");
+                            }}
+                          >
+                            {val.gayatri_str}
+                          </p>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
+      </div>
+
+      {isLoading ? (
+        <TableSkeleton />
+      ) : (
+        <Table
+          scroll={{ x: "1600px", y: "100vh" }}
+          id="amReportList"
+          columns={columns}
+          bordered={false}
+          dataSource={reportData}
+          rowKey={(record, index) => index}
+          rowClassName={(row, index) => {
+            return row?.clientName === "TOTAL"
+              ? amReportStyles.highlighttotalrow
+              : "";
+          }}
+          pagination={false}
+          // pagination={{
+          //   size: "small",
+          //   pageSize: 15
+          // }}
+        />
+      )}
+
+      {isAllowFilters && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <OnboardFilerList
+            setAppliedFilters={setAppliedFilters}
+            appliedFilter={appliedFilter}
+            setCheckedState={setCheckedState}
+            checkedState={checkedState}
+            setTableFilteredState={setTableFilteredState}
+            tableFilteredState={tableFilteredState}
+            setFilteredTagLength={setFilteredTagLength}
+            onRemoveHRFilters={onRemoveHRFilters}
+            getHTMLFilter={getHTMLFilter}
+            hrFilterList={allHRConfig.hrFilterListConfig()}
+            filtersType={allEngagementConfig.amReportFilterTypeConfig(
+              filtersList
+            )}
+            clearFilters={clearFilters}
+          />
+        </Suspense>
+      )}
+
+      {showTalentProfiles && (
+        <Modal
+          transitionName=""
+          width="1000px"
+          centered
+          footer={null}
+          open={showTalentProfiles}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setSearchTerm("");
+            setShowTalentProfiles(false);
+            setHRTalentListFourCount([]);
+          }}
+        >
+          <>
+            <div
+              style={{
+                padding: "45px 15px 10px 15px",
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <h3>
+                Profiles for <strong>{profileInfo?.hR_Number}</strong>
+              </h3>
+
+              <p style={{ marginBottom: "0.5em" }}>
+                Company : <strong>{profileInfo?.company}</strong>{" "}
+                {profileInfo?.companyCategory === "Diamond" && (
+                  <img
+                    src={Diamond}
+                    alt="info"
+                    style={{ width: "16px", height: "16px" }}
+                  />
+                )}
+              </p>
+
+              <input
+                type="text"
+                placeholder="Search talent..."
+                value={searchTerm}
+                onChange={(e) => handleSearchInput(e.target.value)} // Create this function
+                style={{
+                  padding: "6px 10px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  marginLeft: "auto",
+                  marginRight: "20px",
+                  minWidth: "260px",
+                }}
+              />
+            </div>
+
+            {loadingTalentProfile ? (
+              <div>
+                <Skeleton active />
+              </div>
+            ) : (
+              <div style={{ margin: "5px 10px" }}>
+                <Table
+                  dataSource={filteredTalentList}
+                  columns={ProfileColumns}
+                  // bordered
+                  pagination={false}
+                />
+              </div>
+            )}
+
+            {/* {moveToAssessment && (
+                              <Modal
+                                width="992px"
+                                centered
+                                footer={null}
+                                open={moveToAssessment}
+                                className="commonModalWrap"
+                                // onOk={() => setVersantModal(false)}
+                                onCancel={() => {
+                                  setMoveToAssessment(false);
+                                  resetRemarkField("remark");
+                                  clearRemarkError("remark");
+                                }}
+                              >
+                                <MoveToAssessment
+                                  onCancel={() => {
+                                    setMoveToAssessment(false);
+                                    resetRemarkField("remark");
+                                    clearRemarkError("remark");
+                                  }}
+                                  register={remarkregiter}
+                                  handleSubmit={remarkSubmit}
+                                  resetField={resetRemarkField}
+                                  errors={remarkError}
+                                  saveRemark={saveRemark}
+                                  saveRemarkLoading={saveRemarkLoading}
+                                />
+                              </Modal>
+                            )} */}
+
+            <div style={{ padding: "10px 0" }}>
+              <button
+                className={amReportStyles.btnCancle}
+                // disabled={isAddingNewTask}
+                onClick={() => {
+                  setSearchTerm("");
+                  setShowTalentProfiles(false);
+                  setHRTalentListFourCount([]);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        </Modal>
+      )}
+
+      {showSummeryDetails && (
+        <Modal
+          transitionName=""
+          width="1200px"
+          centered
+          footer={null}
+          open={showSummeryDetails}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setSearchTerm("");
+            setShowSummeryDetails(false);
+            setSummeryDetails([]);
+          }}
+        >
+          <>
+            <div
+              style={{
+                padding: "45px 15px 10px 15px",
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            ></div>
+
+            {loadingTalentProfile ? (
+              <div>
+                <Skeleton active />
+              </div>
+            ) : (
+              <div style={{ margin: "5px 10px" }}>
+                <Table
+                  dataSource={summeryDetails}
+                  columns={SummeryColumns}
+                  // bordered
+                  pagination={false}
+                />
+              </div>
+            )}
+
+            <div style={{ padding: "10px 0" }}>
+              <button
+                className={amReportStyles.btnCancle}
+                // disabled={isAddingNewTask}
+                onClick={() => {
+                  setSearchTerm("");
+                  setShowSummeryDetails(false);
+                  setSummeryDetails([]);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        </Modal>
+      )}
     </div>
   );
 };
