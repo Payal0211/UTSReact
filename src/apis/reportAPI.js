@@ -676,6 +676,24 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getSummeryAMReport');
 		}
 	},
+		getTAReportSummeryDetailsReport:async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.AMWisePotentialClosuresSummary_HRTalentPopup  + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}
+			&groupName=${reportData?.groupName}&am_ColumnName=${reportData?.am_ColumnName}&stage_ID=${reportData?.stage_ID}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getTAReportSummeryDetailsReport');
+		}
+	},
 	getAMReportFilters : async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
