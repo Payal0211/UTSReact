@@ -1147,6 +1147,8 @@ export default function TalentReport() {
             obj[`Contract Start Date / Contract End Date`] = `${
               data.contractStartDate ? data.contractStartDate : "NA"
             } / ${data.contractEndDate ? data.contractEndDate : "NA"}`;
+          } else if (val.key === "ssO_Login") {
+            return
           } else {
             obj[`${val.title}`] = data[`${val.key}`];
           }
