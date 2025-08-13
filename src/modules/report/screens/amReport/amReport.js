@@ -19,6 +19,9 @@ import { IoMdAddCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
 import { HTTPStatusCode } from "constants/network";
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
+import spinGif from "assets/gif/RefreshLoader.gif";
+import Editor from "modules/hiring request/components/textEditor/editor";
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 
 // const columns = [
 //   {
@@ -138,8 +141,25 @@ const AMReport = () => {
   const [profileStatusID, setProfileStatusID] = useState(0);
   const [talentToMove, setTalentToMove] = useState({});
 
+  const [showComment, setShowComment] = useState(false);
+  const [commentData, setCommentData] = useState({});
+  const [allCommentList, setALLCommentsList] = useState([]);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
+
   const [summeryDetails, setSummeryDetails] = useState([]);
   const [showSummeryDetails, setShowSummeryDetails] = useState(false);
+
+    const [userData, setUserData] = useState({});
+      
+    useEffect(() => {
+      const getUserResult = async () => {
+        let userData = UserSessionManagementController.getUserSession();
+        if (userData) setUserData(userData);
+      };
+      getUserResult();
+    }, []);
+
+
   useEffect(() => {
     getAMReportFilter();
   }, []);
@@ -227,6 +247,7 @@ const AMReport = () => {
     setTableFilteredState({
       filterFields_OnBoard: {
         text: null,
+      EngType: "",
       },
     });
   };
@@ -291,13 +312,66 @@ const AMReport = () => {
   };
 
   const handleFieldChange = (newValue, record, index, field) => {
-    // const updatedData = [...data];
-    // updatedData[index] = { ...record, [field]: newValue };
-    // setData(updatedData);
-    // // if (field === "productType" || field === "potentialType") {
-    //   updatePotentialClosuresRowValue(updatedData[index]);
-    // // }
+    const updatedData = [...reportData];
+    updatedData[index] = { ...record, [field]: newValue };
+    setReportData(updatedData);
+    // if (field === "productType" || field === "potentialType") {
+      updatePotentialClosuresRowValue(updatedData[index]);
+    // }
   };
+
+    const updatePotentialClosuresRowValue = async (updatedData) => {
+      const pl = {
+        PotentialCloserList_ID: updatedData.potentialCloserList_ID,
+        HRID: updatedData?.hiringRequest_ID,
+        ProbabiltyRatio_thismonth:updatedData?.probabiltyRatio_thismonth,
+        Expected_Closure_Week:updatedData?.expected_Closure_Week,
+        Actual_Closure_Week:updatedData?.actual_Closure_Week,
+        // Pushed_Closure_Week:updatedData?.pushed_Closure_Week,
+        Talent_NoticePeriod:updatedData?.talent_NoticePeriod,
+        Talent_Backup:updatedData?.talent_Backup,
+        // OwnerID:updatedData?.owner_UserID
+      };
+  
+      await ReportDAO.PotentialClosuresUpdateDAO(pl);
+    };
+
+    const getAllComments = async (d, modal) => {
+      setIsCommentLoading(true);
+      const pl = {  
+        potentialCloserListID: d.potentialCloserList_ID,
+        hrID  :d.hiringRequest_ID,
+      };
+      const result = await ReportDAO.getALLPotentialClosuresCommentsDAO(pl);
+      setIsCommentLoading(false);
+      if (result.statusCode === HTTPStatusCode.OK) {
+        setALLCommentsList(result.responseBody);
+      } else {
+        setALLCommentsList([]);
+      }
+    };
+
+  const AddComment = (data, modal, index) => {
+    getAllComments(data, modal);
+    setShowComment(true);
+    setCommentData(data);
+  };
+
+     const saveComment = async (note) => {
+        let pl = {
+        PotentialCloserList_ID: commentData.potentialCloserList_ID,
+        HR_ID   :commentData.hiringRequest_ID,
+  
+          loggedInUserID: userData?.UserId,
+          comments: note,
+        };
+        setIsCommentLoading(true);
+        const res = await ReportDAO.insertPotentialClosureCommentRequestDAO(pl);
+        setIsCommentLoading(false);
+        if (res.statusCode === HTTPStatusCode.OK) {
+          setALLCommentsList(res.responseBody);
+        }
+      };
 
   const getTalentProfilesDetailsfromTable = async (
     result,
@@ -325,6 +399,26 @@ const AMReport = () => {
     }
   };
 
+  const commentColumn = [
+    {title:"Created By",
+      dataIndex: "createdByDatetime",
+      key: "createdByDatetime",
+       width:'200px'
+    },
+    {title:"Comment",
+      dataIndex: "comments",
+      key: "comments",
+      render:(text)=>{
+        return <div  dangerouslySetInnerHTML={{ __html: text }}></div>
+      }
+    },
+     {title:"Added By",
+      dataIndex: "addedBy",
+      key: "addedBy",
+      width:'200px'
+    },
+  ]
+
   const getSummeryDetails = async (val, col) => {
     let pl = {
       hr_BusinessType: "G",
@@ -338,7 +432,6 @@ const AMReport = () => {
     setLoadingTalentProfile(true);
     const res = await ReportDAO.getTAReportSummeryDetailsDAO(pl);
     setLoadingTalentProfile(false);
-    console.log(res);
     if (res.statusCode === HTTPStatusCode.OK) {
       setSummeryDetails(res.responseBody);
     } else {
@@ -521,7 +614,7 @@ const AMReport = () => {
             {text}
           </p>
         ) : (
-          text
+          ''
         );
       },
     },
@@ -536,6 +629,9 @@ const AMReport = () => {
       key: "noifInterviewRounds",
       align: "center",
       width: 180,
+      render:(text, result)=>{
+        return  +text > 0 ? text : ''
+      }
     },
     {
       title: <div style={{ textAlign: "center" }}>CTP Link</div>,
@@ -776,7 +872,7 @@ const AMReport = () => {
             <Tooltip title={`Add/View comment`} placement="top">
               <span
                 onClick={() => {
-                  // AddComment(record);
+                  AddComment(record);
                 }}
                 // className={taStyles.feedbackLabel}
               >
@@ -1120,21 +1216,20 @@ const AMReport = () => {
               <table className={amReportStyles.stagetable} style={{width:'650px'}}>
                 <thead>
                   <tr>
-                    <th>Stage</th>
-                    <th>Sappy</th>
-                    <th>Nikita</th>
-                    <th>Deepsikha</th>
-                    <th>Nandini</th>
-                    <th>Gayatri</th>
+                    <th style={{textAlign:'center'}}>Stage</th>
+                    <th style={{textAlign:'center'}}>Sappy</th>
+                    <th style={{textAlign:'center'}}>Nikita</th>
+                    <th style={{textAlign:'center'}}>Deepsikha</th>
+                    <th style={{textAlign:'center'}}>Nandini</th>
+                    <th style={{textAlign:'center'}}>Gayatri</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.map((val) => (
                     <tr
-                      key={gName}
+                      key={gName + val.stage}
                       //  className={getStageClass(stage.profileStatusID)}
                     >
-                      {console.log(val)}
                       <td>{val.stage}</td>
                       <td style={{textAlign:'end'}}>
                         {val.stage === "Recurring Goal" ? (
@@ -1461,6 +1556,96 @@ const AMReport = () => {
           </>
         </Modal>
       )}
+
+         {showComment && (
+                    <Modal
+                      transitionName=""
+                      width="1000px"
+                      centered
+                      footer={null}
+                      open={showComment}
+                      className="engagementModalStyle"
+                      onCancel={() => {
+                        setShowComment(false);
+                        setALLCommentsList([]);
+                        setCommentData({});
+                      }}
+                    >
+                      <div style={{ padding: "35px 15px 10px 15px" }}>
+                        <h3>Add Comment</h3>
+                      </div>
+                      <Suspense>
+                        <div
+                          style={{
+                            position: "relative",
+                            marginBottom: "10px",
+                            padding: "0 20px",
+                            paddingRight: "30px",
+                          }}
+                        >
+                          <Editor
+                            hrID={""}
+                            saveNote={(note) => saveComment(note)}
+                            isUsedForComment={true}
+                          />
+                        </div>
+                      </Suspense>
+            
+                      {allCommentList.length > 0 ? (
+                        <div style={{ padding: "12px 20px" }}>
+                          {isCommentLoading && (
+                            <div>
+                              Adding Comment ...{" "}
+                              <img src={spinGif} alt="loadgif" width={16} />{" "}
+                            </div>
+                          )}
+                          {!isCommentLoading && <Table 
+                           dataSource={allCommentList}
+                                columns={commentColumn}
+                                pagination={false}
+                          />}
+                          {/* <ul>
+                            {allCommentList.map((item) => (
+                              <li
+                                key={item.comments}
+                               
+                              >
+                                <div style={{display:'flex',justifyContent:'space-between'}}>
+                                  <strong>{item.addedBy}</strong><p>{item.createdByDatetime}</p>
+                                </div>
+                                <div  dangerouslySetInnerHTML={{ __html: item.comments }}></div>
+                              </li>
+                            ))}
+                          </ul> */}
+                        </div>
+                      ) : (
+                        <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+                          {isCommentLoading ? (
+                            <div>
+                              Loading Comments...{" "}
+                              <img src={spinGif} alt="loadgif" width={16} />{" "}
+                            </div>
+                          ) : (
+                            "No Comments yet"
+                          )}
+                        </h3>
+                      )}
+                      <div style={{ padding: "10px" }}>
+                        <button
+                          className={amReportStyles.btnCancle}
+                          // disabled={isEditNewTask}
+                          onClick={() => {
+                            setShowComment(false);
+                            setALLCommentsList([]);
+                            setCommentData({});
+                          }}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </Modal>
+                  )}
+      
     </div>
   );
 };
