@@ -247,6 +247,7 @@ const AMReport = () => {
     setTableFilteredState({
       filterFields_OnBoard: {
         text: null,
+      EngType: "",
       },
     });
   };
