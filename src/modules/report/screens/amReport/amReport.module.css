@@ -221,6 +221,15 @@
   border: 1px solid #d1d1d1;
 }
 
+.summeryTableWrapper [class*='ant-table-content'] table thead tr th {
+  background-color: rgb(221, 221, 221) !important;
+    border-radius: 0px !important;
+}
+
+.summeryTableWrapper [class*='ant-table-content'] table tbody tr td {
+  border: 1px solid rgb(221, 221, 221);
+}
+
 .recruitercard {
   border: 1px solid #e8e8e8;
   border-radius: 8px;
