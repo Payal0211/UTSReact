@@ -136,6 +136,7 @@ const AMReport = () => {
   const [profileInfo, setInfoforProfile] = useState({});
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
   const [hrTalentList, setHRTalentList] = useState([]);
+  const [summeryTitles,setSummertTitles] = useState({})
   const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
   const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const [profileStatusID, setProfileStatusID] = useState(0);
@@ -430,6 +431,7 @@ const AMReport = () => {
     };
     setShowSummeryDetails(true);
     setLoadingTalentProfile(true);
+    setSummertTitles({...val,col})
     const res = await ReportDAO.getTAReportSummeryDetailsDAO(pl);
     setLoadingTalentProfile(false);
     if (res.statusCode === HTTPStatusCode.OK) {
@@ -962,12 +964,21 @@ const AMReport = () => {
           text
         ),
     },
-
-    {
-      title: "Business Type",
-      dataIndex: "businessType",
-      key: "businessType",
+ {
+      title: "Uplers Fees",
+      dataIndex: "uplersFees_Str",
+      key: "uplersFees_Str",
     },
+     {
+      title: "Talent",
+      dataIndex: "talent",
+      key: "talent",
+    },
+        {
+      title: "Sales Person",
+      dataIndex: "salesPerson",
+      key: "salesPerson",
+    }, 
     {
       title: "Status",
       dataIndex: "hrStatus",
@@ -994,10 +1005,10 @@ const AMReport = () => {
       dataIndex: "leadType",
       key: "leadType",
     },
-    {
-      title: "Sales Person",
-      dataIndex: "salesPerson",
-      key: "salesPerson",
+  {
+      title: "Business Type",
+      dataIndex: "businessType",
+      key: "businessType",
     },
   ];
 
@@ -1523,14 +1534,23 @@ const AMReport = () => {
                 alignItems: "center",
                 flexWrap: "wrap",
               }}
-            ></div>
+            >
+              <h3>
+               <strong>{gN(summeryTitles?.groupName)}</strong>
+              </h3>
+
+              <p style={{ marginBottom: "0.5em" }}>
+                Stage: <strong>{summeryTitles?.stage}</strong>{" , "}<strong>{summeryTitles?.col?.replace("_str", "i")?.replace(/^./, c => c.toUpperCase())}</strong>{" "}
+              </p>
+
+            </div>
 
             {loadingTalentProfile ? (
               <div>
                 <Skeleton active />
               </div>
             ) : (
-              <div style={{ margin: "5px 10px" }}>
+              <div className={amReportStyles.summeryTableWrapper} style={{ margin: "5px 10px" }}>
                 <Table
                   dataSource={summeryDetails}
                   columns={SummeryColumns}
@@ -1604,19 +1624,7 @@ const AMReport = () => {
                                 columns={commentColumn}
                                 pagination={false}
                           />}
-                          {/* <ul>
-                            {allCommentList.map((item) => (
-                              <li
-                                key={item.comments}
-                               
-                              >
-                                <div style={{display:'flex',justifyContent:'space-between'}}>
-                                  <strong>{item.addedBy}</strong><p>{item.createdByDatetime}</p>
-                                </div>
-                                <div  dangerouslySetInnerHTML={{ __html: item.comments }}></div>
-                              </li>
-                            ))}
-                          </ul> */}
+                        
                         </div>
                       ) : (
                         <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
