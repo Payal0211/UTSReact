@@ -326,10 +326,10 @@ export default class UTSRoutes {
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 	static AM_REPORT = '/amReport';
 	static COMPANY_CATEGORY = '/companyCategory'
-	static DAILY_BUSINESS_NUMBERS = 'RevenueBusinessReport';
+	static DAILY_BUSINESS_NUMBERS = '/RevenueBusinessReport';
 	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresList'
 	static SCREENING_INTERVIEW_REJECT = '/screeningInterviewReject'
-	static AM_INTERVIEW = 'amInterviews'
+	static AM_INTERVIEW = '/amInterviews'
 }
 
 export const navigateToComponent = {
