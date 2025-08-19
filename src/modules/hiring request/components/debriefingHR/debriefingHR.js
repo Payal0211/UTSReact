@@ -942,7 +942,7 @@ const getParsingType = (isHaveJD,parseType) => {
 									label="Interview Round"
 									name="interviewRound"
 									type={InputType.NUMBER}
-									placeholder="Enter other skill"
+									placeholder="Enter interview rounds"
 									
 									required
 								/>
