@@ -347,16 +347,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 		branch: [],
 		isVisible: isAccess(usertypeID,'Hiring Request')
 	})] : [
-		 new SideBarModels({
-			id: 'UTS_AM_Dashboard',
-			title: 'AM Dashboard',
-			isActive: false,
-			icon: AMDashboardIcon ,                                                                                                                    
-			navigateTo: UTSRoutes.AMDASHBOARD,
-			isChildren: false,
-			branch: [],
-			isVisible: isAccess(usertypeID,'AM Dashboard')
-		}),
+		//  new SideBarModels({
+		// 	id: 'UTS_AM_Dashboard',
+		// 	title: 'AM Dashboard',
+		// 	isActive: false,
+		// 	icon: AMDashboardIcon ,                                                                                                                    
+		// 	navigateTo: UTSRoutes.AMDASHBOARD,
+		// 	isChildren: false,
+		// 	branch: [],
+		// 	isVisible: isAccess(usertypeID,'AM Dashboard')
+		// }),
 		new SideBarModels({
 			id: 'UTS_TA_Dashboard',
 			title: 'TA Dashboard',
@@ -558,13 +558,32 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 		}),
 			new SideBarModels({
 			id: 'amReport',
-			title: 'AM Report',
+			title: 'AM',
 			isActive: false,
-			icon: ADDHRSVG ,                                                                                                                    
-			isChildren: false,
-			branch: [],
-			navigateTo: UTSRoutes.AM_REPORT,
-			isVisible: isAccess(usertypeID, 'amReport')
+			icon: ADDHRSVG ,                                                                                                                    		
+			// navigateTo: UTSRoutes.AM_REPORT,
+			isVisible: isAccess(usertypeID, 'amReport'),
+			isChildren: true,
+			branch: [
+				new SideBarModels({
+					id: 'amReport',
+					title: 'Report',
+					isActive: false,
+					navigateTo: UTSRoutes.AM_REPORT,
+					isVisible: isAccess(usertypeID, 'amReport'),
+					isChildren : false					
+				}),
+				new SideBarModels({
+					id: 'UTS_AM_Dashboard',
+					title: 'Dashboard',
+					isActive: false,
+					icon: AMDashboardIcon ,                                                                                                                    
+					navigateTo: UTSRoutes.AMDASHBOARD,
+					isChildren: false,
+					branch: [],
+					isVisible: isAccess(usertypeID,'AM Dashboard')			
+				}),
+			]
 		}),
       
 		new SideBarModels({
