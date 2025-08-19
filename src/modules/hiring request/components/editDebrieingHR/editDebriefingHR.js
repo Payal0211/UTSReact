@@ -325,9 +325,10 @@ const EditDebriefingHR = ({
 
 	useEffect(() => {		
 		setValue('hrTitle', getHRdetails?.addHiringRequest?.requestForTalent);
+		setValue('interviewRound',getHRdetails?.addHiringRequest?.interviewRounds);	
 		// setValue('role',getHRdetails?.addHiringRequest?.requestForTalent);	
 	},[
-		getHRdetails?.addHiringRequest?.requestForTalent,setValue
+		getHRdetails?.addHiringRequest?.requestForTalent,setValue,getHRdetails?.addHiringRequest?.interviewRounds
 	])
 	// let hrRole = watch('role');
 	// useEffect(() => {
@@ -520,6 +521,7 @@ const getParsingType = (isHaveJD,parseType) => {
 				skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),//must have
 				aboutCompanyDesc: d.aboutCompany,
 				// secondaryInterviewer: d.secondaryInterviewer,
+				interviewRounds: d.interviewRound,
 				interviewerFullName: d.interviewerFullName,
 				interviewerEmail: d.interviewerEmail,
 				interviewerLinkedin: d.interviewerLinkedin,
@@ -899,6 +901,31 @@ const getParsingType = (isHaveJD,parseType) => {
 								name="jobDescription"
 								required
 							/> */}
+
+							<div className={DebriefingHRStyle.colMd12}>
+															<HRInputField
+																register={register}
+																errors={errors}
+																validationSchema={{
+																	required: 'please enter interview round.',
+																	min:{
+																		value:1,
+																		message: 'Please enter round between 1 - 5.',
+																	},
+																	max:{
+																		value:5,
+																		message: 'Please enter round between 1 - 5',
+																	},
+																}}
+															
+																label="Interview Round"
+																name="interviewRound"
+																type={InputType.NUMBER}
+																placeholder="Enter other skill"
+																
+																required
+															/>
+														</div>
 
 <div className={DebriefingHRStyle.mb50}>
 									<HRSelectField

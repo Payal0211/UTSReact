@@ -750,7 +750,7 @@ export default function TADashboard() {
       },
     },
      {
-      title: "Total Pipeline",
+      title: "Total Pipeline ( INR )",
       dataIndex: "totalPipelineStr",
       key: "totalPipelineStr",
       width: 130,
