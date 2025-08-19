@@ -749,6 +749,24 @@ export default function TADashboard() {
         return text ? text : "-";
       },
     },
+     {
+      title: "Total Pipeline",
+      dataIndex: "totalPipelineStr",
+      key: "totalPipelineStr",
+      width: 130,
+      align: "center",
+      render: (text, result) => {
+        return text ? (
+          <div
+            className={taStyles.today1Text}
+            style={{ background: "#f0f0f0"}}
+           
+          >
+            {text}
+          </div>
+        ): ''
+      },
+    },
     {
       title: (
         <>
@@ -2508,6 +2526,13 @@ export default function TADashboard() {
                             <div style={{ textAlign: "center" }}>
                               <strong>
                                 {summaryData.total_GoalStr || "-"}
+                              </strong>
+                            </div>
+                          </Table.Summary.Cell>
+                            <Table.Summary.Cell index={1}>
+                            <div style={{ textAlign: "center" }}>
+                              <strong>
+                                {summaryData.total_TotalPipelineStr || "-"}
                               </strong>
                             </div>
                           </Table.Summary.Cell>

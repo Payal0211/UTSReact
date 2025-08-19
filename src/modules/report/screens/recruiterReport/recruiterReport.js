@@ -435,7 +435,7 @@ return (
                         }
                         return (
                           <div key={index} className={recruiterStyle.keyValuePair}>
-                            <span className={recruiterStyle.kvLabel}>{stage.profileStatusID === 16 ? 'Cur. Month Pipeline (INR)' : stage.profileStage}: </span>
+                            <span className={recruiterStyle.kvLabel}>{stage.profileStatusID === 16 ? 'Assigned Pipeline (INR)' : stage.profileStage}: </span>
                             <span className={recruiterStyle.kvValue}><b>{displayValue ? displayValue : '-'}</b></span>
                           </div>
                         );
