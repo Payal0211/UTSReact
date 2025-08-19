@@ -462,6 +462,7 @@ const getParsingType = (isHaveJD,parseType) => {
 			requirements: '',
 			JobDescription:d.jobDescription,
 			en_Id: enID,
+			interviewRounds: d.interviewRound,
 			skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),
 			aboutCompanyDesc: d.aboutCompany,
 			// secondaryInterviewer: d.secondaryInterviewer,
@@ -731,14 +732,14 @@ const getParsingType = (isHaveJD,parseType) => {
 					<div className={DebriefingHRStyle.hrFieldLeftPane}>
 						<h3>Job Description</h3>
 						<p>Please provide the necessary details</p>
-						<div className={DebriefingHRStyle.focusRole} >
+						{/* <div className={DebriefingHRStyle.focusRole} >
 						<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
 						  Make this a Focused Role
 						</Checkbox>	
 						  <FocusRole
                       		style={{ width: "24px" }}                     
                    		 />
-						</div>
+						</div> */}
 						
 					</div>
 					<div className={DebriefingHRStyle.hrFieldRightPane}>
@@ -921,6 +922,31 @@ const getParsingType = (isHaveJD,parseType) => {
 											)}
 									</div>
 								</div>
+
+									<div className={DebriefingHRStyle.colMd12}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter interview round.',
+										min:{
+											value:1,
+											message: 'Please enter round between 1 - 5.',
+										},
+										max:{
+											value:5,
+											message: 'Please enter round between 1 - 5',
+										},
+									}}
+								
+									label="Interview Round"
+									name="interviewRound"
+									type={InputType.NUMBER}
+									placeholder="Enter other skill"
+									
+									required
+								/>
+							</div>
 
 							<div className={DebriefingHRStyle.mb50}>
 							<HRSelectField

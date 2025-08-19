@@ -465,18 +465,10 @@ const ViewHRDetails = () => {
                         </>
                       )}
                       <li>
-                        <span>Discovery Call:</span>{" "}
-                        {hiringDetails?.responseBody?.details?.discoveryCall ? (
-                          <a
-                            href={
-                              hiringDetails?.responseBody?.details
-                                ?.discoveryCall
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Click Here
-                          </a>
+                        <span>Interview Rounds:</span>{" "}
+                        {hiringDetails?.responseBody?.details?.interviewRounds ? (
+hiringDetails?.responseBody?.details
+                                ?.interviewRounds
                         ) : (
                           "NA"
                         )}
