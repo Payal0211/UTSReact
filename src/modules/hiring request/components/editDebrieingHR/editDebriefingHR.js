@@ -800,14 +800,14 @@ const getParsingType = (isHaveJD,parseType) => {
 						<div className={DebriefingHRStyle.hrFieldLeftPane}>
 							<h3>Job Description</h3>
 							<p>Please provide the necessary details</p>
-							<div className={DebriefingHRStyle.focusRole} >
+							{/* <div className={DebriefingHRStyle.focusRole} >
 						<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
 						  Make this a Focused Role
 						</Checkbox>	
 						  <FocusRole
                       		style={{ width: "24px" }}                     
                    		 />
-						</div>
+						</div> */}
 						</div>
 						<div className={DebriefingHRStyle.hrFieldRightPane}>
 
