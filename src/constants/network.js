@@ -208,6 +208,7 @@ export class ReportType {
 	static AVERAGE_SLA  = 'RecruiterAverageSLAReport'
 	static COMPANY_WISE_CATEGORY_DETAILS = 'GetCompanywiseActiveHRList'
 	static GET_POTENTIAL_COMMENTS = 'GetPotentialListComments'
+	static INSERT_POTENTIAL_RESPONSE = 'InsertPotentialListClientResponse'
 	static AMWisePotentialClosuresSummary_HRTalentPopup = 'AMWisePotentialClosuresSummary_HRTalentPopup'
 	static INSERT_POTENTIAL_COMMENTS = 'InsertPotentialListComment'
 	static POTENTIAL_MONTH_WISE_CLOSURES_LIST = 'GetMonthWiseProbabiltyRatioReport'

@@ -150,6 +150,13 @@ const AMReport = () => {
   const [summeryDetails, setSummeryDetails] = useState([]);
   const [showSummeryDetails, setShowSummeryDetails] = useState(false);
 
+  const [showResponse,setShowResponse] = useState(false)
+  const [responseData,setResponseData] = useState({})
+  const [round,setRound] = useState('')
+  const [roundDate,setRoundDate] = useState('')
+  const [loadingResponse,setLoadingResponse] = useState(false)
+  const [responseSubmit,setResponseSubmit] = useState(false)
+
     const [userData, setUserData] = useState({});
       
     useEffect(() => {
@@ -185,7 +192,7 @@ const AMReport = () => {
       searchText: openTicketDebounceText,
       month: monthDate ? +moment(monthDate).format("M") : 0,
       year: monthDate ? +moment(monthDate).format("YYYY") : 0,
-      // "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
+      "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
       hrType: tableFilteredState?.filterFields_OnBoard?.EngType,
       hrStatus: "",
       salesRep: tableFilteredState?.filterFields_OnBoard?.text ?? "",
@@ -352,7 +359,7 @@ const AMReport = () => {
       }
     };
 
-  const AddComment = (data, modal, index) => {
+  const AddComment = (data, modal) => {
     getAllComments(data, modal);
     setShowComment(true);
     setCommentData(data);
@@ -371,6 +378,12 @@ const AMReport = () => {
         setIsCommentLoading(false);
         if (res.statusCode === HTTPStatusCode.OK) {
           setALLCommentsList(res.responseBody);
+          let comments = res.responseBody.map(re=> re.comments)
+          setReportData(prev=>{
+            let nArr = [...prev]
+            nArr[commentData.index] = {...nArr[commentData.index], potentialList_Comments: comments.slice(0,5).join("~")}
+            return nArr
+          })
         }
       };
 
@@ -399,6 +412,11 @@ const AMReport = () => {
       setFilteredTalentList([]);
     }
   };
+
+  const AddResponse = (data)=>{
+    setShowResponse(true)
+    setResponseData(data)
+  }
 
   const commentColumn = [
     {title:"Created By",
@@ -442,100 +460,8 @@ const AMReport = () => {
   };
 
   const columns = [
-    {
-      title: <div style={{ textAlign: "center" }}>Team</div>,
-      dataIndex: "hR_Team",
-      key: "hR_Team",
-      fixed: "left",
-      width: 100,
-      className: amReportStyles.headerCell,
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Date <br /> Created
-        </div>
-      ),
-      dataIndex: "createdByDatetime",
-      key: "createdByDatetime",
-      fixed: "left",
-      width: 120,
-      className: amReportStyles.headerCell,
-      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : "-"),
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Open
-          <br />
-          since how <br /> many
-          <br /> days
-        </div>
-      ),
-      dataIndex: "hrOpenSinceDays",
-      key: "hrOpenSinceDays",
-      fixed: "left",
-      width: 90,
-      align: "center",
-      className: amReportStyles.headerCell,
-    },
-    {
-      title: <div style={{ textAlign: "center" }}>HR #</div>,
-      dataIndex: "hR_Number",
-      key: "hR_Number",
-      width: 180,
-      fixed: "left",
-      className: amReportStyles.headerCell,
-      render: (text, result) =>
-        text ? (
-          <a
-            href={`/allhiringrequest/${result.hiringRequest_ID}`}
-            style={{ textDecoration: "underline" }}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {text}
-          </a>
-        ) : (
-          text
-        ),
-    },
-    {
-      title: <div style={{ textAlign: "center" }}>HR Status</div>,
-      dataIndex: "hrStatus",
-      key: "hrStatus",
-      fixed: "left",
-      className: amReportStyles.headerCell,
-      width: "180px",
-      align: "center",
-      render: (_, param) =>
-        All_Hiring_Request_Utils.GETHRSTATUS(
-          param?.hrStatusCode,
-          param?.hrStatus
-        ),
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Engagement <br /> Model
-        </div>
-      ),
-      dataIndex: "hrModel",
-      key: "hrModel",
-      width: 120,
-      fixed: "left",
-      className: amReportStyles.headerCell,
-    },
-    {
-      title: <div style={{ textAlign: "center" }}>Sales Rep</div>,
-      dataIndex: "salesPerson",
-      key: "salesPerson",
-      width: 150,
-      fixed: "left",
-      className: amReportStyles.headerCell,
-    },
-    {
-      title: <div style={{ textAlign: "center" }}>Company</div>,
+     {
+      title: <div >Company</div>,
       dataIndex: "company",
       key: "company",
       width: 150,
@@ -556,26 +482,107 @@ const AMReport = () => {
           text
         ),
     },
-    // {
-    //   title: (
-    //     <div style={{ textAlign: "center" }}>
-    //       Company
-    //       <br />
-    //       Size
-    //     </div>
-    //   ),
-    //   dataIndex: "companySize",
-    //   key: "companySize",
-    //   width: 90,
-    //   className: amReportStyles.headerCell,
-    // },
     {
+      title: (
+        <div >
+          Open
+          <br />
+          since how <br /> many
+          <br /> days
+        </div>
+      ),
+      dataIndex: "hrOpenSinceDays",
+      key: "hrOpenSinceDays",
+      fixed: "left",
+      width: 90,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+     {
+      title: <div style={{ textAlign: "center" }}>HR #</div>,
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      width: 180,
+      fixed: "left",
+      className: amReportStyles.headerCell,
+      render: (text, result) =>
+        text ? (
+          <a
+            href={`/allhiringrequest/${result.hiringRequest_ID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        ) : (
+          text
+        ),
+    },
+      {
       title: <div style={{ textAlign: "center" }}>Position</div>,
       dataIndex: "position",
       key: "position",
+      fixed: "left",
       width: 180,
     },
-    {
+     {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Average Value
+          <br />
+          (USD)
+        </div>
+      ),
+      dataIndex: "averageValue",
+      key: "averageValue",
+      width: 120,
+      align: "right",
+       fixed: "left",
+      className: amReportStyles.headerCell,
+    },
+       {
+      title: <div style={{ textAlign: "center" }}>HR Status</div>,
+      dataIndex: "hrStatus",
+      key: "hrStatus",
+  
+      className: amReportStyles.headerCell,
+      width: "180px",
+      align: "center",
+      render: (_, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          param?.hrStatusCode,
+          param?.hrStatus
+        ),
+    },
+       {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Engagement <br /> Model
+        </div>
+      ),
+      dataIndex: "hrModel",
+      key: "hrModel",
+      width: 120,
+      // fixed: "left",
+      className: amReportStyles.headerCell,
+    },
+       {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          No Of <br />
+          Interview Rounds
+        </div>
+      ),
+      dataIndex: "noifInterviewRounds",
+      key: "noifInterviewRounds",
+      align: "center",
+      width: 180,
+      render:(text, result)=>{
+        return  +text > 0 ? text : ''
+      }
+    },
+      {
       title: (
         <div style={{ textAlign: "center" }}>
           Client Response <br />
@@ -585,8 +592,44 @@ const AMReport = () => {
       dataIndex: "clientResponseneededBy",
       key: "clientResponseneededBy",
       width: 180,
+       render: (text, record, index) => {
+        const commentsArr = text.length > 0 ? text.split('~') : []
+        return (<div>
+        
+          {commentsArr.length > 0 &&  <> <ul style={{paddingLeft:'5px',marginBottom:0}}>
+            {commentsArr.map(comment=> <li dangerouslySetInnerHTML={{__html:comment}}></li>)}
+          </ul> <br/> </>}
+       
+            <IconContext.Provider
+            value={{
+              color: "green",
+              style: {
+                width: "20px",
+                height: "20px",
+                marginLeft: "5px",
+                cursor: "pointer",
+              },
+            }}
+          >
+            {" "}
+            <Tooltip title={`Add Response`} placement="top">
+              <span
+                onClick={() => {
+                  AddResponse({...record,index});
+                }}
+                // className={taStyles.feedbackLabel}
+              >
+                {" "}
+                <IoMdAddCircle />
+              </span>{" "}
+            </Tooltip>
+          </IconContext.Provider>
+        </div>
+        
+        );
+      },
     },
-    {
+      {
       title: (
         <div style={{ textAlign: "center" }}>
           No Of Profile <br />
@@ -620,22 +663,7 @@ const AMReport = () => {
         );
       },
     },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          No Of <br />
-          Interview Rounds
-        </div>
-      ),
-      dataIndex: "noifInterviewRounds",
-      key: "noifInterviewRounds",
-      align: "center",
-      width: 180,
-      render:(text, result)=>{
-        return  +text > 0 ? text : ''
-      }
-    },
-    {
+      {
       title: <div style={{ textAlign: "center" }}>CTP Link</div>,
       dataIndex: "ctP_Link",
       key: "ctP_Link",
@@ -658,7 +686,7 @@ const AMReport = () => {
         );
       },
     },
-    {
+       {
       title: (
         <div style={{ textAlign: "center" }}>
           Number of
@@ -672,51 +700,7 @@ const AMReport = () => {
       align: "center",
       className: amReportStyles.headerCell,
     },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Revenue
-          <br />
-          Opportunity
-        </div>
-      ),
-      dataIndex: "hrRevenueAnnualCTC_INR_Str",
-      key: "hrRevenueAnnualCTC_INR_Str",
-      width: 120,
-      align: "right",
-      className: amReportStyles.headerCell,
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Average Value
-          <br />
-          (USD)
-        </div>
-      ),
-      dataIndex: "averageValue",
-      key: "averageValue",
-      width: 120,
-      align: "right",
-      className: amReportStyles.headerCell,
-    },
-    {
-      title: <div style={{ textAlign: "center" }}>Uplers Fees %</div>,
-      dataIndex: "uplersFeesPer",
-      key: "uplersFeesPer",
-      width: 120,
-      align: "center",
-      className: amReportStyles.headerCell,
-    },
-    {
-      title: <div style={{ textAlign: "center" }}>Uplers Fees</div>,
-      dataIndex: "uplersFeeStr",
-      key: "uplersFeeStr",
-      width: 150,
-      align: "left",
-      className: amReportStyles.headerCell,
-    },
-    {
+     {
       title: (
         <div style={{ textAlign: "center" }}>
           Probability Ratio <br />
@@ -736,7 +720,7 @@ const AMReport = () => {
           handleFieldChange
         ),
     },
-    {
+     {
       title: (
         <div style={{ textAlign: "center" }}>
           Expected
@@ -757,6 +741,177 @@ const AMReport = () => {
           handleFieldChange
         ),
     },
+        {
+      title: <div style={{ textAlign: "center" }}>Back Up</div>,
+      dataIndex: "talent_Backup",
+      key: "talent_Backup",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+      render: (value, record, index) =>
+        renderYesNoSelect(
+          value,
+          record,
+          index,
+          "talent_Backup",
+          handleFieldChange
+        ),
+    },
+     {
+      title: (
+        <div >
+          Comments 
+        </div>
+      ),
+      dataIndex: "potentialList_Comments",
+      key: "potentialList_Comments",
+      width: 200,
+      // align: "center",
+      className: amReportStyles.headerCell,
+      render: (text, record, index) => {
+        const commentsArr = text.length > 0 ? text.split('~') : []
+        return (<div>
+        
+          {commentsArr.length > 0 &&  <> <ul style={{paddingLeft:'5px',marginBottom:0}}>
+            {commentsArr.map(comment=> <li dangerouslySetInnerHTML={{__html:comment}}></li>)}
+          </ul> <br/> </>}
+       
+            <IconContext.Provider
+            value={{
+              color: "green",
+              style: {
+                width: "20px",
+                height: "20px",
+                marginLeft: "5px",
+                cursor: "pointer",
+              },
+            }}
+          >
+            {" "}
+            <Tooltip title={`Add/View comment`} placement="top">
+              <span
+                onClick={() => {
+                  AddComment({...record,index});
+                }}
+                // className={taStyles.feedbackLabel}
+              >
+                {" "}
+                <IoMdAddCircle />
+              </span>{" "}
+            </Tooltip>
+          </IconContext.Provider>
+        </div>
+        
+        );
+      },
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Talent's
+          <br /> Notice Period
+        </div>
+      ),
+      dataIndex: "talent_NoticePeriod",
+      key: "talent_NoticePeriod",
+      width: 150,
+      align: "center",
+      className: amReportStyles.headerCell,
+      //  render: (value, record, index) =>
+      //   renderInputField(
+      //     value,
+      //     record,
+      //     index,
+      //     "talent_NoticePeriod",
+      //     handleFieldChange
+      //   ),
+    },
+      {
+      title: <div style={{ textAlign: "center" }}>Sales Person</div>,
+      dataIndex: "salesPerson",
+      key: "salesPerson",
+      width: 150,
+      // fixed: "left",
+      className: amReportStyles.headerCell,
+    },
+       {
+      title: <div style={{ textAlign: "center" }}>Lead</div>,
+      dataIndex: "leadType",
+      key: "leadType",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+        {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Date <br /> Created
+        </div>
+      ),
+      dataIndex: "createdByDatetime",
+      key: "createdByDatetime",
+     
+      width: 120,
+      className: amReportStyles.headerCell,
+      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : "-"),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Team</div>,
+      dataIndex: "hR_Team",
+      key: "hR_Team",
+     align: "center",
+      width: 100,
+      className: amReportStyles.headerCell,
+    },
+
+        {
+      title: <div style={{ textAlign: "center" }}>Uplers Fees %</div>,
+      dataIndex: "uplersFeesPer",
+      key: "uplersFeesPer",
+      width: 120,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+   
+ 
+ 
+  
+   
+    // {
+    //   title: (
+    //     <div style={{ textAlign: "center" }}>
+    //       Company
+    //       <br />
+    //       Size
+    //     </div>
+    //   ),
+    //   dataIndex: "companySize",
+    //   key: "companySize",
+    //   width: 90,
+    //   className: amReportStyles.headerCell,
+    // },
+    // {
+    //   title: (
+    //     <div style={{ textAlign: "center" }}>
+    //       Revenue
+    //       <br />
+    //       Opportunity
+    //     </div>
+    //   ),
+    //   dataIndex: "hrRevenueAnnualCTC_INR_Str",
+    //   key: "hrRevenueAnnualCTC_INR_Str",
+    //   width: 120,
+    //   align: "right",
+    //   className: amReportStyles.headerCell,
+    // },
+    // {
+    //   title: <div style={{ textAlign: "center" }}>Uplers Fees</div>,
+    //   dataIndex: "uplersFeeStr",
+    //   key: "uplersFeeStr",
+    //   width: 150,
+    //   align: "left",
+    //   className: amReportStyles.headerCell,
+    // }, 
     // {
     //   title: (
     //     <div style={{ textAlign: "center" }}>
@@ -800,92 +955,6 @@ const AMReport = () => {
     //   //     handleFieldChange
     //   //   ),
     // },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Talent's
-          <br /> Notice Period
-        </div>
-      ),
-      dataIndex: "talent_NoticePeriod",
-      key: "talent_NoticePeriod",
-      width: 150,
-      align: "center",
-      className: amReportStyles.headerCell,
-      //  render: (value, record, index) =>
-      //   renderInputField(
-      //     value,
-      //     record,
-      //     index,
-      //     "talent_NoticePeriod",
-      //     handleFieldChange
-      //   ),
-    },
-    {
-      title: <div style={{ textAlign: "center" }}>Back Up</div>,
-      dataIndex: "talent_Backup",
-      key: "talent_Backup",
-      width: 100,
-      align: "center",
-      className: amReportStyles.headerCell,
-      render: (value, record, index) =>
-        renderYesNoSelect(
-          value,
-          record,
-          index,
-          "talent_Backup",
-          handleFieldChange
-        ),
-    },
-
-    {
-      title: <div style={{ textAlign: "center" }}>Lead</div>,
-      dataIndex: "leadType",
-      key: "leadType",
-      width: 100,
-      align: "center",
-      className: amReportStyles.headerCell,
-    },
-    {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Next Action <br /> Point
-        </div>
-      ),
-      dataIndex: "nextAction",
-      key: "nextAction",
-      width: 100,
-      align: "center",
-      className: amReportStyles.headerCell,
-      render: (text, record) => {
-        return (
-          <IconContext.Provider
-            value={{
-              color: "green",
-              style: {
-                width: "20px",
-                height: "20px",
-                marginRight: "5px",
-                cursor: "pointer",
-              },
-            }}
-          >
-            {" "}
-            <Tooltip title={`Add/View comment`} placement="top">
-              <span
-                onClick={() => {
-                  AddComment(record);
-                }}
-                // className={taStyles.feedbackLabel}
-              >
-                {" "}
-                <IoMdAddCircle />
-              </span>{" "}
-            </Tooltip>
-          </IconContext.Provider>
-        );
-      },
-    },
     //    {
     //   title: <div style={{ textAlign: "center" }}>Owner</div>,
     //   dataIndex: "owner_UserID",
@@ -1085,6 +1154,42 @@ const AMReport = () => {
     }, 300);
     setHTMLFilter(false);
   };
+
+  const saveResponse = async()=>{
+    setResponseSubmit(true)
+
+    if(round === '' || roundDate === ''){
+      message.error(`Please Select ${round === '' ?  "Round":''} ${round === '' && roundDate === '' ? 'And' :''} ${roundDate === '' ? "Date" : ''}`)
+      return
+    }
+    let PL = {
+      HR_ID: responseData?.hiringRequest_ID,
+      Interview_Round:round,
+      Round_Date:roundDate,
+      Comments:'',
+      LoggedInUserID:userData?.UserId
+    }
+    setLoadingResponse(true)
+    const result = await  ReportDAO.insertPotentialClosureResponseRequestDAO(PL);
+    setLoadingResponse(false)
+
+    if(result.statusCode === 200){
+       let responces = result.responseBody.map(re=> re.round_Detail)
+          setReportData(prev=>{
+            let nArr = [...prev]
+            nArr[responseData?.index] = {...nArr[responseData?.index], clientResponseneededBy: responces.join("~")}
+            return nArr
+          })
+        setShowResponse(false);
+        setResponseData({});
+        setRoundDate('')
+        setRound('')
+        setResponseSubmit(false)
+    }else{
+      message.error('something went wrong')
+    }
+
+  }
 
   const gN = (name) => {
     switch (name) {
@@ -1647,6 +1752,125 @@ const AMReport = () => {
                             setALLCommentsList([]);
                             setCommentData({});
                           }}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </Modal>
+                  )}
+
+                   {showResponse && (
+                    <Modal
+                      transitionName=""
+                      width="400px"
+                      centered
+                      footer={null}
+                      open={showResponse}
+                      className="engagementModalStyle"
+                      onCancel={() => {
+                        setShowResponse(false);
+                            setResponseData({});
+                            setRoundDate('')
+                            setRound('')
+                            setResponseSubmit(false)
+                      }}
+                    >
+                      <div style={{ padding: "35px 15px 10px 15px" }}>
+                        <h3>Add Response</h3>
+                      </div>
+                      <h3 style={{marginLeft:'10px'}}>{responseData?.position} </h3>
+                    <p style={{marginLeft:'10px'}}>({responseData?.hR_Number})</p>
+
+                    {loadingResponse ? <Skeleton active /> : 
+                    
+                    <>
+                     <div 
+                         style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginLeft:'10px',
+                  marginRight:'10px',
+                  marginBottom:'10px'
+                }} >
+                          <label>Select Round</label>
+                          <Select
+                                  value={round}
+                                  onChange={(newValue) =>
+                                  { setRound(newValue)}
+                                    // handleChange(newValue, record, index, dataIndex)
+                                  }
+                                  style={{ width: "250px" }}
+                                  size="middle"
+                                  placeholder="Select Rounds"
+                                >
+                                  <Option value="R1">R1</Option>
+                                  <Option value="R2">R2</Option>
+                                  <Option value="R3">R3</Option>
+                                  <Option value="R4">R4</Option>
+                                  <Option value="R5">R5</Option>
+                                </Select>
+                        </div>
+
+                       <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginLeft:'10px',
+                  marginRight:'10px',
+                 
+                }}
+              >
+                <div>Date</div>
+                <div className={amReportStyles.calendarFilter}>
+                  <CalenderSVG
+                    style={{ height: "16px", marginRight: "16px" }}
+                  />
+                  <DatePicker
+                    style={{ backgroundColor: "red" }}
+                    onKeyDown={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className={amReportStyles.dateFilter}
+                    placeholderText="Select Date"
+                    selected={roundDate}
+                    onChange={(date) => setRoundDate(date)}
+                    dateFormat="dd-MM-yyyy"
+                    // showMonthYearPicker
+                  />
+                </div>
+              </div>
+                    </>}
+                       
+                    
+            
+                     
+                      <div style={{ padding: "10px" }}>
+                         <button
+                          className={amReportStyles.btn}
+                          // disabled={isEditNewTask}
+                          onClick={() => {
+                            saveResponse()
+                          }}
+                          disabled={loadingResponse}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className={amReportStyles.btnCancle}
+                          // disabled={isEditNewTask}
+                          onClick={() => {
+                            setShowResponse(false);
+                            setResponseData({});
+                            setRoundDate('')
+                            setRound('')
+                            setResponseSubmit(false)
+                          }}
+                          disabled={loadingResponse}
                         >
                           Close
                         </button>
