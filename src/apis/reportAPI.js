@@ -647,7 +647,7 @@ export const ReportAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
-			ReportType.AM_WEEK_WISE_REPORT_NEW + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}&hrType=${reportData?.hrType}`
+			ReportType.AM_WEEK_WISE_REPORT_NEW + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}&hrType=${reportData?.hrType}&amUserIDs=${reportData?.amUserIDs}`
 
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = reportData;
@@ -868,6 +868,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.insertPotentialClosuresCommentsAPI');
+		}
+	},
+	insertPotentialClosureResponseRequestAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.INSERT_POTENTIAL_RESPONSE
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.insertPotentialClosureResponseRequestAPI');
 		}
 	},
 	revenueBusinessReportAPI:async function (payload) {
