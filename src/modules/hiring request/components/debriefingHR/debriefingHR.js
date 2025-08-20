@@ -931,11 +931,11 @@ const getParsingType = (isHaveJD,parseType) => {
 										required: 'please enter interview round.',
 										min:{
 											value:1,
-											message: 'Please enter round between 1 - 5.',
+											message: 'Please enter interview round between 1 to 5.',
 										},
 										max:{
 											value:5,
-											message: 'Please enter round between 1 - 5',
+											message: 'Please enter interview round between 1 to 5',
 										},
 									}}
 								
