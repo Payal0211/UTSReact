@@ -4,6 +4,7 @@ import { Table, Radio, message, Select, Tooltip, Modal, Skeleton, Spin } from "a
 import { ReportDAO } from "core/report/reportDAO";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
+import { ReactComponent as SendSVG } from 'assets/svg/send.svg';
 import { InputType } from "constants/application";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import DatePicker from "react-datepicker";
@@ -144,6 +145,7 @@ const AMReport = () => {
   const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const [profileStatusID, setProfileStatusID] = useState(0);
   const [talentToMove, setTalentToMove] = useState({});
+  const [remarkText,setRemarkText ] = useState('')
 
   const [showComment, setShowComment] = useState(false);
   const [commentData, setCommentData] = useState({});
@@ -1237,6 +1239,37 @@ const AMReport = () => {
     setHTMLFilter(false);
   };
 
+  const saveRemark = async() =>{
+    if(remarkText === ''){
+      message.error('Please enter remark!')
+      return
+    }
+    
+      let pl = {
+        PotentialCloserList_ID: 0,
+        HR_ID   :0, 
+        loggedInUserID: userData?.UserId,
+        comments: remarkText,
+        };
+        setIsCommentLoading(true);
+        const res = await ReportDAO.insertPotentialClosureCommentRequestDAO(pl);
+        setIsCommentLoading(false);
+        if (res.statusCode === HTTPStatusCode.OK) {
+         message.success('Remark Saved')
+        }
+  }
+
+  const getRemark= async () =>{
+    let result = await ReportDAO.getPotentialRemarkDAO()
+    if(result.statusCode === 200){
+      setRemarkText(result.responseBody[0].comments ?? '')
+    }
+  }
+
+  useEffect(()=>{
+    getRemark()
+  },[])
+
   const saveResponse = async()=>{
     setResponseSubmit(true)
 
@@ -1588,6 +1621,35 @@ const AMReport = () => {
         })}
                         </>}
      
+      </div>
+
+      <div > 
+ <h3 className={amReportStyles.recruitername}>Add Remark</h3>
+ <div style={{display:'flex'}}>
+  {(isCommentLoading|| isLoading )?  <div style={{display:"flex",height:"60px",justifyContent:'center',width:'100%'}}>
+                          <Spin size="large"/>
+                        </div> :   <textarea className={amReportStyles.RemarkText} value={remarkText} onChange={(e)=>{setRemarkText(e.target.value)}}  rows={3} /> }
+
+    {/* <button><SendSVG style={{ marginLeft: '5px' }} /></button> */}   <div
+                onClick={async () => {
+                !isCommentLoading && saveRemark()
+                }}
+                style={{
+                marginLeft:'20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'white',
+                  height: '64px',
+                  width: '64px',
+                  borderRadius: '50%',
+                  border: `1px solid var(--uplers-border-color) `,
+                  boxShadow: '-4px 4px 20px rgba(166, 166, 166, 0.2)',
+                }}>
+                <SendSVG style={{ marginLeft: '5px' }} />
+              </div>
+ </div>
       </div>
 
       {isLoading ? (

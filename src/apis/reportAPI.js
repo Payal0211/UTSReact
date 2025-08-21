@@ -871,6 +871,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.insertPotentialClosuresCommentsAPI');
 		}
 	},
+	getPotentialRemarkAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_POTENTIAL_LIST_COMMENT + `?potentialCloserListID=0&hrID=0`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.insertPotentialClosuresCommentsAPI');
+		}
+	},
 	insertPotentialClosureResponseRequestAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
