@@ -1,6 +1,6 @@
 import React, { Suspense, useCallback, useEffect, useState } from "react";
 import amReportStyles from "./amReport.module.css";
-import { Table, Radio, message, Select, Tooltip, Modal, Skeleton } from "antd";
+import { Table, Radio, message, Select, Tooltip, Modal, Skeleton, Spin } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
@@ -22,7 +22,7 @@ import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import spinGif from "assets/gif/RefreshLoader.gif";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
-
+ 
 // const columns = [
 //   {
 //     title: 'Client Name',
@@ -113,6 +113,7 @@ const AMReport = () => {
   const [summeryGroupsNames, setSummeryGroupsName] = useState([]);
   const today = new Date();
   const [monthDate, setMonthDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
   const [openTicketDebounceText, setopenTicketDebounceText] = useState("");
   const [getHTMLFilter, setHTMLFilter] = useState(false);
   const [isAllowFilters, setIsAllowFilters] = useState(false);
@@ -121,13 +122,15 @@ const AMReport = () => {
   const [checkedState, setCheckedState] = useState(new Map());
   const [tableFilteredState, setTableFilteredState] = useState({
     filterFields_OnBoard: {
-      text: null,
+      text: '',
       EngType: "",
     },
   });
   var date = new Date();
+    const firstDayOfMonth = new Date();
+  firstDayOfMonth.setDate(1);
   const [startDate, setStartDate] = useState(
-    new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+   firstDayOfMonth
   );
   const [dateTypeFilter, setDateTypeFilter] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -149,7 +152,7 @@ const AMReport = () => {
 
   const [summeryDetails, setSummeryDetails] = useState([]);
   const [showSummeryDetails, setShowSummeryDetails] = useState(false);
-
+  const [isModalLoading, setIsModalLoading] = useState(false); 
   const [showResponse,setShowResponse] = useState(false)
   const [responseData,setResponseData] = useState({})
   const [round,setRound] = useState('')
@@ -174,7 +177,7 @@ const AMReport = () => {
 
   useEffect(() => {
     getAMReportData();
-  }, [openTicketDebounceText, monthDate, tableFilteredState]);
+  }, [openTicketDebounceText, monthDate, tableFilteredState,endDate,startDate]);
 
   const getAMReportFilter = async () => {
     setIsLoading(true);
@@ -190,8 +193,10 @@ const AMReport = () => {
   const getAMReportData = async () => {
     let payload = {
       searchText: openTicketDebounceText,
-      month: monthDate ? +moment(monthDate).format("M") : 0,
-      year: monthDate ? +moment(monthDate).format("YYYY") : 0,
+      "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
+      "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
+      "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(startDate).format('YYYY-MM-DD') : '',
+      "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(endDate).format('YYYY-MM-DD'): '' ,
       "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
       hrType: tableFilteredState?.filterFields_OnBoard?.EngType,
       hrStatus: "",
@@ -212,8 +217,12 @@ const AMReport = () => {
   const getAMSummary = async () => {
     let pl = {
       hr_BusinessType: "G",
-      month: monthDate ? +moment(monthDate).format("M") : 0,
-      year: monthDate ? +moment(monthDate).format("YYYY") : 0,
+      //   "month": +moment(monthDate).format("M") ,
+      // "year":  +moment(monthDate).format("YYYY"),
+      "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
+      "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
+      "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(startDate).format('YYYY-MM-DD') : '',
+      "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(endDate).format('YYYY-MM-DD'): '' ,
     };
 
     setIsSummeryLoading(true);
@@ -235,7 +244,7 @@ const AMReport = () => {
 
   useEffect(() => {
     getAMSummary();
-  }, [monthDate]);
+  }, [monthDate, startDate,endDate]);
 
   const toggleHRFilter = useCallback(() => {
     !getHTMLFilter
@@ -254,10 +263,13 @@ const AMReport = () => {
     setMonthDate(new Date());
     setTableFilteredState({
       filterFields_OnBoard: {
-        text: null,
+        text: '',
       EngType: "",
       },
     });
+      setStartDate(firstDayOfMonth);
+      setEndDate(today);  
+      setDateTypeFilter(0);
   };
 
   const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
@@ -529,7 +541,7 @@ const AMReport = () => {
      {
       title: (
         <div style={{ textAlign: "center" }}>
-          Average Value
+          Uplers Fees
           <br />
           (USD)
         </div>
@@ -765,7 +777,7 @@ const AMReport = () => {
       ),
       dataIndex: "potentialList_Comments",
       key: "potentialList_Comments",
-      width: 200,
+      width: 400,
       // align: "center",
       className: amReportStyles.headerCell,
       render: (text, record, index) => {
@@ -974,6 +986,36 @@ const AMReport = () => {
     // },
   ];
 
+    const onCalenderFilter = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+   
+  };
+
+    const getTalentProfilesDetails = async (result, statusID, stageID) => {
+        setShowTalentProfiles(true);
+        setInfoforProfile(result);
+        let pl = {
+          hrID: result?.hiringRequest_ID,
+          statusID: statusID,
+          stageID: statusID === 0 ? null : stageID ? stageID : 0,
+        };
+        setIsModalLoading(true);
+        setLoadingTalentProfile(true);
+        const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+        setIsModalLoading(false);
+        setLoadingTalentProfile(false);
+        if (hrResult.statusCode === HTTPStatusCode.OK) {
+          setHRTalentList(hrResult.responseBody);
+          setFilteredTalentList(hrResult.responseBody);  
+        } else {
+          setHRTalentList([]);
+          setFilteredTalentList([]);
+    
+        }
+      };
+
   const handleSearchInput = (value) => {
     setSearchTerm(value);
     const filteredData = hrTalentList.filter(
@@ -1165,7 +1207,7 @@ const AMReport = () => {
     let PL = {
       HR_ID: responseData?.hiringRequest_ID,
       Interview_Round:round,
-      Round_Date:roundDate,
+      Round_Date:moment(roundDate).format('YYYY-MM-DD'),
       Comments:'',
       LoggedInUserID:userData?.UserId
     }
@@ -1288,7 +1330,27 @@ const AMReport = () => {
                 <Radio value={"Contract"}>Contract</Radio>
                 <Radio value={"DP"}>DP</Radio>
               </Radio.Group>
-              <div
+
+              <div style={{display:'flex',justifyContent:'center',alignItems:"center"}}>
+                  <div style={{display:"flex",justifyContent:'center',marginRight:"10px"}}>
+                                  <Select
+                                    id="selectedValue"
+                                    placeholder="Select"
+                                    value={dateTypeFilter}                    
+                                    style={{width:"180px",height:"48px"}}
+                                    onChange={(value, option) => {
+                                      setDateTypeFilter(value);
+                                      setStartDate(firstDayOfMonth);
+                                      setEndDate(new Date(date));
+                                    }}
+                                    options={[
+                                      // {value: 2,label: 'No Dates'},
+                                      {value: 0,label: 'By Month'},{value: 1,label: 'With Date Range'}]}
+                                    optionFilterProp="value"
+                                  />
+                                </div>
+
+                {dateTypeFilter === 0 &&   <div
                 style={{
                   display: "flex",
                   justifyContent: "space-evenly",
@@ -1315,14 +1377,43 @@ const AMReport = () => {
                     showMonthYearPicker
                   />
                 </div>
+              </div>}
+
+               {dateTypeFilter === 1 && (
+                                <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}>
+                                  <div>Date</div>
+                                  <div className={amReportStyles.calendarFilter}>                       
+                                  <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                                  <DatePicker
+                                    style={{ backgroundColor: "red" }}
+                                    onKeyDown={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                    }}
+                                    className={amReportStyles.dateFilter}
+                                    placeholderText="Start date - End date"
+                                    selected={startDate}
+                                    onChange={onCalenderFilter}
+                                    startDate={startDate}
+                                    endDate={endDate}
+                                    maxDate={new Date()}
+                                    selectsRange
+                                  />
+                                </div>
+                                </div>
+                              )}       
               </div>
+            
             </div>
           </div>
         </div>
       </div>
 
       <div className={amReportStyles.summeryContainer}>
-        {summeryGroupsNames.map((gName) => {
+        {isLoading  ? <div style={{display:"flex",height:"350px",justifyContent:'center',width:'100%'}}>
+                          <Spin size="large"/>
+                        </div> : <>
+                           {summeryGroupsNames.map((gName) => {
           let data = summeryReportData.filter(
             (item) => item.groupName === gName
           );
@@ -1338,6 +1429,7 @@ const AMReport = () => {
                     <th style={{textAlign:'center'}}>Deepsikha</th>
                     <th style={{textAlign:'center'}}>Nandini</th>
                     <th style={{textAlign:'center'}}>Gayatri</th>
+                    <th style={{textAlign:'center'}}>Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1442,6 +1534,11 @@ const AMReport = () => {
                           </p>
                         )}
                       </td>
+                       <td style={{textAlign:'end'}}>
+                        {
+                          val.total_str
+                        }
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -1449,6 +1546,8 @@ const AMReport = () => {
             </div>
           );
         })}
+                        </>}
+     
       </div>
 
       {isLoading ? (
@@ -1511,6 +1610,11 @@ const AMReport = () => {
             setHRTalentListFourCount([]);
           }}
         >
+           {isModalLoading ?  
+                        <div style={{display:"flex",height:"350px",justifyContent:'center'}}>
+                          <Spin size="large"/>
+                        </div>:
+                          
           <>
             <div
               style={{
@@ -1551,6 +1655,185 @@ const AMReport = () => {
                 }}
               />
             </div>
+
+              <div
+                                    style={{
+                                      padding: "10px 15px",
+                                      display: "flex",
+                                      gap: "10px",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <div
+                                      className={amReportStyles.filterType}
+                                      key={"Total Talents"}
+                                      onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 0);
+                                        setProfileStatusID(0);
+                                      }}
+                                      style={{
+                                        borderBottom:
+                                          profileStatusID === 0 ? "6px solid #FFDA30" : "",
+                                      }}
+                                    >
+                                      <h2>
+                                        Total Talents :{" "}
+                                        <span>
+                                          {hrTalentListFourCount[0]?.totalTalents
+                                            ? hrTalentListFourCount[0]?.totalTalents
+                                            : 0}
+                                        </span>
+                                      </h2>
+                                    </div>
+                                    <div
+                                      className={amReportStyles.filterType}
+                                      key={"Profile shared"}
+                                      onClick={() => {
+                                        console.log(profileInfo,"profileInfo");                              
+                                        getTalentProfilesDetails(profileInfo, 2);
+                                        setProfileStatusID(2);
+                                      }}
+                                      style={{
+                                        borderBottom:
+                                          profileStatusID === 2 ? "6px solid #FFDA30" : "",
+                                      }}
+                                    >
+                                      <h2>
+                                        Profile shared :{" "}
+                                        <span>
+                                          {hrTalentListFourCount[0]?.profileSharedCount
+                                            ? hrTalentListFourCount[0]?.profileSharedCount
+                                            : 0}
+                                        </span>
+                                      </h2>
+                                    </div>
+                                    <div
+                                      className={amReportStyles.filterType}
+                                      key={"In Assessment"}
+                                      onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 11);
+                                        setProfileStatusID(11);
+                                      }}
+                                      style={{
+                                        borderBottom:
+                                          profileStatusID === 11 ? "6px solid #FFDA30" : "",
+                                      }}
+                                    >
+                                      <h2>
+                                        In Assessment :{" "}
+                                        <span>
+                                          {hrTalentListFourCount[0]?.assessmentCount
+                                            ? hrTalentListFourCount[0]?.assessmentCount
+                                            : 0}
+                                        </span>
+                                      </h2>
+                                    </div>
+                                    <div
+                                      className={amReportStyles.filterType}
+                                      key={"In Interview"}
+                                      onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 3);
+                                        setProfileStatusID(3);
+                                      }}
+                                      style={{
+                                        borderBottom:
+                                          profileStatusID === 3 ? "6px solid #FFDA30" : "",
+                                      }}
+                                    >
+                                      <h2>
+                                        In Interview :{" "}
+                                        <span>
+                                          {hrTalentListFourCount[0]?.inInterviewCount
+                                            ? hrTalentListFourCount[0]?.inInterviewCount
+                                            : 0}
+                                        </span>
+                                      </h2>
+                                    </div>
+                                    <div
+                                      className={amReportStyles.filterType}
+                                      key={"Offered"}
+                                      onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 4);
+                                        setProfileStatusID(4);
+                                      }}
+                                      style={{
+                                        borderBottom:
+                                          profileStatusID === 4 ? "6px solid #FFDA30" : "",
+                                      }}
+                                    >
+                                      <h2>
+                                        Offered :{" "}
+                                        <span>
+                                          {hrTalentListFourCount[0]?.offeredCount
+                                            ? hrTalentListFourCount[0]?.offeredCount
+                                            : 0}
+                                        </span>
+                                      </h2>
+                                    </div>
+                                    <div
+                                      className={amReportStyles.filterType}
+                                      key={"Hired"}
+                                      onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 10);
+                                        setProfileStatusID(10);
+                                      }}
+                                      style={{
+                                        borderBottom:
+                                          profileStatusID === 10 ? "6px solid #FFDA30" : "",
+                                      }}
+                                    >
+                                      <h2>
+                                        Hired :{" "}
+                                        <span>
+                                          {hrTalentListFourCount[0]?.hiredCount
+                                            ? hrTalentListFourCount[0]?.hiredCount
+                                            : 0}
+                                        </span>
+                                      </h2>
+                                    </div>
+                                    <div
+                                      className={amReportStyles.filterType}
+                                      key={"Rejected, screening"}
+                                      onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 7, 1);
+                                        setProfileStatusID(71);
+                                      }}
+                                      style={{
+                                        borderBottom:
+                                          profileStatusID === 71 ? "6px solid #FFDA30" : "",
+                                      }}
+                                    >
+                                      <h2>
+                                        Screen Reject :{" "}
+                                        <span>
+                                          {hrTalentListFourCount[0]?.screeningRejectCount
+                                            ? hrTalentListFourCount[0]?.screeningRejectCount
+                                            : 0}
+                                        </span>
+                                      </h2>
+                                    </div>
+                                    <div
+                                      className={amReportStyles.filterType}
+                                      key={"Rejected, Interview"}
+                                      onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 7, 2);
+                                        setProfileStatusID(72);
+                                      }}
+                                      style={{
+                                        borderBottom:
+                                          profileStatusID === 72 ? "6px solid #FFDA30" : "",
+                                      }}
+                                    >
+                                      <h2>
+                                        Interview Reject :{" "}
+                                        <span>
+                                          {hrTalentListFourCount[0]?.interviewRejectCount
+                                            ? hrTalentListFourCount[0]?.interviewRejectCount
+                                            : 0}
+                                        </span>
+                                      </h2>
+                                    </div>
+                                  </div>
 
             {loadingTalentProfile ? (
               <div>
@@ -1610,7 +1893,7 @@ const AMReport = () => {
                 Cancel
               </button>
             </div>
-          </>
+          </>}
         </Modal>
       )}
 
@@ -1809,7 +2092,7 @@ const AMReport = () => {
                                   <Option value="R2">R2</Option>
                                   <Option value="R3">R3</Option>
                                   <Option value="R4">R4</Option>
-                                  <Option value="R5">R5</Option>
+                                  <Option value="Selection">Selection</Option>
                                 </Select>
                         </div>
 
