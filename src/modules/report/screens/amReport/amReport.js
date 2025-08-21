@@ -195,8 +195,8 @@ const AMReport = () => {
       searchText: openTicketDebounceText,
       "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
       "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
-      "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(startDate).format('DD/MM/YYY') : '',
-      "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(endDate).format('DD/MM/YYY'): '' ,
+      "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(startDate).format('YYYY-MM-DD') : '',
+      "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(endDate).format('YYYY-MM-DD'): '' ,
       "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
       hrType: tableFilteredState?.filterFields_OnBoard?.EngType,
       hrStatus: "",
@@ -221,8 +221,8 @@ const AMReport = () => {
       // "year":  +moment(monthDate).format("YYYY"),
       "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
       "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
-      "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? startDate.toLocaleDateString("en-US"): '',
-      "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? endDate.toLocaleDateString("en-US"): '' ,
+      "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(startDate).format('YYYY-MM-DD') : '',
+      "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(endDate).format('YYYY-MM-DD'): '' ,
     };
 
     setIsSummeryLoading(true);
@@ -244,7 +244,7 @@ const AMReport = () => {
 
   useEffect(() => {
     getAMSummary();
-  }, [monthDate]);
+  }, [monthDate, startDate,endDate]);
 
   const toggleHRFilter = useCallback(() => {
     !getHTMLFilter
