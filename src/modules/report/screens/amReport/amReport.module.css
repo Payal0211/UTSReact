@@ -291,6 +291,19 @@
   background-color: lightcyan;
 }
 
+.RemarkText{
+  width: 92%;
+    border-radius: 10px;
+    background: #f9f9fb;
+    padding: 10px;
+        border: none;
+}
+
+.RemarkText:focus {
+ border: 1px solid var(--color-sunlight);
+ outline: none;
+}
+
 .filterType {
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
