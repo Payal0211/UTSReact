@@ -211,6 +211,7 @@ export class ReportType {
 	static INSERT_POTENTIAL_RESPONSE = 'InsertPotentialListClientResponse'
 	static AMWisePotentialClosuresSummary_HRTalentPopup = 'AMWisePotentialClosuresSummary_HRTalentPopup'
 	static INSERT_POTENTIAL_COMMENTS = 'InsertPotentialListComment'
+	static GET_POTENTIAL_LIST_COMMENT = 'GetPotentialListComments'
 	static POTENTIAL_MONTH_WISE_CLOSURES_LIST = 'GetMonthWiseProbabiltyRatioReport'
 	static GET_PROBABILITY_RATIO_DETAILS = 'GetProbabiltyRatioDetails'
 	static ACTIVE_OWNER_USER = 'GetActiveOwner_UserList'
