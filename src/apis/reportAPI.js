@@ -647,7 +647,8 @@ export const ReportAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
-			ReportType.AM_WEEK_WISE_REPORT_NEW + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}&hrType=${reportData?.hrType}&amUserIDs=${reportData?.amUserIDs}`
+			ReportType.AM_WEEK_WISE_REPORT_NEW + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}&hrType=${reportData?.hrType}
+			&amUserIDs=${reportData?.amUserIDs}&searchText=${reportData?.searchText}&fromDate=${reportData?.fromDate}&toDate=${reportData?.toDate}`
 
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = reportData;
@@ -664,7 +665,7 @@ export const ReportAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
-			ReportType.AM_WISE_CLOSURES_SUMMARY  + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}`
+			ReportType.AM_WISE_CLOSURES_SUMMARY  + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}&fromDate=${reportData?.fromDate}&toDate=${reportData?.toDate}`
 
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = reportData;
