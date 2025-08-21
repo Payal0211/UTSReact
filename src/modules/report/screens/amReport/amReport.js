@@ -641,6 +641,46 @@ const AMReport = () => {
         );
       },
     },
+       {
+      title:'W1',
+      dataIndex: "w1",
+      key: "w1",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+      {
+      title:'W2',
+      dataIndex: "w2",
+      key: "w3",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+      {
+      title:'W3',
+      dataIndex: "w3",
+      key: "w3",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+      {
+      title:'W4',
+      dataIndex: "w4",
+      key: "w4",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+      {
+      title:'W5',
+      dataIndex: "w5",
+      key: "w5",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
       {
       title: (
         <div style={{ textAlign: "center" }}>
