@@ -199,7 +199,7 @@ const AMReport = () => {
       "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
       "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(startDate).format('YYYY-MM-DD') : '',
       "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(endDate).format('YYYY-MM-DD'): '' ,
-      "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
+      // "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
       hrType: tableFilteredState?.filterFields_OnBoard?.EngType,
       hrStatus: "",
       salesRep: tableFilteredState?.filterFields_OnBoard?.text ?? "",
