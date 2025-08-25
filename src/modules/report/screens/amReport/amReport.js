@@ -1513,7 +1513,7 @@ const AMReport = () => {
                     >
                       <td>{val.stage}</td>
                       <td style={{textAlign:'end'}}>
-                        {val.stage === "Recurring Goal" ? (
+                        {(val.stage_ID === 1 || val.stage_ID === 8) ? (
                           val.sappy_str
                         ) : (
                           <p
@@ -1532,7 +1532,7 @@ const AMReport = () => {
                         )}
                       </td>
                       <td style={{textAlign:'end'}}>
-                        {val.stage === "Recurring Goal" ? (
+                        {(val.stage_ID === 1 || val.stage_ID === 8) ? (
                           val.nikita_str
                         ) : (
                           <p
@@ -1551,7 +1551,7 @@ const AMReport = () => {
                         )}
                       </td>
                       <td style={{textAlign:'end'}}>
-                        {val.stage === "Recurring Goal" ? (
+                        {(val.stage_ID === 1 || val.stage_ID === 8)? (
                           val.deepshikha_str
                         ) : (
                           <p
@@ -1570,7 +1570,7 @@ const AMReport = () => {
                         )}
                       </td>
                       <td style={{textAlign:'end'}}>
-                        {val.stage === "Recurring Goal" ? (
+                        {(val.stage_ID === 1 || val.stage_ID === 8) ? (
                           val.nandni_str
                         ) : (
                           <p
@@ -1589,7 +1589,7 @@ const AMReport = () => {
                         )}
                       </td>
                       <td style={{textAlign:'end'}}>
-                        {val.stage === "Recurring Goal" ? (
+                        {(val.stage_ID === 1 || val.stage_ID === 8) ? (
                           val.gayatri_str
                         ) : (
                           <p
