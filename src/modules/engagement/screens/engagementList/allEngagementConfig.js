@@ -1035,6 +1035,18 @@ export const allEngagementConfig = {
 				child: filterList?.map(item=>({...item,text: item.value,value:`${item.text}`})),
 				isSearch: true,
 			},
+			{
+				label: 'Probability Ratio',
+				name: 'str_probabilityratio',
+				child: ['100%','75%','50%','25%','0%',"Preonboarding",'Lost','Won','Pause','Backed out'].map(item=>({text: item,value:`${item}`})),
+				isSearch: true,
+			},
+			// {
+			// 	label: 'Week',
+			// 	name: 'str_probabilityratio',
+			// 	child: ['W1','W2','W3','W4','W5'].map(item=>({text: item,value:`${item}`})),
+			// 	isSearch: true,
+			// },
 		];
 	},
 };

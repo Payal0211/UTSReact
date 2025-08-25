@@ -125,6 +125,7 @@ const AMReport = () => {
     filterFields_OnBoard: {
       text: '',
       EngType: "",
+      str_probabilityratio:''
     },
   });
   var date = new Date();
@@ -203,6 +204,7 @@ const AMReport = () => {
       hrType: tableFilteredState?.filterFields_OnBoard?.EngType,
       hrStatus: "",
       salesRep: tableFilteredState?.filterFields_OnBoard?.text ?? "",
+      str_probabilityratio: tableFilteredState?.filterFields_OnBoard?.str_probabilityratio ?? "",
       leadType: "",
       hr_BusinessType: "G",
     };
@@ -267,6 +269,7 @@ const AMReport = () => {
       filterFields_OnBoard: {
         text: '',
       EngType: "",
+      str_probabilityratio:''
       },
     });
       setStartDate(firstDayOfMonth);
@@ -463,7 +466,7 @@ const AMReport = () => {
     };
     setShowSummeryDetails(true);
     setLoadingTalentProfile(true);
-    setSummertTitles({...val,col})
+    setSummertTitles({...val,col,amount:val[col]})
     const res = await ReportDAO.getTAReportSummeryDetailsDAO(pl);
     setLoadingTalentProfile(false);
     if (res.statusCode === HTTPStatusCode.OK) {
@@ -497,22 +500,6 @@ const AMReport = () => {
         ),
     },
     {
-      title: (
-        <div >
-          Open
-          <br />
-          since how <br /> many
-          <br /> days
-        </div>
-      ),
-      dataIndex: "hrOpenSinceDays",
-      key: "hrOpenSinceDays",
-      fixed: "left",
-      width: 90,
-      align: "center",
-      className: amReportStyles.headerCell,
-    },
-     {
       title: <div style={{ textAlign: "center" }}>HR #</div>,
       dataIndex: "hR_Number",
       key: "hR_Number",
@@ -555,33 +542,29 @@ const AMReport = () => {
        fixed: "left",
       className: amReportStyles.headerCell,
     },
-       {
-      title: <div style={{ textAlign: "center" }}>HR Status</div>,
-      dataIndex: "hrStatus",
-      key: "hrStatus",
-  
-      className: amReportStyles.headerCell,
-      width: "180px",
-      align: "center",
-      render: (_, param) =>
-        All_Hiring_Request_Utils.GETHRSTATUS(
-          param?.hrStatusCode,
-          param?.hrStatus
-        ),
-    },
-       {
+     {
       title: (
         <div style={{ textAlign: "center" }}>
-          Engagement <br /> Model
+          Probability Ratio <br />
+          this month
         </div>
       ),
-      dataIndex: "hrModel",
-      key: "hrModel",
-      width: 120,
-      // fixed: "left",
-      className: amReportStyles.headerCell,
+      dataIndex: "probabiltyRatio_thismonth",
+      key: "probabiltyRatio_thismonth",
+      width: 135,
+      fixed: "left",
+      align: "center",
+      render: (value, record, index) =>
+        renderDDSelect(
+          value,
+          record,
+          index,
+          "probabiltyRatio_thismonth",
+          handleFieldChange
+        ),
     },
-       {
+
+         {
       title: (
         <div style={{ textAlign: "center" }}>
           No Of <br />
@@ -683,134 +666,6 @@ const AMReport = () => {
       align: "center",
       className: amReportStyles.headerCell,
     },
-      {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          No Of Profile <br />
-          Talents Till Date
-        </div>
-      ),
-      dataIndex: "noOfProfile_TalentsTillDate",
-      key: "noOfProfile_TalentsTillDate",
-      width: 180,
-      align: "center",
-      render: (text, result) => {
-        return +text > 0 ? (
-          <p
-            style={{
-              color: "blue",
-              fontWeight: "bold",
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              getTalentProfilesDetailsfromTable(result, 0);
-              setTalentToMove(result);
-              setProfileStatusID(0);
-              setHRTalentListFourCount([]);
-            }}
-          >
-            {text}
-          </p>
-        ) : (
-          ''
-        );
-      },
-    },
-      {
-      title: <div style={{ textAlign: "center" }}>CTP Link</div>,
-      dataIndex: "ctP_Link",
-      key: "ctP_Link",
-      width: 120,
-      render: (text, result) => {
-        if (text === "" || text === "NA") {
-          return "";
-        }
-        return (
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <a
-              href={text}
-              style={{ textDecoration: "underline" }}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Link
-            </a>
-          </div>
-        );
-      },
-    },
-       {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Number of
-          <br />
-          TRs
-        </div>
-      ),
-      dataIndex: "noofTR",
-      key: "noofTR",
-      width: 100,
-      align: "center",
-      className: amReportStyles.headerCell,
-    },
-     {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Probability Ratio <br />
-          this month
-        </div>
-      ),
-      dataIndex: "probabiltyRatio_thismonth",
-      key: "probabiltyRatio_thismonth",
-      width: 135,
-      align: "center",
-      render: (value, record, index) =>
-        renderDDSelect(
-          value,
-          record,
-          index,
-          "probabiltyRatio_thismonth",
-          handleFieldChange
-        ),
-    },
-     {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Expected
-          <br />
-          Closure Week
-        </div>
-      ),
-      dataIndex: "closurebyWeekend",
-      key: "closurebyWeekend",
-      width: 115,
-      align: "center",
-      render: (value, record, index) =>
-        renderWeekSelect(
-          value,
-          record,
-          index,
-          "closurebyWeekend",
-          handleFieldChange
-        ),
-    },
-        {
-      title: <div style={{ textAlign: "center" }}>Back Up</div>,
-      dataIndex: "talent_Backup",
-      key: "talent_Backup",
-      width: 100,
-      align: "center",
-      className: amReportStyles.headerCell,
-      render: (value, record, index) =>
-        renderYesNoSelect(
-          value,
-          record,
-          index,
-          "talent_Backup",
-          handleFieldChange
-        ),
-    },
      {
       title: (
         <div >
@@ -859,6 +714,123 @@ const AMReport = () => {
         );
       },
     },
+     {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Number of
+          <br />
+          TRs
+        </div>
+      ),
+      dataIndex: "noofTR",
+      key: "noofTR",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+      {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          No Of Profile <br />
+          Talents Till Date
+        </div>
+      ),
+      dataIndex: "noOfProfile_TalentsTillDate",
+      key: "noOfProfile_TalentsTillDate",
+      width: 180,
+      align: "center",
+      render: (text, result) => {
+        return +text > 0 ? (
+          <p
+            style={{
+              color: "blue",
+              fontWeight: "bold",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              getTalentProfilesDetailsfromTable(result, 0);
+              setTalentToMove(result);
+              setProfileStatusID(0);
+              setHRTalentListFourCount([]);
+            }}
+          >
+            {text}
+          </p>
+        ) : (
+          ''
+        );
+      },
+    },
+     {
+      title: <div style={{ textAlign: "center" }}>Sales Person</div>,
+      dataIndex: "salesPerson",
+      key: "salesPerson",
+      width: 150,
+      // fixed: "left",
+      className: amReportStyles.headerCell,
+    },
+     {
+      title: <div style={{ textAlign: "center" }}>CTP Link</div>,
+      dataIndex: "ctP_Link",
+      key: "ctP_Link",
+      width: 120,
+      render: (text, result) => {
+        if (text === "" || text === "NA") {
+          return "";
+        }
+        return (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <a
+              href={text}
+              style={{ textDecoration: "underline" }}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Link
+            </a>
+          </div>
+        );
+      },
+    },
+     {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Expected
+          <br />
+          Closure Week
+        </div>
+      ),
+      dataIndex: "closurebyWeekend",
+      key: "closurebyWeekend",
+      width: 115,
+      align: "center",
+      render: (value, record, index) =>
+        renderWeekSelect(
+          value,
+          record,
+          index,
+          "closurebyWeekend",
+          handleFieldChange
+        ),
+    },
+        {
+      title: <div style={{ textAlign: "center" }}>Back Up</div>,
+      dataIndex: "talent_Backup",
+      key: "talent_Backup",
+      width: 100,
+      align: "center",
+      className: amReportStyles.headerCell,
+      render: (value, record, index) =>
+        renderYesNoSelect(
+          value,
+          record,
+          index,
+          "talent_Backup",
+          handleFieldChange
+        ),
+    },
+    
     {
       title: (
         <div style={{ textAlign: "center" }}>
@@ -880,14 +852,56 @@ const AMReport = () => {
       //     handleFieldChange
       //   ),
     },
-      {
-      title: <div style={{ textAlign: "center" }}>Sales Person</div>,
-      dataIndex: "salesPerson",
-      key: "salesPerson",
-      width: 150,
+           {
+      title: <div style={{ textAlign: "center" }}>Uplers Fees %</div>,
+      dataIndex: "uplersFeesPer",
+      key: "uplersFeesPer",
+      width: 120,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Engagement <br /> Model
+        </div>
+      ),
+      dataIndex: "hrModel",
+      key: "hrModel",
+      width: 120,
       // fixed: "left",
       className: amReportStyles.headerCell,
     },
+      {
+      title: <div style={{ textAlign: "center" }}>HR Status</div>,
+      dataIndex: "hrStatus",
+      key: "hrStatus",
+  
+      className: amReportStyles.headerCell,
+      width: "180px",
+      align: "center",
+      render: (_, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          param?.hrStatusCode,
+          param?.hrStatus
+        ),
+    },
+    {
+      title: (
+        <div >
+          Open
+          <br />
+          since how <br /> many
+          <br /> days
+        </div>
+      ),
+      dataIndex: "hrOpenSinceDays",
+      key: "hrOpenSinceDays",
+
+      width: 90,
+      align: "center",
+      className: amReportStyles.headerCell,
+    },  
        {
       title: <div style={{ textAlign: "center" }}>Lead</div>,
       dataIndex: "leadType",
@@ -896,36 +910,29 @@ const AMReport = () => {
       align: "center",
       className: amReportStyles.headerCell,
     },
-        {
-      title: (
-        <div style={{ textAlign: "center" }}>
-          Date <br /> Created
-        </div>
-      ),
-      dataIndex: "createdByDatetime",
-      key: "createdByDatetime",
+    //     {
+    //   title: (
+    //     <div style={{ textAlign: "center" }}>
+    //       Date <br /> Created
+    //     </div>
+    //   ),
+    //   dataIndex: "createdByDatetime",
+    //   key: "createdByDatetime",
      
-      width: 120,
-      className: amReportStyles.headerCell,
-      render: (text) => (text ? moment(text).format("DD/MM/YYYY") : "-"),
-    },
-    {
-      title: <div style={{ textAlign: "center" }}>Team</div>,
-      dataIndex: "hR_Team",
-      key: "hR_Team",
-     align: "center",
-      width: 100,
-      className: amReportStyles.headerCell,
-    },
+    //   width: 120,
+    //   className: amReportStyles.headerCell,
+    //   render: (text) => (text ? moment(text).format("DD/MM/YYYY") : "-"),
+    // },
+    // {
+    //   title: <div style={{ textAlign: "center" }}>Team</div>,
+    //   dataIndex: "hR_Team",
+    //   key: "hR_Team",
+    //  align: "center",
+    //   width: 100,
+    //   className: amReportStyles.headerCell,
+    // },
 
-        {
-      title: <div style={{ textAlign: "center" }}>Uplers Fees %</div>,
-      dataIndex: "uplersFeesPer",
-      key: "uplersFeesPer",
-      width: 120,
-      align: "center",
-      className: amReportStyles.headerCell,
-    },
+ 
    
  
  
@@ -1082,7 +1089,7 @@ const AMReport = () => {
       render: (text, result) =>
         text ? (
           <a
-            href={`/allhiringrequest/${result.hiringRequest_ID}`}
+            href={`/allhiringrequest/${result.hiringRequestID}`}
             style={{ textDecoration: "underline" }}
             target="_blank"
             rel="noreferrer"
@@ -1499,10 +1506,10 @@ const AMReport = () => {
                     <th style={{textAlign:'center'}}>Stage</th>
                     <th style={{textAlign:'center'}}>Sappy</th>
                     <th style={{textAlign:'center'}}>Nikita</th>
-                    <th style={{textAlign:'center'}}>Deepsikha</th>
+                    <th style={{textAlign:'center'}}>Deepshikha</th>
                     <th style={{textAlign:'center'}}>Nandini</th>
                     <th style={{textAlign:'center'}}>Gayatri</th>
-                    <th style={{textAlign:'center'}}>Total</th>
+                    <th style={{textAlign:'center'}}>Total (D+N+G)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2026,7 +2033,7 @@ const AMReport = () => {
               }}
             >
               <h3>
-               <strong>{gN(summeryTitles?.groupName)}</strong>
+               <strong>{gN(summeryTitles?.groupName)} ( {summeryTitles?.amount} )</strong>
               </h3>
 
               <p style={{ marginBottom: "0.5em" }}>

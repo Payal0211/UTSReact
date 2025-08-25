@@ -648,7 +648,7 @@ export const ReportAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
 			ReportType.AM_WEEK_WISE_REPORT_NEW + `?hr_BusinessType=${reportData?.hr_BusinessType}&month=${reportData?.month}&year=${reportData?.year}&hrType=${reportData?.hrType}
-			&salesRep=${reportData?.salesRep}&searchText=${reportData?.searchText}&fromDate=${reportData?.fromDate}&toDate=${reportData?.toDate}`
+			&salesRep=${reportData?.salesRep}&searchText=${reportData?.searchText}&fromDate=${reportData?.fromDate}&toDate=${reportData?.toDate}&str_probabilityratio=${reportData?.str_probabilityratio}`
 
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = reportData;
