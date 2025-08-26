@@ -137,6 +137,7 @@ const AMReport = () => {
       text: "",
       EngType: "",
       str_probabilityratio: "",
+      str_weeknos:""
     },
   });
   var date = new Date();
@@ -241,6 +242,7 @@ const AMReport = () => {
       salesRep: tableFilteredState?.filterFields_OnBoard?.text ?? "",
       str_probabilityratio:
         tableFilteredState?.filterFields_OnBoard?.str_probabilityratio ?? "",
+        str_weeknos:tableFilteredState?.filterFields_OnBoard?.str_weeknos ?? "",
       leadType: "",
       hr_BusinessType: "G",
     };
@@ -326,6 +328,7 @@ const AMReport = () => {
         text: "",
         EngType: "",
         str_probabilityratio: "",
+        str_weeknos:""
       },
     });
     setStartDate(firstDayOfMonth);
@@ -1400,6 +1403,7 @@ const AMReport = () => {
   };
 
   return (
+    <>
     <div className={amReportStyles.container}>
       {/* <h1 className={amReportStyles.title}>Pipeline to bring closures from</h1> */}
       <h1 className={amReportStyles.title}>AM Potential Closures List </h1>
@@ -1753,173 +1757,13 @@ const AMReport = () => {
               )}
             </div>
 
-             <div className={amReportStyles.filterSets}>
-        <div
-          className={amReportStyles.filterSetsInner}
-          onClick={() => setShowSummeryPipeline((prev) => !prev)}
-          style={{
-            marginBottom: "20px",
-            cursor: "pointer",
-            borderBottom: "1px solid gray",
-            paddingBottom: "5px",
-            width:'200%'
-          }}
-        >
-          {/* <p
-                    className={amReportStyles.resetText}
-                    style={{ textDecoration: "none" }}
-                  > */}
-          <h3
-            className={amReportStyles.recruitername}
-            style={{ marginBottom: "0" }}
-          >
-            Remark
-          </h3>
-          <ArrowDownSVG
-            style={{
-              rotate: showSummeryPipeline ? "180deg" : "",
-              marginLeft: "10px",
-            }}
-          />
-          {/* </p> */}
-        </div>
-      </div>
-
-      {showSummeryPipeline && <div style={{ display: "flex", gap: "10px", width: "200%" }}>
-              <div style={{ width: "100%" }}>
-                <h3 className={amReportStyles.recruitername}>
-                  Recurring Remark
-                </h3>
-                <div style={{ display: "flex" }}>
-                  {isCommentLoading || isLoading ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        height: "60px",
-                        justifyContent: "center",
-                        width: "100%",
-                      }}
-                    >
-                      <Spin size="large" />
-                    </div>
-                  ) : (
-                    <textarea
-                    name='remark'
-                      className={amReportStyles.RemarkText}
-                      value={remarkText}
-                      onChange={(e) => {
-                        setRemarkText(e.target.value);
-                      }}
-                      rows={3}
-                    />
-                  )}
-                  {/* <button><SendSVG style={{ marginLeft: '5px' }} /></button> */}{" "}
-                  <div
-                    onClick={async () => {
-                      !isCommentLoading && saveRemark(remarkText, "R");
-                    }}
-                    style={{
-                      marginLeft: "20px",
-                      cursor: "pointer",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "white",
-                      height: "64px",
-                      width: "64px",
-                      borderRadius: "50%",
-                      border: `1px solid var(--uplers-border-color) `,
-                      boxShadow: "-4px 4px 20px rgba(166, 166, 166, 0.2)",
-                    }}
-                  >
-                    <SendSVG style={{ marginLeft: "5px" }} />
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ width: "100%" }}>
-                <h3 className={amReportStyles.recruitername}>
-                  One Time Remark
-                </h3>
-                <div style={{ display: "flex" }}>
-                  {isCommentLoading || isLoading ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        height: "60px",
-                        justifyContent: "center",
-                        width: "100%",
-                      }}
-                    >
-                      <Spin size="large" />
-                    </div>
-                  ) : (
-                    <textarea
-                    name="oneTimeRemark"
-                      className={amReportStyles.RemarkText}
-                      value={oneTimeRemarkText}
-                      onChange={(e) => {
-                        e.preventDefault()
-                        setOneTimeRemarkText(e.target.value);
-                      }}
-                      rows={3}
-                    />
-                  )}
-                  {/* <button><SendSVG style={{ marginLeft: '5px' }} /></button> */}{" "}
-                  <div
-                    onClick={async () => {
-                      !isCommentLoading && saveRemark(oneTimeRemarkText, "O");
-                    }}
-                    style={{
-                      marginLeft: "20px",
-                      cursor: "pointer",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "white",
-                      height: "64px",
-                      width: "64px",
-                      borderRadius: "50%",
-                      border: `1px solid var(--uplers-border-color) `,
-                      boxShadow: "-4px 4px 20px rgba(166, 166, 166, 0.2)",
-                    }}
-                  >
-                    {isCommentLoading || isLoading ? (
-                      <Spin size="large" />
-                    ) : (
-                      <SendSVG style={{ marginLeft: "5px" }} />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>}
+            
             
           </div>
         </>
       
 
-      {isLoading ? (
-        <TableSkeleton />
-      ) : (
-        <Table
-          scroll={{ x: "1600px", y: "100vh" }}
-          id="amReportList"
-          columns={columns}
-          bordered={false}
-          dataSource={reportData}
-          rowKey={(record, index) => index}
-          rowClassName={(row, index) => {
-            return row?.clientName === "TOTAL"
-              ? amReportStyles.highlighttotalrow
-              : "";
-          }}
-          pagination={false}
-          // pagination={{
-          //   size: "small",
-          //   pageSize: 15
-          // }}
-        />
-      )}
+
 
       {isAllowFilters && (
         <Suspense fallback={<div>Loading...</div>}>
@@ -2554,6 +2398,176 @@ const AMReport = () => {
         </Modal>
       )}
     </div>
+
+    <div className={amReportStyles.container}>
+ <div className={amReportStyles.filterSets}>
+        <div
+          className={amReportStyles.filterSetsInner}
+          onClick={() => setShowSummeryPipeline((prev) => !prev)}
+          style={{
+            marginBottom: "10px",
+            cursor: "pointer",
+            borderBottom: "1px solid gray",
+            paddingBottom: "5px",
+          }}
+        >
+          {/* <p
+                    className={amReportStyles.resetText}
+                    style={{ textDecoration: "none" }}
+                  > */}
+          <h3
+            className={amReportStyles.recruitername}
+            style={{ marginBottom: "0" }}
+          >
+            Remark
+          </h3>
+          <ArrowDownSVG
+            style={{
+              rotate: showSummeryPipeline ? "180deg" : "",
+              marginLeft: "10px",
+            }}
+          />
+          {/* </p> */}
+        </div>
+      </div>
+
+      {showSummeryPipeline && <div style={{ display: "flex", gap: "10px" }}>
+              <div style={{ width: "100%" }}>
+                <h3 className={amReportStyles.recruitername}>
+                  Recurring Remark
+                </h3>
+                <div style={{ display: "flex" }}>
+                  {isCommentLoading || isLoading ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "60px",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <textarea
+                    name='remark'
+                      className={amReportStyles.RemarkText}
+                      value={remarkText}
+                      onChange={(e) => {
+                        setRemarkText(e.target.value);
+                      }}
+                      rows={3}
+                    />
+                  )}
+                  {/* <button><SendSVG style={{ marginLeft: '5px' }} /></button> */}{" "}
+                  <div
+                    onClick={async () => {
+                      !isCommentLoading && saveRemark(remarkText, "R");
+                    }}
+                    style={{
+                      marginLeft: "20px",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      height: "64px",
+                      width: "64px",
+                      borderRadius: "50%",
+                      border: `1px solid var(--uplers-border-color) `,
+                      boxShadow: "-4px 4px 20px rgba(166, 166, 166, 0.2)",
+                    }}
+                  >
+                    <SendSVG style={{ marginLeft: "5px" }} />
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ width: "100%" }}>
+                <h3 className={amReportStyles.recruitername}>
+                  One Time Remark
+                </h3>
+                <div style={{ display: "flex" }}>
+                  {isCommentLoading || isLoading ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "60px",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <textarea
+                    name="oneTimeRemark"
+                      className={amReportStyles.RemarkText}
+                      value={oneTimeRemarkText}
+                      onChange={(e) => {
+                        e.preventDefault()
+                        setOneTimeRemarkText(e.target.value);
+                      }}
+                      rows={3}
+                    />
+                  )}
+                  {/* <button><SendSVG style={{ marginLeft: '5px' }} /></button> */}{" "}
+                  <div
+                    onClick={async () => {
+                      !isCommentLoading && saveRemark(oneTimeRemarkText, "O");
+                    }}
+                    style={{
+                      marginLeft: "20px",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      height: "64px",
+                      width: "64px",
+                      borderRadius: "50%",
+                      border: `1px solid var(--uplers-border-color) `,
+                      boxShadow: "-4px 4px 20px rgba(166, 166, 166, 0.2)",
+                    }}
+                  >
+                    {isCommentLoading || isLoading ? (
+                      <Spin size="large" />
+                    ) : (
+                      <SendSVG style={{ marginLeft: "5px" }} />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>}
+    </div>
+
+
+<div className={amReportStyles.container}>
+
+      {isLoading ? (
+        <TableSkeleton />
+      ) : (
+        <Table
+          scroll={{ x: "1600px", y: "100vh" }}
+          id="amReportList"
+          columns={columns}
+          bordered={false}
+          dataSource={reportData}
+          rowKey={(record, index) => index}
+          rowClassName={(row, index) => {
+            return row?.clientName === "TOTAL"
+              ? amReportStyles.highlighttotalrow
+              : "";
+          }}
+          pagination={false}
+          // pagination={{
+          //   size: "small",
+          //   pageSize: 15
+          // }}
+        />
+      )}
+</div>
+    </>
   );
 };
 
