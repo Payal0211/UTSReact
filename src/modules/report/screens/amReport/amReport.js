@@ -1,10 +1,19 @@
 import React, { Suspense, useCallback, useEffect, useState } from "react";
 import amReportStyles from "./amReport.module.css";
-import { Table, Radio, message, Select, Tooltip, Modal, Skeleton, Spin } from "antd";
+import {
+  Table,
+  Radio,
+  message,
+  Select,
+  Tooltip,
+  Modal,
+  Skeleton,
+  Spin,
+} from "antd";
 import { ReportDAO } from "core/report/reportDAO";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
-import { ReactComponent as SendSVG } from 'assets/svg/send.svg';
+import { ReactComponent as SendSVG } from "assets/svg/send.svg";
 import { InputType } from "constants/application";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import DatePicker from "react-datepicker";
@@ -23,7 +32,8 @@ import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import spinGif from "assets/gif/RefreshLoader.gif";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
- 
+import { ReactComponent as ArrowDownSVG } from "assets/svg/arrowDownLight.svg";
+
 // const columns = [
 //   {
 //     title: 'Client Name',
@@ -121,19 +131,18 @@ const AMReport = () => {
   const [filteredTagLength, setFilteredTagLength] = useState(0);
   const [appliedFilter, setAppliedFilters] = useState(new Map());
   const [checkedState, setCheckedState] = useState(new Map());
+  const [showSummeryPipeline, setShowSummeryPipeline] = useState(false);
   const [tableFilteredState, setTableFilteredState] = useState({
     filterFields_OnBoard: {
-      text: '',
+      text: "",
       EngType: "",
-      str_probabilityratio:''
+      str_probabilityratio: "",
     },
   });
   var date = new Date();
-    const firstDayOfMonth = new Date();
+  const firstDayOfMonth = new Date();
   firstDayOfMonth.setDate(1);
-  const [startDate, setStartDate] = useState(
-   firstDayOfMonth
-  );
+  const [startDate, setStartDate] = useState(firstDayOfMonth);
   const [dateTypeFilter, setDateTypeFilter] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [filtersList, setFiltersList] = useState([]);
@@ -141,12 +150,13 @@ const AMReport = () => {
   const [profileInfo, setInfoforProfile] = useState({});
   const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
   const [hrTalentList, setHRTalentList] = useState([]);
-  const [summeryTitles,setSummertTitles] = useState({})
+  const [summeryTitles, setSummertTitles] = useState({});
   const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
   const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const [profileStatusID, setProfileStatusID] = useState(0);
   const [talentToMove, setTalentToMove] = useState({});
-  const [remarkText,setRemarkText ] = useState('')
+  const [remarkText, setRemarkText] = useState("");
+  const [oneTimeRemarkText, setOneTimeRemarkText] = useState("");
 
   const [showComment, setShowComment] = useState(false);
   const [commentData, setCommentData] = useState({});
@@ -155,24 +165,23 @@ const AMReport = () => {
 
   const [summeryDetails, setSummeryDetails] = useState([]);
   const [showSummeryDetails, setShowSummeryDetails] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false); 
-  const [showResponse,setShowResponse] = useState(false)
-  const [responseData,setResponseData] = useState({})
-  const [round,setRound] = useState('')
-  const [roundDate,setRoundDate] = useState('')
-  const [loadingResponse,setLoadingResponse] = useState(false)
-  const [responseSubmit,setResponseSubmit] = useState(false)
+  const [isModalLoading, setIsModalLoading] = useState(false);
+  const [showResponse, setShowResponse] = useState(false);
+  const [responseData, setResponseData] = useState({});
+  const [round, setRound] = useState("");
+  const [roundDate, setRoundDate] = useState("");
+  const [loadingResponse, setLoadingResponse] = useState(false);
+  const [responseSubmit, setResponseSubmit] = useState(false);
 
-    const [userData, setUserData] = useState({});
-      
-    useEffect(() => {
-      const getUserResult = async () => {
-        let userData = UserSessionManagementController.getUserSession();
-        if (userData) setUserData(userData);
-      };
-      getUserResult();
-    }, []);
+  const [userData, setUserData] = useState({});
 
+  useEffect(() => {
+    const getUserResult = async () => {
+      let userData = UserSessionManagementController.getUserSession();
+      if (userData) setUserData(userData);
+    };
+    getUserResult();
+  }, []);
 
   useEffect(() => {
     getAMReportFilter();
@@ -180,7 +189,13 @@ const AMReport = () => {
 
   useEffect(() => {
     getAMReportData();
-  }, [openTicketDebounceText, monthDate, tableFilteredState,endDate,startDate]);
+  }, [
+    openTicketDebounceText,
+    monthDate,
+    tableFilteredState,
+    endDate,
+    startDate,
+  ]);
 
   const getAMReportFilter = async () => {
     setIsLoading(true);
@@ -196,15 +211,36 @@ const AMReport = () => {
   const getAMReportData = async () => {
     let payload = {
       searchText: openTicketDebounceText,
-      "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
-      "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
-      "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(startDate).format('YYYY-MM-DD') : '',
-      "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(endDate).format('YYYY-MM-DD'): '' ,
+      month:
+        dateTypeFilter === 2
+          ? 0
+          : dateTypeFilter === 0
+          ? +moment(monthDate).format("M")
+          : 0,
+      year:
+        dateTypeFilter === 2
+          ? 0
+          : dateTypeFilter === 0
+          ? +moment(monthDate).format("YYYY")
+          : 0,
+      fromDate:
+        dateTypeFilter === 2
+          ? ""
+          : dateTypeFilter === 1
+          ? moment(startDate).format("YYYY-MM-DD")
+          : "",
+      toDate:
+        dateTypeFilter === 2
+          ? ""
+          : dateTypeFilter === 1
+          ? moment(endDate).format("YYYY-MM-DD")
+          : "",
       // "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
       hrType: tableFilteredState?.filterFields_OnBoard?.EngType,
       hrStatus: "",
       salesRep: tableFilteredState?.filterFields_OnBoard?.text ?? "",
-      str_probabilityratio: tableFilteredState?.filterFields_OnBoard?.str_probabilityratio ?? "",
+      str_probabilityratio:
+        tableFilteredState?.filterFields_OnBoard?.str_probabilityratio ?? "",
       leadType: "",
       hr_BusinessType: "G",
     };
@@ -223,10 +259,30 @@ const AMReport = () => {
       hr_BusinessType: "G",
       //   "month": +moment(monthDate).format("M") ,
       // "year":  +moment(monthDate).format("YYYY"),
-      "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
-      "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
-      "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(startDate).format('YYYY-MM-DD') : '',
-      "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ?  moment(endDate).format('YYYY-MM-DD'): '' ,
+      month:
+        dateTypeFilter === 2
+          ? 0
+          : dateTypeFilter === 0
+          ? +moment(monthDate).format("M")
+          : 0,
+      year:
+        dateTypeFilter === 2
+          ? 0
+          : dateTypeFilter === 0
+          ? +moment(monthDate).format("YYYY")
+          : 0,
+      fromDate:
+        dateTypeFilter === 2
+          ? ""
+          : dateTypeFilter === 1
+          ? moment(startDate).format("YYYY-MM-DD")
+          : "",
+      toDate:
+        dateTypeFilter === 2
+          ? ""
+          : dateTypeFilter === 1
+          ? moment(endDate).format("YYYY-MM-DD")
+          : "",
     };
 
     setIsSummeryLoading(true);
@@ -248,7 +304,7 @@ const AMReport = () => {
 
   useEffect(() => {
     getAMSummary();
-  }, [monthDate, startDate,endDate]);
+  }, [monthDate, startDate, endDate]);
 
   const toggleHRFilter = useCallback(() => {
     !getHTMLFilter
@@ -267,14 +323,14 @@ const AMReport = () => {
     setMonthDate(new Date());
     setTableFilteredState({
       filterFields_OnBoard: {
-        text: '',
-      EngType: "",
-      str_probabilityratio:''
+        text: "",
+        EngType: "",
+        str_probabilityratio: "",
       },
     });
-      setStartDate(firstDayOfMonth);
-      setEndDate(today);  
-      setDateTypeFilter(0);
+    setStartDate(firstDayOfMonth);
+    setEndDate(today);
+    setDateTypeFilter(0);
   };
 
   const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
@@ -341,40 +397,40 @@ const AMReport = () => {
     updatedData[index] = { ...record, [field]: newValue };
     setReportData(updatedData);
     // if (field === "productType" || field === "potentialType") {
-      updatePotentialClosuresRowValue(updatedData[index]);
+    updatePotentialClosuresRowValue(updatedData[index]);
     // }
   };
 
-    const updatePotentialClosuresRowValue = async (updatedData) => {
-      const pl = {
-        PotentialCloserList_ID: updatedData.potentialCloserList_ID,
-        HRID: updatedData?.hiringRequest_ID,
-        ProbabiltyRatio_thismonth:updatedData?.probabiltyRatio_thismonth,
-        Expected_Closure_Week:updatedData?.expected_Closure_Week,
-        Actual_Closure_Week:updatedData?.actual_Closure_Week,
-        // Pushed_Closure_Week:updatedData?.pushed_Closure_Week,
-        Talent_NoticePeriod:updatedData?.talent_NoticePeriod,
-        Talent_Backup:updatedData?.talent_Backup,
-        // OwnerID:updatedData?.owner_UserID
-      };
-  
-      await ReportDAO.PotentialClosuresUpdateDAO(pl);
+  const updatePotentialClosuresRowValue = async (updatedData) => {
+    const pl = {
+      PotentialCloserList_ID: updatedData.potentialCloserList_ID,
+      HRID: updatedData?.hiringRequest_ID,
+      ProbabiltyRatio_thismonth: updatedData?.probabiltyRatio_thismonth,
+      Expected_Closure_Week: updatedData?.expected_Closure_Week,
+      Actual_Closure_Week: updatedData?.actual_Closure_Week,
+      // Pushed_Closure_Week:updatedData?.pushed_Closure_Week,
+      Talent_NoticePeriod: updatedData?.talent_NoticePeriod,
+      Talent_Backup: updatedData?.talent_Backup,
+      // OwnerID:updatedData?.owner_UserID
     };
 
-    const getAllComments = async (d, modal) => {
-      setIsCommentLoading(true);
-      const pl = {  
-        potentialCloserListID: d.potentialCloserList_ID,
-        hrID  :d.hiringRequest_ID,
-      };
-      const result = await ReportDAO.getALLPotentialClosuresCommentsDAO(pl);
-      setIsCommentLoading(false);
-      if (result.statusCode === HTTPStatusCode.OK) {
-        setALLCommentsList(result.responseBody);
-      } else {
-        setALLCommentsList([]);
-      }
+    await ReportDAO.PotentialClosuresUpdateDAO(pl);
+  };
+
+  const getAllComments = async (d, modal) => {
+    setIsCommentLoading(true);
+    const pl = {
+      potentialCloserListID: d.potentialCloserList_ID,
+      hrID: d.hiringRequest_ID,
     };
+    const result = await ReportDAO.getALLPotentialClosuresCommentsDAO(pl);
+    setIsCommentLoading(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setALLCommentsList(result.responseBody);
+    } else {
+      setALLCommentsList([]);
+    }
+  };
 
   const AddComment = (data, modal) => {
     getAllComments(data, modal);
@@ -382,27 +438,30 @@ const AMReport = () => {
     setCommentData(data);
   };
 
-     const saveComment = async (note) => {
-        let pl = {
-        PotentialCloserList_ID: commentData.potentialCloserList_ID,
-        HR_ID   :commentData.hiringRequest_ID,
-  
-          loggedInUserID: userData?.UserId,
-          comments: note,
+  const saveComment = async (note) => {
+    let pl = {
+      PotentialCloserList_ID: commentData.potentialCloserList_ID,
+      HR_ID: commentData.hiringRequest_ID,
+
+      loggedInUserID: userData?.UserId,
+      comments: note,
+    };
+    setIsCommentLoading(true);
+    const res = await ReportDAO.insertPotentialClosureCommentRequestDAO(pl);
+    setIsCommentLoading(false);
+    if (res.statusCode === HTTPStatusCode.OK) {
+      setALLCommentsList(res.responseBody);
+      let comments = res.responseBody.map((re) => re.comments);
+      setReportData((prev) => {
+        let nArr = [...prev];
+        nArr[commentData.index] = {
+          ...nArr[commentData.index],
+          potentialList_Comments: comments.slice(0, 5).join("~"),
         };
-        setIsCommentLoading(true);
-        const res = await ReportDAO.insertPotentialClosureCommentRequestDAO(pl);
-        setIsCommentLoading(false);
-        if (res.statusCode === HTTPStatusCode.OK) {
-          setALLCommentsList(res.responseBody);
-          let comments = res.responseBody.map(re=> re.comments)
-          setReportData(prev=>{
-            let nArr = [...prev]
-            nArr[commentData.index] = {...nArr[commentData.index], potentialList_Comments: comments.slice(0,5).join("~")}
-            return nArr
-          })
-        }
-      };
+        return nArr;
+      });
+    }
+  };
 
   const getTalentProfilesDetailsfromTable = async (
     result,
@@ -430,30 +489,28 @@ const AMReport = () => {
     }
   };
 
-  const AddResponse = (data)=>{
-    setShowResponse(true)
-    setResponseData(data)
-  }
+  const AddResponse = (data) => {
+    setShowResponse(true);
+    setResponseData(data);
+  };
 
   const commentColumn = [
-    {title:"Created By",
+    {
+      title: "Created By",
       dataIndex: "createdByDatetime",
       key: "createdByDatetime",
-       width:'200px'
+      width: "200px",
     },
-    {title:"Comment",
+    {
+      title: "Comment",
       dataIndex: "comments",
       key: "comments",
-      render:(text)=>{
-        return <div  dangerouslySetInnerHTML={{ __html: text }}></div>
-      }
+      render: (text) => {
+        return <div dangerouslySetInnerHTML={{ __html: text }}></div>;
+      },
     },
-     {title:"Added By",
-      dataIndex: "addedBy",
-      key: "addedBy",
-      width:'200px'
-    },
-  ]
+    { title: "Added By", dataIndex: "addedBy", key: "addedBy", width: "200px" },
+  ];
 
   const getSummeryDetails = async (val, col) => {
     let pl = {
@@ -466,7 +523,7 @@ const AMReport = () => {
     };
     setShowSummeryDetails(true);
     setLoadingTalentProfile(true);
-    setSummertTitles({...val,col,amount:val[col]})
+    setSummertTitles({ ...val, col, amount: val[col] });
     const res = await ReportDAO.getTAReportSummeryDetailsDAO(pl);
     setLoadingTalentProfile(false);
     if (res.statusCode === HTTPStatusCode.OK) {
@@ -477,8 +534,8 @@ const AMReport = () => {
   };
 
   const columns = [
-     {
-      title: <div >Company</div>,
+    {
+      title: <div>Company</div>,
       dataIndex: "company",
       key: "company",
       width: 150,
@@ -520,14 +577,14 @@ const AMReport = () => {
           text
         ),
     },
-      {
+    {
       title: <div style={{ textAlign: "center" }}>Position</div>,
       dataIndex: "position",
       key: "position",
       fixed: "left",
       width: 180,
     },
-     {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
           Uplers Fees
@@ -539,10 +596,10 @@ const AMReport = () => {
       key: "averageValue",
       width: 120,
       align: "right",
-       fixed: "left",
+      fixed: "left",
       className: amReportStyles.headerCell,
     },
-     {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
           Probability Ratio <br />
@@ -564,7 +621,7 @@ const AMReport = () => {
         ),
     },
 
-         {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
           No Of <br />
@@ -575,11 +632,11 @@ const AMReport = () => {
       key: "noifInterviewRounds",
       align: "center",
       width: 180,
-      render:(text, result)=>{
-        return  +text > 0 ? text : ''
-      }
+      render: (text, result) => {
+        return +text > 0 ? text : "";
+      },
     },
-      {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
           Client Response <br />
@@ -589,132 +646,142 @@ const AMReport = () => {
       dataIndex: "clientResponseneededBy",
       key: "clientResponseneededBy",
       width: 180,
-       render: (text, record, index) => {
-        const commentsArr = text.length > 0 ? text.split('~') : []
-        return (<div>
-        
-          {commentsArr.length > 0 &&  <> <ul style={{paddingLeft:'5px',marginBottom:0}}>
-            {commentsArr.map(comment=> <li dangerouslySetInnerHTML={{__html:comment}}></li>)}
-          </ul> <br/> </>}
-       
-            <IconContext.Provider
-            value={{
-              color: "green",
-              style: {
-                width: "20px",
-                height: "20px",
-                marginLeft: "5px",
-                cursor: "pointer",
-              },
-            }}
-          >
-            {" "}
-            <Tooltip title={`Add Response`} placement="top">
-              <span
-                onClick={() => {
-                  AddResponse({...record,index});
-                }}
-                // className={taStyles.feedbackLabel}
-              >
+      render: (text, record, index) => {
+        const commentsArr = text.length > 0 ? text.split("~") : [];
+        return (
+          <div>
+            {commentsArr.length > 0 && (
+              <>
                 {" "}
-                <IoMdAddCircle />
-              </span>{" "}
-            </Tooltip>
-          </IconContext.Provider>
-        </div>
-        
+                <ul style={{ paddingLeft: "5px", marginBottom: 0 }}>
+                  {commentsArr.map((comment) => (
+                    <li dangerouslySetInnerHTML={{ __html: comment }}></li>
+                  ))}
+                </ul>{" "}
+                <br />{" "}
+              </>
+            )}
+
+            <IconContext.Provider
+              value={{
+                color: "green",
+                style: {
+                  width: "20px",
+                  height: "20px",
+                  marginLeft: "5px",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              {" "}
+              <Tooltip title={`Add Response`} placement="top">
+                <span
+                  onClick={() => {
+                    AddResponse({ ...record, index });
+                  }}
+                  // className={taStyles.feedbackLabel}
+                >
+                  {" "}
+                  <IoMdAddCircle />
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
+          </div>
         );
       },
     },
-       {
-      title:'W1',
+    {
+      title: "W1",
       dataIndex: "w1",
       key: "w1",
       width: 100,
       align: "center",
       className: amReportStyles.headerCell,
     },
-      {
-      title:'W2',
+    {
+      title: "W2",
       dataIndex: "w2",
       key: "w3",
       width: 100,
       align: "center",
       className: amReportStyles.headerCell,
     },
-      {
-      title:'W3',
+    {
+      title: "W3",
       dataIndex: "w3",
       key: "w3",
       width: 100,
       align: "center",
       className: amReportStyles.headerCell,
     },
-      {
-      title:'W4',
+    {
+      title: "W4",
       dataIndex: "w4",
       key: "w4",
       width: 100,
       align: "center",
       className: amReportStyles.headerCell,
     },
-      {
-      title:'W5',
+    {
+      title: "W5",
       dataIndex: "w5",
       key: "w5",
       width: 100,
       align: "center",
       className: amReportStyles.headerCell,
     },
-     {
-      title: (
-        <div >
-          Comments 
-        </div>
-      ),
+    {
+      title: <div>Comments</div>,
       dataIndex: "potentialList_Comments",
       key: "potentialList_Comments",
       width: 400,
       // align: "center",
       className: amReportStyles.headerCell,
       render: (text, record, index) => {
-        const commentsArr = text.length > 0 ? text.split('~') : []
-        return (<div>
-        
-          {commentsArr.length > 0 &&  <> <ul style={{paddingLeft:'5px',marginBottom:0}}>
-            {commentsArr.map(comment=> <li dangerouslySetInnerHTML={{__html:comment}}></li>)}
-          </ul> <br/> </>}
-       
-            <IconContext.Provider
-            value={{
-              color: "green",
-              style: {
-                width: "20px",
-                height: "20px",
-                marginLeft: "5px",
-                cursor: "pointer",
-              },
-            }}
-          >
-            {" "}
-            <Tooltip title={`Add/View comment`} placement="top">
-              <span
-                onClick={() => {
-                  AddComment({...record,index});
-                }}
-                // className={taStyles.feedbackLabel}
-              >
+        const commentsArr = text.length > 0 ? text.split("~") : [];
+        return (
+          <div>
+            {commentsArr.length > 0 && (
+              <>
                 {" "}
-                <IoMdAddCircle />
-              </span>{" "}
-            </Tooltip>
-          </IconContext.Provider>
-        </div>
-        
+                <ul style={{ paddingLeft: "5px", marginBottom: 0 }}>
+                  {commentsArr.map((comment) => (
+                    <li dangerouslySetInnerHTML={{ __html: comment }}></li>
+                  ))}
+                </ul>{" "}
+                <br />{" "}
+              </>
+            )}
+
+            <IconContext.Provider
+              value={{
+                color: "green",
+                style: {
+                  width: "20px",
+                  height: "20px",
+                  marginLeft: "5px",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              {" "}
+              <Tooltip title={`Add/View comment`} placement="top">
+                <span
+                  onClick={() => {
+                    AddComment({ ...record, index });
+                  }}
+                  // className={taStyles.feedbackLabel}
+                >
+                  {" "}
+                  <IoMdAddCircle />
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
+          </div>
         );
       },
     },
-     {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
           Number of
@@ -728,7 +795,7 @@ const AMReport = () => {
       align: "center",
       className: amReportStyles.headerCell,
     },
-      {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
           No Of Profile <br />
@@ -758,11 +825,11 @@ const AMReport = () => {
             {text}
           </p>
         ) : (
-          ''
+          ""
         );
       },
     },
-     {
+    {
       title: <div style={{ textAlign: "center" }}>Sales Person</div>,
       dataIndex: "salesPerson",
       key: "salesPerson",
@@ -770,7 +837,7 @@ const AMReport = () => {
       // fixed: "left",
       className: amReportStyles.headerCell,
     },
-     {
+    {
       title: <div style={{ textAlign: "center" }}>CTP Link</div>,
       dataIndex: "ctP_Link",
       key: "ctP_Link",
@@ -793,7 +860,7 @@ const AMReport = () => {
         );
       },
     },
-     {
+    {
       title: (
         <div style={{ textAlign: "center" }}>
           Expected
@@ -814,7 +881,7 @@ const AMReport = () => {
           handleFieldChange
         ),
     },
-        {
+    {
       title: <div style={{ textAlign: "center" }}>Back Up</div>,
       dataIndex: "talent_Backup",
       key: "talent_Backup",
@@ -830,7 +897,7 @@ const AMReport = () => {
           handleFieldChange
         ),
     },
-    
+
     {
       title: (
         <div style={{ textAlign: "center" }}>
@@ -852,7 +919,7 @@ const AMReport = () => {
       //     handleFieldChange
       //   ),
     },
-           {
+    {
       title: <div style={{ textAlign: "center" }}>Uplers Fees %</div>,
       dataIndex: "uplersFeesPer",
       key: "uplersFeesPer",
@@ -872,11 +939,11 @@ const AMReport = () => {
       // fixed: "left",
       className: amReportStyles.headerCell,
     },
-      {
+    {
       title: <div style={{ textAlign: "center" }}>HR Status</div>,
       dataIndex: "hrStatus",
       key: "hrStatus",
-  
+
       className: amReportStyles.headerCell,
       width: "180px",
       align: "center",
@@ -888,7 +955,7 @@ const AMReport = () => {
     },
     {
       title: (
-        <div >
+        <div>
           Open
           <br />
           since how <br /> many
@@ -901,8 +968,8 @@ const AMReport = () => {
       width: 90,
       align: "center",
       className: amReportStyles.headerCell,
-    },  
-       {
+    },
+    {
       title: <div style={{ textAlign: "center" }}>Lead</div>,
       dataIndex: "leadType",
       key: "leadType",
@@ -918,7 +985,7 @@ const AMReport = () => {
     //   ),
     //   dataIndex: "createdByDatetime",
     //   key: "createdByDatetime",
-     
+
     //   width: 120,
     //   className: amReportStyles.headerCell,
     //   render: (text) => (text ? moment(text).format("DD/MM/YYYY") : "-"),
@@ -932,12 +999,6 @@ const AMReport = () => {
     //   className: amReportStyles.headerCell,
     // },
 
- 
-   
- 
- 
-  
-   
     // {
     //   title: (
     //     <div style={{ textAlign: "center" }}>
@@ -972,7 +1033,7 @@ const AMReport = () => {
     //   width: 150,
     //   align: "left",
     //   className: amReportStyles.headerCell,
-    // }, 
+    // },
     // {
     //   title: (
     //     <div style={{ textAlign: "center" }}>
@@ -1035,35 +1096,33 @@ const AMReport = () => {
     // },
   ];
 
-    const onCalenderFilter = (dates) => {
+  const onCalenderFilter = (dates) => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
-   
   };
 
-    const getTalentProfilesDetails = async (result, statusID, stageID) => {
-        setShowTalentProfiles(true);
-        setInfoforProfile(result);
-        let pl = {
-          hrID: result?.hiringRequest_ID,
-          statusID: statusID,
-          stageID: statusID === 0 ? null : stageID ? stageID : 0,
-        };
-        setIsModalLoading(true);
-        setLoadingTalentProfile(true);
-        const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
-        setIsModalLoading(false);
-        setLoadingTalentProfile(false);
-        if (hrResult.statusCode === HTTPStatusCode.OK) {
-          setHRTalentList(hrResult.responseBody);
-          setFilteredTalentList(hrResult.responseBody);  
-        } else {
-          setHRTalentList([]);
-          setFilteredTalentList([]);
-    
-        }
-      };
+  const getTalentProfilesDetails = async (result, statusID, stageID) => {
+    setShowTalentProfiles(true);
+    setInfoforProfile(result);
+    let pl = {
+      hrID: result?.hiringRequest_ID,
+      statusID: statusID,
+      stageID: statusID === 0 ? null : stageID ? stageID : 0,
+    };
+    setIsModalLoading(true);
+    setLoadingTalentProfile(true);
+    const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+    setIsModalLoading(false);
+    setLoadingTalentProfile(false);
+    if (hrResult.statusCode === HTTPStatusCode.OK) {
+      setHRTalentList(hrResult.responseBody);
+      setFilteredTalentList(hrResult.responseBody);
+    } else {
+      setHRTalentList([]);
+      setFilteredTalentList([]);
+    }
+  };
 
   const handleSearchInput = (value) => {
     setSearchTerm(value);
@@ -1078,7 +1137,7 @@ const AMReport = () => {
 
   const SummeryColumns = [
     {
-      title: "Created Date",
+      title: "Action Date",
       dataIndex: "hrCreatedDateStr",
       key: "hrCreatedDateStr",
     },
@@ -1124,21 +1183,23 @@ const AMReport = () => {
           text
         ),
     },
- {
+    {
       title: "Uplers Fees",
       dataIndex: "uplersFees_Str",
       key: "uplersFees_Str",
+      align: "right",
     },
-     {
-      title: "Talent",
+    {
+      title: "TR/Talent",
       dataIndex: "talent",
       key: "talent",
+      align: "right",
     },
-        {
+    {
       title: "Sales Person",
       dataIndex: "salesPerson",
       key: "salesPerson",
-    }, 
+    },
     {
       title: "Status",
       dataIndex: "hrStatus",
@@ -1165,7 +1226,7 @@ const AMReport = () => {
       dataIndex: "leadType",
       key: "leadType",
     },
-  {
+    {
       title: "Business Type",
       dataIndex: "businessType",
       key: "businessType",
@@ -1246,72 +1307,82 @@ const AMReport = () => {
     setHTMLFilter(false);
   };
 
-  const saveRemark = async() =>{
-    if(remarkText === ''){
-      message.error('Please enter remark!')
-      return
+  const saveRemark = async (text, category) => {
+    if (text === "") {
+      message.error("Please enter remark!");
+      return;
     }
-    
-      let pl = {
-        PotentialCloserList_ID: 0,
-        HR_ID   :0, 
-        loggedInUserID: userData?.UserId,
-        comments: remarkText,
-        };
-        setIsCommentLoading(true);
-        const res = await ReportDAO.insertPotentialClosureCommentRequestDAO(pl);
-        setIsCommentLoading(false);
-        if (res.statusCode === HTTPStatusCode.OK) {
-         message.success('Remark Saved')
-        }
-  }
 
-  const getRemark= async () =>{
-    let result = await ReportDAO.getPotentialRemarkDAO()
-    if(result.statusCode === 200){
-      setRemarkText(result.responseBody[0].comments ?? '')
+    let pl = {
+      PotentialCloserList_ID: 0,
+      HR_ID: 0,
+      loggedInUserID: userData?.UserId,
+      comments: text,
+      Comments_category: category,
+    };
+    setIsCommentLoading(true);
+    const res = await ReportDAO.insertPotentialClosureCommentRequestDAO(pl);
+    setIsCommentLoading(false);
+    if (res.statusCode === HTTPStatusCode.OK) {
+      message.success("Remark Saved");
     }
-  }
+  };
 
-  useEffect(()=>{
-    getRemark()
-  },[])
+  const getRemark = async () => {
+    let result = await ReportDAO.getPotentialRemarkDAO();
+    if (result.statusCode === 200) {
+      let rem = result.responseBody.filter(i=> i.comments_category === "R");
+      let oneT = result.responseBody.filter(i=> i.comments_category === "O");
+      setRemarkText(rem[0].comments ?? "");
+      setOneTimeRemarkText(oneT[0].comments ?? "");
+    }
+  };
 
-  const saveResponse = async()=>{
-    setResponseSubmit(true)
+  useEffect(() => {
+    getRemark();
+  }, []);
 
-    if(round === '' || roundDate === ''){
-      message.error(`Please Select ${round === '' ?  "Round":''} ${round === '' && roundDate === '' ? 'And' :''} ${roundDate === '' ? "Date" : ''}`)
-      return
+  const saveResponse = async () => {
+    setResponseSubmit(true);
+
+    if (round === "" || roundDate === "") {
+      message.error(
+        `Please Select ${round === "" ? "Round" : ""} ${
+          round === "" && roundDate === "" ? "And" : ""
+        } ${roundDate === "" ? "Date" : ""}`
+      );
+      return;
     }
     let PL = {
       HR_ID: responseData?.hiringRequest_ID,
-      Interview_Round:round,
-      Round_Date:moment(roundDate).format('YYYY-MM-DD'),
-      Comments:'',
-      LoggedInUserID:userData?.UserId
-    }
-    setLoadingResponse(true)
-    const result = await  ReportDAO.insertPotentialClosureResponseRequestDAO(PL);
-    setLoadingResponse(false)
+      Interview_Round: round,
+      Round_Date: moment(roundDate).format("YYYY-MM-DD"),
+      Comments: "",
+      LoggedInUserID: userData?.UserId,
+    };
+    setLoadingResponse(true);
+    const result = await ReportDAO.insertPotentialClosureResponseRequestDAO(PL);
+    setLoadingResponse(false);
 
-    if(result.statusCode === 200){
-       let responces = result.responseBody.map(re=> re.round_Detail)
-          setReportData(prev=>{
-            let nArr = [...prev]
-            nArr[responseData?.index] = {...nArr[responseData?.index], clientResponseneededBy: responces.join("~")}
-            return nArr
-          })
-        setShowResponse(false);
-        setResponseData({});
-        setRoundDate('')
-        setRound('')
-        setResponseSubmit(false)
-    }else{
-      message.error('something went wrong')
+    if (result.statusCode === 200) {
+      let responces = result.responseBody.map((re) => re.round_Detail);
+      setReportData((prev) => {
+        let nArr = [...prev];
+        nArr[responseData?.index] = {
+          ...nArr[responseData?.index],
+          clientResponseneededBy: responces.join("~"),
+        };
+        return nArr;
+      });
+      setShowResponse(false);
+      setResponseData({});
+      setRoundDate("");
+      setRound("");
+      setResponseSubmit(false);
+    } else {
+      message.error("something went wrong");
     }
-
-  }
+  };
 
   const gN = (name) => {
     switch (name) {
@@ -1411,253 +1482,421 @@ const AMReport = () => {
                 <Radio value={"DP"}>DP</Radio>
               </Radio.Group>
 
-              <div style={{display:'flex',justifyContent:'center',alignItems:"center"}}>
-                  <div style={{display:"flex",justifyContent:'center',marginRight:"10px"}}>
-                                  <Select
-                                    id="selectedValue"
-                                    placeholder="Select"
-                                    value={dateTypeFilter}                    
-                                    style={{width:"180px",height:"48px"}}
-                                    onChange={(value, option) => {
-                                      setDateTypeFilter(value);
-                                      setStartDate(firstDayOfMonth);
-                                      setEndDate(new Date(date));
-                                    }}
-                                    options={[
-                                      // {value: 2,label: 'No Dates'},
-                                      {value: 0,label: 'By Month'},{value: 1,label: 'With Date Range'}]}
-                                    optionFilterProp="value"
-                                  />
-                                </div>
-
-                {dateTypeFilter === 0 &&   <div
+              <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-evenly",
+                  justifyContent: "center",
                   alignItems: "center",
-                  gap: "8px",
                 }}
               >
-                <div>Month-Year</div>
-                <div className={amReportStyles.calendarFilter}>
-                  <CalenderSVG
-                    style={{ height: "16px", marginRight: "16px" }}
-                  />
-                  <DatePicker
-                    style={{ backgroundColor: "red" }}
-                    onKeyDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginRight: "10px",
+                  }}
+                >
+                  <Select
+                    id="selectedValue"
+                    placeholder="Select"
+                    value={dateTypeFilter}
+                    style={{ width: "180px", height: "48px" }}
+                    onChange={(value, option) => {
+                      setDateTypeFilter(value);
+                      setStartDate(firstDayOfMonth);
+                      setEndDate(new Date(date));
                     }}
-                    className={amReportStyles.dateFilter}
-                    placeholderText="Month - Year"
-                    selected={monthDate}
-                    onChange={(date) => setMonthDate(date)}
-                    dateFormat="MM-yyyy"
-                    showMonthYearPicker
+                    options={[
+                      // {value: 2,label: 'No Dates'},
+                      { value: 0, label: "By Month" },
+                      { value: 1, label: "With Date Range" },
+                    ]}
+                    optionFilterProp="value"
                   />
                 </div>
-              </div>}
 
-               {dateTypeFilter === 1 && (
-                                <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}>
-                                  <div>Date</div>
-                                  <div className={amReportStyles.calendarFilter}>                       
-                                  <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                                  <DatePicker
-                                    style={{ backgroundColor: "red" }}
-                                    onKeyDown={(e) => {
-                                      e.preventDefault();
-                                      e.stopPropagation();
-                                    }}
-                                    className={amReportStyles.dateFilter}
-                                    placeholderText="Start date - End date"
-                                    selected={startDate}
-                                    onChange={onCalenderFilter}
-                                    startDate={startDate}
-                                    endDate={endDate}
-                                    maxDate={new Date()}
-                                    selectsRange
-                                  />
-                                </div>
-                                </div>
-                              )}       
+                {dateTypeFilter === 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <div>Month-Year</div>
+                    <div className={amReportStyles.calendarFilter}>
+                      <CalenderSVG
+                        style={{ height: "16px", marginRight: "16px" }}
+                      />
+                      <DatePicker
+                        style={{ backgroundColor: "red" }}
+                        onKeyDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        className={amReportStyles.dateFilter}
+                        placeholderText="Month - Year"
+                        selected={monthDate}
+                        onChange={(date) => setMonthDate(date)}
+                        dateFormat="MM-yyyy"
+                        showMonthYearPicker
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {dateTypeFilter === 1 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <div>Date</div>
+                    <div className={amReportStyles.calendarFilter}>
+                      <CalenderSVG
+                        style={{ height: "16px", marginRight: "16px" }}
+                      />
+                      <DatePicker
+                        style={{ backgroundColor: "red" }}
+                        onKeyDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        className={amReportStyles.dateFilter}
+                        placeholderText="Start date - End date"
+                        selected={startDate}
+                        onChange={onCalenderFilter}
+                        startDate={startDate}
+                        endDate={endDate}
+                        maxDate={new Date()}
+                        selectsRange
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            
             </div>
           </div>
         </div>
       </div>
 
-      <div className={amReportStyles.summeryContainer}>
-        {isLoading  ? <div style={{display:"flex",height:"350px",justifyContent:'center',width:'100%'}}>
-                          <Spin size="large"/>
-                        </div> : <>
-                           {summeryGroupsNames.map((gName) => {
-          let data = summeryReportData.filter(
-            (item) => item.groupName === gName
-          );
-          return (
-            <div className={amReportStyles.cardcontainer}>
-              <h3 className={amReportStyles.recruitername}>{gN(gName)}</h3>
-              <table className={amReportStyles.stagetable} style={{width:'650px'}}>
-                <thead>
-                  <tr>
-                    <th style={{textAlign:'center'}}>Stage</th>
-                    <th style={{textAlign:'center'}}>Sappy</th>
-                    <th style={{textAlign:'center'}}>Nikita</th>
-                    <th style={{textAlign:'center'}}>Deepshikha</th>
-                    <th style={{textAlign:'center'}}>Nandini</th>
-                    <th style={{textAlign:'center'}}>Gayatri</th>
-                    <th style={{textAlign:'center'}}>Total (D+N+G)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((val) => (
-                    <tr
-                      key={gName + val.stage}
-                      //  className={getStageClass(stage.profileStatusID)}
-                    >
-                      <td>{val.stage}</td>
-                      <td style={{textAlign:'end'}}>
-                        {(val.stage_ID === 1 || val.stage_ID === 8) ? (
-                          val.sappy_str
-                        ) : (
-                          <p
-                            style={{
-                              margin: 0,
-                              textDecoration: "underline",
-                              color: "blue",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              getSummeryDetails(val, "sappy_str");
-                            }}
-                          >
-                            {val.sappy_str}
-                          </p>
-                        )}
-                      </td>
-                      <td style={{textAlign:'end'}}>
-                        {(val.stage_ID === 1 || val.stage_ID === 8) ? (
-                          val.nikita_str
-                        ) : (
-                          <p
-                            style={{
-                              margin: 0,
-                              textDecoration: "underline",
-                              color: "blue",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              getSummeryDetails(val, "nikita_str");
-                            }}
-                          >
-                            {val.nikita_str}
-                          </p>
-                        )}
-                      </td>
-                      <td style={{textAlign:'end'}}>
-                        {(val.stage_ID === 1 || val.stage_ID === 8)? (
-                          val.deepshikha_str
-                        ) : (
-                          <p
-                            style={{
-                              margin: 0,
-                              textDecoration: "underline",
-                              color: "blue",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              getSummeryDetails(val, "deepshikha_str");
-                            }}
-                          >
-                            {val.deepshikha_str}
-                          </p>
-                        )}
-                      </td>
-                      <td style={{textAlign:'end'}}>
-                        {(val.stage_ID === 1 || val.stage_ID === 8) ? (
-                          val.nandni_str
-                        ) : (
-                          <p
-                            style={{
-                              margin: 0,
-                              textDecoration: "underline",
-                              color: "blue",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              getSummeryDetails(val, "nandni_str");
-                            }}
-                          >
-                            {val.nandni_str}
-                          </p>
-                        )}
-                      </td>
-                      <td style={{textAlign:'end'}}>
-                        {(val.stage_ID === 1 || val.stage_ID === 8) ? (
-                          val.gayatri_str
-                        ) : (
-                          <p
-                            style={{
-                              margin: 0,
-                              textDecoration: "underline",
-                              color: "blue",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              getSummeryDetails(val, "gayatri_str");
-                            }}
-                          >
-                            {val.gayatri_str}
-                          </p>
-                        )}
-                      </td>
-                       <td style={{textAlign:'end'}}>
-                        {
-                          val.total_str
-                        }
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          );
-        })}
-                        </>}
      
+
+      
+        <>
+          <div
+            className={amReportStyles.summeryContainer}
+            style={{ flexDirection: "column" }}
+          >
+            <div style={{ display: "flex", gap: "10px" }}>
+              {isLoading ? (
+                <div
+                  style={{
+                    display: "flex",
+                    height: "350px",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <>
+                  {summeryGroupsNames.map((gName) => {
+                    let data = summeryReportData.filter(
+                      (item) => item.groupName === gName
+                    );
+                    return (
+                      <div className={amReportStyles.cardcontainer}>
+                        <h3 className={amReportStyles.recruitername}>
+                          {gN(gName)}
+                        </h3>
+                        <table
+                          className={amReportStyles.stagetable}
+                          style={{ width: "650px" }}
+                        >
+                          <thead>
+                            <tr>
+                              <th style={{ textAlign: "center" }}>Stage</th>
+                              <th style={{ textAlign: "center" }}>Sappy</th>
+                              <th style={{ textAlign: "center" }}>Nikita</th>
+                              <th style={{ textAlign: "center" }}>
+                                Deepshikha
+                              </th>
+                              <th style={{ textAlign: "center" }}>Nandini</th>
+                              <th style={{ textAlign: "center" }}>Gayatri</th>
+                              <th style={{ textAlign: "center" }}>
+                                Total (D+N+G)
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data.map((val) => (
+                              <tr
+                                key={gName + val.stage}
+                                //  className={getStageClass(stage.profileStatusID)}
+                              >
+                                <td>{val.stage}</td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.sappy_str
+                                  ) : (
+                                    <p
+                                      style={{
+                                        margin: 0,
+                                        textDecoration: "underline",
+                                        color: "blue",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => {
+                                        getSummeryDetails(val, "sappy_str");
+                                      }}
+                                    >
+                                      {val.sappy_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.nikita_str
+                                  ) : (
+                                    <p
+                                      style={{
+                                        margin: 0,
+                                        textDecoration: "underline",
+                                        color: "blue",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => {
+                                        getSummeryDetails(val, "nikita_str");
+                                      }}
+                                    >
+                                      {val.nikita_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.deepshikha_str
+                                  ) : (
+                                    <p
+                                      style={{
+                                        margin: 0,
+                                        textDecoration: "underline",
+                                        color: "blue",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => {
+                                        getSummeryDetails(
+                                          val,
+                                          "deepshikha_str"
+                                        );
+                                      }}
+                                    >
+                                      {val.deepshikha_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.nandni_str
+                                  ) : (
+                                    <p
+                                      style={{
+                                        margin: 0,
+                                        textDecoration: "underline",
+                                        color: "blue",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => {
+                                        getSummeryDetails(val, "nandni_str");
+                                      }}
+                                    >
+                                      {val.nandni_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.gayatri_str
+                                  ) : (
+                                    <p
+                                      style={{
+                                        margin: 0,
+                                        textDecoration: "underline",
+                                        color: "blue",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => {
+                                        getSummeryDetails(val, "gayatri_str");
+                                      }}
+                                    >
+                                      {val.gayatri_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.total_str}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+
+             <div className={amReportStyles.filterSets}>
+        <div
+          className={amReportStyles.filterSetsInner}
+          onClick={() => setShowSummeryPipeline((prev) => !prev)}
+          style={{
+            marginBottom: "20px",
+            cursor: "pointer",
+            borderBottom: "1px solid gray",
+            paddingBottom: "5px",
+            width:'200%'
+          }}
+        >
+          {/* <p
+                    className={amReportStyles.resetText}
+                    style={{ textDecoration: "none" }}
+                  > */}
+          <h3
+            className={amReportStyles.recruitername}
+            style={{ marginBottom: "0" }}
+          >
+            Remark
+          </h3>
+          <ArrowDownSVG
+            style={{
+              rotate: showSummeryPipeline ? "180deg" : "",
+              marginLeft: "10px",
+            }}
+          />
+          {/* </p> */}
+        </div>
       </div>
 
-      <div > 
- <h3 className={amReportStyles.recruitername}>Add Remark</h3>
- <div style={{display:'flex'}}>
-  {(isCommentLoading|| isLoading )?  <div style={{display:"flex",height:"60px",justifyContent:'center',width:'100%'}}>
-                          <Spin size="large"/>
-                        </div> :   <textarea className={amReportStyles.RemarkText} value={remarkText} onChange={(e)=>{setRemarkText(e.target.value)}}  rows={3} /> }
-
-    {/* <button><SendSVG style={{ marginLeft: '5px' }} /></button> */}   <div
-                onClick={async () => {
-                !isCommentLoading && saveRemark()
-                }}
-                style={{
-                marginLeft:'20px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: 'white',
-                  height: '64px',
-                  width: '64px',
-                  borderRadius: '50%',
-                  border: `1px solid var(--uplers-border-color) `,
-                  boxShadow: '-4px 4px 20px rgba(166, 166, 166, 0.2)',
-                }}>
-                <SendSVG style={{ marginLeft: '5px' }} />
+      {showSummeryPipeline && <div style={{ display: "flex", gap: "10px", width: "200%" }}>
+              <div style={{ width: "100%" }}>
+                <h3 className={amReportStyles.recruitername}>
+                  Recurring Remark
+                </h3>
+                <div style={{ display: "flex" }}>
+                  {isCommentLoading || isLoading ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "60px",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <textarea
+                    name='remark'
+                      className={amReportStyles.RemarkText}
+                      value={remarkText}
+                      onChange={(e) => {
+                        setRemarkText(e.target.value);
+                      }}
+                      rows={3}
+                    />
+                  )}
+                  {/* <button><SendSVG style={{ marginLeft: '5px' }} /></button> */}{" "}
+                  <div
+                    onClick={async () => {
+                      !isCommentLoading && saveRemark(remarkText, "R");
+                    }}
+                    style={{
+                      marginLeft: "20px",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      height: "64px",
+                      width: "64px",
+                      borderRadius: "50%",
+                      border: `1px solid var(--uplers-border-color) `,
+                      boxShadow: "-4px 4px 20px rgba(166, 166, 166, 0.2)",
+                    }}
+                  >
+                    <SendSVG style={{ marginLeft: "5px" }} />
+                  </div>
+                </div>
               </div>
- </div>
-      </div>
+
+              <div style={{ width: "100%" }}>
+                <h3 className={amReportStyles.recruitername}>
+                  One Time Remark
+                </h3>
+                <div style={{ display: "flex" }}>
+                  {isCommentLoading || isLoading ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "60px",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <textarea
+                    name="oneTimeRemark"
+                      className={amReportStyles.RemarkText}
+                      value={oneTimeRemarkText}
+                      onChange={(e) => {
+                        e.preventDefault()
+                        setOneTimeRemarkText(e.target.value);
+                      }}
+                      rows={3}
+                    />
+                  )}
+                  {/* <button><SendSVG style={{ marginLeft: '5px' }} /></button> */}{" "}
+                  <div
+                    onClick={async () => {
+                      !isCommentLoading && saveRemark(oneTimeRemarkText, "O");
+                    }}
+                    style={{
+                      marginLeft: "20px",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      height: "64px",
+                      width: "64px",
+                      borderRadius: "50%",
+                      border: `1px solid var(--uplers-border-color) `,
+                      boxShadow: "-4px 4px 20px rgba(166, 166, 166, 0.2)",
+                    }}
+                  >
+                    {isCommentLoading || isLoading ? (
+                      <Spin size="large" />
+                    ) : (
+                      <SendSVG style={{ marginLeft: "5px" }} />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>}
+            
+          </div>
+        </>
+      
 
       {isLoading ? (
         <TableSkeleton />
@@ -1719,247 +1958,253 @@ const AMReport = () => {
             setHRTalentListFourCount([]);
           }}
         >
-           {isModalLoading ?  
-                        <div style={{display:"flex",height:"350px",justifyContent:'center'}}>
-                          <Spin size="large"/>
-                        </div>:
-                          
-          <>
+          {isModalLoading ? (
             <div
               style={{
-                padding: "45px 15px 10px 15px",
                 display: "flex",
-                gap: "10px",
-                alignItems: "center",
-                flexWrap: "wrap",
+                height: "350px",
+                justifyContent: "center",
               }}
             >
-              <h3>
-                Profiles for <strong>{profileInfo?.hR_Number}</strong>
-              </h3>
-
-              <p style={{ marginBottom: "0.5em" }}>
-                Company : <strong>{profileInfo?.company}</strong>{" "}
-                {profileInfo?.companyCategory === "Diamond" && (
-                  <img
-                    src={Diamond}
-                    alt="info"
-                    style={{ width: "16px", height: "16px" }}
-                  />
-                )}
-              </p>
-
-              <input
-                type="text"
-                placeholder="Search talent..."
-                value={searchTerm}
-                onChange={(e) => handleSearchInput(e.target.value)} // Create this function
-                style={{
-                  padding: "6px 10px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  marginLeft: "auto",
-                  marginRight: "20px",
-                  minWidth: "260px",
-                }}
-              />
+              <Spin size="large" />
             </div>
-
+          ) : (
+            <>
               <div
-                                    style={{
-                                      padding: "10px 15px",
-                                      display: "flex",
-                                      gap: "10px",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <div
-                                      className={amReportStyles.filterType}
-                                      key={"Total Talents"}
-                                      onClick={() => {
-                                        getTalentProfilesDetails(profileInfo, 0);
-                                        setProfileStatusID(0);
-                                      }}
-                                      style={{
-                                        borderBottom:
-                                          profileStatusID === 0 ? "6px solid #FFDA30" : "",
-                                      }}
-                                    >
-                                      <h2>
-                                        Total Talents :{" "}
-                                        <span>
-                                          {hrTalentListFourCount[0]?.totalTalents
-                                            ? hrTalentListFourCount[0]?.totalTalents
-                                            : 0}
-                                        </span>
-                                      </h2>
-                                    </div>
-                                    <div
-                                      className={amReportStyles.filterType}
-                                      key={"Profile shared"}
-                                      onClick={() => {
-                                        console.log(profileInfo,"profileInfo");                              
-                                        getTalentProfilesDetails(profileInfo, 2);
-                                        setProfileStatusID(2);
-                                      }}
-                                      style={{
-                                        borderBottom:
-                                          profileStatusID === 2 ? "6px solid #FFDA30" : "",
-                                      }}
-                                    >
-                                      <h2>
-                                        Profile shared :{" "}
-                                        <span>
-                                          {hrTalentListFourCount[0]?.profileSharedCount
-                                            ? hrTalentListFourCount[0]?.profileSharedCount
-                                            : 0}
-                                        </span>
-                                      </h2>
-                                    </div>
-                                    <div
-                                      className={amReportStyles.filterType}
-                                      key={"In Assessment"}
-                                      onClick={() => {
-                                        getTalentProfilesDetails(profileInfo, 11);
-                                        setProfileStatusID(11);
-                                      }}
-                                      style={{
-                                        borderBottom:
-                                          profileStatusID === 11 ? "6px solid #FFDA30" : "",
-                                      }}
-                                    >
-                                      <h2>
-                                        In Assessment :{" "}
-                                        <span>
-                                          {hrTalentListFourCount[0]?.assessmentCount
-                                            ? hrTalentListFourCount[0]?.assessmentCount
-                                            : 0}
-                                        </span>
-                                      </h2>
-                                    </div>
-                                    <div
-                                      className={amReportStyles.filterType}
-                                      key={"In Interview"}
-                                      onClick={() => {
-                                        getTalentProfilesDetails(profileInfo, 3);
-                                        setProfileStatusID(3);
-                                      }}
-                                      style={{
-                                        borderBottom:
-                                          profileStatusID === 3 ? "6px solid #FFDA30" : "",
-                                      }}
-                                    >
-                                      <h2>
-                                        In Interview :{" "}
-                                        <span>
-                                          {hrTalentListFourCount[0]?.inInterviewCount
-                                            ? hrTalentListFourCount[0]?.inInterviewCount
-                                            : 0}
-                                        </span>
-                                      </h2>
-                                    </div>
-                                    <div
-                                      className={amReportStyles.filterType}
-                                      key={"Offered"}
-                                      onClick={() => {
-                                        getTalentProfilesDetails(profileInfo, 4);
-                                        setProfileStatusID(4);
-                                      }}
-                                      style={{
-                                        borderBottom:
-                                          profileStatusID === 4 ? "6px solid #FFDA30" : "",
-                                      }}
-                                    >
-                                      <h2>
-                                        Offered :{" "}
-                                        <span>
-                                          {hrTalentListFourCount[0]?.offeredCount
-                                            ? hrTalentListFourCount[0]?.offeredCount
-                                            : 0}
-                                        </span>
-                                      </h2>
-                                    </div>
-                                    <div
-                                      className={amReportStyles.filterType}
-                                      key={"Hired"}
-                                      onClick={() => {
-                                        getTalentProfilesDetails(profileInfo, 10);
-                                        setProfileStatusID(10);
-                                      }}
-                                      style={{
-                                        borderBottom:
-                                          profileStatusID === 10 ? "6px solid #FFDA30" : "",
-                                      }}
-                                    >
-                                      <h2>
-                                        Hired :{" "}
-                                        <span>
-                                          {hrTalentListFourCount[0]?.hiredCount
-                                            ? hrTalentListFourCount[0]?.hiredCount
-                                            : 0}
-                                        </span>
-                                      </h2>
-                                    </div>
-                                    <div
-                                      className={amReportStyles.filterType}
-                                      key={"Rejected, screening"}
-                                      onClick={() => {
-                                        getTalentProfilesDetails(profileInfo, 7, 1);
-                                        setProfileStatusID(71);
-                                      }}
-                                      style={{
-                                        borderBottom:
-                                          profileStatusID === 71 ? "6px solid #FFDA30" : "",
-                                      }}
-                                    >
-                                      <h2>
-                                        Screen Reject :{" "}
-                                        <span>
-                                          {hrTalentListFourCount[0]?.screeningRejectCount
-                                            ? hrTalentListFourCount[0]?.screeningRejectCount
-                                            : 0}
-                                        </span>
-                                      </h2>
-                                    </div>
-                                    <div
-                                      className={amReportStyles.filterType}
-                                      key={"Rejected, Interview"}
-                                      onClick={() => {
-                                        getTalentProfilesDetails(profileInfo, 7, 2);
-                                        setProfileStatusID(72);
-                                      }}
-                                      style={{
-                                        borderBottom:
-                                          profileStatusID === 72 ? "6px solid #FFDA30" : "",
-                                      }}
-                                    >
-                                      <h2>
-                                        Interview Reject :{" "}
-                                        <span>
-                                          {hrTalentListFourCount[0]?.interviewRejectCount
-                                            ? hrTalentListFourCount[0]?.interviewRejectCount
-                                            : 0}
-                                        </span>
-                                      </h2>
-                                    </div>
-                                  </div>
+                style={{
+                  padding: "45px 15px 10px 15px",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <h3>
+                  Profiles for <strong>{profileInfo?.hR_Number}</strong>
+                </h3>
 
-            {loadingTalentProfile ? (
-              <div>
-                <Skeleton active />
-              </div>
-            ) : (
-              <div style={{ margin: "5px 10px" }}>
-                <Table
-                  dataSource={filteredTalentList}
-                  columns={ProfileColumns}
-                  // bordered
-                  pagination={false}
+                <p style={{ marginBottom: "0.5em" }}>
+                  Company : <strong>{profileInfo?.company}</strong>{" "}
+                  {profileInfo?.companyCategory === "Diamond" && (
+                    <img
+                      src={Diamond}
+                      alt="info"
+                      style={{ width: "16px", height: "16px" }}
+                    />
+                  )}
+                </p>
+
+                <input
+                  type="text"
+                  placeholder="Search talent..."
+                  value={searchTerm}
+                  onChange={(e) => handleSearchInput(e.target.value)} // Create this function
+                  style={{
+                    padding: "6px 10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    marginLeft: "auto",
+                    marginRight: "20px",
+                    minWidth: "260px",
+                  }}
                 />
               </div>
-            )}
 
-            {/* {moveToAssessment && (
+              <div
+                style={{
+                  padding: "10px 15px",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  className={amReportStyles.filterType}
+                  key={"Total Talents"}
+                  onClick={() => {
+                    getTalentProfilesDetails(profileInfo, 0);
+                    setProfileStatusID(0);
+                  }}
+                  style={{
+                    borderBottom:
+                      profileStatusID === 0 ? "6px solid #FFDA30" : "",
+                  }}
+                >
+                  <h2>
+                    Total Talents :{" "}
+                    <span>
+                      {hrTalentListFourCount[0]?.totalTalents
+                        ? hrTalentListFourCount[0]?.totalTalents
+                        : 0}
+                    </span>
+                  </h2>
+                </div>
+                <div
+                  className={amReportStyles.filterType}
+                  key={"Profile shared"}
+                  onClick={() => {
+                    console.log(profileInfo, "profileInfo");
+                    getTalentProfilesDetails(profileInfo, 2);
+                    setProfileStatusID(2);
+                  }}
+                  style={{
+                    borderBottom:
+                      profileStatusID === 2 ? "6px solid #FFDA30" : "",
+                  }}
+                >
+                  <h2>
+                    Profile shared :{" "}
+                    <span>
+                      {hrTalentListFourCount[0]?.profileSharedCount
+                        ? hrTalentListFourCount[0]?.profileSharedCount
+                        : 0}
+                    </span>
+                  </h2>
+                </div>
+                <div
+                  className={amReportStyles.filterType}
+                  key={"In Assessment"}
+                  onClick={() => {
+                    getTalentProfilesDetails(profileInfo, 11);
+                    setProfileStatusID(11);
+                  }}
+                  style={{
+                    borderBottom:
+                      profileStatusID === 11 ? "6px solid #FFDA30" : "",
+                  }}
+                >
+                  <h2>
+                    In Assessment :{" "}
+                    <span>
+                      {hrTalentListFourCount[0]?.assessmentCount
+                        ? hrTalentListFourCount[0]?.assessmentCount
+                        : 0}
+                    </span>
+                  </h2>
+                </div>
+                <div
+                  className={amReportStyles.filterType}
+                  key={"In Interview"}
+                  onClick={() => {
+                    getTalentProfilesDetails(profileInfo, 3);
+                    setProfileStatusID(3);
+                  }}
+                  style={{
+                    borderBottom:
+                      profileStatusID === 3 ? "6px solid #FFDA30" : "",
+                  }}
+                >
+                  <h2>
+                    In Interview :{" "}
+                    <span>
+                      {hrTalentListFourCount[0]?.inInterviewCount
+                        ? hrTalentListFourCount[0]?.inInterviewCount
+                        : 0}
+                    </span>
+                  </h2>
+                </div>
+                <div
+                  className={amReportStyles.filterType}
+                  key={"Offered"}
+                  onClick={() => {
+                    getTalentProfilesDetails(profileInfo, 4);
+                    setProfileStatusID(4);
+                  }}
+                  style={{
+                    borderBottom:
+                      profileStatusID === 4 ? "6px solid #FFDA30" : "",
+                  }}
+                >
+                  <h2>
+                    Offered :{" "}
+                    <span>
+                      {hrTalentListFourCount[0]?.offeredCount
+                        ? hrTalentListFourCount[0]?.offeredCount
+                        : 0}
+                    </span>
+                  </h2>
+                </div>
+                <div
+                  className={amReportStyles.filterType}
+                  key={"Hired"}
+                  onClick={() => {
+                    getTalentProfilesDetails(profileInfo, 10);
+                    setProfileStatusID(10);
+                  }}
+                  style={{
+                    borderBottom:
+                      profileStatusID === 10 ? "6px solid #FFDA30" : "",
+                  }}
+                >
+                  <h2>
+                    Hired :{" "}
+                    <span>
+                      {hrTalentListFourCount[0]?.hiredCount
+                        ? hrTalentListFourCount[0]?.hiredCount
+                        : 0}
+                    </span>
+                  </h2>
+                </div>
+                <div
+                  className={amReportStyles.filterType}
+                  key={"Rejected, screening"}
+                  onClick={() => {
+                    getTalentProfilesDetails(profileInfo, 7, 1);
+                    setProfileStatusID(71);
+                  }}
+                  style={{
+                    borderBottom:
+                      profileStatusID === 71 ? "6px solid #FFDA30" : "",
+                  }}
+                >
+                  <h2>
+                    Screen Reject :{" "}
+                    <span>
+                      {hrTalentListFourCount[0]?.screeningRejectCount
+                        ? hrTalentListFourCount[0]?.screeningRejectCount
+                        : 0}
+                    </span>
+                  </h2>
+                </div>
+                <div
+                  className={amReportStyles.filterType}
+                  key={"Rejected, Interview"}
+                  onClick={() => {
+                    getTalentProfilesDetails(profileInfo, 7, 2);
+                    setProfileStatusID(72);
+                  }}
+                  style={{
+                    borderBottom:
+                      profileStatusID === 72 ? "6px solid #FFDA30" : "",
+                  }}
+                >
+                  <h2>
+                    Interview Reject :{" "}
+                    <span>
+                      {hrTalentListFourCount[0]?.interviewRejectCount
+                        ? hrTalentListFourCount[0]?.interviewRejectCount
+                        : 0}
+                    </span>
+                  </h2>
+                </div>
+              </div>
+
+              {loadingTalentProfile ? (
+                <div>
+                  <Skeleton active />
+                </div>
+              ) : (
+                <div style={{ margin: "5px 10px" }}>
+                  <Table
+                    dataSource={filteredTalentList}
+                    columns={ProfileColumns}
+                    // bordered
+                    pagination={false}
+                  />
+                </div>
+              )}
+
+              {/* {moveToAssessment && (
                               <Modal
                                 width="992px"
                                 centered
@@ -1989,20 +2234,21 @@ const AMReport = () => {
                               </Modal>
                             )} */}
 
-            <div style={{ padding: "10px 0" }}>
-              <button
-                className={amReportStyles.btnCancle}
-                // disabled={isAddingNewTask}
-                onClick={() => {
-                  setSearchTerm("");
-                  setShowTalentProfiles(false);
-                  setHRTalentListFourCount([]);
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </>}
+              <div style={{ padding: "10px 0" }}>
+                <button
+                  className={amReportStyles.btnCancle}
+                  // disabled={isAddingNewTask}
+                  onClick={() => {
+                    setSearchTerm("");
+                    setShowTalentProfiles(false);
+                    setHRTalentListFourCount([]);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
         </Modal>
       )}
 
@@ -2033,13 +2279,46 @@ const AMReport = () => {
               }}
             >
               <h3>
-               <strong>{gN(summeryTitles?.groupName)} ( {summeryTitles?.amount} )</strong>
+                <strong>{gN(summeryTitles?.groupName)} </strong>
               </h3>
 
               <p style={{ marginBottom: "0.5em" }}>
-                Stage: <strong>{summeryTitles?.stage}</strong>{" , "}<strong>{summeryTitles?.col?.replace("_str", "i")?.replace(/^./, c => c.toUpperCase())}</strong>{" "}
+                Stage:{" "}
+                <strong>
+                  {summeryTitles?.stage} ( {summeryTitles?.amount} )
+                </strong>
+                {/* {" , "}<strong>{summeryTitles?.col?.replace("_str", "")?.replace(/^./, c => c.toUpperCase())}</strong>{" "} */}
               </p>
+            </div>
 
+            <div
+              style={{
+                padding: "10px 15px",
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
+              }}
+            >
+              <div className={amReportStyles.filterType} key={"Total HRs"}>
+                <h2>
+                  Total HRs :{" "}
+                  <span>
+                    {summeryDetails[0]?.total_HRs
+                      ? summeryDetails[0]?.total_HRs
+                      : 0}
+                  </span>
+                </h2>
+              </div>
+              <div className={amReportStyles.filterType} key={"Total TRs"}>
+                <h2>
+                  Total TRs :{" "}
+                  <span>
+                    {summeryDetails[0]?.total_TRs
+                      ? summeryDetails[0]?.total_TRs
+                      : 0}
+                  </span>
+                </h2>
+              </div>
             </div>
 
             {loadingTalentProfile ? (
@@ -2047,7 +2326,10 @@ const AMReport = () => {
                 <Skeleton active />
               </div>
             ) : (
-              <div className={amReportStyles.summeryTableWrapper} style={{ margin: "5px 10px" }}>
+              <div
+                className={amReportStyles.summeryTableWrapper}
+                style={{ margin: "5px 10px" }}
+              >
                 <Table
                   dataSource={summeryDetails}
                   columns={SummeryColumns}
@@ -2074,146 +2356,150 @@ const AMReport = () => {
         </Modal>
       )}
 
-         {showComment && (
-                    <Modal
-                      transitionName=""
-                      width="1000px"
-                      centered
-                      footer={null}
-                      open={showComment}
-                      className="engagementModalStyle"
-                      onCancel={() => {
-                        setShowComment(false);
-                        setALLCommentsList([]);
-                        setCommentData({});
-                      }}
-                    >
-                      <div style={{ padding: "35px 15px 10px 15px" }}>
-                        <h3>Add Comment</h3>
-                      </div>
-                      <Suspense>
-                        <div
-                          style={{
-                            position: "relative",
-                            marginBottom: "10px",
-                            padding: "0 20px",
-                            paddingRight: "30px",
-                          }}
-                        >
-                          <Editor
-                            hrID={""}
-                            saveNote={(note) => saveComment(note)}
-                            isUsedForComment={true}
-                          />
-                        </div>
-                      </Suspense>
-            
-                      {allCommentList.length > 0 ? (
-                        <div style={{ padding: "12px 20px" }}>
-                          {isCommentLoading && (
-                            <div>
-                              Adding Comment ...{" "}
-                              <img src={spinGif} alt="loadgif" width={16} />{" "}
-                            </div>
-                          )}
-                          {!isCommentLoading && <Table 
-                           dataSource={allCommentList}
-                                columns={commentColumn}
-                                pagination={false}
-                          />}
-                        
-                        </div>
-                      ) : (
-                        <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
-                          {isCommentLoading ? (
-                            <div>
-                              Loading Comments...{" "}
-                              <img src={spinGif} alt="loadgif" width={16} />{" "}
-                            </div>
-                          ) : (
-                            "No Comments yet"
-                          )}
-                        </h3>
-                      )}
-                      <div style={{ padding: "10px" }}>
-                        <button
-                          className={amReportStyles.btnCancle}
-                          // disabled={isEditNewTask}
-                          onClick={() => {
-                            setShowComment(false);
-                            setALLCommentsList([]);
-                            setCommentData({});
-                          }}
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </Modal>
-                  )}
+      {showComment && (
+        <Modal
+          transitionName=""
+          width="1000px"
+          centered
+          footer={null}
+          open={showComment}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowComment(false);
+            setALLCommentsList([]);
+            setCommentData({});
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Add Comment</h3>
+          </div>
+          <Suspense>
+            <div
+              style={{
+                position: "relative",
+                marginBottom: "10px",
+                padding: "0 20px",
+                paddingRight: "30px",
+              }}
+            >
+              <Editor
+                hrID={""}
+                saveNote={(note) => saveComment(note)}
+                isUsedForComment={true}
+              />
+            </div>
+          </Suspense>
 
-                   {showResponse && (
-                    <Modal
-                      transitionName=""
-                      width="400px"
-                      centered
-                      footer={null}
-                      open={showResponse}
-                      className="engagementModalStyle"
-                      onCancel={() => {
-                        setShowResponse(false);
-                            setResponseData({});
-                            setRoundDate('')
-                            setRound('')
-                            setResponseSubmit(false)
-                      }}
-                    >
-                      <div style={{ padding: "35px 15px 10px 15px" }}>
-                        <h3>Add Response</h3>
-                      </div>
-                      <h3 style={{marginLeft:'10px'}}>{responseData?.position} </h3>
-                    <p style={{marginLeft:'10px'}}>({responseData?.hR_Number})</p>
+          {allCommentList.length > 0 ? (
+            <div style={{ padding: "12px 20px" }}>
+              {isCommentLoading && (
+                <div>
+                  Adding Comment ...{" "}
+                  <img src={spinGif} alt="loadgif" width={16} />{" "}
+                </div>
+              )}
+              {!isCommentLoading && (
+                <Table
+                  dataSource={allCommentList}
+                  columns={commentColumn}
+                  pagination={false}
+                />
+              )}
+            </div>
+          ) : (
+            <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+              {isCommentLoading ? (
+                <div>
+                  Loading Comments...{" "}
+                  <img src={spinGif} alt="loadgif" width={16} />{" "}
+                </div>
+              ) : (
+                "No Comments yet"
+              )}
+            </h3>
+          )}
+          <div style={{ padding: "10px" }}>
+            <button
+              className={amReportStyles.btnCancle}
+              // disabled={isEditNewTask}
+              onClick={() => {
+                setShowComment(false);
+                setALLCommentsList([]);
+                setCommentData({});
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
 
-                    {loadingResponse ? <Skeleton active /> : 
-                    
-                    <>
-                     <div 
-                         style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "8px",
-                  marginLeft:'10px',
-                  marginRight:'10px',
-                  marginBottom:'10px'
-                }} >
-                          <label>Select Round</label>
-                          <Select
-                                  value={round}
-                                  onChange={(newValue) =>
-                                  { setRound(newValue)}
-                                    // handleChange(newValue, record, index, dataIndex)
-                                  }
-                                  style={{ width: "250px" }}
-                                  size="middle"
-                                  placeholder="Select Rounds"
-                                >
-                                  <Option value="R1">R1</Option>
-                                  <Option value="R2">R2</Option>
-                                  <Option value="R3">R3</Option>
-                                  <Option value="R4">R4</Option>
-                                  <Option value="Selection">Selection</Option>
-                                </Select>
-                        </div>
+      {showResponse && (
+        <Modal
+          transitionName=""
+          width="400px"
+          centered
+          footer={null}
+          open={showResponse}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowResponse(false);
+            setResponseData({});
+            setRoundDate("");
+            setRound("");
+            setResponseSubmit(false);
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Add Response</h3>
+          </div>
+          <h3 style={{ marginLeft: "10px" }}>{responseData?.position} </h3>
+          <p style={{ marginLeft: "10px" }}>({responseData?.hR_Number})</p>
 
-                       <div
+          {loadingResponse ? (
+            <Skeleton active />
+          ) : (
+            <>
+              <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                   gap: "8px",
-                  marginLeft:'10px',
-                  marginRight:'10px',
-                 
+                  marginLeft: "10px",
+                  marginRight: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <label>Select Round</label>
+                <Select
+                  value={round}
+                  onChange={
+                    (newValue) => {
+                      setRound(newValue);
+                    }
+                    // handleChange(newValue, record, index, dataIndex)
+                  }
+                  style={{ width: "250px" }}
+                  size="middle"
+                  placeholder="Select Rounds"
+                >
+                  <Option value="R1">R1</Option>
+                  <Option value="R2">R2</Option>
+                  <Option value="R3">R3</Option>
+                  <Option value="R4">R4</Option>
+                  <Option value="Selection">Selection</Option>
+                </Select>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginLeft: "10px",
+                  marginRight: "10px",
                 }}
               >
                 <div>Date</div>
@@ -2236,40 +2522,37 @@ const AMReport = () => {
                   />
                 </div>
               </div>
-                    </>}
-                       
-                    
-            
-                     
-                      <div style={{ padding: "10px" }}>
-                         <button
-                          className={amReportStyles.btn}
-                          // disabled={isEditNewTask}
-                          onClick={() => {
-                            saveResponse()
-                          }}
-                          disabled={loadingResponse}
-                        >
-                          Save
-                        </button>
-                        <button
-                          className={amReportStyles.btnCancle}
-                          // disabled={isEditNewTask}
-                          onClick={() => {
-                            setShowResponse(false);
-                            setResponseData({});
-                            setRoundDate('')
-                            setRound('')
-                            setResponseSubmit(false)
-                          }}
-                          disabled={loadingResponse}
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </Modal>
-                  )}
-      
+            </>
+          )}
+
+          <div style={{ padding: "10px" }}>
+            <button
+              className={amReportStyles.btn}
+              // disabled={isEditNewTask}
+              onClick={() => {
+                saveResponse();
+              }}
+              disabled={loadingResponse}
+            >
+              Save
+            </button>
+            <button
+              className={amReportStyles.btnCancle}
+              // disabled={isEditNewTask}
+              onClick={() => {
+                setShowResponse(false);
+                setResponseData({});
+                setRoundDate("");
+                setRound("");
+                setResponseSubmit(false);
+              }}
+              disabled={loadingResponse}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
