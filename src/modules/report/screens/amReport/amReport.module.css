@@ -252,11 +252,12 @@
 }
 
 .summeryContainer{
-  display: flex;
-    gap: 30px;
+    display: flex;
+    gap: 5px;
     margin: 20px 0;
     width: 100%;
     overflow-x: scroll;
+    padding-bottom: 15px;
 }
 
 .stagetable {
