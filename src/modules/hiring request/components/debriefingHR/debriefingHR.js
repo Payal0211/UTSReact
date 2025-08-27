@@ -889,8 +889,10 @@ const getParsingType = (isHaveJD,parseType) => {
 								/>
 							</div> */}
 
-								<div className={DebriefingHRStyle.mb50}>
-									<div className={DebriefingHRStyle.formGroup}>
+								<div
+								//  className={DebriefingHRStyle.mb50} 
+								 style={{display:'flex',justifyContent:'space-between'}}>
+									<div className={DebriefingHRStyle.formGroup} style={{width:'48%'}}>
 											<label>
 											Hiring Request Title <b style={{ color: "red" }}>*</b>
 											</label>
@@ -921,9 +923,8 @@ const getParsingType = (isHaveJD,parseType) => {
 											</div>
 											)}
 									</div>
-								</div>
 
-									<div className={DebriefingHRStyle.colMd12}>
+										<div className={DebriefingHRStyle.colMd6}>
 								<HRInputField
 									register={register}
 									errors={errors}
@@ -947,6 +948,9 @@ const getParsingType = (isHaveJD,parseType) => {
 									required
 								/>
 							</div>
+								</div>
+
+								
 
 							<div className={DebriefingHRStyle.mb50}>
 							<HRSelectField

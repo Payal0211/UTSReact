@@ -811,8 +811,11 @@ const getParsingType = (isHaveJD,parseType) => {
 						</div>
 						<div className={DebriefingHRStyle.hrFieldRightPane}>
 
-						<div className={DebriefingHRStyle.mb50}>
-								<div className={DebriefingHRStyle.formGroup}>
+						<div 
+						// className={DebriefingHRStyle.mb50}
+						 style={{display:'flex',justifyContent:'space-between'}}
+						>
+								<div className={DebriefingHRStyle.formGroup}  style={{width:'48%'}}>
                     <label>
 					Hiring Request Title <b style={{ color: "red" }}>*</b>
                     </label>
@@ -846,6 +849,31 @@ const getParsingType = (isHaveJD,parseType) => {
                       </div>
                     )}
                   </div> 
+
+				  	<div className={DebriefingHRStyle.colMd6}>
+															<HRInputField
+																register={register}
+																errors={errors}
+																validationSchema={{
+																	required: 'please enter interview round.',
+																	min:{
+																		value:1,
+																		message: 'Please enter interview round between 1 to 5.',
+																	},
+																	max:{
+																		value:5,
+																		message: 'Please enter interview round between 1 to 5',
+																	},
+																}}
+															
+																label="Interview Round"
+																name="interviewRound"
+																type={InputType.NUMBER}
+																placeholder="Enter interview rounds"
+																
+																required
+															/>
+														</div>
 								</div>
 							<div className={DebriefingHRStyle.colMd12}>
 								{/* <TextEditor
@@ -902,30 +930,7 @@ const getParsingType = (isHaveJD,parseType) => {
 								required
 							/> */}
 
-							<div className={DebriefingHRStyle.colMd12}>
-															<HRInputField
-																register={register}
-																errors={errors}
-																validationSchema={{
-																	required: 'please enter interview round.',
-																	min:{
-																		value:1,
-																		message: 'Please enter interview round between 1 to 5.',
-																	},
-																	max:{
-																		value:5,
-																		message: 'Please enter interview round between 1 to 5',
-																	},
-																}}
-															
-																label="Interview Round"
-																name="interviewRound"
-																type={InputType.NUMBER}
-																placeholder="Enter interview rounds"
-																
-																required
-															/>
-														</div>
+						
 
 <div className={DebriefingHRStyle.mb50}>
 									<HRSelectField

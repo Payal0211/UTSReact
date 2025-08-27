@@ -12,11 +12,11 @@
 
 .partOne {
     padding-top: 50px;
-    display: flex;
+    /* display: flex; */
 }
 
 .hrFieldLeftPane {
-    width: 33.33%;
+    /* width: 33.33%; */
     padding-right: 30px;
 }
 
@@ -331,7 +331,7 @@ cursor: default;
         padding: 24px 0;
     }
     .hrFieldLeftPane {
-        width: 28%;
+        /* width: 28%; */
         padding-right: 16px;
     }
     .hrFieldLeftPane h3 {
