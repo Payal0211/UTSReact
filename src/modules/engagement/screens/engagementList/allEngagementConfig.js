@@ -1041,12 +1041,12 @@ export const allEngagementConfig = {
 				child: ['100%','75%','50%','25%','0%',"Preonboarding",'Lost','Won','Pause','Backed out'].map(item=>({text: item,value:`${item}`})),
 				isSearch: true,
 			},
-			// {
-			// 	label: 'Week',
-			// 	name: 'str_probabilityratio',
-			// 	child: ['W1','W2','W3','W4','W5'].map(item=>({text: item,value:`${item}`})),
-			// 	isSearch: true,
-			// },
+			{
+				label: 'Week',
+				name: 'str_weeknos',
+				child: ['W1','W2','W3','W4','W5'].map(item=>({text: item,value:`${item}`})),
+				isSearch: true,
+			},
 		];
 	},
 };
