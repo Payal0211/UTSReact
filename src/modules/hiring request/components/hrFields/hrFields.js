@@ -800,6 +800,10 @@ const HRFields = ({
   const getStartEndTimeHandler = useCallback(async () => {
     const durationTypes = await MasterDAO.getStartEndTimeDAO();
     setStaryEndTimes(durationTypes && durationTypes?.responseBody);
+    setValue("fromTime", { id: "", value:"9:00 AM" });
+    setControlledFromTimeValue("9:00 AM")
+    setValue("endTime", { id: "", value: "6:00 PM"});
+    setControlledEndTimeValue("6:00 PM");
   }, []);
 
   const getSalesPerson = useCallback(async () => {
@@ -3175,7 +3179,7 @@ const HRFields = ({
                 )}
               </div>
               <div className={HRFieldStyle.colMd6}>
-                {showAddCompany && (
+                {/* {showAddCompany && ( */}
                   <div
                     className={HRFieldStyle.formPanelAction}
                     style={{
@@ -3197,7 +3201,7 @@ const HRFields = ({
                       Add Company / Client
                     </button>
                   </div>
-                )}
+                {/* )} */}
               </div>
 
               <div className={HRFieldStyle.colMd6}>
@@ -4542,9 +4546,7 @@ const HRFields = ({
                 </div>
               </div> */}
 
-              <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.row}>
-                <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.colMd4}>
 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
@@ -4592,7 +4594,7 @@ const HRFields = ({
                 </div>
 
                 </div>
-                <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.colMd4}>
 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
@@ -4640,12 +4642,7 @@ const HRFields = ({
 
                 </div>
 
-                
-                </div>
-                
-              </div>
-
-              <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.colMd4}>
                 <HRInputField
                   register={register}
                   errors={errors}
@@ -4774,7 +4771,7 @@ const HRFields = ({
                   />
                 </div>
               </div> */}
-              <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledTimeZoneValue}
@@ -4795,40 +4792,8 @@ const HRFields = ({
                   />
                 </div>
               </div>
-            </div>
 
-            <div className={HRFieldStyle.row}>
-              {/* <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRInputField
-                    register={register}
-                    errors={errors}
-                    disabled={
-                      watch("region")?.value.includes("Overlapping")
-                        ? false
-                        : true
-                    }
-                    validationSchema={{
-                      required: "please enter the number of talents.",
-                      min: {
-                        value: 1,
-                        message: `please enter the value more than 0`,
-                      },
-                    }}
-                    label="Overlapping Hours."
-                    name="overlappingHours"
-                    type={InputType.NUMBER}
-                    placeholder="Please enter Overlapping Hours."
-                    required={
-                      watch("region")?.value.includes("Overlapping")
-                        ? true
-                        : false
-                    }
-                  />
-                </div>
-              </div> */}
-
-              <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledFromTimeValue}
@@ -4881,7 +4846,7 @@ const HRFields = ({
                 </div>
               </div>
 
-              <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledEndTimeValue}
@@ -4911,6 +4876,8 @@ const HRFields = ({
                 </div>
               </div>
             </div>
+
+          
                     {console.log(errors) }
             <div className={HRFieldStyle.row}>
               {userCompanyTypeID === 1 &&  <div className={HRFieldStyle.colMd6}>
@@ -4970,14 +4937,14 @@ const HRFields = ({
                     <HRInputField
                       register={register}
                       errors={errors}
-                      validationSchema={{
-                        required: "please enter the discovery call link.",
-                      }}
+                      // validationSchema={{
+                      //   required: "please enter the discovery call link.",
+                      // }}
                       label="Discovery Call Link"
                       name="discoveryCallLink"
                       type={InputType.TEXT}
                       placeholder="Enter the link for Discovery call"
-                      required
+                      // required
                     />
                   </div>
                 )}

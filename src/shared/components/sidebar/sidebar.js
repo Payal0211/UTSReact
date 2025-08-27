@@ -558,7 +558,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 		}),
 			new SideBarModels({
 			id: 'amReport',
-			title: 'AM',
+			title: 'AM Dashboard',
 			isActive: false,
 			icon: ADDHRSVG ,                                                                                                                    		
 			// navigateTo: UTSRoutes.AM_REPORT,
@@ -567,7 +567,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			branch: [
 				new SideBarModels({
 					id: 'amReport',
-					title: 'Report',
+					title: 'AM Pipeline',
 					isActive: false,
 					navigateTo: UTSRoutes.AM_REPORT,
 					isVisible: isAccess(usertypeID, 'amReport'),
@@ -575,7 +575,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 				}),
 				new SideBarModels({
 					id: 'UTS_AM_Dashboard',
-					title: 'Dashboard',
+					title: 'Deployed Dashboard',
 					isActive: false,
 					icon: AMDashboardIcon ,                                                                                                                    
 					navigateTo: UTSRoutes.AMDASHBOARD,
