@@ -9,7 +9,9 @@ import {
   Modal,
   Skeleton,
   Spin,
+  Tabs
 } from "antd";
+import TabPane from "antd/lib/tabs/TabPane";
 import { ReportDAO } from "core/report/reportDAO";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
@@ -173,6 +175,7 @@ const AMReport = () => {
   const [roundDate, setRoundDate] = useState("");
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [responseSubmit, setResponseSubmit] = useState(false);
+  const [activeTab, setActiveTab] = useState("A");
 
   const [userData, setUserData] = useState({});
 
@@ -196,6 +199,7 @@ const AMReport = () => {
     tableFilteredState,
     endDate,
     startDate,
+    activeTab
   ]);
 
   const getAMReportFilter = async () => {
@@ -238,7 +242,7 @@ const AMReport = () => {
           : "",
       // "amUserIDs": tableFilteredState?.filterFields_OnBoard?.text,
       hrType: tableFilteredState?.filterFields_OnBoard?.EngType,
-      hrStatus: "",
+      hrStatus: activeTab,
       salesRep: tableFilteredState?.filterFields_OnBoard?.text ?? "",
       str_probabilityratio:
         tableFilteredState?.filterFields_OnBoard?.str_probabilityratio ?? "",
@@ -2543,6 +2547,19 @@ const AMReport = () => {
 
 
 <div className={amReportStyles.container}>
+        <Tabs
+          activeKey={activeTab}
+          onChange={key => setActiveTab(key)}
+          style={{ marginBottom: 16, marginTop: 16 }}
+          destroyInactiveTabPane={false}
+          animated={true}
+          tabBarGutter={50}
+          tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
+        >
+          <TabPane tab="Active" key="A" />
+          <TabPane tab="Won" key="W" />
+          <TabPane tab="Lost" key="L" />
+        </Tabs>
 
       {isLoading ? (
         <TableSkeleton />

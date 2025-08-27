@@ -2901,12 +2901,17 @@ const EditHRFields = ({
         {getHRdetails?.salesHiringRequest_Details ? (
           <>
             <div className={HRFieldStyle.partOne}>
-              <div className={HRFieldStyle.hrFieldLeftPane}>
-                <h3>Hiring Request Details</h3>
-                <p>Please provide the necessary details</p>
-                <p className={HRFieldStyle.teansactionMessage}>
+              <div className={HRFieldStyle.hrFieldLeftPane} style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div>
+                  <h3>Hiring Request Details</h3>
+                <p style={{marginBottom:'8px'}}>Please provide the necessary details</p>
+                 <p className={HRFieldStyle.teansactionMessage} style={{marginBottom:'8px'}}>
                   {companyType?.name && `HR is "${companyType?.name}"`}
                 </p>
+                </div>
+
+                <div>
+                   
                 <div
                   className={HRFieldStyle.formPanelAction}
                   style={{ padding: "0 0 20px", justifyContent: "flex-start" }}
@@ -2921,6 +2926,9 @@ const EditHRFields = ({
                     View / Edit Company Details
                   </button>
                 </div>
+                </div>
+                
+              
                 <LogoLoader visible={isSavedLoading} />
               </div>
 
@@ -4138,6 +4146,35 @@ const EditHRFields = ({
                       />
                     </div>
                   </div>
+                   {companyType?.id === 1 && (
+                    <div className={HRFieldStyle.colMd6}>
+                      {" "}
+                      <div className={HRFieldStyle.formGroup}>
+                        <HRSelectField
+                          controlledValue={controlledDurationTypeValue}
+                          setControlledValue={setControlledDurationTypeValue}
+                          setValue={setValue}
+                          isControlled={true}
+                          register={register}
+                          label={"Long Term/Short Term"}
+                          options={getDurationType.map((item) => ({
+                            id: item.id,
+                            label: item.text,
+                            value: item.value,
+                          }))}
+                          name="getDurationType"
+                          mode={"id/value"}
+                          isError={
+                            errors["getDurationType"] &&
+                            errors["getDurationType"]
+                          }
+                          required={!isHRDirectPlacement}
+                          errorMsg={"Please select duration type"}
+                          disabled={isHRDirectPlacement}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {getWorkingModelFields()}
                 {/* {watch('role')?.id === -1 && (
@@ -4358,87 +4395,8 @@ const EditHRFields = ({
                 </div>
 
                 <div className={HRFieldStyle.row}>
-                  {companyType?.id === 1 && (
-                    <div className={HRFieldStyle.colMd6}>
-                      {" "}
-                      <div className={HRFieldStyle.formGroup}>
-                        <HRSelectField
-                          controlledValue={controlledDurationTypeValue}
-                          setControlledValue={setControlledDurationTypeValue}
-                          setValue={setValue}
-                          isControlled={true}
-                          register={register}
-                          label={"Long Term/Short Term"}
-                          options={getDurationType.map((item) => ({
-                            id: item.id,
-                            label: item.text,
-                            value: item.value,
-                          }))}
-                          name="getDurationType"
-                          mode={"id/value"}
-                          isError={
-                            errors["getDurationType"] &&
-                            errors["getDurationType"]
-                          }
-                          required={!isHRDirectPlacement}
-                          errorMsg={"Please select duration type"}
-                          disabled={isHRDirectPlacement}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  
-
-                  <div
-                  className={HRFieldStyle.colMd6}
-                    // className={
-                    //   companyType?.id === 1
-                    //     ? HRFieldStyle.colMd4
-                    //     : HRFieldStyle.colMd6
-                    // }
-                  >
-                    <HRInputField
-                      register={register}
-                      errors={errors}
-                      validationSchema={{
-                        required: "please enter the number of talents.",
-                        min: {
-                          value: 1,
-                          message: `please enter the value more than 0`,
-                        },
-                        max: {
-                          value: 99,
-                          message: "please don't enter the value more than 99",
-                        },
-                      }}
-                      label="How many talents are needed."
-                      name="talentsNumber"
-                      type={InputType.NUMBER}
-                      placeholder="Please enter number of talents needed"
-                      required={
-                        disabledFields !== null
-                          ? !disabledFields?.talentRequired
-                          : true
-                      }
-                      disabled={
-                        disabledFields !== null
-                          ? disabledFields?.talentRequired
-                          : false
-                      }
-                    />
-                  </div>
-
-                  <div
-                  className={HRFieldStyle.colMd6}
-                    // className={
-                    //   companyType?.id === 1
-                    //     ? HRFieldStyle.colMd4
-                    //     : HRFieldStyle.colMd6
-                    // }
-                  >
-                     <div className={HRFieldStyle.row}>
-                <div className={HRFieldStyle.colMd6}>
+                 
+ <div className={HRFieldStyle.colMd4}>
 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
@@ -4485,7 +4443,7 @@ const EditHRFields = ({
                 </div>
 
                 </div>
-                <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.colMd4}>
 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
@@ -4532,10 +4490,48 @@ const EditHRFields = ({
                 </div>
 
                 </div>
+                  
 
-                
-                </div>
+                  <div
+                  className={HRFieldStyle.colMd4}
+                    // className={
+                    //   companyType?.id === 1
+                    //     ? HRFieldStyle.colMd4
+                    //     : HRFieldStyle.colMd6
+                    // }
+                  >
+                    <HRInputField
+                      register={register}
+                      errors={errors}
+                      validationSchema={{
+                        required: "please enter the number of talents.",
+                        min: {
+                          value: 1,
+                          message: `please enter the value more than 0`,
+                        },
+                        max: {
+                          value: 99,
+                          message: "please don't enter the value more than 99",
+                        },
+                      }}
+                      label="How many talents are needed."
+                      name="talentsNumber"
+                      type={InputType.NUMBER}
+                      placeholder="Please enter number of talents needed"
+                      required={
+                        disabledFields !== null
+                          ? !disabledFields?.talentRequired
+                          : true
+                      }
+                      disabled={
+                        disabledFields !== null
+                          ? disabledFields?.talentRequired
+                          : false
+                      }
+                    />
                   </div>
+
+             
                 </div>
 
                 <div className={HRFieldStyle.row}>
@@ -4636,7 +4632,7 @@ const EditHRFields = ({
                     />
                   </div>
                 </div>*/}
-                  <div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.colMd4}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         controlledValue={controlledTimeZoneValue}
@@ -4658,40 +4654,7 @@ const EditHRFields = ({
                       />
                     </div>
                   </div>
-                </div>
-
-                <div className={HRFieldStyle.row}>
-                  {/* <div className={HRFieldStyle.colMd6}>
-                  <div className={HRFieldStyle.formGroup}>
-                    <HRInputField
-                      register={register}
-                      errors={errors}
-                      disabled={
-                        watch("region")?.value.includes("Overlapping")
-                          ? false
-                          : true
-                      }
-                      validationSchema={{
-                        required: "please enter the number of talents.",
-                        min: {
-                          value: 1,
-                          message: `please enter the value more than 0`,
-                        },
-                      }}
-                      label="Overlapping Hours."
-                      name="overlappingHours"
-                      type={InputType.NUMBER}
-                      placeholder="Please enter Overlapping Hours."
-                      required={
-                        watch("region")?.value.includes("Overlapping")
-                          ? true
-                          : false
-                      }
-                    />
-                  </div>
-                </div> */}
-
-                  <div className={HRFieldStyle.colMd6}>
+                   <div className={HRFieldStyle.colMd4}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         controlledValue={controlledFromTimeValue}
@@ -4746,7 +4709,7 @@ const EditHRFields = ({
                     </div>
                   </div>
 
-                  <div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.colMd4}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         controlledValue={controlledEndTimeValue}
@@ -4776,6 +4739,8 @@ const EditHRFields = ({
                     </div>
                   </div>
                 </div>
+
+             
 
                 <div className={HRFieldStyle.row}>
                  
@@ -4840,14 +4805,14 @@ const EditHRFields = ({
                         <HRInputField
                           register={register}
                           errors={errors}
-                          validationSchema={{
-                            required: "please enter the discovery call link.",
-                          }}
+                          // validationSchema={{
+                          //   required: "please enter the discovery call link.",
+                          // }}
                           label="Discovery Call Link"
                           name="discoveryCallLink"
                           type={InputType.TEXT}
                           placeholder="Enter the link for Discovery call"
-                          required={isGUID === null}
+                          // required={isGUID === null}
                         />
                       </div>
                     )}

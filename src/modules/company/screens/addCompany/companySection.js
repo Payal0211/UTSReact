@@ -563,7 +563,8 @@ function CompanySection({
                       register={register}
                       errors={errors}
                       validationSchema={{
-                        required: "please enter the company linkedin URL.",
+                        // required: "please enter the company linkedin URL.",
+                         required: false,
                         validate: (value) => {
                           try {
                             if (ValidateFieldURL(value, "linkedin")) {
@@ -580,7 +581,7 @@ function CompanySection({
                       name={"companyLinkedinURL"}
                       type={InputType.TEXT}
                       placeholder="https://www.linkedin.com/company/companyname"
-                      required
+                      required={false}
                     />
                   </div>
 
