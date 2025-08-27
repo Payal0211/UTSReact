@@ -285,11 +285,13 @@
 
 /* Alternate row colors for body */
 .stagetable tbody tr:nth-child(odd) {
-  background-color: lightblue;
+  /* background-color: lightblue; */
+   background-color: #f0f2f5;
 }
 
 .stagetable tbody tr:nth-child(even) {
-  background-color: lightcyan;
+  /* background-color: lightcyan; */
+  background-color: #f9fafb;
 }
 
 .RemarkText{
