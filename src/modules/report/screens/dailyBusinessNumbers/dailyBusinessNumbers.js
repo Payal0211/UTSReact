@@ -2039,7 +2039,7 @@ export default function DailyBusinessNumbersPage() {
                                   "rgb(233, 233, 233) !important",
                               }}
                             >
-                              TR / HR / Talent
+                              TR / Talent
                             </th>
                           )}
                           <th
