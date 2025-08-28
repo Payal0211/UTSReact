@@ -548,11 +548,13 @@ font-weight: 500;
 
 /* Alternate row colors for body */
 .stagetable tbody tr:nth-child(odd) {
-  background-color: lightblue;
+  /* background-color: lightblue; */
+   background-color: #e7e7e7;
 }
 
 .stagetable tbody tr:nth-child(even) {
-  background-color: lightcyan;
+  /* background-color: lightcyan; */
+   background-color: #f0f2f5;
 }
 
 /* Styles for the key-value section (MODIFIED for 2 columns) */
@@ -560,7 +562,6 @@ font-weight: 500;
   margin-top: 10px; /* Reduced margin if table is present */
   padding-top: 10px;
   border-top: 1px solid #f0f0f0; /* Separator line */
-  
   /* CSS Grid for two-column layout */
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Two equal-width columns */
@@ -576,6 +577,10 @@ font-weight: 500;
   font-size: 12px; 
   line-height: 1.4;
   flex-wrap: wrap;
+   flex-direction: column;
+  border:1px solid gray;
+  border-radius: 8px;
+  background: #f0f2f5;
 }
 
 .kvLabel {
