@@ -3014,8 +3014,8 @@ const HRFields = ({
       <div className={HRFieldStyle.hrFieldContainer}>
         <div className={HRFieldStyle.partOne}>
           <div className={HRFieldStyle.hrFieldLeftPane}>
-            <h3>Hiring Request Details</h3>
-            <p>Please provide the necessary details</p>
+            <h3 style={{marginBottom:'25px'}}>Hiring Request Details</h3>
+            {/* <p>Please provide the necessary details</p> */}
             {/* <p className={HRFieldStyle.teansactionMessage}>{companyType?.name &&`HR is "${companyType?.name}"`}</p> */}
             <LogoLoader visible={isSavedLoading} />
           </div>
@@ -3484,7 +3484,7 @@ const HRFields = ({
                 </div>
               )}
 {/* {console.log({JobTypes , availability,watch:watch("availability")})} */}
-              <div className={HRFieldStyle.colMd6}>
+              <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledAvailabilityValue}
@@ -3562,7 +3562,7 @@ const HRFields = ({
                   {(watch("availability")?.id === 2 ||
                     watch("availability")?.id === 3 ||
                     watch("availability")?.id === 4) && (
-                    <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.colMd4}>
                       <div className={HRFieldStyle.formGroup}>
                         <HRSelectField
                           key={"contract Duration for pay per Credit"}
@@ -3658,7 +3658,7 @@ const HRFields = ({
                 <>
                 {console.log('hrPricingTypes',hrPricingTypes)}
                   {watch("availability")?.id && (
-                    <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.colMd4}>
                       <div className={HRFieldStyle.formGroup}>
                         <HRSelectField
                           controlledValue={controlledHiringPricingTypeValue}
@@ -3715,7 +3715,7 @@ const HRFields = ({
                   </div>
                 </div>}
                */}
-                      <div className={HRFieldStyle.colMd6}>
+                      <div className={HRFieldStyle.colMd4}>
                         <div className={HRFieldStyle.formGroup}>
                           <HRSelectField
                             dropdownRender={(menu) => (
@@ -3808,7 +3808,7 @@ const HRFields = ({
               {userCompanyTypeID !== 2 && (watch("hiringPricingType")?.id === 3 ||
                 watch("hiringPricingType")?.id === 6) && (
                 <>
-                  <div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.colMd4}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         //  controlledValue={controlledAvailabilityValue}
@@ -3840,7 +3840,7 @@ const HRFields = ({
                     </div>
                   </div>
                   {watch("payrollType")?.id === 4 && (
-                    <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.colMd4}>
                       <div className={HRFieldStyle.formGroup}>
                         <HRSelectField
                           dropdownRender={(menu) => (
@@ -3913,7 +3913,7 @@ const HRFields = ({
                   )}
 
                   {watch("payrollType")?.id === 3 && (
-                    <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.colMd4}>
                       <div className={HRFieldStyle.formGroup}>
                         <HRInputField
                           register={register}
@@ -4546,7 +4546,7 @@ const HRFields = ({
                 </div>
               </div> */}
 
-              <div className={HRFieldStyle.colMd4}>
+              <div className={HRFieldStyle.colMd3}>
 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
@@ -4594,7 +4594,7 @@ const HRFields = ({
                 </div>
 
                 </div>
-                <div className={HRFieldStyle.colMd4}>
+                <div className={HRFieldStyle.colMd3}>
 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
@@ -4642,7 +4642,7 @@ const HRFields = ({
 
                 </div>
 
-              <div className={HRFieldStyle.colMd4}>
+              <div className={HRFieldStyle.colMd3}>
                 <HRInputField
                   register={register}
                   errors={errors}
@@ -4673,6 +4673,23 @@ const HRFields = ({
                   }
                 />
               </div>
+
+                {userCompanyTypeID === 1 &&  <div className={HRFieldStyle.colMd3}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    mode={"id/value"}
+                    setValue={setValue}
+                    register={register}
+                    label={"How soon can they join?"}
+                    defaultValue="Select how soon?"
+                    options={howSoon}
+                    name="howSoon"
+                    isError={errors["howSoon"] && errors["howSoon"]}
+                    required={userCompanyTypeID === 1 ? true : false}
+                    errorMsg={"Please select the how soon."}
+                  />
+                </div>
+              </div>}
             </div>
 
             <div className={HRFieldStyle.row}>
@@ -4879,37 +4896,7 @@ const HRFields = ({
 
           
                     {console.log(errors) }
-            <div className={HRFieldStyle.row}>
-              {userCompanyTypeID === 1 &&  <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    label={"How soon can they join?"}
-                    defaultValue="Select how soon?"
-                    options={howSoon}
-                    name="howSoon"
-                    isError={errors["howSoon"] && errors["howSoon"]}
-                    required={userCompanyTypeID === 1 ? true : false}
-                    errorMsg={"Please select the how soon."}
-                  />
-                </div>
-              </div>}
-             
-              {/* {userCompanyTypeID === 1 && <>
-              {(removeFields !== null && removeFields?.dealID === true) ? null : <div className={HRFieldStyle.colMd6}>
-                <HRInputField
-                  register={register}
-                  disabled={true}
-                  label="Deal ID"
-                  name="dealID"
-                  type={InputType.NUMBER}
-                  placeholder="Enter ID"
-                />
-              </div>}
-              </>} */}
-            </div>
+       
 
             {userCompanyTypeID === 1 && (
               <div className={HRFieldStyle.row}>
