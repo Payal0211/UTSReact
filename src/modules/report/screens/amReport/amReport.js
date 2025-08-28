@@ -1497,7 +1497,7 @@ const AMReport = () => {
                   alignItems: "center",
                 }}
               >
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -1521,7 +1521,7 @@ const AMReport = () => {
                     ]}
                     optionFilterProp="value"
                   />
-                </div>
+                </div> */}
 
                 {dateTypeFilter === 0 && (
                   <div
