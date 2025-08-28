@@ -130,6 +130,15 @@ input[type="file"] {
   display: block;
   min-height: 140px;
 }
+.quill.heightSize .ql-toolbar.ql-snow{
+    border-radius: 8px 8px 0 0;
+}
+.quill.heightSize  .ql-container.ql-snow{
+    border-radius: 0 0 8px 8px;
+    background-color: #f5f5f5;
+
+}
+  
 
 /* -- Ant Table Pagination--*/
 .ant-table-tbody .first-row,
