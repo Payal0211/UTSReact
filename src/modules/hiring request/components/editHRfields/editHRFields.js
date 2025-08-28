@@ -2934,7 +2934,27 @@ const EditHRFields = ({
 
               <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
                 <div className={HRFieldStyle.row}>
-                  <div className={HRFieldStyle.colMd12}>
+                    <div className={HRFieldStyle.colMd4}>
+                    <HRInputField
+                      // disabled={
+                      //     pathName === ClientHRURL.ADD_NEW_CLIENT ||
+                      //     isCompanyNameAvailable ||
+                      //     isLoading
+                      // }
+                      disabled={isCompanyNameAvailable ? true : false}
+                      register={register}
+                      errors={errors}
+                      validationSchema={{
+                        required: "please enter the company name.",
+                      }}
+                      label="Company"
+                      name="companyName"
+                      type={InputType.TEXT}
+                      placeholder="Enter Company Name"
+                      required
+                    />
+                  </div>
+                  <div className={HRFieldStyle.colMd4}>
                     <div className={HRFieldStyle.formGroup}>
                       <label>
                         Client Email/Name{" "}
@@ -2982,45 +3002,8 @@ const EditHRFields = ({
                       )}
                     </div>
                   </div>
-                  {/* <div className={HRFieldStyle.colMd12}>
-							<HRInputField
-								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT || isLoading}
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the client email/name.',
-								}}
-								label={'Client Email/Name'}
-								name="clientName"
-								type={InputType.TEXT}
-								placeholder="Enter Client Email/Name"
-								required
-							/>
-						</div> */}
-                </div>
-                <div className={HRFieldStyle.row}>
-                  <div className={HRFieldStyle.colMd6}>
-                    <HRInputField
-                      // disabled={
-                      //     pathName === ClientHRURL.ADD_NEW_CLIENT ||
-                      //     isCompanyNameAvailable ||
-                      //     isLoading
-                      // }
-                      disabled={isCompanyNameAvailable ? true : false}
-                      register={register}
-                      errors={errors}
-                      validationSchema={{
-                        required: "please enter the company name.",
-                      }}
-                      label="Company Name"
-                      name="companyName"
-                      type={InputType.TEXT}
-                      placeholder="Enter Company Name"
-                      required
-                    />
-                  </div>
 
-                  <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.colMd4}>
                     {userData.LoggedInUserTypeID && (
                       <HRSelectField
                         controlledValue={controlledSalesValue}
@@ -3049,6 +3032,26 @@ const EditHRFields = ({
                       />
                     )}
                   </div>
+                  {/* <div className={HRFieldStyle.colMd12}>
+							<HRInputField
+								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT || isLoading}
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the client email/name.',
+								}}
+								label={'Client Email/Name'}
+								name="clientName"
+								type={InputType.TEXT}
+								placeholder="Enter Client Email/Name"
+								required
+							/>
+						</div> */}
+                </div>
+                <div className={HRFieldStyle.row}>
+                
+
+                
 
                   {companyType?.id === 2 && (
                     <div
