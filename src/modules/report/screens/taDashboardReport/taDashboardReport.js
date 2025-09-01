@@ -206,7 +206,11 @@ const TADashboardReport = () => {
         key: "carryFwdPipeLineStr",
         align: 'center',
         render: (text) => {
-            return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today1Text} style={{background:"#babaf5"}}>{text}</div></div>;
+            return <div style={{display:"flex",justifyContent:"center",cursor: "pointer"}}
+             onClick={() =>
+              showDetails(7, { taUserID: 2 }, "Carry Fwd Pipeline (INR)", text)
+            }
+            ><div className={styles.today1Text} style={{background:"#babaf5"}}>{text}</div></div>;
         },
         },
         {
@@ -220,7 +224,16 @@ const TADashboardReport = () => {
               key: "carryFwdHoldPipelineStr",
               align: 'center',
               render: (text) => {
-                return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today1Text} style={{background:"lightyellow"}}>{text}</div></div>;
+                return <div style={{display:"flex",justifyContent:"center",cursor: "pointer"}}
+                 onClick={() =>
+              showDetails(
+                8,
+                { taUserID: 2 },
+                "Carry Fwd Not Included Pipeline (INR)",
+                text
+              )
+            }
+                ><div className={styles.today1Text} style={{background:"lightyellow"}}>{text}</div></div>;
               },
             },
         {
@@ -233,7 +246,10 @@ const TADashboardReport = () => {
         key: "activeHRPipeLineStr",
         align: 'center',
         render: (text) => {
-                return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today1Text} style={{background:"#f0f0f0"}}>{text}</div></div>;
+                return <div style={{display:"flex",justifyContent:"center",cursor: "pointer"}}
+                 onClick={() =>
+              showDetails(9, { taUserID: 2 }, "Added HR (New)", text)
+            }><div className={styles.today1Text} style={{background:"#f0f0f0"}}>{text}</div></div>;
               },
         },  
         {
@@ -247,7 +263,11 @@ const TADashboardReport = () => {
         key: "achievedHRPipeLineStr",
         align: 'center',
         render: (text) => {
-            return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.todayText}>{text ? text : '-'}</div></div>;
+            return <div style={{display:"flex",justifyContent:"center",cursor: "pointer"}} 
+              onClick={() =>
+              showDetails(3, { taUserID: 2 }, "Achieve Pipeline (INR)", text)
+            }
+            ><div className={styles.todayText}>{text ? text : '-'}</div></div>;
         },
         },      
         {
@@ -260,7 +280,10 @@ const TADashboardReport = () => {
         align: 'center',
         key: "lostHRPipeLineStr",
         render: (text) => {
-            return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today2Text} style={{background:'lightsalmon'}}>{text}</div></div>;
+            return <div style={{display:"flex",justifyContent:"center",cursor: "pointer"}}
+             onClick={() =>
+              showDetails(4, { taUserID: 2 }, "Lost Pipeline (INR)", text)
+            }><div className={styles.today2Text} style={{background:'lightsalmon'}}>{text}</div></div>;
         },
         },
         {
@@ -274,7 +297,15 @@ const TADashboardReport = () => {
         key: "totalActivePipeLineStr",
         align: 'center',
         render: (text) => {
-            return <div style={{display:"flex",justifyContent:"center"}}><div className={styles.today1Text}>{text}</div></div>;
+            return <div style={{display:"flex",justifyContent:"center",cursor: "pointer"}}  
+            onClick={() =>
+              showDetails(
+                10,
+                { taUserID: 2 },
+                "Total Active Pipeline (INR)",
+                text
+              )
+            }><div className={styles.today1Text}>{text}</div></div>;
         },
         }    
     ];
