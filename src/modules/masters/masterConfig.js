@@ -50,16 +50,22 @@ export const MasterConfig = {
 				align: 'left',
 			},
 			{
-				title: 'From Currency to INR',
+				title: 'Any Currency to INR',
 				dataIndex: 'exchangeRate',
 				key: 'exchangeRate',
 				align: 'left',
 			},
 			{
-				title: 'From Currency to USD',
+				title: <div style={{textAlign:'center'}}>Any Currency to <br/>USD (Divide)</div>,
 				dataIndex: 'usD_ExchangeRate',
 				key: 'usD_ExchangeRate',
-				align: 'left',
+				align: 'center',
+			},
+				{
+				title: <div style={{textAlign:'center'}}>Any Currency to <br/>USD (Multiply)</div>,
+				dataIndex: 'usD_BaseValue',
+				key: 'usD_BaseValue',
+				align: 'center',
 			},
 		];
 	},
