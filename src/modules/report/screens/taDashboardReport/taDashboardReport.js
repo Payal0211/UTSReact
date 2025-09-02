@@ -362,8 +362,8 @@ const TADashboardReport = () => {
       if(pipeLineTypeId == 7 || pipeLineTypeId == 8) setIsCarryFwdStatus(true);
       else setIsCarryFwdStatus(false); 
         setModalLoader(true);
-        const month = moment(new Date()).format("MM");
-        const year = moment(new Date()).format("YYYY");
+        const month = moment(monthDate).format("MM");
+        const year = moment(monthDate).format("YYYY");
         let pl = {
           pipelineTypeID:pipeLineTypeId,
           taUserID:data?.taUserID,

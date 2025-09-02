@@ -1081,7 +1081,7 @@ const TalentList = ({
 										}}
 									/>
 
-		{(item?.TalentStatusID_BasedOnHR === 10 || item?.TalentStatusID_BasedOnHR === 4 ) ?  <ColapsableTalDetails item={item} /> : 
+		{(item?.TalentStatusID_BasedOnHR === 10 || item?.TalentStatusID_BasedOnHR === 4 || item?.TalentStatusID_BasedOnHR === 12) ?  <ColapsableTalDetails item={item} /> : 
 			DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
 				<div>
 					<span>
@@ -1308,7 +1308,7 @@ const TalentList = ({
 										}}
 									/>			
 									{/* item?.ContractStartdate old condition */}
-									{(item?.TalentStatusID_BasedOnHR === 10 || item?.TalentStatusID_BasedOnHR === 4 ) ? <>
+									{(item?.TalentStatusID_BasedOnHR === 10 || item?.TalentStatusID_BasedOnHR === 4 || item?.TalentStatusID_BasedOnHR === 12) ? <>
 
 									<h3 style={{textDecoration:'underline'}}>Offer Details  </h3>
 
