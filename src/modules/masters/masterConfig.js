@@ -56,16 +56,16 @@ export const MasterConfig = {
 				align: 'left',
 			},
 			{
-				title: <div style={{textAlign:'center'}}>Any Currency to <br/>USD (Divide)</div>,
+				title: <div >Any Currency to <br/>USD (Divide)</div>,
 				dataIndex: 'usD_ExchangeRate',
 				key: 'usD_ExchangeRate',
-				align: 'center',
+				align: 'left',
 			},
 				{
-				title: <div style={{textAlign:'center'}}>Any Currency to <br/>USD (Multiply)</div>,
+				title: <div >Any Currency to <br/>USD (Multiply)</div>,
 				dataIndex: 'usD_BaseValue',
 				key: 'usD_BaseValue',
-				align: 'center',
+				align: 'left',
 			},
 		];
 	},
