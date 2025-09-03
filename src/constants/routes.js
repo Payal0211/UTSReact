@@ -9,6 +9,7 @@ import ViewOnBoardDetails from 'modules/onBoardList/viewOnBoardDetails';
 import TalentDocument from 'modules/report/screens/talentDocuments/talentDocument';
 import AllNOTES from 'modules/report/screens/talentNotes/talentNotes';
 import RevenueReport from 'modules/report/screens/revenueReport/revenueReport';
+import UplersReport from 'modules/report/screens/uplersReport/uplersReport';
 
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
@@ -330,6 +331,7 @@ export default class UTSRoutes {
 	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresList'
 	static SCREENING_INTERVIEW_REJECT = '/screeningInterviewReject'
 	static AM_INTERVIEW = '/amInterviews'
+	static POD_DASHBOARD_REPORT = '/podDashboardReport'
 }
 
 export const navigateToComponent = {
@@ -606,6 +608,11 @@ export const navigateToComponent = {
 [UTSRoutes.AVERAGE_SLA]:(
 	<Suspense>
 			<AverageSLA />
+	</Suspense>
+),
+[UTSRoutes.POD_DASHBOARD_REPORT]:(
+	<Suspense>
+			<UplersReport />
 	</Suspense>
 ),
 [UTSRoutes.ALLCLIENTS]:(

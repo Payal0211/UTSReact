@@ -215,6 +215,10 @@ export class ReportType {
 	static POTENTIAL_MONTH_WISE_CLOSURES_LIST = 'GetMonthWiseProbabiltyRatioReport'
 	static GET_PROBABILITY_RATIO_DETAILS = 'GetProbabiltyRatioDetails'
 	static ACTIVE_OWNER_USER = 'GetActiveOwner_UserList'
+	static GET_POD_DASHBOARD_GROUP_REPORT = 'PODDashboardPODGroups'
+	static GET_POD_DASHBOARD_USERS_GROUP_REPORT = 'PODDashboardPODGroupUserDetails'
+	static GET_POD_DASHBOARD_LIST = 'PODDashboard'
+	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
