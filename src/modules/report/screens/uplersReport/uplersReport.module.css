@@ -1,0 +1,152 @@
+.hiringRequestContainer {
+    padding: 24px 40px;
+}
+
+.filterContainer{
+    border-radius: 10px;
+    margin: 24px auto;
+    background-color: var(--background-color-light);
+}
+
+.filterSets{
+    /* width: 96%; */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 24px;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;    
+}
+
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+.filterSetsInner [class*="ant-select"]  {
+    /* width:200px */
+}
+
+.filterSetsInner [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 12px 10px;
+    height: 46px !important;
+    min-height: 44px;
+    overflow: scroll;
+    /* width:200px */
+}
+
+.tableSelectField  [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 5px 10px !important;
+    height: 30px !important;
+}
+
+.filterRight{
+  display: flex;
+  justify-content: flex-end;
+  gap:24px;
+  align-items: center ; 
+  flex-wrap: wrap;
+}
+
+.filterRight [class*='ant-select-selector']  {
+    height: 45px !important;
+    padding: 12px 16px !important;
+}
+.calendarFilterSet{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.calendarFilter{
+  width:250px ;
+  height: 44px;
+  border-radius: 8px;
+  padding: 2px 10px;
+  border: 1px solid var(--background-color-metal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.calendarFilter [class*="react-datepicker-popper"]{
+  right: 0 !important;
+  left: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  margin: 40px 0 30px;
+  min-width: 220px;
+  z-index: 4;
+}
+
+.calendarFilter {
+  display: flex;
+  align-items: center;
+}
+.calendarFilter
+[class*="react-datepicker-popper"]
+> div
+> [class*="react-datepicker"] {
+margin-left: 0;
+min-width: 100%;
+}
+.calendarFilter
+[class*="react-datepicker-popper"]
+[class*="react-datepicker__navigation"]:before {
+top: 14px;
+}
+.calendarFilter
+[class*="react-datepicker-popper"]
+[class*="react-datepicker__day-names"] {
+margin-top: 5px;
+}
+.calendarFilter
+[class*="react-datepicker__month-container"]
+[class*="react-datepicker__month"] {
+margin-bottom: 10px;
+}
+.dateFilter {
+  background-color: white;  
+  border: none;
+  padding: 5px 10px;      
+  border-radius: 4px;     
+}
+
+.heighliteRow{
+    background-color: yellow;
+}
+
+.chipCardContainer{
+    display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.btnCancle {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left: 10px;
+}
+
+
+.chipCard{
+    background: #f0f4ff;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #333;
+}

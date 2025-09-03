@@ -18,6 +18,7 @@ import I2sIcon from 'assets/svg/i2sIcon.svg';
 import clientReport from  'assets/svg/clientReport.svg';
 import TalentDocIcon from 'assets/svg/talent-doc.png'
 import HRReport from 'assets/svg/clientLogs.svg'
+import UPLERSSVG from 'assets/svg/uplersLineIcon.svg'
 import UTMTrackingIcon from 'assets/UTMtracking report.png'
 import ClientDetailsIcon from 'assets/Clienttracking details.png'
 import EmailTracking from 'assets/svg/emailTrack.svg'
@@ -316,7 +317,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible =  true
 		return isVisible		
 	}
-	 if(title === 'Hiring Request' || title === "MasterReports" ||
+	 if(title === 'Hiring Request' || title === "MasterReports" || title === 'PODDashboardReport' ||
 	  title === 'Users'  ||
 	   title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
 	 title === 'Engagement' || title === 'Reports' ||
@@ -426,7 +427,24 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isVisible: isAccess(usertypeID, 'Users')
 		}),
 		
-		
+		  new SideBarModels({
+			id: 'uplersReport',
+			title: 'Uplers Report',
+			isActive: false,
+			icon: UPLERSSVG,			
+			isChildren: true,
+			branch:[
+				new SideBarModels({
+					id: 'PODDashboardReport',
+					title: 'POD Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.POD_DASHBOARD_REPORT,
+					isVisible: isAccess(usertypeID, 'PODDashboardReport'),
+					isChildren : false					
+				}),
+
+			]
+		}),
 		
 		
 		  new SideBarModels({

@@ -939,6 +939,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getHrTAWiseReportAPI');
 		}
 	},
+	getPOCPopupReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_POC_DETAILS_LIST + `?pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}&stageID=${payload?.stageID}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPOCPopupReportAPI');
+		}
+	},
 	getNBDorAMRevenueAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -1021,5 +1038,52 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 		return errorDebug(error, 'ReportAPI.GetAMWiseTalentInterviewDetails');
 	}
 	},
+	getAllPODGroupRequest:async function (payload) {
+	let httpService = new HttpServices();
+	httpService.URL =
+		NetworkInfo.NETWORK +
+		SubDomain.REPORT +
+		ReportType.GET_POD_DASHBOARD_GROUP_REPORT
 
+	httpService.setAuthRequired = true;
+	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	try {
+		let response = await httpService.sendGetRequest();
+		return response;
+	} catch (error) {
+		return errorDebug(error, 'ReportAPI.getAllPODGroupRequest');
+	}
+	},
+getAllPODGroupUsersRequest:async function (payload) {
+	let httpService = new HttpServices();
+	httpService.URL =
+		NetworkInfo.NETWORK +
+		SubDomain.REPORT +
+		ReportType.GET_POD_DASHBOARD_USERS_GROUP_REPORT + `?PODGroupID=${payload}`
+
+	httpService.setAuthRequired = true;
+	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	try {
+		let response = await httpService.sendGetRequest();
+		return response;
+	} catch (error) {
+		return errorDebug(error, 'ReportAPI.getAllPODGroupUsersRequest');
+	}
+	},
+	getAllPODDashboardRequest:async function (payload) {
+	let httpService = new HttpServices();
+	httpService.URL =
+		NetworkInfo.NETWORK +
+		SubDomain.REPORT +
+		ReportType.GET_POD_DASHBOARD_LIST + `?pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}`
+
+	httpService.setAuthRequired = true;
+	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	try {
+		let response = await httpService.sendGetRequest();
+		return response;
+	} catch (error) {
+		return errorDebug(error, 'ReportAPI.getAllPODDashboardRequest');
+	}
+	},
 };
