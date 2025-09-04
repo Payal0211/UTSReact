@@ -461,7 +461,7 @@ const getColumns = () => [
                   }
         },
            {
-          title: "W1 Achvd",
+          title: "W1",
           dataIndex: 'w1Str',
           key: "w1Str",
           width: 120,
@@ -480,7 +480,7 @@ const getColumns = () => [
                   }
         },
          {
-          title: "W2 Achvd",
+          title: "W2",
           dataIndex: 'w2Str',
           key: "w2Str",
           width: 120,
@@ -499,7 +499,7 @@ const getColumns = () => [
                   }
         },
          {
-          title: "W3 Achvd",
+          title: "W3",
           dataIndex: 'w3Str',
           key: "w3Str",
           width: 120,
@@ -518,7 +518,7 @@ const getColumns = () => [
                   }
         },
          {
-          title: "W4 Achvd",
+          title: "W4",
           dataIndex: 'w4Str',
           key: "w4Str",
           width: 120,
@@ -537,7 +537,7 @@ const getColumns = () => [
                   }
         },
          {
-          title: "W5 Achvd",
+          title: "W5",
           dataIndex: 'w5Str',
           key: "w5Str",
           width: 120,
@@ -767,7 +767,7 @@ const getColumns = () => [
                                   ? "Created Date"
                                   : "HR Created Date"}
                               </th>
-                              {showTalentCol?.isTalentShow === 1 && (
+                              
                                 <th
                                   style={{
                                     padding: "10px",
@@ -777,7 +777,7 @@ const getColumns = () => [
                                 >
                                   Action Date
                                 </th>
-                              )}
+                            
                               <th
                                 style={{
                                   padding: "10px",
@@ -826,7 +826,7 @@ const getColumns = () => [
                                       backgroundColor: "rgb(233, 233, 233) !important",
                                     }}
                                   >
-                                    Uplers Fees
+                                    HR Pipeline
                                   </th>
                                 </>
                               )}
@@ -851,17 +851,7 @@ const getColumns = () => [
                                   Carry Fwd Status
                                 </th>
                               )}
-                              {showTalentCol?.stage !== "New Clients" && (
-                                <th
-                                  style={{
-                                    padding: "10px",
-                                    border: "1px solid #ddd",
-                                    backgroundColor: "rgb(233, 233, 233) !important",
-                                  }}
-                                >
-                                  HR Status
-                                </th>
-                              )}
+                              
         
                               <th
                                 style={{
@@ -881,6 +871,17 @@ const getColumns = () => [
                               >
                                 Lead Type
                               </th>
+                              {showTalentCol?.stage !== "New Clients" && (
+                                <th
+                                  style={{
+                                    padding: "10px",
+                                    border: "1px solid #ddd",
+                                    backgroundColor: "rgb(233, 233, 233) !important",
+                                  }}
+                                >
+                                  HR Status
+                                </th>
+                              )}
                             </tr>
                           </thead>
         
@@ -895,13 +896,13 @@ const getColumns = () => [
                                 >
                                   {detail.hrCreatedDateStr}
                                 </td>
-                                {showTalentCol?.isTalentShow === 1 && (
+                               
                                   <td
                                     style={{ padding: "8px", border: "1px solid #ddd" }}
                                   >
-                                    {detail.closureDateStr}
+                                    {detail.actionDateStr}
                                   </td>
-                                )}
+                                
                                 <td
                                   style={{ padding: "8px", border: "1px solid #ddd" }}
                                 >
@@ -962,7 +963,7 @@ const getColumns = () => [
                                         height: "100%",
                                       }}
                                     >
-                                      {detail.uplersFeesStr}
+                                      {detail.hrPipelineStr}
                                     </td>
                                   </>
                                 )}
@@ -982,16 +983,7 @@ const getColumns = () => [
                                     )}
                                   </td>
                                 )}
-                                {showTalentCol?.stage !== "New Clients" && (
-                                  <td
-                                    style={{ padding: "8px", border: "1px solid #ddd" }}
-                                  >
-                                    {All_Hiring_Request_Utils.GETHRSTATUS(
-                                      Number(detail.hrStatusCode),
-                                      detail.hrStatus
-                                    )}
-                                  </td>
-                                )}
+                               
         
                                 <td
                                   style={{ padding: "8px", border: "1px solid #ddd" }}
@@ -1003,6 +995,16 @@ const getColumns = () => [
                                 >
                                   {detail.lead_Type}
                                 </td>
+                                 {showTalentCol?.stage !== "New Clients" && (
+                                  <td
+                                    style={{ padding: "8px", border: "1px solid #ddd" }}
+                                  >
+                                    {All_Hiring_Request_Utils.GETHRSTATUS(
+                                      Number(detail.hrStatusCode),
+                                      detail.hrStatus
+                                    )}
+                                  </td>
+                                )}
                               </tr>
                             ))}
                           </tbody>
