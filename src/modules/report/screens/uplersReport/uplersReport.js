@@ -12,6 +12,7 @@ import {
   Checkbox,
   Col, Card,
   Spin,
+  Avatar,
 } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
@@ -136,15 +137,9 @@ export default function UplersReport() {
         setIsTableLoading(false);
         if (filterResult.statusCode === HTTPStatusCode.OK) {
           setPODDashboardList(filterResult && convertDataSource(filterResult?.responseBody));
-        } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-          // setLoading(false);
-          return navigate(UTSRoutes.LOGINROUTE);
-        } else if (
-          filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-        ) {
-          // setLoading(false);
-          return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-        } else {
+        } 
+        else {
+            setPODDashboardList([]);
           return "NO DATA FOUND";
         }
       }
@@ -228,7 +223,7 @@ console.log('selectedHead',selectedHead,pODUsersList)
     );
   };
 
-    const getHRTalentWiseReport = async (row, v) => {
+    const getHRTalentWiseReport = async (row, v,week) => {
       try {
         setShowAchievedReport(true);
   
@@ -237,6 +232,8 @@ console.log('selectedHead',selectedHead,pODUsersList)
           month: moment(monthDate).format("M"),
           year: moment(monthDate).format("YYYY"),
           stageID: row.stage_ID,  
+          cat: row.category,
+          week: week ? week : '',
         };
         setShowTalentCol(row);
         setAchievedTotal(v);
@@ -391,16 +388,16 @@ const getColumns = () => [
                   title: "Goal",
                   dataIndex: 'goalStr',
                   key: "goalStr",
-                  align: "center",
+                  align: "right",
                   width: 120,
                   onHeaderCell: () => ({
                     className: uplersStyle.headerCommonGoalHeaderConfig,
                   }),
                   className: `${uplersStyle.headerCommonConfig} `,
                   render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec, v)}
-                    style={{ cursor: "pointer", color: "#1890ff" }}
+                    return v ? rec.stage === 'Goal' ? v : <span
+                    // onClick={() => getHRTalentWiseReport(rec, v)}
+                    // style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
                   </span> : ''
@@ -410,16 +407,16 @@ const getColumns = () => [
           title: "Goal till date",
           dataIndex: 'goalTillDateStr',
           key: "goalTillDateStr",
-          width: 110,
-          align: "center",
+          width: 120,
+          align: "right",
           onHeaderCell: () => ({
             className: uplersStyle.headerCommonGoalHeaderConfig,
           }),
           className: `${uplersStyle.headerCommonConfig}`,
           render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
-                    style={{ cursor: "pointer", color: "#1890ff" }}
+                    return v  ?( rec.stage === 'Goal' || rec.stage.includes('%'))? v : <span
+                    // onClick={() => getHRTalentWiseReport(rec,  v)}
+                    // style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
                   </span> : ''
@@ -429,14 +426,14 @@ const getColumns = () => [
           title: "Achieved",
           dataIndex: 'achievedStr',
           key: "achievedStr",
-          width: 110,
-          align: "center",
+          width: 120,
+          align: "right",
           onHeaderCell: () => ({
             className: uplersStyle.headerCommonGoalHeaderConfig,
           }),
           className: `${uplersStyle.headerCommonConfig}`,
           render: (v, rec) =>{
-                    return v ? <span
+                    return v  ? ( rec.stage === 'Goal' || rec.stage.includes('%')) ? v : <span
                     onClick={() => getHRTalentWiseReport(rec,  v)}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
@@ -448,16 +445,16 @@ const getColumns = () => [
           title: "Achieved %",
           dataIndex: 'achievedPerStr',
           key: "achievedPerStr",
-          width: 110,
-          align: "center",
+          width: 120,
+          align: "right",
           onHeaderCell: () => ({
             className: uplersStyle.headerCommonGoalHeaderConfig,
           }),
           className: `${uplersStyle.headerCommonConfig}`,
           render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
-                    style={{ cursor: "pointer", color: "#1890ff" }}
+                    return v ? ( rec.stage === 'Goal' || rec.stage.includes('%')) ? v :<span
+                    // onClick={() => getHRTalentWiseReport(rec,  v)}
+                    // style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
                   </span> : ''
@@ -467,15 +464,15 @@ const getColumns = () => [
           title: "W1 Achvd",
           dataIndex: 'w1Str',
           key: "w1Str",
-          width: 110,
-          align: "center",
+          width: 120,
+          align: "right",
           onHeaderCell: () => ({
             className: uplersStyle.headerCommonGoalHeaderConfig,
           }),
           className: `${uplersStyle.headerCommonConfig}`,
           render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
+                    return v ? ( rec.stage === 'Goal' || rec.stage.includes('%')) ? v : <span
+                    onClick={() => getHRTalentWiseReport(rec,  v,'W1')}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
@@ -486,15 +483,15 @@ const getColumns = () => [
           title: "W2 Achvd",
           dataIndex: 'w2Str',
           key: "w2Str",
-          width: 110,
-          align: "center",
+          width: 120,
+          align: "right",
           onHeaderCell: () => ({
             className: uplersStyle.headerCommonGoalHeaderConfig,
           }),
           className: `${uplersStyle.headerCommonConfig}`,
           render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
+                    return v ?( rec.stage === 'Goal' || rec.stage.includes('%')) ? v :<span
+                    onClick={() => getHRTalentWiseReport(rec,  v,'W2')}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
@@ -505,15 +502,15 @@ const getColumns = () => [
           title: "W3 Achvd",
           dataIndex: 'w3Str',
           key: "w3Str",
-          width: 110,
-          align: "center",
+          width: 120,
+          align: "right",
           onHeaderCell: () => ({
             className: uplersStyle.headerCommonGoalHeaderConfig,
           }),
           className: `${uplersStyle.headerCommonConfig}`,
           render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
+                    return v ? ( rec.stage === 'Goal' || rec.stage.includes('%')) ? v : <span
+                    onClick={() => getHRTalentWiseReport(rec,  v,'W3')}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
@@ -524,15 +521,15 @@ const getColumns = () => [
           title: "W4 Achvd",
           dataIndex: 'w4Str',
           key: "w4Str",
-          width: 110,
-          align: "center",
+          width: 120,
+          align: "right",
           onHeaderCell: () => ({
             className: uplersStyle.headerCommonGoalHeaderConfig,
           }),
           className: `${uplersStyle.headerCommonConfig}`,
           render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
+                    return v ? ( rec.stage === 'Goal' || rec.stage.includes('%')) ? v : <span
+                    onClick={() => getHRTalentWiseReport(rec,  v,'W4')}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
@@ -543,15 +540,15 @@ const getColumns = () => [
           title: "W5 Achvd",
           dataIndex: 'w5Str',
           key: "w5Str",
-          width: 110,
-          align: "center",
+          width: 120,
+          align: "right",
           onHeaderCell: () => ({
             className: uplersStyle.headerCommonGoalHeaderConfig,
           }),
           className: `${uplersStyle.headerCommonConfig}`,
           render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
+                    return v ? ( rec.stage === 'Goal' || rec.stage.includes('%')) ? v : <span
+                    onClick={() => getHRTalentWiseReport(rec,  v,'W5')}
                     style={{ cursor: "pointer", color: "#1890ff" }}
                   >
                     {v}
@@ -559,63 +556,63 @@ const getColumns = () => [
                   }
         },
 
-         {
-          title: "GTD",
-          dataIndex: 'gtdStr',
-          key: "gtdStr",
-          width: 110,
-          align: "center",
-          onHeaderCell: () => ({
-            className: uplersStyle.headerCommonGoalHeaderConfig,
-          }),
-          className: `${uplersStyle.headerCommonConfig}`,
-          render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
-                    style={{ cursor: "pointer", color: "#1890ff" }}
-                  >
-                    {v}
-                  </span> : ''
-                  }
-        },
-         {
-          title: "ATD",
-          dataIndex: 'atdStr',
-          key: "atdStr",
-          width: 110,
-          align: "center",
-          onHeaderCell: () => ({
-            className: uplersStyle.headerCommonGoalHeaderConfig,
-          }),
-          className: `${uplersStyle.headerCommonConfig}`,
-          render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
-                    style={{ cursor: "pointer", color: "#1890ff" }}
-                  >
-                    {v}
-                  </span> : ''
-                  }
-        },
-         {
-          title: "ATD %",
-          dataIndex: 'atdPerStr',
-          key: "atdPerStr",
-          width: 110,
-          align: "center",
-          onHeaderCell: () => ({
-            className: uplersStyle.headerCommonGoalHeaderConfig,
-          }),
-          className: `${uplersStyle.headerCommonConfig}`,
-          render: (v, rec) =>{
-                    return v ? <span
-                    onClick={() => getHRTalentWiseReport(rec,  v)}
-                    style={{ cursor: "pointer", color: "#1890ff" }}
-                  >
-                    {v}
-                  </span> : ''
-                  }
-        },
+        //  {
+        //   title: "GTD",
+        //   dataIndex: 'gtdStr',
+        //   key: "gtdStr",
+        //   width: 110,
+        //   align: "center",
+        //   onHeaderCell: () => ({
+        //     className: uplersStyle.headerCommonGoalHeaderConfig,
+        //   }),
+        //   className: `${uplersStyle.headerCommonConfig}`,
+        //   render: (v, rec) =>{
+        //             return v ? <span
+        //             onClick={() => getHRTalentWiseReport(rec,  v)}
+        //             style={{ cursor: "pointer", color: "#1890ff" }}
+        //           >
+        //             {v}
+        //           </span> : ''
+        //           }
+        // },
+        //  {
+        //   title: "ATD",
+        //   dataIndex: 'atdStr',
+        //   key: "atdStr",
+        //   width: 110,
+        //   align: "center",
+        //   onHeaderCell: () => ({
+        //     className: uplersStyle.headerCommonGoalHeaderConfig,
+        //   }),
+        //   className: `${uplersStyle.headerCommonConfig}`,
+        //   render: (v, rec) =>{
+        //             return v ? <span
+        //             onClick={() => getHRTalentWiseReport(rec,  v)}
+        //             style={{ cursor: "pointer", color: "#1890ff" }}
+        //           >
+        //             {v}
+        //           </span> : ''
+        //           }
+        // },
+        //  {
+        //   title: "ATD %",
+        //   dataIndex: 'atdPerStr',
+        //   key: "atdPerStr",
+        //   width: 110,
+        //   align: "center",
+        //   onHeaderCell: () => ({
+        //     className: uplersStyle.headerCommonGoalHeaderConfig,
+        //   }),
+        //   className: `${uplersStyle.headerCommonConfig}`,
+        //   render: (v, rec) =>{
+        //             return v ? <span
+        //             onClick={() => getHRTalentWiseReport(rec,  v)}
+        //             style={{ cursor: "pointer", color: "#1890ff" }}
+        //           >
+        //             {v}
+        //           </span> : ''
+        //           }
+        // },
 ]
   return (
 
@@ -666,29 +663,21 @@ const getColumns = () => [
                         </div>
                       </div>
                     </div>
-                  </div>
 
-
-             <div className={uplersStyle.filterContainer}>
-            <div className={uplersStyle.filterSets}>
-
-
-           <div className={uplersStyle.chipCardContainer}>
+                       <div className={uplersStyle.chipCardContainer}>
             {isLoading ? <div style={{display:'flex',width:'100%',justifyContent:'center'}}><Spin  /></div>  :  pODUsersList?.map((item,index)=>{
                    if(item.leadtype ==="leaduser") {
-                     return  <div className={uplersStyle.chipCard}><strong>{ item.dd_text}</strong> </div> 
+                     return  <div className={uplersStyle.chipCard}><Avatar size={'small'}>{item.dd_text[0].toUpperCase()}</Avatar> <strong>{item.dd_text}</strong> </div> 
                    }else{
-                    return <div className={uplersStyle.chipCard}>{item.dd_text}</div> 
+                    return <div className={uplersStyle.chipCard}><Avatar size={'small'}>{item.dd_text[0].toUpperCase()}</Avatar> {item.dd_text}</div> 
                    }
                 })}
              
             </div>
-            </div>
-           
-            </div>
+                  </div>
 
-             <Card bordered={false}>
-                    <div className={uplersStyle.customTableContainer}>
+<div className={uplersStyle.filterContainer} style={{padding:'12px'}}>
+      <div className={uplersStyle.customTableContainer}>
                       {isTableLoading ? (
                         <TableSkeleton />
                       ) : (
@@ -720,7 +709,10 @@ const getColumns = () => [
                         </Card>
                       </Col>
                     </div>
-                  </Card>
+</div>
+       
+
+          
 
 
           {showAchievedReport && (
