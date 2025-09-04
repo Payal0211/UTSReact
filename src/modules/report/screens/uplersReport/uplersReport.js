@@ -807,6 +807,15 @@ const getColumns = () => [
                                   >
                                     HR Title
                                   </th>
+                                    <th
+                                style={{
+                                  padding: "10px",
+                                  border: "1px solid #ddd",
+                                  backgroundColor: "rgb(233, 233, 233) !important",
+                                }}
+                              >
+                                TR / Talent
+                              </th>
                                   {showTalentCol?.isTalentShow === 1 && (
                                     <th
                                       style={{
@@ -882,6 +891,7 @@ const getColumns = () => [
                                   HR Status
                                 </th>
                               )}
+                             
                             </tr>
                           </thead>
         
@@ -944,6 +954,11 @@ const getColumns = () => [
                                     >
                                       {detail.hrTitle}
                                     </td>
+                                        <td
+                                  style={{ padding: "8px", border: "1px solid #ddd" }}
+                                >
+                                  {detail.tRorTalent}
+                                </td>
                                     {showTalentCol?.isTalentShow === 1 && (
                                       <td
                                         style={{
@@ -1005,6 +1020,7 @@ const getColumns = () => [
                                     )}
                                   </td>
                                 )}
+                            
                               </tr>
                             ))}
                           </tbody>
