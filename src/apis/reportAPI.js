@@ -944,7 +944,7 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
-			ReportType.GET_POC_DETAILS_LIST + `?pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}&stageID=${payload?.stageID}`
+			ReportType.GET_POC_DETAILS_LIST + `?pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}&stageID=${payload?.stageID}&weekno=${payload?.week}&category=${payload?.cat}`
 
 		httpService.setAuthRequired = true;
 		// httpService.dataToSend = payload;
