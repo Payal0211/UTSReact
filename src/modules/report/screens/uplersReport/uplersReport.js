@@ -905,7 +905,40 @@ export default function UplersReport() {
               <Table
                 columns={getColumns()}
                 dataSource={podDashboardList.filter(
-                  (item) => item.category === "CG"
+                  (item) => item.category === "CF"
+                )}
+                bordered
+                pagination={false}
+                size="middle"
+                scroll={{ x: "max-content", y: "1vh" }}
+                rowClassName={(record) =>
+                  record.stage === "Goal" ? uplersStyle.heighliteRow : ""
+                }
+              />
+            </>
+          )}
+        </div>
+      </div>
+
+          <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+          {isTableLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+               Customer Health
+              </p>
+              <Table
+                columns={getColumns()}
+                dataSource={podDashboardList.filter(
+                  (item) => item.category === "CH"
                 )}
                 bordered
                 pagination={false}
@@ -933,12 +966,12 @@ export default function UplersReport() {
                   padding: "20px 20px 0",
                 }}
               >
-                New Business
+               Delivery Funnel
               </p>
               <Table
                 columns={getColumns()}
                 dataSource={podDashboardList.filter(
-                  (item) => item.category === "Delivery Funnel"
+                  (item) => item.category === "DF"
                 )}
                 bordered
                 pagination={false}
@@ -952,6 +985,8 @@ export default function UplersReport() {
           )}
         </div>
       </div>
+
+  
 
       {showAchievedReport && (
         <Modal
@@ -969,7 +1004,7 @@ export default function UplersReport() {
               <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
           </div>
-
+{console.log("TC",showTalentCol , (showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH'))}
           {achievedLoading ? (
             <TableSkeleton />
           ) : listAchievedData.length > 0 ? (
@@ -1006,7 +1041,7 @@ export default function UplersReport() {
                           : "HR Created Date"}
                       </th>
 
-                      <th
+                     {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') &&  <th
                         style={{
                           padding: "10px",
                           border: "1px solid #ddd",
@@ -1014,7 +1049,7 @@ export default function UplersReport() {
                         }}
                       >
                         Action Date
-                      </th>
+                      </th>} 
 
                       <th
                         style={{
@@ -1025,7 +1060,7 @@ export default function UplersReport() {
                       >
                         Company
                       </th>
-                      {showTalentCol?.stage !== "New Clients" && (
+                      {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') && (
                         <>
                           <th
                             style={{
@@ -1117,7 +1152,7 @@ export default function UplersReport() {
                       >
                         Lead Type
                       </th>
-                      {showTalentCol?.stage !== "New Clients" && (
+                      {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') && (
                         <th
                           style={{
                             padding: "10px",
@@ -1142,17 +1177,22 @@ export default function UplersReport() {
                         >
                           {detail.hrCreatedDateStr}
                         </td>
-
-                        <td
+ {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') &&  <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.actionDateStr}
-                        </td>
+                        </td>}
+                        
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.company}{" "}
+                           <a
+                                  href={`/viewCompanyDetails/${detail.company_ID}`}
+                                  style={{ textDecoration: "underline" }}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >{detail.company}{" "}</a> 
                           {detail.company_Category === "Diamond" && (
                             <img
                               src={Diamond}
@@ -1161,7 +1201,7 @@ export default function UplersReport() {
                             />
                           )}
                         </td>
-                        {showTalentCol?.stage !== "New Clients" && (
+                        {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH')  && (
                           <>
                             <td
                               style={{
@@ -1248,7 +1288,7 @@ export default function UplersReport() {
                         >
                           {detail.lead_Type}
                         </td>
-                        {showTalentCol?.stage !== "New Clients" && (
+                        {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') && (
                           <td
                             style={{ padding: "8px", border: "1px solid #ddd" }}
                           >
