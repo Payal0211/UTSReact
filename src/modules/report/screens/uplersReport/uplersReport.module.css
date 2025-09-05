@@ -116,7 +116,21 @@ margin-bottom: 10px;
 }
 
 .heighliteRow{
-    background-color: yellow;
+    background-color: rgb(209 219 250);
+}
+
+.heighliteGreen {
+    background-color: #daf5da;
+}
+
+.heighliteOrange {
+    background-color: rgb(247 247 177);
+}
+.heighliteRed {
+    background-color: rgb(242 214 214);
+}
+.heighlitePurple {
+    background-color: #e7d1e7;
 }
 
 .chipCardContainer{
@@ -161,4 +175,8 @@ margin-bottom: 10px;
   border-radius: 20px;
   font-size: 13px;
   color: #333;
+}
+
+.customTableContainer  [class*='ant-table-thead'] tr th{
+ background-color: rgb(218, 218, 218) !important;
 }
