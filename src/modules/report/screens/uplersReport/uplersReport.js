@@ -233,6 +233,7 @@ export default function UplersReport() {
       setShowAchievedReport(true);
 
       const pl = {
+        hrmodel: hrModal,
         pod_id: selectedHead,
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
@@ -712,6 +713,10 @@ export default function UplersReport() {
                               let val = pODList.find(i=>i.dd_text=== "Orion")?.dd_value                                 
                                setSelectedHead(val);
                                getGroupUsers(val);
+                            }else{
+                               let val = pODList[0]?.dd_value                                 
+                               setSelectedHead(val);
+                               getGroupUsers(val);
                             }
                            
                             //  setEngagementType(e.target.value);
@@ -725,7 +730,7 @@ export default function UplersReport() {
             <Select
               id="selectedValue"
               placeholder="Select Head"
-              style={{ marginLeft: "10px", width: "270px" }}
+              style={{ width: "270px" }}
               // mode="multiple"
               value={selectedHead}
               showSearch={true}
@@ -834,8 +839,23 @@ export default function UplersReport() {
                 pagination={false}
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
-                rowClassName={(record) =>
-                  record.stage === "Goal" ? uplersStyle.heighliteRow : ""
+                rowClassName={(record) =>{
+                  if(record.stage === "Goal"){
+                    return uplersStyle.heighliteRow 
+                  } 
+                  if(record.stage === "Joining"){
+                    return uplersStyle.heighliteGreen 
+                  } 
+                   if(record.stage === "Selections/Closures"){
+                    return uplersStyle.heighliteOrange
+                  } 
+                   if(record.stage === "Lost (Pipeline)"){
+                    return uplersStyle.heighliteRed 
+                  } 
+                   if(record.stage === "Total Active Pipeline"){
+                    return uplersStyle.heighlitePurple
+                  } 
+                }
                 }
               />
             </>
@@ -867,8 +887,23 @@ export default function UplersReport() {
                 pagination={false}
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
-                rowClassName={(record) =>
-                  record.stage === "Goal" ? uplersStyle.heighliteRow : ""
+                rowClassName={(record) =>{
+                  if(record.stage === "Goal"){
+                    return uplersStyle.heighliteRow 
+                  } 
+                  if(record.stage === "Joining"){
+                    return uplersStyle.heighliteGreen 
+                  } 
+                   if(record.stage === "Selections/Closures"){
+                    return uplersStyle.heighliteOrange
+                  } 
+                   if(record.stage === "Lost (Pipeline)"){
+                    return uplersStyle.heighliteRed 
+                  } 
+                   if(record.stage === "Total Active Pipeline"){
+                    return uplersStyle.heighlitePurple
+                  } 
+                }
                 }
               />
             </>
@@ -901,7 +936,23 @@ export default function UplersReport() {
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
                 rowClassName={(record) =>
-                  record.stage === "Goal" ? uplersStyle.heighliteRow : ""
+                 {
+                  if(record.stage === "Goal"){
+                    return uplersStyle.heighliteRow 
+                  } 
+                  if(record.stage === "Joining"){
+                    return uplersStyle.heighliteGreen 
+                  } 
+                   if(record.stage === "Selections/Closures"){
+                    return uplersStyle.heighliteOrange
+                  } 
+                   if(record.stage === "Lost (Pipeline)"){
+                    return uplersStyle.heighliteRed 
+                  } 
+                   if(record.stage === "Total Active Pipeline"){
+                    return uplersStyle.heighlitePurple
+                  } 
+                }
                 }
               />
             </>
@@ -934,7 +985,23 @@ export default function UplersReport() {
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
                 rowClassName={(record) =>
-                  record.stage === "Goal" ? uplersStyle.heighliteRow : ""
+                  {
+                  if(record.stage === "Goal"){
+                    return uplersStyle.heighliteRow 
+                  } 
+                  if(record.stage === "Joining"){
+                    return uplersStyle.heighliteGreen 
+                  } 
+                   if(record.stage === "Selections/Closures"){
+                    return uplersStyle.heighliteOrange
+                  } 
+                   if(record.stage === "Lost (Pipeline)"){
+                    return uplersStyle.heighliteRed 
+                  } 
+                   if(record.stage === "Total Active Pipeline"){
+                    return uplersStyle.heighlitePurple
+                  } 
+                }
                 }
               />
             </>
@@ -967,7 +1034,23 @@ export default function UplersReport() {
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
                 rowClassName={(record) =>
-                  record.stage === "Goal" ? uplersStyle.heighliteRow : ""
+                  {
+                  if(record.stage === "Goal"){
+                    return uplersStyle.heighliteRow 
+                  } 
+                  if(record.stage === "Joining"){
+                    return uplersStyle.heighliteGreen 
+                  } 
+                   if(record.stage === "Selections/Closures"){
+                    return uplersStyle.heighliteOrange
+                  } 
+                   if(record.stage === "Lost (Pipeline)"){
+                    return uplersStyle.heighliteRed 
+                  } 
+                   if(record.stage === "Total Active Pipeline"){
+                    return uplersStyle.heighlitePurple
+                  } 
+                }
                 }
               />
             </>
@@ -1000,7 +1083,23 @@ export default function UplersReport() {
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
                 rowClassName={(record) =>
-                  record.stage === "Goal" ? uplersStyle.heighliteRow : ""
+                  {
+                  if(record.stage === "Goal"){
+                    return uplersStyle.heighliteRow 
+                  } 
+                  if(record.stage === "Joining"){
+                    return uplersStyle.heighliteGreen 
+                  } 
+                   if(record.stage === "Selections/Closures"){
+                    return uplersStyle.heighliteOrange
+                  } 
+                   if(record.stage === "Lost (Pipeline)"){
+                    return uplersStyle.heighliteRed 
+                  } 
+                   if(record.stage === "Total Active Pipeline"){
+                    return uplersStyle.heighlitePurple
+                  } 
+                }
                 }
               />
             </>
@@ -1109,20 +1208,8 @@ export default function UplersReport() {
                               backgroundColor: "rgb(233, 233, 233) !important",
                             }}
                           >
-                            TR / Talent
+                            TR 
                           </th>
-                          {showTalentCol?.isTalentShow === 1 && (
-                            <th
-                              style={{
-                                padding: "10px",
-                                border: "1px solid #ddd",
-                                backgroundColor:
-                                  "rgb(233, 233, 233) !important",
-                              }}
-                            >
-                              TR / Talent
-                            </th>
-                          )}
                           <th
                             style={{
                               padding: "10px",
@@ -1130,7 +1217,34 @@ export default function UplersReport() {
                               backgroundColor: "rgb(233, 233, 233) !important",
                             }}
                           >
-                            HR Pipeline
+                            1TR Pipeline
+                          </th>
+                           <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Total Pipeline
+                          </th>
+                           <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Uplers Fees %
+                          </th>
+                           <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Talent Pay
                           </th>
                         </>
                       )}
@@ -1173,6 +1287,15 @@ export default function UplersReport() {
                         }}
                       >
                         Lead Type
+                      </th>
+                       <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Talent
                       </th>
                       {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') && (
                         <th
@@ -1258,31 +1381,44 @@ export default function UplersReport() {
                                 border: "1px solid #ddd",
                               }}
                             >
-                              {detail.tRorTalent}
+                              {detail.tr}
                             </td>
-                            {showTalentCol?.isTalentShow === 1 && (
-                              <td
-                                style={{
-                                  padding: "8px",
-                                  border: "1px solid #ddd",
-                                }}
-                              >
-                                {detail.talent}
-                              </td>
-                            )}
                             <td
                               style={{
-                                padding: "8px",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "right",
-                                height: "100%",
+                               padding: "8px",
+                                border: "1px solid #ddd",
                               }}
                             >
                               {detail.hrPipelineStr}
                             </td>
+                               <td
+                              style={{
+                               padding: "8px",
+                                border: "1px solid #ddd",
+                              }}
+                            >
+                              {detail.total_HRPipelineStr}
+                            </td>
+                       <td
+                              style={{
+                               padding: "8px",
+                                border: "1px solid #ddd",
+                              }}
+                            >
+                              {detail.uplersFeesPer}
+                            </td>
+                               <td
+                              style={{
+                               padding: "8px",
+                                border: "1px solid #ddd",
+                              }}
+                            >
+                              {detail.talentPayStr}
+                            </td>
                           </>
                         )}
+                               
+                            
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
@@ -1309,6 +1445,11 @@ export default function UplersReport() {
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.lead_Type}
+                        </td>
+                         <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.talent}
                         </td>
                         {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') && (
                           <td
