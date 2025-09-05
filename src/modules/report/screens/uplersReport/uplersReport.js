@@ -11,6 +11,7 @@ import {
   Skeleton,
   Checkbox,
   Col,
+  Radio,
   Card,
   Spin,
   Avatar,
@@ -43,6 +44,7 @@ export default function UplersReport() {
   const [achievedLoading, setAchievedLoading] = useState(false);
   const [showTalentCol, setShowTalentCol] = useState({});
   const [achievedTotal, setAchievedTotal] = useState("");
+  const [hrModal,setHRModal]=useState('DP')
 
   const [monthDate, setMonthDate] = useState(new Date());
   const selectedYear = monthDate.getFullYear();
@@ -129,6 +131,7 @@ export default function UplersReport() {
 
   const getDashboardList = async () => {
     let pl = {
+      hrmodel: hrModal,
       pod_id: selectedHead,
       month: moment(monthDate).format("MM"),
       year: selectedYear,
@@ -151,7 +154,7 @@ export default function UplersReport() {
     if (selectedHead) {
       getDashboardList();
     }
-  }, [selectedHead, monthDate]);
+  }, [selectedHead, monthDate,hrModal]);
 
   console.log("selectedHead", selectedHead, pODUsersList);
   useEffect(() => {
@@ -700,6 +703,25 @@ export default function UplersReport() {
             </Title>
           </div>
           <div className={uplersStyle.filterRight}>
+
+             <Radio.Group
+                          onChange={(e) => {
+ 
+                            setHRModal( e.target.value)
+                            if(e.target.value==="Contract"){
+                              let val = pODList.find(i=>i.dd_text=== "Orion")?.dd_value                                 
+                               setSelectedHead(val);
+                               getGroupUsers(val);
+                            }
+                           
+                            //  setEngagementType(e.target.value);
+                          }}
+                          value={hrModal}
+                        >
+                          <Radio value={"DP"}>FTE</Radio>
+                          <Radio value={"Contract"}>Contract</Radio>
+                          
+                        </Radio.Group>
             <Select
               id="selectedValue"
               placeholder="Select Head"
