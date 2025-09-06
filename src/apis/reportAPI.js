@@ -956,6 +956,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getPOCPopupReportAPI');
 		}
 	},
+	getPOCDFPopupReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_POC_DF_DETAILS_LIST + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}&optiontype=${payload?.optiontype}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPOCDFPopupReportAPI');
+		}
+	},
 	getNBDorAMRevenueAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
