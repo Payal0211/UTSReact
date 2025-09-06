@@ -45,9 +45,15 @@ export default function UplersReport() {
   const [showTalentCol, setShowTalentCol] = useState({});
   const [achievedTotal, setAchievedTotal] = useState("");
   const [hrModal,setHRModal]=useState('DP')
+  const [DFListData, setDFListData] = useState([]);
+  const [DFFilterListData, setDFFilterListData] = useState([]);
+  const [showDFReport, setShowDFReport] = useState(false);
 
   const [monthDate, setMonthDate] = useState(new Date());
   const selectedYear = monthDate.getFullYear();
+
+  const [searchTerm, setSearchTerm] = useState("");
+
 
   const getHeads = async () => {
     setIsLoading(true);
@@ -257,6 +263,36 @@ export default function UplersReport() {
     }
   };
 
+  const getDFDetails = async (row, v) => {
+    try {
+      setShowDFReport(true);
+
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        optiontype: row.stage_ID
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPOCDFPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setDFListData(result.responseBody);
+        setDFFilterListData(result.responseBody);
+      } else {
+        setDFListData([]);
+        setDFFilterListData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setDFListData([]);
+      setDFFilterListData([]);
+    }
+  };
+
   const getColumns = () => [
     {
       title: "Stages",
@@ -460,7 +496,13 @@ export default function UplersReport() {
             v
           ) : (
             <span
-              onClick={() => getHRTalentWiseReport(rec, v)}
+              onClick={() => {
+                if(rec.category === "DF"){
+                  getDFDetails(rec, v)
+                }else{
+                  getHRTalentWiseReport(rec, v)
+                }
+                }}
               style={{ cursor: "pointer", color: "#1890ff" }}
             >
               {v}
@@ -514,7 +556,15 @@ export default function UplersReport() {
             v
           ) : (
             <span
-              onClick={() => getHRTalentWiseReport(rec, v, "W1")}
+              onClick={() =>
+                {
+                if(rec.category === "DF"){
+                  getDFDetails(rec, v)
+                }else{
+                   getHRTalentWiseReport(rec, v, "W1")
+                }
+                }
+              }
               style={{ cursor: "pointer", color: "#1890ff" }}
             >
               {v}
@@ -541,7 +591,15 @@ export default function UplersReport() {
             v
           ) : (
             <span
-              onClick={() => getHRTalentWiseReport(rec, v, "W2")}
+              onClick={() =>
+                {
+                if(rec.category === "DF"){
+                  getDFDetails(rec, v)
+                }else{
+                  getHRTalentWiseReport(rec, v, "W2")
+                }
+                }
+              }
               style={{ cursor: "pointer", color: "#1890ff" }}
             >
               {v}
@@ -568,7 +626,15 @@ export default function UplersReport() {
             v
           ) : (
             <span
-              onClick={() => getHRTalentWiseReport(rec, v, "W3")}
+              onClick={() => 
+                {
+                if(rec.category === "DF"){
+                  getDFDetails(rec, v)
+                }else{
+                  getHRTalentWiseReport(rec, v, "W3")
+                }
+                }
+              }
               style={{ cursor: "pointer", color: "#1890ff" }}
             >
               {v}
@@ -595,7 +661,15 @@ export default function UplersReport() {
             v
           ) : (
             <span
-              onClick={() => getHRTalentWiseReport(rec, v, "W4")}
+              onClick={() => 
+                {
+                if(rec.category === "DF"){
+                  getDFDetails(rec, v)
+                }else{
+                  getHRTalentWiseReport(rec, v, "W4")
+                }
+                }
+              }
               style={{ cursor: "pointer", color: "#1890ff" }}
             >
               {v}
@@ -622,7 +696,15 @@ export default function UplersReport() {
             v
           ) : (
             <span
-              onClick={() => getHRTalentWiseReport(rec, v, "W5")}
+              onClick={() => 
+                {
+                if(rec.category === "DF"){
+                  getDFDetails(rec, v)
+                }else{
+                  getHRTalentWiseReport(rec, v, "W5")
+                }
+                }
+              }
               style={{ cursor: "pointer", color: "#1890ff" }}
             >
               {v}
@@ -692,6 +774,101 @@ export default function UplersReport() {
     //           }
     // },
   ];
+
+  const DFColumns = [
+      {
+        title: "Action Date",
+        dataIndex: "actionDate",
+        key: "actionDate",
+         width: "150px",
+        render:(text)=>{
+          return text
+        }
+      },  {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+         width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+         width: "170px",
+        render:(text,value)=>{
+           return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+           
+        }
+      },
+       {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+      },  
+      {
+        title: "Talent",
+        dataIndex: "talent",
+        key: "talent",
+      },
+      {
+        title: "Slot/Remark",
+        dataIndex: "slotOrRemarkDetails",
+        key: "slotOrRemarkDetails",
+      },
+      // {
+      //   title: "Status",
+      //   dataIndex: "talentStatus",
+      //   key: "talentStatus",
+      //   render: (_, item) => (
+      //     <div
+      //       style={{
+      //         display: "flex",
+      //         alignItems: "center",
+      //         justifyContent: "space-between",
+      //       }}
+      //     >
+      //       {All_Hiring_Request_Utils.GETTALENTSTATUS(
+      //         parseInt(item?.talentStatusColor),
+      //         item?.talentStatus
+      //       )}
+  
+      //       {(item?.statusID === 2 || item?.statusID === 3) && (
+      //         <IconContext.Provider
+      //           value={{
+      //             color: "#FFDA30",
+      //             style: { width: "16px", height: "16px", cursor: "pointer" },
+      //           }}
+      //         >
+      //           <Tooltip title="Move to Assessment" placement="top">
+      //             <span                  
+      //               onClick={() => {
+      //                 setMoveToAssessment(true);
+      //                 setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
+      //               }}
+      //               style={{ padding: "0" }}
+      //             >
+      //               {" "}
+      //               <BsClipboard2CheckFill />
+      //             </span>{" "}
+      //           </Tooltip>
+      //         </IconContext.Provider>
+      //       )}
+          
+      //     </div>
+      //   ),
+      // },
+    
+     
+    ];
+
+    const handleSearchInput = (value) => {
+    setSearchTerm(value); 
+    const filteredData = DFListData.filter((talent) =>
+      talent.talent.toLowerCase().includes(value.toLowerCase()) || 
+      (talent.email && talent.email.toLowerCase().includes(value.toLowerCase())) 
+    );
+    setDFFilterListData(filteredData); 
+  };
   return (
     <div className={uplersStyle.hiringRequestContainer}>
       <div className={uplersStyle.filterContainer}>
@@ -1493,6 +1670,302 @@ export default function UplersReport() {
           </div>
         </Modal>
       )}
+
+       {showDFReport && (
+                          <Modal
+                            transitionName=""
+                            width="1020px"
+                            centered
+                            footer={null}
+                            open={showDFReport}
+                            className="engagementModalStyle"
+                            onCancel={() => {
+                              setSearchTerm('')
+                              setShowDFReport(false);
+                              setDFFilterListData([]);
+                              setDFListData([]);
+                            }}
+                          >
+                            {false ?  
+                              <div style={{display:"flex",height:"350px",justifyContent:'center'}}>
+                                <Spin size="large"/>
+                              </div>:
+                            <>                    
+                            <div
+                                style={{
+                                  padding: "45px 15px 10px 15px",
+                                  display: "flex",
+                                  gap: "10px",
+                                  alignItems: "center",
+                                  flexWrap: "wrap", 
+                                }}
+                              >
+                                
+                               
+                   <h3>
+              <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+            </h3>
+                                {/* <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
+                                  TA : <strong>add</strong>
+                                </p> */}
+                  
+                                <input
+                                  type="text"
+                                  placeholder="Search talent..."
+                                  value={searchTerm}
+                                  onChange={(e) => handleSearchInput(e.target.value)}
+                                  style={{
+                                      padding: "6px 10px",
+                                      border: "1px solid #ccc",
+                                      borderRadius: "4px",
+                                      marginLeft: "auto", 
+                                      marginRight:"20px",
+                                      minWidth: "260px",
+                                  }}
+                                />
+                            </div>           
+                  
+                            {/* <div
+                              style={{
+                                padding: "10px 15px",
+                                display: "flex",
+                                gap: "10px",
+                                alignItems: "center",
+                              }}
+                            >
+                              <div
+                                className={taStyles.filterType}
+                                key={"Total Talents"}
+                                onClick={() => {
+                                  getTalentProfilesDetails(profileInfo, 0);
+                                  setProfileStatusID(0);
+                                }}
+                                style={{
+                                  borderBottom:
+                                    profileStatusID === 0 ? "6px solid #FFDA30" : "",
+                                }}
+                              >
+                                <h2>
+                                  Total Talents :{" "}
+                                  <span>
+                                    {hrTalentListFourCount[0]?.totalTalents
+                                      ? hrTalentListFourCount[0]?.totalTalents
+                                      : 0}
+                                  </span>
+                                </h2>
+                              </div>
+                              <div
+                                className={taStyles.filterType}
+                                key={"Profile shared"}
+                                onClick={() => {
+                                  console.log(profileInfo,"profileInfo");                              
+                                  getTalentProfilesDetails(profileInfo, 2);
+                                  setProfileStatusID(2);
+                                }}
+                                style={{
+                                  borderBottom:
+                                    profileStatusID === 2 ? "6px solid #FFDA30" : "",
+                                }}
+                              >
+                                <h2>
+                                  Profile shared :{" "}
+                                  <span>
+                                    {hrTalentListFourCount[0]?.profileSharedCount
+                                      ? hrTalentListFourCount[0]?.profileSharedCount
+                                      : 0}
+                                  </span>
+                                </h2>
+                              </div>
+                              <div
+                                className={taStyles.filterType}
+                                key={"In Assessment"}
+                                onClick={() => {
+                                  getTalentProfilesDetails(profileInfo, 11);
+                                  setProfileStatusID(11);
+                                }}
+                                style={{
+                                  borderBottom:
+                                    profileStatusID === 11 ? "6px solid #FFDA30" : "",
+                                }}
+                              >
+                                <h2>
+                                  In Assessment :{" "}
+                                  <span>
+                                    {hrTalentListFourCount[0]?.assessmentCount
+                                      ? hrTalentListFourCount[0]?.assessmentCount
+                                      : 0}
+                                  </span>
+                                </h2>
+                              </div>
+                              <div
+                                className={taStyles.filterType}
+                                key={"In Interview"}
+                                onClick={() => {
+                                  getTalentProfilesDetails(profileInfo, 3);
+                                  setProfileStatusID(3);
+                                }}
+                                style={{
+                                  borderBottom:
+                                    profileStatusID === 3 ? "6px solid #FFDA30" : "",
+                                }}
+                              >
+                                <h2>
+                                  In Interview :{" "}
+                                  <span>
+                                    {hrTalentListFourCount[0]?.inInterviewCount
+                                      ? hrTalentListFourCount[0]?.inInterviewCount
+                                      : 0}
+                                  </span>
+                                </h2>
+                              </div>
+                              <div
+                                className={taStyles.filterType}
+                                key={"Offered"}
+                                onClick={() => {
+                                  getTalentProfilesDetails(profileInfo, 4);
+                                  setProfileStatusID(4);
+                                }}
+                                style={{
+                                  borderBottom:
+                                    profileStatusID === 4 ? "6px solid #FFDA30" : "",
+                                }}
+                              >
+                                <h2>
+                                  Offered :{" "}
+                                  <span>
+                                    {hrTalentListFourCount[0]?.offeredCount
+                                      ? hrTalentListFourCount[0]?.offeredCount
+                                      : 0}
+                                  </span>
+                                </h2>
+                              </div>
+                              <div
+                                className={taStyles.filterType}
+                                key={"Hired"}
+                                onClick={() => {
+                                  getTalentProfilesDetails(profileInfo, 10);
+                                  setProfileStatusID(10);
+                                }}
+                                style={{
+                                  borderBottom:
+                                    profileStatusID === 10 ? "6px solid #FFDA30" : "",
+                                }}
+                              >
+                                <h2>
+                                  Hired :{" "}
+                                  <span>
+                                    {hrTalentListFourCount[0]?.hiredCount
+                                      ? hrTalentListFourCount[0]?.hiredCount
+                                      : 0}
+                                  </span>
+                                </h2>
+                              </div>
+                              <div
+                                className={taStyles.filterType}
+                                key={"Rejected, screening"}
+                                onClick={() => {
+                                  getTalentProfilesDetails(profileInfo, 7, 1);
+                                  setProfileStatusID(71);
+                                }}
+                                style={{
+                                  borderBottom:
+                                    profileStatusID === 71 ? "6px solid #FFDA30" : "",
+                                }}
+                              >
+                                <h2>
+                                  Screen Reject :{" "}
+                                  <span>
+                                    {hrTalentListFourCount[0]?.screeningRejectCount
+                                      ? hrTalentListFourCount[0]?.screeningRejectCount
+                                      : 0}
+                                  </span>
+                                </h2>
+                              </div>
+                              <div
+                                className={taStyles.filterType}
+                                key={"Rejected, Interview"}
+                                onClick={() => {
+                                  getTalentProfilesDetails(profileInfo, 7, 2);
+                                  setProfileStatusID(72);
+                                }}
+                                style={{
+                                  borderBottom:
+                                    profileStatusID === 72 ? "6px solid #FFDA30" : "",
+                                }}
+                              >
+                                <h2>
+                                  Interview Reject :{" "}
+                                  <span>
+                                    {hrTalentListFourCount[0]?.interviewRejectCount
+                                      ? hrTalentListFourCount[0]?.interviewRejectCount
+                                      : 0}
+                                  </span>
+                                </h2>
+                              </div>
+                            </div> */}
+                  
+                              {achievedLoading ? (
+                                <div>
+                                  <Skeleton active />
+                                </div>
+                              ) : (
+                                <div style={{ margin: "5px 10px" }}>
+                                  <Table
+                                    dataSource={DFFilterListData}
+                                    columns={DFColumns}
+                                    pagination={false}
+                                    scroll={{ y: "480px" }}
+                                  />
+                                </div>
+                              )}
+                  
+                              {/* {moveToAssessment && (
+                                <Modal
+                                  width="992px"
+                                  centered
+                                  footer={null}
+                                  open={moveToAssessment}
+                                  className="commonModalWrap"
+                                  // onOk={() => setVersantModal(false)}
+                                  onCancel={() => {
+                                    setMoveToAssessment(false);
+                                    resetRemarkField("remark");
+                                    clearRemarkError("remark");
+                                  }}
+                                >
+                                  <MoveToAssessment
+                                    onCancel={() => {
+                                      setMoveToAssessment(false);
+                                      resetRemarkField("remark");
+                                      clearRemarkError("remark");
+                                    }}
+                                    register={remarkregiter}
+                                    handleSubmit={remarkSubmit}
+                                    resetField={resetRemarkField}
+                                    errors={remarkError}
+                                    saveRemark={saveRemark}
+                                    saveRemarkLoading={saveRemarkLoading}
+                                  />
+                                </Modal>
+                              )} */}
+                  
+                              <div style={{ padding: "10px 0" }}>
+                                <button
+                                  className={uplersStyle.btnCancle}
+                                  // disabled={isAddingNewTask}
+                                  onClick={() => {
+                                    setSearchTerm('')
+                                    setShowDFReport(false);
+                                    setDFFilterListData([]);
+                                    setDFListData([]);
+                                  }}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </>}
+                          </Modal>
+                        )}
     </div>
   );
 }

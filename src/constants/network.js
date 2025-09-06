@@ -219,6 +219,7 @@ export class ReportType {
 	static GET_POD_DASHBOARD_USERS_GROUP_REPORT = 'PODDashboardPODGroupUserDetails'
 	static GET_POD_DASHBOARD_LIST = 'PODDashboard'
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
+	static GET_POC_DF_DETAILS_LIST = 'PODDashboard_DeliveryFunnelDetails'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
