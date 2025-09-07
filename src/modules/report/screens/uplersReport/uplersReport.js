@@ -263,7 +263,7 @@ export default function UplersReport() {
     }
   };
 
-  const getDFDetails = async (row, v) => {
+  const getDFDetails = async (row, v,week) => {
     try {
       setShowDFReport(true);
 
@@ -272,7 +272,8 @@ export default function UplersReport() {
         pod_id: selectedHead,
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
-        optiontype: row.stage_ID
+        optiontype: row.stage_ID,
+        weekno: week ? week : "",
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -559,7 +560,7 @@ export default function UplersReport() {
               onClick={() =>
                 {
                 if(rec.category === "DF"){
-                  getDFDetails(rec, v)
+                  getDFDetails(rec, v, "W1")
                 }else{
                    getHRTalentWiseReport(rec, v, "W1")
                 }
@@ -594,7 +595,7 @@ export default function UplersReport() {
               onClick={() =>
                 {
                 if(rec.category === "DF"){
-                  getDFDetails(rec, v)
+                  getDFDetails(rec, v, "W2")
                 }else{
                   getHRTalentWiseReport(rec, v, "W2")
                 }
@@ -629,7 +630,7 @@ export default function UplersReport() {
               onClick={() => 
                 {
                 if(rec.category === "DF"){
-                  getDFDetails(rec, v)
+                  getDFDetails(rec, v, "W3")
                 }else{
                   getHRTalentWiseReport(rec, v, "W3")
                 }
@@ -664,7 +665,7 @@ export default function UplersReport() {
               onClick={() => 
                 {
                 if(rec.category === "DF"){
-                  getDFDetails(rec, v)
+                  getDFDetails(rec, v, "W4")
                 }else{
                   getHRTalentWiseReport(rec, v, "W4")
                 }
@@ -699,7 +700,7 @@ export default function UplersReport() {
               onClick={() => 
                 {
                 if(rec.category === "DF"){
-                  getDFDetails(rec, v)
+                  getDFDetails(rec, v, "W5")
                 }else{
                   getHRTalentWiseReport(rec, v, "W5")
                 }
