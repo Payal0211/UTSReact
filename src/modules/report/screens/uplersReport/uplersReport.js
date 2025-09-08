@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import uplersStyle from "./uplersReport.module.css";
 import {
   Select,
@@ -27,6 +27,13 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 import { size } from "lodash";
+import { IoMdAddCircle } from "react-icons/io";
+import { IoChatboxEllipses } from "react-icons/io5"
+import { IconContext } from "react-icons";
+import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
+import spinGif from "assets/gif/RefreshLoader.gif";
+import Editor from "modules/hiring request/components/textEditor/editor";
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 
 const { Title, Text } = Typography;
 
@@ -51,8 +58,21 @@ export default function UplersReport() {
 
   const [monthDate, setMonthDate] = useState(new Date());
   const selectedYear = monthDate.getFullYear();
+  const [showComment, setShowComment] = useState(false);
+  const [commentData, setCommentData] = useState({});
+   const [allCommentList, setALLCommentsList] = useState([]);
+    const [isCommentLoading, setIsCommentLoading] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
+
+    const [userData, setUserData] = useState({});
+    useEffect(() => {
+      const getUserResult = async () => {
+        let userData = UserSessionManagementController.getUserSession();
+        if (userData) setUserData(userData);
+      };
+      getUserResult();
+    }, []);
 
 
   const getHeads = async () => {
@@ -162,10 +182,54 @@ export default function UplersReport() {
     }
   }, [selectedHead, monthDate,hrModal]);
 
-  console.log("selectedHead", selectedHead, pODUsersList);
+
   useEffect(() => {
     getHeads();
   }, []);
+
+    const saveComment = async (note) => {
+      let pl = {
+        hR_BusinessType: "Global",
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        userCategory: 'POD',
+        hR_Model: hrModal === 'DP' ? 'D' : 'C',
+        stage_ID: selectedHead,
+        loggedInUserID: userData?.UserId,
+        comments: note,
+      };
+      setIsCommentLoading(true);
+      const res = await TaDashboardDAO.insertRecruiterCommentRequestDAO(pl);
+      setIsCommentLoading(false);
+      if (res.statusCode === HTTPStatusCode.OK) {
+        setALLCommentsList(res.responseBody);
+      }
+    };
+
+    const getAllComments = async (d, modal) => {
+      setIsCommentLoading(true);
+      const pl = {
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        userCategory: 'POD',
+        hR_Model: hrModal === 'DP' ? 'D' : 'C',
+        stage_ID: selectedHead,
+        hR_BusinessType: "Global",
+      }; 
+      const result = await TaDashboardDAO.getALLRevenueCommentsDAO(pl);
+      setIsCommentLoading(false);
+      if (result.statusCode === HTTPStatusCode.OK) {
+        setALLCommentsList(result.responseBody);
+      } else {
+        setALLCommentsList([]);
+      }
+    };
+
+    const AddComment = (data, modal, index) => {
+    getAllComments(data, modal);
+    setShowComment(true);
+    setCommentData({ ...data, hR_Model: modal });
+  };
 
   const renderCell = (
     value,
@@ -492,10 +556,46 @@ export default function UplersReport() {
       }),
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
-        return v ? (
+        return <>
+            <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "end",
+                    // flexDirection:'end'
+                  }}
+                >
+                  {(rec.stage === 'Joining' || rec.stage === 'Companies CF' || rec.stage === 'Total Customers assigned') && <IconContext.Provider
+                                      value={{
+                                        color: "green",
+                                        style: {
+                                          width: "20px",
+                                          height: "20px",
+                                          marginRight: "auto",
+                                          cursor: "pointer",
+                                        },
+                                      }}
+                                    >
+                                      {" "}
+                                      <Tooltip title={`Add/View comment`} placement="top">
+                                        <span
+                                          onClick={() => {
+                                            AddComment(rec, "N");
+                                          }}
+                                          // className={taStyles.feedbackLabel}
+                                        >
+                                          {" "}
+                                          <IoMdAddCircle />
+                                        </span>{" "}
+                                      </Tooltip>
+                                    </IconContext.Provider>}
+                    
+<div style={{marginLeft:'auto'}}>
+  { v ? (
           rec.stage === "Goal" || rec.stage.includes("%") ? (
             v
           ) : (
+         
             <span
               onClick={() => {
                 if(rec.category === "DF"){
@@ -510,8 +610,12 @@ export default function UplersReport() {
             </span>
           )
         ) : (
-          ""
-        );
+          "" )}
+</div>
+                                    
+       
+              </div>
+        </>
       },
     },
     {
@@ -776,6 +880,26 @@ export default function UplersReport() {
     // },
   ];
 
+   const commentColumn = [
+    {title:"Created By",
+      dataIndex: "createdByDatetime",
+      key: "createdByDatetime",
+       width:'200px'
+    },
+    {title:"Comment",
+      dataIndex: "comments",
+      key: "comments",
+      render:(text)=>{
+        return <div  dangerouslySetInnerHTML={{ __html: text }}></div>
+      }
+    },
+     {title:"Added By",
+      dataIndex: "addedBy",
+      key: "addedBy",
+      width:'200px'
+    },
+  ]
+
   const DFColumns = [
       {
         title: "Action Date",
@@ -810,6 +934,16 @@ export default function UplersReport() {
         title: "Talent",
         dataIndex: "talent",
         key: "talent",
+      },
+       {
+        title: "TA",
+        dataIndex: "ta",
+        key: "ta",
+      },
+       {
+        title: "Sales Person",
+        dataIndex: "salesperson",
+        key: "salesperson",
       },
       {
         title: "Slot/Remark",
@@ -975,6 +1109,31 @@ export default function UplersReport() {
               })
             )}
           </div>
+          <div style={{display:'flex', alignItems:'center',gap:'10px', height:'60px'}}>
+ <IconContext.Provider
+                                      value={{
+                                        color: "green",
+                                        style: {
+                                          width: "20px",
+                                          height: "20px",
+                                          marginRight: "auto",
+                                          cursor: "pointer",
+                                        },
+                                      }}
+                                    >
+                                      {" "}
+                                      <Tooltip title={`All Comments`} placement="top">
+                                        <span
+                                          onClick={() => {
+                                            AddComment();
+                                          }}
+                                          // className={taStyles.feedbackLabel}
+                                        >
+                                          {" "}
+                                          <IoChatboxEllipses/>
+                                        </span>{" "}
+                                      </Tooltip>
+                                    </IconContext.Provider>
 
           <Card
             size="small"
@@ -990,6 +1149,8 @@ export default function UplersReport() {
               <strong>{podDashboardList[0]?.workingDaysTillNow}</strong>
             </Text>
           </Card>
+          </div>
+          
         </div>
       </div>
 
@@ -1303,7 +1464,7 @@ export default function UplersReport() {
               <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
           </div>
-{console.log("TC",showTalentCol , (showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH'))}
+
           {achievedLoading ? (
             <TableSkeleton />
           ) : listAchievedData.length > 0 ? (
@@ -1340,14 +1501,14 @@ export default function UplersReport() {
                           : "HR Created Date"}
                       </th>
 
-                     {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') &&  <th
+                     {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH' ) &&  <th
                         style={{
                           padding: "10px",
                           border: "1px solid #ddd",
                           background: "rgb(233, 233, 233) !important",
                         }}
                       >
-                        Action Date
+                        {showTalentCol?.stage === 'Joining' || showTalentCol?.stage === 'Selections/Closures' ? showTalentCol?.stage : 'Action'} Date
                       </th>} 
 
                       <th
@@ -1359,7 +1520,7 @@ export default function UplersReport() {
                       >
                         Company
                       </th>
-                      {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') && (
+                      {(showTalentCol?.category !== 'CF' && (showTalentCol?.category === 'CH' && showTalentCol?.stage !== "Customers with Active HRs" ? false : true)) && (
                         <>
                           <th
                             style={{
@@ -1395,9 +1556,9 @@ export default function UplersReport() {
                               backgroundColor: "rgb(233, 233, 233) !important",
                             }}
                           >
-                            1TR Pipeline
+                            1TR {(showTalentCol?.stage === 'Joining' || showTalentCol?.stage === 'Selections/Closures') ? 'Revenue': 'Pipeline'} 
                           </th>
-                           <th
+                          {(showTalentCol?.stage !== 'Joining' && showTalentCol?.stage !== 'Selections/Closures')  &&  <th
                             style={{
                               padding: "10px",
                               border: "1px solid #ddd",
@@ -1405,7 +1566,8 @@ export default function UplersReport() {
                             }}
                           >
                             Total Pipeline
-                          </th>
+                          </th>}
+                          
                            <th
                             style={{
                               padding: "10px",
@@ -1466,7 +1628,10 @@ export default function UplersReport() {
                       >
                         Lead Type
                       </th>
-                       <th
+                      
+                      {(showTalentCol?.category !== 'CF' && (showTalentCol?.category === 'CH' && showTalentCol?.stage !== "Customers with Active HRs" ? false : true)) && (
+                        <>
+                         <th
                         style={{
                           padding: "10px",
                           border: "1px solid #ddd",
@@ -1475,7 +1640,6 @@ export default function UplersReport() {
                       >
                         Talent
                       </th>
-                      {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') && (
                         <th
                           style={{
                             padding: "10px",
@@ -1484,7 +1648,7 @@ export default function UplersReport() {
                           }}
                         >
                           HR Status
-                        </th>
+                        </th></>
                       )}
                     </tr>
                   </thead>
@@ -1524,7 +1688,7 @@ export default function UplersReport() {
                             />
                           )}
                         </td>
-                        {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH')  && (
+                        {(showTalentCol?.category !== 'CF' && (showTalentCol?.category === 'CH' && showTalentCol?.stage !== "Customers with Active HRs" ? false : true))  && (
                           <>
                             <td
                               style={{
@@ -1569,14 +1733,14 @@ export default function UplersReport() {
                             >
                               {detail.hrPipelineStr}
                             </td>
-                               <td
+                            {(showTalentCol?.stage !== 'Joining' && showTalentCol?.stage !== 'Selections/Closures') &&  <td
                               style={{
                                padding: "8px",
                                 border: "1px solid #ddd",
                               }}
                             >
                               {detail.total_HRPipelineStr}
-                            </td>
+                            </td>}  
                        <td
                               style={{
                                padding: "8px",
@@ -1624,12 +1788,13 @@ export default function UplersReport() {
                         >
                           {detail.lead_Type}
                         </td>
-                         <td
+                       
+                        {(showTalentCol?.category !== 'CF' && (showTalentCol?.category === 'CH' && showTalentCol?.stage !== "Customers with Active HRs" ? false : true)) && ( <>
+                           <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.talent}
                         </td>
-                        {(showTalentCol?.category !== 'CF' && showTalentCol?.category !== 'CH') && (
                           <td
                             style={{ padding: "8px", border: "1px solid #ddd" }}
                           >
@@ -1638,6 +1803,7 @@ export default function UplersReport() {
                               detail.hrStatus
                             )}
                           </td>
+                          </>
                         )}
                       </tr>
                     ))}
@@ -1726,184 +1892,6 @@ export default function UplersReport() {
                                 />
                             </div>           
                   
-                            {/* <div
-                              style={{
-                                padding: "10px 15px",
-                                display: "flex",
-                                gap: "10px",
-                                alignItems: "center",
-                              }}
-                            >
-                              <div
-                                className={taStyles.filterType}
-                                key={"Total Talents"}
-                                onClick={() => {
-                                  getTalentProfilesDetails(profileInfo, 0);
-                                  setProfileStatusID(0);
-                                }}
-                                style={{
-                                  borderBottom:
-                                    profileStatusID === 0 ? "6px solid #FFDA30" : "",
-                                }}
-                              >
-                                <h2>
-                                  Total Talents :{" "}
-                                  <span>
-                                    {hrTalentListFourCount[0]?.totalTalents
-                                      ? hrTalentListFourCount[0]?.totalTalents
-                                      : 0}
-                                  </span>
-                                </h2>
-                              </div>
-                              <div
-                                className={taStyles.filterType}
-                                key={"Profile shared"}
-                                onClick={() => {
-                                  console.log(profileInfo,"profileInfo");                              
-                                  getTalentProfilesDetails(profileInfo, 2);
-                                  setProfileStatusID(2);
-                                }}
-                                style={{
-                                  borderBottom:
-                                    profileStatusID === 2 ? "6px solid #FFDA30" : "",
-                                }}
-                              >
-                                <h2>
-                                  Profile shared :{" "}
-                                  <span>
-                                    {hrTalentListFourCount[0]?.profileSharedCount
-                                      ? hrTalentListFourCount[0]?.profileSharedCount
-                                      : 0}
-                                  </span>
-                                </h2>
-                              </div>
-                              <div
-                                className={taStyles.filterType}
-                                key={"In Assessment"}
-                                onClick={() => {
-                                  getTalentProfilesDetails(profileInfo, 11);
-                                  setProfileStatusID(11);
-                                }}
-                                style={{
-                                  borderBottom:
-                                    profileStatusID === 11 ? "6px solid #FFDA30" : "",
-                                }}
-                              >
-                                <h2>
-                                  In Assessment :{" "}
-                                  <span>
-                                    {hrTalentListFourCount[0]?.assessmentCount
-                                      ? hrTalentListFourCount[0]?.assessmentCount
-                                      : 0}
-                                  </span>
-                                </h2>
-                              </div>
-                              <div
-                                className={taStyles.filterType}
-                                key={"In Interview"}
-                                onClick={() => {
-                                  getTalentProfilesDetails(profileInfo, 3);
-                                  setProfileStatusID(3);
-                                }}
-                                style={{
-                                  borderBottom:
-                                    profileStatusID === 3 ? "6px solid #FFDA30" : "",
-                                }}
-                              >
-                                <h2>
-                                  In Interview :{" "}
-                                  <span>
-                                    {hrTalentListFourCount[0]?.inInterviewCount
-                                      ? hrTalentListFourCount[0]?.inInterviewCount
-                                      : 0}
-                                  </span>
-                                </h2>
-                              </div>
-                              <div
-                                className={taStyles.filterType}
-                                key={"Offered"}
-                                onClick={() => {
-                                  getTalentProfilesDetails(profileInfo, 4);
-                                  setProfileStatusID(4);
-                                }}
-                                style={{
-                                  borderBottom:
-                                    profileStatusID === 4 ? "6px solid #FFDA30" : "",
-                                }}
-                              >
-                                <h2>
-                                  Offered :{" "}
-                                  <span>
-                                    {hrTalentListFourCount[0]?.offeredCount
-                                      ? hrTalentListFourCount[0]?.offeredCount
-                                      : 0}
-                                  </span>
-                                </h2>
-                              </div>
-                              <div
-                                className={taStyles.filterType}
-                                key={"Hired"}
-                                onClick={() => {
-                                  getTalentProfilesDetails(profileInfo, 10);
-                                  setProfileStatusID(10);
-                                }}
-                                style={{
-                                  borderBottom:
-                                    profileStatusID === 10 ? "6px solid #FFDA30" : "",
-                                }}
-                              >
-                                <h2>
-                                  Hired :{" "}
-                                  <span>
-                                    {hrTalentListFourCount[0]?.hiredCount
-                                      ? hrTalentListFourCount[0]?.hiredCount
-                                      : 0}
-                                  </span>
-                                </h2>
-                              </div>
-                              <div
-                                className={taStyles.filterType}
-                                key={"Rejected, screening"}
-                                onClick={() => {
-                                  getTalentProfilesDetails(profileInfo, 7, 1);
-                                  setProfileStatusID(71);
-                                }}
-                                style={{
-                                  borderBottom:
-                                    profileStatusID === 71 ? "6px solid #FFDA30" : "",
-                                }}
-                              >
-                                <h2>
-                                  Screen Reject :{" "}
-                                  <span>
-                                    {hrTalentListFourCount[0]?.screeningRejectCount
-                                      ? hrTalentListFourCount[0]?.screeningRejectCount
-                                      : 0}
-                                  </span>
-                                </h2>
-                              </div>
-                              <div
-                                className={taStyles.filterType}
-                                key={"Rejected, Interview"}
-                                onClick={() => {
-                                  getTalentProfilesDetails(profileInfo, 7, 2);
-                                  setProfileStatusID(72);
-                                }}
-                                style={{
-                                  borderBottom:
-                                    profileStatusID === 72 ? "6px solid #FFDA30" : "",
-                                }}
-                              >
-                                <h2>
-                                  Interview Reject :{" "}
-                                  <span>
-                                    {hrTalentListFourCount[0]?.interviewRejectCount
-                                      ? hrTalentListFourCount[0]?.interviewRejectCount
-                                      : 0}
-                                  </span>
-                                </h2>
-                              </div>
-                            </div> */}
                   
                               {achievedLoading ? (
                                 <div>
@@ -1967,6 +1955,95 @@ export default function UplersReport() {
                             </>}
                           </Modal>
                         )}
+
+                           {showComment && (
+                                <Modal
+                                  transitionName=""
+                                  width="1000px"
+                                  centered
+                                  footer={null}
+                                  open={showComment}
+                                  className="engagementModalStyle"
+                                  onCancel={() => {
+                                    setShowComment(false);
+                                    setALLCommentsList([]);
+                                    setCommentData({});
+                                  }}
+                                >
+                                  <div style={{ padding: "35px 15px 10px 15px" }}>
+                                    <h3>Add Comment</h3>
+                                  </div>
+                                  <Suspense>
+                                    <div
+                                      style={{
+                                        position: "relative",
+                                        marginBottom: "10px",
+                                        padding: "0 20px",
+                                        paddingRight: "30px",
+                                      }}
+                                    >
+                                      <Editor
+                                        hrID={""}
+                                        saveNote={(note) => saveComment(note)}
+                                        isUsedForComment={true}
+                                      />
+                                    </div>
+                                  </Suspense>
+                        
+                                  {allCommentList.length > 0 ? (
+                                    <div style={{ padding: "12px 20px" }}>
+                                      {isCommentLoading && (
+                                        <div>
+                                          Adding Comment ...{" "}
+                                          <img src={spinGif} alt="loadgif" width={16} />{" "}
+                                        </div>
+                                      )}
+                                      {!isCommentLoading && <Table 
+                                       dataSource={allCommentList}
+                                            columns={commentColumn}
+                                            pagination={false}
+                                      />}
+                                      {/* <ul>
+                                        {allCommentList.map((item) => (
+                                          <li
+                                            key={item.comments}
+                                           
+                                          >
+                                            <div style={{display:'flex',justifyContent:'space-between'}}>
+                                              <strong>{item.addedBy}</strong><p>{item.createdByDatetime}</p>
+                                            </div>
+                                            <div  dangerouslySetInnerHTML={{ __html: item.comments }}></div>
+                                          </li>
+                                        ))}
+                                      </ul> */}
+                                    </div>
+                                  ) : (
+                                    <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+                                      {isCommentLoading ? (
+                                        <div>
+                                          Loading Comments...{" "}
+                                          <img src={spinGif} alt="loadgif" width={16} />{" "}
+                                        </div>
+                                      ) : (
+                                        "No Comments yet"
+                                      )}
+                                    </h3>
+                                  )}
+                                  <div style={{ padding: "10px" }}>
+                                    <button
+                                      className={uplersStyle.btnCancle}
+                                      // disabled={isEditNewTask}
+                                      onClick={() => {
+                                        setShowComment(false);
+                                        setALLCommentsList([]);
+                                        setCommentData({});
+                                      }}
+                                    >
+                                      Close
+                                    </button>
+                                  </div>
+                                </Modal>
+                              )}
     </div>
   );
 }
