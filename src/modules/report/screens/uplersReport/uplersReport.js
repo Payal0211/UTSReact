@@ -1556,7 +1556,7 @@ export default function UplersReport() {
                               backgroundColor: "rgb(233, 233, 233) !important",
                             }}
                           >
-                            1TR {(showTalentCol?.stage === 'Joining' || showTalentCol?.stage === 'Selections/Closures') ? 'Revenue': 'Pipeline'} 
+                            {(showTalentCol?.stage === 'Joining' || showTalentCol?.stage === 'Selections/Closures') ? 'Revenue': ' 1TR Pipeline'} 
                           </th>
                           {(showTalentCol?.stage !== 'Joining' && showTalentCol?.stage !== 'Selections/Closures')  &&  <th
                             style={{
