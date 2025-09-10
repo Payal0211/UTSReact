@@ -247,7 +247,7 @@ console.log('groupList',groupList)
             return <>
             <div className={CloneHRModalStyle.colMd12}>
             <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px',justifyContent:'space-between'}}> 
-                  <label style={{marginBottom:"12px"}}>
+                  <label style={{marginBottom:"12px", fontSize:'15px'}}>
                   POD
                   {/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
                     *
@@ -280,7 +280,7 @@ console.log('groupList',groupList)
 
              <div className={CloneHRModalStyle.colMd12}>
             <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px',justifyContent:'space-between'}}> 
-                  <label style={{marginBottom:"12px",width:'135px'}}>
+                  <label style={{marginBottom:"12px",width:'135px', fontSize:'15px'}}>
                   AM Lead
                   {/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
                     *
@@ -317,7 +317,7 @@ console.log('groupList',groupList)
 
               <div className={CloneHRModalStyle.colMd12}>
             <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px',justifyContent:'space-between'}}> 
-                  <label style={{marginBottom:"12px",width:'135px'}}>
+                  <label style={{marginBottom:"12px",width:'135px', fontSize:'15px'}}>
                   AM 
                   {/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
                     *
@@ -354,7 +354,7 @@ console.log('groupList',groupList)
 
             <div className={CloneHRModalStyle.colMd12}>
             <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px',justifyContent:'space-between'}}> 
-                  <label style={{marginBottom:"12px",width:'135px'}}>
+                  <label style={{marginBottom:"12px",width:'135px', fontSize:'15px'}}>
                   TA Lead
                   {/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
                     *
@@ -392,7 +392,7 @@ console.log('groupList',groupList)
 
    <div className={CloneHRModalStyle.colMd12}>
             <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px',justifyContent:'space-between'}}> 
-                  <label style={{marginBottom:"12px",width:'135px'}}>
+                  <label style={{marginBottom:"12px",width:'135px', fontSize:'15px'}}>
                   TA 
                   {/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
                     *
@@ -433,7 +433,7 @@ console.log('groupList',groupList)
         
            <div className={CloneHRModalStyle.colMd12}>
             <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px',justifyContent:'space-between'}}> 
-                  <label style={{marginBottom:"12px",width:'135px'}}>
+                  <label style={{marginBottom:"12px",width:'135px', fontSize:'15px'}}>
                   New POD
                 </label>
                <Select
