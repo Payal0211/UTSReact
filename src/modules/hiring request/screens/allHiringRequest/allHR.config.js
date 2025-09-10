@@ -6,6 +6,7 @@ import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 import { ReactComponent as CloseHR } from "assets/svg/power.svg";
 import { ReactComponent as FocusedRole } from "assets/svg/FocusRole.svg";
 import { Tooltip, message, Checkbox } from "antd";
+import { PiArrowsSplitBold } from "react-icons/pi";
 import eyeIcon from 'assets/svg/eye.svg'
 import Diamond from "assets/svg/diamond.svg";
 import moment from "moment";
@@ -29,7 +30,8 @@ export const allHRConfig = {
     setIsPreviewModal,
     setpreviewIDs,
     getPreviewPostData,
-    setRepostHrModal
+    setRepostHrModal,
+    setSplitHR
   ) => {
 
     const getColorCode = (doneBy)=>{
@@ -209,6 +211,35 @@ export const allHRConfig = {
           );
         },
       },
+       {
+        title: " ",
+        dataIndex: "splitHR",
+        key: "splitHR",
+        width: "42px",
+        align: "center",
+        fixed: "left",
+        render: (text, result) => {
+          // if (LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10) {
+          //   return;
+          // }
+          return (
+            <>
+              <Tooltip placement="bottom" title={"Split HR"}>
+                <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
+                  <PiArrowsSplitBold
+                    style={{ width: "17px", height: "17px", fill: '#232323' }}
+                    onClick={() => {
+                      setSplitHR(true);
+                      setHRID(result?.key);
+                      setHRNumber({hrNumber:result?.HR_ID, isHybrid:result?.isHybrid,companyID:result?.companyID});
+                    }}
+                  />
+                </a>
+              </Tooltip>
+            </>
+          );
+        },
+      },
       // {
       // 	title: 'O/P',
       // 	dataIndex: 'adHocHR',
@@ -378,6 +409,18 @@ export const allHRConfig = {
           // );
           return text
         },
+      },
+        {
+        title: `POD`,
+        // title: (
+        //   <>
+        //     HR Published <br /> Since
+        //   </>
+        // ),
+        dataIndex: "poDs",
+        key: "poDs",
+        width: "164px",
+        align: "left",
       },
       {
         title: `HR Published Since`,

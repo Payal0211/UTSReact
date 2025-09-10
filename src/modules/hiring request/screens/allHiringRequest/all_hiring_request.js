@@ -48,6 +48,7 @@ import LogoLoader from "shared/components/loader/logoLoader";
 import PreviewHRModal from "./previewHR/previewHRModal";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import RePostHRModal from "modules/hiring request/components/repostHRModal/repostHRModal";
+import SplitHR from "./splitHR";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -88,6 +89,7 @@ const AllHiringRequestScreen = () => {
   const [priorityCount, setPriorityCount] = useState([]);
   const [messageAPI, contextHolder] = message.useMessage();
   const [openCloneHR, setCloneHR] = useState(false);
+   const [openSplitHR, setSplitHR] = useState(false);
   const [getHRnumber, setHRNumber] = useState({hrNumber:'', isHybrid:false});
   const [getHRID, setHRID] = useState("");
   const [reopenHrData, setReopenHRData] = useState({});
@@ -326,7 +328,7 @@ const AllHiringRequestScreen = () => {
         setIsPreviewModal,
         setpreviewIDs,
         getPreviewPostData,
-        setRepostHrModal
+        setRepostHrModal,setSplitHR
       ),
     [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
@@ -988,6 +990,24 @@ const AllHiringRequestScreen = () => {
         <CloneHR
           cloneHRhandler={cloneHRhandler}
           onCancel={() => setCloneHR(false)}
+          getHRnumber={getHRnumber.hrNumber}
+          isHRHybrid={getHRnumber.isHybrid}
+          companyID={getHRnumber.companyID}
+        />
+      </Modal>
+
+            <Modal
+        width={"700px"}
+        centered
+        footer={false}
+        open={openSplitHR}
+        className="cloneHRConfWrap"
+        onCancel={() => setSplitHR(false)}
+      >
+        <SplitHR
+          cloneHRhandler={cloneHRhandler}
+          onCancel={() => setSplitHR(false)}
+          getHRID={getHRID}
           getHRnumber={getHRnumber.hrNumber}
           isHRHybrid={getHRnumber.isHybrid}
           companyID={getHRnumber.companyID}

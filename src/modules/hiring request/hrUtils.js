@@ -44,7 +44,9 @@ export const hrUtils = {
 			isDraftHR: item?.isDraftHR,
 			appActionDoneBy: item?.appActionDoneBy,
 			hrPostedFromPlatform: item?.hrPostedFromPlatform,
-			timeZone: item?.timeZone
+			timeZone: item?.timeZone,			
+			poDs: item?.poDs,
+			podiDs: item?.podiDs,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {

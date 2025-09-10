@@ -216,8 +216,10 @@ export class ReportType {
 	static GET_PROBABILITY_RATIO_DETAILS = 'GetProbabiltyRatioDetails'
 	static ACTIVE_OWNER_USER = 'GetActiveOwner_UserList'
 	static GET_POD_DASHBOARD_GROUP_REPORT = 'PODDashboardPODGroups'
+	static GET_POD_SPLIT_GROUP = 'HRSplitinPODs'
 	static GET_POD_DASHBOARD_USERS_GROUP_REPORT = 'PODDashboardPODGroupUserDetails'
 	static GET_POD_DASHBOARD_LIST = 'PODDashboard'
+	static GET_POD_SAVE_SPLIT_LIST = 'SaveSplitHRwithPODs'
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
 	static GET_POC_DF_DETAILS_LIST = 'PODDashboard_DeliveryFunnelDetails'
 }
