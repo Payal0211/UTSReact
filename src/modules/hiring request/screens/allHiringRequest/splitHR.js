@@ -81,7 +81,7 @@ const SplitHR = ({
                 default : break
             }
         })
-console.log('podData',podObj)
+// console.log('podData',podObj)
         modData.push(podObj)
        
     })
@@ -97,7 +97,7 @@ let pl = {hrNo:getHRID,podid :0}
         let filterResult = await ReportDAO.getAllPODUsersGroupDAO(pl);
         setIsLoading(false); 
         if (filterResult.statusCode === HTTPStatusCode.OK) {
-          console.log('filterResult',filterResult?.responseBody)
+        //   console.log('filterResult',filterResult?.responseBody)
           let modData = await modifyResponseforPOD(filterResult?.responseBody)
           
         //   let datawithList = await adduserListToEachPOD(modData)
@@ -190,36 +190,36 @@ const saveSplitHR = async () =>{
            payload.push({
             "poD_ID": item.pod,
             "HR_ID": getHRID,
-            "POD_User_Id": item.amLead,
+            "POD_User_Id": item.amLead !== '' ? item.amLead : null,
             "Revenue": item.amLeadAmount ? parseFloat(item.amLeadAmount) : 0
            
         })   
           payload.push({
             "poD_ID": item.pod,
             "HR_ID": getHRID,
-            "POD_User_Id": item.am,
+            "POD_User_Id": item.am !== '' ? item.am : null,
             "Revenue": item.amAmount ? parseFloat(item.amAmount) : 0
            
         })
           payload.push({
             "poD_ID": item.pod,
             "HR_ID": getHRID,
-            "POD_User_Id": item.taLead,
+            "POD_User_Id": item.taLead !== '' ? item.taLead : null,
             "Revenue": item.taLeadAmount ? parseFloat(item.taLeadAmount) : 0
            
         })
         payload.push({
             "poD_ID": item.pod,
             "HR_ID": getHRID,
-            "POD_User_Id": item.ta,
+            "POD_User_Id": item.ta !== '' ? item.ta : null,
             "Revenue": item.taAmount ? parseFloat(item.taAmount) : 0
            
         })
            
         })
-    console.log('payload',payload)
+    // console.log('payload',payload)
     setIsLoading(true);
-    let filterResult = await ReportDAO.saveSplitHRDAO(payload);
+    let filterResult = await ReportDAO.saveSplitHRDAO({'hrpodDetails':payload});
     setIsLoading(false); 
     if (filterResult.statusCode === HTTPStatusCode.OK) {
       onCancel()
@@ -237,14 +237,14 @@ const saveSplitHR = async () =>{
 }
 	
 
-console.log('groupList',groupList)
+// console.log('groupList',groupList)
 	return (
 		<div className={CloneHRModalStyle.cloneHRConfContent}>
 			<h2>Split Pipeline {getHRnumber}</h2>
 
 		{isLoading ? <Skeleton active /> : 
         groupList?.map((item,index)=>{
-            return <>
+            return <div key={index + 1} className={CloneHRModalStyle.podContainer}>
             <div className={CloneHRModalStyle.colMd12}>
             <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px',justifyContent:'space-between'}}> 
                   <label style={{marginBottom:"12px", fontSize:'15px'}}>
@@ -306,7 +306,7 @@ console.log('groupList',groupList)
               }))}
             //   optionFilterProp="label"
             />
-             <Input type='number' style={{ width: "270px", height:'54px', borderRadius:'8px' }} value={item.amLeadAmount}   onChange={e=>{setGroupList(prev=>{
+             <Input type='number' style={{ width: "270px", height:'40px', borderRadius:'8px' }} value={item.amLeadAmount}   onChange={e=>{setGroupList(prev=>{
                     let newArr = [...prev]
                     newArr[index].amLeadAmount = e.target.value
                     return newArr
@@ -343,7 +343,7 @@ console.log('groupList',groupList)
               }))}
               optionFilterProp="label"
             />
-               <Input type='number' style={{ width: "270px", height:'54px', borderRadius:'8px' }} value={item.amAmount}  onChange={e=>{setGroupList(prev=>{
+               <Input type='number' style={{ width: "270px", height:'40px', borderRadius:'8px' }} value={item.amAmount}  onChange={e=>{setGroupList(prev=>{
                     let newArr = [...prev]
                     newArr[index].amAmount = e.target.value
                     return newArr
@@ -380,7 +380,7 @@ console.log('groupList',groupList)
               }))}
               optionFilterProp="label"
             />
-              <Input type='number' style={{ width: "270px", height:'54px', borderRadius:'8px' }} value={item.taLeadAmount}  onChange={e=>{setGroupList(prev=>{
+              <Input type='number' style={{ width: "270px", height:'40px', borderRadius:'8px' }} value={item.taLeadAmount}  onChange={e=>{setGroupList(prev=>{
                     let newArr = [...prev]
                     newArr[index].taLeadAmount = e.target.value
                     return newArr
@@ -418,7 +418,7 @@ console.log('groupList',groupList)
               }))}
               optionFilterProp="label"
             />
-               <Input type='number' style={{ width: "270px", height:'54px', borderRadius:'8px' }} value={item.taAmount}  onChange={e=>{setGroupList(prev=>{
+               <Input type='number' style={{ width: "270px", height:'40px', borderRadius:'8px' }} value={item.taAmount}  onChange={e=>{setGroupList(prev=>{
                     let newArr = [...prev]
                     newArr[index].taAmount = e.target.value
                     return newArr
@@ -427,11 +427,11 @@ console.log('groupList',groupList)
 							</div>
             </div>
 <Divider />
-            </>
+            </div>
         })}
 
         
-           <div className={CloneHRModalStyle.colMd12}>
+           <div className={`${CloneHRModalStyle.colMd12} ${CloneHRModalStyle.podContainer}`}>
             <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px',justifyContent:'space-between'}}> 
                   <label style={{marginBottom:"12px",width:'135px', fontSize:'15px'}}>
                   New POD
@@ -466,7 +466,7 @@ console.log('groupList',groupList)
 
 			
 
-			<div className={CloneHRModalStyle.formPanelAction}>
+			<div className={CloneHRModalStyle.formPanelAction} style={{marginBottom:'5px'}}>
 					<button
                     disabled={isLoading}
 						className={CloneHRModalStyle.btnPrimary}
