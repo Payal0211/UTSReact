@@ -1071,6 +1071,22 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 		return errorDebug(error, 'ReportAPI.getAllPODGroupRequest');
 	}
 	},
+	getAllPODUsersGroupRequest:async function (payload) {
+	let httpService = new HttpServices();
+	httpService.URL =
+		NetworkInfo.NETWORK +
+		SubDomain.REPORT +
+		ReportType.GET_POD_SPLIT_GROUP + `?hrid=${payload?.hrNo}&podid=${payload?.podid}`
+
+	httpService.setAuthRequired = true;
+	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	try {
+		let response = await httpService.sendGetRequest();
+		return response;
+	} catch (error) {
+		return errorDebug(error, 'ReportAPI.getAllPODGroupRequest');
+	}
+	},
 getAllPODGroupUsersRequest:async function (payload) {
 	let httpService = new HttpServices();
 	httpService.URL =
@@ -1103,4 +1119,23 @@ getAllPODGroupUsersRequest:async function (payload) {
 		return errorDebug(error, 'ReportAPI.getAllPODDashboardRequest');
 	}
 	},
+
+	saveSplitHRRequest:async function (payload) {
+	let httpService = new HttpServices();
+	httpService.URL =
+		NetworkInfo.NETWORK +
+		SubDomain.REPORT +
+		ReportType.GET_POD_SAVE_SPLIT_LIST 
+
+	httpService.setAuthRequired = true;
+	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	httpService.dataToSend = payload;
+	try {
+		let response = await httpService.sendPostRequest();
+		return response;
+	} catch (error) {
+		return errorDebug(error, 'ReportAPI.getAllPODDashboardRequest');
+	}
+	},
+
 };
