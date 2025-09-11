@@ -21,7 +21,7 @@ const { Option } = Select;
 export default function NegotiontoJoinee({
   impHooks
 }) {
-        const {AddComment,monthDate,hrModal,selectedHead} = impHooks
+        const {AddComment,monthDate,hrModal,selectedHead,podName} = impHooks
      const [isLoading, setIsLoading] = useState(false);
      const [isTableLoading,setIsTableLoading] = useState(false)
        const [reportData, setReportData] = useState([]);
@@ -299,7 +299,7 @@ export default function NegotiontoJoinee({
     {
       title: (
         <div style={{ textAlign: "center" }}>
-         Nasa Revenue
+         {podName} Revenue
         </div>
       ),
       dataIndex: "podValueStr",
