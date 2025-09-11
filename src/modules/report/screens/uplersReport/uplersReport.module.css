@@ -133,6 +133,10 @@ margin-bottom: 10px;
     background-color: #e7d1e7;
 }
 
+.boldText td{
+  font-weight: bold;
+}
+
 .chipCardContainer{
     display: flex;
   flex-wrap: wrap;
