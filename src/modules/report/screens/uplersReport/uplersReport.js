@@ -493,6 +493,7 @@ export default function UplersReport() {
           monthDate,
           hrModal,
           selectedHead,
+          podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
           }} 
         />},
          ]}
