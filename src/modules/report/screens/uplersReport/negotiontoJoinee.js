@@ -258,7 +258,7 @@ export default function NegotiontoJoinee({
       dataIndex: "talent",
       key: "talent",
       width: 120,
-      align: "center",
+      align: "left",
       className: uplersStyle.headerCell,
     },
     {
