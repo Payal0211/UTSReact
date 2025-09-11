@@ -973,6 +973,40 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getPOCDFPopupReportAPI');
 		}
 	},
+	getNegotiationReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_NEGOTIATION_REPORT + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPOCDFPopupReportAPI');
+		}
+	},
+	getNegotiationReportSummaryAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_NEGOTIATION_SUMMARY_REPORT + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPOCDFPopupReportAPI');
+		}
+	},
 	getNBDorAMRevenueAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

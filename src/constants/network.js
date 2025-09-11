@@ -222,6 +222,8 @@ export class ReportType {
 	static GET_POD_SAVE_SPLIT_LIST = 'SaveSplitHRwithPODs'
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
 	static GET_POC_DF_DETAILS_LIST = 'PODDashboard_DeliveryFunnelDetails'
+	static GET_NEGOTIATION_REPORT = 'PODNegotiationToJoiningFunnelList'
+	static GET_NEGOTIATION_SUMMARY_REPORT = 'PODNegotiationToJoiningFunnelSummary'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
