@@ -1720,67 +1720,9 @@ month
         </div>
       </div>
 
-       <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
-          {isTableLoading ? (
-            <TableSkeleton />
-          ) : (
-            <>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  padding: "20px 20px 0",
-                }}
-              >
-               New - Goal Planning upto negotiation
-              </p>
-              <Table
-          scroll={{ x: "1600px", y: "100vh" }}
-          id="List"
-          columns={reportPtoNColumns}
-          bordered={false}
-          dataSource={reportPtoNData?.filter(item=> item.businessType === 'New')}
-          rowKey={(record, index) => index}
-       
-          pagination={false}
-        />
-            </>
-          )}
-        </div>
-      </div>
+   
 
- <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
-          {isTableLoading ? (
-            <TableSkeleton />
-          ) : (
-            <>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  padding: "20px 20px 0",
-                }}
-              >
-                Existing - Goal Planning upto negotiation
-              </p>
-              <Table
-          scroll={{ x: "1600px", y: "100vh" }}
-          id="List"
-          columns={reportPtoNColumns}
-          bordered={false}
-          dataSource={reportPtoNData?.filter(item=> item.businessType === "Existing")}
-          rowKey={(record, index) => index}
-       
-          pagination={false}
-        />
-            </>
-          )}
-        </div>
-      </div>
 
-{console.log('reportPtoNData',reportPtoNData)}
        {showResponse && (
               <Modal
                 transitionName=""
@@ -2217,7 +2159,17 @@ month
  {isLoading ? (
         <TableSkeleton />
       ) : (
-        <Table
+        <>
+         <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+               Negotiation to Joinee Funnel
+              </p>
+               <Table
           scroll={{ x: "1600px", y: "100vh" }}
           id="amReportList"
           columns={reportColumns}
@@ -2227,6 +2179,8 @@ month
        
           pagination={false}
         />
+        </>
+       
       )}
 
        <Modal
@@ -2246,6 +2200,66 @@ month
           impHooks={{groupList,setGroupList,isSplitLoading, setIsSplitLoading}}
         />
       </Modal>
+        </div>
+      </div>
+
+          <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+          {isTableLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+               New - Goal Planning upto negotiation
+              </p>
+              <Table
+          scroll={{ x: "1600px", y: "100vh" }}
+          id="List"
+          columns={reportPtoNColumns}
+          bordered={false}
+          dataSource={reportPtoNData?.filter(item=> item.businessType === 'New')}
+          rowKey={(record, index) => index}
+       
+          pagination={false}
+        />
+            </>
+          )}
+        </div>
+      </div>
+
+ <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+          {isTableLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+                Existing - Goal Planning upto negotiation
+              </p>
+              <Table
+          scroll={{ x: "1600px", y: "100vh" }}
+          id="List"
+          columns={reportPtoNColumns}
+          bordered={false}
+          dataSource={reportPtoNData?.filter(item=> item.businessType === "Existing")}
+          rowKey={(record, index) => index}
+       
+          pagination={false}
+        />
+            </>
+          )}
         </div>
       </div>
   </>
