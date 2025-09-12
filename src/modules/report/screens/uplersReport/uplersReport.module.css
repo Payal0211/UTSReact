@@ -145,6 +145,33 @@ margin-bottom: 10px;
       padding: 0px 24px 12px;
 }
 
+.filterType {
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content:center;
+    align-items: center;
+    display: inline-flex;
+    cursor: pointer;
+    /* flex: 1; */
+}
+
+.filterType h2 {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    color: #232323;
+    margin-bottom: 0px;
+}
+
+.filterType span {
+    font-weight: 600;
+}
+
 .overwriteTableColor{
   background-color: rgb(233, 233, 233) !important;
 }
