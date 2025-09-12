@@ -15,18 +15,30 @@ import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 import { IoMdAddCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
 import { HTTPStatusCode } from "constants/network";
+import { useNavigate } from "react-router-dom";
+import UTSRoutes from "constants/routes";
+import { PiArrowsSplitBold } from "react-icons/pi";
+import SplitHR from "modules/hiring request/screens/allHiringRequest/splitHR";
 
 const { Option } = Select;
 
 export default function NegotiontoJoinee({
   impHooks
 }) {
-        const {AddComment,monthDate,hrModal,selectedHead,podName} = impHooks
-     const [isLoading, setIsLoading] = useState(false);
-     const [isTableLoading,setIsTableLoading] = useState(false)
-       const [reportData, setReportData] = useState([]);
-       const [summaryData,setSummaryData] = useState([])
+    const navigate = useNavigate()
+    const {AddComment,monthDate,hrModal,selectedHead,podName} = impHooks
+    const [isLoading, setIsLoading] = useState(false);
+    const [isTableLoading,setIsTableLoading] = useState(false)
+    const [reportData, setReportData] = useState([]);
+    const [summaryData,setSummaryData] = useState([])
 
+    const [openSplitHR, setSplitHR] = useState(false);
+    const [getHRnumber, setHRNumber] = useState({hrNumber:'', isHybrid:false});
+    const [getHRID, setHRID] = useState("");
+    const [isSplitLoading, setIsSplitLoading] = useState(false);
+    const [groupList,setGroupList] = useState([{
+    pod:'',amLead:'', amLeadAmount:'',am:'',amAmount:'',taLead:'',taLeadAmount:'',ta:'', taAmount:'' ,currency:''
+    }])
 
        const getReportData = async () => {
  const pl = {
@@ -77,6 +89,85 @@ export default function NegotiontoJoinee({
         getReportSummaryData()
        },[monthDate,hrModal,selectedHead])
 
+           const getPODList = async (getHRID) => {
+                 setIsSplitLoading(true);
+         let pl = {hrNo:getHRID,podid :0} 
+                 let filterResult = await ReportDAO.getAllPODUsersGroupDAO(pl);
+                 setIsSplitLoading(false); 
+                 if (filterResult.statusCode === HTTPStatusCode.OK) {
+                 //   console.log('filterResult',filterResult?.responseBody)
+                   let modData = await modifyResponseforPOD(filterResult?.responseBody)
+                   
+                 //   let datawithList = await adduserListToEachPOD(modData)
+                 //   console.log('set g list',modData,datawithList)
+                  setGroupList(modData) 
+                 } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                   // setLoading(false); 
+                   return navigate(UTSRoutes.LOGINROUTE);
+                 } else if (
+                   filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+                 ) {
+                   // setLoading(false);
+                   return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+                 } else {
+                     setGroupList([{
+             pod:'',amLead:'', amLeadAmount:'',am:'',amAmount:'',taLead:'',taLeadAmount:'',ta:'', taAmount:'' ,currency:''
+           }])
+                   return "NO DATA FOUND";
+                 }
+               };
+       
+                const modifyResponseforPOD =async (data)=>{
+                   let categories = []
+                   let modData = []
+               
+                   data.forEach(item=>{
+                       if(!categories.includes(item.category)){
+                           categories.push(item.category)
+                       }
+                   })
+               
+                   categories.forEach( async cat=>{
+                      let cats = data.filter(item=> item.category === cat)
+                       let podObj = {
+                           pod:'',amLead:'', amLeadAmount:'',am:'',amAmount:'',taLead:'',taLeadAmount:'',ta:'', taAmount:'' ,currency:''
+                       }
+           
+                 podObj.pod = cats[0]?.poD_ID
+                   podObj.currency = cats[0]?.currencyCode
+                       cats.forEach(itm=>{
+                           switch(itm.roW_Value){
+                               case 'AM Lead':{
+                                   podObj.amLead = (itm.userID !== 0) ? itm.userID : ''
+                                   podObj.amLeadAmount = itm.revenue
+                                   break
+                               }
+                               case 'AM':{
+                                   podObj.am = (itm.userID !== 0 )? itm.userID : ''
+                                   podObj.amAmount = itm.revenue
+                                   break
+                               }
+                               case 'TA Lead':{
+                                   podObj.taLead = (itm.userID !== 0 )? itm.userID : ''
+                                   podObj.taLeadAmount = itm.revenue
+                                   break
+                               }
+                               case 'TA':{
+                                   podObj.ta = (itm.userID !== 0 )? itm.userID : ''
+                                   podObj.taAmount = itm.revenue
+                                   break
+                               }
+                               default : break
+                           }
+                       })
+                       modData.push(podObj)
+                      
+                   })
+               
+                
+                   return modData
+                }
+
 
  const reportColumns = [
     {
@@ -111,7 +202,7 @@ export default function NegotiontoJoinee({
       render: (text, result) =>
         text ? (
           <a
-            href={`/allhiringrequest/${result.hiringRequest_ID}`}
+            href={`/allhiringrequest/${result.hiringRequestID}`}
             style={{ textDecoration: "underline" }}
             target="_blank"
             rel="noreferrer"
@@ -307,6 +398,24 @@ export default function NegotiontoJoinee({
       width: 150,
       align: "right",
       className: uplersStyle.headerCell,
+      render:(v,row)=>{
+        return v ? <div style={{display:'flex',alignContent:'center',justifyContent:'space-between'}}>
+  <Tooltip placement="bottom" title={"Split HR"}>
+                <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
+                  <PiArrowsSplitBold
+                    style={{ width: "17px", height: "17px", fill: '#232323' }}
+                    onClick={() => {
+                      setSplitHR(true);
+                      setHRID(row?.hiringRequestID);
+                      setHRNumber({hrNumber:row?.hR_Number});
+                      getPODList(row?.hiringRequestID)
+                    }}
+                  />
+                </a>
+              </Tooltip>
+{v}
+        </div> : ''
+      }
     },
       {
       title: <div style={{ textAlign: "center" }}>Recruiter</div>,
@@ -963,6 +1072,24 @@ export default function NegotiontoJoinee({
           // }}
         />
       )}
+
+       <Modal
+        width={"700px"}
+        centered
+        footer={false}
+        open={openSplitHR}
+        className="cloneHRConfWrap"
+        onCancel={() => setSplitHR(false)}
+      >
+        <SplitHR
+          onCancel={() => {setSplitHR(false);setHRID('')}}
+          getHRID={getHRID}
+          getHRnumber={getHRnumber.hrNumber}
+          isHRHybrid={getHRnumber.isHybrid}
+          companyID={getHRnumber.companyID}
+          impHooks={{groupList,setGroupList,isSplitLoading, setIsSplitLoading}}
+        />
+      </Modal>
         </div>
       </div>
   </>
