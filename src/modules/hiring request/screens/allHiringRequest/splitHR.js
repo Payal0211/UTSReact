@@ -13,21 +13,19 @@ const SplitHR = ({
 	navigateToCloneHR,
 	isHRHybrid,
 	companyID,
-    getHRID
+    getHRID,impHooks
 }) => {
     const navigate = useNavigate();
+    const {groupList,setGroupList,isSplitLoading, setIsSplitLoading} = impHooks
 
 	
 
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedHead, setSelectedHead] = useState("");
   const [selectedNewHead, setSelectedNewHead] = useState("");
   const [pODList, setPODList] = useState([]);
   const [pODUsersList, setPODUsersList] = useState({});
 
-  const [groupList,setGroupList] = useState([{
-    pod:'',amLead:'', amLeadAmount:'',am:'',amAmount:'',taLead:'',taLeadAmount:'',ta:'', taAmount:'' ,currency:''
-  }])
+  
 
   const  getLeadsForPOD = async (ID) =>{
   let filterResult = await ReportDAO.getAllPODGroupUsersDAO(ID);
@@ -38,92 +36,16 @@ const SplitHR = ({
   }
 
 
- const modifyResponseforPOD =async (data)=>{
-    let categories = []
-    let modData = []
-
-    data.forEach(item=>{
-        if(!categories.includes(item.category)){
-            categories.push(item.category)
-        }
-    })
-
-    categories.forEach( async cat=>{
-       let cats = data.filter(item=> item.category === cat)
-        let podObj = {
-            pod:'',amLead:'', amLeadAmount:'',am:'',amAmount:'',taLead:'',taLeadAmount:'',ta:'', taAmount:'' ,currency:''
-        }
-
-  podObj.pod = cats[0]?.poD_ID
-    podObj.currency = cats[0]?.currencyCode
-        cats.forEach(itm=>{
-            switch(itm.roW_Value){
-                case 'AM Lead':{
-                    podObj.amLead = (itm.userID !== 0) ? itm.userID : ''
-                    podObj.amLeadAmount = itm.revenue
-                    break
-                }
-                case 'AM':{
-                    podObj.am = (itm.userID !== 0 )? itm.userID : ''
-                    podObj.amAmount = itm.revenue
-                    break
-                }
-                case 'TA Lead':{
-                    podObj.taLead = (itm.userID !== 0 )? itm.userID : ''
-                    podObj.taLeadAmount = itm.revenue
-                    break
-                }
-                case 'TA':{
-                    podObj.ta = (itm.userID !== 0 )? itm.userID : ''
-                    podObj.taAmount = itm.revenue
-                    break
-                }
-                default : break
-            }
-        })
-// console.log('podData',podObj)
-        modData.push(podObj)
-       
-    })
-
- 
-    return modData
- }
 
 
-     const getPODList = async () => {
-        setIsLoading(true);
-let pl = {hrNo:getHRID,podid :0}
-        let filterResult = await ReportDAO.getAllPODUsersGroupDAO(pl);
-        setIsLoading(false); 
-        if (filterResult.statusCode === HTTPStatusCode.OK) {
-        //   console.log('filterResult',filterResult?.responseBody)
-          let modData = await modifyResponseforPOD(filterResult?.responseBody)
-          
-        //   let datawithList = await adduserListToEachPOD(modData)
-        //   console.log('set g list',modData,datawithList)
-         setGroupList(modData) 
-        } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-          // setLoading(false); 
-          return navigate(UTSRoutes.LOGINROUTE);
-        } else if (
-          filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-        ) {
-          // setLoading(false);
-          return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-        } else {
-            setGroupList([{
-    pod:'',amLead:'', amLeadAmount:'',am:'',amAmount:'',taLead:'',taLeadAmount:'',ta:'', taAmount:'' ,currency:''
-  }])
-          return "NO DATA FOUND";
-        }
-      };
+
+    
 
         const getHeads = async () => {
-          setIsLoading(true);
+          setIsSplitLoading(true);
       
           let filterResult = await ReportDAO.getAllPODGroupDAO();
-          setIsLoading(false);
+          setIsSplitLoading(false);
           if (filterResult.statusCode === HTTPStatusCode.OK) {
             setPODList(filterResult && filterResult?.responseBody);
             let podsID = filterResult?.responseBody?.map(item=> item.dd_value)
@@ -143,10 +65,10 @@ let pl = {hrNo:getHRID,podid :0}
         };
       
         const getGroupUsers = async (ID, ind) => {
-          setIsLoading(true);
+          setIsSplitLoading(true);
       
           let filterResult = await ReportDAO.getAllPODGroupUsersDAO(ID);
-          setIsLoading(false);
+          setIsSplitLoading(false);
           if (filterResult.statusCode === HTTPStatusCode.OK) {
             setPODUsersList(prev=> ({...prev,[ID]: filterResult?.responseBody}));
           } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -164,9 +86,9 @@ let pl = {hrNo:getHRID,podid :0}
 
 
     useEffect(()=>{
-        getPODList()
+        // getPODList()
         getHeads()
-    },[getHRID])
+    },[])
 
 const addNewPOD =async () => {
     if(selectedNewHead){
@@ -218,9 +140,9 @@ const saveSplitHR = async () =>{
            
         })
     // console.log('payload',payload)
-    setIsLoading(true);
+    setIsSplitLoading(true);
     let filterResult = await ReportDAO.saveSplitHRDAO({'hrpodDetails':payload});
-    setIsLoading(false); 
+    setIsSplitLoading(false); 
     if (filterResult.statusCode === HTTPStatusCode.OK) {
       onCancel()
     } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -242,7 +164,7 @@ const saveSplitHR = async () =>{
 		<div className={CloneHRModalStyle.cloneHRConfContent}>
 			<h2>Split Pipeline {getHRnumber}</h2>
 
-		{isLoading ? <Skeleton active /> : 
+		{isSplitLoading ? <Skeleton active /> : 
         groupList?.map((item,index)=>{
             return <div key={index + 1} className={CloneHRModalStyle.podContainer}>
             <div className={CloneHRModalStyle.colMd12}>
@@ -468,7 +390,7 @@ const saveSplitHR = async () =>{
 
 			<div className={CloneHRModalStyle.formPanelAction} style={{marginBottom:'5px'}}>
 					<button
-                    disabled={isLoading}
+                    disabled={isSplitLoading}
 						className={CloneHRModalStyle.btnPrimary}
 						onClick={() => {
 						saveSplitHR()

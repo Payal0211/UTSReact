@@ -31,7 +31,8 @@ export const allHRConfig = {
     setpreviewIDs,
     getPreviewPostData,
     setRepostHrModal,
-    setSplitHR
+    setSplitHR,
+    getPODList
   ) => {
 
     const getColorCode = (doneBy)=>{
@@ -232,6 +233,7 @@ export const allHRConfig = {
                       setSplitHR(true);
                       setHRID(result?.key);
                       setHRNumber({hrNumber:result?.HR_ID, isHybrid:result?.isHybrid,companyID:result?.companyID});
+                      getPODList(result?.key)
                     }}
                   />
                 </a>
