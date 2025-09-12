@@ -483,8 +483,8 @@ export default function UplersReport() {
         }}
       />},
                 {
-            label: "Negotiation to Joinee Funnel",
-            key: "Negotiation to Joinee Funnel",
+            label: "Goal to Negotiation Funnel",
+            key: "Goal to Negotiation Funnel",
             children:  <NegotiontoJoinee
              impHooks={{
           isTableLoading,
