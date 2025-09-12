@@ -5,7 +5,8 @@ import {
   Modal,
   Tooltip,
   Skeleton,
-  Spin,Select
+  Spin,Select,
+  message
 } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import Diamond from "assets/svg/diamond.svg";
@@ -19,6 +20,10 @@ import { useNavigate } from "react-router-dom";
 import UTSRoutes from "constants/routes";
 import { PiArrowsSplitBold } from "react-icons/pi";
 import SplitHR from "modules/hiring request/screens/allHiringRequest/splitHR";
+import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
+import DatePicker from "react-datepicker";
+import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 
 const { Option } = Select;
 
@@ -31,7 +36,7 @@ export default function NegotiontoJoinee({
     const [isTableLoading,setIsTableLoading] = useState(false)
     const [reportData, setReportData] = useState([]);
     const [summaryData,setSummaryData] = useState([])
-
+    const [reportPtoNData, setReportPtoNData] = useState([]);
     const [openSplitHR, setSplitHR] = useState(false);
     const [getHRnumber, setHRNumber] = useState({hrNumber:'', isHybrid:false});
     const [getHRID, setHRID] = useState("");
@@ -39,6 +44,35 @@ export default function NegotiontoJoinee({
     const [groupList,setGroupList] = useState([{
     pod:'',amLead:'', amLeadAmount:'',am:'',amAmount:'',taLead:'',taLeadAmount:'',ta:'', taAmount:'' ,currency:''
     }])
+
+    const [showResponse, setShowResponse] = useState(false);
+    const [responseData, setResponseData] = useState({});
+  const [round, setRound] = useState("");
+   const [roundDate, setRoundDate] = useState("");
+   const [loadingResponse, setLoadingResponse] = useState(false);
+   const [responseSubmit, setResponseSubmit] = useState(false);
+    const [isModalLoading, setIsModalLoading] = useState(false);
+
+      const [showTalentProfiles, setShowTalentProfiles] = useState(false);
+      const [profileInfo, setInfoforProfile] = useState({});
+      const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
+const [hrTalentList, setHRTalentList] = useState([]);
+const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
+const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
+ const [profileStatusID, setProfileStatusID] = useState(0);
+ const [searchTerm, setSearchTerm] = useState("");
+
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    const getUserResult = async () =>{
+      let userData = UserSessionManagementController.getUserSession();
+      if (userData) setUserData(userData);
+    };
+    getUserResult();
+  }, []);
+ 
+
 
        const getReportData = async () => {
  const pl = {
@@ -58,6 +92,28 @@ export default function NegotiontoJoinee({
       );
     } else {
       setReportData([]);
+      return "NO DATA FOUND";
+    }
+       }
+
+       const getReportPtoNData = async () => {
+ const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+      };
+      setIsLoading(true)
+        const result = await ReportDAO.getPtoNegotiationReportDAO(pl);
+
+ setIsLoading(false);
+
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setReportPtoNData(
+        result && result?.responseBody
+      );
+    } else {
+      setReportPtoNData([]);
       return "NO DATA FOUND";
     }
        }
@@ -86,6 +142,7 @@ export default function NegotiontoJoinee({
 
        useEffect(()=>{
         getReportData()
+        getReportPtoNData()
         getReportSummaryData()
        },[monthDate,hrModal,selectedHead])
 
@@ -458,130 +515,7 @@ export default function NegotiontoJoinee({
         //   fixed: "left",
         width: 200,
         className: `${uplersStyle.stagesHeaderCell} ${uplersStyle.headerCommonConfig} `,
-        //   render: (text, record) => {
-        //     if (record.isCategory) {
-        //       return {
-        //         children: (
-        //           <strong
-        //             style={{
-        //               paddingLeft: "5px",
-        //               display: "flex",
-        //               alignItems: "center",
-        //             }}
-        //           >
-        //             {text}{" "}
-        //             {(record.stage === "Existing (Total)" ||
-        //               record.stage === "NBD (Total)") && (
-        //               <div
-        //                 className={uplersStyle.showMoreNBDAMBTN}
-        //                 onClick={(val, obj) => {
-        //                   if (
-        //                     record.stage === "Existing (Total)" ||
-        //                     record.stage === "NBD (Total)"
-        //                   ) {
-        //                     // getNBDorAMRevenueReport(
-        //                     //   record,
-        //                     //   record.stage === "Existing (Total)" ? "AM" : "NBD"
-        //                     // );
-        //                   }
-        //                 }}
-        //               >
-        //                 Show Details
-        //               </div>
-        //             )}
-        //           </strong>
-        //         ),
-        //         props: {
-        //           colSpan: 14,
-        //           style: {
-        //             backgroundColor: "#FFC000",
-        //             fontWeight: "500",
-        //             borderRight: "1px solid #d9d9d9",
-        //             padding: "8px",
-        //           },
-        //           onclick: (val, obj) => {
-        //             console.log(val, obj);
-        //           },
-        //         },
-        //       };
-        //     }
-        //     if (record.isSpacer) {
-        //       return {
-        //         children: <div style={{ height: "10px" }}> </div>,
-        //         props: {
-        //           colSpan: 14,
-        //           style: {
-        //             padding: "0px",
-        //             backgroundColor: "#ffffff",
-        //             border: "none",
-        //           },
-        //         },
-        //       };
-        //     }
-  
-        //     let cellStyle = {
-        //       padding: "8px",
-        //       margin: "-8px -8px",
-        //       display: "flex",
-        //       alignItems: "center",
-        //       height: "calc(100% + 16px)",
-        //       width: "calc(100% + 16px)",
-        //     };
-        //     let content = text || "\u00A0";
-  
-        //     if (record.stage === "Closures")
-        //       cellStyle = {
-        //         ...cellStyle,
-        //         backgroundColor: "#70AD47",
-        //         color: "white",
-        //         fontWeight: "bold",
-        //       };
-        //     else if (record.stage === "Current Active")
-        //       cellStyle = {
-        //         ...cellStyle,
-        //         backgroundColor: "#9ec7e6",
-        //         color: "white",
-        //         fontWeight: "bold",
-        //       };
-        //     else if (record.stage === "Current Month Lost")
-        //       cellStyle = {
-        //         ...cellStyle,
-        //         backgroundColor: "#ED7D31",
-        //         color: "white",
-        //         fontWeight: "bold",
-        //       };
-        //     else if (record.stage === "Churn")
-        //       cellStyle = {
-        //         ...cellStyle,
-        //         backgroundColor: "#ED7D31",
-        //         color: "white",
-        //         fontWeight: "bold",
-        //       };
-        //     else if (record.stage === "C2H" || record.stage === "C2S%")
-        //       cellStyle = {
-        //         ...cellStyle,
-        //         backgroundColor: "#595959",
-        //         color: "white",
-        //         fontWeight: "bold",
-        //       };
-        //     else if (text === "Goal")
-        //       cellStyle = {
-        //         ...cellStyle,
-        //         backgroundColor: "#FFFF00",
-        //         fontWeight: "bold",
-        //         color: "black",
-        //       };
-  
-        //     if (record.key === "inbound_desc" && text === "") {
-        //       return <div style={cellStyle}> </div>;
-        //     }
-  
-        //     return (
-        //       <div style={cellStyle}>
-        //         <span style={{ paddingLeft: "5px" }}>{content}</span>
-        //       </div>
-        //     );
-        //   },
+      
       },
       {
         title: <div style={{ textAlign: "center" }}>Goal</div>,
@@ -906,7 +840,39 @@ export default function NegotiontoJoinee({
           );
         },
       },
-
+     {
+        title: <div style={{ textAlign: "center" }}>Projection</div>,
+        dataIndex: "projectionStr",
+        key: "projectionStr",
+        width: 120,
+        align: "right",
+        onHeaderCell: () => ({
+          className: uplersStyle.headerCommonGoalHeaderConfig,
+        }),
+        className: `${uplersStyle.headerCommonConfig}`,
+        render: (v, rec) => {
+          return v ? (
+            rec.stage === "Goal" || rec.stage.includes("%") ? (
+              v
+            ) : (
+              <span
+                onClick={() => {
+                  if (rec.category === "DF") {
+                    // getDFDetails(rec, v, "W5");
+                  } else {
+                    // getHRTalentWiseReport(rec, v, "W5");
+                  }
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {v}
+              </span>
+            )
+          ) : (
+            ""
+          );
+        },
+      },
         {
         title: <div style={{ textAlign: "center" }}>Next Month</div>,
         dataIndex: "nextMonthStr",
@@ -999,7 +965,712 @@ export default function NegotiontoJoinee({
       //           }
       // },
     ];
+
+      const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
+        return (
+          <Select
+            value={value}
+            onChange={(newValue) =>
+              handleChange(newValue, record, index, dataIndex)
+            }
+            style={{ width: "100%" }}
+            size="small"
+          >
+            <Option value="100%">100%</Option>
+            <Option value="75%">75%</Option>
+            <Option value="50%">50%</Option>
+            <Option value="25%">25%</Option>
+            <Option value="0%">0%</Option>
+            <Option value="Preonboarding">Preonboarding</Option>
+            <Option value="Lost">Lost</Option>
+            <Option value="Won">Won</Option>
+            <Option value="Pause">Pause</Option>
+            <Option value="Backed out">Backed out</Option>
+          </Select>
+        );
+      };
+    
+      const renderWeekSelect = (value, record, index, dataIndex, handleChange) => {
+        return (
+          <Select
+            value={value}
+            onChange={(newValue) =>
+              handleChange(newValue, record, index, dataIndex)
+            }
+            style={{ width: "100%" }}
+            size="small"
+          >
+            <Option value="W1">W1</Option>
+            <Option value="W2">W2</Option>
+            <Option value="W3">W3</Option>
+            <Option value="W4">W4</Option>
+            <Option value="W5">W5</Option>
+          </Select>
+        );
+      };
+    
+      const renderYesNoSelect = (value, record, index, dataIndex, handleChange) => {
+        return (
+          <Select
+            value={value}
+            onChange={(newValue) =>
+              handleChange(newValue, record, index, dataIndex)
+            }
+            style={{ width: "100%" }}
+            size="small"
+          >
+            <Option value="Yes">Yes</Option>
+            <Option value="No">No</Option>
+          </Select>
+        );
+      };
+    
+      const handleFieldChange = (newValue, record, index, field) => {
+        const updatedData = [...reportPtoNData];
+        let indVal = updatedData.findIndex(item => (item.company === record.company && item.hiringRequestID === record.hiringRequestID))
+        updatedData[indVal] = { ...record, [field]: newValue };
+        setReportPtoNData(updatedData);
+        // if (field === "productType" || field === "potentialType") {
+        updatePotentialClosuresRowValue(updatedData[index]);
+        // }
+      };
+    
+      const updatePotentialClosuresRowValue = async (updatedData) => {
+        const pl = {
+          PotentialCloserList_ID: updatedData.potentialCloserList_ID,
+          HRID: updatedData?.hiringRequest_ID,
+          ProbabiltyRatio_thismonth: updatedData?.probabiltyRatio_thismonth,
+          Expected_Closure_Week: updatedData?.expected_Closure_Week,
+          Actual_Closure_Week: updatedData?.actual_Closure_Week,
+          // Pushed_Closure_Week:updatedData?.pushed_Closure_Week,
+          Talent_NoticePeriod: updatedData?.talent_NoticePeriod,
+          Talent_Backup: updatedData?.talent_Backup,
+          // OwnerID:updatedData?.owner_UserID
+        };
+    
+        await ReportDAO.PotentialClosuresUpdateDAO(pl);
+      };
+
+      
+  const AddResponse = (data) => {
+    setShowResponse(true);
+    setResponseData(data);
+  };
+
+   const getTalentProfilesDetailsfromTable = async (
+      result,
+      statusID,
+      stageID
+    ) => {
+      setShowTalentProfiles(true);
+      setInfoforProfile(result);
+      let pl = {
+        hrID: result?.hiringRequest_ID,
+        statusID: statusID,
+        stageID: statusID === 0 ? null : stageID ? stageID : 0,
+      };
+      setLoadingTalentProfile(true);
+      const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+      setLoadingTalentProfile(false);
   
+      if (hrResult.statusCode === HTTPStatusCode.OK) {
+        setHRTalentList(hrResult.responseBody);
+        setFilteredTalentList(hrResult.responseBody);
+        setHRTalentListFourCount(hrResult.responseBody);
+      } else {
+        setHRTalentList([]);
+        setFilteredTalentList([]);
+      }
+    };
+
+     const reportPtoNColumns = [
+        {
+          title: <div>Company</div>,
+          dataIndex: "company",
+          key: "company",
+          width: 150,
+          fixed: "left",
+          className: uplersStyle.headerCell,
+          render: (text, record) =>
+            record?.companyCategory === "Diamond" ? (
+              <>
+                <span>{text}</span>
+                &nbsp;
+                <img
+                  src={Diamond}
+                  alt="info"
+                  style={{ width: "16px", height: "16px" }}
+                />
+              </>
+            ) : (
+              text
+            ),
+        },
+        {
+          title: <div style={{ textAlign: "center" }}>HR #</div>,
+          dataIndex: "hR_Number",
+          key: "hR_Number",
+          width: 180,
+          fixed: "left",
+          className: uplersStyle.headerCell,
+          render: (text, result) =>
+            text ? (
+              <a
+                href={`/allhiringrequest/${result.hiringRequest_ID}`}
+                style={{ textDecoration: "underline" }}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {text}
+              </a>
+            ) : (
+              text
+            ),
+        },
+        {
+          title: <div style={{ textAlign: "center" }}>Position</div>,
+          dataIndex: "position",
+          key: "position",
+          fixed: "left",
+          width: 180,
+        },
+          {
+          title: <div style={{ textAlign: "center" }}>Uplers Fees %</div>,
+          dataIndex: "uplersFeesPer",
+          key: "uplersFeesPer",
+          width: 120,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+        {
+          title: (
+            <div style={{ textAlign: "center" }}>
+             1 TR Pipeline
+            </div>
+          ),
+          dataIndex: "hrPipelineStr",
+          key: "hrPipelineStr",
+          width: 150,
+          align: "right",
+         
+          className: uplersStyle.headerCell,
+        },
+              {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              Number of
+              <br />
+              TRs
+            </div>
+          ),
+          dataIndex: "noofTR",
+          key: "noofTR",
+          width: 100,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+              {
+          title: (
+            <div style={{ textAlign: "center" }}>
+           Uplers Revenue
+            </div>
+          ),
+          dataIndex: "total_HRPipelineStr",
+          key: "total_HRPipelineStr",
+          width: 150,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+     {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              {podName}  Revenue           
+            </div>
+          ),
+          dataIndex: "podValueStr",
+          key: "podValueStr",
+          width: 150,
+          align: "right",
+         
+          className: uplersStyle.headerCell,
+        },
+
+        {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              Probability Ratio 
+              
+            </div>
+          ),
+          dataIndex: "probabiltyRatio_thismonth",
+          key: "probabiltyRatio_thismonth",
+          width: 150,
+          align: "center",
+          render: (value, record, index) =>
+            renderDDSelect(
+              value,
+              record,
+              index,
+              "probabiltyRatio_thismonth",
+              handleFieldChange
+            ),
+        },
+    
+        {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              No Of <br />
+              Interview <br/>Rounds
+            </div>
+          ),
+          dataIndex: "noifInterviewRounds",
+          key: "noifInterviewRounds",
+          align: "center",
+          width: 100,
+          render: (text, result) => {
+            return +text > 0 ? text : "";
+          },
+        },
+        {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              Client Response <br />
+              needed By
+            </div>
+          ),
+          dataIndex: "clientResponseneededBy",
+          key: "clientResponseneededBy",
+          width: 180,
+          render: (text, record, index) => {
+            const commentsArr = text.length > 0 ? text.split("~") : [];
+            return (
+              <div>
+                {commentsArr.length > 0 && (
+                  <>
+                    {" "}
+                    <ul style={{ paddingLeft: "5px", marginBottom: 0 }}>
+                      {commentsArr.map((comment) => (
+                        <li dangerouslySetInnerHTML={{ __html: comment }}></li>
+                      ))}
+                    </ul>{" "}
+                    <br />{" "}
+                  </>
+                )}
+    
+                <IconContext.Provider
+                  value={{
+                    color: "green",
+                    style: {
+                      width: "20px",
+                      height: "20px",
+                      marginLeft: "5px",
+                      cursor: "pointer",
+                    },
+                  }}
+                >
+                  {" "}
+                  <Tooltip title={`Add Response`} placement="top">
+                    <span
+                      onClick={() => {
+                        AddResponse({ ...record, index });
+                      }}
+                      // className={taStyles.feedbackLabel}
+                    >
+                      {" "}
+                      <IoMdAddCircle />
+                    </span>{" "}
+                  </Tooltip>
+                </IconContext.Provider>
+              </div>
+            );
+          },
+        },
+        {
+          title: "W1",
+          dataIndex: "w1",
+          key: "w1",
+          width: 100,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+        {
+          title: "W2",
+          dataIndex: "w2",
+          key: "w3",
+          width: 100,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+        {
+          title: "W3",
+          dataIndex: "w3",
+          key: "w3",
+          width: 100,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+        {
+          title: "W4",
+          dataIndex: "w4",
+          key: "w4",
+          width: 100,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+        {
+          title: "W5",
+          dataIndex: "w5",
+          key: "w5",
+          width: 100,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+             {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              Possibility of <br/>
+joining this
+month             
+            </div>
+          ),
+          dataIndex: "talent_Backup",
+          key: "talent_Backup",
+          width: 150,
+          align: "right",
+         
+          className: uplersStyle.headerCell,
+           render: (value, record, index) =>
+            renderYesNoSelect(
+              value,
+              record,
+              index,
+              "probabiltyRatio_thismonth",
+              handleFieldChange
+            ),
+        },
+        {
+          title: <div>Comments</div>,
+          dataIndex: "potentialList_Comments",
+          key: "potentialList_Comments",
+          width: 400,
+          // align: "center",
+          className: uplersStyle.headerCell,
+          render: (text, record, index) => {
+            const commentsArr = text.length > 0 ? text.split("~") : [];
+            return (
+              <div>
+                {commentsArr.length > 0 && (
+                  <>
+                    {" "}
+                    <ul style={{ paddingLeft: "5px", marginBottom: 0 }}>
+                      {commentsArr.map((comment) => (
+                        <li dangerouslySetInnerHTML={{ __html: comment }}></li>
+                      ))}
+                    </ul>{" "}
+                    <br />{" "}
+                  </>
+                )}
+    
+                <IconContext.Provider
+                  value={{
+                    color: "green",
+                    style: {
+                      width: "20px",
+                      height: "20px",
+                      marginLeft: "5px",
+                      cursor: "pointer",
+                    },
+                  }}
+                >
+                  {" "}
+                  <Tooltip title={`Add/View comment`} placement="top">
+                    <span
+                      onClick={() => {
+                        AddComment({ ...record, index });
+                      }}
+                      // className={taStyles.feedbackLabel}
+                    >
+                      {" "}
+                      <IoMdAddCircle />
+                    </span>{" "}
+                  </Tooltip>
+                </IconContext.Provider>
+              </div>
+            );
+          },
+        },
+  
+        {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              No Of Profile <br />
+              Talents Till Date
+            </div>
+          ),
+          dataIndex: "noOfProfile_TalentsTillDate",
+          key: "noOfProfile_TalentsTillDate",
+          width: 180,
+          align: "center",
+          render: (text, result) => {
+            return +text > 0 ? (
+              <p
+                style={{
+                  color: "blue",
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  getTalentProfilesDetailsfromTable(result, 0);
+                //   setTalentToMove(result);
+                  setProfileStatusID(0);
+                  setHRTalentListFourCount([]);
+                }}
+              >
+                {text}
+              </p>
+            ) : (
+              ""
+            );
+          },
+        },
+        {
+          title: <div style={{ textAlign: "center" }}>Sales Person</div>,
+          dataIndex: "salesPerson",
+          key: "salesPerson",
+          width: 150,
+          // fixed: "left",
+          className: uplersStyle.headerCell,
+        },
+        {
+          title: <div style={{ textAlign: "center" }}>CTP Link</div>,
+          dataIndex: "ctP_Link",
+          key: "ctP_Link",
+          width: 120,
+          render: (text, result) => {
+            if (text === "" || text === "NA") {
+              return "";
+            }
+            return (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <a
+                  href={text}
+                  style={{ textDecoration: "underline" }}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Link
+                </a>
+              </div>
+            );
+          },
+        },
+       
+    
+        {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              Talent's
+              <br /> Notice Period
+            </div>
+          ),
+          dataIndex: "talent_NoticePeriod",
+          key: "talent_NoticePeriod",
+          width: 150,
+          align: "center",
+          className: uplersStyle.headerCell,
+          //  render: (value, record, index) =>
+          //   renderInputField(
+          //     value,
+          //     record,
+          //     index,
+          //     "talent_NoticePeriod",
+          //     handleFieldChange
+          //   ),
+        },
+      
+        {
+          title: <div style={{ textAlign: "center" }}>HR Status</div>,
+          dataIndex: "hrStatus",
+          key: "hrStatus",
+    
+          className: uplersStyle.headerCell,
+          width: "180px",
+          align: "center",
+          render: (_, param) =>
+            All_Hiring_Request_Utils.GETHRSTATUS(
+              param?.hrStatusCode,
+              param?.hrStatus
+            ),
+        },
+        {
+          title: (
+            <div>
+              Open
+              <br />
+              since how <br /> many
+              <br /> days
+            </div>
+          ),
+          dataIndex: "hrOpenSinceDays",
+          key: "hrOpenSinceDays",
+    
+          width: 90,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+        {
+          title: <div style={{ textAlign: "center" }}>Lead</div>,
+          dataIndex: "leadType",
+          key: "leadType",
+          width: 100,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+      ];
+
+       const ProfileColumns = [
+          {
+            title: "Submission Date",
+            dataIndex: "profileSubmittedDate",
+            key: "profileSubmittedDate",
+          },
+          {
+            title: "Talent",
+            dataIndex: "talent",
+            key: "talent",
+          },
+          {
+            title: "Status",
+            dataIndex: "talentStatus",
+            key: "talentStatus",
+            render: (_, item) => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                {All_Hiring_Request_Utils.GETTALENTSTATUS(
+                  parseInt(item?.talentStatusColor),
+                  item?.talentStatus
+                )}
+      
+                {(item?.statusID === 2 || item?.statusID === 3) && (
+                  <IconContext.Provider
+                    value={{
+                      color: "#FFDA30",
+                      style: { width: "16px", height: "16px", cursor: "pointer" },
+                    }}
+                  >
+                    <Tooltip title="Move to Assessment" placement="top">
+                      <span
+                        // style={{
+                        //   background: 'red'
+                        // }}
+                        onClick={() => {
+                          // setMoveToAssessment(true);
+                          // setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
+                        }}
+                        style={{ padding: "0" }}
+                      >
+                        {" "}
+                        {/* <BsClipboard2CheckFill /> */}
+                      </span>{" "}
+                    </Tooltip>
+                  </IconContext.Provider>
+                )}
+              </div>
+            ),
+          },
+          {
+            title: "Interview Detail",
+            dataIndex: "talentStatusDetail",
+            key: "talentStatusDetail",
+          },
+          {
+            title: "Submitted By",
+            dataIndex: "profileSubmittedBy",
+            key: "profileSubmittedBy",
+          },
+        ];
+  
+
+       const saveResponse = async () => {
+          setResponseSubmit(true);
+      
+          if (round === "" || roundDate === "") {
+            message.error(
+              `Please Select ${round === "" ? "Round" : ""} ${
+                round === "" && roundDate === "" ? "And" : ""
+              } ${roundDate === "" ? "Date" : ""}`
+            );
+            return;
+          }
+          let PL = {
+            HR_ID: responseData?.hiringRequest_ID,
+            Interview_Round: round,
+            Round_Date: moment(roundDate).format("YYYY-MM-DD"),
+            Comments: "",
+            LoggedInUserID: userData?.UserId,
+          };
+          setLoadingResponse(true);
+          const result = await ReportDAO.insertPotentialClosureResponseRequestDAO(PL);
+          setLoadingResponse(false);
+      
+          if (result.statusCode === 200) {
+            let responces = result.responseBody.map((re) => re.round_Detail);
+            setReportData((prev) => {
+              let nArr = [...prev];
+              nArr[responseData?.index] = {
+                ...nArr[responseData?.index],
+                clientResponseneededBy: responces.join("~"),
+              };
+              return nArr;
+            });
+            setShowResponse(false);
+            setResponseData({});
+            setRoundDate("");
+            setRound("");
+            setResponseSubmit(false);
+          } else {
+            message.error("something went wrong");
+          }
+        };
+
+     const handleSearchInput = (value) => {
+    setSearchTerm(value);
+    const filteredData = hrTalentList.filter(
+      (talent) =>
+        talent.talent.toLowerCase().includes(value.toLowerCase()) ||
+        (talent.email &&
+          talent.email.toLowerCase().includes(value.toLowerCase()))
+    );
+    setFilteredTalentList(filteredData);
+  };
+
+    const getTalentProfilesDetails = async (result, statusID, stageID) => {
+      setShowTalentProfiles(true);
+      setInfoforProfile(result);
+      let pl = {
+        hrID: result?.hiringRequest_ID,
+        statusID: statusID,
+        stageID: statusID === 0 ? null : stageID ? stageID : 0,
+      };
+      setIsModalLoading(true);
+      setLoadingTalentProfile(true);
+      const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+      setIsModalLoading(false);
+      setLoadingTalentProfile(false);
+      if (hrResult.statusCode === HTTPStatusCode.OK) {
+        setHRTalentList(hrResult.responseBody);
+        setFilteredTalentList(hrResult.responseBody);
+      } else {
+        setHRTalentList([]);
+        setFilteredTalentList([]);
+      }
+    };
 
 
   return (<>
@@ -1048,6 +1719,499 @@ export default function NegotiontoJoinee({
           )}
         </div>
       </div>
+
+       <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+          {isTableLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+               New - Goal Planning upto negotiation
+              </p>
+              <Table
+          scroll={{ x: "1600px", y: "100vh" }}
+          id="List"
+          columns={reportPtoNColumns}
+          bordered={false}
+          dataSource={reportPtoNData?.filter(item=> item.businessType === 'New')}
+          rowKey={(record, index) => index}
+       
+          pagination={false}
+        />
+            </>
+          )}
+        </div>
+      </div>
+
+ <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+          {isTableLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+                Existing - Goal Planning upto negotiation
+              </p>
+              <Table
+          scroll={{ x: "1600px", y: "100vh" }}
+          id="List"
+          columns={reportPtoNColumns}
+          bordered={false}
+          dataSource={reportPtoNData?.filter(item=> item.businessType === "Existing")}
+          rowKey={(record, index) => index}
+       
+          pagination={false}
+        />
+            </>
+          )}
+        </div>
+      </div>
+
+{console.log('reportPtoNData',reportPtoNData)}
+       {showResponse && (
+              <Modal
+                transitionName=""
+                width="400px"
+                centered
+                footer={null}
+                open={showResponse}
+                className="engagementModalStyle"
+                onCancel={() => {
+                  setShowResponse(false);
+                  setResponseData({});
+                  setRoundDate("");
+                  setRound("");
+                  setResponseSubmit(false);
+                }}
+              >
+                <div style={{ padding: "35px 15px 10px 15px" }}>
+                  <h3>Add Response</h3>
+                </div>
+                <h3 style={{ marginLeft: "10px" }}>{responseData?.position} </h3>
+                <p style={{ marginLeft: "10px" }}>({responseData?.hR_Number})</p>
+      
+                {loadingResponse ? (
+                  <Skeleton active />
+                ) : (
+                  <>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <label>Select Round</label>
+                      <Select
+                        value={round}
+                        onChange={
+                          (newValue) => {
+                            setRound(newValue);
+                          }
+                          // handleChange(newValue, record, index, dataIndex)
+                        }
+                        style={{ width: "250px" }}
+                        size="middle"
+                        placeholder="Select Rounds"
+                      >
+                        <Option value="R1">R1</Option>
+                        <Option value="R2">R2</Option>
+                        <Option value="R3">R3</Option>
+                        <Option value="R4">R4</Option>
+                        <Option value="Selection">Selection</Option>
+                      </Select>
+                    </div>
+      
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                      }}
+                    >
+                      <div>Date</div>
+                      <div className={uplersStyle.calendarFilter}>
+                        <CalenderSVG
+                          style={{ height: "16px", marginRight: "16px" }}
+                        />
+                        <DatePicker
+                          style={{ backgroundColor: "red" }}
+                          onKeyDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          className={uplersStyle.dateFilter}
+                          placeholderText="Select Date"
+                          selected={roundDate}
+                          onChange={(date) => setRoundDate(date)}
+                          dateFormat="dd-MM-yyyy"
+                          // showMonthYearPicker
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+      
+                <div style={{ padding: "10px" }}>
+                  <button
+                    className={uplersStyle.btn}
+                    // disabled={isEditNewTask}
+                    onClick={() => {
+                      saveResponse();
+                    }}
+                    disabled={loadingResponse}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className={uplersStyle.btnCancle}
+                    // disabled={isEditNewTask}
+                    onClick={() => {
+                      setShowResponse(false);
+                      setResponseData({});
+                      setRoundDate("");
+                      setRound("");
+                      setResponseSubmit(false);
+                    }}
+                    disabled={loadingResponse}
+                  >
+                    Close
+                  </button>
+                </div>
+              </Modal>
+            )}
+
+              {showTalentProfiles && (
+                    <Modal
+                      transitionName=""
+                      width="1000px"
+                      centered
+                      footer={null}
+                      open={showTalentProfiles}
+                      // className={allEngagementStyles.engagementModalContainer}
+                      className="engagementModalStyle"
+                      // onOk={() => setVersantModal(false)}
+                      onCancel={() => {
+                        setSearchTerm("");
+                        setShowTalentProfiles(false);
+                        setHRTalentListFourCount([]);
+                      }}
+                    >
+                      {isModalLoading ? (
+                        <div
+                          style={{
+                            display: "flex",
+                            height: "350px",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Spin size="large" />
+                        </div>
+                      ) : (
+                        <>
+                          <div
+                            style={{
+                              padding: "45px 15px 10px 15px",
+                              display: "flex",
+                              gap: "10px",
+                              alignItems: "center",
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            <h3>
+                              Profiles for <strong>{profileInfo?.hR_Number}</strong>
+                            </h3>
+            
+                            <p style={{ marginBottom: "0.5em" }}>
+                              Company : <strong>{profileInfo?.company}</strong>{" "}
+                              {profileInfo?.companyCategory === "Diamond" && (
+                                <img
+                                  src={Diamond}
+                                  alt="info"
+                                  style={{ width: "16px", height: "16px" }}
+                                />
+                              )}
+                            </p>
+            
+                            <input
+                              type="text"
+                              placeholder="Search talent..."
+                              value={searchTerm}
+                              onChange={(e) => handleSearchInput(e.target.value)} // Create this function
+                              style={{
+                                padding: "6px 10px",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                                marginLeft: "auto",
+                                marginRight: "20px",
+                                minWidth: "260px",
+                              }}
+                            />
+                          </div>
+            
+                          <div
+                            style={{
+                              padding: "10px 15px",
+                              display: "flex",
+                              gap: "10px",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div
+                              className={uplersStyle.filterType}
+                              key={"Total Talents"}
+                              onClick={() => {
+                                getTalentProfilesDetails(profileInfo, 0);
+                                setProfileStatusID(0);
+                              }}
+                              style={{
+                                borderBottom:
+                                  profileStatusID === 0 ? "6px solid #FFDA30" : "",
+                              }}
+                            >
+                              <h2>
+                                Total Talents :{" "}
+                                <span>
+                                  {hrTalentListFourCount[0]?.totalTalents
+                                    ? hrTalentListFourCount[0]?.totalTalents
+                                    : 0}
+                                </span>
+                              </h2>
+                            </div>
+                            <div
+                              className={uplersStyle.filterType}
+                              key={"Profile shared"}
+                              onClick={() => {
+                                console.log(profileInfo, "profileInfo");
+                                getTalentProfilesDetails(profileInfo, 2);
+                                setProfileStatusID(2);
+                              }}
+                              style={{
+                                borderBottom:
+                                  profileStatusID === 2 ? "6px solid #FFDA30" : "",
+                              }}
+                            >
+                              <h2>
+                                Profile shared :{" "}
+                                <span>
+                                  {hrTalentListFourCount[0]?.profileSharedCount
+                                    ? hrTalentListFourCount[0]?.profileSharedCount
+                                    : 0}
+                                </span>
+                              </h2>
+                            </div>
+                            <div
+                              className={uplersStyle.filterType}
+                              key={"In Assessment"}
+                              onClick={() => {
+                                getTalentProfilesDetails(profileInfo, 11);
+                                setProfileStatusID(11);
+                              }}
+                              style={{
+                                borderBottom:
+                                  profileStatusID === 11 ? "6px solid #FFDA30" : "",
+                              }}
+                            >
+                              <h2>
+                                In Assessment :{" "}
+                                <span>
+                                  {hrTalentListFourCount[0]?.assessmentCount
+                                    ? hrTalentListFourCount[0]?.assessmentCount
+                                    : 0}
+                                </span>
+                              </h2>
+                            </div>
+                            <div
+                              className={uplersStyle.filterType}
+                              key={"In Interview"}
+                              onClick={() => {
+                                getTalentProfilesDetails(profileInfo, 3);
+                                setProfileStatusID(3);
+                              }}
+                              style={{
+                                borderBottom:
+                                  profileStatusID === 3 ? "6px solid #FFDA30" : "",
+                              }}
+                            >
+                              <h2>
+                                In Interview :{" "}
+                                <span>
+                                  {hrTalentListFourCount[0]?.inInterviewCount
+                                    ? hrTalentListFourCount[0]?.inInterviewCount
+                                    : 0}
+                                </span>
+                              </h2>
+                            </div>
+                            <div
+                              className={uplersStyle.filterType}
+                              key={"Offered"}
+                              onClick={() => {
+                                getTalentProfilesDetails(profileInfo, 4);
+                                setProfileStatusID(4);
+                              }}
+                              style={{
+                                borderBottom:
+                                  profileStatusID === 4 ? "6px solid #FFDA30" : "",
+                              }}
+                            >
+                              <h2>
+                                Offered :{" "}
+                                <span>
+                                  {hrTalentListFourCount[0]?.offeredCount
+                                    ? hrTalentListFourCount[0]?.offeredCount
+                                    : 0}
+                                </span>
+                              </h2>
+                            </div>
+                            <div
+                              className={uplersStyle.filterType}
+                              key={"Hired"}
+                              onClick={() => {
+                                getTalentProfilesDetails(profileInfo, 10);
+                                setProfileStatusID(10);
+                              }}
+                              style={{
+                                borderBottom:
+                                  profileStatusID === 10 ? "6px solid #FFDA30" : "",
+                              }}
+                            >
+                              <h2>
+                                Hired :{" "}
+                                <span>
+                                  {hrTalentListFourCount[0]?.hiredCount
+                                    ? hrTalentListFourCount[0]?.hiredCount
+                                    : 0}
+                                </span>
+                              </h2>
+                            </div>
+                            <div
+                              className={uplersStyle.filterType}
+                              key={"Rejected, screening"}
+                              onClick={() => {
+                                getTalentProfilesDetails(profileInfo, 7, 1);
+                                setProfileStatusID(71);
+                              }}
+                              style={{
+                                borderBottom:
+                                  profileStatusID === 71 ? "6px solid #FFDA30" : "",
+                              }}
+                            >
+                              <h2>
+                                Screen Reject :{" "}
+                                <span>
+                                  {hrTalentListFourCount[0]?.screeningRejectCount
+                                    ? hrTalentListFourCount[0]?.screeningRejectCount
+                                    : 0}
+                                </span>
+                              </h2>
+                            </div>
+                            <div
+                              className={uplersStyle.filterType}
+                              key={"Rejected, Interview"}
+                              onClick={() => {
+                                getTalentProfilesDetails(profileInfo, 7, 2);
+                                setProfileStatusID(72);
+                              }}
+                              style={{
+                                borderBottom:
+                                  profileStatusID === 72 ? "6px solid #FFDA30" : "",
+                              }}
+                            >
+                              <h2>
+                                Interview Reject :{" "}
+                                <span>
+                                  {hrTalentListFourCount[0]?.interviewRejectCount
+                                    ? hrTalentListFourCount[0]?.interviewRejectCount
+                                    : 0}
+                                </span>
+                              </h2>
+                            </div>
+                          </div>
+            
+                          {loadingTalentProfile ? (
+                            <div>
+                              <Skeleton active />
+                            </div>
+                          ) : (
+                            <div style={{ margin: "5px 10px" }}>
+                              <Table
+                                dataSource={filteredTalentList}
+                                columns={ProfileColumns}
+                                // bordered
+                                pagination={false}
+                              />
+                            </div>
+                          )}
+            
+                          {/* {moveToAssessment && (
+                                          <Modal
+                                            width="992px"
+                                            centered
+                                            footer={null}
+                                            open={moveToAssessment}
+                                            className="commonModalWrap"
+                                            // onOk={() => setVersantModal(false)}
+                                            onCancel={() => {
+                                              setMoveToAssessment(false);
+                                              resetRemarkField("remark");
+                                              clearRemarkError("remark");
+                                            }}
+                                          >
+                                            <MoveToAssessment
+                                              onCancel={() => {
+                                                setMoveToAssessment(false);
+                                                resetRemarkField("remark");
+                                                clearRemarkError("remark");
+                                              }}
+                                              register={remarkregiter}
+                                              handleSubmit={remarkSubmit}
+                                              resetField={resetRemarkField}
+                                              errors={remarkError}
+                                              saveRemark={saveRemark}
+                                              saveRemarkLoading={saveRemarkLoading}
+                                            />
+                                          </Modal>
+                                        )} */}
+            
+                          <div style={{ padding: "10px 0" }}>
+                            <button
+                              className={uplersStyle.btnCancle}
+                              // disabled={isAddingNewTask}
+                              onClick={() => {
+                                setSearchTerm("");
+                                setShowTalentProfiles(false);
+                                setHRTalentListFourCount([]);
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </Modal>
+                  )}
+
+
    <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
         <div className={uplersStyle.customTableContainer}>
  {isLoading ? (
@@ -1060,16 +2224,8 @@ export default function NegotiontoJoinee({
           bordered={false}
           dataSource={reportData}
           rowKey={(record, index) => index}
-        //   rowClassName={(row, index) => {
-        //     return row?.clientName === "TOTAL"
-        //       ? uplersStyle.highlighttotalrow
-        //       : "";
-        //   }}
+       
           pagination={false}
-          // pagination={{
-          //   size: "small",
-          //   pageSize: 15
-          // }}
         />
       )}
 
