@@ -840,7 +840,39 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           );
         },
       },
-
+     {
+        title: <div style={{ textAlign: "center" }}>Projection</div>,
+        dataIndex: "projectionStr",
+        key: "projectionStr",
+        width: 120,
+        align: "right",
+        onHeaderCell: () => ({
+          className: uplersStyle.headerCommonGoalHeaderConfig,
+        }),
+        className: `${uplersStyle.headerCommonConfig}`,
+        render: (v, rec) => {
+          return v ? (
+            rec.stage === "Goal" || rec.stage.includes("%") ? (
+              v
+            ) : (
+              <span
+                onClick={() => {
+                  if (rec.category === "DF") {
+                    // getDFDetails(rec, v, "W5");
+                  } else {
+                    // getHRTalentWiseReport(rec, v, "W5");
+                  }
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {v}
+              </span>
+            )
+          ) : (
+            ""
+          );
+        },
+      },
         {
         title: <div style={{ textAlign: "center" }}>Next Month</div>,
         dataIndex: "nextMonthStr",
