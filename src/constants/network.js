@@ -223,6 +223,7 @@ export class ReportType {
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
 	static GET_POC_DF_DETAILS_LIST = 'PODDashboard_DeliveryFunnelDetails'
 	static GET_NEGOTIATION_REPORT = 'PODNegotiationToJoiningFunnelList'
+	static GET_PLANING_TO_NEGOTIATION_REPORT = 'PODGoalPlanningToNegotiationList'
 	static GET_NEGOTIATION_SUMMARY_REPORT = 'PODNegotiationToJoiningFunnelSummary'
 }
 export class ReportsAPI {
