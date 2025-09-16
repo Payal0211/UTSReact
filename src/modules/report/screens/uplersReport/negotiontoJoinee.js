@@ -456,8 +456,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       align: "right",
       className: uplersStyle.headerCell,
       render:(v,row)=>{
-        return v ? <div style={{display:'flex',alignContent:'center',justifyContent:'space-between'}}>
-  <Tooltip placement="bottom" title={"Split HR"}>
+        return <div style={{display:'flex',alignContent:'center',justifyContent:'space-between'}}>
+           <Tooltip placement="bottom" title={"Split HR"}>
                 <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
                   <PiArrowsSplitBold
                     style={{ width: "17px", height: "17px", fill: '#232323' }}
@@ -470,8 +470,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   />
                 </a>
               </Tooltip>
-{v}
-        </div> : ''
+    {  v ? v  : ''} </div>
       }
     },
       {
@@ -504,6 +503,15 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           param?.hrStatusCode,
           param?.hrStatus
         ),
+    },
+     {
+      title: <div style={{ textAlign: "center" }}>HR Modal</div>,
+      dataIndex: "hR_Model",
+      key: "hR_Model",
+
+      className: uplersStyle.headerCell,
+      width: "180px",
+      align: "center",
     },
   ];
 
@@ -1470,12 +1478,14 @@ month
         {
           title: (
             <div style={{ textAlign: "center" }}>
-              Talent's
-              <br /> Notice Period
+              {hrModal !== 'DP' ? <>HR Modal</> : <>
+               Talent's
+              <br /> Notice Period</>}
+             
             </div>
           ),
-          dataIndex: "talent_NoticePeriod",
-          key: "talent_NoticePeriod",
+          dataIndex: hrModal !== 'DP' ? 'hR_Model' :"talent_NoticePeriod",
+          key: hrModal !== 'DP' ? 'hR_Model' :"talent_NoticePeriod",
           width: 150,
           align: "center",
           className: uplersStyle.headerCell,
@@ -1539,6 +1549,11 @@ month
             title: "Talent",
             dataIndex: "talent",
             key: "talent",
+          },
+           {
+            title: "Notice Period",
+            dataIndex: "talentNoticePeriod",
+            key: "talentNoticePeriod",
           },
           {
             title: "Status",
@@ -2154,7 +2169,89 @@ month
                   )}
 
 
-   <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+    {hrModal !== 'DP' ? <>
+    <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+ {isLoading ? (
+        <TableSkeleton />
+      ) : (
+        <>
+         <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+              New - Negotiation to Joinee Funnel
+              </p>
+               <Table
+          scroll={{ x: "1600px", y: "100vh" }}
+          id="amReportList"
+          columns={reportColumns}
+          bordered={false}
+          dataSource={reportData.filter(item => item.businessType === 'New')}
+          rowKey={(record, index) => index}
+       
+          pagination={false}
+        />
+        </>
+       
+      )}
+
+     
+        </div>
+      </div>
+       <Modal
+        width={"700px"}
+        centered
+        footer={false}
+        open={openSplitHR}
+        className="cloneHRConfWrap"
+        onCancel={() => setSplitHR(false)}
+      >
+        <SplitHR
+          onCancel={() => {setSplitHR(false);setHRID('')}}
+          getHRID={getHRID}
+          getHRnumber={getHRnumber.hrNumber}
+          isHRHybrid={getHRnumber.isHybrid}
+          companyID={getHRnumber.companyID}
+          impHooks={{groupList,setGroupList,isSplitLoading, setIsSplitLoading}}
+        />
+      </Modal>
+      <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+ {isLoading ? (
+        <TableSkeleton />
+      ) : (
+        <>
+         <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+              Existing - Negotiation to Joinee Funnel
+              </p>
+               <Table
+          scroll={{ x: "1600px", y: "100vh" }}
+          id="amReportList"
+          columns={reportColumns}
+          bordered={false}
+          dataSource={reportData.filter(item => item.businessType === 'Existing')}
+          rowKey={(record, index) => index}
+       
+          pagination={false}
+        />
+        </>
+       
+      )}
+
+
+        </div>
+      </div>
+    </> :<div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
         <div className={uplersStyle.customTableContainer}>
  {isLoading ? (
         <TableSkeleton />
@@ -2201,7 +2298,7 @@ month
         />
       </Modal>
         </div>
-      </div>
+      </div>}
 
           <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
         <div className={uplersStyle.customTableContainer}>
