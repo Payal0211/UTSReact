@@ -354,7 +354,13 @@ export default function UplersReport() {
               options={pODList?.map((v) => ({
                 label: v.dd_text,
                 value: v.dd_value,
-              }))}
+              })).filter(item=>{
+                if(hrModal === "DP"){
+                  return item.value !== 5
+                }else{
+                  return item.value === 5
+                }
+              })}
               optionFilterProp="label"
             />
             <div className={uplersStyle.calendarFilterSet}>
