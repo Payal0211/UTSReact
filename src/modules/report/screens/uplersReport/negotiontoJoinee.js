@@ -456,8 +456,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       align: "right",
       className: uplersStyle.headerCell,
       render:(v,row)=>{
-        return v ? <div style={{display:'flex',alignContent:'center',justifyContent:'space-between'}}>
-  <Tooltip placement="bottom" title={"Split HR"}>
+        return <div style={{display:'flex',alignContent:'center',justifyContent:'space-between'}}>
+           <Tooltip placement="bottom" title={"Split HR"}>
                 <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
                   <PiArrowsSplitBold
                     style={{ width: "17px", height: "17px", fill: '#232323' }}
@@ -470,8 +470,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   />
                 </a>
               </Tooltip>
-{v}
-        </div> : ''
+    {  v ? v  : ''} </div>
       }
     },
       {
@@ -1550,6 +1549,11 @@ month
             title: "Talent",
             dataIndex: "talent",
             key: "talent",
+          },
+           {
+            title: "Notice Period",
+            dataIndex: "talentNoticePeriod",
+            key: "talentNoticePeriod",
           },
           {
             title: "Status",
