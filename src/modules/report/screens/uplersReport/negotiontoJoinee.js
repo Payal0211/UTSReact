@@ -1690,7 +1690,98 @@ month
 
   return (<>
 
+     {hrModal !== 'DP' ? <>
       <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+          {isTableLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+               New - Negotiation to Joinee Summary
+              </p>
+              <Table
+                columns={getColumns()}
+                dataSource={summaryData.filter(item => item.hR_Type === 'New')}
+                bordered
+                pagination={false}
+                size="middle"
+                scroll={{ x: "max-content", y: "1vh" }}
+                rowClassName={(record) => {
+                  if (record.stage === "PROJECTION") {
+                    return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+                  }
+                  if (record.stage === "Joined" || record.stage === "Offer Signed" ) {
+                    return uplersStyle.heighliteGreen;
+                  }
+                  if (record.stage === "Selections/Closures") {
+                    return uplersStyle.heighliteOrange;
+                  }
+                  if (record.stage === "Dropouts" || record.stage === "Dropouts") {
+                    return uplersStyle.heighliteRed;
+                  }
+                  if (record.stage === "Total Active Pipeline") {
+                    return uplersStyle.heighlitePurple;
+                  }
+                }}
+              />
+            </>
+          )}
+        </div>
+      </div>
+
+
+       <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+          {isTableLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+                Existing- Negotiation to Joinee Summary
+              </p>
+              <Table
+                columns={getColumns()}
+                dataSource={summaryData.filter(item => item.hR_Type === 'Existing')}
+                bordered
+                pagination={false}
+                size="middle"
+                scroll={{ x: "max-content", y: "1vh" }}
+                rowClassName={(record) => {
+                  if (record.stage === "PROJECTION") {
+                    return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+                  }
+                  if (record.stage === "Joined" || record.stage === "Offer Signed" ) {
+                    return uplersStyle.heighliteGreen;
+                  }
+                  if (record.stage === "Selections/Closures") {
+                    return uplersStyle.heighliteOrange;
+                  }
+                  if (record.stage === "Dropouts" || record.stage === "Dropouts") {
+                    return uplersStyle.heighliteRed;
+                  }
+                  if (record.stage === "Total Active Pipeline") {
+                    return uplersStyle.heighlitePurple;
+                  }
+                }}
+              />
+            </>
+          )}
+        </div>
+      </div>
+     </> :  <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
         <div className={uplersStyle.customTableContainer}>
           {isTableLoading ? (
             <TableSkeleton />
@@ -1733,7 +1824,7 @@ month
             </>
           )}
         </div>
-      </div>
+      </div>}
 
    
 
