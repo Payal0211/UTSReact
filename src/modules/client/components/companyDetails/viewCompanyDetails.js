@@ -501,7 +501,12 @@ export default function ViewCompanyDetails() {
                               ? companyPreviewData?.basicDetails?.company_Category
                               : "NA"}
                           </li>
-
+                          <li>
+                            <label>Geo:</label>
+                            {companyPreviewData?.basicDetails?.companyGeo
+                              ? companyPreviewData?.basicDetails?.companyGeo
+                              : "NA"}
+                          </li>
                         {companyPreviewData?.showWhatsappCTA ? <li>
                           <img
                             src={

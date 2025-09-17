@@ -1,11 +1,11 @@
 /******* Start myJobPosts.css *******/
 .Filescopypaste__area .ql-container.ql-snow {
-    height: 130px !important;
+    height: 250px !important;
 }
 
 .Filescopypaste__area .ql-container.ql-snow .ql-editor {
-    height: 95px !important;
-    min-height: 85px;
+    height: 240px !important;
+    min-height: 240px;
 }
 .formFields{
     margin-top: 20px;
