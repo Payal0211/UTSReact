@@ -353,6 +353,8 @@ function AddCompany() {
       return
     }
     console.log(d,"company_Category");
+
+    let geo_id = filtersList.Geo.find(item => item.value ===  d?.Geo)?.text
     
     
     let payload = {
@@ -364,6 +366,8 @@ function AddCompany() {
         "foundedYear": d?.foundedIn,
         "company_Category":d?.Category,
         // "companySize": +d.teamSize,
+        'geo_id': geo_id,
+        'companyGeo': d?.Geo,
         "teamSize": d?.teamSize,
         "companyType": d?.companyType,
         "industry": d?.industry,

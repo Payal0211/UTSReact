@@ -88,6 +88,7 @@ function PreviewClientModal({
   const [isEditLinkedInURL, setIsEditLinkedInURL] = useState(false);
   const [isEditUserName, setIsEditUserName] = useState(false);
   const [isEditCategory, setIsEditCategory] = useState(false);
+  const [isEditGeo, setIsEditGeo] = useState(false);
   const [getCompanyDetails, setCompanyDetails] = useState({});
   const [showAllInvestors, setShowAllInvestors] = useState(false);
   const [isAnotherRound, setAnotherRound] = useState(false);
@@ -107,6 +108,7 @@ function PreviewClientModal({
   const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
   const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
   const [controlledCategoryValue, setControlledCategoryValue] = useState("");
+  const [controlledGeoValue, setControlledGeoValue] = useState("");
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
     googleDriveFileUpload: "",
@@ -337,6 +339,25 @@ function PreviewClientModal({
       IsUpdateFromPreviewPage: true,
     };
     let res = await allCompanyRequestDAO.updateCompanyCategoryDAO(payload);
+    if (res?.statusCode === HTTPStatusCode.OK) {
+      getDetails();
+      setIsEditCategory(false);
+    }
+    setIsLoading(false);
+  };
+
+    const handleSubmitGeo = async () => {
+    setIsLoading(true);
+     let geo_id = filtersList.Geo.find(item => item.value ===  controlledGeoValue)?.text
+    let payload = {
+      basicDetails: {
+        companyID: getcompanyID,
+        companyGeo: controlledGeoValue,
+        GEO_ID: geo_id 
+      },
+      IsUpdateFromPreviewPage: true,
+    };
+    let res = await allCompanyRequestDAO.updateCompanyGeoDAO(payload);
     if (res?.statusCode === HTTPStatusCode.OK) {
       getDetails();
       setIsEditCategory(false);
@@ -1553,6 +1574,23 @@ const categoryOptions = [{
                               {getCompanyDetails?.basicDetails?.company_Category
                                 ? getCompanyDetails?.basicDetails
                                   ?.company_Category
+                                : "NA"}{" "}
+                            </p>
+                          </li>
+                          <li>
+
+                            <span onClick={() =>{ setIsEditGeo(true)
+                              setControlledGeoValue(getCompanyDetails?.basicDetails?.companyGeo )
+                              setValue('Geo',getCompanyDetails?.basicDetails?.companyGeo )
+                            }}>
+                              {" "}
+                              Geo <EditNewIcon />{" "}
+                            </span>
+
+                            <p>
+                              {getCompanyDetails?.basicDetails?.companyGeo
+                                ? getCompanyDetails?.basicDetails
+                                  ?.companyGeo
                                 : "NA"}{" "}
                             </p>
                           </li>
@@ -4056,6 +4094,68 @@ const categoryOptions = [{
             type="button"
             className={previewClientStyle.btnPrimary}
             onClick={handleSubmit(handleSubmitCategory) }
+          >
+            {" "}
+            SAVE{" "}
+          </button>
+        </div>
+      </Modal>
+
+       {/* Geo Modal*/}
+       <Modal
+        centered
+        open={isEditGeo}
+        onCancel={() => {
+          setIsEditGeo(false)
+          setControlledGeoValue('')
+          resetField("Geo")
+        }}
+        width={300}
+        footer={false}
+        maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
+      >
+
+        <HRSelectField
+              controlledValue={controlledGeoValue}
+              setControlledValue={setControlledGeoValue}
+              isControlled={true}
+              register={register}
+               errors={errors}
+               isError={
+                errors["Geo"] && errors["Geo"]
+              }
+              errorMsg="Please select Geo."
+              setValue={setValue}
+              label="Geo"
+              name="Geo"
+              mode={"value"}
+              defaultValue="Select"              
+              required              
+              options={filtersList?.Geo?.map(item=> ({
+                                      id: item.text,
+                                      value: item.value,
+                                    }))}
+          />       
+      
+        <div className={`${previewClientStyle.buttonEditGroup}`}>
+          <button
+            type="button"
+            className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
+            onClick={() => {
+              setIsEditGeo(false)
+              setControlledGeoValue('')
+              resetField("Geo")
+            }}
+          >
+            {" "}
+            Cancel{" "}
+          </button>
+          <button
+            type="button"
+            className={previewClientStyle.btnPrimary}
+            onClick={handleSubmit(handleSubmitGeo) }
           >
             {" "}
             SAVE{" "}

@@ -134,6 +134,7 @@ export class CompanysAPI {
 	static UPDATE_COMPANY_DETAILS = 'UpdateDetails'
 	static UPDATE_COMPANY_CATEGORY = 'UpdateCompanyCategory'
 	static REMOVE_COMPANY_CATEGORY = 'RemoveDiamondCategory '
+	static UPDATE_COMPANY_GEO = 'UpdateCompanyGEO'
 	static VALIDATE_COMPANY_CLIENT = 'ValidateCompanyClient'
 	static DELETE_FUNDING = "DeleteFundingDetails"
 	static PREVIEW = 'Preview'
