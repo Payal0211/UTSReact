@@ -231,6 +231,38 @@ export const allCompanyRequestDAO  = {
             return errorDebug(error, 'allCompanyRequestDAO.updateCompanyCategoryDAO');
         }
     },
+		updateCompanyGeoDAO: async (payload) =>{
+        try {            
+            const allClientsResult = await CompanyAPI.updateCompanyGeoRequest(payload);
+            if (allClientsResult) {
+				const statusCode = allClientsResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = allClientsResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return allClientsResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return allClientsResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+        } catch (error) {
+            return errorDebug(error, 'allCompanyRequestDAO.updateCompanyGeoDAO');
+        }
+    },
 	removeCompanyCategoryDAO: async (payload) =>{
         try {            
             const allClientsResult = await CompanyAPI.removeCompanyCategoryRequest(payload);

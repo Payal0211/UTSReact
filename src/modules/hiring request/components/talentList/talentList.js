@@ -917,7 +917,7 @@ const TalentList = ({
 										{/* <span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp; */}
 										<div style={{display:'flex', justifyContent:'space-between', gap:'50px',width:'100%'}}>
 										<span style={{ fontWeight: '500' }}>
-											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Click here</p> : item?.ATSTalentLiveURL ? (
+											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Download Resume</p> : item?.ATSTalentLiveURL ? (
 											<Tooltip title={'View Profile Details'}>
 												<a
 													style={{ textDecoration: 'underline' }}

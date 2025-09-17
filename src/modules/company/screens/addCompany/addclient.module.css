@@ -71,6 +71,11 @@
     padding: 0 9px;
 }
 
+.colMd3 {
+    width: 25%;
+    padding: 0 9px;
+}
+
 .tabsLeftPanel h3 {
     font-family: 'Montserrat';
     font-weight: 500;

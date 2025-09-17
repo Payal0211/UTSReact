@@ -54,14 +54,15 @@ function CompanySection({
     const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
     const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
     const [controlledCategoryValue, setControlledCategoryValue] = useState("None");
+    const [controlledGeoValue, setControlledGeoValue] = useState("");
 
   const leadTypeOptions = [{
     id: 12,
-    value: 'InBound',
+    value: 'inbound',
   },
   {
     id: 11,
-    value: 'OutBound',
+    value: 'outbound',
   },
   {
     id: 4,
@@ -103,9 +104,13 @@ function CompanySection({
     setControlledLeadTypeValue(companyDetails?.leadUserType)
     setValue("LeadUser", companyDetails?.leadUserID);
     setControlledLeadUserValue(companyDetails?.leadUserName)
-    setControlledCategoryValue(companyDetails?.company_Category ? companyDetails?.company_Category :  'None')
-    setValue('Category',companyDetails?.company_Category ? companyDetails?.company_Category : 'None')
+    setControlledCategoryValue(companyDetails?.companyCategory ? companyDetails?.companyCategory :  'None')
+    setValue('Category',companyDetails?.companyCategory ? companyDetails?.companyCategory : 'None')
+     setControlledGeoValue(companyDetails?.companyGeo ? companyDetails?.companyGeo :  '')
+    setValue('Geo',companyDetails?.companyGeo ? companyDetails?.companyGeo : '')
   }, [companyDetails]);
+
+
 
   const generateYears = (startYear, endYear) => {
     const years = [];
@@ -602,7 +607,7 @@ function CompanySection({
                         isError={errors["foundedIn"] && errors["foundedIn"]}
                         required
                         errorMsg={"Please select Founded in"}
-                        options={yearOptions}
+                        options={yearOptions.reverse()}
                       />
                     </div>
                   </div>
@@ -784,10 +789,7 @@ function CompanySection({
                     />
                   </div>
 
-
-{console.log('Category',watch('Category'))}
-
-                  <div className={AddNewClientStyle.colMd6}>
+                  <div className={AddNewClientStyle.colMd3}>
                            <HRSelectField
                               controlledValue={controlledCategoryValue}
                               setControlledValue={setControlledCategoryValue}
@@ -813,8 +815,31 @@ function CompanySection({
                                 value: 'None',
                               },
                              ]}
-                          />  
-                  </div>
+                          />  </div>
+
+                           <div className={AddNewClientStyle.colMd3}>
+   <HRSelectField
+                              controlledValue={controlledGeoValue}
+                              setControlledValue={setControlledGeoValue}
+                              isControlled={true}
+                              register={register}
+                              errors={errors}
+                              isError={
+                                errors['Geo'] && errors['Geo']
+                              }
+                              errorMsg="Please select Geo."
+                              setValue={setValue}
+                              label="Geo"
+                              name="Geo"
+                              mode={"value"}
+                              defaultValue="Select"              
+                              required              
+                              options={filtersList?.Geo?.map(item=> ({
+                                      id: item.text,
+                                      value: item.value,
+                                    }))}
+                          /> 
+                           </div>          
                 </div>
 
                 <div className={AddNewClientStyle.row}>
