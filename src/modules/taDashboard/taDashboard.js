@@ -2061,7 +2061,7 @@ export default function TADashboard() {
                   </Tooltip>
                 </IconContext.Provider>
 
-                {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 ) && <IconContext.Provider
+                {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65||userData.UserId ===49||userData.UserId ===176||userData.UserId ===443||userData.UserId ===436||userData.UserId ===302 ) && <IconContext.Provider
                   value={{
                     color: "red",
                     style: {
