@@ -360,7 +360,7 @@ function PreviewClientModal({
     let res = await allCompanyRequestDAO.updateCompanyGeoDAO(payload);
     if (res?.statusCode === HTTPStatusCode.OK) {
       getDetails();
-      setIsEditCategory(false);
+      setIsEditGeo(false);
     }
     setIsLoading(false);
   };
@@ -543,19 +543,19 @@ function PreviewClientModal({
 
   const leadTypeOptions = [{
     id: 12,
-    value: 'InBound',
+    value: 'inbound',
   },
   {
     id: 11,
-    value: 'OutBound',
+    value: 'outbound',
   },
   {
     id: 4,
-    value: 'Referral',
+    value: 'referral',
   },
   {
     id: 176,
-    value: 'Partnership',
+    value: 'partnership',
   }
 ];
 
@@ -4000,13 +4000,13 @@ const categoryOptions = [{
               required
               //  errorMsg={"Please select Founded in"}
               options={filtersList?.LeadUsers?.filter(val => {
-                if(watch('LeadType') === 'InBound'){
+                if(watch('LeadType') === 'inbound'){
                   return val.userTypeId === 12
                 }
-                else if(watch('LeadType') === 'Referral'){
+                else if(watch('LeadType') === 'referral'){
                   return val.userTypeId === 4
                 }
-                else if(watch('LeadType') === 'Partnership'){
+                else if(watch('LeadType') === 'partnership'){
                   return val.employeeId === "UP1831"
                 }else{
                   return val.userTypeId === 11
