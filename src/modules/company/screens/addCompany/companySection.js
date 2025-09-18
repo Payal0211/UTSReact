@@ -66,11 +66,11 @@ function CompanySection({
   },
   {
     id: 4,
-    value: 'Referral',
+    value: 'referral',
   },
   {
     id: 176,
-    value: 'Partnership',
+    value: 'partnership',
   }
 ];
 
@@ -678,13 +678,13 @@ function CompanySection({
                                     required
                                     //  errorMsg={"Please select Founded in"}
                                     options={filtersList?.LeadUsers?.filter(val => {
-                                      if(watch('LeadType') === 'InBound'){
+                                      if(watch('LeadType') === 'inbound'){
                                         return val.userTypeId === 12
                                       }
-                                      else if(watch('LeadType') === 'Referral'){
+                                      else if(watch('LeadType') === 'referral'){
                                         return val.userTypeId === 4
                                       }
-                                      else if(watch('LeadType') === 'Partnership'){
+                                      else if(watch('LeadType') === 'partnership'){
                                         return val.employeeId === "UP1831"
                                       }else{
                                         return val.userTypeId === 11

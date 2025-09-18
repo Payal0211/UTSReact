@@ -360,7 +360,7 @@ function PreviewClientModal({
     let res = await allCompanyRequestDAO.updateCompanyGeoDAO(payload);
     if (res?.statusCode === HTTPStatusCode.OK) {
       getDetails();
-      setIsEditCategory(false);
+      setIsEditGeo(false);
     }
     setIsLoading(false);
   };
