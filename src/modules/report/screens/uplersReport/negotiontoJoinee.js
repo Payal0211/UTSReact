@@ -72,6 +72,18 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
     getUserResult();
   }, []);
  
+  const ProbabilityRatioArr = [
+  "100%",
+  "75%",
+  "50%",
+  "25%",
+  "0%",
+  "Preonboarding",
+  "Lost",
+  "Won",
+  "Pause",
+  "Backed out"
+];
 
 
        const getReportData = async () => {
@@ -862,21 +874,21 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           return v ? (
             rec.stage === "Goal" || rec.stage.includes("%") ? (
               v
-            ) : (
-              <span
-                onClick={() => {
-                  if (rec.category === "DF") {
-                    // getDFDetails(rec, v, "W5");
-                  } else {
-                    // getHRTalentWiseReport(rec, v, "W5");
-                  }
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
-          ) : (
+            ) : v
+              // <span
+              //   onClick={() => {
+              //     if (rec.category === "DF") {
+              //       // getDFDetails(rec, v, "W5");
+              //     } else {
+              //       // getHRTalentWiseReport(rec, v, "W5");
+              //     }
+              //   }}
+              //   style={{ cursor: "pointer", color: "#1890ff" }}
+              // >
+                // {v}
+              // </span> 
+            
+          ): (
             ""
           );
         },
@@ -983,8 +995,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             }
             style={{ width: "100%" }}
             size="small"
-          >
-            <Option value="100%">100%</Option>
+          >{ProbabilityRatioArr.map(
+            val => <Option key={val} value={val}>{val}</Option>
+          )}
+            {/* <Option value="100%">100%</Option>
             <Option value="75%">75%</Option>
             <Option value="50%">50%</Option>
             <Option value="25%">25%</Option>
@@ -993,7 +1007,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             <Option value="Lost">Lost</Option>
             <Option value="Won">Won</Option>
             <Option value="Pause">Pause</Option>
-            <Option value="Backed out">Backed out</Option>
+            <Option value="Backed out">Backed out</Option> */}
           </Select>
         );
       };
@@ -1222,6 +1236,11 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
               "probabiltyRatio_thismonth",
               handleFieldChange
             ),
+
+            filters:ProbabilityRatioArr.map(v=> ({ text: v, value: v,})),
+            onFilter: (value, record) => record.probabiltyRatio_thismonth.indexOf(value) === 0,
+             filterMultiple: false,
+            // sorter: (a, b) => a.name.length - b.name.length,
         },
     
         {
@@ -1355,6 +1374,9 @@ month
               "probabiltyRatio_thismonth",
               handleFieldChange
             ),
+              filters:[{ text: 'Yes', value: 'Yes'},{text:'No',value:'No'}],
+            onFilter: (value, record) => record.talent_Backup.indexOf(value) === 0,
+             filterMultiple: false,
         },
         {
           title: <div>Comments</div>,
