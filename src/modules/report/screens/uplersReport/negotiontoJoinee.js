@@ -1367,7 +1367,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
              filterMultiple: false,
               filterIcon: (filtered) => (
       <FilterOutlined
-        style={{ color: filtered ? "#FFDA30" : "black" }} // 👈 change color here
+        style={{ color: filtered ? "#1890ff" : "black" }} 
       />)
             // sorter: (a, b) => a.name.length - b.name.length,
         },
@@ -1506,9 +1506,9 @@ month
               filters:[{ text: 'Yes', value: 'Yes'},{text:'No',value:'No'}],
             onFilter: (value, record) => record.talent_Backup.indexOf(value) === 0,
              filterMultiple: false,
-             filterIcon: (filtered) => (
+              filterIcon: (filtered) => (
       <FilterOutlined
-        style={{ color: filtered ? "#FFDA30" : "black" }} // 👈 change color here
+        style={{ color: filtered ? "#1890ff" : "black" }} 
       />)
         },
         {
