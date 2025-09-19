@@ -24,6 +24,7 @@ import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import DatePicker from "react-datepicker";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
+import { FilterOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -1364,6 +1365,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             filters:ProbabilityRatioArr.map(v=> ({ text: v, value: v,})),
             onFilter: (value, record) => record.probabiltyRatio_thismonth.indexOf(value) === 0,
              filterMultiple: false,
+              filterIcon: (filtered) => (
+      <FilterOutlined
+        style={{ color: filtered ? "#FFDA30" : "black" }} // 👈 change color here
+      />)
             // sorter: (a, b) => a.name.length - b.name.length,
         },
     
@@ -1501,6 +1506,10 @@ month
               filters:[{ text: 'Yes', value: 'Yes'},{text:'No',value:'No'}],
             onFilter: (value, record) => record.talent_Backup.indexOf(value) === 0,
              filterMultiple: false,
+             filterIcon: (filtered) => (
+      <FilterOutlined
+        style={{ color: filtered ? "#FFDA30" : "black" }} // 👈 change color here
+      />)
         },
         {
           title: <div>Comments</div>,
