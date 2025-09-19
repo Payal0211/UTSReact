@@ -223,6 +223,7 @@ export class ReportType {
 	static GET_POD_SAVE_SPLIT_LIST = 'SaveSplitHRwithPODs'
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
 	static GET_POC_DF_DETAILS_LIST = 'PODDashboard_DeliveryFunnelDetails'
+	static GET_NEGOTIATION_POPUP_DETAILS_LIST = 'PODNegotiationToJoiningFunnelSummary_Popup'
 	static GET_NEGOTIATION_REPORT = 'PODNegotiationToJoiningFunnelList'
 	static GET_PLANING_TO_NEGOTIATION_REPORT = 'PODGoalPlanningToNegotiationList'
 	static GET_NEGOTIATION_SUMMARY_REPORT = 'PODNegotiationToJoiningFunnelSummary'
