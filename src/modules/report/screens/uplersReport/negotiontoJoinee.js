@@ -2582,6 +2582,65 @@ month
           rowKey={(record, index) => index}
        
           pagination={false}
+           summary={() => {             
+            return (
+               <Table.Summary fixed>
+                 <Table.Summary.Row>
+                  {reportPtoNColumns.map((item, index)=> {
+                    if(item.dataIndex === 'company'){
+                      return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong>Total :</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w1'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W1_N}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w2'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W2_N}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w3'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W3_N}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w4'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W4_N}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w5'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W5_N}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else {
+                         return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                               
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                  })}
+                 </Table.Summary.Row>
+               </Table.Summary>
+            )
+           }}
         />
             </>
           )}
@@ -2612,6 +2671,65 @@ month
           rowKey={(record, index) => index}
        
           pagination={false}
+            summary={() => {             
+            return (
+               <Table.Summary fixed>
+                 <Table.Summary.Row>
+                  {reportPtoNColumns.map((item, index)=> {
+                    if(item.dataIndex === 'company'){
+                      return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong>Total :</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w1'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W1_E}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w2'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W2_E}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w3'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W3_E}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w4'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W4_E}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else if(item.dataIndex === 'w5'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W5_E}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                    else {
+                         return  <Table.Summary.Cell index={index}>
+                                              <div>
+                                               
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                  })}
+                 </Table.Summary.Row>
+               </Table.Summary>
+            )
+           }}
         />
             </>
           )}
