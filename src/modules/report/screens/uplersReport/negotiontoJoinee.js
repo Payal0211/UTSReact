@@ -1500,7 +1500,7 @@ month
               value,
               record,
               index,
-              "probabiltyRatio_thismonth",
+              "talent_Backup",
               handleFieldChange
             ),
               filters:[{ text: 'Yes', value: 'Yes'},{text:'No',value:'No'}],
