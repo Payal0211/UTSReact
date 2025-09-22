@@ -24,7 +24,7 @@ import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import DatePicker from "react-datepicker";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
-import { FilterOutlined } from "@ant-design/icons";
+import { FilterFilled } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -1319,7 +1319,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
               {
           title: (
             <div style={{ textAlign: "center" }}>
-           Uplers Revenue
+          Total Pipeline
             </div>
           ),
           dataIndex: "total_HRPipelineStr",
@@ -1351,7 +1351,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           ),
           dataIndex: "probabiltyRatio_thismonth",
           key: "probabiltyRatio_thismonth",
-          width: 150,
+          width: 200,
           align: "center",
           render: (value, record, index) =>
             renderDDSelect(
@@ -1366,7 +1366,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             onFilter: (value, record) => record.probabiltyRatio_thismonth.indexOf(value) === 0,
              filterMultiple: false,
               filterIcon: (filtered) => (
-      <FilterOutlined
+      <FilterFilled
         style={{ color: filtered ? "#1890ff" : "black" }} 
       />)
             // sorter: (a, b) => a.name.length - b.name.length,
@@ -1491,7 +1491,7 @@ month
           ),
           dataIndex: "talent_Backup",
           key: "talent_Backup",
-          width: 150,
+          width: 200,
           align: "right",
          
           className: uplersStyle.headerCell,
@@ -1507,7 +1507,7 @@ month
             onFilter: (value, record) => record.talent_Backup.indexOf(value) === 0,
              filterMultiple: false,
               filterIcon: (filtered) => (
-      <FilterOutlined
+      <FilterFilled
         style={{ color: filtered ? "#1890ff" : "black" }} 
       />)
         },
