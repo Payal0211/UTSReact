@@ -1490,7 +1490,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           ),
           dataIndex: "talent_Backup",
           key: "talent_Backup",
-          width: 200,
+          width: 150,
           align: "center",       
           className: uplersStyle.headerCell,
            render: (value, record, index) =>
@@ -1631,14 +1631,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         {
           title: (
             <div style={{ textAlign: "center" }}>
-              {hrModal !== 'DP' ? <>HR Modal</> : <>
-               Talent's
-              <br /> Notice Period</>}
+              HR Modal
              
             </div>
           ),
-          dataIndex: hrModal !== 'DP' ? 'hR_Model' :"talent_NoticePeriod",
-          key: hrModal !== 'DP' ? 'hR_Model' :"talent_NoticePeriod",
+          dataIndex:  'hR_Model',
+          key:  'hR_Model',
           width: 150,
           align: "center",
           className: uplersStyle.headerCell,
@@ -2582,14 +2580,14 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           rowKey={(record, index) => index}
        
           pagination={false}
-           summary={() => {             
+           summary={() => {        
             return (
                <Table.Summary fixed>
                  <Table.Summary.Row>
                   {reportPtoNColumns.map((item, index)=> {
-                    if(item.dataIndex === 'company'){
+                    if(item.dataIndex === "position"){
                       return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong>Total :</strong>
                                               </div>
                                             </Table.Summary.Cell>
@@ -2676,9 +2674,9 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                <Table.Summary fixed>
                  <Table.Summary.Row>
                   {reportPtoNColumns.map((item, index)=> {
-                    if(item.dataIndex === 'company'){
+                    if(item.dataIndex === "position"){
                       return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong>Total :</strong>
                                               </div>
                                             </Table.Summary.Cell>
