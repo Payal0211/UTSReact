@@ -1492,8 +1492,7 @@ month
           dataIndex: "talent_Backup",
           key: "talent_Backup",
           width: 200,
-          align: "right",
-         
+          align: "center",       
           className: uplersStyle.headerCell,
            render: (value, record, index) =>
             renderYesNoSelect(
@@ -2466,6 +2465,7 @@ month
         footer={false}
         open={openSplitHR}
         className="cloneHRConfWrap"
+        zIndex={99999999}
         onCancel={() => setSplitHR(false)}
       >
         <SplitHR
@@ -2545,6 +2545,7 @@ month
         open={openSplitHR}
         className="cloneHRConfWrap"
         onCancel={() => setSplitHR(false)}
+        zIndex={99999999}
       >
         <SplitHR
           onCancel={() => {setSplitHR(false);setHRID('')}}
