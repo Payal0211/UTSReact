@@ -1858,15 +1858,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
     };
     
       const saveGoalComment = async (note) => {
-        let pl = {
-          hR_BusinessType: "Global",
-          month: moment(monthDate).format("M"),
-          year: moment(monthDate).format("YYYY"),
-          userCategory: "POD",
-          hR_Model: hrModal === "DP" ? "D" : "C",
+        let pl = {       
           stage_ID: selectedHead,
           loggedInUserID: userData?.UserId,
           comments: note,
+          PotentialCloserList_ID:commentData.potentialCloserList_ID,
+          HR_ID:commentData.hiringRequestID 
         };
         setIsCommentLoading(true);
         const res = await TaDashboardDAO.insertGoalCommentsDAO(pl);
@@ -1874,8 +1871,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         if (res.statusCode === HTTPStatusCode.OK) {
           setALLGoalCommentsList(res.responseBody);
           let comments = res.responseBody.map((re) => re.comments);
-          let indToUpdate = allGoalCommentList.findIndex(item=> item.potentialCloserList_ID === commentData.potentialCloserList_ID && item.hiringRequestID === commentData.hiringRequestID)
-          setALLGoalCommentsList((prev) => {
+          let indToUpdate = reportPtoNData.findIndex(item=> (item.potentialCloserList_ID == commentData.potentialCloserList_ID && item.hiringRequestID == commentData.hiringRequestID))
+          setReportPtoNData((prev) => {
         let nArr = [...prev];
         nArr[indToUpdate] = {
           ...nArr[indToUpdate],
