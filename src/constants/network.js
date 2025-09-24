@@ -82,6 +82,8 @@ export class TaDashboardURL {
 	static REMOVE_TASK ='InactiveTATask'
 	static GET_ALL_REVENUE_COMMENTS = 'GetSectionwiseRevenueReportComments'
 	static INSERT_REVENUE_COMMENT = 'InsertRevenueReportComment'
+	static GET_ALL_GOAL_COMMENT = 'GetPotentialListComments'
+	static INSERT_GOAL_COMMENT ='InsertPotentialListComment'
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
 	static GET_TA_WISE_PIPELINE_DETAILS= 'GetTAWiseHRPipelineDetails'
 	static GET_IMMEDIATE_TALENT_DETAILS = 'GetImmediateJinerDetails'
