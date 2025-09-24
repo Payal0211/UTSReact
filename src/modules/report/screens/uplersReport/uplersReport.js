@@ -495,7 +495,6 @@ export default function UplersReport() {
              impHooks={{
           isTableLoading,
           podDashboardList,
-          AddComment,
           monthDate,
           hrModal,
           selectedHead,

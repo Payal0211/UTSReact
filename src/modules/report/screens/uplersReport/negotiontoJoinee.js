@@ -25,6 +25,8 @@ import DatePicker from "react-datepicker";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import { FilterFilled } from "@ant-design/icons";
+import spinGif from "assets/gif/RefreshLoader.gif";
+import Editor from "modules/hiring request/components/textEditor/editor";
 
 const { Option } = Select;
 
@@ -32,7 +34,7 @@ export default function NegotiontoJoinee({
   impHooks
 }) {
     const navigate = useNavigate()
-    const {AddComment,monthDate,hrModal,selectedHead,podName} = impHooks
+    const {monthDate,hrModal,selectedHead,podName} = impHooks
     const [isLoading, setIsLoading] = useState(false);
     const [isTableLoading,setIsTableLoading] = useState(false)
     const [reportData, setReportData] = useState([]);
@@ -69,6 +71,11 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
    const [DFListData, setDFListData] = useState([]);
    const [DFFilterListData, setDFFilterListData] = useState([]);
    const [showDFReport, setShowDFReport] = useState(false);
+
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
+  const [showGoalComment, setShowGoalComment] = useState(false);
+  const [allGoalCommentList, setALLGoalCommentsList] = useState([]);
+  const [commentData, setCommentData] = useState({});
 
   const [userData, setUserData] = useState({});
 
@@ -838,7 +845,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                     <Tooltip title={`Add/View comment`} placement="top">
                       <span
                         onClick={() => {
-                          AddComment(rec, "N");
+                          AddGoalComment(rec, "N");
                         }}
                         // className={taStyles.feedbackLabel}
                       >
@@ -1490,7 +1497,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           ),
           dataIndex: "talent_Backup",
           key: "talent_Backup",
-          width: 200,
+          width: 150,
           align: "center",       
           className: uplersStyle.headerCell,
            render: (value, record, index) =>
@@ -1547,7 +1554,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   <Tooltip title={`Add/View comment`} placement="top">
                     <span
                       onClick={() => {
-                        AddComment({ ...record, index });
+                        AddGoalComment({ ...record, index });
                       }}
                       // className={taStyles.feedbackLabel}
                     >
@@ -1631,14 +1638,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         {
           title: (
             <div style={{ textAlign: "center" }}>
-              {hrModal !== 'DP' ? <>HR Modal</> : <>
-               Talent's
-              <br /> Notice Period</>}
+              HR Modal
              
             </div>
           ),
-          dataIndex: hrModal !== 'DP' ? 'hR_Model' :"talent_NoticePeriod",
-          key: hrModal !== 'DP' ? 'hR_Model' :"talent_NoticePeriod",
+          dataIndex:  'hR_Model',
+          key:  'hR_Model',
           width: 150,
           align: "center",
           className: uplersStyle.headerCell,
@@ -1851,6 +1856,75 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         setFilteredTalentList([]);
       }
     };
+    
+      const saveGoalComment = async (note) => {
+        let pl = {
+          hR_BusinessType: "Global",
+          month: moment(monthDate).format("M"),
+          year: moment(monthDate).format("YYYY"),
+          userCategory: "POD",
+          hR_Model: hrModal === "DP" ? "D" : "C",
+          stage_ID: selectedHead,
+          loggedInUserID: userData?.UserId,
+          comments: note,
+        };
+        setIsCommentLoading(true);
+        const res = await TaDashboardDAO.insertGoalCommentsDAO(pl);
+        setIsCommentLoading(false);
+        if (res.statusCode === HTTPStatusCode.OK) {
+          setALLGoalCommentsList(res.responseBody);
+          let comments = res.responseBody.map((re) => re.comments);
+          let indToUpdate = allGoalCommentList.findIndex(item=> item.potentialCloserList_ID === commentData.potentialCloserList_ID && item.hiringRequestID === commentData.hiringRequestID)
+          setALLGoalCommentsList((prev) => {
+        let nArr = [...prev];
+        nArr[indToUpdate] = {
+          ...nArr[indToUpdate],
+          potentialList_Comments: comments.slice(0, 5).join("~"),
+        };
+        return nArr;
+      })
+        }
+      };
+
+      const getAllGoalComments = async (d, modal) => {
+    setIsCommentLoading(true);
+    const pl = {
+    potentialCloserListID:d.potentialCloserList_ID,
+    hrID:d.hiringRequestID    };
+    const result = await TaDashboardDAO.getALLGoalCommentsDAO(pl);
+    setIsCommentLoading(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setALLGoalCommentsList(result.responseBody);
+    } else {
+      setALLGoalCommentsList([]);
+    }
+  };
+
+    const commentColumn = [
+    {
+      title: "Created By",
+      dataIndex: "createdByDatetime",
+      key: "createdByDatetime",
+      width: "200px",
+    },
+    {
+      title: "Comment",
+      dataIndex: "comments",
+      key: "comments",
+      render: (text) => {
+        return <div dangerouslySetInnerHTML={{ __html: text }}></div>;
+      },
+    },
+    { title: "Added By", dataIndex: "addedBy", key: "addedBy", width: "200px" },
+  ];
+
+
+
+      const AddGoalComment = (data,modal) =>{
+    getAllGoalComments(data, modal);
+    setShowGoalComment(true);
+    setCommentData({ ...data, hR_Model: modal });
+  }
 
 
   return (<>
@@ -2582,49 +2656,70 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           rowKey={(record, index) => index}
        
           pagination={false}
-           summary={() => {             
+           summary={() => {     
             return (
                <Table.Summary fixed>
                  <Table.Summary.Row>
                   {reportPtoNColumns.map((item, index)=> {
-                    if(item.dataIndex === 'company'){
+                    if(item.dataIndex === "position"){
                       return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong>Total :</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                     else if(item.dataIndex === 'hrPipelineStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end'}}>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_1TR_N}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                     else if(item.dataIndex === 'total_HRPipelineStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end'}}>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_TR_N}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                     else if(item.dataIndex === 'podValueStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end'}}>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_PODValue_N}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w1'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W1_N}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w2'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W2_N}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w3'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W3_N}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w4'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W4_N}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w5'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W5_N}</strong>
                                               </div>
                                             </Table.Summary.Cell>
@@ -2676,44 +2771,65 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                <Table.Summary fixed>
                  <Table.Summary.Row>
                   {reportPtoNColumns.map((item, index)=> {
-                    if(item.dataIndex === 'company'){
+                    if(item.dataIndex === "position"){
                       return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong>Total :</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                          else if(item.dataIndex === 'hrPipelineStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end'}}>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_1TR_E}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                     else if(item.dataIndex === 'total_HRPipelineStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end'}}>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_TR_E}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                     else if(item.dataIndex === 'podValueStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end'}}>
+                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.totalPODValue_E}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w1'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W1_E}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w2'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W2_E}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w3'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W3_E}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w4'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W4_E}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w5'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div>
+                                              <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W5_E}</strong>
                                               </div>
                                             </Table.Summary.Cell>
@@ -2857,6 +2973,97 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   )}
                 </Modal>
               )}
+
+                       {showGoalComment && (
+        <Modal
+          transitionName=""
+          width="1000px"
+          centered
+          footer={null}
+          open={showGoalComment}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowGoalComment(false);
+            setALLGoalCommentsList([]);
+            setCommentData({});
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Add Comment</h3>
+          </div>
+          <Suspense>
+            <div
+              style={{
+                position: "relative",
+                marginBottom: "10px",
+                padding: "0 20px",
+                paddingRight: "30px",
+              }}
+            >
+              <Editor
+                hrID={""}
+                saveNote={(note) => saveGoalComment(note)}
+                isUsedForComment={true}
+              />
+            </div>
+          </Suspense>
+
+          {allGoalCommentList.length > 0 ? (
+            <div style={{ padding: "12px 20px" }}>
+              {isCommentLoading && (
+                <div>
+                  Adding Comment ...{" "}
+                  <img src={spinGif} alt="loadgif" width={16} />{" "}
+                </div>
+              )}
+              {!isCommentLoading && (
+                <Table
+                  dataSource={allGoalCommentList}
+                  columns={commentColumn}
+                  pagination={false}
+                />
+              )}
+              {/* <ul>
+                                        {allCommentList.map((item) => (
+                                          <li
+                                            key={item.comments}
+                                           
+                                          >
+                                            <div style={{display:'flex',justifyContent:'space-between'}}>
+                                              <strong>{item.addedBy}</strong><p>{item.createdByDatetime}</p>
+                                            </div>
+                                            <div  dangerouslySetInnerHTML={{ __html: item.comments }}></div>
+                                          </li>
+                                        ))}
+                                      </ul> */}
+            </div>
+          ) : (
+            <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+              {isCommentLoading ? (
+                <div>
+                  Loading Comments...{" "}
+                  <img src={spinGif} alt="loadgif" width={16} />{" "}
+                </div>
+              ) : (
+                "No Comments yet"
+              )}
+            </h3>
+          )}
+          <div style={{ padding: "10px" }}>
+            <button
+              className={uplersStyle.btnCancle}
+              // disabled={isEditNewTask}
+              onClick={() => {
+                setShowGoalComment(false);
+                setALLGoalCommentsList([]);
+                setCommentData({});
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
       </div>
   </>
      
