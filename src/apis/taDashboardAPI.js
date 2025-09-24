@@ -285,6 +285,39 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getALLRevenueCommentsRequest');
 		}
 	},
+	getALLGoalCommentsRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			TaDashboardURL.GET_ALL_GOAL_COMMENT + `?potentialCloserListID=${pl.potentialCloserListID}&hrID=${pl.hrID}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getALLGoalCommentsRequest');
+		}
+	},
+	insertGOALCommentRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			TaDashboardURL.INSERT_GOAL_COMMENT
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.insertGOALCommentRequest');
+		}
+	},
     removeTasksRequest: async function (id) {
 		let httpService = new HttpServices();
 		httpService.URL =
