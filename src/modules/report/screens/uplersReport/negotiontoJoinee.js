@@ -1385,8 +1385,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
               Interview <br/>Rounds
             </div>
           ),
-          dataIndex: "noifInterviewRounds",
-          key: "noifInterviewRounds",
+          dataIndex: "noofInterviewRounds",
+          key: "noofInterviewRounds",
           align: "center",
           width: 100,
           render: (text, result) => {
