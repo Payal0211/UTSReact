@@ -785,6 +785,25 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	updateTentativeJoiningDateAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD + 
+			OnboardsAPI.UPDATE_TENTATIVE_JOINING_DATE
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.updateTentativeJoiningDateAPI',
+			);
+		}
+	},
 	getallBRPRWithLeave: async function (onBoardId) {
 		let httpService = new HttpServices();
 		httpService.URL =
