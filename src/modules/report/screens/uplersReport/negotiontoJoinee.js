@@ -263,6 +263,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           year: moment(monthDate).format("YYYY"),
           stage_ID: row.stage_ID,
           weekno: week ? week : "",
+          hr_businesstype:row.hR_Type
         };
         setShowTalentCol(row);
         setAchievedTotal(v);
@@ -1385,8 +1386,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
               Interview <br/>Rounds
             </div>
           ),
-          dataIndex: "noifInterviewRounds",
-          key: "noifInterviewRounds",
+          dataIndex: "noofInterviewRounds",
+          key: "noofInterviewRounds",
           align: "center",
           width: 100,
           render: (text, result) => {
