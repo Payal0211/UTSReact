@@ -1923,6 +1923,27 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
     setCommentData({ ...data, hR_Model: modal });
   }
 
+  const calculateTotal = (data,key)=>{
+      if(data.length === 0){
+        return ''
+      }
+          function detectCurrency(str) {
+        const match = str.match(/[^\d,.\s]/); // find first non-numeric character
+        return match ? match[0] : ""; 
+      }
+
+      let d = data[0]
+      const currencySymbol = detectCurrency(d[key]) 
+      const total = data.reduce((sum, item) => {
+        const num = Number(item[key].replace(/[^0-9.-]+/g, "")); 
+        return sum + num;
+      }, 0);
+
+
+      const formattedTotal = `${currencySymbol}${total.toLocaleString("en-IN")}`
+      return formattedTotal
+  }
+
 
   return (<>
 
@@ -2653,7 +2674,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           rowKey={(record, index) => index}
        
           pagination={false}
-           summary={() => {     
+           summary={(values) => {     
             return (
                <Table.Summary fixed>
                  <Table.Summary.Row>
@@ -2668,56 +2689,56 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                      else if(item.dataIndex === 'hrPipelineStr'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_1TR_N}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'hrPipelineStr')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                      else if(item.dataIndex === 'total_HRPipelineStr'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_TR_N}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'total_HRPipelineStr')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                      else if(item.dataIndex === 'podValueStr'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_PODValue_N}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'podValueStr')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w1'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W1_N}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w2'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W2_N}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w3'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W3_N}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w4'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W4_N}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w5'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'New')[0]?.total_W5_N}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -2763,7 +2784,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           rowKey={(record, index) => index}
        
           pagination={false}
-            summary={() => {             
+             summary={(values) => {     
             return (
                <Table.Summary fixed>
                  <Table.Summary.Row>
@@ -2775,59 +2796,59 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                               </div>
                                             </Table.Summary.Cell>
                     }
-                          else if(item.dataIndex === 'hrPipelineStr'){
+                     else if(item.dataIndex === 'hrPipelineStr'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_1TR_E}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'hrPipelineStr')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                      else if(item.dataIndex === 'total_HRPipelineStr'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_TR_E}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'total_HRPipelineStr')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                      else if(item.dataIndex === 'podValueStr'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.totalPODValue_E}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'podValueStr')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w1'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W1_E}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w2'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W2_E}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w3'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W3_E}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w4'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W4_E}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w5'){
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{reportPtoNData?.filter(item=> item.businessType === 'Existing')[0]?.total_W5_E}</strong>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
