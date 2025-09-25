@@ -531,6 +531,7 @@ export class OnboardsAPI {
 	static ONBOARDING_STATUS_UPDATES = 'OnBoardingStatusUpdates';
 	static VIEW_IN_DETAIL = 'ViewInDetail';
 	static UPDATE_CONTRACT_START_DATE= 'UpdateContractStarDate';
+	static UPDATE_TENTATIVE_JOINING_DATE = 'UpdateTentativeJoiningDate'
 	static FATCH_CLIENT_LEGAL_INFO = 'FetchClientLegalInfo'
 	static FEATCH_TALENT_ON_BOARD_INFO = 'FetchTalentOnBoardInfo'
 	static UPLOAD_FILE = "UploadSOWDocument"

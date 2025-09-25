@@ -1485,6 +1485,38 @@ export const engagementRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.updateContractStartDate');
 		}
 	},
+	updateTentativeJoiningDate: async function (payload) {
+		try {
+			const updateResult = await EngagementRequestAPI.updateTentativeJoiningDateAPI(payload);
+			if (updateResult) {
+				const statusCode = updateResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = updateResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return updateResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return updateResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.updateTentativeJoiningDate');
+		}
+	},
 
 	getAllBRPRListWithLeaveDAO: async function (id) {
 		try {

@@ -263,6 +263,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           year: moment(monthDate).format("YYYY"),
           stage_ID: row.stage_ID,
           weekno: week ? week : "",
+          hr_businesstype:row.hR_Type
         };
         setShowTalentCol(row);
         setAchievedTotal(v);

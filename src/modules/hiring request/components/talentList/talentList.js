@@ -14,6 +14,7 @@ import { ReactComponent as InfoCircleIcon } from 'assets/svg/infoCircleIcon.svg'
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
 import { useNavigate } from 'react-router-dom'
 import infoIcon from 'assets/svg/info.svg'
+import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 
 import {
 	InterviewFeedbackStatus,
@@ -71,6 +72,8 @@ import TalentListDocuments from './talentDocuments';
 import TalentOtherEngagement from '../talentAcceptance/talentOtherEngagement';
 import HighlightedLinks from 'shared/components/animatedLinks/animatedLinks';
 import MoveToAssessment from './moveToAssessment';
+import DatePicker from 'react-datepicker';
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -257,6 +260,9 @@ const TalentList = ({
 		hrId: '',
 	});
 	const [getOnboardFormDetails, setOnboardFormDetails] = useState({});
+	const [editJoiningDateModal,setEditJoiningDateModal] = useState(false)
+	const [editTJoiningDateModal,setEditTJoiningDateModal] = useState(false)
+	const [onboardDetails,setOnboardDetails] = useState({})
 
 	const getOnboardingForm = async (getOnboardID) => {
 		setOnboardFormDetails({});
@@ -665,6 +671,58 @@ const TalentList = ({
 	</div>
 
   }
+
+    const handleTJoiningDateSubmit  = async () => {
+   
+    const formattedDate = onboardDetails.date ?  moment(onboardDetails.date).format("YYYY-MM-DD") : '';
+    const payload = {
+      onBoardID: onboardDetails?.onBoardId,
+      TentativeJoiningDate : formattedDate,
+    };
+    try {
+      const response = await engagementRequestDAO.updateTentativeJoiningDate(payload); // <-- Make sure this function exists
+  
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        message.success(" Tentative Joining date updated successfully.");
+        // getOnboardingForm(getHRAndEngagementId?.onBoardId);
+        setEditTJoiningDateModal(false);
+		 getHrUserData(hrId)
+      } else {
+        message.error("Failed to update Tentative joining date.");
+      }
+    } catch (error) {
+      console.error("Error updating joining date:", error);
+      message.error("Something went wrong.");
+    }
+  };
+
+  const handleJoiningDateSubmit  = async () => {
+    if (!onboardDetails.date) {
+      message.warning("Please select a date before saving.");
+      return;
+    }
+    const formattedDate = moment(onboardDetails.date).format("YYYY-MM-DD");
+    const payload = {
+      onBoardID: onboardDetails?.onBoardId,
+      contractStartDate: formattedDate,
+    };
+  
+    try {
+      const response = await engagementRequestDAO.updateContractStartDate(payload); // <-- Make sure this function exists
+  
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        message.success("Joining date updated successfully.");
+        // getOnboardingForm(getHRAndEngagementId?.onBoardId);
+        setEditJoiningDateModal(false);
+		 getHrUserData(hrId)
+      } else {
+        message.error("Failed to update joining date.");
+      }
+    } catch (error) {
+      console.error("Error updating joining date:", error);
+      message.error("Something went wrong.");
+    }
+  };
 
   const ColapsableTalNotesDetails =({item}) => {
 	const [show,setShow] = useState(false)
@@ -1348,14 +1406,119 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Tentative Joining Date:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.TentativeJoiningDate ? item?.TentativeJoiningDate :  'NA'} 
+											</span>
+
+											 <span
+											className={TalentListStyle.editNewIcon}
+											style={{ marginLeft: "auto", cursor: "pointer" }}
+											onClick={() => {
+												setEditTJoiningDateModal(true);
+												console.log(new Date(item?.TentativeJoiningDate) , item?.TentativeJoiningDate)
+												let date = ''
+												if(item?.TentativeJoiningDate){
+													const [day, month, year] = item?.TentativeJoiningDate.split("/").map(Number);
+												 date = new Date(year, month - 1, day);
+												}
+												
+												setOnboardDetails({date:date ,onBoardId:item.OnBoardId})
+											}}
+											>
+											<EditNewIcon />
+											</span>
+										</div>
+										{editTJoiningDateModal  && (
+										  <Modal
+										  width={400}
+										  centered
+										  footer={false}
+										  open={editTJoiningDateModal}
+										  className="editStartDateModal"
+										
+										  onCancel={() => setEditTJoiningDateModal(false)}
+										>
+										  <label className={TalentListStyle.formLabel}>Edit Tentative Joining Date</label>   
+										  <div className={TalentListStyle.timeSlotItem}>
+											<CalenderSVG />
+											<DatePicker
+											  selected={onboardDetails.date}
+											  onChange={(date) => {
+												setOnboardDetails(prev=> {
+													return {...prev,date:date}
+												})
+											  }}
+											  placeholderText="Select Date"
+											  dateFormat="dd/MM/yyyy"
+											/>
+										  </div>
+										  <button
+											type="button"
+											className={TalentListStyle.btnPrimary}
+											onClick={handleTJoiningDateSubmit}
+										  >
+											SAVE
+										  </button>
+										</Modal>
+										)}
+
+
+									
 										{item?.JoiningDate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Joining Date:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500' }}>
 												{item?.JoiningDate}
 											</span>
+											 <span
+											className={TalentListStyle.editNewIcon}
+											style={{ marginLeft: "auto", cursor: "pointer" }}
+											onClick={() => {
+												setEditJoiningDateModal(true);
+												const [day, month, year] = item?.JoiningDate.split("/").map(Number);
+												const date = new Date(year, month - 1, day);
+												setOnboardDetails({date:date ,onBoardId:item.OnBoardId})
+											}}
+											>
+											<EditNewIcon />
+											</span>
 										</div>
 									)}
+									 {editJoiningDateModal  && (
+										  <Modal
+										  width={400}
+										  centered
+										  footer={false}
+										  open={editJoiningDateModal}
+										  className="editStartDateModal"
+										
+										  onCancel={() => setEditJoiningDateModal(false)}
+										>
+										  <label className={TalentListStyle.formLabel}>Edit Joining Date</label>   
+										  <div className={TalentListStyle.timeSlotItem}>
+											<CalenderSVG />
+											<DatePicker
+											  selected={onboardDetails.date}
+											  onChange={(date) => {
+												setOnboardDetails(prev=> {
+													return {...prev,date:date}
+												})
+											  }}
+											  placeholderText="Start Date"
+											  dateFormat="dd/MM/yyyy"
+											/>
+										  </div>
+										  <button
+											type="button"
+											className={TalentListStyle.btnPrimary}
+											onClick={handleJoiningDateSubmit}
+										  >
+											SAVE
+										  </button>
+										</Modal>
+										)}
 										{item?.ContractStartdate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Contract Start Date:</span>&nbsp;&nbsp;
