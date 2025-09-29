@@ -979,7 +979,7 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
 			ReportType.GET_NEGOTIATION_POPUP_DETAILS_LIST + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}
-			&stage_id=${payload?.stage_ID}&weekno=${payload?.weekno}&hr_businesstype=${payload?.hr_businesstype?? ''}`
+			&stage_id=${payload?.stage_ID}&weekno=${payload?.weekno}&hr_businesstype=${payload?.hr_businesstype?? ''}&isNextMonth=${payload?.isNextMonth?? ''}`
 
 		httpService.setAuthRequired = true;
 		// httpService.dataToSend = payload;
