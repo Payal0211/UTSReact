@@ -263,7 +263,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           year: moment(monthDate).format("YYYY"),
           stage_ID: row.stage_ID,
           weekno: week ? week : "",
-          hr_businesstype:row.hR_Type
+          hr_businesstype:row.hR_Type,
+          isNextMonth:row?.isNM === 'Yes'? row?.isNM : ''
         };
         setShowTalentCol(row);
         setAchievedTotal(v);
@@ -1103,7 +1104,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             ) : (
               <span
                 onClick={() => {
-                  getDFDetails({...rec,stage_ID:'NM' }, v);
+                  getDFDetails({...rec,isNM:'Yes' }, v);
                 }}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
