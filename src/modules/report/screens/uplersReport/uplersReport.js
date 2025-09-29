@@ -48,7 +48,7 @@ export default function UplersReport() {
   const [podDashboardList, setPODDashboardList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
-  const [hrModal, setHRModal] = useState("DP");
+
   const [monthDate, setMonthDate] = useState(new Date());
   const selectedYear = monthDate.getFullYear();
   const [showComment, setShowComment] = useState(false);
@@ -58,6 +58,7 @@ export default function UplersReport() {
   const [dashboardTabTitle, setDashboardTabTitle] = useState("pod");
 
   const [userData, setUserData] = useState({});
+  const [hrModal, setHRModal] = useState("DP");
   useEffect(() => {
     const getUserResult = async () => {
       let userData = UserSessionManagementController.getUserSession();
@@ -65,6 +66,19 @@ export default function UplersReport() {
     };
     getUserResult();
   }, []);
+
+  useEffect(() => {
+    // set modal to contract for stanley 
+    if(userData?.EmployeeID ==="UP1831"){
+       setHRModal('Contract');
+        let val = pODList.find(
+                    (i) => i.dd_text === "Orion"
+                  )?.dd_value;
+                  setSelectedHead(val);
+                  getGroupUsers(val);
+    }
+  
+  }, [userData,pODList]);
 
   const getHeads = async () => {
     setIsLoading(true);
