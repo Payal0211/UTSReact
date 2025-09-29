@@ -1352,8 +1352,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         {
           title: (
             <div style={{ textAlign: "center" }}>
-              Probability Ratio 
-              
+              {/* Probability Ratio  */}
+              Probability Ratio <br/> to move to <br/>Negotiation stage
             </div>
           ),
           dataIndex: "probabiltyRatio_thismonth",
