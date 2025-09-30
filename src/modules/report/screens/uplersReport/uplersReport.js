@@ -246,8 +246,12 @@ export default function UplersReport() {
 
   useEffect(() => {
     getHeads();
-    getPODRevenue()
+
   }, []);
+    useEffect(() => {
+
+    getPODRevenue()
+  }, [monthDate,selectedYear]);
 
   const saveComment = async (note) => {
     let pl = {
