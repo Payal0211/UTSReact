@@ -1188,7 +1188,22 @@ getAllPODGroupUsersRequest:async function (payload) {
 		return errorDebug(error, 'ReportAPI.getAllPODDashboardRequest');
 	}
 	},
+getAllPODRevenueRequest:async function (payload) {
+	let httpService = new HttpServices();
+	httpService.URL =
+		NetworkInfo.NETWORK +
+		SubDomain.REPORT +
+		ReportType.GET_POD_REVENUE_LIST + `?month=${payload?.month}&year=${payload?.year}`
 
+	httpService.setAuthRequired = true;
+	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	try {
+		let response = await httpService.sendGetRequest();
+		return response;
+	} catch (error) {
+		return errorDebug(error, 'ReportAPI.getAllPODRevenueRequest');
+	}
+	},
 	saveSplitHRRequest:async function (payload) {
 	let httpService = new HttpServices();
 	httpService.URL =

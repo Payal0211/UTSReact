@@ -42,23 +42,26 @@ const { Title, Text } = Typography;
 
 export default function UplersReport() {
   const navigate = useNavigate();
-  const [selectedHead, setSelectedHead] = useState("");
+  let data = localStorage.getItem('uplersReportValues')
+    let parsedData = JSON.parse(data)
+  const [selectedHead, setSelectedHead] = useState(parsedData?.selectedHead ?? '');
   const [pODList, setPODList] = useState([]);
   const [pODUsersList, setPODUsersList] = useState([]);
   const [podDashboardList, setPODDashboardList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
 
-  const [monthDate, setMonthDate] = useState(new Date());
+  const [monthDate, setMonthDate] = useState(parsedData?.monthDate ? new Date(parsedData?.monthDate) : new Date());
   const selectedYear = monthDate.getFullYear();
   const [showComment, setShowComment] = useState(false);
   const [commentData, setCommentData] = useState({});
   const [allCommentList, setALLCommentsList] = useState([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
-  const [dashboardTabTitle, setDashboardTabTitle] = useState("pod");
+  const [dashboardTabTitle, setDashboardTabTitle] = useState(parsedData?.dashboardTabTitle ?? 'pod');
 
   const [userData, setUserData] = useState({});
-  const [hrModal, setHRModal] = useState("DP");
+  const [hrModal, setHRModal] = useState(parsedData?.hrModal ?? 'DP');
+  const [summeryRevenueData,setSummeryRevenueData] = useState([])
   useEffect(() => {
     const getUserResult = async () => {
       let userData = UserSessionManagementController.getUserSession();
@@ -67,15 +70,37 @@ export default function UplersReport() {
     getUserResult();
   }, []);
 
+
+  useEffect(()=>{
+    let presistValue = {
+      hrModal, monthDate,selectedHead,dashboardTabTitle
+    }
+    localStorage.setItem('uplersReportValues',JSON.stringify(presistValue))
+  },[hrModal,selectedHead,dashboardTabTitle,monthDate])
+
+  // useEffect(()=>{
+  //   let data = localStorage.getItem('uplersReportValues')
+  //   if(data){
+    
+  //     console.log('pds',parsedData)
+  //     setHRModal(parsedData?.hrModal ?? 'DP')
+  //     setMonthDate(parsedData?.monthDate ? new Date(parsedData?.monthDate) : new Date())
+  //     setSelectedHead(parsedData?.selectedHead ?? '')
+  //     setDashboardTabTitle(parsedData?.dashboardTabTitle ?? 'pod')
+  //   }
+  
+  // },[])
+
+
   useEffect(() => {
     // set modal to contract for stanley 
     if(userData?.EmployeeID ==="UP1831"){
-       setHRModal('Contract');
+       setHRModal(parsedData?.hrModal ?? 'Contract');
         let val = pODList.find(
                     (i) => i.dd_text === "Orion"
                   )?.dd_value;
-                  setSelectedHead(val);
-                  getGroupUsers(val);
+                  setSelectedHead(parsedData?.selectedHead?? val);
+                  getGroupUsers(parsedData?.selectedHead?? val);
     }
   
   }, [userData,pODList]);
@@ -87,8 +112,40 @@ export default function UplersReport() {
     setIsLoading(false);
     if (filterResult.statusCode === HTTPStatusCode.OK) {
       setPODList(filterResult && filterResult?.responseBody);
-      getGroupUsers(filterResult?.responseBody[0]?.dd_value);
-      setSelectedHead(filterResult?.responseBody[0]?.dd_value);
+     
+      setSelectedHead(prev =>{
+        if(prev ===''){
+           getGroupUsers(filterResult?.responseBody[0]?.dd_value);
+          return filterResult?.responseBody[0]?.dd_value
+        }else{
+           getGroupUsers(prev);
+          return prev
+        }
+        
+      }  );
+    } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+      // setLoading(false);
+      return navigate(UTSRoutes.LOGINROUTE);
+    } else if (
+      filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+    ) {
+      // setLoading(false);
+      return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+    } else {
+      return "NO DATA FOUND";
+    }
+  };
+
+  const getPODRevenue  = async () => {
+    setIsLoading(true);
+ let pl = {
+      month: moment(monthDate).format("MM"),
+      year: selectedYear,
+    };
+    let filterResult = await ReportDAO.getAllPODRevenueDAO(pl);
+    setIsLoading(false);
+    if (filterResult.statusCode === HTTPStatusCode.OK) {
+     setSummeryRevenueData(filterResult && filterResult?.responseBody);
     } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
       // setLoading(false);
       return navigate(UTSRoutes.LOGINROUTE);
@@ -189,7 +246,12 @@ export default function UplersReport() {
 
   useEffect(() => {
     getHeads();
+
   }, []);
+    useEffect(() => {
+
+    getPODRevenue()
+  }, [monthDate,selectedYear]);
 
   const saveComment = async (note) => {
     let pl = {
@@ -393,6 +455,74 @@ export default function UplersReport() {
               </div>
             </div>
           </div>
+        </div>
+        <div style={{ display: "flex" , margin:'10px 24px', gap:'10px'}}>
+          {console.log(summeryRevenueData,'summeryRevenueData')}
+           <div
+                    className={uplersStyle.filterType}
+                    key={"Total FTE"}
+                    // style={{
+                    //   borderBottom:
+                    //     tableFilteredState?.filterFields_OnBoard
+                    //       ?.SummaryFilterOption === "AT"
+                    //       ? "6px solid #FFDA30"
+                    //       : "",
+                    // }}
+                  >
+                    {/* <img src={FeedBack} alt="rocket" /> */}
+                    <h2>
+                      FTE Total :{" "}
+                      <span>
+                        {summeryRevenueData[0]?.ftE_Total_Str
+                          ? summeryRevenueData[0]?.ftE_Total_Str
+                          : 0}
+                      </span>
+                    </h2>
+                     <Tooltip
+                                            placement="bottomLeft"
+                                            title={
+                                              <div>
+                                                {/* Active engagements determined by the following
+                                                count: */}
+                                                <ul>
+                                                  <li>NASA Total:   {summeryRevenueData[0]?.nasa_Total_Str
+                          ? summeryRevenueData[0]?.nasa_Total_Str
+                          : 0}</li>
+                                                  <li>Shunya Total:   {summeryRevenueData[0]?.shunya_Total_Str
+                          ? summeryRevenueData[0]?.shunya_Total_Str
+                          : 0}</li>
+                                                  <li>Meteoroid Total:   {summeryRevenueData[0]?.meteoroiD_Total_Str
+                          ? summeryRevenueData[0]?.meteoroiD_Total_Str
+                          : 0}</li>
+                                                </ul>
+                                              </div>
+                                            }
+                                          >
+                                            <div className={uplersStyle.summaryTooltip}>!</div>
+                                          </Tooltip>
+                  </div>
+
+                   <div
+                    className={uplersStyle.filterType}
+                    key={"Contract total"}
+                    // style={{
+                    //   borderBottom:
+                    //     tableFilteredState?.filterFields_OnBoard
+                    //       ?.SummaryFilterOption === "AT"
+                    //       ? "6px solid #FFDA30"
+                    //       : "",
+                    // }}
+                  >
+                    {/* <img src={FeedBack} alt="rocket" /> */}
+                    <h2>
+                     Contract Total :{" "}
+                      <span>
+                        {summeryRevenueData[0]?.contract_Total_Str
+                          ? summeryRevenueData[0]?.contract_Total_Str
+                          : 0}
+                      </span>
+                    </h2>
+                  </div>
         </div>
         <div style={{ display: "flex" }}>
           <div className={uplersStyle.chipCardContainer}>
