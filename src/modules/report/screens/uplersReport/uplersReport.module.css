@@ -182,6 +182,40 @@ margin-bottom: 10px;
    text-align: center;
 }
 
+.filterType {
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    padding: 10px 16px;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content:center;
+    align-items: center;
+    display: inline-flex;
+    /* flex: 1; */
+}
+
+.filterType h2 {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #232323;
+    margin-bottom: 0px;
+}
+
+.filterType span {
+    font-weight: 600;
+}
+
+.summaryTooltip {
+    border-radius: 50%;
+    background: var(--color-sunlight);
+    width: 20px;
+    margin-left: 5px;
+    font-weight: bold;
+}
+
 .btn {
     background: #FFDA30;
     border: 1px solid #CECCCC;
