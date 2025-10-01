@@ -17,6 +17,8 @@ import {
   Avatar,
   Tabs,
 } from "antd";
+import FeedBack from "assets/svg/feedbackReceived.png";
+import Handshake from "assets/svg/handshake.svg";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import Diamond from "assets/svg/diamond.svg";
@@ -95,12 +97,14 @@ export default function UplersReport() {
   useEffect(() => {
     // set modal to contract for stanley 
     if(userData?.EmployeeID ==="UP1831"){
-       setHRModal(parsedData?.hrModal ?? 'Contract');
+      if(!parsedData?.selectedHead){
+        setHRModal('Contract');
         let val = pODList.find(
                     (i) => i.dd_text === "Orion"
                   )?.dd_value;
-                  setSelectedHead(parsedData?.selectedHead?? val);
-                  getGroupUsers(parsedData?.selectedHead?? val);
+                  setSelectedHead(val);
+                  getGroupUsers(val);
+      }    
     }
   
   }, [userData,pODList]);
@@ -461,15 +465,12 @@ export default function UplersReport() {
            <div
                     className={uplersStyle.filterType}
                     key={"Total FTE"}
-                    // style={{
-                    //   borderBottom:
-                    //     tableFilteredState?.filterFields_OnBoard
-                    //       ?.SummaryFilterOption === "AT"
-                    //       ? "6px solid #FFDA30"
-                    //       : "",
-                    // }}
+                     style={{
+                      borderBottom:"6px solid #FFDA30"
+                          
+                    }}
                   >
-                    {/* <img src={FeedBack} alt="rocket" /> */}
+                    <img src={FeedBack} alt="rocket" />
                     <h2>
                       FTE Total :{" "}
                       <span>
@@ -480,22 +481,19 @@ export default function UplersReport() {
                     </h2>
                      <Tooltip
                                             placement="bottomLeft"
-                                            title={
-                                              <div>
-                                                {/* Active engagements determined by the following
-                                                count: */}
-                                                <ul>
-                                                  <li>NASA Total:   {summeryRevenueData[0]?.nasa_Total_Str
+                                            title={                                            
+                                                <ul style={{margin:'10px 10px 10px 0'}}>
+                                                  <li>NASA Total:  <strong style={{marginLeft:'10px'}}>{summeryRevenueData[0]?.nasa_Total_Str
                           ? summeryRevenueData[0]?.nasa_Total_Str
-                          : 0}</li>
-                                                  <li>Shunya Total:   {summeryRevenueData[0]?.shunya_Total_Str
+                          : 0}</strong> </li>
+                                                  <li>Shunya Total: <strong style={{marginLeft:'10px'}}> {summeryRevenueData[0]?.shunya_Total_Str
                           ? summeryRevenueData[0]?.shunya_Total_Str
-                          : 0}</li>
-                                                  <li>Meteoroid Total:   {summeryRevenueData[0]?.meteoroiD_Total_Str
+                          : 0}</strong>  </li>
+                                                  <li>Meteoroid Total:  <strong style={{marginLeft:'10px'}}>{summeryRevenueData[0]?.meteoroiD_Total_Str
                           ? summeryRevenueData[0]?.meteoroiD_Total_Str
-                          : 0}</li>
+                          : 0} </strong> </li>
                                                 </ul>
-                                              </div>
+                                             
                                             }
                                           >
                                             <div className={uplersStyle.summaryTooltip}>!</div>
@@ -505,15 +503,12 @@ export default function UplersReport() {
                    <div
                     className={uplersStyle.filterType}
                     key={"Contract total"}
-                    // style={{
-                    //   borderBottom:
-                    //     tableFilteredState?.filterFields_OnBoard
-                    //       ?.SummaryFilterOption === "AT"
-                    //       ? "6px solid #FFDA30"
-                    //       : "",
-                    // }}
+                    style={{
+                      borderBottom:"6px solid #FFDA30"
+                          
+                    }}
                   >
-                    {/* <img src={FeedBack} alt="rocket" /> */}
+                  <img src={Handshake} alt="handshaker" />
                     <h2>
                      Contract Total :{" "}
                       <span>

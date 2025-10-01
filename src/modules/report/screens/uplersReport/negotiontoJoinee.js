@@ -1395,6 +1395,40 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             return +text > 0 ? text : "";
           },
         },
+          {
+          title: (
+            <div style={{ textAlign: "center" }}>
+              No Of Profile <br />
+              Talents Till Date
+            </div>
+          ),
+          dataIndex: "noOfProfile_TalentsTillDate",
+          key: "noOfProfile_TalentsTillDate",
+          width: 180,
+          align: "center",
+          render: (text, result) => {
+            return +text > 0 ? (
+              <p
+                style={{
+                  color: "blue",
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  getTalentProfilesDetailsfromTable(result, 0);
+                //   setTalentToMove(result);
+                  setProfileStatusID(0);
+                  setHRTalentListFourCount([]);
+                }}
+              >
+                {text}
+              </p>
+            ) : (
+              ""
+            );
+          },
+        },
         {
           title: (
             <div style={{ textAlign: "center" }}>
@@ -1453,7 +1487,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           title: "W1",
           dataIndex: "w1",
           key: "w1",
-          width: 100,
+          width: 120,
           align: "center",
           className: uplersStyle.headerCell,
         },
@@ -1461,7 +1495,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           title: "W2",
           dataIndex: "w2",
           key: "w3",
-          width: 100,
+          width: 120,
           align: "center",
           className: uplersStyle.headerCell,
         },
@@ -1469,7 +1503,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           title: "W3",
           dataIndex: "w3",
           key: "w3",
-          width: 100,
+          width: 120,
           align: "center",
           className: uplersStyle.headerCell,
         },
@@ -1477,7 +1511,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           title: "W4",
           dataIndex: "w4",
           key: "w4",
-          width: 100,
+          width: 120,
           align: "center",
           className: uplersStyle.headerCell,
         },
@@ -1485,7 +1519,15 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           title: "W5",
           dataIndex: "w5",
           key: "w5",
-          width: 100,
+          width: 120,
+          align: "center",
+          className: uplersStyle.headerCell,
+        },
+          {
+          title: "Next Month",
+          dataIndex: "nextMonthStr",
+          key: "nextMonthStr",
+          width: 120,
           align: "center",
           className: uplersStyle.headerCell,
         },
@@ -1570,40 +1612,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           },
         },
   
-        {
-          title: (
-            <div style={{ textAlign: "center" }}>
-              No Of Profile <br />
-              Talents Till Date
-            </div>
-          ),
-          dataIndex: "noOfProfile_TalentsTillDate",
-          key: "noOfProfile_TalentsTillDate",
-          width: 180,
-          align: "center",
-          render: (text, result) => {
-            return +text > 0 ? (
-              <p
-                style={{
-                  color: "blue",
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  getTalentProfilesDetailsfromTable(result, 0);
-                //   setTalentToMove(result);
-                  setProfileStatusID(0);
-                  setHRTalentListFourCount([]);
-                }}
-              >
-                {text}
-              </p>
-            ) : (
-              ""
-            );
-          },
-        },
+      
         {
           title: <div style={{ textAlign: "center" }}>Sales Person</div>,
           dataIndex: "salesPerson",
@@ -1929,20 +1938,28 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       if(data.length === 0){
         return ''
       }
+
+      let currencySymbol = ''
           function detectCurrency(str) {
+            console.log('disC',key,str)
         const match = str.match(/[^\d,.\s]/); // find first non-numeric character
         return match ? match[0] : ""; 
       }
 
-      let d = data[0]
-      const currencySymbol = detectCurrency(d[key]) 
+      // let d = data[0]
+      // const currencySymbol = detectCurrency(d[key]) 
       const total = data.reduce((sum, item) => {
+        if(item[key]){
+          currencySymbol = detectCurrency(item[key])
+        }
+        
         const num = Number(item[key].replace(/[^0-9.-]+/g, "")); 
         return sum + num;
       }, 0);
 
 
       const formattedTotal = `${currencySymbol}${total.toLocaleString("en-IN")}`
+      console.log('total',key, currencySymbol , total , total.toLocaleString("en-IN"),formattedTotal )
       return formattedTotal
   }
 
@@ -1975,6 +1992,9 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                 rowClassName={(record) => {
                   if (record.stage === "PROJECTION") {
                     return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+                  }
+                   if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
+                    return uplersStyle.boldText;
                   }
                   if (record.stage === "Joined" || record.stage === "Offer Signed" ) {
                     return uplersStyle.heighliteGreen;
@@ -2022,6 +2042,9 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   if (record.stage === "PROJECTION") {
                     return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
                   }
+                   if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
+                    return uplersStyle.boldText;
+                  }
                   if (record.stage === "Joined" || record.stage === "Offer Signed" ) {
                     return uplersStyle.heighliteGreen;
                   }
@@ -2065,6 +2088,9 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                 rowClassName={(record) => {
                   if (record.stage === "PROJECTION") {
                     return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+                  }
+                   if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
+                    return uplersStyle.boldText;
                   }
                   if (record.stage === "Joined" || record.stage === "Offer Signed" ) {
                     return uplersStyle.heighliteGreen;
@@ -2744,6 +2770,13 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                               </div>
                                             </Table.Summary.Cell>
                     }
+                    else if(item.dataIndex === 'nextMonthStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end'}}>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'nextMonthStr')}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
                     else {
                          return  <Table.Summary.Cell index={index}>
                                               <div>
@@ -2830,6 +2863,13 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                      else if(item.dataIndex === 'nextMonthStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end'}}>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'nextMonthStr')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }

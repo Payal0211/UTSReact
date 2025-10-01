@@ -207,7 +207,10 @@ margin-bottom: 10px;
 .filterType span {
     font-weight: 600;
 }
-
+.filterType img{
+    max-width: 24px;
+    margin-right: 8px;
+}
 .summaryTooltip {
     border-radius: 50%;
     background: var(--color-sunlight);
