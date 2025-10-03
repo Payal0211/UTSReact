@@ -52,12 +52,12 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
       isInternal: false,
     };
   
-    setIsLoading(false);
     const response = await hiringRequestDAO.acceptHRRequestDAO(
     	acceptHRObject,
     );
+	setIsLoading(false);
     if (response?.statusCode === HTTPStatusCode.OK) {
-    	setIsLoading(false);
+    	
     	cancelModal();
     	window.location.reload(false);
     }
