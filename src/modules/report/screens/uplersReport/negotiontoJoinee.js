@@ -1372,7 +1372,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
 
             filters:ProbabilityRatioArr.map(v=> ({ text: v, value: v,})),
             onFilter: (value, record) => record.probabiltyRatio_thismonth.indexOf(value) === 0,
-             filterMultiple: false,
+             filterMultiple: true,
               filterIcon: (filtered) => (
       <FilterFilled
         style={{ color: filtered ? "#1890ff" : "black" }} 
