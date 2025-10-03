@@ -50,7 +50,15 @@
 }
 .colMd12 {
     width: 100%;
-    
+    margin-bottom: 10px;
+}
+
+.TextArea {
+border-radius: 10px;
+}
+
+.TextArea :focus, .TextArea:active, .TextArea:hover {
+    border-color: var(--color-sunlight) !important;
 }
 
 .formPanelAction .btnPrimary {
