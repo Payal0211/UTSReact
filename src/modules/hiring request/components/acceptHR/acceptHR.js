@@ -41,7 +41,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
     setIsLoading(true);
     let acceptHRObject = {
       HRID: urlSplitter,
-      AcceptValue: actionType === "Accept" ? "1" : "2",
+      AcceptValue: actionType === "Accept" ? "1" : "3",
       Reason:
         actionType === "Reject"
           ? rejectionValue?.id === 0 || rejectionValue?.id === 7
