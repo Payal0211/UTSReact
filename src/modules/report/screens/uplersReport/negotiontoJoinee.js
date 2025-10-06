@@ -1851,7 +1851,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           align: "center",
       
 
-            filters:ProbabilityRatioArr.map(v=> ({ text: v, value: v,})),
+            filters:ProbabilityRatioArr.filter(v => v === 'Preonboarding' || v === 'Won' ).map(v=> ({ text: v, value: v,})),
             onFilter: (value, record) => record.probabiltyRatio_thismonth.indexOf(value) === 0,
              filterMultiple: true,
               filterIcon: (filtered) => (
@@ -3243,7 +3243,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           id="List"
           columns={reportPtoNColumns}
           bordered={false}
-          dataSource={reportPtoNData?.filter(item=> item.businessType === 'New')}
+          dataSource={reportPtoNData?.filter(item=> item.businessType === 'New' && (item.probabiltyRatio_thismonth !== 'Preonboarding' || item.probabiltyRatio_thismonth !== 'Won'))}
           rowKey={(record, index) => index}
        
           pagination={false}
@@ -3480,7 +3480,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           id="List"
           columns={reportPtoNColumns}
           bordered={false}
-          dataSource={reportPtoNData?.filter(item=> item.businessType === "Existing")}
+          dataSource={reportPtoNData?.filter(item=> item.businessType === "Existing" && (item.probabiltyRatio_thismonth !== 'Preonboarding' || item.probabiltyRatio_thismonth !== 'Won'))}
           rowKey={(record, index) => index}
        
           pagination={false}
