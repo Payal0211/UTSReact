@@ -1348,6 +1348,23 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           align: "right",
          
           className: uplersStyle.headerCell,
+           render:(v,row)=>{
+        return <div style={{display:'flex',alignContent:'center',justifyContent:'space-between'}}>
+           <Tooltip placement="bottom" title={"Split HR"}>
+                <a href="javascript:void(0);" style={{display: 'inline-flex'}}>
+                  <PiArrowsSplitBold
+                    style={{ width: "17px", height: "17px", fill: '#232323' }}
+                    onClick={() => {
+                      setSplitHR(true);
+                      setHRID(row?.hiringRequestID);
+                      setHRNumber({hrNumber:row?.hR_Number});
+                      getPODList(row?.hiringRequestID)
+                    }}
+                  />
+                </a>
+              </Tooltip>
+    {  v ? v  : ''} </div>
+      }
         },
 
         {
