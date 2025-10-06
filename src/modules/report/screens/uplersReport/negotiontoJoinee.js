@@ -3243,7 +3243,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           id="List"
           columns={reportPtoNColumns}
           bordered={false}
-          dataSource={reportPtoNData?.filter(item=> item.businessType === 'New' && (item.probabiltyRatio_thismonth !== 'Preonboarding' || item.probabiltyRatio_thismonth !== 'Won'))}
+          dataSource={reportPtoNData?.filter(item=> item.businessType === 'New' && !(item.probabiltyRatio_thismonth === 'Preonboarding' || item.probabiltyRatio_thismonth === 'Won'))}
           rowKey={(record, index) => index}
        
           pagination={false}
@@ -3480,7 +3480,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           id="List"
           columns={reportPtoNColumns}
           bordered={false}
-          dataSource={reportPtoNData?.filter(item=> item.businessType === "Existing" && (item.probabiltyRatio_thismonth !== 'Preonboarding' || item.probabiltyRatio_thismonth !== 'Won'))}
+          dataSource={reportPtoNData?.filter(item=> item.businessType === "Existing" && !(item.probabiltyRatio_thismonth === 'Preonboarding' || item.probabiltyRatio_thismonth === 'Won'))}
           rowKey={(record, index) => index}
        
           pagination={false}
