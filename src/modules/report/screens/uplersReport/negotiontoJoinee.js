@@ -1415,8 +1415,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           {
           title: (
             <div style={{ textAlign: "center" }}>
-              No Of Profile <br />
-              Talents Till Date
+              No Of Active <br /> Profiles Till Date
             </div>
           ),
           dataIndex: "noOfProfile_TalentsTillDate",
@@ -1878,9 +1877,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         },
           {
           title: (
-            <div style={{ textAlign: "center" }}>
-              No Of Profile <br />
-              Talents Till Date
+          <div style={{ textAlign: "center" }}>
+              No Of Active <br /> Profiles Till Date
             </div>
           ),
           dataIndex: "noOfProfile_TalentsTillDate",
