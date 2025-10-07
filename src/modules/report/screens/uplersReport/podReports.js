@@ -762,6 +762,9 @@ export default function PodReports({
                   if (record.stage === "Total Active Pipeline") {
                     return uplersStyle.heighlitePurple;
                   }
+                  //   if (record.stage === "Not Accepted HRs") {
+                  //   return uplersStyle.heighliteDarkRed;
+                  // }
                 }}
               />
             </>
@@ -1109,6 +1112,16 @@ export default function PodReports({
                             >
                               HR Title
                             </th>
+                             {showTalentCol?.stage === "Not Accepted HRs" &&   <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              Reason
+                            </th>}
                             <th
                               style={{
                                 padding: "10px",
@@ -1216,7 +1229,7 @@ export default function PodReports({
                           ? false
                           : true) && (
                           <>
-                            <th
+                          {showTalentCol?.stage !== "Not Accepted HRs" &&   <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1225,7 +1238,8 @@ export default function PodReports({
                               }}
                             >
                               Talent
-                            </th>
+                            </th>}
+                          
                             <th
                               style={{
                                 padding: "10px",
@@ -1316,6 +1330,14 @@ export default function PodReports({
                               >
                                 {detail.hrTitle}
                               </td>
+                                 {showTalentCol?.stage === "Not Accepted HRs" &&    <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {detail.talent}
+                              </td>}
                               <td
                                 style={{
                                   padding: "8px",
@@ -1396,14 +1418,15 @@ export default function PodReports({
                             ? false
                             : true) && (
                             <>
-                              <td
+                             {showTalentCol?.stage !== "Not Accepted HRs" &&      <td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
                                 }}
                               >
                                 {detail.talent}
-                              </td>
+                              </td>}
+                           
                               <td
                                 style={{
                                   padding: "8px",
