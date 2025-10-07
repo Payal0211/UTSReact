@@ -132,7 +132,9 @@ margin-bottom: 10px;
 .heighlitePurple {
     background-color: #e7d1e7;
 }
-
+.heighliteDarkRed {
+    background-color: rgb(255 124 124);
+}
 .boldText td{
   font-weight: bold;
 }
