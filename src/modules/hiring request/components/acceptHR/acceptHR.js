@@ -29,7 +29,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
       }
 
       if (
-        (rejectionValue?.id === 7 || rejectionValue?.id === 0) &&
+        (rejectionValue?.id === 14 || rejectionValue?.id === 0) &&
         otherReason.trim() === ""
       ) {
         isFormValid = false;
@@ -44,7 +44,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
       AcceptValue: actionType === "Accept" ? "1" : "3",
       Reason:
         actionType === "Reject"
-          ? rejectionValue?.id === 0 || rejectionValue?.id === 7
+          ? rejectionValue?.id === 0 || rejectionValue?.id === 14
             ? otherReason
             : rejectionValue?.value
           : "",
@@ -151,7 +151,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
                     </span>
                   )}
                 </div>
-                {(rejectionValue?.id === 7 || rejectionValue?.id === 0) && (
+                {(rejectionValue?.id === 14 || rejectionValue?.id === 0) && (
                   <div className={AcceptHRStyle.colMd12}>
                     <TextArea
                       rows={4}
