@@ -95,7 +95,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
     >
       <div className={AcceptHRStyle.container}>
         <div className={AcceptHRStyle.modalTitle}>
-          <h2>Accept HR</h2>
+          <h2>Reject HR</h2>
           <span className={AcceptHRStyle.paragraph}>{hrID}</span>
         </div>
         <Divider style={{ borderTop: "1px solid #E8E8E8" }} />
@@ -123,7 +123,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
                 value={actionType}
               >
                 <Radio value={"Accept"}>Accept HR</Radio>
-                <Radio value={"Reject"}>Reject</Radio>
+                <Radio value={"Reject"}>Reject HR</Radio>
               </Radio.Group>
             </div>
 
