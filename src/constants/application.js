@@ -181,6 +181,7 @@ export class HRCTA {
 	static CONVERT_TO_CONTRACTUAL = 'Convert to Contractual';
 	static AM_ASSIGNMENT = 'AM Assignment';
 	static ACCEPT_HR = 'Accept HR';
+	static REJECT_HR = 'Reject HR';
 	static UPDATE_TR = 'UpdateTR';
 	static SHARE_PROFILE = 'Share a Profile';
 	static ADD_NOTES = 'Add Notes';
