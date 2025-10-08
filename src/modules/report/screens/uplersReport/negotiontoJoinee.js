@@ -1506,6 +1506,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+           render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w1_color}}>{record?.w1_Actual}</div> 
+            </div>
+          }
         },
         {
           title: "W2",
@@ -1514,6 +1520,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+          render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w2_color}}>{record?.w2_Actual}</div> 
+            </div>
+          }
         },
         {
           title: "W3",
@@ -1522,6 +1534,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+           render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w3_color}}>{record?.w3_Actual}</div> 
+            </div>
+          }
         },
         {
           title: "W4",
@@ -1530,6 +1548,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+           render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w4_color}}>{record?.w4_Actual}</div> 
+            </div>
+          }
         },
         {
           title: "W5",
@@ -1538,6 +1562,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+           render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w5_color}}>{record?.w5_Actual}</div> 
+            </div>
+          }
         },
           {
           title: "Next Month",
@@ -1946,6 +1976,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+             render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w1_color}}>{record?.w1_Actual}</div> 
+            </div>
+          }
         },
         {
           title: "W2",
@@ -1954,6 +1990,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+             render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w2_color}}>{record?.w2_Actual}</div> 
+            </div>
+          }
         },
         {
           title: "W3",
@@ -1962,6 +2004,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+             render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w3_color}}>{record?.w3_Actual}</div> 
+            </div>
+          }
         },
         {
           title: "W4",
@@ -1970,6 +2018,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+             render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w4_color}}>{record?.w4_Actual}</div> 
+            </div>
+          }
         },
         {
           title: "W5",
@@ -1978,6 +2032,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 120,
           align: "center",
           className: uplersStyle.headerCell,
+             render: (value, record, index) =>{
+            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+              {value}
+             <div style={{color:record?.w5_color}}>{record?.w5_Actual}</div> 
+            </div>
+          }
         },
           {
           title: "Next Month",
@@ -2367,7 +2427,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
 
       let currencySymbol = ''
           function detectCurrency(str) {
-            console.log('disC',key,str)
+            // console.log('disC',key,str)
         const match = str.match(/[^\d,.\s]/); // find first non-numeric character
         return match ? match[0] : ""; 
       }
@@ -2379,14 +2439,14 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           currencySymbol = detectCurrency(item[key])
         }
         
-        const num = Number(item[key].replace(/[^0-9.-]+/g, "")); 
+        const num = Number(item[key]?.replace(/[^0-9.-]+/g, "")); 
         return sum + num;
       }, 0);
 
 
       const formattedTotal = `${currencySymbol}${total.toLocaleString("en-IN")}`
-      console.log('total',key, currencySymbol , total , total.toLocaleString("en-IN"),formattedTotal )
-      return formattedTotal
+      // console.log('total',key, currencySymbol , total , total.toLocaleString("en-IN"),formattedTotal )
+      return total > 0 ? formattedTotal : ''
   }
 
 
@@ -3163,36 +3223,41 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                     }
                     else if(item.dataIndex === 'w1'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w2'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w3'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w4'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w5'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3280,36 +3345,41 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                     }
                     else if(item.dataIndex === 'w1'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w2'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w3'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w4'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w5'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3395,45 +3465,43 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                               </div>
                                             </Table.Summary.Cell>
                     }
-                    else if(item.dataIndex === 'w1'){
+                 else if(item.dataIndex === 'w1'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w2'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                      else if(item.dataIndex === 'nextMonthStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'nextMonthStr')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w3'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w4'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w5'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3515,45 +3583,43 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                               </div>
                                             </Table.Summary.Cell>
                     }
-                    else if(item.dataIndex === 'w1'){
+                        else if(item.dataIndex === 'w1'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w2'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                      else if(item.dataIndex === 'nextMonthStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'nextMonthStr')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w3'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w4'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
                     else if(item.dataIndex === 'w5'){
                        return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
+                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }

@@ -86,6 +86,10 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 								setIsAcceptHR(true);
 								break;
 							}
+							case HRCTA.REJECT_HR: {
+								setIsAcceptHR(true);
+								break;
+							}
 							case HRCTA.SHARE_PROFILE: {
 								setIsShareProfile(true);
 								break;

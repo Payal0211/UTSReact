@@ -483,7 +483,12 @@ const togglePriority = useCallback(
 									<CTASlot1
 										callAPI={callAPI}
 										hrID={urlSplitter?.split('HR')[0]}
-										slotItem={apiData?.dynamicCTA?.CTA_Set1}
+										slotItem={apiData?.dynamicCTA?.CTA_Set1.map((item) => {
+											if(item.label === "Accept HR"){
+												return {...item,label:'Reject HR'}
+											}
+											return item
+										})}
 										apiData={apiData}
 										miscData={miscData}
 									/>
