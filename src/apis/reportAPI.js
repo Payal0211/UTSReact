@@ -991,6 +991,24 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getNegotiationPopupReportAPI');
 		}
 	},
+	getFTEPopupReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_FTE_POPUP_DETAILS_LIST + `?hrmodel=${payload?.hrmodel}&month=${payload?.month}&year=${payload?.year}
+			&stage_id=${payload?.stage_ID}&weekno=${payload?.weekno}&hr_businesstype=${payload?.hr_businesstype?? ''}&isNextMonth=${payload?.isNextMonth?? ''}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getFTEPopupReportAPI');
+		}
+	},
 	getNegotiationReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -1014,6 +1032,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
 			ReportType.GET_PLANING_TO_NEGOTIATION_REPORT + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPtoNegotiationReportAPI');
+		}
+	},
+	getFTENegotiationReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_FTE_NEGOTIATION_REPORT + `?hrmodel=${payload?.hrmodel}&month=${payload?.month}&year=${payload?.year}`
 
 		httpService.setAuthRequired = true;
 		// httpService.dataToSend = payload;
