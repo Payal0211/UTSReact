@@ -39,6 +39,7 @@ import Editor from "modules/hiring request/components/textEditor/editor";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import PodReports from "./podReports";
 import NegotiontoJoinee from "./negotiontoJoinee";
+import FTENegotiationSummary from "./fteNegotionSummary";
 
 const { Title, Text } = Typography;
 
@@ -482,7 +483,7 @@ export default function UplersReport() {
                      <Tooltip
                                             placement="bottomLeft"
                                             title={                                            
-                                                <ul style={{margin:'10px 10px 10px 0'}}>
+                                                <ul style={{margin:'10px 10px 10px 0', width:'200px', padding:'0'}}>
                                                   <li>NASA Total:  <strong style={{marginLeft:'10px'}}>{summeryRevenueData[0]?.nasa_Total_Str
                           ? summeryRevenueData[0]?.nasa_Total_Str
                           : 0}</strong> </li>
@@ -631,6 +632,19 @@ export default function UplersReport() {
             label: "Goal to Negotiation Funnel",
             key: "Goal to Negotiation Funnel",
             children:  <NegotiontoJoinee
+             impHooks={{
+          isTableLoading,
+          podDashboardList,
+          monthDate,
+          hrModal,
+          selectedHead,
+          podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
+          }} 
+        />},
+          {
+            label: "All FTE Negotiation Summary",
+            key: "All FTE Negotiation Summary",
+            children:  <FTENegotiationSummary
              impHooks={{
           isTableLoading,
           podDashboardList,
