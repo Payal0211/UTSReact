@@ -1113,7 +1113,7 @@ export default function PodReports({
                               HR Title
                             </th>
                              {showTalentCol?.stage === "Not Accepted HRs" &&   <th
-                              style={{
+                              style={{ 
                                 padding: "10px",
                                 border: "1px solid #ddd",
                                 backgroundColor:
@@ -1332,6 +1332,7 @@ export default function PodReports({
                               </td>
                                  {showTalentCol?.stage === "Not Accepted HRs" &&    <td
                                 style={{
+                                   minWidth:'300px',
                                   padding: "8px",
                                   border: "1px solid #ddd",
                                 }}
