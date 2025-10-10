@@ -88,6 +88,7 @@ function PreviewClientModal({
   const [isEditLinkedInURL, setIsEditLinkedInURL] = useState(false);
   const [isEditUserName, setIsEditUserName] = useState(false);
   const [isEditCategory, setIsEditCategory] = useState(false);
+  const [isEditSubCategory, setIsEditSubCategory] = useState(false);
   const [isEditGeo, setIsEditGeo] = useState(false);
   const [getCompanyDetails, setCompanyDetails] = useState({});
   const [showAllInvestors, setShowAllInvestors] = useState(false);
@@ -108,6 +109,7 @@ function PreviewClientModal({
   const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
   const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
   const [controlledCategoryValue, setControlledCategoryValue] = useState("");
+  const [controlledSubCategoryValue, setControlledSubCategoryValue] = useState("");
   const [controlledGeoValue, setControlledGeoValue] = useState("");
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
@@ -346,6 +348,23 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
+  const handleSubmitSubCategory = async () => {
+    setIsLoading(true);
+    let payload = {
+      basicDetails: {
+        companyID: getcompanyID,
+        company_SubCategory: controlledSubCategoryValue,
+      },
+      IsUpdateFromPreviewPage: true,
+    };
+    let res = await allCompanyRequestDAO.updateCompanySubCategoryDAO(payload);
+    if (res?.statusCode === HTTPStatusCode.OK) {
+      getDetails();
+      setIsEditSubCategory(false);
+    }
+    setIsLoading(false);
+  };
+
     const handleSubmitGeo = async () => {
     setIsLoading(true);
      let geo_id = filtersList.Geo.find(item => item.value ===  controlledGeoValue)?.text
@@ -566,6 +585,21 @@ const categoryOptions = [{
   {
     id: 'None',
     value: 'None',
+  },
+]
+
+const subCategoryOptions = [
+  {
+    id: 'Kitten',
+    value: 'Kitten',
+  },
+  {
+    id: 'Cheetah',
+    value: 'Cheetah',
+  },
+   {
+    id: 'Panda',
+    value: 'Panda',
   },
 ]
 
@@ -1577,8 +1611,24 @@ const categoryOptions = [{
                                 : "NA"}{" "}
                             </p>
                           </li>
-                          <li>
+                               <li>
 
+                            <span onClick={() =>{ setIsEditSubCategory(true)
+                              setControlledSubCategoryValue(getCompanyDetails?.basicDetails?.company_SubCategory ? getCompanyDetails?.basicDetails?.company_SubCategory : '')
+                              setValue('SubCategory',getCompanyDetails?.basicDetails?.company_SubCategory ? getCompanyDetails?.basicDetails?.company_SubCategory : '')
+                            }}>
+                              {" "}
+                              Sub-Category <EditNewIcon />{" "}
+                            </span>
+
+                            <p>
+                              {getCompanyDetails?.basicDetails?.company_SubCategory
+                                ? getCompanyDetails?.basicDetails
+                                  ?.company_SubCategory
+                                : "NA"}{" "}
+                            </p>
+                          </li>
+                          <li>
                             <span onClick={() =>{ setIsEditGeo(true)
                               setControlledGeoValue(getCompanyDetails?.basicDetails?.companyGeo )
                               setValue('Geo',getCompanyDetails?.basicDetails?.companyGeo )
@@ -4094,6 +4144,65 @@ const categoryOptions = [{
             type="button"
             className={previewClientStyle.btnPrimary}
             onClick={handleSubmit(handleSubmitCategory) }
+          >
+            {" "}
+            SAVE{" "}
+          </button>
+        </div>
+      </Modal>
+
+      {/* Sub Category Modal*/}
+       <Modal
+        centered
+        open={isEditSubCategory}
+        onCancel={() => {
+          setIsEditSubCategory(false)
+          setControlledSubCategoryValue('')
+          resetField("SubCategory")
+        }}
+        width={300}
+        footer={false}
+        maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
+      >
+
+        <HRSelectField
+              controlledValue={controlledSubCategoryValue}
+              setControlledValue={setControlledSubCategoryValue}
+              isControlled={true}
+              register={register}
+              //  errors={errors}
+              //  isError={
+              //   errors["Category"] && errors["Category"]
+              // }
+              errorMsg="Please select category."
+              setValue={setValue}
+              label="Sub Category"
+              name="SubCategory"
+              mode={"value"}
+              defaultValue="Select"              
+              // required              
+              options={subCategoryOptions}
+          />       
+      
+        <div className={`${previewClientStyle.buttonEditGroup}`}>
+          <button
+            type="button"
+            className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
+            onClick={() => {
+             setIsEditSubCategory(false)
+          setControlledSubCategoryValue('')
+          resetField("SubCategory")
+            }}
+          >
+            {" "}
+            Cancel{" "}
+          </button>
+          <button
+            type="button"
+            className={previewClientStyle.btnPrimary}
+            onClick={handleSubmit(handleSubmitSubCategory) }
           >
             {" "}
             SAVE{" "}
