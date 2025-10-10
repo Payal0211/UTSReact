@@ -500,7 +500,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: uplersStyle.headerCell,
     },
     {
-      title: <div style={{ textAlign: "center" }}>{podName} Revenue</div>,
+      title: <div style={{ textAlign: "center" }}>Revenue</div>,
       dataIndex: "podValueStr",
       key: "podValueStr",
       width: "150px",
