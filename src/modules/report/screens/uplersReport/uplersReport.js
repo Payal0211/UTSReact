@@ -641,7 +641,7 @@ export default function UplersReport() {
           podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
           }} 
         />},
-          {
+        hrModal === "DP" && {
             label: "All FTE Negotiation Summary",
             key: "All FTE Negotiation Summary",
             children:  <FTENegotiationSummary
