@@ -2446,7 +2446,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
 
       const formattedTotal = `${currencySymbol}${total.toLocaleString("en-IN")}`
       // console.log('total',key, currencySymbol , total , total.toLocaleString("en-IN"),formattedTotal )
-      return total > 0 ? formattedTotal : ''
+      return total > 0 ? formattedTotal : '-'
   }
 
 
@@ -3225,7 +3225,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px' , color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w1_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3233,7 +3233,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w2_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3241,7 +3241,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w3_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3249,7 +3249,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w4_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3257,7 +3257,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w5_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3347,7 +3347,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w1_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3355,7 +3355,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w2_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3363,7 +3363,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w3_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3371,7 +3371,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w4_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3379,7 +3379,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w5_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3469,7 +3469,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w1_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3477,7 +3477,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w2_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3485,7 +3485,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w3_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3493,7 +3493,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w4_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3501,7 +3501,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w5_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3587,7 +3587,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w1_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3595,7 +3595,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w2_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3603,7 +3603,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w3_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3611,7 +3611,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w4_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
@@ -3619,7 +3619,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                        return  <Table.Summary.Cell index={index}>
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
-                                                  <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5_Actual')}</strong>
+                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w5_Actual')}</strong>
                                               </div>
                                             </Table.Summary.Cell>
                     }
