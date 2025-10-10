@@ -1409,6 +1409,15 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
+
+										{item?.OfferDate && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Offer Date:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.OfferDate}
+											</span>
+										</div>
+									)}
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Tentative Joining Date:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500' }}>
@@ -1522,14 +1531,7 @@ const TalentList = ({
 										  </button>
 										</Modal>
 										)}
-										{item?.OfferDate && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Offer Date:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.OfferDate}
-											</span>
-										</div>
-									)}
+									
 										{item?.ContractStartdate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Contract Start Date:</span>&nbsp;&nbsp;

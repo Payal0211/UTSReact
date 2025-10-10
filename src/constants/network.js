@@ -135,6 +135,7 @@ export class CompanysAPI {
 	static DELETE_CULTURE_IMAGE = 'DeleteCultureImage'
 	static UPDATE_COMPANY_DETAILS = 'UpdateDetails'
 	static UPDATE_COMPANY_CATEGORY = 'UpdateCompanyCategory'
+	static UPDATE_COMPANY_SUB_CATEGORY = 'UpdateCompanySubCategory'
 	static REMOVE_COMPANY_CATEGORY = 'RemoveDiamondCategory '
 	static UPDATE_COMPANY_GEO = 'UpdateCompanyGEO'
 	static VALIDATE_COMPANY_CLIENT = 'ValidateCompanyClient'
