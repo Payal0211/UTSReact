@@ -1138,7 +1138,7 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-
+{console.log(DynamicSalaryInfo)}
 		{(item?.TalentStatusID_BasedOnHR === 10 || item?.TalentStatusID_BasedOnHR === 4 || item?.TalentStatusID_BasedOnHR === 12) ?  <ColapsableTalDetails item={item} /> : 
 			DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
 				<div>
@@ -1155,11 +1155,14 @@ const TalentList = ({
 							title={<div>
 									<span>Fixed : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Fixed_str ?? 'NA'}</span><br/>
 									<span>Variable : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Variable_str ?? 'NA'}</span><br/>
-									<span>Stock : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Stock_str ?? 'NA'}</span>
+									<span>Stock : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Stock_str ?? 'NA'}</span><br/>
+									<span>Vested Across : </span><span style={{ fontWeight: '500' }}>{item?.Current_CTC_vested_across_str ?? 'NA'}</span>
 								</div>}>
 								<img src={infoIcon} alt='info' style={{marginLeft:'10px'}} />							
 						</Tooltip>}
 				</div>
+				
+				
 				{/* {info.IsEditable && <>
 					{!hrType ? <>
 						{apiData?.JobStatusID !== 2 &&
@@ -1519,6 +1522,14 @@ const TalentList = ({
 										  </button>
 										</Modal>
 										)}
+										{item?.OfferDate && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Offer Date:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.OfferDate}
+											</span>
+										</div>
+									)}
 										{item?.ContractStartdate && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Contract Start Date:</span>&nbsp;&nbsp;
