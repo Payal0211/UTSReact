@@ -1187,6 +1187,19 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.reopeneHR');
 		}
 	},
+	updateHRCategoryRequest: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.VIEW_ALL_HR + HiringRequestsAPI.UPDATE_HR_CATEGORY+ `?hrid=${data.hrID}&category=${data.category}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.updateHRCategoryRequest');
+		}
+	},
 	hrDpAmounts: async (data) => {
 		let httpService = new HttpServices();
 		httpService.URL =

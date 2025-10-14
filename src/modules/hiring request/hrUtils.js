@@ -47,6 +47,7 @@ export const hrUtils = {
 			timeZone: item?.timeZone,			
 			poDs: item?.poDs,
 			podiDs: item?.podiDs,
+			hR_Category: item?.hR_Category,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
