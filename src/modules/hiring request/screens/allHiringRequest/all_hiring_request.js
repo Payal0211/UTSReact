@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { Dropdown, Menu, message, Table, Tooltip, Modal, Checkbox, Select } from "antd";
+import { Dropdown, Menu, message, Table, Tooltip, Modal, Checkbox, Select,Skeleton } from "antd";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +27,7 @@ import { hrUtils } from "modules/hiring request/hrUtils";
 import { IoChevronDownOutline } from "react-icons/io5";
 import allHRStyles from "./all_hiring_request.module.css";
 import UTSRoutes from "constants/routes";
+import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 
 import HROperator from "modules/hiring request/components/hroperator/hroperator";
 import { DateTimeUtils } from "shared/utils/basic_utils";
@@ -50,6 +51,7 @@ import { allCompanyRequestDAO } from "core/company/companyDAO";
 import RePostHRModal from "modules/hiring request/components/repostHRModal/repostHRModal";
 import SplitHR from "./splitHR";
 import { ReportDAO } from "core/report/reportDAO";
+import { useForm } from "react-hook-form";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -116,10 +118,25 @@ const AllHiringRequestScreen = () => {
   const [hrNumber, sethrNumber] = useState("");
   const [ispreviewLoading,setIspreviewLoading] = useState(false)
 
+    const [showDiamondRemark, setShowDiamondRemark] = useState(false);
+    const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
+    const [remDiamondLoading, setRemDiamondLoading] = useState(false);
+
   const [isSplitLoading, setIsSplitLoading] = useState(false);
   const [groupList,setGroupList] = useState([{
     pod:'',amLead:'', amLeadAmount:'',am:'',amAmount:'',taLead:'',taLeadAmount:'',ta:'', taAmount:'' ,currency:''
   }])
+
+    const {
+      watch,
+      register,
+      setError,
+      handleSubmit,
+      resetField,
+      clearErrors,
+      formState: { errors },
+    } = useForm();
+
 
   // UTS-7517: Code for clone HR in demo acccount starts
 
@@ -393,6 +410,54 @@ const AllHiringRequestScreen = () => {
             return modData
          }
 
+         const updateHRCategory = async (cat,hrID) => {
+          let pl = {hrID:hrID,category:cat ==='None' ? '' : cat} 
+      
+          let Result = await hiringRequestDAO.updateHRCategoryDAO(pl);
+          if (Result.statusCode === HTTPStatusCode.OK) {
+            handleHRRequest(tableFilteredState);
+          }else{
+            message.error("Something went wrong, please try again later.");
+          }
+         }
+
+        const setDiamondCompany = async (row, index) => {
+          let payload = {
+            basicDetails: {
+              companyID: row.companyID,
+              companyCategory: "Diamond",
+            },
+            // IsUpdateFromPreviewPage: true,
+          };
+         
+          let res = await allCompanyRequestDAO.updateCompanyCategoryDAO(payload);
+          if(res.statusCode === 200){
+             handleHRRequest(tableFilteredState);
+          }else{
+            message.error("Something went wrong, please try again later.");
+          }
+        };
+
+  const handleRemoveDiamond = async (d) => {
+      let payload = {
+        CompanyID: companyIdForRemark.companyID,
+        DiamondCategoryRemoveRemark: d.diamondCategoryRemoveRemark,
+      };
+      setRemDiamondLoading(true);
+      let res = await allCompanyRequestDAO.removeCompanyCategoryDAO(payload);
+      setRemDiamondLoading(false);
+      //   console.log("response", res);
+      if (res.statusCode === 200) {
+      
+        setShowDiamondRemark(false);
+        resetField("diamondCategoryRemoveRemark");
+        clearErrors("diamondCategoryRemoveRemark");
+        handleHRRequest(tableFilteredState);
+      } else {
+        message.error("Something Went Wrong!");
+      }
+    };
+
 
   const tableColumnsMemo = useMemo(
     () =>
@@ -413,7 +478,8 @@ const AllHiringRequestScreen = () => {
         setIsPreviewModal,
         setpreviewIDs,
         getPreviewPostData,
-        setRepostHrModal,setSplitHR,getPODList
+        setRepostHrModal,setSplitHR,getPODList,userData,updateHRCategory,setDiamondCompany,
+        setShowDiamondRemark,setCompanyIdForRemark
       ),
     [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
@@ -686,13 +752,13 @@ const AllHiringRequestScreen = () => {
       <LogoLoader visible={isLoading} />
         <div className={allHRStyles.hiringRequest}></div>
         <div className={allHRStyles.btn_wrap}>
-        {showCloneHRToDemoAccount && <button
+        {/* {showCloneHRToDemoAccount && <button
         style={{marginRight:'15px'}}
             className={allHRStyles.btnPrimary}
             onClick={() => CloneHRDemoAccountAPICall()} >
             Clone HR(s) to Demo Account
-          </button>}
-          <div className={allHRStyles.priorities_drop_custom}>
+          </button>} */}
+          {/* <div className={allHRStyles.priorities_drop_custom}>
             {priorityCount?.length === 1 ? (
               <button className={allHRStyles.togglebtn}>
                 <span className={allHRStyles.blank_btn}>
@@ -739,7 +805,7 @@ const AllHiringRequestScreen = () => {
                 </table>
               </div>
             )}
-          </div>
+          </div> */}
 
           {(miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR ||
             miscData?.loggedInUserTypeID === UserAccountRole.SALES ||
@@ -858,12 +924,12 @@ const AllHiringRequestScreen = () => {
 
           </div>
           <div className={allHRStyles.filterRight}>
-            <Checkbox
+            {/* <Checkbox
               checked={isOnlyPriority}
               onClick={() => setIsOnlyPriority((prev) => !prev)}
             >
               Show only Priority
-            </Checkbox>
+            </Checkbox> */}
             {/* <Checkbox
               checked={isFrontEndHR}
               onClick={() => setIsFrontEndHR((prev) => !prev)}
@@ -1132,6 +1198,67 @@ const AllHiringRequestScreen = () => {
           />
         </Modal>
       )}
+
+            {showDiamondRemark && (
+              <Modal
+                transitionName=""
+                width="1000px"
+                centered
+                footer={null}
+                open={showDiamondRemark}
+                className="engagementModalStyle"
+                onCancel={() => {
+                  setShowDiamondRemark(false);
+                  resetField("diamondCategoryRemoveRemark");
+                  clearErrors("diamondCategoryRemoveRemark");
+                }}
+              >
+                <div style={{ padding: "35px 15px 10px 15px" }}>
+                  <h3>Add Remark</h3>
+                </div>
+      
+                <div style={{ padding: "10px 20px" }}>
+                  {remDiamondLoading ? (
+                    <Skeleton active />
+                  ) : (
+                    <HRInputField
+                      isTextArea={true}
+                      register={register}
+                      errors={errors}
+                      label="Remark"
+                      name="diamondCategoryRemoveRemark"
+                      type={InputType.TEXT}
+                      placeholder="Enter Remark"
+                      validationSchema={{
+                        required: "please enter remark",
+                      }}
+                      required
+                    />
+                  )}
+                </div>
+      
+                <div style={{ padding: "10px 20px" }}>
+                  <button
+                    className={allHRStyles.btnPrimary}
+                    onClick={handleSubmit(handleRemoveDiamond)}
+                    disabled={remDiamondLoading}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className={allHRStyles.btnCancle}
+                    disabled={remDiamondLoading}
+                    onClick={() => {
+                      setShowDiamondRemark(false);
+                      resetField("diamondCategoryRemoveRemark");
+                      clearErrors("diamondCategoryRemoveRemark");
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </Modal>
+            )}
 
       {closeHrModal && (
         <Modal
