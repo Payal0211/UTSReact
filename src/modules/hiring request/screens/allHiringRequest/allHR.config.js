@@ -5,13 +5,89 @@ import { ReactComponent as CloneHRSVG } from "assets/svg/cloneHR.svg";
 import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 import { ReactComponent as CloseHR } from "assets/svg/power.svg";
 import { ReactComponent as FocusedRole } from "assets/svg/FocusRole.svg";
-import { Tooltip, message, Checkbox } from "antd";
+import PowerIcon from "assets/svg/powerRed.svg";
+import { Tooltip, message, Checkbox, Select } from "antd";
 import { PiArrowsSplitBold } from "react-icons/pi";
 import eyeIcon from 'assets/svg/eye.svg'
 import Diamond from "assets/svg/diamond.svg";
 import moment from "moment";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { HTTPStatusCode } from "constants/network";
+import { useState } from "react";
+import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
+import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
+import { ReactComponent as Close } from "assets/svg/close.svg";
+import  Tiger from 'assets/tiger-face.png'
+import  Panda from 'assets/panda-face.png'
+import  Kitten  from 'assets/kitten-face.png'
+
+  const subCategoryOptions = [
+    {
+    id: 'None',
+    value: 'None',
+  },
+  {
+    id: 'Kitten',
+    value: 'Kitten',
+  },
+  {
+    id: 'Cheetah',
+    value: 'Cheetah',
+  },
+   {
+    id: 'Panda',
+    value: 'Panda',
+  },
+]
+
+  const SubCategoryComponent = ({ value, row,updateHRCategory }) => {
+    const [cat, setCat] = useState(value?? '');
+    const [isEdit, setIsEdit] = useState(false); 
+
+    if(isEdit){
+      return <div style={{display:'flex', alignItems:'center', width:'100%'}}>
+            <TickMark
+              width={24}
+              height={24}
+              style={{marginRight:'10px',cursor:'pointer'}}
+              onClick={() => {updateHRCategory(cat,row?.HRID)}}
+            />
+             <Select
+					id="selectedValue"
+					placeholder={"Select Sub Category"}
+
+size="small"
+					value={cat}
+				
+					// dropdownRender={dropdownRender}
+					onChange={(value, option) => setCat(value)}
+					options={subCategoryOptions}
+				
+				/>
+            <Close 
+            width={24}
+            height={24}
+            style={{marginLeft:'10px',cursor:'pointer'}}
+            onClick={() => {setIsEdit(false);setCat(value)}} />
+            </div>
+    }
+
+      return <div style={{display:'flex', alignItems:'center', width:'100%'}}>
+      {cat === 'Cheetah' &&  <img src={Tiger} alt='tiger'  style={{width:'24px', height:'24px', marginRight:'10px'}} />} 
+       {cat === 'Panda' && <img src={Panda} alt='panda'  style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
+       {cat === 'Kitten' && <img src={Kitten} alt='kitten' style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
+        {cat !== 'Cheetah' && cat !== 'Panda' && cat !== 'Kitten' &&  'NA'}
+       
+              <EditSVG
+              width={24}
+              height={24}
+              style={{marginLeft:'auto',cursor:'pointer'}}
+              onClick={() => setIsEdit(true)}
+            /> 
+          </div>
+
+
+  }
 export const allHRConfig = {
   tableConfig: (
     togglePriority,
@@ -32,7 +108,10 @@ export const allHRConfig = {
     getPreviewPostData,
     setRepostHrModal,
     setSplitHR,
-    getPODList
+    getPODList,
+    userData,
+    updateHRCategory,
+    setDiamondCompany,setShowDiamondRemark,setCompanyIdForRemark
   ) => {
 
     const getColorCode = (doneBy)=>{
@@ -79,53 +158,118 @@ export const allHRConfig = {
       </Tooltip> ;
         },
       },
+      //    {
+      //   title: "",
+      //   dataIndex: "companyCategory",
+      //   key: "companyCategory",
+      //   align: "center",
+      //   width: "80px",
+      //   fixed: "left",
+      //   render: (val,row, index) => {
+      //    return   <div
+      //                  style={{
+      //                    display: "flex",
+      //                   //  marginLeft: "auto",
+      //                    gap: "10px",
+      //                    justifyContent:'center'
+      //                   //  marginRight: "10px",
+      //                  }}
+      //                >
+      //                  {val === "Diamond" && (
+      //                    <>
+      //                      <img
+      //                        src={Diamond}
+      //                        alt="info"
+      //                        style={{ width: "16px", height: "16px" }}
+      //                      />
+      //                      {(userData?.UserId === 2 ||
+      //                      userData?.UserId === 333 ||
+      //                      userData?.UserId === 190 ||
+      //                      userData?.UserId === 96) &&    <div
+      //                        onClick={() => {
+      //                         //  setShowDiamondRemark(true);
+      //                         //  setCompanyIdForRemark({ ...row, index: index });
+      //                        }}
+      //                      >
+      //                        <Tooltip title="Remove Diamond">
+      //                          <img
+      //                            src={PowerIcon}
+      //                            alt="info"
+      //                            style={{
+      //                              width: "16px",
+      //                              height: "16px",
+      //                              cursor: "pointer",
+      //                            }}
+      //                          />
+      //                        </Tooltip>
+      //                      </div>}
+                        
+      //                    </>
+      //                  )}
+      //                  {val !== "Diamond" &&
+      //                    (userData?.UserId === 2 ||
+      //                      userData?.UserId === 333 ||
+      //                      userData?.UserId === 190 ||
+      //                      userData?.UserId === 96) && (
+      //                        <Tooltip title="Make Diamond"><Checkbox onChange={() => {
+      //                     //  setDiamondCompany(row, index)
+      //                     }
+      //                      }>
+                             
+      //                      </Checkbox></Tooltip>
+                           
+      //                    )}
+      //                </div>
+      //   },
+      // },
+        
 
-      {
-        title: " ",
-        dataIndex: "showCloneToDemoAccount",
-        key: "showCloneToDemoAccount",
-        align: "center",
-        fixed: "left",
-        width: showCloneHRToDemoAccount === true ? "32px": "0",     
-        render: (text, result) => {
-          if(showCloneHRToDemoAccount === true)
-          {
-            return (
-              <>
-              {result?.showCloneToDemoAccount === true ? (
-              <Tooltip placement="bottom" title={"Clone HR to Demo Account"}>
-                    <a href="javascript:void(0);" style={{display: 'inline-flex'}}> 
-                    <Checkbox
-                      checked={selectedCheckboxes.map(item=> item.hRID)?.includes(result.HRID)}
-                      onClick={() => handleDemoCloneCheckboxChange(result)}
-                    >              
-                    </Checkbox> 
-                    </a>
-                  </Tooltip>) : ""}
-              </>
-            );
-        }
-        },
-      },
+      // {
+      //   title: " ",
+      //   dataIndex: "showCloneToDemoAccount",
+      //   key: "showCloneToDemoAccount",
+      //   align: "center",
+      //   fixed: "left",
+      //   width: showCloneHRToDemoAccount === true ? "32px": "0",     
+      //   render: (text, result) => {
+      //     if(showCloneHRToDemoAccount === true)
+      //     {
+      //       return (
+      //         <>
+      //         {result?.showCloneToDemoAccount === true ? (
+      //         <Tooltip placement="bottom" title={"Clone HR to Demo Account"}>
+      //               <a href="javascript:void(0);" style={{display: 'inline-flex'}}> 
+      //               <Checkbox
+      //                 checked={selectedCheckboxes.map(item=> item.hRID)?.includes(result.HRID)}
+      //                 onClick={() => handleDemoCloneCheckboxChange(result)}
+      //               >              
+      //               </Checkbox> 
+      //               </a>
+      //             </Tooltip>) : ""}
+      //         </>
+      //       );
+      //   }
+      //   },
+      // },
 
-      {
-        title: " ",
-        dataIndex: "starStatus",
-        key: "starStatus",
-        align: "center",
-        width: "42px",
-        fixed: "left",
-        render: (_, param) => {
-          let response = All_Hiring_Request_Utils.GETHRPRIORITY(
-            param?.starStatus,
-            param?.salesRep,
-            param?.key,
-            togglePriority
-          );
+      // {
+      //   title: " ",
+      //   dataIndex: "starStatus",
+      //   key: "starStatus",
+      //   align: "center",
+      //   width: "42px",
+      //   fixed: "left",
+      //   render: (_, param) => {
+      //     let response = All_Hiring_Request_Utils.GETHRPRIORITY(
+      //       param?.starStatus,
+      //       param?.salesRep,
+      //       param?.key,
+      //       togglePriority
+      //     );
 
-          return response;
-        },
-      },
+      //     return response;
+      //   },
+      // },
       {
         title: " ",
         dataIndex: "reopenHR",
@@ -285,6 +429,72 @@ export const allHRConfig = {
         ),
       },
       {
+      title: "Category",
+      dataIndex: "hR_Category",
+      key: "hR_Category",
+      width: '220px',
+      fixed: "left",
+      render: (value, row, index) => {
+        return  <div
+                       style={{
+                         display: "flex",
+                        //  marginLeft: "auto",
+                         gap: "10px",
+                       alignItems:'center',
+                       width:'100%',
+                        //  marginRight: "10px",
+                       }}
+                     >
+                       {row?.companyCategory === "Diamond" && (
+                         <>
+                           <img
+                             src={Diamond}
+                             alt="info"
+                             style={{ width: "24px", height: "24px" }}
+                           />
+                           {(userData?.UserId === 2 ||
+                           userData?.UserId === 333 ||
+                           userData?.UserId === 190 ||
+                           userData?.UserId === 96) &&    <div
+                             onClick={() => {
+                               setShowDiamondRemark(true);
+                               setCompanyIdForRemark({ ...row, index: index });
+                             }}
+                           >
+                             <Tooltip title="Remove Diamond">
+                               <img
+                                 src={PowerIcon}
+                                 alt="info"
+                                 style={{
+                                   width: "24px",
+                                   height: "24px",
+                                   cursor: "pointer",
+                                 }}
+                               />
+                             </Tooltip>
+                           </div>}
+                        
+                         </>
+                       )}
+                       {row?.companyCategory !== "Diamond" &&
+                         (userData?.UserId === 2 ||
+                           userData?.UserId === 333 ||
+                           userData?.UserId === 190 ||
+                           userData?.UserId === 96) && (
+                             <Tooltip title="Make Diamond"><Checkbox onChange={() => {
+                           setDiamondCompany(row, index)
+                          }
+                           }>
+                             
+                           </Checkbox></Tooltip>
+                           
+                         )}
+                          <SubCategoryComponent value={value} row={row} updateHRCategory={updateHRCategory} />
+                     </div>
+       
+      },
+    },
+      {
         title: "TR",
         dataIndex: "TR",
         key: "TR",
@@ -434,6 +644,18 @@ export const allHRConfig = {
         dataIndex: "hrAcceptedSince",
         key: "HRAcceptedSince",
         width: "164px",
+        align: "left",
+      },
+        {
+        title: `Reason`,
+        // title: (
+        //   <>
+        //     HR Published <br /> Since
+        //   </>
+        // ),
+        dataIndex: "pauseHRReason",
+        key: "pauseHRReason",
+        width: "250px",
         align: "left",
       },
     ];
