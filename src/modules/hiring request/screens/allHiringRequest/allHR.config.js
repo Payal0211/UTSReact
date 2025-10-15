@@ -47,8 +47,8 @@ import  Kitten  from 'assets/kitten-face.png'
     if(isEdit){
       return <div style={{display:'flex', alignItems:'center', width:'100%'}}>
             <TickMark
-              width={24}
-              height={24}
+              width={26}
+              height={26}
               style={{marginRight:'10px',cursor:'pointer'}}
               onClick={() => {updateHRCategory(cat,row?.HRID)}}
             />
@@ -65,8 +65,8 @@ size="small"
 				
 				/>
             <Close 
-            width={24}
-            height={24}
+            width={26}
+            height={26}
             style={{marginLeft:'10px',cursor:'pointer'}}
             onClick={() => {setIsEdit(false);setCat(value)}} />
             </div>
@@ -79,8 +79,8 @@ size="small"
         {cat !== 'Cheetah' && cat !== 'Panda' && cat !== 'Kitten' &&  'NA'}
        
               <EditSVG
-              width={24}
-              height={24}
+              width={22}
+              height={22}
               style={{marginLeft:'auto',cursor:'pointer'}}
               onClick={() => setIsEdit(true)}
             /> 
@@ -466,8 +466,8 @@ export const allHRConfig = {
                                  src={PowerIcon}
                                  alt="info"
                                  style={{
-                                   width: "24px",
-                                   height: "24px",
+                                   width: "26px",
+                                   height: "26px",
                                    cursor: "pointer",
                                  }}
                                />
@@ -635,7 +635,7 @@ export const allHRConfig = {
         align: "left",
       },
       {
-        title: `HR Published Since`,
+        title: `Open Since`,
         // title: (
         //   <>
         //     HR Published <br /> Since
@@ -647,7 +647,7 @@ export const allHRConfig = {
         align: "left",
       },
         {
-        title: `Reason`,
+        title: `Reject Reason`,
         // title: (
         //   <>
         //     HR Published <br /> Since
