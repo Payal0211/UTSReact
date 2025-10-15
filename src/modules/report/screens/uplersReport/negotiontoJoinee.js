@@ -1508,8 +1508,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
             return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
-              {value}
-             <div style={{color:record?.w1_color}}>{record?.w1_Actual}</div> 
+             {value? value: '-'}
+             <div style={{color:record?.w1_color}}>{record?.w1_Actual ? record?.w1_Actual: '-'}</div> 
             </div>
           }
         },
@@ -1522,8 +1522,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           className: uplersStyle.headerCell,
           render: (value, record, index) =>{
             return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
-              {value}
-             <div style={{color:record?.w2_color}}>{record?.w2_Actual}</div> 
+             {value? value: '-'}
+             <div style={{color:record?.w2_color}}>{record?.w2_Actual ? record?.w2_Actual :'-'}</div> 
             </div>
           }
         },
@@ -1536,8 +1536,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
             return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
-              {value}
-             <div style={{color:record?.w3_color}}>{record?.w3_Actual}</div> 
+              {value? value: '-'}
+             <div style={{color:record?.w3_color}}>{record?.w3_Actual ? record?.w3_Actual :'-'}</div> 
             </div>
           }
         },
@@ -1550,8 +1550,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
             return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
-              {value}
-             <div style={{color:record?.w4_color}}>{record?.w4_Actual}</div> 
+              {value?? '-'}
+             <div style={{color:record?.w4_color}}>{record?.w4_Actual ? record?.w4_Actual :'-'}</div> 
             </div>
           }
         },
@@ -1564,8 +1564,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
             return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
-              {value}
-             <div style={{color:record?.w5_color}}>{record?.w5_Actual}</div> 
+              {value?? '-'}
+             <div style={{color:record?.w5_color}}>{record?.w5_Actual ? record?.w5_Actual :'-'}</div> 
             </div>
           }
         },
