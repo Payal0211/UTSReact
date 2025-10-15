@@ -1507,7 +1507,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           align: "center",
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
-            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+            return (record?.w1_color === 'red' && value) ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+             <div style={{color:record?.w1_color}}>{value? value: '-'}</div> 
+             <div >{record?.w1_Actual ? record?.w1_Actual :'-'}</div> 
+            </div> : <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
              {value? value: '-'}
              <div style={{color:record?.w1_color}}>{record?.w1_Actual ? record?.w1_Actual: '-'}</div> 
             </div>
@@ -1521,7 +1524,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           align: "center",
           className: uplersStyle.headerCell,
           render: (value, record, index) =>{
-            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+            return (record?.w2_color === 'red' && value) ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+             <div style={{color:record?.w2_color}}>{value? value: '-'}</div> 
+             <div >{record?.w2_Actual ? record?.w2_Actual :'-'}</div> 
+            </div> : <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
              {value? value: '-'}
              <div style={{color:record?.w2_color}}>{record?.w2_Actual ? record?.w2_Actual :'-'}</div> 
             </div>
@@ -1535,7 +1541,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           align: "center",
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
-            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+            return (record?.w3_color === 'red' && value) ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+             <div style={{color:record?.w3_color}}>{value? value: '-'}</div> 
+             <div >{record?.w3_Actual ? record?.w3_Actual :'-'}</div> 
+            </div> : <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
               {value? value: '-'}
              <div style={{color:record?.w3_color}}>{record?.w3_Actual ? record?.w3_Actual :'-'}</div> 
             </div>
@@ -1549,7 +1558,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           align: "center",
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
-            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+            return (record?.w4_color === 'red' && value) ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+             <div style={{color:record?.w4_color}}>{value? value: '-'}</div> 
+             <div >{record?.w4_Actual ? record?.w4_Actual :'-'}</div> 
+            </div> : <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
               {value?? '-'}
              <div style={{color:record?.w4_color}}>{record?.w4_Actual ? record?.w4_Actual :'-'}</div> 
             </div>
@@ -1563,7 +1575,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           align: "center",
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
-            return <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+            return (record?.w5_color === 'red' && value) ? <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
+             <div style={{color:record?.w5_color}}>{value? value: '-'}</div> 
+             <div >{record?.w5_Actual ? record?.w5_Actual :'-'}</div> 
+            </div> : <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center', gap:'5px'}}>
               {value?? '-'}
              <div style={{color:record?.w5_color}}>{record?.w5_Actual ? record?.w5_Actual :'-'}</div> 
             </div>
