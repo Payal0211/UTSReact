@@ -22,10 +22,10 @@ import  Panda from 'assets/panda-face.png'
 import  Kitten  from 'assets/kitten-face.png'
 
   const subCategoryOptions = [
-    {
-    id: 'None',
-    value: 'None',
-  },
+  //   {
+  //   id: 'None',
+  //   value: 'None',
+  // },
   {
     id: 'Kitten',
     value: 'Kitten',
