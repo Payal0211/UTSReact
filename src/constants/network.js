@@ -232,6 +232,7 @@ export class ReportType {
 	static GET_FTE_POPUP_DETAILS_LIST = 'AllFTEPODsNegotiationToJoiningFunnelSummary_Popup'
 	static GET_NEGOTIATION_REPORT = 'PODNegotiationToJoiningFunnelList'
 	static GET_PLANING_TO_NEGOTIATION_REPORT = 'PODGoalPlanningToNegotiationList'
+	static GET_PLANNING_SUMMARY_REPORT = 'PODwiseGoalPlanningSummary'
 	static GET_NEGOTIATION_SUMMARY_REPORT = 'PODNegotiationToJoiningFunnelSummary'
 }
 export class ReportsAPI {
