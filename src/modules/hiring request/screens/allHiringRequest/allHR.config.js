@@ -452,10 +452,7 @@ export const allHRConfig = {
                              alt="info"
                              style={{ width: "24px", height: "24px" }}
                            />
-                           {(userData?.UserId === 2 ||
-                           userData?.UserId === 333 ||
-                           userData?.UserId === 190 ||
-                           userData?.UserId === 96) &&    <div
+                              <div
                              onClick={() => {
                                setShowDiamondRemark(true);
                                setCompanyIdForRemark({ ...row, index: index });
@@ -472,15 +469,12 @@ export const allHRConfig = {
                                  }}
                                />
                              </Tooltip>
-                           </div>}
+                           </div>
                         
                          </>
                        )}
                        {row?.companyCategory !== "Diamond" &&
-                         (userData?.UserId === 2 ||
-                           userData?.UserId === 333 ||
-                           userData?.UserId === 190 ||
-                           userData?.UserId === 96) && (
+                         (
                              <Tooltip title="Make Diamond"><Checkbox onChange={() => {
                            setDiamondCompany(row, index)
                           }
@@ -784,8 +778,15 @@ export const allHRConfig = {
         // ],
         isSearch: false,
       },
+      // {
+      //   label: "Tenure",
+      //   name: "tenure",
+      //   child: [],
+      //   isSearch: false,
+      //   isNumber: true,
+      // },
       {
-        label: "Tenure",
+        label: "Open Since",
         name: "tenure",
         child: [],
         isSearch: false,
