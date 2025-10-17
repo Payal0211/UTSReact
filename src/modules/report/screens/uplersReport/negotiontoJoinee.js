@@ -1799,74 +1799,74 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           title: "",
           dataIndex: "stage",
           key: "stage",
-          width: 120,
+          // width: 120,
            align: "left",
           className: uplersStyle.headerCell,
           
         },
       
         {
-          title: "W1",
+          title: <div style={{textAlign:'center'}}>W1</div> ,
           dataIndex: "w1",
           key: "w1",
           // width: 120,
           align: "left",
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
-            return <div dangerouslySetInnerHTML={{__html: value? value.replace('\r\n','<br/>') : ''}}>
-              {/* {value? value.replace('\r\n','<br/>') : ''} */}
+            return <div dangerouslySetInnerHTML={{__html: value? value.replace('/\r\n/g','<br/><br/>') : ''}}>
+              {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
             </div>
           }
         },
         {
-          title: "W2",
+          title:  <div style={{textAlign:'center'}}>W2</div>,
           dataIndex: "w2",
           key: "w3",
           // width: 120,
           align: "left",
           className: uplersStyle.headerCell,
           render: (value, record, index) =>{
-            return <div dangerouslySetInnerHTML={{__html: value? value.replace('\r\n','<br/>') : ''}}>
-              {/* {value? value.replace('\r\n','<br/>') : ''} */}
+            return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
+              {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
             </div>
           }
         },
         {
-          title: "W3",
+          title: <div style={{textAlign:'center'}}>W3</div>,
           dataIndex: "w3",
           key: "w3",
           // width: 120,
          align: "left",
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
-            return <div dangerouslySetInnerHTML={{__html: value? value.replace('\r\n','<br/>') : ''}}>
-              {/* {value? value.replace('\r\n','<br/>') : ''} */}
+            return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
+              {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
             </div>
           }
         },
         {
-          title: "W4",
+          title: <div style={{textAlign:'center'}}>W4</div>,
           dataIndex: "w4",
           key: "w4",
           // width: 120,
            align: "left",
           className: uplersStyle.headerCell,
            render: (value, record, index) =>{
-            return <div dangerouslySetInnerHTML={{__html: value? value.replace('\r\n','<br/>') : ''}}>
-              {/* {value? value.replace('\r\n','<br/>') : ''} */}
+            return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
+              {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
             </div>
           }
         },
         {
-          title: "W5",
+          title: <div style={{textAlign:'center'}}>W5</div>,
           dataIndex: "w5",
           key: "w5",
           // width: 120,
           align: "left",
           className: uplersStyle.headerCell,
           render: (value, record, index) =>{
-            return <div dangerouslySetInnerHTML={{__html: value? value.replace('\r\n','<br/>') : ''}}>
-              {/* {value? value.replace('\r\n','<br/>') : ''} */}
+            return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
+              {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
             </div>
           }
         },
@@ -2131,20 +2131,15 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   }
 
   function getMaxDate(currentDate = new Date()) {
-  const dayOfWeek = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const dayOfWeek = currentDate.getDay(); // 0 = Sunday, ..., 6 = Saturday
 
-  // Days until next Monday
-  const daysUntilNextMonday = (8 - dayOfWeek) % 7;
+  // Calculate how many days until next week's Saturday
+  const daysUntilNextSaturday = ((13 - dayOfWeek) % 7) ;
 
-  // Date of next Monday
-  const nextMonday = new Date(currentDate);
-  nextMonday.setDate(currentDate.getDate() + daysUntilNextMonday);
+  const startDate = new Date(currentDate);
+  startDate.setDate(currentDate.getDate() + daysUntilNextSaturday);
 
-  // Add 7 more days to get Monday of the week after next
-  const nextToNextMonday = new Date(nextMonday);
-  nextToNextMonday.setDate(nextMonday.getDate() + 7);
-
-  return nextToNextMonday;
+  return startDate;
 }
 
 
@@ -2882,7 +2877,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                 Weekly Plan vs Progress
               </p>
               <Table
-          scroll={{ y: "100vh" }}
+          scroll={{x:"1600px", y: "100vh" }}
           id="List"
           columns={reportPlanningSummaryColumns}
           bordered={false}
@@ -2890,7 +2885,15 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           rowKey={(record, index) => index}
        
           pagination={false}
-   
+          rowClassName={(record) => {
+            if (record.stage === "Total Planning Amount") {
+              return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+            }
+        
+            if (record.stage === "Total Achieved Amount" ) {
+              return `${uplersStyle.heighliteGreen} ${uplersStyle.boldText}`; 
+            }                 
+          }}  
         />
             </>
           )}
