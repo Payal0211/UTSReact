@@ -27,6 +27,9 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { FilterFilled } from "@ant-design/icons";
 import spinGif from "assets/gif/RefreshLoader.gif";
 import Editor from "modules/hiring request/components/textEditor/editor";
+import  Tiger from 'assets/tiger-face.png'
+import  Panda from 'assets/panda-face.png'
+import  Kitten  from 'assets/kitten-face.png'
 
 const { Option } = Select;
 
@@ -488,20 +491,20 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       width: 150,
       fixed: "left",
       className: uplersStyle.headerCell,
-      render: (text, record) =>
-        record?.companyCategory === "Diamond" ? (
-          <>
-            <span>{text}</span>
-            &nbsp;
-            <img
-              src={Diamond}
-              alt="info"
-              style={{ width: "16px", height: "16px" }}
-            />
-          </>
-        ) : (
-          text
-        ),
+      // render: (text, record) =>
+      //   record?.companyCategory === "Diamond" ? (
+      //     <>
+      //       <span>{text}</span>
+      //       &nbsp;
+      //       <img
+      //         src={Diamond}
+      //         alt="info"
+      //         style={{ width: "16px", height: "16px" }}
+      //       />
+      //     </>
+      //   ) : (
+      //     text
+      //   ),
     },
     {
       title: <div style={{ textAlign: "center" }}>HR #</div>,
@@ -524,6 +527,33 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           text
         ),
     },
+      {
+      title: <div>Category</div>,
+      dataIndex: "hR_Category",
+      key: "hR_Category",
+      width: 100,
+      fixed: "left",
+      className: uplersStyle.headerCell,
+      render: (text, record) =><div style={{display:'flex', gap:'10px'}}>
+        { record?.companyCategory === "Diamond" && (
+          <>        
+            &nbsp;
+            <img
+              src={Diamond}
+              alt="info"
+              style={{ width: "24px", height: "24px" }}
+            />
+          </>
+        ) }
+
+         {text === 'Cheetah' &&  <img src={Tiger} alt='tiger'  style={{width:'24px', height:'24px', marginRight:'10px'}} />} 
+       {text === 'Panda' && <img src={Panda} alt='panda'  style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
+       {text === 'Kitten' && <img src={Kitten} alt='kitten' style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
+      
+      </div>
+       
+    },
+  
     {
       title: <div style={{ textAlign: "center" }}>Position</div>,
       dataIndex: "position",
@@ -1271,20 +1301,20 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 150,
           fixed: "left",
           className: uplersStyle.headerCell,
-          render: (text, record) =>
-            record?.companyCategory === "Diamond" ? (
-              <>
-                <span>{text}</span>
-                &nbsp;
-                <img
-                  src={Diamond}
-                  alt="info"
-                  style={{ width: "16px", height: "16px" }}
-                />
-              </>
-            ) : (
-              text
-            ),
+          // render: (text, record) =>
+          //   record?.companyCategory === "Diamond" ? (
+          //     <>
+          //       <span>{text}</span>
+          //       &nbsp;
+          //       <img
+          //         src={Diamond}
+          //         alt="info"
+          //         style={{ width: "16px", height: "16px" }}
+          //       />
+          //     </>
+          //   ) : (
+          //     text
+          //   ),
         },
         {
           title: <div style={{ textAlign: "center" }}>HR #</div>,
@@ -1307,6 +1337,32 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
               text
             ),
         },
+              {
+      title: <div>Category</div>,
+      dataIndex: "hR_Category",
+      key: "hR_Category",
+      width: 100,
+      fixed: "left",
+      className: uplersStyle.headerCell,
+      render: (text, record) =><div style={{display:'flex', gap:'10px'}}>
+        { record?.companyCategory === "Diamond" && (
+          <>        
+            &nbsp;
+            <img
+              src={Diamond}
+              alt="info"
+              style={{ width: "24px", height: "24px" }}
+            />
+          </>
+        ) }
+
+         {text === 'Cheetah' &&  <img src={Tiger} alt='tiger'  style={{width:'24px', height:'24px', marginRight:'10px'}} />} 
+       {text === 'Panda' && <img src={Panda} alt='panda'  style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
+       {text === 'Kitten' && <img src={Kitten} alt='kitten' style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
+    
+      </div>
+       
+    },
         {
           title: <div style={{ textAlign: "center" }}>Position</div>,
           dataIndex: "position",
