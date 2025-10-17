@@ -321,7 +321,7 @@ const HiringFilters = ({
 										className={hiringFilterStyle.searchInput}
 										type="number"
 										id="NumberInput"
-										placeholder={`Enter ${filterSubChild?.name}`}
+										placeholder={`Enter ${filterSubChild?.label}`}
 										min="1" max="99" 
 									/>
 
