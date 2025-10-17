@@ -1799,7 +1799,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           title: "",
           dataIndex: "stage",
           key: "stage",
-          // width: 120,
+          width: 150,
            align: "left",
           className: uplersStyle.headerCell,
           
@@ -2886,11 +2886,11 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
        
           pagination={false}
           rowClassName={(record) => {
-            if (record.stage === "Total Planning Amount") {
+            if (record.stage === "Total Planning") {
               return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
             }
         
-            if (record.stage === "Total Achieved Amount" ) {
+            if (record.stage === "Total Achieved" ) {
               return `${uplersStyle.heighliteGreen} ${uplersStyle.boldText}`; 
             }                 
           }}  
