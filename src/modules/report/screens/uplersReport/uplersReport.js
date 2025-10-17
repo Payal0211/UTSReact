@@ -483,7 +483,7 @@ export default function UplersReport() {
                      <Tooltip
                                             placement="bottomLeft"
                                             title={                                            
-                                                <ul style={{margin:'10px 10px 10px 0', width:'200px', padding:'0'}}>
+                                                <ul style={{margin:'10px 10px 10px 0', width:'300px', padding:'0'}}>
                                                   <li>NASA Total:  <strong style={{marginLeft:'10px'}}>{summeryRevenueData[0]?.nasa_Total_Str
                           ? summeryRevenueData[0]?.nasa_Total_Str
                           : 0}</strong> </li>
