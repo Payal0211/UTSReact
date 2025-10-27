@@ -2433,8 +2433,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                           selected={roundDate}
                           onChange={(date) => setRoundDate(date)}
                           dateFormat="dd-MM-yyyy"
-                          minDate={getMaxDate()}
-                          // maxDate={getMaxDate()}
+                          // minDate={getMaxDate()}
+                          minDate={new Date()}
                           // showMonthYearPicker
                         />
                       </div>
