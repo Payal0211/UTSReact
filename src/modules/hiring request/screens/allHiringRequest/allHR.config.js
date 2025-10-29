@@ -664,7 +664,7 @@ export const allHRConfig = {
       { name: "Data Analyst" },
     ];
   },
-  hrFilterTypeConfig: (filterList) => {
+  hrFilterTypeConfig: (filterList,rejectionReasons) => {
     return [
       // {
       // 	label: 'ODR/Pool',
@@ -778,6 +778,43 @@ export const allHRConfig = {
         // ],
         isSearch: false,
       },
+        {
+        label: "Sales Representative",
+        name: "salesRep",
+        child: filterList?.salesReps,
+        isSearch: true,
+      },
+         {
+        label: "Manager",
+        name: "manager",
+        child: filterList?.managers,
+        isSearch: true,
+      },
+        {
+        label: "Category",
+        name: "Category",
+        child: ['Diamond + Cheetah','Diamond + Kitten','Diamond + Panda','Non Diamond + Cheetah','Non Diamond + Kitten','Non Diamond + Panda'].map(it=> ({
+    "disabled": false,
+    "group": null,
+    "selected": false,
+    "text": it,
+    "value": it
+})),
+        isSearch: false,
+        isSingleSelect:true
+      },
+       {
+        label: "Rejected Reason",
+        name: "RejectedReasonID",
+        child: rejectionReasons.map(it=> ({
+    "disabled": false,
+    "group": null,
+    "selected": false,
+    "text": `${it.id}`,
+    "value": it.reason
+})),
+        isSearch: false,
+      },
       // {
       //   label: "Tenure",
       //   name: "tenure",
@@ -793,24 +830,12 @@ export const allHRConfig = {
         isNumber: true,
       },
       {
-        label: "Talent Request",
+        label: "TR",
         name: "tr",
         child: [],
         isSearch: false,
         isNumber: true,
       },
-      {
-        label: "Position",
-        name: "position",
-        child: filterList?.positions,
-        isSearch: true,
-      },
-      // {
-      // 	label: 'Company',
-      // 	name: 'company',
-      // 	child: filterList?.companies,
-      // 	isSearch: true,
-      // },
       {
         label: "FTE/PTE",
         name: "typeOfEmployee",
@@ -832,25 +857,25 @@ export const allHRConfig = {
         ],
         isSearch: false,
       },
-      {
-        label: "Manager",
-        name: "manager",
-        child: filterList?.managers,
-        isSearch: true,
-      },
-      {
+         {
         label: 'Lead Type',
         name: 'leadUserId',
         child: filterList?.leadTypeList,
         isSearch: false,
         isSingleSelect:true
     },
-      {
-        label: "Sales Representative",
-        name: "salesRep",
-        child: filterList?.salesReps,
-        isSearch: true,
-      },
+      // {
+      //   label: "Position",
+      //   name: "position",
+      //   child: filterList?.positions,
+      //   isSearch: true,
+      // },
+      // {
+      // 	label: 'Company',
+      // 	name: 'company',
+      // 	child: filterList?.companies,
+      // 	isSearch: true,
+      // }, 
       {
         label: "Type of HR",
         name: "HRType",
@@ -872,18 +897,19 @@ export const allHRConfig = {
         ],
         isSearch: false,
       },
-      {
-        label: "Company Type",
-        name: "companyTypeIds",
-        child: filterList?.companyModel,
-        isSearch: false,
-      },
-      {
+        {
         label: "GEO",
         name: "Geos",
         child: filterList?.geoList,
         isSearch: false,
       },
+      // {
+      //   label: "Company Type",
+      //   name: "companyTypeIds",
+      //   child: filterList?.companyModel,
+      //   isSearch: false,
+      // },
+    
     ];
   },
    potentialFilterTypeConfig: (filterList) => {

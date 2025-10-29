@@ -436,6 +436,22 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.getAllFilterDataForHRRequest');
 		}
 	},
+	getAllFilterDataForHRRejectionReasonRequest: async () => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR + 'GetRejectedReasonsForHR?OrderSequence=1'
+			// HiringRequestsAPI.GET_ALL_FILTER_DATA_FOR_HR;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getAllFilterDataForHRRejectionReasonRequest');
+		}
+	},
 	setTalentPrioritiesRequest: async (talentPrioritiesData) => {
 		let httpService = new HttpServices();
 		const miscData = UserSessionManagementController.getUserMiscellaneousData();

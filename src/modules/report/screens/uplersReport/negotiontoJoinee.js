@@ -1143,10 +1143,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         },
       },
         {
-        title: <div style={{ textAlign: "center" }}>Next Month</div>,
+        title: <div style={{ textAlign: "center" }}>Upcoming months</div>,
         dataIndex: "nextMonthStr",
         key: "nextMonthStr",
-        width: 120,
+        width: 155,
         align: "right",
         onHeaderCell: () => ({
           className: uplersStyle.headerCommonGoalHeaderConfig,
