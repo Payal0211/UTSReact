@@ -361,7 +361,40 @@ const HiringFilters = ({
 												</div>
 											);
 									  })
-									: filterSubChild?.child?.map((item, index) => {
+									: filterSubChild.isSingleSelect ? filterSubChild?.child?.map((item, index) => {
+																			return (
+																				<div
+																					className={hiringFilterStyle.filterItem}
+																					key={index}>
+																					<Checkbox
+																					disabled={
+																						appliedFilter?.get(`${filterSubChild.name}`) &&
+																						!checkedState.get(
+																							`${filterSubChild.name}${item.text}`,
+																						)
+																					}
+																						checked={checkedState?.get(
+																							`${filterSubChild.name}${item.text}`,
+																						)}
+																						onChange={(e) =>
+																							handleAppliedFilters(e.target.checked, {
+																								filterType: filterSubChild.name,
+																								value: item?.value,
+																								id: item?.text,
+																							})
+																						}
+																						id={item?.value + `/${index + 1}`}
+																						style={{
+																							fontSize: `${!item.label && '1rem'}`,
+																							fontWeight: '500',
+																						}}>														
+																						{item.label
+																							? item.label
+																							: item?.value}
+																					</Checkbox>
+																				</div>
+																			);
+																	  }) : filterSubChild?.child?.map((item, index) => {
 											return (
 												<div
 													className={hiringFilterStyle.filterItem}

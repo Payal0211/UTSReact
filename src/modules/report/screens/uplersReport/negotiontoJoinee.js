@@ -1143,10 +1143,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         },
       },
         {
-        title: <div style={{ textAlign: "center" }}>Next Month</div>,
+        title: <div style={{ textAlign: "center" }}>Upcoming months</div>,
         dataIndex: "nextMonthStr",
         key: "nextMonthStr",
-        width: 120,
+        width: 155,
         align: "right",
         onHeaderCell: () => ({
           className: uplersStyle.headerCommonGoalHeaderConfig,
@@ -2815,24 +2815,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
      
         </div>
       </div>
-       <Modal
-        width={"700px"}
-        centered
-        footer={false}
-        open={openSplitHR}
-        className="cloneHRConfWrap"
-        zIndex={99999999}
-        onCancel={() => setSplitHR(false)}
-      >
-        <SplitHR
-          onCancel={() => {setSplitHR(false);setHRID('')}}
-          getHRID={getHRID}
-          getHRnumber={getHRnumber.hrNumber}
-          isHRHybrid={getHRnumber.isHybrid}
-          companyID={getHRnumber.companyID}
-          impHooks={{groupList,setGroupList,isSplitLoading, setIsSplitLoading}}
-        />
-      </Modal>
+       
       <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
         <div className={uplersStyle.customTableContainer}>
  {isLoading ? (
@@ -2894,14 +2877,17 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
        
       )}
 
-       <Modal
+      
+        </div>
+      </div>}
+ <Modal
         width={"700px"}
         centered
         footer={false}
         open={openSplitHR}
         className="cloneHRConfWrap"
         onCancel={() => setSplitHR(false)}
-        zIndex={99999999}
+        // zIndex={99999999}
       >
         <SplitHR
           onCancel={() => {setSplitHR(false);setHRID('')}}
@@ -2912,8 +2898,6 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           impHooks={{groupList,setGroupList,isSplitLoading, setIsSplitLoading}}
         />
       </Modal>
-        </div>
-      </div>}
 
 
       
