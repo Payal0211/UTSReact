@@ -81,6 +81,7 @@ const AllHiringRequestScreen = () => {
   const [isAllowFilters, setIsAllowFilters] = useState(false);
   const [getHTMLFilter, setHTMLFilter] = useState(false);
   const [filtersList, setFiltersList] = useState([]);
+  const [rejectionReasons, setRejectionReasons] = useState([]);
   const [apiData, setAPIdata] = useState([]);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -102,6 +103,7 @@ const AllHiringRequestScreen = () => {
   const [closeHrModal, setCloseHrModal] = useState(false);
   const [isFrontEndHR, setIsFrontEndHR] = useState(false);
   const [isOnlyPriority, setIsOnlyPriority] = useState(false);
+  const [isOnlyDiamond,setIsOnlyDiamond] = useState(false);
   const [userData, setUserData] = useState({});
   const [isShowDirectHRChecked, setIsShowDirectHRChecked] = useState(false);
 
@@ -500,6 +502,7 @@ const AllHiringRequestScreen = () => {
         ...pageData,
         isFrontEndHR: isFrontEndHR,
         StarNextWeek: isOnlyPriority,
+        OnlyDiamond: isOnlyDiamond ? 'diamond' : ''
       });
 
       if (response?.statusCode === HTTPStatusCode.OK) {
@@ -524,7 +527,7 @@ const AllHiringRequestScreen = () => {
         return "NO DATA FOUND";
       }
     },
-    [navigate, isFrontEndHR, isOnlyPriority]
+    [navigate, isFrontEndHR, isOnlyPriority,isOnlyDiamond]
   );
 
   useEffect(() => {
@@ -578,16 +581,17 @@ const AllHiringRequestScreen = () => {
         handleHRRequest(tableFilteredState);
       }
     }
-  }, [tableFilteredState, endDate, startDate, isFrontEndHR, isOnlyPriority]);
+  }, [tableFilteredState, endDate, startDate, isFrontEndHR, isOnlyPriority,isOnlyDiamond]);
 
   useEffect(() => {
     // handleHRRequest(tableFilteredState);
     handleRequetWithDates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableFilteredState, isFrontEndHR, isOnlyPriority]);
+  }, [tableFilteredState, isFrontEndHR, isOnlyPriority,isOnlyDiamond]);
 
   const getHRFilterRequest = useCallback(async () => {
     const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
+     const rejectionResponse = await hiringRequestDAO.getAllFilterDataForHRRejectedReasonRequestDAO();
     if (response?.statusCode === HTTPStatusCode.OK) {
       setFiltersList(response && response?.responseBody?.details?.Data);
       setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
@@ -597,6 +601,10 @@ const AllHiringRequestScreen = () => {
       return navigate(UTSRoutes.SOMETHINGWENTWRONG);
     } else {
       return "NO DATA FOUND";
+    }
+
+    if (rejectionResponse?.statusCode === HTTPStatusCode.OK) {
+      setRejectionReasons(rejectionResponse.responseBody.details.Data)
     }
   }, [navigate]);
 
@@ -730,6 +738,7 @@ const AllHiringRequestScreen = () => {
     setDebouncedSearch("");
     setIsFrontEndHR(false);
     setIsOnlyPriority(false);
+    setIsOnlyDiamond(false);
     setIsShowDirectHRChecked(false);
     setSelectedHRTypes([])
     setPageIndex(1);
@@ -938,7 +947,14 @@ const AllHiringRequestScreen = () => {
               Show Self Sign Up Only
             </Checkbox> */}
 
-            <Select 
+            {/* <Checkbox
+              checked={isOnlyDiamond}
+              onClick={() => setIsOnlyDiamond((prev) => !prev)}
+            >
+              Only Diamond Client
+            </Checkbox>  */}
+
+            {/* <Select 
                 mode="multiple"
                 size='small'
                 style={{ width: '150px' }}
@@ -947,7 +963,7 @@ const AllHiringRequestScreen = () => {
                 value={selectedHRTypes}
                 onChange={(data,datawithID)=>{setSelectedHRTypes(datawithID)}}
                 options={HRTypesList} 
-            />
+            /> */}
 
            
             <div className={allHRStyles.searchFilterSet}>
@@ -1125,7 +1141,7 @@ const AllHiringRequestScreen = () => {
             setIsShowDirectHRChecked={setIsShowDirectHRChecked}
             hrFilterList={allHRConfig.hrFilterListConfig()}
             filtersType={allHRConfig.hrFilterTypeConfig(
-              filtersList && filtersList
+              filtersList && filtersList,rejectionReasons
             )}
             clearFilters={clearFilters}
           />
