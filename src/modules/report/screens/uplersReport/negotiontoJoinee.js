@@ -2189,8 +2189,12 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   function getMaxDate(currentDate = new Date()) {
     const dayOfWeek = currentDate.getDay(); // 0 = Sunday, ..., 6 = Saturday
 
+
+  if(dayOfWeek === 1){
+      return currentDate;
+  }
   // Calculate how many days until next week's Saturday
-  const daysUntilNextSaturday = ((13 - dayOfWeek) % 7) ;
+  const daysUntilNextSaturday = ((15 - dayOfWeek) % 7) ;
 
   const startDate = new Date(currentDate);
   startDate.setDate(currentDate.getDate() + daysUntilNextSaturday);
@@ -2433,8 +2437,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                           selected={roundDate}
                           onChange={(date) => setRoundDate(date)}
                           dateFormat="dd-MM-yyyy"
-                          // minDate={getMaxDate()}
-                          minDate={new Date()}
+                          minDate={getMaxDate()}
+                          // minDate={new Date()}
                           // showMonthYearPicker
                         />
                       </div>
