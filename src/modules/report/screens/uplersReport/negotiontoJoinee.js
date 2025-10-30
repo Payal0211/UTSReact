@@ -2041,6 +2041,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             setRoundDate("");
             setRound("");
             setResponseSubmit(false);
+            getReportPtoNData()
           } else {
             message.error("something went wrong");
           }
