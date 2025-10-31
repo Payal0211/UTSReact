@@ -55,7 +55,7 @@ export default function NegotiontoJoinee({
 
     const [showResponse, setShowResponse] = useState(false);
     const [responseData, setResponseData] = useState({});
-  const [round, setRound] = useState("");
+  const [round, setRound] = useState("Selection");
    const [roundDate, setRoundDate] = useState("");
    const [loadingResponse, setLoadingResponse] = useState(false);
    const [responseSubmit, setResponseSubmit] = useState(false);
@@ -665,6 +665,9 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       width: 150,
       align: "center",
       className: uplersStyle.headerCell,
+      render: (text) => {
+        return text === '01/01/1900' ? "" : text;
+      },
     },
         {
       title: (
@@ -691,6 +694,9 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       width: 150,
       align: "center",
       className: uplersStyle.headerCell,
+        render: (text) => {
+        return text === '01/01/1900' ? "" : text;
+      },
     },
         {
       title: (
@@ -2076,7 +2082,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             setShowResponse(false);
             setResponseData({});
             setRoundDate("");
-            setRound("");
+            setRound("Selection");
             setResponseSubmit(false);
             getReportPtoNData()
           } else {
@@ -2439,7 +2445,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   setShowResponse(false);
                   setResponseData({});
                   setRoundDate("");
-                  setRound("");
+                  setRound("Selection");
                   setResponseSubmit(false);
                 }}
               >
@@ -2473,6 +2479,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                           }
                           // handleChange(newValue, record, index, dataIndex)
                         }
+                        defaultValue="Selection"
                         style={{ width: "250px" }}
                         size="middle"
                         placeholder="Select Rounds"
@@ -2538,7 +2545,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                       setShowResponse(false);
                       setResponseData({});
                       setRoundDate("");
-                      setRound("");
+                      setRound("Selection");
                       setResponseSubmit(false);
                     }}
                     disabled={loadingResponse}
