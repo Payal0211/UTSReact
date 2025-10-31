@@ -14,7 +14,7 @@ import moment from "moment";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { HTTPStatusCode } from "constants/network";
 import { useState } from "react";
-import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
+import { ReactComponent as EditSVG } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
 import { ReactComponent as Close } from "assets/svg/close.svg";
 import  Tiger from 'assets/tiger-face.png'

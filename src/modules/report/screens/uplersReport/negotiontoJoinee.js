@@ -82,6 +82,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const [allGoalCommentList, setALLGoalCommentsList] = useState([]);
   const [commentData, setCommentData] = useState({});
 
+   const [summeryReportData, setSummeryReportData] = useState([]);
+    const [summeryGroupsNames, setSummeryGroupsName] = useState([]);
+     const [isSummeryLoading, setIsSummeryLoading] = useState(false);
+
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
@@ -127,6 +131,34 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       return "NO DATA FOUND";
     }
        }
+
+       const getAMSummary = async () => {
+           let pl = {
+             hr_BusinessType: "G",
+             //   "month": +moment(monthDate).format("M") ,
+             // "year":  +moment(monthDate).format("YYYY"),
+             month: +moment(monthDate).format("M"),
+             year: +moment(monthDate).format("YYYY"),
+             fromDate: "",
+             toDate: "",
+           };
+       
+           setIsSummeryLoading(true);
+           const apiResult = await ReportDAO.getAMSummeryReportDAO(pl);
+           setIsSummeryLoading(false);
+           if (apiResult?.statusCode === 200) {
+             setSummeryReportData(apiResult.responseBody);
+             let groups = [];
+             apiResult.responseBody.forEach((element) => {
+               if (!groups.includes(element.groupName)) {
+                 groups.push(element.groupName);
+               }
+             });
+             setSummeryGroupsName(groups);
+           } else if (apiResult?.statusCode === 404) {
+             setSummeryReportData([]);
+           }
+         };
 
        const getReportPtoNData = async () => {
  const pl = {
@@ -199,6 +231,11 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         getReportPtoNData()
         getReportSummaryData()
         getPlanningSummeryData()
+
+        if(hrModal === 'Contract' && selectedHead === 5){
+          getAMSummary()
+        }
+        console.log(hrModal,selectedHead)
        },[monthDate,hrModal,selectedHead])
 
            const getPODList = async (getHRID) => {
@@ -2203,6 +2240,42 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   return startDate;
 }
 
+  const gN = (name) => {
+    switch (name) {
+      case "1_AM_Recurring":
+        return "New";
+      case "1_NBD_Recurring":
+        return "Existing";
+      case "2_AM_DP":
+        return "AM One Time";
+      case "2_NBD_DP":
+        return "NBD One Time";
+      default:
+        return "";
+    }
+  };
+
+    const getSummeryDetails = async (val, col) => {
+      let pl = {
+        hr_BusinessType: "G",
+        month: monthDate ? +moment(monthDate).format("M") : 0,
+        year: monthDate ? +moment(monthDate).format("YYYY") : 0,
+        groupName: val.groupName,
+        am_ColumnName: col,
+        stage_ID: val.stage_ID,
+      };
+      // setShowSummeryDetails(true);
+      // setLoadingTalentProfile(true);
+      // setSummertTitles({ ...val, col, amount: val[col] });
+      // const res = await ReportDAO.getTAReportSummeryDetailsDAO(pl);
+      // setLoadingTalentProfile(false);
+      // if (res.statusCode === HTTPStatusCode.OK) {
+      //   setSummeryDetails(res.responseBody);
+      // } else {
+      //   setSummeryDetails([]);
+      // }
+    };
+
 
   return (<>
 
@@ -3400,7 +3473,171 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         </Modal>
       )}
       </div>
-
+        {(hrModal === 'Contract' && selectedHead === 5) &&  <div className={`${uplersStyle.filterContainer} ${uplersStyle.summeryContainer} `} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer} style={{width:'100%'}}>
+          <div style={{ display: "flex", gap: "10px" }}>
+             {isSummeryLoading ? (
+                <div
+                  style={{
+                    display: "flex",
+                    height: "350px",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <>
+                  {summeryGroupsNames.slice(0,2).map((gName) => {
+                    let data = summeryReportData.filter(
+                      (item) => item.groupName === gName
+                    );
+                    return (
+                      <div className={uplersStyle.cardcontainer}>
+                        <h3 className={uplersStyle.recruitername}>
+                          {gN(gName)}
+                        </h3>
+                        <table
+                          className={uplersStyle.stagetable}
+                          style={{ width: "650px" }}
+                        >
+                          <thead>
+                            <tr>
+                              <th style={{ textAlign: "center" }}>Stage</th>
+                              <th style={{ textAlign: "center" }}>Sappy</th>
+                              <th style={{ textAlign: "center" }}>Nikita</th>
+                              <th style={{ textAlign: "center" }}>
+                                Deepshikha
+                              </th>
+                              <th style={{ textAlign: "center" }}>Nandini</th>
+                              <th style={{ textAlign: "center" }}>Gayatri</th>
+                              <th style={{ textAlign: "center" }}>
+                                Total (D+N+G)
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data.map((val) => (
+                              <tr
+                                key={gName + val.stage}
+                                //  className={getStageClass(stage.profileStatusID)}
+                              >
+                                <td>{val.stage}</td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.sappy_str
+                                  ) : (
+                                    <p
+                                      // style={{
+                                      //   margin: 0,
+                                      //   textDecoration: "underline",
+                                      //   color: "blue",
+                                      //   cursor: "pointer",
+                                      // }}
+                                      // onClick={() => {
+                                      //   getSummeryDetails(val, "sappy_str");
+                                      // }}
+                                    >
+                                      {val.sappy_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.nikita_str
+                                  ) : (
+                                    <p
+                                      // style={{
+                                      //   margin: 0,
+                                      //   textDecoration: "underline",
+                                      //   color: "blue",
+                                      //   cursor: "pointer",
+                                      // }}
+                                      // onClick={() => {
+                                      //   getSummeryDetails(val, "nikita_str");
+                                      // }}
+                                    >
+                                      {val.nikita_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.deepshikha_str
+                                  ) : (
+                                    <p
+                                      // style={{
+                                      //   margin: 0,
+                                      //   textDecoration: "underline",
+                                      //   color: "blue",
+                                      //   cursor: "pointer",
+                                      // }}
+                                      // onClick={() => {
+                                      //   getSummeryDetails(
+                                      //     val,
+                                      //     "deepshikha_str"
+                                      //   );
+                                      // }}
+                                    >
+                                      {val.deepshikha_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.nandni_str
+                                  ) : (
+                                    <p
+                                      // style={{
+                                      //   margin: 0,
+                                      //   textDecoration: "underline",
+                                      //   color: "blue",
+                                      //   cursor: "pointer",
+                                      // }}
+                                      // onClick={() => {
+                                      //   getSummeryDetails(val, "nandni_str");
+                                      // }}
+                                    >
+                                      {val.nandni_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
+                                    val.gayatri_str
+                                  ) : (
+                                    <p
+                                      // style={{
+                                      //   margin: 0,
+                                      //   textDecoration: "underline",
+                                      //   color: "blue",
+                                      //   cursor: "pointer",
+                                      // }}
+                                      // onClick={() => {
+                                      //   getSummeryDetails(val, "gayatri_str");
+                                      // }}
+                                    >
+                                      {val.gayatri_str}
+                                    </p>
+                                  )}
+                                </td>
+                                <td style={{ textAlign: "end" }}>
+                                  {val.total_str}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+          </div>
+          </div>
+          
+          </div>}
   </>
      
   )
