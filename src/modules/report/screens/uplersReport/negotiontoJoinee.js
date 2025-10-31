@@ -3512,8 +3512,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                           <thead>
                             <tr>
                               <th style={{ textAlign: "center" }}>Stage</th>
-                              <th style={{ textAlign: "center" }}>Sappy</th>
-                              <th style={{ textAlign: "center" }}>Nikita</th>
+                              {/* <th style={{ textAlign: "center" }}>Sappy</th>
+                              <th style={{ textAlign: "center" }}>Nikita</th> */}
                               <th style={{ textAlign: "center" }}>
                                 Deepshikha
                               </th>
@@ -3531,7 +3531,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                 //  className={getStageClass(stage.profileStatusID)}
                               >
                                 <td>{val.stage}</td>
-                                <td style={{ textAlign: "end" }}>
+                                {/* <td style={{ textAlign: "end" }}>
                                   {val.stage_ID === 1 || val.stage_ID === 8 ? (
                                     val.sappy_str
                                   ) : (
@@ -3568,7 +3568,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                       {val.nikita_str}
                                     </p>
                                   )}
-                                </td>
+                                </td> */}
                                 <td style={{ textAlign: "end" }}>
                                   {val.stage_ID === 1 || val.stage_ID === 8 ? (
                                     val.deepshikha_str
