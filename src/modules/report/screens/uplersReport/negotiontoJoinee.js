@@ -3501,7 +3501,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                       (item) => item.groupName === gName
                     );
                     return (
-                      <div className={uplersStyle.cardcontainer}>
+                      <div className={uplersStyle.cardcontainer} style={{flexDirection:'column'}}>
                         <h3 className={uplersStyle.recruitername}>
                           {gN(gName)}
                         </h3>
