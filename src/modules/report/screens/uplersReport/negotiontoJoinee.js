@@ -37,7 +37,7 @@ export default function NegotiontoJoinee({
   impHooks
 }) {
     const navigate = useNavigate()
-    const {monthDate,hrModal,selectedHead,podName} = impHooks
+    const {monthDate,hrModal,selectedHead,podName,isFreezeAllowed} = impHooks
     const [isLoading, setIsLoading] = useState(false);
     const [isTableLoading,setIsTableLoading] = useState(false)
     const [reportData, setReportData] = useState([]);
@@ -182,6 +182,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
     }
        }
 
+
+
   const getPlanningSummeryData = async () => {
  const pl = {
         hrmodel: hrModal,
@@ -231,7 +233,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         getReportPtoNData()
         getReportSummaryData()
         getPlanningSummeryData()
-
+     
         if(hrModal === 'Contract' && selectedHead === 5){
           getAMSummary()
         }
@@ -1594,8 +1596,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                     <br />{" "}
                   </>
                 )}
-    
-                <IconContext.Provider
+    {!isFreezeAllowed && <IconContext.Provider
                   value={{
                     color: "green",
                     style: {
@@ -1618,7 +1619,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                       <IoMdAddCircle />
                     </span>{" "}
                   </Tooltip>
-                </IconContext.Provider>
+                </IconContext.Provider>}
+                
               </div>
             );
           },
