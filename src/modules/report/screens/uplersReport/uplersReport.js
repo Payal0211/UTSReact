@@ -61,6 +61,8 @@ export default function UplersReport() {
   const [allCommentList, setALLCommentsList] = useState([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [dashboardTabTitle, setDashboardTabTitle] = useState(parsedData?.dashboardTabTitle ?? 'pod');
+  const [isFreezeAllowed,setIsFreezeAllowed] = useState(true);
+  const [showFreeze,setShowFreeze] = useState(false);
 
   const [userData, setUserData] = useState({});
   const [hrModal, setHRModal] = useState(parsedData?.hrModal ?? 'DP');
@@ -140,6 +142,50 @@ export default function UplersReport() {
       return "NO DATA FOUND";
     }
   };
+
+         const getFreezeInfo = async()=>{
+        let pl = {
+           hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        isFreeze:null,
+        currentDate:moment(monthDate).format("YYYY-MM-DD"),
+        }
+        const result = await ReportDAO.getFreezeSummeryReportDAO(pl);
+
+
+        if(result.statusCode === HTTPStatusCode.OK){
+          setIsFreezeAllowed(result?.responseBody[0]?.isFreeze )
+        }else{
+          setIsFreezeAllowed(true)
+        }
+
+       }
+
+          const saveFreezeInfo = async()=>{
+        let pl = {
+           hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        isFreeze:true,
+        currentDate:moment(monthDate).format("YYYY-MM-DD"),
+        }
+        const result = await ReportDAO.getFreezeSummeryReportDAO(pl);
+
+        setShowFreeze(false);
+        if(result.statusCode === HTTPStatusCode.OK){
+          setIsFreezeAllowed(result?.responseBody[0]?.isFreeze )
+        }else{
+          setIsFreezeAllowed(true)
+        }
+
+       }
+
+         useEffect(()=>{
+                 getFreezeInfo()
+              },[monthDate,hrModal,selectedHead])
 
   const getPODRevenue  = async () => {
     setIsLoading(true);
@@ -519,6 +565,8 @@ export default function UplersReport() {
                       </span>
                     </h2>
                   </div>
+
+                  <button className={uplersStyle.FreezeButton} disabled={isFreezeAllowed} onClick={()=>setShowFreeze(true)}> Freeze</button>
         </div>
         <div style={{ display: "flex" }}>
           <div className={uplersStyle.chipCardContainer}>
@@ -638,6 +686,7 @@ export default function UplersReport() {
           monthDate,
           hrModal,
           selectedHead,
+          isFreezeAllowed,
           podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
           }} 
         />},
@@ -742,6 +791,48 @@ export default function UplersReport() {
                 setShowComment(false);
                 setALLCommentsList([]);
                 setCommentData({});
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {showFreeze && (
+        <Modal
+          transitionName=""
+          width="500px"
+          centered
+          footer={null}
+          open={showFreeze}
+          className="engagementModalStyle"
+          onCancel={() => {
+           
+            setShowFreeze(false);
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Are you sure you what to freeze the data ?</h3>
+          </div>
+         
+
+        
+          <div style={{ padding: "10px" }}>
+             <button
+              className={uplersStyle.btn}
+              // disabled={isEditNewTask}
+              onClick={() => {
+               saveFreezeInfo()
+              }}
+            >
+              Yes
+            </button>
+            <button
+              className={uplersStyle.btnCancle}
+              // disabled={isEditNewTask}
+              onClick={() => {
+                setShowFreeze(false);
               }}
             >
               Close
