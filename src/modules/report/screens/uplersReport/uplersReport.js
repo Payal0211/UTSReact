@@ -174,7 +174,7 @@ export default function UplersReport() {
         }
         const result = await ReportDAO.getFreezeSummeryReportDAO(pl);
 
-
+        setShowFreeze(false);
         if(result.statusCode === HTTPStatusCode.OK){
           setIsFreezeAllowed(result?.responseBody[0]?.isFreeze )
         }else{
