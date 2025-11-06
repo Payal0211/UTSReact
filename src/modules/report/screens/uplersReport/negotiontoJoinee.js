@@ -186,13 +186,14 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
 
   const getPlanningSummeryData = async () => {
  const pl = {
-        hrmodel: hrModal,
-        pod_id: selectedHead,
+        // hrmodel: hrModal,
+        // pod_id: selectedHead,
+        hr_BusinessType:'G',
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
       };
       setIsPlanningSummeryLoading(true)
-        const result = await ReportDAO.getPlanningSummeryReportDAO(pl);
+        const result = await ReportDAO.getNegoPlanningSummeryReportDAO(pl);
 
  setIsPlanningSummeryLoading(false);
 
