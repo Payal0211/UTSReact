@@ -37,7 +37,7 @@ export default function NegotiontoJoinee({
   impHooks
 }) {
     const navigate = useNavigate()
-    const {monthDate,hrModal,selectedHead,podName,isFreezeAllowed} = impHooks
+    const {monthDate,hrModal,selectedHead,podName,isFreezeAllowed,freezeDate} = impHooks
     const [isLoading, setIsLoading] = useState(false);
     const [isTableLoading,setIsTableLoading] = useState(false)
     const [reportData, setReportData] = useState([]);
@@ -1593,7 +1593,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                     <br />{" "}
                   </>
                 )}
-    {!isFreezeAllowed && <IconContext.Provider
+    {/* {!isFreezeAllowed &&  */}
+    <IconContext.Provider
                   value={{
                     color: "green",
                     style: {
@@ -1616,7 +1617,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                       <IoMdAddCircle />
                     </span>{" "}
                   </Tooltip>
-                </IconContext.Provider>}
+                </IconContext.Provider>
+                {/* } */}
                 
               </div>
             );
@@ -2230,6 +2232,10 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   }
 
   function getMaxDate(currentDate = new Date()) {
+
+    if(freezeDate !== null){
+      return new Date(freezeDate);
+    }
     const dayOfWeek = currentDate.getDay(); // 0 = Sunday, ..., 6 = Saturday
 
 

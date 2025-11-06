@@ -62,6 +62,7 @@ export default function UplersReport() {
   const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [dashboardTabTitle, setDashboardTabTitle] = useState(parsedData?.dashboardTabTitle ?? 'pod');
   const [isFreezeAllowed,setIsFreezeAllowed] = useState(true);
+  const [freezeDate,setFreezeDate] = useState(null);
   const [showFreeze,setShowFreeze] = useState(false);
 
   const [userData, setUserData] = useState({});
@@ -157,8 +158,10 @@ export default function UplersReport() {
 
         if(result.statusCode === HTTPStatusCode.OK){
           setIsFreezeAllowed(result?.responseBody[0]?.isFreeze )
+          setFreezeDate(result?.responseBody[0]?.freezDate)
         }else{
           setIsFreezeAllowed(true)
+          setFreezeDate(null)
         }
 
        }
@@ -687,6 +690,7 @@ export default function UplersReport() {
           hrModal,
           selectedHead,
           isFreezeAllowed,
+          freezeDate,
           podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
           }} 
         />},
