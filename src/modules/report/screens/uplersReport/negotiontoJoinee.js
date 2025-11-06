@@ -133,18 +133,16 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
        }
 
        const getAMSummary = async () => {
-           let pl = {
-             hr_BusinessType: "G",
-             //   "month": +moment(monthDate).format("M") ,
-             // "year":  +moment(monthDate).format("YYYY"),
-             month: +moment(monthDate).format("M"),
-             year: +moment(monthDate).format("YYYY"),
-             fromDate: "",
-             toDate: "",
-           };
+            const pl = {
+        // hrmodel: hrModal,
+        // pod_id: selectedHead,
+        hr_BusinessType:'G',
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+      };
        
            setIsSummeryLoading(true);
-           const apiResult = await ReportDAO.getAMSummeryReportDAO(pl);
+           const apiResult = await ReportDAO.getNegoPlanningSummeryReportDAO(pl);
            setIsSummeryLoading(false);
            if (apiResult?.statusCode === 200) {
              setSummeryReportData(apiResult.responseBody);
@@ -186,14 +184,13 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
 
   const getPlanningSummeryData = async () => {
  const pl = {
-        // hrmodel: hrModal,
-        // pod_id: selectedHead,
-        hr_BusinessType:'G',
+        hrmodel: hrModal,
+        pod_id: selectedHead,
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
       };
       setIsPlanningSummeryLoading(true)
-        const result = await ReportDAO.getNegoPlanningSummeryReportDAO(pl);
+        const result = await ReportDAO.getPlanningSummeryReportDAO(pl);
 
  setIsPlanningSummeryLoading(false);
 
@@ -238,7 +235,6 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         if(hrModal === 'Contract' && selectedHead === 5){
           getAMSummary()
         }
-        console.log(hrModal,selectedHead)
        },[monthDate,hrModal,selectedHead])
 
            const getPODList = async (getHRID) => {
@@ -2660,7 +2656,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                               className={uplersStyle.filterType}
                               key={"Profile shared"}
                               onClick={() => {
-                                console.log(profileInfo, "profileInfo");
+                                // console.log(profileInfo, "profileInfo");
                                 getTalentProfilesDetails(profileInfo, 2);
                                 setProfileStatusID(2);
                               }}
@@ -3573,64 +3569,18 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                   )}
                                 </td> */}
                                 <td style={{ textAlign: "end" }}>
-                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
-                                    val.deepshikha_str
-                                  ) : (
-                                    <p
-                                      // style={{
-                                      //   margin: 0,
-                                      //   textDecoration: "underline",
-                                      //   color: "blue",
-                                      //   cursor: "pointer",
-                                      // }}
-                                      // onClick={() => {
-                                      //   getSummeryDetails(
-                                      //     val,
-                                      //     "deepshikha_str"
-                                      //   );
-                                      // }}
-                                    >
+                                 
                                       {val.deepshikha_str}
-                                    </p>
-                                  )}
+                                    
                                 </td>
                                 <td style={{ textAlign: "end" }}>
-                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
-                                    val.nandni_str
-                                  ) : (
-                                    <p
-                                      // style={{
-                                      //   margin: 0,
-                                      //   textDecoration: "underline",
-                                      //   color: "blue",
-                                      //   cursor: "pointer",
-                                      // }}
-                                      // onClick={() => {
-                                      //   getSummeryDetails(val, "nandni_str");
-                                      // }}
-                                    >
+                                  
                                       {val.nandni_str}
-                                    </p>
-                                  )}
+                                  
                                 </td>
                                 <td style={{ textAlign: "end" }}>
-                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
-                                    val.gayatri_str
-                                  ) : (
-                                    <p
-                                      // style={{
-                                      //   margin: 0,
-                                      //   textDecoration: "underline",
-                                      //   color: "blue",
-                                      //   cursor: "pointer",
-                                      // }}
-                                      // onClick={() => {
-                                      //   getSummeryDetails(val, "gayatri_str");
-                                      // }}
-                                    >
                                       {val.gayatri_str}
-                                    </p>
-                                  )}
+                                   
                                 </td>
                                 <td style={{ textAlign: "end" }}>
                                   {val.total_str}
