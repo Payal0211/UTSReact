@@ -586,7 +586,14 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
        {text === 'Panda' && <img src={Panda} alt='panda'  style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
        {text === 'Kitten' && <img src={Kitten} alt='kitten' style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
       
-      </div>
+      </div>,
+      //  filters:['Cheetah','Panda','Kitten'].map(v=> ({ text: v, value: v,})),
+      //       onFilter: (value, record) => record.hR_Category.indexOf(value) === 0,
+      //        filterMultiple: true,
+      //         filterIcon: (filtered) => (
+      // <FilterFilled
+      //   style={{ color: filtered ? "#1890ff" : "black" }} 
+      // />)
        
     },
   
@@ -1402,8 +1409,14 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
        {text === 'Panda' && <img src={Panda} alt='panda'  style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
        {text === 'Kitten' && <img src={Kitten} alt='kitten' style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
     
-      </div>
-       
+      </div>,
+      //   filters:['Cheetah','Panda','Kitten'].map(v=> ({ text: v, value: v,})),
+      //       onFilter: (value, record) => record.hR_Category.indexOf(value) === 0,
+      //        filterMultiple: true,
+      //         filterIcon: (filtered) => (
+      // <FilterFilled
+      //   style={{ color: filtered ? "#1890ff" : "black" }} 
+      // />)
     },
         {
           title: <div style={{ textAlign: "center" }}>Position</div>,
@@ -2254,9 +2267,9 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const gN = (name) => {
     switch (name) {
       case "1_AM_Recurring":
-        return "New";
-      case "1_NBD_Recurring":
         return "Existing";
+      case "1_NBD_Recurring":
+        return "New";
       case "2_AM_DP":
         return "AM One Time";
       case "2_NBD_DP":
@@ -3501,7 +3514,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                 </div>
               ) : (
                 <>
-                  {summeryGroupsNames.slice(0,2).map((gName) => {
+                  {summeryGroupsNames.slice(0,2).reverse().map((gName) => {
                     let data = summeryReportData.filter(
                       (item) => item.groupName === gName
                     );
