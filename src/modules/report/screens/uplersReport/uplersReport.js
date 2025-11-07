@@ -158,7 +158,11 @@ export default function UplersReport() {
 
         if(result.statusCode === HTTPStatusCode.OK){
           setIsFreezeAllowed(result?.responseBody[0]?.isFreeze )
+         if(result?.responseBody[0]?.freezDate){
           setFreezeDate(result?.responseBody[0]?.freezDate)
+         }else{
+          setFreezeDate(null)
+         } 
         }else{
           setIsFreezeAllowed(true)
           setFreezeDate(null)
