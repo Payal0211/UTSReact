@@ -587,13 +587,25 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
        {text === 'Kitten' && <img src={Kitten} alt='kitten' style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
       
       </div>,
-      //  filters:['Cheetah','Panda','Kitten'].map(v=> ({ text: v, value: v,})),
-      //       onFilter: (value, record) => record.hR_Category.indexOf(value) === 0,
-      //        filterMultiple: true,
-      //         filterIcon: (filtered) => (
-      // <FilterFilled
-      //   style={{ color: filtered ? "#1890ff" : "black" }} 
-      // />)
+      filters:['Diamond + Cheetah','Diamond + Kitten','Diamond + Panda','Non Diamond + Cheetah','Non Diamond + Kitten','Non Diamond + Panda'].map(v=> ({ text: v, value: v,})),
+            // onFilter: (value, record) => record.hR_Category.indexOf(value) === 0,
+        onFilter:(value, record) =>  {
+          const [diamondPart, categoryPart] = value.split(" + ");
+
+          const isDiamond = record.companyCategory === "Diamond";
+          const matchesDiamond =
+            (diamondPart === "Diamond" && isDiamond) ||
+            (diamondPart === "Non Diamond" && !isDiamond);
+
+          const matchesCategory = record.hR_Category === categoryPart;
+
+          return matchesDiamond && matchesCategory;
+        },
+             filterMultiple: true,
+              filterIcon: (filtered) => (
+      <FilterFilled
+        style={{ color: filtered ? "#1890ff" : "black" }} 
+      />)
        
     },
   
@@ -1410,13 +1422,25 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
        {text === 'Kitten' && <img src={Kitten} alt='kitten' style={{width:'24px', height:'24px', marginRight:'10px'}} />}  
     
       </div>,
-      //   filters:['Cheetah','Panda','Kitten'].map(v=> ({ text: v, value: v,})),
-      //       onFilter: (value, record) => record.hR_Category.indexOf(value) === 0,
-      //        filterMultiple: true,
-      //         filterIcon: (filtered) => (
-      // <FilterFilled
-      //   style={{ color: filtered ? "#1890ff" : "black" }} 
-      // />)
+        filters:['Diamond + Cheetah','Diamond + Kitten','Diamond + Panda','Non Diamond + Cheetah','Non Diamond + Kitten','Non Diamond + Panda'].map(v=> ({ text: v, value: v,})),
+            // onFilter: (value, record) => record.hR_Category.indexOf(value) === 0,
+        onFilter:(value, record) =>  {
+          const [diamondPart, categoryPart] = value.split(" + ");
+
+          const isDiamond = record.companyCategory === "Diamond";
+          const matchesDiamond =
+            (diamondPart === "Diamond" && isDiamond) ||
+            (diamondPart === "Non Diamond" && !isDiamond);
+
+          const matchesCategory = record.hR_Category === categoryPart;
+
+          return matchesDiamond && matchesCategory;
+        },
+             filterMultiple: true,
+              filterIcon: (filtered) => (
+      <FilterFilled
+        style={{ color: filtered ? "#1890ff" : "black" }} 
+      />)
     },
         {
           title: <div style={{ textAlign: "center" }}>Position</div>,
