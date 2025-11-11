@@ -138,6 +138,10 @@ input[type="file"] {
     background-color: #f5f5f5;
 
 }
+
+.ant-tabs-nav-wrap {
+  justify-content: flex-start !important;
+}
   
 
 /* -- Ant Table Pagination--*/

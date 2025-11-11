@@ -40,6 +40,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import PodReports from "./podReports";
 import NegotiontoJoinee from "./negotiontoJoinee";
 import FTENegotiationSummary from "./fteNegotionSummary";
+import QASummary from "./qaSummary";
 
 const { Title, Text } = Typography;
 
@@ -64,6 +65,10 @@ export default function UplersReport() {
   const [isFreezeAllowed,setIsFreezeAllowed] = useState(true);
   const [freezeDate,setFreezeDate] = useState(null);
   const [showFreeze,setShowFreeze] = useState(false);
+
+  const [reportData, setReportData] = useState([]);
+  const [monthNames,setMonthNames] = useState({m1Name:'',m2Name:'',m3Name:''})
+  const [QtabName,setQTabName] = useState('')
 
   const [userData, setUserData] = useState({});
   const [hrModal, setHRModal] = useState(parsedData?.hrModal ?? 'DP');
@@ -236,6 +241,32 @@ export default function UplersReport() {
       return "NO DATA FOUND";
     }
   };
+
+      const getQASummarytData = async () => {
+         const pl = {
+           hrmodel: hrModal,
+           month: moment(monthDate).format("M"),
+           year: moment(monthDate).format("YYYY"),
+         };
+         setIsLoading(true);
+         const result = await ReportDAO.getPODWiseQuarterlySummaryDAO(pl);
+     
+         setIsLoading(false);
+     
+         if (result.statusCode === HTTPStatusCode.OK) {
+           setReportData(result && result?.responseBody);
+           let mn = result?.responseBody[0]
+           setMonthNames({m1Name:mn.m1Name,m2Name:mn.m2Name,m3Name:mn.m3Name})
+           setQTabName(mn.qaurterName)
+         } else {
+           setReportData([]);
+           return "NO DATA FOUND";
+         }
+       };
+     
+       useEffect(() => {
+         getQASummarytData();
+       }, [monthDate, hrModal]);
 
   const convertDataSource = (data) => {
     const list = [];
@@ -515,7 +546,6 @@ export default function UplersReport() {
           </div>
         </div>
         <div style={{ display: "flex" , margin:'10px 24px', gap:'10px'}}>
-          {console.log(summeryRevenueData,'summeryRevenueData')}
            <div
                     className={uplersStyle.filterType}
                     key={"Total FTE"}
@@ -711,6 +741,19 @@ export default function UplersReport() {
           podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
           }} 
         />},
+        {
+            label: QtabName,
+            key: QtabName,
+            children:  <QASummary
+             impHooks={{
+          isTableLoading,
+          podDashboardList,
+          monthDate,
+          hrModal,
+          selectedHead,monthNames,setMonthNames ,QtabName,setQTabName,reportData,
+          podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
+          }} 
+        />}
          ]}
         />
 

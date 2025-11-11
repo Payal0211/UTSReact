@@ -1661,6 +1661,29 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.getFTENegotiationReportDAO');
 		}
 	},
+	getPODWiseQuarterlySummaryDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.getPODWiseQuarterlySummaryAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getPODWiseQuarterlySummaryDAO');
+		}
+	},
 	getNegotiationReportSummaryDAO:async function (payload) {
 		try {
 			const taResult = await ReportAPI.getNegotiationReportSummaryAPI(payload);
