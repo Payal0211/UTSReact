@@ -1630,7 +1630,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                     <br />{" "}
                   </>
                 )}
-    {record?.isHRFreeze === 1 && 
+    {record?.isHRFreeze === 0 && 
     <IconContext.Provider
                   value={{
                     color: "green",
