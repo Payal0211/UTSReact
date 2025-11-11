@@ -224,6 +224,7 @@ export class ReportType {
 	static GET_POD_DASHBOARD_USERS_GROUP_REPORT = 'PODDashboardPODGroupUserDetails'
 	static GET_POD_DASHBOARD_LIST = 'PODDashboard'
 	static GET_FTE_NEGOTIATION_REPORT = 'AllFTEPODsNegotiationToJoiningFunnelSummary'
+	static GET_POD_WISE_SUMMARY = 'PODWiseQuarterlySummary'
 	static GET_POD_REVENUE_LIST = 'AllPODsRevenueSummary'
 	static GET_POD_SAVE_SPLIT_LIST = 'SaveSplitHRwithPODs'
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'

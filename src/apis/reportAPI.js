@@ -1113,6 +1113,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getPtoNegotiationReportAPI');
 		}
 	},
+	getPODWiseQuarterlySummaryAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_POD_WISE_SUMMARY + `?hrmodel=${payload?.hrmodel}&month=${payload?.month}&year=${payload?.year}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPODWiseQuarterlySummaryAPI');
+		}
+	},
 	getNegotiationReportSummaryAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
