@@ -1630,7 +1630,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                     <br />{" "}
                   </>
                 )}
-    {/* {!isFreezeAllowed &&  */}
+    {record?.isHRFreeze === 1 && 
     <IconContext.Provider
                   value={{
                     color: "green",
@@ -1655,7 +1655,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                     </span>{" "}
                   </Tooltip>
                 </IconContext.Provider>
-                {/* } */}
+               }
                 
               </div>
             );
