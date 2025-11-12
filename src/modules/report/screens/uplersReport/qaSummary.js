@@ -55,33 +55,6 @@ export default function QASummary({impHooks}) {
       },
     },
     {
-      title: <div style={{ textAlign: "center" }}>Goal till date</div>,
-      dataIndex: "goalTillDateStr",
-      key: "goalTillDateStr",
-      width: 120,
-      align: "right",
-      onHeaderCell: () => ({
-        className: uplersStyle.headerCommonGoalHeaderConfig,
-      }),
-      className: `${uplersStyle.headerCommonConfig}`,
-      render: (v, rec) => {
-        return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
-            v
-          ) : (
-            <span
-            // onClick={() => getHRTalentWiseReport(rec,  v)}
-            // style={{ cursor: "pointer", color: "#1890ff" }}
-            >
-              {v}
-            </span>
-          )
-        ) : (
-          ""
-        );
-      },
-    },
-    {
       title: <div style={{ textAlign: "center" }}>Achieved</div>,
       dataIndex: "achievedStr",
       key: "achievedStr",
@@ -155,7 +128,7 @@ export default function QASummary({impHooks}) {
     
     },
     {
-      title: <div style={{ textAlign: "center" }}>Next Month</div>,
+      title: <div style={{ textAlign: "center" }}>Upcoming Quarter</div>,
       dataIndex: "nextMonthStr",
       key: "nextMonthStr",
       width: 120,
