@@ -244,6 +244,7 @@ export default function UplersReport() {
 
       const getQASummarytData = async () => {
          const pl = {
+           pod_id: selectedHead,
            hrmodel: hrModal,
            month: moment(monthDate).format("M"),
            year: moment(monthDate).format("YYYY"),
