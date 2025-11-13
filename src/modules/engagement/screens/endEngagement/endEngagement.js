@@ -202,14 +202,16 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 				className={`${allengagementEnd.headingContainer} ${allengagementEnd.addFeebackContainer}`}>
 				<h1>End Engagement</h1>
 				<ul className={allengagementEnd.engModalHeadList}>
+					{(talentInfo?.hrNumber ? talentInfo?.hrNumber : talentInfo?.hR_Number) && <>
 					<li>
 						<span>HR ID:</span>
 						{talentInfo?.hrNumber ? talentInfo?.hrNumber : talentInfo?.hR_Number}
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
+					</>}
 					<li>
 						<span>Engagement ID:</span>
-						{talentInfo?.engagementID ||  talentInfo?.engagemenID.split('/')[0]}
+						{talentInfo?.engagementID ||  talentInfo?.engagemenID?.split('/')[0]}
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
