@@ -147,6 +147,7 @@ export class TalentOnboardStatus {
 	static REJECT_TALENT = "TalentStatus";
 	static REJECT_TALENT_NO_HIRE = "SubmitFeedbackWithNoHire";
 	static SCHEDULE_ANOTHER_ROUND_INTERVIEW = 'Schedule Another Interview Round';
+	static END_ENGAGEMENT = 'EndEngagement'
 	
 	static CONFIRM_CONTRACT_DETAILS = "GotoOnBoard";
 	static UPDATE_LEGAL = "UpdateLegalClientOnBoardStatus";
