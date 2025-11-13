@@ -74,6 +74,7 @@ import HighlightedLinks from 'shared/components/animatedLinks/animatedLinks';
 import MoveToAssessment from './moveToAssessment';
 import DatePicker from 'react-datepicker';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import EngagementEnd from 'modules/engagement/screens/endEngagement/endEngagement';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -251,6 +252,7 @@ const TalentList = ({
 	const [showOfferPosition ,setShowOfferPosition] = useState(false)
 	const [emailLater,setEmailLater] = useState(false)
 	const [showEngagementCancel, setShowEngagementCancel] = useState(false)
+	const [showEngagementEnd, setShowEngagementEnd] = useState(false)
 	const [showengagementOnboard, setShowEngagementOnboard] = useState(false);
 	const [getHRAndEngagementId, setHRAndEngagementId] = useState({
 		hrNumber: '',
@@ -1837,6 +1839,15 @@ const TalentList = ({
 																// setTalentIndex(item?.TalentID);
 																break;
 															}
+															case TalentOnboardStatus.END_ENGAGEMENT: {
+																setShowEngagementEnd(true)
+																setTalentIndex(item?.TalentID);
+																// let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.label === menuItem.key).key
+																// setActionKey(key)
+																// setLegalTalentOnboardModal(true);
+																// setTalentIndex(item?.TalentID);
+																break;
+															}
 															// case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
 															// 	// setLegalClientOnboardModal(true);
 															// 	// setTalentIndex(item?.TalentID);
@@ -2043,14 +2054,37 @@ const TalentList = ({
 						}>
 						<EngagementCancel
 							engagementListHandler={() => {callAPI(hrId); getHrUserData(hrId)}}
-							talentInfo={filterTalentID}
-							// lostReasons={filtersList?.onBoardingLostReasons}
+							talentInfo={filterTalentID}			
 							closeModal={() =>
 								setShowEngagementCancel(false)
 							}
 						/>
 					</Modal>
 				)}
+
+					{showEngagementEnd && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={showEngagementEnd}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setShowEngagementEnd(false)
+						}>
+							<EngagementEnd
+							engagementListHandler={() => {callAPI(hrId); getHrUserData(hrId)}}
+							talentInfo={{...filterTalentID,onboardID: filterTalentID?.OnBoardId,engagementID: filterTalentID?.EngagemenID,
+								hrNumber: filterTalentID?.HR_Number,talentName: filterTalentID?.Name
+							}}
+							closeModal={() =>
+								setShowEngagementEnd(false)
+							}
+						/>
+					</Modal>
+				)}
+
 
 				{moveToAssessment &&  	<Modal
 					width="992px"
