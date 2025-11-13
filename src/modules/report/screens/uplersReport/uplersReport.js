@@ -267,7 +267,7 @@ export default function UplersReport() {
      
        useEffect(() => {
          getQASummarytData();
-       }, [monthDate, hrModal]);
+       }, [monthDate, hrModal,selectedHead]);
 
   const convertDataSource = (data) => {
     const list = [];
