@@ -1939,7 +1939,15 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 150,
            align: "left",
           className: uplersStyle.headerCell,
-          
+          render:(val,row)=>{
+            if(val === 'Total Planning'){
+              return <div style={{display:'flex', flexDirection:'column',gap:'4px'}}>{val} {row?.total_AllweeksPlanning}</div>
+            }
+             if(val === 'Total Achieved'){
+              return <div style={{display:'flex', flexDirection:'column',gap:'4px'}}>{val} {row?.total_AllweeksAchieved}</div>
+            }
+            return val
+          }
         },
       
         {

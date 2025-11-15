@@ -19,6 +19,8 @@ export default function FTENegotiationSummary({ impHooks }) {
   const [DFFilterListData, setDFFilterListData] = useState([]);
   const [showDFReport, setShowDFReport] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isPlanningSummeryLoading, setIsPlanningSummeryLoading] = useState(false);
+  const [planningSummaryData, setPlanningSummaryData] = useState([]);
 
   const getReportData = async () => {
     const pl = {
@@ -42,6 +44,34 @@ export default function FTENegotiationSummary({ impHooks }) {
   useEffect(() => {
     getReportData();
   }, [monthDate, hrModal]);
+
+  
+   const getPlanningSummeryData = async () => {
+   const pl = {
+          hrmodel: hrModal,
+          pod_id: selectedHead,
+          month: moment(monthDate).format("M"),
+          year: moment(monthDate).format("YYYY"),
+        };
+        setIsPlanningSummeryLoading(true)
+          const result = await ReportDAO.getFTEGOALPlanningSummeryReportDAO(pl);
+  
+   setIsPlanningSummeryLoading(false);
+  
+      if (result.statusCode === HTTPStatusCode.OK) {
+        setPlanningSummaryData(
+          result && result?.responseBody
+        );
+      } else {
+        setPlanningSummaryData([]);
+        return "NO DATA FOUND";
+      }
+         }
+
+
+          useEffect(() => {
+    getPlanningSummeryData();
+  }, [monthDate, hrModal,selectedHead]);
 
   const getDFDetails = async (row, v, week) => {
     try {
@@ -545,6 +575,93 @@ export default function FTENegotiationSummary({ impHooks }) {
     },
   ];
 
+   const reportPlanningSummaryColumns = [
+          {
+            title: "",
+            dataIndex: "stage",
+            key: "stage",
+            width: 150,
+             align: "left",
+            className: uplersStyle.headerCell,
+            render:(val,row)=>{
+              if(val === 'Total Planning'){
+                return <div style={{display:'flex', flexDirection:'column',gap:'4px'}}>{val} {row?.total_AllweeksPlanning}</div>
+              }
+               if(val === 'Total Achieved'){
+                return <div style={{display:'flex', flexDirection:'column',gap:'4px'}}>{val} {row?.total_AllweeksAchieved}</div>
+              }
+              return val
+            }
+          },
+        
+          {
+            title: <div style={{textAlign:'center'}}>W1</div> ,
+            dataIndex: "w1",
+            key: "w1",
+            // width: 120,
+            align: "left",
+            className: uplersStyle.headerCell,
+             render: (value, record, index) =>{
+              return <div dangerouslySetInnerHTML={{__html: value? value.replace('/\r\n/g','<br/><br/>') : ''}}>
+                {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
+              </div>
+            }
+          },
+          {
+            title:  <div style={{textAlign:'center'}}>W2</div>,
+            dataIndex: "w2",
+            key: "w3",
+            // width: 120,
+            align: "left",
+            className: uplersStyle.headerCell,
+            render: (value, record, index) =>{
+              return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
+                {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
+              </div>
+            }
+          },
+          {
+            title: <div style={{textAlign:'center'}}>W3</div>,
+            dataIndex: "w3",
+            key: "w3",
+            // width: 120,
+           align: "left",
+            className: uplersStyle.headerCell,
+             render: (value, record, index) =>{
+              return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
+                {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
+              </div>
+            }
+          },
+          {
+            title: <div style={{textAlign:'center'}}>W4</div>,
+            dataIndex: "w4",
+            key: "w4",
+            // width: 120,
+             align: "left",
+            className: uplersStyle.headerCell,
+             render: (value, record, index) =>{
+              return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
+                {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
+              </div>
+            }
+          },
+          {
+            title: <div style={{textAlign:'center'}}>W5</div>,
+            dataIndex: "w5",
+            key: "w5",
+            // width: 120,
+            align: "left",
+            className: uplersStyle.headerCell,
+            render: (value, record, index) =>{
+              return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
+                {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
+              </div>
+            }
+          },
+           
+        ];
+
   const handleSummerySearchInput = (value) => {
     setSearchTerm(value);
     const filteredData = DFListData.filter(
@@ -556,8 +673,8 @@ export default function FTENegotiationSummary({ impHooks }) {
     setDFFilterListData(filteredData);
   };
 
-  return (
-    <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+  return (<>
+   <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
       <div className={uplersStyle.customTableContainer}>
         {isLoading ? (
           <TableSkeleton />
@@ -737,5 +854,48 @@ export default function FTENegotiationSummary({ impHooks }) {
         )}
       </div>
     </div>
+
+     <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+          <div className={uplersStyle.customTableContainer}>
+            {isPlanningSummeryLoading ? (
+              <TableSkeleton />
+            ) : (
+              <>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                    padding: "20px 20px 0",
+                  }}
+                >
+                  Weekly Plan vs Progress
+                </p>
+                <Table
+            scroll={{x:"1600px", y: "100vh" }}
+            id="List"
+            columns={reportPlanningSummaryColumns}
+            bordered={false}
+            dataSource={planningSummaryData}
+            rowKey={(record, index) => index}
+         
+            pagination={false}
+            rowClassName={(record) => {
+              if (record.stage === "Total Planning") {
+                return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+              }
+          
+              if (record.stage === "Total Achieved" ) {
+                return `${uplersStyle.heighliteGreen} ${uplersStyle.boldText}`; 
+              }                 
+            }}  
+          />
+              </>
+            )}
+          </div>
+  
+    
+        </div>
+  </>
+   
   );
 }

@@ -1500,6 +1500,29 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.getNegotiationPopupReportDAO');
 		}
 	},
+	getQuarterlySummaryPopupReportDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.getQuarterlySummaryPopupReportAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getQuarterlySummaryPopupReportDAO');
+		}
+	},
 	getFTEPopupReportDAO:async function (payload) {
 		try {
 			const taResult = await ReportAPI.getFTEPopupReportAPI(payload);
@@ -1592,9 +1615,9 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.getPlanningSummeryReportDAO');
 		}
 	},
-	getNegoPlanningSummeryReportDAO:async function (payload) {
+	getFTEGOALPlanningSummeryReportDAO:async function (payload) {
 		try {
-			const taResult = await ReportAPI.getNegoPlanningSummeryReportAPI(payload);
+			const taResult = await ReportAPI.getPlanningSummeryReportAPI(payload);
 			if (taResult) {
 				const statusCode = taResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -1612,7 +1635,30 @@ export const ReportDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'TaDashboardDAO.getNegoPlanningSummeryReportDAO');
+			return errorDebug(error, 'TaDashboardDAO.getPlanningSummeryReportDAO');
+		}
+	},
+	getFTEGOALPlanningSummeryReportDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.getFTEGOALPlanningSummeryReportAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getFTEGOALPlanningSummeryReportDAO');
 		}
 	},
 	getFreezeSummeryReportDAO:async function (payload) {
