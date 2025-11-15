@@ -228,6 +228,8 @@ export class ReportType {
 	static GET_POD_REVENUE_LIST = 'AllPODsRevenueSummary'
 	static GET_POD_SAVE_SPLIT_LIST = 'SaveSplitHRwithPODs'
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
+	static GET_QUARTERLY_SUMMARY_POPUP_DETAILS_LIST = 'PODWiseQuarterlySummary_Popup'
+	static GET_FTE_PLANNING_SUMMARY_REPORT = 'AllFTEPODsGoalPlanningSummary'
 	static GET_POC_DF_DETAILS_LIST = 'PODDashboard_DeliveryFunnelDetails'
 	static GET_NEGOTIATION_POPUP_DETAILS_LIST = 'PODNegotiationToJoiningFunnelSummary_Popup'
 	static GET_FTE_POPUP_DETAILS_LIST = 'AllFTEPODsNegotiationToJoiningFunnelSummary_Popup'

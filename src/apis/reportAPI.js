@@ -991,6 +991,24 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getNegotiationPopupReportAPI');
 		}
 	},
+	getQuarterlySummaryPopupReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_QUARTERLY_SUMMARY_POPUP_DETAILS_LIST + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}
+			&stage_id=${payload?.stage_ID}&weekno=${payload?.weekno}&hr_businesstype=${payload?.hr_businesstype?? ''}&isNextMonth=${payload?.isNextMonth?? ''}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getQuarterlySummaryPopupReportAPI');
+		}
+	},
 	getFTEPopupReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -1058,6 +1076,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.getPlanningSummeryReportAPI');
+		}
+	},
+	getFTEGOALPlanningSummeryReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_FTE_PLANNING_SUMMARY_REPORT + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getFTEGOALPlanningSummeryReportAPI');
 		}
 	},
 	getNegoPlanningSummeryReportAPI:async function (payload) {
