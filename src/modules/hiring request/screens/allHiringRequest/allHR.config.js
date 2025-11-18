@@ -89,7 +89,7 @@ size="small"
 
   }
 export const allHRConfig = {
-  tableConfig: (
+  tableConfig: ({
     togglePriority,
     setCloneHR,
     setHRID,
@@ -111,7 +111,7 @@ export const allHRConfig = {
     getPODList,
     userData,
     updateHRCategory,
-    setDiamondCompany,setShowDiamondRemark,setCompanyIdForRemark
+    setDiamondCompany,setShowDiamondRemark,setCompanyIdForRemark,setShowAddDiamondRemark}
   ) => {
 
     const getColorCode = (doneBy)=>{
@@ -476,7 +476,9 @@ export const allHRConfig = {
                        {row?.companyCategory !== "Diamond" &&
                          (
                              <Tooltip title="Make Diamond"><Checkbox onChange={() => {
-                           setDiamondCompany(row, index)
+                          //  setDiamondCompany(row, index)
+                          setShowAddDiamondRemark(true);
+                          setCompanyIdForRemark({ ...row, index: index });
                           }
                            }>
                              
