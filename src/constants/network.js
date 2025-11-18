@@ -141,6 +141,7 @@ export class CompanysAPI {
 	static VALIDATE_COMPANY_CLIENT = 'ValidateCompanyClient'
 	static DELETE_FUNDING = "DeleteFundingDetails"
 	static PREVIEW = 'Preview'
+	static ADD_COMPANY_CATEGORY = 'AddDiamondCategory'
 	static HR_UPDATE_PREVIEW = 'HRUpdatePreviewDetails'
 	static CREATE_WHATSAPP_GROUP = 'CreateWhatsappGroup'
 	static UPDATE_WHATSAPP_GROUP = 'UpdateWhatsappGroupMembers'

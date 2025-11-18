@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { Dropdown, Menu, message, Table, Tooltip, Modal, Checkbox, Select,Skeleton } from "antd";
+import { Dropdown, Menu, message, Table, Tooltip, Modal, Checkbox, Select,Skeleton, Radio } from "antd";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
@@ -120,9 +120,11 @@ const AllHiringRequestScreen = () => {
   const [hrNumber, sethrNumber] = useState("");
   const [ispreviewLoading,setIspreviewLoading] = useState(false)
 
-    const [showDiamondRemark, setShowDiamondRemark] = useState(false);
-    const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
-    const [remDiamondLoading, setRemDiamondLoading] = useState(false);
+  const [showDiamondRemark, setShowDiamondRemark] = useState(false);
+  const [showAddDiamondRemark, setShowAddDiamondRemark] = useState(false);
+  const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
+  const [remDiamondLoading, setRemDiamondLoading] = useState(false);
+  const [addDiamondReason, setAddDiamondReason] = useState("As Per Formula");
 
   const [isSplitLoading, setIsSplitLoading] = useState(false);
   const [groupList,setGroupList] = useState([{
@@ -460,11 +462,32 @@ const AllHiringRequestScreen = () => {
       }
     };
 
+     const handleAddDiamond = async (d) => {
+      let payload = {
+        CompanyID: companyIdForRemark.companyID,
+        DiamondCategoryRemoveRemark: addDiamondReason ==='Other' ? d.diamondCategoryAddRemark : addDiamondReason,
+      };
+      setRemDiamondLoading(true);
+      // console.log("payload", payload);
+      let res = await allCompanyRequestDAO.addCompanyDiamondCategoryDAO(payload);
+      setRemDiamondLoading(false);
+      //   console.log("response", res);
+      if (res.statusCode === 200) {
+      
+        setShowAddDiamondRemark(false);
+        resetField("diamondCategoryAddRemark");
+        clearErrors("diamondCategoryAddRemark");
+        handleHRRequest(tableFilteredState);
+      } else {
+        message.error("Something Went Wrong!");
+      }
+    };
+
 
   const tableColumnsMemo = useMemo(
     () =>
       allHRConfig.tableConfig(
-        togglePriority,
+        {togglePriority,
         setCloneHR,
         setHRID,
         setHRNumber,
@@ -472,7 +495,7 @@ const AllHiringRequestScreen = () => {
         setReopenHrModal,
         setCloseHRDetail,
         setCloseHrModal,
-        userData?.LoggedInUserTypeID,
+        LoggedInUserTypeID:userData?.LoggedInUserTypeID,
         setLoading,
         handleDemoCloneCheckboxChange, 
         selectedCheckboxes,       
@@ -481,7 +504,7 @@ const AllHiringRequestScreen = () => {
         setpreviewIDs,
         getPreviewPostData,
         setRepostHrModal,setSplitHR,getPODList,userData,updateHRCategory,setDiamondCompany,
-        setShowDiamondRemark,setCompanyIdForRemark
+        setShowDiamondRemark,setCompanyIdForRemark,setShowAddDiamondRemark}
       ),
     [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
@@ -1275,6 +1298,89 @@ const AllHiringRequestScreen = () => {
                 </div>
               </Modal>
             )}
+
+
+      {showAddDiamondRemark && (
+              <Modal
+                transitionName=""
+                width="800px"
+                centered
+                footer={null}
+                open={showAddDiamondRemark}
+                className="engagementModalStyle"
+                onCancel={() => {
+                  setShowAddDiamondRemark(false);
+                  resetField("diamondCategoryAddRemark");
+                  clearErrors("diamondCategoryAddRemark");
+               
+                }}
+              >
+                <div style={{ padding: "35px 15px 10px 15px" }}>
+                  <h3>Mark Diamond</h3>
+                </div>
+
+                 <div style={{ padding: "10px 20px" }}>
+                  {remDiamondLoading ? (
+                    <Skeleton active />
+                  ) : (
+                    <Radio.Group
+                                 onChange={(e) => {
+                                  setAddDiamondReason(e.target.value);
+                                 }}
+                                 value={addDiamondReason}
+                                 style={{flexDirection:'column'}}
+                               >
+                                 <Radio value={"As Per Formula"}>As Per Formula</Radio>
+                                 <Radio value={"Other"}>Other</Radio>
+                               </Radio.Group>
+                  )}
+                </div>
+                  
+                  {
+                    addDiamondReason === 'Other' && <div style={{ padding: "10px 20px" }}>
+                  {remDiamondLoading ? (
+                    <Skeleton active />
+                  ) : (
+                    <HRInputField
+                      isTextArea={true}
+                      register={register}
+                      errors={errors}
+                      label="Other Remark"
+                      name="diamondCategoryAddRemark"
+                      type={InputType.TEXT}
+                      placeholder="Enter Remark"
+                      validationSchema={{
+                        required:addDiamondReason ==='Other'?"please enter remark" : false,
+                      }}
+                      required={addDiamondReason ==='Other'?true :false }
+                    />
+                  )}
+                </div>
+                  }
+                
+      
+                <div style={{ padding: "10px 20px" }}>
+                  <button
+                    className={allHRStyles.btnPrimary}
+                    onClick={handleSubmit(handleAddDiamond)}
+                    disabled={remDiamondLoading}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className={allHRStyles.btnCancle}
+                    disabled={remDiamondLoading}
+                    onClick={() => {
+                      setShowAddDiamondRemark(false);
+                      resetField("diamondCategoryAddRemark");
+                      clearErrors("diamondCategoryAddRemark");
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </Modal>
+            )}      
 
       {closeHrModal && (
         <Modal
