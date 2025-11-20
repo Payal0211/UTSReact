@@ -5749,8 +5749,8 @@ who have worked in scaled start ups."
                         //   setNearByCitiesData(citiesVal);
                         // }
                       }}
-                       onDeselect={(val, val2)=>{console.log('onC ds',val,val2)
-                        setSelectedCitiesIDS(prev => prev.filter(item=> item.id !== val2.id))
+                       onDeselect={(val, val2)=>{                    
+                        setSelectedCitiesIDS(prev => prev.filter(item=> item.value !== val))
                       }}
                       filterOption={true}
                       onSearch={(searchValue) => {
