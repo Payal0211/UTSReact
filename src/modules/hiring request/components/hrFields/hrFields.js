@@ -4915,8 +4915,8 @@ const HRFields = ({
 
             {/* {userCompanyTypeID === 1 && ( */}
               <div className={HRFieldStyle.row}>
-                {removeFields !== null &&
-                removeFields?.hrFormLink === true ? null : (
+                {/* {removeFields !== null &&
+                removeFields?.hrFormLink === true ? null : ( */}
                   <div className={HRFieldStyle.colMd6}>
                     <HRInputField
                       register={register}
@@ -4931,10 +4931,10 @@ const HRFields = ({
                       // required
                     />
                   </div>
-                )}
+                {/* )} */}
 
-                {removeFields !== null &&
-                removeFields?.discoveryCallLink === true ? null : (
+                {/* {removeFields !== null &&
+                removeFields?.discoveryCallLink === true ? null : ( */}
                   <div className={HRFieldStyle.colMd6}>
                     <HRInputField
                       register={register}
@@ -4949,7 +4949,7 @@ const HRFields = ({
                       // required
                     />
                   </div>
-                )}
+                {/* )} */}
               </div>
             {/* )} */}
           </form>
