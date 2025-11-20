@@ -2207,7 +2207,8 @@ const HRFields = ({
       locationList,
       jobPostUsersDetails,
       locationSelectValidation,
-      confidentialInfo
+      confidentialInfo,
+      selectedCitiesIDS
     ]
   );
 

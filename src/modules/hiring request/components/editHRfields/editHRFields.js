@@ -1620,7 +1620,8 @@ const EditHRFields = ({
       isHaveJD,
       parseType,
       confidentialInfo,
-      forFileUploadTypeId
+      forFileUploadTypeId,
+      selectedCitiesIDS
     ]
   );
   // useEffect(() => {
