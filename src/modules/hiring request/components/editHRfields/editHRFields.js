@@ -4789,7 +4789,7 @@ const EditHRFields = ({
                 </>}              */}
                 </div>
 
-                {companyType?.id === 1 && (
+                {/* {companyType?.id === 1 && ( */}
                   
                   <div className={HRFieldStyle.row}>
 
@@ -4830,7 +4830,7 @@ const EditHRFields = ({
                       </div>
                     )}
                   </div>
-                )}
+                {/* )} */}
               </form>
             </div>
 

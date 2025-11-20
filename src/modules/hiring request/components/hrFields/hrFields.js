@@ -4913,7 +4913,7 @@ const HRFields = ({
                     {console.log(errors) }
        
 
-            {userCompanyTypeID === 1 && (
+            {/* {userCompanyTypeID === 1 && ( */}
               <div className={HRFieldStyle.row}>
                 {removeFields !== null &&
                 removeFields?.hrFormLink === true ? null : (
@@ -4951,7 +4951,7 @@ const HRFields = ({
                   </div>
                 )}
               </div>
-            )}
+            {/* )} */}
           </form>
         </div>
         <Divider />
