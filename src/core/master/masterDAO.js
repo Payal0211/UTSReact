@@ -2064,6 +2064,35 @@ export const MasterDAO = {
 			);
 		}
 	},
+	getNearByCitiesMultipleDAO : async function (LocationID) {		
+		try {
+			const getNearByCitiesResponse =
+			await MasterAPI.getNearByMultipleCities(LocationID);
+				if (getNearByCitiesResponse) {
+					const statusCode = getNearByCitiesResponse['statusCode'];
+					if (statusCode === HTTPStatusCode.OK) {
+						const tempResut = getNearByCitiesResponse?.responseBody;
+						return {
+							statusCode: statusCode,
+							responseBody: tempResut,
+						};
+					} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+						return getNearByCitiesResponse;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+						return getNearByCitiesResponse;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+						let deletedResponse =
+							UserSessionManagementController.deleteAllSession();
+						if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+					}
+				}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getNearByCitiesMultipleDAO',
+			);
+		}
+	},
 	getAutoCompleteCity : async function () {
 		try {
 			const getNearByCitiesResponse =

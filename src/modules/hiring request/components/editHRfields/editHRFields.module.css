@@ -20,6 +20,14 @@
     padding-right: 30px;
 }
 
+.modSearchField [class*=ant-select-selection-search-input]{
+    width: fit-content;
+}
+
+.modSearchField [class*=ant-select-selector]{
+    padding:0 5px !important
+} 
+
 .hrFieldLeftPane h3 {
     font-family: 'Montserrat';
     font-weight: 500;
