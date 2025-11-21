@@ -1948,7 +1948,7 @@ const HRFields = ({
       //     : null;
        hrFormDetails.ATS_JobLocationID =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
-          ?   selectedCitiesIDS.map((item) =>    (item.id)).join(',')
+          ?   +selectedCitiesIDS[0]?.id
           : null;
       hrFormDetails.ATS_NearByCities =  watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3 ? getNearByCitiesForAts() ?? null : null;
 
