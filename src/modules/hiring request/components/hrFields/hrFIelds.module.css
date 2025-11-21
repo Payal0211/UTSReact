@@ -34,7 +34,7 @@
 }
 
 .modSearchField [class*=ant-select-selector]{
-    padding:0 5px !important
+    padding: 5px !important
 } 
 
 .hrFieldLeftPane p {
