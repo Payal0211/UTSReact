@@ -1398,7 +1398,7 @@ const EditHRFields = ({
       hrFormDetails.NearByCities =  selectedLabels?.concat(nonNumericValues)?.join(',') ?? null;
         hrFormDetails.ATS_JobLocationID =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
-          ?  selectedCitiesIDS.map((item) =>    (item.id)).join(','): null;
+          ?  +selectedCitiesIDS[0]?.id: null;
       hrFormDetails.ATS_NearByCities = watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3 ? getNearByCitiesForAts() ?? null : null;
 
       if (companyType.id === 2) {
@@ -1759,7 +1759,7 @@ const EditHRFields = ({
     setValue("country", getHRdetails?.directPlacement?.country);
     setValue("address", getHRdetails?.directPlacement?.address);
     // setValue("location", getHRdetails?.directPlacement?.jobLocation);
-    setValue("location", getHRdetails?.atS_Joblocation?.map((item) =>  item.atS_City_Name ).join(", "));
+    setValue("location", getHRdetails?.atS_Joblocation?.map((item) =>  item.atS_City_Name));
     setSelectedCitiesIDS(getHRdetails?.atS_Joblocation?.length ? getHRdetails?.atS_Joblocation?.map((item) => ({id: item.atS_City_ID, value: item.atS_City_Name})) : []);
     // setIsRelocate(getHRdetails?.directPlacement?.isOpenToWorkNearByCities);
     setNearByCitesValues(
