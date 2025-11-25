@@ -1084,6 +1084,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.updateRole');
 		}
 	},
+	getNearByMultipleCities: async function (LocationID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + MastersAPI.GET_NEAR_BY_MULTIPLE_CITIES +"?LocationIDs="+ LocationID ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.updateRole');
+		}
+	},
 	getAllCities : async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

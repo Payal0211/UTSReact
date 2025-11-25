@@ -137,6 +137,7 @@ const EditHRFields = ({
   const [isFresherDisabled, setIsFresherDisabled] = useState(false);
 
   const [locationList, setLocationList] = useState([]);
+  const [selectedCitiesIDS,setSelectedCitiesIDS] = useState([]);
   const [frequencyData, setFrequencyData] = useState([]);
   const [nearByCitiesData, setNearByCitiesData] = useState([]);
   // const [isRelocate, setIsRelocate] = useState(false);
@@ -1379,10 +1380,12 @@ const EditHRFields = ({
       hrFormDetails.StringSeparator = "^";
       hrFormDetails.jdFileTypeID = forFileUploadTypeId
       hrFormDetails.JobTypeID = watch("workingMode")?.id;
-      hrFormDetails.JobLocation =
+      hrFormDetails.ATS_Joblocation =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
-          ? watch("location")
-          : null;
+          ? selectedCitiesIDS.map((item) =>    ({
+        "id": item.id,
+        "city_name": item.value
+      })): null;
       hrFormDetails.FrequencyOfficeVisitID =
         watch("workingMode")?.id === 2 ? watch("officeVisits")?.id : null;
       // hrFormDetails.IsOpenToWorkNearByCities =
@@ -1395,7 +1398,7 @@ const EditHRFields = ({
       hrFormDetails.NearByCities =  selectedLabels?.concat(nonNumericValues)?.join(',') ?? null;
         hrFormDetails.ATS_JobLocationID =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
-          ? locationList.length ? locationList?.find((loc) => loc.value === watch("location"))?.id : getHRdetails?.directPlacement?.atsJobLocationId : null;
+          ?  +selectedCitiesIDS[0]?.id: null;
       hrFormDetails.ATS_NearByCities = watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3 ? getNearByCitiesForAts() ?? null : null;
 
       if (companyType.id === 2) {
@@ -1545,7 +1548,7 @@ const EditHRFields = ({
       }
       setInterval(() => setIsSavedLoading(false), 58000);
 
-      // console.log("submit handler",hrFormDetails)
+      console.log("submit handler",hrFormDetails)
       // setIsSavedLoading(false);
       // return
 
@@ -1617,7 +1620,8 @@ const EditHRFields = ({
       isHaveJD,
       parseType,
       confidentialInfo,
-      forFileUploadTypeId
+      forFileUploadTypeId,
+      selectedCitiesIDS
     ]
   );
   // useEffect(() => {
@@ -1754,7 +1758,9 @@ const EditHRFields = ({
     setValue("state", getHRdetails?.directPlacement?.state);
     setValue("country", getHRdetails?.directPlacement?.country);
     setValue("address", getHRdetails?.directPlacement?.address);
-    setValue("location", getHRdetails?.directPlacement?.jobLocation);
+    // setValue("location", getHRdetails?.directPlacement?.jobLocation);
+    setValue("location", getHRdetails?.atS_Joblocation?.map((item) =>  item.atS_City_Name));
+    setSelectedCitiesIDS(getHRdetails?.atS_Joblocation?.length ? getHRdetails?.atS_Joblocation?.map((item) => ({id: item.atS_City_ID, value: item.atS_City_Name})) : []);
     // setIsRelocate(getHRdetails?.directPlacement?.isOpenToWorkNearByCities);
     setNearByCitesValues(
       getHRdetails?.directPlacement?.nearByCities?.split(",")
@@ -2763,9 +2769,11 @@ const EditHRFields = ({
     []
   );
 
+   useEffect(() => {getCities()},[selectedCitiesIDS])
+
   const getCities = async (locationId) => {
     setIsLoading(true);
-    let _res = await MasterDAO.getNearByCitiesDAO(locationId);
+    let _res = await MasterDAO.getNearByCitiesMultipleDAO(selectedCitiesIDS.map(i=>i.id).join(','));
     setIsLoading(false);
     let citiesValues = [];
     if (_res?.statusCode === 200) {
@@ -2773,9 +2781,10 @@ const EditHRFields = ({
         value: city.nearByDistrictID,
         label: city.nearByDistrictName,
       }));
-      return citiesValues || [];
+      setNearByCitiesData(citiesValues || []);
     } else {
-      return [];
+      // return [];
+      setNearByCitiesData([]);
     }
   };
 
@@ -4780,13 +4789,13 @@ const EditHRFields = ({
                 </>}              */}
                 </div>
 
-                {companyType?.id === 1 && (
+                {/* {companyType?.id === 1 && ( */}
                   
                   <div className={HRFieldStyle.row}>
 
                  
-                    {removeFields !== null &&
-                    removeFields?.hrFormLink === true ? null : (
+                    {/* {removeFields !== null &&
+                    removeFields?.hrFormLink === true ? null : ( */}
                       <div className={HRFieldStyle.colMd6}>
                         <HRInputField
                           register={register}
@@ -4801,10 +4810,10 @@ const EditHRFields = ({
                           // required={isGUID === null}
                         />
                       </div>
-                    )}
+                    {/* )} */}
 
-                    {removeFields !== null &&
-                    removeFields?.discoveryCallLink === true ? null : (
+                    {/* {removeFields !== null &&
+                    removeFields?.discoveryCallLink === true ? null : ( */}
                       <div className={HRFieldStyle.colMd6}>
                         <HRInputField
                           register={register}
@@ -4819,9 +4828,9 @@ const EditHRFields = ({
                           // required={isGUID === null}
                         />
                       </div>
-                    )}
+                    {/* )} */}
                   </div>
-                )}
+                {/* )} */}
               </form>
             </div>
 
@@ -5711,21 +5720,24 @@ who have worked in scaled start ups."
         <>
           {/* <div className={HRFieldStyle.row}> */}
             <div className={HRFieldStyle.colMd4}>
-              <div className={HRFieldStyle.formGroup}>
+              <div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.modSearchField}`}>
                 <label>
                   Location <span className={HRFieldStyle.reqField}>*</span>
                 </label>
                 <Controller
                   render={({ ...props }) => (
-                    <AutoComplete
+                    <Select
+                    mode="multiple"
+                     style={{ width: "100%" }}
                       options={locationList ?? []}
                       onSelect={async (locName, _obj) => {
                         // getClientNameValue(clientName,_obj)
                         setLocationSelectValidation(false)
-                        let citiesVal = await getCities(_obj.id);
-                        setNearByCitiesData(citiesVal);
-                        let firstCity = citiesVal[0];
-                        setNearByCitesValues([firstCity.label]);
+                        setSelectedCitiesIDS(prev => ([...prev, _obj]))
+                        // let citiesVal = await getCities(_obj.id);
+                        // setNearByCitiesData(citiesVal);
+                        // let firstCity = citiesVal[0];
+                        // setNearByCitesValues([firstCity.label]);
                         // if (watch("workingMode").value === WorkingMode.HYBRID) {
                         //   let firstCity = citiesVal[0];
                         //   setNearByCitesValues([firstCity.label]);
@@ -5737,23 +5749,26 @@ who have worked in scaled start ups."
                         //   setNearByCitiesData(citiesVal);
                         // }
                       }}
+                       onDeselect={(val, val2)=>{                    
+                        setSelectedCitiesIDS(prev => prev.filter(item=> item.value !== val))
+                      }}
                       filterOption={true}
                       onSearch={(searchValue) => {
                         // setClientNameSuggestion([]);
-                        setNearByCitesValues([])
+                        // setNearByCitesValues([])
                         onChangeLocation(searchValue);
                       }}
                       onChange={(locName) => {
                         setValue("location", locName);
                       }}
-                      onBlur={e=>{
-                        const isValidSelection = locationList?.some(
-                          (location) => location.value === e.target.value
-                      );
-                      if (!isValidSelection) {    
-                         setLocationSelectValidation(true)
-                      }
-                      }}
+                      // onBlur={e=>{
+                      //   const isValidSelection = locationList?.some(
+                      //     (location) => location.value === e.target.value
+                      // );
+                      // if (!isValidSelection) {    
+                      //    setLocationSelectValidation(true)
+                      // }
+                      // }}
                       placeholder="Enter Location"
                       // ref={controllerRef}
                       // name="clientName"

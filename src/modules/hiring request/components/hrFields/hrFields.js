@@ -123,6 +123,7 @@ const HRFields = ({
     "Select working mode"
   );
   const [locationSelectValidation,setLocationSelectValidation] = useState(false);
+  const [selectedCitiesIDS,setSelectedCitiesIDS] = useState([]);
 
   const [controlledTempProjectValue, setControlledTempProjectValue] =
     useState("Please select .");
@@ -1925,9 +1926,12 @@ const HRFields = ({
       hrFormDetails.jdFileTypeID =   parseType === 'JDFileUpload' ? 1 : parseType === 'Manual' ? 3 : 2
 
       hrFormDetails.JobTypeID = watch("workingMode")?.id;
-      hrFormDetails.JobLocation =
+      hrFormDetails.ATS_Joblocation =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
-          ? watch("location")
+          ? selectedCitiesIDS.map((item) =>    ({
+        "id": item.id,
+        "city_name": item.value
+      }))
           : null;
       hrFormDetails.FrequencyOfficeVisitID =
         watch("workingMode")?.id === 2 ? watch("officeVisits")?.id : null;
@@ -1938,9 +1942,13 @@ const HRFields = ({
       const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
       const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value)); 
       hrFormDetails.NearByCities =  selectedLabels?.concat(nonNumericValues)?.join(',') ?? null;
-      hrFormDetails.ATS_JobLocationID =
+      // hrFormDetails.ATS_JobLocationID =
+      //   watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
+      //     ? locationList?.find((loc) => loc.value === watch("location"))?.id
+      //     : null;
+       hrFormDetails.ATS_JobLocationID =
         watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3
-          ? locationList?.find((loc) => loc.value === watch("location"))?.id
+          ?   +selectedCitiesIDS[0]?.id
           : null;
       hrFormDetails.ATS_NearByCities =  watch("workingMode")?.id === 2 || watch("workingMode")?.id === 3 ? getNearByCitiesForAts() ?? null : null;
 
@@ -2199,7 +2207,8 @@ const HRFields = ({
       locationList,
       jobPostUsersDetails,
       locationSelectValidation,
-      confidentialInfo
+      confidentialInfo,
+      selectedCitiesIDS
     ]
   );
 
@@ -2947,9 +2956,13 @@ const HRFields = ({
     []
   );
 
+  useEffect(() => {getCities()},[selectedCitiesIDS])
+
   const getCities = async (locationId) => {
     setIsLoading(true);
-    let _res = await MasterDAO.getNearByCitiesDAO(locationId);
+    // let _res = await MasterDAO.getNearByCitiesDAO(locationId);
+    console.log('locationId',watch('location'),selectedCitiesIDS)
+    let _res = await MasterDAO.getNearByCitiesMultipleDAO(selectedCitiesIDS.map(i=>i.id).join(','));
     setIsLoading(false);
     let citiesValues = [];
     if (_res?.statusCode === 200) {
@@ -2957,9 +2970,11 @@ const HRFields = ({
         value: city.nearByDistrictID,
         label: city.nearByDistrictName,
       }));
-      return citiesValues || [];
+      // return citiesValues || [];
+      setNearByCitiesData(citiesValues || []);
     } else {
-      return [];
+      // return [];
+      setNearByCitiesData([]);
     }
   };
 
@@ -4898,10 +4913,10 @@ const HRFields = ({
                     {console.log(errors) }
        
 
-            {userCompanyTypeID === 1 && (
+            {/* {userCompanyTypeID === 1 && ( */}
               <div className={HRFieldStyle.row}>
-                {removeFields !== null &&
-                removeFields?.hrFormLink === true ? null : (
+                {/* {removeFields !== null &&
+                removeFields?.hrFormLink === true ? null : ( */}
                   <div className={HRFieldStyle.colMd6}>
                     <HRInputField
                       register={register}
@@ -4916,10 +4931,10 @@ const HRFields = ({
                       // required
                     />
                   </div>
-                )}
+                {/* )} */}
 
-                {removeFields !== null &&
-                removeFields?.discoveryCallLink === true ? null : (
+                {/* {removeFields !== null &&
+                removeFields?.discoveryCallLink === true ? null : ( */}
                   <div className={HRFieldStyle.colMd6}>
                     <HRInputField
                       register={register}
@@ -4934,9 +4949,9 @@ const HRFields = ({
                       // required
                     />
                   </div>
-                )}
+                {/* )} */}
               </div>
-            )}
+            {/* )} */}
           </form>
         </div>
         <Divider />
@@ -5780,21 +5795,24 @@ who have worked in scaled start ups."
         <>
           <div className={HRFieldStyle.row}>
             <div className={HRFieldStyle.colMd6}>
-              <div className={HRFieldStyle.formGroup}>
+              <div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.modSearchField}`}>
                 <label>
                   Location <span className={HRFieldStyle.reqField}>*</span>
                 </label>
                 <Controller
                   render={({ ...props }) => (
-                    <AutoComplete
+                    <Select
+                     mode="multiple"
+                     style={{ width: "100%" }}
                       options={locationList ?? []}
                       onSelect={async (locName, _obj) => {
                         // getClientNameValue(clientName,_obj)
                         setLocationSelectValidation(false)
-                        let citiesVal = await getCities(_obj.id);
-                        setNearByCitiesData(citiesVal);
-                          let firstCity = citiesVal[0];
-                          setNearByCitesValues([firstCity.label]);
+                        setSelectedCitiesIDS(prev => [...prev, _obj])
+                        // let citiesVal = await _obj(_obj.id);
+                        
+                          // let firstCity = citiesVal[0];
+                          // setNearByCitesValues([firstCity.label]);
                         // if (watch("workingMode").value === WorkingMode.HYBRID) {
                         //   let firstCity = citiesVal[0];
                         //   // setNearByCitesValues([firstCity.label]);
@@ -5806,6 +5824,10 @@ who have worked in scaled start ups."
                         //   setNearByCitiesData(citiesVal);
                         // }
                       }}
+                    
+                      onDeselect={(val, val2)=>{console.log('onC ds',val,val2)
+                        setSelectedCitiesIDS(prev => prev.filter(item=> item.id !== val2.id))
+                      }}
                       filterOption={true}
                       onSearch={(searchValue) => {
                         // setClientNameSuggestion([]);
@@ -5813,16 +5835,17 @@ who have worked in scaled start ups."
                         onChangeLocation(searchValue);
                       }}
                       onChange={(locName) => {
+                        console.log("locName", locName.obj);
                         setValue("location", locName);
                       }}
-                      onBlur={e=>{
-                        const isValidSelection = locationList?.some(
-                          (location) => location.value === e.target.value
-                      );
-                      if (!isValidSelection) {    
-                         setLocationSelectValidation(true)
-                      }
-                      }}
+                      // onBlur={e=>{
+                      //   const isValidSelection = locationList?.some(
+                      //     (location) => location.value === e.target.value
+                      // );
+                      // if (!isValidSelection) {    
+                      //    setLocationSelectValidation(true)
+                      // }
+                      // }}
                       placeholder="Enter Location"
                       // ref={controllerRef}
                       // name="clientName"
