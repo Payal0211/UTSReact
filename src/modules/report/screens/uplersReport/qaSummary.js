@@ -247,7 +247,25 @@ export default function QASummary({impHooks}) {
         className: uplersStyle.headerCommonGoalHeaderConfig,
       }),
       className: `${uplersStyle.headerCommonConfig}`,
-     
+      render: (v, rec) => {
+          return v ? (
+            rec.stage === "Goal" || rec.stage.includes("%") ? (
+              v
+            ) : (
+              <span
+                onClick={() => {
+                   getDFDetails({...rec,isNM:'Yes' }, v);
+                 
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {v}
+              </span>
+            )
+          ) : (
+            ""
+          );
+        },
     },
 ]
 
