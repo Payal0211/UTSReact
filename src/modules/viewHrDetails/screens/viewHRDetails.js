@@ -458,7 +458,7 @@ const ViewHRDetails = () => {
                           ?.directHRModeOfWork === "Hybrid") && (
                         <>
                           <li>
-                            <span>Address:</span>{" "}
+                            <span>Location:</span>{" "}
                             {/* {`${hiringDetails?.responseBody?.details?.address } ${hiringDetails?.responseBody?.details?.city} ${hiringDetails?.responseBody?.details?.state} ${hiringDetails?.responseBody?.details?.country} ${hiringDetails?.responseBody?.details?.postalCode}`} */}
                             {`${hiringDetails?.responseBody?.details?.city} ${hiringDetails?.responseBody?.details?.country}`}
                           </li>
