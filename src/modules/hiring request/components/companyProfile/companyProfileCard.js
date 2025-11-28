@@ -477,7 +477,7 @@ const CompanyProfileCard = ({
                 </span>
               </div>
               {clientDetail?.ModeOfWork !== 'Remote' && <div className={CompanyProfileCardStyle.preferredTime}>
-                <span>City:</span>&nbsp;&nbsp;
+                <span>Location:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.City || "NA"}
                 </span>
