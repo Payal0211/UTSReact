@@ -479,7 +479,16 @@ const CompanyProfileCard = ({
               {clientDetail?.ModeOfWork !== 'Remote' && <div className={CompanyProfileCardStyle.preferredTime}>
                 <span>Location:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
-                  {clientDetail?.City || "NA"}
+                  {clientDetail?.City?.split(',')[0] || "NA"}
+                  {clientDetail?.City?.split(',')?.length > 1 && <Tooltip
+							placement="bottomLeft"
+							title={<div>
+                {clientDetail?.City}
+  
+              </div>}>
+               <span style={{color:'#1890ff'}}>... Show More</span>
+								{/* <img src={infoIcon} alt='info' style={{marginLeft:'auto'}} />							 */}
+						</Tooltip>}
                 </span>
               </div>}
               <div className={CompanyProfileCardStyle.jdLink}>
