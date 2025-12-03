@@ -1439,6 +1439,7 @@ getSkillList();
 
       setIsLoading(true)
       let result = await updateJobPostDetail(payload);
+          setIsLoading(false)
       if (result.statusCode === 200) {
         setisEditLocation(false);
         messageApi.open({
@@ -1466,7 +1467,7 @@ getSkillList();
           ATS_JobLocationID:null,
           ATS_NearByCities:""});
       }
-      setIsLoading(false)
+  
     }
   };
 
@@ -1995,6 +1996,7 @@ async function onHandleBlurImage(content, field) {
         open={ViewPosition}
         onOk={() => setViewPosition(false)}
         onCancel={() => {
+          setisEditLocation(false);
           if(isAnyFieldUpdate && !isSaveAllChanges){
             confirm({
               title: 'Please save your changes before leaving this page to avoid losing any unsaved data.',
@@ -2674,13 +2676,14 @@ async function onHandleBlurImage(content, field) {
                                   >
                                     Cancel
                                   </button>
-                                  <button
+                                  {isLoading ? <div style={{display:'flex'}}><Spin /></div> : <button
                                     type="button"
                                     class="btnPrimary"
                                     onClick={() => updateLocation()}
                                   >
                                     SAVE
-                                  </button>
+                                  </button> }
+                                 
                                 </div>
                               </div>
                             </li>
