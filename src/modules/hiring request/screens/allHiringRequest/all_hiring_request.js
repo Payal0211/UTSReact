@@ -306,7 +306,7 @@ const AllHiringRequestScreen = () => {
 
     if (res.statusCode === 200) {
       let details = res?.responseBody;
-      const previewData = { ...details.JobPreview, hrNumber: hrNumber, HRID: hrId};
+      const previewData = { ...details.JobPreview, hrNumber: hrNumber, HRID: hrId,atSJoblocation: details.atSJoblocation};
       sethrNumber(hrNumber);
       setJobPreview(previewData);
       setAllData(details);
