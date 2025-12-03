@@ -1397,7 +1397,7 @@ getSkillList();
           _errors.workingModeId = "Please select location."
           isValid = false;
         }
-        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && selectedCitiesIDS.length === 0 ){
+        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && selectedCitiesIDS?.length === 0 ){
             _errors.JobLocation = "Please select job location."
             isValid = false;
         }
@@ -2323,11 +2323,11 @@ async function onHandleBlurImage(content, field) {
                                       let citiesVal = await getCities(jobPreview?.atS_JobLocation);                                                                                                                                 
                                       let val = citiesVal?.filter(option => option?.label !== citiesVal[0]?.label) 
                                       setNearByCitiesData(val);  
-                                      setSelectedCitiesIDS(jobPreview?.atSJoblocation?.map(i=> ({value:i.atS_City_ID,label:i.atS_City_Name})))                                                              
+                                      setSelectedCitiesIDS(jobPreview?.atSJoblocation?.map(i=> ({value:i.atS_City_ID,label:i.atS_City_Name}))?? [])                                                              
                                       setEditLocation({
                                         ...editLocation,
                                         workingModeId: jobPreview?.workingModeId,
-                                        JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.atSJoblocation?.map(i=> i.atS_City_Name) : null,
+                                        JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.atSJoblocation?.map(i=> i.atS_City_Name) ?? [] : null,
                                         FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
                                         IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
                                         NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],             
@@ -2339,11 +2339,11 @@ async function onHandleBlurImage(content, field) {
                                     setisEditLocation(!iseditLocation);
                                     getFrequencyData()
                                     fetchCities()
-                                    setSelectedCitiesIDS(jobPreview?.atSJoblocation?.map(i=> ({value:i.atS_City_ID,label:i.atS_City_Name}))) 
+                                    setSelectedCitiesIDS(jobPreview?.atSJoblocation?.map(i=> ({value:i.atS_City_ID,label:i.atS_City_Name}))?? []) 
                                     setEditLocation({
                                       ...editLocation,
                                       workingModeId: jobPreview?.workingModeId,
-                                      JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.atSJoblocation?.map(i=> i.atS_City_Name) : null,
+                                      JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.atSJoblocation?.map(i=> i.atS_City_Name)?? [] : null,
                                       FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
                                       IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
                                       NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],            
