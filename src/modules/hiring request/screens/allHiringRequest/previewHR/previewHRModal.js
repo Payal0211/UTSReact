@@ -87,12 +87,13 @@ function PreviewHRModal({
   const [editNoticePeriod, setEditNoticePeriod] = useState({ howsoon: "" });
   const [iseditLocation, setisEditLocation] = useState(false);
   const [editLocation, setEditLocation] = useState({workingModeId: "",
-    JobLocation:"",
+    JobLocation:[],
     FrequencyOfficeVisitID:null,
     IsOpenToWorkNearByCities:null,
     NearByCities:[],
     ATS_JobLocationID:null,
     ATS_NearByCities:""});  
+    const [selectedCitiesIDS,setSelectedCitiesIDS] = useState([]);
   const [iseditExp, setisEditExp] = useState(false);
   const [editExp, seteditExp] = useState("");
   const [editMaxExp, seteditMaxExp] = useState("");
@@ -1396,13 +1397,14 @@ getSkillList();
           _errors.workingModeId = "Please select location."
           isValid = false;
         }
-        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !editLocation?.JobLocation ){
+        if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && selectedCitiesIDS?.length === 0 ){
             _errors.JobLocation = "Please select job location."
             isValid = false;
-        }else if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !locationList?.some((location) => location.label === editLocation?.JobLocation)){
-          _errors.JobLocation = "Choose a valid location from the suggestions."
-          isValid = false;
         }
+        // else if((editLocation.workingModeId === 2 || editLocation.workingModeId === 3) && !locationList?.some((location) => location.label === editLocation?.JobLocation)){
+        //   _errors.JobLocation = "Choose a valid location from the suggestions."
+        //   isValid = false;
+        // }
         if(editLocation.workingModeId === 2 && !editLocation?.FrequencyOfficeVisitID){
             _errors.FrequencyOfficeVisitID = "Please select frequency of office visits."
             isValid = false;
@@ -1423,16 +1425,21 @@ getSkillList();
       const nonNumericValues = editLocation?.NearByCities?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));      
       let payload = {
         workingModeID: editLocation.locationValue === 'Hybrid' ? 2 :editLocation.locationValue === 'Onsite' ? 3 : editLocation.workingModeId,
-        JobLocation : (editLocation.workingModeId === 2 || editLocation.workingModeId === 3) ? editLocation?.JobLocation : null,
+        JobLocation : (editLocation.workingModeId === 2 || editLocation.workingModeId === 3) ? editLocation?.JobLocation[0] : null,
         FrequencyOfficeVisitID : editLocation.workingModeId === 2 ? editLocation?.FrequencyOfficeVisitID : null,
         IsOpenToWorkNearByCities : editLocation?.IsOpenToWorkNearByCities,                        
         NearByCities : selectedLabels?.concat(nonNumericValues)?.join(','),            
         ATS_JobLocation : editLocation?.ATS_JobLocationID,
         ATS_NearByCities : selectedValues?.join(','),
+        atSJoblocation: (editLocation.workingModeId === 2 || editLocation.workingModeId === 3) ? selectedCitiesIDS.map((item) =>    ({
+                                            "id": item.value,
+                                            "city_name": item.label
+                                            })) : null,
       }; 
 
       setIsLoading(true)
       let result = await updateJobPostDetail(payload);
+          setIsLoading(false)
       if (result.statusCode === 200) {
         setisEditLocation(false);
         messageApi.open({
@@ -1446,17 +1453,21 @@ getSkillList();
           isOpenToWorkNearByCities:editLocation?.IsOpenToWorkNearByCities,
           nearByCities:selectedLabels?.concat(nonNumericValues)?.join(','),
           atS_JobLocationID:editLocation?.ATS_JobLocationID,
-          atS_NearByCities:editLocation?.NearByCities?.join(',')
+          atS_NearByCities:editLocation?.NearByCities?.join(','),
+          atSJoblocation:(editLocation.workingModeId === 2 || editLocation.workingModeId === 3) ? selectedCitiesIDS.map((item) =>    ({
+                                            "atS_City_ID": item.value,
+                                            "atS_City_Name": item.label
+                                            })) : null,
          }));
          setEditLocation({workingModeId: "",
-          JobLocation:"",
+          JobLocation:[],
           FrequencyOfficeVisitID:null,
           IsOpenToWorkNearByCities:null,
           NearByCities:[],
           ATS_JobLocationID:null,
           ATS_NearByCities:""});
       }
-      setIsLoading(false)
+  
     }
   };
 
@@ -1625,19 +1636,26 @@ getSkillList();
     }            
 });
 
+  useEffect(()=> {if(selectedCitiesIDS?.length > 0){getCities()} },[selectedCitiesIDS])
+
   const getCities = async (locationId) => {
     setIsLoading(true);
-    let _res = await MasterDAO.getNearByCitiesDAO(locationId);
+    let _res = await MasterDAO.getNearByCitiesMultipleDAO(selectedCitiesIDS?.map(i=>i.value).join(','));
     setIsLoading(false);
     let citiesValues = [];
     if (_res?.statusCode === 200) {                
         citiesValues = _res?.responseBody?.details?.map((city) => ({
             value: city.nearByDistrictID,
             label: city.nearByDistrictName,
-        }));                       
-        return citiesValues || [];                                                            
+        }));  
+         setNearByCitiesData(citiesValues.filter(
+            (item, index, self) =>
+              index === self.findIndex(t => t.label === item.label)
+          ) || []);                         
+        // return citiesValues || [];                                                            
     }else{
-      return []
+      setNearByCitiesData([]); 
+      // return []
     }    
   }
 
@@ -1656,7 +1674,7 @@ getSkillList();
       if(nearByCitiesData?.length>0){
          setEditLocation((prev) => ({
             ...prev,
-            JobLocation: '',
+            JobLocation: [],
             ATS_JobLocationID: null,
             NearByCities:[nearByCitiesData?.length>0 && nearByCitiesData[0]?.label] 
         }));
@@ -1978,6 +1996,7 @@ async function onHandleBlurImage(content, field) {
         open={ViewPosition}
         onOk={() => setViewPosition(false)}
         onCancel={() => {
+          setisEditLocation(false);
           if(isAnyFieldUpdate && !isSaveAllChanges){
             confirm({
               title: 'Please save your changes before leaving this page to avoid losing any unsaved data.',
@@ -2302,14 +2321,15 @@ async function onHandleBlurImage(content, field) {
                                       getFrequencyData()
                                       setisEditLocation(true);                                                                                           
                                       fetchCities();
-                                      fetchLocations(jobPreview?.jobLocation?.substring(0,3)); 
+                                      // fetchLocations(jobPreview?.jobLocation?.substring(0,3)); 
                                       let citiesVal = await getCities(jobPreview?.atS_JobLocation);                                                                                                                                 
                                       let val = citiesVal?.filter(option => option?.label !== citiesVal[0]?.label) 
-                                      setNearByCitiesData(val);                                                                
+                                      setNearByCitiesData(val);  
+                                      setSelectedCitiesIDS(jobPreview?.atSJoblocation?.map(i=> ({value:i.atS_City_ID,label:i.atS_City_Name}))?? [])                                                              
                                       setEditLocation({
                                         ...editLocation,
                                         workingModeId: jobPreview?.workingModeId,
-                                        JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
+                                        JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.atSJoblocation?.map(i=> i.atS_City_Name) ?? [] : null,
                                         FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
                                         IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
                                         NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],             
@@ -2321,17 +2341,18 @@ async function onHandleBlurImage(content, field) {
                                     setisEditLocation(!iseditLocation);
                                     getFrequencyData()
                                     fetchCities()
+                                    setSelectedCitiesIDS(jobPreview?.atSJoblocation?.map(i=> ({value:i.atS_City_ID,label:i.atS_City_Name}))?? []) 
                                     setEditLocation({
                                       ...editLocation,
                                       workingModeId: jobPreview?.workingModeId,
-                                      JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation : null,
+                                      JobLocation : (jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.atSJoblocation?.map(i=> i.atS_City_Name)?? [] : null,
                                       FrequencyOfficeVisitID : jobPreview.workingModeId === 2 ? jobPreview?.frequencyOfficeVisitID : null,
                                       IsOpenToWorkNearByCities : jobPreview?.isOpenToWorkNearByCities,                    
                                       NearByCities : jobPreview?.nearByCities ? jobPreview?.nearByCities?.split(',') : [],            
                                       ATS_JobLocationID : jobPreview?.atS_JobLocation,
                                       ATS_NearByCities: jobPreview?.atS_NearByCities ? jobPreview?.atS_NearByCities : null                                
                                     });
-                                    fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
+                                    // fetchLocations((jobPreview?.workingModeId === 2 || jobPreview?.workingModeId === 3) ? jobPreview?.jobLocation?.substring(0,3) : null); 
                                   }}>
                                     <img src={SmallDownArrow} alt="small-down-arrow"/>
                                   </span> 
@@ -2352,7 +2373,7 @@ async function onHandleBlurImage(content, field) {
                                           setEditLocation({
                                             ...editLocation,
                                             workingModeId: e.target.value,
-                                            JobLocation:"",
+                                            JobLocation:[],
                                             FrequencyOfficeVisitID:null,
                                             IsOpenToWorkNearByCities:null,
                                             NearByCities:[],
@@ -2395,28 +2416,71 @@ async function onHandleBlurImage(content, field) {
                                     <div className="col-md-6">
                                         <div className={`form-group`}>
                                             <h3>Location <span>*</span></h3>
-                                            <div className='cutomeAutoCompliteArrow'>
-                                                <AutoComplete
+                                            {/* <div className='cutomeAutoCompliteArrow'> */}
+                                                <Select
+                                                    mode="multiple"
+                                                    style={{ width: "100%" }}
                                                     value={editLocation?.JobLocation}
                                                     options={locationList ?? []}
-                                                    onChange={onChangeLocation}
-                                                    onSelect={async (value, option) => {                                                                                                                                    
-                                                      let citiesVal = await getCities(option.value);                                                                 
-                                                      setEditLocation({...editLocation,
-                                                        JobLocation: option.label,
-                                                        ATS_JobLocationID: option.value,   
-                                                        NearByCities:[citiesVal[0]?.label]                                                     
-                                                      });                               
-                                                      let val = citiesVal
-                                                      setNearByCitiesData(val);                            
-                                                      setError({...error,['JobLocation'] : ""});                                                           
-                                                  }}                       
-                                                    onBlur={handleBlur}                                 
+                                                    // onChange={onChangeLocation}
+                                                    onSelect={async (value, option) => {     
+                                                            let oldIds = selectedCitiesIDS.map(item=> item.label)
+                                                                 if(oldIds.includes(option.label)){
+                                                                        setSelectedCitiesIDS(prev => {
+                                                                   
+                                                                 let allAr =  prev.filter(item=> item.label !== option.label)
+                                                                     let _eng = {...editLocation};
+                                                                _eng.JobLocation =  allAr.map(i=> i.label)
+                                                                _eng.ATS_JobLocationID = allAr[0]?.value    
+                                                               
+                                                                setEditLocation(_eng);  
+                                                                return allAr
+                                                                })
+                                                                    }else{         
+                                                                         setSelectedCitiesIDS(prev => {
+                                                                    let allAr = [...prev, option]
+                                                                     let _eng = {...editLocation};
+                                                                _eng.JobLocation =  allAr.map(i=> i.label)
+                                                                _eng.ATS_JobLocationID = allAr[0]?.value  
+ 
+                                                               
+                                                                setEditLocation(_eng);  
+                                                                    return allAr
+                                                                }) 
+                                                                setError({...error,JobLocation : ""});  
+                                                              }                                                                                                                                
+                                                      // let citiesVal = await getCities(option.value);                                                                 
+                                                      // setEditLocation({...editLocation,
+                                                      //   JobLocation: option.label,
+                                                      //   ATS_JobLocationID: option.value,   
+                                                      //   NearByCities:[citiesVal[0]?.label]                                                     
+                                                      // });                               
+                                                      // let val = citiesVal
+                                                      // setNearByCitiesData(val);                            
+                                                                                                               
+                                                  }}  
+                                                   filterOption={false}
+                                                  onDeselect={(val, val2)=>{                    
+                                                                setSelectedCitiesIDS(prev => {
+                                                                   
+                                                                 let allAr =  prev.filter(item=> item.label !== val)
+                                                                     let _eng = {...editLocation};
+                                                                _eng.JobLocation =  allAr.map(i=> i.label)
+                                                                _eng.ATS_JobLocationID = allAr[0]?.value    
+                                                               
+                                                                setEditLocation(_eng);  
+                                                                return allAr
+                                                                })
+                                                            }}           
+                                                   onSearch={(searchValue) => {
+                                                               searchValue && fetchLocations(searchValue);
+                                                            }}            
+                                                    // onBlur={handleBlur}                                 
                                                     placeholder='Select location'
                                                     className='customSelectAutoField'                                                       
                                                 />
-                                                <span className='downArrowCus'></span>
-                                            </div>
+                                                {/* <span className='downArrowCus'></span> */}
+                                            {/* </div> */}
                                             {error?.JobLocation && <span className='error'>{error?.JobLocation}</span>}
                                         </div>
                                     </div>
@@ -2612,13 +2676,14 @@ async function onHandleBlurImage(content, field) {
                                   >
                                     Cancel
                                   </button>
-                                  <button
+                                  {isLoading ? <div style={{display:'flex'}}><Spin /></div> : <button
                                     type="button"
                                     class="btnPrimary"
                                     onClick={() => updateLocation()}
                                   >
                                     SAVE
-                                  </button>
+                                  </button> }
+                                 
                                 </div>
                               </div>
                             </li>
