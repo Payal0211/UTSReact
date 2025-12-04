@@ -1057,7 +1057,7 @@ export default function PodReports({
                       >
                         {showTalentCol?.stage === "New Clients"
                           ? "Created Date"
-                          : "HR Created Date"}
+                          : "Company Created Date"}
                       </th>
 
                       {showTalentCol?.category !== "CF" &&
@@ -1237,7 +1237,7 @@ export default function PodReports({
                                   "rgb(233, 233, 233) !important",
                               }}
                             >
-                              Talent
+                             {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason': 'Talent'}
                             </th>}
                           
                             <th
