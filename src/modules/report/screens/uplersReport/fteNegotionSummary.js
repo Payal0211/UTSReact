@@ -602,7 +602,7 @@ export default function FTENegotiationSummary({ impHooks }) {
             align: "left",
             className: uplersStyle.headerCell,
              render: (value, record, index) =>{
-              return <div dangerouslySetInnerHTML={{__html: value? value.replace('/\r\n/g','<br/><br/>') : ''}}>
+              return <div dangerouslySetInnerHTML={{__html: value? value.replace(/\r\n/g,'<br/><br/>') : ''}}>
                 {/* {value? value.replace(/\r\n/g,'<br/><br/>') : ''} */}
               </div>
             }
