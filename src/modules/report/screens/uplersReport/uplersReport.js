@@ -310,9 +310,10 @@ export default function UplersReport() {
   const getDashboardList = async () => {
     let pl = {
       hrmodel: hrModal,
-      pod_id: selectedHead,
+      pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead,
       month: moment(monthDate).format("MM"),
       year: selectedYear,
+      multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : '0'
     };
     setIsTableLoading(true);
 
@@ -330,9 +331,9 @@ export default function UplersReport() {
 
   useEffect(() => {
     if (selectedHead) {
-      getDashboardList();
+     (dashboardTabTitle === 'pod' || dashboardTabTitle === 'All FTE Dashboard') && getDashboardList();
     }
-  }, [selectedHead, monthDate, hrModal]);
+  }, [selectedHead, monthDate, hrModal,dashboardTabTitle]);
 
   useEffect(() => {
     getHeads();
@@ -729,6 +730,19 @@ export default function UplersReport() {
           podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
           }} 
         />},
+         {
+            label: QtabName,
+            key: QtabName,
+            children:  <QASummary
+             impHooks={{
+          isTableLoading,
+          podDashboardList,
+          monthDate,
+          hrModal,
+          selectedHead,monthNames,setMonthNames ,QtabName,setQTabName,reportData,
+          podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
+          }} 
+        />},
         hrModal === "DP" && {
             label: "All FTE Negotiation Summary",
             key: "All FTE Negotiation Summary",
@@ -743,18 +757,18 @@ export default function UplersReport() {
           }} 
         />},
         {
-            label: QtabName,
-            key: QtabName,
-            children:  <QASummary
-             impHooks={{
+            label:"All FTE Dashboard",
+            key: "All FTE Dashboard",
+            children:  <PodReports
+        impHooks={{
           isTableLoading,
           podDashboardList,
+          AddComment,
           monthDate,
           hrModal,
-          selectedHead,monthNames,setMonthNames ,QtabName,setQTabName,reportData,
-          podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
-          }} 
-        />}
+          selectedHead,
+        }}
+      />},
          ]}
         />
 
