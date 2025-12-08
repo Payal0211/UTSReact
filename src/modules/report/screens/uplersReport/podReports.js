@@ -19,7 +19,7 @@ import { IconContext } from "react-icons";
 export default function PodReports({
   impHooks
 }) {
-    const {isTableLoading,podDashboardList,AddComment,monthDate,hrModal,selectedHead} = impHooks
+    const {isTableLoading,podDashboardList,AddComment,monthDate,hrModal,selectedHead,dashboardTabTitle} = impHooks
   const [showAchievedReport, setShowAchievedReport] = useState(false);
   const [listAchievedData, setListAchievedData] = useState([]);
   const [achievedLoading, setAchievedLoading] = useState(false);
@@ -36,12 +36,13 @@ export default function PodReports({
 
       const pl = {
         hrmodel: hrModal,
-        pod_id: selectedHead,
+        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
         stageID: row.stage_ID,
         cat: row.category,
         week: week ? week : "",
+        multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);

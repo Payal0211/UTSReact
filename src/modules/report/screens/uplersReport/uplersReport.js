@@ -310,7 +310,7 @@ export default function UplersReport() {
   const getDashboardList = async () => {
     let pl = {
       hrmodel: hrModal,
-      pod_id: dashboardTabTitle === 'All FTE Dashboard' ? '' :  selectedHead,
+      pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead,
       month: moment(monthDate).format("MM"),
       year: selectedYear,
       multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
@@ -712,7 +712,7 @@ export default function UplersReport() {
           AddComment,
           monthDate,
           hrModal,
-          selectedHead,
+          selectedHead,dashboardTabTitle
         }}
       />},
                 {
@@ -766,7 +766,7 @@ export default function UplersReport() {
           AddComment,
           monthDate,
           hrModal,
-          selectedHead,
+          selectedHead,dashboardTabTitle
         }}
       />},
          ]}
