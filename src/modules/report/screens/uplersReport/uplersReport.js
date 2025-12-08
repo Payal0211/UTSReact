@@ -313,7 +313,7 @@ export default function UplersReport() {
       pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead,
       month: moment(monthDate).format("MM"),
       year: selectedYear,
-      multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : '0'
+      multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
     };
     setIsTableLoading(true);
 
@@ -712,7 +712,7 @@ export default function UplersReport() {
           AddComment,
           monthDate,
           hrModal,
-          selectedHead,
+          selectedHead,dashboardTabTitle
         }}
       />},
                 {
@@ -766,7 +766,7 @@ export default function UplersReport() {
           AddComment,
           monthDate,
           hrModal,
-          selectedHead,
+          selectedHead,dashboardTabTitle
         }}
       />},
          ]}
