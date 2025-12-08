@@ -1423,6 +1423,9 @@ export default function PodReports({
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
+                                  minWidth: showTalentCol?.stage === "Lost (Pipeline)" ? '250px': '',
+                                  // whiteSpace: "normal",    // ✅ allow wrapping
+                                  // wordBreak: "break-word",
                                 }}
                               >
                                 {detail.talent}
