@@ -1328,6 +1328,22 @@ getAllPODGroupUsersRequest:async function (payload) {
 		return errorDebug(error, 'ReportAPI.getAllPODDashboardRequest');
 	}
 	},
+	getAllPODDashboardMonthsRequest:async function (payload) {
+	let httpService = new HttpServices();
+	httpService.URL =
+		NetworkInfo.NETWORK +
+		SubDomain.REPORT +
+		ReportType.GET_POD_DASHBOARD_MONTH_LIST + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&monthstr=${payload?.month}&yearstr=${payload?.year}&multiplePODIds=${payload?.multiplePODIds}`
+
+	httpService.setAuthRequired = true;
+	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	try {
+		let response = await httpService.sendGetRequest();
+		return response;
+	} catch (error) {
+		return errorDebug(error, 'ReportAPI.getAllPODDashboardMonthsRequest');
+	}
+	},
 getAllPODRevenueRequest:async function (payload) {
 	let httpService = new HttpServices();
 	httpService.URL =

@@ -317,7 +317,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible =  true
 		return isVisible		
 	}
-	 if(title === 'Hiring Request' || title === "MasterReports" || title === 'PODDashboardReport' ||
+	 if(title === 'Hiring Request' || title === "MasterReports" || title === 'PODDashboardReport' || title ==='AllFTEDASHBOARD' ||
 	  title === 'Users'  ||
 	   title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
 	 title === 'Engagement' || title === 'Reports' ||
@@ -442,7 +442,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'PODDashboardReport'),
 					isChildren : false					
 				}),
-
+                new SideBarModels({
+					id: 'AllFTEDASHBOARD',
+					title: 'Multi-Month POD Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.ALL_FTE_DASHBOARD_REPORT,
+					isVisible: isAccess(usertypeID, 'AllFTEDASHBOARD'),
+					isChildren : false					
+				}),
 			]
 		}),
 		

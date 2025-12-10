@@ -350,3 +350,56 @@ margin-bottom: 10px;
 .customTableContainer  [class*='ant-table-thead'] tr th{
  background-color: rgb(218, 218, 218) !important;
 }
+
+.monthSelector [class*='ant-select-selector'] {
+ padding : 8px 10px !important
+}
+
+.monthSelector [class*='ant-select-selection-overflow']{
+    height: 40px !important
+}
+
+
+.calendarFilterYear {
+  width: 120px !important
+}
+
+.calendarFilterYear .dateFilter{
+      width: 60px !important;
+}
+
+
+.monthPicker {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+}
+
+
+.monthGrid {
+  display: flex;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.monthBox {
+padding: 8px 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid var(--background-color-metal);
+    background: ghostwhite;
+    font-weight: 600;
+}
+
+.monthBox:hover {
+  background-color: #edf4ff;
+}
+
+.monthBox.selected {
+  background-color: #ffd400;
+  font-weight: 600;
+  border-bottom: 3px solid;
+}
