@@ -1983,7 +1983,7 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.saveSplitHRDAO');
 		}
 	},
-		getAllPOCDashboardDAO:async function (payload) {
+	getAllPOCDashboardDAO:async function (payload) {
 		try {
 			const taResult = await ReportAPI.getAllPODDashboardRequest(payload);
 			if (taResult) {
@@ -2004,6 +2004,29 @@ export const ReportDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'TaDashboardDAO.getAllPOCDashboardDAO');
+		}
+	},
+	getAllPODDashboardMonthsDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.getAllPODDashboardMonthsRequest(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getAllPODDashboardMonthsDAO');
 		}
 	},
 	getAllPODRevenueDAO:async function (payload) {
