@@ -62,20 +62,10 @@ export default function AllFTEPage() {
     const [monthList, setMonthList] = useState("");
     const [monthNamesStr,setMonthsNameStr] = useState([])
     console.log(selectedMonths, monthList)
-    const monthsArray = [
-        { value: 0, label: "JAN" },
-        { value: 1, label: "FEB" },
-        { value: 2, label: "MAR" },
-        { value: 3, label: "APR" },
-        { value: 4, label: "MAY" },
-        { value: 5, label: "JUN" },
-        { value: 6, label: "JUL" },
-        { value: 7, label: "AUG" },
-        { value: 8, label: "SEP" },
-        { value: 9, label: "OCT" },
-        { value: 10, label: "NOV" },
-        { value: 11, label: "DEC" }
-    ]
+   const monthOrder = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
 
     useEffect(() => {
         let month = monthDate.getMonth()
@@ -136,14 +126,15 @@ export default function AllFTEPage() {
             stages.forEach(itm=> {
                 let allStageData = data.filter(i=> i.stage=== itm)
                 let obj = {...allStageData[0]}
-                months.forEach(mont=>{
+                
+                months.forEach(mont=>{                
                     let monthD = allStageData.find(si=> si.month_Name === mont)
-                    obj[mont] = monthD.monthAmountSTR
+                    obj[mont] = monthD?.monthAmountSTR ?? ''
                 })
                 newD.push(obj)
             })
+            // console.log('newD',months,stages, newD,data)
             setMonthsNameStr(months)
-            console.log('newD',months,stages, newD)
             return newD
       }
 
@@ -192,7 +183,9 @@ export default function AllFTEPage() {
    
           },
          
-          ...monthNamesStr.map(mon=>({
+          ...monthNamesStr?.sort(
+  (a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b)
+)?.map(mon=>({
             title: <div style={{ textAlign: "center" }}>{mon}</div>,
             dataIndex: mon,
             key: mon,
