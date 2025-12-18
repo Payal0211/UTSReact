@@ -149,18 +149,27 @@ export default function AllFTEPage() {
             let stages = []
             let months = []
             let newD = []
+            let cats = []
 
             data.forEach(itm=> {
                 if(!stages.includes(itm.stage)){
                     stages.push(itm.stage)
                 }
+
                  if(!months.includes(itm.month_Name)){
                     months.push(itm.month_Name)
                 }
+
+                 if(!cats.includes(itm.category)){
+                    cats.push(itm.category)
+                }
             })
 
-            stages.forEach(itm=> {
-                let allStageData = data.filter(i=> i.stage=== itm)
+            cats.forEach(cat=> {
+                let catbasedata = data.filter(i=> i.category === cat)
+            
+                stages.forEach(itm=> {
+                let allStageData = catbasedata.filter(i=> i.stage=== itm)
                 let obj = {...allStageData[0]}
                 
                 months.forEach(mont=>{                
@@ -169,6 +178,10 @@ export default function AllFTEPage() {
                 })
                 newD.push(obj)
             })
+            }
+            )
+
+            
             // console.log('newD',months,stages, newD,data)
             setMonthsNameStr(months)
             return newD
@@ -287,7 +300,7 @@ export default function AllFTEPage() {
         let Result = await ReportDAO.getAllPODDashboardMonthsDAO(pl);
         setIsTableLoading(false);
         if (Result.statusCode === HTTPStatusCode.OK) {
-            console.log('res',Result)
+            // console.log('res',Result)
             let data = Result.responseBody
             setDashboardData(mapMonthStageWise(data))
         } else if (Result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -486,7 +499,7 @@ export default function AllFTEPage() {
           )}
         </div>
       </div>
-
+{console.log('dashboardData',dashboardData)}
       <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
         <div className={uplersStyle.customTableContainer}>
           {isTableLoading ? (
