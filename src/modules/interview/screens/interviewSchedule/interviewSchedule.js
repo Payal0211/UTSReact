@@ -115,6 +115,13 @@ const InterviewSchedule = ({
 	const getTimeZone = useCallback(async () => {
 		let response = await MasterDAO.getTimeZoneRequestDAO();
 		setScheduleTimezone(response && response?.responseBody);
+
+		let defaultTZ = response?.responseBody?.find(i=> i.value === "(GMT+05:30) Asia/Kolkata (IST)")
+
+		if(defaultTZ?.id){
+			setInterviewTimezone(defaultTZ?.value)
+			setValue('interviewTimezone',defaultTZ?.id)
+		}
 	}, [setScheduleTimezone]);
 	useEffect(() => {
 		getTimeZone();
