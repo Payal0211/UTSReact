@@ -149,6 +149,8 @@ const TalentList = ({
 			formState: { errors : remarkError},
 		} = useForm();
 
+	const [offerError,setOfferError] = useState(false)
+
 	const [profileRejectedModal, setProfileRejectedModal] = useState(false);
 
 	const [editPayRate, setEditPayRate] = useState(false);
@@ -430,7 +432,7 @@ const TalentList = ({
 	}
 
 	const clientFeedbackHandler = useCallback(
-		async (reload, talentInfo) => {
+		async (reload, talentInfo,tjoiningDate) => {
 			setLoading(true)
 	
 			const clientFeedback = {
@@ -452,6 +454,7 @@ const TalentList = ({
 				comments:  '',
 				en_Id: '',
 				FeedbackId: talentInfo?.ClientFeedbackID || 0,
+				TentativeJoiningDate:tjoiningDate ? moment(tjoiningDate).format("YYYY-MM-DD")  :''
 				// IsClientNotificationSent: isClientNotification,
 			};
 
@@ -463,6 +466,8 @@ const TalentList = ({
 					 callAPI(hrId)
 					 getHrUserData(hrId)
 					 setLoading(false)
+					setOnboardDetails({})
+					setOfferError(false)
 				}else{
 					 setLoading(false)
 				}	
@@ -2149,14 +2154,32 @@ const TalentList = ({
 			)}
 
             <Modal
-				width="864px"
+				width="650px"
 				centered
 				footer={null}
 				open={showOfferPosition}
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => {setShowOfferPosition(false);setEmailLater(false)}}>
+				onCancel={() => {setShowOfferPosition(false);setEmailLater(false);setOnboardDetails({});setOfferError(false)}}>
 					<h1>Offer Talent</h1>
 				<div>
+					
+					 <p style={{marginBottom:'5px'}}>Tentative Joining Date <span style={{color:'red'}}>*</span></p>
+										  <div className={TalentListStyle.timeSlotItem} style={{paddingTop:'0', width:'50%'}}>
+											<CalenderSVG style={{top:'20px'}} />
+											<DatePicker
+											  selected={onboardDetails.date}
+											  onChange={(date) => {
+												setOfferError(false)
+												setOnboardDetails(prev=> {
+													return {...prev,date:date}
+												})
+											  }}
+											  placeholderText="Select Date"
+											  dateFormat="dd/MM/yyyy"
+											/>
+										  </div>
+
+					{offerError && <p style={{color:'red', margin:'-9px 0 5px 0'}}>please select joining date</p>}
 
 				<p style={{marginBottom:'5px'}}>Send Offer Email</p>
 				<Radio.Group
@@ -2176,10 +2199,15 @@ const TalentList = ({
 				<div className={TalentListStyle.formPanelAction}>
 				<button className={TalentListStyle.btnPrimary}   onClick={()=>{
 					let item = hrData?.FinalResult?.rows?.find(i=> i.TalentID === talentIndex)
-					clientFeedbackHandler(true,item)
+					if(onboardDetails.date){
+						clientFeedbackHandler(true,item,onboardDetails.date)
+					}else{
+						setOfferError(true)
+					}
+					
 				
 				}}>Offer</button>
-                <button  onClick={()=>{setShowOfferPosition(false);setEmailLater(false);}}>Cancel</button>
+                <button  onClick={()=>{setShowOfferPosition(false);setEmailLater(false);setOnboardDetails({});setOfferError(false)}}>Cancel</button>
 				</div>
 				</div>
 			</Modal>

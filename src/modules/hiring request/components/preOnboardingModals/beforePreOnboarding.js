@@ -2825,7 +2825,7 @@ function calculateDayGap(day1, day2) {
 
             </div>
         </div>
-
+{/* 
             <div className={HRDetailStyle.onboardingProcesBox}>
               <div className={HRDetailStyle.onboardingProcessLeft}>
                 <div>
@@ -2958,7 +2958,7 @@ function calculateDayGap(day1, day2) {
                 </div>
 
               </div>
-            </div>
+            </div> */}
           </>
         )}
       </div>
