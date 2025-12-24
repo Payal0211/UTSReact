@@ -359,6 +359,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 		// 	isVisible: isAccess(usertypeID,'AM Dashboard')
 		// }),
 		new SideBarModels({
+			id: 'UTS_AM_Dashboard',
+			title: 'AM Deployed Dashboard',
+			isActive: false,
+			icon: AMDashboardIcon ,                                                                                                                    
+			navigateTo: UTSRoutes.AMDASHBOARD,
+			isChildren: false,
+			branch: [],
+			isVisible: isAccess(usertypeID,'AM Dashboard')	
+		}),
+		new SideBarModels({
 			id: 'UTS_TA_Dashboard',
 			title: 'TA Dashboard',
 			isActive: false,
@@ -581,35 +591,35 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			],
 			isVisible: isAccess(usertypeID, 'omReport')
 		}),
-			new SideBarModels({
-			id: 'amReport',
-			title: 'AM Dashboard',
-			isActive: false,
-			icon: ADDHRSVG ,                                                                                                                    		
-			// navigateTo: UTSRoutes.AM_REPORT,
-			isVisible: isAccess(usertypeID, 'amReport'),
-			isChildren: true,
-			branch: [
-				new SideBarModels({
-					id: 'amReport',
-					title: 'AM Pipeline',
-					isActive: false,
-					navigateTo: UTSRoutes.AM_REPORT,
-					isVisible: isAccess(usertypeID, 'amReport'),
-					isChildren : false					
-				}),
-				new SideBarModels({
-					id: 'UTS_AM_Dashboard',
-					title: 'Deployed Dashboard',
-					isActive: false,
-					icon: AMDashboardIcon ,                                                                                                                    
-					navigateTo: UTSRoutes.AMDASHBOARD,
-					isChildren: false,
-					branch: [],
-					isVisible: isAccess(usertypeID,'AM Dashboard')			
-				}),
-			]
-		}),
+		// 	new SideBarModels({
+		// 	id: 'amReport',
+		// 	title: 'AM Dashboard',
+		// 	isActive: false,
+		// 	icon: ADDHRSVG ,                                                                                                                    		
+		// 	// navigateTo: UTSRoutes.AM_REPORT,
+		// 	isVisible: isAccess(usertypeID, 'amReport'),
+		// 	isChildren: true,
+		// 	branch: [
+		// 		new SideBarModels({
+		// 			id: 'amReport',
+		// 			title: 'AM Pipeline',
+		// 			isActive: false,
+		// 			navigateTo: UTSRoutes.AM_REPORT,
+		// 			isVisible: isAccess(usertypeID, 'amReport'),
+		// 			isChildren : false					
+		// 		}),
+		// 		new SideBarModels({
+		// 			id: 'UTS_AM_Dashboard',
+		// 			title: 'Deployed Dashboard',
+		// 			isActive: false,
+		// 			icon: AMDashboardIcon ,                                                                                                                    
+		// 			navigateTo: UTSRoutes.AMDASHBOARD,
+		// 			isChildren: false,
+		// 			branch: [],
+		// 			isVisible: isAccess(usertypeID,'AM Dashboard')			
+		// 		}),
+		// 	]
+		// }),
       
 		new SideBarModels({
 			id: 'Talent',
