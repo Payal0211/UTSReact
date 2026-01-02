@@ -1832,7 +1832,6 @@ export default function TADashboard() {
         <>
           Total Revenue <br />
           Opportunity <br />
-          (INR)
         </>
       ),
       dataIndex: "totalRevenue_NoofTalentStr",
@@ -1852,7 +1851,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Talent Annual <br /> Budget (INR)
+          Talent Budget
         </>
       ),
       dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
@@ -1862,12 +1861,20 @@ export default function TADashboard() {
         return <Tooltip title={result.actualCostWithCurrency}>{text}</Tooltip>;
       },
     },
+      {
+      title: (
+        <>
+          Uplers <br/> Fees %
+        </>
+      ),
+      dataIndex: "uplersFeesPer",
+      key: "uplersFeesPer",
+      width: "80px",
+    },
     {
       title: (
         <>
-          Revenue <br />
-          Opportunity <br />
-          (10%)
+          Uplers Fees
         </>
       ),
       dataIndex: "revenue_On10PerCTCStr",
@@ -3566,7 +3573,7 @@ export default function TADashboard() {
                         )}
                       </div>
                       <div>
-                        <span>Talent Annual CTC Budget (INR) : </span>
+                        <span>Talent Budget : </span>
                         {newTRAllData.totalAnnualBudgetInINR}
                       </div>
                       <div>
@@ -3574,7 +3581,7 @@ export default function TADashboard() {
                         {newTRAllData.modelType}
                       </div>
                       <div>
-                        <span>Revenue Opportunity (10% on annual CTC) : </span>
+                        <span>Revenue Opportunity : </span>
                         {newTRAllData.revenue10Percent}
                       </div>
                       <div>
@@ -3583,8 +3590,7 @@ export default function TADashboard() {
                       </div>
                       <div>
                         <span>
-                          Total Revenue Opportunity (NO. of TR x TalentAnnual
-                          CTC budget) :{" "}
+                          Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
                         </span>
                         {newTRAllData.totalRevenueOppurtunity}
                       </div>
@@ -3768,7 +3774,7 @@ export default function TADashboard() {
                         )}
                       </div>
                       <div>
-                        <span>Talent Annual CTC Budget (INR) : </span>
+                        <span>Talent Budget  : </span>
                         {editTATaskData.talent_AnnualCTC_Budget_INRValue}
                       </div>
                       <div>
@@ -3776,7 +3782,7 @@ export default function TADashboard() {
                         {editTATaskData.modelType}
                       </div>
                       <div>
-                        <span>Revenue Opportunity (10% on annual CTC) : </span>
+                        <span>Revenue Opportunity : </span>
                         {editTATaskData.revenue_On10PerCTC}
                       </div>
                       <div>
@@ -3785,8 +3791,7 @@ export default function TADashboard() {
                       </div>
                       <div>
                         <span>
-                          Total Revenue Opportunity (NO. of TR x TalentAnnual
-                          CTC budget) :{" "}
+                          Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
                         </span>
                         {editTATaskData.totalRevenue_NoofTalent}
                       </div>
