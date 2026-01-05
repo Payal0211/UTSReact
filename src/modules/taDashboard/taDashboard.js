@@ -460,6 +460,7 @@ export default function TADashboard() {
   const getHRLISTForComapny = async (id) => {
     const pl = {
       companyID: id,
+      tAHeadID:newTAHeadUservalue
     };
     let response = await TaDashboardDAO.getHRlistFromCompanyDAO(pl);
     if (response?.statusCode === HTTPStatusCode.OK) {
