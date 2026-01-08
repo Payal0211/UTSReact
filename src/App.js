@@ -1,16 +1,18 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { Routes, Navigate, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import UTSRoutes, { navigateToComponent , isAccess } from 'constants/routes';
+import UTSRoutes, { navigateToComponent , isAccess, NewPagesRouts } from 'constants/routes';
 import { ProtectedRoutes } from 'shared/utils/protected_utils';
 import PageNotFound from 'shared/screen/404';
 import SomethingWentWrong from 'shared/screen/500';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import New_all_hiring_request from 'modules/hiring request/screens/allHiringRequest/n_all_hiring_request';
 
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
 );
 const Layout = React.lazy(() => import('layout/layout'));
+const NewLayout = React.lazy(() => import('layout/n_layout'));
 
 function App() {
 	const queryClient = new QueryClient();
@@ -70,6 +72,7 @@ function App() {
 					<Route
 						path={UTSRoutes.HOMEROUTE}
 						element={<ProtectedRoutes Component={Layout} />}>
+						
 						{Object.entries(navigateToComponent).map(([path, component]) => {
 							return (
 								<Route
@@ -80,7 +83,27 @@ function App() {
 								/>
 							);
 						})}
+
+						
 					</Route>
+
+					{/* new design pages */}
+					<Route
+						path={UTSRoutes.HOMEROUTE}
+						element={<ProtectedRoutes Component={NewLayout} />}
+						>
+							 <Route
+						 exact
+						 key={NewPagesRouts.ALLHIRINGREQUESTROUTE}
+						path={NewPagesRouts.ALLHIRINGREQUESTROUTE}
+						element={<New_all_hiring_request />}
+					/>
+						
+						
+					</Route>
+
+                    
+
 
 					<Route
 						path={UTSRoutes.SOMETHINGWENTWRONG}
