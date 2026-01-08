@@ -453,7 +453,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 					/>
 				</div>
 			</div>
-			<div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
+			{/* <div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
 				<div className={allengagementEnd.colMd12}>
 					<Checkbox
 							name="PayPerCredit"
@@ -473,7 +473,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 					Is this engagement going under replacement?
 					</Checkbox>
 				</div>
-			</div>
+			</div> */}
 			<div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
 				<div className={allengagementEnd.colMd6}>
 					{engagementReplacement?.replacementData &&<div className={allengagementEnd.timeSlotItemField}>
