@@ -648,10 +648,13 @@ body {
 
 /* Shortcuts Cell */
 .shortcuts-cell {
-    vertical-align: middle;
-    white-space: nowrap;
-    position: relative;
-    overflow: visible;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    position: relative !important;
+    overflow: visible !important;
+     /* display: flex;
+  gap: 8px;
+  flex-wrap: wrap; */
 }
 
 .shortcut-icon-wrapper {

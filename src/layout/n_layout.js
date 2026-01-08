@@ -1,6 +1,7 @@
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import stylesOBj from 'modules/hiring request/screens/allHiringRequest/n_all_hiring_request.module.css';
 
 
 import UTSFeedback from 'modules/utsFeedback/utsFeedback';
@@ -22,16 +23,17 @@ const NewLayout = () => {
         <div>
             {/* <Navbar fullName={userData?.FullName} /> */}
             <NSidebar />
-              <header className="top-header">
-                <div className="header-user">
-                    <span className="user-name">{userData?.FullName}</span>
-                    <div className="user-avatar">
-                        <img src="images/default-user-ic.png" alt="Manisha Virani" />
+              {/* <!-- Top Header --> */}
+              <header className={stylesOBj["top-header"]}>
+                <div  className={stylesOBj["header-user"]}>
+                    <span  className={stylesOBj["user-name"]}>{userData?.FullName}</span>
+                    <div  className={stylesOBj["nav-label user-avatar"]}>
+                        <img src="images/default-user-ic.png" alt={userData?.FullName} />
                     </div> 
                 </div>
             </header>
                 <Outlet />
-                    {/* <!-- Top Header --> */}
+                  
           
             {/* <main
                 // style={{
