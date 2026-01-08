@@ -11,6 +11,7 @@ import AllNOTES from 'modules/report/screens/talentNotes/talentNotes';
 import RevenueReport from 'modules/report/screens/revenueReport/revenueReport';
 import UplersReport from 'modules/report/screens/uplersReport/uplersReport';
 import AllFTEPage from 'modules/report/screens/uplersReport/allFTEPage';
+import New_all_hiring_request from 'modules/hiring request/screens/allHiringRequest/n_all_hiring_request';
 
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
@@ -336,6 +337,11 @@ export default class UTSRoutes {
 	static ALL_FTE_DASHBOARD_REPORT = '/allMultiMonthPODDashboard'
 }
 
+export class NewPagesRouts  {
+	static ALLHIRINGREQUESTROUTE = '/w_allhiringrequest';
+	static ALLHIRINGREQUESTSUBROUTE = '/w_allhiringrequest/:hrid';
+}
+
 export const navigateToComponent = {
 	[UTSRoutes.HOMEROUTE]: (
 		<Suspense>
@@ -357,6 +363,11 @@ export const navigateToComponent = {
 			<AllHiringRequest />
 		</Suspense>
 	),
+	// [NewPagesRouts.ALLHIRINGREQUESTROUTE]: (
+	// 	<Suspense>
+	// 		<New_all_hiring_request />
+	// 	</Suspense>
+	// ),
 	[UTSRoutes.ALLHIRINGREQUESTSUBROUTE]: (
 		<Suspense>
 			<HRDetail />
