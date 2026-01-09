@@ -118,8 +118,27 @@ export default function AllFTEPage() {
        const getDBpopupReport = async (row, v, month) => {
           try {
             setShowAchievedReport(true);
-      
-            const pl = {
+
+            let pl
+            let result      
+
+            setShowTalentCol(row);
+            setAchievedTotal(v);
+            setAchievedLoading(true);
+
+            if(row.category === "DF"){
+              pl = {
+              hrmodel: hrModal,
+              pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, 
+              optiontype:  row.stage_ID,
+              monthstr: selectedMonths.map(i=> i+1).join(','),
+              yearstr: moment(monthDate).format("YYYY"),
+              monthno: month ? monthOrder.findIndex(m => m === month) + 1 : '',
+              multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
+            };
+              result = await ReportDAO.getDeliveryFunnelPopupMultiMonthReportDAO(pl);
+            }else{
+              pl ={
               hrmodel: hrModal,
               pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, 
               monthstr: selectedMonths.map(i=> i+1).join(','),
@@ -129,10 +148,14 @@ export default function AllFTEPage() {
               monthno: month ? monthOrder.findIndex(m => m === month) + 1 : '',
               multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
             };
-            setShowTalentCol(row);
-            setAchievedTotal(v);
-            setAchievedLoading(true);
-            const result = await ReportDAO.getPOCPopupMultiMonthReportDAO(pl);
+
+              result = await ReportDAO.getPOCPopupMultiMonthReportDAO(pl);
+            }
+           
+
+
+           
+           
             setAchievedLoading(false);
             if (result.statusCode === 200) {
               setListAchievedData(result.responseBody);
@@ -344,7 +367,185 @@ export default function AllFTEPage() {
         // onChange(updated.map(m => m + 1).join(",")); // SQL ready
     };
 
+    const DFPopupTable = () => {
+      return  <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 14,
+                    textAlign: "left",
+                  }}
+                >
+                  <thead
+                    className={uplersStyle.overwriteTableColor}
+                    style={{ position: "sticky", top: "0" }}
+                  >
+                    <tr style={{ backgroundColor: "#f0f0f0" }}>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                       Action Date
+                      </th>                   
 
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Company
+                      </th>
+                     <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              HR Number
+                            </th>
+                            <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              HR Title
+                            </th>
+
+                             <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              Talent
+                            </th>
+                            
+                            <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              TA
+                            </th>
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Sales Person
+                      </th>
+                     
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Remark
+                      </th>
+                 
+
+                   
+                    </tr>
+                  </thead>
+
+                  <tbody style={{ maxHeight: "500px" }}>
+                    {listAchievedData.map((detail, index) => (
+                      <tr
+                        key={index}
+                        style={{ borderBottom: "1px solid #ddd" }}
+                      >
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.actionDate}
+                        </td>
+                          <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                           {/* <a
+                            href={`/viewCompanyDetails/${detail.company_ID}`}
+                            style={{ textDecoration: "underline" }}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {detail.company}{" "}
+                          </a> */}
+                          {detail.company}
+                        </td>
+
+                          <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                         {detail.hiringRequestID > 0 ? (
+                                  <a
+                                    href={`/allhiringrequest/${detail.hiringRequestID}`}
+                                    style={{ textDecoration: "underline" }}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    {detail.hR_Number}
+                                  </a>
+                                ) : (
+                                  detail.hR_Number
+                                )}
+                        </td>
+
+                          <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.hrTitle}
+                        </td>
+
+                          <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.talent}
+                        </td>
+
+                          <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.ta}
+                        </td>
+
+                          <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.salesperson}
+                        </td>
+
+                          <td
+                          style={{minWidth:'250px', padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.slotOrRemarkDetails}
+                        </td>
+                        
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+    }
 
 
 
@@ -772,7 +973,8 @@ export default function AllFTEPage() {
                   maxHeight: "500px",
                 }}
               >
-                <table
+
+                {showTalentCol?.category === "DF" ? <DFPopupTable /> :   <table
                   style={{
                     width: "100%",
                     borderCollapse: "collapse",
@@ -1184,7 +1386,8 @@ export default function AllFTEPage() {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                </table>}
+             
               </div>
             </>
           ) : (

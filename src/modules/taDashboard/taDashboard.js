@@ -1828,20 +1828,13 @@ export default function TADashboard() {
         );
       },
     },
+
     {
       title: (
         <>
-          Total Revenue <br />
-          Opportunity <br />
+          Contract <br/>/ DP
         </>
       ),
-      dataIndex: "totalRevenue_NoofTalentStr",
-      key: "totalRevenue_NoofTalentStr",
-      width: "115px",
-      fixed: "left",
-    },
-    {
-      title: "Contract / DP",
       dataIndex: "modelType",
       key: "modelType",
       render: (text, result, index) => {
@@ -1895,7 +1888,18 @@ export default function TADashboard() {
       width: "80px",
       // fixed: "left",
     },
-
+    {
+      title: (
+        <>
+          Total Revenue <br />
+          Opportunity <br />
+        </>
+      ),
+      dataIndex: "totalRevenue_NoofTalentStr",
+      key: "totalRevenue_NoofTalentStr",
+      width: "115px",
+      // fixed: "left",
+    },
     {
       title: (
         <>
