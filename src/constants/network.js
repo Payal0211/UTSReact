@@ -236,6 +236,7 @@ export class ReportType {
 	static GET_NEGOTIATION_POPUP_DETAILS_LIST = 'PODNegotiationToJoiningFunnelSummary_Popup'
 	static GET_FTE_POPUP_DETAILS_LIST = 'AllFTEPODsNegotiationToJoiningFunnelSummary_Popup'
 	static GET_POD_DASHBOARD_MULTIPLE_MONTH_POUP = 'PODDashboardForMutipleMonths_PopupDetails'
+	static GET_POD_DASHBOARD_MULTIPLE_MONTH_DF_POUP = 'PODDashboardForMutipleMonthsDeliveryFunnelDetails'
 	static GET_NEGOTIATION_REPORT = 'PODNegotiationToJoiningFunnelList'
 	static GET_PLANING_TO_NEGOTIATION_REPORT = 'PODGoalPlanningToNegotiationList'
 	static GET_PLANNING_SUMMARY_REPORT = 'PODwiseGoalPlanningSummary'

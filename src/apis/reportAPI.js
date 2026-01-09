@@ -973,6 +973,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getPOCPopupMultiMonthReportAPI');
 		}
 	},
+	getDeliveryFunnelPopupMultiMonthReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_POD_DASHBOARD_MULTIPLE_MONTH_DF_POUP + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&monthstr=${payload?.monthstr}&yearstr=${payload?.yearstr}&optiontype=${payload?.optiontype}&monthno=${payload?.monthno}&multiplePODIds=${payload?.multiplePODIds}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPOCPopupMultiMonthReportAPI');
+		}
+	},
 	getPOCDFPopupReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
