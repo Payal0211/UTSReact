@@ -51,6 +51,55 @@ let defaaultFilterState = {
     IsDirectHR: false,
     hrTypeIds: ''
 }
+
+
+const MamoedCategoryRightComponent = ({ data, index ,handleHRRequest , tableFilteredState}) => {
+        const [archetype, setArchetype] = useState(data?.hR_Category);
+        const [showArchetypeDropdown, setShowArchetypeDropdown] = useState(false);
+
+        const [loadingCat, setLoadingCat] = useState(false);
+
+        const updateHRCategory = async (cat, hrID) => {
+            let pl = { hrID: hrID, category: cat === 'None' ? '' : cat }
+            setLoadingCat(true);
+            let Result = await hiringRequestDAO.updateHRCategoryDAO(pl);
+            setLoadingCat(false);
+            if (Result.statusCode === HTTPStatusCode.OK) {
+                handleHRRequest(tableFilteredState);
+            } else {
+                message.error("Something went wrong, please try again later.");
+            }
+        }
+
+        return <div className={`${stylesOBj["category-right"]}`}>
+            {loadingCat ? <Spin /> : <>
+                {archetype === '' ? <div className={`${stylesOBj["archetype-select-wrapper"]}`} >
+                    <button type="button" className={`${stylesOBj["archetype-btn"]}`} onClick={() => setShowArchetypeDropdown(prev => !prev)}>Archetype</button>
+                    {data?.hR_Category !== '' && <button type="button" className={`${stylesOBj["archetype-close"]}`} onClick={() => setArchetype(data?.hR_Category)}>×</button>}
+                    <div className={`${stylesOBj["archetype-dropdown"]} ${showArchetypeDropdown ? stylesOBj["show"] : ""}`}>
+                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="kitten" onClick={() => updateHRCategory("Kitten", data?.HRID)}>
+                            <img src="images/kitten-ic.svg" alt="Kitten" /> Kitten
+                        </button>
+                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="cheetah" onClick={() => updateHRCategory("Cheetah", data?.HRID)}>
+                            <img src="images/cheetah-ic.svg" alt="Cheetah" /> Cheetah
+                        </button>
+                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="panda" onClick={() => updateHRCategory("Panda", data?.HRID)}>
+                            <img src="images/panda-ic.svg" alt="Panda" /> Panda
+                        </button>
+                    </div>
+                </div> : <div className={`${stylesOBj["archetype-image-wrapper"]}`}>
+                    <div className={`${stylesOBj["archetype-image-container"]}`}>
+                        {archetype === 'Cheetah' && <img src="images/cheetah-ic.svg" alt="Cheetah" className={`${stylesOBj["archetype-image"]}`} />}
+                        {archetype === 'Panda' && <img src="images/panda-ic.svg" alt="Panda" className={`${stylesOBj["archetype-image"]}`} />}
+                        {archetype === 'Kitten' && <img src="images/kitten-ic.svg" alt="Kitten" className={`${stylesOBj["archetype-image"]}`} />}
+                    </div>
+                    <button type="button" className={`${stylesOBj["archetype-close"]}`} onClick={() => setArchetype('')}>×</button>
+                </div>}
+            </>}
+
+
+        </div>
+    }
 export default function New_all_hiring_request() {
     const navigate = useNavigate();
     const [tableFilteredState, setTableFilteredState] = useState(defaaultFilterState);
@@ -717,53 +766,7 @@ export default function New_all_hiring_request() {
     };
 
 
-    const MamoedCategoryRightComponent = ({ data, index }) => {
-        const [archetype, setArchetype] = useState(data?.hR_Category);
-        const [showArchetypeDropdown, setShowArchetypeDropdown] = useState(false);
-
-        const [loadingCat, setLoadingCat] = useState(false);
-
-        const updateHRCategory = async (cat, hrID) => {
-            let pl = { hrID: hrID, category: cat === 'None' ? '' : cat }
-            setLoadingCat(true);
-            let Result = await hiringRequestDAO.updateHRCategoryDAO(pl);
-            setLoadingCat(false);
-            if (Result.statusCode === HTTPStatusCode.OK) {
-                handleHRRequest(tableFilteredState);
-            } else {
-                message.error("Something went wrong, please try again later.");
-            }
-        }
-
-        return <div className={`${stylesOBj["category-right"]}`}>
-            {loadingCat ? <Spin /> : <>
-                {archetype === '' ? <div className={`${stylesOBj["archetype-select-wrapper"]}`} >
-                    <button type="button" className={`${stylesOBj["archetype-btn"]}`} onClick={() => setShowArchetypeDropdown(prev => !prev)}>Archetype</button>
-                    {data?.hR_Category !== '' && <button type="button" className={`${stylesOBj["archetype-close"]}`} onClick={() => setArchetype(data?.hR_Category)}>×</button>}
-                    <div className={`${stylesOBj["archetype-dropdown"]} ${showArchetypeDropdown ? stylesOBj["show"] : ""}`}>
-                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="kitten" onClick={() => updateHRCategory("Kitten", data?.HRID)}>
-                            <img src="images/kitten-ic.svg" alt="Kitten" /> Kitten
-                        </button>
-                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="cheetah" onClick={() => updateHRCategory("Cheetah", data?.HRID)}>
-                            <img src="images/cheetah-ic.svg" alt="Cheetah" /> Cheetah
-                        </button>
-                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="panda" onClick={() => updateHRCategory("Panda", data?.HRID)}>
-                            <img src="images/panda-ic.svg" alt="Panda" /> Panda
-                        </button>
-                    </div>
-                </div> : <div className={`${stylesOBj["archetype-image-wrapper"]}`}>
-                    <div className={`${stylesOBj["archetype-image-container"]}`}>
-                        {archetype === 'Cheetah' && <img src="images/cheetah-ic.svg" alt="Cheetah" className={`${stylesOBj["archetype-image"]}`} />}
-                        {archetype === 'Panda' && <img src="images/panda-ic.svg" alt="Panda" className={`${stylesOBj["archetype-image"]}`} />}
-                        {archetype === 'Kitten' && <img src="images/kitten-ic.svg" alt="Kitten" className={`${stylesOBj["archetype-image"]}`} />}
-                    </div>
-                    <button type="button" className={`${stylesOBj["archetype-close"]}`} onClick={() => setArchetype('')}>×</button>
-                </div>}
-            </>}
-
-
-        </div>
-    }
+    
 
     // const CategoryRightComponent = useMemo(({data,index})=> <MamoedCategoryRightComponent data={data} index={index} /> ,[allData]) 
 
@@ -983,7 +986,7 @@ export default function New_all_hiring_request() {
                                                                 </button>
                                                             </div>
                                                             <div className={`${stylesOBj["category-divider"]}`}></div>
-                                                            <MamoedCategoryRightComponent data={data} index={index} />
+                                                            <MamoedCategoryRightComponent data={data} index={index} handleHRRequest={handleHRRequest} tableFilteredState={tableFilteredState} />
                                                             {/* {CategoryRightComponent({data,index})} */}
                                                         </div>
 
