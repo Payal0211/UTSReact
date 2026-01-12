@@ -1425,13 +1425,14 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
+							
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Tentative Joining Date:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500' }}>
 												{item?.TentativeJoiningDate ? item?.TentativeJoiningDate :  'NA'} 
 											</span>
 
-											 <span
+{item?.IsShowJoiningAndTentativedate === 1 && <span
 											className={TalentListStyle.editNewIcon}
 											style={{ marginLeft: "auto", cursor: "pointer" }}
 											onClick={() => {
@@ -1447,7 +1448,8 @@ const TalentList = ({
 											}}
 											>
 											<EditNewIcon />
-											</span>
+											</span>}
+											 
 										</div>
 										{editTJoiningDateModal  && (
 										  <Modal
