@@ -9,6 +9,7 @@ import {
   message,
   Skeleton,
   Checkbox,
+  NumberInput,
 } from "antd";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
@@ -460,7 +461,7 @@ export default function TADashboard() {
   const getHRLISTForComapny = async (id) => {
     const pl = {
       companyID: id,
-      tAHeadID:newTAHeadUservalue
+      tAHeadID: newTAHeadUservalue
     };
     let response = await TaDashboardDAO.getHRlistFromCompanyDAO(pl);
     if (response?.statusCode === HTTPStatusCode.OK) {
@@ -471,6 +472,7 @@ export default function TADashboard() {
           id: item.hrid,
         }))
       );
+
     } else if (
       response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
       response?.statusCode === HTTPStatusCode.NOT_FOUND
@@ -599,21 +601,21 @@ export default function TADashboard() {
     }
   };
 
-  const HRTextCol = ({hrText, title,row}) =>{
+  const HRTextCol = ({ hrText, title, row }) => {
     let formatted = hrText?.replace(/\(([^)]+)\)/g, (_, name) => `( <div style="color:rgb(179, 76, 1);font-weight: 600" >${name.trim()}</div> )`)
 
-    if(title === 'Achieve Pipeline (INR)' || title === 'PreOnboarding Pipeline (INR)'){
-      return <div dangerouslySetInnerHTML={{__html:formatted}}  style={{ textDecoration: "underline", cursor:'pointer' }} onClick={()=> window.open(`/allhiringrequest/${row.hiringRequest_ID}`, '_blank', 'noopener,noreferrer')} ></div>
+    if (title === 'Achieve Pipeline (INR)' || title === 'PreOnboarding Pipeline (INR)') {
+      return <div dangerouslySetInnerHTML={{ __html: formatted }} style={{ textDecoration: "underline", cursor: 'pointer' }} onClick={() => window.open(`/allhiringrequest/${row.hiringRequest_ID}`, '_blank', 'noopener,noreferrer')} ></div>
     }
-    
-    return   <a
-            href={`/allhiringrequest/${row.hiringRequest_ID}`}
-            style={{ textDecoration: "underline" }}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {hrText}
-          </a>
+
+    return <a
+      href={`/allhiringrequest/${row.hiringRequest_ID}`}
+      style={{ textDecoration: "underline" }}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {hrText}
+    </a>
   }
 
   const getGoalsDetails = async (date, head, tA_UserID) => {
@@ -750,7 +752,7 @@ export default function TADashboard() {
         return text ? text : "-";
       },
     },
-     {
+    {
       title: "Total Pipeline ( INR )",
       dataIndex: "totalPipelineStr",
       key: "totalPipelineStr",
@@ -760,12 +762,12 @@ export default function TADashboard() {
         return text ? (
           <div
             className={taStyles.today1Text}
-            style={{ background: "#f0f0f0"}}
-           
+            style={{ background: "#f0f0f0" }}
+
           >
             {text}
           </div>
-        ): ''
+        ) : ''
       },
     },
     {
@@ -1653,32 +1655,32 @@ export default function TADashboard() {
                   style={{ width: "16px", height: "16px" }}
                 />
                 {(userData?.UserId === 2 ||
-                userData?.UserId === 333 ||
-                userData?.UserId === 190 || userData?.UserId === 96 ) &&    <div
-                  onClick={() => {
-                    setShowDiamondRemark(true);
-                    setCompanyIdForRemark({ ...row, index: index });
-                  }}
-                >
-                  <Tooltip title="Remove Diamond">
-                    <img
-                      src={PowerIcon}
-                      alt="info"
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        cursor: "pointer",
-                      }}
-                    />
-                  </Tooltip>
-                </div>}
-             
+                  userData?.UserId === 333 ||
+                  userData?.UserId === 190 || userData?.UserId === 96) && <div
+                    onClick={() => {
+                      setShowDiamondRemark(true);
+                      setCompanyIdForRemark({ ...row, index: index });
+                    }}
+                  >
+                    <Tooltip title="Remove Diamond">
+                      <img
+                        src={PowerIcon}
+                        alt="info"
+                        style={{
+                          width: "16px",
+                          height: "16px",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </Tooltip>
+                  </div>}
+
               </>
             )}
             {row?.companyCategory !== "Diamond" &&
               (userData?.UserId === 2 ||
                 userData?.UserId === 333 ||
-                userData?.UserId === 190 || userData?.UserId === 96 ) && (
+                userData?.UserId === 190 || userData?.UserId === 96) && (
                 <Checkbox onChange={() => setDiamondCompany(row, index)}>
                   Make Diamond
                 </Checkbox>
@@ -1758,7 +1760,7 @@ export default function TADashboard() {
               onClick={() => {
                 window.open(
                   UTSRoutes.ALLHIRINGREQUESTROUTE +
-                    `/${result.hiringRequest_ID}`,
+                  `/${result.hiringRequest_ID}`,
                   "_blank"
                 );
               }}
@@ -1832,7 +1834,7 @@ export default function TADashboard() {
     {
       title: (
         <>
-          Contract <br/>/ DP
+          Contract <br />/ DP
         </>
       ),
       dataIndex: "modelType",
@@ -1855,10 +1857,10 @@ export default function TADashboard() {
         return <Tooltip title={result.actualCostWithCurrency}>{text}</Tooltip>;
       },
     },
-      {
+    {
       title: (
         <>
-          Uplers <br/> Fees %
+          Uplers <br /> Fees %
         </>
       ),
       dataIndex: "uplersFeesPer",
@@ -2047,64 +2049,64 @@ export default function TADashboard() {
     },
     userData?.showTADashboardDropdowns
       ? {
-          title: "Action",
-          dataIndex: "",
-          key: "",
-          render: (_, row) => {
-            return (
-              <div>
-                <IconContext.Provider
-                  value={{
-                    color: "#FFDA30",
-                    style: { width: "19px", height: "19px", cursor: "pointer" },
-                  }}
-                >
-                  {" "}
-                  <Tooltip title="Edit" placement="top">
-                    <span
-                      onClick={() => {
-                        editTAforTask(row);
-                      }}
-                      style={{ padding: "0" }}
-                    >
-                      {" "}
-                      <GrEdit />
-                    </span>{" "}
-                  </Tooltip>
-                </IconContext.Provider>
+        title: "Action",
+        dataIndex: "",
+        key: "",
+        render: (_, row) => {
+          return (
+            <div>
+              <IconContext.Provider
+                value={{
+                  color: "#FFDA30",
+                  style: { width: "19px", height: "19px", cursor: "pointer" },
+                }}
+              >
+                {" "}
+                <Tooltip title="Edit" placement="top">
+                  <span
+                    onClick={() => {
+                      editTAforTask(row);
+                    }}
+                    style={{ padding: "0" }}
+                  >
+                    {" "}
+                    <GrEdit />
+                  </span>{" "}
+                </Tooltip>
+              </IconContext.Provider>
 
-                {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65||userData.UserId ===49||userData.UserId ===176||userData.UserId ===443||userData.UserId ===436||userData.UserId ===302 ) && <IconContext.Provider
-                  value={{
-                    color: "red",
-                    style: {
-                      width: "19px",
-                      height: "19px",
-                      marginLeft: "10px",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  <Tooltip title="Remove" placement="top">
-                    <span
-                      // style={{
-                      //   background: 'red'
-                      // }}
-                      onClick={() => {
-                        handleRemoveTask(row);
-                      }}
-                      style={{ padding: "0" }}
-                    >
-                      {" "}
-                      <IoIosRemoveCircle />
-                    </span>{" "}
-                  </Tooltip>
-                </IconContext.Provider>}
+              {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65 || userData.UserId === 49 || userData.UserId === 176 || userData.UserId === 443 || userData.UserId === 436 || userData.UserId === 302) && <IconContext.Provider
+                value={{
+                  color: "red",
+                  style: {
+                    width: "19px",
+                    height: "19px",
+                    marginLeft: "10px",
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                <Tooltip title="Remove" placement="top">
+                  <span
+                    // style={{
+                    //   background: 'red'
+                    // }}
+                    onClick={() => {
+                      handleRemoveTask(row);
+                    }}
+                    style={{ padding: "0" }}
+                  >
+                    {" "}
+                    <IoIosRemoveCircle />
+                  </span>{" "}
+                </Tooltip>
+              </IconContext.Provider>}
 
-                
-              </div>
-            );
-          },
-        }
+
+            </div>
+          );
+        },
+      }
       : {},
     // {
     //   title: <>#Profiles Submitted <br/> Yesterday</>,
@@ -2167,13 +2169,13 @@ export default function TADashboard() {
 
   useEffect(() => {
     if (filtersList?.HeadUsers?.length) {
-      if(userData?.UserId === 176){
-        let PoojaPatel = filtersList?.HeadUsers?.find((head)=> head.data === "Pooja Patel");
+      if (userData?.UserId === 176) {
+        let PoojaPatel = filtersList?.HeadUsers?.find((head) => head.data === "Pooja Patel");
         setSelectedHead(PoojaPatel?.id);
-      }else{
+      } else {
         setSelectedHead(filtersList?.HeadUsers[0]?.id);
       }
-      
+
     }
   }, [filtersList?.HeadUsers, userData]);
 
@@ -2219,6 +2221,11 @@ export default function TADashboard() {
       return;
     }
 
+    if (newTRAllData.activeHR <= 0 || newTRAllData.activeHR > 20 || isNaN(newTRAllData.activeHR)) {
+      setNewTaskError(true);
+      return;
+    }
+
     let pl = {
       tA_UserID: newTAUservalue,
       company_ID: selectedCompanyID,
@@ -2236,6 +2243,7 @@ export default function TADashboard() {
       tA_HR_StatusID: 2,
       tA_Head_UserID: `${newTAHeadUservalue}`,
     };
+    // console.log("pl", pl,newTRAllData);
     setAddingNewTask(true);
     let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
     setAddingNewTask(false);
@@ -2313,8 +2321,8 @@ export default function TADashboard() {
     !getHTMLFilter
       ? setIsAllowFilters(!isAllowFilters)
       : setTimeout(() => {
-          setIsAllowFilters(!isAllowFilters);
-        }, 300);
+        setIsAllowFilters(!isAllowFilters);
+      }, 300);
     setHTMLFilter(!getHTMLFilter);
   }, [getHTMLFilter, isAllowFilters]);
 
@@ -2380,45 +2388,37 @@ export default function TADashboard() {
           } else if (val.key === "hrTitle") {
             obj["HR Title / HR ID "] = `${data.hrTitle} / ${data.hrNumber}`;
           } else if (val.key === "talent_AnnualCTC_Budget_INRValueStr") {
-            obj["Talent Annual CTC Budget (INR)"] = `${
-              data.talent_AnnualCTC_Budget_INRValueStr ?? ""
-            }`;
+            obj["Talent Annual CTC Budget (INR)"] = `${data.talent_AnnualCTC_Budget_INRValueStr ?? ""
+              }`;
           } else if (val.key === "revenue_On10PerCTCStr") {
-            obj["Revenue Opportunity (10% on annual CTC)"] = `${
-              data.revenue_On10PerCTCStr ?? ""
-            }`;
+            obj["Revenue Opportunity (10% on annual CTC)"] = `${data.revenue_On10PerCTCStr ?? ""
+              }`;
           } else if (val.key === "totalRevenue_NoofTalentStr") {
-            obj["Total Revenue Opportunity (INR)"] = `${
-              data.totalRevenue_NoofTalentStr ?? ""
-            }`;
+            obj["Total Revenue Opportunity (INR)"] = `${data.totalRevenue_NoofTalentStr ?? ""
+              }`;
           } else if (val.key === "noOfProfile_TalentsTillDate") {
-            obj["No. of Active/Submitted Profiles till Date"] = `${
-              data.noOfProfile_TalentsTillDate ?? ""
-            }`;
+            obj["No. of Active/Submitted Profiles till Date"] = `${data.noOfProfile_TalentsTillDate ?? ""
+              }`;
           } else if (val.key === "role_Type") {
             obj["Inbound / Outbound"] = `${data?.role_Type ?? ""}`;
           } else if (val.key === "no_of_InterviewRounds") {
             obj["#Interview Rounds"] = `${data?.no_of_InterviewRounds ?? ""}`;
           } else if (val.key === "hrOpenSinceOneMonths") {
-            obj["Open Since > 1 Month (Yes/no)"] = `${
-              data?.hrOpenSinceOneMonths ?? ""
-            }`;
+            obj["Open Since > 1 Month (Yes/no)"] = `${data?.hrOpenSinceOneMonths ?? ""
+              }`;
           } else if (val.key === "latestNotes") {
             obj[
               "Latest Communication & Updates (Matcher to be Accountable)"
             ] = `${data?.latestNotes ?? ""}`;
           } else if (val.key === "profile_Shared_Target") {
-            obj["Profiles Shared  Target"] = `${
-              data?.profile_Shared_Target ?? ""
-            }`;
+            obj["Profiles Shared  Target"] = `${data?.profile_Shared_Target ?? ""
+              }`;
           } else if (val.key === "profile_Shared_Achieved") {
-            obj["Profiles  Shared  Achieved"] = `${
-              data?.profile_Shared_Achieved ?? ""
-            }`;
+            obj["Profiles  Shared  Achieved"] = `${data?.profile_Shared_Achieved ?? ""
+              }`;
           } else if (val.key === "interview_Scheduled_Target") {
-            obj["L1 Interviews Scheduled"] = `${
-              data?.interview_Scheduled_Target ?? ""
-            }`;
+            obj["L1 Interviews Scheduled"] = `${data?.interview_Scheduled_Target ?? ""
+              }`;
           } else if (val.key === "activeTR") {
             obj["Active TRs"] = `${data?.activeTR ?? ""}`;
           } else {
@@ -2547,7 +2547,7 @@ export default function TADashboard() {
                               </strong>
                             </div>
                           </Table.Summary.Cell>
-                            <Table.Summary.Cell index={1}>
+                          <Table.Summary.Cell index={1}>
                             <div style={{ textAlign: "center" }}>
                               <strong>
                                 {summaryData.total_TotalPipelineStr || "-"}
@@ -3513,7 +3513,7 @@ export default function TADashboard() {
                   <div className={taStyles.colMd6}>
                     <div className={taStyles.formGroup}>
                       <label>
-                        Select company{" "}
+                        Select Company{" "}
                         <span className={taStyles.reqField}>*</span>
                       </label>
 
@@ -3570,13 +3570,32 @@ export default function TADashboard() {
                   </div>
                 </div>
 
+                {Object.keys(newTRAllData).length > 0 && <div className={taStyles.row}>
+                  <div className={taStyles.colMd6}>
+                    <div className={taStyles.formGroup} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <label>
+                        Active TR {" "}
+                        <span className={taStyles.reqField}>*</span>
+                      </label>
+
+                      <InputNumber size="large" value={newTRAllData.activeHR} min={1} max={20} onChange={(value) => { setTRAllData(prev => ({ ...prev, activeHR: parseInt(value) })) }} />
+
+
+                    </div>
+                    {newTaskError && (newTRAllData.activeHR <= 0 || newTRAllData.activeHR > 20 || isNaN(newTRAllData.activeHR)) && (
+                      <p className={taStyles.error} style={{ marginTop: '5px' }}>Please enter a value from 1 to 20 </p>
+                    )}
+                  </div>
+                </div>}
+
+
                 <div className={taStyles.HRINFOCOntainer}>
                   {Object.keys(newTRAllData).length > 0 && (
                     <>
-                      <div>
+                      {/* <div>
                         <span>Active TR : </span>
                         {newTRAllData.activeHR}
-                      </div>
+                      </div> */}
                       <div>
                         <span>HR Created Date : </span>
                         {moment(newTRAllData.hrCreatedDate).format(
@@ -3737,7 +3756,7 @@ export default function TADashboard() {
                         disabled={true}
                         value={editTATaskData?.company_ID}
                         showSearch={true}
-                        onChange={(value, option) => {}}
+                        onChange={(value, option) => { }}
                         options={getCompanyNameSuggestion}
                         optionFilterProp="label"
                       />
