@@ -2167,9 +2167,15 @@ export default function TADashboard() {
 
   useEffect(() => {
     if (filtersList?.HeadUsers?.length) {
-      setSelectedHead(filtersList?.HeadUsers[0]?.id);
+      if(userData?.UserId === 176){
+        let PoojaPatel = filtersList?.HeadUsers?.find((head)=> head.data === "Pooja Patel");
+        setSelectedHead(PoojaPatel?.id);
+      }else{
+        setSelectedHead(filtersList?.HeadUsers[0]?.id);
+      }
+      
     }
-  }, [filtersList?.HeadUsers]);
+  }, [filtersList?.HeadUsers, userData]);
 
   useEffect(() => {
     if (selectedHead.length !== 0) {
