@@ -472,7 +472,7 @@ export default function QASummary({impHooks}) {
               id="amReportList"
               columns={reportColumns}
               bordered={false}
-              dataSource={reportData.filter(item=> item.hR_Type !== 'New')}
+              dataSource={reportData.filter(item=> item.hR_Type === 'New')}
               rowKey={(record, index) => index}
               pagination={false}
               rowClassName={(record) => {
@@ -530,7 +530,7 @@ export default function QASummary({impHooks}) {
               id="amReportList"
               columns={reportColumns}
               bordered={false}
-              dataSource={reportData.filter(item=> item.hR_Type !== 'Existing')}
+              dataSource={reportData.filter(item=> item.hR_Type === 'Existing')}
               rowKey={(record, index) => index}
               pagination={false}
               rowClassName={(record) => {
