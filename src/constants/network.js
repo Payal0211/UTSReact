@@ -86,8 +86,10 @@ export class TaDashboardURL {
 	static INSERT_GOAL_COMMENT ='InsertPotentialListComment'
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
 	static GET_TA_WISE_PIPELINE_DETAILS= 'GetTAWiseHRPipelineDetails'
+	static GET_TA_WISE_CONTRACT_PIPELINE_DETAILS = 'GetTAWiseHRPipelineDetails_Contract'
 	static GET_IMMEDIATE_TALENT_DETAILS = 'GetImmediateJinerDetails'
 	static GET_TOTAL_REVENUE_PER_TA = 'GetTotalRevenuePerTAUser'
+	static GET_TOTAL_CONTRACT_REVENUE_PER_TA = 'GetTotalRevenuePerTAUser_Contract'
 	static GET_DAILY_ACTIVE_TARGETS = 'GetDailyActiveHRPipelineAndTotalTarget'
 }
 

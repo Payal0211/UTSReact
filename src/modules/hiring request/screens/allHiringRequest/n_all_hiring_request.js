@@ -809,7 +809,7 @@ export default function New_all_hiring_request() {
                         {/* {(startDate && endDate) &&  <img src="images/close-hr-ic.svg" alt="Close Icon" onClick={()=>{setStartDate(null);setEndDate(null)}} className={`${stylesOBj["input-icon"]}`} />} */}
 
                         <div className={`${stylesOBj["filter-group"]} ${stylesOBj['search-group']}`}>
-                            <input type="text" className={`${stylesOBj["filter-input"]} ${stylesOBj['search-input']}`} placeholder="Search via HR#, role, company"
+                            <input type="text" className={`${stylesOBj["filter-input"]} ${stylesOBj['search-input']}`} placeholder="Search via HR#, Role , Company , Client , HR Type"
                                 onChange={debouncedSearchHandler}
                                 value={debouncedSearch}
                             />
@@ -828,7 +828,7 @@ export default function New_all_hiring_request() {
 
                             </button>
 
-                            <button className={`${stylesOBj["filter-btn"]}`} style={{ width: '130px', text: 'center', fontWeight: '500' }} onClick={clearFilters}>
+                            <button className={`${stylesOBj["filter-btn"]}`} style={{ width: '140px', text: 'center', fontWeight: '500' }} onClick={clearFilters}>
                                 <span>Reset Filters <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'small' }}>X</span></span>
                             </button>
                         </div>
@@ -889,7 +889,7 @@ export default function New_all_hiring_request() {
                                             {apiData.map((data, index) => {
                                                 return <tr key={data.key}>
                                                     {/* SHORTCUTS */}
-                                                    <td  >
+                                                    <td style={{padding:'15px'}} >
                                                         <div className={`${stylesOBj["shortcuts-cell"]}`}>
                                                             <a href="javascript:void(0)" onClick={() => { setIsPreviewModal(true); setpreviewIDs({ hrID: data?.HRID, companyID: data?.companyID }); getPreviewPostData(data?.HRID, data.HR_ID, data?.companyID) }} className={`${stylesOBj["shortcut-icon-wrapper"]}`} data-tooltip="Preview HR">
                                                                 <img src="images/preview-hr-ic.svg" alt="Preview HR" className={`${stylesOBj["shortcut-icon"]}`} />

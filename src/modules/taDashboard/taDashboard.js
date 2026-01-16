@@ -9,7 +9,7 @@ import {
   message,
   Skeleton,
   Checkbox,
-  NumberInput,
+  NumberInput, Tabs
 } from "antd";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
@@ -97,6 +97,8 @@ export default function TADashboard() {
   const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const [dailyActivityTargets, setDailyActiveTargets] = useState([]);
   const [totalRevenueList, setTotalRevenueList] = useState([]);
+  const [totalContractRevenueList, setTotalContractRevenueList] = useState([]);
+  const [contractSummaryData, setContractSummaryData] = useState({});
   const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
   const date = new Date();
   const [startTargetDate, setStartTargetDate] = useState(date);
@@ -156,6 +158,7 @@ export default function TADashboard() {
   const [allShowDetails, setAllShowDetails] = useState([]);
   const [isCarryFwdStatus, setIsCarryFwdStatus] = useState(false);
   const [PipelineTupeId, setPipelineTupeId] = useState(0);
+  const [dashboardTabTitle, setDashboardTabTitle] = useState("FTE")
   useEffect(() => {
     const getUserResult = async () => {
       let userData = UserSessionManagementController.getUserSession();
@@ -568,6 +571,39 @@ export default function TADashboard() {
     }
   };
 
+  const getTotalContractRevenue = async () => {
+    setpipelineLoading(true);
+    let pl = { month: moment(startDate).format('MM'), year: moment(startDate).format('YYYY') };
+    let result = await TaDashboardDAO.getTotalContractRevenueRequestDAO(pl);
+    setpipelineLoading(false);
+
+    console.log("contract revenue", result);
+
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      if (result.responseBody.length) {
+        const lastRow = {
+          ...result.responseBody[result.responseBody.length - 1],
+          bandwidthper: "",
+          goalRevenueStr: "",
+          taName: "",
+          sumOfTotalRevenue: result.responseBody[0].sumOfTotalRevenue,
+          sumOfTotalRevenueStr: result.responseBody[0].sumOfTotalRevenueStr,
+          taUserID: result.responseBody[0].taUserID,
+          totalRevenuePerUser: result.responseBody[0].totalRevenuePerUser,
+          totalRevenuePerUserStr: result.responseBody[0].totalRevenuePerUserStr,
+          TOTALROW: true,
+        };
+
+        setContractSummaryData(lastRow);
+        setTotalContractRevenueList(result.responseBody);
+      } else {
+        setTotalContractRevenueList([]);
+      }
+    } else {
+      setTotalContractRevenueList([]);
+    }
+  }
+
   const getTotalRevenue = async () => {
     setpipelineLoading(true);
     let result = await TaDashboardDAO.getTotalRevenueRequestDAO();
@@ -649,6 +685,10 @@ export default function TADashboard() {
     getTotalRevenue();
   }, []);
 
+  useEffect(() => {
+    getTotalContractRevenue()
+  }, [startDate])
+
   const editTAforTask = (task) => {
     setShowEditTATask(true);
     getCompanySuggestionHandler(task.tA_UserID);
@@ -698,6 +738,34 @@ export default function TADashboard() {
       message.error("Something went wrong!");
     }
   };
+
+  const showContractDetails = async (pipeLineTypeId, data, title, value, isTotal) => {
+    if (pipeLineTypeId == 7 || pipeLineTypeId == 8) setIsCarryFwdStatus(true);
+    else setIsCarryFwdStatus(false);
+    setPipelineTupeId(pipeLineTypeId);
+    setModalLoader(true);
+    const month = moment(new Date()).format("MM");
+    const year = moment(new Date()).format("YYYY");
+    let pl = {
+      pipelineTypeID: pipeLineTypeId,
+      taUserID: data?.taUserID,
+      month: Number(month),
+      year: Number(year),
+    };
+    let result = await TaDashboardDAO.getTAWiseContractHRPipelineDetailsDAO(pl);
+    setModalLoader(false);
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      setIsShowDetails({
+        isBoolean: true,
+        title: title,
+        value: value,
+        isTotal: isTotal,
+        TAName: data?.taName,
+      });
+      setAllShowDetails(result?.responseBody);
+    }
+  };
+
 
   const showDetails = async (pipeLineTypeId, data, title, value, isTotal) => {
     if (pipeLineTypeId == 7 || pipeLineTypeId == 8) setIsCarryFwdStatus(true);
@@ -999,6 +1067,282 @@ export default function TADashboard() {
             style={{ background: "lightpink", cursor: "pointer" }}
             onClick={() =>
               showDetails(6, result, "PreOnboarding Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+  ];
+
+  const totalRevenueContractColumns = [
+    {
+      title: "TA",
+      dataIndex: "taName",
+      key: "taName",
+      width: 120,
+      render: (text, result) => {
+        return text ? text : "-";
+      },
+    },
+    {
+      title: "Goal (INR)",
+      dataIndex: "goalRevenueStr",
+      key: "goalRevenueStr",
+      width: 130,
+      align: "center",
+      render: (text, result) => {
+        return text ? text : "-";
+      },
+    },
+    {
+      title: "Total Pipeline ( INR )",
+      dataIndex: "totalPipelineStr",
+      key: "totalPipelineStr",
+      width: 130,
+      align: "center",
+      render: (text, result) => {
+        return text ? (
+          <div
+            className={taStyles.today1Text}
+            style={{ background: "#f0f0f0" }}
+
+          >
+            {text}
+          </div>
+        ) : ''
+      },
+    },
+    {
+      title: (
+        <>
+          Assigned <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "totalRevenuePerUserStr",
+      key: "totalRevenuePerUserStr",
+      align: "center",
+      width: 150,
+      render: (text, result) => {
+        return text ? (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showContractDetails(0, result, "Assigned Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        ) : (
+          "-"
+        );
+      },
+    },
+    {
+      title: (
+        <>
+          Carry Fwd <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "carryFwdPipelineStr",
+      key: "carryFwdPipelineStr",
+      width: 150,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "#babaf5", cursor: "pointer" }}
+            onClick={() =>
+              showContractDetails(7, result, "Carry Fwd Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+    {
+      title: (
+        <>
+          Carry Fwd <br />
+          Not Included <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "carryFwdHoldPipelineStr",
+      key: "carryFwdHoldPipelineStr",
+      width: 170,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "lightyellow", cursor: "pointer" }}
+            onClick={() =>
+              showContractDetails(
+                8,
+                result,
+                "Carry Fwd Not Included Pipeline (INR)",
+                text
+              )
+            }
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+    {
+      title: (
+        <>
+          Current Month
+          <br />
+          Active
+          <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "currentMonthActualPipelineStr",
+      key: "currentMonthActualPipelineStr",
+      width: 150,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showContractDetails(
+                1,
+                result,
+                "Current Month Active Pipeline (INR)",
+                text
+              )
+            }
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+    {
+      title: (
+        <>
+          Total Active
+          <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "actualPipelineStr",
+      key: "actualPipelineStr",
+      width: 150,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.today1Text}
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showContractDetails(10, result, "Total Active Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Multiplier",
+      dataIndex: "bandwidthper",
+      key: "bandwidthper",
+      width: 80,
+      align: "center",
+      render: (text, result) => {
+        return text ? text : "-";
+      },
+    },
+    {
+      title: (
+        <>
+          Achieve <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "achievedPipelineStr",
+      key: "achievedPipelineStr",
+      width: 180,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              showContractDetails(3, result, "Achieve Pipeline (INR)", text)
+            }
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Lost Pipeline (INR)",
+      dataIndex: "lostPipelineStr",
+      key: "lostPipelineStr",
+      width: 160,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "lightsalmon", cursor: "pointer" }}
+            onClick={() => showContractDetails(4, result, "Lost Pipeline (INR)", text)}
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Hold Pipeline (INR)",
+      dataIndex: "holdPipelineStr",
+      key: "holdPipelineStr",
+      width: 150,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "lightyellow", cursor: "pointer" }}
+            onClick={() => showContractDetails(5, result, "Hold Pipeline (INR)", text)}
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+    {
+      title: (
+        <>
+          PreOnboarding <br />
+          Pipeline (INR)
+        </>
+      ),
+      dataIndex: "preOnboardingPipelineStr",
+      key: "preOnboardingPipelineStr",
+      width: 150,
+      align: "center",
+      render: (text, result) => {
+        return (
+          <div
+            className={taStyles.todayText}
+            style={{ background: "lightpink", cursor: "pointer" }}
+            onClick={() =>
+              showContractDetails(6, result, "PreOnboarding Pipeline (INR)", text)
             }
           >
             {text}
@@ -2526,224 +2870,465 @@ export default function TADashboard() {
               )}
 
               <div style={{ padding: "20px  20px" }}>
-                <Table
-                  dataSource={totalRevenueList}
-                  columns={totalRevenueColumns}
-                  pagination={false}
-                  scroll={{ x: "max-content", y: "1vh" }}
-                  summary={() => {
-                    return (
-                      <Table.Summary fixed>
-                        <Table.Summary.Row>
-                          <Table.Summary.Cell index={0}>
-                            <div>
-                              <strong>Total :</strong>
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={1}>
-                            <div style={{ textAlign: "center" }}>
-                              <strong>
-                                {summaryData.total_GoalStr || "-"}
-                              </strong>
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={1}>
-                            <div style={{ textAlign: "center" }}>
-                              <strong>
-                                {summaryData.total_TotalPipelineStr || "-"}
-                              </strong>
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={2}>
-                            <div
-                              style={{
-                                textAlign: "center",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                showDetails(
-                                  0,
-                                  { taUserID: 2 },
-                                  "Assigned Pipeline (INR)",
-                                  summaryData.sumOfTotalRevenueStr,
-                                  true
-                                )
-                              }
-                            >
-                              {summaryData.sumOfTotalRevenueStr || "-"}
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={3}>
-                            <div
-                              style={{ textAlign: "center", cursor: "pointer" }}
-                              onClick={() =>
-                                showDetails(
-                                  7,
-                                  { taUserID: 2 },
-                                  "Carry Fwd Pipeline (INR)",
-                                  summaryData.total_CarryFwdPipelineStr,
-                                  true
-                                )
-                              }
-                            >
-                              <strong>
-                                {summaryData.total_CarryFwdPipelineStr || "-"}
-                              </strong>
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={4}>
-                            <div
-                              style={{ textAlign: "center", cursor: "pointer" }}
-                              onClick={() =>
-                                showDetails(
-                                  8,
-                                  { taUserID: 2 },
-                                  "Carry Fwd Not Included Pipeline (INR)",
-                                  summaryData.total_CarryFwdHoldPipelineStr,
-                                  true
-                                )
-                              }
-                            >
-                              <strong>
-                                {summaryData.total_CarryFwdHoldPipelineStr ||
-                                  "-"}
-                              </strong>
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={5}>
-                            <div
-                              style={{
-                                textAlign: "center",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                showDetails(
-                                  1,
-                                  { taUserID: 2 },
-                                  "Current Month Actual Pipeline (INR)",
-                                  summaryData.total_CurrentMonthActualPipelineStr,
-                                  true
-                                )
-                              }
-                            >
-                              {summaryData.total_CurrentMonthActualPipelineStr ||
-                                "-"}
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={6}>
-                            <div
-                              style={{ textAlign: "center", cursor: "pointer" }}
-                              onClick={() =>
-                                showDetails(
-                                  10,
-                                  { taUserID: 2 },
-                                  "Total Active Pipeline (INR)",
-                                  summaryData.total_ActualPipelineStr,
-                                  true
-                                )
-                              }
-                            >
-                              <strong>
-                                {summaryData.total_ActualPipelineStr || "-"}
-                              </strong>
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={6}>
-                            <div style={{ textAlign: "center" }}></div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={7}>
-                            <div
-                              style={{
-                                textAlign: "center",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                showDetails(
-                                  3,
-                                  { taUserID: 2 },
-                                  "Achieved Pipeline (INR)",
-                                  summaryData.total_AchievedPipelineStr,
-                                  true
-                                )
-                              }
-                            >
-                              {summaryData.total_AchievedPipelineStr || "-"}
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={8}>
-                            <div
-                              style={{
-                                textAlign: "center",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                showDetails(
-                                  4,
-                                  { taUserID: 2 },
-                                  "Lost Pipeline (INR)",
-                                  summaryData.total_LostPipelineStr,
-                                  true
-                                )
-                              }
-                            >
-                              {summaryData.total_LostPipelineStr || "-"}
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={9}>
-                            <div
-                              style={{
-                                textAlign: "center",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                showDetails(
-                                  5,
-                                  { taUserID: 2 },
-                                  "Hold Pipeline (INR)",
-                                  summaryData.total_HoldPipelineStr,
-                                  true
-                                )
-                              }
-                            >
-                              {summaryData.total_HoldPipelineStr || "-"}
-                            </div>
-                          </Table.Summary.Cell>
-                          <Table.Summary.Cell index={10}>
-                            <div
-                              style={{
-                                textAlign: "center",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                showDetails(
-                                  6,
-                                  { taUserID: 2 },
-                                  "Pre-Onboarding Pipeline (INR)",
-                                  summaryData.total_PreOnboardingPipelineStr,
-                                  true
-                                )
-                              }
-                            >
-                              {summaryData.total_PreOnboardingPipelineStr ||
-                                "-"}
-                            </div>
-                          </Table.Summary.Cell>
-                        </Table.Summary.Row>
-                      </Table.Summary>
-                    );
-                  }}
-                  rowClassName={(record) => {
-                    if (record.orderSequence === 1) return taStyles.one;
-                    return "";
-                  }}
+                <Tabs
+                  onChange={(e) => setDashboardTabTitle(e)}
+                  defaultActiveKey="1"
+                  activeKey={dashboardTabTitle}
+                  animated={true}
+                  tabBarGutter={50}
+                  tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
+                  items={[
+                    {
+                      label: "FTE",
+                      key: "FTE",
+                      children:
+                        <Table
+                          dataSource={totalRevenueList}
+                          columns={totalRevenueColumns}
+                          pagination={false}
+                          scroll={{ x: "max-content", y: "1vh" }}
+                          summary={() => {
+                            return (
+                              <Table.Summary fixed>
+                                <Table.Summary.Row>
+                                  <Table.Summary.Cell index={0}>
+                                    <div>
+                                      <strong>Total :</strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={1}>
+                                    <div style={{ textAlign: "center" }}>
+                                      <strong>
+                                        {summaryData.total_GoalStr || "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={1}>
+                                    <div style={{ textAlign: "center" }}>
+                                      <strong>
+                                        {summaryData.total_TotalPipelineStr || "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={2}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          0,
+                                          { taUserID: 2 },
+                                          "Assigned Pipeline (INR)",
+                                          summaryData.sumOfTotalRevenueStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {summaryData.sumOfTotalRevenueStr || "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={3}>
+                                    <div
+                                      style={{ textAlign: "center", cursor: "pointer" }}
+                                      onClick={() =>
+                                        showDetails(
+                                          7,
+                                          { taUserID: 2 },
+                                          "Carry Fwd Pipeline (INR)",
+                                          summaryData.total_CarryFwdPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      <strong>
+                                        {summaryData.total_CarryFwdPipelineStr || "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={4}>
+                                    <div
+                                      style={{ textAlign: "center", cursor: "pointer" }}
+                                      onClick={() =>
+                                        showDetails(
+                                          8,
+                                          { taUserID: 2 },
+                                          "Carry Fwd Not Included Pipeline (INR)",
+                                          summaryData.total_CarryFwdHoldPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      <strong>
+                                        {summaryData.total_CarryFwdHoldPipelineStr ||
+                                          "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={5}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          1,
+                                          { taUserID: 2 },
+                                          "Current Month Actual Pipeline (INR)",
+                                          summaryData.total_CurrentMonthActualPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {summaryData.total_CurrentMonthActualPipelineStr ||
+                                        "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={6}>
+                                    <div
+                                      style={{ textAlign: "center", cursor: "pointer" }}
+                                      onClick={() =>
+                                        showDetails(
+                                          10,
+                                          { taUserID: 2 },
+                                          "Total Active Pipeline (INR)",
+                                          summaryData.total_ActualPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      <strong>
+                                        {summaryData.total_ActualPipelineStr || "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={6}>
+                                    <div style={{ textAlign: "center" }}></div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={7}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          3,
+                                          { taUserID: 2 },
+                                          "Achieved Pipeline (INR)",
+                                          summaryData.total_AchievedPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {summaryData.total_AchievedPipelineStr || "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={8}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          4,
+                                          { taUserID: 2 },
+                                          "Lost Pipeline (INR)",
+                                          summaryData.total_LostPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {summaryData.total_LostPipelineStr || "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={9}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          5,
+                                          { taUserID: 2 },
+                                          "Hold Pipeline (INR)",
+                                          summaryData.total_HoldPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {summaryData.total_HoldPipelineStr || "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={10}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          6,
+                                          { taUserID: 2 },
+                                          "Pre-Onboarding Pipeline (INR)",
+                                          summaryData.total_PreOnboardingPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {summaryData.total_PreOnboardingPipelineStr ||
+                                        "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                </Table.Summary.Row>
+                              </Table.Summary>
+                            );
+                          }}
+                          rowClassName={(record) => {
+                            if (record.orderSequence === 1) return taStyles.one;
+                            return "";
+                          }}
+                        />
+
+                    },
+                    {
+                      label: "Contract",
+                      key: "Contract",
+                      children:
+                        <Table
+                          dataSource={totalContractRevenueList}
+                          columns={totalRevenueContractColumns}
+                          pagination={false}
+                          scroll={{ x: "max-content", y: "1vh" }}
+                          summary={() => {
+                            return (
+                              <Table.Summary fixed>
+                                <Table.Summary.Row>
+                                  <Table.Summary.Cell index={0}>
+                                    <div>
+                                      <strong>Total :</strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={1}>
+                                    <div style={{ textAlign: "center" }}>
+                                      <strong>
+                                        {contractSummaryData.total_GoalStr || "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={1}>
+                                    <div style={{ textAlign: "center" }}>
+                                      <strong>
+                                        {contractSummaryData.total_TotalPipelineStr || "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={2}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          0,
+                                          { taUserID: 2 },
+                                          "Assigned Pipeline (INR)",
+                                          contractSummaryData.sumOfTotalRevenueStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {contractSummaryData.sumOfTotalRevenueStr || "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={3}>
+                                    <div
+                                      style={{ textAlign: "center", cursor: "pointer" }}
+                                      onClick={() =>
+                                        showDetails(
+                                          7,
+                                          { taUserID: 2 },
+                                          "Carry Fwd Pipeline (INR)",
+                                          contractSummaryData.total_CarryFwdPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      <strong>
+                                        {contractSummaryData.total_CarryFwdPipelineStr || "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={4}>
+                                    <div
+                                      style={{ textAlign: "center", cursor: "pointer" }}
+                                      onClick={() =>
+                                        showDetails(
+                                          8,
+                                          { taUserID: 2 },
+                                          "Carry Fwd Not Included Pipeline (INR)",
+                                          contractSummaryData.total_CarryFwdHoldPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      <strong>
+                                        {contractSummaryData.total_CarryFwdHoldPipelineStr ||
+                                          "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={5}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          1,
+                                          { taUserID: 2 },
+                                          "Current Month Actual Pipeline (INR)",
+                                          contractSummaryData.total_CurrentMonthActualPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {contractSummaryData.total_CurrentMonthActualPipelineStr ||
+                                        "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={6}>
+                                    <div
+                                      style={{ textAlign: "center", cursor: "pointer" }}
+                                      onClick={() =>
+                                        showDetails(
+                                          10,
+                                          { taUserID: 2 },
+                                          "Total Active Pipeline (INR)",
+                                          contractSummaryData.total_ActualPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      <strong>
+                                        {contractSummaryData.total_ActualPipelineStr || "-"}
+                                      </strong>
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={6}>
+                                    <div style={{ textAlign: "center" }}></div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={7}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          3,
+                                          { taUserID: 2 },
+                                          "Achieved Pipeline (INR)",
+                                          contractSummaryData.total_AchievedPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {contractSummaryData.total_AchievedPipelineStr || "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={8}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          4,
+                                          { taUserID: 2 },
+                                          "Lost Pipeline (INR)",
+                                          contractSummaryData.total_LostPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {contractSummaryData.total_LostPipelineStr || "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={9}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          5,
+                                          { taUserID: 2 },
+                                          "Hold Pipeline (INR)",
+                                          contractSummaryData.total_HoldPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {contractSummaryData.total_HoldPipelineStr || "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                  <Table.Summary.Cell index={10}>
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        showDetails(
+                                          6,
+                                          { taUserID: 2 },
+                                          "Pre-Onboarding Pipeline (INR)",
+                                          contractSummaryData.total_PreOnboardingPipelineStr,
+                                          true
+                                        )
+                                      }
+                                    >
+                                      {contractSummaryData.total_PreOnboardingPipelineStr ||
+                                        "-"}
+                                    </div>
+                                  </Table.Summary.Cell>
+                                </Table.Summary.Row>
+                              </Table.Summary>
+                            );
+                          }}
+                          rowClassName={(record) => {
+                            if (record.orderSequence === 1) return taStyles.one;
+                            return "";
+                          }}
+                        />
+                    }
+                  ]}
                 />
               </div>
+
+
+
             </>
           )
         ) : null}
