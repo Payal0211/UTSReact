@@ -136,6 +136,22 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getHRTalentDetailsRequest');
 		}
 	},
+	getTotalContractRevenueRequest: async function (pl) {
+		let httpService = new HttpServices();		
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TOTAL_CONTRACT_REVENUE_PER_TA + `?month=${pl?.month}&year=${pl?.year}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getTotalContractRevenueRequest');
+		}
+	},
 	getDailyActiveTargetsRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -363,7 +379,22 @@ export const TaDashboardAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'TaDashboardAPI.insertProfileShearedTargetRequest');
+			return errorDebug(error, 'TaDashboardAPI.getTAWiseHRPipelineDetailsRequest');
+		}
+	},
+	getTAWiseContractHRPipelineDetailsRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TA_WISE_CONTRACT_PIPELINE_DETAILS+ `?pipelineTypeID=${pl?.pipelineTypeID}&taUserID=${pl?.taUserID}&month=${pl?.month}&year=${pl?.year}`			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getTAWiseContractHRPipelineDetailsRequest');
 		}
 	},
 	getTAGoalListAPI: async function () {
