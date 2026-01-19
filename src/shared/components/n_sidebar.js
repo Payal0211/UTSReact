@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import UTSRoutes, { NewPagesRouts } from 'constants/routes';
 import { userDAO } from 'core/user/userDAO';
 import { useQueryClient } from '@tanstack/react-query';
-
+// import TADashboardIcon from 'assets/svg/ta-dashboard.svg'
+// import AMReportIcon from 'assets/svg/amreport.svg';
 
 
 export default function N_sidebar() {
@@ -53,6 +54,19 @@ export default function N_sidebar() {
                         </svg>
 
                         <span className={stylesOBj["nav-label"]}>AM Deployed Dashboard</span>
+
+                    </Link>
+                    <Link to={UTSRoutes.TADASHBOARD} className={`${stylesOBj['nav-item']}`}>
+
+                        <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['stroke-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#4C4E64" d="M12 12c2.7 0 4.5-1.8 4.5-4.5S14.7 3 12 3 7.5 4.8 7.5 7.5 9.3 12 12 12z" />
+                            <path fill="#4C4E64" d="M12 13.5c-3 0-9 1.5-9 4.5V21h18v-3c0-3-6-4.5-9-4.5z" />
+                            <rect x="17.5" y="9" width="1.5" height="6" fill="#4C4E64" />
+                            <rect x="20.5" y="6" width="1.5" height="9" fill="#4C4E64" />
+                            <rect x="14.5" y="12" width="1.5" height="3" fill="#4C4E64" />
+                        </svg>
+
+                        <span className={stylesOBj["nav-label"]}>TA Dashboard</span>
 
                     </Link>
                     <Link to={NewPagesRouts.ALLHIRINGREQUESTROUTE} className={`${stylesOBj['nav-item']} ${stylesOBj['active']}`}>
@@ -139,6 +153,22 @@ export default function N_sidebar() {
                             <li><Link to={UTSRoutes.CLIENT_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Client Dashboard</Link></li>
                         </ul>
                     </div>
+                    {/* <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('OM Report') ? stylesOBj['expanded'] : ''}`}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('OM Report')}>
+                         
+                            <span className={stylesOBj["nav-label"]}>OM Report</span>
+                            <svg className={`${stylesOBj['nav-chevron']}`} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 4L10 8L6 12" stroke="#4C4E64" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                        <ul className={`${stylesOBj['nav-submenu']}`}>
+                            <li><Link to={UTSRoutes.AM_INTERVIEW} className={`${stylesOBj['nav-subitem']}`}>AM Wise Interview Count</Link></li>
+                            <li><Link to={UTSRoutes.SCREENING_INTERVIEW_REJECT} className={`${stylesOBj['nav-subitem']}`}>Screen & Interview Reject Count</Link></li>
+                            <li><Link to={UTSRoutes.DAILY_BUSINESS_NUMBERS} className={`${stylesOBj['nav-subitem']}`}>Revenue Report</Link></li>
+                            <li><Link to={UTSRoutes.POTENTIAL_CLOSURES_SHEET} className={`${stylesOBj['nav-subitem']}`}>Potential Closures List</Link></li>
+                            <li><Link to={UTSRoutes.COMPANY_CATEGORY} className={`${stylesOBj['nav-subitem']}`}>Company Category</Link></li>
+                        </ul>
+                    </div> */}
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Talent') ? stylesOBj['expanded'] : ''}`}>
                         <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Talent')}>
                             <img src="images/talent-ic.svg" alt="Talent Icon" />
