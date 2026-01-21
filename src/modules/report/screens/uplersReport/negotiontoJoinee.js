@@ -619,7 +619,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         {
       title: (
         <div style={{ textAlign: "center" }}>
-          Number of
+          Active
           <br />
           TRs
         </div>
@@ -1473,7 +1473,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
               {
           title: (
             <div style={{ textAlign: "center" }}>
-              Number of
+              Active
               <br />
               TRs
             </div>
