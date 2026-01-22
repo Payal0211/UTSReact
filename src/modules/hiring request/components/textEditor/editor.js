@@ -20,7 +20,7 @@ import { allCompanyRequestDAO } from 'core/company/companyDAO';
 import { HTTPStatusCode } from 'constants/network';
 import spinGif from "assets/gif/RefreshLoader.gif";
 
-const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment , isUsedForComment }) => {
+const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment , isUsedForComment ,editedText}) => {
 	const [isStyleEditor, setStyleEditor] = useState(false);
 	const [isShowDropDownList, setShowDropDownList] = useState(false);
 	const [tagUserSearch, setTagUserSearch] = useState('');
@@ -65,6 +65,13 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI,saveNote,allowAttachment ,
 				setShowDropDownList(false);
 		}
 	};
+
+	useEffect(() => {
+		console.log("editedText", editedText)
+		if(editedText){
+			commentRef.current.innerHTML = editedText
+		}
+	},[editedText])
 
 
 	const onFileChangeCapture = async ( e ) => {

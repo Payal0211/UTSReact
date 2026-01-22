@@ -125,7 +125,8 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_TOTAL_REVENUE_PER_TA + `?month=${pl?.month}&year=${pl?.year}`
+			TaDashboardURL.GET_TOTAL_REVENUE_PER_TA 
+			// + `?month=${pl?.month}&year=${pl?.year}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
