@@ -455,6 +455,10 @@ font-weight: 500;
     background-color: rgb(233, 233, 233) !important;
 }
 
+.TaUserColColor td { 
+    background-color: rgb(252, 252, 239) !important;
+}
+
 @media screen and (max-width: 1440px) {
     .hiringRequestContainer {
         padding: 16px 24px;
