@@ -2224,7 +2224,128 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         </div>
       </div>}
 
-   
+       {showDFReport && (
+                <Modal
+                  transitionName=""
+                  width="1050px"
+                  centered
+                  footer={null}
+                  open={showDFReport}
+                  className="engagementModalStyle"
+                  onCancel={() => {
+                    setSearchTerm("");
+                    setShowDFReport(false);
+                    setDFFilterListData([]);
+                    setDFListData([]);
+                  }}
+                >
+                  {false ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "350px",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        style={{
+                          padding: "45px 15px 10px 15px",
+                          display: "flex",
+                          gap: "10px",
+                          alignItems: "center",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <h3>
+                          <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+                        </h3>
+                        {/* <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
+                                          TA : <strong>add</strong>
+                                        </p> */}
+        
+                        <input
+                          type="text"
+                          placeholder="Search talent..."
+                          value={searchTerm}
+                          onChange={(e) => handleSummerySearchInput(e.target.value)}
+                          style={{
+                            padding: "6px 10px",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                            marginLeft: "auto",
+                            marginRight: "20px",
+                            minWidth: "260px",
+                          }}
+                        />
+                      </div>
+        
+                      {achievedLoading ? (
+                        <div>
+                          <Skeleton active />
+                        </div>
+                      ) : (
+                        <div style={{ margin: "5px 10px" }}>
+                          <Table
+                            dataSource={DFFilterListData}
+                            columns={DFColumns}
+                            pagination={false}
+                            scroll={{x: "1600px", y: "480px"}}
+                          />
+                        </div>
+                      )}
+        
+                      {/* {moveToAssessment && (
+                                        <Modal
+                                          width="992px"
+                                          centered
+                                          footer={null}
+                                          open={moveToAssessment}
+                                          className="commonModalWrap"
+                                          // onOk={() => setVersantModal(false)}
+                                          onCancel={() => {
+                                            setMoveToAssessment(false);
+                                            resetRemarkField("remark");
+                                            clearRemarkError("remark");
+                                          }}
+                                        >
+                                          <MoveToAssessment
+                                            onCancel={() => {
+                                              setMoveToAssessment(false);
+                                              resetRemarkField("remark");
+                                              clearRemarkError("remark");
+                                            }}
+                                            register={remarkregiter}
+                                            handleSubmit={remarkSubmit}
+                                            resetField={resetRemarkField}
+                                            errors={remarkError}
+                                            saveRemark={saveRemark}
+                                            saveRemarkLoading={saveRemarkLoading}
+                                          />
+                                        </Modal>
+                                      )} */}
+        
+                      <div style={{ padding: "10px 0" }}>
+                        <button
+                          className={uplersStyle.btnCancle}
+                          // disabled={isAddingNewTask}
+                          onClick={() => {
+                            setSearchTerm("");
+                            setShowDFReport(false);
+                            setDFFilterListData([]);
+                            setDFListData([]);
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </Modal>
+              )}
 
 
        {showResponse && (
