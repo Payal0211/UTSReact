@@ -33,18 +33,18 @@ import  Kitten  from 'assets/kitten-face.png'
 
 const { Option } = Select;
 
-export default function NegotiontoJoinee({
+export default function NegotiontoJoineeMultiMonth({
   impHooks
 }) {
     const navigate = useNavigate()
-    const {monthDate,hrModal,selectedHead,podName,isFreezeAllowed,freezeDate} = impHooks
+    const {monthDate,hrModal,selectedHead,podName,isFreezeAllowed,freezeDate,monthOrder,selectedMonths} = impHooks
     const [isLoading, setIsLoading] = useState(false);
     const [isTableLoading,setIsTableLoading] = useState(false)
     const [reportData, setReportData] = useState([]);
     const [summaryData,setSummaryData] = useState([])
     const [reportPtoNData, setReportPtoNData] = useState([]);
-    const [isPlanningSummeryLoading, setIsPlanningSummeryLoading] = useState(false);
-    const [planningSummaryData, setPlanningSummaryData] = useState([]);
+    // const [isPlanningSummeryLoading, setIsPlanningSummeryLoading] = useState(false);
+    // const [planningSummaryData, setPlanningSummaryData] = useState([]);
     const [openSplitHR, setSplitHR] = useState(false);
     const [getHRnumber, setHRNumber] = useState({hrNumber:'', isHybrid:false});
     const [getHRID, setHRID] = useState("");
@@ -69,7 +69,7 @@ const [hrTalentListFourCount, setHRTalentListFourCount] = useState([]);
 const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
  const [profileStatusID, setProfileStatusID] = useState(0);
  const [searchTerm, setSearchTerm] = useState("");
-
+   const [monthNamesStr,setMonthsNameStr] = useState([])
  const [achievedLoading, setAchievedLoading] = useState(false);
    const [showTalentCol, setShowTalentCol] = useState({});
    const [achievedTotal, setAchievedTotal] = useState("");
@@ -110,27 +110,27 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
 ];
 
 
-       const getReportData = async () => {
- const pl = {
-        hrmodel: hrModal,
-        pod_id: selectedHead,
-        month: moment(monthDate).format("M"),
-        year: moment(monthDate).format("YYYY"),
-      };
-      setIsLoading(true)
-        const result = await ReportDAO.getNegotiationReportDAO(pl);
+//        const getReportData = async () => {
+//  const pl = {
+//         hrmodel: hrModal,
+//         pod_id: selectedHead,
+//         month: moment(monthDate).format("M"),
+//         year: moment(monthDate).format("YYYY"),
+//       };
+//       setIsLoading(true)
+//         const result = await ReportDAO.getNegotiationReportDAO(pl);
 
- setIsLoading(false);
+//  setIsLoading(false);
 
-    if (result.statusCode === HTTPStatusCode.OK) {
-      setReportData(
-        result && result?.responseBody
-      );
-    } else {
-      setReportData([]);
-      return "NO DATA FOUND";
-    }
-       }
+//     if (result.statusCode === HTTPStatusCode.OK) {
+//       setReportData(
+//         result && result?.responseBody
+//       );
+//     } else {
+//       setReportData([]);
+//       return "NO DATA FOUND";
+//     }
+//        }
 
        const getAMSummary = async () => {
             const pl = {
@@ -182,43 +182,85 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
 
 
 
-  const getPlanningSummeryData = async () => {
- const pl = {
-        hrmodel: hrModal,
-        pod_id: selectedHead,
-        month: moment(monthDate).format("M"),
-        year: moment(monthDate).format("YYYY"),
-      };
-      setIsPlanningSummeryLoading(true)
-        const result = await ReportDAO.getPlanningSummeryReportDAO(pl);
+//   const getPlanningSummeryData = async () => {
+//  const pl = {
+//         hrmodel: hrModal,
+//         pod_id: selectedHead,
+//         month: moment(monthDate).format("M"),
+//         year: moment(monthDate).format("YYYY"),
+//       };
+//       setIsPlanningSummeryLoading(true)
+//         const result = await ReportDAO.getPlanningSummeryReportDAO(pl);
 
- setIsPlanningSummeryLoading(false);
+//  setIsPlanningSummeryLoading(false);
 
-    if (result.statusCode === HTTPStatusCode.OK) {
-      setPlanningSummaryData(
-        result && result?.responseBody
-      );
-    } else {
-      setPlanningSummaryData([]);
-      return "NO DATA FOUND";
-    }
-       }
+//     if (result.statusCode === HTTPStatusCode.OK) {
+//       setPlanningSummaryData(
+//         result && result?.responseBody
+//       );
+//     } else {
+//       setPlanningSummaryData([]);
+//       return "NO DATA FOUND";
+//     }
+//        }
+
+        const mapMonthStageWise = (data) =>{
+            let stages = []
+            let months = []
+            let newD = []
+            let cats = []
+
+            data.forEach(itm=> {
+                if(!stages.includes(itm.stage)){
+                    stages.push(itm.stage)
+                }
+
+                 if(!months.includes(itm.month_Name)){
+                    months.push(itm.month_Name)
+                }
+
+                 if(!cats.includes(itm.category)){
+                    cats.push(itm.category)
+                }
+            })
+
+            cats.forEach(cat=> {
+                let catbasedata = data.filter(i=> i.category === cat)
+            
+                stages.forEach(itm=> {
+                let allStageData = catbasedata.filter(i=> i.stage=== itm)
+                let obj = {...allStageData[0]}
+                
+                months.forEach(mont=>{                
+                    let monthD = allStageData.find(si=> si.month_Name === mont)
+                    obj[mont] = monthD?.monthAmountSTR ?? ''
+                })
+                newD.push(obj)
+            })
+            }
+            )
+
+            
+            // console.log('newD',months,stages, newD,data)
+            setMonthsNameStr(months)
+            return newD
+      }
 
     const getReportSummaryData = async () => {
  const pl = {
         hrmodel: hrModal,
         pod_id: selectedHead,
-        month: moment(monthDate).format("M"),
+        month: selectedMonths.map(i=> i+1).join(','),
         year: moment(monthDate).format("YYYY"),
       };
       setIsTableLoading(true)
-        const result = await ReportDAO.getNegotiationReportSummaryDAO(pl);
+        const result = await ReportDAO.getNegotiationMultiMonthReportSummaryDAO(pl);
        
  setIsTableLoading(false);
 
     if (result.statusCode === HTTPStatusCode.OK) {
       setSummaryData(
-        result && result?.responseBody
+       mapMonthStageWise(result && result?.responseBody) 
       );
     } else {
       setSummaryData([]);
@@ -227,15 +269,15 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
        }
 
        useEffect(()=>{
-        getReportData()
+        // getReportData()
         getReportPtoNData()
         getReportSummaryData()
-        getPlanningSummeryData()
+        // getPlanningSummeryData()
      
         if(hrModal === 'Contract' && selectedHead === 5){
           getAMSummary()
         }
-       },[monthDate,hrModal,selectedHead])
+       },[monthDate,hrModal,selectedHead,selectedMonths])
 
            const getPODList = async (getHRID) => {
                  setIsSplitLoading(true);
@@ -323,8 +365,8 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         const pl = {
           hrmodel: hrModal,
           pod_id: selectedHead,
-          month: moment(monthDate).format("M"),
-          year: moment(monthDate).format("YYYY"),
+          monthstr: moment(monthDate).format("M"),
+          yearstr: moment(monthDate).format("YYYY"),
           stage_ID: row.stage_ID,
           weekno: week ? week : "",
           hr_businesstype:row.hR_Type,
@@ -333,7 +375,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         setShowTalentCol(row);
         setAchievedTotal(v);
         setAchievedLoading(true);
-        const result = await ReportDAO.getNegotiationPopupReportDAO(pl);
+        const result = await ReportDAO.getNegotiationMultimonthPopupReportDAO(pl);
         setAchievedLoading(false);
         if (result.statusCode === 200) {
           setDFListData(result.responseBody);
@@ -870,371 +912,93 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         className: `${uplersStyle.stagesHeaderCell} ${uplersStyle.headerCommonConfig} `,
       
       },
-      {
-        title: <div style={{ textAlign: "center" }}>Goal</div>,
-        dataIndex: "goalStr",
-        key: "goalStr",
-        align: "right",
-        width: 120,
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig} `,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" ? (
-              v
-            ) : (
-              <span
-              // onClick={() => getHRTalentWiseReport(rec, v)}
-              // style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
+       {
+            title: <div style={{ textAlign: "center" }}>Goal</div>,
+            dataIndex: "goalStr",
+            key: "goalStr",
+            width: 120,
+            align: "right",
+            onHeaderCell: () => ({
+              className: uplersStyle.headerCommonGoalHeaderConfig,
+            }),
+            className: `${uplersStyle.headerCommonConfig}`,
+ 
+          },
+          {
+            title: <div style={{ textAlign: "center" }}>Achieved</div>,
+            dataIndex: "achievedStr",
+            key: "achievedStr",
+            width: 120,
+            align: "right",
+            onHeaderCell: () => ({
+              className: uplersStyle.headerCommonGoalHeaderConfig,
+            }),
+            className: `${uplersStyle.headerCommonConfig}`,
+              render: (v, rec) => {
+        return v ? (
+          rec.stage === "Goal" || rec.stage.includes("%") ? (
+            v
           ) : (
-            ""
-          );
-        },
-      },
-      {
-        title: <div style={{ textAlign: "center" }}>Goal till date</div>,
-        dataIndex: "goalTillDateStr",
-        key: "goalTillDateStr",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : (
-              <span
-              // onClick={() => getHRTalentWiseReport(rec,  v)}
-              // style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
+            <span
+              onClick={() => {
+                  getDFDetails(rec, v);
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {v}
+            </span>
+          )
+        ) : (
+          ""
+        );
+      }
+          },
+          {
+            title: <div style={{ textAlign: "center" }}>Achieved %</div>,
+            dataIndex: "achievedPerStr",
+            key: "achievedPerStr",
+            width: 120,
+            align: "right",
+            onHeaderCell: () => ({
+              className: uplersStyle.headerCommonGoalHeaderConfig,
+            }),
+            className: `${uplersStyle.headerCommonConfig}`,
+   
+          },
+         
+          ...monthNamesStr?.sort(
+  (a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b)
+)?.map(mon=>({
+            title: <div style={{ textAlign: "center" }}>{mon}</div>,
+            dataIndex: mon,
+            key: mon,
+            width: 120,
+            align: "right",
+            onHeaderCell: () => ({
+              className: uplersStyle.headerCommonGoalHeaderConfig,
+            }),
+            className: `${uplersStyle.headerCommonConfig}`,
+             render: (v, rec) => {
+        return v ? (
+          rec.stage === "Goal" || rec.stage.includes("%") ? (
+            v
           ) : (
-            ""
-          );
-        },
+            <span
+              onClick={() => {
+                  getDFDetails(rec, v, mon);
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {v}
+            </span>
+          )
+        ) : (
+          ""
+        );
       },
-      {
-        title: <div style={{ textAlign: "center" }}>Achieved</div>,
-        dataIndex: "achievedStr",
-        key: "achievedStr",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return (
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "end",
-                  // flexDirection:'end'
-                }}
-              >
-                {(rec.stage === "Joining" ||
-                  rec.stage === "Companies CF" ||
-                  rec.stage === "Total Customers assigned") && (
-                  <IconContext.Provider
-                    value={{
-                      color: "green",
-                      style: {
-                        width: "20px",
-                        height: "20px",
-                        marginRight: "auto",
-                        cursor: "pointer",
-                      },
-                    }}
-                  >
-                    {" "}
-                    <Tooltip title={`Add/View comment`} placement="top">
-                      <span
-                        onClick={() => {
-                          AddGoalComment(rec, "N");
-                        }}
-                        // className={taStyles.feedbackLabel}
-                      >
-                        {" "}
-                        <IoMdAddCircle />
-                      </span>{" "}
-                    </Tooltip>
-                  </IconContext.Provider>
-                )}
-  
-                <div style={{ marginLeft: "auto" }}>
-                  {v ? (
-                    rec.stage === "Goal" || rec.stage.includes("%") ? (
-                      v
-                    ) : (
-                      <span
-                        onClick={() => {
-                        getDFDetails(rec, v);
-                        }}
-                        style={{ cursor: "pointer", color: "#1890ff" }}
-                      >
-                        {v}
-                      </span>
-                    )
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-            </>
-          );
-        },
-      },
-      {
-        title: <div style={{ textAlign: "center" }}>Achieved %</div>,
-        dataIndex: "achievedPerStr",
-        key: "achievedPerStr",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : (
-              <span
-              // onClick={() => getHRTalentWiseReport(rec,  v)}
-              // style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
-          ) : (
-            ""
-          );
-        },
-      },
-      {
-        title: <div style={{ textAlign: "center" }}>W1</div>,
-        dataIndex: "w1Str",
-        key: "w1Str",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : (
-              <span
-                onClick={() => {
-                   getDFDetails(rec, v, "W1");
-                 
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
-          ) : (
-            ""
-          );
-        },
-      },
-      {
-        title: <div style={{ textAlign: "center" }}>W2</div>,
-        dataIndex: "w2Str",
-        key: "w2Str",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : (
-              <span
-                onClick={() => {
-                 getDFDetails(rec, v, "W2");
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
-          ) : (
-            ""
-          );
-        },
-      },
-      {
-        title: <div style={{ textAlign: "center" }}>W3</div>,
-        dataIndex: "w3Str",
-        key: "w3Str",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : (
-              <span
-                onClick={() => {
-                 getDFDetails(rec, v, "W3");
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
-          ) : (
-            ""
-          );
-        },
-      },
-      {
-        title: <div style={{ textAlign: "center" }}>W4</div>,
-        dataIndex: "w4Str",
-        key: "w4Str",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : (
-              <span
-                onClick={() => {
-                getDFDetails(rec, v, "W4");
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
-          ) : (
-            ""
-          );
-        },
-      },
-      {
-        title: <div style={{ textAlign: "center" }}>W5</div>,
-        dataIndex: "w5Str",
-        key: "w5Str",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : (
-              <span
-                onClick={() => {
-                  getDFDetails(rec, v, "W5");
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
-          ) : (
-            ""
-          );
-        },
-      },
-     {
-        title: <div style={{ textAlign: "center" }}>Projection</div>,
-        dataIndex: "projectionStr",
-        key: "projectionStr",
-        width: 120,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : v
-              // <span
-              //   onClick={() => {
-              //     if (rec.category === "DF") {
-              //       // getDFDetails(rec, v, "W5");
-              //     } else {
-              //       // getHRTalentWiseReport(rec, v, "W5");
-              //     }
-              //   }}
-              //   style={{ cursor: "pointer", color: "#1890ff" }}
-              // >
-                // {v}
-              // </span> 
-            
-          ): (
-            ""
-          );
-        },
-      },
-        {
-        title: <div style={{ textAlign: "center" }}>Upcoming months</div>,
-        dataIndex: "nextMonthStr",
-        key: "nextMonthStr",
-        width: 155,
-        align: "right",
-        onHeaderCell: () => ({
-          className: uplersStyle.headerCommonGoalHeaderConfig,
-        }),
-        className: `${uplersStyle.headerCommonConfig}`,
-        render: (v, rec) => {
-          return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
-              v
-            ) : (
-              <span
-                onClick={() => {
-                  getDFDetails({...rec,isNM:'Yes' }, v);
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {v}
-              </span>
-            )
-          ) : (
-            ""
-          );
-        },
-      },
-  
-
-    ];
+          }
+          ))
+        ];
 
       const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
         return (
@@ -2311,26 +2075,6 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
     }
   };
 
-    const getSummeryDetails = async (val, col) => {
-      let pl = {
-        hr_BusinessType: "G",
-        month: monthDate ? +moment(monthDate).format("M") : 0,
-        year: monthDate ? +moment(monthDate).format("YYYY") : 0,
-        groupName: val.groupName,
-        am_ColumnName: col,
-        stage_ID: val.stage_ID,
-      };
-      // setShowSummeryDetails(true);
-      // setLoadingTalentProfile(true);
-      // setSummertTitles({ ...val, col, amount: val[col] });
-      // const res = await ReportDAO.getTAReportSummeryDetailsDAO(pl);
-      // setLoadingTalentProfile(false);
-      // if (res.statusCode === HTTPStatusCode.OK) {
-      //   setSummeryDetails(res.responseBody);
-      // } else {
-      //   setSummeryDetails([]);
-      // }
-    };
 
 
   return (<>
@@ -2917,738 +2661,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   )}
 
 
-    {hrModal !== 'DP' ? <>
-    <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
- {isLoading ? (
-        <TableSkeleton />
-      ) : (
-        <>
-         <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  padding: "20px 20px 0",
-                }}
-              >
-              New - Negotiation to Joinee Funnel
-              </p>
-               <Table
-          scroll={{ x: "1600px", y: "100vh" }}
-          id="amReportList"
-          columns={reportColumns}
-          bordered={false}
-          dataSource={reportData.filter(item => item.businessType === 'New')}
-          rowKey={(record, index) => index}
-       
-          pagination={false}
-        />
-        </>
-       
-      )}
-
-     
-        </div>
-      </div>
-       
-      <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
- {isLoading ? (
-        <TableSkeleton />
-      ) : (
-        <>
-         <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  padding: "20px 20px 0",
-                }}
-              >
-              Existing - Negotiation to Joinee Funnel
-              </p>
-               <Table
-          scroll={{ x: "1600px", y: "100vh" }}
-          id="amReportList"
-          columns={reportColumns}
-          bordered={false}
-          dataSource={reportData.filter(item => item.businessType === 'Existing')}
-          rowKey={(record, index) => index}
-       
-          pagination={false}
-        />
-        </>
-       
-      )}
-
-
-        </div>
-      </div>
-    </> :<div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
- {isLoading ? (
-        <TableSkeleton />
-      ) : (
-        <>
-         <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  padding: "20px 20px 0",
-                }}
-              >
-               Negotiation to Joinee Funnel
-              </p>
-               <Table
-          scroll={{ x: "1600px", y: "100vh" }}
-          id="amReportList"
-          columns={reportColumns}
-          bordered={false}
-          dataSource={reportData}
-          rowKey={(record, index) => index}
-       
-          pagination={false}
-        />
-        </>
-       
-      )}
-
-      
-        </div>
-      </div>}
- <Modal
-        width={"700px"}
-        centered
-        footer={false}
-        open={openSplitHR}
-        className="cloneHRConfWrap"
-        onCancel={() => setSplitHR(false)}
-        // zIndex={99999999}
-      >
-        <SplitHR
-          onCancel={() => {setSplitHR(false);setHRID('')}}
-          getHRID={getHRID}
-          getHRnumber={getHRnumber.hrNumber}
-          isHRHybrid={getHRnumber.isHybrid}
-          companyID={getHRnumber.companyID}
-          impHooks={{groupList,setGroupList,isSplitLoading, setIsSplitLoading}}
-        />
-      </Modal>
-
-
-      
-       <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
-          {isPlanningSummeryLoading ? (
-            <TableSkeleton />
-          ) : (
-            <>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  padding: "20px 20px 0",
-                }}
-              >
-                Weekly Plan vs Progress
-              </p>
-              <Table
-          scroll={{x:"1600px", y: "100vh" }}
-          id="List"
-          columns={reportPlanningSummaryColumns}
-          bordered={false}
-          dataSource={planningSummaryData}
-          rowKey={(record, index) => index}
-       
-          pagination={false}
-          rowClassName={(record) => {
-            if (record.stage === "Total Planning") {
-              return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
-            }
-        
-            if (record.stage === "Total Achieved" ) {
-              return `${uplersStyle.heighliteGreen} ${uplersStyle.boldText}`; 
-            }                 
-          }}  
-        />
-            </>
-          )}
-        </div>
-
   
-      </div>
-
-
-          <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
-          {isTableLoading ? (
-            <TableSkeleton />
-          ) : (
-            <>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  padding: "20px 20px 0",
-                }}
-              >
-               New - Goal Planning upto negotiation
-              </p>
-              <Table
-          scroll={{ x: "1600px", y: "100vh" }}
-          id="List"
-          columns={reportPtoNColumns}
-          bordered={false}
-          dataSource={reportPtoNData?.filter(item=> item.businessType === 'New')}
-          rowKey={(record, index) => index}
-       
-          pagination={false}
-           summary={(values) => {     
-            return (
-               <Table.Summary fixed>
-                 <Table.Summary.Row>
-                  {reportPtoNColumns.map((item, index)=> {
-                    if(item.dataIndex === "position"){
-                      return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong>Total :</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                     else if(item.dataIndex === 'hrPipelineStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'hrPipelineStr')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                     else if(item.dataIndex === 'total_HRPipelineStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'total_HRPipelineStr')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                     else if(item.dataIndex === 'podValueStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'podValueStr')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w1'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w1_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w2'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w2_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w3'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w3_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w4'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w4_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w5'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w5_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'nextMonthStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'nextMonthStr')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else {
-                         return  <Table.Summary.Cell index={index}>
-                                              <div>
-                                               
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                  })}
-                 </Table.Summary.Row>
-               </Table.Summary>
-            )
-           }}
-        />
-            </>
-          )}
-        </div>
-      </div>
-
- 
-
- <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
-          {isTableLoading ? (
-            <TableSkeleton />
-          ) : (
-            <>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "20px",
-                  padding: "20px 20px 0",
-                }}
-              >
-                Existing - Goal Planning upto negotiation
-              </p>
-              <Table
-          scroll={{ x: "1600px", y: "100vh" }}
-          id="List"
-          columns={reportPtoNColumns}
-          bordered={false}
-          dataSource={reportPtoNData?.filter(item=> item.businessType === "Existing")}
-          rowKey={(record, index) => index}
-       
-          pagination={false}
-             summary={(values) => {     
-            return (
-               <Table.Summary fixed>
-                 <Table.Summary.Row>
-                  {reportPtoNColumns.map((item, index)=> {
-                    if(item.dataIndex === "position"){
-                      return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong>Total :</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                     else if(item.dataIndex === 'hrPipelineStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'hrPipelineStr')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                     else if(item.dataIndex === 'total_HRPipelineStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'total_HRPipelineStr')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                     else if(item.dataIndex === 'podValueStr'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'podValueStr')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                        else if(item.dataIndex === 'w1'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w1')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w1_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w2'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w2')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w2_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w3'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w3')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w3_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w4'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w4')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w4_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else if(item.dataIndex === 'w5'){
-                       return  <Table.Summary.Cell index={index}>
-                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
-                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
-                                                  <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w5_Actual')}</strong>
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                    else {
-                         return  <Table.Summary.Cell index={index}>
-                                              <div>
-                                               
-                                              </div>
-                                            </Table.Summary.Cell>
-                    }
-                  })}
-                 </Table.Summary.Row>
-               </Table.Summary>
-            )
-           }}
-        />
-            </>
-          )}
-        </div>
-
-         {showDFReport && (
-                <Modal
-                  transitionName=""
-                  width="1050px"
-                  centered
-                  footer={null}
-                  open={showDFReport}
-                  className="engagementModalStyle"
-                  onCancel={() => {
-                    setSearchTerm("");
-                    setShowDFReport(false);
-                    setDFFilterListData([]);
-                    setDFListData([]);
-                  }}
-                >
-                  {false ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        height: "350px",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Spin size="large" />
-                    </div>
-                  ) : (
-                    <>
-                      <div
-                        style={{
-                          padding: "45px 15px 10px 15px",
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "center",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        <h3>
-                          <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
-                        </h3>
-                        {/* <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
-                                          TA : <strong>add</strong>
-                                        </p> */}
-        
-                        <input
-                          type="text"
-                          placeholder="Search talent..."
-                          value={searchTerm}
-                          onChange={(e) => handleSummerySearchInput(e.target.value)}
-                          style={{
-                            padding: "6px 10px",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                            marginLeft: "auto",
-                            marginRight: "20px",
-                            minWidth: "260px",
-                          }}
-                        />
-                      </div>
-        
-                      {achievedLoading ? (
-                        <div>
-                          <Skeleton active />
-                        </div>
-                      ) : (
-                        <div style={{ margin: "5px 10px" }}>
-                          <Table
-                            dataSource={DFFilterListData}
-                            columns={DFColumns}
-                            pagination={false}
-                            scroll={{x: "1600px", y: "480px"}}
-                          />
-                        </div>
-                      )}
-        
-                      {/* {moveToAssessment && (
-                                        <Modal
-                                          width="992px"
-                                          centered
-                                          footer={null}
-                                          open={moveToAssessment}
-                                          className="commonModalWrap"
-                                          // onOk={() => setVersantModal(false)}
-                                          onCancel={() => {
-                                            setMoveToAssessment(false);
-                                            resetRemarkField("remark");
-                                            clearRemarkError("remark");
-                                          }}
-                                        >
-                                          <MoveToAssessment
-                                            onCancel={() => {
-                                              setMoveToAssessment(false);
-                                              resetRemarkField("remark");
-                                              clearRemarkError("remark");
-                                            }}
-                                            register={remarkregiter}
-                                            handleSubmit={remarkSubmit}
-                                            resetField={resetRemarkField}
-                                            errors={remarkError}
-                                            saveRemark={saveRemark}
-                                            saveRemarkLoading={saveRemarkLoading}
-                                          />
-                                        </Modal>
-                                      )} */}
-        
-                      <div style={{ padding: "10px 0" }}>
-                        <button
-                          className={uplersStyle.btnCancle}
-                          // disabled={isAddingNewTask}
-                          onClick={() => {
-                            setSearchTerm("");
-                            setShowDFReport(false);
-                            setDFFilterListData([]);
-                            setDFListData([]);
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </Modal>
-              )}
-
-                       {showGoalComment && (
-        <Modal
-          transitionName=""
-          width="1000px"
-          centered
-          footer={null}
-          open={showGoalComment}
-          className="engagementModalStyle"
-          onCancel={() => {
-            setShowGoalComment(false);
-            setALLGoalCommentsList([]);
-            setCommentData({});
-          }}
-        >
-          <div style={{ padding: "35px 15px 10px 15px" }}>
-            <h3>Add Comment</h3>
-          </div>
-          <Suspense>
-            <div
-              style={{
-                position: "relative",
-                marginBottom: "10px",
-                padding: "0 20px",
-                paddingRight: "30px",
-              }}
-            >
-              <Editor
-                hrID={""}
-                saveNote={(note) => saveGoalComment(note)}
-                isUsedForComment={true}
-              />
-            </div>
-          </Suspense>
-
-          {allGoalCommentList.length > 0 ? (
-            <div style={{ padding: "12px 20px" }}>
-              {isCommentLoading && (
-                <div>
-                  Adding Comment ...{" "}
-                  <img src={spinGif} alt="loadgif" width={16} />{" "}
-                </div>
-              )}
-              {!isCommentLoading && (
-                <Table
-                  dataSource={allGoalCommentList}
-                  columns={commentColumn}
-                  pagination={false}
-                />
-              )}
-              {/* <ul>
-                                        {allCommentList.map((item) => (
-                                          <li
-                                            key={item.comments}
-                                           
-                                          >
-                                            <div style={{display:'flex',justifyContent:'space-between'}}>
-                                              <strong>{item.addedBy}</strong><p>{item.createdByDatetime}</p>
-                                            </div>
-                                            <div  dangerouslySetInnerHTML={{ __html: item.comments }}></div>
-                                          </li>
-                                        ))}
-                                      </ul> */}
-            </div>
-          ) : (
-            <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
-              {isCommentLoading ? (
-                <div>
-                  Loading Comments...{" "}
-                  <img src={spinGif} alt="loadgif" width={16} />{" "}
-                </div>
-              ) : (
-                "No Comments yet"
-              )}
-            </h3>
-          )}
-          <div style={{ padding: "10px" }}>
-            <button
-              className={uplersStyle.btnCancle}
-              // disabled={isEditNewTask}
-              onClick={() => {
-                setShowGoalComment(false);
-                setALLGoalCommentsList([]);
-                setCommentData({});
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </Modal>
-      )}
-      </div>
-        {(hrModal === 'Contract' && selectedHead === 5) &&  <div className={`${uplersStyle.filterContainer} ${uplersStyle.summeryContainer} `} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer} style={{width:'100%'}}>
-          <div style={{ display: "flex", gap: "10px" }}>
-             {isSummeryLoading ? (
-                <div
-                  style={{
-                    display: "flex",
-                    height: "350px",
-                    justifyContent: "center",
-                    width: "100%",
-                  }}
-                >
-                  <Spin size="large" />
-                </div>
-              ) : (
-                <>
-                  {summeryGroupsNames.slice(0,2).reverse().map((gName) => {
-                    let data = summeryReportData.filter(
-                      (item) => item.groupName === gName
-                    );
-                    return (
-                      <div className={uplersStyle.cardcontainer} style={{flexDirection:'column'}}>
-                        <h3 className={uplersStyle.recruitername}>
-                          {gN(gName)}
-                        </h3>
-                        <table
-                          className={uplersStyle.stagetable}
-                          style={{ width: "650px" }}
-                        >
-                          <thead>
-                            <tr>
-                              <th style={{ textAlign: "center" }}>Stage</th>
-                              {/* <th style={{ textAlign: "center" }}>Sappy</th>
-                              <th style={{ textAlign: "center" }}>Nikita</th> */}
-                              <th style={{ textAlign: "center" }}>
-                                Deepshikha
-                              </th>
-                              <th style={{ textAlign: "center" }}>Nandini</th>
-                              <th style={{ textAlign: "center" }}>Gayatri</th>
-                              <th style={{ textAlign: "center" }}>
-                                Total (D+N+G)
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {data.map((val) => (
-                              <tr
-                                key={gName + val.stage}
-                                //  className={getStageClass(stage.profileStatusID)}
-                              >
-                                <td>{val.stage}</td>
-                                {/* <td style={{ textAlign: "end" }}>
-                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
-                                    val.sappy_str
-                                  ) : (
-                                    <p
-                                      // style={{
-                                      //   margin: 0,
-                                      //   textDecoration: "underline",
-                                      //   color: "blue",
-                                      //   cursor: "pointer",
-                                      // }}
-                                      // onClick={() => {
-                                      //   getSummeryDetails(val, "sappy_str");
-                                      // }}
-                                    >
-                                      {val.sappy_str}
-                                    </p>
-                                  )}
-                                </td>
-                                <td style={{ textAlign: "end" }}>
-                                  {val.stage_ID === 1 || val.stage_ID === 8 ? (
-                                    val.nikita_str
-                                  ) : (
-                                    <p
-                                      // style={{
-                                      //   margin: 0,
-                                      //   textDecoration: "underline",
-                                      //   color: "blue",
-                                      //   cursor: "pointer",
-                                      // }}
-                                      // onClick={() => {
-                                      //   getSummeryDetails(val, "nikita_str");
-                                      // }}
-                                    >
-                                      {val.nikita_str}
-                                    </p>
-                                  )}
-                                </td> */}
-                                <td style={{ textAlign: "end" }}>
-                                 
-                                      {val.deepshikha_str}
-                                    
-                                </td>
-                                <td style={{ textAlign: "end" }}>
-                                  
-                                      {val.nandni_str}
-                                  
-                                </td>
-                                <td style={{ textAlign: "end" }}>
-                                      {val.gayatri_str}
-                                   
-                                </td>
-                                <td style={{ textAlign: "end" }}>
-                                  {val.total_str}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    );
-                  })}
-                </>
-              )}
-          </div>
-          </div>
-          
-          </div>}
   </>
      
   )
