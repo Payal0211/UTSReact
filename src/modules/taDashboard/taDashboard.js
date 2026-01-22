@@ -47,6 +47,7 @@ import Diamond from "assets/svg/diamond.svg";
 import PowerIcon from "assets/svg/powerRed.svg";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
+import { ReactComponent as EditSVG } from "assets/svg/editnewIcon.svg";
 
 const { Option } = Select;
 
@@ -116,6 +117,7 @@ export default function TADashboard() {
   const [showComment, setShowComment] = useState(false);
   const [showDiamondRemark, setShowDiamondRemark] = useState(false);
   const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
+  const [editedCommentData, setEditedCommentData] = useState({});
 
   const {
     watch,
@@ -577,7 +579,7 @@ export default function TADashboard() {
     let result = await TaDashboardDAO.getTotalContractRevenueRequestDAO(pl);
     setpipelineLoading(false);
 
-    console.log("contract revenue", result);
+    // console.log("contract revenue", result);
 
     if (result?.statusCode === HTTPStatusCode.OK) {
       if (result.responseBody.length) {
@@ -2693,11 +2695,13 @@ export default function TADashboard() {
     let pl = {
       task_ID: commentData?.id,
       comments: note,
+      CommentID: editedCommentData?.id ?? 0
     };
     setIsCommentLoading(true);
     const res = await TaDashboardDAO.insertTaskCommentRequestDAO(pl);
     setIsCommentLoading(false);
     if (res.statusCode === HTTPStatusCode.OK) {
+       setEditedCommentData({})
       setALLCommentsList(res.responseBody);
       setTaListData((prev) => {
         let oldComments = prev[commentData?.index]?.latestNotes;
@@ -4460,6 +4464,7 @@ export default function TADashboard() {
           className="engagementModalStyle"
           onCancel={() => {
             setShowComment(false);
+            setEditedCommentData({})
             setALLCommentsList([]);
             setCommentData({});
           }}
@@ -4479,7 +4484,9 @@ export default function TADashboard() {
               <Editor
                 hrID={""}
                 saveNote={(note) => saveComment(note)}
+                //  saveNote={(note) => console.log(note)}
                 isUsedForComment={true}
+                editedText={editedCommentData?.comments}
               />
             </div>
           </Suspense>
@@ -4492,12 +4499,22 @@ export default function TADashboard() {
                   <img src={spinGif} alt="loadgif" width={16} />{" "}
                 </div>
               )}
-              <ul>
+              <ul style={{marginLeft:'20px'}}>
                 {allCommentList.map((item) => (
-                  <li
+                  <> <li
                     key={item.comments}
-                    dangerouslySetInnerHTML={{ __html: item.comments }}
-                  ></li>
+                   style={{ marginBottom: "10px" }}
+                  > <div style={{display:'flex',justifyContent:'space-between'}}>
+                    <div dangerouslySetInnerHTML={{ __html: item.comments }}></div>   <EditSVG
+              width={22}
+              height={22}
+              style={{marginLeft:'auto',cursor:'pointer'}}
+              onClick={() => setEditedCommentData(item)}
+            />  
+                    </div></li>
+                 
+                  </>
+                 
                 ))}
               </ul>
             </div>
@@ -4519,6 +4536,7 @@ export default function TADashboard() {
               disabled={isEditNewTask}
               onClick={() => {
                 setShowComment(false);
+                setEditedCommentData({})
                 setALLCommentsList([]);
                 setCommentData({});
               }}
