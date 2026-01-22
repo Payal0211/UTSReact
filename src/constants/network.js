@@ -245,6 +245,8 @@ export class ReportType {
 	static GET_NEGO_PLANNING_SUMMARY_REPORT = 'OrionPOD_AMwise_Summary'
 	static GET_FREEZE_SUMMARY_REPORT = 'PODwiseWeekWiseFreezeCTA'
 	static GET_NEGOTIATION_SUMMARY_REPORT = 'PODNegotiationToJoiningFunnelSummary'
+	static GET_NEGOTIATION_SUMMARY_MULTI_MONTH_REPORT = 'PODNegotiationToJoiningFunnelSummaryForMutipleMonths'
+	static GET_PLANING_TO_NEGOTIATION_MULTI_MONTH_POPUP_REPORT = 'PODNegotiationToJoiningFunnelSummaryForMutipleMonths_Popup'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

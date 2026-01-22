@@ -38,7 +38,7 @@ import spinGif from "assets/gif/RefreshLoader.gif";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import PodReports from "./podReports";
-import NegotiontoJoinee from "./negotiontoJoinee";
+import NegotiontoJoineeMultiMonth from "./negotiationToJoineeMultiMonth";
 import FTENegotiationSummary from "./fteNegotionSummary";
 import QASummary from "./qaSummary";
 
@@ -64,7 +64,10 @@ export default function AllFTEPage() {
      const [showAchievedReport, setShowAchievedReport] = useState(false);
      const [listAchievedData, setListAchievedData] = useState([]);
      const [achievedLoading, setAchievedLoading] = useState(false);
-
+  const [podDashboardList, setPODDashboardList] = useState([]);
+  const [isFreezeAllowed,setIsFreezeAllowed] = useState(true);
+    const [freezeDate,setFreezeDate] = useState(null);
+    const [showFreeze,setShowFreeze] = useState(false);
     const [showTalentCol, setShowTalentCol] = useState({});
     const [achievedTotal, setAchievedTotal] = useState("");
 
@@ -304,8 +307,6 @@ export default function AllFTEPage() {
       },
           }
           ))
-      
-
         ];
 
     const  getDashboardList = async () =>{
@@ -941,6 +942,23 @@ export default function AllFTEPage() {
  
     
     </>},
+         {
+                        label: "Goal to Negotiation Funnel",
+                        key: "Goal to Negotiation Funnel",
+                        children:     <NegotiontoJoineeMultiMonth
+                                     impHooks={{
+                                  isTableLoading,
+                                  podDashboardList,
+                                  monthDate,
+                                  hrModal,
+                                  selectedHead,
+                                  isFreezeAllowed,
+                                  freezeDate,
+                                  podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text,
+                                  monthOrder,
+                                  selectedMonths
+                                  }} 
+                                />   },
                 ]}
                 />
 

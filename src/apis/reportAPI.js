@@ -1025,6 +1025,24 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getNegotiationPopupReportAPI');
 		}
 	},
+	getNegotiationMultimonthPopupReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_PLANING_TO_NEGOTIATION_MULTI_MONTH_POPUP_REPORT + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&monthstr=${payload?.monthstr}&yearstr=${payload?.yearstr}
+			&stage_id=${payload?.stage_ID}&weekno=${payload?.weekno}&hr_businesstype=${payload?.hr_businesstype?? ''}&isNextMonth=${payload?.isNextMonth?? ''}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getNegotiationMultimonthPopupReportAPI');
+		}
+	},
 	getQuarterlySummaryPopupReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -1214,6 +1232,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.getPOCDFPopupReportAPI');
+		}
+	},
+	getNegotiationMultiMonthReportSummaryAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_NEGOTIATION_SUMMARY_MULTI_MONTH_REPORT + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&monthstr=${payload?.month}&yearstr=${payload?.year}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getNegotiationMultiMonthReportSummaryAPI');
 		}
 	},
 	getNBDorAMRevenueAPI:async function (payload) {
