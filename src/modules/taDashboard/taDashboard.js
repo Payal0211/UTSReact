@@ -1089,7 +1089,7 @@ export default function TADashboard() {
       },
     },
     {
-      title: "Goal (INR)",
+      title: "Goal",
       dataIndex: "goalRevenueStr",
       key: "goalRevenueStr",
       width: 130,
@@ -1099,7 +1099,7 @@ export default function TADashboard() {
       },
     },
     {
-      title: "Total Pipeline ( INR )",
+      title: "Total Pipeline",
       dataIndex: "totalPipelineStr",
       key: "totalPipelineStr",
       width: 130,
@@ -1120,7 +1120,7 @@ export default function TADashboard() {
       title: (
         <>
           Assigned <br />
-          Pipeline (INR)
+          Pipeline
         </>
       ),
       dataIndex: "totalRevenuePerUserStr",
@@ -1132,7 +1132,7 @@ export default function TADashboard() {
           <div
             style={{ cursor: "pointer" }}
             onClick={() =>
-              showContractDetails(0, result, "Assigned Pipeline (INR)", text)
+              showContractDetails(0, result, "Assigned Pipeline", text)
             }
           >
             {text}
@@ -1146,7 +1146,7 @@ export default function TADashboard() {
       title: (
         <>
           Carry Fwd <br />
-          Pipeline (INR)
+          Pipeline
         </>
       ),
       dataIndex: "carryFwdPipelineStr",
@@ -1159,7 +1159,7 @@ export default function TADashboard() {
             className={taStyles.todayText}
             style={{ background: "#babaf5", cursor: "pointer" }}
             onClick={() =>
-              showContractDetails(7, result, "Carry Fwd Pipeline (INR)", text)
+              showContractDetails(7, result, "Carry Fwd Pipeline", text)
             }
           >
             {text}
@@ -1172,7 +1172,7 @@ export default function TADashboard() {
         <>
           Carry Fwd <br />
           Not Included <br />
-          Pipeline (INR)
+          Pipeline
         </>
       ),
       dataIndex: "carryFwdHoldPipelineStr",
@@ -1188,7 +1188,7 @@ export default function TADashboard() {
               showContractDetails(
                 8,
                 result,
-                "Carry Fwd Not Included Pipeline (INR)",
+                "Carry Fwd Not Included Pipeline",
                 text
               )
             }
@@ -1205,7 +1205,7 @@ export default function TADashboard() {
           <br />
           Active
           <br />
-          Pipeline (INR)
+          Pipeline 
         </>
       ),
       dataIndex: "currentMonthActualPipelineStr",
@@ -1220,7 +1220,7 @@ export default function TADashboard() {
               showContractDetails(
                 1,
                 result,
-                "Current Month Active Pipeline (INR)",
+                "Current Month Active Pipeline",
                 text
               )
             }
@@ -1235,7 +1235,7 @@ export default function TADashboard() {
         <>
           Total Active
           <br />
-          Pipeline (INR)
+          Pipeline
         </>
       ),
       dataIndex: "actualPipelineStr",
@@ -1248,7 +1248,7 @@ export default function TADashboard() {
             className={taStyles.today1Text}
             style={{ cursor: "pointer" }}
             onClick={() =>
-              showContractDetails(10, result, "Total Active Pipeline (INR)", text)
+              showContractDetails(10, result, "Total Active Pipeline ", text)
             }
           >
             {text}
@@ -1270,7 +1270,7 @@ export default function TADashboard() {
       title: (
         <>
           Achieve <br />
-          Pipeline (INR)
+          Pipeline
         </>
       ),
       dataIndex: "achievedPipelineStr",
@@ -1283,7 +1283,7 @@ export default function TADashboard() {
             className={taStyles.todayText}
             style={{ cursor: "pointer" }}
             onClick={() =>
-              showContractDetails(3, result, "Achieve Pipeline (INR)", text)
+              showContractDetails(3, result, "Achieve Pipeline", text)
             }
           >
             {text}
@@ -1292,7 +1292,7 @@ export default function TADashboard() {
       },
     },
     {
-      title: "Lost Pipeline (INR)",
+      title: "Lost Pipeline",
       dataIndex: "lostPipelineStr",
       key: "lostPipelineStr",
       width: 160,
@@ -1302,7 +1302,7 @@ export default function TADashboard() {
           <div
             className={taStyles.todayText}
             style={{ background: "lightsalmon", cursor: "pointer" }}
-            onClick={() => showContractDetails(4, result, "Lost Pipeline (INR)", text)}
+            onClick={() => showContractDetails(4, result, "Lost Pipeline", text)}
           >
             {text}
           </div>
@@ -1310,7 +1310,7 @@ export default function TADashboard() {
       },
     },
     {
-      title: "Hold Pipeline (INR)",
+      title: "Hold Pipeline",
       dataIndex: "holdPipelineStr",
       key: "holdPipelineStr",
       width: 150,
@@ -1320,7 +1320,7 @@ export default function TADashboard() {
           <div
             className={taStyles.todayText}
             style={{ background: "lightyellow", cursor: "pointer" }}
-            onClick={() => showContractDetails(5, result, "Hold Pipeline (INR)", text)}
+            onClick={() => showContractDetails(5, result, "Hold Pipeline", text)}
           >
             {text}
           </div>
@@ -1331,7 +1331,7 @@ export default function TADashboard() {
       title: (
         <>
           PreOnboarding <br />
-          Pipeline (INR)
+          Pipeline 
         </>
       ),
       dataIndex: "preOnboardingPipelineStr",
@@ -1344,7 +1344,7 @@ export default function TADashboard() {
             className={taStyles.todayText}
             style={{ background: "lightpink", cursor: "pointer" }}
             onClick={() =>
-              showContractDetails(6, result, "PreOnboarding Pipeline (INR)", text)
+              showContractDetails(6, result, "PreOnboarding Pipeline ", text)
             }
           >
             {text}
@@ -3100,6 +3100,7 @@ export default function TADashboard() {
                           }}
                           rowClassName={(record) => {
                             if (record.orderSequence === 1) return taStyles.one;
+                            if(record.taHeadID === 65 || record.taHeadID === 443) return taStyles.TaUserColColor;
                             return "";
                           }}
                         />
