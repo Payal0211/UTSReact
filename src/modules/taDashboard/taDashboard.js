@@ -683,13 +683,12 @@ export default function TADashboard() {
     }
   }, [selectedHead, startDate, tableFilteredState]);
 
-  useEffect(() => {
-    getTotalRevenue();
-  }, []);
+
 
   useEffect(() => {
-    getTotalContractRevenue()
-  }, [startDate])
+    dashboardTabTitle === "Contract" && getTotalContractRevenue()
+    dashboardTabTitle === "FTE" && getTotalRevenue()
+  }, [startDate, dashboardTabTitle]);
 
   const editTAforTask = (task) => {
     setShowEditTATask(true);
@@ -4500,18 +4499,19 @@ export default function TADashboard() {
                   <img src={spinGif} alt="loadgif" width={16} />{" "}
                 </div>
               )}
-              <ul style={{marginLeft:'20px'}}>
+              <ul style={{marginLeft:'10px', listStyleType:'none'}}>
                 {allCommentList.map((item) => (
                   <> <li
-                    key={item.comments}
+                    key={item.comments} 
                    style={{ marginBottom: "10px" }}
-                  > <div style={{display:'flex',justifyContent:'space-between'}}>
-                    <div dangerouslySetInnerHTML={{ __html: item.comments }}></div>   <EditSVG
+                  > <div style={{display:'flex'}}>
+                     <EditSVG
               width={22}
               height={22}
-              style={{marginLeft:'auto',cursor:'pointer'}}
+              style={{marginRight:'10px',cursor:'pointer'}}
               onClick={() => setEditedCommentData(item)}
             />  
+                    <div dangerouslySetInnerHTML={{ __html: item.comments }}></div>  
                     </div></li>
                  
                   </>
