@@ -633,6 +633,20 @@ const onBoardListConfig = ({
         return text ? `₹ ${text}` : "";
       },
     },
+     {
+      title: (
+        <>
+          Feedback <br/> Status
+        </>
+      ),
+      dataIndex: "clientFeedbackstr ",
+      key: "clientFeedbackstr ",
+      align: "left",
+      width: "150px",
+      render: (text, result) => {
+        return text ? text :  "";
+      },
+    },
 
     {
       title: (
@@ -1402,6 +1416,7 @@ const calDueDate = (date, term)=>{
         searchMonth: dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
         searchYear:
           dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
+        AmberFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "AF" ? 1 : 0,
       },
     };
     getOnBoardListData(payload);
@@ -1429,6 +1444,7 @@ const calDueDate = (date, term)=>{
         searchMonth: dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
         searchYear:
           dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
+       AmberFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "AF" ? 1 : 0,
       },
     };
     getOnBoardListData(payload);
@@ -1830,6 +1846,79 @@ const calDueDate = (date, term)=>{
               modules={[Keyboard, Scrollbar, Navigation, Pagination]}
               className="mySwiper"
             >
+
+               <SwiperSlide
+                onClick={() =>
+                  setTableFilteredState((prev) => ({
+                    ...prev,
+                    filterFields_OnBoard: {
+                      ...prev.filterFields_OnBoard,
+                      SummaryFilterOption: "AF",
+                    },
+                  }))
+                }
+              >
+                <Tooltip title={"View Feedback Received"}>
+                  <div
+                    className={onboardList.filterType}
+                    key={"Feedback Received"}
+                    style={{
+                      borderBottom:
+                        tableFilteredState?.filterFields_OnBoard
+                          ?.SummaryFilterOption === "AF"
+                          ? "6px solid #FFDA30"
+                          : "",
+                    }}
+                  >
+                    <img src={LostEng} alt="rocket" />
+                    <h2>
+                      Amber Feedback :{" "}
+                      <span>
+                        {onBoardListData[0]?.totalAmberFeedbackCount
+                          ? onBoardListData[0]?.totalAmberFeedbackCount
+                          : 0}
+                      </span>
+                    </h2>
+                  </div>
+                </Tooltip>
+              </SwiperSlide>
+
+               <SwiperSlide
+                onClick={() =>
+                  setTableFilteredState((prev) => ({
+                    ...prev,
+                    filterFields_OnBoard: {
+                      ...prev.filterFields_OnBoard,
+                      SummaryFilterOption: "FR",
+                    },
+                  }))
+                }
+              >
+                <Tooltip title={"View Feedback Received"}>
+                  <div
+                    className={onboardList.filterType}
+                    key={"Feedback Received"}
+                    style={{
+                      borderBottom:
+                        tableFilteredState?.filterFields_OnBoard
+                          ?.SummaryFilterOption === "FR"
+                          ? "6px solid #FFDA30"
+                          : "",
+                    }}
+                  >
+                    <img src={FeedBack} alt="rocket" />
+                    <h2>
+                      Feedback Received :{" "}
+                      <span>
+                        {onBoardListData[0]?.s_TotalFeedbackReceived
+                          ? onBoardListData[0]?.s_TotalFeedbackReceived
+                          : 0}
+                      </span>
+                    </h2>
+                  </div>
+                </Tooltip>
+              </SwiperSlide>
+
               <SwiperSlide
                 onClick={() =>
                   setTableFilteredState((prev) => ({
@@ -2222,41 +2311,6 @@ const calDueDate = (date, term)=>{
                 </SwiperSlide>
               )}
 
-              <SwiperSlide
-                onClick={() =>
-                  setTableFilteredState((prev) => ({
-                    ...prev,
-                    filterFields_OnBoard: {
-                      ...prev.filterFields_OnBoard,
-                      SummaryFilterOption: "FR",
-                    },
-                  }))
-                }
-              >
-                <Tooltip title={"View Feedback Received"}>
-                  <div
-                    className={onboardList.filterType}
-                    key={"Feedback Received"}
-                    style={{
-                      borderBottom:
-                        tableFilteredState?.filterFields_OnBoard
-                          ?.SummaryFilterOption === "FR"
-                          ? "6px solid #FFDA30"
-                          : "",
-                    }}
-                  >
-                    <img src={FeedBack} alt="rocket" />
-                    <h2>
-                      Feedback Received :{" "}
-                      <span>
-                        {onBoardListData[0]?.s_TotalFeedbackReceived
-                          ? onBoardListData[0]?.s_TotalFeedbackReceived
-                          : 0}
-                      </span>
-                    </h2>
-                  </div>
-                </Tooltip>
-              </SwiperSlide>
 
               {tableFilteredState?.filterFields_OnBoard?.EngType !== "D" && (
                 <SwiperSlide>
