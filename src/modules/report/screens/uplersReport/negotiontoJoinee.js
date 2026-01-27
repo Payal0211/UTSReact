@@ -1917,9 +1917,61 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           dataIndex: "hrOpenSinceDays",
           key: "hrOpenSinceDays",
     
-          width: 90,
+          width: 150,
           align: "center",
           className: uplersStyle.headerCell,
+           filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    <div style={{ padding: 8 }}>
+      
+      {/* Operator selection */}
+      <select
+        style={{ width: 70, marginBottom: 8 , marginRight: '10px'}}
+        value={selectedKeys[0]?.op || ">="}
+        onChange={(e) => {
+          const val = selectedKeys[0] || {};
+          setSelectedKeys([{ ...val, op: e.target.value }]);
+        }}
+      >
+        <option value=">=">{">="}</option>
+        <option value="<=">{"<="}</option>
+        <option value=">">{">"}</option>
+        <option value="<">{"<"}</option>
+        <option value="=">{"="}</option>
+      </select>
+
+      {/* Value input */}
+      <input
+        type="number"
+        style={{ width: 70, marginBottom: 8 }}
+        placeholder="Days"
+        value={selectedKeys[0]?.value || ""}
+        onChange={(e) => {
+          const op = selectedKeys[0]?.op || ">=";
+          setSelectedKeys([{ op, value: e.target.value }]);
+        }}
+      />
+
+      <div>
+        <button className='ant-btn ant-btn-primary ant-btn-sm' onClick={() => confirm()} style={{ marginRight: 8 }}>Filter</button>
+        <button className="ant-btn ant-btn-link ant-btn-sm" onClick={() => clearFilters()}>Reset</button>
+      </div>
+    </div>
+  ),
+
+  /// Filtering Logic 👇
+  onFilter: (filter, record) => {
+    const age = Number(record.hrOpenSinceDays);
+    const value = Number(filter.value);
+
+    switch (filter.op) {
+      case ">=": return age >= value;
+      case "<=": return age <= value;
+      case ">": return age > value;
+      case "<": return age < value;
+      case "=": return age === value;
+      default: return true;
+    }
+  },
         },
         {
           title: <div style={{ textAlign: "center" }}>Lead</div>,
