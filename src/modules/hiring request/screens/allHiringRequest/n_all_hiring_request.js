@@ -24,7 +24,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import PreviewHRModal from "./previewHR/previewHRModal";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
-import { Modal, message, Radio, Skeleton, Spin } from "antd";
+import { Modal, message, Radio, Skeleton, Spin, Tooltip } from "antd";
 import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
 import CloseHRModal from "../../components/closeHRModal/closeHRModal";
 import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
@@ -838,10 +838,12 @@ console.log(newData,'--newData',index,cat);
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px' }} >
                                      <div className={stylesOBj.filterCount}>{filteredTagLength}</div>
-                                     {(filteredTagLength > 0 || startDate || debouncedSearch) && <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large' }} onClick={e=> {
+                                     {(filteredTagLength > 0 || startDate || debouncedSearch) &&<Tooltip title="Reser Filters">
+                                        <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large' }} onClick={e=> {
                                     e.stopPropagation();
                                     clearFilters()
-                                }}>X</span>}
+                                }}>X</span>
+                                     </Tooltip> }
 
                                 </div>
                               
