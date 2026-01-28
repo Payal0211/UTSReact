@@ -497,8 +497,8 @@ const getParsingType = (isHaveJD,parseType) => {
 				return obj;
 			});
 
-			let goodtoonlySkillsList = goodToSkillList.map((item) => item.skillsName.toLowerCase())
-			let skillonlyList = skillList.map((item) => item.skillsName.toLowerCase() )
+			let goodtoonlySkillsList = goodToSkillList.map((item) => item.skillsName?.toLowerCase())
+			let skillonlyList = skillList.map((item) => item.skillsName?.toLowerCase() )
 
 			goodtoonlySkillsList.forEach(item => {
 				if(skillonlyList.includes(item)){
