@@ -639,8 +639,8 @@ const onBoardListConfig = ({
           Feedback <br/> Status
         </>
       ),
-      dataIndex: "clientFeedbackstr ",
-      key: "clientFeedbackstr ",
+      dataIndex: "clientFeedbackstr",
+      key: "clientFeedbackstr",
       align: "left",
       width: "150px",
       render: (text, result) => {
