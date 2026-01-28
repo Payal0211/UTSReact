@@ -65,7 +65,9 @@ const MamoedCategoryRightComponent = ({ data, index ,handleHRRequest , tableFilt
             let Result = await hiringRequestDAO.updateHRCategoryDAO(pl);
             setLoadingCat(false);
             if (Result.statusCode === HTTPStatusCode.OK) {
-                handleHRRequest(tableFilteredState);
+                setShowArchetypeDropdown(false)
+                setArchetype(cat);
+                handleHRRequest(cat,index);
             } else {
                 message.error("Something went wrong, please try again later.");
             }
@@ -362,6 +364,15 @@ export default function New_all_hiring_request() {
         },
         [navigate, isFrontEndHR, isOnlyPriority, isOnlyDiamond]
     );
+
+    const handleHRRequestWithoutAPI = (cat,index) =>{
+        setAPIdata(prev=> {
+            let newData = [...prev];
+            newData[index].hR_Category = cat;
+console.log(newData,'--newData',index,cat);
+            return newData;
+        });
+    }
 
     const handleRequetWithDates = useCallback(() => {
         if (tableFilteredState?.filterFields_ViewAllHRs?.fromDate && tableFilteredState?.filterFields_ViewAllHRs?.toDate) {
@@ -795,7 +806,7 @@ export default function New_all_hiring_request() {
                                     e.stopPropagation();
                                 }}
                                 className={stylesOBj.dateFilter}
-                                placeholderText="Start date - End date"
+                                placeholderText="Select Date Range"
                                 selected={startDate}
                                 onChange={onCalenderFilter}
                                 startDate={startDate}
@@ -809,31 +820,48 @@ export default function New_all_hiring_request() {
                         {/* {(startDate && endDate) &&  <img src="images/close-hr-ic.svg" alt="Close Icon" onClick={()=>{setStartDate(null);setEndDate(null)}} className={`${stylesOBj["input-icon"]}`} />} */}
 
                         <div className={`${stylesOBj["filter-group"]} ${stylesOBj['search-group']}`}>
-                            <input type="text" className={`${stylesOBj["filter-input"]} ${stylesOBj['search-input']}`} placeholder="Search via HR#, Role , Company , Client , HR Type"
+                            <input type="text" className={`${stylesOBj["filter-input"]} ${stylesOBj['search-input']}`} placeholder="Search"
                                 onChange={debouncedSearchHandler}
                                 value={debouncedSearch}
                             />
                             <img src="images/search-ic.svg" alt="Search Icon" className={`${stylesOBj["input-icon"]}`} />
                         </div>
 
-                        <div style={{ display: 'flex', gap: '10px', width: 'max-content' }}>
-                            <button className={`${stylesOBj["filter-btn"]}`} onClick={toggleHRFilter} styles={{ width: '170px' }}>
+                        {/* <div style={{ display: 'flex', gap: '10px', width: 'max-content' }}> */}
+                            <button className={`${stylesOBj["filter-btn"]}`} onClick={toggleHRFilter} >
 
                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                    <div className={stylesOBj.filterCount}>{filteredTagLength}</div>
+                                    
+                                     <img src="images/filter-ic.svg" alt="Filter Icon" />
                                     <span>Add Filters</span>
 
                                 </div>
-                                <img src="images/filter-ic.svg" alt="Filter Icon" />
+                                <div style={{ display: 'flex', gap: '10px' }} >
+                                     <div className={stylesOBj.filterCount}>{filteredTagLength}</div>
+                                     {(filteredTagLength > 0 || startDate || debouncedSearch) && <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large' }} onClick={e=> {
+                                    e.stopPropagation();
+                                    clearFilters()
+                                }}>X</span>}
 
+                                </div>
+                              
                             </button>
 
-                            <button className={`${stylesOBj["filter-btn"]}`} style={{ width: '140px', text: 'center', fontWeight: '500' }} onClick={clearFilters}>
+                            {/* <button className={`${stylesOBj["filter-btn"]}`} style={{ width: '140px', text: 'center', fontWeight: '500' }} onClick={clearFilters}>
                                 <span>Reset Filters <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'small' }}>X</span></span>
-                            </button>
-                        </div>
+                            </button>*/} 
+                        {/* </div>  */}
 
-
+ {/* <button  className={`${stylesOBj["filter-btn"]}`} onClick={toggleHRFilter}>
+                        <img src="images/filter-ic.svg" alt="Filter Icon" class="filter-icon"/>
+                        <span  className={`${stylesOBj["filter-text"]}`}> Add Filters</span>
+                        <span class="filter-counter-wrapper">
+                            <span class="filter-counter">0</span>
+                            <svg class="filter-close-icon" title="Clear Filters" data-tooltip="Clear Filters" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 3L3 9M3 3L9 9" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </button> */}
 
                         <div className={`${stylesOBj["filter-group"]} ${stylesOBj['control-btns-group']}`}>
                             {(miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR ||
@@ -986,7 +1014,7 @@ export default function New_all_hiring_request() {
                                                                 </button>
                                                             </div>
                                                             <div className={`${stylesOBj["category-divider"]}`}></div>
-                                                            <MamoedCategoryRightComponent data={data} index={index} handleHRRequest={handleHRRequest} tableFilteredState={tableFilteredState} />
+                                                            <MamoedCategoryRightComponent data={data} index={index} handleHRRequest={handleHRRequestWithoutAPI} tableFilteredState={tableFilteredState} />
                                                             {/* {CategoryRightComponent({data,index})} */}
                                                         </div>
 
