@@ -105,6 +105,8 @@ export default function LegalPreOnboarding({
           "lwd",
           dayjs(data?.ReplacementDetail?.lastWorkingDay).toDate()
         );
+        setValue("msaDate", moment(data?.getLegalInfo?.msaDate));
+        // console.log('msaDate',data?.getLegalInfo?.msaDate)
         data?.getLegalInfo?.totalLeavesGiven && setValue('noofLeaves',data?.getLegalInfo?.totalLeavesGiven)
         data?.getLegalInfo?.holidayLeaves && setValue('holidayLeaves',data?.getLegalInfo?.holidayLeaves)
         setReplacementEngHr(data?.replacementEngHRs);
@@ -703,17 +705,15 @@ const uploadSOWFileHandler = (e) => {
                         >
                           <CalenderSVG />
                           <Controller
-                            render={({ ...props }) => (
+                            render={({ field }) => (
                               <DatePicker
-                                selected={watch("msaDate")}
-                                placeholderText="Select Date"
-                                // defaultValue={dayjs(watch('sowDate'), 'YYYY-MM-DD')}
+                                {...field}
+                                value={field.value || null}
+                                placeholder="Select Date"
                                 onChange={(date) => {
-                                  setValue("msaDate", date);
-                                  clearErrors(`msaDate`);
+                                  field.onChange(date);
+                                  clearErrors("msaDate");
                                 }}
-                                // value={dayjs(watch('msaDate'))}
-                                // dateFormat="yyyy/MM/dd"
                               />
                             )}
                             name="msaDate"
