@@ -358,11 +358,11 @@ export const navigateToComponent = {
 			<TADashboard />
 		</Suspense>
 	),
-	[UTSRoutes.ALLHIRINGREQUESTROUTE]: (
-		<Suspense>
-			<AllHiringRequest />
-		</Suspense>
-	),
+	// [UTSRoutes.ALLHIRINGREQUESTROUTE]: (
+	// 	<Suspense>
+	// 		<AllHiringRequest />
+	// 	</Suspense>
+	// ),
 	// [NewPagesRouts.ALLHIRINGREQUESTROUTE]: (
 	// 	<Suspense>
 	// 		<New_all_hiring_request />
