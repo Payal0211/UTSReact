@@ -895,7 +895,7 @@ console.log(newData,'--newData',index,cat);
                                         <th>POSITION</th>
                                         <th>CATEGORY</th>
                                         <th>TR</th>
-                                        <th>HR TYPE</th>
+                                        {/* <th>HR TYPE</th> */}
                                         <th>ENGAGEMENT TYPE</th>
                                         <th>MARGIN %</th>
                                         <th>SALARY/CLIENT BUDGET</th>
@@ -983,7 +983,7 @@ console.log(newData,'--newData',index,cat);
                                                     <td>{data?.Date}</td>
                                                     {/* HR ID */}
                                                     <td>
-                                                        <a href={`/allhiringrequest/${data?.key}`} className={`${stylesOBj["hr-id"]}`}>{data?.HR_ID}</a>
+                                                        <a href={`/allhiringrequest/${data?.key}`} target="_blank" className={`${stylesOBj["hr-id"]}`}>{data?.HR_ID}</a>
                                                         {data?.hrPostedFromPlatform && <p style={{
                                                             color: getColorCode(data?.appActionDoneBy)?.color,
                                                             background: getColorCode(data?.appActionDoneBy)?.background,
@@ -1024,7 +1024,7 @@ console.log(newData,'--newData',index,cat);
                                                     {/* TR */}
                                                     <td>{data?.TR}</td>
                                                     {/* HR TYPE */}
-                                                    <td>{data?.hrTypeName}</td>
+                                                    {/* <td>{data?.hrTypeName}</td> */}
                                                     {/* ENGAGEMENT TYPE */}
                                                     <td>{data?.hrEngagementType}
                                                         {/* <span className={`${stylesOBj[]}`}"transparent-text">(Transparent)</span> */}</td>
