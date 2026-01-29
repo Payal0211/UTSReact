@@ -94,8 +94,8 @@ function App() {
 						>
 							 <Route
 						 exact
-						 key={NewPagesRouts.ALLHIRINGREQUESTROUTE}
-						path={NewPagesRouts.ALLHIRINGREQUESTROUTE}
+						 key={UTSRoutes.ALLHIRINGREQUESTROUTE}
+						path={UTSRoutes.ALLHIRINGREQUESTROUTE}
 						element={<New_all_hiring_request />}
 					/>
 						
