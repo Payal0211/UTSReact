@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space, Tooltip, Radio, Skeleton } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space, Tooltip, Radio, Skeleton, InputNumber, Spin } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -102,7 +102,7 @@ const TalentList = ({
 	setPage,
 	page,
 	getHrUserData
-}) => {	
+}) => {
 	const navigate = useNavigate()
 	const EmpID = localStorage.getItem('EmployeeID')
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
@@ -134,30 +134,30 @@ const TalentList = ({
 	const [replaceTalentModal, setReplaceTalentModal] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
-	const [ActionKey,setActionKey] = useState("")
+	const [ActionKey, setActionKey] = useState("")
 	//schedule modal state
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 	const [editBillRate, setEditBillRate] = useState(false);
-	const [moveToAssessment ,setMoveToAssessment] = useState(false)
+	const [moveToAssessment, setMoveToAssessment] = useState(false)
 	const {
-			register :remarkregiter,
-			handleSubmit:remarkSubmit,
-			resetField: resetRemarkField,
-			clearErrors : clearRemarkError,
-			formState: { errors : remarkError},
-		} = useForm();
+		register: remarkregiter,
+		handleSubmit: remarkSubmit,
+		resetField: resetRemarkField,
+		clearErrors: clearRemarkError,
+		formState: { errors: remarkError },
+	} = useForm();
 
-	const [offerError,setOfferError] = useState(false)
+	const [offerError, setOfferError] = useState(false)
 
 	const [profileRejectedModal, setProfileRejectedModal] = useState(false);
 
 	const [editPayRate, setEditPayRate] = useState(false);
 
 	const [editDPRate, setEditDPRate] = useState(false);
-	const [showOtherHRStatus,setShowOtherHRStatus] = useState(false)
-	const [hrOtherStatusDetails,setHROtherStatusDetails]= useState({})
+	const [showOtherHRStatus, setShowOtherHRStatus] = useState(false)
+	const [hrOtherStatusDetails, setHROtherStatusDetails] = useState({})
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{
@@ -251,8 +251,8 @@ const TalentList = ({
 	);
 
 	const [getBillRateInfo, setBillRateInfo] = useState({});
-	const [showOfferPosition ,setShowOfferPosition] = useState(false)
-	const [emailLater,setEmailLater] = useState(false)
+	const [showOfferPosition, setShowOfferPosition] = useState(false)
+	const [emailLater, setEmailLater] = useState(false)
 	const [showEngagementCancel, setShowEngagementCancel] = useState(false)
 	const [showEngagementEnd, setShowEngagementEnd] = useState(false)
 	const [showengagementOnboard, setShowEngagementOnboard] = useState(false);
@@ -264,9 +264,14 @@ const TalentList = ({
 		hrId: '',
 	});
 	const [getOnboardFormDetails, setOnboardFormDetails] = useState({});
-	const [editJoiningDateModal,setEditJoiningDateModal] = useState(false)
-	const [editTJoiningDateModal,setEditTJoiningDateModal] = useState(false)
-	const [onboardDetails,setOnboardDetails] = useState({})
+	const [editJoiningDateModal, setEditJoiningDateModal] = useState(false)
+	const [editTJoiningDateModal, setEditTJoiningDateModal] = useState(false)
+	const [onboardDetails, setOnboardDetails] = useState({})
+
+	const [editTalentOfferedCTCModal, setEditTalentOfferedCTCModal] = useState(false)
+	const [offeredCTCDeails, setofferedCTCDetails] = useState({})
+	const [editUplersFeesPerModal, setEditUplersFeesPerModal] = useState(false)
+	const [ctcPerUpdating, setCTCPERUPDATING] = useState(false)
 
 	const getOnboardingForm = async (getOnboardID) => {
 		setOnboardFormDetails({});
@@ -432,9 +437,9 @@ const TalentList = ({
 	}
 
 	const clientFeedbackHandler = useCallback(
-		async (reload, talentInfo,tjoiningDate) => {
+		async (reload, talentInfo, tjoiningDate) => {
 			setLoading(true)
-	
+
 			const clientFeedback = {
 				role: talentInfo?.TalentRole || '',
 				talentName: talentInfo?.Name || '',
@@ -445,32 +450,32 @@ const TalentList = ({
 				hdnRadiovalue: reload ? "Hire" : "AnotherRound",
 				topSkill: '',
 				improvedSkill: '',
-				SendOfferedEmailLater:emailLater,
+				SendOfferedEmailLater: emailLater,
 				// technicalSkillRating: radioValue2,
 				// communicationSkillRating: radioValue3,
 				// cognitiveSkillRating: radioValue4,
 				messageToTalent: '',
-				clientsDecision:  '',
-				comments:  '',
+				clientsDecision: '',
+				comments: '',
 				en_Id: '',
 				FeedbackId: talentInfo?.ClientFeedbackID || 0,
-				TentativeJoiningDate:tjoiningDate ? moment(tjoiningDate).format("YYYY-MM-DD")  :''
+				TentativeJoiningDate: tjoiningDate ? moment(tjoiningDate).format("YYYY-MM-DD") : ''
 				// IsClientNotificationSent: isClientNotification,
 			};
 
 
-				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
-					clientFeedback,
-				);
-				if (response?.statusCode === HTTPStatusCode.OK) {
-					 callAPI(hrId)
-					 getHrUserData(hrId)
-					 setLoading(false)
-					setOnboardDetails({})
-					setOfferError(false)
-				}else{
-					 setLoading(false)
-				}	
+			const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
+				clientFeedback,
+			);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				callAPI(hrId)
+				getHrUserData(hrId)
+				setLoading(false)
+				setOnboardDetails({})
+				setOfferError(false)
+			} else {
+				setLoading(false)
+			}
 		},
 		[
 			callAPI,
@@ -504,7 +509,7 @@ const TalentList = ({
 
 	const filterTalentCTAs = useMemo(
 		() =>
-			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || [],		
+			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || [],
 		[talentCTA, talentIndex],
 	);
 
@@ -540,32 +545,32 @@ const TalentList = ({
 	const [showProfileRejectClass, setShowProfileRejectClass] = useState(false);
 	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([]);
 	const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false);
-	const [saveRemarkLoading,setSaveRemarkLoading] = useState(false)
+	const [saveRemarkLoading, setSaveRemarkLoading] = useState(false)
 
 	// start preONBoard states and controlers
 	const [showAMModal, setShowAMModal] = useState(false);
 	const [AMFlags, setAMFlags] = useState({})
 	// end preONBoard states and controlers
 
-	const saveRemark = async (d) =>{
+	const saveRemark = async (d) => {
 
 		let pl = {
-			HiringRequestId :hrId,
-			CtpId : filterTalentID?.ContactPriorityID,
-			TalentId :filterTalentID?.TalentID,     
-			Remark :d.remark
-		} 
+			HiringRequestId: hrId,
+			CtpId: filterTalentID?.ContactPriorityID,
+			TalentId: filterTalentID?.TalentID,
+			Remark: d.remark
+		}
 		setSaveRemarkLoading(true)
 		const result = await InterviewDAO.updateTalentAssessmentDAO(pl)
 		setSaveRemarkLoading(false)
 
-		if(result.statusCode === HTTPStatusCode.OK){
+		if (result.statusCode === HTTPStatusCode.OK) {
 			setMoveToAssessment(false);
 			resetRemarkField('remark');
 			clearRemarkError('remark')
 			callAPI(hrId)
 			getHrUserData(hrId)
-		}else{
+		} else {
 			message.error('Something went wrong')
 		}
 	}
@@ -601,7 +606,7 @@ const TalentList = ({
 
 	// Talents Notes 
 
-	const fetchTalentsNotes =async (item,setNotes,setisNotesLoading)=>{
+	const fetchTalentsNotes = async (item, setNotes, setisNotesLoading) => {
 		let payload = {
 			"HRID": apiData?.HR_Id,
 			"ATS_TalentID": item?.ATSTalentID
@@ -609,292 +614,352 @@ const TalentList = ({
 		setisNotesLoading(true)
 		let result = await hiringRequestDAO.getTalentNotesDAO(payload)
 		setisNotesLoading(false)
-		if(result?.statusCode === 200) {
+		if (result?.statusCode === 200) {
 			setNotes(result.responseBody.notes?.reverse())
-		}else{
+		} else {
 			setNotes([])
 		}
 	}
 
-	const deleteNoteDetails = async (note,setAllNotes,item) => {
-        let payload = {   
-			...note,   
-            "IsDeleted":true,
-			"CompanyId":apiData?.ClientDetail?.CompanyId,
-            "ContactName" : apiData?.ClientDetail?.ClientName,
-            "ContactEmail" : apiData?.ClientDetail?.ClientEmail,
-            "HiringRequest_ID": apiData?.HR_Id,
-            "ATS_TalentID": item?.ATSTalentID,
+	const deleteNoteDetails = async (note, setAllNotes, item) => {
+		let payload = {
+			...note,
+			"IsDeleted": true,
+			"CompanyId": apiData?.ClientDetail?.CompanyId,
+			"ContactName": apiData?.ClientDetail?.ClientName,
+			"ContactEmail": apiData?.ClientDetail?.ClientEmail,
+			"HiringRequest_ID": apiData?.HR_Id,
+			"ATS_TalentID": item?.ATSTalentID,
 			"EmployeeID": localStorage.getItem('EmployeeID'),
-            "EmployeeName": localStorage.getItem('FullName')
-    }
+			"EmployeeName": localStorage.getItem('FullName')
+		}
 
-	let dataForUTSAPI = {
-		"contactID": item?.ContactId,
-		"hrid": apiData?.HR_Id,
-		"atsTalentID": item?.ATSTalentID,
-		"utsTalentID": item?.TalentID,
-		"notes": note.Notes,
-		"atsNoteID": note.Note_Id,
-		"createdByDateTime": note.Added_Date,
-		"flag": "Delete"
-	  }
+		let dataForUTSAPI = {
+			"contactID": item?.ContactId,
+			"hrid": apiData?.HR_Id,
+			"atsTalentID": item?.ATSTalentID,
+			"utsTalentID": item?.TalentID,
+			"notes": note.Notes,
+			"atsNoteID": note.Note_Id,
+			"createdByDateTime": note.Added_Date,
+			"flag": "Delete"
+		}
 
-    let result = await hiringRequestDAO.saveTalentNotesDAO(payload)
+		let result = await hiringRequestDAO.saveTalentNotesDAO(payload)
 
-	if(result.statusCode === 200){
-		setAllNotes(prev => prev.filter(i => i.Note_Id !== note.Note_Id))
-		hiringRequestDAO.addDeleteNotesDataDAO(dataForUTSAPI)
+		if (result.statusCode === 200) {
+			setAllNotes(prev => prev.filter(i => i.Note_Id !== note.Note_Id))
+			hiringRequestDAO.addDeleteNotesDataDAO(dataForUTSAPI)
+		}
 	}
-        }
 
 	function arePropsEqual(oldProps, newProps) {
-		console.log({ oldProps, newProps})
+		console.log({ oldProps, newProps })
 		return (
 			oldProps.dataPoints.length === newProps.dataPoints.length &&
 			oldProps.dataPoints.every((oldPoint, index) => {
-			const newPoint = newProps.dataPoints[index];
-			return oldPoint.x === newPoint.x && oldPoint.y === newPoint.y;
+				const newPoint = newProps.dataPoints[index];
+				return oldPoint.x === newPoint.x && oldPoint.y === newPoint.y;
 			})
 		);
+	}
+
+	const ColapsableTalDetails = ({ item }) => {
+		const [show, setShow] = useState(false)
+		return <div>
+			<div onClick={() => setShow(prev => !prev)} className={TalentListStyle.colHeader}><h3 style={{ textDecoration: 'underline' }}>Matchmaking Details</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }} /></div>
+			{(show && DynamicSalaryInfo.length > 0) && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
+				<div>
+					<span>
+						{info.Title}
+					</span>
+					&nbsp;&nbsp;
+					<span style={{ fontWeight: '500' }}>
+						{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
+					</span>
+				</div>
+
+			</div>)}
+		</div>
+
+	}
+
+	const handleTJoiningDateSubmit = async () => {
+
+		const formattedDate = onboardDetails.date ? moment(onboardDetails.date).format("YYYY-MM-DD") : '';
+		const payload = {
+			onBoardID: onboardDetails?.onBoardId,
+			TentativeJoiningDate: formattedDate,
+		};
+		try {
+			const response = await engagementRequestDAO.updateTentativeJoiningDate(payload); // <-- Make sure this function exists
+
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				message.success(" Tentative Joining date updated successfully.");
+				// getOnboardingForm(getHRAndEngagementId?.onBoardId);
+				setEditTJoiningDateModal(false);
+				getHrUserData(hrId)
+			} else {
+				message.error("Failed to update Tentative joining date.");
+			}
+		} catch (error) {
+			console.error("Error updating joining date:", error);
+			message.error("Something went wrong.");
+		}
+	};
+
+	const handleTalentOfferedCTCSubmit = async () => {
+		let isValid = true
+		if (editTalentOfferedCTCModal) {
+			if (!offeredCTCDeails?.CTC || offeredCTCDeails?.CTC <= 0) {
+				isValid = false
+				return
+			}
 		}
 
-  const ColapsableTalDetails =({item}) => {
-	const [show,setShow] = useState(false)
-	return  <div>
-	<div onClick={()=>setShow(prev=>!prev)} className={TalentListStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Matchmaking Details</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }}  /></div>
-	{(show && DynamicSalaryInfo.length > 0) && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
-								<div>
-									<span>
-										{info.Title}
-									</span>
-									&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
-									</span>
-								</div>
+		if (editUplersFeesPerModal) {
+			if (!offeredCTCDeails?.uplersFees || offeredCTCDeails?.uplersFees <= 0 || offeredCTCDeails?.uplersFees > 100) {
+				isValid = false
+				return
+			}
+		}
 
-							</div>)}
-	</div>
+		if (isValid) {
+			let pl = {
+				"onBoardID": offeredCTCDeails?.onBoardId ? offeredCTCDeails?.onBoardId : '',
+				"offerCTC": offeredCTCDeails?.CTC ? offeredCTCDeails?.CTC : 0,
+				"uplersPer": offeredCTCDeails?.uplersFees ? parseFloat(offeredCTCDeails?.uplersFees) : 0
+			}
+			
 
-  }
+			try {
+				setCTCPERUPDATING(true)
+				const response = await engagementRequestDAO.updateOfferCTCUlpersFeesDAO(pl);
+				setCTCPERUPDATING(false)
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					message.success(" Updated successfully.");
+					// getOnboardingForm(getHRAndEngagementId?.onBoardId);
+					setEditTalentOfferedCTCModal(false);
+					setEditUplersFeesPerModal(false)
+					getHrUserData(hrId)
+				} else {
+					message.error("Failed to update.");
+				}
+			} catch (error) {
+				console.error("Error updating :", error);
+				message.error("Something went wrong.");
+			}
+		}
 
-    const handleTJoiningDateSubmit  = async () => {
-   
-    const formattedDate = onboardDetails.date ?  moment(onboardDetails.date).format("YYYY-MM-DD") : '';
-    const payload = {
-      onBoardID: onboardDetails?.onBoardId,
-      TentativeJoiningDate : formattedDate,
-    };
-    try {
-      const response = await engagementRequestDAO.updateTentativeJoiningDate(payload); // <-- Make sure this function exists
-  
-      if (response?.statusCode === HTTPStatusCode.OK) {
-        message.success(" Tentative Joining date updated successfully.");
-        // getOnboardingForm(getHRAndEngagementId?.onBoardId);
-        setEditTJoiningDateModal(false);
-		 getHrUserData(hrId)
-      } else {
-        message.error("Failed to update Tentative joining date.");
-      }
-    } catch (error) {
-      console.error("Error updating joining date:", error);
-      message.error("Something went wrong.");
-    }
-  };
+	}
 
-  const handleJoiningDateSubmit  = async () => {
-    if (!onboardDetails.date) {
-      message.warning("Please select a date before saving.");
-      return;
-    }
-    const formattedDate = moment(onboardDetails.date).format("YYYY-MM-DD");
-    const payload = {
-      onBoardID: onboardDetails?.onBoardId,
-      contractStartDate: formattedDate,
-    };
-  
-    try {
-      const response = await engagementRequestDAO.updateContractStartDate(payload); // <-- Make sure this function exists
-  
-      if (response?.statusCode === HTTPStatusCode.OK) {
-        message.success("Joining date updated successfully.");
-        // getOnboardingForm(getHRAndEngagementId?.onBoardId);
-        setEditJoiningDateModal(false);
-		 getHrUserData(hrId)
-      } else {
-        message.error("Failed to update joining date.");
-      }
-    } catch (error) {
-      console.error("Error updating joining date:", error);
-      message.error("Something went wrong.");
-    }
-  };
+	const handleJoiningDateSubmit = async () => {
+		if (!onboardDetails.date) {
+			message.warning("Please select a date before saving.");
+			return;
+		}
+		const formattedDate = moment(onboardDetails.date).format("YYYY-MM-DD");
+		const payload = {
+			onBoardID: onboardDetails?.onBoardId,
+			contractStartDate: formattedDate,
+		};
 
-  const ColapsableTalNotesDetails =({item}) => {
-	const [show,setShow] = useState(false)
-	return  <div>
-		<Divider
-			style={{
-				margin: '16px 0 10px 0',
-			}}
-		/>
-	<div onClick={()=>setShow(prev=>!prev)} className={TalentListStyle.colHeader}><h3 style={{textDecoration:'underline'}}>Notes</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }}  /></div>
-	{show &&  <>
-	<Divider
-		style={{
-			margin: '16px 0 10px 0',
-		}}
-	/>
-	<TalentNotesCardComp item={item} />
-	</> }
-	</div>
+		try {
+			const response = await engagementRequestDAO.updateContractStartDate(payload); // <-- Make sure this function exists
 
-  }
-	const TalentNotesCardComp = ({item})=>{
-		const [allNotes , setAllNotes] = useState([])
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				message.success("Joining date updated successfully.");
+				// getOnboardingForm(getHRAndEngagementId?.onBoardId);
+				setEditJoiningDateModal(false);
+				getHrUserData(hrId)
+			} else {
+				message.error("Failed to update joining date.");
+			}
+		} catch (error) {
+			console.error("Error updating joining date:", error);
+			message.error("Something went wrong.");
+		}
+	};
+
+	const ColapsableTalNotesDetails = ({ item }) => {
+		const [show, setShow] = useState(false)
+		return <div>
+			<Divider
+				style={{
+					margin: '16px 0 10px 0',
+				}}
+			/>
+			<div onClick={() => setShow(prev => !prev)} className={TalentListStyle.colHeader}><h3 style={{ textDecoration: 'underline' }}>Notes</h3>   <ArrowDownSVG style={{ rotate: show ? '180deg' : '' }} /></div>
+			{show && <>
+				<Divider
+					style={{
+						margin: '16px 0 10px 0',
+					}}
+				/>
+				<TalentNotesCardComp item={item} />
+			</>}
+		</div>
+
+	}
+
+	function parsePrice(text) {
+		const regex = /(?<symbol>[\p{Sc}])?\s*(?<amount>\d+(?:\.\d+)?)\s*(?<code>[A-Z]{3})?/u;
+		const match = text.match(regex);
+
+		if (!match || !match.groups) return null;
+
+		return {
+			symbol: match.groups.symbol || null,
+			amount: Number(match.groups.amount),
+			code: match.groups.code || null
+		};
+	}
+
+	const TalentNotesCardComp = ({ item }) => {
+		const [allNotes, setAllNotes] = useState([])
 		const [showAddNotesModal, setShowAddNotesModal] = useState(false);
-	const [showAllNotesModal, setShowAllNotesModal] = useState(false);
-	const [showViewNotesModal, setShowViewNotesModal] = useState(false);
-	const [isNotesLoading,setisNotesLoading] = useState(false)
-	const [viewNoteData,setViewNoteData] = useState({});
-	const [showEditNotesModal, setShowEditNotesModal] = useState(false);
-		useEffect(()=>{
-			fetchTalentsNotes(item,setAllNotes, setisNotesLoading )
-		},[item])
+		const [showAllNotesModal, setShowAllNotesModal] = useState(false);
+		const [showViewNotesModal, setShowViewNotesModal] = useState(false);
+		const [isNotesLoading, setisNotesLoading] = useState(false)
+		const [viewNoteData, setViewNoteData] = useState({});
+		const [showEditNotesModal, setShowEditNotesModal] = useState(false);
+		useEffect(() => {
+			fetchTalentsNotes(item, setAllNotes, setisNotesLoading)
+		}, [item])
 
 		return (
 			<div className={TalentListStyle.addNotesList}>
-			<div className={TalentListStyle.addNotesHead}>
-				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAddNotesModal(true)} title='Add a note for talent'><NotesIcon />Add a note for talent</button>
-			</div>
+				<div className={TalentListStyle.addNotesHead}>
+					<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAddNotesModal(true)} title='Add a note for talent'><NotesIcon />Add a note for talent</button>
+				</div>
 
-			{isNotesLoading ? <Skeleton active /> 
-			: allNotes.length === 0 ? <div className={TalentListStyle.addNoteItem} style={{display:'flex', justifyContent:'center'}}><h4 style={{padding:'0'}}>No Notes Available  </h4></div>  
-			: allNotes?.slice(0,2).map(note=> {
-				const regex = /(<([^>]+)>)/gi;
-				const newString = note.Notes.replace(regex, " ")
-			return	<div className={TalentListStyle.addNoteItem} key={note.Note_Id}>
-				{note.EmployeeID === EmpID && <div className={TalentListStyle.addNoteAction} key={note.Note_Id}>
-					<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => {setShowEditNotesModal(true);setViewNoteData(note)}}><EditIcon /></button>
-					<button type="button" className={TalentListStyle.addNoteBtn} title='Delete' onClick={()=> {deleteNoteDetails(note, setAllNotes, item)}}><DeleteIcon /></button>
+				{isNotesLoading ? <Skeleton active />
+					: allNotes.length === 0 ? <div className={TalentListStyle.addNoteItem} style={{ display: 'flex', justifyContent: 'center' }}><h4 style={{ padding: '0' }}>No Notes Available  </h4></div>
+						: allNotes?.slice(0, 2).map(note => {
+							const regex = /(<([^>]+)>)/gi;
+							const newString = note.Notes.replace(regex, " ")
+							return <div className={TalentListStyle.addNoteItem} key={note.Note_Id}>
+								{note.EmployeeID === EmpID && <div className={TalentListStyle.addNoteAction} key={note.Note_Id}>
+									<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => { setShowEditNotesModal(true); setViewNoteData(note) }}><EditIcon /></button>
+									<button type="button" className={TalentListStyle.addNoteBtn} title='Delete' onClick={() => { deleteNoteDetails(note, setAllNotes, item) }}><DeleteIcon /></button>
+								</div>}
+
+								<h4>{note?.EmployeeName}  {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/} </h4>
+								{note.Notes.length > 100 ? <p>{`${newString?.substring(0, 100)}...`}<span className={TalentListStyle.addNoteView} onClick={() => { setShowViewNotesModal(true); setViewNoteData(note) }}>view more</span></p> : <p dangerouslySetInnerHTML={{ __html: note.Notes }}></p>}
+								{/* <p>{note.Notes.length > 100 ? `${note.Notes.substring(0, 100)}...` : note.Notes} {note.Notes.length > 100 && <span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span>}</p> */}
+							</div>
+						})}
+				{allNotes.length > 2 && <div className={TalentListStyle.addNoteMore}>
+					<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAllNotesModal(true)} title='Show more notes'>Show more notes</button>
 				</div>}
-				
-				<h4>{note?.EmployeeName}  {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/} </h4>
-				{note.Notes.length > 100 ? <p>{`${newString?.substring(0, 100)}...`}<span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span></p> : <p dangerouslySetInnerHTML={{__html:note.Notes }}></p>}
-				{/* <p>{note.Notes.length > 100 ? `${note.Notes.substring(0, 100)}...` : note.Notes} {note.Notes.length > 100 && <span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span>}</p> */}
-			</div>
-			}) }
-			{allNotes.length > 2 && <div className={TalentListStyle.addNoteMore}>
-				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAllNotesModal(true)} title='Show more notes'>Show more notes</button>
-			</div>}
-			
 
-			{/** ============ Modal For Add Notes ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="commonModalWrap"
-				open={showAddNotesModal}
-				onCancel={() =>
-					setShowAddNotesModal(false)
-				}>
-				<AddNotes onCancel={()=>setShowAddNotesModal(false)} item={item} apiData={apiData} setAllNotes={setAllNotes}/>
-			</Modal>
 
-			{/** ============ Modal For All Notes ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="commonModalWrap"
-				open={showAllNotesModal}
-				onCancel={() =>
-					setShowAllNotesModal(false)
-				}>
-				<AllNotes onClose={()=>setShowAllNotesModal(false)} allNotes={allNotes} onEditNote={(note)=> {
-					setShowEditNotesModal(true);setViewNoteData(note)
-				}}
-				
-				deleteNote={(note)=> {
-					deleteNoteDetails(note, setAllNotes,item)
-				}}/>
-			</Modal>
-			
-			{/** ============ Modal For View Notes ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="commonModalWrap"
-				open={showViewNotesModal}
-				cancelButtonProps={{ style: { display: 'none' } }}
-				onCancel={() =>
-					{setShowViewNotesModal(false);setViewNoteData({})}
-				}
+				{/** ============ Modal For Add Notes ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					className="commonModalWrap"
+					open={showAddNotesModal}
+					onCancel={() =>
+						setShowAddNotesModal(false)
+					}>
+					<AddNotes onCancel={() => setShowAddNotesModal(false)} item={item} apiData={apiData} setAllNotes={setAllNotes} />
+				</Modal>
+
+				{/** ============ Modal For All Notes ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					className="commonModalWrap"
+					open={showAllNotesModal}
+					onCancel={() =>
+						setShowAllNotesModal(false)
+					}>
+					<AllNotes onClose={() => setShowAllNotesModal(false)} allNotes={allNotes} onEditNote={(note) => {
+						setShowEditNotesModal(true); setViewNoteData(note)
+					}}
+
+						deleteNote={(note) => {
+							deleteNoteDetails(note, setAllNotes, item)
+						}} />
+				</Modal>
+
+				{/** ============ Modal For View Notes ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					className="commonModalWrap"
+					open={showViewNotesModal}
+					cancelButtonProps={{ style: { display: 'none' } }}
+					onCancel={() => { setShowViewNotesModal(false); setViewNoteData({}) }
+					}
 				>
-				<ViewNotes viewNoteData={viewNoteData} onClose={()=> {setShowViewNotesModal(false);setViewNoteData({})}} showAll={()=>{setShowAllNotesModal(true);setShowViewNotesModal(false)}}
-				onEditNote={(note)=> {
-					setShowEditNotesModal(true);setViewNoteData(note);setShowViewNotesModal(false);
-				}}
-				
-				deleteNote={(note)=> {
-					deleteNoteDetails(note, setAllNotes,item);setShowViewNotesModal(false);
-				}}
-				 />
-			</Modal>
-			
-			{/** ============ Modal For Edit Notes ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="commonModalWrap"
-				open={showEditNotesModal}
-				onCancel={() =>
-					{setShowEditNotesModal(false);
-					setViewNoteData({})}
-				}>
-				<EditNotes onClose={() =>
-					{setShowEditNotesModal(false);
-					setViewNoteData({})}}
-					viewNoteData={viewNoteData}
-					apiData={apiData}
-					item={item}
-					setAllNotes={setAllNotes}
+					<ViewNotes viewNoteData={viewNoteData} onClose={() => { setShowViewNotesModal(false); setViewNoteData({}) }} showAll={() => { setShowAllNotesModal(true); setShowViewNotesModal(false) }}
+						onEditNote={(note) => {
+							setShowEditNotesModal(true); setViewNoteData(note); setShowViewNotesModal(false);
+						}}
+
+						deleteNote={(note) => {
+							deleteNoteDetails(note, setAllNotes, item); setShowViewNotesModal(false);
+						}}
 					/>
-			</Modal>
-		</div>
+				</Modal>
+
+				{/** ============ Modal For Edit Notes ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					className="commonModalWrap"
+					open={showEditNotesModal}
+					onCancel={() => {
+						setShowEditNotesModal(false);
+						setViewNoteData({})
+					}
+					}>
+					<EditNotes onClose={() => {
+						setShowEditNotesModal(false);
+						setViewNoteData({})
+					}}
+						viewNoteData={viewNoteData}
+						apiData={apiData}
+						item={item}
+						setAllNotes={setAllNotes}
+					/>
+				</Modal>
+			</div>
 		)
-	
-	}	
+
+	}
 
 	return (
 		<div>
-			{contextHolder}			
+			{contextHolder}
 			<List
 				grid={{ gutter: 16, column: 2 }}
 				size="large"
-				dataSource={hrData?.FinalResult?.rows && hrData?.FinalResult?.rows}				
+				dataSource={hrData?.FinalResult?.rows && hrData?.FinalResult?.rows}
 				pagination={{
 					className: TalentListStyle.paginate,
 					size: 'small',
 					pageSize: ROW_SIZE,
 					position: 'top',
-					total:hrData?.FinalResult?.totalrows,
-					current:page,					
-					onChange: (page, pageSize) => {	
-						setPageIndex(page - 1);	
+					total: hrData?.FinalResult?.totalrows,
+					current: page,
+					onChange: (page, pageSize) => {
+						setPageIndex(page - 1);
 						setPage(page);
 					},
 				}}
-				renderItem={(item, listIndex) => {	
-					
+				renderItem={(item, listIndex) => {
+
 					return (
 						<div
 							key={item?.Name}
@@ -976,41 +1041,41 @@ const TalentList = ({
 												<BsThreeDots style={{ fontSize: '1.5rem' }} />
 											</Dropdown>
 										</div>
-									</div>									
-			
-									<div className={TalentListStyle.profileURL} style={{marginBottom:'5px'}}>
-										{/* <span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp; */}
-										<div style={{display:'flex', justifyContent:'space-between', gap:'50px',width:'100%'}}>
-										<span style={{ fontWeight: '500' }}>
-											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Download Resume</p> : item?.ATSTalentLiveURL ? (
-											<Tooltip title={'View Profile Details'}>
-												<a
-													style={{ textDecoration: 'underline' }}
-													href={item?.ATSTalentLiveURL}
-													target="_blank"
-													rel="noreferrer">
-													View Profile URL
-												</a>
-											</Tooltip>	
-											) : (
-												'NA'
-											)}
-			
-										</span>
+									</div>
 
-										{item?.IsAssociatedWithOtherHR && <Tooltip title={"View Other HR's "}><div className={TalentListStyle.insightText} onClick={()=>{
-										setShowOtherHRStatus(true)
-										setHROtherStatusDetails({TalentID:item?.TalentID, HiringDetailID:hrId, talentName: item?.Name})
-										}}>
-										View Other HR Status.
-											</div></Tooltip> }
+									<div className={TalentListStyle.profileURL} style={{ marginBottom: '5px' }}>
+										{/* <span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp; */}
+										<div style={{ display: 'flex', justifyContent: 'space-between', gap: '50px', width: '100%' }}>
+											<span style={{ fontWeight: '500' }}>
+												{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Download Resume</p> : item?.ATSTalentLiveURL ? (
+													<Tooltip title={'View Profile Details'}>
+														<a
+															style={{ textDecoration: 'underline' }}
+															href={item?.ATSTalentLiveURL}
+															target="_blank"
+															rel="noreferrer">
+															View Profile URL
+														</a>
+													</Tooltip>
+												) : (
+													'NA'
+												)}
+
+											</span>
+
+											{item?.IsAssociatedWithOtherHR && <Tooltip title={"View Other HR's "}><div className={TalentListStyle.insightText} onClick={() => {
+												setShowOtherHRStatus(true)
+												setHROtherStatusDetails({ TalentID: item?.TalentID, HiringDetailID: hrId, talentName: item?.Name })
+											}}>
+												View Other HR Status.
+											</div></Tooltip>}
 
 											{/* <HighlightedLinks /> */}
 
-									</div>
+										</div>
 
 									</div>
-			
+
 									<div className={TalentListStyle.EmailID}>
 										<span>Email:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -1024,7 +1089,7 @@ const TalentList = ({
 											{item?.ContactNumber ? item?.ContactNumber : "-"}
 										</span>
 									</div>}
-			
+
 									<div className={TalentListStyle.experience}>
 										<span>Experience:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -1080,7 +1145,7 @@ const TalentList = ({
 										setProfileRejectedModal={setProfileRejectedModal}
 										setShowFeedback={setShowFeedback}
 										setTalentIndex={setTalentIndex} />
-			
+
 									{/* HTML for Rejection Status Starts  */}
 									{/* <div className={TalentListStyle.statusReject}>
 										<div className={TalentListStyle.statusRejectInner}>
@@ -1097,7 +1162,7 @@ const TalentList = ({
 										</div>
 									</div> */}
 									{/* HTML for Rejection Status Ends */}
-			
+
 									{/* HTML for Feedback Pending Starts */}
 									{/* <div className={TalentListStyle.statusPending}>
 										<div className={TalentListStyle.statusPendingInner}>
@@ -1110,7 +1175,7 @@ const TalentList = ({
 										</div>
 									</div> */}
 									{/* HTML for Feedback Pending Ends */}
-			
+
 									{/* <div className={TalentListStyle.payRate}>
 										<div>
 											<span>Interview Status:</span>&nbsp;&nbsp;
@@ -1145,32 +1210,32 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-{console.log(DynamicSalaryInfo)}
-		{(item?.TalentStatusID_BasedOnHR === 10 || item?.TalentStatusID_BasedOnHR === 4 || item?.TalentStatusID_BasedOnHR === 12) ?  <ColapsableTalDetails item={item} /> : 
-			DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
-				<div>
-					<span>
-						{info.Title}
-					</span>
-					&nbsp;&nbsp;
-					<span style={{ fontWeight: '500' }}>
-						{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
-					</span>
-					{info?.Title === "Talent's Current Pay:" && <Tooltip
-				
-							placement="bottomLeft"
-							title={<div>
-									<span>Fixed : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Fixed_str ?? 'NA'}</span><br/>
-									<span>Variable : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Variable_str ?? 'NA'}</span><br/>
-									<span>Stock : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Stock_str ?? 'NA'}</span><br/>
-									<span>Vested Across : </span><span style={{ fontWeight: '500' }}>{item?.Current_CTC_vested_across_str ?? 'NA'}</span>
-								</div>}>
-								<img src={infoIcon} alt='info' style={{marginLeft:'10px'}} />							
-						</Tooltip>}
-				</div>
-				
-				
-				{/* {info.IsEditable && <>
+									{/* {console.log(DynamicSalaryInfo)} */}
+									{(item?.TalentStatusID_BasedOnHR === 10 || item?.TalentStatusID_BasedOnHR === 4 || item?.TalentStatusID_BasedOnHR === 12) ? <ColapsableTalDetails item={item} /> :
+										DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
+											<div>
+												<span>
+													{info.Title}
+												</span>
+												&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
+												</span>
+												{info?.Title === "Talent's Current Pay:" && <Tooltip
+
+													placement="bottomLeft"
+													title={<div>
+														<span>Fixed : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Fixed_str ?? 'NA'}</span><br />
+														<span>Variable : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Variable_str ?? 'NA'}</span><br />
+														<span>Stock : </span><span style={{ fontWeight: '500' }}>{item?.CurrentCTC_Stock_str ?? 'NA'}</span><br />
+														<span>Vested Across : </span><span style={{ fontWeight: '500' }}>{item?.Current_CTC_vested_across_str ?? 'NA'}</span>
+													</div>}>
+													<img src={infoIcon} alt='info' style={{ marginLeft: '10px' }} />
+												</Tooltip>}
+											</div>
+
+
+											{/* {info.IsEditable && <>
 					{!hrType ? <>
 						{apiData?.JobStatusID !== 2 &&
 							(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') &&
@@ -1203,10 +1268,10 @@ const TalentList = ({
 							Edit
 						</span>}
 					</>}
-				</>} */}				
+				</>} */}
 
-			</div>)
-		}
+										</div>)
+									}
 
 									{/* {!hrType ? (
 										<>
@@ -1368,227 +1433,313 @@ const TalentList = ({
 											</div>
 										</>
 									)} */}
-			
+
 									<Divider
 										style={{
 											margin: '10px 0',
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
-									/>			
+									/>
 									{/* item?.ContractStartdate old condition */}
 									{(item?.TalentStatusID_BasedOnHR === 10 || item?.TalentStatusID_BasedOnHR === 4 || item?.TalentStatusID_BasedOnHR === 12) ? <>
 
-									<h3 style={{textDecoration:'underline'}}>Offer Details  </h3>
+										<h3 style={{ textDecoration: 'underline' }}>Offer Details  </h3>
 
 										{item?.OfferedCTC && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Talent's Offered CTC:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{budgetStringToCommaSeprated(item?.OfferedCTC)}
-											</span>
-										</div>
-									)}	
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Talent's Offered CTC:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{budgetStringToCommaSeprated(item?.OfferedCTC)}
+												</span>
+												<span
+													className={TalentListStyle.editNewIcon}
+													style={{ marginLeft: "auto", cursor: "pointer" }}
+													onClick={() => {
+														setEditTalentOfferedCTCModal(true)
+														let ctc = parsePrice(item?.OfferedCTC)
+
+														setofferedCTCDetails({ CTC: ctc.amount, ...ctc, onBoardId: item.OnBoardId })
+													}}
+												>
+													<EditNewIcon />
+												</span>
+											</div>
+										)}
+
+										{editTalentOfferedCTCModal && (
+											<Modal
+												width={300}
+												centered
+												footer={false}
+												open={editTalentOfferedCTCModal}
+												className="editStartDateModal"
+
+												onCancel={() => setEditTalentOfferedCTCModal(false)}
+											>
+												<div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexDirection: 'column' }}>
+													<label className={TalentListStyle.formLabel}>Edit Talent's Offered CTC</label>
+													<div >
+														{ctcPerUpdating ? <Skeleton active /> : <>{offeredCTCDeails?.symbol} <InputNumber style={{ width: '80%' }} value={offeredCTCDeails.CTC} onChange={val => setofferedCTCDetails(prev => ({ ...prev, CTC: val }))} /> {offeredCTCDeails?.code}</>}
+
+													</div>
 
 
-							{item?.OnBoardUplersFeesPercentage && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Uplers Fees %:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.OnBoardUplersFeesPercentage}
-											</span>
-										</div>
-									)}
+													{(!offeredCTCDeails?.CTC || offeredCTCDeails?.CTC <= 0) && <span style={{ color: 'red' }}>Please enter valid CTC</span>}
+													<button
+														type="button"
+														className={TalentListStyle.btnPrimary}
+														onClick={handleTalentOfferedCTCSubmit}
+														disabled={ctcPerUpdating}
+													>
+														SAVE
+													</button>
+												</div>
+
+											</Modal>
+										)}
+
+										{item?.OnBoardUplersFeesPercentage && (
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Uplers Fees %:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.OnBoardUplersFeesPercentage}
+												</span>
+												<span
+													className={TalentListStyle.editNewIcon}
+													style={{ marginLeft: "auto", cursor: "pointer" }}
+													onClick={() => {
+														setEditUplersFeesPerModal(true)
+														let per = item?.OnBoardUplersFeesPercentage.replace('%', '').trim()
+														setofferedCTCDetails({ uplersFees: per, onBoardId: item.OnBoardId })
+													}}
+												>
+													<EditNewIcon />
+												</span>
+											</div>
+										)}
+
+										{editUplersFeesPerModal && (
+											<Modal
+												width={400}
+												centered
+												footer={false}
+												open={editUplersFeesPerModal}
+												className="editStartDateModal"
+
+												onCancel={() => setEditUplersFeesPerModal(false)}
+											>
+												<div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexDirection: 'column' }}>
+													<label className={TalentListStyle.formLabel}>Edit Uplers Fees %</label>
+													<div >
+														{ctcPerUpdating ? <Skeleton active /> : <><InputNumber value={offeredCTCDeails.uplersFees} onChange={val => setofferedCTCDetails(prev => ({ ...prev, uplersFees: val }))} /> {' %'}</>}
+
+													</div>
+
+													{(!offeredCTCDeails?.uplersFees || offeredCTCDeails?.uplersFees <= 0 || offeredCTCDeails?.uplersFees > 100) && <span style={{ color: 'red' }}>Please enter valid Uplers Fees %</span>}
+
+													<button
+														type="button"
+														className={TalentListStyle.btnPrimary}
+														onClick={handleTalentOfferedCTCSubmit}
+														disabled={ctcPerUpdating}
+													>
+														SAVE
+													</button>
+												</div>
+
+											</Modal>
+										)}
 
 
 										{item?.OnBoardUplersFeesAmount && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Uplers Fees (in Amount):</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.OnBoardUplersFeesAmount}
-											</span>
-										</div>
-									)}
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Uplers Fees (in Amount):</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.OnBoardUplersFeesAmount}
+												</span>
+											</div>
+										)}
 										{item?.Onboard_BillRate_str && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Client's Bill Amount:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.Onboard_BillRate_str}
-											</span>
-										</div>
-									)}
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Client's Bill Amount:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.Onboard_BillRate_str}
+												</span>
+											</div>
+										)}
 
 										{item?.OfferDate && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Offer Date:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.OfferDate}
-											</span>
-										</div>
-									)}
-							
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Offer Date:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.OfferDate}
+												</span>
+											</div>
+										)}
+
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Tentative Joining Date:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500' }}>
-												{item?.TentativeJoiningDate ? item?.TentativeJoiningDate :  'NA'} 
+												{item?.TentativeJoiningDate ? item?.TentativeJoiningDate : 'NA'}
 											</span>
 
-{item?.IsShowJoiningAndTentativedate === 1 && <span
-											className={TalentListStyle.editNewIcon}
-											style={{ marginLeft: "auto", cursor: "pointer" }}
-											onClick={() => {
-												setEditTJoiningDateModal(true);
-												console.log(new Date(item?.TentativeJoiningDate) , item?.TentativeJoiningDate)
-												let date = ''
-												if(item?.TentativeJoiningDate){
-													const [day, month, year] = item?.TentativeJoiningDate.split("/").map(Number);
-												 date = new Date(year, month - 1, day);
-												}
-												
-												setOnboardDetails({date:date ,onBoardId:item.OnBoardId})
-											}}
+											{item?.IsShowJoiningAndTentativedate === 1 && <span
+												className={TalentListStyle.editNewIcon}
+												style={{ marginLeft: "auto", cursor: "pointer" }}
+												onClick={() => {
+													setEditTJoiningDateModal(true);
+													console.log(new Date(item?.TentativeJoiningDate), item?.TentativeJoiningDate)
+													let date = ''
+													if (item?.TentativeJoiningDate) {
+														const [day, month, year] = item?.TentativeJoiningDate.split("/").map(Number);
+														date = new Date(year, month - 1, day);
+													}
+
+													setOnboardDetails({ date: date, onBoardId: item.OnBoardId })
+												}}
 											>
-											<EditNewIcon />
+												<EditNewIcon />
 											</span>}
-											 
+
 										</div>
-										{editTJoiningDateModal  && (
-										  <Modal
-										  width={400}
-										  centered
-										  footer={false}
-										  open={editTJoiningDateModal}
-										  className="editStartDateModal"
-										
-										  onCancel={() => setEditTJoiningDateModal(false)}
-										>
-										  <label className={TalentListStyle.formLabel}>Edit Tentative Joining Date</label>   
-										  <div className={TalentListStyle.timeSlotItem}>
-											<CalenderSVG />
-											<DatePicker
-											  selected={onboardDetails.date}
-											  onChange={(date) => {
-												setOnboardDetails(prev=> {
-													return {...prev,date:date}
-												})
-											  }}
-											  placeholderText="Select Date"
-											  dateFormat="dd/MM/yyyy"
-											/>
-										  </div>
-										  <button
-											type="button"
-											className={TalentListStyle.btnPrimary}
-											onClick={handleTJoiningDateSubmit}
-										  >
-											SAVE
-										  </button>
-										</Modal>
-										)}
+										{editTJoiningDateModal && (
+											<Modal
+												width={400}
+												centered
+												footer={false}
+												open={editTJoiningDateModal}
+												className="editStartDateModal"
 
-
-									
-										{item?.JoiningDate && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Joining Date:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.JoiningDate}
-											</span>
-											 <span
-											className={TalentListStyle.editNewIcon}
-											style={{ marginLeft: "auto", cursor: "pointer" }}
-											onClick={() => {
-												setEditJoiningDateModal(true);
-												const [day, month, year] = item?.JoiningDate.split("/").map(Number);
-												const date = new Date(year, month - 1, day);
-												setOnboardDetails({date:date ,onBoardId:item.OnBoardId})
-											}}
+												onCancel={() => setEditTJoiningDateModal(false)}
 											>
-											<EditNewIcon />
-											</span>
-										</div>
-									)}
-									 {editJoiningDateModal  && (
-										  <Modal
-										  width={400}
-										  centered
-										  footer={false}
-										  open={editJoiningDateModal}
-										  className="editStartDateModal"
-										
-										  onCancel={() => setEditJoiningDateModal(false)}
-										>
-										  <label className={TalentListStyle.formLabel}>Edit Joining Date</label>   
-										  <div className={TalentListStyle.timeSlotItem}>
-											<CalenderSVG />
-											<DatePicker
-											  selected={onboardDetails.date}
-											  onChange={(date) => {
-												setOnboardDetails(prev=> {
-													return {...prev,date:date}
-												})
-											  }}
-											  placeholderText="Start Date"
-											  dateFormat="dd/MM/yyyy"
-											/>
-										  </div>
-										  <button
-											type="button"
-											className={TalentListStyle.btnPrimary}
-											onClick={handleJoiningDateSubmit}
-										  >
-											SAVE
-										  </button>
-										</Modal>
+												<label className={TalentListStyle.formLabel}>Edit Tentative Joining Date</label>
+												<div className={TalentListStyle.timeSlotItem}>
+													<CalenderSVG />
+													<DatePicker
+														selected={onboardDetails.date}
+														onChange={(date) => {
+															setOnboardDetails(prev => {
+																return { ...prev, date: date }
+															})
+														}}
+														placeholderText="Select Date"
+														dateFormat="dd/MM/yyyy"
+													/>
+												</div>
+												<button
+													type="button"
+													className={TalentListStyle.btnPrimary}
+													onClick={handleTJoiningDateSubmit}
+												>
+													SAVE
+												</button>
+											</Modal>
 										)}
-									
+
+
+
+										{item?.JoiningDate && (
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Joining Date:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.JoiningDate}
+												</span>
+												<span
+													className={TalentListStyle.editNewIcon}
+													style={{ marginLeft: "auto", cursor: "pointer" }}
+													onClick={() => {
+														setEditJoiningDateModal(true);
+														const [day, month, year] = item?.JoiningDate.split("/").map(Number);
+														const date = new Date(year, month - 1, day);
+														setOnboardDetails({ date: date, onBoardId: item.OnBoardId })
+													}}
+												>
+													<EditNewIcon />
+												</span>
+											</div>
+										)}
+										{editJoiningDateModal && (
+											<Modal
+												width={400}
+												centered
+												footer={false}
+												open={editJoiningDateModal}
+												className="editStartDateModal"
+
+												onCancel={() => setEditJoiningDateModal(false)}
+											>
+												<label className={TalentListStyle.formLabel}>Edit Joining Date</label>
+												<div className={TalentListStyle.timeSlotItem}>
+													<CalenderSVG />
+													<DatePicker
+														selected={onboardDetails.date}
+														onChange={(date) => {
+															setOnboardDetails(prev => {
+																return { ...prev, date: date }
+															})
+														}}
+														placeholderText="Start Date"
+														dateFormat="dd/MM/yyyy"
+													/>
+												</div>
+												<button
+													type="button"
+													className={TalentListStyle.btnPrimary}
+													onClick={handleJoiningDateSubmit}
+												>
+													SAVE
+												</button>
+											</Modal>
+										)}
+
 										{item?.ContractStartdate && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Contract Start Date:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.ContractStartdate}
-											</span>
-										</div>
-									)}
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Contract Start Date:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.ContractStartdate}
+												</span>
+											</div>
+										)}
 										{item?.ContractEnddate && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Contract End Date:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.ContractEnddate}
-											</span>
-										</div>
-									)}		
-																
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Contract End Date:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.ContractEnddate}
+												</span>
+											</div>
+										)}
+
 										{item?.LastWorkingDate && (
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Last Working Date:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.LastWorkingDate}
+												</span>
+											</div>
+										)}
+									</> : <>
+										{item?.ScheduleTimeZone && (
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Time Zone:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.ScheduleTimeZone}
+												</span>
+											</div>
+										)}
+
 										<div className={TalentListStyle.interviewSlots}>
-											<span>Last Working Date:</span>&nbsp;&nbsp;
+											<span>Available Interview Slots:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500' }}>
-												{item?.LastWorkingDate}
-											</span>
-										</div>
-									)}
-									</>: <>
-									{item?.ScheduleTimeZone && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Time Zone:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.ScheduleTimeZone}
-											</span>
-										</div>
-									)}
-			
-									<div className={TalentListStyle.interviewSlots}>
-										<span>Available Interview Slots:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
-											{/* { inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList?.length === 0 } */}
-											{inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID)?.SlotList?.length === 0 ? (
-												'NA'
-											) : item.InterViewStatusId === 3 ? 'NA' : (
-												<Dropdown
-													trigger={['click']}
-													placement="bottom"
-													overlay={
-														<Menu>
-															{/* {hrUtils
+												{/* { inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList?.length === 0 } */}
+												{inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID)?.SlotList?.length === 0 ? (
+													'NA'
+												) : item.InterViewStatusId === 3 ? 'NA' : (
+													<Dropdown
+														trigger={['click']}
+														placement="bottom"
+														overlay={
+															<Menu>
+																{/* {hrUtils
 																?.formatInterviewSlots(
 																	inteviewSlotDetails[listIndex]?.SlotList,
 																)
@@ -1599,48 +1750,48 @@ const TalentList = ({
 																		</Menu.Item>
 																	);
 																})} */}
-															{hrUtils
-																?.formatInterviewSlots(
-																	inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList
-																)
-																?.map((item, index) => {
-																	return (
-																		<Menu.Item key={index}>
-																			{item?.label}
-																		</Menu.Item>
-																	);
-																})}
-														</Menu>
-													}>
-													<span>
-														<Space>
-															{/* {
+																{hrUtils
+																	?.formatInterviewSlots(
+																		inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList
+																	)
+																	?.map((item, index) => {
+																		return (
+																			<Menu.Item key={index}>
+																				{item?.label}
+																			</Menu.Item>
+																		);
+																	})}
+															</Menu>
+														}>
+														<span>
+															<Space>
+																{/* {
 																hrUtils?.formatInterviewSlots(
 																	inteviewSlotDetails[listIndex]?.SlotList,
 																)?.[0]?.label
 															} */}
-															{hrUtils?.formatInterviewSlots(
-																inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList,
-															)?.[0]?.label}
-															<DownOutlined />
-														</Space>
-													</span>
-												</Dropdown>
-											)}
-										</span>
-									</div>
-									
-									{item?.Onboard_BillRate_str && (
-										<div className={TalentListStyle.interviewSlots}>
-											<span>Slot Confirmed:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.Slotconfirmed}
+																{hrUtils?.formatInterviewSlots(
+																	inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList,
+																)?.[0]?.label}
+																<DownOutlined />
+															</Space>
+														</span>
+													</Dropdown>
+												)}
 											</span>
 										</div>
-									)}
+
+										{item?.Onboard_BillRate_str && (
+											<div className={TalentListStyle.interviewSlots}>
+												<span>Slot Confirmed:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{item?.Slotconfirmed}
+												</span>
+											</div>
+										)}
 									</>}
-									
-			
+
+
 									{/* <Divider
 										style={{
 											margin: '10px 0',
@@ -1666,17 +1817,17 @@ const TalentList = ({
 									</div> */}
 
 									{item?.Status?.includes('Hired') && <TalentListDocuments talentID={item?.TalentID} companyId={apiData?.ClientDetail?.CompanyId} />}
-									
+
 									<ColapsableTalNotesDetails item={item} />
-									
+
 									<Divider
 										style={{
 											margin: '10px 0',
 										}}
-									/>		
-									{talentCTA.find(it=> it.TalentID === item.TalentID)?.cTAInfoList
-										?.length > 0 && (talentCTA.find(it=> it.TalentID === item.TalentID)
-											?.cTAInfoList[0]?.label === TalentOnboardStatus.CANCEL_ENGAGEMENT ? item?.IsShownTalentStatus === 1 ? true : false : true ) && (
+									/>
+									{talentCTA.find(it => it.TalentID === item.TalentID)?.cTAInfoList
+										?.length > 0 && (talentCTA.find(it => it.TalentID === item.TalentID)
+											?.cTAInfoList[0]?.label === TalentOnboardStatus.CANCEL_ENGAGEMENT ? item?.IsShownTalentStatus === 1 ? true : false : true) && (
 											<div
 												// style={{
 												// 	position: 'absolute',
@@ -1688,7 +1839,7 @@ const TalentList = ({
 												<HROperator
 													onClickHandler={() => setTalentIndex(item?.TalentID)}
 													title={
-														talentCTA.find(it=> it.TalentID === item.TalentID)
+														talentCTA.find(it => it.TalentID === item.TalentID)
 															?.cTAInfoList[0]?.label
 													}
 													isUseKey={true}
@@ -1696,17 +1847,17 @@ const TalentList = ({
 													backgroundColor={`var(--color-sunlight)`}
 													iconBorder={`1px solid var(--color-sunlight)`}
 													isDropdown={true}
-													listItem={hrUtils.showTalentCTA(filterTalentCTAs,item.Status)}
+													listItem={hrUtils.showTalentCTA(filterTalentCTAs, item.Status)}
 													menuAction={(menuItem) => {
-														switch (menuItem.key) {															
+														switch (menuItem.key) {
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setScheduleInterviewModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
-															case TalentOnboardStatus.MOVE_TO_ASSESSMENT:{
+															case TalentOnboardStatus.MOVE_TO_ASSESSMENT: {
 																setMoveToAssessment(true)
 																setTalentIndex(item?.TalentID);
 																break;
@@ -1718,7 +1869,7 @@ const TalentList = ({
 															// 	break
 															// }
 															case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setReScheduleInterviewModal(true);
 																setTalentIndex(item?.TalentID);
@@ -1732,15 +1883,15 @@ const TalentList = ({
 															// 	break;
 															// }
 															case TalentOnboardStatus.TALENT_STATUS: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setTalentStatus(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
-			
+
 															case TalentOnboardStatus.INTERVIEW_STATUS: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setInterviewStatus(true);
 																setTalentIndex(item?.TalentID);
@@ -1778,7 +1929,7 @@ const TalentList = ({
 															// }
 															case TalentOnboardStatus.SUBMIT_AS_HIRE: {
 																// console.log("as hire")
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setShowOfferPosition(true)
 																setEmailLater(false)
@@ -1786,48 +1937,48 @@ const TalentList = ({
 																// clientFeedbackHandler(true,item)
 																break;
 															}
-															case TalentOnboardStatus.MOVE_TO_ANOTHER_ROUND:{
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+															case TalentOnboardStatus.MOVE_TO_ANOTHER_ROUND: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
-																clientFeedbackHandler(false,item)
+																clientFeedbackHandler(false, item)
 																break;
 															}
 															case TalentOnboardStatus.REJECT_TALENT: {
-							
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setTalentStatus(true);
 																setTalentIndex(item?.TalentID);
 																setActionKey(key)
 																break;
 															}
 															case TalentOnboardStatus.REJECT_TALENT_NO_HIRE: {
-							
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setTalentStatus(true);
 																setTalentIndex(item?.TalentID);
 																setActionKey(key)
 																break;
 															}
 															case TalentOnboardStatus.ANOTHER_ROUND_INTERVIEW: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
-																setAnotherRound(true);																
+																setAnotherRound(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.SCHEDULE_ANOTHER_ROUND_INTERVIEW: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setScheduleAnotherRoundInterview(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setOnboardTalentModal(true);
 																setTalentIndex(item?.TalentID);
-			
+
 																break;
 															}
 															// case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
@@ -1886,14 +2037,14 @@ const TalentList = ({
 															// 	break;
 															// }
 															case TalentOnboardStatus.REPLACE_TALENT: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setReplaceTalentModal(true);
 																setTalentIndex(item?.TalentID);
 																break;
 															}
 															case TalentOnboardStatus.CONFIRM_SLOT: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setConfirmSlotModal(true);
 																setTalentIndex(item?.TalentID);
@@ -1903,7 +2054,7 @@ const TalentList = ({
 																// let onboardID = item.OnBoardId
 																// navigate(`/onboard/edit/${onboardID}`)
 																// window.scrollTo(0, 0)
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setShowAMModal(true);
 																let Flags = {
@@ -1916,7 +2067,7 @@ const TalentList = ({
 																setAMFlags(Flags)
 																break;
 															}
-															case TalentOnboardStatus.UPDATE_LEGAL: {																
+															case TalentOnboardStatus.UPDATE_LEGAL: {
 																setShowAMModal(true);
 																let Flags = {
 																	talent: item,
@@ -1927,7 +2078,7 @@ const TalentList = ({
 																}
 																setAMFlags(Flags)
 																break;
-															}															
+															}
 															case TalentOnboardStatus.RELEASE_OFFER_DETAILS: {
 																// let onboardID = item.OnBoardId
 																// navigate(`/onboard/edit/${onboardID}`)
@@ -1959,9 +2110,9 @@ const TalentList = ({
 															// 	break;
 															// }
 															case TalentOnboardStatus.VIEW_ENGAGEMENT: {
-																let key = filterTalentCTAs?.cTAInfoList?.find(item=>item.key === menuItem.key).key
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
-																window.open(`/viewOnboardDetails/${item.OnBoardId}/${item.IsOngoing === "Ongoing" ? true : false }`, "_blank")
+																window.open(`/viewOnboardDetails/${item.OnBoardId}/${item.IsOngoing === "Ongoing" ? true : false}`, "_blank")
 																// setHRAndEngagementId({
 																// 	talentName: item.Name,
 																// 	engagementID: item.EngagemenID,
@@ -1979,10 +2130,10 @@ const TalentList = ({
 												/>
 											</div>
 										)}
-								
-									
+
+
 								</div>
-			
+
 								<div className={TalentListStyle.talentCardNote}>
 									<InfoCircleIcon /> Please note that any notes you add here will also be accessible to the client.
 								</div>
@@ -1993,7 +2144,7 @@ const TalentList = ({
 			/>
 
 			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
-			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal} AMFlags={AMFlags} callAPI={callAPI} getHrUserData={getHrUserData}/>
+			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal} AMFlags={AMFlags} callAPI={callAPI} getHrUserData={getHrUserData} />
 
 
 			{/** ============ Engagement Onboard ================ */}
@@ -2049,72 +2200,73 @@ const TalentList = ({
 			</Modal>
 
 			{showEngagementCancel && (
-					<Modal
-						transitionName=""
-						width="930px"
-						centered
-						footer={null}
-						open={showEngagementCancel}
-						className="engagementReplaceTalentModal"
-						onCancel={() =>
-							setShowEngagementCancel(false)
-						}>
-						<EngagementCancel
-							engagementListHandler={() => {callAPI(hrId); getHrUserData(hrId)}}
-							talentInfo={filterTalentID}			
-							closeModal={() =>
-								setShowEngagementCancel(false)
-							}
-						/>
-					</Modal>
-				)}
-
-					{showEngagementEnd && (
-					<Modal
-						transitionName=""
-						width="930px"
-						centered
-						footer={null}
-						open={showEngagementEnd}
-						className="engagementReplaceTalentModal"
-						onCancel={() =>
-							setShowEngagementEnd(false)
-						}>
-							<EngagementEnd
-							engagementListHandler={() => {callAPI(hrId); getHrUserData(hrId)}}
-							talentInfo={{...filterTalentID,onboardID: filterTalentID?.OnBoardId,engagementID: filterTalentID?.EngagemenID,
-								hrNumber: filterTalentID?.HR_Number,talentName: filterTalentID?.Name
-							}}
-							closeModal={() =>
-								setShowEngagementEnd(false)
-							}
-						/>
-					</Modal>
-				)}
-
-
-				{moveToAssessment &&  	<Modal
-					width="992px"
+				<Modal
+					transitionName=""
+					width="930px"
 					centered
 					footer={null}
-					open={moveToAssessment}
-					className="commonModalWrap"
-					// onOk={() => setVersantModal(false)}
-					onCancel={() => {
-						setMoveToAssessment(false);resetRemarkField('remark');clearRemarkError('remark')
-					}}>
-						<MoveToAssessment 
-						onCancel={()=>{setMoveToAssessment(false);resetRemarkField('remark');clearRemarkError('remark')}} 
-						talentInfo={filterTalentID} hrId={hrId}  
-						register={remarkregiter}
-						handleSubmit={remarkSubmit}
-						resetField={resetRemarkField}
-						errors={remarkError}
-						saveRemark={saveRemark}
-						saveRemarkLoading={saveRemarkLoading}
-						/>
-					
-						</Modal>}
+					open={showEngagementCancel}
+					className="engagementReplaceTalentModal"
+					onCancel={() =>
+						setShowEngagementCancel(false)
+					}>
+					<EngagementCancel
+						engagementListHandler={() => { callAPI(hrId); getHrUserData(hrId) }}
+						talentInfo={filterTalentID}
+						closeModal={() =>
+							setShowEngagementCancel(false)
+						}
+					/>
+				</Modal>
+			)}
+
+			{showEngagementEnd && (
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={showEngagementEnd}
+					className="engagementReplaceTalentModal"
+					onCancel={() =>
+						setShowEngagementEnd(false)
+					}>
+					<EngagementEnd
+						engagementListHandler={() => { callAPI(hrId); getHrUserData(hrId) }}
+						talentInfo={{
+							...filterTalentID, onboardID: filterTalentID?.OnBoardId, engagementID: filterTalentID?.EngagemenID,
+							hrNumber: filterTalentID?.HR_Number, talentName: filterTalentID?.Name
+						}}
+						closeModal={() =>
+							setShowEngagementEnd(false)
+						}
+					/>
+				</Modal>
+			)}
+
+
+			{moveToAssessment && <Modal
+				width="992px"
+				centered
+				footer={null}
+				open={moveToAssessment}
+				className="commonModalWrap"
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => {
+					setMoveToAssessment(false); resetRemarkField('remark'); clearRemarkError('remark')
+				}}>
+				<MoveToAssessment
+					onCancel={() => { setMoveToAssessment(false); resetRemarkField('remark'); clearRemarkError('remark') }}
+					talentInfo={filterTalentID} hrId={hrId}
+					register={remarkregiter}
+					handleSubmit={remarkSubmit}
+					resetField={resetRemarkField}
+					errors={remarkError}
+					saveRemark={saveRemark}
+					saveRemarkLoading={saveRemarkLoading}
+				/>
+
+			</Modal>}
 
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
 
@@ -2155,62 +2307,62 @@ const TalentList = ({
 				</Modal>
 			)}
 
-            <Modal
+			<Modal
 				width="650px"
 				centered
 				footer={null}
 				open={showOfferPosition}
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => {setShowOfferPosition(false);setEmailLater(false);setOnboardDetails({});setOfferError(false)}}>
-					<h1>Offer Talent</h1>
+				onCancel={() => { setShowOfferPosition(false); setEmailLater(false); setOnboardDetails({}); setOfferError(false) }}>
+				<h1>Offer Talent</h1>
 				<div>
-					
-					 <p style={{marginBottom:'5px'}}>Tentative Joining Date <span style={{color:'red'}}>*</span></p>
-										  <div className={TalentListStyle.timeSlotItem} style={{paddingTop:'0', width:'50%'}}>
-											<CalenderSVG style={{top:'20px'}} />
-											<DatePicker
-											  selected={onboardDetails.date}
-											  onChange={(date) => {
-												setOfferError(false)
-												setOnboardDetails(prev=> {
-													return {...prev,date:date}
-												})
-											  }}
-											  placeholderText="Select Date"
-											  dateFormat="dd/MM/yyyy"
-											/>
-										  </div>
 
-					{offerError && <p style={{color:'red', margin:'-9px 0 5px 0'}}>please select joining date</p>}
+					<p style={{ marginBottom: '5px' }}>Tentative Joining Date <span style={{ color: 'red' }}>*</span></p>
+					<div className={TalentListStyle.timeSlotItem} style={{ paddingTop: '0', width: '50%' }}>
+						<CalenderSVG style={{ top: '20px' }} />
+						<DatePicker
+							selected={onboardDetails.date}
+							onChange={(date) => {
+								setOfferError(false)
+								setOnboardDetails(prev => {
+									return { ...prev, date: date }
+								})
+							}}
+							placeholderText="Select Date"
+							dateFormat="dd/MM/yyyy"
+						/>
+					</div>
 
-				<p style={{marginBottom:'5px'}}>Send Offer Email</p>
-				<Radio.Group
-                        onChange={(e) => {
-                          setEmailLater(e.target.value);
-                        }}
-                        value={emailLater}
-                      >
-                        <Radio value={false}>Now</Radio>
-                        <Radio value={true}>Later</Radio>
-                </Radio.Group>
+					{offerError && <p style={{ color: 'red', margin: '-9px 0 5px 0' }}>please select joining date</p>}
 
-				<div style={{marginTop:'10px'}}>
-					<p style={{marginBottom:'5px'}}>Now - email will be sent immediately to the Talent</p>
-				<p style={{marginBottom:'10px'}}>Later - you can send email later from custom email section </p>				
-				</div>
-				<div className={TalentListStyle.formPanelAction}>
-				<button className={TalentListStyle.btnPrimary}   onClick={()=>{
-					let item = hrData?.FinalResult?.rows?.find(i=> i.TalentID === talentIndex)
-					if(onboardDetails.date){
-						clientFeedbackHandler(true,item,onboardDetails.date)
-					}else{
-						setOfferError(true)
-					}
-					
-				
-				}}>Offer</button>
-                <button  onClick={()=>{setShowOfferPosition(false);setEmailLater(false);setOnboardDetails({});setOfferError(false)}}>Cancel</button>
-				</div>
+					<p style={{ marginBottom: '5px' }}>Send Offer Email</p>
+					<Radio.Group
+						onChange={(e) => {
+							setEmailLater(e.target.value);
+						}}
+						value={emailLater}
+					>
+						<Radio value={false}>Now</Radio>
+						<Radio value={true}>Later</Radio>
+					</Radio.Group>
+
+					<div style={{ marginTop: '10px' }}>
+						<p style={{ marginBottom: '5px' }}>Now - email will be sent immediately to the Talent</p>
+						<p style={{ marginBottom: '10px' }}>Later - you can send email later from custom email section </p>
+					</div>
+					<div className={TalentListStyle.formPanelAction}>
+						<button className={TalentListStyle.btnPrimary} onClick={() => {
+							let item = hrData?.FinalResult?.rows?.find(i => i.TalentID === talentIndex)
+							if (onboardDetails.date) {
+								clientFeedbackHandler(true, item, onboardDetails.date)
+							} else {
+								setOfferError(true)
+							}
+
+
+						}}>Offer</button>
+						<button onClick={() => { setShowOfferPosition(false); setEmailLater(false); setOnboardDetails({}); setOfferError(false) }}>Cancel</button>
+					</div>
 				</div>
 			</Modal>
 
@@ -2462,7 +2614,7 @@ const TalentList = ({
 				</Modal>
 			)}
 
-            {showOtherHRStatus && (
+			{showOtherHRStatus && (
 				<Modal
 					transitionName=""
 					width="1400px"

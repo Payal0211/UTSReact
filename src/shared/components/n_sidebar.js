@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import stylesOBj from 'modules/hiring request/screens/allHiringRequest/n_all_hiring_request.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import UTSRoutes, { NewPagesRouts } from 'constants/routes';
 import { userDAO } from 'core/user/userDAO';
 import { useQueryClient } from '@tanstack/react-query';
@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 
 export default function N_sidebar() {
+    const switchLocation = useLocation();
     const [extendedList, setExtendedlist] = useState([]);
 
     const queryClient = useQueryClient();
@@ -57,7 +58,11 @@ export default function N_sidebar() {
                         <span className={stylesOBj["nav-label"]}>AM Deployed Dashboard</span>
 
                     </Link>
-                    <Link to={UTSRoutes.TADASHBOARD} className={`${stylesOBj['nav-item']}`}>
+                    <Link to={UTSRoutes.TADASHBOARD} className={`${stylesOBj['nav-item']} ${
+                                                                   switchLocation.pathname  === UTSRoutes.TADASHBOARD
+                                                                        ? stylesOBj['active']
+                                                                        : ''
+                                                                }`}>
 
                         <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['stroke-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill="#4C4E64" d="M12 12c2.7 0 4.5-1.8 4.5-4.5S14.7 3 12 3 7.5 4.8 7.5 7.5 9.3 12 12 12z" />
@@ -70,7 +75,11 @@ export default function N_sidebar() {
                         <span className={stylesOBj["nav-label"]}>TA Dashboard</span>
 
                     </Link>
-                    <Link to={NewPagesRouts.ALLHIRINGREQUESTROUTE} className={`${stylesOBj['nav-item']} ${stylesOBj['active']}`}>
+                    <Link to={UTSRoutes.ALLHIRINGREQUESTROUTE} className={`${stylesOBj['nav-item']} ${
+                                                                   switchLocation.pathname  === UTSRoutes.ALLHIRINGREQUESTROUTE
+                                                                        ? stylesOBj['active']
+                                                                        : ''
+                                                                }`}>
                         <img src="images/hiring-request-ic.svg" alt="Hiring Request Icon" />
                         <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M9 6.25C7.48122 6.25 6.25 7.48122 6.25 9C6.25 10.5188 7.48122 11.75 9 11.75C10.5188 11.75 11.75 10.5188 11.75 9C11.75 7.48122 10.5188 6.25 9 6.25ZM7.75 9C7.75 8.30965 8.30965 7.75 9 7.75C9.69036 7.75 10.25 8.30965 10.25 9C10.25 9.69036 9.69036 10.25 9 10.25C8.30965 10.25 7.75 9.69036 7.75 9Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -268,7 +277,11 @@ export default function N_sidebar() {
                 </div>
                 <div className={`${stylesOBj['nav-divider']}`} ></div>
                 <div className={`${stylesOBj['nav-item-container']}`}>
-                    <Link to="#" className={`${stylesOBj['nav-item']}`}>
+                    <Link to={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE} className={`${stylesOBj['nav-item']} ${
+                                                                   switchLocation.pathname  === NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE
+                                                                        ? stylesOBj['active']
+                                                                        : ''
+                                                                }`}>
                         <img src="images/unassigned-hr-ic.svg" alt="Unassigned HR Icon" />
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M19.9896 3.99114C18.4369 2.46995 16.3082 2.41192 15.2249 3.47329L11.5248 7.09826C11.2289 7.38814 10.7541 7.38327 10.4642 7.08739C10.1743 6.79151 10.1792 6.31666 10.4751 6.02678L14.1752 2.40181C16.0111 0.603142 19.0889 1.00882 21.0393 2.91966C22.9924 4.83318 23.4177 7.87521 21.5679 9.68751L18.6607 12.5357C18.3648 12.8256 17.8899 12.8207 17.6001 12.5249C17.3102 12.229 17.3151 11.7541 17.6109 11.4643L20.5181 8.61604C21.5875 7.56831 21.5395 5.50965 19.9896 3.99114Z" fill="#4C4E64" fill-opacity="0.86" />
