@@ -7,6 +7,7 @@ import PageNotFound from 'shared/screen/404';
 import SomethingWentWrong from 'shared/screen/500';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import New_all_hiring_request from 'modules/hiring request/screens/allHiringRequest/n_all_hiring_request';
+import Unassigned_hiring_request from 'modules/hiring request/screens/allHiringRequest/n_unassigned_hr';
 
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
@@ -97,6 +98,12 @@ function App() {
 						 key={UTSRoutes.ALLHIRINGREQUESTROUTE}
 						path={UTSRoutes.ALLHIRINGREQUESTROUTE}
 						element={<New_all_hiring_request />}
+					/>
+					 <Route
+						 exact
+						 key={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE}
+						path={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE}
+						element={<Unassigned_hiring_request />}
 					/>
 						
 						
