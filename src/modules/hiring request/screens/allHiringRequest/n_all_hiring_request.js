@@ -897,9 +897,9 @@ console.log(newData,'--newData',index,cat);
                                         <th>TR</th>
                                         {/* <th>HR TYPE</th> */}
                                         <th>ENGAGEMENT TYPE</th>
-                                        <th>MARGIN %</th>
-                                        <th>SALARY/CLIENT BUDGET</th>
                                         <th>HR STATUS</th>
+                                        <th>MARGIN %</th>
+                                        <th>SALARY/CLIENT BUDGET</th>                                   
                                         <th>FTE/PTE</th>
                                         <th>SALES REP</th>
                                         <th>POD</th>
@@ -1028,18 +1028,19 @@ console.log(newData,'--newData',index,cat);
                                                     {/* ENGAGEMENT TYPE */}
                                                     <td>{data?.hrEngagementType}
                                                         {/* <span className={`${stylesOBj[]}`}"transparent-text">(Transparent)</span> */}</td>
-                                                    {/* MARGIN % */}
-                                                    <td>{data?.timeZone}</td>
-                                                    {/* SALARY/CLIENT BUDGET */}
-                                                    <td>{data?.salaryBudget}</td>
-                                                    {/* HR STATUS */}
-                                                    <td>
+                                                          <td>
                                                         {All_Hiring_Request_Utils.GETHRSTATUS(
                                                             data?.hrStatusCode,
                                                             data?.hrStatus
                                                         )}
                                                         {/* <span className={`${stylesOBj[]}`}"hr-status-badge hr-status-open">Open</span> */}
                                                     </td>
+                                                    {/* MARGIN % */}
+                                                    <td>{data?.timeZone}</td>
+                                                    {/* SALARY/CLIENT BUDGET */}
+                                                    <td>{data?.salaryBudget}</td>
+                                                    {/* HR STATUS */}
+                                                  
                                                     {/* FTE/PTE */}
                                                     <td>{data?.typeOfEmployee}</td>
                                                     {/* SALES REP */}
