@@ -340,6 +340,7 @@ export default class UTSRoutes {
 export class NewPagesRouts  {
 	static ALLHIRINGREQUESTROUTE = '/w_allhiringrequest';
 	static ALLHIRINGREQUESTSUBROUTE = '/w_allhiringrequest/:hrid';
+	static ALLUNASSIGNHIRINGREQUESTROUTE = '/allunassignedhiringrequest';
 }
 
 export const navigateToComponent = {
