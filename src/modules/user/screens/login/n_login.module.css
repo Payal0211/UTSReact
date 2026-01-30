@@ -1,0 +1,667 @@
+/* Login Page Styles */
+
+.login-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 30px 200px 30px;
+    overflow: hidden;
+}
+
+/* Background Patterns */
+.login-background-pattern {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.login-pattern-top-left {
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+}
+
+.login-pattern-top-left svg {
+    width: 100%;
+    height: auto;
+    max-width: 1318px;
+    display: block;
+}
+
+.login-pattern-bottom-right {
+    bottom: 0;
+    right: 0;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+}
+
+.login-pattern-bottom-right svg {
+    width: 100%;
+    height: auto;
+    max-width: 1315px;
+    display: block;
+}
+
+/* Login Content */
+.login-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+/* Logo */
+.login-logo {
+    margin-bottom: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-logo svg {
+    width: 180px;
+    height: auto;
+}
+
+.login-logo .brandLogo__freddie path,
+.login-logo .brandLogo__wordMark path {
+    fill: #000000;
+}
+
+/* Welcome Section */
+.login-welcome {
+    margin-bottom: 28px;
+}
+
+.login-title {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 110%;
+    color: #000000;
+    letter-spacing: -0.01px;
+    margin-bottom: 15px;
+}
+
+.login-tagline {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 120%;
+    color: #00000099;
+    letter-spacing: -0.01px;
+}
+
+/* Login Form */
+.login-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+    position: relative;
+}
+
+.floating-label {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 100%;
+    color: #808080;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.form-group:focus-within .floating-label,
+.form-group.has-value .floating-label {
+    top: 18px;
+    transform: translateY(0);
+    font-size: 12px;
+}
+
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper .floating-label {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 100%;
+    color: #808080;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.password-input-wrapper:focus-within .floating-label,
+.password-input-wrapper.has-value .floating-label {
+    top: 18px;
+    transform: translateY(0);
+    font-size: 12px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 20px;
+    padding-top: 28px;
+    border: 1px solid #D1D1D1;
+    border-radius: 18px;
+    background-color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 100%;
+    color: #000000;
+    letter-spacing: 0px;
+    min-height: 77px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, padding 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+}
+
+.form-group:focus-within .form-input,
+.form-group.has-value .form-input {
+    padding-top: 35px;
+    padding-bottom: 15px;
+}
+
+.password-input-wrapper:focus-within .form-input,
+.password-input-wrapper.has-value .form-input {
+    padding-top: 35px;
+    padding-bottom: 15px;
+}
+
+.form-input::placeholder {
+    color: transparent;
+}
+
+/* Password Input Wrapper */
+.password-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-input-wrapper .form-input {
+    padding-right: 48px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #636578;
+    transition: color 0.2s;
+}
+
+.password-toggle:hover {
+    color: #000000;
+}
+
+.password-toggle svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Login Button */
+.btn-login {
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 18px;
+    background-color: #FFDE2D;
+    color: #000000;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 100%;
+    letter-spacing: 0px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.btn-login:not(:disabled):hover {
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+.btn-login:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media screen and (max-width: 1536px) {
+    .login-container {
+        padding: 65px 24px 190px 24px;
+    }
+    
+    .login-content {
+        max-width: 450px;
+    }
+    
+    .login-pattern-top-left svg {
+        max-width: 1100px;
+    }
+    
+    .login-pattern-bottom-right svg {
+        max-width: 1100px;
+    }
+    
+    .login-logo {
+        margin-bottom: 70px;
+    }
+    
+    .login-logo svg {
+        width: 165px;
+    }
+    
+    .login-welcome {
+        margin-bottom: 26px;
+    }
+    
+    .login-title {
+        font-size: 34px;
+        margin-bottom: 12px;
+    }
+    
+    .login-tagline {
+        font-size: 18px;
+    }
+    
+    .form-group {
+        margin-bottom: 22px;
+    }
+    
+    .floating-label {
+        left: 18px;
+        font-size: 16px;
+    }
+    
+    .form-group:focus-within .floating-label,
+    .form-group.has-value .floating-label {
+        top: 16px;
+        font-size: 11px;
+    }
+    
+    .password-input-wrapper .floating-label {
+        left: 18px;
+        font-size: 16px;
+    }
+    
+    .password-input-wrapper:focus-within .floating-label,
+    .password-input-wrapper.has-value .floating-label {
+        top: 16px;
+        font-size: 11px;
+    }
+    
+    .form-input {
+        padding: 18px;
+        padding-top: 26px;
+        font-size: 16px;
+        min-height: 70px;
+        border-radius: 16px;
+    }
+    
+    .form-group:focus-within .form-input,
+    .form-group.has-value .form-input {
+        padding-top: 30px;
+        padding-bottom: 13px;
+    }
+    
+    .password-input-wrapper:focus-within .form-input,
+    .password-input-wrapper.has-value .form-input {
+        padding-top: 30px;
+        padding-bottom: 13px;
+    }
+    
+    .password-toggle {
+        right: 15px;
+    }
+    
+    .password-toggle svg {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .btn-login {
+        padding: 18px;
+        font-size: 18px;
+        border-radius: 16px;
+    }
+
+}
+
+
+/* Responsive Styles */
+@media screen and (max-width: 1440px) {
+    .login-container {
+        padding: 50px 22px 190px 22px;
+    }
+    
+    .login-content {
+        max-width: 430px;
+    }
+    
+    .login-pattern-top-left svg {
+        max-width: 1050px;
+    }
+    
+    .login-pattern-bottom-right svg {
+        max-width: 1050px;
+    }
+    
+    .login-logo {
+        margin-bottom: 60px;
+    }
+    
+    .login-logo svg {
+        width: 150px;
+    }
+    
+    .login-welcome {
+        margin-bottom: 24px;
+    }
+    
+    .login-title {
+        font-size: 30px;
+        margin-bottom: 12px;
+    }
+    
+    .login-tagline {
+        font-size: 16px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .floating-label {
+        left: 16px;
+        font-size: 14px;
+    }
+    
+    .form-group:focus-within .floating-label,
+    .form-group.has-value .floating-label {
+        top: 14px;
+        font-size: 10px;
+    }
+    
+    .password-input-wrapper .floating-label {
+        left: 16px;
+        font-size: 14px;
+    }
+    
+    .password-input-wrapper:focus-within .floating-label,
+    .password-input-wrapper.has-value .floating-label {
+        top: 14px;
+        font-size: 10px;
+    }
+    
+    .form-input {
+        padding: 16px;
+        padding-top: 24px;
+        font-size: 14px;
+        min-height: 63px;
+        border-radius: 14px;
+    }
+    
+    .form-group:focus-within .form-input,
+    .form-group.has-value .form-input {
+        padding-top: 25px;
+        padding-bottom: 12px;
+    }
+    
+    .password-input-wrapper:focus-within .form-input,
+    .password-input-wrapper.has-value .form-input {
+        padding-top: 25px;
+        padding-bottom: 12px;
+    }
+    
+    .password-toggle {
+        right: 14px;
+    }
+    
+    .password-toggle svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .btn-login {
+        padding: 16px;
+        font-size: 16px;
+        border-radius: 14px;
+    }
+}
+
+@media screen and (max-width: 1366px) {
+    .login-container {
+        padding: 40px 18px 170px 18px;
+    }
+    
+    .login-content {
+        max-width: 380px;
+    }
+    
+    .login-pattern-top-left svg {
+        max-width: 850px;
+    }
+    
+    .login-pattern-bottom-right svg {
+        max-width: 850px;
+    }
+    
+    .login-logo {
+        margin-bottom: 50px;
+    }
+    
+    .login-logo svg {
+        width: 145px;
+    }
+    
+    .login-welcome {
+        margin-bottom: 22px;
+    }
+    
+    .login-title {
+        font-size: 28px;
+        margin-bottom: 11px;
+    }
+    
+    .login-tagline {
+        font-size: 14px;
+    }
+    
+    .form-group {
+        margin-bottom: 18px;
+    }
+    
+    .floating-label {
+        left: 14px;
+        font-size: 13px;
+    }
+    
+    .form-group:focus-within .floating-label,
+    .form-group.has-value .floating-label {
+        top: 13px;
+        font-size: 9px;
+    }
+    
+    .password-input-wrapper .floating-label {
+        left: 14px;
+        font-size: 13px;
+    }
+    
+    .password-input-wrapper:focus-within .floating-label,
+    .password-input-wrapper.has-value .floating-label {
+        top: 13px;
+        font-size: 9px;
+    }
+    
+    .form-input {
+        padding: 14px;
+        padding-top: 22px;
+        font-size: 13px;
+        min-height: 56px;
+        border-radius: 12px;
+    }
+    
+    .form-group:focus-within .form-input,
+    .form-group.has-value .form-input {
+        padding-top: 23px;
+        padding-bottom: 10px;
+    }
+    
+    .password-input-wrapper:focus-within .form-input,
+    .password-input-wrapper.has-value .form-input {
+        padding-top: 23px;
+        padding-bottom: 10px;
+    }
+    
+    .password-toggle {
+        right: 13px;
+    }
+    
+    .password-toggle svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .btn-login {
+        padding: 14px;
+        font-size: 15px;
+        border-radius: 13px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .login-pattern-top-left svg {
+        max-width: 700px;
+    }
+    
+    .login-pattern-bottom-right svg {
+        max-width: 700px;
+    }      
+}
+
+@media screen and (max-width: 768px) {
+    .login-container {
+        padding: 35px 14px 150px 14px;
+    }
+    
+    .login-content {
+        max-width: 360px;
+    }
+    
+    .login-pattern-top-left svg {
+        max-width: 450px;
+    }
+    
+    .login-pattern-bottom-right svg {
+        max-width: 450px;
+    }
+    
+    .login-logo {
+        margin-bottom: 45px;
+    }
+    
+    .login-logo svg {
+        width: 130px;
+    }
+    
+    .login-welcome {
+        margin-bottom: 20px;
+    }
+    
+    .login-title {
+        font-size: 26px;
+        margin-bottom: 9px;
+    }
+    
+    .login-tagline {
+        font-size: 13px;
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .floating-label {
+        left: 14px;
+        font-size: 12px;
+    }
+    
+    .form-group:focus-within .floating-label,
+    .form-group.has-value .floating-label {
+        top: 12px;
+        font-size: 9px;
+    }
+    
+    .password-input-wrapper .floating-label {
+        left: 14px;
+        font-size: 12px;
+    }
+    
+    .password-input-wrapper:focus-within .floating-label,
+    .password-input-wrapper.has-value .floating-label {
+        top: 12px;
+        font-size: 9px;
+    }
+    
+    .form-input {
+        padding: 12px;
+        padding-top: 20px;
+        font-size: 12px;
+        min-height: 50px;
+        border-radius: 11px;
+    }
+    
+    .form-group:focus-within .form-input,
+    .form-group.has-value .form-input {
+        padding-top: 23px;
+        padding-bottom: 8px;
+    }
+    
+    .password-input-wrapper:focus-within .form-input,
+    .password-input-wrapper.has-value .form-input {
+        padding-top: 23px;
+        padding-bottom: 8px;
+    }
+    
+    .password-toggle {
+        right: 12px;
+    }
+    
+    .password-toggle svg {
+        width:  16px;
+        height: 16px;
+    }
+    
+    .btn-login {
+        padding: 12px;
+        font-size: 14px;
+        border-radius: 11px;
+    }
+}
+
