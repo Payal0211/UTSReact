@@ -29,6 +29,10 @@ const NewLoginScreen = () => {
 
 
     const loginHandler = async (d) => {
+        if(!userData?.username || !userData?.password){
+            message.error('Please enter username and password');
+            return
+        }
         setLoading(true);
         const result = await userDAO.loginDAO({
             username: userData?.username,
@@ -191,7 +195,8 @@ const NewLoginScreen = () => {
                         </div>
                     </div>
 
-                    {isLoading ? <Spin /> : <button type="submit" className={`${loginStyle["btn-login"]}`} id="loginButton" disabled={userData?.username !== '' && userData?.password !== '' ? false : true}
+                    {isLoading ? <Spin /> : <button type="submit" className={`${loginStyle["btn-login"]}`} id="loginButton"
+                    //  disabled={userData?.username !== '' && userData?.password !== '' ? false : true}
                         onClick={(e) => {
                             e.preventDefault()
                             loginHandler()

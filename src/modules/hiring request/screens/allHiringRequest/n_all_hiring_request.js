@@ -838,7 +838,7 @@ console.log(newData,'--newData',index,cat);
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px' }} >
                                      <div className={stylesOBj.filterCount}>{filteredTagLength}</div>
-                                     {(filteredTagLength > 0 || startDate || debouncedSearch) &&<Tooltip title="Reser Filters">
+                                     {(filteredTagLength > 0 || startDate || debouncedSearch) &&<Tooltip title="Reset Filters">
                                         <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large' }} onClick={e=> {
                                     e.stopPropagation();
                                     clearFilters()

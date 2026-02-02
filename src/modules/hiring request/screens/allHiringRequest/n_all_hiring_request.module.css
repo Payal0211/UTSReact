@@ -1449,7 +1449,7 @@ body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select, optio
 .select-wrapper {
     position: relative;
     display: inline-block;
-    width: 40px;
+    width: 50px;
 }
 
 .select-wrapper::after {
