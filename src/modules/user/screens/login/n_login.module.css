@@ -186,9 +186,81 @@
     padding-bottom: 15px;
 }
 
+/* Autofill detection - automatically move labels when autofilled */
+.form-input:-webkit-autofill ~ .floating-label,
+.form-input:-webkit-autofill + .floating-label,
+.form-group:has(.form-input:-webkit-autofill) .floating-label {
+    top: 15px;
+    transform: translateY(0);
+    font-size: 12px;
+    color: #636578;
+}
+
+.password-input-wrapper:has(.form-input:-webkit-autofill) .floating-label {
+    top: 15px;
+    transform: translateY(0);
+    font-size: 12px;
+    color: #636578;
+}
+
+.form-group:has(.form-input:-webkit-autofill) .form-input {
+    padding-top: 35px;
+    padding-bottom: 15px;
+}
+
+.password-input-wrapper:has(.form-input:-webkit-autofill) .form-input {
+    padding-top: 35px;
+    padding-bottom: 15px;
+}
+
+/* Autofill detection End */
+
 .form-input::placeholder {
     color: transparent;
 }
+
+/* Autofill detection animation */
+@keyframes onAutoFillStart {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.form-input:-webkit-autofill {
+    animation-name: onAutoFillStart;
+    animation-duration: 0.001s;
+    padding-top: 35px !important;
+    padding-bottom: 15px !important;
+}
+
+/* When input is autofilled, move the label up - using :has() selector */
+.form-group:has(.form-input:-webkit-autofill) .floating-label {
+    top: 15px !important;
+    transform: translateY(0) !important;
+    font-size: 12px !important;
+    color: #636578 !important;
+}
+
+/* For password wrapper */
+.password-input-wrapper:has(.form-input:-webkit-autofill) .floating-label {
+    top: 15px !important;
+    transform: translateY(0) !important;
+    font-size: 12px !important;
+    color: #636578 !important;
+}
+
+/* Fallback for browsers that don't support :has() - use adjacent sibling if structure allows */
+.form-input:-webkit-autofill + .floating-label {
+    top: 15px !important;
+    transform: translateY(0) !important;
+    font-size: 12px !important;
+    color: #636578 !important;
+}
+
+/* Autofill detection End */
 
 /* Password Input Wrapper */
 .password-input-wrapper {
@@ -664,4 +736,3 @@
         border-radius: 11px;
     }
 }
-
