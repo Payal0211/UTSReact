@@ -63,15 +63,11 @@ export default function N_sidebar() {
                                                                         ? stylesOBj['active']
                                                                         : ''
                                                                 }`}>
-
-                        <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['stroke-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill="#4C4E64" d="M12 12c2.7 0 4.5-1.8 4.5-4.5S14.7 3 12 3 7.5 4.8 7.5 7.5 9.3 12 12 12z" />
-                            <path fill="#4C4E64" d="M12 13.5c-3 0-9 1.5-9 4.5V21h18v-3c0-3-6-4.5-9-4.5z" />
-                            <rect x="17.5" y="9" width="1.5" height="6" fill="#4C4E64" />
-                            <rect x="20.5" y="6" width="1.5" height="9" fill="#4C4E64" />
-                            <rect x="14.5" y="12" width="1.5" height="3" fill="#4C4E64" />
+                        <svg class="nav-icon stroke-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 15.5524C18.8263 19.2893 15.3351 22 11.2108 22C6.12383 22 2 17.8762 2 12.7892C2 8.66488 4.71065 5.1737 8.44759 4" stroke="#4C4E64" stroke-width="1.5" stroke-opacity="0.87" stroke-linecap="round"/>
+                            <path d="M21.9131 9.94727C20.8515 6.14438 17.8556 3.14845 14.0527 2.0869C12.4091 1.6281 11 3.05419 11 4.76062V11.4551C11 12.3083 11.6917 13 12.5449 13H19.2394C20.9458 13 22.3719 11.5909 21.9131 9.94727Z" stroke="#4C4E64" stroke-width="1.5" stroke-opacity="0.87"/>
                         </svg>
-
+                               
                         <span className={stylesOBj["nav-label"]}>TA Dashboard</span>
 
                     </Link>
