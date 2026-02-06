@@ -248,6 +248,25 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.createHiringRequest');
 		}
 	},
+	createNEWHiringRequest: async function (hrData) {
+		let httpService = new HttpServices();
+		const miscData = UserSessionManagementController.getUserMiscellaneousData();
+
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.CREATE_NEW_HR +
+			`?LoggedInUserId=${miscData?.loggedInUserTypeID}`;
+		httpService.dataToSend = hrData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.createNEWHiringRequest');
+		}
+	},
 	createDirectHiringRequest: async function (hrData) {
 		let httpService = new HttpServices();
 

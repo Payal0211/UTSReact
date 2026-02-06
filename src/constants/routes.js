@@ -342,6 +342,9 @@ export class NewPagesRouts  {
 	static ALLHIRINGREQUESTROUTE = '/w_allhiringrequest';
 	static ALLHIRINGREQUESTSUBROUTE = '/w_allhiringrequest/:hrid';
 	static ALLUNASSIGNHIRINGREQUESTROUTE = '/allunassignedhiringrequest';
+	static ADD_NEWHR = '/w_allhiringrequest/addnewhr/';
+	static ADDNEWHR = '/w_allhiringrequest/addnewhr/:hrid';
+	static PREVIEW_HR = '/w_previewHR/:hrid'
 }
 
 export const navigateToComponent = {

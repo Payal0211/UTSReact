@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import stylesOBj from 'modules/hiring request/screens/allHiringRequest/n_all_hiring_request.module.css';
 
-
-import UTSFeedback from 'modules/utsFeedback/utsFeedback';
 import NSidebar from 'shared/components/n_sidebar';
 
 
