@@ -10,7 +10,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { hrUtils } from "modules/hiring request/hrUtils";
 import { HTTPStatusCode } from "constants/network";
-import UTSRoutes from "constants/routes";
+import UTSRoutes, { NewPagesRouts } from "constants/routes";
 import { allHRConfig } from "./allHR.config";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 import { useNavigate } from "react-router-dom";
@@ -876,8 +876,14 @@ console.log(newData,'--newData',index,cat);
                             )} <button className={`${stylesOBj["btn-add-hr"]} ${stylesOBj["control-btns"]}`} onClick={() => {
                                 localStorage.removeItem('hrID')
                                 navigate(UTSRoutes.ADDNEWHR);
+                        
                             }}>ADD NEW HR</button>
                             <button className={`${stylesOBj["btn-export"]} ${stylesOBj['control-btns']}`} onClick={() => handleExport(apiData)}>Export</button>
+                            <button style={{padding:'8px 2px', borderRadius:'8px', border:'1px solid'}} onClick={() => {
+                                localStorage.removeItem('hrID')
+                           
+                                navigate(NewPagesRouts.ADD_NEWHR + '0')
+                            }}>Add HR</button>
                         </div>
                     </div>
 

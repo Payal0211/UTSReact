@@ -9,6 +9,8 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import New_all_hiring_request from 'modules/hiring request/screens/allHiringRequest/n_all_hiring_request';
 import Unassigned_hiring_request from 'modules/hiring request/screens/allHiringRequest/n_unassigned_hr';
 import NewLoginScreen from 'modules/user/screens/login/n_login_screen';
+import NewHRFields from 'modules/hiring request/components/hrFields/n_hrFields';
+import NewPreviewHrFields from 'modules/hiring request/components/hrFields/n_peviewHrFields';
 
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
@@ -113,6 +115,19 @@ function App() {
 						element={<Unassigned_hiring_request />}
 					/>
 						
+						 <Route
+						 exact
+						 key={NewPagesRouts.ADDNEWHR}
+						path={NewPagesRouts.ADDNEWHR}
+						element={<NewHRFields />}
+					/>
+
+					 <Route
+						 exact
+						 key={NewPagesRouts.PREVIEW_HR}
+						path={NewPagesRouts.PREVIEW_HR}
+						element={<NewPreviewHrFields />}
+					/>
 						
 					</Route>
 
