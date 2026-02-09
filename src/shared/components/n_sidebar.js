@@ -270,6 +270,23 @@ export default function N_sidebar() {
                             <li><Link to={UTSRoutes.MASTERTIMEZONE} className={`${stylesOBj['nav-subitem']}`}>Timezone</Link></li>
                         </ul>
                     </div>
+
+                      <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Profile') ? stylesOBj['expanded'] : ''}`}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Profile')}>
+                            <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['stroke-icon"']}`}  width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="6" r="4" stroke="#636578" stroke-width="1.5"/>
+                                <ellipse cx="12" cy="17" rx="7" ry="4" stroke="#636578" stroke-width="1.5"/>
+                            </svg>
+                                
+                            <span className={stylesOBj["nav-label"]}>Profile</span>
+                            <svg className={`${stylesOBj['nav-chevron']}`} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 4L10 8L6 12" stroke="#4C4E64" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                        <ul className={`${stylesOBj['nav-submenu']}`}>
+                            <li><Link to={UTSRoutes.CHANGE_PASSOWRD} className={`${stylesOBj['nav-subitem']}`}>Change Password</Link></li>
+                        </ul>
+                    </div>
                 </div>
                 <div className={`${stylesOBj['nav-divider']}`} ></div>
                 <div className={`${stylesOBj['nav-item-container']}`}>

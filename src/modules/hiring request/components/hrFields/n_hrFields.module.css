@@ -175,6 +175,14 @@
     display: none;
 }
 
+.teansactionMessage {
+    color: #f90;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+
 .fieldError{
 margin:0;
 color: #FF0000;
