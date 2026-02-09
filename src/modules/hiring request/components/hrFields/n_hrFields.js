@@ -36,7 +36,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { HTTPStatusCode } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { hrUtils } from "modules/hiring request/hrUtils";
 import { MasterDAO } from "core/master/masterDAO";
 import useDrivePicker from "react-google-drive-picker/dist";
@@ -68,6 +68,7 @@ import { NewPagesRouts } from 'constants/routes';
 
 
 function NewHRFields() {
+    const { hrid } = useParams()
     const navigate = useNavigate();
     const [basicFormFields, setBasicFormFields] = useState({
         companyName: '',
@@ -81,8 +82,37 @@ function NewHRFields() {
         payrollPartnerName: ''
     })
 
-    const [roleReqFormFields, setRoleReqFormFields] = useState({
+    const [companyConfidentailFields, setCompanyConfidentialFields] = useState({
+        companyURL: '',
+        companyLogoAlias: '',
+        headquaters: '',
+        headquatersAlias: '',
+        companyNameAlias: '',
+        companyLinkedinURL: '',
+        companyLogo: ''
+    })
 
+     const secondaryClient = {
+    clientProfilePic: "",
+    companyID: 0,
+    contactNo: "",
+    designation: "",
+    emailID: "",
+    firstName: "",
+    fullName: "",
+    id: 0,
+    isPrimary: false,
+    lastName: "",
+    linkedIn: "",
+    resendInviteEmail: false,
+    roleID: 3,
+    countryCode: "",
+    isNewClient:true
+  };
+
+    const [clientFieldsDetails,setClientFieldsDetails] = useState([])
+
+    const [roleReqFormFields, setRoleReqFormFields] = useState({
         roleTitle: '',
         minExp: '',
         maxExp: '',
@@ -96,6 +126,8 @@ function NewHRFields() {
         interviewRounds: '',
         numberOfTalents: ''
     })
+
+
     const [mustHaveSkills, setMustHaveSkills] = useState([]);
     const [goodToHaveSkills, setGoodToHaveSkills] = useState([]);
     const [jobDesData, setJobDesData] = useState({
@@ -118,14 +150,13 @@ function NewHRFields() {
 
     const [enhanceMatchmakingFormFields, setEnhanceMatchmakingFormFields] = useState({
         industry: undefined,
-        peopleManagement: '',
+        peopleManagement: false,
         highlight: ''
     })
 
     const [isLoading, setIsLoading] = useState(false);
     const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
-    const [autoCompleteValue, setAutoCompleteValue] = useState("");
-    const [companyautoCompleteValue, setCompanyAutoCompleteValue] = useState("");
+
     const [companyID, setCompanyID] = useState(null);
     const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
     const [getClientNameMessage, setClientNameMessage] = useState("");
@@ -174,7 +205,7 @@ function NewHRFields() {
     const [typeOfPricing, setTypeOfPricing] = useState(null);
     const [transactionMessage, setTransactionMessage] = useState("");
     const [disableYypeOfPricing, setDisableTypeOfPricing] = useState(false);
-
+    const [getHRDetails, setHRDetails] = useState({})
 
     const [userData, setUserData] = useState({});
     useEffect(() => {
@@ -198,6 +229,118 @@ function NewHRFields() {
         "Restricted stock units (RSUs)",
         "Custom"
     ];
+
+    //   useEffect(()=>{
+
+    //     if(getHRDetails?.clientDetails_Result){
+    //       let companyInfo = getHRDetails?.companyInfo
+    //     let clientResult = getHRDetails?.clientDetails_Result;
+
+
+    //     setConfidentialInfo(clientResult?.isCompanyConfidential)
+    //     if(companyInfo?.companyLogo || companyInfo?.companyLogoAwsUrl){
+    //       setValue("companyLogo",companyInfo?.companyLogoAwsUrl ?  companyInfo?.companyLogoAwsUrl : companyInfo?.companyLogo ?? "")   
+    //     }
+    //     clientResult?.companyAlias && setValue('companyNameAlias',clientResult?.companyAlias)
+    //     clientResult?.companyHQAlias && setValue('headquatersAlias',clientResult?.companyHQAlias)
+    //     clientResult?.headquaters && setValue('headquaters',clientResult?.headquaters)
+    //     clientResult?.companyLogoAlias && setValue('companyLogoAlias',clientResult?.companyLogoAlias)
+    //     clientResult?.companyURL &&  setValue('companyURL',clientResult?.companyURL)
+    //     clientResult?.linkedInProfile && setValue('companyLinkedinURL',clientResult?.linkedInProfile)      
+    //     }
+
+
+    //   },[getHRDetails])
+
+    const getHRdetailsHandler = async (hrId) => {
+        setIsSavedLoading(true)
+        const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId);
+        setIsSavedLoading(false)
+        if (response.statusCode === HTTPStatusCode.OK) {
+            console.log(response?.responseBody?.details);
+
+            let data = response?.responseBody?.details
+
+            let availabilityId = availability?.find(v => v.value === data?.addHiringRequest?.availability)?.id
+            let noticePeriodId = howSoon?.find(v => v.value === data?.salesHiringRequest_Details?.howSoon)?.id
+
+            getTransparentEngType(data?.companyInfo?.companyID, data?.addHiringRequest?.hiringTypePricingId)
+
+            setHRDetails(data)
+            setClientDetails({
+                ...data?.companyInfo,
+                "companyId": data?.companyInfo?.companyID,
+                "company": data?.companyInfo?.companyName,
+                "companyURL": data?.companyInfo?.website,
+                "companyLinkedIn": data?.companyInfo?.linkedInURL,
+                "isTransparentPricing": data?.addHiringRequest?.isTransparentPricing,
+            })
+
+
+            setIsVettedProfile(data?.addHiringRequest?.isVettedProfile);
+            setBasicFormFields({
+                companyName: data?.company,
+                clientFullName: data?.fullClientName,
+                salesPerson: data?.addHiringRequest?.salesUserId,
+                availability: availabilityId,
+                payroll: data?.addHiringRequest?.payrollTypeId,
+                hiringPricingType: data?.addHiringRequest?.hiringTypePricingId,
+                NRMargin: data?.addHiringRequest?.isHrtypeDp === true
+                    ? data?.addHiringRequest?.dppercentage
+                    : data?.addHiringRequest?.talentCostCalcPercentage,
+                contractDuration: data?.contractDuration === "-1"
+                    ? "Indefinite"
+                    : data?.contractDuration,
+                payrollPartnerName: data?.addHiringRequest?.payrollTypeId === 3 ? data?.addHiringRequest?.payrollPartnerName : ''
+            })
+
+            setConfidentialInfo(data?.clientDetails_Result?.isCompanyConfidential)
+
+            setRoleReqFormFields({
+                roleTitle: data?.nameOfHiringRequest,
+                minExp: data?.clientDetails_Result?.minYearOfExp,
+                maxExp: data?.clientDetails_Result?.maxYearOfExp,
+                modeOfWorking: data?.hdnModeOfWork,
+                location: data?.atS_Joblocation?.map((item) => item.atS_City_Name),
+                frequency: data?.directPlacement?.frequencyOfficeVisitId ?? '',
+                timeZone: data?.salesHiringRequest_Details?.timezoneId,
+                startTime: data?.salesHiringRequest_Details?.timeZoneFromTime,
+                endTime: data?.salesHiringRequest_Details?.timeZoneEndTime,
+                noticePeriod: noticePeriodId,
+                interviewRounds: data?.addHiringRequest?.interviewRounds,
+                numberOfTalents: data?.salesHiringRequest_Details?.noofEmployee
+            })
+
+            setNearByCitesValues(data?.directPlacement?.nearByCities?.split(","))
+
+            setMustHaveSkills(data?.skillmulticheckbox?.map((item) => item?.text))
+            setGoodToHaveSkills(data?.allSkillmulticheckbox?.map((item) => item?.text))
+
+            setBudgetFormFields({
+                currency: data?.salesHiringRequest_Details?.currency,
+                minBudget: data?.salesHiringRequest_Details?.budgetFrom,
+                maxBudget: data?.salesHiringRequest_Details?.budgetTo,
+                type: data?.budgetType,
+                isConfidential: data?.salesHiringRequest_Details?.isConfidentialBudget,
+                compensationOptions: data?.compensationOption ? data?.compensationOption?.split("^") : []
+            })
+
+            setEnhanceMatchmakingFormFields(
+                {
+                    industry: data?.hrIndustryType.length ? data?.hrIndustryType?.split("^") : undefined,
+                    peopleManagement: data?.hasPeopleManagementExp,
+                    highlight: data?.prerequisites
+                }
+            )
+
+        }
+    };
+
+    useEffect(() => {
+        if (hrid !== 0 && availability.length && howSoon.length) {
+            getHRdetailsHandler(hrid)
+        }
+    }, [hrid, availability, howSoon])
 
     useEffect(() => { getCities() }, [selectedCitiesIDS])
 
@@ -281,7 +424,6 @@ function NewHRFields() {
         async (companyName, cid) => {
             setClientNameMessage("");
             setBasicFormFields(prev => ({ ...prev, clientFullName: '' }));
-            setAutoCompleteValue("");
             setAddClient(false);
             setCompanyID(null);
             let response = await MasterDAO.getCompanySuggestionDAO(companyName);
@@ -312,10 +454,43 @@ function NewHRFields() {
         [companyID]
     );
 
+     useEffect(()=>{
+       
+        if(getHRDetails?.clientDetails_Result){
+          let companyInfo = getHRDetails?.companyInfo
+        let clientResult = getHRDetails?.clientDetails_Result;
+        
+    
+        setConfidentialInfo(clientResult?.isCompanyConfidential === true ? 1 : 0)
+         setCompanyConfidentialFields({
+            companyURL: clientResult?.companyURL,
+            companyLogoAlias: clientResult?.companyLogoAlias,
+            headquaters: clientResult?.headquaters,
+            headquatersAlias: clientResult?.companyHQAlias,
+            companyNameAlias: clientResult?.companyAlias,
+            companyLinkedinURL: clientResult?.linkedInProfile,
+            companyLogo: companyInfo?.companyLogoAwsUrl ?  companyInfo?.companyLogoAwsUrl : companyInfo?.companyLogo ?? ""
+        })
+    
+      
+     
+            setClientFieldsDetails([{...secondaryClient,
+      fullName: clientResult?.clientName ,
+      fullNameAlias: clientResult?.clientPOCNameAlias,
+      emailID:clientResult?.clientEmail,
+      emailIDAlias:clientResult?.clientPOCEmailAlias,
+      id:clientResult?.contactId
+    }])
+ 
+       
+        }
+        
+    
+      },[getHRDetails])
+
     const getClientNameValue = (clientName, clientData) => {
         setBasicFormFields(prev => ({ ...prev, clientFullName: clientName }));
         setClientDetails(clientData);
-        setIsVettedProfile(clientData?.isVettedProfile);
         setIsPostaJob(clientData?.isPostaJob);
         setIsProfileView(clientData?.isProfileView);
         setIsVettedProfile(clientData?.isVettedProfile);
@@ -323,6 +498,24 @@ function NewHRFields() {
 
         setConfidentialInfo(clientData?.isCompanyConfidential)
 
+
+        setCompanyConfidentialFields({
+            companyURL: clientData?.companyURL,
+            companyLogoAlias: clientData?.companyLogoAlias,
+            headquaters: clientData?.companyHQ,
+            headquatersAlias: clientData?.companyHQAlias,
+            companyNameAlias: clientData?.companyAlias,
+            companyLinkedinURL: clientData?.companyLinkedIn,
+            companyLogo: clientData?.companyLogoAwsUrl ? clientData?.companyLogoAwsUrl : clientData?.companyLogo ?? ""
+        })
+
+        setClientFieldsDetails([{...secondaryClient,
+      id: clientData?.contactId,
+      fullName: clientData?.contactName ,
+      fullNameAlias: clientData?.clientPOCNameAlias,
+      emailID:clientData?.emailId,
+      emailIDAlias: clientData?.clientPOCEmailAlias,
+    }])
 
         clientData?.companyId && getTransparentEngType(clientData?.companyId, clientData?.hiringTypePricingId)
         clientData?.companyTypeID && setBasicFormFields(prev => ({ ...prev, availability: clientData?.companyTypeID === 2 ? 1 : 2 }));
@@ -720,22 +913,56 @@ function NewHRFields() {
         }
     };
 
+      const updateCompanyDetails = useCallback(async () => {
+        let payload = {
+          "basicDetails": {
+            "companyID": clientDetails?.companyId,    
+            "isCompanyConfidential": confidentialInfo
+          }, 
+          
+        }
+    
+        if(confidentialInfo) {
+          payload["clientDetails"] = [
+            {
+              "clientID": clientFieldsDetails[0]?.id,     
+              "emailId" :clientFieldsDetails[0]?.emailID,
+              "clientPOCNameAlias": clientFieldsDetails[0]?.fullNameAlias,
+              "clientPOCEmailAlias": clientFieldsDetails[0]?.emailIDAlias
+            }
+          ]  
+          payload["companyConfidentialDetails"] = {
+            "companyAlias": companyConfidentailFields.companyNameAlias,
+            "companyURLAlias": null,
+            "companyLinkedInAlias": null,
+            "companyHQAlias": companyConfidentailFields.headquatersAlias  ,
+            "companyLogoAlias": companyConfidentailFields.companyLogoAlias 
+          }
+        }
+    
+        const result = await allCompanyRequestDAO.updateCompanyConfidentialDAO(payload)
+    
+        // if(result.statusCode === 200){
+        //   message.success('Successfully Updated Company profile details')
+        // }
+      },[confidentialInfo,clientDetails]) 
+
     const createHRHandler = async (pl, isDraft) => {
         setIsSavedLoading(true)
         const result = await hiringRequestDAO.createNEWHRDAO(pl)
         setIsSavedLoading(false)
         console.log('result,result', result)
 
-        if(result.statusCode === HTTPStatusCode.OK){
-          
-           if(isDraft){
-  // navigate('/w_previewHR/'+result?.responseBody?.id) 
-   message.success("HR details has been saved to draft.")
-   navigate("/allhiringrequest");
-           }else{
-              navigate('/w_previewHR/'+result?.responseBody?.details?.id)
-             
-           }
+        if (result.statusCode === HTTPStatusCode.OK) {
+            updateCompanyDetails()
+            if (isDraft) {
+                // navigate('/w_previewHR/'+result?.responseBody?.id) 
+                message.success("HR details has been saved to draft.")
+                navigate("/allhiringrequest");
+            } else {
+                navigate('/w_previewHR/' + result?.responseBody?.details?.id)
+
+            }
         }
     }
 
@@ -743,148 +970,154 @@ function NewHRFields() {
         let isValid = true;
         setFormValidationError(false)
 
-        if(!isDraft){
- if (basicFormFields.companyName.trim() === '') {
-            isValid = false;
-        }
-
-        if (basicFormFields.clientFullName.trim() === '') {
-            isValid = false;
-        }
-
-        if (basicFormFields.salesPerson === undefined) {
-            isValid = false;
-        }
-
-        if (basicFormFields.availability === '') {
-            isValid = false;
-        }
-
-        if (basicFormFields.hiringPricingType === '') {
-            isValid = false;
-        }
-
-        if (basicFormFields?.hiringPricingType === '3' ||
-            basicFormFields?.hiringPricingType === '6') {
-            if (basicFormFields.payroll === '') {
+        if (!isDraft) {
+            if (basicFormFields.companyName.trim() === '') {
                 isValid = false;
             }
-        }
 
-        if (basicFormFields?.hiringPricingType === '1' || basicFormFields?.hiringPricingType === '2' || basicFormFields.payroll === '4') {
-            if (basicFormFields.contractDuration === '') {
-                isValid = false;
-            }
-        }
-
-        if (basicFormFields.payroll === '3') {
-            if (basicFormFields.payrollPartnerName.trim() === '') {
-                isValid = false;
-            }
-        }
-
-        if (basicFormFields.NRMargin <= 0 || basicFormFields.NRMargin === '' || basicFormFields.NRMargin > 100) {
-            isValid = false;
-        }
-
-        if (roleReqFormFields.roleTitle.trim() === '') {
-            isValid = false;
-        }
-
-        if (roleReqFormFields.minExp === '' || roleReqFormFields.maxExp === '') {
-            isValid = false;
-        }
-
-        if (roleReqFormFields.maxExp <= roleReqFormFields.minExp || roleReqFormFields.minExp < 0 || roleReqFormFields.maxExp > 60 || roleReqFormFields.minExp > 60) {
-            isValid = false;
-        }
-
-        if (roleReqFormFields.modeOfWorking === '') {
-            isValid = false;
-        }
-
-        if (roleReqFormFields?.modeOfWorking === 'Hybrid' || roleReqFormFields?.modeOfWorking === 'Office') {
-            if (roleReqFormFields.location.length === 0) {
-                isValid = false;
-            }
-            if (NearByCitesValues.length === 0) {
-                isValid = false
-            }
-        }
-
-        if (roleReqFormFields?.modeOfWorking === 'Hybrid') {
-            if (roleReqFormFields.frequency === '') {
-                isValid = false;
-            }
-        }
-
-        if (roleReqFormFields.timeZone === undefined) {
-            isValid = false;
-        }
-
-        if (roleReqFormFields.startTime === undefined || roleReqFormFields.endTime === undefined) {
-            isValid = false;
-        }
-
-        if (roleReqFormFields.noticePeriod === '') {
-            isValid = false;
-        }
-
-        if (roleReqFormFields.interviewRounds === '' || isNaN(roleReqFormFields.interviewRounds) || parseInt(roleReqFormFields.interviewRounds) <= 0 || parseInt(roleReqFormFields.interviewRounds) > 5) {
-            isValid = false;
-        }
-
-        if (roleReqFormFields?.numberOfTalents === '' || isNaN(roleReqFormFields.numberOfTalents) || parseInt(roleReqFormFields.numberOfTalents) <= 0 || parseInt(roleReqFormFields.numberOfTalents) > 99) {
-            isValid = false;
-        }
-
-        if (mustHaveSkills.length === 0 || mustHaveSkills.length > 8 || goodToHaveSkills.length === 0) {
-            isValid = false;
-        }
-
-        if (isHaveJD === 0) {
-            if ((jobDesData.jobDescription.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL.trim() === '' && jobDesData.jdFile === '') {
-                isValid = false;
-            }
-        }
-
-
-
-        if (budgetFormFields?.currency === undefined || budgetFormFields?.type === undefined) {
-            isValid = false
-        }
-
-        if (budgetFormFields?.type === 'Range') {
-            if (budgetFormFields?.minBudget === '' || budgetFormFields?.maxBudget === '' || +budgetFormFields?.maxBudget <= +budgetFormFields?.minBudget) {
-                isValid = false
-            }
-        }
-
-        if (budgetFormFields?.type === 'Fixed') {
-            if (budgetFormFields?.minBudget === '') {
-                isValid = false
-            }
-        }
-
-        }
-
-        if(isDraft){
             if (basicFormFields.clientFullName.trim() === '') {
-                    message.error("Please enter the client full-name.")
-                      return 
-                    }
-                   
+                isValid = false;
+            }
+
+            if (basicFormFields.salesPerson === undefined) {
+                isValid = false;
+            }
+
+            if (basicFormFields.availability === '') {
+                isValid = false;
+            }
+
+            if (basicFormFields.hiringPricingType === '') {
+                isValid = false;
+            }
+
+            if (basicFormFields?.hiringPricingType === '3' ||
+                basicFormFields?.hiringPricingType === '6') {
+                if (basicFormFields.payroll === '') {
+                    isValid = false;
+                }
+            }
+
+            if (basicFormFields?.hiringPricingType === '1' || basicFormFields?.hiringPricingType === '2' || basicFormFields.payroll === '4') {
+                if (basicFormFields.contractDuration === '') {
+                    isValid = false;
+                }
+            }
+
+            if (basicFormFields.payroll === '3') {
+                if (basicFormFields.payrollPartnerName.trim() === '') {
+                    isValid = false;
+                }
+            }
+
+            if (basicFormFields.NRMargin <= 0 || basicFormFields.NRMargin === '' || basicFormFields.NRMargin > 100) {
+                isValid = false;
+            }
+
+            if (roleReqFormFields.roleTitle.trim() === '') {
+                isValid = false;
+            }
+
+            if (roleReqFormFields.minExp === '' || roleReqFormFields.maxExp === '') {
+                isValid = false;
+            }
+
+            if (roleReqFormFields.maxExp <= roleReqFormFields.minExp || roleReqFormFields.minExp < 0 || roleReqFormFields.maxExp > 60 || roleReqFormFields.minExp > 60) {
+                isValid = false;
+            }
+
+            if (roleReqFormFields.modeOfWorking === '') {
+                isValid = false;
+            }
+
+            if (roleReqFormFields?.modeOfWorking === 'Hybrid' || roleReqFormFields?.modeOfWorking === 'Office') {
+                if (roleReqFormFields.location.length === 0) {
+                    isValid = false;
+                }
+                if (NearByCitesValues.length === 0) {
+                    isValid = false
+                }
+            }
+
+            if (roleReqFormFields?.modeOfWorking === 'Hybrid') {
+                if (roleReqFormFields.frequency === '') {
+                    isValid = false;
+                }
+            }
+
+            if (roleReqFormFields.timeZone === undefined) {
+                isValid = false;
+            }
+
+            if (roleReqFormFields.startTime === undefined || roleReqFormFields.endTime === undefined) {
+                isValid = false;
+            }
+
+            if (roleReqFormFields.noticePeriod === '') {
+                isValid = false;
+            }
+
+            if (roleReqFormFields.interviewRounds === '' || isNaN(roleReqFormFields.interviewRounds) || parseInt(roleReqFormFields.interviewRounds) <= 0 || parseInt(roleReqFormFields.interviewRounds) > 5) {
+                isValid = false;
+            }
+
+            if (roleReqFormFields?.numberOfTalents === '' || isNaN(roleReqFormFields.numberOfTalents) || parseInt(roleReqFormFields.numberOfTalents) <= 0 || parseInt(roleReqFormFields.numberOfTalents) > 99) {
+                isValid = false;
+            }
+
+            if (mustHaveSkills.length === 0 || mustHaveSkills.length > 8 || goodToHaveSkills.length === 0) {
+                isValid = false;
+            }
+
+            if (isHaveJD === 0) {
+                if ((jobDesData.jobDescription.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL.trim() === '' && jobDesData.jdFile === '') {
+                    isValid = false;
+                }
+            }
+
+
+
+            if (budgetFormFields?.currency === undefined || budgetFormFields?.type === undefined) {
+                isValid = false
+            }
+
+            if (budgetFormFields?.type === 'Range') {
+                if (budgetFormFields?.minBudget === '' || budgetFormFields?.maxBudget === '' || +budgetFormFields?.maxBudget <= +budgetFormFields?.minBudget) {
+                    isValid = false
+                }
+            }
+
+            if (budgetFormFields?.type === 'Fixed') {
+                if (budgetFormFields?.minBudget === '') {
+                    isValid = false
+                }
+            }
+
+            if(confidentialInfo === true){
+                if(companyConfidentailFields.companyNameAlias.trim() === '' || companyConfidentailFields?.companyLogoAlias.trim() === ''){
+                    isValid = false
+                }
+            }
+
+        }
+
+        if (isDraft) {
+            if (basicFormFields.clientFullName.trim() === '') {
+                message.error("Please enter the client full-name.")
+                return
+            }
+
             if (basicFormFields.salesPerson === undefined) {
                 message.error("Please select hiring request sales person")
-                return 
+                return
             }
             if (roleReqFormFields?.numberOfTalents === '' || isNaN(roleReqFormFields.numberOfTalents) || roleReqFormFields.numberOfTalents <= 0 || roleReqFormFields.numberOfTalents > 99) {
                 message.error("Please enter valid No. of talents")
-                return 
+                return
             }
         }
 
-       
+
 
 
         if (!isValid) {
@@ -908,18 +1141,20 @@ function NewHRFields() {
         const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));
 
         let formPayload = {
-            "en_Id": "",
-            "Id": 0,
+            "en_Id": getHRDetails?.en_Id ? getHRDetails?.en_Id : "",
+            "Id": +hrid,
             "contactId": clientDetails?.contactId,
             "clientName": basicFormFields?.clientFullName,
             "companyName": basicFormFields?.companyName,
             "hrTitle": roleReqFormFields?.roleTitle,
             "availability": availability?.find(v => v.id === +basicFormFields?.availability)?.value,
-
+            "IsCompanyConfidential": confidentialInfo,
             "BudgetType": budgetFormFields?.type === "Fixed" ? '1' : '2',
-            "Currency": currency.find(c=> c.id === budgetFormFields?.currency)?.value ,
+            "Currency": currency.find(c => c.id === budgetFormFields?.currency)?.value,
 
-            "minimumBudget": +budgetFormFields?.minBudget,
+
+            "adhocBudgetCost": budgetFormFields?.type === "Fixed" ? +budgetFormFields?.minBudget : 0,
+            "minimumBudget":  budgetFormFields?.type === "Range" ? +budgetFormFields?.minBudget : 0,
             "maximumBudget": budgetFormFields?.type === "Range" ? +budgetFormFields?.maxBudget : 0,
 
             "NRMargin": basicFormFields?.NRMargin,
@@ -927,7 +1162,7 @@ function NewHRFields() {
             "contractDuration": basicFormFields?.contractDuration,
             "howSoon": howSoon?.find(v => v.id === +roleReqFormFields?.noticePeriod)?.value,
 
-            "years": roleReqFormFields?.minExp ?roleReqFormFields?.minExp : 0,
+            "years": roleReqFormFields?.minExp ? roleReqFormFields?.minExp : 0,
             "minExpYears": roleReqFormFields?.minExp ? roleReqFormFields?.minExp : 0,
             "maxExpYears": roleReqFormFields?.maxExp ? roleReqFormFields?.maxExp : 0,
 
@@ -961,9 +1196,9 @@ function NewHRFields() {
 
             "CompensationOption": budgetFormFields?.compensationOptions.join("^"),
 
-            "HasPeopleManagementExp": enhanceMatchmakingFormFields?.peopleManagement ? enhanceMatchmakingFormFields?.peopleManagement : null,
+            "HasPeopleManagementExp": enhanceMatchmakingFormFields?.peopleManagement,
             "Prerequisites": enhanceMatchmakingFormFields?.highlight,
-            "HRIndustryType": enhanceMatchmakingFormFields?.industry ? enhanceMatchmakingFormFields?.industry : '',
+            "HRIndustryType": enhanceMatchmakingFormFields?.industry ? enhanceMatchmakingFormFields?.industry.join('^') : '',
             "StringSeparator": "^",
 
             "jdFileTypeID": parseType === 'JDFileUpload' ? 1 : parseType === 'Manual' ? 3 : 2,
@@ -1079,7 +1314,7 @@ function NewHRFields() {
     return (
         <main className={`${styles["main-content"]}`}>
             {/* <!-- Content Section --> */}
-             <LogoLoader visible={isSavedLoading} />
+            <LogoLoader visible={isSavedLoading} />
             <div className={`${styles["content-wrapper"]}`}>
                 {/* <!-- New Hiring Request Form --> */}
                 <div className={`${styles["new-hr-form-wrapper"]}`}>
@@ -1101,32 +1336,32 @@ function NewHRFields() {
                                                 onSelect={(companyName, _obj) => {
                                                     console.log(_obj)
                                                     setBasicFormFields(prev => ({ ...prev, companyName: companyName }));
-                                                    setCompanyAutoCompleteValue(companyName);
+
                                                     setCompanyID(_obj.companyID);
                                                     getClientNameSuggestionHandler("", _obj.companyID);
                                                     getPOCUsers(_obj.companyID);
                                                 }}
                                                 filterOption={true}
                                                 onSearch={(searchValue) => {
-                                                    setCompanyAutoCompleteValue(searchValue);
+
                                                     if (searchValue) {
                                                         setCompanyNameSuggestion([]);
                                                         getCompanyNameSuggestionHandler(searchValue);
                                                     } else {
                                                         setClientNameMessage("");
                                                         setBasicFormFields(prev => ({ ...prev, clientFullName: '' }))
-                                                        setAutoCompleteValue("");
                                                         setAddClient(false);
                                                         setCompanyID(null);
                                                         setCompanyNameError("");
 
                                                     }
                                                 }}
-                                                value={companyautoCompleteValue}
+                                                value={basicFormFields?.companyName}
                                                 onChange={(CompanyName) =>
                                                     setBasicFormFields(prev => ({ ...prev, companyName: CompanyName }))
                                                 }
                                                 placeholder="Company name *"
+                                                disabled={hrid > 0}
                                             // ref={controllerCompanyRef}
                                             />
                                             {companyNameError.length > 0 && <p className={`${styles["fieldError"]}`}>{companyNameError}</p>}
@@ -1146,15 +1381,15 @@ function NewHRFields() {
                                                 options={getClientNameSuggestion}
                                                 onSelect={(clientName, _obj) => {
                                                     getClientNameValue(clientName, _obj);
-                                                    setAutoCompleteValue(clientName);
+
                                                 }}
                                                 filterOption={true}
                                                 onSearch={(searchValue) => {
                                                     setClientNameSuggestion([]);
                                                     getClientNameSuggestionHandler(searchValue);
-                                                    setAutoCompleteValue(searchValue);
+
                                                 }}
-                                                value={autoCompleteValue}
+                                                value={basicFormFields?.clientFullName}
                                                 onChange={(clientName, obj) => {
                                                     setBasicFormFields(prev => ({ ...prev, clientFullName: clientName }))
                                                 }
@@ -1228,10 +1463,10 @@ function NewHRFields() {
                                                 value={basicFormFields.availability}
                                                 onChange={(e) =>
                                                     setBasicFormFields(prev => ({ ...prev, availability: e.target.value, hiringPricingType: "", payroll: '', contractDuration: '', payrollPartnerName: '' }))}>
-                                                <option value="">Engagement model *</option>
+                                                <option className={`${styles["custom-select-option"]}`} value="">Engagement model *</option>
 
                                                 {availability.map((engagement) => (
-                                                    <option value={engagement.id}>{engagement.value}</option>
+                                                    <option className={`${styles["custom-select-option"]}`} value={engagement.id}>{engagement.value}</option>
                                                 ))}
                                             </select>
                                             {formValidationError && basicFormFields.availability === '' && <p className={`${styles["fieldError"]}`}>please select engagement model</p>}
@@ -1243,9 +1478,9 @@ function NewHRFields() {
                                                 <select className={`${styles["form-select"]}`} required value={basicFormFields.payroll} onChange={(e) => {
                                                     setBasicFormFields(prev => ({ ...prev, payroll: e.target.value, contractDuration: '', payrollPartnerName: '' }))
                                                 }}>
-                                                    <option value="">Payroll *</option>
+                                                    <option className={`${styles["custom-select-option"]}`} value="">Payroll *</option>
                                                     {payRollTypes.map((payroll) => (
-                                                        <option value={payroll.id}>{payroll.value}</option>
+                                                        <option className={`${styles["custom-select-option"]}`} value={payroll.id}>{payroll.value}</option>
                                                     ))}
                                                 </select>
                                                 {formValidationError && basicFormFields.payroll === '' && <p className={`${styles["fieldError"]}`}>please select payroll</p>}
@@ -1259,9 +1494,9 @@ function NewHRFields() {
                                             <select className={`${styles["form-select"]}`} required value={basicFormFields?.hiringPricingType} onChange={(e) => {
                                                 setBasicFormFields(prev => ({ ...prev, hiringPricingType: e.target.value, payroll: '', contractDuration: '', payrollPartnerName: '' }))
                                             }}>
-                                                <option value="">Engagement type *</option>
-                                                {hrPricingTypes && basicFormFields.availability === '1' ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime })).filter(i => (i.id !== 3 && i.showPartTime === true)).map(val => (<option value={val.id}>{val.value}</option>))
-                                                    : hrPricingTypes.map((val) => (<option value={val.id}>{val.type}</option>))}
+                                                <option className={`${styles["custom-select-option"]}`} value="">Engagement type *</option>
+                                                {hrPricingTypes && basicFormFields.availability === '1' ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime })).filter(i => (i.id !== 3 && i.showPartTime === true)).map(val => (<option className={`${styles["custom-select-option"]}`} value={val.id}>{val.value}</option>))
+                                                    : hrPricingTypes.map((val) => (<option className={`${styles["custom-select-option"]}`} value={val.id}>{val.type}</option>))}
                                             </select>
                                             {formValidationError && basicFormFields.hiringPricingType === '' && <p className={`${styles["fieldError"]}`}>please select engagement type</p>}
                                         </div>
@@ -1281,7 +1516,7 @@ function NewHRFields() {
                                             <select className={`${styles["form-select"]}`} required value={basicFormFields?.contractDuration} onChange={(e) => {
                                                 setBasicFormFields(prev => ({ ...prev, contractDuration: e.target.value }))
                                             }}>
-                                                <option value="">Contract Duration (in months) *</option>
+                                                <option className={`${styles["custom-select-option"]}`} value="">Contract Duration (in months) *</option>
                                                 {contractDurations.filter((item) => {
                                                     // if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" || item?.value !== "Indefinite"
                                                     // return item?.value !== "-1"
@@ -1290,7 +1525,7 @@ function NewHRFields() {
                                                     }
                                                     return true;
                                                 })
-                                                    .map((item) => (<option value={item.value}>{item.text}</option>))}
+                                                    .map((item) => (<option className={`${styles["custom-select-option"]}`} value={item.value}>{item.text}</option>))}
                                             </select>
                                             {formValidationError && basicFormFields.contractDuration === '' && <p className={`${styles["fieldError"]}`}>please select contract duration</p>}
                                         </div> </div>}
@@ -1306,6 +1541,7 @@ function NewHRFields() {
                                     </div>}
 
                                 </div>
+
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
                                         <div className={`${styles["form-group"]} ${styles["checkbox-group"]}`}>
@@ -1316,9 +1552,174 @@ function NewHRFields() {
                                         </div>
                                     </div>
                                 </div>
+                               
                             </div>
 
                         </section>
+
+                        {confidentialInfo &&
+                            <section className={`${styles["form-section"]}`}>
+                                  <p style={{marginBottom:'10px'}} className={`${styles["teansactionMessage"]}`}>Be careful not to use company names in About, Culture, Job description if you choose to keep information confidential. </p>
+                                <div className={`${styles["form-rows"]}`}>
+                                    <div className={`${styles["row"]}`}>
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Company Name" disabled={true} value={basicFormFields?.companyName}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Company Name Alias  *" required value={companyConfidentailFields?.companyNameAlias}
+                                                        onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, companyNameAlias: e.target.value }))} />
+                                                    {formValidationError && (companyConfidentailFields?.companyNameAlias.trim() === '') && <p className={`${styles["fieldError"]}`}>please enter company name alias</p>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                     <div className={`${styles["row"]}`}>
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Company Logo" disabled={true} value={companyConfidentailFields?.companyLogo}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Company Logo Alias  *" required value={companyConfidentailFields?.companyLogoAlias}
+                                                        onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, companyLogoAlias: e.target.value }))} />
+                                                    {formValidationError && (companyConfidentailFields?.companyLogoAlias.trim() === '') && <p className={`${styles["fieldError"]}`}>please enter company logo alias</p>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+ <div className={`${styles["row"]}`}>
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Company URL" disabled={true} value={companyConfidentailFields?.companyURL}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                      
+                                    </div>
+
+                                     <div className={`${styles["row"]}`}>
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Company Linkedin" disabled={true} value={companyConfidentailFields?.companyLinkedinURL}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                      
+                                    </div>
+
+                                    <p className={styles.teansactionMessage}>If the client POC details are not added then it will be considered as "N/A."</p>
+
+                                {clientFieldsDetails.map((val,ind)=>{
+                                    return <>
+                                    <div className={`${styles["row"]}`}>
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Full Name" disabled={true} value={val.fullName}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Full Name Alias" required value={val.fullNameAlias}
+                                                        onChange={(e) => setClientFieldsDetails(prev => {
+                                                            let arr = [...prev]
+                                                            arr[ind] = {...arr[ind],fullNameAlias:e.target.value}
+
+                                                            return arr
+                                                        })} />
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className={`${styles["row"]}`}>
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Email" disabled={true} value={val.emailID}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Email Alias" required value={val.emailIDAlias}
+                                                        onChange={(e) => setClientFieldsDetails(prev => {
+                                                            let arr = [...prev]
+                                                            arr[ind] = {...arr[ind],emailIDAlias:e.target.value}
+
+                                                            return arr
+                                                        })} />
+                             
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </>
+                                })}
+
+
+                                  <div className={`${styles["row"]}`}>
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Company Headquarters" disabled={true} value={companyConfidentailFields?.headquaters}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["form-group"]}`}>
+                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Company Headquarters Alias" required value={companyConfidentailFields?.headquatersAlias}
+                                                        onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, headquatersAlias: e.target.value }))} />
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                       
+
+                                </div>
+                            </section>
+                        }
 
                         {/* <!-- Role Requirements Section --> */}
                         <section className={`${styles["form-section"]}`}>
@@ -1373,10 +1774,10 @@ function NewHRFields() {
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <select className={`${styles["form-select"]} ${styles["mode-of-working"]}`} required value={roleReqFormFields.modeOfWorking} onChange={(e) => setRoleReqFormFields({ ...roleReqFormFields, modeOfWorking: e.target.value })}>
-                                                <option value="">Mode of working *</option>
-                                                <option value="Remote">Remote</option>
-                                                <option value="Hybrid">Hybrid</option>
-                                                <option value="Office">Office</option>
+                                                <option className={`${styles["custom-select-option"]}`} value="">Mode of working *</option>
+                                                <option className={`${styles["custom-select-option"]}`} value="Remote">Remote</option>
+                                                <option className={`${styles["custom-select-option"]}`} value="Hybrid">Hybrid</option>
+                                                <option className={`${styles["custom-select-option"]}`} value="Office">Office</option>
                                             </select>
                                             {formValidationError && roleReqFormFields.modeOfWorking === '' && <p className={`${styles["fieldError"]}`}>please select mode of working</p>}
                                         </div>
@@ -1418,7 +1819,7 @@ function NewHRFields() {
 
                                                 value={roleReqFormFields?.location}
                                             />
-                                            {formValidationError && roleReqFormFields.location.length === 0 && <p className={`${styles["fieldError"]}`}>please select location</p>}
+                                            {formValidationError && roleReqFormFields?.location?.length === 0 && <p className={`${styles["fieldError"]}`}>please select location</p>}
                                         </div>
                                     </div>)}
 
@@ -1433,8 +1834,8 @@ function NewHRFields() {
                                             <select className={`${styles["form-select"]}`} required value={roleReqFormFields?.frequency} onChange={(e) => {
                                                 setRoleReqFormFields(prev => ({ ...prev, frequency: e.target.value }))
                                             }}>
-                                                <option value="">Frequency *</option>
-                                                {frequencyData.map((item) => (<option value={item.id}>{item.value}</option>))}
+                                                <option className={`${styles["custom-select-option"]}`} value="">Frequency *</option>
+                                                {frequencyData.map((item) => (<option className={`${styles["custom-select-option"]}`} value={item.id}>{item.value}</option>))}
                                             </select>
                                             {formValidationError && roleReqFormFields?.frequency === '' && <p className={`${styles["fieldError"]}`}>please select frequency</p>}
                                         </div>
@@ -1617,8 +2018,8 @@ function NewHRFields() {
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <select className={`${styles["form-select"]}`} required value={roleReqFormFields.noticePeriod} onChange={(e) => setRoleReqFormFields({ ...roleReqFormFields, noticePeriod: e.target.value })}>
-                                                <option value="">Notice period *</option>
-                                                {howSoon.map((item) => (<option value={item.id}>{item.value}</option>))}
+                                                <option className={`${styles["custom-select-option"]}`} value="">Notice period *</option>
+                                                {howSoon.map((item) => (<option className={`${styles["custom-select-option"]}`} value={item.id}>{item.value}</option>))}
                                             </select>
                                             {formValidationError && (roleReqFormFields.noticePeriod === '') && <p className={`${styles["fieldError"]}`}>please select notice period</p>}
                                         </div>
@@ -2020,6 +2421,7 @@ function NewHRFields() {
                                                 <div className={`${styles["autocomplete-dropdown"]}`}></div>
                                             </div> */}
                                             <Select
+                                             mode="tags"
                                                 showSearch
                                                 filterOption={(input, option) =>
                                                     option.value?.toLowerCase().includes(input.toLowerCase())
@@ -2046,13 +2448,13 @@ function NewHRFields() {
                                             <label className={`${styles["form-label"]}`}>Does the client require a talent with people management experience?</label>
                                             <div className={`${styles["radio-group"]}`}>
                                                 <label className={`${styles["radio-label"]}`}>
-                                                    <input type="radio" name="people-management" value="yes" className={`${styles["form-radio"]}`} checked={enhanceMatchmakingFormFields?.peopleManagement === 'yes'}
-                                                        onChange={() => { setEnhanceMatchmakingFormFields(prev => ({ ...prev, peopleManagement: 'yes' })) }} />
+                                                    <input type="radio" name="people-management" value={true} className={`${styles["form-radio"]}`} checked={enhanceMatchmakingFormFields?.peopleManagement}
+                                                        onChange={() => { setEnhanceMatchmakingFormFields(prev => ({ ...prev, peopleManagement: true })) }} />
                                                     <span>Yes</span>
                                                 </label>
                                                 <label className={`${styles["radio-label"]}`}>
-                                                    <input type="radio" name="people-management" value="no" className={`${styles["form-radio"]}`} checked={enhanceMatchmakingFormFields?.peopleManagement === 'no'}
-                                                        onChange={() => { setEnhanceMatchmakingFormFields(prev => ({ ...prev, peopleManagement: 'no' })) }} />
+                                                    <input type="radio" name="people-management" value={false} className={`${styles["form-radio"]}`} checked={!enhanceMatchmakingFormFields?.peopleManagement}
+                                                        onChange={() => { setEnhanceMatchmakingFormFields(prev => ({ ...prev, peopleManagement: false })) }} />
                                                     <span>No</span>
                                                 </label>
                                             </div>
@@ -2085,8 +2487,8 @@ function NewHRFields() {
 
                         {/* <!-- Form Actions --> */}
                         <section className={`${styles["form-actions"]}`}>
-                            <button type="button" name="save" className={`${styles["btn-save"]}`} onClick={() => handleNext(true)}>SAVE</button>
-                            <button type="button" name="next" className={`${styles["btn-next"]}`} onClick={() => handleNext(false)}>NEXT</button>
+                            <button type="button" name="save" className={`${styles["btn-save"]}`} onClick={() => handleNext(true)}>Save As Draft</button>
+                            <button type="button" name="next" className={`${styles["btn-next"]}`} onClick={() => handleNext(false)}>Create HR</button>
                         </section>
                     </form>
                 </div>
