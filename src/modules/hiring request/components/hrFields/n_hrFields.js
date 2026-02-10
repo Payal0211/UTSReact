@@ -33,7 +33,7 @@ import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import HRSelectField from "../hrSelectField/hrSelectField";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { HTTPStatusCode } from "constants/network";
+import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -284,7 +284,7 @@ function NewHRFields() {
                 salesPerson: data?.addHiringRequest?.salesUserId,
                 availability: availabilityId,
                 payroll: data?.addHiringRequest?.payrollTypeId,
-                hiringPricingType: data?.addHiringRequest?.hiringTypePricingId,
+                hiringPricingType: `${data?.addHiringRequest?.hiringTypePricingId}`,
                 NRMargin: data?.addHiringRequest?.isHrtypeDp === true
                     ? data?.addHiringRequest?.dppercentage
                     : data?.addHiringRequest?.talentCostCalcPercentage,
@@ -318,9 +318,9 @@ function NewHRFields() {
 
             setBudgetFormFields({
                 currency: data?.salesHiringRequest_Details?.currency,
-                minBudget: data?.salesHiringRequest_Details?.budgetFrom,
+                minBudget:data?.budgetType === "1" ? data?.salesHiringRequest_Details?.adhocBudgetCost : data?.salesHiringRequest_Details?.budgetFrom,
                 maxBudget: data?.salesHiringRequest_Details?.budgetTo,
-                type: data?.budgetType,
+                type: data?.budgetType === "1" ? "Fixed" : "Range",
                 isConfidential: data?.salesHiringRequest_Details?.isConfidentialBudget,
                 compensationOptions: data?.compensationOption ? data?.compensationOption?.split("^") : []
             })
@@ -332,6 +332,15 @@ function NewHRFields() {
                     highlight: data?.prerequisites
                 }
             )
+
+             if(data?.addHiringRequest?.jdfilename){
+       setJobDesData(prev=>({jdFile:data?.addHiringRequest?.jdfilename,}))
+       setIsHaveJD(0)
+    }else{
+      if(!data?.draftDontHaveJD){
+        setIsHaveJD(1)
+      }     
+    }
 
         }
     };
@@ -461,7 +470,7 @@ function NewHRFields() {
         let clientResult = getHRDetails?.clientDetails_Result;
         
     
-        setConfidentialInfo(clientResult?.isCompanyConfidential === true ? 1 : 0)
+        setConfidentialInfo(clientResult?.isCompanyConfidential)
          setCompanyConfidentialFields({
             companyURL: clientResult?.companyURL,
             companyLogoAlias: clientResult?.companyLogoAlias,
@@ -596,7 +605,7 @@ function NewHRFields() {
             setHRPricingTypes(types);
             let current = types.find(item => item.id === hrtypeid)
             // setControlledHiringPricingTypeValue(current.type)
-            setBasicFormFields(prev => ({ ...prev, hiringPricingType: `${current.id}`, NRMargin: current.pricingPercent }))
+          hrid === '0' &&  setBasicFormFields(prev => ({ ...prev, hiringPricingType: `${current.id}`, NRMargin: current.pricingPercent }))
 
         }
     }
@@ -1143,6 +1152,7 @@ function NewHRFields() {
         let formPayload = {
             "en_Id": getHRDetails?.en_Id ? getHRDetails?.en_Id : "",
             "Id": +hrid,
+            "ActionType" : +hrid === 0 ? "Save" : 'Edit',
             "contactId": clientDetails?.contactId,
             "clientName": basicFormFields?.clientFullName,
             "companyName": basicFormFields?.companyName,
@@ -1157,7 +1167,7 @@ function NewHRFields() {
             "minimumBudget":  budgetFormFields?.type === "Range" ? +budgetFormFields?.minBudget : 0,
             "maximumBudget": budgetFormFields?.type === "Range" ? +budgetFormFields?.maxBudget : 0,
 
-            "NRMargin": basicFormFields?.NRMargin,
+            "NRMargin": basicFormFields?.hiringPricingType !== "3" ? basicFormFields?.NRMargin :  0,
             "salesPerson": basicFormFields?.salesPerson,
             "contractDuration": basicFormFields?.contractDuration,
             "howSoon": howSoon?.find(v => v.id === +roleReqFormFields?.noticePeriod)?.value,
@@ -1177,13 +1187,13 @@ function NewHRFields() {
             "modeOfWorkingId": roleReqFormFields?.modeOfWorking,
 
             "PayPerType": userCompanyTypeID,
-            "isHRTypeDP": true,
+            "isHRTypeDP": basicFormFields?.hiringPricingType === "3" ? true: false,
             "issaveasdraft": isDraft,
 
             "directPlacement": {
-                "hiringRequestId": 0,
+                "hiringRequestId": +hrid,
                 "modeOfWork": roleReqFormFields?.modeOfWorking,
-                "dpPercentage": 0,
+                "dpPercentage": basicFormFields?.hiringPricingType === "3" ? basicFormFields?.NRMargin :  0,
                 "address": null,
                 "city": null,
                 "state": null,
@@ -1231,8 +1241,8 @@ function NewHRFields() {
             "IsGoodToHaveSkillschanged": false,
 
             "IsTransparentPricing": clientDetails?.isTransparentPricing,
-            "HrTypePricingId": clientDetails?.hiringTypePricingId,
-            "HrTypeId": clientDetails?.hiringTypePricingId,
+            "HrTypePricingId": basicFormFields.hiringPricingType,
+            "HrTypeId":basicFormFields.hiringPricingType,
 
 
             "companyInfo": {
@@ -1319,7 +1329,7 @@ function NewHRFields() {
                 {/* <!-- New Hiring Request Form --> */}
                 <div className={`${styles["new-hr-form-wrapper"]}`}>
                     <form className={`${styles["new-hr-form"]}`}>
-                        <h1 className={`${styles["page-title"]}`}>New Hiring Request</h1>
+                        <h1 className={`${styles["page-title"]}`}>{+hrid === 0 ? 'New' : 'Edit' } Hiring Request</h1>
 
                         {/* <!-- Basic Details Section --> */}
                         <section className={`${styles["form-section"]}`}>
@@ -1401,7 +1411,7 @@ function NewHRFields() {
                                             {formValidationError && basicFormFields.clientFullName.trim() === '' && <p className={`${styles["fieldError"]}`}>please select client full name</p>}
                                         </div>
                                     </div>
-                                    <div className={`${styles["cols"]} ${styles["col-lg-2-5"]}`}>
+                                    {+hrid === 0 &&               <div className={`${styles["cols"]} ${styles["col-lg-2-5"]}`}>
                                         <div className={`${styles["form-group"]} ${styles["form-group-button"]}`}>
                                             <button type="button" className={`${styles["btn-add-company"]}`}
                                                 onClick={() => navigate("/addNewCompany/0", {
@@ -1419,7 +1429,8 @@ function NewHRFields() {
                                                 <span className={`${styles["btn-add-text"]}`}>ADD NEW COMPANY</span>
                                             </button>
                                         </div>
-                                    </div>
+                                    </div>}
+                      
                                 </div>
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
@@ -2251,9 +2262,23 @@ function NewHRFields() {
                                                         handleJDUpload(e.target.files[0])
                                                         // setJobDesData(prev => ({ ...prev, jdFile: e.target.files[0], jobDescription: '', jdURL: '' }))
                                                     }} />
-                                                    <div className={`${styles["file-list"]}`} style={{ display: jobDesData?.jdFile?.length === 0 ? 'none' : 'block' }}>
+                                                    <div className={`${styles["file-list"]}`} style={{ display: jobDesData?.jdFile?.length === 0 ? 'none' : 'block' }} onClick={e => {
+                                                                e.stopPropagation();
+                                                            }}>
                                                         {jobDesData?.jdFile?.length && <div className={`${styles["file-item"]}`}>
-                                                            <span className={`${styles["file-name"]}`}>{jobDesData?.jdFile}</span>
+                                                            <span className={`${styles["file-name"]}`}>
+                                                                
+                                                                 <a
+                                                                                              rel="noreferrer"
+                                                                                              href={
+                                                                                                NetworkInfo.PROTOCOL +
+                                                                                                NetworkInfo.DOMAIN +
+                                                                                                "Media/JDParsing/JDfiles/" +
+                                                                                                jobDesData?.jdFile
+                                                                                              }
+                                                                                              style={{ textDecoration: "underline" }}
+                                                                                              target="_blank"
+                                                                                            >{jobDesData?.jdFile}</a></span>
                                                             <button type="button" className={`${styles["file-delete"]}`} onClick={e => {
                                                                 e.stopPropagation();
                                                                 setJobDesData(prev => ({ ...prev, jdFile: '', jobDescription: '', jdURL: '' }))
