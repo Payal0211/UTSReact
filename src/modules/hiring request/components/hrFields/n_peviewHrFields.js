@@ -139,7 +139,7 @@ console.log(getHRdetails)
                             <div className={`${styles["preview-table-wrapper"]}`}>
                                 <div className={`${styles["preview-details-table"]}`}>
                                     <div className={`${styles["preview-table-row"]} ${styles["preview-table-row-first"]}`}>
-                                        <div className={`${styles["preview-table-cell"]}`}>{getHRdetails?.currency}</div>
+                                        {/* <div className={`${styles["preview-table-cell"]}`}>{getHRdetails?.currency}</div> */}
                                         <div className={`${styles["preview-table-cell"]}`}>
                                             {/* {getHRdetails?.budgetFrom} {getHRdetails?.budgetTo > 0 && `to ${getHRdetails?.budgetTo}`} */}
                                             {getHRdetails?.hiringCost}

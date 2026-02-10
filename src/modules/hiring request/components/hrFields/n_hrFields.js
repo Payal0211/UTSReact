@@ -33,7 +33,7 @@ import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import HRSelectField from "../hrSelectField/hrSelectField";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { HTTPStatusCode } from "constants/network";
+import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -257,7 +257,7 @@ function NewHRFields() {
         const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId);
         setIsSavedLoading(false)
         if (response.statusCode === HTTPStatusCode.OK) {
-            console.log(response?.responseBody?.details);
+            // console.log(response?.responseBody?.details);
 
             let data = response?.responseBody?.details
 
@@ -283,8 +283,8 @@ function NewHRFields() {
                 clientFullName: data?.fullClientName,
                 salesPerson: data?.addHiringRequest?.salesUserId,
                 availability: availabilityId,
-                payroll: data?.addHiringRequest?.payrollTypeId,
-                hiringPricingType: data?.addHiringRequest?.hiringTypePricingId,
+                payroll: `${data?.addHiringRequest?.payrollTypeId}`,
+                hiringPricingType: `${data?.addHiringRequest?.hiringTypePricingId}`,
                 NRMargin: data?.addHiringRequest?.isHrtypeDp === true
                     ? data?.addHiringRequest?.dppercentage
                     : data?.addHiringRequest?.talentCostCalcPercentage,
@@ -318,9 +318,9 @@ function NewHRFields() {
 
             setBudgetFormFields({
                 currency: data?.salesHiringRequest_Details?.currency,
-                minBudget: data?.salesHiringRequest_Details?.budgetFrom,
+                minBudget:data?.budgetType === "1" ? data?.salesHiringRequest_Details?.adhocBudgetCost : data?.salesHiringRequest_Details?.budgetFrom,
                 maxBudget: data?.salesHiringRequest_Details?.budgetTo,
-                type: data?.budgetType,
+                type: data?.budgetType === "1" ? "Fixed" : "Range",
                 isConfidential: data?.salesHiringRequest_Details?.isConfidentialBudget,
                 compensationOptions: data?.compensationOption ? data?.compensationOption?.split("^") : []
             })
@@ -333,11 +333,21 @@ function NewHRFields() {
                 }
             )
 
+             if(data?.addHiringRequest?.jdfilename){
+       setJobDesData(prev=>({jdFile:data?.addHiringRequest?.jdfilename,}))
+       setIsHaveJD(0)
+    }else{
+      if(!data?.draftDontHaveJD){
+        setIsHaveJD(1)
+      }     
+    }
+
         }
     };
 
     useEffect(() => {
-        if (hrid !== 0 && availability.length && howSoon.length) {
+       +hrid > 0 && setIsSavedLoading(true)
+        if (+hrid > 0 && availability.length && howSoon.length) {
             getHRdetailsHandler(hrid)
         }
     }, [hrid, availability, howSoon])
@@ -347,7 +357,7 @@ function NewHRFields() {
     const getCities = async (locationId) => {
         setIsLoading(true);
         // let _res = await MasterDAO.getNearByCitiesDAO(locationId);
-        console.log('locationId', roleReqFormFields?.location, selectedCitiesIDS)
+        // console.log('locationId', roleReqFormFields?.location, selectedCitiesIDS)
         let _res = await MasterDAO.getNearByCitiesMultipleDAO(selectedCitiesIDS.map(i => i.id).join(','));
         setIsLoading(false);
         let citiesValues = [];
@@ -461,7 +471,7 @@ function NewHRFields() {
         let clientResult = getHRDetails?.clientDetails_Result;
         
     
-        setConfidentialInfo(clientResult?.isCompanyConfidential === true ? 1 : 0)
+        setConfidentialInfo(clientResult?.isCompanyConfidential)
          setCompanyConfidentialFields({
             companyURL: clientResult?.companyURL,
             companyLogoAlias: clientResult?.companyLogoAlias,
@@ -494,7 +504,7 @@ function NewHRFields() {
         setIsPostaJob(clientData?.isPostaJob);
         setIsProfileView(clientData?.isProfileView);
         setIsVettedProfile(clientData?.isVettedProfile);
-        console.log("clientData", clientData)
+        // console.log("clientData", clientData)
 
         setConfidentialInfo(clientData?.isCompanyConfidential)
 
@@ -521,7 +531,7 @@ function NewHRFields() {
         clientData?.companyTypeID && setBasicFormFields(prev => ({ ...prev, availability: clientData?.companyTypeID === 2 ? 1 : 2 }));
 
         let salesPersonID = salesPerson.map(i => i.id)
-        console.log("salesPersonID", salesPersonID, +clientData.contactId, salesPersonID.includes(+clientData.contactId))
+        // console.log("salesPersonID", salesPersonID, +clientData.contactId, salesPersonID.includes(+clientData.contactId))
         if (salesPersonID.includes(+clientData.contactId)) {
             setBasicFormFields(prev => ({ ...prev, salesPerson: +clientData.contactId }));
         }
@@ -596,7 +606,7 @@ function NewHRFields() {
             setHRPricingTypes(types);
             let current = types.find(item => item.id === hrtypeid)
             // setControlledHiringPricingTypeValue(current.type)
-            setBasicFormFields(prev => ({ ...prev, hiringPricingType: `${current.id}`, NRMargin: current.pricingPercent }))
+          hrid === '0' &&  setBasicFormFields(prev => ({ ...prev, hiringPricingType: `${current.id}`, NRMargin: current.pricingPercent }))
 
         }
     }
@@ -614,7 +624,7 @@ function NewHRFields() {
     const getStartEndTimeHandler = useCallback(async () => {
         const durationTypes = await MasterDAO.getStartEndTimeDAO();
         setStaryEndTimes(durationTypes && durationTypes?.responseBody);
-        console.log("durationTypes", durationTypes)
+        // console.log("durationTypes", durationTypes)
         // setValue("fromTime", { id: "", value:"9:00 AM" });
         setRoleReqFormFields(prev => ({ ...prev, startTime: "9:00 AM", endTime: "6:00 PM" }))
         // setValue("endTime", { id: "", value: "6:00 PM"});
@@ -704,7 +714,7 @@ function NewHRFields() {
             if (basicFormFields?.clientFullName) {
                 let existingClientDetails =
                     await hiringRequestDAO.getClientDetailRequestDAO(
-                        basicFormFields?.clientFullName
+                        basicFormFields?.clientFullName?.match(/\(([^)]+)\)/)?.[1]?.trim()
                     );
 
                 // existingClientDetails?.statusCode === HTTPStatusCode.OK &&
@@ -719,15 +729,13 @@ function NewHRFields() {
                         ...prev,
                         contactID: existingClientDetails?.responseBody?.contactid,
                     }));
-                    // setIsCompanyNameAvailable(true);
-                    setBasicFormFields(prev => ({
-                        ...prev, companyName: existingClientDetails?.responseBody?.name,
-                        clientFullName: existingClientDetails?.responseBody?.email
-                    }))
-                    //   setValue("companyName", existingClientDetails?.responseBody?.name);
-                    //   setValue("clientName", existingClientDetails?.responseBody?.email);
-                    //   clearErrors(["clientName"]);
-
+                 
+                    // setBasicFormFields(prev => ({
+                    //     ...prev, 
+                    //     companyName: existingClientDetails?.responseBody?.name,
+                    //     clientFullName: existingClientDetails?.responseBody?.email
+                    // }))
+                  
 
                     setCheckCreditAvailability(
                         existingClientDetails?.responseBody?.CheckCreditAvailablilty
@@ -767,29 +775,7 @@ function NewHRFields() {
                         );
                     }
 
-                    if (existingClientDetails?.responseBody?.salesuserid > 0) {
-                        // setIsSalesPersionDisable(true)
-                        let salesUserObj = salesPerson.filter(
-                            (p) =>
-                                p.id ===
-                                parseInt(existingClientDetails?.responseBody?.salesuserid)
-                        );
-                        setBasicFormFields(prev => ({ ...prev, salesPerson: salesUserObj[0]?.id }))
-                        // setValue("salesPerson", salesUserObj[0]?.id);
-                        // setSalesPersionNameFromEmail(salesUserObj[0]?.value);
-                    } else {
-                        //     if (userData?.LoggedInUserTypeID !== UserAccountRole.SALES) {
-                        //       if (
-                        //         defaultPropertys !== null &&
-                        //         defaultPropertys?.salesPerson > 0
-                        //       ) {
-                        //         return;
-                        //       }
-                        //       setIsSalesPersionDisable(false);
-                        //       resetField("salesPerson");
-                        //       setSalesPersionNameFromEmail("");
-                        //     }
-                    }
+                   
                 }
 
                 /* setError('clientName', {
@@ -801,30 +787,21 @@ function NewHRFields() {
 
                 // for manage and fetch from HubSpot
                 if (existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND) {
-                    let email = basicFormFields?.clientFullName;
+                    let email = basicFormFields?.clientFullName?.match(/\(([^)]+)\)/)?.[1]?.trim();
                     if (EmailRegEx.email.test(email)) {
                         let response = await HubSpotDAO.getContactsByEmailDAO(email);
                         if (response.statusCode === HTTPStatusCode.OK) {
                             getHRClientName(watchClientName);
                         } else {
                             message.error(response?.responseBody);
-                            setBasicFormFields(prev => ({
-                                ...prev,
-                                clientFullName: ''
-                            }))
                         }
                         setIsSavedLoading(false);
-                        setBasicFormFields(prev => ({
-                            ...prev, companyName: existingClientDetails?.responseBody?.name,
-                            clientFullName: existingClientDetails?.responseBody?.email
-                        }))
+                        // setBasicFormFields(prev => ({
+                        //     ...prev, companyName: existingClientDetails?.responseBody?.name,
+                        //     clientFullName: existingClientDetails?.responseBody?.email
+                        // }))
                         setIsLoading(false);
                     } else {
-
-                        setBasicFormFields(prev => ({
-                            ...prev,
-                            clientFullName: ''
-                        }))
                         setIsSavedLoading(false);
                         setIsLoading(false);
                     }
@@ -845,7 +822,6 @@ function NewHRFields() {
         let timer;
         if (!_isNull(basicFormFields?.clientFullName)) {
             timer =
-                pathName === ClientHRURL.ADD_NEW_HR &&
                 setTimeout(() => {
                     setIsLoading(true);
                     getHRClientName(basicFormFields?.clientFullName);
@@ -951,7 +927,7 @@ function NewHRFields() {
         setIsSavedLoading(true)
         const result = await hiringRequestDAO.createNEWHRDAO(pl)
         setIsSavedLoading(false)
-        console.log('result,result', result)
+        // console.log('result,result', result)
 
         if (result.statusCode === HTTPStatusCode.OK) {
             updateCompanyDetails()
@@ -960,7 +936,13 @@ function NewHRFields() {
                 message.success("HR details has been saved to draft.")
                 navigate("/allhiringrequest");
             } else {
-                navigate('/w_previewHR/' + result?.responseBody?.details?.id)
+                if(+hrid > 0){
+                message.success("HR details has been updated.")
+                navigate("/allhiringrequest");
+                }else{
+                   navigate('/w_previewHR/' + result?.responseBody?.details?.id)  
+                }
+               
 
             }
         }
@@ -971,11 +953,11 @@ function NewHRFields() {
         setFormValidationError(false)
 
         if (!isDraft) {
-            if (basicFormFields.companyName.trim() === '') {
+            if (basicFormFields.companyName?.trim() === '') {
                 isValid = false;
             }
 
-            if (basicFormFields.clientFullName.trim() === '') {
+            if (basicFormFields.clientFullName?.trim() === '') {
                 isValid = false;
             }
 
@@ -1005,7 +987,7 @@ function NewHRFields() {
             }
 
             if (basicFormFields.payroll === '3') {
-                if (basicFormFields.payrollPartnerName.trim() === '') {
+                if (basicFormFields.payrollPartnerName?.trim() === '') {
                     isValid = false;
                 }
             }
@@ -1014,7 +996,7 @@ function NewHRFields() {
                 isValid = false;
             }
 
-            if (roleReqFormFields.roleTitle.trim() === '') {
+            if (roleReqFormFields.roleTitle?.trim() === '') {
                 isValid = false;
             }
 
@@ -1070,7 +1052,7 @@ function NewHRFields() {
             }
 
             if (isHaveJD === 0) {
-                if ((jobDesData.jobDescription.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL.trim() === '' && jobDesData.jdFile === '') {
+                if ((jobDesData.jobDescription?.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL?.trim() === '' && jobDesData.jdFile === '') {
                     isValid = false;
                 }
             }
@@ -1094,7 +1076,7 @@ function NewHRFields() {
             }
 
             if(confidentialInfo === true){
-                if(companyConfidentailFields.companyNameAlias.trim() === '' || companyConfidentailFields?.companyLogoAlias.trim() === ''){
+                if(companyConfidentailFields.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias?.trim() === ''){
                     isValid = false
                 }
             }
@@ -1102,7 +1084,7 @@ function NewHRFields() {
         }
 
         if (isDraft) {
-            if (basicFormFields.clientFullName.trim() === '') {
+            if (basicFormFields.clientFullName?.trim() === '') {
                 message.error("Please enter the client full-name.")
                 return
             }
@@ -1143,7 +1125,8 @@ function NewHRFields() {
         let formPayload = {
             "en_Id": getHRDetails?.en_Id ? getHRDetails?.en_Id : "",
             "Id": +hrid,
-            "contactId": clientDetails?.contactId,
+            "ActionType" : +hrid === 0 ? "Save" : 'Edit',
+            "contactId": getContactAndSaleID?.contactID,
             "clientName": basicFormFields?.clientFullName,
             "companyName": basicFormFields?.companyName,
             "hrTitle": roleReqFormFields?.roleTitle,
@@ -1157,7 +1140,7 @@ function NewHRFields() {
             "minimumBudget":  budgetFormFields?.type === "Range" ? +budgetFormFields?.minBudget : 0,
             "maximumBudget": budgetFormFields?.type === "Range" ? +budgetFormFields?.maxBudget : 0,
 
-            "NRMargin": basicFormFields?.NRMargin,
+            "NRMargin": basicFormFields?.hiringPricingType !== "3" ? basicFormFields?.NRMargin :  0,
             "salesPerson": basicFormFields?.salesPerson,
             "contractDuration": basicFormFields?.contractDuration,
             "howSoon": howSoon?.find(v => v.id === +roleReqFormFields?.noticePeriod)?.value,
@@ -1177,13 +1160,13 @@ function NewHRFields() {
             "modeOfWorkingId": roleReqFormFields?.modeOfWorking,
 
             "PayPerType": userCompanyTypeID,
-            "isHRTypeDP": true,
+            "isHRTypeDP": basicFormFields?.hiringPricingType === "3" ? true: false,
             "issaveasdraft": isDraft,
 
             "directPlacement": {
-                "hiringRequestId": 0,
+                "hiringRequestId": +hrid,
                 "modeOfWork": roleReqFormFields?.modeOfWorking,
-                "dpPercentage": 0,
+                "dpPercentage": basicFormFields?.hiringPricingType === "3" ? basicFormFields?.NRMargin :  0,
                 "address": null,
                 "city": null,
                 "state": null,
@@ -1202,8 +1185,8 @@ function NewHRFields() {
             "StringSeparator": "^",
 
             "jdFileTypeID": parseType === 'JDFileUpload' ? 1 : parseType === 'Manual' ? 3 : 2,
-            "JobTypeID": workingMode.find(v => v.value === roleReqFormFields?.modeOfWorking)?.id,
-            "JobLocation": roleReqFormFields?.location.join(','),
+            "JobTypeID": workingMode?.find(v => v.value === roleReqFormFields?.modeOfWorking)?.id,
+            "JobLocation": roleReqFormFields?.location?.join(','),
 
             "FrequencyOfficeVisitID": roleReqFormFields?.modeOfWorking === "Hybrid" ? roleReqFormFields?.frequency : null,
             "NearByCities": selectedLabels?.concat(nonNumericValues)?.join(',') ?? null,
@@ -1231,8 +1214,8 @@ function NewHRFields() {
             "IsGoodToHaveSkillschanged": false,
 
             "IsTransparentPricing": clientDetails?.isTransparentPricing,
-            "HrTypePricingId": clientDetails?.hiringTypePricingId,
-            "HrTypeId": clientDetails?.hiringTypePricingId,
+            "HrTypePricingId": basicFormFields.hiringPricingType,
+            "HrTypeId":basicFormFields.hiringPricingType,
 
 
             "companyInfo": {
@@ -1256,7 +1239,7 @@ function NewHRFields() {
         }
 
 
-        console.log("pl", pl, formPayload)
+        // console.log("pl", pl, formPayload)
         createHRHandler(formPayload, isDraft)
     }
 
@@ -1319,7 +1302,7 @@ function NewHRFields() {
                 {/* <!-- New Hiring Request Form --> */}
                 <div className={`${styles["new-hr-form-wrapper"]}`}>
                     <form className={`${styles["new-hr-form"]}`}>
-                        <h1 className={`${styles["page-title"]}`}>New Hiring Request</h1>
+                        <h1 className={`${styles["page-title"]}`}>{+hrid === 0 ? 'New' : 'Edit' } Hiring Request</h1>
 
                         {/* <!-- Basic Details Section --> */}
                         <section className={`${styles["form-section"]}`}>
@@ -1334,7 +1317,7 @@ function NewHRFields() {
                                                 // className={`${styles["form-input"]}`}
                                                 options={getCompanyNameSuggestion}
                                                 onSelect={(companyName, _obj) => {
-                                                    console.log(_obj)
+                                                    // console.log(_obj)
                                                     setBasicFormFields(prev => ({ ...prev, companyName: companyName }));
 
                                                     setCompanyID(_obj.companyID);
@@ -1365,7 +1348,7 @@ function NewHRFields() {
                                             // ref={controllerCompanyRef}
                                             />
                                             {companyNameError.length > 0 && <p className={`${styles["fieldError"]}`}>{companyNameError}</p>}
-                                            {formValidationError && basicFormFields.companyName.trim() === '' && <p className={`${styles["fieldError"]}`}>please select company name</p>}
+                                            {formValidationError && basicFormFields.companyName?.trim() === '' && <p className={`${styles["fieldError"]}`}>please select company name</p>}
 
                                         </div>
                                     </div>
@@ -1398,10 +1381,10 @@ function NewHRFields() {
                                             // ref={controllerRef}
                                             />
 
-                                            {formValidationError && basicFormFields.clientFullName.trim() === '' && <p className={`${styles["fieldError"]}`}>please select client full name</p>}
+                                            {formValidationError && basicFormFields.clientFullName?.trim() === '' && <p className={`${styles["fieldError"]}`}>please select client full name</p>}
                                         </div>
                                     </div>
-                                    <div className={`${styles["cols"]} ${styles["col-lg-2-5"]}`}>
+                                    {+hrid === 0 &&               <div className={`${styles["cols"]} ${styles["col-lg-2-5"]}`}>
                                         <div className={`${styles["form-group"]} ${styles["form-group-button"]}`}>
                                             <button type="button" className={`${styles["btn-add-company"]}`}
                                                 onClick={() => navigate("/addNewCompany/0", {
@@ -1419,7 +1402,8 @@ function NewHRFields() {
                                                 <span className={`${styles["btn-add-text"]}`}>ADD NEW COMPANY</span>
                                             </button>
                                         </div>
-                                    </div>
+                                    </div>}
+                      
                                 </div>
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
@@ -1535,7 +1519,7 @@ function NewHRFields() {
                                         <div className={`${styles["form-group"]}`}>
                                             <input type="text" className={`${styles["form-input"]}`} placeholder="Payroll Partner Name *" required value={basicFormFields?.payrollPartnerName}
                                                 onChange={(e) => setBasicFormFields(prev => ({ ...prev, payrollPartnerName: e.target.value }))} />
-                                            {formValidationError && basicFormFields.payrollPartnerName.trim() === '' && <p className={`${styles["fieldError"]}`}>please enter payroll partner name</p>}
+                                            {formValidationError && basicFormFields.payrollPartnerName?.trim() === '' && <p className={`${styles["fieldError"]}`}>please enter payroll partner name</p>}
                                         </div>
 
                                     </div>}
@@ -1577,7 +1561,7 @@ function NewHRFields() {
                                                 <div className={`${styles["form-group"]}`}>
                                                     <input type="text" className={`${styles["form-input"]}`} placeholder="Company Name Alias  *" required value={companyConfidentailFields?.companyNameAlias}
                                                         onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, companyNameAlias: e.target.value }))} />
-                                                    {formValidationError && (companyConfidentailFields?.companyNameAlias.trim() === '') && <p className={`${styles["fieldError"]}`}>please enter company name alias</p>}
+                                                    {formValidationError && (companyConfidentailFields?.companyNameAlias?.trim() === '') && <p className={`${styles["fieldError"]}`}>please enter company name alias</p>}
                                                 </div>
                                             </div>
                                         </div>
@@ -1599,7 +1583,7 @@ function NewHRFields() {
                                                 <div className={`${styles["form-group"]}`}>
                                                     <input type="text" className={`${styles["form-input"]}`} placeholder="Company Logo Alias  *" required value={companyConfidentailFields?.companyLogoAlias}
                                                         onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, companyLogoAlias: e.target.value }))} />
-                                                    {formValidationError && (companyConfidentailFields?.companyLogoAlias.trim() === '') && <p className={`${styles["fieldError"]}`}>please enter company logo alias</p>}
+                                                    {formValidationError && (companyConfidentailFields?.companyLogoAlias?.trim() === '') && <p className={`${styles["fieldError"]}`}>please enter company logo alias</p>}
                                                 </div>
                                             </div>
                                         </div>
@@ -1745,7 +1729,7 @@ function NewHRFields() {
                                                 //   ref={controllerRef}
                                                 value={roleReqFormFields?.roleTitle}
                                             />
-                                            {formValidationError && roleReqFormFields.roleTitle.trim() === '' && <p className={`${styles["fieldError"]}`}>please select role title</p>}
+                                            {formValidationError && roleReqFormFields.roleTitle?.trim() === '' && <p className={`${styles["fieldError"]}`}>please select role title</p>}
                                         </div>
                                     </div>
                                     <div className={`${styles["cols"]} ${styles["col-lg-2-5"]}`}>
@@ -1934,7 +1918,7 @@ function NewHRFields() {
                                                 options={timeZoneList && timeZoneList}
                                                 value={roleReqFormFields?.timeZone}
                                                 onChange={(val, valObj) => {
-                                                    console.log(val, valObj)
+                                                    // console.log(val, valObj)
                                                     setRoleReqFormFields(prev => ({ ...prev, timeZone: valObj.id }))
                                                 }}
                                             />
@@ -1963,7 +1947,7 @@ function NewHRFields() {
                                                 }))}
                                                 value={roleReqFormFields?.startTime}
                                                 onChange={(val, valObj) => {
-                                                    console.log(val, valObj)
+                                                    // console.log(val, valObj)
 
                                                     let index = getStartEndTimes.findIndex(
                                                         (item) => item.value === val
@@ -2005,7 +1989,7 @@ function NewHRFields() {
                                                 }))}
                                                 value={roleReqFormFields?.endTime}
                                                 onChange={(val, valObj) => {
-                                                    console.log(val, valObj)
+                                                    // console.log(val, valObj)
                                                     setRoleReqFormFields(prev => ({ ...prev, endTime: valObj.id }))
                                                 }}
                                             />
@@ -2234,7 +2218,7 @@ function NewHRFields() {
                                                 </div>
                                             </div>
                                         </div>
-                                        {console.log('jobDesData', jobDesData)}
+                              
                                         <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
                                             <div className={`${styles["form-group"]}`}>
                                                 <div className={`${styles["file-upload-area"]}`} onClick={() => jdFileRef.current.click()}>
@@ -2251,9 +2235,23 @@ function NewHRFields() {
                                                         handleJDUpload(e.target.files[0])
                                                         // setJobDesData(prev => ({ ...prev, jdFile: e.target.files[0], jobDescription: '', jdURL: '' }))
                                                     }} />
-                                                    <div className={`${styles["file-list"]}`} style={{ display: jobDesData?.jdFile?.length === 0 ? 'none' : 'block' }}>
+                                                    <div className={`${styles["file-list"]}`} style={{ display: jobDesData?.jdFile?.length === 0 ? 'none' : 'block' }} onClick={e => {
+                                                                e.stopPropagation();
+                                                            }}>
                                                         {jobDesData?.jdFile?.length && <div className={`${styles["file-item"]}`}>
-                                                            <span className={`${styles["file-name"]}`}>{jobDesData?.jdFile}</span>
+                                                            <span className={`${styles["file-name"]}`}>
+                                                                
+                                                                 <a
+                                                                                              rel="noreferrer"
+                                                                                              href={
+                                                                                                NetworkInfo.PROTOCOL +
+                                                                                                NetworkInfo.DOMAIN +
+                                                                                                "Media/JDParsing/JDfiles/" +
+                                                                                                jobDesData?.jdFile
+                                                                                              }
+                                                                                              style={{ textDecoration: "underline" }}
+                                                                                              target="_blank"
+                                                                                            >{jobDesData?.jdFile}</a></span>
                                                             <button type="button" className={`${styles["file-delete"]}`} onClick={e => {
                                                                 e.stopPropagation();
                                                                 setJobDesData(prev => ({ ...prev, jdFile: '', jobDescription: '', jdURL: '' }))
@@ -2265,7 +2263,7 @@ function NewHRFields() {
                                         </div>
                                     </div>
 
-                                    {formValidationError && ((jobDesData.jobDescription.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL.trim() === '' && jobDesData.jdFile === '') && <p className={`${styles["fieldError"]}`}>please provide Job description ( text , link or file )</p>}
+                                    {formValidationError && ((jobDesData.jobDescription?.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL?.trim() === '' && jobDesData.jdFile === '') && <p className={`${styles["fieldError"]}`}>please provide Job description ( text , link or file )</p>}
                                 </> :
                                     <div className="noJobDesInfo">
                                         No job description? No problem! We'll help you create one. Just fill out the next form and we'll generate a custom job <br />description based on your input.
@@ -2301,7 +2299,7 @@ function NewHRFields() {
                                                 options={currency && currency}
                                                 value={budgetFormFields?.currency}
                                                 onChange={(val, valObj) => {
-                                                    console.log(val, valObj)
+                                                    // console.log(val, valObj)
                                                     setBudgetFormFields(prev => ({ ...prev, currency: valObj.id }))
                                                 }}
                                             />
@@ -2328,7 +2326,7 @@ function NewHRFields() {
                                                 options={[{ id: 'Fixed', value: 'Fixed' }, { id: 'Range', value: 'Range' }]}
                                                 value={budgetFormFields?.type}
                                                 onChange={(val, valObj) => {
-                                                    console.log(val, valObj)
+                                                    // console.log(val, valObj)
                                                     setBudgetFormFields(prev => ({ ...prev, type: valObj.id }))
                                                 }}
                                             />
@@ -2434,7 +2432,7 @@ function NewHRFields() {
                                                 options={[{ id: 'Product', value: 'Product' }, { id: 'Service', value: 'Service' }]}
                                                 value={enhanceMatchmakingFormFields?.industry}
                                                 onChange={(val, valObj) => {
-                                                    console.log(val, valObj)
+                                                    // console.log(val, valObj)
                                                     setEnhanceMatchmakingFormFields(prev => ({ ...prev, industry: valObj.id }))
                                                 }}
                                             />
@@ -2487,8 +2485,8 @@ function NewHRFields() {
 
                         {/* <!-- Form Actions --> */}
                         <section className={`${styles["form-actions"]}`}>
-                            <button type="button" name="save" className={`${styles["btn-save"]}`} onClick={() => handleNext(true)}>Save As Draft</button>
-                            <button type="button" name="next" className={`${styles["btn-next"]}`} onClick={() => handleNext(false)}>Create HR</button>
+                          {+hrid === 0 && <button type="button" name="save" className={`${styles["btn-save"]}`} onClick={() => handleNext(true)}>Save As Draft</button>} 
+                            <button type="button" name="next" className={`${styles["btn-next"]}`} onClick={() => handleNext(false)}>{+hrid === 0 ? "Create" : "Edit"} HR</button>
                         </section>
                     </form>
                 </div>
