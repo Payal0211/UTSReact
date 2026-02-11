@@ -137,7 +137,7 @@ function NewHRFields() {
     })
     const jdFileRef = useRef(null);
     const [isHaveJD, setIsHaveJD] = useState(0);
-    const [parseType, setParseType] = useState('JDFileUpload');
+    const [parseType, setParseType] = useState("Text_Parsing");
     const [pathName, setPathName] = useState("");
     const [budgetFormFields, setBudgetFormFields] = useState({
         currency: undefined,
@@ -263,6 +263,7 @@ function NewHRFields() {
 
             let availabilityId = availability?.find(v => v.value === data?.addHiringRequest?.availability)?.id
             let noticePeriodId = howSoon?.find(v => v.value === data?.salesHiringRequest_Details?.howSoon)?.id
+            let currencyId = currency.find(c => c.value=== data?.salesHiringRequest_Details?.currency)?.id
 
             getTransparentEngType(data?.companyInfo?.companyID, data?.addHiringRequest?.hiringTypePricingId)
 
@@ -317,7 +318,8 @@ function NewHRFields() {
             setGoodToHaveSkills(data?.allSkillmulticheckbox?.map((item) => item?.text))
 
             setBudgetFormFields({
-                currency: data?.salesHiringRequest_Details?.currency,
+                // currency: data?.salesHiringRequest_Details?.currency,
+                currency:currencyId,
                 minBudget:data?.budgetType === "1" ? data?.salesHiringRequest_Details?.adhocBudgetCost : data?.salesHiringRequest_Details?.budgetFrom,
                 maxBudget: data?.salesHiringRequest_Details?.budgetTo,
                 type: data?.budgetType === "1" ? "Fixed" : "Range",
@@ -344,7 +346,7 @@ function NewHRFields() {
 
     useEffect(() => {
        +hrid > 0 && setIsSavedLoading(true)
-        if (+hrid > 0 && availability.length && howSoon.length) {
+        if (+hrid > 0 && availability.length && howSoon.length && currency.length) {
             getHRdetailsHandler(hrid)
         }
     }, [hrid, availability, howSoon])
@@ -945,6 +947,15 @@ function NewHRFields() {
         }
     }
 
+    const isQuillEmpty = (html) => {
+  const text = html
+    .replace(/<(.|\n)*?>/g, '')
+    .replace(/&nbsp;/g, '')
+    .trim();
+
+  return text.length === 0;
+};
+
     const handleNext = (isDraft) => {
         let isValid = true;
         setFormValidationError(false)
@@ -1048,11 +1059,9 @@ function NewHRFields() {
                 isValid = false;
             }
 
-            if (isHaveJD === 0) {
-                if ((jobDesData.jobDescription?.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL?.trim() === '' && jobDesData.jdFile === '') {
+           if (isQuillEmpty(jobDesData?.jobDescription)) {
                     isValid = false;
                 }
-            }
 
 
 
@@ -2066,7 +2075,7 @@ function NewHRFields() {
                                     </div>
                                 </div>
 
-                              {+hrid === 0 &&  <div className={`${styles["row"]} ${styles['mt-2']}`}>
+                              {/* {+hrid === 0 &&  <div className={`${styles["row"]} ${styles['mt-2']}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <Radio.Group
@@ -2150,7 +2159,7 @@ function NewHRFields() {
                                         </div>
 
                                     </div>
-                                </div>}  
+                                </div>}   */}
 
                                 {+hrid > 0 ?
                                 <>
@@ -2165,7 +2174,7 @@ function NewHRFields() {
                                                     value={jobDesData?.jobDescription}
                                                     name="parametersHighlight"
                                                     onChange={(val) => {
-                                                        setParseType("Text_Parsing");
+                                                        // setParseType("Text_Parsing");
                                                         setJobDesData(prev => ({ ...prev, jobDescription: val, }))
                                                         //   let sanitizedContent = sanitizeLinks(val);
                                                         //   // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
@@ -2191,6 +2200,8 @@ function NewHRFields() {
                                                                                               style={{ textDecoration: "underline", marginTop:'10px' }}
                                                                                               target="_blank"
                                                                                             >{jobDesData?.jdURL}</a>
+
+                                                                                            {formValidationError && (isQuillEmpty(jobDesData?.jobDescription))  && <p className={`${styles["fieldError"]}`}>please provide Job description </p>}
                                             </div>
                                         </div>
                                     </div>
@@ -2209,14 +2220,16 @@ function NewHRFields() {
                                                     value={jobDesData?.jobDescription}
                                                     name="parametersHighlight"
                                                     onChange={(val) => {
-                                                        setParseType("Text_Parsing");
-                                                        setJobDesData(prev => ({ ...prev, jobDescription: val, jdURL: '', jdFile: '' }))
+                                                        // setParseType("Text_Parsing");
+                                                        setJobDesData(prev => ({ ...prev, jobDescription: val}))
                                                         //   let sanitizedContent = sanitizeLinks(val);
                                                         //   // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
                                                         //   setValue("parametersHighlight", sanitizedContent)
                                                     }}
 
                                                 />
+
+                                                 {formValidationError && (isQuillEmpty(jobDesData?.jobDescription))  && <p className={`${styles["fieldError"]}`}>please provide Job description </p>}
                                                 {/* <div className={`${styles["rich-text-editor-wrapper"]}`}>
                                             <div id="job-description-toolbar" className={`${styles["ql-toolbar"]} ${styles["ql-snow"]}`}>
                                                 <span className={`${styles["ql-formats"]}`}>
@@ -2242,33 +2255,43 @@ function NewHRFields() {
                                         </div>
                                     </div>
 
-                                    <div className={`${styles["row"]} ${styles['form-separator-wrapper']}`}>
+                                    {/* <div className={`${styles["row"]} ${styles['form-separator-wrapper']}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                             <div className={`${styles["form-separator"]}`}>
                                                 <span className={`${styles["separator-text"]}`}>OR</span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                     <div className={`${styles["row"]}`}>
-                                        <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
+                                        <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
                                             <div className={`${styles["form-group"]}`}>
                                                 <div className={`${styles["input-with-icon"]}`}>
                                                     <textarea className={`${styles["form-textarea"]}`} placeholder="Paste the job description link" value={jobDesData?.jdURL} onChange={e => {
-                                                        setJobDesData(prev => ({ ...prev, jdURL: e.target.value, jobDescription: '', jdFile: '' }))
+                                                        setJobDesData(prev => ({ ...prev, jdURL: e.target.value }))
                                                     }}></textarea>
                                                     <img src="images/link-simple-ic.svg" alt="Link Icon" className={`${styles["input-icon-right"]}`} />
                                                 </div>
                                             </div>
                                         </div>
+
+                                                                      
+                                    
+                                          <div className={`${styles["cols"]} ${styles["col-lg-1"]}`} >
+                                             <div className={`${styles["form-separator"]}`} style={{height:'80%'}}><span className={`${styles["separator-text"]}`}>OR</span></div>
+                                            
+                                          </div>
+                                                
+                                         
+                                        
                               
-                                        <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
+                                        <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
                                             <div className={`${styles["form-group"]}`}>
                                                 <div className={`${styles["file-upload-area"]}`} onClick={() => jdFileRef.current.click()}>
                                                     {uploading ? <Spin className={`${styles["upload-icon"]}`} /> : <img src="images/folder-open-ic.svg" alt="Folder Icon" className={`${styles["upload-icon"]}`} />}
                                                     <p className={`${styles["upload-text"]}`}>Click to upload or drag and drop <br />(supported files: PDF, DOC, DOCX)</p>
                                                     <input ref={jdFileRef} type="file" className={`${styles["file-input"]}`} accept=".pdf,.doc,.docx" multiple onChange={e => {
-                                                        setParseType('JDFileUpload');
+                                                        // setParseType('JDFileUpload');
                                                         const MAX_FILE_SIZE = 500 * 1024; // 500 KB in bytes
                                                         const isFileSizeValid = e.target.files[0].size <= MAX_FILE_SIZE;
                                                         if (!isFileSizeValid) {
@@ -2297,7 +2320,7 @@ function NewHRFields() {
                                                                                             >{jobDesData?.jdFile}</a></span>
                                                             <button type="button" className={`${styles["file-delete"]}`} onClick={e => {
                                                                 e.stopPropagation();
-                                                                setJobDesData(prev => ({ ...prev, jdFile: '', jobDescription: '', jdURL: '' }))
+                                                                setJobDesData(prev => ({ ...prev, jdFile: ''}))
                                                             }}></button>
                                                         </div>}
                                                     </div>
@@ -2306,7 +2329,7 @@ function NewHRFields() {
                                         </div>
                                     </div>
 
-                                    {formValidationError && ((jobDesData.jobDescription?.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL?.trim() === '' && jobDesData.jdFile === '') && <p className={`${styles["fieldError"]}`}>please provide Job description ( text , link or file )</p>}
+                                   
                                 </> :
                                     <div className="noJobDesInfo">
                                         No job description? No problem! We'll help you create one. Just fill out the form and we'll generate a custom job <br />description based on your input.
