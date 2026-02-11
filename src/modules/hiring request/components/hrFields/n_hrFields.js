@@ -333,14 +333,11 @@ function NewHRFields() {
                 }
             )
 
-             if(data?.addHiringRequest?.jdfilename){
-       setJobDesData(prev=>({jdFile:data?.addHiringRequest?.jdfilename,}))
-       setIsHaveJD(0)
-    }else{
-      if(!data?.draftDontHaveJD){
-        setIsHaveJD(1)
-      }     
-    }
+           
+       setJobDesData(prev=>({jdFile:data?.addHiringRequest?.jdfilename,jobDescription:data?.salesHiringRequest_Details?.jobDescription,
+        jdURL:data?.addHiringRequest?.jdurl}))
+        setIsHaveJD(0)
+            setParseType("Text_Parsing"); 
 
         }
     };
@@ -1718,6 +1715,7 @@ function NewHRFields() {
                                                     setRoleReqFormFields(prev => ({ ...prev, roleTitle: e.target.value }))
                                                 }}
                                             /> */}
+                                            {console.log('talentRole',talentRole)}
                                             <AutoComplete
                                                 options={talentRole && talentRole.filter(item => item.value !== null)}
                                                 filterOption={true}
@@ -2068,7 +2066,7 @@ function NewHRFields() {
                                     </div>
                                 </div>
 
-                                <div className={`${styles["row"]} ${styles['mt-2']}`}>
+                              {+hrid === 0 &&  <div className={`${styles["row"]} ${styles['mt-2']}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <Radio.Group
@@ -2152,9 +2150,54 @@ function NewHRFields() {
                                         </div>
 
                                     </div>
-                                </div>
+                                </div>}  
 
-                                {isHaveJD === 0 ? <>
+                                {+hrid > 0 ?
+                                <>
+                                  <div className={`${styles["row"]} ${styles['mt-2']}`}>
+                                        <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <label className={`${styles["form-label"]}`}>Job Description *</label>
+                                                <ReactQuill
+
+                                                    theme="snow"
+                                                    className="newQuillEditor"
+                                                    value={jobDesData?.jobDescription}
+                                                    name="parametersHighlight"
+                                                    onChange={(val) => {
+                                                        setParseType("Text_Parsing");
+                                                        setJobDesData(prev => ({ ...prev, jobDescription: val, }))
+                                                        //   let sanitizedContent = sanitizeLinks(val);
+                                                        //   // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                                                        //   setValue("parametersHighlight", sanitizedContent)
+                                                    }}
+
+                                                />
+                                  <a
+                                                                                              rel="noreferrer"
+                                                                                              href={
+                                                                                                NetworkInfo.PROTOCOL +
+                                                                                                NetworkInfo.DOMAIN +
+                                                                                                "Media/JDParsing/JDfiles/" +
+                                                                                                jobDesData?.jdFile
+                                                                                              }
+                                                                                              style={{ textDecoration: "underline", marginTop:'10px' }}
+                                                                                              target="_blank"
+                                                                                            >{jobDesData?.jdFile}</a>
+
+                                                                                                <a
+                                                                                              rel="noreferrer"
+                                                                                              href={jobDesData?.jdURL}
+                                                                                              style={{ textDecoration: "underline", marginTop:'10px' }}
+                                                                                              target="_blank"
+                                                                                            >{jobDesData?.jdURL}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                                :
+                                <>
+                                  {isHaveJD === 0 ? <>
                                     <div className={`${styles["row"]} ${styles['mt-2']}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
                                             <div className={`${styles["form-group"]}`}>
@@ -2266,9 +2309,13 @@ function NewHRFields() {
                                     {formValidationError && ((jobDesData.jobDescription?.trim() === '' || jobDesData?.jobDescription === "<p><br></p>") && jobDesData.jdURL?.trim() === '' && jobDesData.jdFile === '') && <p className={`${styles["fieldError"]}`}>please provide Job description ( text , link or file )</p>}
                                 </> :
                                     <div className="noJobDesInfo">
-                                        No job description? No problem! We'll help you create one. Just fill out the next form and we'll generate a custom job <br />description based on your input.
+                                        No job description? No problem! We'll help you create one. Just fill out the form and we'll generate a custom job <br />description based on your input.
                                     </div>
                                 }
+                                </>
+                                }
+
+                              
 
 
                             </div>
