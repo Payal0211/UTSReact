@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { Routes, Navigate, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import UTSRoutes, { navigateToComponent , isAccess, NewPagesRouts } from 'constants/routes';
+import UTSRoutes, { navigateToComponent, isAccess, NewPagesRouts } from 'constants/routes';
 import { ProtectedRoutes } from 'shared/utils/protected_utils';
 import PageNotFound from 'shared/screen/404';
 import SomethingWentWrong from 'shared/screen/500';
@@ -23,24 +23,24 @@ function App() {
 	const queryClient = new QueryClient();
 
 	const isAuthenticatedRoute = () => {
-		let token = localStorage.getItem("apiKey");		
+		let token = localStorage.getItem("apiKey");
 		const sessionStartTime = localStorage.getItem('sessionStartTime');
-		
+
 		if (token && sessionStartTime) {
-			
+
 			const sessionDuration = new Date().getTime() - sessionStartTime;
 			const maxSessionDuration = 82800000; // 23 hours in milliseconds     
-		  
-		  if (sessionDuration < maxSessionDuration) {
-			return true;
-		  } else {
-			localStorage.clear()
-			return false;
-		  }
+
+			if (sessionDuration < maxSessionDuration) {
+				return true;
+			} else {
+				localStorage.clear()
+				return false;
+			}
 		}
 		localStorage.clear()
 		return false;
-	};	  
+	};
 
 	const [userData, setUserData] = useState({});
 
@@ -52,8 +52,8 @@ function App() {
 		getUserResult();
 	}, []);
 
-    const isAllowed =  isAccess(userData?.LoggedInUserTypeID) 	
-	
+	const isAllowed = isAccess(userData?.LoggedInUserTypeID)
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Suspense>
@@ -75,15 +75,15 @@ function App() {
 						element={
 							<Navigate
 								replace
-								to={isAllowed ? userData?.LoggedInUserTypeID === (6 && 3) ? UTSRoutes.AMDASHBOARD :  UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD}
+								to={isAllowed ? userData?.LoggedInUserTypeID === (6 && 3) ? UTSRoutes.AMDASHBOARD : UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD}
 							/>
 						}
 					/>}
-					
+
 					<Route
 						path={UTSRoutes.HOMEROUTE}
 						element={<ProtectedRoutes Component={Layout} />}>
-						
+
 						{Object.entries(navigateToComponent).map(([path, component]) => {
 							return (
 								<Route
@@ -95,59 +95,59 @@ function App() {
 							);
 						})}
 
-						
+
 					</Route>
 
 					{/* new design pages */}
 					<Route
 						path={UTSRoutes.HOMEROUTE}
 						element={<ProtectedRoutes Component={NewLayout} />}
-						>
-							 <Route
-						 exact
-						 key={UTSRoutes.ALLHIRINGREQUESTROUTE}
-						path={UTSRoutes.ALLHIRINGREQUESTROUTE}
-						element={<New_all_hiring_request />}
-					/>
-					 <Route
-						 exact
-						 key={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE}
-						path={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE}
-						element={<Unassigned_hiring_request />}
-					/>
-						
-						 <Route
-						 exact
-						 key={UTSRoutes.ADDNEWHR}
-						path={UTSRoutes.ADDNEWHR}
-						element={<NewHRFields />}
-					/>
-						 <Route
-						 exact
-						 key={UTSRoutes.EDITNEWHR}
-						path={UTSRoutes.EDITNEWHR}
-						element={<NewHRFields />}
-					/>
+					>
+						<Route
+							exact
+							key={UTSRoutes.ALLHIRINGREQUESTROUTE}
+							path={UTSRoutes.ALLHIRINGREQUESTROUTE}
+							element={<New_all_hiring_request />}
+						/>
+						<Route
+							exact
+							key={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE}
+							path={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE}
+							element={<Unassigned_hiring_request />}
+						/>
+
+						<Route
+							exact
+							key={UTSRoutes.ADDNEWHR}
+							path={UTSRoutes.ADDNEWHR}
+							element={<NewHRFields />}
+						/>
+						<Route
+							exact
+							key={UTSRoutes.EDITNEWHR}
+							path={UTSRoutes.EDITNEWHR}
+							element={<NewHRFields />}
+						/>
 
 
-					 <Route
-						 exact
-						 key={NewPagesRouts.PREVIEW_HR}
-						path={NewPagesRouts.PREVIEW_HR}
-						element={<NewPreviewHrFields />}
-					/>
+						<Route
+							exact
+							key={NewPagesRouts.PREVIEW_HR}
+							path={NewPagesRouts.PREVIEW_HR}
+							element={<NewPreviewHrFields />}
+						/>
 
-<Route
-						 exact
-						 key={NewPagesRouts.ALL_CLIENTS}
-						path={NewPagesRouts.ALL_CLIENTS}
-						element={<New_all_clients_company />}
-					/>
+						<Route
+							exact
+							key={UTSRoutes.ALLCLIENTS}
+							path={UTSRoutes.ALLCLIENTS}
+							element={<New_all_clients_company />}
+						/>
 
-						
+
 					</Route>
 
-                    
+
 
 
 					<Route
