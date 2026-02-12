@@ -1269,7 +1269,7 @@ function NewHRFields() {
                 fileData?.type === "image/jpeg"
             ) {
 
-                setJobDesData(prev => ({ ...prev, jdFile: fileData?.name, jobDescription: '', jdURL: '' }))
+                setJobDesData(prev => ({ ...prev, jdFile: fileData?.name }))
 
                 // setJDParsedSkills(
                 // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
@@ -1283,7 +1283,7 @@ function NewHRFields() {
                 fileData?.type ===
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
-                setJobDesData(prev => ({ ...prev, jdFile: fileData?.name, jobDescription: '', jdURL: '' }))
+                setJobDesData(prev => ({ ...prev, jdFile: fileData?.name }))
                 // setJDParsedSkills(
                 // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
                 // );
