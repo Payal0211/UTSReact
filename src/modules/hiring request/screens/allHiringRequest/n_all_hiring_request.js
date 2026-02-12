@@ -875,15 +875,11 @@ console.log(newData,'--newData',index,cat);
                                 miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS
                             )} <button className={`${stylesOBj["btn-add-hr"]} ${stylesOBj["control-btns"]}`} onClick={() => {
                                 localStorage.removeItem('hrID')
-                                navigate(UTSRoutes.ADDNEWHR);
+                                navigate(UTSRoutes.ADDNEWHR+ '/0');
                         
                             }}>ADD NEW HR</button>
                             <button className={`${stylesOBj["btn-export"]} ${stylesOBj['control-btns']}`} onClick={() => handleExport(apiData)}>Export</button>
-                            <button style={{padding:'8px 2px', borderRadius:'8px', border:'1px solid'}} onClick={() => {
-                                localStorage.removeItem('hrID')
                            
-                                navigate(NewPagesRouts.ADD_NEWHR + '0')
-                            }}>Add HR</button>
                         </div>
                     </div>
 

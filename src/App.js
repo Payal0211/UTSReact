@@ -11,6 +11,7 @@ import Unassigned_hiring_request from 'modules/hiring request/screens/allHiringR
 import NewLoginScreen from 'modules/user/screens/login/n_login_screen';
 import NewHRFields from 'modules/hiring request/components/hrFields/n_hrFields';
 import NewPreviewHrFields from 'modules/hiring request/components/hrFields/n_peviewHrFields';
+import New_all_clients_company from 'modules/allClients/n_allClients';
 
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
@@ -117,10 +118,17 @@ function App() {
 						
 						 <Route
 						 exact
-						 key={NewPagesRouts.ADDNEWHR}
-						path={NewPagesRouts.ADDNEWHR}
+						 key={UTSRoutes.ADDNEWHR}
+						path={UTSRoutes.ADDNEWHR}
 						element={<NewHRFields />}
 					/>
+						 <Route
+						 exact
+						 key={UTSRoutes.EDITNEWHR}
+						path={UTSRoutes.EDITNEWHR}
+						element={<NewHRFields />}
+					/>
+
 
 					 <Route
 						 exact
@@ -128,6 +136,14 @@ function App() {
 						path={NewPagesRouts.PREVIEW_HR}
 						element={<NewPreviewHrFields />}
 					/>
+
+<Route
+						 exact
+						 key={NewPagesRouts.ALL_CLIENTS}
+						path={NewPagesRouts.ALL_CLIENTS}
+						element={<New_all_clients_company />}
+					/>
+
 						
 					</Route>
 
