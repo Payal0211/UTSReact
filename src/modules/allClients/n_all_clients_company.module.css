@@ -127,6 +127,35 @@
 
 /* my changes end */
 
+.AMNAME{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.btnPrimaryResendBtn{
+    color: #232323;
+    text-align: center;
+    display: flex;
+    border-radius: 4px;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 500;
+    /* transition: transform 0.2s; */
+    white-space: nowrap;
+    border: none;
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
+    background-color: var(--color-sunlight);
+    cursor: pointer;
+}
+
+.linkForSSO{
+    text-decoration: none !important;
+}
+
 .dashboard-container {
     display: flex;
     height: 100vh;

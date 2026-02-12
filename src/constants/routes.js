@@ -644,7 +644,7 @@ export const navigateToComponent = {
 			<AllFTEPage />
 	</Suspense>
 ),
-[UTSRoutes.ALLCLIENTS]:(
+[NewPagesRouts.ALL_CLIENTS]:(
 	<Suspense>
 			<AllClients />
 	</Suspense>
