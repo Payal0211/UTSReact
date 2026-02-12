@@ -345,6 +345,7 @@ export class NewPagesRouts  {
 	static ADD_NEWHR = '/w_allhiringrequest/addnewhr/';
 	static ADDNEWHR = '/w_allhiringrequest/addnewhr/:hrid';
 	static PREVIEW_HR = '/w_previewHR/:hrid'
+	static ALL_CLIENTS = '/w_allClients'
 }
 
 export const navigateToComponent = {
@@ -383,12 +384,17 @@ export const navigateToComponent = {
 			<AddNewClient />
 		</Suspense>
 	),
-	[UTSRoutes.ADDNEWHR]: (
-		<Suspense>
-			<AddNewHR />
-		</Suspense>
-	),
-	[UTSRoutes.EDITNEWHR]: (
+	// [UTSRoutes.ADDNEWHR]: (
+	// 	<Suspense>
+	// 		<AddNewHR />
+	// 	</Suspense>
+	// ),
+	// [UTSRoutes.EDITNEWHR]: (
+	// 	<Suspense>
+	// 		<AddNewHR />
+	// 	</Suspense>
+	// ),
+	[NewPagesRouts.ADDNEWHR]: (
 		<Suspense>
 			<AddNewHR />
 		</Suspense>
@@ -638,7 +644,7 @@ export const navigateToComponent = {
 			<AllFTEPage />
 	</Suspense>
 ),
-[UTSRoutes.ALLCLIENTS]:(
+[NewPagesRouts.ALL_CLIENTS]:(
 	<Suspense>
 			<AllClients />
 	</Suspense>
