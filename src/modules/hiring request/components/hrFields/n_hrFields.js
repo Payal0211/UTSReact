@@ -74,11 +74,11 @@ function NewHRFields() {
         companyName: '',
         clientFullName: '',
         salesPerson: undefined,
-        availability: '',
-        payroll: '',
-        hiringPricingType: '',
+        availability: undefined,
+        payroll: undefined,
+        hiringPricingType: undefined,
         NRMargin: '',
-        contractDuration: '',
+        contractDuration: undefined,
         payrollPartnerName: ''
     })
 
@@ -116,13 +116,13 @@ function NewHRFields() {
         roleTitle: '',
         minExp: '',
         maxExp: '',
-        modeOfWorking: '',
+        modeOfWorking: undefined,
         location: [],
-        frequency: '',
+        frequency: undefined,
         timeZone: undefined,
         startTime: undefined,
         endTime: undefined,
-        noticePeriod: '',
+        noticePeriod: undefined,
         interviewRounds: '',
         numberOfTalents: ''
     })
@@ -284,8 +284,8 @@ function NewHRFields() {
                 clientFullName: data?.fullClientName,
                 salesPerson: data?.addHiringRequest?.salesUserId,
                 availability: availabilityId,
-                payroll: `${data?.addHiringRequest?.payrollTypeId}`,
-                hiringPricingType: `${data?.addHiringRequest?.hiringTypePricingId}`,
+                payroll: data?.addHiringRequest?.payrollTypeId,
+                hiringPricingType: data?.addHiringRequest?.hiringTypePricingId,
                 NRMargin: data?.addHiringRequest?.isHrtypeDp === true
                     ? data?.addHiringRequest?.dppercentage
                     : data?.addHiringRequest?.talentCostCalcPercentage,
@@ -605,7 +605,7 @@ function NewHRFields() {
             setHRPricingTypes(types);
             let current = types.find(item => item.id === hrtypeid)
             // setControlledHiringPricingTypeValue(current.type)
-          hrid === '0' &&  setBasicFormFields(prev => ({ ...prev, hiringPricingType: `${current.id}`, NRMargin: current.pricingPercent }))
+          hrid === '0' &&  setBasicFormFields(prev => ({ ...prev, hiringPricingType: current.id, NRMargin: current.pricingPercent }))
 
         }
     }
@@ -973,28 +973,28 @@ function NewHRFields() {
                 isValid = false;
             }
 
-            if (basicFormFields.availability === '') {
+            if (basicFormFields.availability === undefined) {
                 isValid = false;
             }
 
-            if (basicFormFields.hiringPricingType === '') {
+            if (basicFormFields.hiringPricingType === undefined) {
                 isValid = false;
             }
 
-            if (basicFormFields?.hiringPricingType === '3' ||
-                basicFormFields?.hiringPricingType === '6') {
-                if (basicFormFields.payroll === '') {
+            if (basicFormFields?.hiringPricingType === 3 ||
+                basicFormFields?.hiringPricingType === 6) {
+                if (basicFormFields.payroll === undefined) {
                     isValid = false;
                 }
             }
 
-            if (basicFormFields?.hiringPricingType === '1' || basicFormFields?.hiringPricingType === '2' || basicFormFields.payroll === '4') {
-                if (basicFormFields.contractDuration === '') {
+            if (basicFormFields?.hiringPricingType === 1 || basicFormFields?.hiringPricingType === 2 || basicFormFields.payroll === 4) {
+                if (basicFormFields.contractDuration === undefined) {
                     isValid = false;
                 }
             }
 
-            if (basicFormFields.payroll === '3') {
+            if (basicFormFields.payroll === 3) {
                 if (basicFormFields.payrollPartnerName?.trim() === '') {
                     isValid = false;
                 }
@@ -1016,7 +1016,7 @@ function NewHRFields() {
                 isValid = false;
             }
 
-            if (roleReqFormFields.modeOfWorking === '') {
+            if (roleReqFormFields.modeOfWorking === undefined) {
                 isValid = false;
             }
 
@@ -1043,11 +1043,11 @@ function NewHRFields() {
                 isValid = false;
             }
 
-            if (roleReqFormFields.noticePeriod === '') {
+            if (roleReqFormFields.noticePeriod === undefined) {
                 isValid = false;
             }
 
-            if (roleReqFormFields.interviewRounds === '' || isNaN(roleReqFormFields.interviewRounds) || parseInt(roleReqFormFields.interviewRounds) <= 0 || parseInt(roleReqFormFields.interviewRounds) > 5) {
+            if (roleReqFormFields.interviewRounds === '' || isNaN(roleReqFormFields.interviewRounds) || parseInt(roleReqFormFields.interviewRounds) <= 0 || parseInt(roleReqFormFields.interviewRounds) > 10) {
                 isValid = false;
             }
 
@@ -1146,7 +1146,7 @@ function NewHRFields() {
             "minimumBudget":  budgetFormFields?.type === "Range" ? +budgetFormFields?.minBudget : 0,
             "maximumBudget": budgetFormFields?.type === "Range" ? +budgetFormFields?.maxBudget : 0,
 
-            "NRMargin": basicFormFields?.hiringPricingType !== "3" ? basicFormFields?.NRMargin :  0,
+            "NRMargin": basicFormFields?.hiringPricingType !== 3 ? basicFormFields?.NRMargin :  0,
             "salesPerson": basicFormFields?.salesPerson,
             "contractDuration": basicFormFields?.contractDuration,
             "howSoon": howSoon?.find(v => v.id === +roleReqFormFields?.noticePeriod)?.value,
@@ -1166,13 +1166,13 @@ function NewHRFields() {
             "modeOfWorkingId": roleReqFormFields?.modeOfWorking,
 
             "PayPerType": userCompanyTypeID,
-            "isHRTypeDP": basicFormFields?.hiringPricingType === "3" ? true: false,
+            "isHRTypeDP": basicFormFields?.hiringPricingType === 3 ? true: false,
             "issaveasdraft": isDraft,
 
             "directPlacement": {
                 "hiringRequestId": +hrid,
                 "modeOfWork": roleReqFormFields?.modeOfWorking,
-                "dpPercentage": basicFormFields?.hiringPricingType === "3" ? basicFormFields?.NRMargin :  0,
+                "dpPercentage": basicFormFields?.hiringPricingType === 3 ? basicFormFields?.NRMargin :  0,
                 "address": null,
                 "city": null,
                 "state": null,
@@ -1232,7 +1232,7 @@ function NewHRFields() {
             },
 
             "PayrollPartnerName": basicFormFields?.payrollPartnerName,
-            "PayrollTypeId": +basicFormFields?.payroll ?? '',
+            "PayrollTypeId": basicFormFields?.payroll ?? '',
             "jdURL": jobDesData?.jdURL ? jobDesData.jdURL : null,
             "jDFilename": jobDesData?.jdFile,
             "jDDescription": jobDesData?.jobDescription ? jobDesData?.jobDescription : null,
@@ -1268,8 +1268,7 @@ function NewHRFields() {
                 fileData?.type === "image/png" ||
                 fileData?.type === "image/jpeg"
             ) {
-
-                setJobDesData(prev => ({ ...prev, jdFile: fileData?.name }))
+                setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName}))
 
                 // setJDParsedSkills(
                 // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
@@ -1283,7 +1282,7 @@ function NewHRFields() {
                 fileData?.type ===
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
-                setJobDesData(prev => ({ ...prev, jdFile: fileData?.name }))
+                setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName }))
                 // setJDParsedSkills(
                 // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
                 // );
@@ -1449,7 +1448,24 @@ function NewHRFields() {
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                            <select className={`${styles["form-select"]}`} required
+                                                <Select
+                                                showSearch
+                                                filterOption={(input, option) =>
+                                                    option.value?.toLowerCase().includes(input.toLowerCase())
+                                                }
+                                                fieldNames={{
+                                                    value: "id",      // stored value
+                                                    label: "value"    // display text
+                                                }}
+                                                placeholder="Engagement model *"
+                                                options={availability && availability}
+                                                value={basicFormFields.availability}
+                                                onChange={(val, valObj) => {
+                                                    console.log(val,valObj)
+                                                    setBasicFormFields(prev => ({ ...prev, availability: val , hiringPricingType: undefined, payroll: undefined, contractDuration: undefined, payrollPartnerName: ''  }))
+                                                }}
+                                            />
+                                            {/* <select className={`${styles["form-select"]}`} required
                                                 value={basicFormFields.availability}
                                                 onChange={(e) =>
                                                     setBasicFormFields(prev => ({ ...prev, availability: e.target.value, hiringPricingType: "", payroll: '', contractDuration: '', payrollPartnerName: '' }))}>
@@ -1458,22 +1474,39 @@ function NewHRFields() {
                                                 {availability.map((engagement) => (
                                                     <option className={`${styles["custom-select-option"]}`} value={engagement.id}>{engagement.value}</option>
                                                 ))}
-                                            </select>
-                                            {formValidationError && basicFormFields.availability === '' && <p className={`${styles["fieldError"]}`}>please select engagement model</p>}
+                                            </select> */}
+                                            {formValidationError && basicFormFields.availability === undefined && <p className={`${styles["fieldError"]}`}>please select engagement model</p>}
                                         </div>
                                     </div>
-                                    {(basicFormFields?.hiringPricingType === '3' ||
-                                        basicFormFields?.hiringPricingType === '6') && (<div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                    {(basicFormFields?.hiringPricingType === 3 ||
+                                        basicFormFields?.hiringPricingType === 6) && (<div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                             <div className={`${styles["form-group"]}`}>
-                                                <select className={`${styles["form-select"]}`} required value={basicFormFields.payroll} onChange={(e) => {
+                                                   <Select
+                                                showSearch
+                                                filterOption={(input, option) =>
+                                                    option.value?.toLowerCase().includes(input.toLowerCase())
+                                                }
+                                                fieldNames={{
+                                                    value: "id",      // stored value
+                                                    label: "value"    // display text
+                                                }}
+                                                placeholder="Payroll *"
+                                                options={payRollTypes && payRollTypes}
+                                                value={basicFormFields.payroll}
+                                                onChange={(val, valObj) => {
+                                                  
+                                                     setBasicFormFields(prev => ({ ...prev, payroll: val, contractDuration: undefined, payrollPartnerName: '' }))
+                                                }}
+                                            />
+                                                {/* <select className={`${styles["form-select"]}`} required value={basicFormFields.payroll} onChange={(e) => {
                                                     setBasicFormFields(prev => ({ ...prev, payroll: e.target.value, contractDuration: '', payrollPartnerName: '' }))
                                                 }}>
                                                     <option className={`${styles["custom-select-option"]}`} value="">Payroll *</option>
                                                     {payRollTypes.map((payroll) => (
                                                         <option className={`${styles["custom-select-option"]}`} value={payroll.id}>{payroll.value}</option>
                                                     ))}
-                                                </select>
-                                                {formValidationError && basicFormFields.payroll === '' && <p className={`${styles["fieldError"]}`}>please select payroll</p>}
+                                                </select> */}
+                                                {formValidationError && basicFormFields.payroll === undefined && <p className={`${styles["fieldError"]}`}>please select payroll</p>}
                                             </div>
                                         </div>)}
 
@@ -1481,14 +1514,33 @@ function NewHRFields() {
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                            <select className={`${styles["form-select"]}`} required value={basicFormFields?.hiringPricingType} onChange={(e) => {
+                                               <Select
+                                                showSearch
+                                                filterOption={(input, option) =>
+                                                    option.value?.toLowerCase().includes(input.toLowerCase())
+                                                }
+                                                fieldNames={{
+                                                    value: "id",      // stored value
+                                                    label: "value"    // display text
+                                                }}
+                                                placeholder="Engagement type *"
+                                                options={hrPricingTypes && basicFormFields.availability === 1 ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime })).filter(i => (i.id !== 3 && i.showPartTime === true))
+                                                    : hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime }))}
+                                                value={basicFormFields.availability}
+                                                onChange={(val, valObj) => {
+                    
+                                                    setBasicFormFields(prev => ({ ...prev, hiringPricingType:  val, payroll: undefined, contractDuration: undefined, payrollPartnerName: '' }))
+                                                   
+                                                }}
+                                            />
+                                            {/* <select className={`${styles["form-select"]}`} required value={basicFormFields?.hiringPricingType} onChange={(e) => {
                                                 setBasicFormFields(prev => ({ ...prev, hiringPricingType: e.target.value, payroll: '', contractDuration: '', payrollPartnerName: '' }))
                                             }}>
                                                 <option className={`${styles["custom-select-option"]}`} value="">Engagement type *</option>
-                                                {hrPricingTypes && basicFormFields.availability === '1' ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime })).filter(i => (i.id !== 3 && i.showPartTime === true)).map(val => (<option className={`${styles["custom-select-option"]}`} value={val.id}>{val.value}</option>))
+                                                {hrPricingTypes && basicFormFields.availability === 1 ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime })).filter(i => (i.id !== 3 && i.showPartTime === true)).map(val => (<option className={`${styles["custom-select-option"]}`} value={val.id}>{val.value}</option>))
                                                     : hrPricingTypes.map((val) => (<option className={`${styles["custom-select-option"]}`} value={val.id}>{val.type}</option>))}
-                                            </select>
-                                            {formValidationError && basicFormFields.hiringPricingType === '' && <p className={`${styles["fieldError"]}`}>please select engagement type</p>}
+                                            </select> */}
+                                            {formValidationError && basicFormFields.hiringPricingType === undefined && <p className={`${styles["fieldError"]}`}>please select engagement type</p>}
                                         </div>
                                     </div>
                                     <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
@@ -1501,27 +1553,54 @@ function NewHRFields() {
                                     </div>
                                 </div>
                                 <div className={`${styles["row"]}`}>
-                                    {(basicFormFields?.hiringPricingType === '1' || basicFormFields?.hiringPricingType === '2' || basicFormFields.payroll === '4') && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                    {(basicFormFields?.hiringPricingType === 1 || basicFormFields?.hiringPricingType === 2 || basicFormFields.payroll === 4) && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                            <select className={`${styles["form-select"]}`} required value={basicFormFields?.contractDuration} onChange={(e) => {
+                                               <Select
+                                                showSearch
+                                                filterOption={(input, option) =>
+                                                    option.value?.toLowerCase().includes(input.toLowerCase())
+                                                }
+                                                fieldNames={{
+                                                    value: "id",      // stored value
+                                                    label: "value"    // display text
+                                                }}
+                                                placeholder="Contract Duration (in months) *"
+                                                options={contractDurations && contractDurations.filter((item) => {
+                                                   
+                                                    if (basicFormFields.availability === 4) {
+                                                        return item.value !== "Indefinite";
+                                                    }
+                                                    return true;
+                                                }).map((item) => ({
+                              id: item.value,
+                              label: item.text,
+                              value: item.text,
+                            }))}
+                                                value={basicFormFields?.contractDuration}
+                                                onChange={(val, valObj) => {
+                                                    setBasicFormFields(prev => ({ ...prev, contractDuration: val }))
+                                                   
+                                                }}
+                                            />
+                                            {/* <select className={`${styles["form-select"]}`} required value={basicFormFields?.contractDuration} onChange={(e) => {
                                                 setBasicFormFields(prev => ({ ...prev, contractDuration: e.target.value }))
                                             }}>
                                                 <option className={`${styles["custom-select-option"]}`} value="">Contract Duration (in months) *</option>
                                                 {contractDurations.filter((item) => {
                                                     // if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" || item?.value !== "Indefinite"
                                                     // return item?.value !== "-1"
-                                                    if (basicFormFields.availability === '4') {
+                                                    if (basicFormFields.availability === 4) {
                                                         return item.value !== "Indefinite";
                                                     }
                                                     return true;
                                                 })
                                                     .map((item) => (<option className={`${styles["custom-select-option"]}`} value={item.value}>{item.text}</option>))}
-                                            </select>
-                                            {formValidationError && basicFormFields.contractDuration === '' && <p className={`${styles["fieldError"]}`}>please select contract duration</p>}
+                                            </select> */}
+                                            {formValidationError && basicFormFields.contractDuration === undefined && <p className={`${styles["fieldError"]}`}>please select contract duration</p>}
                                         </div> </div>}
 
 
-                                    {basicFormFields.payroll === '3' && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                    {basicFormFields.payroll === 3 && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <input type="text" className={`${styles["form-input"]}`} placeholder="Payroll Partner Name *" required value={basicFormFields?.payrollPartnerName}
                                                 onChange={(e) => setBasicFormFields(prev => ({ ...prev, payrollPartnerName: e.target.value }))} />
@@ -1764,13 +1843,29 @@ function NewHRFields() {
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                            <select className={`${styles["form-select"]} ${styles["mode-of-working"]}`} required value={roleReqFormFields.modeOfWorking} onChange={(e) => setRoleReqFormFields({ ...roleReqFormFields, modeOfWorking: e.target.value })}>
+                                               <Select
+                                                showSearch
+                                                filterOption={(input, option) =>
+                                                    option.value?.toLowerCase().includes(input.toLowerCase())
+                                                }
+                                                fieldNames={{
+                                                    value: "id",      // stored value
+                                                    label: "value"    // display text
+                                                }}
+                                                placeholder="Mode of working *"
+                                                options={['Remote','Hybrid', 'Office'].map(i=>({id:i,value:i}))}
+                                                value={roleReqFormFields.modeOfWorking}
+                                                onChange={(val, valObj) => {
+                                                    setRoleReqFormFields({ ...roleReqFormFields, modeOfWorking: val })
+                                                }}
+                                            />
+                                            {/* <select className={`${styles["form-select"]} ${styles["mode-of-working"]}`} required value={roleReqFormFields.modeOfWorking} onChange={(e) => setRoleReqFormFields({ ...roleReqFormFields, modeOfWorking: e.target.value })}>
                                                 <option className={`${styles["custom-select-option"]}`} value="">Mode of working *</option>
                                                 <option className={`${styles["custom-select-option"]}`} value="Remote">Remote</option>
                                                 <option className={`${styles["custom-select-option"]}`} value="Hybrid">Hybrid</option>
                                                 <option className={`${styles["custom-select-option"]}`} value="Office">Office</option>
-                                            </select>
-                                            {formValidationError && roleReqFormFields.modeOfWorking === '' && <p className={`${styles["fieldError"]}`}>please select mode of working</p>}
+                                            </select> */}
+                                            {formValidationError && roleReqFormFields.modeOfWorking === undefined && <p className={`${styles["fieldError"]}`}>please select mode of working</p>}
                                         </div>
                                     </div>
 
@@ -1822,13 +1917,29 @@ function NewHRFields() {
                                         </div>
                                     </div> */}
                                         <div className={`${styles["form-group"]}`}>
-                                            <select className={`${styles["form-select"]}`} required value={roleReqFormFields?.frequency} onChange={(e) => {
+                                             <Select
+                                                showSearch
+                                                filterOption={(input, option) =>
+                                                    option.value?.toLowerCase().includes(input.toLowerCase())
+                                                }
+                                                fieldNames={{
+                                                    value: "id",      // stored value
+                                                    label: "value"    // display text
+                                                }}
+                                                placeholder="Frequency *"
+                                                options={frequencyData && frequencyData}
+                                                value={roleReqFormFields?.frequency}
+                                                onChange={(val, valObj) => {
+                                                setRoleReqFormFields({ ...roleReqFormFields, frequency: val })
+                                                }}
+                                            />
+                                            {/* <select className={`${styles["form-select"]}`} required value={roleReqFormFields?.frequency} onChange={(e) => {
                                                 setRoleReqFormFields(prev => ({ ...prev, frequency: e.target.value }))
                                             }}>
                                                 <option className={`${styles["custom-select-option"]}`} value="">Frequency *</option>
                                                 {frequencyData.map((item) => (<option className={`${styles["custom-select-option"]}`} value={item.id}>{item.value}</option>))}
-                                            </select>
-                                            {formValidationError && roleReqFormFields?.frequency === '' && <p className={`${styles["fieldError"]}`}>please select frequency</p>}
+                                            </select> */}
+                                            {formValidationError && roleReqFormFields?.frequency === undefined && <p className={`${styles["fieldError"]}`}>please select frequency</p>}
                                         </div>
                                     </div>)}
 
@@ -2008,10 +2119,26 @@ function NewHRFields() {
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                            <select className={`${styles["form-select"]}`} required value={roleReqFormFields.noticePeriod} onChange={(e) => setRoleReqFormFields({ ...roleReqFormFields, noticePeriod: e.target.value })}>
+                                               <Select
+                                                showSearch
+                                                filterOption={(input, option) =>
+                                                    option.value?.toLowerCase().includes(input.toLowerCase())
+                                                }
+                                                fieldNames={{
+                                                    value: "id",      // stored value
+                                                    label: "value"    // display text
+                                                }}
+                                                placeholder="Notice period *"
+                                                options={howSoon && howSoon}
+                                                value={roleReqFormFields.noticePeriod}
+                                                onChange={(val, valObj) => {
+                                                setRoleReqFormFields({ ...roleReqFormFields, noticePeriod: val })
+                                                }}
+                                            />
+                                            {/* <select className={`${styles["form-select"]}`} required value={roleReqFormFields.noticePeriod} onChange={(e) => setRoleReqFormFields({ ...roleReqFormFields, noticePeriod: e.target.value })}>
                                                 <option className={`${styles["custom-select-option"]}`} value="">Notice period *</option>
                                                 {howSoon.map((item) => (<option className={`${styles["custom-select-option"]}`} value={item.id}>{item.value}</option>))}
-                                            </select>
+                                            </select> */}
                                             {formValidationError && (roleReqFormFields.noticePeriod === '') && <p className={`${styles["fieldError"]}`}>please select notice period</p>}
                                         </div>
                                     </div>
@@ -2021,7 +2148,7 @@ function NewHRFields() {
                                                 value={roleReqFormFields.interviewRounds}
                                                 onChange={e => setRoleReqFormFields(prev => ({ ...prev, interviewRounds: e.target.value }))}
                                             />
-                                            {formValidationError && (roleReqFormFields.interviewRounds === '' || isNaN(roleReqFormFields.interviewRounds) || parseInt(roleReqFormFields.interviewRounds) <= 0 || parseInt(roleReqFormFields.interviewRounds) > 5) && <p className={`${styles["fieldError"]}`}>please enter interview rounds (1 to 5 )</p>}
+                                            {formValidationError && (roleReqFormFields.interviewRounds === '' || isNaN(roleReqFormFields.interviewRounds) || parseInt(roleReqFormFields.interviewRounds) <= 0 || parseInt(roleReqFormFields.interviewRounds) > 10) && <p className={`${styles["fieldError"]}`}>please enter interview rounds (1 to 10 )</p>}
                                         </div>
                                     </div>
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
@@ -2063,7 +2190,7 @@ function NewHRFields() {
                                                 showSearch
                                                 mode="tags"
                                                 style={{ width: '100%' }}
-                                                placeholder="Good to have skills (optional)"
+                                                placeholder="Good to have skills *"
                                                 options={SkillMemo}
                                                 onChange={options => {
                                                     setGoodToHaveSkills(options)
