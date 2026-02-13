@@ -2148,7 +2148,7 @@ function NewHRFields() {
                                                 value={roleReqFormFields.interviewRounds}
                                                 onChange={e => setRoleReqFormFields(prev => ({ ...prev, interviewRounds: e.target.value }))}
                                             />
-                                            {formValidationError && (roleReqFormFields.interviewRounds === '' || isNaN(roleReqFormFields.interviewRounds) || parseInt(roleReqFormFields.interviewRounds) <= 0 || parseInt(roleReqFormFields.interviewRounds) > 10) && <p className={`${styles["fieldError"]}`}>please enter interview rounds (1 to 5 )</p>}
+                                            {formValidationError && (roleReqFormFields.interviewRounds === '' || isNaN(roleReqFormFields.interviewRounds) || parseInt(roleReqFormFields.interviewRounds) <= 0 || parseInt(roleReqFormFields.interviewRounds) > 10) && <p className={`${styles["fieldError"]}`}>please enter interview rounds (1 to 10 )</p>}
                                         </div>
                                     </div>
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
