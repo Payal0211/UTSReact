@@ -920,7 +920,7 @@ function NewHRFields() {
         // if(result.statusCode === 200){
         //   message.success('Successfully Updated Company profile details')
         // }
-      },[confidentialInfo,clientDetails]) 
+      },[confidentialInfo,clientDetails,companyConfidentailFields,clientFieldsDetails]) 
 
     const createHRHandler = async (pl, isDraft) => {
         setIsSavedLoading(true)
@@ -1081,8 +1081,8 @@ function NewHRFields() {
                 }
             }
 
-            if(confidentialInfo === true){
-                if(companyConfidentailFields.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias?.trim() === ''){
+            if(confidentialInfo){
+                if(companyConfidentailFields?.companyNameAlias?.trim() === '' ||companyConfidentailFields?.companyNameAlias === null || companyConfidentailFields?.companyLogoAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias === null){
                     isValid = false
                 }
             }
@@ -1105,8 +1105,18 @@ function NewHRFields() {
             }
         }
 
+//              let pl = {
+//             basicFormFields,
+//             roleReqFormFields,
+//             mustHaveSkills,
+//             goodToHaveSkills,
+//             jobDesData,
+//             budgetFormFields,
+//             enhanceMatchmakingFormFields
+//         }
 
 
+// console.log(pl)
 
         if (!isValid) {
             setFormValidationError(true)
@@ -1115,16 +1125,7 @@ function NewHRFields() {
         }
 
 
-        let pl = {
-            basicFormFields,
-            roleReqFormFields,
-            mustHaveSkills,
-            goodToHaveSkills,
-            jobDesData,
-            budgetFormFields,
-            enhanceMatchmakingFormFields
-        }
-
+   
         const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
         const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));
 
@@ -1148,7 +1149,7 @@ function NewHRFields() {
 
             "NRMargin": basicFormFields?.hiringPricingType !== 3 ? basicFormFields?.NRMargin :  0,
             "salesPerson": basicFormFields?.salesPerson,
-            "contractDuration": basicFormFields?.contractDuration,
+            "contractDuration": basicFormFields?.contractDuration === "Indefinite" ? '-1' : basicFormFields?.contractDuration,
             "howSoon": howSoon?.find(v => v.id === +roleReqFormFields?.noticePeriod)?.value,
 
             "years": roleReqFormFields?.minExp ? roleReqFormFields?.minExp : 0,
@@ -1232,7 +1233,7 @@ function NewHRFields() {
             },
 
             "PayrollPartnerName": basicFormFields?.payrollPartnerName,
-            "PayrollTypeId": basicFormFields?.payroll ?? '',
+            "PayrollTypeId": basicFormFields?.payroll ?? 0,
             "jdURL": jobDesData?.jdURL ? jobDesData.jdURL : null,
             "jDFilename": jobDesData?.jdFile,
             "jDDescription": jobDesData?.jobDescription ? jobDesData?.jobDescription : null,
@@ -1526,7 +1527,7 @@ function NewHRFields() {
                                                 placeholder="Engagement type *"
                                                 options={hrPricingTypes && basicFormFields.availability === 1 ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime })).filter(i => (i.id !== 3 && i.showPartTime === true))
                                                     : hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime }))}
-                                                value={basicFormFields.availability}
+                                                value={basicFormFields.hiringPricingType}
                                                 onChange={(val, valObj) => {
                     
                                                     setBasicFormFields(prev => ({ ...prev, hiringPricingType:  val, payroll: undefined, contractDuration: undefined, payrollPartnerName: '' }))
@@ -1646,7 +1647,7 @@ function NewHRFields() {
                                                 <div className={`${styles["form-group"]}`}>
                                                     <input type="text" className={`${styles["form-input"]}`} placeholder="Company Name Alias  *" required value={companyConfidentailFields?.companyNameAlias}
                                                         onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, companyNameAlias: e.target.value }))} />
-                                                    {formValidationError && (companyConfidentailFields?.companyNameAlias?.trim() === '') && <p className={`${styles["fieldError"]}`}>please enter company name alias</p>}
+                                                    {formValidationError && (companyConfidentailFields?.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyNameAlias === null ) && <p className={`${styles["fieldError"]}`}>please enter company name alias</p>}
                                                 </div>
                                             </div>
                                         </div>
@@ -1668,7 +1669,7 @@ function NewHRFields() {
                                                 <div className={`${styles["form-group"]}`}>
                                                     <input type="text" className={`${styles["form-input"]}`} placeholder="Company Logo Alias  *" required value={companyConfidentailFields?.companyLogoAlias}
                                                         onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, companyLogoAlias: e.target.value }))} />
-                                                    {formValidationError && (companyConfidentailFields?.companyLogoAlias?.trim() === '') && <p className={`${styles["fieldError"]}`}>please enter company logo alias</p>}
+                                                    {formValidationError && (companyConfidentailFields?.companyLogoAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias === null) && <p className={`${styles["fieldError"]}`}>please enter company logo alias</p>}
                                                 </div>
                                             </div>
                                         </div>
