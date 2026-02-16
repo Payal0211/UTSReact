@@ -956,6 +956,40 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getPOCPopupReportAPI');
 		}
 	},
+getPOChrSummaryPopupReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_HR_COUNT_SUMMARY_POPUP_LIST + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}&stage_ID=${payload?.stageID}&category=${payload?.cat}&multiplePODIds=${payload?.multiplePODIds}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPOChrSummaryPopupReportAPI');
+		}
+	},
+	getHRCountSummaryAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.GET_HR_COUNT_SUMMARY_LIST + `?hrmodel=${payload?.hrmodel}&pod_id=${payload?.pod_id}&monthstr=${payload?.monthstr}&yearstr=${payload?.yearstr}&multiplePODIds=${payload?.multiplePODIds}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getHRCountSummaryAPI');
+		}
+	},
 	getPOCPopupMultiMonthReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

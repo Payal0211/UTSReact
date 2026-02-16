@@ -6,7 +6,8 @@ import {
   Tooltip,
   Skeleton,
   Spin,Select,
-  message
+  message,
+  InputNumber
 } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import Diamond from "assets/svg/diamond.svg";
@@ -56,6 +57,7 @@ export default function NegotiontoJoinee({
     const [showResponse, setShowResponse] = useState(false);
     const [responseData, setResponseData] = useState({});
   const [round, setRound] = useState("Selection");
+  const [trVal,setTRval] = useState('')
    const [roundDate, setRoundDate] = useState("");
    const [loadingResponse, setLoadingResponse] = useState(false);
    const [responseSubmit, setResponseSubmit] = useState(false);
@@ -1326,6 +1328,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const AddResponse = (data) => {
     setShowResponse(true);
     setResponseData(data);
+    setTRval(data.noofTR)
   };
 
    const getTalentProfilesDetailsfromTable = async (
@@ -2156,11 +2159,19 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             );
             return;
           }
+
+          if( +trVal <= 0 || +trVal > 9){
+              message.error(
+              `Please Enter TR (1 to 9)`
+            );
+            return;
+          }
           let PL = {
             HR_ID: responseData?.hiringRequest_ID,
             Interview_Round: round,
             Round_Date: moment(roundDate).format("YYYY-MM-DD"),
             Comments: "",
+            ActiveTR:trVal,
             LoggedInUserID: userData?.UserId,
           };
           setLoadingResponse(true);
@@ -2181,6 +2192,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             setResponseData({});
             setRoundDate("");
             setRound("Selection");
+            setTRval('')
             setResponseSubmit(false);
             getReportPtoNData()
           } else {
@@ -2548,6 +2560,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   setResponseData({});
                   setRoundDate("");
                   setRound("Selection");
+                  setTRval('')
                   setResponseSubmit(false);
                 }}
               >
@@ -2561,6 +2574,30 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                   <Skeleton active />
                 ) : (
                   <>
+                   <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <label>TR</label>
+                      <InputNumber  
+                      value={trVal}
+                        onChange={
+                          (newValue) => {
+                            setTRval(newValue);
+                          }
+                          // handleChange(newValue, record, index, dataIndex)
+                        }
+                    placeholder="TR"
+                        style={{ width: "250px", height:'54px', padding:'10px 0', borderRadius:'8px' }}
+                        size="middle" />
+                    </div>
                     <div
                       style={{
                         display: "flex",
@@ -2647,6 +2684,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                       setShowResponse(false);
                       setResponseData({});
                       setRoundDate("");
+                      setTRval('')
                       setRound("Selection");
                       setResponseSubmit(false);
                     }}

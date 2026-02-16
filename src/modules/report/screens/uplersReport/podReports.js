@@ -29,6 +29,7 @@ export default function PodReports({
   const [DFFilterListData, setDFFilterListData] = useState([]);
   const [showDFReport, setShowDFReport] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [hrCountSummeryData,setHRCountSummeryData] = useState([])
 
   const getHRTalentWiseReport = async (row, v, week) => {
     try {
@@ -59,6 +60,68 @@ export default function PodReports({
       setListAchievedData([]);
     }
   };
+
+  const getSummaryDetailsPopup = async (row,v) => {
+ try {
+      // setShowSummaryReport(true);
+  setShowAchievedReport(true);
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        stageID: row.stage_ID,
+          cat: row.category,
+        multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPOChrSummaryPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  }
+
+  const GetHRCountSummary = async() =>{
+    try{
+ const pl = {
+        hrmodel: hrModal,
+        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
+        monthstr: moment(monthDate).format("M"),
+        yearstr: moment(monthDate).format("YYYY"),
+        multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
+    }
+
+
+    const result = await ReportDAO.getHRCountSummaryDAO(pl)
+
+    console.log('hr count summ',result)
+
+     if (result.statusCode === 200) {
+        setHRCountSummeryData(result.responseBody);
+      } else {
+        setHRCountSummeryData([]);
+      }
+    }catch(err){
+      console.log(err)
+      setHRCountSummeryData([])
+    }
+   
+
+  }
+
+  useEffect(()=>{
+    GetHRCountSummary()
+  },[selectedHead, monthDate, hrModal,dashboardTabTitle])
+
 
   const getColumns = () => [
     {
@@ -576,6 +639,147 @@ export default function PodReports({
     // },
   ];
 
+  const getHRCountsColumns = () => [
+    {
+      title: "Stages",
+      dataIndex: "stage",
+      key: "stage",
+      //   fixed: "left",
+      width: 200,
+      className: `${uplersStyle.stagesHeaderCell} ${uplersStyle.headerCommonConfig} `,
+      
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Total Achieved</div>,
+      dataIndex: "total_Achieved",
+      key: "total_Achieved",
+      align: "right",
+      width: 120,
+      onHeaderCell: () => ({
+        className: uplersStyle.headerCommonGoalHeaderConfig,
+      }),
+      className: `${uplersStyle.headerCommonConfig} `,
+      render: (v, rec) => {
+        return (
+          <>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                // flexDirection:'end'
+              }}
+            >       
+
+              <div style={{ marginLeft: "auto" }}>
+                {v ? (
+                  (
+                    <span
+                      onClick={() => {
+                      getSummaryDetailsPopup(rec, v);
+                      }}
+                      style={{ cursor: "pointer", color: "#1890ff" }}
+                    >
+                      {v}
+                    </span>
+                  )
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          </>
+        );
+      },
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Diamond Achieved </div>,
+      dataIndex: "diamond_Achieved",
+      key: "diamond_Achieved",
+      width: 120,
+      align: "right",
+      onHeaderCell: () => ({
+        className: uplersStyle.headerCommonGoalHeaderConfig,
+      }),
+      className: `${uplersStyle.headerCommonConfig}`,
+      render: (v, rec) => {
+        return(
+          <>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                // flexDirection:'end'
+              }}
+            >       
+
+              <div style={{ marginLeft: "auto" }}>
+                {v ? (
+                  (
+                    <span
+                      onClick={() => {
+                         getSummaryDetailsPopup(rec, v);
+                      }}
+                      style={{ cursor: "pointer", color: "#1890ff" }}
+                    >
+                      {v}
+                    </span>
+                  )
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          </>
+        );
+      },
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Non Diamond Achieved</div>,
+      dataIndex: "nonDiamond_Achieved",
+      key: "nonDiamond_Achieved",
+      width: 120,
+      align: "right",
+      onHeaderCell: () => ({
+        className: uplersStyle.headerCommonGoalHeaderConfig,
+      }),
+      className: `${uplersStyle.headerCommonConfig}`,
+      render: (v, rec) => {
+        return (
+          <>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                // flexDirection:'end'
+              }}
+            >       
+
+              <div style={{ marginLeft: "auto" }}>
+                {v ? (
+                  (
+                    <span
+                      onClick={() => {
+                          getSummaryDetailsPopup(rec, v);
+                      }}
+                      style={{ cursor: "pointer", color: "#1890ff" }}
+                    >
+                      {v}
+                    </span>
+                  )
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          </>
+        );
+      },
+    },
+  ];
+
   const DFColumns = [
     {
       title: "Action Date",
@@ -867,7 +1071,7 @@ export default function PodReports({
         </div>
       </div>
 
-      <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+      {/* <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
         <div className={uplersStyle.customTableContainer}>
           {isTableLoading ? (
             <TableSkeleton />
@@ -887,6 +1091,51 @@ export default function PodReports({
                 dataSource={podDashboardList.filter(
                   (item) => item.category === "CF"
                 )}
+                bordered
+                pagination={false}
+                size="middle"
+                scroll={{ x: "max-content", y: "1vh" }}
+                rowClassName={(record) => {
+                  if (record.stage === "Goal") {
+                    return uplersStyle.heighliteRow;
+                  }
+                  if (record.stage === "Joining") {
+                    return uplersStyle.heighliteGreen;
+                  }
+                  if (record.stage === "Selections/Closures") {
+                    return uplersStyle.heighliteOrange;
+                  }
+                  if (record.stage === "Lost (Pipeline)") {
+                    return uplersStyle.heighliteRed;
+                  }
+                  if (record.stage === "Total Active Pipeline") {
+                    return uplersStyle.heighlitePurple;
+                  }
+                }}
+              />
+            </>
+          )}
+        </div>
+      </div> */}
+
+        <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+        <div className={uplersStyle.customTableContainer}>
+          {isTableLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+                HR Count Summary
+              </p>
+              <Table
+                columns={getHRCountsColumns()}
+                dataSource={hrCountSummeryData}
                 bordered
                 pagination={false}
                 size="middle"
@@ -1056,9 +1305,10 @@ export default function PodReports({
                           background: "rgb(233, 233, 233) !important",
                         }}
                       >
-                        {showTalentCol?.stage === "New Clients"
+                        {/* {showTalentCol?.stage === "New Clients"
                           ? "Created Date"
-                          : "Company Created Date"}
+                          : "Company Created Date"} */}
+                        Created Date
                       </th>
 
                       {showTalentCol?.category !== "CF" &&
