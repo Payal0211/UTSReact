@@ -1454,6 +1454,52 @@ export const ReportDAO = {
 			return errorDebug(error, 'TaDashboardDAO.getPOCPopupReportDAO');
 		}
 	},
+	getPOChrSummaryPopupReportDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.getPOChrSummaryPopupReportAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getPOChrSummaryPopupReportDAO');
+		}
+	},
+	getHRCountSummaryDAO:async function (payload) {
+		try {
+			const taResult = await ReportAPI.getHRCountSummaryAPI(payload);
+			if (taResult) {
+				const statusCode = taResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = taResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+					else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+					else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardDAO.getHRCountSummaryDAO');
+		}
+	},
 	getPOCPopupMultiMonthReportDAO:async function (payload) {
 		try {
 			const taResult = await ReportAPI.getPOCPopupMultiMonthReportAPI(payload);
