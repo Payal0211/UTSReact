@@ -1105,8 +1105,18 @@ function NewHRFields() {
             }
         }
 
+//              let pl = {
+//             basicFormFields,
+//             roleReqFormFields,
+//             mustHaveSkills,
+//             goodToHaveSkills,
+//             jobDesData,
+//             budgetFormFields,
+//             enhanceMatchmakingFormFields
+//         }
 
 
+// console.log(pl)
 
         if (!isValid) {
             setFormValidationError(true)
@@ -1115,16 +1125,7 @@ function NewHRFields() {
         }
 
 
-        let pl = {
-            basicFormFields,
-            roleReqFormFields,
-            mustHaveSkills,
-            goodToHaveSkills,
-            jobDesData,
-            budgetFormFields,
-            enhanceMatchmakingFormFields
-        }
-
+   
         const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
         const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));
 
@@ -1526,7 +1527,7 @@ function NewHRFields() {
                                                 placeholder="Engagement type *"
                                                 options={hrPricingTypes && basicFormFields.availability === 1 ? hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime })).filter(i => (i.id !== 3 && i.showPartTime === true))
                                                     : hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime }))}
-                                                value={basicFormFields.availability}
+                                                value={basicFormFields.hiringPricingType}
                                                 onChange={(val, valObj) => {
                     
                                                     setBasicFormFields(prev => ({ ...prev, hiringPricingType:  val, payroll: undefined, contractDuration: undefined, payrollPartnerName: '' }))
