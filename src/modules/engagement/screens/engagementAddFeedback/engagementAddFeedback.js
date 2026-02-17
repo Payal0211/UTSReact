@@ -18,7 +18,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 
 
 
-const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control, setError, getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit,setClientFeedbackList
+const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control, setError, getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit,setClientFeedbackList,feedbackCategory
 }) => {
     const watchFeedbackDate = watch('feedBackDate')
     const submitFeedbacHandler = async (data) => {
@@ -35,7 +35,9 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
             talentName: getFeedbackFormContent?.talentName,
             talentID: getFeedbackFormContent?.talentID,
             engagemenID: getFeedbackFormContent?.engagementID,
-            supportingFilename : getUploadFileData
+            supportingFilename : getUploadFileData,
+            LostCategoryID:data.category?.id,
+            LostSubCategory:data.subCategory
         }
         const response = await engagementRequestDAO.saveFeedbackFormDAO(feedBackdata);
         if (response.statusCode === HTTPStatusCode.OK) {
@@ -226,6 +228,45 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                     />
                 </div>
             </div>
+             <div className={allengagementAddFeedbackStyles.row}>
+                <div
+                    className={allengagementAddFeedbackStyles.colMd12}>
+                    <HRSelectField
+                        mode='id/value'
+                        // controlledValue={feedBackTypeEdit}
+                        // setControlledValue={setFeedbackTypeEdit}
+                        // isControlled={true}
+                        setValue={setValue}
+                        register={register}
+                        name="category"
+                        label="Category"
+                        defaultValue="Please Select"
+                        options={feedbackCategory?.filter((item) => item?.value !== "0")}
+                        required
+                        isError={
+                            errors['category'] && errors['category']
+                        }
+                        errorMsg="Please select a category."
+                    />
+                </div>
+          
+            </div>
+
+             <div className={allengagementAddFeedbackStyles.row}>
+                <div
+                    className={allengagementAddFeedbackStyles.colMd12}>
+                    <HRInputField
+                        register={register}
+                        isTextArea={true}
+                        rows={4}
+                        errors={errors}
+                        label={'Sub Category'}
+                        name="subCategory"
+                        type={InputType.TEXT}
+                        placeholder="Add the sub category"
+                    />
+                </div>
+            </div>
 
             <div className={allengagementAddFeedbackStyles.row}>
                 <div
@@ -235,6 +276,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                         isTextArea={true}
                         rows={4}
                         errors={errors}
+                        required
                         validationSchema={{
                             required: 'Please enter the action to take.',
                         }}
