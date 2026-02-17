@@ -1012,7 +1012,7 @@ function NewHRFields() {
                 isValid = false;
             }
 
-            if (roleReqFormFields.maxExp <= roleReqFormFields.minExp || roleReqFormFields.minExp < 0 || roleReqFormFields.maxExp > 60 || roleReqFormFields.minExp > 60) {
+            if (+roleReqFormFields.maxExp <= +roleReqFormFields.minExp || +roleReqFormFields.minExp < 0 || +roleReqFormFields.maxExp > 60 || +roleReqFormFields.minExp > 60) {
                 isValid = false;
             }
 
@@ -1839,7 +1839,7 @@ function NewHRFields() {
                                                     setRoleReqFormFields(prev => ({ ...prev, maxExp: e.target.value }))
                                                 }} />
 
-                                            {formValidationError && (roleReqFormFields.maxExp === '' || roleReqFormFields.maxExp <= roleReqFormFields.minExp || roleReqFormFields.maxExp > 60) && <p className={`${styles["fieldError"]}`}>please enter valid max experience </p>}
+                                            {formValidationError && (roleReqFormFields.maxExp === '' || +roleReqFormFields.maxExp <= +roleReqFormFields.minExp || +roleReqFormFields.maxExp > 60) && <p className={`${styles["fieldError"]}`}>please enter valid max experience </p>}
                                         </div>
                                     </div>
                                 </div>
@@ -2687,7 +2687,7 @@ function NewHRFields() {
                         {/* <!-- Form Actions --> */}
                         <section className={`${styles["form-actions"]}`}>
                           {+hrid === 0 && <button type="button" name="save" className={`${styles["btn-save"]}`} onClick={() => handleNext(true)}>Save As Draft</button>} 
-                            <button type="button" name="next" className={`${styles["btn-next"]}`} onClick={() => handleNext(false)}>{+hrid === 0 ? "Create" : "Edit"} HR</button>
+                            <button type="button" name="next" className={`${styles["btn-next"]}`} onClick={() => handleNext(false)}>{+hrid === 0 ? "Create" : "Save"} HR</button>
                         </section>
                     </form>
                 </div>
