@@ -61,7 +61,7 @@ export default function PodReports({
     }
   };
 
-  const getSummaryDetailsPopup = async (row,v) => {
+  const getSummaryDetailsPopup = async (row,v, cat) => {
  try {
       // setShowSummaryReport(true);
   setShowAchievedReport(true);
@@ -71,7 +71,7 @@ export default function PodReports({
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
         stageID: row.stage_ID,
-          cat: row.category,
+        cat: cat,
         multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
       };
       setShowTalentCol(row);
@@ -660,6 +660,9 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig} `,
       render: (v, rec) => {
+        if(rec.stage.trim() === 'Coversion %' || rec.stage.trim() ===  'Lost %' ||rec.stage.trim() ===   "Total NBD value of convert" || rec.stage.trim() ===  "Average HR value of convert"){
+          return v
+        }
         return (
           <>
             <div
@@ -676,7 +679,7 @@ export default function PodReports({
                   (
                     <span
                       onClick={() => {
-                      getSummaryDetailsPopup(rec, v);
+                      getSummaryDetailsPopup(rec, v,'All');
                       }}
                       style={{ cursor: "pointer", color: "#1890ff" }}
                     >
@@ -703,6 +706,10 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
+
+        if(rec.stage.trim() === 'Coversion %' || rec.stage.trim() ===  'Lost %' ||rec.stage.trim() ===   "Total NBD value of convert" || rec.stage.trim() ===  "Average HR value of convert"){
+          return v
+        }
         return(
           <>
             <div
@@ -719,7 +726,7 @@ export default function PodReports({
                   (
                     <span
                       onClick={() => {
-                         getSummaryDetailsPopup(rec, v);
+                         getSummaryDetailsPopup(rec, v,'D');
                       }}
                       style={{ cursor: "pointer", color: "#1890ff" }}
                     >
@@ -746,6 +753,9 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
+        if(rec.stage.trim() === 'Coversion %' || rec.stage.trim() ===  'Lost %' ||rec.stage.trim() ===   "Total NBD value of convert" || rec.stage.trim() ===  "Average HR value of convert"){
+          return v
+        }
         return (
           <>
             <div
@@ -762,7 +772,7 @@ export default function PodReports({
                   (
                     <span
                       onClick={() => {
-                          getSummaryDetailsPopup(rec, v);
+                          getSummaryDetailsPopup(rec, v,'ND');
                       }}
                       style={{ cursor: "pointer", color: "#1890ff" }}
                     >

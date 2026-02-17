@@ -1087,6 +1087,37 @@ export const engagementRequestDAO = {
             return errorDebug(error, 'engagementRequestDAO.getFeedbackFormContentDAO');
         }
     },
+	getFeedbackFormCategoryDAO: async function (getHRAndEngagementId) {
+        try {
+            const feedbackFormContent = await EngagementRequestAPI.getFeedbackFormCategoryAPI(getHRAndEngagementId);
+            if (feedbackFormContent) {
+                const statusCode = feedbackFormContent['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = feedbackFormContent.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+                )
+                    return feedbackFormContent;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return feedbackFormContent;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+                    return (
+                        <Navigate
+                            replace
+                            to={UTSRoutes.LOGINROUTE}
+                        />
+                    );
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.getFeedbackFormCategoryDAO');
+        }
+    },
     updateLeaveRequestDAO: async function (pl) {
         try {
             const feedbackFormContent = await EngagementRequestAPI.updateLeaveRequest(pl);

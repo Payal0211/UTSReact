@@ -579,6 +579,21 @@ export const EngagementRequestAPI = {
 			return errorDebug(error, 'EngagementRequestAPI.feedbackFormContent');
 		}
 	},
+	getFeedbackFormCategoryAPI:async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_FEEDBACK_CATEGORIES 
+			
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.feedbackFormContent');
+		}
+	},
 	updateLeaveRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =
