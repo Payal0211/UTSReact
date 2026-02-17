@@ -281,6 +281,7 @@ export class EngagementAPI {
 	static GET_CONTENT_FOR_ADD_INVOICE = 'GetContentForAddInvoice';
 	static VIEW_ONBOARD_FEEDBACK = 'ViewOnBoardFeedback';
 	static GET_ONBOARD_FEEDBACK = 'GetOnBordFeedBack';
+	static GET_FEEDBACK_CATEGORIES  = 'GetAllLostCategory'
 	static GET_FEEDBACK_CONTENT = 'GetFeedbackFormContent';
 	static SAVE_FEEDBACK_CLIENT_ONBOARD = 'SaveFeedbackClientOnBoard';
 	static SAVE_INVOICE_DETAILS = 'SaveInvoiceDetails';
