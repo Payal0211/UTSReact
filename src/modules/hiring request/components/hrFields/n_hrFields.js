@@ -1554,7 +1554,10 @@ function NewHRFields() {
                                     </div>
                                 </div>
                                 <div className={`${styles["row"]}`}>
-                                    {(basicFormFields?.hiringPricingType === 1 || basicFormFields?.hiringPricingType === 2 || basicFormFields.payroll === 4) && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                    {(basicFormFields?.hiringPricingType === 1 || basicFormFields?.hiringPricingType === 2 ||
+                                       basicFormFields?.hiringPricingType === 4 || basicFormFields?.hiringPricingType === 5 ||
+                                       basicFormFields?.hiringPricingType === 7 || basicFormFields?.hiringPricingType === 8
+                                       || basicFormFields.payroll === 4) && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                                <Select
                                                 showSearch
