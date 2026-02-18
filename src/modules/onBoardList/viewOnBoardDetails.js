@@ -52,6 +52,7 @@ export default function ViewOnBoardDetails() {
   const [allBRPRlist, setAllBRPRList] = useState([]);
   const [otherDetailsList,setOtherDetailsList] = useState([]);
   const [getFeedbackFormContent, setFeedbackFormContent] = useState({});
+    const [feedbackCategory,setFeedbackCategory] = useState([])
   const [feedBackSave, setFeedbackSave] = useState(false);
   const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
   const [documentsList,setDocumentsList] = useState([]);
@@ -652,6 +653,12 @@ export default function ViewOnBoardDetails() {
     const response = await engagementRequestDAO.getFeedbackFormContentDAO(
       getHRAndEngagementId,
     );
+       const categorylistResult = await engagementRequestDAO.getFeedbackFormCategoryDAO()
+
+    if (categorylistResult?.statusCode === HTTPStatusCode.OK) {
+      setFeedbackCategory(categorylistResult?.responseBody?.details.map(v=> ({id: v.id, value: v.lostCategory})));
+    }
+
     if (response?.statusCode === HTTPStatusCode.OK) {
       setFeedbackFormContent(response?.responseBody?.details);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -1393,6 +1400,7 @@ export default function ViewOnBoardDetails() {
                 reset()
               }
 							}
+               feedbackCategory={feedbackCategory}
 							setFeedbackSave={setFeedbackSave}
 							feedBackSave={feedBackSave}
 							register={register}
