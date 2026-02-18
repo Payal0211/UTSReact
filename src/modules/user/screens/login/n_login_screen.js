@@ -166,7 +166,7 @@ const NewLoginScreen = () => {
                 {/* <!-- Welcome Message --> */}
                 <div className={`${loginStyle["login-welcome"]}`}>
                     <h1 className={`${loginStyle["login-title"]}`}>Welcome to <br />Uplers Workspace</h1>
-                    <p className={`${loginStyle["login-tagline"]}`}>Hire Top Talents Quickly <br />with AI & Human Intelligence</p>
+                    {/* <p className={`${loginStyle["login-tagline"]}`}>Hire Top Talents Quickly <br />with AI & Human Intelligence</p> */}
                 </div>
 
                 {/* <!-- Login Form --> */}
