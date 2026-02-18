@@ -3272,6 +3272,13 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                               </div>
                                             </Table.Summary.Cell>
                     }
+                     else if(item.dataIndex === 'nextMonthStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'nextMonthStr')}</strong>                                         
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
                     else {
                          return  <Table.Summary.Cell index={index}>
                                               <div>
@@ -3386,6 +3393,14 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                                               <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
                                                 <strong style={{fontSize:'12px'}}>{calculateTotal(values,'w5')}</strong>
                                                   <strong style={{fontSize:'12px', color:'#1890ff', marginTop:'5px'}}>{calculateTotal(values,'w5_Actual')}</strong>
+                                              </div>
+                                            </Table.Summary.Cell>
+                    }
+                        else if(item.dataIndex === 'nextMonthStr'){
+                       return  <Table.Summary.Cell index={index}>
+                                              <div style={{textAlign:'end', display:'flex',flexDirection:'column'}}>
+                                                <strong style={{fontSize:'12px'}}>{calculateTotal(values,'nextMonthStr')}</strong>
+                                                  
                                               </div>
                                             </Table.Summary.Cell>
                     }
