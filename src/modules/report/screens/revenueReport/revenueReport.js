@@ -402,6 +402,7 @@ function OnBoardList() {
     engagementAddFeedback: false,
   });
   const [getFeedbackFormContent, setFeedbackFormContent] = useState({});
+    const [feedbackCategory,setFeedbackCategory] = useState([])
   const [feedBackData, setFeedBackData] = useState({
     totalRecords: 10,
     pagenumber: 1,
@@ -518,6 +519,13 @@ function OnBoardList() {
     const response = await engagementRequestDAO.getFeedbackFormContentDAO(
       getHRAndEngagementId
     );
+
+       const categorylistResult = await engagementRequestDAO.getFeedbackFormCategoryDAO()
+
+    if (categorylistResult?.statusCode === HTTPStatusCode.OK) {
+      setFeedbackCategory(categorylistResult?.responseBody?.details.map(v=> ({id: v.id, value: v.lostCategory})));
+    }
+
     if (response?.statusCode === HTTPStatusCode.OK) {
       setFeedbackFormContent(response?.responseBody?.details);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -1155,6 +1163,7 @@ function OnBoardList() {
               });
               reset();
             }}
+            feedbackCategory={feedbackCategory}
             setFeedbackSave={setFeedbackSave}
             feedBackSave={feedBackSave}
             register={register}

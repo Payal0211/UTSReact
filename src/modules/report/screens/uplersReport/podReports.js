@@ -14,6 +14,7 @@ import moment from "moment";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 import { IoMdAddCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
+import { downloadToExcel } from "modules/report/reportUtils";
 
 
 export default function PodReports({
@@ -88,6 +89,36 @@ export default function PodReports({
       console.log(err);
       setListAchievedData([]);
     }
+
+    //   try {
+    //   setShowDFReport(true);
+
+    //    const pl = {
+    //     hrmodel: hrModal,
+    //     pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
+    //     month: moment(monthDate).format("M"),
+    //     year: moment(monthDate).format("YYYY"),
+    //     stageID: row.stage_ID,
+    //     cat: cat,
+    //     multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
+    //   };
+    //   setShowTalentCol(row);
+    //   setAchievedTotal(v);
+    //   setAchievedLoading(true);
+    //   const result = await ReportDAO.getPOChrSummaryPopupReportDAO(pl);
+    //   setAchievedLoading(false);
+    //   if (result.statusCode === 200) {
+    //     setDFListData(result.responseBody);
+    //     setDFFilterListData(result.responseBody);
+    //   } else {
+    //     setDFListData([]);
+    //     setDFFilterListData([]);
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    //   setDFListData([]);
+    //   setDFFilterListData([]);
+    // }
   }
 
   const GetHRCountSummary = async() =>{
@@ -935,6 +966,17 @@ export default function PodReports({
     setDFFilterListData(filteredData);
   };
 
+  
+    // const handleExport = (apiData) => {
+    //   let DataToExport = apiData.map((data) => {
+    //     let obj = {};
+       
+  
+    //     return obj;
+    //   });
+    //   downloadToExcel(DataToExport, "Engagement Report");
+    // };
+
   return (
     <>
       <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
@@ -1278,10 +1320,18 @@ export default function PodReports({
             setShowAchievedReport(false);
           }}
         >
-          <div style={{ padding: "20px 15px" }}>
+          <div style={{ padding: "20px 15px", display:'flex', justifyContent:'space-between' }}>
             <h3>
               <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
+
+{/* 
+              <button
+                  className={uplersStyle.btnPrimary}
+                  onClick={() => handleExport(listAchievedData)}
+                >
+                  Export
+                </button> */}
           </div>
 
           {achievedLoading ? (
@@ -1465,7 +1515,7 @@ export default function PodReports({
                         </th>
                       )}
 
-                      <th
+                      {/* <th
                         style={{
                           padding: "10px",
                           border: "1px solid #ddd",
@@ -1473,7 +1523,7 @@ export default function PodReports({
                         }}
                       >
                         Client Business Type
-                      </th>
+                      </th> */}
                       <th
                         style={{
                           padding: "10px",
@@ -1663,11 +1713,11 @@ export default function PodReports({
                           </td>
                         )}
 
-                        <td
+                        {/* <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.clientBusinessType}
-                        </td>
+                        </td> */}
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
