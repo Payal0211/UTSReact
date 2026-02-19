@@ -1014,6 +1014,23 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getOnBoardListData');
 		}
 	},
+	getClientFeedbackListAPI:async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +  SubDomain.ENGAGEMENT + 'ClientFeedbackReport' 
+			// +`
+			// ?StartDate=${data.StartDate}&EndDate=${data.EndDate}&MonthStr=${data.MonthStr}&YearStr=${data.YearStr}&AMAssignment=${data.AMAssignment}&ClientFeedback=${data.ClientFeedback}&AmberFeedback=${data.AmberFeedback}&
+			// RedFeedback=${data.RedFeedback}&GreenFeedback=${data.GreenFeedback}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = data
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getClientFeedbackListAPI');
+		}
+	},
 	getRevenueListData : async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =

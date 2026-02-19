@@ -231,6 +231,11 @@ const CompanyCategory = React.lazy(() =>
 	import('modules/report/screens/companyCategory/companyCategory')
 )
 
+const ClientFeedback = React.lazy(() => 
+	import('modules/report/screens/clientFeedback/clientFeedback')
+)
+
+
 const DailyBusinessNumbers = React.lazy(() => 
 	import('modules/report/screens/dailyBusinessNumbers/dailyBusinessNumbers')
 )
@@ -329,6 +334,7 @@ export default class UTSRoutes {
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 	static AM_REPORT = '/amReport';
 	static COMPANY_CATEGORY = '/companyCategory'
+	static CLIENT_FEEDBACK = '/clientFeedback'
 	static DAILY_BUSINESS_NUMBERS = '/RevenueBusinessReport';
 	static POTENTIAL_CLOSURES_SHEET = '/potentialClosuresList'
 	static SCREENING_INTERVIEW_REJECT = '/screeningInterviewReject'
@@ -728,6 +734,11 @@ export const navigateToComponent = {
 [UTSRoutes.COMPANY_CATEGORY]: (
 	<Suspense>
 		<CompanyCategory />
+	</Suspense>
+),
+[UTSRoutes.CLIENT_FEEDBACK]: (
+	<Suspense>
+		<ClientFeedback />
 	</Suspense>
 ),
 

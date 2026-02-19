@@ -277,7 +277,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible = (ID === 3 || ID === 2 || ID === 1) ? true : false;
 		return isVisible
 	}
-	if(title ==='amInterviews' || title ==='omReport' || title ==='amReport' || title ==='companyCategory' || title ==='PotentialClosuresSheet'|| title ==='DailyBusinessNumbers'  || title ==='Screen & Interview Reject Count' ){
+	if(title ==='amInterviews' || title ==='omReport' || title ==='amReport' || title ==='companyCategory'||title === 'clientFeedback' || title ==='PotentialClosuresSheet'|| title ==='DailyBusinessNumbers'  || title ==='Screen & Interview Reject Count' ){
 		isVisible =  (ID === 4 || ID===9 || ID=== 10 || ID===1 || ID===2) ? true : false
 		// isVisible = true
 		return isVisible	
@@ -587,6 +587,13 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isActive: false,
 					navigateTo: UTSRoutes.COMPANY_CATEGORY,
 					isVisible: isAccess(usertypeID, 'companyCategory')
+				}),
+				new SideBarModels({
+					id: 'clientFeedback',
+					title: 'Client Feedback',
+					isActive: false,
+					navigateTo: UTSRoutes.CLIENT_FEEDBACK,
+					isVisible: isAccess(usertypeID, 'clientFeedback')
 				}),
 			],
 			isVisible: isAccess(usertypeID, 'omReport')
