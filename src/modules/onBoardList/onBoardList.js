@@ -1865,10 +1865,10 @@ const calDueDate = (date, term)=>{
                   }))
                 }
               >
-                <Tooltip title={"View Feedback Received"}>
+                <Tooltip title={"View Amber Feedback"}>
                   <div
                     className={onboardList.filterType}
-                    key={"Feedback Received"}
+                    key={"Amber Feedback"}
                     style={{
                       borderBottom:
                         tableFilteredState?.filterFields_OnBoard
