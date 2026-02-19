@@ -895,6 +895,24 @@ export const allEngagementConfig = {
 			// },
 		];
 	},
+	clientFeedbackListFilterTypeConfig: (filterList) => {
+		return [
+
+			{
+				label: 'AM',
+				name: 'amName',
+				child: filterList?.amName?.map(item=>({...item,text: item.value,value:item.text})),
+				isSearch: true,
+			},
+			{
+				label: 'Client Feedback',
+				name: 'clientFeedback',
+				child: filterList?.clientFeedback,
+				isSearch: true,
+			},
+		
+		];
+	},
 	revenueListFilterTypeConfig: (filterList) => {
 		return [
 			{
