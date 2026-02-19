@@ -510,7 +510,7 @@ const InterviewReschedule = ({
 										}}
 										showTimeSelect
 										showTimeSelectOnly
-										timeIntervals={60}
+										timeIntervals={30}
 										timeCaption="Time"
 										timeFormat="h:mm a"
 										dateFormat="h:mm a"
@@ -539,7 +539,7 @@ const InterviewReschedule = ({
 										}}
 										showTimeSelect
 										showTimeSelectOnly
-										timeIntervals={60}
+										timeIntervals={30}
 										timeCaption="Time"
 										timeFormat="h:mm a"
 										dateFormat="h:mm a"
@@ -599,7 +599,7 @@ const InterviewReschedule = ({
 												}}
 												showTimeSelect
 												showTimeSelectOnly
-												timeIntervals={60}
+												timeIntervals={30}
 												timeCaption="Time"
 												timeFormat="h:mm a"
 												dateFormat="h:mm a"
@@ -629,7 +629,7 @@ const InterviewReschedule = ({
 												}}
 												showTimeSelect
 												showTimeSelectOnly
-												timeIntervals={60}
+												timeIntervals={30}
 												timeCaption="Time"
 												timeFormat="h:mm a"
 												dateFormat="h:mm a"
@@ -684,7 +684,7 @@ const InterviewReschedule = ({
 												}}
 												showTimeSelect
 												showTimeSelectOnly
-												timeIntervals={60}
+												timeIntervals={30}
 												timeCaption="Time"
 												timeFormat="h:mm a"
 												dateFormat="h:mm a"
@@ -715,7 +715,7 @@ const InterviewReschedule = ({
 												}}
 												showTimeSelect
 												showTimeSelectOnly
-												timeIntervals={60}
+												timeIntervals={30}
 												timeCaption="Time"
 												timeFormat="h:mm a"
 												dateFormat="h:mm a"
