@@ -432,7 +432,7 @@ const InterviewSchedule = ({
 										}}
 										showTimeSelect
 										showTimeSelectOnly
-										timeIntervals={60}
+										timeIntervals={30}
 										timeCaption="Time"
 										timeFormat="h:mm a"
 										dateFormat="h:mm a"
@@ -461,7 +461,7 @@ const InterviewSchedule = ({
 										}}
 										showTimeSelect
 										showTimeSelectOnly
-										timeIntervals={60}
+										timeIntervals={30}
 										timeCaption="Time"
 										dateFormat="h:mm a"
 										timeFormat="h:mm a"
@@ -518,7 +518,7 @@ const InterviewSchedule = ({
 												}}
 												showTimeSelect
 												showTimeSelectOnly
-												timeIntervals={60}
+												timeIntervals={30}
 												timeCaption="Time"
 												dateFormat="h:mm a"
 												timeFormat="h:mm a"
@@ -548,7 +548,7 @@ const InterviewSchedule = ({
 												}}
 												showTimeSelect
 												showTimeSelectOnly
-												timeIntervals={60}
+												timeIntervals={30}
 												timeCaption="Time"
 												dateFormat="h:mm a"
 												timeFormat="h:mm a"
@@ -604,7 +604,7 @@ const InterviewSchedule = ({
 												}}
 												showTimeSelect
 												showTimeSelectOnly
-												timeIntervals={60}
+												timeIntervals={30}
 												timeCaption="Time"
 												dateFormat="h:mm a"
 												timeFormat="h:mm a"
@@ -634,7 +634,7 @@ const InterviewSchedule = ({
 												}}
 												showTimeSelect
 												showTimeSelectOnly
-												timeIntervals={60}
+												timeIntervals={30}
 												timeCaption="Time"
 												dateFormat="h:mm a"
 												timeFormat="h:mm a"
