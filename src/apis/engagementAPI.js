@@ -585,7 +585,7 @@ export const EngagementRequestAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.ENGAGEMENT +
 			EngagementAPI.GET_FEEDBACK_CATEGORIES 
-			
+			httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendGetRequest();
