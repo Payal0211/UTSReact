@@ -142,6 +142,11 @@ function ClientFeedback() {
         if(dateModal === 'Date Range'  && !endDate){
             return
         }
+
+        if(dateModal === 'Months' && selectedMonths.length === 0){
+            return
+        }
+
         console.log(payload)
         setLoading(true);
         let result = await MasterDAO.getClientFeedbackListDAO(payload);
@@ -301,11 +306,11 @@ function ClientFeedback() {
 
     const tableColumns = [
         {
-            title: "Feedback Date",
+            title: <>Feedback<br/> Date</>,
             dataIndex: "feedbackCreatedDateTime",
             key: "feedbackCreatedDateTime",
             align: "left",
-            width: "95px",
+            width: "120px",
             fixed: "left",
         },
         {
@@ -378,21 +383,21 @@ function ClientFeedback() {
             dataIndex: "subCategory",
             key: "subCategory",
             align: "left",
-
+width: "300px",
         },
         {
             title: "Feedback Comments",
             dataIndex: "feedbackComment",
             key: "feedbackComment",
             align: "left",
-
+width: "300px",
         },
         {
             title: "Action To Take",
             dataIndex: "feedbackActionToTake",
             key: "feedbackActionToTake",
             align: "left",
-
+width: "300px",
         },
     ]
 
@@ -404,6 +409,9 @@ function ClientFeedback() {
           if (val.title === "Eng. ID/HR#") {
             obj[`${val.title}`] =
               `${data.engagemenID} /  ${data?.hR_Number} ` 
+              
+          }else if (val.key === "feedbackCreatedDateTime") {
+            obj["Feedback Data"] =`${data.feedbackCreatedDateTime}` 
               
           } else if (val.key === "feedbackType") {
             obj["Feedback Type"] =`${data.feedbackType}` 
