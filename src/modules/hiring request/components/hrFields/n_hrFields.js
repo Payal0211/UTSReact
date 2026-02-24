@@ -270,6 +270,7 @@ function NewHRFields() {
             setHRDetails(data)
             setClientDetails({
                 ...data?.companyInfo,
+                "emailId": data?.clientDetails_Result?.clientEmail,
                 "companyId": data?.companyInfo?.companyID,
                 "company": data?.companyInfo?.companyName,
                 "companyURL": data?.companyInfo?.website,
@@ -1261,7 +1262,7 @@ function NewHRFields() {
         formData.append("File", fileData);
         formData.append(
             "clientemail",
-            clientDetails.emailId
+            clientDetails.emailId  
         );
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         setUploading(false);
