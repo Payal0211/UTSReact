@@ -22,6 +22,7 @@ export default function PodReports({
 }) {
     const {isTableLoading,podDashboardList,AddComment,monthDate,hrModal,selectedHead,dashboardTabTitle} = impHooks
   const [showAchievedReport, setShowAchievedReport] = useState(false);
+  const [showChReport,setShowCHReport] = useState(false)
   const [listAchievedData, setListAchievedData] = useState([]);
   const [achievedLoading, setAchievedLoading] = useState(false);
   const [showTalentCol, setShowTalentCol] = useState({});
@@ -35,6 +36,36 @@ export default function PodReports({
   const getHRTalentWiseReport = async (row, v, week) => {
     try {
       setShowAchievedReport(true);
+
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
+        month: moment(monthDate).format("M"),
+        year: moment(monthDate).format("YYYY"),
+        stageID: row.stage_ID,
+        cat: row.category,
+        week: week ? week : "",
+        multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPOCPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
+
+  const getHRChealthWiseReport =  async (row, v, week) => {
+    try {
+      setShowCHReport(true);
 
       const pl = {
         hrmodel: hrModal,
@@ -669,6 +700,93 @@ export default function PodReports({
     //           }
     // },
   ];
+   const getCHColumns = () => [
+    {
+      title: "Stages",
+      dataIndex: "stage",
+      key: "stage",
+      //   fixed: "left",
+      width: 200,
+      className: `${uplersStyle.stagesHeaderCell} ${uplersStyle.headerCommonConfig} `,
+    
+    },
+   
+    {
+      title: <div style={{ textAlign: "center" }}>Achieved</div>,
+      dataIndex: "achievedStr",
+      key: "achievedStr",
+      width: 120,
+      align: "right",
+      onHeaderCell: () => ({
+        className: uplersStyle.headerCommonGoalHeaderConfig,
+      }),
+      className: `${uplersStyle.headerCommonConfig}`,
+      render: (v, rec) => {
+        return (
+          <>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                // flexDirection:'end'
+              }}
+            >
+              
+
+              <div style={{ marginLeft: "auto" }}>
+                {v ? (
+                  rec.stage === "Goal" || rec.stage.includes("%") ? (
+                    v
+                  ) : (
+                    <span
+                      onClick={() => {
+                       getHRChealthWiseReport(rec, v)
+                      
+                      }}
+                      style={{ cursor: "pointer", color: "#1890ff" }}
+                    >
+                      {v}
+                    </span>
+                  )
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          </>
+        );
+      },
+    },
+    {
+      title: <div style={{ textAlign: "center" }}>Achieved %</div>,
+      dataIndex: "achievedPerStr",
+      key: "achievedPerStr",
+      width: 120,
+      align: "right",
+      onHeaderCell: () => ({
+        className: uplersStyle.headerCommonGoalHeaderConfig,
+      }),
+      className: `${uplersStyle.headerCommonConfig}`,
+      render: (v, rec) => {
+        return v ? (
+          rec.stage === "Goal" || rec.stage.includes("%") ? (
+            v
+          ) : (
+            <span
+            // onClick={() => getHRTalentWiseReport(rec,  v)}
+            // style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {v}
+            </span>
+          )
+        ) : (
+          ""
+        );
+      },
+    },
+   
+  ];
 
   const getHRCountsColumns = () => [
     {
@@ -1231,7 +1349,7 @@ export default function PodReports({
                 Customer Health
               </p>
               <Table
-                columns={getColumns()}
+                columns={getCHColumns()}
                 dataSource={podDashboardList.filter(
                   (item) => item.category === "CH"
                 )}
@@ -1780,6 +1898,206 @@ export default function PodReports({
               className={uplersStyle.btnCancle}
               onClick={() => {
                 setShowAchievedReport(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+
+       {showChReport && (
+        <Modal
+          width="1200px"
+          centered
+          footer={null}
+          open={showChReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowCHReport(false);
+          }}
+        >
+          <div style={{ padding: "20px 15px", display:'flex', justifyContent:'space-between' }}>
+            <h3>
+              <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+            </h3>
+
+{/* 
+              <button
+                  className={uplersStyle.btnPrimary}
+                  onClick={() => handleExport(listAchievedData)}
+                >
+                  Export
+                </button> */}
+          </div>
+
+          {achievedLoading ? (
+            <TableSkeleton />
+          ) : listAchievedData.length > 0 ? (
+            <>
+              <div
+                style={{
+                  padding: "0 20px 20px 20px",
+                  overflowX: "auto",
+                  maxHeight: "500px",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 14,
+                    textAlign: "left",
+                  }}
+                >
+                  <thead
+                    className={uplersStyle.overwriteTableColor}
+                    style={{ position: "sticky", top: "0" }}
+                  >
+                    <tr style={{ backgroundColor: "#f0f0f0" }}>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        {showTalentCol?.stage_ID === 'CompanyJobCount'
+                          ? "Added Date" : "Created Date"
+                       }
+                       
+                      </th>
+
+                  
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Company
+                      </th>
+                    
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Sales Person
+                      </th>
+
+                       {showTalentCol?.stage_ID === 'CompanyJobCount'
+                          &&<th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Jobs Count
+                      </th>
+                       }
+                
+
+                      {/*  */}
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Lead Type
+                      </th>
+
+                
+                    </tr>
+                  </thead>
+
+                  <tbody style={{ maxHeight: "500px" }}>
+                    {listAchievedData.map((detail, index) => (
+                      <tr
+                        key={index}
+                        style={{ borderBottom: "1px solid #ddd" }}
+                      >
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.hrCreatedDateStr}
+                        </td>
+                      
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          <a
+                            href={`/viewCompanyDetails/${detail.company_ID}`}
+                            style={{ textDecoration: "underline" }}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {detail.company}{" "}
+                          </a>
+                          {detail.company_Category === "Diamond" && (
+                            <img
+                              src={Diamond}
+                              alt="info"
+                              style={{ width: "16px", height: "16px" }}
+                            />
+                          )}
+                        </td>
+                      
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.salesPerson}
+                        </td>
+                         {showTalentCol?.stage_ID === 'CompanyJobCount'
+                          &&  <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.clientBusinessType }
+                        </td>
+                       }
+                     
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.lead_Type}
+                        </td>
+
+                      
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <div
+              style={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "20px",
+                fontWeight: 500,
+              }}
+            >
+              <p>No details available.</p>
+            </div>
+          )}
+
+          <div style={{ padding: "10px", textAlign: "right" }}>
+            <button
+              className={uplersStyle.btnCancle}
+              onClick={() => {
+                setShowCHReport(false);
               }}
             >
               Close
