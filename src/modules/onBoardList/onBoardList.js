@@ -1890,6 +1890,44 @@ const calDueDate = (date, term)=>{
                 </Tooltip>
               </SwiperSlide>
 
+
+<SwiperSlide
+                onClick={() =>
+                  setTableFilteredState((prev) => ({
+                    ...prev,
+                    filterFields_OnBoard: {
+                      ...prev.filterFields_OnBoard,
+                      SummaryFilterOption: "RF",
+                    },
+                  }))
+                }
+              >
+                <Tooltip title={"View Red Feedback"}>
+                  <div
+                    className={onboardList.filterType}
+                    key={"Red Feedback"}
+                    style={{
+                      borderBottom:
+                        tableFilteredState?.filterFields_OnBoard
+                          ?.SummaryFilterOption === "RF"
+                          ? "6px solid #FFDA30"
+                          : "",
+                    }}
+                  >
+                    <img src={LostEng} alt="rocket" />
+                    <h2>
+                      Red Feedback :{" "}
+                      <span>
+                        {onBoardListData[0]?.totalRedFeedbackCount
+                          ? onBoardListData[0]?.totalRedFeedbackCount
+                          : 0}
+                      </span>
+                    </h2>
+                  </div>
+                </Tooltip>
+              </SwiperSlide>
+              
+
                <SwiperSlide
                 onClick={() =>
                   setTableFilteredState((prev) => ({

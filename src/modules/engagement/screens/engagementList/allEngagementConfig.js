@@ -897,7 +897,6 @@ export const allEngagementConfig = {
 	},
 	clientFeedbackListFilterTypeConfig: (filterList) => {
 		return [
-
 			{
 				label: 'AM',
 				name: 'amName',
@@ -907,10 +906,9 @@ export const allEngagementConfig = {
 			{
 				label: 'Client Feedback',
 				name: 'clientFeedback',
-				child: filterList?.clientFeedback,
+				child: filterList?.feedbackReport,
 				isSearch: true,
-			},
-		
+			},	
 		];
 	},
 	revenueListFilterTypeConfig: (filterList) => {

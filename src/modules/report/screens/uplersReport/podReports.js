@@ -731,28 +731,7 @@ export default function PodReports({
                 justifyContent: "end",
                 // flexDirection:'end'
               }}
-            >
-              
-
-              <div style={{ marginLeft: "auto" }}>
-                {v ? (
-                  rec.stage === "Goal" || rec.stage.includes("%") ? (
-                    v
-                  ) : (
-                    <span
-                      onClick={() => {
-                       getHRChealthWiseReport(rec, v)
-                      
-                      }}
-                      style={{ cursor: "pointer", color: "#1890ff" }}
-                    >
-                      {v}
-                    </span>
-                  )
-                ) : (
-                  ""
-                )}
-              </div>
+            >          
             </div>
           </>
         );
