@@ -352,6 +352,7 @@ export class NewPagesRouts  {
 	static ADDNEWHR = '/w_allhiringrequest/addnewhr/:hrid';
 	static PREVIEW_HR = '/w_previewHR/:hrid'
 	static ALL_CLIENTS = '/w_allClients'
+	static ADD_NEW_COMPANY = "/w_addNewCompany/:companyID";
 }
 
 export const navigateToComponent = {
