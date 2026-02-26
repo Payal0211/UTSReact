@@ -1424,6 +1424,7 @@ const calDueDate = (date, term)=>{
         searchYear:
           dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
         AmberFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "AF" ? 1 : 0,
+        RedFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "RF" ? 1 : 0,
       },
     };
     getOnBoardListData(payload);
