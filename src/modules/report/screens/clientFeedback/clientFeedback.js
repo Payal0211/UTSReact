@@ -364,6 +364,20 @@ function ClientFeedback() {
                 return <>{val} <br /> ( {result.talentEmail} ) </>
             }
         },
+          {
+            title: "AM",
+            dataIndex: "amAssignmentUser",
+            key: "amAssignmentUser",
+            align: "left",
+           width: '100px'
+        },
+         {
+            title: "TA",
+            dataIndex: "taUser",
+            key: "taUser",
+            align: "left",
+           width: '100px'
+        },
         {
             title: <>Feedback <br />Type</>,
             dataIndex: "feedbackType",
