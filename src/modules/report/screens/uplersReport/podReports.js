@@ -736,13 +736,13 @@ export default function PodReports({
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "end",
+                justifyContent: "center",
                 // flexDirection:'end'
               }}
             >
 
 
-              <div style={{ marginLeft: "auto" }}>
+              <div >
                 {v ? (
                   rec.stage === "Goal" || rec.stage.includes("%") ? (
                     v
