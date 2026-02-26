@@ -956,6 +956,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getPOCPopupReportAPI');
 		}
 	},
+	updateReachoutStatusAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.UPDATE_REACHOUT_STATUS
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.updateReachoutStatusAPI');
+		}
+	},
 getPOChrSummaryPopupReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

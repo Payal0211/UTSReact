@@ -6,6 +6,9 @@ import {
   Tooltip,
   Skeleton,
   Spin,
+  Select,
+  message,
+  Input
 } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import Diamond from "assets/svg/diamond.svg";
@@ -15,14 +18,19 @@ import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 import { IoMdAddCircle } from "react-icons/io";
 import { IconContext } from "react-icons";
 import { downloadToExcel } from "modules/report/reportUtils";
+import { HTTPStatusCode } from "constants/network";
+
+const { Option } = Select;
+
+const { TextArea } = Input;
 
 
 export default function PodReports({
   impHooks
 }) {
-    const {isTableLoading,podDashboardList,AddComment,monthDate,hrModal,selectedHead,dashboardTabTitle} = impHooks
+  const { isTableLoading, podDashboardList, AddComment, monthDate, hrModal, selectedHead, dashboardTabTitle } = impHooks
   const [showAchievedReport, setShowAchievedReport] = useState(false);
-  const [showChReport,setShowCHReport] = useState(false)
+  const [showChReport, setShowCHReport] = useState(false)
   const [listAchievedData, setListAchievedData] = useState([]);
   const [achievedLoading, setAchievedLoading] = useState(false);
   const [showTalentCol, setShowTalentCol] = useState({});
@@ -31,7 +39,7 @@ export default function PodReports({
   const [DFFilterListData, setDFFilterListData] = useState([]);
   const [showDFReport, setShowDFReport] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [hrCountSummeryData,setHRCountSummeryData] = useState([])
+  const [hrCountSummeryData, setHRCountSummeryData] = useState([])
 
   const getHRTalentWiseReport = async (row, v, week) => {
     try {
@@ -39,7 +47,7 @@ export default function PodReports({
 
       const pl = {
         hrmodel: hrModal,
-        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
+        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 : selectedHead, selectedHead,
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
         stageID: row.stage_ID,
@@ -63,13 +71,13 @@ export default function PodReports({
     }
   };
 
-  const getHRChealthWiseReport =  async (row, v, week) => {
+  const getHRChealthWiseReport = async (row, v, week) => {
     try {
       setShowCHReport(true);
 
       const pl = {
         hrmodel: hrModal,
-        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
+        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 : selectedHead, selectedHead,
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
         stageID: row.stage_ID,
@@ -93,13 +101,13 @@ export default function PodReports({
     }
   };
 
-  const getSummaryDetailsPopup = async (row,v, cat) => {
- try {
+  const getSummaryDetailsPopup = async (row, v, cat) => {
+    try {
       // setShowSummaryReport(true);
-  setShowAchievedReport(true);
+      setShowAchievedReport(true);
       const pl = {
         hrmodel: hrModal,
-        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
+        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 : selectedHead, selectedHead,
         month: moment(monthDate).format("M"),
         year: moment(monthDate).format("YYYY"),
         stageID: row.stage_ID,
@@ -152,37 +160,37 @@ export default function PodReports({
     // }
   }
 
-  const GetHRCountSummary = async() =>{
-    try{
- const pl = {
+  const GetHRCountSummary = async () => {
+    try {
+      const pl = {
         hrmodel: hrModal,
-        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 :  selectedHead, selectedHead,
+        pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 : selectedHead, selectedHead,
         monthstr: moment(monthDate).format("M"),
         yearstr: moment(monthDate).format("YYYY"),
         multiplePODIds: dashboardTabTitle === 'All FTE Dashboard' ? '1,2,3' : ''
-    }
+      }
 
 
-    const result = await ReportDAO.getHRCountSummaryDAO(pl)
+      const result = await ReportDAO.getHRCountSummaryDAO(pl)
 
-    console.log('hr count summ',result)
+      console.log('hr count summ', result)
 
-     if (result.statusCode === 200) {
+      if (result.statusCode === 200) {
         setHRCountSummeryData(result.responseBody);
       } else {
         setHRCountSummeryData([]);
       }
-    }catch(err){
+    } catch (err) {
       console.log(err)
       setHRCountSummeryData([])
     }
-   
+
 
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     GetHRCountSummary()
-  },[selectedHead, monthDate, hrModal,dashboardTabTitle])
+  }, [selectedHead, monthDate, hrModal, dashboardTabTitle])
 
 
   const getColumns = () => [
@@ -396,31 +404,31 @@ export default function PodReports({
               {(rec.stage === "Joining" ||
                 rec.stage === "Companies CF" ||
                 rec.stage === "Total Customers assigned") && (
-                <IconContext.Provider
-                  value={{
-                    color: "green",
-                    style: {
-                      width: "20px",
-                      height: "20px",
-                      marginRight: "auto",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  {" "}
-                  <Tooltip title={`Add/View comment`} placement="top">
-                    <span
-                      onClick={() => {
-                        AddComment(rec, "N");
-                      }}
+                  <IconContext.Provider
+                    value={{
+                      color: "green",
+                      style: {
+                        width: "20px",
+                        height: "20px",
+                        marginRight: "auto",
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    {" "}
+                    <Tooltip title={`Add/View comment`} placement="top">
+                      <span
+                        onClick={() => {
+                          AddComment(rec, "N");
+                        }}
                       // className={taStyles.feedbackLabel}
-                    >
-                      {" "}
-                      <IoMdAddCircle />
-                    </span>{" "}
-                  </Tooltip>
-                </IconContext.Provider>
-              )}
+                      >
+                        {" "}
+                        <IoMdAddCircle />
+                      </span>{" "}
+                    </Tooltip>
+                  </IconContext.Provider>
+                )}
 
               <div style={{ marginLeft: "auto" }}>
                 {v ? (
@@ -700,7 +708,7 @@ export default function PodReports({
     //           }
     // },
   ];
-   const getCHColumns = () => [
+  const getCHColumns = () => [
     {
       title: "Stages",
       dataIndex: "stage",
@@ -708,9 +716,9 @@ export default function PodReports({
       //   fixed: "left",
       width: 200,
       className: `${uplersStyle.stagesHeaderCell} ${uplersStyle.headerCommonConfig} `,
-    
+
     },
-   
+
     {
       title: <div style={{ textAlign: "center" }}>Achieved</div>,
       dataIndex: "achievedStr",
@@ -731,40 +739,34 @@ export default function PodReports({
                 justifyContent: "end",
                 // flexDirection:'end'
               }}
-            >          
+            >
+
+
+              <div style={{ marginLeft: "auto" }}>
+                {v ? (
+                  rec.stage === "Goal" || rec.stage.includes("%") ? (
+                    v
+                  ) : (
+                    <span
+                      onClick={() => {
+                        getHRChealthWiseReport(rec, v)
+
+                      }}
+                      style={{ cursor: "pointer", color: "#1890ff" }}
+                    >
+                      {v}
+                    </span>
+                  )
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </>
         );
       },
     },
-    {
-      title: <div style={{ textAlign: "center" }}>Achieved %</div>,
-      dataIndex: "achievedPerStr",
-      key: "achievedPerStr",
-      width: 120,
-      align: "right",
-      onHeaderCell: () => ({
-        className: uplersStyle.headerCommonGoalHeaderConfig,
-      }),
-      className: `${uplersStyle.headerCommonConfig}`,
-      render: (v, rec) => {
-        return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
-            v
-          ) : (
-            <span
-            // onClick={() => getHRTalentWiseReport(rec,  v)}
-            // style={{ cursor: "pointer", color: "#1890ff" }}
-            >
-              {v}
-            </span>
-          )
-        ) : (
-          ""
-        );
-      },
-    },
-   
+
   ];
 
   const getHRCountsColumns = () => [
@@ -775,7 +777,7 @@ export default function PodReports({
       //   fixed: "left",
       width: 200,
       className: `${uplersStyle.stagesHeaderCell} ${uplersStyle.headerCommonConfig} `,
-      
+
     },
     {
       title: <div style={{ textAlign: "center" }}>Total Achieved</div>,
@@ -788,7 +790,7 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig} `,
       render: (v, rec) => {
-        if(rec.stage.trim() === 'Coversion %' || rec.stage.trim() ===  'Lost %' ||rec.stage.trim() ===   "Total NBD value of convert" || rec.stage.trim() ===  "Average HR value of convert"){
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
           return v
         }
         return (
@@ -800,14 +802,14 @@ export default function PodReports({
                 justifyContent: "end",
                 // flexDirection:'end'
               }}
-            >       
+            >
 
               <div style={{ marginLeft: "auto" }}>
                 {v ? (
                   (
                     <span
                       onClick={() => {
-                      getSummaryDetailsPopup(rec, v,'All');
+                        getSummaryDetailsPopup(rec, v, 'All');
                       }}
                       style={{ cursor: "pointer", color: "#1890ff" }}
                     >
@@ -835,10 +837,10 @@ export default function PodReports({
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
 
-        if(rec.stage.trim() === 'Coversion %' || rec.stage.trim() ===  'Lost %' ||rec.stage.trim() ===   "Total NBD value of convert" || rec.stage.trim() ===  "Average HR value of convert"){
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
           return v
         }
-        return(
+        return (
           <>
             <div
               style={{
@@ -847,14 +849,14 @@ export default function PodReports({
                 justifyContent: "end",
                 // flexDirection:'end'
               }}
-            >       
+            >
 
               <div style={{ marginLeft: "auto" }}>
                 {v ? (
                   (
                     <span
                       onClick={() => {
-                         getSummaryDetailsPopup(rec, v,'D');
+                        getSummaryDetailsPopup(rec, v, 'D');
                       }}
                       style={{ cursor: "pointer", color: "#1890ff" }}
                     >
@@ -881,7 +883,7 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
-        if(rec.stage.trim() === 'Coversion %' || rec.stage.trim() ===  'Lost %' ||rec.stage.trim() ===   "Total NBD value of convert" || rec.stage.trim() ===  "Average HR value of convert"){
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
           return v
         }
         return (
@@ -893,14 +895,14 @@ export default function PodReports({
                 justifyContent: "end",
                 // flexDirection:'end'
               }}
-            >       
+            >
 
               <div style={{ marginLeft: "auto" }}>
                 {v ? (
                   (
                     <span
                       onClick={() => {
-                          getSummaryDetailsPopup(rec, v,'ND');
+                        getSummaryDetailsPopup(rec, v, 'ND');
                       }}
                       style={{ cursor: "pointer", color: "#1890ff" }}
                     >
@@ -1063,16 +1065,104 @@ export default function PodReports({
     setDFFilterListData(filteredData);
   };
 
-  
-    // const handleExport = (apiData) => {
-    //   let DataToExport = apiData.map((data) => {
-    //     let obj = {};
-       
-  
-    //     return obj;
-    //   });
-    //   downloadToExcel(DataToExport, "Engagement Report");
-    // };
+  const updatepopupTableData = (val, record, index, dataIndex) => {
+    const updatedData = [...listAchievedData];
+    updatedData[index] = { ...record, [dataIndex]: val };
+    // console.log(val, record, index, dataIndex, updatedData)
+    setListAchievedData(updatedData);
+  }
+
+  const updateReachoutStatus = async (val, record, index, dataIndex, reason = '') => {
+    let pl = {
+      "Id": record.hiringRequestID,
+      "IsReachout": val === 'yes' ? true : false,
+      "Reason": reason
+    }
+    const result = await ReportDAO.updateReachoutStatusDAO(pl)
+
+    if (result.statusCode === HTTPStatusCode.OK) {
+      updatepopupTableData(val, record, index, dataIndex)
+    } else {
+      message.error('Something went Wrong')
+    }
+
+  }
+
+
+  const RenderReachoutDD = ({ value, record, index, dataIndex }) => {
+    const [reason, setReason] = useState('')
+    const [showReason, setShowReason] = useState(false)
+    return (
+      <>
+        <Select
+          value={value}
+          onChange={(newValue) => {
+            if (newValue === 'yes') {
+              updateReachoutStatus(newValue, record, index, dataIndex)
+            }
+
+            if (newValue === 'no') {
+              setShowReason(true)
+            }
+
+            // handleChange(newValue, record, index, dataIndex)
+          }}
+          style={{ width: "100%" }}
+          size="small"
+        >
+          <Option value="yes">yes</Option>
+          <Option value="no">no</Option>
+
+        </Select>
+
+        <Modal
+          width="800px"
+          centered
+          footer={null}
+          open={showReason}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowReason(false);
+          }}
+        >
+          <div>
+
+            <TextArea rows={4} placeholder="Enter Reason" style={{ margin: '40px 10px 10px', width: '-webkit-fill-available', borderRadius: '8px' }} value={reason} onChange={e => {
+              setReason(e.target.value)
+            }} />
+            <div style={{ padding: "10px", textAlign: "right" }}>
+              <button
+                className={uplersStyle.btnCancle}
+                onClick={() => {
+                  if (reason.trim() === '') {
+                    message.error('please give reason')
+                  } else {
+                    updateReachoutStatus('no', record, index, dataIndex, reason)
+                  }
+                }}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+
+
+        </Modal>
+      </>
+
+    );
+  }
+
+
+  // const handleExport = (apiData) => {
+  //   let DataToExport = apiData.map((data) => {
+  //     let obj = {};
+
+
+  //     return obj;
+  //   });
+  //   downloadToExcel(DataToExport, "Engagement Report");
+  // };
 
   return (
     <>
@@ -1267,7 +1357,7 @@ export default function PodReports({
         </div>
       </div> */}
 
-        <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+      <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
         <div className={uplersStyle.customTableContainer}>
           {isTableLoading ? (
             <TableSkeleton />
@@ -1417,12 +1507,12 @@ export default function PodReports({
             setShowAchievedReport(false);
           }}
         >
-          <div style={{ padding: "20px 15px", display:'flex', justifyContent:'space-between' }}>
+          <div style={{ padding: "20px 15px", display: 'flex', justifyContent: 'space-between' }}>
             <h3>
               <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
 
-{/* 
+            {/* 
               <button
                   className={uplersStyle.btnPrimary}
                   onClick={() => handleExport(listAchievedData)}
@@ -1478,7 +1568,7 @@ export default function PodReports({
                             }}
                           >
                             {showTalentCol?.stage === "Joining" ||
-                            showTalentCol?.stage === "Selections/Closures"
+                              showTalentCol?.stage === "Selections/Closures"
                               ? showTalentCol?.stage
                               : "Action"}{" "}
                             Date
@@ -1496,7 +1586,7 @@ export default function PodReports({
                       </th>
                       {showTalentCol?.category !== "CF" &&
                         (showTalentCol?.category === "CH" &&
-                        showTalentCol?.stage !== "Customers with Active HRs"
+                          showTalentCol?.stage !== "Customers with Active HRs"
                           ? false
                           : true) && (
                           <>
@@ -1520,8 +1610,8 @@ export default function PodReports({
                             >
                               HR Title
                             </th>
-                             {showTalentCol?.stage === "Not Accepted HRs" &&   <th
-                              style={{ 
+                            {showTalentCol?.stage === "Not Accepted HRs" && <th
+                              style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
                                 backgroundColor:
@@ -1549,13 +1639,13 @@ export default function PodReports({
                               }}
                             >
                               {showTalentCol?.stage === "Joining" ||
-                              showTalentCol?.stage === "Selections/Closures"
+                                showTalentCol?.stage === "Selections/Closures"
                                 ? "Revenue"
                                 : " 1TR Pipeline"}
                             </th>
                             {showTalentCol?.stage !== "Joining" &&
                               showTalentCol?.stage !==
-                                "Selections/Closures" && (
+                              "Selections/Closures" && (
                                 <th
                                   style={{
                                     padding: "10px",
@@ -1633,11 +1723,11 @@ export default function PodReports({
 
                       {showTalentCol?.category !== "CF" &&
                         (showTalentCol?.category === "CH" &&
-                        showTalentCol?.stage !== "Customers with Active HRs"
+                          showTalentCol?.stage !== "Customers with Active HRs"
                           ? false
                           : true) && (
                           <>
-                          {showTalentCol?.stage !== "Not Accepted HRs" &&   <th
+                            {showTalentCol?.stage !== "Not Accepted HRs" && <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1645,9 +1735,9 @@ export default function PodReports({
                                   "rgb(233, 233, 233) !important",
                               }}
                             >
-                             {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason': 'Talent'}
+                              {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
                             </th>}
-                          
+
                             <th
                               style={{
                                 padding: "10px",
@@ -1707,7 +1797,7 @@ export default function PodReports({
                         </td>
                         {showTalentCol?.category !== "CF" &&
                           (showTalentCol?.category === "CH" &&
-                          showTalentCol?.stage !== "Customers with Active HRs"
+                            showTalentCol?.stage !== "Customers with Active HRs"
                             ? false
                             : true) && (
                             <>
@@ -1738,9 +1828,9 @@ export default function PodReports({
                               >
                                 {detail.hrTitle}
                               </td>
-                                 {showTalentCol?.stage === "Not Accepted HRs" &&    <td
+                              {showTalentCol?.stage === "Not Accepted HRs" && <td
                                 style={{
-                                   minWidth:'300px',
+                                  minWidth: '300px',
                                   padding: "8px",
                                   border: "1px solid #ddd",
                                 }}
@@ -1765,7 +1855,7 @@ export default function PodReports({
                               </td>
                               {showTalentCol?.stage !== "Joining" &&
                                 showTalentCol?.stage !==
-                                  "Selections/Closures" && (
+                                "Selections/Closures" && (
                                   <td
                                     style={{
                                       padding: "8px",
@@ -1823,22 +1913,22 @@ export default function PodReports({
 
                         {showTalentCol?.category !== "CF" &&
                           (showTalentCol?.category === "CH" &&
-                          showTalentCol?.stage !== "Customers with Active HRs"
+                            showTalentCol?.stage !== "Customers with Active HRs"
                             ? false
                             : true) && (
                             <>
-                             {showTalentCol?.stage !== "Not Accepted HRs" &&      <td
+                              {showTalentCol?.stage !== "Not Accepted HRs" && <td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
-                                  minWidth: showTalentCol?.stage === "Lost (Pipeline)" ? '250px': '',
+                                  minWidth: showTalentCol?.stage === "Lost (Pipeline)" ? '250px' : '',
                                   // whiteSpace: "normal",    // ✅ allow wrapping
                                   // wordBreak: "break-word",
                                 }}
                               >
                                 {detail.talent}
                               </td>}
-                           
+
                               <td
                                 style={{
                                   padding: "8px",
@@ -1885,7 +1975,7 @@ export default function PodReports({
         </Modal>
       )}
 
-       {showChReport && (
+      {showChReport && (
         <Modal
           width="1200px"
           centered
@@ -1896,12 +1986,12 @@ export default function PodReports({
             setShowCHReport(false);
           }}
         >
-          <div style={{ padding: "20px 15px", display:'flex', justifyContent:'space-between' }}>
+          <div style={{ padding: "20px 15px", display: 'flex', justifyContent: 'space-between' }}>
             <h3>
               <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
 
-{/* 
+            {/* 
               <button
                   className={uplersStyle.btnPrimary}
                   onClick={() => handleExport(listAchievedData)}
@@ -1943,11 +2033,11 @@ export default function PodReports({
                       >
                         {showTalentCol?.stage_ID === 'CompanyJobCount'
                           ? "Added Date" : "Created Date"
-                       }
-                       
+                        }
+
                       </th>
 
-                  
+
 
                       <th
                         style={{
@@ -1958,7 +2048,7 @@ export default function PodReports({
                       >
                         Company
                       </th>
-                    
+
 
                       <th
                         style={{
@@ -1970,18 +2060,30 @@ export default function PodReports({
                         Sales Person
                       </th>
 
-                       {showTalentCol?.stage_ID === 'CompanyJobCount'
-                          &&<th
-                        style={{
-                          padding: "10px",
-                          border: "1px solid #ddd",
-                          backgroundColor: "rgb(233, 233, 233) !important",
-                        }}
-                      >
-                        Jobs Count
-                      </th>
-                       }
-                
+                      {showTalentCol?.stage_ID === 'CompanyJobCount'
+                        && <>
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Jobs Count
+                          </th>
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Is Reachout
+                          </th>
+                        </>
+
+                      }
+
 
                       {/*  */}
                       <th
@@ -1994,7 +2096,7 @@ export default function PodReports({
                         Lead Type
                       </th>
 
-                
+
                     </tr>
                   </thead>
 
@@ -2009,7 +2111,7 @@ export default function PodReports({
                         >
                           {detail.hrCreatedDateStr}
                         </td>
-                      
+
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
@@ -2030,28 +2132,37 @@ export default function PodReports({
                             />
                           )}
                         </td>
-                      
+
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.salesPerson}
                         </td>
-                         {showTalentCol?.stage_ID === 'CompanyJobCount'
-                          &&  <td
-                          style={{ padding: "8px", border: "1px solid #ddd" }}
-                        >
-                          {detail.clientBusinessType }
-                        </td>
-                       }
-                     
+                        {showTalentCol?.stage_ID === 'CompanyJobCount'
+                          && <>
+                            <td
+                              style={{ padding: "8px", border: "1px solid #ddd" }}
+                            >
+                              {detail.clientBusinessType}
+
+                            </td>
+                            <td
+                              style={{ padding: "8px", border: "1px solid #ddd" }}
+                            >
+                              <RenderReachoutDD value={detail.talentPayStr} record={detail} index={index} dataIndex={'talentPayStr'} />
+
+                            </td>
+                          </>
+                        }
+
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
                           {detail.lead_Type}
                         </td>
 
-                      
+
                       </tr>
                     ))}
                   </tbody>
