@@ -790,7 +790,8 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig} `,
       render: (v, rec) => {
-        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"
+      || rec.stage.trim() === "Total NBD value") {
           return v
         }
         return (
@@ -837,7 +838,7 @@ export default function PodReports({
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
 
-        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"|| rec.stage.trim() === "Total NBD value") {
           return v
         }
         return (
@@ -883,7 +884,7 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
-        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"|| rec.stage.trim() === "Total NBD value") {
           return v
         }
         return (
@@ -1746,6 +1747,17 @@ export default function PodReports({
                                   "rgb(233, 233, 233) !important",
                               }}
                             >
+                              Carry Forward Status
+                            </th>
+
+                            <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
                               HR Status
                             </th>
                           </>
@@ -1928,6 +1940,18 @@ export default function PodReports({
                               >
                                 {detail.talent}
                               </td>}
+
+                               <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {All_Hiring_Request_Utils.GETHRSTATUS(
+                                  Number(detail.hrStatusCode),
+                                  detail.carryFwd_HRStatus 
+                                )}
+                              </td>
 
                               <td
                                 style={{
