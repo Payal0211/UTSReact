@@ -224,8 +224,14 @@ export default function UplersReport() {
 
   const getGroupUsers = async (ID) => {
     setIsLoading(true);
+    
+    let pl = {
+      id: ID,
+      month: moment(monthDate).format("MM"),
+      year: selectedYear,
+    }
 
-    let filterResult = await ReportDAO.getAllPODGroupUsersDAO(ID);
+    let filterResult = await ReportDAO.getAllPODGroupUsersDAO(pl);
     setIsLoading(false);
     if (filterResult.statusCode === HTTPStatusCode.OK) {
       setPODUsersList(filterResult && filterResult?.responseBody);

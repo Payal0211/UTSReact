@@ -1728,7 +1728,7 @@ export default function PodReports({
                           ? false
                           : true) && (
                           <>
-                            {showTalentCol?.stage !== "Not Accepted HRs" && <th
+                            {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1739,7 +1739,7 @@ export default function PodReports({
                               {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
                             </th>}
 
-                            <th
+                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures') &&<th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1748,7 +1748,7 @@ export default function PodReports({
                               }}
                             >
                               Carry Forward Status
-                            </th>
+                            </th>} 
 
                             <th
                               style={{
@@ -1929,7 +1929,7 @@ export default function PodReports({
                             ? false
                             : true) && (
                             <>
-                              {showTalentCol?.stage !== "Not Accepted HRs" && <td
+                              {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
@@ -1941,7 +1941,7 @@ export default function PodReports({
                                 {detail.talent}
                               </td>}
 
-                               <td
+                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures') &&<td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
@@ -1951,7 +1951,7 @@ export default function PodReports({
                                   Number(detail.hrStatusCode),
                                   detail.carryFwd_HRStatus 
                                 )}
-                              </td>
+                              </td>} 
 
                               <td
                                 style={{
