@@ -2603,7 +2603,7 @@ function NewAddCompany() {
 
             {/* <!-- Form Actions --> */}
             <div className={`${companyStyles["form-actions"]}`} style={{ marginBottom: '64px' }}>
-              <button type="button" name="cancel" className={`${companyStyles["btn-cancel"]}`}>CANCEL</button>
+              <button type="button" name="cancel" className={`${companyStyles["btn-cancel"]}`} onClick={()=>navigate('/allClients')}>CANCEL</button>
               <button type="button" name="save" className={`${companyStyles["btn-save"]}`}
                 disabled={disableSubmit}
                 style={{ cursor: disableSubmit ? "not-allowed" : "pointer" }}
