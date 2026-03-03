@@ -179,6 +179,41 @@
     font-weight: 400;
 }
 
+.cultureImage {
+    width: 100%;
+    border-radius: 10%;
+    margin-bottom: 15px;
+    height: 160px;
+}
+
+.cultureImageContainer{
+    position: relative;
+    width: 100%;
+}
+
+.cultureDelete {
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    cursor: pointer;
+}
+
+.youTubeDetails{
+    background: #fff8d6;
+    border-radius: 14px;
+    color: #002dcb;
+    display: flex;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    margin-top: 11px;
+    padding: 5px 14px;
+    text-decoration: underline;
+    width: fit-content;
+    max-width: 100%;
+    align-items: center;
+}
+
 
 /* Form Label */
 .form-label {

@@ -1948,7 +1948,7 @@ export default function PodReports({
                                 }}
                               >
                                 {All_Hiring_Request_Utils.GETHRSTATUS(
-                                  Number(detail.hrStatusCode),
+                                  Number(detail.carryFwd_HRStatusCode),
                                   detail.carryFwd_HRStatus 
                                 )}
                               </td>} 

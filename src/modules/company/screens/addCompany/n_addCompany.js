@@ -24,7 +24,7 @@ import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
-
+import { ReactComponent as DeleteIcon} from 'assets/svg/delete-yellow.svg'
 
 
 export const secondaryClient = {
@@ -390,7 +390,7 @@ function NewAddCompany() {
             basicDetails: {
               companyLogo: imgUrls[0],
               // companyLogoAWS: imgUrls[0],
-              ...prev.basicDetails?.companyLogo,
+              ...prev.basicDetails,
             },
           }));
           setUploadModal(false);
@@ -1210,6 +1210,53 @@ function NewAddCompany() {
     setUploading(false)
   }
 
+    const removeYoutubeDetailsFromBE = async (toDelete) => {
+      let payload = {
+          "youtubeID": toDelete.youtubeID,
+          "companyID": companyID
+      }
+      const result = await allCompanyRequestDAO.deleteYoutubeDetailsDAO(payload)
+      if(result.statusCode === HTTPStatusCode.OK){
+        let filteredValue =  getCompanyDetails?.youTubeDetails.filter(d=> !(d.youtubeID === toDelete.youtubeID && d.youtubeLink === toDelete.youtubeLink))
+        setCompanyDetails(prev => ({...prev,youTubeDetails:filteredValue}))
+      }
+      }
+  
+     const removeYoutubelink = (toDelete) => {
+      if(toDelete.youtubeID === 0){
+        let filteredValue =  getCompanyDetails?.youTubeDetails.filter(d=> !(d.youtubeID === toDelete.youtubeID && d.youtubeLink === toDelete.youtubeLink))
+        setCompanyDetails(prev => ({...prev,youTubeDetails:filteredValue}))
+      }else {
+        removeYoutubeDetailsFromBE(toDelete)
+      }
+        
+     }
+
+    const removeIMGFromBE= async (toDelete) =>{
+      let payload = {
+        "cultureID": toDelete.cultureID,
+        "culture_Image": toDelete.cultureImage,
+        "companyID": companyID
+      }
+  
+      const result = await allCompanyRequestDAO.deleteImageDAO(payload)
+
+      if(result.statusCode === HTTPStatusCode.OK){
+        let filteredValue =  getCompanyDetails?.cultureDetails.filter(d=> !(d.cultureID=== toDelete.cultureID && d.cultureImage=== toDelete.cultureImage))
+        setCompanyDetails(prev => ({...prev,cultureDetails:filteredValue}))
+      }
+     }
+
+     const deleteCulturImage = (toDelete) => {
+    if(toDelete.cultureID === 0){
+      let filteredValue =  getCompanyDetails?.cultureDetails.filter(d=> !(d.cultureID=== toDelete.cultureID && d.cultureImage=== toDelete.cultureImage))
+      setCompanyDetails(prev => ({...prev,cultureDetails:filteredValue}))
+    }else {
+      removeIMGFromBE(toDelete)
+    }
+   }
+
+
 
   const handleDrop = async (e) => {
     e.preventDefault();
@@ -1678,7 +1725,7 @@ function NewAddCompany() {
 
                                 <div className={`${companyStyles["form-group"]}`}>
                                   <input type="number" className={`${companyStyles["form-input"]}`} name={`pricingPercent_${value?.id}`} placeholder="Pricing %" autocomplete="off"
-                                    value={manageablePricingType[fieldInd].pricingPercent}
+                                    value={manageablePricingType[fieldInd]?.pricingPercent}
                                     onChange={e => {
                                       setManageablePricingType(prev => {
                                         let newArr = [...prev]
@@ -1934,7 +1981,7 @@ function NewAddCompany() {
                           options={leadTypeOptions}
                           value={companySectionData?.LeadType}
                           onChange={(val, valObj) => {
-                            setCompanySectionData(p => ({ ...p, LeadType: val }))
+                            setCompanySectionData(p => ({ ...p, LeadType: val ,LeadUser: null }))
                           }}
                         />
                         {formValidationError && companySectionData?.LeadType === null && <p className={`${companyStyles["fieldError"]}`}>*Please select lead source </p>}
@@ -2284,10 +2331,10 @@ function NewAddCompany() {
 
 
                   {getCompanyDetails?.cultureDetails?.length > 0 && <div className={companyStyles.row}>
-                    {getCompanyDetails?.cultureDetails?.map(culture => <div className={companyStyles.colMd4} key={`${culture.cultureID} ${culture.cultureImage}`}>
+                    {getCompanyDetails?.cultureDetails?.map(culture => <div className={`${companyStyles["col-lg-4"]}`} key={`${culture.cultureID} ${culture.cultureImage}`}>
                       <div className={companyStyles.cultureImageContainer}>
                         <img src={culture.cultureImage} alt='culture' className={companyStyles.cultureImage} />
-                        {/* <DeleteIcon  className={companyStyles.cultureDelete} onClick={()=> deleteCulturImage(culture)}/> */}
+                        <DeleteIcon  className={companyStyles.cultureDelete} onClick={()=> deleteCulturImage(culture)}/>
                       </div>
                     </div>)}
                   </div>}
@@ -2323,7 +2370,7 @@ function NewAddCompany() {
                     /> */}
                           <div className={companyStyles.youTubeDetails} onClick={() => { }}>
                             {youtube.youtubeLink}
-                            {/*  <DeleteIcon style={{marginLeft:'10px',cursor:'pointer'}} onClick={()=>{ removeYoutubelink(youtube)}} /> */}
+                             <DeleteIcon style={{marginLeft:'10px',cursor:'pointer'}} onClick={()=>{ removeYoutubelink(youtube)}} />
                           </div>
                         </div>)}
 
