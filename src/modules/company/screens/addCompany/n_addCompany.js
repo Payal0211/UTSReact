@@ -1037,7 +1037,7 @@ function NewAddCompany() {
         "companyLogo": getCompanyDetails?.basicDetails?.companyLogo,
         "websiteUrl": companySectionData?.companyURL,
         "foundedYear": companySectionData?.foundedIn,
-        "company_Category": companySectionData?.Category,
+        "companyCategory": companySectionData?.Category,
         // "companySize": +d.teamSize,
         'geo_id': companySectionData?.Geo,
         'companyGeo': geo_id,
