@@ -707,7 +707,7 @@ export const navigateToComponent = {
 		<OnBoardList />
 	</Suspense>
 ),
-[UTSRoutes.ADD_NEW_COMPANY] : (
+[NewPagesRouts.ADD_NEW_COMPANY] : (
 	<Suspense>
 		<AddCompany />
 	</Suspense>

@@ -147,8 +147,8 @@ function App() {
 
 						<Route
 							exact
-							key={NewPagesRouts.ADD_NEW_COMPANY}
-							path={NewPagesRouts.ADD_NEW_COMPANY}
+							key={UTSRoutes.ADD_NEW_COMPANY}
+							path={UTSRoutes.ADD_NEW_COMPANY}
 							element={<NewAddCompany />}
 						/>
 
