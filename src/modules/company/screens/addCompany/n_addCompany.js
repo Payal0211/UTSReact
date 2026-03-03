@@ -405,28 +405,28 @@ function NewAddCompany() {
     [setBase64Image, setUploadFileData]
   );
 
-  const getDetailsForAutoFetchAI = async (compURL) => {
-    setShowFetchAIButton(false)
-    setLoadingCompanyDetails(true)
-    const result = await allCompanyRequestDAO.getCompanyDetailDAO(0, compURL);
+  // const getDetailsForAutoFetchAI = async (compURL) => {
+  //   setShowFetchAIButton(false)
+  //   setLoadingCompanyDetails(true)
+  //   const result = await allCompanyRequestDAO.getCompanyDetailDAO(0, compURL);
 
-    if (result?.statusCode === HTTPStatusCode.OK) {
-      if (result?.responseBody?.basicDetails?.companyLogo !== null) {
-        let newresponse = {
-          ...result?.responseBody, basicDetails: {
-            ...result?.responseBody?.basicDetails,
-            companyLogo: `${result?.responseBody?.basicDetails?.companyLogo}`
-          }
-        }
-        setCompanyDetails(newresponse);
-      } else {
-        message.warn("No Detail Fetched From AI")
-      }
+  //   if (result?.statusCode === HTTPStatusCode.OK) {
+  //     if (result?.responseBody?.basicDetails?.companyLogo !== null) {
+  //       let newresponse = {
+  //         ...result?.responseBody, basicDetails: {
+  //           ...result?.responseBody?.basicDetails,
+  //           companyLogo: `${result?.responseBody?.basicDetails?.companyLogo}`
+  //         }
+  //       }
+  //       setCompanyDetails(newresponse);
+  //     } else {
+  //       message.warn("No Detail Fetched From AI")
+  //     }
 
-      setLoadingCompanyDetails(false)
-    }
-    setLoadingCompanyDetails(false)
-  };
+  //     setLoadingCompanyDetails(false)
+  //   }
+  //   setLoadingCompanyDetails(false)
+  // };
 
 
   const validateCompanyURL = async () => {
@@ -468,10 +468,10 @@ function NewAddCompany() {
 
           setDisableSubmit(false);
           setIsViewCompanyurl(false);
-          if (companyID === "0") {
-            // setShowFetchAIButton(true);
-            getDetailsForAutoFetchAI(companySectionData?.companyURL)
-          }
+          // if (companyID === "0") {
+          //   // setShowFetchAIButton(true);
+          //   getDetailsForAutoFetchAI(companySectionData?.companyURL)
+          // }
         }
         if (result.statusCode === HTTPStatusCode.BAD_REQUEST) {
           setDisableSubmit(true);
@@ -513,6 +513,132 @@ function NewAddCompany() {
     }
   }, [getCompanyDetails?.confidentialDetails])
 
+  //set data on edit
+
+    useEffect(() => {
+      if(companyID > 0){
+ companyDetails?.companyLogo && setUploadFileData(companyDetails?.companyLogo)
+      // companyDetails?.companyLogo.includes(NetworkInfo.PROTOCOL +
+      //   NetworkInfo.DOMAIN) ? setUploadFileData(companyDetails?.companyLogo) :  setUploadFileData(  NetworkInfo.PROTOCOL +
+      //     NetworkInfo.DOMAIN +
+      //     "Media/CompanyLogo/" + companyDetails?.companyLogo);
+  
+      let engagementDetails = getCompanyDetails?.engagementDetails
+
+      if(filtersList?.Geo?.length){
+ let  geo_id = filtersList.Geo?.find(g=> g.value === companyDetails?.companyGeo)?.text
+    let lead_Type = leadTypeOptions?.find(l=> l.value ===  companyDetails?.leadUserType)?.id
+// console.log('ff', geo_id,lead_Type,companySectionData?.Geo,companyDetails?.companyGeo)
+    setCompanySectionData({
+    "companyName": companyDetails?.companyName ?? '',
+    "companyURL": companyDetails?.website ?? '',
+    "companyLinkedinURL": companyDetails?.linkedInProfile ?? '',
+    "foundedIn": companyDetails?.foundedYear ? companyDetails?.foundedYear : null,
+
+    "LeadUser": companyDetails?.leadUserID ? companyDetails?.leadUserID: null,
+    "industry": companyDetails?.companyIndustry ?? '',
+    "teamSize": companyDetails?.teamSize > 0 ? companyDetails?.teamSize : '',
+    "headquaters": companyDetails?.headquaters ?? '',
+    "Category": companyDetails?.companyCategory ? companyDetails?.companyCategory : 'None',
+  
+    "aboutCompany": companyDetails?.aboutCompany ?? '',
+    'hiringPricingType': engagementDetails?.hiringTypePricingId,
+    "creditCurrency": engagementDetails?.creditCurrency ? engagementDetails?.creditCurrency : null,
+    'creditAmount': engagementDetails?.creditAmount ? engagementDetails?.creditAmount : '',
+    'jobPostCredit': engagementDetails?.isPostaJob && engagementDetails?.jobPostCredit ? engagementDetails?.jobPostCredit : '',
+    'freeCredit': engagementDetails?.jpCreditBalance ? engagementDetails?.jpCreditBalance : '',
+
+     "LeadType": lead_Type ? lead_Type: null,
+
+    "Geo": geo_id ? geo_id : null,
+  })
+  
+      }
+
+     
+  
+
+  setCheckPayPer({
+      
+        companyTypeID: engagementDetails?.companyTypeID??0,
+        anotherCompanyTypeID:engagementDetails?.anotherCompanyTypeID??0
+      });
+    
+    engagementDetails?.isTransparentPricing != null && setTypeOfPricing(engagementDetails?.isTransparentPricing === true ? 1 : 0)
+
+
+       if (engagementDetails?.companyID) {
+      setIsChecked({
+        isPostaJob: engagementDetails?.isPostaJob,
+        isProfileView: engagementDetails?.isProfileView,
+      });
+     
+    
+    }
+
+    let funding = getFundingDetails.length > 0 ? getFundingDetails[0] : {}
+
+    setFundingSectionData( {
+    isSelfFunded: companyDetails?.isSelfFunded,
+    fundingAmount: funding?.fundingAmount,
+    series: funding?.series ? funding?.series : null,
+    month: funding?.fundingMonth ? funding?.fundingMonth : null,
+    year: funding?.fundingYear ? funding?.fundingYear : null,
+    investors: funding?.investors ?? '',
+    additionalInfo: funding?.additionalInformation ??'',
+    "fundingID": funding?.fundingId,
+  }
+     
+    )
+
+    let contactDetails = getCompanyDetails?.contactDetails
+
+      if (contactDetails?.length > 0) {
+        let clients = []
+          contactDetails?.forEach((contact) => {
+            let phoneDetails = {
+              contactNo: "",
+              countryCode: "",
+            };
+    
+            if (contact?.contactNo) {
+              // if (contact?.contactNo?.includes("+91")) {
+              //   phoneDetails.contactNo = contact?.contactNo?.slice(3);
+              //   phoneDetails.countryCode = contact?.contactNo?.slice(0, 3);
+              // }else if (contact?.contactNo?.includes("+")) {
+              //   phoneDetails.contactNo = contact?.contactNo?.slice(2)?.trim();
+              //   phoneDetails.countryCode = contact?.contactNo?.slice(0, 2);
+              // } else {
+              //   phoneDetails.contactNo = contact?.contactNo;
+              // }
+              phoneDetails.contactNo = contact?.contactNo;
+            }
+            clients.push({
+              ...secondaryClient,
+              ...contact,
+              _id: contact.id,
+              isNewClient:false,
+              ...phoneDetails,
+            });
+          });
+
+          setClientsData(clients)
+
+        } else {
+          setClientsData([{ ...secondaryClient, roleID: 1, isPrimary: true }]);
+        }
+
+        setUplersPOCName(getCompanyDetails?.pocUserDetailsEdit?.pocUserID)
+   
+      }
+     
+
+    
+
+    }, [getCompanyDetails,filtersList]);
+
+    
+
   const getHRPricingType = useCallback(async () => {
     const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
     setHRPricingTypes(
@@ -544,7 +670,7 @@ function NewAddCompany() {
   }, [hrPricingTypes, typeOfPricing])
 
   useEffect(() => {
-    if (hrPricingTypes.length > 0) {
+    if (hrPricingTypes?.length > 0) {
       let typeArr = [...hrPricingTypes]
       if (getCompanyDetails?.hiringDetails?.length > 0) {
         getCompanyDetails?.hiringDetails.forEach(item => {
@@ -559,89 +685,213 @@ function NewAddCompany() {
 
 
 
-  const checkFormValidation = () => {
+  // const checkFormValidation = () => {
+  //   setAboutCompanyError(false);
+  //   let valid = true
+  //   if (companySectionData?.companyName.trim() === '') {
+  //     valid = false
+  //   }
+
+  //   if (companySectionData?.companyURL.trim() === '' || !ValidateFieldURL(companySectionData?.companyURL, "website")) {
+  //     valid = false
+  //   }
+
+  //   if (companySectionData?.companyLinkedinURL !== '' && !ValidateFieldURL(companySectionData?.companyLinkedinURL, "linkedin")) {
+  //     valid = false
+  //   }
+
+  //   if (companySectionData?.foundedIn === null || companySectionData?.LeadType === null || companySectionData?.LeadUser === null) {
+  //     valid = false
+  //   }
+
+  //   if (companySectionData?.teamSize?.trim() === '' || companySectionData?.teamSize < 1) {
+  //     valid = false
+  //   }
+
+  //   if (companySectionData?.industry.trim() === '') {
+  //     valid = false
+  //   }
+
+
+  //   if (isQuillEmpty(companySectionData?.aboutCompany)) {
+  //     setAboutCompanyError(true);
+  //     valid = false
+
+  //   }
+
+
+  //   if (companySectionData?.Category === null || companySectionData?.Geo === null) {
+  //     valid = false
+  //   }
+
+  //   if (confidentialInfo === 1) {
+  //     if (companyConfidentailFields?.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyNameAlias === null) {
+  //       valid = false
+  //     }
+  //     if (companyConfidentailFields?.companyLogoAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias === null) {
+  //       valid = false
+  //     }
+  //   }
+
+  //   if (checkPayPer?.companyTypeID !== 0 &&
+  //     checkPayPer?.companyTypeID !== null) {
+  //     if (companySectionData?.creditCurrency === null ) {
+  //       valid = false
+  //     }
+  //       if (+companySectionData?.creditAmount < 1) {
+  //       valid = false
+  //     }
+
+  //     if (IsChecked?.isPostaJob && (companySectionData?.jobPostCredit?.trim() === '' || companySectionData?.jobPostCredit < 1)) {
+  //       valid = false
+  //     }
+  //   }
+
+
+  //   if (uplersPOCname === null) {
+  //     valid = false
+  //   }
+
+
+  //   clientsData.forEach(client => {
+  //     if (client.fullName.trim() === '') {
+  //       valid = false
+  //     }
+
+  //     if (client.emailID.trim() === '' || !eReg.test(client.emailID)) {
+  //       valid = false
+  //     }
+  //   })
+
+
+  //   return valid
+  // }
+
+  const  checkFormValidation = () =>  {
     setAboutCompanyError(false);
-    let valid = true
-    if (companySectionData?.companyName.trim() === '') {
-      valid = false
-    }
+  let valid = true;
 
-    if (companySectionData?.companyURL.trim() === '' || !ValidateFieldURL(companySectionData?.companyURL, "website")) {
-      valid = false
-    }
-
-    if (companySectionData?.companyLinkedinURL !== '' && !ValidateFieldURL(companySectionData?.companyLinkedinURL, "linkedin")) {
-      valid = false
-    }
-
-    if (companySectionData?.foundedIn === null || companySectionData?.LeadType === null || companySectionData?.LeadUser === null) {
-      valid = false
-    }
-
-    if (companySectionData?.teamSize?.trim() === '' || companySectionData?.teamSize < 1) {
-      valid = false
-    }
-
-    if (companySectionData?.industry.trim() === '') {
-      valid = false
-    }
-
-
-    if (isQuillEmpty(companySectionData?.aboutCompany)) {
-      setAboutCompanyError(true);
-      valid = false
-
-    }
-
-
-    if (companySectionData?.Category === null || companySectionData?.Geo === null) {
-      valid = false
-    }
-
-    if (confidentialInfo === 1) {
-      if (companyConfidentailFields?.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyNameAlias === null) {
-        valid = false
-      }
-      if (companyConfidentailFields?.companyLogoAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias === null) {
-        valid = false
-      }
-    }
-
-    if (checkPayPer?.companyTypeID !== 0 &&
-      checkPayPer?.companyTypeID !== null) {
-      if (companySectionData?.creditCurrency === null || companySectionData?.creditAmount.trim() === '' || companySectionData?.creditAmount < 1) {
-        valid = false
-      }
-
-      if (IsChecked?.isPostaJob && (companySectionData?.jobPostCredit.trim() === '' || companySectionData?.jobPostCredit < 1)) {
-        valid = false
-      }
-    }
-
-    if (confidentialInfo === 1) {
-      if (companyConfidentailFields?.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyNameAlias === null || companyConfidentailFields?.companyLogoAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias === null) {
-        valid = false
-      }
-    }
-
-    if (uplersPOCname === null) {
-      valid = false
-    }
-
-
-    clientsData.forEach(client => {
-      if (client.fullName.trim() === '') {
-        valid = false
-      }
-
-      if (client.emailID.trim() === '' || !eReg.test(client.emailID)) {
-        valid = false
-      }
-    })
-
-
-    return valid
+  if (companySectionData?.companyName.trim() === '') {
+    console.log("❌ companyName is empty");
+    valid = false;
   }
+
+  if (
+    companySectionData?.companyURL.trim() === '' ||
+    !ValidateFieldURL(companySectionData?.companyURL, "website")
+  ) {
+    console.log("❌ companyURL invalid");
+    valid = false;
+  }
+
+  if (
+    companySectionData?.companyLinkedinURL !== '' &&
+    !ValidateFieldURL(companySectionData?.companyLinkedinURL, "linkedin")
+  ) {
+    console.log("❌ companyLinkedinURL invalid");
+    valid = false;
+  }
+
+  if (
+    companySectionData?.foundedIn === null ||
+    companySectionData?.LeadType === null ||
+    companySectionData?.LeadUser === null
+  ) {
+    console.log("❌ foundedIn / LeadType / LeadUser missing");
+    valid = false;
+  }
+
+  if (
+    companySectionData?.teamSize?.trim() === '' ||
+    companySectionData?.teamSize < 1
+  ) {
+    console.log("❌ teamSize invalid");
+    valid = false;
+  }
+
+  if (companySectionData?.industry.trim() === '') {
+    console.log("❌ industry empty");
+    valid = false;
+  }
+
+  if (isQuillEmpty(companySectionData?.aboutCompany)) {
+    console.log("❌ aboutCompany empty");
+    setAboutCompanyError(true);
+    valid = false;
+  }
+
+  if (
+    companySectionData?.Category === null ||
+    companySectionData?.Geo === null
+  ) {
+    console.log("❌ Category or Geo missing");
+    valid = false;
+  }
+
+  if (confidentialInfo === 1) {
+    if (
+      companyConfidentailFields?.companyNameAlias?.trim() === '' ||
+      companyConfidentailFields?.companyNameAlias === null
+    ) {
+      console.log("❌ companyNameAlias empty (Confidential)");
+      valid = false;
+    }
+
+    if (
+      companyConfidentailFields?.companyLogoAlias?.trim() === '' ||
+      companyConfidentailFields?.companyLogoAlias === null
+    ) {
+      console.log("❌ companyLogoAlias empty (Confidential)");
+      valid = false;
+    }
+  }
+
+  if (
+    checkPayPer?.companyTypeID !== 0 &&
+    checkPayPer?.companyTypeID !== null
+  ) {
+    if (companySectionData?.creditCurrency === null) {
+      console.log("❌ creditCurrency missing");
+      valid = false;
+    }
+
+    if (+companySectionData?.creditAmount < 1) {
+      console.log("❌ creditAmount invalid");
+      valid = false;
+    }
+
+    if (
+      IsChecked?.isPostaJob &&
+      (
+        companySectionData?.jobPostCredit < 1)
+    ) {
+      console.log("❌ jobPostCredit invalid");
+      valid = false;
+    }
+  }
+
+  if (uplersPOCname === null) {
+    console.log("❌ uplersPOCname not selected");
+    valid = false;
+  }
+
+  clientsData.forEach((client, index) => {
+    if (client.fullName.trim() === '') {
+      console.log(`❌ Client ${index + 1} fullName empty`);
+      valid = false;
+    }
+
+    if (client.emailID.trim() === '' || !eReg.test(client.emailID)) {
+      console.log(`❌ Client ${index + 1} emailID invalid`);
+      valid = false;
+    }
+  });
+
+  console.log("Final Validation Result:", valid);
+
+  return valid;
+};
+  
 
   const handleCreateCompany = async () => {
     console.log(companySectionData)
@@ -655,7 +905,7 @@ function NewAddCompany() {
       setFormValidationError(true)
       return
     }
-
+ 
     // console.log(d,"aboutCompanyaboutCompanyaboutCompany");
 
     const allClientEmails = clientsData.map(c => c.emailID)
@@ -667,6 +917,8 @@ function NewAddCompany() {
       message.error("Duplicate email addresses are not allowed.")
       return
     }
+
+ 
 
     if (typeOfPricing === null && checkPayPer?.anotherCompanyTypeID == 1 && (checkPayPer?.companyTypeID == 0 || checkPayPer?.companyTypeID == 2)) {
       setPricingTypeError(true)
@@ -687,17 +939,18 @@ function NewAddCompany() {
       return
     }
 
-    if (checkPayPer?.companyTypeID === 2 && IsChecked?.isPostaJob === false && IsChecked?.isProfileView === false) {
+    if (checkPayPer?.companyTypeID == 2 && IsChecked?.isPostaJob === false ) {
       setCreditError(true)
+      
       return
     }
 
-
+    
 
     // check for at lest one admin client
     let isAdmin = false
 
-    clientsData.map((client) => {
+    clientsData.forEach((client) => {
       if (client.roleID === 1) {
         isAdmin = true
       }
@@ -718,7 +971,7 @@ function NewAddCompany() {
       let encryptedPassword = encrypt(password);
 
       return {
-        "clientID": companyID !== '0' ? client.id : 0,
+        "clientID": companyID !== '0' ? client?.en_Id ?  client.id : 0 : 0,
         "en_Id": client.en_Id,
         "isPrimary": client.isPrimary,
         "fullName": client.fullName,
@@ -741,10 +994,6 @@ function NewAddCompany() {
       culture_Image: culture.cultureImage
     }))
 
-    console.log(manageablePricingType.filter(i => getRequiredHRPricingType().map(it => it.id).includes(i.id)).map(item => ({
-      "hiringTypePricingId": item.id,
-      "hiringTypePricingPercentage": item.pricingPercent
-    })), checkPayPer?.anotherCompanyTypeID)
 
     let companyHiringTypePricing = +checkPayPer?.anotherCompanyTypeID === 1 ? manageablePricingType.filter(i => getRequiredHRPricingType().map(it => it.id).includes(i.id)).map(item => ({
       "hiringTypePricingId": item.id,
@@ -764,6 +1013,7 @@ function NewAddCompany() {
         }
       })
     }
+
     if (!valid) {
       return
     }
@@ -771,7 +1021,7 @@ function NewAddCompany() {
     let geo_id = filtersList.Geo.find(item => item.text === companySectionData?.Geo)?.value
 
     let usrTypeVal = leadTypeOptions.find(i => i.id === companySectionData.LeadType)?.value
-
+// console.log(" v",filtersList,companySectionData?.Geo,leadTypeOptions,companySectionData.LeadType)
     let fundingObj = [{
       ...fundingSectionData,
       fundingID: 0,
@@ -908,7 +1158,7 @@ function NewAddCompany() {
       //     id: item,
       //     value: item,
       // })))
-      setCultureSectionData(p => ({ ...p, perksAndAdvantages: getCompanyDetails?.perkDetails?.map(item => item) }))
+      setCultureSectionData(p => ({ ...p,culture:companyDetails?.culture ?? '' , perksAndAdvantages: getCompanyDetails?.perkDetails?.map(item => item) }))
       if (getValuesForDD?.CompanyPerks?.length > 0) {
         setCombinedPerkMemo([...getCompanyDetails?.perkDetails?.map(item => ({
           id: item,
@@ -919,10 +1169,6 @@ function NewAddCompany() {
         }))])
       }
 
-      // setControlledperk(getCompanyDetails?.perkDetails?.map(item=> ({
-      //     id: item,
-      //     value: item,
-      // })))
     } else {
       setCombinedPerkMemo(getValuesForDD?.CompanyPerks?.map(item => ({
         id: item.value,
@@ -930,9 +1176,7 @@ function NewAddCompany() {
       })))
     }
 
-    // if(companyDetails?.companyName){
-    //     companyDetails?.culture && setValue('culture',companyDetails?.culture)
-    // }
+ 
   }, [getCompanyDetails?.perkDetails, companyDetails, getValuesForDD?.CompanyPerks])
 
   const uploadCultureImages = async (Files) => {
@@ -1015,7 +1259,7 @@ function NewAddCompany() {
       return message.error('Youtube link Already exists')
     }
 
-    let nweyouTubeDetails = [...getCompanyDetails?.youTubeDetails]
+    let nweyouTubeDetails = getCompanyDetails?.youTubeDetails ? [...getCompanyDetails?.youTubeDetails] : []
     setCompanyDetails(prev => ({ ...prev, youTubeDetails: [youtubeDetail, ...nweyouTubeDetails] }))
     setCultureSectionData(p => ({
       ...p,
@@ -1296,7 +1540,7 @@ function NewAddCompany() {
                                 }))
                               }}
                             />
-                            {formValidationError && (companySectionData?.creditAmount.trim() === '' || companySectionData?.creditAmount < 1) && <p className={`${companyStyles["fieldError"]}`}>*Please enter credit amount </p>}
+                            {formValidationError && ( companySectionData?.creditAmount < 1) && <p className={`${companyStyles["fieldError"]}`}>*Please enter credit amount </p>}
                           </div>
                         </div>
                       </div>
@@ -1329,7 +1573,7 @@ function NewAddCompany() {
                               />
                               <span>Credit per post a job.</span>
                             </label>
-
+{creditError && <p className={`${companyStyles["fieldError"]}`}>*credit pre post is required </p>}
                           </div>
                         </div>
                       </div>
@@ -1345,7 +1589,7 @@ function NewAddCompany() {
                                   jobPostCredit: e.target.value
                                 }))
                               }} />
-                            {formValidationError && (companySectionData?.jobPostCredit.trim() === '' || companySectionData?.jobPostCredit < 1) && <p className={`${companyStyles["fieldError"]}`}>*Please enter credit per post </p>}
+                            {formValidationError && (companySectionData?.jobPostCredit?.trim() === '' || companySectionData?.jobPostCredit < 1) && <p className={`${companyStyles["fieldError"]}`}>*Please enter credit per post </p>}
                           </div>
                         </div>
                       </div>}
@@ -1413,7 +1657,7 @@ function NewAddCompany() {
                         {
                           getRequiredHRPricingType().map((value, ind) => {
                             let fieldInd = manageablePricingType.findIndex(itm => itm.id === value.id)
-                            console.log(manageablePricingType, fieldInd, value)
+                            // console.log(manageablePricingType, fieldInd, value)
                             return <>
                               <div className={companyStyles.engModelOption}>
                                 <Radio value={value.id}>{value.value}</Radio>
@@ -2164,7 +2408,7 @@ function NewAddCompany() {
                                   validateClientEemailName(client.id, index)
                                 }}
                               />
-                              {console.log(('clientsEmailError', clientsEmailError))}
+                              {/* {console.log(('clientsEmailError', clientsEmailError))} */}
                               {formValidationError && (client.emailID.trim() === '' || !eReg.test(client.emailID)) && <p className={`${companyStyles["fieldError"]}`}>*Please enter valid email </p>}
                               {clientsEmailError[client.id] && <p className={`${companyStyles["fieldError"]}`}>{clientsEmailError[client.id]} </p>}
                             </div>
