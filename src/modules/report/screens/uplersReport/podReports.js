@@ -790,7 +790,8 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig} `,
       render: (v, rec) => {
-        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"
+      || rec.stage.trim() === "Total NBD value") {
           return v
         }
         return (
@@ -837,7 +838,7 @@ export default function PodReports({
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
 
-        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"|| rec.stage.trim() === "Total NBD value") {
           return v
         }
         return (
@@ -883,7 +884,7 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
-        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert") {
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"|| rec.stage.trim() === "Total NBD value") {
           return v
         }
         return (
@@ -1727,7 +1728,7 @@ export default function PodReports({
                           ? false
                           : true) && (
                           <>
-                            {showTalentCol?.stage !== "Not Accepted HRs" && <th
+                            {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1737,6 +1738,17 @@ export default function PodReports({
                             >
                               {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
                             </th>}
+
+                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures') &&<th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              Carry Forward Status
+                            </th>} 
 
                             <th
                               style={{
@@ -1917,7 +1929,7 @@ export default function PodReports({
                             ? false
                             : true) && (
                             <>
-                              {showTalentCol?.stage !== "Not Accepted HRs" && <td
+                              {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
@@ -1928,6 +1940,18 @@ export default function PodReports({
                               >
                                 {detail.talent}
                               </td>}
+
+                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures') &&<td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {All_Hiring_Request_Utils.GETHRSTATUS(
+                                  Number(detail.hrStatusCode),
+                                  detail.carryFwd_HRStatus 
+                                )}
+                              </td>} 
 
                               <td
                                 style={{

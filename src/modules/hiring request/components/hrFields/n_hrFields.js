@@ -79,7 +79,9 @@ function NewHRFields() {
         hiringPricingType: undefined,
         NRMargin: '',
         contractDuration: undefined,
-        payrollPartnerName: ''
+        payrollPartnerName: '',
+        ctpLink:'',
+        discoveryCallLink:''
     })
 
     const [companyConfidentailFields, setCompanyConfidentialFields] = useState({
@@ -293,7 +295,9 @@ function NewHRFields() {
                 contractDuration: data?.contractDuration === "-1"
                     ? "Indefinite"
                     : data?.contractDuration,
-                payrollPartnerName: data?.addHiringRequest?.payrollTypeId === 3 ? data?.addHiringRequest?.payrollPartnerName : ''
+                payrollPartnerName: data?.addHiringRequest?.payrollTypeId === 3 ? data?.addHiringRequest?.payrollPartnerName : '',
+                ctpLink: data?.addHiringRequest?.bqlink,
+                discoveryCallLink: data?.addHiringRequest?.discoveryCall
             })
 
             setConfidentialInfo(data?.clientDetails_Result?.isCompanyConfidential)
@@ -1175,6 +1179,9 @@ function NewHRFields() {
             "PayPerType": userCompanyTypeID,
             "isHRTypeDP": basicFormFields?.hiringPricingType === 3 ? true: false,
             "issaveasdraft": isDraft,
+
+            'discoveryCallLink': basicFormFields?.discoveryCallLink,
+            'bqFormLink': basicFormFields?.ctpLink,
 
             "directPlacement": {
                 "hiringRequestId": +hrid,
@@ -2571,6 +2578,25 @@ function NewHRFields() {
                             </div>
                         </section>
 
+                        
+                        {/* <!-- Enhance Talent Matchmaking Section --> */}
+                        <section className={`${styles["form-section"]}`}>
+                            <h2 className={`${styles["section-title"]} ${styles["md-1"]}`}>Additional</h2>
+                             <div className={`${styles["form-rows"]}`}>
+                                <div className={`${styles["row"]}`}>
+                                    <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
+                                         <input type="text" className={`${styles["form-input"]}`} placeholder="Add CTP Link" value={basicFormFields?.ctpLink} 
+                                                onChange={(e) => setBasicFormFields(prev => ({ ...prev, ctpLink: e.target.value }))} />
+                                    </div>
+
+                                     <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
+                                         <input type="text" className={`${styles["form-input"]}`} placeholder="Add Discovery Call Link" value={basicFormFields?.discoveryCallLink} 
+                                                onChange={(e) => setBasicFormFields(prev => ({ ...prev, discoveryCallLink: e.target.value }))} />
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
                         {/* <!-- Enhance Talent Matchmaking Section --> */}
                         <section className={`${styles["form-section"]}`}>
                             <h2 className={`${styles["section-title"]} ${styles["md-1"]}`}>Enhance talent matchmaking (optional)</h2>
@@ -2630,7 +2656,12 @@ function NewHRFields() {
                                     <div className={`${styles["cols"]} ${styles['col-lg-12']}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <label className={`${styles["form-label"]}`}>Highlight any key parameters or things to consider for finding the best match talents</label>
-                                            <ReactQuill
+                                             <textarea type="text" className={`${styles["form-input"]}`} placeholder=""  value={enhanceMatchmakingFormFields?.highlight} rows={4}
+                                                 onChange={(val) => {
+                                                    setEnhanceMatchmakingFormFields(prev => ({ ...prev, highlight: val }))
+
+                                                }}/>
+                                            {/* <ReactQuill
 
                                                 theme="snow"
                                                 className="newQuillEditor"
@@ -2641,7 +2672,7 @@ function NewHRFields() {
 
                                                 }}
 
-                                            />
+                                            /> */}
                                         </div>
                                     </div>
                                 </div>

@@ -1421,7 +1421,7 @@ getAllPODGroupUsersRequest:async function (payload) {
 	httpService.URL =
 		NetworkInfo.NETWORK +
 		SubDomain.REPORT +
-		ReportType.GET_POD_DASHBOARD_USERS_GROUP_REPORT + `?PODGroupID=${payload}`
+		ReportType.GET_POD_DASHBOARD_USERS_GROUP_REPORT + `?PODGroupID=${payload.id}&month=${payload.month}&year=${payload.year}`
 
 	httpService.setAuthRequired = true;
 	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
