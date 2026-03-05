@@ -791,7 +791,7 @@ export default function PodReports({
       className: `${uplersStyle.headerCommonConfig} `,
       render: (v, rec) => {
         if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"
-      || rec.stage.trim() === "Total NBD value") {
+      || rec.stage.trim() === "Total NBD value" || rec.stage.trim() === "Closing Balance") {
           return v
         }
         return (
@@ -838,7 +838,7 @@ export default function PodReports({
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
 
-        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"|| rec.stage.trim() === "Total NBD value") {
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"|| rec.stage.trim() === "Total NBD value" || rec.stage.trim() === "Closing Balance") {
           return v
         }
         return (
@@ -884,7 +884,7 @@ export default function PodReports({
       }),
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
-        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"|| rec.stage.trim() === "Total NBD value") {
+        if (rec.stage.trim() === 'Coversion %' || rec.stage.trim() === 'Lost %' || rec.stage.trim() === "Total NBD value of convert" || rec.stage.trim() === "Average HR value of convert"|| rec.stage.trim() === "Total NBD value" || rec.stage.trim() === "Closing Balance") {
           return v
         }
         return (
@@ -2072,20 +2072,21 @@ export default function PodReports({
                       >
                         Company
                       </th>
+  
 
+                   
 
-                      <th
+                      {showTalentCol?.stage_ID === 'CompanyJobCount'
+                        && <>
+                         <th
                         style={{
                           padding: "10px",
                           border: "1px solid #ddd",
                           backgroundColor: "rgb(233, 233, 233) !important",
                         }}
                       >
-                        Sales Person
+                         URL
                       </th>
-
-                      {showTalentCol?.stage_ID === 'CompanyJobCount'
-                        && <>
                           <th
                             style={{
                               padding: "10px",
@@ -2107,7 +2108,15 @@ export default function PodReports({
                         </>
 
                       }
-
+   <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Sales Person
+                      </th>
 
                       {/*  */}
                       <th
@@ -2158,13 +2167,22 @@ export default function PodReports({
                         </td>
 
 
-                        <td
-                          style={{ padding: "8px", border: "1px solid #ddd" }}
-                        >
-                          {detail.salesPerson}
-                        </td>
+
+                       
                         {showTalentCol?.stage_ID === 'CompanyJobCount'
                           && <>
+                          <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          <a
+                            href={`${detail.hrTitle}`}
+                            style={{ textDecoration: "underline" }}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {detail.hrTitle}{" "}
+                          </a>
+                        </td>
                             <td
                               style={{ padding: "8px", border: "1px solid #ddd" }}
                             >
@@ -2179,6 +2197,11 @@ export default function PodReports({
                             </td>
                           </>
                         }
+                         <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.salesPerson}
+                        </td>
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}

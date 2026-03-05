@@ -1936,7 +1936,7 @@ function NewHRFields() {
                                 </div>
 
                                  {(roleReqFormFields?.modeOfWorking === 'Hybrid' || roleReqFormFields?.modeOfWorking === 'Office') && ( <div className={`${styles["row"]}`}>
-                                     <div className={`${styles["cols"]} ${styles["col-lg-6"]} ${styles["location-field-wrapper"]}`}>
+                                     <div className={`${styles["cols"]} ${styles["col-lg-12"]} ${styles["location-field-wrapper"]}`}>
                                         <div className={`${styles["form-group"]} ${styles["multiselect"]}`}>
                                             {/* <div className={`${styles["autocomplete-wrapper"]}`} data-autocomplete="location">
                                             <input type="text" className={`${styles["form-input"]} ${styles["form-input-autocomplete"]}`} placeholder="Location *" autocomplete="off" />
@@ -1977,7 +1977,7 @@ function NewHRFields() {
                                     </div>
                                 </div>)}
                                 {(roleReqFormFields?.modeOfWorking === 'Hybrid' || roleReqFormFields?.modeOfWorking === 'Office') && <div className={`${styles["row"]}`}>
-                                    <div className={`${styles["cols"]}  ${styles["col-lg-6"]}`}>
+                                    <div className={`${styles["cols"]}  ${styles["col-lg-12"]}`}>
                                         <div className={`${styles["form-group"]}  ${styles["multiselect"]}`}>
                                             <Select
                                                 mode="multiple"
@@ -2656,7 +2656,7 @@ function NewHRFields() {
                                     <div className={`${styles["cols"]} ${styles['col-lg-12']}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <label className={`${styles["form-label"]}`}>Highlight any key parameters or things to consider for finding the best match talents</label>
-                                             <textarea type="text" className={`${styles["form-input"]}`} placeholder=""  value={enhanceMatchmakingFormFields?.highlight} rows={4}
+                                             <textarea type="text" className={`${styles["form-input"]}`} placeholder=""  value={enhanceMatchmakingFormFields?.highlight} rows={2}
                                                  onChange={(val) => {
                                                     setEnhanceMatchmakingFormFields(prev => ({ ...prev, highlight: val }))
 
