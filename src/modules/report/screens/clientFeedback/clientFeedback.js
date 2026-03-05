@@ -349,11 +349,11 @@ function ClientFeedback() {
             },
         },
         {
-            title: "Company",
-            dataIndex: "companyName",
-            key: "companyName",
+            title: "Role",
+            dataIndex: "role",
+            key: "role",
             align: "left",
-
+            width: "150px",
         },
         {
             title: "Talent (Email)",
@@ -363,6 +363,13 @@ function ClientFeedback() {
             render: (val, result) => {
                 return <>{val} <br /> ( {result.talentEmail} ) </>
             }
+        },
+          {
+            title: "Company",
+            dataIndex: "companyName",
+            key: "companyName",
+            align: "left",
+
         },
           {
             title: "AM",

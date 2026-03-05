@@ -162,8 +162,8 @@ export default function N_sidebar() {
                     
                         </ul>
                     </div>
-                          <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('OM Report') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('OM Report')}>
+                          <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('TA Report') ? stylesOBj['expanded'] : ''}`}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('TA Report')}>
                             <img src="images/ta-report-ic.svg" alt="TA Report Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 9.24999C9.92893 9.24999 8.25 10.9289 8.25 13C8.25 15.0711 9.92893 16.75 12 16.75C14.0711 16.75 15.75 15.0711 15.75 13C15.75 10.9289 14.0711 9.24999 12 9.24999ZM9.75 13C9.75 11.7573 10.7574 10.75 12 10.75C13.2426 10.75 14.25 11.7573 14.25 13C14.25 14.2426 13.2426 15.25 12 15.25C10.7574 15.25 9.75 14.2426 9.75 13Z" fill="#4C4E64" fill-opacity="0.87" />
