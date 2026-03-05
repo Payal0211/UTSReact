@@ -354,7 +354,7 @@ body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select, optio
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 0;
-    scrollbar-width: none;
+    scrollbar-width: thin;
     -ms-overflow-style: none;
     margin-top: 12px;
     max-height: none;
@@ -1279,10 +1279,10 @@ body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, select, optio
     border: none;
     padding: 0;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 120%;
     letter-spacing: 0.1px;
-    color: #00000066;
+    color: #4C4E64DE;
     font-weight: 500;
 }
 
