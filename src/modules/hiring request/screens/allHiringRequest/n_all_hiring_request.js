@@ -53,55 +53,55 @@ let defaaultFilterState = {
 }
 
 
-const MamoedCategoryRightComponent = ({ data, index ,handleHRRequest , tableFilteredState}) => {
-        const [archetype, setArchetype] = useState(data?.hR_Category);
-        const [showArchetypeDropdown, setShowArchetypeDropdown] = useState(false);
+const MamoedCategoryRightComponent = ({ data, index, handleHRRequest, tableFilteredState }) => {
+    const [archetype, setArchetype] = useState(data?.hR_Category);
+    const [showArchetypeDropdown, setShowArchetypeDropdown] = useState(false);
 
-        const [loadingCat, setLoadingCat] = useState(false);
+    const [loadingCat, setLoadingCat] = useState(false);
 
-        const updateHRCategory = async (cat, hrID) => {
-            let pl = { hrID: hrID, category: cat === 'None' ? '' : cat }
-            setLoadingCat(true);
-            let Result = await hiringRequestDAO.updateHRCategoryDAO(pl);
-            setLoadingCat(false);
-            if (Result.statusCode === HTTPStatusCode.OK) {
-                setShowArchetypeDropdown(false)
-                setArchetype(cat);
-                handleHRRequest(cat,index);
-            } else {
-                message.error("Something went wrong, please try again later.");
-            }
+    const updateHRCategory = async (cat, hrID) => {
+        let pl = { hrID: hrID, category: cat === 'None' ? '' : cat }
+        setLoadingCat(true);
+        let Result = await hiringRequestDAO.updateHRCategoryDAO(pl);
+        setLoadingCat(false);
+        if (Result.statusCode === HTTPStatusCode.OK) {
+            setShowArchetypeDropdown(false)
+            setArchetype(cat);
+            handleHRRequest(cat, index);
+        } else {
+            message.error("Something went wrong, please try again later.");
         }
-
-        return <div className={`${stylesOBj["category-right"]}`}>
-            {loadingCat ? <Spin /> : <>
-                {archetype === '' ? <div className={`${stylesOBj["archetype-select-wrapper"]}`} >
-                    <button type="button" className={`${stylesOBj["archetype-btn"]}`} onClick={() => setShowArchetypeDropdown(prev => !prev)}>Archetype</button>
-                    {data?.hR_Category !== '' && <button type="button" className={`${stylesOBj["archetype-close"]}`} onClick={() => setArchetype(data?.hR_Category)}>×</button>}
-                    <div className={`${stylesOBj["archetype-dropdown"]} ${showArchetypeDropdown ? stylesOBj["show"] : ""}`}>
-                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="kitten" onClick={() => updateHRCategory("Kitten", data?.HRID)}>
-                            <img src="images/kitten-ic.svg" alt="Kitten" /> Kitten
-                        </button>
-                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="cheetah" onClick={() => updateHRCategory("Cheetah", data?.HRID)}>
-                            <img src="images/cheetah-ic.svg" alt="Cheetah" /> Cheetah
-                        </button>
-                        <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="panda" onClick={() => updateHRCategory("Panda", data?.HRID)}>
-                            <img src="images/panda-ic.svg" alt="Panda" /> Panda
-                        </button>
-                    </div>
-                </div> : <div className={`${stylesOBj["archetype-image-wrapper"]}`}>
-                    <div className={`${stylesOBj["archetype-image-container"]}`}>
-                        {archetype === 'Cheetah' && <img src="images/cheetah-ic.svg" alt="Cheetah" className={`${stylesOBj["archetype-image"]}`} />}
-                        {archetype === 'Panda' && <img src="images/panda-ic.svg" alt="Panda" className={`${stylesOBj["archetype-image"]}`} />}
-                        {archetype === 'Kitten' && <img src="images/kitten-ic.svg" alt="Kitten" className={`${stylesOBj["archetype-image"]}`} />}
-                    </div>
-                    <button type="button" className={`${stylesOBj["archetype-close"]}`} onClick={() => setArchetype('')}>×</button>
-                </div>}
-            </>}
-
-
-        </div>
     }
+
+    return <div className={`${stylesOBj["category-right"]}`}>
+        {loadingCat ? <Spin /> : <>
+            {archetype === '' ? <div className={`${stylesOBj["archetype-select-wrapper"]}`} >
+                <button type="button" className={`${stylesOBj["archetype-btn"]}`} onClick={() => setShowArchetypeDropdown(prev => !prev)}>Archetype</button>
+                {data?.hR_Category !== '' && <button type="button" className={`${stylesOBj["archetype-close"]}`} onClick={() => setArchetype(data?.hR_Category)}>×</button>}
+                <div className={`${stylesOBj["archetype-dropdown"]} ${showArchetypeDropdown ? stylesOBj["show"] : ""}`}>
+                    <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="kitten" onClick={() => updateHRCategory("Kitten", data?.HRID)}>
+                        <img src="images/kitten-ic.svg" alt="Kitten" /> Kitten
+                    </button>
+                    <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="cheetah" onClick={() => updateHRCategory("Cheetah", data?.HRID)}>
+                        <img src="images/cheetah-ic.svg" alt="Cheetah" /> Cheetah
+                    </button>
+                    <button type="button" className={`${stylesOBj["archetype-option"]}`} data-value="panda" onClick={() => updateHRCategory("Panda", data?.HRID)}>
+                        <img src="images/panda-ic.svg" alt="Panda" /> Panda
+                    </button>
+                </div>
+            </div> : <div className={`${stylesOBj["archetype-image-wrapper"]}`}>
+                <div className={`${stylesOBj["archetype-image-container"]}`}>
+                    {archetype === 'Cheetah' && <img src="images/cheetah-ic.svg" alt="Cheetah" className={`${stylesOBj["archetype-image"]}`} />}
+                    {archetype === 'Panda' && <img src="images/panda-ic.svg" alt="Panda" className={`${stylesOBj["archetype-image"]}`} />}
+                    {archetype === 'Kitten' && <img src="images/kitten-ic.svg" alt="Kitten" className={`${stylesOBj["archetype-image"]}`} />}
+                </div>
+                <button type="button" className={`${stylesOBj["archetype-close"]}`} onClick={() => setArchetype('')}>×</button>
+            </div>}
+        </>}
+
+
+    </div>
+}
 export default function New_all_hiring_request() {
     const navigate = useNavigate();
     const [tableFilteredState, setTableFilteredState] = useState(defaaultFilterState);
@@ -365,11 +365,11 @@ export default function New_all_hiring_request() {
         [navigate, isFrontEndHR, isOnlyPriority, isOnlyDiamond]
     );
 
-    const handleHRRequestWithoutAPI = (cat,index) =>{
-        setAPIdata(prev=> {
+    const handleHRRequestWithoutAPI = (cat, index) => {
+        setAPIdata(prev => {
             let newData = [...prev];
             newData[index].hR_Category = cat;
-console.log(newData,'--newData',index,cat);
+            console.log(newData, '--newData', index, cat);
             return newData;
         });
     }
@@ -535,7 +535,9 @@ console.log(newData,'--newData',index,cat);
         setAppliedFilters(new Map());
         setCheckedState(new Map());
         setFilteredTagLength(0);
-        setTableFilteredState(defaaultFilterState);
+        setTableFilteredState({ ...defaaultFilterState ,searchText: debouncedSearch,filterFields_ViewAllHRs:{
+            fromDate:startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+            toDate:endDate ? new Date(endDate).toLocaleDateString("en-US") : null,} });
         // const reqFilter = {
         //   ...tableFilteredState,
         //   ...{
@@ -554,9 +556,9 @@ console.log(newData,'--newData',index,cat);
         localStorage.removeItem("HRFilterCheckedState");
         // handleHRRequest(defaaultFilterState);
         setIsAllowFilters(false);
-        setEndDate(null);
-        setStartDate(null);
-        setDebouncedSearch("");
+        // setEndDate(null);
+        // setStartDate(null);
+        // setDebouncedSearch("");
         setIsFrontEndHR(false);
         setIsOnlyPriority(false);
         setIsOnlyDiamond(false);
@@ -572,6 +574,9 @@ console.log(newData,'--newData',index,cat);
         setIsAllowFilters,
         setTableFilteredState,
         // tableFilteredState,
+        startDate,
+        endDate,
+        debouncedSearch
     ]);
 
     const cloneHRhandler = async (isHybrid, payload, resetFields) => {
@@ -777,7 +782,7 @@ console.log(newData,'--newData',index,cat);
     };
 
 
-    
+
 
     // const CategoryRightComponent = useMemo(({data,index})=> <MamoedCategoryRightComponent data={data} index={index} /> ,[allData]) 
 
@@ -813,6 +818,23 @@ console.log(newData,'--newData',index,cat);
                                 endDate={endDate}
                                 selectsRange
                             />
+
+                            {(startDate && endDate) && <Tooltip title="Reset date range">
+                                <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large', position: 'absolute', right: '40px', cursor: 'pointer' }} onClick={e => {
+                                    e.stopPropagation();
+                                    // setDebouncedSear
+                                    setTableFilteredState({
+                                        ...tableFilteredState,
+                                        filterFields_ViewAllHRs: {
+                                            ...tableFilteredState.filterFields_ViewAllHRs,
+                                            fromDate: null,
+                                            toDate: null,
+                                        },
+                                    });
+                                    setEndDate(null);
+                                    setStartDate(null);
+                                }}>X</span>
+                            </Tooltip>}
                             <img src="images/calendar-ic.svg" alt="Calendar Icon" className={`${stylesOBj["input-icon"]}`} />
 
                         </div>
@@ -824,37 +846,48 @@ console.log(newData,'--newData',index,cat);
                                 onChange={debouncedSearchHandler}
                                 value={debouncedSearch}
                             />
+                            {debouncedSearch.length > 0 && <Tooltip title="Reset search">
+                                <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large', position: 'absolute', right: '40px', cursor: 'pointer' }} onClick={e => {
+                                    e.stopPropagation();
+                                    setDebouncedSearch("");
+                                    setTableFilteredState({
+                                        ...tableFilteredState,
+                                        pagenum: 1,
+                                        searchText: "",
+                                    });
+                                }}>X</span>
+                            </Tooltip>}
                             <img src="images/search-ic.svg" alt="Search Icon" className={`${stylesOBj["input-icon"]}`} />
                         </div>
 
                         {/* <div style={{ display: 'flex', gap: '10px', width: 'max-content' }}> */}
-                            <button className={`${stylesOBj["filter-btn"]}`} onClick={toggleHRFilter} >
+                        <button className={`${stylesOBj["filter-btn"]}`} onClick={toggleHRFilter} >
 
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    
-                                     <img src="images/filter-ic.svg" alt="Filter Icon" />
-                                    <span>Add Filters</span>
+                            <div style={{ display: 'flex', gap: '10px' }}>
 
-                                </div>
-                                <div style={{ display: 'flex', gap: '10px' }} >
-                                     <div className={stylesOBj.filterCount}>{filteredTagLength}</div>
-                                     {(filteredTagLength > 0 || startDate || debouncedSearch) &&<Tooltip title="Reset Filters">
-                                        <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large' }} onClick={e=> {
-                                    e.stopPropagation();
-                                    clearFilters()
-                                }}>X</span>
-                                     </Tooltip> }
+                                <img src="images/filter-ic.svg" alt="Filter Icon" />
+                                <span>Add Filters</span>
 
-                                </div>
-                              
-                            </button>
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px' }} >
+                                <div className={stylesOBj.filterCount}>{filteredTagLength}</div>
+                                {(filteredTagLength > 0 ) && <Tooltip title="Reset Filters">
+                                    <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large' }} onClick={e => {
+                                        e.stopPropagation();
+                                        clearFilters()
+                                    }}>X</span>
+                                </Tooltip>}
 
-                            {/* <button className={`${stylesOBj["filter-btn"]}`} style={{ width: '140px', text: 'center', fontWeight: '500' }} onClick={clearFilters}>
+                            </div>
+
+                        </button>
+
+                        {/* <button className={`${stylesOBj["filter-btn"]}`} style={{ width: '140px', text: 'center', fontWeight: '500' }} onClick={clearFilters}>
                                 <span>Reset Filters <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'small' }}>X</span></span>
-                            </button>*/} 
+                            </button>*/}
                         {/* </div>  */}
 
- {/* <button  className={`${stylesOBj["filter-btn"]}`} onClick={toggleHRFilter}>
+                        {/* <button  className={`${stylesOBj["filter-btn"]}`} onClick={toggleHRFilter}>
                         <img src="images/filter-ic.svg" alt="Filter Icon" class="filter-icon"/>
                         <span  className={`${stylesOBj["filter-text"]}`}> Add Filters</span>
                         <span class="filter-counter-wrapper">
@@ -875,11 +908,11 @@ console.log(newData,'--newData',index,cat);
                                 miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS
                             )} <button className={`${stylesOBj["btn-add-hr"]} ${stylesOBj["control-btns"]}`} onClick={() => {
                                 localStorage.removeItem('hrID')
-                                navigate(UTSRoutes.ADDNEWHR+ '/0');
-                        
+                                navigate(UTSRoutes.ADDNEWHR + '/0');
+
                             }}>ADD NEW HR</button>
                             <button className={`${stylesOBj["btn-export"]} ${stylesOBj['control-btns']}`} onClick={() => handleExport(apiData)}>Export</button>
-                           
+
                         </div>
                     </div>
 
@@ -901,7 +934,7 @@ console.log(newData,'--newData',index,cat);
                                         <th>ENGAGEMENT TYPE</th>
                                         <th>HR STATUS</th>
                                         <th>MARGIN %</th>
-                                        <th>SALARY/CLIENT BUDGET</th>                                   
+                                        <th>SALARY/CLIENT BUDGET</th>
                                         <th>FTE/PTE</th>
                                         <th>SALES REP</th>
                                         <th>POD</th>
@@ -921,7 +954,7 @@ console.log(newData,'--newData',index,cat);
                                             {apiData.map((data, index) => {
                                                 return <tr key={data.key}>
                                                     {/* SHORTCUTS */}
-                                                    <td style={{padding:'15px'}} >
+                                                    <td style={{ padding: '15px' }} >
                                                         <div className={`${stylesOBj["shortcuts-cell"]}`}>
                                                             <a href="javascript:void(0)" onClick={() => { setIsPreviewModal(true); setpreviewIDs({ hrID: data?.HRID, companyID: data?.companyID }); getPreviewPostData(data?.HRID, data.HR_ID, data?.companyID) }} className={`${stylesOBj["shortcut-icon-wrapper"]}`} data-tooltip="Preview HR">
                                                                 <img src="images/preview-hr-ic.svg" alt="Preview HR" className={`${stylesOBj["shortcut-icon"]}`} />
@@ -1030,7 +1063,7 @@ console.log(newData,'--newData',index,cat);
                                                     {/* ENGAGEMENT TYPE */}
                                                     <td>{data?.hrEngagementType}
                                                         {/* <span className={`${stylesOBj[]}`}"transparent-text">(Transparent)</span> */}</td>
-                                                          <td>
+                                                    <td>
                                                         {All_Hiring_Request_Utils.GETHRSTATUS(
                                                             data?.hrStatusCode,
                                                             data?.hrStatus
@@ -1042,7 +1075,7 @@ console.log(newData,'--newData',index,cat);
                                                     {/* SALARY/CLIENT BUDGET */}
                                                     <td>{data?.salaryBudget}</td>
                                                     {/* HR STATUS */}
-                                                  
+
                                                     {/* FTE/PTE */}
                                                     <td>{data?.typeOfEmployee}</td>
                                                     {/* SALES REP */}
@@ -1128,7 +1161,11 @@ console.log(newData,'--newData',index,cat);
                         checkedState={checkedState}
                         handleHRRequest={handleHRRequest}
                         setPageIndex={setPageIndex}
-                        setTableFilteredState={setTableFilteredState}
+                        setTableFilteredState={filtersV=>setTableFilteredState({...filtersV,filterFields_ViewAllHRs:{
+                            ...filtersV.filterFields_ViewAllHRs,
+                               fromDate:startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+                                toDate:endDate ? new Date(endDate).toLocaleDateString("en-US") : null
+                        }})}
                         tableFilteredState={tableFilteredState}
                         setFilteredTagLength={setFilteredTagLength}
                         onRemoveHRFilters={onRemoveHRFilters}
