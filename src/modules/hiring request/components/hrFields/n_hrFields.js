@@ -2185,7 +2185,7 @@ function NewHRFields() {
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <input type="number" className={`${styles["form-input"]}`} placeholder="No. of talents needed *" required min={1} max={99}
-                                                value={roleReqFormFields?.numberOfTalents} onChange={e => setRoleReqFormFields(prev => ({ ...prev, numberOfTalents: e.target.value }))} />
+                                                value={roleReqFormFields?.numberOfTalents} onChange={e => setRoleReqFormFields(prev => ({ ...prev, numberOfTalents: e.target.value }))} disabled={+hrid >0} />
                                             {formValidationError && (roleReqFormFields?.numberOfTalents === '' || isNaN(roleReqFormFields.numberOfTalents) || parseInt(roleReqFormFields.numberOfTalents) <= 0 || parseInt(roleReqFormFields.numberOfTalents) > 99) && <p className={`${styles["fieldError"]}`}>please enter no of talents ( 1 to 99 )</p>}
                                         </div>
                                     </div>
