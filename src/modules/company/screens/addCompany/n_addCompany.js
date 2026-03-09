@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import companyStyles from "./n_addCompany.module.css";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { useFieldArray, useForm } from "react-hook-form";
-import { Modal, Skeleton, message, Select, Radio } from "antd";
+import { Modal, Skeleton, message, Select, Radio, Switch } from "antd";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import ReactQuill from "react-quill";
@@ -24,8 +24,8 @@ import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
-import { ReactComponent as DeleteIcon} from 'assets/svg/delete-yellow.svg'
-
+import { ReactComponent as DeleteIcon } from 'assets/svg/delete-yellow.svg'
+import ConfirmationModal from "modules/client/components/addClient/confirmationResendEmailModal";
 
 export const secondaryClient = {
   clientProfilePic: "",
@@ -158,6 +158,9 @@ function NewAddCompany() {
   const [confidentialInfo, setConfidentialInfo] = useState(0);
   const [loadingDetails, setLoadingDetails] = useState(false)
   const [clientsEmailError, setClientsEmailError] = useState({})
+  const [showConfirmationModal, setConfirmationModal] = useState(false);
+  const [clientID, setClientID] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [uplersPOCname, setUplersPOCName] = useState(null)
 
@@ -515,129 +518,129 @@ function NewAddCompany() {
 
   //set data on edit
 
-    useEffect(() => {
-      if(companyID > 0){
- companyDetails?.companyLogo && setUploadFileData(companyDetails?.companyLogo)
+  useEffect(() => {
+    if (companyID > 0) {
+      companyDetails?.companyLogo && setUploadFileData(companyDetails?.companyLogo)
       // companyDetails?.companyLogo.includes(NetworkInfo.PROTOCOL +
       //   NetworkInfo.DOMAIN) ? setUploadFileData(companyDetails?.companyLogo) :  setUploadFileData(  NetworkInfo.PROTOCOL +
       //     NetworkInfo.DOMAIN +
       //     "Media/CompanyLogo/" + companyDetails?.companyLogo);
-  
+
       let engagementDetails = getCompanyDetails?.engagementDetails
 
-      if(filtersList?.Geo?.length){
- let  geo_id = filtersList.Geo?.find(g=> g.value === companyDetails?.companyGeo)?.text
-    let lead_Type = leadTypeOptions?.find(l=> l.value ===  companyDetails?.leadUserType)?.id
-// console.log('ff', geo_id,lead_Type,companySectionData?.Geo,companyDetails?.companyGeo)
-    setCompanySectionData({
-    "companyName": companyDetails?.companyName ?? '',
-    "companyURL": companyDetails?.website ?? '',
-    "companyLinkedinURL": companyDetails?.linkedInProfile ?? '',
-    "foundedIn": companyDetails?.foundedYear ? companyDetails?.foundedYear : null,
+      if (filtersList?.Geo?.length) {
+        let geo_id = filtersList.Geo?.find(g => g.value === companyDetails?.companyGeo)?.text
+        let lead_Type = leadTypeOptions?.find(l => l.value === companyDetails?.leadUserType)?.id
+        // console.log('ff', geo_id,lead_Type,companySectionData?.Geo,companyDetails?.companyGeo)
+        setCompanySectionData({
+          "companyName": companyDetails?.companyName ?? '',
+          "companyURL": companyDetails?.website ?? '',
+          "companyLinkedinURL": companyDetails?.linkedInProfile ?? '',
+          "foundedIn": companyDetails?.foundedYear ? companyDetails?.foundedYear : null,
 
-    "LeadUser": companyDetails?.leadUserID ? companyDetails?.leadUserID: null,
-    "industry": companyDetails?.companyIndustry ?? '',
-    "teamSize": companyDetails?.teamSize > 0 ? companyDetails?.teamSize : '',
-    "headquaters": companyDetails?.headquaters ?? '',
-    "Category": companyDetails?.companyCategory ? companyDetails?.companyCategory : 'None',
-  
-    "aboutCompany": companyDetails?.aboutCompany ?? '',
-    'hiringPricingType': engagementDetails?.hiringTypePricingId,
-    "creditCurrency": engagementDetails?.creditCurrency ? engagementDetails?.creditCurrency : null,
-    'creditAmount': engagementDetails?.creditAmount ? engagementDetails?.creditAmount : '',
-    'jobPostCredit': engagementDetails?.isPostaJob && engagementDetails?.jobPostCredit ? engagementDetails?.jobPostCredit : '',
-    'freeCredit': engagementDetails?.jpCreditBalance ? engagementDetails?.jpCreditBalance : '',
+          "LeadUser": companyDetails?.leadUserID ? companyDetails?.leadUserID : null,
+          "industry": companyDetails?.companyIndustry ?? '',
+          "teamSize": companyDetails?.teamSize > 0 ? companyDetails?.teamSize : '',
+          "headquaters": companyDetails?.headquaters ?? '',
+          "Category": companyDetails?.companyCategory ? companyDetails?.companyCategory : 'None',
 
-     "LeadType": lead_Type ? lead_Type: null,
+          "aboutCompany": companyDetails?.aboutCompany ?? '',
+          'hiringPricingType': engagementDetails?.hiringTypePricingId,
+          "creditCurrency": engagementDetails?.creditCurrency ? engagementDetails?.creditCurrency : null,
+          'creditAmount': engagementDetails?.creditAmount ? engagementDetails?.creditAmount : '',
+          'jobPostCredit': engagementDetails?.isPostaJob && engagementDetails?.jobPostCredit ? engagementDetails?.jobPostCredit : '',
+          'freeCredit': engagementDetails?.jpCreditBalance ? engagementDetails?.jpCreditBalance : '',
 
-    "Geo": geo_id ? geo_id : null,
-  })
-  
+          "LeadType": lead_Type ? lead_Type : null,
+
+          "Geo": geo_id ? geo_id : null,
+        })
+
       }
 
-     
-  
 
-  setCheckPayPer({
-      
-        companyTypeID: engagementDetails?.companyTypeID??0,
-        anotherCompanyTypeID:engagementDetails?.anotherCompanyTypeID??0
+
+
+      setCheckPayPer({
+
+        companyTypeID: engagementDetails?.companyTypeID ?? 0,
+        anotherCompanyTypeID: engagementDetails?.anotherCompanyTypeID ?? 0
       });
-    
-    engagementDetails?.isTransparentPricing != null && setTypeOfPricing(engagementDetails?.isTransparentPricing === true ? 1 : 0)
+
+      engagementDetails?.isTransparentPricing != null && setTypeOfPricing(engagementDetails?.isTransparentPricing === true ? 1 : 0)
 
 
-       if (engagementDetails?.companyID) {
-      setIsChecked({
-        isPostaJob: engagementDetails?.isPostaJob,
-        isProfileView: engagementDetails?.isProfileView,
-      });
-     
-    
-    }
+      if (engagementDetails?.companyID) {
+        setIsChecked({
+          isPostaJob: engagementDetails?.isPostaJob,
+          isProfileView: engagementDetails?.isProfileView,
+        });
 
-    let funding = getFundingDetails.length > 0 ? getFundingDetails[0] : {}
 
-    setFundingSectionData( {
-    isSelfFunded: companyDetails?.isSelfFunded,
-    fundingAmount: funding?.fundingAmount,
-    series: funding?.series ? funding?.series : null,
-    month: funding?.fundingMonth ? funding?.fundingMonth : null,
-    year: funding?.fundingYear ? funding?.fundingYear : null,
-    investors: funding?.investors ?? '',
-    additionalInfo: funding?.additionalInformation ??'',
-    "fundingID": funding?.fundingId,
-  }
-     
-    )
+      }
 
-    let contactDetails = getCompanyDetails?.contactDetails
+      let funding = getFundingDetails.length > 0 ? getFundingDetails[0] : {}
+
+      setFundingSectionData({
+        isSelfFunded: companyDetails?.isSelfFunded,
+        fundingAmount: funding?.fundingAmount,
+        series: funding?.series ? funding?.series : null,
+        month: funding?.fundingMonth ? funding?.fundingMonth : null,
+        year: funding?.fundingYear ? funding?.fundingYear : null,
+        investors: funding?.investors ?? '',
+        additionalInfo: funding?.additionalInformation ?? '',
+        "fundingID": funding?.fundingId,
+      }
+
+      )
+
+      let contactDetails = getCompanyDetails?.contactDetails
 
       if (contactDetails?.length > 0) {
         let clients = []
-          contactDetails?.forEach((contact) => {
-            let phoneDetails = {
-              contactNo: "",
-              countryCode: "",
-            };
-    
-            if (contact?.contactNo) {
-              // if (contact?.contactNo?.includes("+91")) {
-              //   phoneDetails.contactNo = contact?.contactNo?.slice(3);
-              //   phoneDetails.countryCode = contact?.contactNo?.slice(0, 3);
-              // }else if (contact?.contactNo?.includes("+")) {
-              //   phoneDetails.contactNo = contact?.contactNo?.slice(2)?.trim();
-              //   phoneDetails.countryCode = contact?.contactNo?.slice(0, 2);
-              // } else {
-              //   phoneDetails.contactNo = contact?.contactNo;
-              // }
-              phoneDetails.contactNo = contact?.contactNo;
-            }
-            clients.push({
-              ...secondaryClient,
-              ...contact,
-              _id: contact.id,
-              isNewClient:false,
-              ...phoneDetails,
-            });
+        contactDetails?.forEach((contact) => {
+          let phoneDetails = {
+            contactNo: "",
+            countryCode: "",
+          };
+
+          if (contact?.contactNo) {
+            // if (contact?.contactNo?.includes("+91")) {
+            //   phoneDetails.contactNo = contact?.contactNo?.slice(3);
+            //   phoneDetails.countryCode = contact?.contactNo?.slice(0, 3);
+            // }else if (contact?.contactNo?.includes("+")) {
+            //   phoneDetails.contactNo = contact?.contactNo?.slice(2)?.trim();
+            //   phoneDetails.countryCode = contact?.contactNo?.slice(0, 2);
+            // } else {
+            //   phoneDetails.contactNo = contact?.contactNo;
+            // }
+            phoneDetails.contactNo = contact?.contactNo;
+          }
+          clients.push({
+            ...secondaryClient,
+            ...contact,
+            _id: contact.id,
+            isNewClient: false,
+            ...phoneDetails,
           });
+        });
 
-          setClientsData(clients)
+        setClientsData(clients)
 
-        } else {
-          setClientsData([{ ...secondaryClient, roleID: 1, isPrimary: true }]);
-        }
-
-        setUplersPOCName(getCompanyDetails?.pocUserDetailsEdit?.pocUserID)
-   
+      } else {
+        setClientsData([{ ...secondaryClient, roleID: 1, isPrimary: true }]);
       }
-     
 
-    
+      setUplersPOCName(getCompanyDetails?.pocUserDetailsEdit?.pocUserID)
 
-    }, [getCompanyDetails,filtersList]);
+    }
 
-    
+
+
+
+  }, [getCompanyDetails, filtersList]);
+
+
 
   const getHRPricingType = useCallback(async () => {
     const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
@@ -767,131 +770,131 @@ function NewAddCompany() {
   //   return valid
   // }
 
-  const  checkFormValidation = () =>  {
+  const checkFormValidation = () => {
     setAboutCompanyError(false);
-  let valid = true;
+    let valid = true;
 
-  if (companySectionData?.companyName.trim() === '') {
-    console.log("❌ companyName is empty");
-    valid = false;
-  }
-
-  if (
-    companySectionData?.companyURL.trim() === '' ||
-    !ValidateFieldURL(companySectionData?.companyURL, "website")
-  ) {
-    console.log("❌ companyURL invalid");
-    valid = false;
-  }
-
-  if (
-    companySectionData?.companyLinkedinURL !== '' &&
-    !ValidateFieldURL(companySectionData?.companyLinkedinURL, "linkedin")
-  ) {
-    console.log("❌ companyLinkedinURL invalid");
-    valid = false;
-  }
-
-  if (
-    companySectionData?.foundedIn === null ||
-    companySectionData?.LeadType === null ||
-    companySectionData?.LeadUser === null
-  ) {
-    console.log("❌ foundedIn / LeadType / LeadUser missing");
-    valid = false;
-  }
-
-  if (
-    companySectionData?.teamSize?.trim() === '' ||
-    companySectionData?.teamSize < 1
-  ) {
-    console.log("❌ teamSize invalid");
-    valid = false;
-  }
-
-  if (companySectionData?.industry.trim() === '') {
-    console.log("❌ industry empty");
-    valid = false;
-  }
-
-  if (isQuillEmpty(companySectionData?.aboutCompany)) {
-    console.log("❌ aboutCompany empty");
-    setAboutCompanyError(true);
-    valid = false;
-  }
-
-  if (
-    companySectionData?.Category === null ||
-    companySectionData?.Geo === null
-  ) {
-    console.log("❌ Category or Geo missing");
-    valid = false;
-  }
-
-  if (confidentialInfo === 1) {
-    if (
-      companyConfidentailFields?.companyNameAlias?.trim() === '' ||
-      companyConfidentailFields?.companyNameAlias === null
-    ) {
-      console.log("❌ companyNameAlias empty (Confidential)");
+    if (companySectionData?.companyName.trim() === '') {
+      console.log("❌ companyName is empty");
       valid = false;
     }
 
     if (
-      companyConfidentailFields?.companyLogoAlias?.trim() === '' ||
-      companyConfidentailFields?.companyLogoAlias === null
+      companySectionData?.companyURL.trim() === '' ||
+      !ValidateFieldURL(companySectionData?.companyURL, "website")
     ) {
-      console.log("❌ companyLogoAlias empty (Confidential)");
-      valid = false;
-    }
-  }
-
-  if (
-    checkPayPer?.companyTypeID !== 0 &&
-    checkPayPer?.companyTypeID !== null
-  ) {
-    if (companySectionData?.creditCurrency === null) {
-      console.log("❌ creditCurrency missing");
-      valid = false;
-    }
-
-    if (+companySectionData?.creditAmount < 1) {
-      console.log("❌ creditAmount invalid");
+      console.log("❌ companyURL invalid");
       valid = false;
     }
 
     if (
-      IsChecked?.isPostaJob &&
-      (
-        companySectionData?.jobPostCredit < 1)
+      companySectionData?.companyLinkedinURL !== '' &&
+      !ValidateFieldURL(companySectionData?.companyLinkedinURL, "linkedin")
     ) {
-      console.log("❌ jobPostCredit invalid");
-      valid = false;
-    }
-  }
-
-  if (uplersPOCname === null) {
-    console.log("❌ uplersPOCname not selected");
-    valid = false;
-  }
-
-  clientsData.forEach((client, index) => {
-    if (client.fullName.trim() === '') {
-      console.log(`❌ Client ${index + 1} fullName empty`);
+      console.log("❌ companyLinkedinURL invalid");
       valid = false;
     }
 
-    if (client.emailID.trim() === '' || !eReg.test(client.emailID)) {
-      console.log(`❌ Client ${index + 1} emailID invalid`);
+    if (
+      companySectionData?.foundedIn === null ||
+      companySectionData?.LeadType === null ||
+      companySectionData?.LeadUser === null
+    ) {
+      console.log("❌ foundedIn / LeadType / LeadUser missing");
       valid = false;
     }
-  });
 
-  console.log("Final Validation Result:", valid);
+    if (
+      companySectionData?.teamSize?.trim() === '' ||
+      companySectionData?.teamSize < 1
+    ) {
+      console.log("❌ teamSize invalid");
+      valid = false;
+    }
 
-  return valid;
-};
-  
+    if (companySectionData?.industry.trim() === '') {
+      console.log("❌ industry empty");
+      valid = false;
+    }
+
+    if (isQuillEmpty(companySectionData?.aboutCompany)) {
+      console.log("❌ aboutCompany empty");
+      setAboutCompanyError(true);
+      valid = false;
+    }
+
+    if (
+      companySectionData?.Category === null ||
+      companySectionData?.Geo === null
+    ) {
+      console.log("❌ Category or Geo missing");
+      valid = false;
+    }
+
+    if (confidentialInfo === 1) {
+      if (
+        companyConfidentailFields?.companyNameAlias?.trim() === '' ||
+        companyConfidentailFields?.companyNameAlias === null
+      ) {
+        console.log("❌ companyNameAlias empty (Confidential)");
+        valid = false;
+      }
+
+      if (
+        companyConfidentailFields?.companyLogoAlias?.trim() === '' ||
+        companyConfidentailFields?.companyLogoAlias === null
+      ) {
+        console.log("❌ companyLogoAlias empty (Confidential)");
+        valid = false;
+      }
+    }
+
+    if (
+      checkPayPer?.companyTypeID !== 0 &&
+      checkPayPer?.companyTypeID !== null
+    ) {
+      if (companySectionData?.creditCurrency === null) {
+        console.log("❌ creditCurrency missing");
+        valid = false;
+      }
+
+      if (+companySectionData?.creditAmount < 1) {
+        console.log("❌ creditAmount invalid");
+        valid = false;
+      }
+
+      if (
+        IsChecked?.isPostaJob &&
+        (
+          companySectionData?.jobPostCredit < 1)
+      ) {
+        console.log("❌ jobPostCredit invalid");
+        valid = false;
+      }
+    }
+
+    if (uplersPOCname === null) {
+      console.log("❌ uplersPOCname not selected");
+      valid = false;
+    }
+
+    clientsData.forEach((client, index) => {
+      if (client.fullName.trim() === '') {
+        console.log(`❌ Client ${index + 1} fullName empty`);
+        valid = false;
+      }
+
+      if (client.emailID.trim() === '' || !eReg.test(client.emailID)) {
+        console.log(`❌ Client ${index + 1} emailID invalid`);
+        valid = false;
+      }
+    });
+
+    console.log("Final Validation Result:", valid);
+
+    return valid;
+  };
+
 
   const handleCreateCompany = async () => {
     console.log(companySectionData)
@@ -905,7 +908,7 @@ function NewAddCompany() {
       setFormValidationError(true)
       return
     }
- 
+
     // console.log(d,"aboutCompanyaboutCompanyaboutCompany");
 
     const allClientEmails = clientsData.map(c => c.emailID)
@@ -918,7 +921,7 @@ function NewAddCompany() {
       return
     }
 
- 
+
 
     if (typeOfPricing === null && checkPayPer?.anotherCompanyTypeID == 1 && (checkPayPer?.companyTypeID == 0 || checkPayPer?.companyTypeID == 2)) {
       setPricingTypeError(true)
@@ -939,13 +942,13 @@ function NewAddCompany() {
       return
     }
 
-    if (checkPayPer?.companyTypeID == 2 && IsChecked?.isPostaJob === false ) {
+    if (checkPayPer?.companyTypeID == 2 && IsChecked?.isPostaJob === false) {
       setCreditError(true)
-      
+
       return
     }
 
-    
+
 
     // check for at lest one admin client
     let isAdmin = false
@@ -971,7 +974,7 @@ function NewAddCompany() {
       let encryptedPassword = encrypt(password);
 
       return {
-        "clientID": companyID !== '0' ? client?.en_Id ?  client.id : 0 : 0,
+        "clientID": companyID !== '0' ? client?.en_Id ? client.id : 0 : 0,
         "en_Id": client.en_Id,
         "isPrimary": client.isPrimary,
         "fullName": client.fullName,
@@ -1021,7 +1024,7 @@ function NewAddCompany() {
     let geo_id = filtersList.Geo.find(item => item.text === companySectionData?.Geo)?.value
 
     let usrTypeVal = leadTypeOptions.find(i => i.id === companySectionData.LeadType)?.value
-// console.log(" v",filtersList,companySectionData?.Geo,leadTypeOptions,companySectionData.LeadType)
+    // console.log(" v",filtersList,companySectionData?.Geo,leadTypeOptions,companySectionData.LeadType)
     let fundingObj = [{
       ...fundingSectionData,
       fundingID: 0,
@@ -1158,7 +1161,7 @@ function NewAddCompany() {
       //     id: item,
       //     value: item,
       // })))
-      setCultureSectionData(p => ({ ...p,culture:companyDetails?.culture ?? '' , perksAndAdvantages: getCompanyDetails?.perkDetails?.map(item => item) }))
+      setCultureSectionData(p => ({ ...p, culture: companyDetails?.culture ?? '', perksAndAdvantages: getCompanyDetails?.perkDetails?.map(item => item) }))
       if (getValuesForDD?.CompanyPerks?.length > 0) {
         setCombinedPerkMemo([...getCompanyDetails?.perkDetails?.map(item => ({
           id: item,
@@ -1176,7 +1179,7 @@ function NewAddCompany() {
       })))
     }
 
- 
+
   }, [getCompanyDetails?.perkDetails, companyDetails, getValuesForDD?.CompanyPerks])
 
   const uploadCultureImages = async (Files) => {
@@ -1210,51 +1213,51 @@ function NewAddCompany() {
     setUploading(false)
   }
 
-    const removeYoutubeDetailsFromBE = async (toDelete) => {
-      let payload = {
-          "youtubeID": toDelete.youtubeID,
-          "companyID": companyID
-      }
-      const result = await allCompanyRequestDAO.deleteYoutubeDetailsDAO(payload)
-      if(result.statusCode === HTTPStatusCode.OK){
-        let filteredValue =  getCompanyDetails?.youTubeDetails.filter(d=> !(d.youtubeID === toDelete.youtubeID && d.youtubeLink === toDelete.youtubeLink))
-        setCompanyDetails(prev => ({...prev,youTubeDetails:filteredValue}))
-      }
-      }
-  
-     const removeYoutubelink = (toDelete) => {
-      if(toDelete.youtubeID === 0){
-        let filteredValue =  getCompanyDetails?.youTubeDetails.filter(d=> !(d.youtubeID === toDelete.youtubeID && d.youtubeLink === toDelete.youtubeLink))
-        setCompanyDetails(prev => ({...prev,youTubeDetails:filteredValue}))
-      }else {
-        removeYoutubeDetailsFromBE(toDelete)
-      }
-        
-     }
+  const removeYoutubeDetailsFromBE = async (toDelete) => {
+    let payload = {
+      "youtubeID": toDelete.youtubeID,
+      "companyID": companyID
+    }
+    const result = await allCompanyRequestDAO.deleteYoutubeDetailsDAO(payload)
+    if (result.statusCode === HTTPStatusCode.OK) {
+      let filteredValue = getCompanyDetails?.youTubeDetails.filter(d => !(d.youtubeID === toDelete.youtubeID && d.youtubeLink === toDelete.youtubeLink))
+      setCompanyDetails(prev => ({ ...prev, youTubeDetails: filteredValue }))
+    }
+  }
 
-    const removeIMGFromBE= async (toDelete) =>{
-      let payload = {
-        "cultureID": toDelete.cultureID,
-        "culture_Image": toDelete.cultureImage,
-        "companyID": companyID
-      }
-  
-      const result = await allCompanyRequestDAO.deleteImageDAO(payload)
+  const removeYoutubelink = (toDelete) => {
+    if (toDelete.youtubeID === 0) {
+      let filteredValue = getCompanyDetails?.youTubeDetails.filter(d => !(d.youtubeID === toDelete.youtubeID && d.youtubeLink === toDelete.youtubeLink))
+      setCompanyDetails(prev => ({ ...prev, youTubeDetails: filteredValue }))
+    } else {
+      removeYoutubeDetailsFromBE(toDelete)
+    }
 
-      if(result.statusCode === HTTPStatusCode.OK){
-        let filteredValue =  getCompanyDetails?.cultureDetails.filter(d=> !(d.cultureID=== toDelete.cultureID && d.cultureImage=== toDelete.cultureImage))
-        setCompanyDetails(prev => ({...prev,cultureDetails:filteredValue}))
-      }
-     }
+  }
 
-     const deleteCulturImage = (toDelete) => {
-    if(toDelete.cultureID === 0){
-      let filteredValue =  getCompanyDetails?.cultureDetails.filter(d=> !(d.cultureID=== toDelete.cultureID && d.cultureImage=== toDelete.cultureImage))
-      setCompanyDetails(prev => ({...prev,cultureDetails:filteredValue}))
-    }else {
+  const removeIMGFromBE = async (toDelete) => {
+    let payload = {
+      "cultureID": toDelete.cultureID,
+      "culture_Image": toDelete.cultureImage,
+      "companyID": companyID
+    }
+
+    const result = await allCompanyRequestDAO.deleteImageDAO(payload)
+
+    if (result.statusCode === HTTPStatusCode.OK) {
+      let filteredValue = getCompanyDetails?.cultureDetails.filter(d => !(d.cultureID === toDelete.cultureID && d.cultureImage === toDelete.cultureImage))
+      setCompanyDetails(prev => ({ ...prev, cultureDetails: filteredValue }))
+    }
+  }
+
+  const deleteCulturImage = (toDelete) => {
+    if (toDelete.cultureID === 0) {
+      let filteredValue = getCompanyDetails?.cultureDetails.filter(d => !(d.cultureID === toDelete.cultureID && d.cultureImage === toDelete.cultureImage))
+      setCompanyDetails(prev => ({ ...prev, cultureDetails: filteredValue }))
+    } else {
       removeIMGFromBE(toDelete)
     }
-   }
+  }
 
 
 
@@ -1587,7 +1590,7 @@ function NewAddCompany() {
                                 }))
                               }}
                             />
-                            {formValidationError && ( companySectionData?.creditAmount < 1) && <p className={`${companyStyles["fieldError"]}`}>*Please enter credit amount </p>}
+                            {formValidationError && (companySectionData?.creditAmount < 1) && <p className={`${companyStyles["fieldError"]}`}>*Please enter credit amount </p>}
                           </div>
                         </div>
                       </div>
@@ -1620,7 +1623,7 @@ function NewAddCompany() {
                               />
                               <span>Credit per post a job.</span>
                             </label>
-{creditError && <p className={`${companyStyles["fieldError"]}`}>*credit pre post is required </p>}
+                            {creditError && <p className={`${companyStyles["fieldError"]}`}>*credit pre post is required </p>}
                           </div>
                         </div>
                       </div>
@@ -1981,7 +1984,7 @@ function NewAddCompany() {
                           options={leadTypeOptions}
                           value={companySectionData?.LeadType}
                           onChange={(val, valObj) => {
-                            setCompanySectionData(p => ({ ...p, LeadType: val ,LeadUser: null }))
+                            setCompanySectionData(p => ({ ...p, LeadType: val, LeadUser: null }))
                           }}
                         />
                         {formValidationError && companySectionData?.LeadType === null && <p className={`${companyStyles["fieldError"]}`}>*Please select lead source </p>}
@@ -2334,7 +2337,7 @@ function NewAddCompany() {
                     {getCompanyDetails?.cultureDetails?.map(culture => <div className={`${companyStyles["col-lg-4"]}`} key={`${culture.cultureID} ${culture.cultureImage}`}>
                       <div className={companyStyles.cultureImageContainer}>
                         <img src={culture.cultureImage} alt='culture' className={companyStyles.cultureImage} />
-                        <DeleteIcon  className={companyStyles.cultureDelete} onClick={()=> deleteCulturImage(culture)}/>
+                        <DeleteIcon className={companyStyles.cultureDelete} onClick={() => deleteCulturImage(culture)} />
                       </div>
                     </div>)}
                   </div>}
@@ -2370,7 +2373,7 @@ function NewAddCompany() {
                     /> */}
                           <div className={companyStyles.youTubeDetails} onClick={() => { }}>
                             {youtube.youtubeLink}
-                             <DeleteIcon style={{marginLeft:'10px',cursor:'pointer'}} onClick={()=>{ removeYoutubelink(youtube)}} />
+                            <DeleteIcon style={{ marginLeft: '10px', cursor: 'pointer' }} onClick={() => { removeYoutubelink(youtube) }} />
                           </div>
                         </div>)}
 
@@ -2538,24 +2541,73 @@ function NewAddCompany() {
                           </div> */}
                             </div>
                           </div>
-                        </div>
-                        <div className={`${companyStyles["row"]}`}>
-                          <div className={`${companyStyles["cols"]} ${companyStyles["col-lg-12"]}`}>
+
+                          <div className={`${companyStyles["cols"]} ${companyStyles["col-lg-6"]}`} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <div className={`${companyStyles["form-group"]} ${companyStyles["checkbox-group"]}`}>
                               <label className={`${companyStyles["checkbox-label"]}`}>
-                                <input type="checkbox" className={`${companyStyles["form-checkbox"]}`} name="emailNotification[]"
-                                  checked={client.isClientNotificationSend} onClick={() => {
+                                {/* <input type="checkbox" className={`${companyStyles["form-checkbox"]}`} name="emailNotification[]"
+                                  checked={!client.isClientNotificationSend} onClick={() => {
                                     setClientsData(pArr => {
                                       let newCopy = [...pArr]
                                       newCopy[index] = { ...newCopy[index], isClientNotificationSend: !client.isClientNotificationSend }
                                       return newCopy
                                     })
-                                  }} />
+                                  }} /> */}
                                 <span>Email notification</span>
+                                <Switch checked={!client.isClientNotificationSend} style={{ width: '70px' }}
+                                  checkedChildren="ON" unCheckedChildren="OFF"
+                                  onChange={val => {
+                                    setClientsData(pArr => {
+                                      let newCopy = [...pArr]
+                                      newCopy[index] = { ...newCopy[index], isClientNotificationSend: !val }
+                                      return newCopy
+                                    })
+                                  }}
+                                />
                               </label>
+
+
                             </div>
+                            {(companyID !== "0" && !client.isClientNotificationSend) && (
+                              <> {client?.resendInviteEmail === true && (
+                                <button
+                                  type="submit"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    // resendInviteEmailAPI(item?.ID);
+                                    let cont = getCompanyDetails?.contactDetails.find(i => i.emailID === client.emailID)
+                                    setClientID(cont.id);
+                                    setConfirmationModal(true);
+                                  }}
+                                  className={companyStyles.btnPrimaryResendBtn}
+                                >
+                                  Send / Resend Invite Email
+                                </button>
+                              )}
+                              </>
+                            )}
                           </div>
+
+                          {/* {(companyID !== "0" && !client.isClientNotificationSend) && (
+                                                  <div className={companyStyles["col-lg-6"]}>
+                                                    {client?.resendInviteEmail === true && (
+                                                      <button
+                                                        type="submit"
+                                                        onClick={() => {
+                                                          // resendInviteEmailAPI(item?.ID);
+                                                          let cont = getCompanyDetails?.contactDetails.find(i=> i.emailID === client.emailID)
+                                                          setClientID(cont.id);
+                                                          setConfirmationModal(true);
+                                                        }}
+                                                        className={companyStyles.btnPrimaryResendBtn}
+                                                      >
+                                                        Send / Resend Invite Email
+                                                      </button>
+                                                    )}
+                                                  </div>
+                                                )} */}
                         </div>
+
                       </div>
                     </div>
                     <div className={`${companyStyles["row"]} ${companyStyles["client-details-add-row"]}`}>
@@ -2650,7 +2702,7 @@ function NewAddCompany() {
 
             {/* <!-- Form Actions --> */}
             <div className={`${companyStyles["form-actions"]}`} style={{ marginBottom: '64px' }}>
-              <button type="button" name="cancel" className={`${companyStyles["btn-cancel"]}`} onClick={()=>navigate('/allClients')}>CANCEL</button>
+              <button type="button" name="cancel" className={`${companyStyles["btn-cancel"]}`} onClick={() => navigate('/allClients')}>CANCEL</button>
               <button type="button" name="save" className={`${companyStyles["btn-save"]}`}
                 disabled={disableSubmit}
                 style={{ cursor: disableSubmit ? "not-allowed" : "pointer" }}
@@ -2696,6 +2748,14 @@ function NewAddCompany() {
         isPreviewModal={isPreviewModal}
         setcompanyID={setcompanyID}
         getcompanyID={getcompanyID}
+      />
+
+      <ConfirmationModal
+        setConfirmationModal={setConfirmationModal}
+        showConfirmationModal={showConfirmationModal}
+        clientID={clientID}
+        setIsLoading={setIsLoading}
+        isLoading={isLoading}
       />
     </main>
   )

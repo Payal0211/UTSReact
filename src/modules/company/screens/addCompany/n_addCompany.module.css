@@ -198,6 +198,23 @@
     cursor: pointer;
 }
 
+.btnPrimaryResendBtn{
+    background: var(--color-sunlight);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: none;
+    color: var(--uplers-black);
+    cursor: pointer;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    line-height: 17px;
+    outline: none;
+    padding: 12px 28px;
+        margin-bottom: 1rem;
+}
+
 .youTubeDetails{
     background: #fff8d6;
     border-radius: 14px;
