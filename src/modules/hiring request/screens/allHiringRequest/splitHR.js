@@ -67,7 +67,7 @@ const SplitHR = ({
         const getGroupUsers = async (ID, ind) => {
           setIsSplitLoading(true);
       
-          let filterResult = await ReportDAO.getAllPODGroupUsersDAO(ID);
+          let filterResult = await ReportDAO.getAllPODGroupUsersDAO({id:ID});
           setIsSplitLoading(false);
           if (filterResult.statusCode === HTTPStatusCode.OK) {
             setPODUsersList(prev=> ({...prev,[ID]: filterResult?.responseBody}));
