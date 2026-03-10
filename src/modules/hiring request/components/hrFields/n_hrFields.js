@@ -2604,7 +2604,7 @@ function NewHRFields() {
                             <div className={`${styles["form-rows"]}`}>
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
-                                        <div className={`${styles["form-group"]}`}>
+                                        <div className={`${styles["form-group"]} ${styles["multiselect"]}`}>
                                             {/* <div className={`${styles["multiselect-autocomplete-wrapper"]}`} data-autocomplete="industry">
                                                 <div className={`${styles["multiselect-tags-container"]}`}></div>
                                                 <input type="text" className={`${styles["form-input"]} ${styles["multiselect-input"]}`} placeholder="Industry" autocomplete="off" />
