@@ -1371,7 +1371,7 @@ export default function PodReports({
                   padding: "20px 20px 0",
                 }}
               >
-                HR Count Summary
+               Prospect Summary
               </p>
               <Table
                 columns={getHRCountsColumns()}
