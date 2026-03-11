@@ -104,7 +104,7 @@ export default function PodReports({
   const getSummaryDetailsPopup = async (row, v, cat) => {
     try {
       // setShowSummaryReport(true);
-      setShowAchievedReport(true);
+      setShowCHReport(true);
       const pl = {
         hrmodel: hrModal,
         pod_id: dashboardTabTitle === 'All FTE Dashboard' ? 0 : selectedHead, selectedHead,
