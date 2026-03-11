@@ -666,7 +666,7 @@ export const allHRConfig = {
       { name: "Data Analyst" },
     ];
   },
-  hrFilterTypeConfig: (filterList,rejectionReasons) => {
+  hrFilterTypeConfig: (filterList,rejectionReasons,pODList) => {
     return [
       // {
       // 	label: 'ODR/Pool',
@@ -689,6 +689,19 @@ export const allHRConfig = {
       // 	],
       // 	isSearch: false,
       // },
+       {
+        label: "POD",
+        name: "PODIds",
+        child: pODList.map(it=> ({
+            "disabled": false,
+            "group": null,
+            "selected": false,
+            "text": `${it.dd_value}`,
+            "value": it.dd_text
+        })),
+        isSearch: false,
+        
+      },
       {
         label: "HR Status",
         name: "hrStatus",

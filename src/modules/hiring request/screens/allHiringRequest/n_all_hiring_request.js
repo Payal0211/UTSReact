@@ -112,6 +112,7 @@ export default function New_all_hiring_request() {
     const [isLoading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState('');
+      const [pODList, setPODList] = useState([]);
     const [apiData, setAPIdata] = useState([]);
     const [isAllowFilters, setIsAllowFilters] = useState(false);
     const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -428,6 +429,34 @@ export default function New_all_hiring_request() {
     useEffect(() => {
         getHRFilterRequest();
     }, [getHRFilterRequest]);
+
+
+      const getHeads = async () => {
+      
+    
+        let filterResult = await ReportDAO.getAllPODGroupDAO();
+    
+        if (filterResult.statusCode === HTTPStatusCode.OK) {
+          setPODList(filterResult && filterResult?.responseBody);
+         
+         
+        } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+          // setLoading(false);
+          return navigate(UTSRoutes.LOGINROUTE);
+        } else if (
+          filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+        ) {
+          // setLoading(false);
+          return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+          return "NO DATA FOUND";
+        }
+      };
+
+      useEffect(() => {
+        getHeads();
+    
+      }, []);
 
 
     const getColorCode = (doneBy) => {
@@ -1174,7 +1203,7 @@ export default function New_all_hiring_request() {
                         setIsShowDirectHRChecked={setIsShowDirectHRChecked}
                         hrFilterList={allHRConfig.hrFilterListConfig()}
                         filtersType={allHRConfig.hrFilterTypeConfig(
-                            filtersList && filtersList, rejectionReasons
+                            filtersList && filtersList, rejectionReasons,pODList
                         )}
                         clearFilters={clearFilters}
                     />
