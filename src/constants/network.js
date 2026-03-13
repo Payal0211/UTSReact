@@ -447,11 +447,13 @@ export class HiringRequestsAPI {
 	static SCHEDULE_INTERVIEW = 'Schedule';
 	static RESCHEDULE_INTERVIEW = 'Reschedule';
 	static UPLOAD_FILE = 'UploadFile';
+	static UPLOAD_PARSING_FILE = 'UploadFileWithParsing'
 	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
 	static CHECK_SALES_USER_IS_PARTNER = 'CheckSalesUserIsPartner';
 	static CONVERT_DP = 'GetHrDPConversion';
+	static EXTRACT_LINK_FROM_JD = 'ExtractJDFromLink'
 	static CONVERT_TO_CONRACUAL = 'GetHrContractualConversion';
 	static GET_TALENT_DP_CONVERSION = 'GetTalentsDPConversion';
 	static GET_HR_DP_CONVERSION = 'GetHrDPConversion';

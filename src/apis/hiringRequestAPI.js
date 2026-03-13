@@ -519,6 +519,36 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
 		}
 	},
+	uploadParsingFile: async (file) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_PARSING_FILE + `?clientEmail=${file.get('clientemail')} ${file.get('hrid') ? `&hrid=${file.get('hrid')}` : '' }`;
+		httpService.dataToSend = file;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendFileDataPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.uploadParsingFile');
+		}
+	},
+	parseURLAPI: async (payload) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.EXTRACT_LINK_FROM_JD + `?psUrl=${payload.psUrl}&clientEmail=${payload.clientEmail}`;
+		// httpService.dataToSend = payload;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.parseURLAPI');
+		}
+	},
 	getDetailsFromTextAPI: async (payload,email) => {
 		let httpService = new HttpServices();
 		httpService.URL =

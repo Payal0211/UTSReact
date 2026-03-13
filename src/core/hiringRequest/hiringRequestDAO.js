@@ -822,6 +822,65 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
 		}
 	},
+	uploadFileParseDAO: async (fileData) => {
+		try {
+			const uploadFileResponse = await HiringRequestAPI.uploadParsingFile(fileData);
+			if (uploadFileResponse) {
+				const statusCode = uploadFileResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = uploadFileResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return uploadFileResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return uploadFileResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.uploadFileParseDAO()');
+		}
+	},
+	parseURLDAO: async (payload) => {
+		try {
+			const uploadFileResponse = await HiringRequestAPI.parseURLAPI(payload);
+			if (uploadFileResponse) {
+				const statusCode = uploadFileResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = uploadFileResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return uploadFileResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return uploadFileResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.parseURLDAO()');
+		}
+	},
+	
 	getDetailsFromTextDAO: async (payload,email) => {
 		try {
 			const uploadFileResponse = await HiringRequestAPI.getDetailsFromTextAPI(payload,email);

@@ -208,6 +208,7 @@ function NewHRFields() {
     const [transactionMessage, setTransactionMessage] = useState("");
     const [disableYypeOfPricing, setDisableTypeOfPricing] = useState(false);
     const [getHRDetails, setHRDetails] = useState({})
+    const [parsingLoading,setParsingLoading] = useState(false)
 
     const [userData, setUserData] = useState({});
     useEffect(() => {
@@ -1263,6 +1264,31 @@ function NewHRFields() {
         createHRHandler(formPayload, isDraft)
     }
 
+    const parseURL = async (url) => {
+
+
+if(!clientDetails?.emailId){
+    message.error("Please select client full name to parse the JD")
+    setJobDesData(prev => ({ ...prev, jdURL: ''}))
+    return
+}
+        
+let pl = {
+    clientEmail: clientDetails.emailId ,
+    psUrl: url
+}
+setParsingLoading(true)
+let linkResponse = await hiringRequestDAO.parseURLDAO(pl);
+setParsingLoading(false)
+// console.log("linkResponse", linkResponse)
+
+if(linkResponse.statusCode === HTTPStatusCode.OK){
+    setJobDesData(prev => ({ ...prev, jdURL: url,jobDescription: linkResponse?.responseBody?.details, jdFile: ''}))
+}else{
+    message.error('Something went wrong while parsing the JD, please try again')
+}
+    }
+
     const handleJDUpload = async (fileData) => {
         setUploading(true);
         let formData = new FormData();
@@ -1271,7 +1297,9 @@ function NewHRFields() {
             "clientemail",
             clientDetails.emailId  
         );
-        let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
+        // formData.append("hrId", hrid);
+        // let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
+         let uploadFileResponse = await hiringRequestDAO.uploadFileParseDAO(formData);
         setUploading(false);
         if (uploadFileResponse.statusCode === 400) {
 
@@ -1282,7 +1310,7 @@ function NewHRFields() {
                 fileData?.type === "image/png" ||
                 fileData?.type === "image/jpeg"
             ) {
-                setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName, jdURL:''}))
+                setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName,jobDescription: uploadFileResponse?.responseBody?.details?.JobDescription, jdURL:''}))
 
                 // setJDParsedSkills(
                 // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
@@ -1296,7 +1324,7 @@ function NewHRFields() {
                 fileData?.type ===
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
-                setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName , jdURL:''}))
+                setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName,jobDescription: uploadFileResponse?.responseBody?.details?.JobDescription , jdURL:''}))
                 // setJDParsedSkills(
                 // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
                 // );
@@ -2318,13 +2346,82 @@ function NewHRFields() {
 
                                     </div>
                                 </div>}   */}
+                                 <label className={`${styles["form-label"]}`}>Job Description *</label>
+     <div className={`${styles["row"]}  ${styles['mt-2']}`}>
+                                        <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["input-with-icon"]}`}>
+                                                    <textarea className={`${styles["form-textarea"]}`} placeholder="Paste the job description link" value={jobDesData?.jdURL} onChange={e => {
+                                                        setJobDesData(prev => ({ ...prev, jdURL: e.target.value, jdFile:'' }))
+                                                    }}
+                                                    onBlur={e=>{
+                                                        parseURL(e.target.value)
+                                                    }}
+                                                    ></textarea>
+                                                    <img src="images/link-simple-ic.svg" alt="Link Icon" className={`${styles["input-icon-right"]}`} />
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                                                      
+                                    
+                                          <div className={`${styles["cols"]} ${styles["col-lg-1"]}`} >
+                                             <div className={`${styles["form-separator"]}`} style={{height:'80%'}}><span className={`${styles["separator-text"]}`}>{parsingLoading ?<Spin /> : 'OR '} </span></div>
+                                            
+                                          </div>
+                                                
+                                         
+                                      
+                              
+                                        <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <div className={`${styles["file-upload-area"]}`} onClick={() => jdFileRef.current.click()}>
+                                                    {uploading ? <Spin className={`${styles["upload-icon"]}`} /> : <img src="images/folder-open-ic.svg" alt="Folder Icon" className={`${styles["upload-icon"]}`} />}
+                                                    <p className={`${styles["upload-text"]}`}>Click to upload or drag and drop <br />(supported files: PDF, DOC, DOCX)</p>
+                                                    <input ref={jdFileRef} type="file" className={`${styles["file-input"]}`} accept=".pdf,.doc,.docx" multiple onChange={e => {
+                                                        // setParseType('JDFileUpload');
+                                                        const MAX_FILE_SIZE = 500 * 1024; // 500 KB in bytes
+                                                        const isFileSizeValid = e.target.files[0].size <= MAX_FILE_SIZE;
+                                                        if (!isFileSizeValid) {
+                                                            message?.error('Max file size 500 KB');
+                                                            return
+                                                        }
+                                                        handleJDUpload(e.target.files[0])
+                                                        // setJobDesData(prev => ({ ...prev, jdFile: e.target.files[0], jobDescription: '', jdURL: '' }))
+                                                    }} />
+                                                    <div className={`${styles["file-list"]}`} style={{ display: jobDesData?.jdFile?.length === 0 ? 'none' : 'block' }} onClick={e => {
+                                                                e.stopPropagation();
+                                                            }}>
+                                                        {jobDesData?.jdFile?.length && <div className={`${styles["file-item"]}`}>
+                                                            <span className={`${styles["file-name"]}`}>
+                                                                
+                                                                 <a
+                                                                                              rel="noreferrer"
+                                                                                              href={
+                                                                                                NetworkInfo.PROTOCOL +
+                                                                                                NetworkInfo.DOMAIN +
+                                                                                                "Media/JDParsing/JDfiles/" +
+                                                                                                jobDesData?.jdFile
+                                                                                              }
+                                                                                              style={{ textDecoration: "underline" }}
+                                                                                              target="_blank"
+                                                                                            >{jobDesData?.jdFile}</a></span>
+                                                            <button type="button" className={`${styles["file-delete"]}`} onClick={e => {
+                                                                e.stopPropagation();
+                                                                setJobDesData(prev => ({ ...prev, jdFile: ''}))
+                                                            }}></button>
+                                                        </div>}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 
 
-                                 <div className={`${styles["row"]} ${styles['mt-2']}`}>
+                                 <div className={`${styles["row"]}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
                                             <div className={`${styles["form-group"]}`}>
-                                                <label className={`${styles["form-label"]}`}>Job Description *</label>
+                                               
                                                 <ReactQuill
 
                                                     theme="snow"
@@ -2375,71 +2472,7 @@ function NewHRFields() {
                                         </div>
                                     </div> */}
 
-                                    <div className={`${styles["row"]}`}>
-                                        <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                                <div className={`${styles["input-with-icon"]}`}>
-                                                    <textarea className={`${styles["form-textarea"]}`} placeholder="Paste the job description link" value={jobDesData?.jdURL} onChange={e => {
-                                                        setJobDesData(prev => ({ ...prev, jdURL: e.target.value, jdFile:'' }))
-                                                    }}></textarea>
-                                                    <img src="images/link-simple-ic.svg" alt="Link Icon" className={`${styles["input-icon-right"]}`} />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                                                      
-                                    
-                                          <div className={`${styles["cols"]} ${styles["col-lg-1"]}`} >
-                                             <div className={`${styles["form-separator"]}`} style={{height:'80%'}}><span className={`${styles["separator-text"]}`}>OR</span></div>
-                                            
-                                          </div>
-                                                
-                                         
-                                      
-                              
-                                        <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                                <div className={`${styles["file-upload-area"]}`} onClick={() => jdFileRef.current.click()}>
-                                                    {uploading ? <Spin className={`${styles["upload-icon"]}`} /> : <img src="images/folder-open-ic.svg" alt="Folder Icon" className={`${styles["upload-icon"]}`} />}
-                                                    <p className={`${styles["upload-text"]}`}>Click to upload or drag and drop <br />(supported files: PDF, DOC, DOCX)</p>
-                                                    <input ref={jdFileRef} type="file" className={`${styles["file-input"]}`} accept=".pdf,.doc,.docx" multiple onChange={e => {
-                                                        // setParseType('JDFileUpload');
-                                                        const MAX_FILE_SIZE = 500 * 1024; // 500 KB in bytes
-                                                        const isFileSizeValid = e.target.files[0].size <= MAX_FILE_SIZE;
-                                                        if (!isFileSizeValid) {
-                                                            message?.error('Max file size 500 KB');
-                                                            return
-                                                        }
-                                                        handleJDUpload(e.target.files[0])
-                                                        // setJobDesData(prev => ({ ...prev, jdFile: e.target.files[0], jobDescription: '', jdURL: '' }))
-                                                    }} />
-                                                    <div className={`${styles["file-list"]}`} style={{ display: jobDesData?.jdFile?.length === 0 ? 'none' : 'block' }} onClick={e => {
-                                                                e.stopPropagation();
-                                                            }}>
-                                                        {jobDesData?.jdFile?.length && <div className={`${styles["file-item"]}`}>
-                                                            <span className={`${styles["file-name"]}`}>
-                                                                
-                                                                 <a
-                                                                                              rel="noreferrer"
-                                                                                              href={
-                                                                                                NetworkInfo.PROTOCOL +
-                                                                                                NetworkInfo.DOMAIN +
-                                                                                                "Media/JDParsing/JDfiles/" +
-                                                                                                jobDesData?.jdFile
-                                                                                              }
-                                                                                              style={{ textDecoration: "underline" }}
-                                                                                              target="_blank"
-                                                                                            >{jobDesData?.jdFile}</a></span>
-                                                            <button type="button" className={`${styles["file-delete"]}`} onClick={e => {
-                                                                e.stopPropagation();
-                                                                setJobDesData(prev => ({ ...prev, jdFile: ''}))
-                                                            }}></button>
-                                                        </div>}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                               
 
                               
 
