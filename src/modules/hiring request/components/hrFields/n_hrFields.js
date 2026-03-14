@@ -647,13 +647,16 @@ function NewHRFields() {
     }, []);
 
     useEffect(() => {
-        const combinedData = [
+        if(skills){
+             const combinedData = [
             ...skills,
         ];
 
         // remove selected skill for other skill list 
         setSkillMemo(combinedData.filter((o) => !mustHaveSkills?.includes(o?.value)))
         setCombinedSkillsMemo(combinedData.filter((o) => !goodToHaveSkills?.includes(o?.value)))
+        }
+       
     }, [skills, mustHaveSkills, goodToHaveSkills])
 
     const getCurrencyHandler = useCallback(async () => {
@@ -1283,7 +1286,7 @@ setParsingLoading(false)
 // console.log("linkResponse", linkResponse)
 
 if(linkResponse.statusCode === HTTPStatusCode.OK){
-    setJobDesData(prev => ({ ...prev, jdURL: url,jobDescription: linkResponse?.responseBody?.details, jdFile: ''}))
+    setJobDesData(prev => ({ ...prev, jdURL: url,jobDescription: linkResponse?.responseBody?.details?.jobDescription, jdFile: ''}))
 }else{
     message.error('Something went wrong while parsing the JD, please try again')
 }
