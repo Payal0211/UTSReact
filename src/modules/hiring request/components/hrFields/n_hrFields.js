@@ -231,7 +231,7 @@ function NewHRFields() {
         "Overtime pay",
         "Allowances (e.g. travel, housing, medical, education)",
         "Restricted stock units (RSUs)",
-        "Custom"
+        // "Custom"
     ];
 
     //   useEffect(()=>{
@@ -2584,10 +2584,23 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
 
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles['col-lg-12']}`}>
-                                        <div className={`${styles["form-group"]}`}>
+                                        <div className={`${styles["form-group"]}  ${styles["multiselect"]}`}>
                                             <label className={`${styles["form-label"]}`}>Variable & equity (optional)</label>
                                             <input type="hidden" name="variable-equity" id="variable-equity-input" />
-                                            <div className={`${styles["pill-container"]} ${styles["pill-container-variable-equity"]}`}>
+ <Select
+                                                showSearch
+                                                mode="tags"
+                                                style={{ width: '100%' }}
+                                                placeholder=""
+                                                options={compensationOptions.map(item => ({ id: item, value: item }))}
+                                                onChange={options => {
+                                                    // setMustHaveSkills(options)
+                                                    setBudgetFormFields(prev => ({ ...prev, compensationOptions: options }))
+                                                }}
+                                                value={budgetFormFields?.compensationOptions}
+                                            />
+
+                                            {/* <div className={`${styles["pill-container"]} ${styles["pill-container-variable-equity"]}`}>
                                                 {compensationOptions.map((item, index) => {
                                                     return <button type="button" className={`${styles["pill"]}  ${budgetFormFields?.compensationOptions.includes(item) ? styles["pill-selected"] : ''}`}
                                                         onClick={() => {
@@ -2604,7 +2617,8 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                     </button>
                                                 })}
 
-                                            </div>
+
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
