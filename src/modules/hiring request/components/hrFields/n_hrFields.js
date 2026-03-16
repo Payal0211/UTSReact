@@ -208,7 +208,6 @@ function NewHRFields() {
     const [transactionMessage, setTransactionMessage] = useState("");
     const [disableYypeOfPricing, setDisableTypeOfPricing] = useState(false);
     const [getHRDetails, setHRDetails] = useState({})
-    const [parsingLoading,setParsingLoading] = useState(false)
 
     const [userData, setUserData] = useState({});
     useEffect(() => {
@@ -218,6 +217,8 @@ function NewHRFields() {
         };
         getUserResult();
     }, []);
+    const [tempJD, setTempJD] = useState("");
+    const [showJDConfirmation,  setShowJDConfirmation] = useState(false)
 
 
     const compensationOptions = [
@@ -1276,17 +1277,25 @@ if(!clientDetails?.emailId){
     return
 }
         
+
 let pl = {
     clientEmail: clientDetails.emailId ,
     psUrl: url
 }
-setParsingLoading(true)
+setUploading(true)
 let linkResponse = await hiringRequestDAO.parseURLDAO(pl);
-setParsingLoading(false)
+setUploading(false)
 // console.log("linkResponse", linkResponse)
 
 if(linkResponse.statusCode === HTTPStatusCode.OK){
+    if(hrid > 0 && !isQuillEmpty(jobDesData?.jobDescription) ){
+        setShowJDConfirmation(true)
+        setTempJD(linkResponse?.responseBody?.details?.jobDescription)
+         setJobDesData(prev => ({ ...prev, jdURL: url, jdFile: ''}))
+    }else{
     setJobDesData(prev => ({ ...prev, jdURL: url,jobDescription: linkResponse?.responseBody?.details?.jobDescription, jdFile: ''}))
+    }
+
 }else{
     message.error('Something went wrong while parsing the JD, please try again')
 }
@@ -1309,17 +1318,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
             message.error(uploadFileResponse?.responseBody)
         }
         if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-            if (
-                fileData?.type === "image/png" ||
-                fileData?.type === "image/jpeg"
-            ) {
-                setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName,jobDescription: uploadFileResponse?.responseBody?.details?.JobDescription, jdURL:''}))
-
-                // setJDParsedSkills(
-                // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
-                // );
-                message.success("File uploaded successfully");
-            } else if (
+      if (
                 fileData?.type === "application/pdf" ||
                 fileData?.type === "application/docs" ||
                 fileData?.type === "application/msword" ||
@@ -1327,7 +1326,15 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                 fileData?.type ===
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
-                setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName,jobDescription: uploadFileResponse?.responseBody?.details?.JobDescription , jdURL:''}))
+
+                if(hrid > 0 && !isQuillEmpty(jobDesData?.jobDescription) ){
+        setShowJDConfirmation(true)
+        setTempJD(uploadFileResponse?.responseBody?.details?.JobDescription)
+         setJobDesData(prev => ({ ...prev, jdURL: '', jdFile: uploadFileResponse?.responseBody?.details?.FileName}))
+    }else{
+  setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName,jobDescription: uploadFileResponse?.responseBody?.details?.JobDescription , jdURL:''}))
+    }
+                
                 // setJDParsedSkills(
                 // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
                 // );
@@ -1348,6 +1355,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
         <main className={`${styles["main-content"]}`}>
             {/* <!-- Content Section --> */}
             <LogoLoader visible={isSavedLoading} />
+             <LogoLoader visible={uploading} />
             <div className={`${styles["content-wrapper"]}`}>
                 {/* <!-- New Hiring Request Form --> */}
                 <div className={`${styles["new-hr-form-wrapper"]}`}>
@@ -2369,7 +2377,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                                       
                                     
                                           <div className={`${styles["cols"]} ${styles["col-lg-1"]}`} >
-                                             <div className={`${styles["form-separator"]}`} style={{height:'80%'}}><span className={`${styles["separator-text"]}`}>{parsingLoading ?<Spin /> : 'OR '} </span></div>
+                                             <div className={`${styles["form-separator"]}`} style={{height:'80%'}}><span className={`${styles["separator-text"]}`}>{uploading ?<Spin /> : 'OR '} </span></div>
                                             
                                           </div>
                                                 
@@ -2724,6 +2732,27 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                     </form>
                 </div>
             </div>
+
+            <Modal
+            open={showJDConfirmation}
+            onCancel={() => setShowJDConfirmation(false)}
+            footer={null}
+            centered  
+            >
+                <div style={{paddingTop:'10px'}} >
+
+                    <p>Updating the job description will overwrite the existing description. Do you want to proceed?</p>
+
+                    <div>
+                        <button className={`${styles["btn-next"]}`} onClick={()=>{
+                            setJobDesData(prev => ({ ...prev,jobDescription: tempJD}))
+                            setShowJDConfirmation(false)
+                        }}>Confirm</button>
+                        <button className={`${styles["btn-save"]}`} style={{marginLeft: '10px'}} onClick={() => setShowJDConfirmation(false)}>Cancel</button>
+                    </div>
+                </div>
+                
+            </Modal>
         </main>
     )
 }
