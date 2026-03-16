@@ -162,7 +162,7 @@ export default function LegalPreOnboarding({
         isIndefiniteHR:isIndefiniteHR,
         clientSOWSignDate: d.clientSOWSignDate ? moment(d.clientSOWSignDate).format("yyyy-MM-DD") : null,
         talentSOWSignDate: d.talentSOWSignDate ?  moment(d.talentSOWSignDate).format("yyyy-MM-DD") : null,
-        clientMSASignDate: moment(d.msaDate).format("yyyy-MM-DD"),
+        clientMSASignDate: getData?.getLegalInfo?.isHRTypeDP ? moment(d.msaDate).format("yyyy-MM-DD") : null,
         talentMSASignDate: null,
         talentReplacement: {
           onboardId: getData?.getLegalInfo?.onBoardID,
