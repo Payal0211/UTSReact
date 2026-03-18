@@ -1154,16 +1154,96 @@ export default function PodReports({
     );
   }
 
+  const getExportData = () => {
+  return listAchievedData.map((detail) => {
+    let row = {
+      "Created Date": detail.hrCreatedDateStr,
+      "Action Date":detail.actionDateStr,
+      "Company": detail.company,
+      "Sales Person": detail.salesPerson,
+      "Lead Type": detail.lead_Type,
+    };
 
-  // const handleExport = (apiData) => {
-  //   let DataToExport = apiData.map((data) => {
-  //     let obj = {};
+ 
+
+    // HR Related Fields
+    if (
+      showTalentCol?.category !== "CF" &&
+      !(showTalentCol?.category === "CH" &&
+        showTalentCol?.stage !== "Customers with Active HRs")
+    ) {
+      row["HR Number"] = detail.hR_Number;
+      row["HR Title"] = detail.hrTitle;
+
+      if (showTalentCol?.stage === "Not Accepted HRs") {
+        row["Reason"] = detail.talent;
+      }
+
+      row["TR"] = detail.tr;
+      row[
+        showTalentCol?.stage === "Joining" ||
+        showTalentCol?.stage === "Joined" ||
+        showTalentCol?.stage === "Selections/Closures"
+          ? "Revenue"
+          : "1TR Pipeline"
+      ] = detail.hrPipelineStr;
+
+      if (
+        showTalentCol?.stage !== "Joining" &&
+        showTalentCol?.stage !== "Joined" &&
+        showTalentCol?.stage !== "Selections/Closures"
+      ) {
+        row["Total Pipeline"] = detail.total_HRPipelineStr;
+      }
+
+      row["Uplers Fees %"] = detail.uplersFeesPer;
+      row["Talent Pay"] = detail.talentPayStr;
+
+      // Talent / Carry Forward
+      if (
+        showTalentCol?.stage !== "Not Accepted HRs" &&
+        (showTalentCol?.stage === "Joined" ||
+          showTalentCol?.stage === "Selections/Closures")
+      ) {
+        row["Talent"] = detail.talent;
+      }
+
+      if (
+        !(showTalentCol?.stage === "Joined" ||
+          showTalentCol?.stage === "Selections/Closures")
+      ) {
+        row["Carry Forward Status"] =
+          All_Hiring_Request_Utils.GETHRSTATUS(
+            Number(detail.carryFwd_HRStatusCode),
+            detail.carryFwd_HRStatus
+          );
+      }
+
+      row["HR Status"] =
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          Number(detail.hrStatusCode),
+          detail.hrStatus
+        );
+    }
+
+    // Special Case
+    if (showTalentCol?.stage === "HRs (Carry Fwd)") {
+      row["Carry Fwd Status"] =
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          Number(detail.carryFwd_HRStatusCode),
+          detail.carryFwd_HRStatus
+        );
+    }
+
+    return row;
+  });
+};
 
 
-  //     return obj;
-  //   });
-  //   downloadToExcel(DataToExport, "Engagement Report");
-  // };
+  const handleExport = (apiData) => {
+    let DataToExport = getExportData()
+    downloadToExcel(DataToExport, `POD ${showTalentCol?.stage} Report`);
+  };
 
   return (
     <>
@@ -1513,13 +1593,13 @@ export default function PodReports({
               <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
 
-            {/* 
+            
               <button
                   className={uplersStyle.btnPrimary}
                   onClick={() => handleExport(listAchievedData)}
                 >
                   Export
-                </button> */}
+                </button>
           </div>
 
           {achievedLoading ? (
@@ -1639,12 +1719,12 @@ export default function PodReports({
                                   "rgb(233, 233, 233) !important",
                               }}
                             >
-                              {showTalentCol?.stage === "Joining" ||
+                              {showTalentCol?.stage === "Joining" || showTalentCol?.stage === "Joined" ||
                                 showTalentCol?.stage === "Selections/Closures"
                                 ? "Revenue"
                                 : " 1TR Pipeline"}
                             </th>
-                            {showTalentCol?.stage !== "Joining" &&
+                            {showTalentCol?.stage !== "Joining" && showTalentCol?.stage !== "Joined"  &&
                               showTalentCol?.stage !==
                               "Selections/Closures" && (
                                 <th
@@ -1865,7 +1945,7 @@ export default function PodReports({
                               >
                                 {detail.hrPipelineStr}
                               </td>
-                              {showTalentCol?.stage !== "Joining" &&
+                              {showTalentCol?.stage !== "Joining" && showTalentCol?.stage !== "Joined" &&
                                 showTalentCol?.stage !==
                                 "Selections/Closures" && (
                                   <td
