@@ -1,4 +1,4 @@
-import {  Skeleton, message } from 'antd';
+import {  Radio, Skeleton, message } from 'antd';
 import { InputType,	GoogleDriveCredentials } from 'constants/application';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
@@ -18,9 +18,10 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 
 
 
-const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control, setError, getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit,setClientFeedbackList,feedbackCategory
+const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control, setError, getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit,setClientFeedbackList,feedbackCategory,trigger,unregister
 }) => {
     const watchFeedbackDate = watch('feedBackDate')
+    const [feedbackFrom, setFeedbackFrom] = useState('client');
     const submitFeedbacHandler = async (data) => {
         setIsLoading(true)
         const feedBackdata = {
@@ -37,7 +38,10 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
             engagemenID: getFeedbackFormContent?.engagementID,
             supportingFilename : getUploadFileData,
             LostCategoryID:data.category?.id,
-            LostSubCategory:data.subCategory
+            LostSubCategory:data.subCategory,
+            FeedbackGivenBy:feedbackFrom,
+            ContractStartDate: getFeedbackFormContent?.contractStartDate,
+            IsWithin90Days : getFeedbackFormContent?.isWithin90Days
         }
         const response = await engagementRequestDAO.saveFeedbackFormDAO(feedBackdata);
         if (response.statusCode === HTTPStatusCode.OK) {
@@ -155,11 +159,39 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                     <li className={allengagementAddFeedbackStyles.divider}>|</li>
                     <li><span>Engagement ID:</span>{getFeedbackFormContent?.engagemenID}</li>
                     <li className={allengagementAddFeedbackStyles.divider}>|</li>
-                    <li><span>Talent Name:</span> {getFeedbackFormContent?.talentName}</li>
+                    <li><span>Talent:</span> {getFeedbackFormContent?.talentName}</li>
+                </ul>
+
+                <ul style={{marginTop:'10px'}}>
+                    <li><span>Contract Start Date:</span> {getFeedbackFormContent?.contractStartDate ?? ''}</li>
+                    <li className={allengagementAddFeedbackStyles.divider}>|</li>
+                    <li><span>Talent Last Feedback Date:</span>{getFeedbackFormContent?.talentLastFeedbackDate ?? ''}</li>
+                   
                 </ul>
             </div>
             {isLoading ?<Skeleton /> :
             <>
+            <div className={allengagementAddFeedbackStyles.row} style={{marginBottom:'20px'}}>
+            <div
+                    className={allengagementAddFeedbackStyles.colMd6}>
+                       <Radio.Group
+                                               onChange={(e) => {
+                                                 setFeedbackFrom(e.target.value);
+                                            //  trigger("feedbackComments");
+                                                if((e.target.value === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 0)){
+                                                    console.log("unregister, fe com")
+                                                     unregister("feedbackComments");
+                                                }
+                                               }}
+                                               value={feedbackFrom}
+                                             >
+                                               <Radio value={'client'}>Client</Radio>
+                                               <Radio value={'talent'}>Talent</Radio>
+                                             </Radio.Group>
+                    </div>
+            </div>
+
+
             <div className={allengagementAddFeedbackStyles.row}>
                 <div
                     className={allengagementAddFeedbackStyles.colMd6}>
@@ -212,20 +244,21 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
             <div className={allengagementAddFeedbackStyles.row}>
                 <div
                     className={allengagementAddFeedbackStyles.colMd12}>
-                    <HRInputField
+                    
+                         <HRInputField
                         register={register}
-                        required
+                        required={(feedbackFrom === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 0) ? false : true}
                         isTextArea={true}
                         rows={4}
                         errors={errors}
                         validationSchema={{
-                            required: 'Please enter the feedback comment.',
+                            required: (feedbackFrom === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 0) ? false :  'Please enter the feedback comment.',
                         }}
                         label={'Feedback Comments'}
                         name="feedbackComments"
                         type={InputType.TEXT}
                         placeholder="Enter Client's Feedback Comments"
-                    />
+                    />              
                 </div>
             </div>
              <div className={allengagementAddFeedbackStyles.row}>

@@ -353,6 +353,7 @@ export class NewPagesRouts  {
 	static PREVIEW_HR = '/w_previewHR/:hrid'
 	static ALL_CLIENTS = '/w_allClients'
 	static ADD_NEW_COMPANY = "/w_addNewCompany/:companyID";
+	static ONBOARD = '/w_onBoardList';
 }
 
 export const navigateToComponent = {

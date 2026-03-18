@@ -119,6 +119,8 @@ export const engagementUtils = {
 				? item?.feedbackCreatedDateTime?.split(' ')[0]
 				: '',
 			feedbackType: item?.feedbackType,
+			feedbackGivenBy: item?.feedbackGivenBy,
+			talentFeedbackDate: item?.talentFeedbackDate
 		}));
 	},
 

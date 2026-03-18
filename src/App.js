@@ -13,6 +13,7 @@ import NewHRFields from 'modules/hiring request/components/hrFields/n_hrFields';
 import NewPreviewHrFields from 'modules/hiring request/components/hrFields/n_peviewHrFields';
 import New_all_clients_company from 'modules/allClients/n_allClients';
 import NewAddCompany from 'modules/company/screens/addCompany/n_addCompany';
+import NewEngagementList from 'modules/engagement/screens/engagementList/n_engagementList';
 
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
@@ -150,6 +151,13 @@ function App() {
 							key={UTSRoutes.ADD_NEW_COMPANY}
 							path={UTSRoutes.ADD_NEW_COMPANY}
 							element={<NewAddCompany />}
+						/>
+
+						<Route
+							exact
+							key={NewPagesRouts.ONBOARD}
+							path={NewPagesRouts.ONBOARD}
+							element={<NewEngagementList />}
 						/>
 
 
