@@ -313,6 +313,22 @@ function ClientFeedback() {
             width: "120px",
             fixed: "left",
         },
+          {
+            title: <>Client/<br/>Talent <br/>Feedback</>,
+            dataIndex: "feedbackGivenBy",
+            key: "feedbackGivenBy",
+            align: "left",
+            width: "90px",
+            fixed: "left",
+        },
+          {
+            title: <>Talent <br/>Feedback<br/> Date</>,
+            dataIndex: "talentFeedbackDate",
+            key: "talentFeedbackDate",
+            align: "left",
+            width: "120px",
+            fixed: "left",
+        },
         {
             title: "Eng. ID/HR#",
             dataIndex: "engagemenID",

@@ -68,7 +68,7 @@ export default function ViewOnBoardDetails() {
   const [holidayLeave, setHolidayLeave] = useState(0)
   const calendarRef = useRef(null);
   const [leaveTypes,setLeaveTypes] = useState([]);
-  const {register,handleSubmit,setValue,control,setError,getValues,watch,reset,resetField,formState: { errors }} = useForm();
+  const {register,handleSubmit,setValue,control,setError,getValues,watch,reset,resetField,formState: { errors }, trigger, unregister} = useForm();
   const [userData, setUserData] = useState({});
   const [getHRAndEngagementId, setHRAndEngagementId] = useState({
     hrNumber: '',
@@ -1410,6 +1410,8 @@ export default function ViewOnBoardDetails() {
 							setError={setError}
 							getValues={getValues}
 							watch={watch}
+              trigger={trigger}
+              unregister={unregister}
 							reset={reset}
 							resetField={resetField}
 							errors={errors}

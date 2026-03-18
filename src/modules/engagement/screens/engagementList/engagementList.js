@@ -168,6 +168,8 @@ const EngagementList = () => {
 		watch,
 		reset,
 		resetField,
+		trigger,
+		unregister,
 		formState: { errors },
 	} = useForm();
 
@@ -939,6 +941,8 @@ const EngagementList = () => {
 							setError={setError}
 							getValues={getValues}
 							watch={watch}
+							trigger={trigger}
+							unregister={unregister}
 							reset={reset}
 							resetField={resetField}
 							errors={errors}
