@@ -40,6 +40,8 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
             LostCategoryID:data.category?.id,
             LostSubCategory:data.subCategory,
             FeedbackGivenBy:feedbackFrom,
+            ContractStartDate: getFeedbackFormContent?.contractStartDate,
+            IsWithin90Days : getFeedbackFormContent?.isWithin90Days
         }
         const response = await engagementRequestDAO.saveFeedbackFormDAO(feedBackdata);
         if (response.statusCode === HTTPStatusCode.OK) {
@@ -176,7 +178,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                                                onChange={(e) => {
                                                  setFeedbackFrom(e.target.value);
                                             //  trigger("feedbackComments");
-                                                if((e.target.value === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 1)){
+                                                if((e.target.value === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 0)){
                                                     console.log("unregister, fe com")
                                                      unregister("feedbackComments");
                                                 }
@@ -245,12 +247,12 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                     
                          <HRInputField
                         register={register}
-                        required={(feedbackFrom === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 1) ? false : true}
+                        required={(feedbackFrom === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 0) ? false : true}
                         isTextArea={true}
                         rows={4}
                         errors={errors}
                         validationSchema={{
-                            required: (feedbackFrom === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 1) ? false :  'Please enter the feedback comment.',
+                            required: (feedbackFrom === 'talent' &&  getFeedbackFormContent?.isWithin90Days === 0) ? false :  'Please enter the feedback comment.',
                         }}
                         label={'Feedback Comments'}
                         name="feedbackComments"
