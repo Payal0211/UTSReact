@@ -778,6 +778,20 @@ export const allEngagementConfig = {
 				key: 'feedbackCreatedDateTime',
 				align: 'left',
 			},
+			     {
+            title: 'Client/Talent Feedback',
+            dataIndex: "feedbackGivenBy",
+            key: "feedbackGivenBy",
+            align: "left",
+        
+        },
+          {
+            title: 'Talent Feedback Date',
+            dataIndex: "talentFeedbackDate",
+            key: "talentFeedbackDate",
+            align: "left",
+    
+        },
 			{
 				title: 'Feedback Type',
 				dataIndex: 'feedbackType',

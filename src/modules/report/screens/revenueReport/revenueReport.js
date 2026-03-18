@@ -453,6 +453,8 @@ function OnBoardList() {
     reset,
     resetField,
     formState: { errors },
+    trigger,
+    unregister
   } = useForm();
 
   // useEffect(() => {
@@ -1173,6 +1175,8 @@ function OnBoardList() {
             setError={setError}
             getValues={getValues}
             watch={watch}
+            trigger={trigger}
+            unregister={unregister}
             reset={reset}
             resetField={resetField}
             errors={errors}

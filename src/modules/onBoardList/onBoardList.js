@@ -1191,6 +1191,8 @@ const calDueDate = (date, term)=>{
     reset,
     resetField,
     formState: { errors },
+    trigger,
+    unregister
   } = useForm();
 
   // useEffect(() => {
@@ -2800,6 +2802,8 @@ const calDueDate = (date, term)=>{
             setError={setError}
             getValues={getValues}
             watch={watch}
+            trigger={trigger}
+            unregister={unregister}
             reset={reset}
             resetField={resetField}
             errors={errors}
