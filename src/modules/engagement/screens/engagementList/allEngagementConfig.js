@@ -9,7 +9,7 @@ export const allEngagementConfig = {
 	engagementFilterTypeConfig: (filterList) => {
 		return [
 			{
-				label: 'Client Feedback',
+				label: 'Feedback',
 				name: 'clientFeedback',
 				child: filterList?.clientFeedback,
 				isSearch: true,
@@ -312,7 +312,7 @@ export const allEngagementConfig = {
 				},
 			},
 			{
-				title: (<>Client Feedback <br />Last Feedback Date</>),
+				title: (<>Feedback <br />Last Feedback Date</>),
 				dataIndex: 'clientFeedback',
 				key: 'clientFeedback',
 				align: 'left',
@@ -872,7 +872,7 @@ export const allEngagementConfig = {
 				isSearch: true,
 			},
 			{
-				label: 'Client Feedback',
+				label: 'Feedback',
 				name: 'clientFeedback',
 				child: filterList?.clientFeedback,
 				isSearch: true,
@@ -918,7 +918,7 @@ export const allEngagementConfig = {
 				isSearch: true,
 			},
 			{
-				label: 'Client Feedback',
+				label: 'Feedback',
 				name: 'clientFeedback',
 				child: filterList?.feedbackReport,
 				isSearch: true,

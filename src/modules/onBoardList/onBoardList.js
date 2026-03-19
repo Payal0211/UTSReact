@@ -651,7 +651,7 @@ const onBoardListConfig = ({
     {
       title: (
         <>
-          Client Feedback <br />
+          Feedback <br />
           Last Feedback Date
         </>
       ),

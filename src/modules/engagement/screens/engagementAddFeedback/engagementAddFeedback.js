@@ -45,6 +45,8 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
         }
         const response = await engagementRequestDAO.saveFeedbackFormDAO(feedBackdata);
         if (response.statusCode === HTTPStatusCode.OK) {
+            resetField('feedbackType')
+           	setFeedbackTypeEdit('Please Select');
             onCancel()
             setFeedbackSave(!feedBackSave)
             setClientFeedbackList && setClientFeedbackList(prev=> [{...response.responseBody?.details,engagemenID:getFeedbackFormContent?.engagemenID},...prev])

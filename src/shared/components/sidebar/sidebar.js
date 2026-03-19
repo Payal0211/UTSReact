@@ -588,13 +588,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.COMPANY_CATEGORY,
 					isVisible: isAccess(usertypeID, 'companyCategory')
 				}),
-				new SideBarModels({
-					id: 'clientFeedback',
-					title: 'Client Feedback',
-					isActive: false,
-					navigateTo: UTSRoutes.CLIENT_FEEDBACK,
-					isVisible: isAccess(usertypeID, 'clientFeedback')
-				}),
+				
 			],
 			isVisible: isAccess(usertypeID, 'omReport')
 		}),
@@ -712,6 +706,13 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			icon: HRReport,			
 			isChildren: true,
 			branch: [		
+				new SideBarModels({
+					id: 'clientFeedback',
+					title: 'Feedback',
+					isActive: false,
+					navigateTo: UTSRoutes.CLIENT_FEEDBACK,
+					isVisible: isAccess(usertypeID, 'clientFeedback')
+				}),
 				new SideBarModels({
 					id: 'Revenue_Report',
 					title: 'Revenue',
