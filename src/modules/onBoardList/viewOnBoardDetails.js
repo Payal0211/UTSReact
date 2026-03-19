@@ -1385,6 +1385,8 @@ export default function ViewOnBoardDetails() {
                 ...getEngagementModal,
                 engagementAddFeedback: false,
               })
+              resetField('feedbackType')
+              	setFeedbackTypeEdit('Please Select');
               reset()
             }
 						}>
@@ -1397,6 +1399,8 @@ export default function ViewOnBoardDetails() {
 									...getEngagementModal,
 									engagementAddFeedback: false,
 								})
+                	setFeedbackTypeEdit('Please Select');
+                resetField('feedbackType')
                 reset()
               }
 							}

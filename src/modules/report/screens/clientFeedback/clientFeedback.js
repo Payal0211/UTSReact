@@ -306,7 +306,7 @@ function ClientFeedback() {
 
     const tableColumns = [
         {
-            title: <>Feedback<br/> Date</>,
+            title: <>Client<br/> Feedback<br/> Date</>,
             dataIndex: "feedbackCreatedDateTime",
             key: "feedbackCreatedDateTime",
             align: "left",
@@ -478,7 +478,7 @@ width: "300px",
                             {/* {`${today?.toLocaleString("default", {
                         month: "long",
                       })} ${selectedYear}`} */}
-                            Client Feedback
+                            Feedback
                         </Title>
 
 
