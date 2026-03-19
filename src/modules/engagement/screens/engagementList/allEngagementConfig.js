@@ -773,20 +773,20 @@ export const allEngagementConfig = {
 	clientFeedbackTypeConfig: (filterList) => {
 		return [
 			{
-				title: 'Last Feedback Date',
+				title: <>Client Feedback<br/> Date</>,
 				dataIndex: 'feedbackCreatedDateTime',
 				key: 'feedbackCreatedDateTime',
 				align: 'left',
 			},
 			     {
-            title: 'Client/Talent Feedback',
+            title: <>Client/Talent <br/> Feedback</>,
             dataIndex: "feedbackGivenBy",
             key: "feedbackGivenBy",
             align: "left",
         
         },
           {
-            title: 'Talent Feedback Date',
+            title: <>Talent Feedback<br/> Date</>,
             dataIndex: "talentFeedbackDate",
             key: "talentFeedbackDate",
             align: "left",

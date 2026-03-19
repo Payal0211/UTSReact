@@ -1152,6 +1152,8 @@ function OnBoardList() {
               ...getEngagementModal,
               engagementAddFeedback: false,
             });
+            	setFeedbackTypeEdit('Please Select');
+            resetField('feedbackType')
             reset();
           }}
         >
@@ -1163,6 +1165,8 @@ function OnBoardList() {
                 ...getEngagementModal,
                 engagementAddFeedback: false,
               });
+              	setFeedbackTypeEdit('Please Select');
+              resetField('feedbackType')
               reset();
             }}
             feedbackCategory={feedbackCategory}
