@@ -651,7 +651,7 @@ const onBoardListConfig = ({
     {
       title: (
         <>
-          Client Feedback <br />
+          Feedback <br />
           Last Feedback Date
         </>
       ),
@@ -2779,6 +2779,8 @@ const calDueDate = (date, term)=>{
               ...getEngagementModal,
               engagementAddFeedback: false,
             });
+            resetField('feedbackType')
+            	setFeedbackTypeEdit('Please Select');
             reset();
           }}
         >
@@ -2790,6 +2792,8 @@ const calDueDate = (date, term)=>{
                 ...getEngagementModal,
                 engagementAddFeedback: false,
               });
+              resetField('feedbackType')
+              	setFeedbackTypeEdit('Please Select');
               reset();
             }}
             feedbackCategory={feedbackCategory}

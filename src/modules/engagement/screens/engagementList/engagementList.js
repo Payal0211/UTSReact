@@ -917,20 +917,24 @@ const EngagementList = () => {
 						footer={null}
 						className="engagementAddFeedbackModal"
 						open={getEngagementModal.engagementAddFeedback}
-						onCancel={() =>
+						onCancel={() =>{
 							setEngagementModal({
 								...getEngagementModal,
 								engagementAddFeedback: false,
 							})
+								setFeedbackTypeEdit('Please Select');
+							resetField('feedbackType')}
 						}>
 						<EngagementAddFeedback
 							getFeedbackFormContent={getFeedbackFormContent}
 							getHRAndEngagementId={getHRAndEngagementId}
-							onCancel={() =>
+							onCancel={() =>{
 								setEngagementModal({
 									...getEngagementModal,
 									engagementAddFeedback: false,
 								})
+									setFeedbackTypeEdit('Please Select');
+								resetField('feedbackType')}
 							}
 							setFeedbackSave={setFeedbackSave}
 							feedBackSave={feedBackSave}

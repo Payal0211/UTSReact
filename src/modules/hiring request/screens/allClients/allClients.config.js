@@ -8,6 +8,7 @@ import { Button, Tooltip, Switch } from "antd";
 import dealDetailsStyles from "../../../../modules/viewClient/viewClientDetails.module.css";
 import moment from "moment";
 import { result } from "lodash";
+import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
         return [
@@ -778,41 +779,41 @@ export const allClientsConfig = {
     },
     ViewClienttableConfig : (togglePriority,setModaljobpostDraft,setGuid) => {
         return [
-            {
-                title: '',
-                dataIndex: 'starMarked',
-                key: 'starMarked',
-                width:'100px',
-                render:(isMarked, result) => {
-                if(result.hR_ID !== 0) 
-                {
-                    if(isMarked === true) {
-                        return  <a href="javascript:void(0);" onClick={() => {
-                                        let priorityObject = {
-                                            isNextWeekStarMarked: '0',
-                                            hRID: result.hR_ID,
-                                            person: result.salesUserName,
-                                        };
-                                        togglePriority(priorityObject);
-                                }
-                        }><NextWeekPriorityStar />
-                    </a>
-                    }else {
-                    return 	<a href="javascript:void(0);" onClick={() => {
-                                        let priorityObject = {
-                                            isNextWeekStarMarked: '1',
-                                            hRID: result.hR_ID,
-                                            person: result.salesUserName,
-                                        };
-                                        togglePriority(priorityObject);
-                                }
-                        }>
-                            <NoPriorityStar />
-                    </a>
-                    }
-                }
-                }
-            },
+            // {
+            //     title: '',
+            //     dataIndex: 'starMarked',
+            //     key: 'starMarked',
+            //     width:'100px',
+            //     render:(isMarked, result) => {
+            //     if(result.hR_ID !== 0) 
+            //     {
+            //         if(isMarked === true) {
+            //             return  <a href="javascript:void(0);" onClick={() => {
+            //                             let priorityObject = {
+            //                                 isNextWeekStarMarked: '0',
+            //                                 hRID: result.hR_ID,
+            //                                 person: result.salesUserName,
+            //                             };
+            //                             togglePriority(priorityObject);
+            //                     }
+            //             }><NextWeekPriorityStar />
+            //         </a>
+            //         }else {
+            //         return 	<a href="javascript:void(0);" onClick={() => {
+            //                             let priorityObject = {
+            //                                 isNextWeekStarMarked: '1',
+            //                                 hRID: result.hR_ID,
+            //                                 person: result.salesUserName,
+            //                             };
+            //                             togglePriority(priorityObject);
+            //                     }
+            //             }>
+            //                 <NoPriorityStar />
+            //         </a>
+            //         }
+            //     }
+            //     }
+            // },
             {
                 title: 'Created Date',
                 dataIndex: 'createdDateTime',
@@ -830,8 +831,23 @@ export const allClientsConfig = {
                 render:(text,result) => {
                     return result.hR_ID === 0 ? <Button type="primary" className={dealDetailsStyles.viewJobBtn} onClick={() => {setModaljobpostDraft(true);setGuid(result.guid)}}>
                     View Job Post in Draft
-                </Button> : text
+                </Button> :   <Link
+                                to={`/allhiringrequest/${result.hR_ID}`}
+                                // to={`/viewClient/${result.companyID}/${result.clientID}`}
+                                target="_blank"
+                                style={{
+                                    color: `var(--uplers-black)`,
+                                    textDecoration: 'underline',
+                                }}>
+                                {text}
+                            </Link>
                 }
+            },
+         
+            {
+                title: 'Position',
+                dataIndex: 'position',
+                key: 'position',
             },
             {
                 title: 'TR',
@@ -839,16 +855,53 @@ export const allClientsConfig = {
                 key: 'totalTR',
                 width:'100px'
             },
-            {
-                title: 'Position',
-                dataIndex: 'position',
-                key: 'position',
+               {
+                title: 'HR Status',
+                dataIndex: 'totalTR',
+                key: 'totalTR',
+                width:'100px',
+                render:(text, result) => {
+                    return    All_Hiring_Request_Utils.GETHRSTATUS(
+                                                                                result?.hrStatusCode,
+                                                                                result?.hrStatus
+                                                                            )
+                }
             },
             {
-                title: 'Budget/Mo',
+                title: 'Margin %',
+                dataIndex: 'uplersFeesPer',
+                key: 'uplersFeesPer',
+                width:'100px'
+            },
+            {
+                title: 'SALARY/CLIENT BUDGET',
                 dataIndex: 'cost',
                 key: 'cost',
+                width:'220px'
             },
+            {
+                title: 'FTE/PTE',
+                dataIndex: 'ftE_PTE',
+                key: 'ftE_PTE',
+                width:'100px'
+            },
+            {
+                title: 'POD',
+                dataIndex: 'poDs',
+                key: 'poDs',
+                width:'100px'
+            },
+               {
+                title: 'SALES REP',
+                dataIndex: 'salesUserName',
+                key: 'salesUserName',
+                  width:'100px'
+            },
+            // {
+            //     title: 'Budget/Mo',
+            //     dataIndex: 'cost',
+            //     key: 'cost',
+            // },
             {
                 title: 'Notice',
                 dataIndex: 'notice',

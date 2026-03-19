@@ -158,7 +158,7 @@ export default function N_sidebar() {
                             <li><Link to={UTSRoutes.DAILY_BUSINESS_NUMBERS} className={`${stylesOBj['nav-subitem']}`}>Revenue Report</Link></li>
                             <li><Link to={UTSRoutes.POTENTIAL_CLOSURES_SHEET} className={`${stylesOBj['nav-subitem']}`}>Potential Closures List</Link></li>
                             <li><Link to={UTSRoutes.COMPANY_CATEGORY} className={`${stylesOBj['nav-subitem']}`}>Company Category</Link></li>
-                            <li><Link to={UTSRoutes.CLIENT_FEEDBACK} className={`${stylesOBj['nav-subitem']}`}>Client Feedback</Link></li>
+                           
                     
                         </ul>
                     </div>
@@ -232,6 +232,8 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
+                             <li><Link to={UTSRoutes.CLIENT_FEEDBACK} className={`${stylesOBj['nav-subitem']}`}>Feedback</Link></li>
+                             <li><Link to={UTSRoutes.REVENUE_REPORT} className={`${stylesOBj['nav-subitem']}`}>Revenue</Link></li>
                             <li><Link to={UTSRoutes.Leave} className={`${stylesOBj['nav-subitem']}`}>Leave</Link></li>
                             <li><Link to={UTSRoutes.CLIENT_REPORT} className={`${stylesOBj['nav-subitem']}`}>Client</Link></li>
                             <li><Link to={UTSRoutes.HR_REPORT} className={`${stylesOBj['nav-subitem']}`}>HR</Link></li>
