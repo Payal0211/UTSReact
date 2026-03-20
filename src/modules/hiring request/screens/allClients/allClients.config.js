@@ -860,7 +860,7 @@ export const allClientsConfig = {
                 title: 'HR Status',
                 dataIndex: 'totalTR',
                 key: 'totalTR',
-                width:'100px',
+                width:'130px',
                 render:(text, result) => {
                     return    All_Hiring_Request_Utils.GETHRSTATUS(
                                                                                 result?.hrStatusCode,
@@ -907,12 +907,6 @@ export const allClientsConfig = {
                 title: 'Notice',
                 dataIndex: 'notice',
                 key: 'notice',
-                width:'100px'
-            },
-            {
-                title: 'FTE/PTE',
-                dataIndex: 'ftE_PTE',
-                key: 'ftE_PTE',
                 width:'100px'
             },
                 {
