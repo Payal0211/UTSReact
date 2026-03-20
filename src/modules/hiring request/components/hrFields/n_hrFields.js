@@ -1288,6 +1288,11 @@ setUploading(false)
 // console.log("linkResponse", linkResponse)
 
 if(linkResponse.statusCode === HTTPStatusCode.OK){
+    if(linkResponse?.responseBody?.details?.jobDescription === ''){
+        message.error('Unable to fetch job description from the provided URL. Please check the URL and try again.')
+        return
+    }
+
     if(hrid > 0 && !isQuillEmpty(jobDesData?.jobDescription) ){
         setShowJDConfirmation(true)
         setTempJD(linkResponse?.responseBody?.details?.jobDescription)
@@ -1318,6 +1323,10 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
             message.error(uploadFileResponse?.responseBody)
         }
         if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+               if(uploadFileResponse?.responseBody?.details?.JobDescription === ''){
+       message.error('Unable to fetch JOb description from the uploaded file . Please check the file and try again.')
+         return
+    }
       if (
                 fileData?.type === "application/pdf" ||
                 fileData?.type === "application/docs" ||
