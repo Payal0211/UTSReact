@@ -361,7 +361,7 @@ const UpdateTR = ({
 
 						{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
 							updateTRDetail?.ClientDetail?.ActiveTR * 2 === count  
-							|| count === 0 
+							// || count === 0 
 							 ? (
 								<button
 									type="submit"
@@ -392,7 +392,7 @@ const UpdateTR = ({
 								</button>
 							)
 						) : updateTRDetail?.ClientDetail?.ActiveTR === count 
-						||  count === 0 
+						// ||  count === 0 
 						 ? (
 							<button
 								type="submit"
