@@ -848,12 +848,13 @@ export const allClientsConfig = {
                 title: 'Position',
                 dataIndex: 'position',
                 key: 'position',
+                  width:'200px'
             },
             {
                 title: 'TR',
                 dataIndex: 'totalTR',
                 key: 'totalTR',
-                width:'100px'
+                width:'80px'
             },
                {
                 title: 'HR Status',
@@ -895,7 +896,7 @@ export const allClientsConfig = {
                 title: 'SALES REP',
                 dataIndex: 'salesUserName',
                 key: 'salesUserName',
-                  width:'100px'
+                  width:'120px'
             },
             // {
             //     title: 'Budget/Mo',
@@ -913,6 +914,12 @@ export const allClientsConfig = {
                 dataIndex: 'ftE_PTE',
                 key: 'ftE_PTE',
                 width:'100px'
+            },
+                {
+                title: 'Delete Reason',
+                dataIndex: 'deleteReason',
+                key: 'deleteReason',
+                width:'200px'
             },
             ]
     }
