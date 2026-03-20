@@ -1141,7 +1141,7 @@ export default function ViewCompanyDetails() {
     {isSavedLoading ? (
               <Skeleton active />
             ) :  <Table 
-                    scroll={{x:'auto',  y: '100vh' }}
+                    scroll={{x:'1200px',  y: '100vh' }}
                     dataSource={viewDetails?.hrList ? viewDetails?.hrList : []} 
                     columns={columns} 
                     pagination={false}
