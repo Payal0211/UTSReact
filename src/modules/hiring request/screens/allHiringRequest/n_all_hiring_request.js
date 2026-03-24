@@ -654,6 +654,7 @@ export default function New_all_hiring_request() {
             { title: "SALES REP", key: "salesRep" },
             { title: "POD", key: "poDs" },
             { title: "OPEN SINCE", key: "hrAcceptedSince" },
+            { title: "PROFILE COUNT", key: "profiles" },
             { title: "REJECT REASON", key: "pauseHRReason" }
         ];
 
@@ -968,6 +969,7 @@ export default function New_all_hiring_request() {
                                         <th>SALES REP</th>
                                         <th>POD</th>
                                         <th>OPEN SINCE</th>
+                                        <th>PROFILE COUNT</th>
                                         <th>REJECT REASON</th>
                                     </tr>
                                 </thead>
@@ -1113,6 +1115,8 @@ export default function New_all_hiring_request() {
                                                     <td>{data?.poDs}</td>
                                                     {/* OPEN SINCE */}
                                                     <td>{data?.hrAcceptedSince}</td>
+                                                     {/* Submission count */}
+                                                    <td>{data?.profiles}</td>
                                                     {/* REJECT REASON */}
                                                     <td>{data?.pauseHRReason}</td>
                                                 </tr>

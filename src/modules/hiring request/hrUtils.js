@@ -48,7 +48,8 @@ export const hrUtils = {
 			poDs: item?.poDs,
 			podiDs: item?.podiDs,
 			hR_Category: item?.hR_Category,
-			pauseHRReason:item?.pauseHRReason
+			pauseHRReason:item?.pauseHRReason,
+			profiles: item?.profiles,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
