@@ -9,8 +9,8 @@
     width: calc(100% - 68px);
     position: relative;
     z-index: 1;
-    height: 100vh;
-    max-height: 100vh;
+    height: auto;
+    min-height: 100vh;
 }
 
 .content-wrapper {
@@ -246,6 +246,7 @@
     min-height: 48px;
     flex-shrink: 0;
     margin-left: auto;
+    max-width: fit-content;
 }
 
 .btn-export:hover {
@@ -1097,4 +1098,953 @@
         font-size: 13px;
     }
 
+}
+
+/* ===================== */
+/* 1200px — Desktop Medium */
+/* ===================== */
+@media screen and (max-width: 1200px) {
+
+    .main-content {
+        margin-left: 58px;
+        width: calc(100% - 58px);
+    }
+
+    .content-wrapper {
+        padding: 20px;
+    }
+
+    .filter-controls {
+        gap: 10px;
+    }
+
+    .search-group {
+        max-width: 250px;
+        min-width: 180px;
+    }
+
+    .filter-input {
+        font-size: 13px;
+        min-height: 42px;
+        padding: 8px 32px 8px 10px;
+        border-radius: 9px;
+    }
+
+    .input-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .toggle-btn {
+        padding: 7px 14px;
+        font-size: 12px;
+    }
+
+    .toggle-group {
+        min-height: 42px;
+    }
+
+    .calendarFilter {
+        height: 42px;
+        max-width: 200px;
+        min-width: 160px;
+        font-size: 13px;
+    }
+
+    .dateFilter {
+        font-size: 13px;
+    }
+
+    .filter-btn {
+        min-height: 42px;
+        font-size: 13px;
+        padding: 8px 10px;
+        border-radius: 9px;
+        min-width: 160px;
+    }
+
+    .filter-btn img {
+        width: 18px;
+        height: 18px;
+    }
+
+    .btn-export {
+        min-height: 42px;
+        padding: 8px 18px;
+        font-size: 12px;
+        border-radius: 9px;
+    }
+
+    .stats-row {
+        gap: 14px;
+        padding: 14px;
+        border-radius: 11px;
+    }
+
+    .stats-section-header {
+        font-size: 7.5px;
+        letter-spacing: 0.9px;
+        margin-bottom: 3px;
+    }
+
+    .stats-cell {
+        padding: 5px 10px;
+        min-width: 80px;
+    }
+
+    .stats-number {
+        font-size: 14px;
+    }
+
+    .stats-label {
+        font-size: 7px;
+        letter-spacing: 0.25px;
+    }
+
+    .data-table th {
+        padding: 10px 14px;
+        font-size: 10px;
+        line-height: 20px;
+    }
+
+    .data-table th:not(:last-child)::after {
+        height: 12px;
+    }
+
+    .data-table td {
+        padding: 8px 14px;
+        font-size: 12px;
+        line-height: 19px;
+    }
+
+    .action-btn {
+        padding: 4px 10px;
+        font-size: 12px;
+        gap: 5px;
+    }
+
+    .action-item {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    .action-dropdown {
+        min-width: 150px;
+    }
+
+    .eng-id-sub {
+        padding: 3px 7px;
+        font-size: 11px;
+    }
+
+    .feedback-dot {
+        width: 15px;
+        height: 15px;
+    }
+
+    .feedback-action-btn {
+        padding: 3px 8px;
+        font-size: 11px;
+    }
+
+    .feedback-date {
+        font-size: 11px;
+    }
+
+    .tooltip-content {
+        font-size: 13px;
+        padding: 6px 8px;
+    }
+
+    .data-table .th-sub {
+        padding: 3px 10px 5px !important;
+        font-size: 9px !important;
+    }
+
+    .th-sub-label {
+        padding: 3px 5px;
+        font-size: 9px;
+    }
+
+    .pagination-right {
+        gap: 20px;
+        font-size: 13px;
+    }
+
+    .pagination-info {
+        font-size: 12px;
+    }
+
+    .rows-select {
+        font-size: 12px;
+    }
+
+    .pagination-btn {
+        width: 22px;
+        height: 22px;
+    }
+
+    .filterCount {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+    }
+
+    .table-pagination-footer {
+        padding: 10px 12px;
+    }
+}
+
+/* ===================== */
+/* 1024px — Tablet Landscape */
+/* ===================== */
+@media screen and (max-width: 1024px) {
+
+    .main-content {
+        margin-left: 53px;
+        width: calc(100% - 53px);
+    }
+
+    .content-wrapper {
+        padding: 18px;
+    }
+
+    .filter-controls {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .search-group {
+        max-width: 220px;
+        min-width: 160px;
+    }
+
+    .filter-input {
+        font-size: 12px;
+        min-height: 40px;
+        padding: 8px 30px 8px 10px;
+        border-radius: 8px;
+    }
+
+    .input-icon {
+        width: 16px;
+        height: 16px;
+        right: 10px;
+    }
+
+    .toggle-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .toggle-group {
+        min-height: 40px;
+    }
+
+    .calendarFilter {
+        height: 40px;
+        max-width: 180px;
+        min-width: 140px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+
+    .calendar-icon-left {
+        width: 18px;
+        height: 18px;
+    }
+
+    .dateFilter {
+        font-size: 12px;
+    }
+
+    .filter-btn {
+        min-height: 40px;
+        font-size: 12px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        min-width: 140px;
+    }
+
+    .filter-btn img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .btn-export {
+        min-height: 40px;
+        padding: 7px 16px;
+        font-size: 11px;
+        border-radius: 8px;
+    }
+
+    .stats-row {
+        gap: 12px;
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .stats-section-header {
+        font-size: 7px;
+        letter-spacing: 0.8px;
+        margin-bottom: 3px;
+    }
+
+    .stats-cell {
+        padding: 5px 8px;
+        min-width: 70px;
+    }
+
+    .stats-number {
+        font-size: 13px;
+    }
+
+    .stats-label {
+        font-size: 6.5px;
+        letter-spacing: 0.2px;
+    }
+
+    .data-table th {
+        padding: 10px 12px;
+        font-size: 9px;
+        line-height: 16px;
+    }
+
+    .data-table td {
+        padding: 7px 12px;
+        font-size: 11px;
+        line-height: 17px;
+    }
+
+    .action-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        gap: 4px;
+    }
+
+    .action-item {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .action-dropdown {
+        min-width: 140px;
+    }
+
+    .eng-id-sub {
+        padding: 3px 6px;
+        font-size: 10px;
+    }
+
+    .feedback-dot {
+        width: 14px;
+        height: 14px;
+    }
+
+    .feedback-status-wrapper {
+        gap: 4px;
+    }
+
+    .feedback-action-btn {
+        padding: 3px 7px;
+        font-size: 10px;
+    }
+
+    .feedback-date {
+        font-size: 10px;
+    }
+
+    .tooltip-content {
+        font-size: 12px;
+        padding: 5px 7px;
+    }
+
+    .data-table .th-sub {
+        padding: 2px 8px 4px !important;
+        font-size: 8px !important;
+    }
+
+    .th-sub-label {
+        padding: 2px 4px;
+        font-size: 8px;
+    }
+
+    .pagination-right {
+        gap: 16px;
+        font-size: 12px;
+    }
+
+    .pagination-info {
+        font-size: 11px;
+    }
+
+    .rows-select {
+        font-size: 11px;
+    }
+
+    .select-wrapper {
+        width: 40px;
+    }
+
+    .pagination-btn {
+        width: 20px;
+        height: 20px;
+    }
+
+    .filterCount {
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+    .table-pagination-footer {
+        padding: 9px 10px;
+    }
+}
+
+/* ===================== */
+/* 991px — Tablet Portrait */
+/* ===================== */
+@media screen and (max-width: 991px) {
+
+    .filter-controls {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .search-group {
+        max-width: none;
+        min-width: unset;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .toggle-group {
+        flex-shrink: 1;
+        width: 100%;
+    }
+
+    .calendarFilter {
+        max-width: none;
+        min-width: unset;
+        width: 100%;
+    }
+
+    .filter-btn {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .btn-export {
+        margin-left: 0;
+        width: auto;
+    }
+
+    .stats-row {
+        flex-wrap: wrap;
+        gap: 14px;
+        padding: 12px;
+    }
+
+    .stats-section {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .stats-cell {
+        min-width: 65px;
+        padding: 4px 7px;
+    }
+
+    .stats-number {
+        font-size: 12px;
+    }
+
+    .stats-label {
+        font-size: 6px;
+    }
+
+    .pagination-right {
+        gap: 12px;
+        font-size: 11px;
+    }
+
+    .per-page-container {
+        gap: 5px;
+    }
+
+    .pagination-info {
+        font-size: 11px;
+    }
+
+    .rows-select {
+        font-size: 11px;
+    }
+}
+
+/* ===================== */
+/* 768px — Tablet / Mobile */
+/* ===================== */
+@media screen and (max-width: 768px) {
+
+    .main-content {
+        margin-left: 48px;
+        width: calc(100% - 48px);
+    }
+
+    .content-wrapper {
+        padding: 16px;
+    }
+
+    .filter-controls {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .search-group {
+        max-width: none;
+        min-width: unset;
+        width: 100%;
+    }
+
+    .filter-input {
+        min-height: 38px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+
+    .toggle-group {
+        min-height: 38px;
+        width: 100%;
+    }
+
+    .toggle-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+        flex: 1;
+        text-align: center;
+    }
+
+    .calendarFilter {
+        max-width: none;
+        min-width: unset;
+        width: 100%;
+        height: 38px;
+        border-radius: 8px;
+    }
+
+    .filter-btn {
+        min-height: 38px;
+        min-width: unset;
+        width: 100%;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+
+    .btn-export {
+        min-height: 38px;
+        width: auto;
+        margin-left: 0;
+        font-size: 11px;
+        border-radius: 8px;
+        padding: 7px 16px;
+    }
+
+    .stats-row {
+        flex-direction: column;
+        gap: 16px;
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .stats-section {
+        width: 100%;
+    }
+
+    .stats-cell {
+        min-width: 60px;
+        padding: 4px 6px;
+    }
+
+    .stats-number {
+        font-size: 12px;
+    }
+
+    .stats-label {
+        font-size: 6px;
+    }
+
+    .stats-section-header {
+        font-size: 7px;
+    }
+
+    .data-table th {
+        padding: 8px 10px;
+        font-size: 8px;
+        line-height: 14px;
+    }
+
+    .data-table td {
+        padding: 6px 10px;
+        font-size: 10px;
+        line-height: 15px;
+    }
+
+    .data-table th:not(:last-child)::after {
+        height: 10px;
+    }
+
+    .action-btn {
+        padding: 3px 6px;
+        font-size: 10px;
+        gap: 3px;
+    }
+
+    .action-item {
+        padding: 5px 8px;
+        font-size: 10px;
+    }
+
+    .action-dropdown {
+        min-width: 130px;
+    }
+
+    .eng-id-sub {
+        padding: 2px 5px;
+        font-size: 9px;
+    }
+
+    .feedback-dot {
+        width: 13px;
+        height: 13px;
+    }
+
+    .feedback-status-wrapper {
+        gap: 3px;
+    }
+
+    .feedback-action-btn {
+        padding: 2px 6px;
+        font-size: 9px;
+    }
+
+    .feedback-date {
+        font-size: 9px;
+    }
+
+    .tooltip-content {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+
+    .data-table .th-sub {
+        padding: 2px 6px 4px !important;
+        font-size: 7px !important;
+    }
+
+    .th-sub-label {
+        padding: 2px 3px;
+        font-size: 7px;
+    }
+
+    .pagination {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .pagination-right {
+        width: 100%;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+        font-size: 10px;
+    }
+
+    .per-page-container {
+        gap: 4px;
+        font-size: 10px;
+    }
+
+    .pagination-info {
+        font-size: 10px;
+    }
+
+    .rows-select {
+        font-size: 10px;
+    }
+
+    .select-wrapper {
+        width: 32px;
+    }
+
+    .pagination-btn {
+        width: 20px;
+        height: 20px;
+    }
+
+    .table-pagination-footer {
+        padding: 8px 10px;
+        margin-bottom: 30px;
+    }
+
+    .filterCount {
+        width: 17px;
+        height: 17px;
+        font-size: 9px;
+    }
+}
+
+/* ===================== */
+/* 575px — Mobile         */
+/* ===================== */
+@media screen and (max-width: 575px) {
+
+    .content-wrapper {
+        padding: 15px;
+    }
+
+    .filter-controls {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .filter-input {
+        min-height: 36px;
+        font-size: 12px;
+        padding: 6px 28px 6px 10px;
+        border-radius: 7px;
+    }
+
+    .input-icon {
+        width: 14px;
+        height: 14px;
+        right: 8px;
+    }
+
+    .toggle-group {
+        min-height: 36px;
+    }
+
+    .toggle-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+
+    .calendarFilter {
+        height: 36px;
+        font-size: 11px;
+        border-radius: 7px;
+        padding: 2px 8px;
+        gap: 6px;
+    }
+
+    .calendar-icon-left {
+        width: 16px;
+        height: 16px;
+    }
+
+    .calendar-dropdown-icon {
+        width: 10px;
+        height: 10px;
+    }
+
+    .dateFilter {
+        font-size: 11px;
+    }
+
+    .filter-btn {
+        min-height: 36px;
+        font-size: 11px;
+        padding: 6px 8px;
+        border-radius: 7px;
+        gap: 6px;
+    }
+
+    .filter-btn img {
+        width: 14px;
+        height: 14px;
+    }
+
+    .btn-export {
+        min-height: 36px;
+        padding: 6px 14px;
+        font-size: 11px;
+        border-radius: 7px;
+        width: auto;
+    }
+
+    .stats-row {
+        gap: 12px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .stats-section-header {
+        font-size: 6.5px;
+        letter-spacing: 0.7px;
+        margin-bottom: 2px;
+    }
+
+    .stats-cell {
+        padding: 3px 5px;
+        min-width: 55px;
+    }
+
+    .stats-number {
+        font-size: 11px;
+    }
+
+    .stats-label {
+        font-size: 5.5px;
+        letter-spacing: 0.15px;
+    }
+
+    .data-table th {
+        padding: 7px 8px;
+        font-size: 7px;
+        line-height: 12px;
+    }
+
+    .data-table th:not(:last-child)::after {
+        height: 8px;
+    }
+
+    .data-table td {
+        padding: 5px 8px;
+        font-size: 9px;
+        line-height: 14px;
+    }
+
+    .action-btn {
+        padding: 2px 5px;
+        font-size: 9px;
+        gap: 3px;
+    }
+
+    .action-item {
+        padding: 4px 8px;
+        font-size: 9px;
+    }
+
+    .action-dropdown {
+        min-width: 110px;
+    }
+
+    .eng-id-sub {
+        padding: 2px 4px;
+        font-size: 8px;
+        border-radius: 12px;
+    }
+
+    .feedback-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+    }
+
+    .feedback-status-wrapper {
+        gap: 3px;
+    }
+
+    .feedback-action-btn {
+        padding: 2px 5px;
+        font-size: 8px;
+    }
+
+    .feedback-date {
+        font-size: 8px;
+    }
+
+    .tooltip-content {
+        font-size: 10px;
+        padding: 4px 5px;
+        gap: 5px;
+    }
+
+    .tooltip-copy-btn {
+        width: 18px;
+        height: 18px;
+    }
+
+    .data-table .th-sub {
+        padding: 2px 5px 3px !important;
+        font-size: 7px !important;
+    }
+
+    .th-sub-label {
+        padding: 2px 3px;
+        font-size: 7px;
+    }
+
+    .data-table .th-grouped {
+        padding-top: 5px !important;
+        padding-bottom: 2px !important;
+    }
+
+    .pagination {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .pagination-right {
+        width: 100%;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+        font-size: 10px;
+    }
+
+    .per-page-container {
+        gap: 3px;
+        font-size: 10px;
+    }
+
+    .pagination-info {
+        font-size: 10px;
+    }
+
+    .rows-select {
+        font-size: 10px;
+    }
+
+    .select-wrapper {
+        width: 28px;
+    }
+
+    .select-wrapper::after {
+        width: 7px;
+        height: 7px;
+    }
+
+    .pagination-btn {
+        width: 18px;
+        height: 18px;
+    }
+
+    .pagination-btn img {
+        width: 14px;
+        height: 14px;
+    }
+
+    .table-pagination-footer {
+        padding: 7px 8px;
+        margin-bottom: 20px;
+    }
+
+    .filterCount {
+        width: 16px;
+        height: 16px;
+        font-size: 9px;
+    }
+
+    .content-wrapper::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
 }
