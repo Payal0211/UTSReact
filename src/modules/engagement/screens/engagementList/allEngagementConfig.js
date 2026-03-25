@@ -920,7 +920,7 @@ export const allEngagementConfig = {
 			{
 				label: 'Feedback',
 				name: 'clientFeedback',
-				child: filterList?.feedbackReport,
+				child: filterList?.clientFeedback,
 				isSearch: true,
 			},	
 		];
