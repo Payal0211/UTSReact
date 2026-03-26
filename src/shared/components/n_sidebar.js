@@ -37,9 +37,9 @@ export default function N_sidebar() {
 
 
         <aside className={stylesOBj.sidebar}>
-            
+
             <div className={stylesOBj['sidebar-logo']}>
-                <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" viewBox="0 0 190 82" xmlSpace="preserve" class="brandLogo brandLogo--lockup--animated">
+                <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 190 82" xmlSpace="preserve" class="brandLogo brandLogo--lockup--animated">
                     <g className={stylesOBj.brandLogo__freddie}><path d="M66.96,23.53L66.96,23.53c-2.72-2.72-6.68-3.76-10.39-2.74c0,0-13.59,3.58-13.59,3.59c-7.36,1.95-25.97,5.63-22.57,13.95 c3.57,8.71,15,18.44,23.58,21.82c12.75,5.02,19.54-3.89,22.37-13.13c0.06-0.19,0.13-0.39,0.18-0.59l0.02-0.09l0.04-0.14 c0.18-0.64,0.34-1.27,0.48-1.9l2.63-10.41C70.72,30.2,69.68,26.25,66.96,23.53z M61.31,31.64l-3.36,13.19 c-0.24,0.88-1.05,1.54-1.98,1.51c-0.93-0.03-1.71-0.73-1.87-1.64l-1.11-5.56c-0.07-0.37-0.25-0.72-0.54-1.01 c-0.29-0.29-0.64-0.47-1.01-0.54l-5.56-1.11c-0.41-0.08-0.77-0.27-1.04-0.55c-0.34-0.34-0.58-0.81-0.6-1.32 c-0.03-0.93,0.61-1.75,1.5-1.98l13.16-3.39c0.68-0.17,1.4,0.02,1.89,0.52c0.38,0.38,0.58,0.88,0.58,1.4 C61.37,31.32,61.35,31.48,61.31,31.64z"></path></g>
                     <g className={stylesOBj.brandLogo__wordMark} ><path d="M90.09,33.51v8.17c0,2.35-1.91,4.26-4.26,4.26c-2.35,0-4.26-1.91-4.26-4.26v-8.17h-4.85v8.17c0,5.03,4.09,9.12,9.12,9.12 c5.03,0,9.12-4.09,9.12-9.12v-8.17H90.09z M112.13,35.68L112.13,35.68c-1.65-1.68-3.68-2.53-6.04-2.53c-1.49,0-2.85,0.38-4.04,1.14 v-0.78h-4.74V57.8h4.74v-8.67c1.27,0.81,2.67,1.22,4.17,1.22c2.31,0,4.31-0.86,5.94-2.55c1.62-1.68,2.44-3.72,2.44-6.07 C114.6,39.39,113.77,37.35,112.13,35.68z M105.68,45.84c-2.25,0-4.08-1.83-4.08-4.08s1.83-4.08,4.08-4.08s4.08,1.83,4.08,4.08 S107.93,45.84,105.68,45.84z M155.59,33.94c-1.02-0.6-2.1-0.88-3.39-0.88c-1.12,0-1.92,0.19-2.69,0.64 c-0.31,0.18-0.65,0.43-0.98,0.71v-0.9h-4.95v16.88h4.95v-8.1c0-1.1,0-2.6,0.98-3.65c0.63-0.66,1.32-0.8,2.16-0.8 c0.26,0,0.95,0,1.8,0.54l0.46,0.29l2.03-4.52L155.59,33.94z M169.48,42.96c-0.32-0.57-0.76-1.07-1.33-1.48 c-0.49-0.37-1.12-0.68-1.85-0.93c-0.55-0.19-1.24-0.39-2.08-0.59l-0.01,0c-1.37-0.3-2.32-0.55-2.82-0.73 c-0.56-0.21-0.56-0.45-0.56-0.54c0-0.21,0.07-0.48,0.6-0.72c0.5-0.23,1.09-0.35,1.75-0.35c0.78,0,1.49,0.13,2.09,0.39 c0.6,0.26,1.16,0.56,1.66,0.91l0.39,0.27l2.53-3.73l-0.37-0.27c-0.63-0.46-1.48-0.91-2.52-1.35c-1.07-0.45-2.35-0.68-3.82-0.68 c-1.14,0-2.15,0.15-3.02,0.43c-0.86,0.29-1.62,0.7-2.26,1.23c-0.64,0.53-1.12,1.14-1.43,1.8c-0.34,0.7-0.5,1.42-0.5,2.13 c0,0.81,0.19,1.53,0.58,2.15c0.35,0.57,0.84,1.08,1.48,1.52c0.56,0.39,1.23,0.73,1.98,1.02c0.65,0.25,1.4,0.46,2.22,0.64 c0.26,0.07,0.68,0.16,1.24,0.28c0.38,0.08,0.69,0.17,0.95,0.27c0.22,0.08,0.38,0.18,0.48,0.29l0.01,0.01 c0.09,0.09,0.13,0.19,0.13,0.32c0,0.25-0.07,0.54-0.57,0.75c-0.53,0.22-1.12,0.34-1.75,0.34c-0.54,0-1.06-0.07-1.54-0.21 c-0.46-0.13-0.89-0.3-1.26-0.51c-0.4-0.23-0.76-0.46-1.05-0.69c-0.27-0.22-0.56-0.47-0.86-0.75l-0.38-0.35l-2.81,3.63l0.26,0.29 c0.33,0.36,0.76,0.74,1.3,1.13c0.51,0.37,1.09,0.69,1.73,0.97c0.69,0.29,1.38,0.52,2.06,0.68c0.79,0.18,1.63,0.27,2.48,0.27 c0.96,0,1.88-0.12,2.75-0.36c0.9-0.25,1.68-0.6,2.34-1.05c0.7-0.49,1.26-1.09,1.66-1.79c0.42-0.73,0.64-1.57,0.64-2.48 C170,44.3,169.83,43.57,169.48,42.96z M140.54,38.35c-0.46-1.09-1.07-2.02-1.82-2.77c-0.74-0.74-1.65-1.34-2.7-1.79 c-1-0.43-2.11-0.64-3.28-0.64c-1.22,0-2.36,0.23-3.39,0.7c-1.06,0.47-1.96,1.1-2.68,1.88c-0.73,0.79-1.33,1.72-1.76,2.78 c-0.43,1.03-0.64,2.18-0.64,3.41c0,1.25,0.23,2.42,0.69,3.49c0.47,1.09,1.12,2.04,1.92,2.84c0.82,0.8,1.79,1.44,2.87,1.88 c1.08,0.45,2.28,0.67,3.56,0.67c1.47,0,2.8-0.26,3.94-0.78c1.1-0.49,2.02-1.03,2.73-1.61l0.33-0.27l-2.55-3.83l-0.4,0.37 c-0.59,0.54-1.24,0.93-1.94,1.15c-0.71,0.23-1.4,0.34-2.04,0.34c-0.61,0-1.14-0.09-1.59-0.26c-0.45-0.17-0.86-0.4-1.24-0.69 c-0.32-0.25-0.6-0.56-0.82-0.91c-0.09-0.15-0.17-0.29-0.23-0.43h11.66l0.02-0.44c0.02-0.43,0.03-0.72,0.03-0.91v-0.62 C141.21,40.62,140.99,39.42,140.54,38.35z M129.88,40.03c0.04-0.15,0.1-0.3,0.17-0.47c0.15-0.34,0.36-0.65,0.63-0.91 c0.31-0.29,0.66-0.52,1.04-0.68c0.42-0.17,0.93-0.26,1.51-0.26c0.6,0,1.13,0.09,1.56,0.26c0.43,0.17,0.79,0.41,1.07,0.69 c0.28,0.29,0.5,0.6,0.64,0.92c0.06,0.16,0.12,0.3,0.16,0.45H129.88z M116.96,24.2v26.19h4.95V24.2H116.96z"></path></g>
                 </svg>
@@ -58,24 +58,22 @@ export default function N_sidebar() {
                         <span className={stylesOBj["nav-label"]}>AM Deployed Dashboard</span>
 
                     </Link>
-                    <Link to={UTSRoutes.TADASHBOARD} className={`${stylesOBj['nav-item']} ${
-                                                                   switchLocation.pathname  === UTSRoutes.TADASHBOARD
-                                                                        ? stylesOBj['active']
-                                                                        : ''
-                                                                }`}>
-                        <svg class="nav-icon stroke-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 15.5524C18.8263 19.2893 15.3351 22 11.2108 22C6.12383 22 2 17.8762 2 12.7892C2 8.66488 4.71065 5.1737 8.44759 4" stroke="#4C4E64" stroke-width="1.5" stroke-opacity="0.87" stroke-linecap="round"/>
-                            <path d="M21.9131 9.94727C20.8515 6.14438 17.8556 3.14845 14.0527 2.0869C12.4091 1.6281 11 3.05419 11 4.76062V11.4551C11 12.3083 11.6917 13 12.5449 13H19.2394C20.9458 13 22.3719 11.5909 21.9131 9.94727Z" stroke="#4C4E64" stroke-width="1.5" stroke-opacity="0.87"/>
+                    <Link to={UTSRoutes.TADASHBOARD} className={`${stylesOBj['nav-item']} ${switchLocation.pathname === UTSRoutes.TADASHBOARD
+                            ? stylesOBj['active']
+                            : ''
+                        }`}>
+                        <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['stroke-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 15.5524C18.8263 19.2893 15.3351 22 11.2108 22C6.12383 22 2 17.8762 2 12.7892C2 8.66488 4.71065 5.1737 8.44759 4" stroke="#4C4E64" stroke-width="1.5" stroke-opacity="0.87" stroke-linecap="round" />
+                            <path d="M21.9131 9.94727C20.8515 6.14438 17.8556 3.14845 14.0527 2.0869C12.4091 1.6281 11 3.05419 11 4.76062V11.4551C11 12.3083 11.6917 13 12.5449 13H19.2394C20.9458 13 22.3719 11.5909 21.9131 9.94727Z" stroke="#4C4E64" stroke-width="1.5" stroke-opacity="0.87" />
                         </svg>
-                               
+
                         <span className={stylesOBj["nav-label"]}>TA Dashboard</span>
 
                     </Link>
-                    <Link to={UTSRoutes.ALLHIRINGREQUESTROUTE} className={`${stylesOBj['nav-item']} ${
-                                                                   switchLocation.pathname  === UTSRoutes.ALLHIRINGREQUESTROUTE
-                                                                        ? stylesOBj['active']
-                                                                        : ''
-                                                                }`}>
+                    <Link to={UTSRoutes.ALLHIRINGREQUESTROUTE} className={`${stylesOBj['nav-item']} ${switchLocation.pathname === UTSRoutes.ALLHIRINGREQUESTROUTE
+                            ? stylesOBj['active']
+                            : ''
+                        }`}>
                         <img src="images/hiring-request-ic.svg" alt="Hiring Request Icon" />
                         <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M9 6.25C7.48122 6.25 6.25 7.48122 6.25 9C6.25 10.5188 7.48122 11.75 9 11.75C10.5188 11.75 11.75 10.5188 11.75 9C11.75 7.48122 10.5188 6.25 9 6.25ZM7.75 9C7.75 8.30965 8.30965 7.75 9 7.75C9.69036 7.75 10.25 8.30965 10.25 9C10.25 9.69036 9.69036 10.25 9 10.25C8.30965 10.25 7.75 9.69036 7.75 9Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -88,11 +86,10 @@ export default function N_sidebar() {
 
                         <span className={stylesOBj["nav-label"]}>Hiring Request</span>
                     </Link>
-                    <Link to={UTSRoutes.ALLCLIENTS} className={`${stylesOBj['nav-item']}  ${
-                                                                   switchLocation.pathname  === UTSRoutes.ALLCLIENTS
-                                                                        ? stylesOBj['active']
-                                                                        : ''
-                                                                }`}>
+                    <Link to={UTSRoutes.ALLCLIENTS} className={`${stylesOBj['nav-item']}  ${switchLocation.pathname === UTSRoutes.ALLCLIENTS
+                            ? stylesOBj['active']
+                            : ''
+                        }`}>
                         <img src="images/company-ic.svg" alt="Company Icon" />
                         <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M10.948 1.25H13.052C13.9505 1.24997 14.6997 1.24995 15.2945 1.32991C15.9223 1.41432 16.4891 1.59999 16.9445 2.05546C17.4 2.51093 17.5857 3.07773 17.6701 3.70552C17.7501 4.30031 17.75 5.04953 17.75 5.94801L17.75 7.25005C18.3266 7.25051 18.8152 7.25491 19.219 7.29599C19.6925 7.34415 20.1318 7.44886 20.5278 7.71346C20.8281 7.9141 21.0859 8.17191 21.2865 8.47218C21.5511 8.86818 21.6559 9.30755 21.704 9.78102C21.75 10.2334 21.75 10.7921 21.75 11.4617V21.25H22C22.4142 21.25 22.75 21.5858 22.75 22C22.75 22.4142 22.4142 22.75 22 22.75H2C1.58579 22.75 1.25 22.4142 1.25 22C1.25 21.5858 1.58579 21.25 2 21.25H2.25L2.25 11.4617C2.24998 10.7921 2.24997 10.2334 2.29598 9.78102C2.34415 9.30755 2.44886 8.86818 2.71346 8.47218C2.91409 8.17191 3.17191 7.9141 3.47218 7.71346C3.86818 7.44886 4.30755 7.34415 4.78102 7.29599C5.18483 7.25491 5.67343 7.25051 6.25 7.25005L6.25 5.94801C6.24997 5.04953 6.24995 4.30031 6.32991 3.70552C6.41432 3.07773 6.59999 2.51093 7.05546 2.05546C7.51093 1.59999 8.07773 1.41432 8.70552 1.32991C9.3003 1.24995 10.0495 1.24997 10.948 1.25ZM6.25 8.7501C5.66741 8.75075 5.25586 8.75542 4.93283 8.78828C4.57796 8.82438 4.41399 8.8882 4.30554 8.96067C4.16905 9.05186 4.05186 9.16905 3.96066 9.30554C3.8882 9.41399 3.82438 9.57796 3.78828 9.93283C3.75091 10.3002 3.75 10.7822 3.75 11.5V21.25H6.25V8.7501ZM7.75 21.25H11.25V19C11.25 18.5858 11.5858 18.25 12 18.25C12.4142 18.25 12.75 18.5858 12.75 19V21.25H16.25V6C16.25 5.03599 16.2484 4.38843 16.1835 3.90539C16.1214 3.44393 16.0142 3.24644 15.8839 3.11612C15.7536 2.9858 15.5561 2.87858 15.0946 2.81654C14.6116 2.7516 13.964 2.75 13 2.75H11C10.036 2.75 9.38843 2.7516 8.90539 2.81654C8.44393 2.87858 8.24643 2.9858 8.11612 3.11612C7.9858 3.24644 7.87858 3.44393 7.81654 3.90539C7.75159 4.38843 7.75 5.03599 7.75 6V21.25ZM17.75 21.25H20.25V11.5C20.25 10.7822 20.2491 10.3002 20.2117 9.93283C20.1756 9.57796 20.1118 9.41399 20.0393 9.30554C19.9481 9.16905 19.8309 9.05186 19.6945 8.96067C19.586 8.8882 19.422 8.82438 19.0672 8.78828C18.7441 8.75542 18.3326 8.75075 17.75 8.7501V21.25ZM9.25 5C9.25 4.58579 9.58579 4.25 10 4.25H14C14.4142 4.25 14.75 4.58579 14.75 5C14.75 5.41422 14.4142 5.75 14 5.75H10C9.58579 5.75 9.25 5.41422 9.25 5ZM9.25 8C9.25 7.58579 9.58579 7.25 10 7.25H14C14.4142 7.25 14.75 7.58579 14.75 8C14.75 8.41422 14.4142 8.75 14 8.75H10C9.58579 8.75 9.25 8.41422 9.25 8ZM9.25 11C9.25 10.5858 9.58579 10.25 10 10.25H14C14.4142 10.25 14.75 10.5858 14.75 11C14.75 11.4142 14.4142 11.75 14 11.75H10C9.58579 11.75 9.25 11.4142 9.25 11ZM9.25 14C9.25 13.5858 9.58579 13.25 10 13.25H14C14.4142 13.25 14.75 13.5858 14.75 14C14.75 14.4142 14.4142 14.75 14 14.75H10C9.58579 14.75 9.25 14.4142 9.25 14Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -100,7 +97,10 @@ export default function N_sidebar() {
 
                         <span className={stylesOBj["nav-label"]}>Company/Client</span>
                     </Link>
-                    <Link to={UTSRoutes.ONBOARD} className={`${stylesOBj['nav-item']}`}>
+                    <Link to={UTSRoutes.ONBOARD} className={`${stylesOBj['nav-item']} ${switchLocation.pathname === UTSRoutes.ONBOARD
+                            ? stylesOBj['active']
+                            : ''
+                        }`}>
                         <img src="images/engagement-ic.svg" alt="Engagement Icon" />
                         <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M15.75 6C15.75 3.92893 14.0711 2.25 12 2.25C9.92893 2.25 8.25 3.92893 8.25 6C8.25 8.07107 9.92893 9.75 12 9.75C14.0711 9.75 15.75 8.07107 15.75 6ZM12 3.75C13.2426 3.75 14.25 4.75736 14.25 6C14.25 7.24264 13.2426 8.25 12 8.25C10.7574 8.25 9.75 7.24264 9.75 6C9.75 4.75736 10.7574 3.75 12 3.75Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -141,13 +141,10 @@ export default function N_sidebar() {
                     </div>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('OM Report') ? stylesOBj['expanded'] : ''}`}>
                         <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('OM Report')}>
-                            <img src="images/ta-report-ic.svg" alt="TA Report Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 9.24999C9.92893 9.24999 8.25 10.9289 8.25 13C8.25 15.0711 9.92893 16.75 12 16.75C14.0711 16.75 15.75 15.0711 15.75 13C15.75 10.9289 14.0711 9.24999 12 9.24999ZM9.75 13C9.75 11.7573 10.7574 10.75 12 10.75C13.2426 10.75 14.25 11.7573 14.25 13C14.25 14.2426 13.2426 15.25 12 15.25C10.7574 15.25 9.75 14.2426 9.75 13Z" fill="#4C4E64" fill-opacity="0.87" />
-                                <path d="M10 18.25C9.58579 18.25 9.25 18.5858 9.25 19C9.25 19.4142 9.58579 19.75 10 19.75H14C14.4142 19.75 14.75 19.4142 14.75 19C14.75 18.5858 14.4142 18.25 14 18.25H10Z" fill="#4C4E64" fill-opacity="0.87" />
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6111 1.58367C17.2678 1.347 18.75 2.63252 18.75 4.30603V5.68251C19.9395 6.31126 20.75 7.56097 20.75 8.99999V19C20.75 21.0711 19.0711 22.75 17 22.75H7C4.92893 22.75 3.25 21.0711 3.25 19V4.99999H3.25136C3.25046 4.97642 3.25 4.95273 3.25 4.92894C3.25 4.02269 3.91638 3.25434 4.81353 3.12618L15.6111 1.58367ZM5.07107 6.75001L5.06244 6.74999H4.75V19C4.75 20.2426 5.75736 21.25 7 21.25H17C18.2426 21.25 19.25 20.2426 19.25 19V8.99999C19.25 7.76055 18.2478 6.75518 17.0096 6.75001H5.07107ZM17.25 5.25001H17.0125L17 5.24999H5.0674C4.89177 5.24802 4.75 5.10504 4.75 4.92894C4.75 4.76916 4.86749 4.6337 5.02566 4.6111L15.8232 3.06859C16.5763 2.96101 17.25 3.54534 17.25 4.30603V5.25001Z" fill="#4C4E64" fill-opacity="0.87" />
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.25 8.67499C2.53832 8.32753 1.25 6.81422 1.25 5C1.25 2.92893 2.92893 1.25 5 1.25C6.81422 1.25 8.32753 2.53832 8.67499 4.25H15.325C15.6725 2.53832 17.1858 1.25 19 1.25C21.0711 1.25 22.75 2.92893 22.75 5C22.75 6.81422 21.4617 8.32753 19.75 8.67499V15.325C21.4617 15.6725 22.75 17.1858 22.75 19C22.75 21.0711 21.0711 22.75 19 22.75C17.1858 22.75 15.6725 21.4617 15.325 19.75H8.67499C8.32753 21.4617 6.81422 22.75 5 22.75C2.92893 22.75 1.25 21.0711 1.25 19C1.25 17.1858 2.53832 15.6725 4.25 15.325L4.25 8.67499ZM2.75 5C2.75 3.75736 3.75736 2.75 5 2.75C6.24264 2.75 7.25 3.75736 7.25 5C7.25 6.24264 6.24264 7.25 5 7.25C3.75736 7.25 2.75 6.24264 2.75 5ZM5.75 15.325L5.75 8.67499C7.21935 8.37673 8.37672 7.21935 8.67499 5.75H15.325C15.6233 7.21935 16.7807 8.37673 18.25 8.67499V15.325C16.7807 15.6233 15.6233 16.7807 15.325 18.25H8.67499C8.37672 16.7807 7.21935 15.6233 5.75 15.325ZM5 16.75C3.75736 16.75 2.75 17.7574 2.75 19C2.75 20.2426 3.75736 21.25 5 21.25C6.24264 21.25 7.25 20.2426 7.25 19C7.25 17.7574 6.24264 16.75 5 16.75ZM21.25 5C21.25 6.24264 20.2426 7.25 19 7.25C17.7574 7.25 16.75 6.24264 16.75 5C16.75 3.75736 17.7574 2.75 19 2.75C20.2426 2.75 21.25 3.75736 21.25 5ZM16.75 19C16.75 17.7574 17.7574 16.75 19 16.75C20.2426 16.75 21.25 17.7574 21.25 19C21.25 20.2426 20.2426 21.25 19 21.25C17.7574 21.25 16.75 20.2426 16.75 19Z" fill="#636578" />
                             </svg>
-                            <span className={stylesOBj["nav-label"]}>OM Report</span>
+                            <span className={stylesOBj["nav-label"]}>Hiring Funnel</span>
                             <svg className={`${stylesOBj['nav-chevron']}`} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M6 4L10 8L6 12" stroke="#4C4E64" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -158,11 +155,11 @@ export default function N_sidebar() {
                             <li><Link to={UTSRoutes.DAILY_BUSINESS_NUMBERS} className={`${stylesOBj['nav-subitem']}`}>Revenue Report</Link></li>
                             <li><Link to={UTSRoutes.POTENTIAL_CLOSURES_SHEET} className={`${stylesOBj['nav-subitem']}`}>Potential Closures List</Link></li>
                             <li><Link to={UTSRoutes.COMPANY_CATEGORY} className={`${stylesOBj['nav-subitem']}`}>Company Category</Link></li>
-                           
-                    
+
+
                         </ul>
                     </div>
-                          <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('TA Report') ? stylesOBj['expanded'] : ''}`}>
+                    <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('TA Report') ? stylesOBj['expanded'] : ''}`}>
                         <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('TA Report')}>
                             <img src="images/ta-report-ic.svg" alt="TA Report Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -232,8 +229,8 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                             <li><Link to={UTSRoutes.CLIENT_FEEDBACK} className={`${stylesOBj['nav-subitem']}`}>Feedback</Link></li>
-                             <li><Link to={UTSRoutes.REVENUE_REPORT} className={`${stylesOBj['nav-subitem']}`}>Revenue</Link></li>
+                            <li><Link to={UTSRoutes.CLIENT_FEEDBACK} className={`${stylesOBj['nav-subitem']}`}>Feedback</Link></li>
+                            <li><Link to={UTSRoutes.REVENUE_REPORT} className={`${stylesOBj['nav-subitem']}`}>Revenue</Link></li>
                             <li><Link to={UTSRoutes.Leave} className={`${stylesOBj['nav-subitem']}`}>Leave</Link></li>
                             <li><Link to={UTSRoutes.CLIENT_REPORT} className={`${stylesOBj['nav-subitem']}`}>Client</Link></li>
                             <li><Link to={UTSRoutes.HR_REPORT} className={`${stylesOBj['nav-subitem']}`}>HR</Link></li>
@@ -300,16 +297,16 @@ export default function N_sidebar() {
                         </ul>
                     </div>
 
-                      <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Profile') ? stylesOBj['expanded'] : ''}`}>
+                    <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Profile') ? stylesOBj['expanded'] : ''}`}>
                         <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Profile')}>
-                            <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['stroke-icon"']}`}  width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12" cy="6" r="4" stroke="#636578" stroke-width="1.5"/>
-                                <ellipse cx="12" cy="17" rx="7" ry="4" stroke="#636578" stroke-width="1.5"/>
+                            <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['stroke-icon"']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="6" r="4" stroke="#636578" stroke-width="1.5" />
+                                <ellipse cx="12" cy="17" rx="7" ry="4" stroke="#636578" stroke-width="1.5" />
                             </svg>
-                                
+
                             <span className={stylesOBj["nav-label"]}>Profile</span>
                             <svg className={`${stylesOBj['nav-chevron']}`} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 4L10 8L6 12" stroke="#4C4E64" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6 4L10 8L6 12" stroke="#4C4E64" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
@@ -319,11 +316,10 @@ export default function N_sidebar() {
                 </div>
                 <div className={`${stylesOBj['nav-divider']}`} ></div>
                 <div className={`${stylesOBj['nav-item-container']}`}>
-                    <Link to={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE} className={`${stylesOBj['nav-item']} ${
-                                                                   switchLocation.pathname  === NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE
-                                                                        ? stylesOBj['active']
-                                                                        : ''
-                                                                }`}>
+                    <Link to={NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE} className={`${stylesOBj['nav-item']} ${switchLocation.pathname === NewPagesRouts.ALLUNASSIGNHIRINGREQUESTROUTE
+                            ? stylesOBj['active']
+                            : ''
+                        }`}>
                         <img src="images/unassigned-hr-ic.svg" alt="Unassigned HR Icon" />
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M19.9896 3.99114C18.4369 2.46995 16.3082 2.41192 15.2249 3.47329L11.5248 7.09826C11.2289 7.38814 10.7541 7.38327 10.4642 7.08739C10.1743 6.79151 10.1792 6.31666 10.4751 6.02678L14.1752 2.40181C16.0111 0.603142 19.0889 1.00882 21.0393 2.91966C22.9924 4.83318 23.4177 7.87521 21.5679 9.68751L18.6607 12.5357C18.3648 12.8256 17.8899 12.8207 17.6001 12.5249C17.3102 12.229 17.3151 11.7541 17.6109 11.4643L20.5181 8.61604C21.5875 7.56831 21.5395 5.50965 19.9896 3.99114Z" fill="#4C4E64" fill-opacity="0.86" />

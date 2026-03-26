@@ -3,19 +3,19 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
     background-color: #F9F6ED;
     margin-left: 68px;
     width: calc(100% - 68px);
     position: relative;
     z-index: 1;
-    height: auto;
+    height: 100vh;
     min-height: 100vh;
 }
 
 .content-wrapper {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     padding: 24px;
     background-color: #F9F6ED;
 }
@@ -576,6 +576,76 @@
 .action-item:hover {
     background-color: #F5F5F5;
 }
+
+.amName{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.btnPrimary {
+    background: #FFDA30;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    padding: 17px 28px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.btnPrimary:hover {
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+}
+
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.row {
+    margin: 0 -9px;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.btnCancle {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left: 10px;
+}
+
+.hadingTitle{
+    color: #232323;
+    font-weight: 400;
+}
+
 
 /* Eng ID link */
 .eng-id {
