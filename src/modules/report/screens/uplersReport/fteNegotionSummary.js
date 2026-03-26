@@ -46,32 +46,32 @@ export default function FTENegotiationSummary({ impHooks }) {
   }, [monthDate, hrModal]);
 
   
-   const getPlanningSummeryData = async () => {
-   const pl = {
-          hrmodel: hrModal,
-          pod_id: selectedHead,
-          month: moment(monthDate).format("M"),
-          year: moment(monthDate).format("YYYY"),
-        };
-        setIsPlanningSummeryLoading(true)
-          const result = await ReportDAO.getFTEGOALPlanningSummeryReportDAO(pl);
+  //  const getPlanningSummeryData = async () => {
+  //  const pl = {
+  //         hrmodel: hrModal,
+  //         pod_id: selectedHead,
+  //         month: moment(monthDate).format("M"),
+  //         year: moment(monthDate).format("YYYY"),
+  //       };
+  //       setIsPlanningSummeryLoading(true)
+  //         const result = await ReportDAO.getFTEGOALPlanningSummeryReportDAO(pl);
   
-   setIsPlanningSummeryLoading(false);
+  //  setIsPlanningSummeryLoading(false);
   
-      if (result.statusCode === HTTPStatusCode.OK) {
-        setPlanningSummaryData(
-          result && result?.responseBody
-        );
-      } else {
-        setPlanningSummaryData([]);
-        return "NO DATA FOUND";
-      }
-         }
+  //     if (result.statusCode === HTTPStatusCode.OK) {
+  //       setPlanningSummaryData(
+  //         result && result?.responseBody
+  //       );
+  //     } else {
+  //       setPlanningSummaryData([]);
+  //       return "NO DATA FOUND";
+  //     }
+  //        }
 
 
-          useEffect(() => {
-    getPlanningSummeryData();
-  }, [monthDate, hrModal,selectedHead]);
+  //         useEffect(() => {
+  //   getPlanningSummeryData();
+  // }, [monthDate, hrModal,selectedHead]);
 
   const getDFDetails = async (row, v, week) => {
     try {
@@ -855,7 +855,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       </div>
     </div>
 
-     <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
+     {/* <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
           <div className={uplersStyle.customTableContainer}>
             {isPlanningSummeryLoading ? (
               <TableSkeleton />
@@ -894,7 +894,7 @@ export default function FTENegotiationSummary({ impHooks }) {
           </div>
   
     
-        </div>
+        </div> */}
   </>
    
   );
