@@ -155,8 +155,8 @@ function App() {
 
 						<Route
 							exact
-							key={NewPagesRouts.ONBOARD}
-							path={NewPagesRouts.ONBOARD}
+							key={UTSRoutes.ONBOARD}
+							path={UTSRoutes.ONBOARD}
 							element={<NewEngagementList />}
 						/>
 

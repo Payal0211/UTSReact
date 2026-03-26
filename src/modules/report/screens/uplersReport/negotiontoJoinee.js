@@ -1283,12 +1283,19 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
         );
       };
     
-      const renderYesNoSelect = (value, record, index, dataIndex, handleChange) => {
-        return (
-          <Select
+      const RenderYesNoSelect = ({value, record, index, dataIndex, handleChange}) => {
+        const [showModal,setShowModal] = useState(false);
+           const [joiningDate, setJoiningDate] = useState("");
+        return (<>
+           <Select
             value={value}
-            onChange={(newValue) =>
+            onChange={(newValue) =>{
+              if(newValue === 'Yes'){
+                setShowModal(true);
+                return
+              }
               handleChange(newValue, record, index, dataIndex)
+            }
             }
             style={{ width: "100%" }}
             size="small"
@@ -1296,13 +1303,106 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
             <Option value="Yes">Yes</Option>
             <Option value="No">No</Option>
           </Select>
+
+           <Modal
+                transitionName=""
+                width="400px"
+                centered
+                footer={null}
+                open={showModal}
+                className="engagementModalStyle"
+                onCancel={() => {
+                  setShowModal(false);              
+                }}
+              >
+                <div style={{ padding: "35px 15px 10px 15px" }}>
+                  <h3>Select Date</h3>
+                </div>
+            
+      
+                {loadingResponse ? (
+                  <Skeleton active />
+                ) : (
+                  <>
+                 
+      
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                      }}
+                    >
+                      <div>Date</div>
+                      <div className={uplersStyle.calendarFilter}>
+                        <CalenderSVG
+                          style={{ height: "16px", marginRight: "16px" }}
+                        />
+                        <DatePicker
+                          style={{ backgroundColor: "red" }}
+                          onKeyDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          className={uplersStyle.dateFilter}
+                          placeholderText="Select Date"
+                          selected={joiningDate}
+                          onChange={(date) => setJoiningDate(date)}
+                          dateFormat="dd-MM-yyyy"
+                          // minDate={getMaxDate()}
+                          // minDate={new Date()}
+                          // showMonthYearPicker
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+      
+                <div style={{ padding: "10px" }}>
+                  <button
+                    className={uplersStyle.btn}
+                    // disabled={isEditNewTask}
+                    onClick={() => {
+                      if(!joiningDate){
+                        message.error("Please select a date")
+                        return
+                      }
+                      handleChange('Yes', record, index, dataIndex,joiningDate ? moment(joiningDate).format("YYYY-MM-DD") : null )
+                       setShowModal(false);
+                    }}
+                    // disabled={!joiningDate}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className={uplersStyle.btnCancle}
+                    // disabled={isEditNewTask}
+                    onClick={() => {
+                  setShowModal(false);
+                    }}
+                    // disabled={loadingResponse}
+                  >
+                    Close
+                  </button>
+                </div>
+              </Modal>
+        </>
+       
         );
       };
     
-      const handleFieldChange = (newValue, record, index, field) => {
+      const handleFieldChange = (newValue, record, index, field,joiningDate) => {
         const updatedData = [...reportPtoNData];
         let indVal = updatedData.findIndex(item => (item.company === record.company && item.hiringRequestID === record.hiringRequestID))
-        updatedData[indVal] = { ...record, [field]: newValue };
+       
+        if(joiningDate){
+           updatedData[indVal] = { ...record, expected_Closure_Week: joiningDate , [field]: newValue  };
+        }else{
+           updatedData[indVal] = { ...record, [field]: newValue };
+        }
         setReportPtoNData(updatedData);
         // if (field === "productType" || field === "potentialType") {
         updatePotentialClosuresRowValue(updatedData[indVal]);
@@ -1770,14 +1870,14 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           width: 150,
           align: "center",       
           className: uplersStyle.headerCell,
-           render: (value, record, index) =>
-            renderYesNoSelect(
-              value,
-              record,
-              index,
-              "talent_Backup",
-              handleFieldChange
-            ),
+           render: (value, record, index) =><RenderYesNoSelect value={value} record={record} index={index} dataIndex={"talent_Backup"} handleChange={handleFieldChange} />,
+            // RenderYesNoSelect(
+            //   value,
+            //   record,
+            //   index,
+            //   "talent_Backup",
+            //   handleFieldChange
+            // ),
               filters:[{ text: 'Yes', value: 'Yes'},{text:'No',value:'No'}],
             onFilter: (value, record) => record.talent_Backup.indexOf(value) === 0,
              filterMultiple: false,
