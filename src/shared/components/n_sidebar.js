@@ -97,7 +97,10 @@ export default function N_sidebar() {
 
                         <span className={stylesOBj["nav-label"]}>Company/Client</span>
                     </Link>
-                    <Link to={UTSRoutes.ONBOARD} className={`${stylesOBj['nav-item']}`}>
+                    <Link to={UTSRoutes.ONBOARD} className={`${stylesOBj['nav-item']} ${switchLocation.pathname === UTSRoutes.ONBOARD
+                            ? stylesOBj['active']
+                            : ''
+                        }`}>
                         <img src="images/engagement-ic.svg" alt="Engagement Icon" />
                         <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M15.75 6C15.75 3.92893 14.0711 2.25 12 2.25C9.92893 2.25 8.25 3.92893 8.25 6C8.25 8.07107 9.92893 9.75 12 9.75C14.0711 9.75 15.75 8.07107 15.75 6ZM12 3.75C13.2426 3.75 14.25 4.75736 14.25 6C14.25 7.24264 13.2426 8.25 12 8.25C10.7574 8.25 9.75 7.24264 9.75 6C9.75 4.75736 10.7574 3.75 12 3.75Z" fill="#4C4E64" fill-opacity="0.87" />
