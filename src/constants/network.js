@@ -245,6 +245,7 @@ export class ReportType {
 	static GET_NEGOTIATION_REPORT = 'PODNegotiationToJoiningFunnelList'
 	static GET_PLANING_TO_NEGOTIATION_REPORT = 'PODGoalPlanningToNegotiationList'
 	static GET_PLANNING_SUMMARY_REPORT = 'PODwiseGoalPlanningSummary'
+	static GET_JOINED_SUMMARY_REPORT = 'PODwiseAnticipatedvsActualJoinedSummary'
 	static GET_NEGO_PLANNING_SUMMARY_REPORT = 'OrionPOD_AMwise_Summary'
 	static GET_FREEZE_SUMMARY_REPORT = 'PODwiseWeekWiseFreezeCTA'
 	static GET_NEGOTIATION_SUMMARY_REPORT = 'PODNegotiationToJoiningFunnelSummary'

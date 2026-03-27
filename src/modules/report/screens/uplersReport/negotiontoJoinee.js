@@ -20,6 +20,7 @@ import { HTTPStatusCode } from "constants/network";
 import { useNavigate } from "react-router-dom";
 import UTSRoutes from "constants/routes";
 import { PiArrowsSplitBold } from "react-icons/pi";
+import { ReactComponent as ArrowDownSVG } from "assets/svg/arrowDownLight.svg";
 import SplitHR from "modules/hiring request/screens/allHiringRequest/splitHR";
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import DatePicker from "react-datepicker";
@@ -46,6 +47,7 @@ export default function NegotiontoJoinee({
     const [reportPtoNData, setReportPtoNData] = useState([]);
     const [isPlanningSummeryLoading, setIsPlanningSummeryLoading] = useState(false);
     const [planningSummaryData, setPlanningSummaryData] = useState([]);
+    const [joiningSummaryData, setJoiningSummaryData] = useState([]);
     const [openSplitHR, setSplitHR] = useState(false);
     const [getHRnumber, setHRNumber] = useState({hrNumber:'', isHybrid:false});
     const [getHRID, setHRID] = useState("");
@@ -83,6 +85,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
   const [showGoalComment, setShowGoalComment] = useState(false);
   const [allGoalCommentList, setALLGoalCommentsList] = useState([]);
   const [commentData, setCommentData] = useState({});
+  const [showWeeklyReport, setShowWeeklyReport] = useState(false)
 
    const [summeryReportData, setSummeryReportData] = useState([]);
     const [summeryGroupsNames, setSummeryGroupsName] = useState([]);
@@ -193,6 +196,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       };
       setIsPlanningSummeryLoading(true)
         const result = await ReportDAO.getPlanningSummeryReportDAO(pl);
+        const joinedResult = await ReportDAO.getJoinedSummeryReportDAO(pl);
 
  setIsPlanningSummeryLoading(false);
 
@@ -202,7 +206,14 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
       );
     } else {
       setPlanningSummaryData([]);
-      return "NO DATA FOUND";
+    }
+
+      if (joinedResult.statusCode === HTTPStatusCode.OK) {
+      setJoiningSummaryData(
+        joinedResult && joinedResult?.responseBody
+      );
+    } else {
+      setJoiningSummaryData([]);
     }
        }
 
@@ -967,7 +978,7 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
                         onClick={() => {
                           AddGoalComment(rec, "N");
                         }}
-                        // className={taStyles.feedbackLabel}
+                        // className={uplersStyle.feedbackLabel}
                       >
                         {" "}
                         <IoMdAddCircle />
@@ -3227,7 +3238,29 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
 
       
        <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
-        <div className={uplersStyle.customTableContainer}>
+  <div className={uplersStyle.filterSets}>
+        
+          <div
+            className={uplersStyle.filterSetsInner}
+            onClick={() => setShowWeeklyReport((prev) => !prev)}
+          >
+            <p
+              className={uplersStyle.AccordianText}
+              style={{ textDecoration: "none" , cursor:'pointer'}}
+            >
+             Planning to Joined Summary{" "}
+              <ArrowDownSVG
+                style={{
+                  rotate: showWeeklyReport ? "180deg" : "",
+                  marginLeft: "10px",
+                }}
+              />
+            </p>
+          </div>
+        </div>
+
+        {showWeeklyReport && <>
+            <div className={uplersStyle.customTableContainer}>
           {isPlanningSummeryLoading ? (
             <TableSkeleton />
           ) : (
@@ -3264,8 +3297,49 @@ const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
           )}
         </div>
 
+<div className={uplersStyle.customTableContainer} >
+          {isPlanningSummeryLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  padding: "20px 20px 0",
+                }}
+              >
+                Weekly Joining Plan vs Achieved
+              </p>
+              <Table
+          scroll={{x:"1600px", y: "100vh" }}
+          id="List"
+          columns={reportPlanningSummaryColumns}
+          bordered={false}
+          dataSource={joiningSummaryData}
+          rowKey={(record, index) => index}
+       
+          pagination={false}
+          rowClassName={(record) => {
+            if (record.stage === "Total Planning") {
+              return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+            }
+        
+            if (record.stage === "Total Achieved" ) {
+              return `${uplersStyle.heighliteGreen} ${uplersStyle.boldText}`; 
+            }                 
+          }}  
+        />
+            </>
+          )}
+        </div>
+        </>}
+
+    
   
       </div>
+
+    
 
 
           <div className={uplersStyle.filterContainer} style={{ padding: "12px" }}>
