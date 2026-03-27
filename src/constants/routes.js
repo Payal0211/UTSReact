@@ -703,11 +703,11 @@ export const navigateToComponent = {
 		<ViewOnBoardDetails />
 	</Suspense>
 ),
-// [UTSRoutes.ONBOARD] : (
-// 	<Suspense>
-// 		<OnBoardList />
-// 	</Suspense>
-// ),
+[NewPagesRouts.ONBOARD] : (
+	<Suspense>
+		<OnBoardList />
+	</Suspense>
+),
 [NewPagesRouts.ADD_NEW_COMPANY] : (
 	<Suspense>
 		<AddCompany />
