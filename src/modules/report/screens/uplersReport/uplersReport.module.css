@@ -358,6 +358,11 @@ margin-bottom: 10px;
     margin-left: 10px;
 }
 
+.AccordianText{
+    font-weight: bold;
+    margin: 0;
+}
+
 .btnPrimary {
     background: #FFDA30;
     border: 1px solid transparent;
