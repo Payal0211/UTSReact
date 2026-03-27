@@ -40,17 +40,6 @@ import EngagementAddFeedback from "modules/engagement/screens/engagementAddFeedb
 import LeaveUppdate from "modules/onBoardList/leaveUppdate";
 
 
-const dummyData = [
-    { engagementID: 'EN081225133754_1', engagementId_HRID: 'EN081225133754_1 / HR081225133754', hrID: 1, typeOfHR: 'Full-Time', company: 'Delightree', clientName: 'Arjun Patel', talentName: 'Vikram Joshi', amName: 'Saptarshi Banerjee', currentStatus: 'Ongoing', contractStartDate: '08-08-2026', joiningDate: '08-08-2026', jobTitle: 'Support ReactJS Developer', lwd: '15-03-2023', feedbackStatus: ['Green', 'Green', 'Red'], clientFeedbackAction: 'View/Add', lastFeedbackDate: '12-07-2023', brft: 'AUD 4,450.00', pr: 'AUD 3,560.00', feePercent: '37.14', fee: 'AUD 890.00', usd: '$ 570.00', inr: '₹ 49,000.00', invoiceNo: 'UP-567890', clientEmail: 'arjun.patel@example.com', talentEmail: 'vikram.joshi@example.com', exchRateFee: '89.9', exchRateUsd: '1', exchRateInr: '1' },
-    { engagementID: 'EN081225133754_2', engagementId_HRID: 'EN081225133754_1 / HR081225133754', hrID: 2, typeOfHR: 'Full-Time', company: 'Riskspan', clientName: 'Harpreet Singh', talentName: 'Sneha Verma', amName: 'Sushmita Gurjar', currentStatus: 'Lost - Backout', contractStartDate: '29-09-2026', joiningDate: '29-09-2026', jobTitle: 'General Engineering Manager - Onsite Mumbai', lwd: '', feedbackStatus: [], clientFeedbackAction: 'Add', lastFeedbackDate: '', brft: 'INR 1,350,000.00', pr: 'INR 1,08,000.00', feePercent: '38.02', fee: 'INR 27,000.00', usd: '$ 570.00', inr: '₹ 49,000.00', invoiceNo: 'UP-456789', clientEmail: 'harpreet.singh@example.com', talentEmail: 'sneha.verma@example.com', exchRateFee: '89.9', exchRateUsd: '1', exchRateInr: '1' },
-    { engagementID: 'EN081225133754_3', engagementId_HRID: 'EN081225133754_1 / HR081225133754', hrID: 3, typeOfHR: 'Full-Time', company: 'RemoFirst', clientName: 'Chloe Adams', talentName: 'Karan Gupta', amName: 'Sushmita Gurjar', currentStatus: 'Awaiting Joining', contractStartDate: '02-04-2026', joiningDate: '02-04-2026', jobTitle: 'Full Stack Developer', lwd: '', feedbackStatus: [], clientFeedbackAction: 'Add', lastFeedbackDate: '', brft: 'USD 3,375.00', pr: 'USD 2,700.00', feePercent: '53.85', fee: 'USD 675.00', usd: '$ 570.00', inr: '₹ 49,000.00', invoiceNo: 'UP-345678', clientEmail: 'chloe.adams@example.com', talentEmail: 'karan.gupta@example.com', exchRateFee: '89.9', exchRateUsd: '1', exchRateInr: '1' },
-    { engagementID: 'EN081225133754_4', engagementId_HRID: 'EN081225133754_1 / HR081225133754', hrID: 4, typeOfHR: 'Full-Time', company: 'Calyx Global', clientName: 'Sophie Leclerc', talentName: 'Ananya Singh', amName: 'Nikita Sharma', currentStatus: 'Ongoing', contractStartDate: '18-05-2026', joiningDate: '18-05-2026', jobTitle: 'AWS Devops Engineer', lwd: '22-07-2023', feedbackStatus: ['Green', 'Red', 'Red'], clientFeedbackAction: 'View/Add', lastFeedbackDate: '09-11-2023', brft: 'USD 4,185.00', pr: 'USD 3,348.00', feePercent: '41.84', fee: 'USD 837.00', usd: '$ 570.00', inr: '₹ 49,000.00', invoiceNo: 'UP-123456', clientEmail: 'sophie.leclerc@example.com', talentEmail: 'ananya.singh@example.com', exchRateFee: '89.9', exchRateUsd: '1', exchRateInr: '1' },
-    { engagementID: 'EN081225133754_5', engagementId_HRID: 'EN081225133754_1 / HR081225133754', hrID: 5, typeOfHR: 'Full-Time', company: 'DeepMatrix', clientName: 'Ravi Sharma', talentName: 'Neha Bhatia', amName: 'Nikita Sharma', currentStatus: 'Ongoing', contractStartDate: '14-02-2026', joiningDate: '14-02-2026', jobTitle: 'Support Desk Coordinator', lwd: '', feedbackStatus: [], clientFeedbackAction: 'View/Add', lastFeedbackDate: '05-05-2023', brft: 'USD 4,000.00', pr: 'USD 3,200.00', feePercent: '34.96', fee: 'USD 800.00', usd: '$ 570.00', inr: '₹ 49,000.00', invoiceNo: 'UP-099765', clientEmail: 'ravi.sharma@example.com', talentEmail: 'neha.bhatia@example.com', exchRateFee: '89.9', exchRateUsd: '1', exchRateInr: '1' },
-    { engagementID: 'EN081225133754_6', engagementId_HRID: 'EN081225133754_1 / HR081225133754', hrID: 6, typeOfHR: 'Full-Time', company: 'Delightree', clientName: 'Emily Johnson', talentName: 'Rahul Desai', amName: 'Nikita Sharma', currentStatus: 'Awaiting Joining', contractStartDate: '23-03-2026', joiningDate: '23-03-2026', jobTitle: 'AWS Devops Engineer', lwd: '30-01-2024', feedbackStatus: [], clientFeedbackAction: 'View/Add', lastFeedbackDate: '30-08-2023', brft: 'USD 3,835.00', pr: 'USD 3,068.00', feePercent: '35.01', fee: 'USD 767.00', usd: '$ 570.00', inr: '₹ 49,000.00', invoiceNo: 'UP-012345', clientEmail: 'emily.johnson@example.com', talentEmail: 'rahul.desai@example.com', exchRateFee: '89.9', exchRateUsd: '1', exchRateInr: '1' },
-    { engagementID: 'EN081225133754_7', engagementId_HRID: 'EN081225133754_1 / HR081225133754', hrID: 7, typeOfHR: 'Full-Time', company: 'Threat Modeler Software Inc', clientName: 'Aisha Khan', talentName: 'Aarav Sharma', amName: 'Sushmita Gurjar', currentStatus: 'Cancelled - Backout', contractStartDate: '23-07-2026', joiningDate: '23-07-2026', jobTitle: 'Backend Engineer', lwd: '', feedbackStatus: [], clientFeedbackAction: 'Add', lastFeedbackDate: '', brft: 'EUR 1,866.00', pr: 'EUR 1,493.00', feePercent: '26.89', fee: 'EUR 373.20', usd: '$ 570.00', inr: '₹ 49,000.00', invoiceNo: 'UP-234567', clientEmail: 'aisha.khan@example.com', talentEmail: 'aarav.sharma@example.com', exchRateFee: '89.9', exchRateUsd: '1', exchRateInr: '1' },
-    { engagementID: 'EN081225133754_8', engagementId_HRID: 'EN081225133754_1 / HR081225133754', hrID: 8, typeOfHR: 'Full-Time', company: 'Arkatecture', clientName: 'John Smith', talentName: 'Priya Kapoor', amName: 'Saptarshi Banerjee', currentStatus: 'Lost - Backout', contractStartDate: '15-01-2026', joiningDate: '15-01-2026', jobTitle: 'Technical Data Analyst Developer', lwd: '', feedbackStatus: ['Green', 'Green'], clientFeedbackAction: 'View/Add', lastFeedbackDate: '17-04-2023', brft: 'ZAR 52,500.00', pr: 'ZAR 42,000.00', feePercent: '40.03', fee: 'ZAR 10,500.00', usd: '$ 570.00', inr: '₹ 49,000.00', invoiceNo: 'UP-045678', clientEmail: 'john.smith@example.com', talentEmail: 'priya.kapoor@example.com', exchRateFee: '89.9', exchRateUsd: '1', exchRateInr: '1' },
-];
-
 function NewEngagementList() {
     const navigate = useNavigate();
     const [pageIndex, setPageIndex] = useState(1);
@@ -449,81 +438,81 @@ function NewEngagementList() {
     }, [getEngagementModal?.engagementAddFeedback]);
 
     const handleExport = () => {
-const columns = [
-  { key: "engagementId", label: "ENG. ID" },
-  { key: "hrId", label: "HR#" },
-  {key:"engagementCount" , label: 'ENG. COUNT'},
-  { key: "type", label: "TYPE" },
-  { key: "company", label: "COMPANY NAME" },
-  { key: "clientName", label: "CLIENT NAME" },
-  { key: "clientEmail", label: "CLIENT EMAIL" },
-  { key: "talent", label: "TALENT" },
-  { key: "talentEmail", label: "TALENT EMAIL" },
-  { key: "am", label: "AM" },
-  { key: "status", label: "STATUS" },
-  { key: "joiningDate", label: "JOINING DATE" },
-  { key: "jobTitle", label: "JOB TITLE" },
-  { key: "lwd", label: "LWD" },
-  { key: "feedbackStatus", label: "FEEDBACK STATUS" },
-  { key: "lastFeedbackDate", label: "LAST FEEDBACK DATE" },
-  { key: "brFt", label: "BR/FT" },
-  { key: "pr", label: "PR" },
-  { key: "feePercent", label: "FEE %" },
-  { key: "uplersFee", label: "UPLERS FEE" },
-  { key: "uplersFeeUSD", label: "UPLERS FEE (USD)" },
-  { key: "uplersFeeINR", label: "UPLERS FEE (INR)" },
-  { key: "invoiceNo", label: "INVOICE NO." }
-];
+        const columns = [
+            { key: "engagementId", label: "ENG. ID" },
+            { key: "hrId", label: "HR#" },
+            { key: "engagementCount", label: 'ENG. COUNT' },
+            { key: "type", label: "TYPE" },
+            { key: "company", label: "COMPANY NAME" },
+            { key: "clientName", label: "CLIENT NAME" },
+            { key: "clientEmail", label: "CLIENT EMAIL" },
+            { key: "talent", label: "TALENT" },
+            { key: "talentEmail", label: "TALENT EMAIL" },
+            { key: "am", label: "AM" },
+            { key: "status", label: "STATUS" },
+            { key: "joiningDate", label: "JOINING DATE" },
+            { key: "jobTitle", label: "JOB TITLE" },
+            { key: "lwd", label: "LWD" },
+            { key: "feedbackStatus", label: "FEEDBACK STATUS" },
+            { key: "lastFeedbackDate", label: "LAST FEEDBACK DATE" },
+            { key: "brFt", label: "BR/FT" },
+            { key: "pr", label: "PR" },
+            { key: "feePercent", label: "FEE %" },
+            { key: "uplersFee", label: "UPLERS FEE" },
+            { key: "uplersFeeUSD", label: "UPLERS FEE (USD)" },
+            { key: "uplersFeeINR", label: "UPLERS FEE (INR)" },
+            { key: "invoiceNo", label: "INVOICE NO." }
+        ];
 
-const dataToExport =  onBoardListData.map((data) => {
-    const clientParts = data?.client?.split("\n") || [];
-    const engParts = data?.engagemenID?.split("/") || [];
+        const dataToExport = onBoardListData.map((data) => {
+            const clientParts = data?.client?.split("\n") || [];
+            const engParts = data?.engagemenID?.split("/") || [];
 
-    return {
-      engagementId: engParts[0] || "",
-      hrId: engParts[1] || "",
-engagementCount: data?.engagementCount || "",
-      type: data?.typeOfHR || "",
-      company: data?.company || "",
+            return {
+                engagementId: engParts[0] || "",
+                hrId: engParts[1] || "",
+                engagementCount: data?.engagementCount || "",
+                type: data?.typeOfHR || "",
+                company: data?.company || "",
 
-      clientName: clientParts[0] || "",
-      clientEmail: (clientParts[1] || "").replace(/[()]/g, ""),
+                clientName: clientParts[0] || "",
+                clientEmail: (clientParts[1] || "").replace(/[()]/g, ""),
 
-      talent: data?.talent || "",
-      talentEmail: data?.talentEmail || "",
+                talent: data?.talent || "",
+                talentEmail: data?.talentEmail || "",
 
-      am: data?.amAssignmentuser || "",
-      status: data?.contractStatus || "",
+                am: data?.amAssignmentuser || "",
+                status: data?.contractStatus || "",
 
-      joiningDate: data?.joiningdate || "",
-      jobTitle: data?.position || "",
+                joiningDate: data?.joiningdate || "",
+                jobTitle: data?.position || "",
 
-      lwd: `${data?.lastWorkingDate || "NA"} - ${data?.contractEndDate || ""}`,
+                lwd: `${data?.lastWorkingDate || "NA"} - ${data?.contractEndDate || ""}`,
 
-      feedbackStatus: data?.clientFeedbackstr || "",
-      lastFeedbackDate: data?.lastFeedbackDate || "",
+                feedbackStatus: data?.clientFeedbackstr || "",
+                lastFeedbackDate: data?.lastFeedbackDate || "",
 
-      brFt: data?.payout_BillRate || "",
-      pr: data?.payout_PayRate || "",
+                brFt: data?.payout_BillRate || "",
+                pr: data?.payout_PayRate || "",
 
-      feePercent: data?.nrPercentage || "",
+                feePercent: data?.nrPercentage || "",
 
-      uplersFee: data?.uplersFees || "",
-      uplersFeeUSD: data?.uplersFees_USD || "",
-      uplersFeeINR: data?.uplersFees_INR || "",
+                uplersFee: data?.uplersFees || "",
+                uplersFeeUSD: data?.uplersFees_USD || "",
+                uplersFeeINR: data?.uplersFees_INR || "",
 
-      invoiceNo: data?.payout_ESales_InvoiceNumber || "NA",
-    };
-  });
+                invoiceNo: data?.payout_ESales_InvoiceNumber || "NA",
+            };
+        });
 
-    let data = dataToExport.map((row) => {
-    let formattedRow = {};
-    columns.forEach((col) => {
-      formattedRow[col.label] = row[col.key];
-    });
-    return formattedRow;
-     })
-downloadToExcel(data, "Engagement Report");
+        let data = dataToExport.map((row) => {
+            let formattedRow = {};
+            columns.forEach((col) => {
+                formattedRow[col.label] = row[col.key];
+            });
+            return formattedRow;
+        })
+        downloadToExcel(data, "Engagement Report");
     };
 
     // Client-side search on dummy data
@@ -1204,7 +1193,7 @@ downloadToExcel(data, "Engagement Report");
                     </button>
 
                     {/* 5. Export */}
-                    <button className={engagementStyles["btn-export"]} onClick={() => handleExport(dummyData)}>
+                    <button className={engagementStyles["btn-export"]} onClick={() => handleExport()}>
                         EXPORT
                     </button>
                 </div>
@@ -1212,7 +1201,7 @@ downloadToExcel(data, "Engagement Report");
                 {/* ===== Stats Section ===== */}
                 <div className={engagementStyles["stats-row"]}>
                     {/* FULL-TIME: 2x2 grid */}
-                 {tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' &&  <div className={engagementStyles["stats-section"]}>
+                    {tableFilteredState?.filterFields_OnBoard?.EngType !== 'C' && <div className={engagementStyles["stats-section"]}>
                         <div className={engagementStyles["stats-section-header"]}>FULL-TIME</div>
                         <div className={engagementStyles["stats-table-ft"]}>
                             <div className={getCellClass('ft-added')} onClick={() => {
@@ -1249,17 +1238,17 @@ downloadToExcel(data, "Engagement Report");
                                 <span className={engagementStyles["stats-number"]}>12</span>
                                 <span className={engagementStyles["stats-label"]}>EOR</span>
                             </div> */}
-                            <div className={getCellClass('ft-total')} onClick={() => {}}>
-                                <span className={engagementStyles["stats-number"]}>{ onBoardListData?.filter(i=> i.typeOfHR === 'DP')?.length }</span>
+                            <div className={getCellClass('ft-total')} onClick={() => { }}>
+                                <span className={engagementStyles["stats-number"]}>{onBoardListData?.filter(i => i.typeOfHR === 'DP')?.length}</span>
                                 <span className={engagementStyles["stats-label"]}>TOTAL</span>
                             </div>
                         </div>
-                    </div>}   
+                    </div>}
 
                     {/* CONTRACTS: row1=4cols, row2=3cols */}
 
                     {tableFilteredState?.filterFields_OnBoard?.EngType !== 'D' && <div className={engagementStyles["stats-section"]}>
-                        <div className={engagementStyles["stats-section-header"]}>CONTRACTS</div>
+                        <div className={engagementStyles["stats-section-header"]}>CONTRACT</div>
                         <div className={engagementStyles["stats-grid-contracts"]}>
                             <div className={getCellClass('c-active')} onClick={() => {
                                 handleCellClick('c-active')
@@ -1354,21 +1343,21 @@ downloadToExcel(data, "Engagement Report");
                             <div className={getCellClass('c-total')} onClick={() => {
                                 handleCellClick('c-total')
                                 setTableFilteredState((prev) => ({
-                                                    ...prev,
-                                                    filterFields_OnBoard: {
-                                                    ...prev.filterFields_OnBoard,
-                                                    SummaryFilterOption: "AT",
-                                                    },
-                                                }))
+                                    ...prev,
+                                    filterFields_OnBoard: {
+                                        ...prev.filterFields_OnBoard,
+                                        SummaryFilterOption: "AT",
+                                    },
+                                }))
                             }}>
                                 <span className={engagementStyles["stats-number"]}> {onBoardListData[0]?.totalRecords
-                          ? onBoardListData[0]?.totalRecords
-                          : 0}</span>
+                                    ? onBoardListData[0]?.totalRecords
+                                    : 0}</span>
                                 <span className={engagementStyles["stats-label"]}>TOTAL</span>
                             </div>
                         </div>
-                    </div> }
-                    
+                    </div>}
+
 
                     {/* FEEDBACK: row1=2cols, row2=1col */}
                     <div className={engagementStyles["stats-section"]}>
@@ -1430,7 +1419,7 @@ downloadToExcel(data, "Engagement Report");
                             <tr>
                                 <th rowSpan={2} style={{ minWidth: '80px' }}>SHORTCUTS</th>
                                 <th rowSpan={2} style={{ minWidth: '160px' }}>ENG. ID / HR#</th>
-                                 <th rowSpan={2} style={{ minWidth: '80px' }}>ENG. COUNT</th>
+                                <th rowSpan={2} style={{ minWidth: '80px' }}>ENG. COUNT</th>
                                 <th rowSpan={2}>TYPE</th>
                                 <th rowSpan={2} style={{ minWidth: '160px' }}>COMPANY NAME</th>
                                 <th rowSpan={2} style={{ minWidth: '130px' }}>CLIENT</th>
@@ -1513,7 +1502,7 @@ downloadToExcel(data, "Engagement Report");
                                                 </a>
                                                 <a href={`/allhiringrequest/${data?.hiringId}`} target="_blank" rel="noreferrer" className={engagementStyles["eng-id-sub"]}> {data?.engagemenID.slice(data?.engagemenID?.indexOf("/"))}</a>
                                             </td>
-                                              {/* ENG. COUNT */}
+                                            {/* ENG. COUNT */}
                                             <td>{data?.engagementCount}</td>
                                             {/* TYPE */}
                                             <td>{data?.typeOfHR}</td>
@@ -1521,29 +1510,34 @@ downloadToExcel(data, "Engagement Report");
                                             <td style={{ whiteSpace: 'normal', maxWidth: '220px' }}>{data?.company}</td>
                                             {/* CLIENT - with tooltip */}
                                             <td>
-                                                <div className={engagementStyles["tooltip-wrapper"]}>
-                                                    {data?.client?.split('\n')[0]}
-                                                    <div className={engagementStyles["tooltip-content"]}>
-                                                        <span>{data?.client?.split('\n')[1].replace(/[()]/g, "")}</span>
-                                                        <button className={engagementStyles["tooltip-copy-btn"]} onClick={() => copyToClipboard(data?.client?.split('\n')[1].replace(/[()]/g, ""))} title="Copy email">
-                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.25 6H3.75C3.55109 6 3.36032 6.07902 3.21967 6.21967C3.07902 6.36032 3 6.55109 3 6.75V20.25C3 20.4489 3.07902 20.6397 3.21967 20.7803C3.36032 20.921 3.55109 21 3.75 21H17.25C17.4489 21 17.6397 20.921 17.7803 20.7803C17.921 20.6397 18 20.4489 18 20.25V6.75C18 6.55109 17.921 6.36032 17.7803 6.21967C17.6397 6.07902 17.4489 6 17.25 6ZM16.5 19.5H4.5V7.5H16.5V19.5ZM21 3.75V17.25C21 17.4489 20.921 17.6397 20.7803 17.7803C20.6397 17.921 20.4489 18 20.25 18C20.0511 18 19.8603 17.921 19.7197 17.7803C19.579 17.6397 19.5 17.4489 19.5 17.25V4.5H6.75C6.55109 4.5 6.36032 4.42098 6.21967 4.28033C6.07902 4.13968 6 3.94891 6 3.75C6 3.55109 6.07902 3.36032 6.21967 3.21967C6.36032 3.07902 6.55109 3 6.75 3H20.25C20.4489 3 20.6397 3.07902 20.7803 3.21967C20.921 3.36032 21 3.55109 21 3.75Z" fill="black" /></svg>
-                                                        </button>
-                                                        {copiedEmail === data?.clientEmail && <span className={engagementStyles["copied-text"]}>Copied!</span>}
-                                                    </div>
-                                                </div>
+
+                                                <Tooltip color={'white'} title={<div style={{ width: 'fit-content', color: 'black', display: 'flex', gap: '8px', alignItems: 'center' }} className={engagementStyles["tooltip-wrapper"]}>
+                                                    <span style={{
+                                                        wordBreak: "break-all",   
+                                                        overflowWrap: "anywhere", 
+                                                    }}>{data?.client?.split('\n')[1].replace(/[()]/g, "")}</span>
+                                                    <button className={engagementStyles["tooltip-copy-btn"]} onClick={() => copyToClipboard(data?.client?.split('\n')[1].replace(/[()]/g, ""))} title="Copy email">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.25 6H3.75C3.55109 6 3.36032 6.07902 3.21967 6.21967C3.07902 6.36032 3 6.55109 3 6.75V20.25C3 20.4489 3.07902 20.6397 3.21967 20.7803C3.36032 20.921 3.55109 21 3.75 21H17.25C17.4489 21 17.6397 20.921 17.7803 20.7803C17.921 20.6397 18 20.4489 18 20.25V6.75C18 6.55109 17.921 6.36032 17.7803 6.21967C17.6397 6.07902 17.4489 6 17.25 6ZM16.5 19.5H4.5V7.5H16.5V19.5ZM21 3.75V17.25C21 17.4489 20.921 17.6397 20.7803 17.7803C20.6397 17.921 20.4489 18 20.25 18C20.0511 18 19.8603 17.921 19.7197 17.7803C19.579 17.6397 19.5 17.4489 19.5 17.25V4.5H6.75C6.55109 4.5 6.36032 4.42098 6.21967 4.28033C6.07902 4.13968 6 3.94891 6 3.75C6 3.55109 6.07902 3.36032 6.21967 3.21967C6.36032 3.07902 6.55109 3 6.75 3H20.25C20.4489 3 20.6397 3.07902 20.7803 3.21967C20.921 3.36032 21 3.55109 21 3.75Z" fill="black" /></svg>
+                                                    </button>
+                                                    {copiedEmail === data?.client?.split('\n')[1].replace(/[()]/g, "") && <span className={engagementStyles["copied-text"]}>Copied!</span>}
+                                                </div>} placement="top"> {data?.client?.split('\n')[0]}</Tooltip>
+
                                             </td>
                                             {/* TALENT - with tooltip */}
                                             <td>
-                                                <div className={engagementStyles["tooltip-wrapper"]}>
-                                                    {data?.talent}
-                                                    <div className={engagementStyles["tooltip-content"]}>
-                                                        <span>{data?.talentEmail}</span>
-                                                        <button className={engagementStyles["tooltip-copy-btn"]} onClick={() => copyToClipboard(data?.talentEmail)} title="Copy email">
-                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.25 6H3.75C3.55109 6 3.36032 6.07902 3.21967 6.21967C3.07902 6.36032 3 6.55109 3 6.75V20.25C3 20.4489 3.07902 20.6397 3.21967 20.7803C3.36032 20.921 3.55109 21 3.75 21H17.25C17.4489 21 17.6397 20.921 17.7803 20.7803C17.921 20.6397 18 20.4489 18 20.25V6.75C18 6.55109 17.921 6.36032 17.7803 6.21967C17.6397 6.07902 17.4489 6 17.25 6ZM16.5 19.5H4.5V7.5H16.5V19.5ZM21 3.75V17.25C21 17.4489 20.921 17.6397 20.7803 17.7803C20.6397 17.921 20.4489 18 20.25 18C20.0511 18 19.8603 17.921 19.7197 17.7803C19.579 17.6397 19.5 17.4489 19.5 17.25V4.5H6.75C6.55109 4.5 6.36032 4.42098 6.21967 4.28033C6.07902 4.13968 6 3.94891 6 3.75C6 3.55109 6.07902 3.36032 6.21967 3.21967C6.36032 3.07902 6.55109 3 6.75 3H20.25C20.4489 3 20.6397 3.07902 20.7803 3.21967C20.921 3.36032 21 3.55109 21 3.75Z" fill="black" /></svg>
-                                                        </button>
-                                                        {copiedEmail === data?.talentEmail && <span className={engagementStyles["copied-text"]}>Copied!</span>}
-                                                    </div>
-                                                </div>
+
+                                                <Tooltip color={'white'} title={<div style={{ maxWidth: 'fit-content', color: 'black', display: 'flex', gap: '8px', alignItems: 'center' }} className={engagementStyles["tooltip-wrapper"]}>
+
+                                                    <span style={{
+                                                        wordBreak: "break-all",   
+                                                        overflowWrap: "anywhere", 
+                                                    }}>{data?.talentEmail}</span>
+                                                    <button className={engagementStyles["tooltip-copy-btn"]} onClick={() => copyToClipboard(data?.talentEmail)} title="Copy email">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.25 6H3.75C3.55109 6 3.36032 6.07902 3.21967 6.21967C3.07902 6.36032 3 6.55109 3 6.75V20.25C3 20.4489 3.07902 20.6397 3.21967 20.7803C3.36032 20.921 3.55109 21 3.75 21H17.25C17.4489 21 17.6397 20.921 17.7803 20.7803C17.921 20.6397 18 20.4489 18 20.25V6.75C18 6.55109 17.921 6.36032 17.7803 6.21967C17.6397 6.07902 17.4489 6 17.25 6ZM16.5 19.5H4.5V7.5H16.5V19.5ZM21 3.75V17.25C21 17.4489 20.921 17.6397 20.7803 17.7803C20.6397 17.921 20.4489 18 20.25 18C20.0511 18 19.8603 17.921 19.7197 17.7803C19.579 17.6397 19.5 17.4489 19.5 17.25V4.5H6.75C6.55109 4.5 6.36032 4.42098 6.21967 4.28033C6.07902 4.13968 6 3.94891 6 3.75C6 3.55109 6.07902 3.36032 6.21967 3.21967C6.36032 3.07902 6.55109 3 6.75 3H20.25C20.4489 3 20.6397 3.07902 20.7803 3.21967C20.921 3.36032 21 3.55109 21 3.75Z" fill="black" /></svg>
+                                                    </button>
+                                                    {copiedEmail === data?.talentEmail && <span className={engagementStyles["copied-text"]}>Copied!</span>}
+                                                </div>} placement="top"> {data?.talent}</Tooltip>
+
                                             </td>
                                             {/* AM */}
                                             <td><div
