@@ -155,6 +155,9 @@ margin-bottom: 10px;
 .heighliteDarkRed {
     background-color: rgb(255 124 124);
 }
+.heighliteGray {
+    background-color: rgb(218, 218, 218) ;
+}
 .boldText td{
   font-weight: bold;
 }
@@ -361,6 +364,7 @@ margin-bottom: 10px;
 .AccordianText{
     font-weight: bold;
     margin: 0;
+        font-size: 20px;
 }
 
 .btnPrimary {
