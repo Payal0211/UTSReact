@@ -1353,7 +1353,7 @@ export default function NegotiontoJoinee({
         }}
       >
         <div style={{ padding: "35px 15px 10px 15px" }}>
-          <h3>Select Date</h3>
+          <h3>Tentative Joining Date</h3>
         </div>
 
 
