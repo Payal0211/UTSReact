@@ -3,7 +3,8 @@ import React, {
     useEffect,
     useCallback,
     Suspense,
-    useMemo
+    useMemo,
+    useRef,
 } from "react";
 import engagementStyles from './n_engagementList.module.css';
 import DatePicker from 'react-datepicker';
@@ -46,6 +47,7 @@ function NewEngagementList() {
     const [pageSize, setPageSize] = useState(5000);
     const pageSizeOptions = [10, 20, 50, 100, 200];
     const [searchText, setSearchText] = useState('');
+    const [debounceSearch,setDebounceSearch] = useState('')
 
     const [filtersList, setFiltersList] = useState([]);
     const [appliedFilter, setAppliedFilters] = useState(new Map());
@@ -58,6 +60,7 @@ function NewEngagementList() {
     const [startDate, setStartDate] = useState(new Date());
 
     const [selectedCell, setSelectedCell] = useState('c-total');
+    const searchInputRef = useRef(null);
 
     const [onBoardListData, setOnBoardListData] = useState([]);
     const [tableFilteredState, setTableFilteredState] = useState({
@@ -370,7 +373,7 @@ function NewEngagementList() {
         });
 
         onRemoveHRFilters();
-
+setDebounceSearch('');
         setSearchText('');
         setStartDate(new Date());
 
@@ -517,7 +520,8 @@ function NewEngagementList() {
 
     // Client-side search on dummy data
     const handleSearchInput = (e) => {
-        setSearchText(e.target.value);
+        // setSearchText(e.target.value);
+        setDebounceSearch(e.target.value);
     };
 
 
@@ -1101,21 +1105,38 @@ function NewEngagementList() {
                     {/* 1. Search */}
                     <div className={`${engagementStyles["filter-group"]} ${engagementStyles["search-group"]}`}>
                         <input
+                            ref={searchInputRef}
                             type="text"
                             className={engagementStyles["filter-input"]}
                             placeholder="Search"
-                            value={searchText}
+                            value={debounceSearch}
+                            onKeyDown={e=>{
+                                if(e.key === 'Enter'){
+                                    setSearchText(debounceSearch);
+                                }
+                            }}
                             onChange={handleSearchInput}
                         />
                         {searchText.length > 0 && (
                             <Tooltip title="Clear search">
                                 <span style={{ position: 'absolute', right: '36px', color: 'red', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}
-                                    onClick={() => { setSearchText(''); }}>
+                                    onClick={() => { setSearchText(''); setDebounceSearch(''); }}>
                                     X
                                 </span>
                             </Tooltip>
                         )}
-                        <img src="images/search-ic.svg" alt="Search" className={engagementStyles["input-icon"]} />
+                         <Tooltip title="search">                           
+                        <img
+                            src="images/search-ic.svg"
+                            onClick={() => {
+                                if (searchInputRef?.current) searchInputRef.current.focus();
+                                setSearchText(debounceSearch);
+                            }}
+                            alt="Search"
+                            className={engagementStyles["input-icon"]}
+                            style={{ cursor: 'pointer' }}
+                        />
+                         </Tooltip>
                     </div>
 
                     {/* 2. Type Toggle */}

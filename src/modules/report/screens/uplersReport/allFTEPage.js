@@ -27,6 +27,7 @@ import { HTTPStatusCode } from "constants/network";
 import { useNavigate } from "react-router-dom";
 import UTSRoutes from "constants/routes";
 import DatePicker from "react-datepicker";
+import { downloadToExcel } from "modules/report/reportUtils";
 import moment from "moment";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 import { size } from "lodash";
@@ -354,6 +355,104 @@ export default function AllFTEPage() {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ];
+
+    const getExportData = () => {
+  return listAchievedData.map((detail) => {
+    let row = {};
+
+    // Created Date
+    row[
+      showTalentCol?.stage === "New Clients"
+        ? "Created Date"
+        : "Company Created Date"
+    ] = detail.hrCreatedDateStr;
+
+    // Action Date
+    if (showTalentCol?.category !== "CF" && showTalentCol?.category !== "CH") {
+      row[
+        showTalentCol?.stage === "Joining" ||
+        showTalentCol?.stage === "Selections/Closures"
+          ? `${showTalentCol?.stage} Date`
+          : "Action Date"
+      ] = detail.actionDateStr;
+    }
+
+    // Company
+    row["Company"] = detail.company;
+
+    // HR Section
+    if (
+      showTalentCol?.category !== "CF" &&
+      !(showTalentCol?.category === "CH" &&
+        showTalentCol?.stage !== "Customers with Active HRs")
+    ) {
+      row["HR Number"] = detail.hR_Number;
+      row["HR Title"] = detail.hrTitle;
+
+      if (showTalentCol?.stage === "Not Accepted HRs") {
+        row["Reason"] = detail.talent;
+      }
+
+      row["TR"] = detail.tr;
+
+      row[
+        showTalentCol?.stage === "Joining" ||
+        showTalentCol?.stage === "Selections/Closures"
+          ? "Revenue"
+          : "1TR Pipeline"
+      ] = detail.hrPipelineStr;
+
+      if (
+        showTalentCol?.stage !== "Joining" &&
+        showTalentCol?.stage !== "Selections/Closures"
+      ) {
+        row["Total Pipeline"] = detail.total_HRPipelineStr;
+      }
+
+      row["Uplers Fees %"] = detail.uplersFeesPer;
+      row["Talent Pay"] = detail.talentPayStr;
+    }
+
+    // Sales Person
+    row["Sales Person"] = detail.salesPerson;
+
+    // Carry Fwd
+    if (showTalentCol?.stage === "HRs (Carry Fwd)") {
+      row["Carry Fwd Status"] =detail.carryFwd_HRStatus
+    }
+
+    // Client Business Type
+    row["Client Business Type"] = detail.clientBusinessType;
+
+    // Lead Type
+    row["Lead Type"] = detail.lead_Type;
+
+    // Talent / Reason + HR Status
+    if (
+      showTalentCol?.category !== "CF" &&
+      !(showTalentCol?.category === "CH" &&
+        showTalentCol?.stage !== "Customers with Active HRs")
+    ) {
+      if (showTalentCol?.stage !== "Not Accepted HRs") {
+        row[
+          showTalentCol?.stage === "Lost (Pipeline)"
+            ? "Reason"
+            : "Talent"
+        ] = detail.talent;
+      }
+
+      row["HR Status"] = detail.hrStatus
+    }
+
+    return row;
+  });
+};
+    
+    
+      const handleExport = (apiData) => {
+        let DataToExport = getExportData()
+        downloadToExcel(DataToExport, `POD ${showTalentCol?.stage} Report`);
+      };
 
 
 
@@ -974,10 +1073,17 @@ export default function AllFTEPage() {
             setShowAchievedReport(false);
           }}
         >
-          <div style={{ padding: "20px 15px" }}>
+          <div style={{ padding: "20px 15px",  display: 'flex', justifyContent: 'space-between' }}>
             <h3>
               <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
+
+              <button
+                              className={uplersStyle.btnPrimary}
+                              onClick={() => handleExport(listAchievedData)}
+                            >
+                              Export
+                            </button>
           </div>
 
           {achievedLoading ? (
