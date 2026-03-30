@@ -49,6 +49,7 @@ export default function NegotiontoJoinee({
   const [isPlanningSummeryLoading, setIsPlanningSummeryLoading] = useState(false);
   const [planningSummaryData, setPlanningSummaryData] = useState([]);
   const [joiningSummaryData, setJoiningSummaryData] = useState([]);
+  const [monthStartingSummaryData,setMonthStartingData] = useState([]);
   const [openSplitHR, setSplitHR] = useState(false);
   const [getHRnumber, setHRNumber] = useState({ hrNumber: '', isHybrid: false });
   const [getHRID, setHRID] = useState("");
@@ -198,6 +199,7 @@ export default function NegotiontoJoinee({
     setIsPlanningSummeryLoading(true)
     const result = await ReportDAO.getPlanningSummeryReportDAO(pl);
     const joinedResult = await ReportDAO.getJoinedSummeryReportDAO(pl);
+    const monthStartingResult = await ReportDAO.getMonthStartingSummaryReportDAO(pl);
 
     setIsPlanningSummeryLoading(false);
 
@@ -230,6 +232,14 @@ export default function NegotiontoJoinee({
       );
     } else {
       setJoiningSummaryData([]);
+    }
+
+    if (monthStartingResult.statusCode === HTTPStatusCode.OK) {
+      setMonthStartingData(
+        monthStartingResult && monthStartingResult?.responseBody
+      );
+    } else {
+      setMonthStartingData([]);
     }
   }
 
@@ -3366,6 +3376,57 @@ export default function NegotiontoJoinee({
                   }
                 }}
               />
+
+              
+            </>
+          )}
+        </div>
+
+         <Divider style={{ marginTop: '25px' }} />
+        <div className={uplersStyle.customTableContainer} >
+          {isPlanningSummeryLoading ? (
+            <TableSkeleton />
+          ) : (
+            <>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  paddingLeft: "20px", padding: '10px'
+                }}
+              >
+                Month Starting Planning Data
+              </p>
+              <Table
+                scroll={{ x: "1600px", y: "100vh" }}
+                id="List"
+                columns={reportPlanningSummaryColumns}
+                bordered={false}
+                dataSource={monthStartingSummaryData}
+                rowKey={(record, index) => index}
+
+                pagination={false}
+                rowClassName={(record) => {
+                  if (record.stage === "Total Planning") {
+                    return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+                  }
+                  if (record.stage === "Total Planned") {
+                    return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+                  }
+                  if (record.stage === "Planning Projection") {
+                    return `${uplersStyle.heighliteGray} ${uplersStyle.boldText}`;
+                  }
+                  if (record.stage === "Joining Projection") {
+                    return `${uplersStyle.heighliteGray} ${uplersStyle.boldText}`;
+                  }
+
+                  if (record.stage === "Total Achieved") {
+                    return `${uplersStyle.heighliteGreen} ${uplersStyle.boldText}`;
+                  }
+                }}
+              />
+
+              
             </>
           )}
         </div>
