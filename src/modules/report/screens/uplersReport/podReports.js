@@ -1154,85 +1154,121 @@ export default function PodReports({
     );
   }
 
-  const getExportData = () => {
+const getExportData = () => {
   return listAchievedData.map((detail) => {
-    let row = {
-      "Created Date": detail.hrCreatedDateStr,
-      "Action Date":detail.actionDateStr,
-      "Company": detail.company,
-      "Sales Person": detail.salesPerson,
-      "Lead Type": detail.lead_Type,
-    };
+    let row = {};
 
- 
+    // Created Date
+    row["Created Date"] = detail.hrCreatedDateStr;
 
-    // HR Related Fields
+    // Action / Joining / Offer Date
     if (
       showTalentCol?.category !== "CF" &&
-      !(showTalentCol?.category === "CH" &&
-        showTalentCol?.stage !== "Customers with Active HRs")
+      showTalentCol?.category !== "CH" &&
+      showTalentCol?.stage !== "Opening Balance" &&
+      showTalentCol?.stage !== "Added HR (New)"
     ) {
+      let label =
+        showTalentCol?.stage === "Joining" ||
+        showTalentCol?.stage === "Selections/Closures" ||
+        showTalentCol?.stage === "Joined"
+          ? `${showTalentCol?.stage} Date`
+          : showTalentCol?.stage === "Preonboarding"
+          ? "Offer Date"
+          : "Action Date";
+
+      row[label] = detail.actionDateStr;
+    }
+
+    // Company
+    row["Company"] = detail.company;
+
+    // HR Section
+    const showHRSection =
+      showTalentCol?.category !== "CF" &&
+      !(
+        showTalentCol?.category === "CH" &&
+        showTalentCol?.stage !== "Customers with Active HRs"
+      );
+
+    if (showHRSection) {
       row["HR Number"] = detail.hR_Number;
       row["HR Title"] = detail.hrTitle;
 
+      // Not Accepted → Reason
       if (showTalentCol?.stage === "Not Accepted HRs") {
         row["Reason"] = detail.talent;
       }
 
-      row["TR"] = detail.tr;
+      // TR (hidden for some stages)
+      if (
+        !["Selections/Closures", "Joined", "Preonboarding"].includes(
+          showTalentCol?.stage
+        )
+      ) {
+        row["TR"] = detail.tr;
+      }
+
+      // Revenue / Pipeline
       row[
-        showTalentCol?.stage === "Joining" ||
-        showTalentCol?.stage === "Joined" ||
-        showTalentCol?.stage === "Selections/Closures"
+        ["Joining", "Joined", "Selections/Closures"].includes(
+          showTalentCol?.stage
+        )
           ? "Revenue"
           : "1TR Pipeline"
       ] = detail.hrPipelineStr;
 
+      // Total Pipeline
       if (
-        showTalentCol?.stage !== "Joining" &&
-        showTalentCol?.stage !== "Joined" &&
-        showTalentCol?.stage !== "Selections/Closures"
+        !["Joining", "Joined", "Selections/Closures"].includes(
+          showTalentCol?.stage
+        )
       ) {
         row["Total Pipeline"] = detail.total_HRPipelineStr;
       }
 
       row["Uplers Fees %"] = detail.uplersFeesPer;
       row["Talent Pay"] = detail.talentPayStr;
-
-      // Talent / Carry Forward
-      if (
-        showTalentCol?.stage !== "Not Accepted HRs" &&
-        (showTalentCol?.stage === "Joined" ||
-          showTalentCol?.stage === "Selections/Closures")
-      ) {
-        row["Talent"] = detail.talent;
-      }
-
-      if (
-        !(showTalentCol?.stage === "Joined" ||
-          showTalentCol?.stage === "Selections/Closures")
-      ) {
-        row["Carry Forward Status"] =
-          All_Hiring_Request_Utils.GETHRSTATUS(
-            Number(detail.carryFwd_HRStatusCode),
-            detail.carryFwd_HRStatus
-          );
-      }
-
-      row["HR Status"] =
-        All_Hiring_Request_Utils.GETHRSTATUS(
-          Number(detail.hrStatusCode),
-          detail.hrStatus
-        );
     }
 
-    // Special Case
+    // Sales Person
+    row["Sales Person"] = detail.salesPerson;
+
+    // Carry Fwd Status (top section)
     if (showTalentCol?.stage === "HRs (Carry Fwd)") {
-      row["Carry Fwd Status"] =
-        All_Hiring_Request_Utils.GETHRSTATUS(
-          Number(detail.carryFwd_HRStatusCode),
-          detail.carryFwd_HRStatus
-        );
+      row["Carry Fwd Status"] =detail.carryFwd_HRStatus
+    }
+
+    // Lead Type
+    row["Lead Type"] = detail.lead_Type;
+
+    // Bottom Section (Talent / Carry Forward / HR Status)
+    if (showHRSection) {
+      // Talent column (only for Joined / Closures)
+      if (
+        showTalentCol?.stage !== "Not Accepted HRs" &&
+        ["Joined", "Selections/Closures"].includes(showTalentCol?.stage)
+      ) {
+        row[
+          showTalentCol?.stage === "Lost (Pipeline)"
+            ? "Reason"
+            : "Talent"
+        ] = detail.talent;
+      }
+
+      // Carry Forward Status (bottom)
+      if (
+        !["Joined", "Selections/Closures", "Added HR (New)"].includes(
+          showTalentCol?.stage
+        )
+      ) {
+        row["Carry Forward Status"] = detail.carryFwd_HRStatus
+         
+      }
+
+      // HR Status
+      row["HR Status"] = detail.hrStatus
+        
     }
 
     return row;
@@ -1640,7 +1676,7 @@ export default function PodReports({
                       </th>
 
                       {showTalentCol?.category !== "CF" &&
-                        showTalentCol?.category !== "CH" && (
+                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' &&(
                           <th
                             style={{
                               padding: "10px",
@@ -1649,9 +1685,9 @@ export default function PodReports({
                             }}
                           >
                             {showTalentCol?.stage === "Joining" ||
-                              showTalentCol?.stage === "Selections/Closures"
+                              showTalentCol?.stage === "Selections/Closures" || showTalentCol?.stage === 'Joined'
                               ? showTalentCol?.stage
-                              : "Action"}{" "}
+                              : showTalentCol?.stage === "Preonboarding" ? "Offer" :  "Action"}{" "}
                             Date
                           </th>
                         )}
@@ -1701,7 +1737,7 @@ export default function PodReports({
                             >
                               Reason
                             </th>}
-                            <th
+                           {(showTalentCol?.stage !== 'Selections/Closures' && showTalentCol?.stage !== 'Joined' && showTalentCol?.stage !== 'Preonboarding') && <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1710,7 +1746,7 @@ export default function PodReports({
                               }}
                             >
                               TR
-                            </th>
+                            </th>} 
                             <th
                               style={{
                                 padding: "10px",
@@ -1819,7 +1855,7 @@ export default function PodReports({
                               {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
                             </th>}
 
-                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures') &&<th
+                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Added HR (New)') &&<th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1857,7 +1893,7 @@ export default function PodReports({
                           {detail.hrCreatedDateStr}
                         </td>
                         {showTalentCol?.category !== "CF" &&
-                          showTalentCol?.category !== "CH" && (
+                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && (
                             <td
                               style={{
                                 padding: "8px",
@@ -1929,14 +1965,14 @@ export default function PodReports({
                               >
                                 {detail.talent}
                               </td>}
-                              <td
+                             {(showTalentCol?.stage !== 'Selections/Closures' && showTalentCol?.stage !== 'Joined' && showTalentCol?.stage !== 'Preonboarding') && <td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
                                 }}
                               >
                                 {detail.tr}
-                              </td>
+                              </td>} 
                               <td
                                 style={{
                                   padding: "8px",
@@ -2021,7 +2057,7 @@ export default function PodReports({
                                 {detail.talent}
                               </td>}
 
-                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures') &&<td
+                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Added HR (New)') &&<td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
