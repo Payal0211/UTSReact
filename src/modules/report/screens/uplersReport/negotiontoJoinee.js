@@ -434,7 +434,7 @@ export default function NegotiontoJoinee({
       width: '200px',
     },
     {
-      title: "Joining Date",
+      title: showTalentCol?.stage === 'Lost' ? "Last Working Day" : "Joining Date",
       dataIndex: "joiningdateStr",
       key: "joiningdateStr",
     },
