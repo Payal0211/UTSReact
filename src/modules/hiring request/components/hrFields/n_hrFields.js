@@ -80,8 +80,8 @@ function NewHRFields() {
         NRMargin: '',
         contractDuration: undefined,
         payrollPartnerName: '',
-        ctpLink:'',
-        discoveryCallLink:''
+        ctpLink: '',
+        discoveryCallLink: ''
     })
 
     const [companyConfidentailFields, setCompanyConfidentialFields] = useState({
@@ -94,25 +94,25 @@ function NewHRFields() {
         companyLogo: ''
     })
 
-     const secondaryClient = {
-    clientProfilePic: "",
-    companyID: 0,
-    contactNo: "",
-    designation: "",
-    emailID: "",
-    firstName: "",
-    fullName: "",
-    id: 0,
-    isPrimary: false,
-    lastName: "",
-    linkedIn: "",
-    resendInviteEmail: false,
-    roleID: 3,
-    countryCode: "",
-    isNewClient:true
-  };
+    const secondaryClient = {
+        clientProfilePic: "",
+        companyID: 0,
+        contactNo: "",
+        designation: "",
+        emailID: "",
+        firstName: "",
+        fullName: "",
+        id: 0,
+        isPrimary: false,
+        lastName: "",
+        linkedIn: "",
+        resendInviteEmail: false,
+        roleID: 3,
+        countryCode: "",
+        isNewClient: true
+    };
 
-    const [clientFieldsDetails,setClientFieldsDetails] = useState([])
+    const [clientFieldsDetails, setClientFieldsDetails] = useState([])
 
     const [roleReqFormFields, setRoleReqFormFields] = useState({
         roleTitle: '',
@@ -208,7 +208,8 @@ function NewHRFields() {
     const [transactionMessage, setTransactionMessage] = useState("");
     const [disableYypeOfPricing, setDisableTypeOfPricing] = useState(false);
     const [getHRDetails, setHRDetails] = useState({})
-
+    const inputRef = useRef(null);
+    const [name, setName] = useState("");
     const [userData, setUserData] = useState({});
     useEffect(() => {
         const getUserResult = async () => {
@@ -218,7 +219,7 @@ function NewHRFields() {
         getUserResult();
     }, []);
     const [tempJD, setTempJD] = useState("");
-    const [showJDConfirmation,  setShowJDConfirmation] = useState(false)
+    const [showJDConfirmation, setShowJDConfirmation] = useState(false)
 
 
     const compensationOptions = [
@@ -267,8 +268,31 @@ function NewHRFields() {
 
             let availabilityId = availability?.find(v => v.value === data?.addHiringRequest?.availability)?.id
             let noticePeriodId = howSoon?.find(v => v.value === data?.salesHiringRequest_Details?.howSoon)?.id
-            let currencyId = currency.find(c => c.value=== data?.salesHiringRequest_Details?.currency)?.id
+            let currencyId = currency.find(c => c.value === data?.salesHiringRequest_Details?.currency)?.id
+            const contract = contractDurations.filter(
+                (item) =>
+                    item.value ===
+                    (data?.contractDuration === "-1"
+                        ? "Indefinite"
+                        : data?.contractDuration)
+            );
 
+            if (contract.length === 0) {
+                if (
+                    data?.contractDuration !== "0" ||
+                    data?.contractDuration !== "-1"
+                ) {
+                    const object = {
+                        disabled: false,
+                        group: null,
+                        selected: false,
+                        text: `${data?.contractDuration} months`,
+                        value: `${data?.contractDuration}`,
+                    };
+                    setcontractDurations((prev) => [...prev, object]);
+
+                }
+            }
             getTransparentEngType(data?.companyInfo?.companyID, data?.addHiringRequest?.hiringTypePricingId)
 
             setHRDetails(data)
@@ -326,8 +350,8 @@ function NewHRFields() {
 
             setBudgetFormFields({
                 // currency: data?.salesHiringRequest_Details?.currency,
-                currency:currencyId,
-                minBudget:data?.budgetType === "1" ? data?.salesHiringRequest_Details?.adhocBudgetCost : data?.salesHiringRequest_Details?.budgetFrom,
+                currency: currencyId,
+                minBudget: data?.budgetType === "1" ? data?.salesHiringRequest_Details?.adhocBudgetCost : data?.salesHiringRequest_Details?.budgetFrom,
                 maxBudget: data?.salesHiringRequest_Details?.budgetTo,
                 type: data?.budgetType === "1" ? "Fixed" : "Range",
                 isConfidential: data?.salesHiringRequest_Details?.isConfidentialBudget,
@@ -342,21 +366,23 @@ function NewHRFields() {
                 }
             )
 
-           
-       setJobDesData(prev=>({jdFile:data?.addHiringRequest?.jdfilename,jobDescription:data?.salesHiringRequest_Details?.jobDescription,
-        jdURL:data?.addHiringRequest?.jdurl}))
-        setIsHaveJD(0)
-            setParseType("Text_Parsing"); 
+
+            setJobDesData(prev => ({
+                jdFile: data?.addHiringRequest?.jdfilename, jobDescription: data?.salesHiringRequest_Details?.jobDescription,
+                jdURL: data?.addHiringRequest?.jdurl
+            }))
+            setIsHaveJD(0)
+            setParseType("Text_Parsing");
 
         }
     };
 
     useEffect(() => {
-       +hrid > 0 && setIsSavedLoading(true)
-        if (+hrid > 0 && availability.length && howSoon.length && currency.length) {
+        +hrid > 0 && setIsSavedLoading(true)
+        if (+hrid > 0 && availability.length && howSoon.length && contractDurations.length && currency.length) {
             getHRdetailsHandler(hrid)
         }
-    }, [hrid, availability, howSoon])
+    }, [hrid, availability, howSoon, currency])
 
     useEffect(() => { getCities() }, [selectedCitiesIDS])
 
@@ -470,39 +496,40 @@ function NewHRFields() {
         [companyID]
     );
 
-     useEffect(()=>{
-       
-        if(getHRDetails?.clientDetails_Result){
-          let companyInfo = getHRDetails?.companyInfo
-        let clientResult = getHRDetails?.clientDetails_Result;
-        
-    
-        setConfidentialInfo(clientResult?.isCompanyConfidential)
-         setCompanyConfidentialFields({
-            companyURL: clientResult?.companyURL,
-            companyLogoAlias: clientResult?.companyLogoAlias,
-            headquaters: clientResult?.headquaters,
-            headquatersAlias: clientResult?.companyHQAlias,
-            companyNameAlias: clientResult?.companyAlias,
-            companyLinkedinURL: clientResult?.linkedInProfile,
-            companyLogo: companyInfo?.companyLogoAwsUrl ?  companyInfo?.companyLogoAwsUrl : companyInfo?.companyLogo ?? ""
-        })
-    
-      
-     
-            setClientFieldsDetails([{...secondaryClient,
-      fullName: clientResult?.clientName ,
-      fullNameAlias: clientResult?.clientPOCNameAlias,
-      emailID:clientResult?.clientEmail,
-      emailIDAlias:clientResult?.clientPOCEmailAlias,
-      id:clientResult?.contactId
-    }])
- 
-       
+    useEffect(() => {
+
+        if (getHRDetails?.clientDetails_Result) {
+            let companyInfo = getHRDetails?.companyInfo
+            let clientResult = getHRDetails?.clientDetails_Result;
+
+
+            setConfidentialInfo(clientResult?.isCompanyConfidential)
+            setCompanyConfidentialFields({
+                companyURL: clientResult?.companyURL,
+                companyLogoAlias: clientResult?.companyLogoAlias,
+                headquaters: clientResult?.headquaters,
+                headquatersAlias: clientResult?.companyHQAlias,
+                companyNameAlias: clientResult?.companyAlias,
+                companyLinkedinURL: clientResult?.linkedInProfile,
+                companyLogo: companyInfo?.companyLogoAwsUrl ? companyInfo?.companyLogoAwsUrl : companyInfo?.companyLogo ?? ""
+            })
+
+
+
+            setClientFieldsDetails([{
+                ...secondaryClient,
+                fullName: clientResult?.clientName,
+                fullNameAlias: clientResult?.clientPOCNameAlias,
+                emailID: clientResult?.clientEmail,
+                emailIDAlias: clientResult?.clientPOCEmailAlias,
+                id: clientResult?.contactId
+            }])
+
+
         }
-        
-    
-      },[getHRDetails])
+
+
+    }, [getHRDetails])
 
     const getClientNameValue = (clientName, clientData) => {
         setBasicFormFields(prev => ({ ...prev, clientFullName: clientName }));
@@ -525,13 +552,14 @@ function NewHRFields() {
             companyLogo: clientData?.companyLogoAwsUrl ? clientData?.companyLogoAwsUrl : clientData?.companyLogo ?? ""
         })
 
-        setClientFieldsDetails([{...secondaryClient,
-      id: clientData?.contactId,
-      fullName: clientData?.contactName ,
-      fullNameAlias: clientData?.clientPOCNameAlias,
-      emailID:clientData?.emailId,
-      emailIDAlias: clientData?.clientPOCEmailAlias,
-    }])
+        setClientFieldsDetails([{
+            ...secondaryClient,
+            id: clientData?.contactId,
+            fullName: clientData?.contactName,
+            fullNameAlias: clientData?.clientPOCNameAlias,
+            emailID: clientData?.emailId,
+            emailIDAlias: clientData?.clientPOCEmailAlias,
+        }])
 
         clientData?.companyId && getTransparentEngType(clientData?.companyId, clientData?.hiringTypePricingId)
         clientData?.companyTypeID && setBasicFormFields(prev => ({ ...prev, availability: clientData?.companyTypeID === 2 ? 1 : 2 }));
@@ -591,7 +619,35 @@ function NewHRFields() {
         );
     }, []);
 
+    const onNameChange = (event) => {
+        setName(event.target.value);
+        // if (event.target.value) {
+        //   setDisableButton(false);
+        // } else {
+        //   setDisableButton(true);
+        // }
+    };
 
+    const addItem = useCallback(
+        (e) => {
+            e.preventDefault();
+            if (!contractDurations.includes(name + " months")) {
+                let newObj = {
+                    disabled: false,
+                    group: null,
+                    selected: false,
+                    text: `${name} months`,
+                    value: `${name}`,
+                };
+                setcontractDurations([...contractDurations, newObj]);
+                setName("");
+            }
+            setTimeout(() => {
+                inputRef.current?.focus();
+            }, 0);
+        },
+        [contractDurations, name]
+    );
 
     const getFrequencyData = async () => {
         let response = await MasterDAO.getFrequencyDAO();
@@ -612,7 +668,7 @@ function NewHRFields() {
             setHRPricingTypes(types);
             let current = types.find(item => item.id === hrtypeid)
             // setControlledHiringPricingTypeValue(current.type)
-          hrid === '0' &&  setBasicFormFields(prev => ({ ...prev, hiringPricingType: current.id, NRMargin: current.pricingPercent }))
+            hrid === '0' && setBasicFormFields(prev => ({ ...prev, hiringPricingType: current.id, NRMargin: current.pricingPercent }))
 
         }
     }
@@ -648,25 +704,25 @@ function NewHRFields() {
     }, []);
 
     useEffect(() => {
-        if(skills){
-             const combinedData = [
-            ...skills,
-        ];
+        if (skills) {
+            const combinedData = [
+                ...skills,
+            ];
 
-        // remove selected skill for other skill list 
-        setSkillMemo(combinedData.filter((o) => !mustHaveSkills?.includes(o?.value)))
-        setCombinedSkillsMemo(combinedData.filter((o) => !goodToHaveSkills?.includes(o?.value)))
+            // remove selected skill for other skill list 
+            setSkillMemo(combinedData.filter((o) => !mustHaveSkills?.includes(o?.value)))
+            setCombinedSkillsMemo(combinedData.filter((o) => !goodToHaveSkills?.includes(o?.value)))
         }
-       
+
     }, [skills, mustHaveSkills, goodToHaveSkills])
 
     const getCurrencyHandler = useCallback(async () => {
         const response = await MasterDAO.getCurrencyRequestDAO();
         setCurrency(response && response?.responseBody);
-        console.log(response,hrid)
-        if(+hrid === 0 && response.statusCode === 200){
-            let inrId = response?.responseBody.find(cc=> cc.value === "INR")?.id
-            setBudgetFormFields(p=>({...p,currency:inrId}))
+        console.log(response, hrid)
+        if (+hrid === 0 && response.statusCode === 200) {
+            let inrId = response?.responseBody.find(cc => cc.value === "INR")?.id
+            setBudgetFormFields(p => ({ ...p, currency: inrId }))
         }
     }, [hrid]);
 
@@ -743,13 +799,13 @@ function NewHRFields() {
                         ...prev,
                         contactID: existingClientDetails?.responseBody?.contactid,
                     }));
-                 
+
                     // setBasicFormFields(prev => ({
                     //     ...prev, 
                     //     companyName: existingClientDetails?.responseBody?.name,
                     //     clientFullName: existingClientDetails?.responseBody?.email
                     // }))
-                  
+
 
                     setCheckCreditAvailability(
                         existingClientDetails?.responseBody?.CheckCreditAvailablilty
@@ -789,7 +845,7 @@ function NewHRFields() {
                         );
                     }
 
-                   
+
                 }
 
                 /* setError('clientName', {
@@ -903,39 +959,39 @@ function NewHRFields() {
         }
     };
 
-      const updateCompanyDetails = useCallback(async () => {
+    const updateCompanyDetails = useCallback(async () => {
         let payload = {
-          "basicDetails": {
-            "companyID": clientDetails?.companyId,    
-            "isCompanyConfidential": confidentialInfo
-          }, 
-          
+            "basicDetails": {
+                "companyID": clientDetails?.companyId,
+                "isCompanyConfidential": confidentialInfo
+            },
+
         }
-    
-        if(confidentialInfo) {
-          payload["clientDetails"] = [
-            {
-              "clientID": clientFieldsDetails[0]?.id,     
-              "emailId" :clientFieldsDetails[0]?.emailID,
-              "clientPOCNameAlias": clientFieldsDetails[0]?.fullNameAlias,
-              "clientPOCEmailAlias": clientFieldsDetails[0]?.emailIDAlias
+
+        if (confidentialInfo) {
+            payload["clientDetails"] = [
+                {
+                    "clientID": clientFieldsDetails[0]?.id,
+                    "emailId": clientFieldsDetails[0]?.emailID,
+                    "clientPOCNameAlias": clientFieldsDetails[0]?.fullNameAlias,
+                    "clientPOCEmailAlias": clientFieldsDetails[0]?.emailIDAlias
+                }
+            ]
+            payload["companyConfidentialDetails"] = {
+                "companyAlias": companyConfidentailFields.companyNameAlias,
+                "companyURLAlias": null,
+                "companyLinkedInAlias": null,
+                "companyHQAlias": companyConfidentailFields.headquatersAlias,
+                "companyLogoAlias": companyConfidentailFields.companyLogoAlias
             }
-          ]  
-          payload["companyConfidentialDetails"] = {
-            "companyAlias": companyConfidentailFields.companyNameAlias,
-            "companyURLAlias": null,
-            "companyLinkedInAlias": null,
-            "companyHQAlias": companyConfidentailFields.headquatersAlias  ,
-            "companyLogoAlias": companyConfidentailFields.companyLogoAlias 
-          }
         }
-    
+
         const result = await allCompanyRequestDAO.updateCompanyConfidentialDAO(payload)
-    
+
         // if(result.statusCode === 200){
         //   message.success('Successfully Updated Company profile details')
         // }
-      },[confidentialInfo,clientDetails,companyConfidentailFields,clientFieldsDetails]) 
+    }, [confidentialInfo, clientDetails, companyConfidentailFields, clientFieldsDetails])
 
     const createHRHandler = async (pl, isDraft) => {
         setIsSavedLoading(true)
@@ -950,26 +1006,26 @@ function NewHRFields() {
                 message.success("HR details has been saved to draft.")
                 navigate("/allhiringrequest");
             } else {
-                if(+hrid > 0){
-                message.success("HR details has been updated.")
-                navigate("/allhiringrequest");
-                }else{
-                   navigate('/w_previewHR/' + result?.responseBody?.details?.id)  
+                if (+hrid > 0) {
+                    message.success("HR details has been updated.")
+                    navigate("/allhiringrequest");
+                } else {
+                    navigate('/w_previewHR/' + result?.responseBody?.details?.id)
                 }
-               
+
 
             }
         }
     }
 
     const isQuillEmpty = (html) => {
-  const text = html
-    .replace(/<(.|\n)*?>/g, '')
-    .replace(/&nbsp;/g, '')
-    .trim();
+        const text = html
+            .replace(/<(.|\n)*?>/g, '')
+            .replace(/&nbsp;/g, '')
+            .trim();
 
-  return text.length === 0;
-};
+        return text.length === 0;
+    };
 
     const handleNext = (isDraft) => {
         let isValid = true;
@@ -1074,9 +1130,9 @@ function NewHRFields() {
                 isValid = false;
             }
 
-           if (isQuillEmpty(jobDesData?.jobDescription)) {
-                    isValid = false;
-                }
+            if (isQuillEmpty(jobDesData?.jobDescription)) {
+                isValid = false;
+            }
 
 
 
@@ -1096,8 +1152,8 @@ function NewHRFields() {
                 }
             }
 
-            if(confidentialInfo){
-                if(companyConfidentailFields?.companyNameAlias?.trim() === '' ||companyConfidentailFields?.companyNameAlias === null || companyConfidentailFields?.companyLogoAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias === null){
+            if (confidentialInfo) {
+                if (companyConfidentailFields?.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyNameAlias === null || companyConfidentailFields?.companyLogoAlias?.trim() === '' || companyConfidentailFields?.companyLogoAlias === null) {
                     isValid = false
                 }
             }
@@ -1120,18 +1176,18 @@ function NewHRFields() {
             }
         }
 
-//              let pl = {
-//             basicFormFields,
-//             roleReqFormFields,
-//             mustHaveSkills,
-//             goodToHaveSkills,
-//             jobDesData,
-//             budgetFormFields,
-//             enhanceMatchmakingFormFields
-//         }
+        //              let pl = {
+        //             basicFormFields,
+        //             roleReqFormFields,
+        //             mustHaveSkills,
+        //             goodToHaveSkills,
+        //             jobDesData,
+        //             budgetFormFields,
+        //             enhanceMatchmakingFormFields
+        //         }
 
 
-// console.log(pl)
+        // console.log(pl)
 
         if (!isValid) {
             setFormValidationError(true)
@@ -1140,14 +1196,14 @@ function NewHRFields() {
         }
 
 
-   
+
         const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
         const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));
 
         let formPayload = {
             "en_Id": getHRDetails?.en_Id ? getHRDetails?.en_Id : "",
             "Id": +hrid,
-            "ActionType" : +hrid === 0 ? "Save" : 'Edit',
+            "ActionType": +hrid === 0 ? "Save" : 'Edit',
             "contactId": getContactAndSaleID?.contactID,
             "clientName": basicFormFields?.clientFullName,
             "companyName": basicFormFields?.companyName,
@@ -1159,10 +1215,10 @@ function NewHRFields() {
 
 
             "adhocBudgetCost": budgetFormFields?.type === "Fixed" ? +budgetFormFields?.minBudget : 0,
-            "minimumBudget":  budgetFormFields?.type === "Range" ? +budgetFormFields?.minBudget : 0,
+            "minimumBudget": budgetFormFields?.type === "Range" ? +budgetFormFields?.minBudget : 0,
             "maximumBudget": budgetFormFields?.type === "Range" ? +budgetFormFields?.maxBudget : 0,
 
-            "NRMargin": basicFormFields?.hiringPricingType !== 3 ? basicFormFields?.NRMargin :  0,
+            "NRMargin": basicFormFields?.hiringPricingType !== 3 ? basicFormFields?.NRMargin : 0,
             "salesPerson": basicFormFields?.salesPerson,
             "contractDuration": basicFormFields?.contractDuration === "Indefinite" ? '-1' : basicFormFields?.contractDuration,
             "howSoon": howSoon?.find(v => v.id === +roleReqFormFields?.noticePeriod)?.value,
@@ -1182,7 +1238,7 @@ function NewHRFields() {
             "modeOfWorkingId": roleReqFormFields?.modeOfWorking,
 
             "PayPerType": userCompanyTypeID,
-            "isHRTypeDP": basicFormFields?.hiringPricingType === 3 ? true: false,
+            "isHRTypeDP": basicFormFields?.hiringPricingType === 3 ? true : false,
             "issaveasdraft": isDraft,
 
             'discoveryCallLink': basicFormFields?.discoveryCallLink,
@@ -1191,7 +1247,7 @@ function NewHRFields() {
             "directPlacement": {
                 "hiringRequestId": +hrid,
                 "modeOfWork": roleReqFormFields?.modeOfWorking,
-                "dpPercentage": basicFormFields?.hiringPricingType === 3 ? basicFormFields?.NRMargin :  0,
+                "dpPercentage": basicFormFields?.hiringPricingType === 3 ? basicFormFields?.NRMargin : 0,
                 "address": null,
                 "city": null,
                 "state": null,
@@ -1240,7 +1296,7 @@ function NewHRFields() {
 
             "IsTransparentPricing": clientDetails?.isTransparentPricing,
             "HrTypePricingId": basicFormFields.hiringPricingType,
-            "HrTypeId":basicFormFields.hiringPricingType,
+            "HrTypeId": basicFormFields.hiringPricingType,
 
 
             "companyInfo": {
@@ -1271,39 +1327,39 @@ function NewHRFields() {
     const parseURL = async (url) => {
 
 
-if(!clientDetails?.emailId){
-    message.error("Please select client full name to parse the JD")
-    setJobDesData(prev => ({ ...prev, jdURL: ''}))
-    return
-}
-        
+        if (!clientDetails?.emailId) {
+            message.error("Please select client full name to parse the JD")
+            setJobDesData(prev => ({ ...prev, jdURL: '' }))
+            return
+        }
 
-let pl = {
-    clientEmail: clientDetails.emailId ,
-    psUrl: url
-}
-setUploading(true)
-let linkResponse = await hiringRequestDAO.parseURLDAO(pl);
-setUploading(false)
-// console.log("linkResponse", linkResponse)
 
-if(linkResponse.statusCode === HTTPStatusCode.OK){
-    if(linkResponse?.responseBody?.details?.jobDescription === ''){
-        message.error('Unable to fetch job description from the provided URL. Please check the URL and try again.')
-        return
-    }
+        let pl = {
+            clientEmail: clientDetails.emailId,
+            psUrl: encodeURIComponent(url)
+        }
+        setUploading(true)
+        let linkResponse = await hiringRequestDAO.parseURLDAO(pl);
+        setUploading(false)
+        // console.log("linkResponse", linkResponse)
 
-    if(hrid > 0 && !isQuillEmpty(jobDesData?.jobDescription) ){
-        setShowJDConfirmation(true)
-        setTempJD(linkResponse?.responseBody?.details?.jobDescription)
-         setJobDesData(prev => ({ ...prev, jdURL: url, jdFile: ''}))
-    }else{
-    setJobDesData(prev => ({ ...prev, jdURL: url,jobDescription: linkResponse?.responseBody?.details?.jobDescription, jdFile: ''}))
-    }
+        if (linkResponse.statusCode === HTTPStatusCode.OK) {
+            if (linkResponse?.responseBody?.details?.jobDescription === '') {
+                message.error('Unable to fetch job description from the provided URL. Please check the URL and try again.')
+                return
+            }
 
-}else{
-    message.error('Something went wrong while parsing the JD, please try again')
-}
+            if (hrid > 0 && !isQuillEmpty(jobDesData?.jobDescription)) {
+                setShowJDConfirmation(true)
+                setTempJD(linkResponse?.responseBody?.details?.jobDescription)
+                setJobDesData(prev => ({ ...prev, jdURL: url, jdFile: '' }))
+            } else {
+                setJobDesData(prev => ({ ...prev, jdURL: url, jobDescription: linkResponse?.responseBody?.details?.jobDescription, jdFile: '' }))
+            }
+
+        } else {
+            message.error('Something went wrong while parsing the JD, please try again')
+        }
     }
 
     const handleJDUpload = async (fileData) => {
@@ -1312,22 +1368,22 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
         formData.append("File", fileData);
         formData.append(
             "clientemail",
-            clientDetails.emailId  
+            clientDetails.emailId
         );
         // formData.append("hrId", hrid);
         // let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
-         let uploadFileResponse = await hiringRequestDAO.uploadFileParseDAO(formData);
+        let uploadFileResponse = await hiringRequestDAO.uploadFileParseDAO(formData);
         setUploading(false);
         if (uploadFileResponse.statusCode === 400) {
 
             message.error(uploadFileResponse?.responseBody)
         }
         if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-               if(uploadFileResponse?.responseBody?.details?.JobDescription === ''){
-       message.error('Unable to fetch JOb description from the uploaded file . Please check the file and try again.')
-         return
-    }
-      if (
+            if (uploadFileResponse?.responseBody?.details?.JobDescription === '') {
+                message.error('Unable to fetch JOb description from the uploaded file . Please check the file and try again.')
+                return
+            }
+            if (
                 fileData?.type === "application/pdf" ||
                 fileData?.type === "application/docs" ||
                 fileData?.type === "application/msword" ||
@@ -1336,14 +1392,14 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
 
-                if(hrid > 0 && !isQuillEmpty(jobDesData?.jobDescription) ){
-        setShowJDConfirmation(true)
-        setTempJD(uploadFileResponse?.responseBody?.details?.JobDescription)
-         setJobDesData(prev => ({ ...prev, jdURL: '', jdFile: uploadFileResponse?.responseBody?.details?.FileName}))
-    }else{
-  setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName,jobDescription: uploadFileResponse?.responseBody?.details?.JobDescription , jdURL:''}))
-    }
-                
+                if (hrid > 0 && !isQuillEmpty(jobDesData?.jobDescription)) {
+                    setShowJDConfirmation(true)
+                    setTempJD(uploadFileResponse?.responseBody?.details?.JobDescription)
+                    setJobDesData(prev => ({ ...prev, jdURL: '', jdFile: uploadFileResponse?.responseBody?.details?.FileName }))
+                } else {
+                    setJobDesData(prev => ({ ...prev, jdFile: uploadFileResponse?.responseBody?.details?.FileName, jobDescription: uploadFileResponse?.responseBody?.details?.JobDescription, jdURL: '' }))
+                }
+
                 // setJDParsedSkills(
                 // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
                 // );
@@ -1364,12 +1420,12 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
         <main className={`${styles["main-content"]}`}>
             {/* <!-- Content Section --> */}
             <LogoLoader visible={isSavedLoading} />
-             <LogoLoader visible={uploading} />
+            <LogoLoader visible={uploading} />
             <div className={`${styles["content-wrapper"]}`}>
                 {/* <!-- New Hiring Request Form --> */}
                 <div className={`${styles["new-hr-form-wrapper"]}`}>
                     <form className={`${styles["new-hr-form"]}`}>
-                        <h1 className={`${styles["page-title"]}`}>{+hrid === 0 ? 'New' : 'Edit' } Hiring Request</h1>
+                        <h1 className={`${styles["page-title"]}`}>{+hrid === 0 ? 'New' : 'Edit'} Hiring Request</h1>
 
                         {/* <!-- Basic Details Section --> */}
                         <section className={`${styles["form-section"]}`}>
@@ -1451,7 +1507,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                             {formValidationError && basicFormFields.clientFullName?.trim() === '' && <p className={`${styles["fieldError"]}`}>please select client full name</p>}
                                         </div>
                                     </div>
-                                    {+hrid === 0 &&               <div className={`${styles["cols"]} ${styles["col-lg-2-5"]}`}>
+                                    {+hrid === 0 && <div className={`${styles["cols"]} ${styles["col-lg-2-5"]}`}>
                                         <div className={`${styles["form-group"]} ${styles["form-group-button"]}`}>
                                             <button type="button" className={`${styles["btn-add-company"]}`}
                                                 onClick={() => navigate("/addNewCompany/0", {
@@ -1470,7 +1526,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                             </button>
                                         </div>
                                     </div>}
-                      
+
                                 </div>
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
@@ -1510,7 +1566,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                                <Select
+                                            <Select
                                                 showSearch
                                                 filterOption={(input, option) =>
                                                     option.value?.toLowerCase().includes(input.toLowerCase())
@@ -1523,8 +1579,8 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                 options={availability && availability}
                                                 value={basicFormFields.availability}
                                                 onChange={(val, valObj) => {
-                                                    console.log(val,valObj)
-                                                    setBasicFormFields(prev => ({ ...prev, availability: val , hiringPricingType: undefined, payroll: undefined, contractDuration: undefined, payrollPartnerName: ''  }))
+                                                    console.log(val, valObj)
+                                                    setBasicFormFields(prev => ({ ...prev, availability: val, hiringPricingType: undefined, payroll: undefined, contractDuration: undefined, payrollPartnerName: '' }))
                                                 }}
                                             />
                                             {/* <select className={`${styles["form-select"]}`} required
@@ -1540,11 +1596,11 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                             {formValidationError && basicFormFields.availability === undefined && <p className={`${styles["fieldError"]}`}>please select engagement model</p>}
                                         </div>
                                     </div>
-                                 
 
-                                          <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+
+                                    <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                               <Select
+                                            <Select
                                                 showSearch
                                                 filterOption={(input, option) =>
                                                     option.value?.toLowerCase().includes(input.toLowerCase())
@@ -1558,9 +1614,9 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                     : hrPricingTypes.map((item) => ({ id: item.id, value: item.type, showPartTime: item.showPartTime }))}
                                                 value={basicFormFields.hiringPricingType}
                                                 onChange={(val, valObj) => {
-                    
-                                                    setBasicFormFields(prev => ({ ...prev, hiringPricingType:  val, payroll: undefined, contractDuration: undefined, payrollPartnerName: '' }))
-                                                   
+
+                                                    setBasicFormFields(prev => ({ ...prev, hiringPricingType: val, payroll: undefined, contractDuration: undefined, payrollPartnerName: '' }))
+
                                                 }}
                                             />
                                             {/* <select className={`${styles["form-select"]}`} required value={basicFormFields?.hiringPricingType} onChange={(e) => {
@@ -1573,13 +1629,13 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                             {formValidationError && basicFormFields.hiringPricingType === undefined && <p className={`${styles["fieldError"]}`}>please select engagement type</p>}
                                         </div>
 
-                                        
+
                                     </div>
 
                                 </div>
                                 <div className={`${styles["row"]}`}>
 
-                                                             <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                    <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <input type="number" className={`${styles["form-input"]}`} placeholder="Uplers success fee (%) *" required value={basicFormFields?.NRMargin} min={0} max={100}
                                                 onChange={(e) => setBasicFormFields(prev => ({ ...prev, NRMargin: e.target.value }))} />
@@ -1587,32 +1643,32 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                         </div>
 
                                     </div>
-                                  
-           
+
+
                                 </div>
 
-                                
+
                                 <div className={`${styles["row"]}`}>
-   {(basicFormFields?.hiringPricingType === 3 ||
+                                    {(basicFormFields?.hiringPricingType === 3 ||
                                         basicFormFields?.hiringPricingType === 6) && (<div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                             <div className={`${styles["form-group"]}`}>
-                                                   <Select
-                                                showSearch
-                                                filterOption={(input, option) =>
-                                                    option.value?.toLowerCase().includes(input.toLowerCase())
-                                                }
-                                                fieldNames={{
-                                                    value: "id",      // stored value
-                                                    label: "value"    // display text
-                                                }}
-                                                placeholder="Payroll *"
-                                                options={payRollTypes && payRollTypes}
-                                                value={basicFormFields.payroll}
-                                                onChange={(val, valObj) => {
-                                                  
-                                                     setBasicFormFields(prev => ({ ...prev, payroll: val, contractDuration: undefined, payrollPartnerName: '' }))
-                                                }}
-                                            />
+                                                <Select
+                                                    showSearch
+                                                    filterOption={(input, option) =>
+                                                        option.value?.toLowerCase().includes(input.toLowerCase())
+                                                    }
+                                                    fieldNames={{
+                                                        value: "id",      // stored value
+                                                        label: "value"    // display text
+                                                    }}
+                                                    placeholder="Payroll *"
+                                                    options={payRollTypes && payRollTypes}
+                                                    value={basicFormFields.payroll}
+                                                    onChange={(val, valObj) => {
+
+                                                        setBasicFormFields(prev => ({ ...prev, payroll: val, contractDuration: undefined, payrollPartnerName: '' }))
+                                                    }}
+                                                />
                                                 {/* <select className={`${styles["form-select"]}`} required value={basicFormFields.payroll} onChange={(e) => {
                                                     setBasicFormFields(prev => ({ ...prev, payroll: e.target.value, contractDuration: '', payrollPartnerName: '' }))
                                                 }}>
@@ -1626,38 +1682,76 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                         </div>)}
 
                                     {(basicFormFields?.hiringPricingType === 1 || basicFormFields?.hiringPricingType === 2 ||
-                                       basicFormFields?.hiringPricingType === 4 || basicFormFields?.hiringPricingType === 5 ||
-                                       basicFormFields?.hiringPricingType === 7 || basicFormFields?.hiringPricingType === 8
-                                       || basicFormFields.payroll === 4) && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
-                                        <div className={`${styles["form-group"]}`}>
-                                               <Select
-                                                showSearch
-                                                filterOption={(input, option) =>
-                                                    option.value?.toLowerCase().includes(input.toLowerCase())
-                                                }
-                                                fieldNames={{
-                                                    value: "id",      // stored value
-                                                    label: "value"    // display text
-                                                }}
-                                                placeholder="Contract Duration (in months) *"
-                                                options={contractDurations && contractDurations.filter((item) => {
-                                                   
-                                                    if (basicFormFields.availability === 4) {
-                                                        return item.value !== "Indefinite";
+                                        basicFormFields?.hiringPricingType === 4 || basicFormFields?.hiringPricingType === 5 ||
+                                        basicFormFields?.hiringPricingType === 7 || basicFormFields?.hiringPricingType === 8
+                                        || basicFormFields.payroll === 4) && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                            <div className={`${styles["form-group"]}`}>
+                                                <Select
+                                                    showSearch
+                                                    filterOption={(input, option) =>
+                                                        option.value?.toLowerCase().includes(input.toLowerCase())
                                                     }
-                                                    return true;
-                                                }).map((item) => ({
-                              id: item.value,
-                              label: item.text,
-                              value: item.text,
-                            }))}
-                                                value={basicFormFields?.contractDuration}
-                                                onChange={(val, valObj) => {
-                                                    setBasicFormFields(prev => ({ ...prev, contractDuration: val }))
-                                                   
-                                                }}
-                                            />
-                                            {/* <select className={`${styles["form-select"]}`} required value={basicFormFields?.contractDuration} onChange={(e) => {
+                                                    fieldNames={{
+                                                        value: "id",      // stored value
+                                                        label: "value"    // display text
+                                                    }}
+                                                    placeholder="Contract Duration (in months) *"
+                                                    options={contractDurations && contractDurations.filter((item) => {
+
+                                                        if (basicFormFields.availability === 4) {
+                                                            return item.value !== "Indefinite";
+                                                        }
+                                                        return true;
+                                                    }).map((item) => ({
+                                                        id: item.value,
+                                                        label: item.text,
+                                                        value: item.text,
+                                                    }))}
+                                                    dropdownRender={(menu) => (
+                                                        <>
+                                                            {menu}
+                                                            <Divider style={{ margin: "8px 0" }} />
+                                                            <Space style={{ padding: "0 8px 4px" }}>
+                                                                <label>Other:</label>
+                                                                <input
+                                                                    type={InputType.NUMBER}
+                                                                    className={HRFieldStyle.addSalesItem}
+                                                                    placeholder="Ex: 5,6,7..."
+                                                                    ref={inputRef}
+                                                                    value={name}
+                                                                    onChange={onNameChange}
+                                                                    required
+                                                                />
+                                                                <Button
+                                                                    style={{
+                                                                        backgroundColor: `var(--uplers-grey)`,
+                                                                    }}
+                                                                    shape="round"
+                                                                    type="text"
+                                                                    icon={<PlusOutlined />}
+                                                                    onClick={addItem}
+                                                                    disabled={
+                                                                        name
+                                                                            ? contractDurations.filter(
+                                                                                (duration) =>
+                                                                                    duration.value == name
+                                                                            ).length > 0
+                                                                            : true
+                                                                    }
+                                                                >
+                                                                    Add item
+                                                                </Button>
+                                                            </Space>
+                                                            <br />
+                                                        </>
+                                                    )}
+                                                    value={basicFormFields?.contractDuration}
+                                                    onChange={(val, valObj) => {
+                                                        setBasicFormFields(prev => ({ ...prev, contractDuration: val }))
+
+                                                    }}
+                                                />
+                                                {/* <select className={`${styles["form-select"]}`} required value={basicFormFields?.contractDuration} onChange={(e) => {
                                                 setBasicFormFields(prev => ({ ...prev, contractDuration: e.target.value }))
                                             }}>
                                                 <option className={`${styles["custom-select-option"]}`} value="">Contract Duration (in months) *</option>
@@ -1671,8 +1765,8 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                 })
                                                     .map((item) => (<option className={`${styles["custom-select-option"]}`} value={item.value}>{item.text}</option>))}
                                             </select> */}
-                                            {formValidationError && basicFormFields.contractDuration === undefined && <p className={`${styles["fieldError"]}`}>please select contract duration</p>}
-                                        </div> </div>}
+                                                {formValidationError && basicFormFields.contractDuration === undefined && <p className={`${styles["fieldError"]}`}>please select contract duration</p>}
+                                            </div> </div>}
 
 
                                     {basicFormFields.payroll === 3 && <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
@@ -1696,14 +1790,14 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                         </div>
                                     </div>
                                 </div>
-                               
+
                             </div>
 
                         </section>
 
                         {confidentialInfo &&
                             <section className={`${styles["form-section"]}`}>
-                                  <p style={{marginBottom:'10px'}} className={`${styles["teansactionMessage"]}`}>Be careful not to use company names in About, Culture, Job description if you choose to keep information confidential. </p>
+                                <p style={{ marginBottom: '10px' }} className={`${styles["teansactionMessage"]}`}>Be careful not to use company names in About, Culture, Job description if you choose to keep information confidential. </p>
                                 <div className={`${styles["form-rows"]}`}>
                                     <div className={`${styles["row"]}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
@@ -1721,13 +1815,13 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                 <div className={`${styles["form-group"]}`}>
                                                     <input type="text" className={`${styles["form-input"]}`} placeholder="Company Name Alias  *" required value={companyConfidentailFields?.companyNameAlias}
                                                         onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, companyNameAlias: e.target.value }))} />
-                                                    {formValidationError && (companyConfidentailFields?.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyNameAlias === null ) && <p className={`${styles["fieldError"]}`}>please enter company name alias</p>}
+                                                    {formValidationError && (companyConfidentailFields?.companyNameAlias?.trim() === '' || companyConfidentailFields?.companyNameAlias === null) && <p className={`${styles["fieldError"]}`}>please enter company name alias</p>}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                     <div className={`${styles["row"]}`}>
+                                    <div className={`${styles["row"]}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                             <div className={`${styles["form-group"]}`}>
                                                 <div className={`${styles["form-group"]}`}>
@@ -1749,7 +1843,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                         </div>
                                     </div>
 
- <div className={`${styles["row"]}`}>
+                                    <div className={`${styles["row"]}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                             <div className={`${styles["form-group"]}`}>
                                                 <div className={`${styles["form-group"]}`}>
@@ -1760,10 +1854,10 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                             </div>
                                         </div>
 
-                                      
+
                                     </div>
 
-                                     <div className={`${styles["row"]}`}>
+                                    <div className={`${styles["row"]}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                             <div className={`${styles["form-group"]}`}>
                                                 <div className={`${styles["form-group"]}`}>
@@ -1774,71 +1868,71 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                             </div>
                                         </div>
 
-                                      
+
                                     </div>
 
                                     <p className={styles.teansactionMessage}>If the client POC details are not added then it will be considered as "N/A."</p>
 
-                                {clientFieldsDetails.map((val,ind)=>{
-                                    return <>
+                                    {clientFieldsDetails.map((val, ind) => {
+                                        return <>
+                                            <div className={`${styles["row"]}`}>
+                                                <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                                    <div className={`${styles["form-group"]}`}>
+                                                        <div className={`${styles["form-group"]}`}>
+                                                            <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Full Name" disabled={true} value={val.fullName}
+                                                            />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                                    <div className={`${styles["form-group"]}`}>
+                                                        <div className={`${styles["form-group"]}`}>
+                                                            <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Full Name Alias" required value={val.fullNameAlias}
+                                                                onChange={(e) => setClientFieldsDetails(prev => {
+                                                                    let arr = [...prev]
+                                                                    arr[ind] = { ...arr[ind], fullNameAlias: e.target.value }
+
+                                                                    return arr
+                                                                })} />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className={`${styles["row"]}`}>
+                                                <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                                    <div className={`${styles["form-group"]}`}>
+                                                        <div className={`${styles["form-group"]}`}>
+                                                            <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Email" disabled={true} value={val.emailID}
+                                                            />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
+                                                    <div className={`${styles["form-group"]}`}>
+                                                        <div className={`${styles["form-group"]}`}>
+                                                            <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Email Alias" required value={val.emailIDAlias}
+                                                                onChange={(e) => setClientFieldsDetails(prev => {
+                                                                    let arr = [...prev]
+                                                                    arr[ind] = { ...arr[ind], emailIDAlias: e.target.value }
+
+                                                                    return arr
+                                                                })} />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    })}
+
+
                                     <div className={`${styles["row"]}`}>
-                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                                <div className={`${styles["form-group"]}`}>
-                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Full Name" disabled={true} value={val.fullName}
-                                                    />
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                                <div className={`${styles["form-group"]}`}>
-                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Full Name Alias" required value={val.fullNameAlias}
-                                                        onChange={(e) => setClientFieldsDetails(prev => {
-                                                            let arr = [...prev]
-                                                            arr[ind] = {...arr[ind],fullNameAlias:e.target.value}
-
-                                                            return arr
-                                                        })} />
-                                                
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className={`${styles["row"]}`}>
-                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                                <div className={`${styles["form-group"]}`}>
-                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Email" disabled={true} value={val.emailID}
-                                                    />
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                                <div className={`${styles["form-group"]}`}>
-                                                    <input type="text" className={`${styles["form-input"]}`} placeholder="Client POC Email Alias" required value={val.emailIDAlias}
-                                                        onChange={(e) => setClientFieldsDetails(prev => {
-                                                            let arr = [...prev]
-                                                            arr[ind] = {...arr[ind],emailIDAlias:e.target.value}
-
-                                                            return arr
-                                                        })} />
-                             
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </>
-                                })}
-
-
-                                  <div className={`${styles["row"]}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-4-75"]}`}>
                                             <div className={`${styles["form-group"]}`}>
                                                 <div className={`${styles["form-group"]}`}>
@@ -1854,12 +1948,12 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                 <div className={`${styles["form-group"]}`}>
                                                     <input type="text" className={`${styles["form-input"]}`} placeholder="Company Headquarters Alias" required value={companyConfidentailFields?.headquatersAlias}
                                                         onChange={(e) => setCompanyConfidentialFields(prev => ({ ...prev, headquatersAlias: e.target.value }))} />
-                                                   
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                       
+
 
                                 </div>
                             </section>
@@ -1878,7 +1972,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                     setRoleReqFormFields(prev => ({ ...prev, roleTitle: e.target.value }))
                                                 }}
                                             /> */}
-                                            {console.log('talentRole',talentRole)}
+                                            {console.log('talentRole', talentRole)}
                                             <AutoComplete
                                                 options={talentRole && talentRole.filter(item => item.value !== null)}
                                                 filterOption={true}
@@ -1918,7 +2012,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                               <Select
+                                            <Select
                                                 showSearch
                                                 filterOption={(input, option) =>
                                                     option.value?.toLowerCase().includes(input.toLowerCase())
@@ -1928,7 +2022,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                     label: "value"    // display text
                                                 }}
                                                 placeholder="Mode of working *"
-                                                options={['Remote','Hybrid', 'Office'].map(i=>({id:i,value:i}))}
+                                                options={['Remote', 'Hybrid', 'Office'].map(i => ({ id: i, value: i }))}
                                                 value={roleReqFormFields.modeOfWorking}
                                                 onChange={(val, valObj) => {
                                                     setRoleReqFormFields({ ...roleReqFormFields, modeOfWorking: val })
@@ -1944,7 +2038,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                         </div>
                                     </div>
 
-                                 
+
 
                                     {roleReqFormFields?.modeOfWorking === 'Hybrid' && (<div className={`${styles["cols"]} ${styles["col-lg-3"]} ${styles["frequency-field-wrapper"]}`} >
                                         {/* <div className={`${styles["form-group"]}`}>
@@ -1954,7 +2048,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                         </div>
                                     </div> */}
                                         <div className={`${styles["form-group"]}`}>
-                                             <Select
+                                            <Select
                                                 showSearch
                                                 filterOption={(input, option) =>
                                                     option.value?.toLowerCase().includes(input.toLowerCase())
@@ -1967,7 +2061,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                 options={frequencyData && frequencyData}
                                                 value={roleReqFormFields?.frequency}
                                                 onChange={(val, valObj) => {
-                                                setRoleReqFormFields({ ...roleReqFormFields, frequency: val })
+                                                    setRoleReqFormFields({ ...roleReqFormFields, frequency: val })
                                                 }}
                                             />
                                             {/* <select className={`${styles["form-select"]}`} required value={roleReqFormFields?.frequency} onChange={(e) => {
@@ -1983,8 +2077,8 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
 
                                 </div>
 
-                                 {(roleReqFormFields?.modeOfWorking === 'Hybrid' || roleReqFormFields?.modeOfWorking === 'Office') && ( <div className={`${styles["row"]}`}>
-                                     <div className={`${styles["cols"]} ${styles["col-lg-12"]} ${styles["location-field-wrapper"]}`}>
+                                {(roleReqFormFields?.modeOfWorking === 'Hybrid' || roleReqFormFields?.modeOfWorking === 'Office') && (<div className={`${styles["row"]}`}>
+                                    <div className={`${styles["cols"]} ${styles["col-lg-12"]} ${styles["location-field-wrapper"]}`}>
                                         <div className={`${styles["form-group"]} ${styles["multiselect"]}`}>
                                             {/* <div className={`${styles["autocomplete-wrapper"]}`} data-autocomplete="location">
                                             <input type="text" className={`${styles["form-input"]} ${styles["form-input-autocomplete"]}`} placeholder="Location *" autocomplete="off" />
@@ -2198,7 +2292,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                         <div className={`${styles["form-group"]}`}>
-                                               <Select
+                                            <Select
                                                 showSearch
                                                 filterOption={(input, option) =>
                                                     option.value?.toLowerCase().includes(input.toLowerCase())
@@ -2211,7 +2305,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                 options={howSoon && howSoon}
                                                 value={roleReqFormFields.noticePeriod}
                                                 onChange={(val, valObj) => {
-                                                setRoleReqFormFields({ ...roleReqFormFields, noticePeriod: val })
+                                                    setRoleReqFormFields({ ...roleReqFormFields, noticePeriod: val })
                                                 }}
                                             />
                                             {/* <select className={`${styles["form-select"]}`} required value={roleReqFormFields.noticePeriod} onChange={(e) => setRoleReqFormFields({ ...roleReqFormFields, noticePeriod: e.target.value })}>
@@ -2233,7 +2327,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                     <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <input type="number" className={`${styles["form-input"]}`} placeholder="No. of talents needed *" required min={1} max={99}
-                                                value={roleReqFormFields?.numberOfTalents} onChange={e => setRoleReqFormFields(prev => ({ ...prev, numberOfTalents: e.target.value }))} disabled={+hrid >0} />
+                                                value={roleReqFormFields?.numberOfTalents} onChange={e => setRoleReqFormFields(prev => ({ ...prev, numberOfTalents: e.target.value }))} disabled={+hrid > 0} />
                                             {formValidationError && (roleReqFormFields?.numberOfTalents === '' || isNaN(roleReqFormFields.numberOfTalents) || parseInt(roleReqFormFields.numberOfTalents) <= 0 || parseInt(roleReqFormFields.numberOfTalents) > 99) && <p className={`${styles["fieldError"]}`}>please enter no of talents ( 1 to 99 )</p>}
                                         </div>
                                     </div>
@@ -2281,7 +2375,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                     </div>
                                 </div>
 
-                              {/* {+hrid === 0 &&  <div className={`${styles["row"]} ${styles['mt-2']}`}>
+                                {/* {+hrid === 0 &&  <div className={`${styles["row"]} ${styles['mt-2']}`}>
                                     <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <Radio.Group
@@ -2366,100 +2460,100 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
 
                                     </div>
                                 </div>}   */}
-                                 <label className={`${styles["form-label"]}`}>Job Description *</label>
-     <div className={`${styles["row"]}  ${styles['mt-2']}`}>
-                                        <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                                <div className={`${styles["input-with-icon"]}`}>
-                                                    <textarea className={`${styles["form-textarea"]}`} placeholder="Paste the job description link" value={jobDesData?.jdURL} onChange={e => {
-                                                        setJobDesData(prev => ({ ...prev, jdURL: e.target.value, jdFile:'' }))
-                                                    }}
-                                                    onBlur={e=>{
+                                <label className={`${styles["form-label"]}`}>Job Description *</label>
+                                <div className={`${styles["row"]}  ${styles['mt-2']}`}>
+                                    <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
+                                        <div className={`${styles["form-group"]}`}>
+                                            <div className={`${styles["input-with-icon"]}`}>
+                                                <textarea className={`${styles["form-textarea"]}`} placeholder="Paste the job description link" value={jobDesData?.jdURL} onChange={e => {
+                                                    setJobDesData(prev => ({ ...prev, jdURL: e.target.value, jdFile: '' }))
+                                                }}
+                                                    onBlur={e => {
                                                         parseURL(e.target.value)
                                                     }}
-                                                    ></textarea>
-                                                    <img src="images/link-simple-ic.svg" alt="Link Icon" className={`${styles["input-icon-right"]}`} />
-                                                </div>
+                                                ></textarea>
+                                                <img src="images/link-simple-ic.svg" alt="Link Icon" className={`${styles["input-icon-right"]}`} />
                                             </div>
                                         </div>
+                                    </div>
 
-                                                                      
-                                    
-                                          <div className={`${styles["cols"]} ${styles["col-lg-1"]}`} >
-                                             <div className={`${styles["form-separator"]}`} style={{height:'80%'}}><span className={`${styles["separator-text"]}`}>{uploading ?<Spin /> : 'OR '} </span></div>
-                                            
-                                          </div>
-                                                
-                                         
-                                      
-                              
-                                        <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                                <div className={`${styles["file-upload-area"]}`} onClick={() => jdFileRef.current.click()}>
-                                                    {uploading ? <Spin className={`${styles["upload-icon"]}`} /> : <img src="images/folder-open-ic.svg" alt="Folder Icon" className={`${styles["upload-icon"]}`} />}
-                                                    <p className={`${styles["upload-text"]}`}>Click to upload or drag and drop <br />(supported files: PDF, DOC, DOCX)</p>
-                                                    <input ref={jdFileRef} type="file" className={`${styles["file-input"]}`} accept=".pdf,.doc,.docx" multiple onChange={e => {
-                                                        // setParseType('JDFileUpload');
-                                                        const MAX_FILE_SIZE = 500 * 1024; // 500 KB in bytes
-                                                        const isFileSizeValid = e.target.files[0].size <= MAX_FILE_SIZE;
-                                                        if (!isFileSizeValid) {
-                                                            message?.error('Max file size 500 KB');
-                                                            return
-                                                        }
-                                                        handleJDUpload(e.target.files[0])
-                                                        // setJobDesData(prev => ({ ...prev, jdFile: e.target.files[0], jobDescription: '', jdURL: '' }))
-                                                    }} />
-                                                    <div className={`${styles["file-list"]}`} style={{ display: jobDesData?.jdFile?.length === 0 ? 'none' : 'block' }} onClick={e => {
-                                                                e.stopPropagation();
-                                                            }}>
-                                                        {jobDesData?.jdFile?.length && <div className={`${styles["file-item"]}`}>
-                                                            <span className={`${styles["file-name"]}`}>
-                                                                
-                                                                 <a
-                                                                                              rel="noreferrer"
-                                                                                              href={
-                                                                                                NetworkInfo.PROTOCOL +
-                                                                                                NetworkInfo.DOMAIN +
-                                                                                                "Media/JDParsing/JDfiles/" +
-                                                                                                jobDesData?.jdFile
-                                                                                              }
-                                                                                              style={{ textDecoration: "underline" }}
-                                                                                              target="_blank"
-                                                                                            >{jobDesData?.jdFile}</a></span>
-                                                            <button type="button" className={`${styles["file-delete"]}`} onClick={e => {
-                                                                e.stopPropagation();
-                                                                setJobDesData(prev => ({ ...prev, jdFile: ''}))
-                                                            }}></button>
-                                                        </div>}
-                                                    </div>
+
+
+                                    <div className={`${styles["cols"]} ${styles["col-lg-1"]}`} >
+                                        <div className={`${styles["form-separator"]}`} style={{ height: '80%' }}><span className={`${styles["separator-text"]}`}>{uploading ? <Spin /> : 'OR '} </span></div>
+
+                                    </div>
+
+
+
+
+                                    <div className={`${styles["cols"]} ${styles['col-lg-5-5']}`}>
+                                        <div className={`${styles["form-group"]}`}>
+                                            <div className={`${styles["file-upload-area"]}`} onClick={() => jdFileRef.current.click()}>
+                                                {uploading ? <Spin className={`${styles["upload-icon"]}`} /> : <img src="images/folder-open-ic.svg" alt="Folder Icon" className={`${styles["upload-icon"]}`} />}
+                                                <p className={`${styles["upload-text"]}`}>Click to upload or drag and drop <br />(supported files: PDF, DOC, DOCX)</p>
+                                                <input ref={jdFileRef} type="file" className={`${styles["file-input"]}`} accept=".pdf,.doc,.docx" multiple onChange={e => {
+                                                    // setParseType('JDFileUpload');
+                                                    const MAX_FILE_SIZE = 500 * 1024; // 500 KB in bytes
+                                                    const isFileSizeValid = e.target.files[0].size <= MAX_FILE_SIZE;
+                                                    if (!isFileSizeValid) {
+                                                        message?.error('Max file size 500 KB');
+                                                        return
+                                                    }
+                                                    handleJDUpload(e.target.files[0])
+                                                    // setJobDesData(prev => ({ ...prev, jdFile: e.target.files[0], jobDescription: '', jdURL: '' }))
+                                                }} />
+                                                <div className={`${styles["file-list"]}`} style={{ display: jobDesData?.jdFile?.length === 0 ? 'none' : 'block' }} onClick={e => {
+                                                    e.stopPropagation();
+                                                }}>
+                                                    {jobDesData?.jdFile?.length && <div className={`${styles["file-item"]}`}>
+                                                        <span className={`${styles["file-name"]}`}>
+
+                                                            <a
+                                                                rel="noreferrer"
+                                                                href={
+                                                                    NetworkInfo.PROTOCOL +
+                                                                    NetworkInfo.DOMAIN +
+                                                                    "Media/JDParsing/JDfiles/" +
+                                                                    jobDesData?.jdFile
+                                                                }
+                                                                style={{ textDecoration: "underline" }}
+                                                                target="_blank"
+                                                            >{jobDesData?.jdFile}</a></span>
+                                                        <button type="button" className={`${styles["file-delete"]}`} onClick={e => {
+                                                            e.stopPropagation();
+                                                            setJobDesData(prev => ({ ...prev, jdFile: '' }))
+                                                        }}></button>
+                                                    </div>}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                
+                                </div>
 
-                                 <div className={`${styles["row"]}`}>
-                                        <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
-                                            <div className={`${styles["form-group"]}`}>
-                                               
-                                                <ReactQuill
 
-                                                    theme="snow"
-                                                    className="newQuillEditor"
-                                                    value={jobDesData?.jobDescription}
-                                                    name="parametersHighlight"
-                                                    onChange={(val) => {
-                                                        // setParseType("Text_Parsing");
-                                                        setJobDesData(prev => ({ ...prev, jobDescription: val}))
-                                                        //   let sanitizedContent = sanitizeLinks(val);
-                                                        //   // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                                                        //   setValue("parametersHighlight", sanitizedContent)
-                                                    }}
+                                <div className={`${styles["row"]}`}>
+                                    <div className={`${styles["cols"]} ${styles["col-lg-12"]}`}>
+                                        <div className={`${styles["form-group"]}`}>
 
-                                                />
+                                            <ReactQuill
 
-                                                 {formValidationError && (isQuillEmpty(jobDesData?.jobDescription))  && <p className={`${styles["fieldError"]}`}>please provide Job description </p>}
-                                                {/* <div className={`${styles["rich-text-editor-wrapper"]}`}>
+                                                theme="snow"
+                                                className="newQuillEditor"
+                                                value={jobDesData?.jobDescription}
+                                                name="parametersHighlight"
+                                                onChange={(val) => {
+                                                    // setParseType("Text_Parsing");
+                                                    setJobDesData(prev => ({ ...prev, jobDescription: val }))
+                                                    //   let sanitizedContent = sanitizeLinks(val);
+                                                    //   // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
+                                                    //   setValue("parametersHighlight", sanitizedContent)
+                                                }}
+
+                                            />
+
+                                            {formValidationError && (isQuillEmpty(jobDesData?.jobDescription)) && <p className={`${styles["fieldError"]}`}>please provide Job description </p>}
+                                            {/* <div className={`${styles["rich-text-editor-wrapper"]}`}>
                                             <div id="job-description-toolbar" className={`${styles["ql-toolbar"]} ${styles["ql-snow"]}`}>
                                                 <span className={`${styles["ql-formats"]}`}>
                                                     <button type="button" className={`${styles["ql-bold"]}`}><svg viewBox="0 0 18 18"> <path class="ql-stroke" d="M5,4H9.5A2.5,2.5,0,0,1,12,6.5v0A2.5,2.5,0,0,1,9.5,9H5A0,0,0,0,1,5,9V4A0,0,0,0,1,5,4Z"></path> <path class="ql-stroke" d="M5,9h5.5A2.5,2.5,0,0,1,13,11.5v0A2.5,2.5,0,0,1,10.5,14H5a0,0,0,0,1,0,0V9A0,0,0,0,1,5,9Z"></path> </svg></button>
@@ -2480,11 +2574,11 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                             <div id="job-description-editor" className={`${styles["rich-text-editor"]}`}></div>
                                             <input type="hidden" name="job-description" id="job-description-input" />
                                         </div> */}
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    {/* <div className={`${styles["row"]} ${styles['form-separator-wrapper']}`}>
+                                {/* <div className={`${styles["row"]} ${styles['form-separator-wrapper']}`}>
                                         <div className={`${styles["cols"]} ${styles["col-lg-3"]}`}>
                                             <div className={`${styles["form-separator"]}`}>
                                                 <span className={`${styles["separator-text"]}`}>OR</span>
@@ -2492,9 +2586,9 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                         </div>
                                     </div> */}
 
-                               
 
-                              
+
+
 
 
                             </div>
@@ -2596,7 +2690,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                         <div className={`${styles["form-group"]}  ${styles["multiselect"]}`}>
                                             <label className={`${styles["form-label"]}`}>Variable & equity (optional)</label>
                                             <input type="hidden" name="variable-equity" id="variable-equity-input" />
- <Select
+                                            <Select
                                                 showSearch
                                                 mode="tags"
                                                 style={{ width: '100%' }}
@@ -2645,20 +2739,20 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                             </div>
                         </section>
 
-                        
+
                         {/* <!-- Enhance Talent Matchmaking Section --> */}
                         <section className={`${styles["form-section"]}`}>
                             <h2 className={`${styles["section-title"]} ${styles["md-1"]}`}>Additional</h2>
-                             <div className={`${styles["form-rows"]}`}>
+                            <div className={`${styles["form-rows"]}`}>
                                 <div className={`${styles["row"]}`}>
                                     <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
-                                         <input type="text" className={`${styles["form-input"]}`} placeholder="Add CTP Link" value={basicFormFields?.ctpLink} 
-                                                onChange={(e) => setBasicFormFields(prev => ({ ...prev, ctpLink: e.target.value }))} />
+                                        <input type="text" className={`${styles["form-input"]}`} placeholder="Add CTP Link" value={basicFormFields?.ctpLink}
+                                            onChange={(e) => setBasicFormFields(prev => ({ ...prev, ctpLink: e.target.value }))} />
                                     </div>
 
-                                     <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
-                                         <input type="text" className={`${styles["form-input"]}`} placeholder="Add Discovery Call Link" value={basicFormFields?.discoveryCallLink} 
-                                                onChange={(e) => setBasicFormFields(prev => ({ ...prev, discoveryCallLink: e.target.value }))} />
+                                    <div className={`${styles["cols"]} ${styles['col-lg-6']}`}>
+                                        <input type="text" className={`${styles["form-input"]}`} placeholder="Add Discovery Call Link" value={basicFormFields?.discoveryCallLink}
+                                            onChange={(e) => setBasicFormFields(prev => ({ ...prev, discoveryCallLink: e.target.value }))} />
                                     </div>
                                 </div>
                             </div>
@@ -2678,7 +2772,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                                 <div className={`${styles["autocomplete-dropdown"]}`}></div>
                                             </div> */}
                                             <Select
-                                             mode="tags"
+                                                mode="tags"
                                                 showSearch
                                                 filterOption={(input, option) =>
                                                     option.value?.toLowerCase().includes(input.toLowerCase())
@@ -2723,11 +2817,11 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
                                     <div className={`${styles["cols"]} ${styles['col-lg-12']}`}>
                                         <div className={`${styles["form-group"]}`}>
                                             <label className={`${styles["form-label"]}`}>Highlight any key parameters or things to consider for finding the best match talents</label>
-                                             <textarea type="text" className={`${styles["form-input"]}`} placeholder=""  value={enhanceMatchmakingFormFields?.highlight} rows={2}
-                                                 onChange={(val) => {
+                                            <textarea type="text" className={`${styles["form-input"]}`} placeholder="" value={enhanceMatchmakingFormFields?.highlight} rows={2}
+                                                onChange={(val) => {
                                                     setEnhanceMatchmakingFormFields(prev => ({ ...prev, highlight: val }))
 
-                                                }}/>
+                                                }} />
                                             {/* <ReactQuill
 
                                                 theme="snow"
@@ -2749,7 +2843,7 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
 
                         {/* <!-- Form Actions --> */}
                         <section className={`${styles["form-actions"]}`}>
-                          {+hrid === 0 && <button type="button" name="save" className={`${styles["btn-save"]}`} onClick={() => handleNext(true)}>Save As Draft</button>} 
+                            {+hrid === 0 && <button type="button" name="save" className={`${styles["btn-save"]}`} onClick={() => handleNext(true)}>Save As Draft</button>}
                             <button type="button" name="next" className={`${styles["btn-next"]}`} onClick={() => handleNext(false)}>{+hrid === 0 ? "Create" : "Save"} HR</button>
                         </section>
                     </form>
@@ -2757,24 +2851,24 @@ if(linkResponse.statusCode === HTTPStatusCode.OK){
             </div>
 
             <Modal
-            open={showJDConfirmation}
-            onCancel={() => setShowJDConfirmation(false)}
-            footer={null}
-            centered  
+                open={showJDConfirmation}
+                onCancel={() => setShowJDConfirmation(false)}
+                footer={null}
+                centered
             >
-                <div style={{paddingTop:'10px'}} >
+                <div style={{ paddingTop: '10px' }} >
 
                     <p>Updating the job description will overwrite the existing description. Do you want to proceed?</p>
 
                     <div>
-                        <button className={`${styles["btn-next"]}`} onClick={()=>{
-                            setJobDesData(prev => ({ ...prev,jobDescription: tempJD}))
+                        <button className={`${styles["btn-next"]}`} onClick={() => {
+                            setJobDesData(prev => ({ ...prev, jobDescription: tempJD }))
                             setShowJDConfirmation(false)
                         }}>Confirm</button>
-                        <button className={`${styles["btn-save"]}`} style={{marginLeft: '10px'}} onClick={() => setShowJDConfirmation(false)}>Cancel</button>
+                        <button className={`${styles["btn-save"]}`} style={{ marginLeft: '10px' }} onClick={() => setShowJDConfirmation(false)}>Cancel</button>
                     </div>
                 </div>
-                
+
             </Modal>
         </main>
     )
