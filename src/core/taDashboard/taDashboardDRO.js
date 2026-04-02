@@ -282,6 +282,29 @@ export const TaDashboardDAO = {
             return errorDebug(error, 'TaDashboardDAO.getHRTalentsWiseRecruiterDashboardDAO');
         }
     },
+     getHRTalentsWiseRecruiterMultimonthDashboardDAO:async function (pl) {
+        try {
+            const taResult = await TaDashboardAPI.getHRTalentsWiseRecruiterMultimonthDashboardRequest(pl);
+            if (taResult) {
+                const statusCode = taResult['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = taResult.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult.details,
+                    };
+                } else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    let deletedResponse =
+                        UserSessionManagementController.deleteAllSession();
+                    if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'TaDashboardDAO.getHRTalentsWiseRecruiterMultimonthDashboardDAO');
+        }
+    },
        getHRTalentsWiseRecruiterInterviewDashboardDAO:async function (pl) {
         try {
             const taResult = await TaDashboardAPI.getHRTalentsWiseRecruiterInterviewDashboardReq(pl);
