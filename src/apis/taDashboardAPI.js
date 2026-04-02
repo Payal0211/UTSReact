@@ -185,6 +185,22 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getHRTalentsWiseRecruiterDashboardRequest');
 		}
 	},
+	getHRTalentsWiseRecruiterMultimonthDashboardRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportsAPI.GET_HR_TALENTS_WISE_MM_DESHBOARD + `?monthStr=${pl?.month}&yearStr=${pl?.year}&tAUserID=${pl?.tAUserID}&optiontype=${pl?.optiontype}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getHRTalentsWiseRecruiterMultimonthDashboardRequest');
+		}
+	},
 	getHRTalentsWiseRecruiterInterviewDashboardReq:async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =

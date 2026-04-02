@@ -374,6 +374,15 @@
     padding-bottom: 0px !important;
 }
 
+.filterSetsInner2 [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 12px 10px !important;
+    height: 49px !important;
+    min-height: 44px ;
+    overflow: scroll;
+    /* width:200px */
+}
+
+
 .filterSetsInner p{
     margin: 0 0 0 10px;
     text-decoration: underline;
