@@ -1509,7 +1509,7 @@ const TalentList = ({
 													style={{ marginLeft: "auto", cursor: "pointer" }}
 													onClick={() => {
 														setEditUplersFeesPerModal(true)
-														let per = item?.OnBoardUplersFeesPercentage.replace('%', '').trim()
+														let per = item?.OnBoardUplersFeesPercentage.match(/\d+(\.\d+)?/)?.[0]
 														setofferedCTCDetails({ uplersFees: per, onBoardId: item.OnBoardId })
 													}}
 												>
