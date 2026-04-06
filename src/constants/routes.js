@@ -217,6 +217,10 @@ const ImmediateJoiners = React.lazy(() =>
 const RecruiterDashboardReport = React.lazy(() => 
 	import('modules/report/screens/clientDashboardReport/RecruiterDashboardReport')
 )
+
+const RecruiterDashboardMultiMonthsReport = React.lazy(() => 
+	import('modules/report/screens/clientDashboardReport/RecruiterDashboardMultiMonthsReport')
+)
 const InterviewReschedule = React.lazy(() => 
 	import('modules/report/screens/clientDashboardReport/interviewReschedule')
 )
@@ -331,6 +335,7 @@ export default class UTSRoutes {
 	static TALENT_DOCUMENTS = '/talentDocument'
 	static TALENT_NOTES = '/talentNotes';
 	static RECRUITER_DASHBOARD_REPORT = '/RevenueDashboardReport';
+	static RECRUITER_DASHBOARD_MULTI_MONTH_REPORT = '/RevenueDashboardMonthsReport';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
 	static AM_REPORT = '/amReport';
 	static COMPANY_CATEGORY = '/companyCategory'
@@ -726,6 +731,11 @@ export const navigateToComponent = {
 [UTSRoutes.RECRUITER_DASHBOARD_REPORT]: (
 	<Suspense>
 		<RecruiterDashboardReport />
+	</Suspense>
+),
+[UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT]:(
+	<Suspense>
+		<RecruiterDashboardMultiMonthsReport />
 	</Suspense>
 ),
 [UTSRoutes.AM_REPORT]: (

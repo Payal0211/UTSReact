@@ -193,6 +193,7 @@ export class ReportType {
 	static RECRUITER_REPORT = 'RecruiterReport'
 	static CLIENT_DASHBOARD_REPORT = 'ClientDashboardReport'
 	static RECRUITER_DASHBOARD_REPORT = 'RecruiterDashboardReport'
+	static RECRUITER_DASHBOARD_M_M_REPORT = 'RecruiterDashboardMultipleMonthReport'
 	static INTERVIEW_RESCHEDULE_DASHBOARD = 'RecruiterRescheduledInterviewCount'
 	static DAILY_SNAPSHOT_REPORT = 'DailySnapshotReport'
 	static AM_WEEK_WISE_REPORT = 'AMWeekWiseReport'
@@ -264,6 +265,7 @@ export class ReportsAPI {
 	static SLA_FILTER = 'GETSLAFilters';
 	static TALENT_DETAIL_POPUP = 'TalentDetailPopup';
 	static GET_HR_TALENTS_WISE_DESHBOARD = 'GetHRTalentsWiseRecruiterDashboard'
+	static GET_HR_TALENTS_WISE_MM_DESHBOARD = 'GetHRTalentsWiseRecruiterDashboardMultipleMonthReport'
 	static GET_INTERVIEW_WISE_RESCHEDULE_DESHBOARD = 'GetRecruiterRescheduledInterviewDetails '
 }
 
