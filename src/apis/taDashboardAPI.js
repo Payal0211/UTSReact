@@ -20,6 +20,38 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getAllMasterRequest');
 		}
 	},
+	getAllMasterContractRequest: async function (type) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_ALL_MASTER_CONTRACT_Data + `${type? `?reportType=${type}` : ''}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getAllMasterContractRequest');
+		}
+	},
+	getTalentWiseReportContractRequest: async function (query) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TALENT_WISE_REPORT_CONTRACT + `${query}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getTalentWiseReportContractRequest');
+		}
+	},
     getAllTAListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -35,6 +67,23 @@ export const TaDashboardAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'TaDashboardAPI.getAllTAListRequest');
+		}
+	},
+	getAllTATaskListRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TA_TASK_LIST_DETAILS
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getAllTATaskListRequest');
 		}
 	},
     updateTAListRequest: async function (payload) {
@@ -232,6 +281,23 @@ export const TaDashboardAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'TaDashboardAPI.getGoalsDetailsRequest');
+		}
+	},
+	GetTATargetsDetails_ContractRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TA_TARGETS_CONTRACT
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.GetTATargetsDetails_ContractRequest');
 		}
 	},
     geAllTAUSERSRequest: async function () {
