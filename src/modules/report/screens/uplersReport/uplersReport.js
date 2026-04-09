@@ -578,11 +578,17 @@ export default function UplersReport() {
                                                   <li>NASA Total:  <strong style={{marginLeft:'10px'}}>{summeryRevenueData[0]?.nasa_Total_Str
                           ? summeryRevenueData[0]?.nasa_Total_Str
                           : 0}</strong> </li>
-                                                  <li>Shunya Total: <strong style={{marginLeft:'10px'}}> {summeryRevenueData[0]?.shunya_Total_Str
+                                                  <li>Phoenix Total: <strong style={{marginLeft:'10px'}}> {summeryRevenueData[0]?.shunya_Total_Str
                           ? summeryRevenueData[0]?.shunya_Total_Str
                           : 0}</strong>  </li>
                                                   <li>Meteoroid Total:  <strong style={{marginLeft:'10px'}}>{summeryRevenueData[0]?.meteoroiD_Total_Str
                           ? summeryRevenueData[0]?.meteoroiD_Total_Str
+                          : 0} </strong> </li>
+                            <li>Shivam Total:  <strong style={{marginLeft:'10px'}}>{summeryRevenueData[0]?.shivam_Total_Str
+                          ? summeryRevenueData[0]?.shivam_Total_Str
+                          : 0} </strong> </li>
+                          <li>Nova Total:  <strong style={{marginLeft:'10px'}}>{summeryRevenueData[0]?.nova_Total_Str
+                          ? summeryRevenueData[0]?.nova_Total_Str
                           : 0} </strong> </li>
                                                 </ul>
                                              
