@@ -480,6 +480,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isChildren : false					
 				}),
 				new SideBarModels({
+					id: 'RecruiterDashboard',
+					title: 'Recruiter Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT,
+					isVisible: isAccess(usertypeID, 'RecruiterDashboard'),
+					isChildren : false					
+				}),
+				new SideBarModels({
 					id: 'DailySnapshot',
 					title: 'Daily Snapshot',
 					isActive: false,
@@ -495,22 +503,15 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'Recruiter'),
 					isChildren : false					
 				}),
-					new SideBarModels({
-					id: 'RecruiterDashboard',
-					title: 'Recruiter Dashboard',
-					isActive: false,
-					navigateTo: UTSRoutes.RECRUITER_DASHBOARD_REPORT,
-					isVisible: isAccess(usertypeID, 'RecruiterDashboard'),
-					isChildren : false					
-				}),
-					new SideBarModels({
-					id: 'RecruiterDashboardMM',
-					title: 'Recruiter Multi-Month Dashboard',
-					isActive: false,
-					navigateTo: UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT,
-					isVisible: isAccess(usertypeID, 'RecruiterDashboard'),
-					isChildren : false					
-				}),
+				
+				// 	new SideBarModels({
+				// 	id: 'RecruiterDashboardMM',
+				// 	title: 'Recruiter Multi-Month Dashboard',
+				// 	isActive: false,
+				// 	navigateTo: UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT,
+				// 	isVisible: isAccess(usertypeID, 'RecruiterDashboard'),
+				// 	isChildren : false					
+				// }),
 				new SideBarModels({
 					id: 'immediateJoiner',
 					title: 'Talent Joining',

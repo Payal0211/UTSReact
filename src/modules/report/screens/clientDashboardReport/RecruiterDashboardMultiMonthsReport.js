@@ -301,24 +301,24 @@ export default function RecruiterDashboardMultiMonthsReport() {
 
   const tableColumnsMemo = useMemo(() => {
     return [
+        // {
+        //     title: "TA Head",
+        //     dataIndex: "recruiterHead",
+        //     key: "recruiterHead",
+        //     align: "left",
+        //     width: "160px",
+        //     fixed: "left",
+        //     render: (text,row, index) => {
+        //      if( row.recruiter === 'Total'){return ''} 
+        //        return { props: {
+        //       rowSpan: row.rowSpan,
+        //       style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
+        //     },
+        //   children: text}
+        //       },
+        //   },
         {
-            title: "TA Head",
-            dataIndex: "recruiterHead",
-            key: "recruiterHead",
-            align: "left",
-            width: "160px",
-            fixed: "left",
-            render: (text,row, index) => {
-             if( row.recruiter === 'Total'){return ''} 
-               return { props: {
-              rowSpan: row.rowSpan,
-              style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
-            },
-          children: text}
-              },
-          },
-        {
-            title: "TA User",
+            title: "TA",
             dataIndex: "recruiter",
             key: "recruiter",
             align: "left",
@@ -374,13 +374,56 @@ export default function RecruiterDashboardMultiMonthsReport() {
           );
         },
       },
-          
+          {
+        title: <>Cur. Month <br/> Pipeline  </>,
+        dataIndex: "currentMonthPipeline",
+        key: "currentMonthPipeline",
+        align: "center",
+        width: "120px",
+        render: (text, result) => {
+          if (result.recruiter === 'Total') {
+            return    <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_CMP');
+              }}
+            >
+              {result.total_CurrentMonthPipeline ? result.total_CurrentMonthPipeline : ''}
+            </p>
+         
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'CMP');
+                // setTalentToMove(result);
+                // setProfileStatusID(2);
+                // setHRTalentListFourCount([]);
+              }}
+            >
+              {text ? text : '-'}
+            </p>
+          ) : (
+            text ? text : '-'
+          );
+        },
+      },  
   {
         title: <>Total Carry <br/> Forward Pipeline</>,
         dataIndex: "totalCarryForwardPipeline",
         key: "totalCarryForwardPipeline",
         align: "center",
-        width: "100px",
+        width: "150px",
         render: (text, result) => {
           if (result.recruiter === 'Total') {
             return    <p
@@ -427,7 +470,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         dataIndex: "totalPipelineInMonth",
         key: "totalPipelineInMonth",
         align: "center",
-        width: "100px",
+        width: "150px",
         render: (text, result) => {
           if (result.recruiter === 'Total') {
             return <p
@@ -795,11 +838,11 @@ export default function RecruiterDashboardMultiMonthsReport() {
         },
       },
       {
-        title: <>Interview Done to <br/> Selected (I2S %)</>,
+        title: <>R1 to  Selected <br/> (I2S %)</>,
         dataIndex: "interviewToSelectedPercent",
         key: "interviewToSelectedPercent",
         align: "center",
-        width: "130px",
+        width: "150px",
        render: (text, result) => {
            if (result.recruiter === 'Total') {
             return <p
@@ -877,7 +920,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         },
       },
          {
-        title: <># of joined Talents <br/> in the Month</>,
+        title: <>Joined Talents</>,
         dataIndex: "joinedTalentsInMonth",
         key: "joinedTalentsInMonth",
         align: "center",
@@ -1109,7 +1152,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
   };
 
   useEffect(() => {
-    getClientDashboardReport();
+    if(selectedHead){
+      getClientDashboardReport();
+    }
+    
   }, [pageIndex, pageSize, openTicketSearchText,tableFilteredState,monthDate,startDate,endDate,selectedHead]);
 
 
@@ -1144,7 +1190,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
           taUserIDs: null,
         },
       }); 
-       setSelectedHead("");
+      //  setSelectedHead("");
       setopenTicketSearchText("");
       setopenTicketDebounceText("");  
       setStartDate(firstDayOfMonth);
@@ -1152,106 +1198,68 @@ export default function RecruiterDashboardMultiMonthsReport() {
       setEndDate(today);  
       setDateTypeFilter(0);
   }
-
-  const exportColumns = [
-  { label: "TA Head", key: "recruiterHead" },
-  { label: "TA User", key: "recruiter" },
-
-  { label: "Revenue Goal", key: "revenueGoal" },
-  { label: "Total Carry Forward Pipeline", key: "totalCarryForwardPipeline" },
-  { label: "Total Pipeline", key: "totalPipelineInMonth" },
-  { label: "Multiplier of Goal", key: "multiplierOfGoal" },
-
-  { label: "Profiles Shared", key: "numberProfilesShared" },
-  { label: "R1 Interview Completed", key: "r1InterviewCompleted" },
-  { label: "R2 Interview Completed", key: "r2InterviewCompleted" },
-  { label: "R3 Interview Completed", key: "r3InterviewCompleted" },
-
-  { label: "Profile to R1 Ratio", key: "profileToR1Ratio" },
-  { label: "Talents Rejected in Interview", key: "talentsRejectedInInterview" },
-
-  { label: "Offer Dropout / Backout", key: "offerDropoutBackout" },
-  { label: "Offer Signed Revenue", key: "offerSignedRevenue" },
-  { label: "Joining Revenue", key: "joiningRevenue" },
-
-  { label: "Goal vs Achieved (%)", key: "goalVsAchievedPercent" },
+const exportColumns = [
+  { header: "TA", key: "recruiter" },
+  { header: "Revenue Goal", key: "revenueGoal" },
+  { header: "Current Month Pipeline", key: "currentMonthPipeline" },
+  { header: "Total Carry Forward Pipeline", key: "totalCarryForwardPipeline" },
+  { header: "Total Pipeline in Month", key: "totalPipelineInMonth" },
+  { header: "Multiplier of Goal", key: "multiplierOfGoal" },
+  { header: "Profiles Shared", key: "numberProfilesShared" },
+  { header: "R1 Interview Completed", key: "r1InterviewCompleted" },
+  { header: "R2 Interview Completed", key: "r2InterviewCompleted" },
+  { header: "R3 Interview Completed", key: "r3InterviewCompleted" },
+  { header: "Profile to R1 Ratio", key: "profileToR1Ratio" },
+  { header: "Talents Rejected in Interview", key: "talentsRejectedInInterview" },
+  { header: "Offer Dropout / Backout", key: "offerDropoutBackout" },
+  { header: "R1 to Selected (I2S %)", key: "interviewToSelectedPercent" },
+  { header: "Offer Signed Revenue", key: "offerSignedRevenue" },
+  { header: "Joined Talents", key: "joinedTalentsInMonth" },
+  { header: "Joining Revenue", key: "joiningRevenue" },
+  { header: "Goal vs Achieved %", key: "goalVsAchievedPercent" },
+  { header: "Pipeline to Joining %", key: "totalPipelineToJoiningPercent" }
 ];
-
 const getExportData = (data) => {
-  return data.map((item) => ({
-    recruiterHead: item.recruiterHead || "",
-    recruiter: item.recruiter === "Total" ? "Total" : item.recruiter || "",
+  return data.map((row) => {
+    const isTotal = row.recruiter === "Total";
 
-    revenueGoal: item.recruiter === "Total"
-      ? item.total_RevenueGoal
-      : item.revenueGoal,
+    return {
+      recruiter: isTotal ? "" : row.recruiter,
 
-    totalCarryForwardPipeline: item.recruiter === "Total"
-      ? item.total_TotalCarryForwardPipeline
-      : item.totalCarryForwardPipeline,
-
-    totalPipelineInMonth: item.recruiter === "Total"
-      ? item.total_TotalPipelineInMonth
-      : item.totalPipelineInMonth,
-
-    multiplierOfGoal: item.recruiter === "Total"
-      ? item.total_multiplierOfGoal
-      : item.multiplierOfGoal,
-
-    numberProfilesShared: item.recruiter === "Total"
-      ? item.total_NumberProfilesShared
-      : item.numberProfilesShared,
-
-    r1InterviewCompleted: item.recruiter === "Total"
-      ? item.total_R1InterviewCompleted
-      : item.r1InterviewCompleted,
-
-    r2InterviewCompleted: item.recruiter === "Total"
-      ? item.total_R2InterviewCompleted
-      : item.r2InterviewCompleted,
-
-    r3InterviewCompleted: item.recruiter === "Total"
-      ? item.total_R3InterviewCompleted
-      : item.r3InterviewCompleted,
-
-    profileToR1Ratio: item.recruiter === "Total"
-      ? item.total_profileToR1Ratio
-      : item.profileToR1Ratio,
-
-    talentsRejectedInInterview: item.recruiter === "Total"
-      ? item.total_TalentsRejectedInInterview
-      : item.talentsRejectedInInterview,
-
-    offerDropoutBackout: item.recruiter === "Total"
-      ? item.total_OfferDropoutBackout
-      : item.offerDropoutBackout,
-
-    offerSignedRevenue: item.recruiter === "Total"
-      ? item.total_OfferSignedRevenue
-      : item.offerSignedRevenue,
-
-    joiningRevenue: item.recruiter === "Total"
-      ? item.total_JoiningRevenue
-      : item.joiningRevenue,
-
-    goalVsAchievedPercent: item.recruiter === "Total"
-      ? item.total_goalVsAchievedPercent
-      : item.goalVsAchievedPercent,
-  }));
+      revenueGoal: isTotal ? row.total_RevenueGoal : row.revenueGoal,
+      currentMonthPipeline: isTotal ? row.total_CurrentMonthPipeline : row.currentMonthPipeline,
+      totalCarryForwardPipeline: isTotal ? row.total_TotalCarryForwardPipeline : row.totalCarryForwardPipeline,
+      totalPipelineInMonth: isTotal ? row.total_TotalPipelineInMonth : row.totalPipelineInMonth,
+      multiplierOfGoal: isTotal ? row.total_multiplierOfGoal : row.multiplierOfGoal,
+      numberProfilesShared: isTotal ? row.total_NumberProfilesShared : row.numberProfilesShared,
+      r1InterviewCompleted: isTotal ? row.total_R1InterviewCompleted : row.r1InterviewCompleted,
+      r2InterviewCompleted: isTotal ? row.total_R2InterviewCompleted : row.r2InterviewCompleted,
+      r3InterviewCompleted: isTotal ? row.total_R3InterviewCompleted : row.r3InterviewCompleted,
+      profileToR1Ratio: isTotal ? row.total_profileToR1Ratio : row.profileToR1Ratio,
+      talentsRejectedInInterview: isTotal ? row.total_TalentsRejectedInInterview : row.talentsRejectedInInterview,
+      offerDropoutBackout: isTotal ? row.total_OfferDropoutBackout : row.offerDropoutBackout,
+      interviewToSelectedPercent: isTotal ? row.total_interviewToSelectedPercent : row.interviewToSelectedPercent,
+      offerSignedRevenue: isTotal ? row.total_OfferSignedRevenue : row.offerSignedRevenue,
+      joinedTalentsInMonth: isTotal ? row.total_JoinedTalentsInMonth : row.joinedTalentsInMonth,
+      joiningRevenue: isTotal ? row.total_JoiningRevenue : row.joiningRevenue,
+      goalVsAchievedPercent: isTotal ? row.total_goalVsAchievedPercent : row.goalVsAchievedPercent,
+      totalPipelineToJoiningPercent: isTotal ? row.total_totalPipelineToJoiningPercent : row.totalPipelineToJoiningPercent,
+    };
+  });
 };
 
   const handleExport = (apiData) => {
-  const exportData = getExportData(clientData);
+ const exportData = getExportData(clientData);
 
-  const formattedData = exportData.map(row => {
-    let obj = {};
-    exportColumns.forEach(col => {
-      obj[col.label] = row[col.key];
-    });
-    return obj;
-  });
+  const headers = exportColumns.map(col => col.header);
 
-      downloadToExcel(formattedData,'Recruiter_Dashboard_Monthly_Report')  
+  const rows = exportData.map(row =>
+    exportColumns.map(col => row[col.key] ?? "")
+  );
+
+  const finalData = [headers, ...rows]; // ✅ add headers row
+
+      downloadToExcel(finalData,'Recruiter_Dashboard_Monthly_Report')  
   }
 
   return (

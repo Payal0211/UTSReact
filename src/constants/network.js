@@ -70,12 +70,16 @@ export class TalentInvoiceAPI {
 
 export class TaDashboardURL {
 	static GET_ALL_MASTER_Data = 'GetAllMastersData'
+	static GET_ALL_MASTER_CONTRACT_Data = 'GetAllMastersData_Contract '
 	static GET_TA_TASK_DETAILS = 'GetTATaskDetailsListing'
+	static GET_TA_TASK_LIST_DETAILS = 'GetTATaskDetailsListing_Contract '
 	static UPDATE_TA_TASK = 'InsertOrUpdateTATasks'
 	static GET_TA_COMPANY_List = 'GetTACompanyList'
 	static GET_HR_LIST_COMPANY = 'GetTAHRListCompanyWise'
 	static GET_HR_TALENT_DETAILS = 'GetHRRelatedTalentDetails'
 	static GET_TA_TARGETS = 'GetTATargetsDetails'
+	static GET_TA_TARGETS_CONTRACT = 'GetTATargetsDetails_Contract'
+	static GET_TALENT_WISE_REPORT_CONTRACT = 'GetTAWiseTalentDetails_Contract'
 	static ALL_TA_USERS = 'GetAllTAUsers'
 	static INSERT_TASK_COMMENT = 'InsertTaskComment'
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'

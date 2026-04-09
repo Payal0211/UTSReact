@@ -359,6 +359,7 @@ export class NewPagesRouts  {
 	static ALL_CLIENTS = '/w_allClients'
 	static ADD_NEW_COMPANY = "/w_addNewCompany/:companyID";
 	static ONBOARD = '/w_onBoardList';
+	static TADASHBOARD = '/w_tadashboard'
 }
 
 export const navigateToComponent = {
