@@ -389,7 +389,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_CM');
+                getTalentProfilesDetailsfromTable(result, 'T_CMP');
               }}
             >
               {result.total_CurrentMonthPipeline ? result.total_CurrentMonthPipeline : ''}
@@ -405,7 +405,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'CM');
+                getTalentProfilesDetailsfromTable(result, 'CMP');
                 // setTalentToMove(result);
                 // setProfileStatusID(2);
                 // setHRTalentListFourCount([]);
@@ -1190,7 +1190,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
           taUserIDs: null,
         },
       }); 
-       setSelectedHead("");
+      //  setSelectedHead("");
       setopenTicketSearchText("");
       setopenTicketDebounceText("");  
       setStartDate(firstDayOfMonth);
