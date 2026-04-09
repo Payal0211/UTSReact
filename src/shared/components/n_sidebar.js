@@ -174,10 +174,11 @@ export default function N_sidebar() {
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
                             <li><Link to={UTSRoutes.TADASHBOARDREPORT} className={`${stylesOBj['nav-subitem']}`}>TA Dashboard</Link></li>
+                            <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter Dashboard</Link></li>
                             <li><Link to={UTSRoutes.DAILYSNAPSHOT} className={`${stylesOBj['nav-subitem']}`}>Daily Snapshot</Link></li>
                             <li><Link to={UTSRoutes.RECRUITERREPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter</Link></li>
-                            <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter Dashboard</Link></li>
-                            <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter Multi-Month Dashboard</Link></li>
+                            
+                            {/* <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter Multi-Month Dashboard</Link></li> */}
                             <li><Link to={UTSRoutes.IMMEDIATEJOINER} className={`${stylesOBj['nav-subitem']}`}>Talent Joining</Link></li>
                             <li><Link to={UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE} className={`${stylesOBj['nav-subitem']}`}>Interview reschedule</Link></li>
                             <li><Link to={UTSRoutes.AVERAGE_SLA} className={`${stylesOBj['nav-subitem']}`}>Average SLA</Link></li>

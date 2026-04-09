@@ -14,6 +14,7 @@ import NewPreviewHrFields from 'modules/hiring request/components/hrFields/n_pev
 import New_all_clients_company from 'modules/allClients/n_allClients';
 import NewAddCompany from 'modules/company/screens/addCompany/n_addCompany';
 import NewEngagementList from 'modules/engagement/screens/engagementList/n_engagementList';
+import NewTADashboard from 'modules/taDashboard/n_taDashboard';
 
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
@@ -160,7 +161,12 @@ function App() {
 							element={<NewEngagementList />}
 						/>
 
-
+<Route
+							exact
+							key={NewPagesRouts.TADASHBOARD}
+							path={NewPagesRouts.TADASHBOARD}
+							element={<NewTADashboard/>}
+						/>
 					</Route>
 
 
