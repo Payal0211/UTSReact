@@ -3,7 +3,7 @@ export class NetworkInfo {
     static PROTOCOL_S = 'https://';
     // static domain = 'localhost:5162/';
     // static ATS_DOMAIN = '/atsstaging.uplers.com/api/';
-    static ATS_DOMAIN = 'ats.uplers.com/api/';
+    static ATS_DOMAIN = 'platform.uplers.com/api/';
     static ATS_TOKEN = 'y8sxutshp4gm2u4lsmsmlg';
     static ZOHO_AUTH = '4b441aae-d361-46e1-ad14-2b2114ffbe17'
     static ZOHO_DOMAIN = 'api-talentsupport.uplers.com/'
