@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import moment from 'moment';
 import TalentdetailsTable from './talentdetailsTable';
+import TotalAchievementTable from './totalAchievementTable';
 const { Option } = Select;
 function NewTADashboard() {
 const navigate = useNavigate()
@@ -23,9 +24,11 @@ const navigate = useNavigate()
     const [selectedHead, setSelectedHead] = useState('');
     const [userData, setUserData] = useState({});
     const [activeTable, setActiveTable] = useState('Dashboard')
+    const [activeTab, setActiveTab] = useState('Contract')
     const [filtersList, setFiltersList] = useState({});
     const [filteredTagLength, setFilteredTagLength] = useState(0);
     const [talentWiseReport,setTalentWiseReport] = useState([])
+    const [quarterlySummeryReport, setQuarterlySummeryReport] = useState([])
      const date = new Date();
      const [startDate, setStartDate] = useState(date);
         const [endDate, setEndDate] = useState(null);
@@ -92,6 +95,30 @@ let date = new Date()
         }
       }
 
+    const  getQuarterlySummeryReport = async () => {
+        let date = new Date()
+        let query = `?poduserid=${selectedHead}&month=${moment(date).month()}&year=${moment(date).year()}`
+        const result =  await TaDashboardDAO.getQuarterlySummeryReportContractDAO(query );
+        console.log('result', result)
+         if (result.statusCode === HTTPStatusCode.OK) {
+          setQuarterlySummeryReport(result && result?.responseBody);
+        } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+          // setLoading(false); 
+          return navigate(UTSRoutes.LOGINROUTE);
+        } else if (
+          result?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+        ) {
+          // setLoading(false);
+          return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+          return "NO DATA FOUND";
+        }
+    }
+
+      useEffect(() => {
+        selectedHead &&  getQuarterlySummeryReport()
+        }, [selectedHead]);
+
         useEffect(() => {
           getFilters();
           getTalentWiseReport()
@@ -133,10 +160,31 @@ let date = new Date()
 
             {/* <!-- Main Content Area --> */}
             <main className={`${stylesOBj["main-content"]}`}>
+
+                <div className={stylesOBj["toggle-group"]} style={{ width: '210px', margin: '10px 0 0 10px' }}>
+                        <button
+                            className={`${stylesOBj["toggle-btn"]}  ${activeTab === 'Full-Time' ? stylesOBj["toggle-btn-active"] : ''}`}
+                            onClick={() => {
+                                setActiveTab('Full-Time')
+                            }}
+                        >Full-Time</button>
+                        <button
+                            className={`${stylesOBj["toggle-btn"]} ${activeTab=== 'Contract' ? stylesOBj["toggle-btn-active"] : ''}`}
+                            onClick={() => {
+                                setActiveTab('Contract')
+                            }}
+                        >Contract</button>
+
+                    </div>
                 <div className={stylesOBj.filterContainer}>
 
                <TalentdetailsTable isLoading={isLoading} talentWiseReport={talentWiseReport}/>
                 </div>
+
+                  <div className={stylesOBj.filterContainer}>
+                    <h2 style={{fontWeight:'bold'}}>Total Achievement (Closure Month)</h2>
+                    <TotalAchievementTable quarterlySummeryReport={quarterlySummeryReport} />
+                  </div>
 
                 <div className={stylesOBj.filterContainer}>
                     <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>

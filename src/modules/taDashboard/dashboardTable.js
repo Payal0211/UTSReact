@@ -102,7 +102,11 @@ function DashboardTableComp({searchText, tableFilteredState , selectedHead}) {
                                 {/* <TABLEBODYComponent apiData={apiData} /> */}
 
                                 <tbody>
-                                  {TaListData.map((data , ind)=>{
+                                  { TaListData.length === 0 ? <tr>
+                                    <td colSpan={19} style={{ textAlign: "center", padding: "20px" }}>
+                                      No data available
+                                    </td>
+                                  </tr> : TaListData.map((data , ind)=>{
 
                                     return <tr>
                                         {/* TA Name */}

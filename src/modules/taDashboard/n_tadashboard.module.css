@@ -151,32 +151,6 @@
     border-right: 1px solid #4C4E641F;
 }
 
-/* Company column width */
-.data-table th:nth-child(4),
-.data-table td:nth-child(4) {
-    width: 220px;
-    min-width: 220px;
-    max-width: 220px;
-    white-space: normal;
-}
-
-/* Position column width */
-.data-table th:nth-child(5),
-.data-table td:nth-child(5) {
-    width: 300px;
-    min-width: 300px;
-    max-width: 300px;
-    white-space: normal;
-}
-
-/* Salary/Client Budget column width */
-.data-table th:nth-child(11),
-.data-table td:nth-child(11) {
-    width: 260px;
-    min-width: 260px;
-    max-width: 260px;
-    white-space: normal;
-}
 
 
 /* Toggle Buttons (All / FT / Contract) */
@@ -245,6 +219,9 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
+}
+.grandTotalRow td {
+    background-color: #fffae0;
 }
 
 .filter-btn {

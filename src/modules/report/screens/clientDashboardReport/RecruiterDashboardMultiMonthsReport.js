@@ -45,6 +45,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
   const [monthDate, setMonthDate] = useState(today);  
   const [startDate, setStartDate] = useState(firstDayOfMonth);
   const [endDate, setEndDate] = useState(today);
+  const [colTextVal,setColTextVal] = useState('')
   
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(100);
@@ -299,6 +300,19 @@ export default function RecruiterDashboardMultiMonthsReport() {
     return finalData;
   }
 
+  const handleTalentExport = (data) => {
+
+      let DataToExport = data.map((data) => {
+          let obj = {};
+          ProfileColumns.map(
+            (val) =>
+              val.title !== " " && (obj[`${val.title}`] = data[`${val.dataIndex}`])
+          );
+          return obj;
+        });
+        downloadToExcel(DataToExport,`Recruiter-${profileInfo?.recruiter}`);
+  }
+
   const tableColumnsMemo = useMemo(() => {
     return [
         // {
@@ -324,6 +338,11 @@ export default function RecruiterDashboardMultiMonthsReport() {
             align: "left",
             width: "150px",
             fixed: "left",
+            onCell: () => ({
+              style: {
+                backgroundColor: "#FAFAFA"
+              }
+            }),
             render: (text, result) => {
                 return text === "Total" 
                   ? "" 
@@ -390,13 +409,14 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_CMP');
+                setColTextVal(text)
               }}
             >
               {result.total_CurrentMonthPipeline ? result.total_CurrentMonthPipeline : ''}
             </p>
          
           }
-          return +text > 0 ? (
+          return +text !== 0 ? (
             <p
               style={{
                 color: "blue",
@@ -406,6 +426,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'CMP');
+                setColTextVal(text)
                 // setTalentToMove(result);
                 // setProfileStatusID(2);
                 // setHRTalentListFourCount([]);
@@ -434,13 +455,14 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TCF');
+                setColTextVal(text)
               }}
             >
               {result.total_TotalCarryForwardPipeline ? result.total_TotalCarryForwardPipeline : ''}
             </p>
          
           }
-          return +text > 0 ? (
+          return +text !== 0 ? (
             <p
               style={{
                 color: "blue",
@@ -450,6 +472,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'TCF');
+                setColTextVal(text)
                 // setTalentToMove(result);
                 // setProfileStatusID(2);
                 // setHRTalentListFourCount([]);
@@ -481,12 +504,13 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TP');
+                setColTextVal(text)
               }}
             >
               {result.total_TotalPipelineInMonth ? result.total_TotalPipelineInMonth : ''}
             </p>
           }
-          return +text > 0 ? (
+          return +text !== 0 ? (
             <p
               style={{
                 color: "blue",
@@ -496,7 +520,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'TP');
-             
+             setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -516,14 +540,15 @@ export default function RecruiterDashboardMultiMonthsReport() {
         render: (text, result) => {
           if (result.recruiter === 'Total') {
             return <p
-            //   style={{
-            //     fontWeight: "bold",
-            //     textDecoration: "underline",
-            //     cursor: "pointer",
-            //   }}
-            //   onClick={() => {
-            //     getTalentProfilesDetailsfromTable(result, 'T_MG');
-            //   }}
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_MG');
+                setColTextVal(text)
+              }}
             >
               {result.total_multiplierOfGoal ? result.total_multiplierOfGoal : ''}
             </p>
@@ -564,6 +589,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_P');
+                setColTextVal(text)
               }}
             >
               {result.total_NumberProfilesShared ? result.total_NumberProfilesShared : ''}
@@ -579,7 +605,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'P');
-              
+              setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -605,6 +631,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R1');
+                setColTextVal(text)
               }}
             >
               {result.total_R1InterviewCompleted ? result.total_R1InterviewCompleted : ''}
@@ -620,7 +647,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'R1');
-             
+             setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -646,6 +673,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R2');
+                setColTextVal(text)
               }}
             >
               {result.total_R2InterviewCompleted ? result.total_R2InterviewCompleted : ''}
@@ -661,7 +689,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'R2');
-             
+             setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -688,6 +716,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R3');
+                setColTextVal(text)
               }}
             >
               {result.total_R3InterviewCompleted ? result.total_R3InterviewCompleted : ''}
@@ -703,7 +732,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'R3');
-             
+             setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -770,6 +799,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TR');
+                setColTextVal(text)
               }}
             >
               {result.total_TalentsRejectedInInterview ? result.total_TalentsRejectedInInterview : ''}
@@ -785,7 +815,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'TR');
-            
+            setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -812,6 +842,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_OD');
+                setColTextVal(text)
               }}
             >
               {result.total_OfferDropoutBackout ? result.total_OfferDropoutBackout : ''}
@@ -827,7 +858,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'OD');
-            
+            setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -894,12 +925,13 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_OSR');
+                setColTextVal(text)
               }}
             >
               {result.total_OfferSignedRevenue ? result.total_OfferSignedRevenue : ''}
             </p>
           }
-          return +text > 0 ? (
+          return +text !== 0 ? (
             <p
               style={{
                 color: "blue",
@@ -909,7 +941,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'OSR');
-            
+            setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -935,12 +967,13 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_J');
+                setColTextVal(text)
               }}
             >
               {result.total_JoinedTalentsInMonth ? result.total_JoinedTalentsInMonth : ''}
             </p>
           }
-          return +text > 0 ? (
+          return +text !== 0 ? (
             <p
               style={{
                 color: "blue",
@@ -950,7 +983,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'J');
-            
+            setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -976,12 +1009,13 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_JR');
+                setColTextVal(text)
               }}
             >
               {result.total_JoiningRevenue ? result.total_JoiningRevenue : ''}
             </p>
           }
-          return +text > 0 ? (
+          return +text !== 0 ? (
             <p
               style={{
                 color: "blue",
@@ -991,7 +1025,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'JR');
-            
+            setColTextVal(text)
               }}
             >
               {text ? text : ''}
@@ -1538,9 +1572,9 @@ const getExportData = (data) => {
                          
             
                           <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
-                            TA : <strong>{profileInfo?.recruiter}</strong>
+                            TA : <strong>{profileInfo?.recruiter}</strong> ({colTextVal})
                           </p>
-            
+             
                           <input
                             type="text"
                             placeholder="Search talent..."
@@ -1555,6 +1589,14 @@ const getExportData = (data) => {
                                 minWidth: "260px",
                             }}
                           />
+
+                          <button
+                    className={clientDashboardStyles.btnPrimary}
+                    style={{height:'35px',padding:'5px 10px'}}
+                    onClick={() =>handleTalentExport(filteredTalentList)}
+                  >
+                    Export
+                  </button>
                       </div>           
             
                       {/* <div
