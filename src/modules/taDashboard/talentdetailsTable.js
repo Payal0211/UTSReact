@@ -26,17 +26,21 @@ function TalentdetailsTable({isLoading,talentWiseReport}) {
                                         <th>DP (INR)</th>
                                         <th>NR(USD)</th>
                                         <th>BILL RATE</th>
-                                        <th>DP / MONTH (USD)</th>
+                                        {/* <th>DP / MONTH (USD)</th> */}
                                         <th>TOTAL ACHIEVEMENT VALUE</th>
                                         <th>MONTH WISE</th>
-                                        <th>BACKOUT</th>
+                                        {/* <th>BACKOUT</th> */}
                                         <th>CLOSURE MONTH</th>
                                     </tr>
                                 </thead>
                                 {/* <TABLEBODYComponent apiData={apiData} /> */}
 
                                 <tbody>
-                                    {talentWiseReport.length > 0 && talentWiseReport.map((data, index)=>{
+                                    {talentWiseReport.length === 0 ? <tr>
+                                        <td colSpan={19} style={{ textAlign: "center", padding: "20px" }}>
+                                            No data available
+                                        </td>
+                                    </tr> : talentWiseReport.map((data, index)=>{
                                         return <tr>
                                             {/* RECRUITER NAME */}
                                             <td>{data.amAssignmentUser}</td>
@@ -71,13 +75,13 @@ function TalentdetailsTable({isLoading,talentWiseReport}) {
                                             {/* BILL RATE */}
                                             <td>{data.billRate}</td>
                                             {/* DP / MONTH (USD) */}
-                                            <td>{'na'}</td>
+                                            {/* <td>{'na'}</td> */}
                                             {/* TOTAL ACHIEVEMENT VALUE */}
                                             <td>{data.totalAchievementValue}</td>
                                             {/* MONTH WISE */}
                                             <td>{data.joinMonthWise}</td>
                                             {/* BACKOUT */}
-                                            <td>{'na'}</td>
+                                            {/* <td>{'na'}</td> */}
                                             {/* CLOSURE MONTH */}
                                             <td>{data.closureMonthWise}</td>
                                             

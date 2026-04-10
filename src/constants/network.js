@@ -80,6 +80,7 @@ export class TaDashboardURL {
 	static GET_TA_TARGETS = 'GetTATargetsDetails'
 	static GET_TA_TARGETS_CONTRACT = 'GetTATargetsDetails_Contract'
 	static GET_TALENT_WISE_REPORT_CONTRACT = 'GetTAWiseTalentDetails_Contract'
+	static GET_QUARTERLY_SUMMARY_REPORT_CONTRACT= 'TADasboardQuarterlySummary_Contract'
 	static ALL_TA_USERS = 'GetAllTAUsers'
 	static INSERT_TASK_COMMENT = 'InsertTaskComment'
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'
