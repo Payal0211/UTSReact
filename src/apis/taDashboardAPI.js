@@ -52,6 +52,22 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getTalentWiseReportContractRequest');
 		}
 	},
+	getQuarterlySummeryReportContractRequest: async function (query) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_QUARTERLY_SUMMARY_REPORT_CONTRACT + `${query}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getQuarterlySummeryReportContractRequest');
+		}
+	},
     getAllTAListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

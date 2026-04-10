@@ -53,7 +53,11 @@ function GoalTableComp({selectedHead,startDate,tableFilteredState}) {
                                 {/* <TABLEBODYComponent apiData={apiData} /> */}
 
                                 <tbody>
-                                  {goalList.map((data , ind)=>{
+                                  {goalList.length === 0 ? <tr>
+                                    <td colSpan={6} style={{ textAlign: "center", padding: "20px" }}>
+                                      No data available
+                                    </td>
+                                  </tr> : goalList.map((data , ind)=>{
 
                                     return <tr>
                                         <td>{data.ta}</td>
