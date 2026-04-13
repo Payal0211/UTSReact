@@ -2581,9 +2581,12 @@ export default function NegotiontoJoinee({
                   if (record.stage === "Selections/Closures") {
                     return uplersStyle.heighliteOrange;
                   }
-                  if (record.stage === "Dropouts" || record.stage === "Dropouts") {
-                    return uplersStyle.heighliteRed;
-                  }
+                   if (record.stage === "Dropouts" || record.stage === "Backout") {
+                  return uplersStyle.heighliteRed;
+                }
+                  if (record.stage === "Lost" ) {
+                  return uplersStyle.heighliteRedLight;
+                }
                   if (record.stage === "Total Active Pipeline") {
                     return uplersStyle.heighlitePurple;
                   }
@@ -2630,9 +2633,12 @@ export default function NegotiontoJoinee({
                   if (record.stage === "Selections/Closures") {
                     return uplersStyle.heighliteOrange;
                   }
-                  if (record.stage === "Dropouts" || record.stage === "Dropouts") {
-                    return uplersStyle.heighliteRed;
-                  }
+                    if (record.stage === "Dropouts" || record.stage === "Backout") {
+                  return uplersStyle.heighliteRed;
+                }
+                  if (record.stage === "Lost" ) {
+                  return uplersStyle.heighliteRedLight;
+                }
                   if (record.stage === "Total Active Pipeline") {
                     return uplersStyle.heighlitePurple;
                   }
@@ -2677,8 +2683,11 @@ export default function NegotiontoJoinee({
                 if (record.stage === "Selections/Closures") {
                   return uplersStyle.heighliteOrange;
                 }
-                if (record.stage === "Dropouts" || record.stage === "Dropouts") {
+                if (record.stage === "Dropouts" || record.stage === "Backout") {
                   return uplersStyle.heighliteRed;
+                }
+                  if (record.stage === "Lost" ) {
+                  return uplersStyle.heighliteRedLight;
                 }
                 if (record.stage === "Total Active Pipeline") {
                   return uplersStyle.heighlitePurple;

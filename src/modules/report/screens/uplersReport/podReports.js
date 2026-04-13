@@ -1258,7 +1258,7 @@ const getExportData = () => {
 
       // Carry Forward Status (bottom)
       if (
-        !["Joined", "Selections/Closures", "Added HR (New)"].includes(
+        !["Joined", "Selections/Closures", "Added HR (New)", "Preonboarding"].includes(
           showTalentCol?.stage
         )
       ) {
@@ -1855,7 +1855,7 @@ const getExportData = () => {
                               {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
                             </th>}
 
-                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Added HR (New)') &&<th
+                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') &&<th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -2057,7 +2057,7 @@ const getExportData = () => {
                                 {detail.talent}
                               </td>}
 
-                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Added HR (New)') &&<td
+                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures'|| showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') &&<td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
