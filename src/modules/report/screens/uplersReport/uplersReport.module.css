@@ -149,6 +149,9 @@ margin-bottom: 10px;
 .heighliteRed {
     background-color: rgb(242 214 214);
 }
+.heighliteRedLight {
+    background-color: rgb(255, 237, 237);
+}
 .heighlitePurple {
     background-color: #e7d1e7;
 }
