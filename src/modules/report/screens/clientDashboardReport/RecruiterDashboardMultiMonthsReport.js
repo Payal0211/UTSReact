@@ -46,6 +46,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
   const [startDate, setStartDate] = useState(firstDayOfMonth);
   const [endDate, setEndDate] = useState(today);
   const [colTextVal,setColTextVal] = useState('')
+  const [isCarryForwardPipelineClicked, setIsCarryForwardPipelineClicked] = useState(false);
   
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(100);
@@ -124,6 +125,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         title: "HR Title",
         dataIndex: "hrTitle",
         key: "hrTitle",
+        width: "200px",
       },  
       {
         title: "Talent",
@@ -134,49 +136,69 @@ export default function RecruiterDashboardMultiMonthsReport() {
         title: "Slot/Remark",
         dataIndex: "slotOrRemarkDetails",
         key: "slotOrRemarkDetails",
+      }
+
+    
+     
+    ];
+
+     const ProfileColumnsCarryForward = [
+      {
+        title: "Created Date" ,
+        dataIndex: "actionDate",
+        key: "actionDate",
+         width: "150px",
+        render:(text)=>{
+          return text
+        }
+      },  {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+         width: "150px",
       },
-      // {
-      //   title: "Status",
-      //   dataIndex: "talentStatus",
-      //   key: "talentStatus",
-      //   render: (_, item) => (
-      //     <div
-      //       style={{
-      //         display: "flex",
-      //         alignItems: "center",
-      //         justifyContent: "space-between",
-      //       }}
-      //     >
-      //       {All_Hiring_Request_Utils.GETTALENTSTATUS(
-      //         parseInt(item?.talentStatusColor),
-      //         item?.talentStatus
-      //       )}
-  
-      //       {(item?.statusID === 2 || item?.statusID === 3) && (
-      //         <IconContext.Provider
-      //           value={{
-      //             color: "#FFDA30",
-      //             style: { width: "16px", height: "16px", cursor: "pointer" },
-      //           }}
-      //         >
-      //           <Tooltip title="Move to Assessment" placement="top">
-      //             <span                  
-      //               onClick={() => {
-      //                 setMoveToAssessment(true);
-      //                 setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
-      //               }}
-      //               style={{ padding: "0" }}
-      //             >
-      //               {" "}
-      //               <BsClipboard2CheckFill />
-      //             </span>{" "}
-      //           </Tooltip>
-      //         </IconContext.Provider>
-      //       )}
-          
-      //     </div>
-      //   ),
-      // },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+         width: "170px",
+        render:(text,value)=>{
+           return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+           
+        }
+      },
+       {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        width: "200px",
+      },  
+    {
+        title: "CarryFwd Pipeline",
+        dataIndex: "hrPipeline",
+        key: "hrPipeline",
+             width: "170px",
+      },{
+        title: "CarryFwd Status",
+        dataIndex: "carryFwd_HRStatus",
+        key: "carryFwd_HRStatus",
+             width: "170px",
+         render: (_, param) => {
+            return All_Hiring_Request_Utils.GETHRSTATUS(
+              param?.carryFwd_HRStatusCode,
+              param?.carryFwd_HRStatus
+            );}
+      },
+    {
+        title: "HR Status",
+        dataIndex: "hrStatus",
+        key: "hrStatus",
+         render: (_, param) => {
+            return All_Hiring_Request_Utils.GETHRSTATUS(
+              param?.hrStatusCode ,
+              param?.hrStatus
+            );}
+      } 
     
      
     ];
@@ -191,6 +213,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
     let pl = {
       tAUserID:result.taUserID,
       optiontype:optiontype,
+      podID: selectedHead,
        "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
         "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
         "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? startDate.toLocaleDateString("en-US"): '',
@@ -201,7 +224,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
     setLoadingTalentProfile(false);
     if (hrResult.statusCode === HTTPStatusCode.OK) {
       setHRTalentList(hrResult.responseBody);
-      setFilteredTalentList(hrResult.responseBody);
+     setFilteredTalentList(hrResult.responseBody);
       setHRTalentListFourCount(hrResult.responseBody);
     } else {
       setHRTalentList([]);
@@ -304,10 +327,19 @@ export default function RecruiterDashboardMultiMonthsReport() {
 
       let DataToExport = data.map((data) => {
           let obj = {};
-          ProfileColumns.map(
+
+          if(isCarryForwardPipelineClicked){
+ProfileColumnsCarryForward.map(
             (val) =>
               val.title !== " " && (obj[`${val.title}`] = data[`${val.dataIndex}`])
           );
+          }else{
+              ProfileColumns.map(
+            (val) =>
+              val.title !== " " && (obj[`${val.title}`] = data[`${val.dataIndex}`])
+          );
+          }
+        
           return obj;
         });
         downloadToExcel(DataToExport,`Recruiter-${profileInfo?.recruiter}`);
@@ -393,54 +425,9 @@ export default function RecruiterDashboardMultiMonthsReport() {
           );
         },
       },
-          {
-        title: <>Cur. Month <br/> Pipeline  </>,
-        dataIndex: "currentMonthPipeline",
-        key: "currentMonthPipeline",
-        align: "center",
-        width: "120px",
-        render: (text, result) => {
-          if (result.recruiter === 'Total') {
-            return    <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_CMP');
-                setColTextVal(text)
-              }}
-            >
-              {result.total_CurrentMonthPipeline ? result.total_CurrentMonthPipeline : ''}
-            </p>
-         
-          }
-          return +text !== 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'CMP');
-                setColTextVal(text)
-                // setTalentToMove(result);
-                // setProfileStatusID(2);
-                // setHRTalentListFourCount([]);
-              }}
-            >
-              {text ? text : '-'}
-            </p>
-          ) : (
-            text ? text : '-'
-          );
-        },
-      },  
+      
   {
-        title: <>Total Carry <br/> Forward Pipeline</>,
+        title: <>Carry Forward <br/> Pipeline</>,
         dataIndex: "totalCarryForwardPipeline",
         key: "totalCarryForwardPipeline",
         align: "center",
@@ -456,6 +443,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TCF');
                 setColTextVal(text)
+                setIsCarryForwardPipelineClicked(true);
               }}
             >
               {result.total_TotalCarryForwardPipeline ? result.total_TotalCarryForwardPipeline : ''}
@@ -473,6 +461,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'TCF');
                 setColTextVal(text)
+                setIsCarryForwardPipelineClicked(true);
                 // setTalentToMove(result);
                 // setProfileStatusID(2);
                 // setHRTalentListFourCount([]);
@@ -486,7 +475,54 @@ export default function RecruiterDashboardMultiMonthsReport() {
         },
       },
     
-    
+         {
+        title: <>Cur. Month <br/> Pipeline  </>,
+        dataIndex: "currentMonthPipeline",
+        key: "currentMonthPipeline",
+        align: "center",
+        width: "120px",
+        render: (text, result) => {
+          if (result.recruiter === 'Total') {
+            return    <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_CMP');
+                setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_CurrentMonthPipeline ? result.total_CurrentMonthPipeline : ''}
+            </p>
+         
+          }
+          return +text !== 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'CMP');
+                setColTextVal(text)
+                setIsCarryForwardPipelineClicked(false);
+                // setTalentToMove(result);
+                // setProfileStatusID(2);
+                // setHRTalentListFourCount([]);
+              }}
+            >
+              {text ? text : '-'}
+            </p>
+          ) : (
+            text ? text : '-'
+          );
+        },
+      }, 
      
       {
         title: <>Total Pipeline<br/> in a month </>,
@@ -505,6 +541,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TP');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_TotalPipelineInMonth ? result.total_TotalPipelineInMonth : ''}
@@ -521,6 +558,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'TP');
              setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -548,6 +586,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_MG');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_multiplierOfGoal ? result.total_multiplierOfGoal : ''}
@@ -590,6 +629,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_P');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_NumberProfilesShared ? result.total_NumberProfilesShared : ''}
@@ -606,6 +646,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'P');
               setColTextVal(text)
+               setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -632,6 +673,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R1');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_R1InterviewCompleted ? result.total_R1InterviewCompleted : ''}
@@ -648,6 +690,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'R1');
              setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -674,6 +717,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R2');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_R2InterviewCompleted ? result.total_R2InterviewCompleted : ''}
@@ -690,6 +734,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'R2');
              setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -717,6 +762,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R3');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_R3InterviewCompleted ? result.total_R3InterviewCompleted : ''}
@@ -733,6 +779,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'R3');
              setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -800,6 +847,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TR');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_TalentsRejectedInInterview ? result.total_TalentsRejectedInInterview : ''}
@@ -816,6 +864,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'TR');
             setColTextVal(text)
+             setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -843,6 +892,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_OD');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_OfferDropoutBackout ? result.total_OfferDropoutBackout : ''}
@@ -859,6 +909,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'OD');
             setColTextVal(text)
+             setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -926,6 +977,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_OSR');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_OfferSignedRevenue ? result.total_OfferSignedRevenue : ''}
@@ -942,6 +994,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'OSR');
             setColTextVal(text)
+             setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -968,6 +1021,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_J');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_JoinedTalentsInMonth ? result.total_JoinedTalentsInMonth : ''}
@@ -984,6 +1038,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'J');
             setColTextVal(text)
+             setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -1010,6 +1065,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_JR');
                 setColTextVal(text)
+                 setIsCarryForwardPipelineClicked(false);
               }}
             >
               {result.total_JoiningRevenue ? result.total_JoiningRevenue : ''}
@@ -1026,6 +1082,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'JR');
             setColTextVal(text)
+             setIsCarryForwardPipelineClicked(false);
               }}
             >
               {text ? text : ''}
@@ -1355,7 +1412,7 @@ const getExportData = (data) => {
             </div>
                                   
 
-                    <div className={clientDashboardStyles.searchFilterSet} style={{marginLeft:'10px',width:'225px'}}>
+                    {/* <div className={clientDashboardStyles.searchFilterSet} style={{marginLeft:'10px',width:'225px'}}>
                       <SearchSVG style={{ width: "16px", height: "16px" }} />
                       <input
                         type={InputType.TEXT}
@@ -1378,7 +1435,7 @@ const getExportData = (data) => {
                           }}
                         />
                       )}
-                    </div>
+                    </div> */}
 
                     <p
                       className={clientDashboardStyles.resetText}
@@ -1786,7 +1843,7 @@ const getExportData = (data) => {
                           <div style={{ margin: "5px 10px" }}>
                             <Table
                               dataSource={filteredTalentList}
-                              columns={ProfileColumns}
+                              columns={isCarryForwardPipelineClicked ? ProfileColumnsCarryForward : ProfileColumns}
                               pagination={false}
                               scroll={{ y: "480px" }}
                             />
