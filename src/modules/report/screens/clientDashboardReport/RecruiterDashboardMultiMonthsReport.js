@@ -47,7 +47,8 @@ export default function RecruiterDashboardMultiMonthsReport() {
   const [endDate, setEndDate] = useState(today);
   const [colTextVal,setColTextVal] = useState('')
   const [isCarryForwardPipelineClicked, setIsCarryForwardPipelineClicked] = useState(false);
-  
+  const [revenueColumn, setRevenueColumn] = useState(false);
+
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(100);
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
@@ -96,9 +97,12 @@ export default function RecruiterDashboardMultiMonthsReport() {
     }, 300);
     setHTMLFilter(false);
   };
-    const ProfileColumns = [
+    const ProfileColumns = () => {
+
+      if(revenueColumn){
+         return [
       {
-        title: "Action Date",
+        title: "Created Date" ,
         dataIndex: "actionDate",
         key: "actionDate",
          width: "150px",
@@ -127,22 +131,37 @@ export default function RecruiterDashboardMultiMonthsReport() {
         key: "hrTitle",
         width: "200px",
       },  
-      {
+         {
         title: "Talent",
         dataIndex: "talent",
         key: "talent",
+          width: "100px",
       },
-      {
-        title: "Slot/Remark",
-        dataIndex: "slotOrRemarkDetails",
-        key: "slotOrRemarkDetails",
-      }
-
-    
+   
+    {
+        title: "Revenue",
+        dataIndex: "hrPipeline",
+        key: "hrPipeline",
+          width: "100px",
+      } ,
+    {
+        title: "HR Status",
+        dataIndex: "hrStatus",
+        key: "hrStatus",
+          width: "200px",
+         render: (_, param) => {
+            return All_Hiring_Request_Utils.GETHRSTATUS(
+              param?.hrStatusCode ,
+              param?.hrStatus
+            );}
+      } 
      
     ];
+      }
 
-     const ProfileColumnsCarryForward = [
+      if(isCarryForwardPipelineClicked){
+
+    return [
       {
         title: "Created Date" ,
         dataIndex: "actionDate",
@@ -193,6 +212,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         title: "HR Status",
         dataIndex: "hrStatus",
         key: "hrStatus",
+        width: "200px",
          render: (_, param) => {
             return All_Hiring_Request_Utils.GETHRSTATUS(
               param?.hrStatusCode ,
@@ -202,6 +222,57 @@ export default function RecruiterDashboardMultiMonthsReport() {
     
      
     ];
+      }
+      return  [
+      {
+        title: "Action Date",
+        dataIndex: "actionDate",
+        key: "actionDate",
+         width: "150px",
+        render:(text)=>{
+          return text
+        }
+      },  {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+         width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+         width: "170px",
+        render:(text,value)=>{
+           return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+           
+        }
+      },
+       {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        width: "200px",
+      },  
+      {
+        title: "Talent",
+        dataIndex: "talent",
+        key: "talent",
+         width: "100px",
+      },
+      {
+        title: "Slot/Remark",
+        dataIndex: "slotOrRemarkDetails",
+        key: "slotOrRemarkDetails",
+         width: "250px",
+      }
+
+    
+     
+    ];
+
+    } 
+   
   var date = new Date();
 
   const getTalentProfilesDetailsfromTable = async (
@@ -328,18 +399,21 @@ export default function RecruiterDashboardMultiMonthsReport() {
       let DataToExport = data.map((data) => {
           let obj = {};
 
-          if(isCarryForwardPipelineClicked){
-ProfileColumnsCarryForward.map(
+//           if(isCarryForwardPipelineClicked){
+// ProfileColumnsCarryForward.map(
+//             (val) =>
+//               val.title !== " " && (obj[`${val.title}`] = data[`${val.dataIndex}`])
+//           );
+//           }else{
+//               ProfileColumns().map(
+//             (val) =>
+//               val.title !== " " && (obj[`${val.title}`] = data[`${val.dataIndex}`])
+//           );
+//           }
+        ProfileColumns().map(
             (val) =>
               val.title !== " " && (obj[`${val.title}`] = data[`${val.dataIndex}`])
           );
-          }else{
-              ProfileColumns.map(
-            (val) =>
-              val.title !== " " && (obj[`${val.title}`] = data[`${val.dataIndex}`])
-          );
-          }
-        
           return obj;
         });
         downloadToExcel(DataToExport,`Recruiter-${profileInfo?.recruiter}`);
@@ -442,7 +516,7 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TCF');
-                setColTextVal(text)
+                setColTextVal(result.total_TotalCarryForwardPipeline)
                 setIsCarryForwardPipelineClicked(true);
               }}
             >
@@ -491,8 +565,8 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_CMP');
-                setColTextVal(text)
-                 setIsCarryForwardPipelineClicked(false);
+                setColTextVal(result.total_CurrentMonthPipeline)
+                 setIsCarryForwardPipelineClicked(true);
               }}
             >
               {result.total_CurrentMonthPipeline ? result.total_CurrentMonthPipeline : ''}
@@ -510,7 +584,7 @@ ProfileColumnsCarryForward.map(
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'CMP');
                 setColTextVal(text)
-                setIsCarryForwardPipelineClicked(false);
+                setIsCarryForwardPipelineClicked(true);
                 // setTalentToMove(result);
                 // setProfileStatusID(2);
                 // setHRTalentListFourCount([]);
@@ -540,8 +614,8 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TP');
-                setColTextVal(text)
-                 setIsCarryForwardPipelineClicked(false);
+                setColTextVal(result.total_TotalPipelineInMonth)
+                 setIsCarryForwardPipelineClicked(true);
               }}
             >
               {result.total_TotalPipelineInMonth ? result.total_TotalPipelineInMonth : ''}
@@ -558,7 +632,7 @@ ProfileColumnsCarryForward.map(
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'TP');
              setColTextVal(text)
-              setIsCarryForwardPipelineClicked(false);
+              setIsCarryForwardPipelineClicked(true);
               }}
             >
               {text ? text : ''}
@@ -585,7 +659,7 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_MG');
-                setColTextVal(text)
+                setColTextVal(result.total_multiplierOfGoal)
                  setIsCarryForwardPipelineClicked(false);
               }}
             >
@@ -628,7 +702,7 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_P');
-                setColTextVal(text)
+                setColTextVal(result.total_NumberProfilesShared)
                  setIsCarryForwardPipelineClicked(false);
               }}
             >
@@ -672,7 +746,7 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R1');
-                setColTextVal(text)
+                setColTextVal(result.total_R1InterviewCompleted)
                  setIsCarryForwardPipelineClicked(false);
               }}
             >
@@ -716,7 +790,7 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R2');
-                setColTextVal(text)
+                setColTextVal(result.total_R2InterviewCompleted)
                  setIsCarryForwardPipelineClicked(false);
               }}
             >
@@ -761,7 +835,7 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_R3');
-                setColTextVal(text)
+                setColTextVal(result.total_R3InterviewCompleted)
                  setIsCarryForwardPipelineClicked(false);
               }}
             >
@@ -846,7 +920,7 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_TR');
-                setColTextVal(text)
+                setColTextVal(result.total_TalentsRejectedInInterview)
                  setIsCarryForwardPipelineClicked(false);
               }}
             >
@@ -891,7 +965,7 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_OD');
-                setColTextVal(text)
+                setColTextVal(result.total_OfferDropoutBackout)
                  setIsCarryForwardPipelineClicked(false);
               }}
             >
@@ -976,8 +1050,9 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_OSR');
-                setColTextVal(text)
+                setColTextVal(result.total_OfferSignedRevenue)
                  setIsCarryForwardPipelineClicked(false);
+                 setRevenueColumn(true)
               }}
             >
               {result.total_OfferSignedRevenue ? result.total_OfferSignedRevenue : ''}
@@ -995,6 +1070,7 @@ ProfileColumnsCarryForward.map(
                 getTalentProfilesDetailsfromTable(result,'OSR');
             setColTextVal(text)
              setIsCarryForwardPipelineClicked(false);
+              setRevenueColumn(true)
               }}
             >
               {text ? text : ''}
@@ -1020,8 +1096,9 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_J');
-                setColTextVal(text)
+                setColTextVal(result.total_JoinedTalentsInMonth)
                  setIsCarryForwardPipelineClicked(false);
+                  setRevenueColumn(true)
               }}
             >
               {result.total_JoinedTalentsInMonth ? result.total_JoinedTalentsInMonth : ''}
@@ -1039,6 +1116,7 @@ ProfileColumnsCarryForward.map(
                 getTalentProfilesDetailsfromTable(result,'J');
             setColTextVal(text)
              setIsCarryForwardPipelineClicked(false);
+              setRevenueColumn(true)
               }}
             >
               {text ? text : ''}
@@ -1064,8 +1142,9 @@ ProfileColumnsCarryForward.map(
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result, 'T_JR');
-                setColTextVal(text)
+                setColTextVal(result.total_JoiningRevenue)
                  setIsCarryForwardPipelineClicked(false);
+                  setRevenueColumn(true)
               }}
             >
               {result.total_JoiningRevenue ? result.total_JoiningRevenue : ''}
@@ -1083,6 +1162,7 @@ ProfileColumnsCarryForward.map(
                 getTalentProfilesDetailsfromTable(result,'JR');
             setColTextVal(text)
              setIsCarryForwardPipelineClicked(false);
+              setRevenueColumn(true)
               }}
             >
               {text ? text : ''}
@@ -1607,6 +1687,8 @@ const getExportData = (data) => {
                       onCancel={() => {
                         setSearchTerm('')
                         setShowTalentProfiles(false);
+                         setIsCarryForwardPipelineClicked(false);
+                          setRevenueColumn(false)
                         setHRTalentListFourCount([]);
                         setFilteredTalentList([]);
                       }}
@@ -1656,184 +1738,6 @@ const getExportData = (data) => {
                   </button>
                       </div>           
             
-                      {/* <div
-                        style={{
-                          padding: "10px 15px",
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div
-                          className={taStyles.filterType}
-                          key={"Total Talents"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 0);
-                            setProfileStatusID(0);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 0 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Total Talents :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.totalTalents
-                                ? hrTalentListFourCount[0]?.totalTalents
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Profile shared"}
-                          onClick={() => {
-                            console.log(profileInfo,"profileInfo");                              
-                            getTalentProfilesDetails(profileInfo, 2);
-                            setProfileStatusID(2);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 2 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Profile shared :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.profileSharedCount
-                                ? hrTalentListFourCount[0]?.profileSharedCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"In Assessment"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 11);
-                            setProfileStatusID(11);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 11 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            In Assessment :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.assessmentCount
-                                ? hrTalentListFourCount[0]?.assessmentCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"In Interview"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 3);
-                            setProfileStatusID(3);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 3 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            In Interview :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.inInterviewCount
-                                ? hrTalentListFourCount[0]?.inInterviewCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Offered"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 4);
-                            setProfileStatusID(4);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 4 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Offered :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.offeredCount
-                                ? hrTalentListFourCount[0]?.offeredCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Hired"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 10);
-                            setProfileStatusID(10);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 10 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Hired :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.hiredCount
-                                ? hrTalentListFourCount[0]?.hiredCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Rejected, screening"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 7, 1);
-                            setProfileStatusID(71);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 71 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Screen Reject :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.screeningRejectCount
-                                ? hrTalentListFourCount[0]?.screeningRejectCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                        <div
-                          className={taStyles.filterType}
-                          key={"Rejected, Interview"}
-                          onClick={() => {
-                            getTalentProfilesDetails(profileInfo, 7, 2);
-                            setProfileStatusID(72);
-                          }}
-                          style={{
-                            borderBottom:
-                              profileStatusID === 72 ? "6px solid #FFDA30" : "",
-                          }}
-                        >
-                          <h2>
-                            Interview Reject :{" "}
-                            <span>
-                              {hrTalentListFourCount[0]?.interviewRejectCount
-                                ? hrTalentListFourCount[0]?.interviewRejectCount
-                                : 0}
-                            </span>
-                          </h2>
-                        </div>
-                      </div> */}
             
                         {loadingTalentProfile ? (
                           <div>
@@ -1843,7 +1747,7 @@ const getExportData = (data) => {
                           <div style={{ margin: "5px 10px" }}>
                             <Table
                               dataSource={filteredTalentList}
-                              columns={isCarryForwardPipelineClicked ? ProfileColumnsCarryForward : ProfileColumns}
+                              columns={ProfileColumns()}
                               pagination={false}
                               scroll={{ y: "480px" }}
                             />
@@ -1887,6 +1791,8 @@ const getExportData = (data) => {
                             onClick={() => {
                               setSearchTerm('')
                               setShowTalentProfiles(false);
+                              setIsCarryForwardPipelineClicked(false);
+                              setRevenueColumn(false)
                               setHRTalentListFourCount([]);
                               setFilteredTalentList([]);
                             }}
