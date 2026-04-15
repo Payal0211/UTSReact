@@ -329,7 +329,7 @@ const CompanyProfileCard = ({
                 //       UserAccountRole.SALES ||
                 //     userSessionMemo?.loggedInUserTypeID ===
                 //       UserAccountRole.SALES_MANAGER) && (allApiData?.ReplaceOnBoardID === null || allApiData?.ReplaceOnBoardID === 0 ) && clientDetail?.CompanyTypeID === 1 
-                allApiData?.dynamicCTA?.UpdateTR?.IsEnabled  &&  (
+                // allApiData?.dynamicCTA?.UpdateTR?.IsEnabled  &&  (
                     <button
                       onClick={() => {
                         setUpdateTR(true);
@@ -338,7 +338,8 @@ const CompanyProfileCard = ({
                     >
                       Update TR
                     </button>
-                  )}
+                  // )
+                  }
               </div>
               {/* <div className={CompanyProfileCardStyle.TRParked}>
 				<span>TR Parked:</span>&nbsp;&nbsp;
