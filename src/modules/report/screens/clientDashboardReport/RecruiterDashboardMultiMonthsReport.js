@@ -783,6 +783,94 @@ export default function RecruiterDashboardMultiMonthsReport() {
           );
         },
       },
+        {
+        title: <># Profiles <br/> Rejected</>,
+        dataIndex: "profilesReject",
+        key: "profilesReject",
+        align: "center",
+        width: "100px",
+        render: (text, result) => {
+          if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_PR');
+                setColTextVal(result.total_ProfilesReject)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_ProfilesReject ? result.total_ProfilesReject : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'PR');
+              setColTextVal(text)
+               setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        },
+      },
+        {
+        title: <>Assessment <br/> Reject</>,
+        dataIndex: "assesmentRejected",
+        key: "assesmentRejected",
+        align: "center",
+        width: "100px",
+        render: (text, result) => {
+          if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_AS');
+                setColTextVal(result.total_AssesmentRejected)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_AssesmentRejected ? result.total_AssesmentRejected : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'AS');
+              setColTextVal(text)
+               setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        },
+      },
       {
         title: <>R1 Interview <br/> Completed</>,
         dataIndex: "r1InterviewCompleted",
@@ -826,6 +914,50 @@ export default function RecruiterDashboardMultiMonthsReport() {
             text ? text : ''
           );
         },
+      },
+       {
+        title: <>R1 Interview <br/> Rejected</>,
+        dataIndex: "r1InterviewRejected",
+        key: "r1InterviewRejected",
+        align: "center",
+       width: "120px",
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R1R');
+                setColTextVal(result.total_R1InterviewRejected)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_R1InterviewRejected ? result.total_R1InterviewRejected : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'R1R');
+                setColTextVal(text)
+                setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        } 
       },
       {
         title: <>R2 Interview <br/> Completed</>,
@@ -871,7 +1003,50 @@ export default function RecruiterDashboardMultiMonthsReport() {
           );
         } 
       },
-     
+      {
+        title: <>R2 Interview <br/> Rejected</>,
+        dataIndex: "r2InterviewRejected",
+        key: "r2InterviewRejected",
+        align: "center",
+       width: "120px",
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R2R');
+                setColTextVal(result.total_R2InterviewRejected)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_R2InterviewRejected ? result.total_R2InterviewRejected : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'R2R');
+             setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        } 
+      },
       {
         title: <>R3 Interview <br/> Completed</>,
         dataIndex: "r3InterviewCompleted",
@@ -905,6 +1080,182 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'R3');
+             setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        } 
+      },
+       {
+        title: <>R3 Interview <br/> Rejected</>,
+        dataIndex: "r3InterviewRejected",
+        key: "r3InterviewRejected",
+        align: "center",
+       width: "120px",
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_R3R');
+                setColTextVal(result.total_R3InterviewRejected)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_R3InterviewRejected ? result.total_R3InterviewRejected : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'R3R');
+             setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        } 
+      },
+       {
+        title: <>No. of Talents <br/> rejected in <br/> interview</>,
+        dataIndex: "talentsRejectedInInterview",
+        key: "talentsRejectedInInterview",
+        align: "center",
+        width: "110px",
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_TR');
+                setColTextVal(result.total_TalentsRejectedInInterview)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_TalentsRejectedInInterview ? result.total_TalentsRejectedInInterview : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'TR');
+            setColTextVal(text)
+             setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        },
+      },
+     {
+        title: <>Negotiation<br/> Start  Count</>,
+        dataIndex: "negotiationStart",
+        key: "negotiationStart",
+        align: "center",
+       width: "120px",
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_NSC');
+                setColTextVal(result.total_NegotiationStart)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_NegotiationStart ? result.total_NegotiationStart : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'NSC');
+             setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        } 
+      },
+       {
+        title: <>Negotiation <br/> Start Revenue</>,
+        dataIndex: "negotiationStartRevenueValue",
+        key: "negotiationStartRevenueValue",
+        align: "center",
+       width: "120px",
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_NSR');
+                setColTextVal(result.NegotiationStartRevenueValue)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.NegotiationStartRevenueValue ? result.NegotiationStartRevenueValue : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'NSR');
              setColTextVal(text)
               setIsCarryForwardPipelineClicked(false);
               }}
@@ -957,51 +1308,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
           );
         } 
       },
-      {
-        title: <>No. of Talents <br/> rejected in <br/> interview</>,
-        dataIndex: "talentsRejectedInInterview",
-        key: "talentsRejectedInInterview",
-        align: "center",
-        width: "110px",
-        render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-              style={{
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_TR');
-                setColTextVal(result.total_TalentsRejectedInInterview)
-                 setIsCarryForwardPipelineClicked(false);
-              }}
-            >
-              {result.total_TalentsRejectedInInterview ? result.total_TalentsRejectedInInterview : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-              style={{
-                color: "blue",
-                fontWeight: "bold",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'TR');
-            setColTextVal(text)
-             setIsCarryForwardPipelineClicked(false);
-              }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        },
-      },
-    
+     
       {
         title: <>Offer  Dropout/ <br/> Backout</>,
         dataIndex: "offerDropoutBackout",
@@ -1045,6 +1352,50 @@ export default function RecruiterDashboardMultiMonthsReport() {
             text ? text : ''
           );
         },
+      },
+       {
+        title: <>Offer Signed <br/> Talent</>,
+        dataIndex: "offerSignedDirectPlacement",
+        key: "offerSignedDirectPlacement",
+        align: "center",
+       width: "120px",
+        render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_OST');
+                setColTextVal(result.total_OfferSignedDirectPlacement)
+                 setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {result.total_OfferSignedDirectPlacement ? result.total_OfferSignedDirectPlacement : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'OST');
+             setColTextVal(text)
+              setIsCarryForwardPipelineClicked(false);
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        } 
       },
       {
         title: <>R1 to  Selected <br/> (I2S %)</>,
