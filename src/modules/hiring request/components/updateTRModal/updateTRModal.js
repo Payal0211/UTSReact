@@ -41,10 +41,11 @@ const UpdateTR = ({
 	const [valueInfo, setValueInfo] = useState('');
 	const tempData = localStorage.setItem('isSubmitted', true);
 	const isGetSubmitted = localStorage.getItem('isSubmitted');
+	
 	const onSubmit = async () => {
 		setIsLoading(true);
 		if (updateTRDetail?.ClientDetail?.Availability === 'Part Time') {
-			if (updateTRDetail?.ClientDetail?.ActiveTR * 2 <= count) {
+			if (updateTRDetail?.ClientDetail?.NoOfTalents * 2 <= count) {
 				let data = {
 					noOfTR: count,
 					hiringRequestId: Number(id?.hrid),
@@ -58,25 +59,28 @@ const UpdateTR = ({
 					onCancel();
 					window.location.reload();
 				}
-			} else if (updateTRDetail?.ClientDetail?.ActiveTR * 2 > count) {
+			} else if (updateTRDetail?.ClientDetail?.NoOfTalents * 2 > count) {
 				let data = {
 					noOfTR: count,
 					hiringRequestId: Number(id?.hrid),
 					addtionalRemarks: additionalComments,
 					reasonForLossCancelled: reasonForLoss,
-					isFinalSubmit: valueInfo ? Boolean(isGetSubmitted) : false,
+					isFinalSubmit: true,
+					// isFinalSubmit: valueInfo ? Boolean(isGetSubmitted) : false,
 				};
 				const response = await hiringRequestDAO.editTRDAO(data);
 				if (response.responseBody.statusCode === HTTPStatusCode.OK) {
 					setValueInfo(response?.responseBody?.details);
-					if (valueInfo && Boolean(isGetSubmitted)) {
+					// if (valueInfo && Boolean(isGetSubmitted)) {
+					// 	onCancel();
+					// 	window.location.reload();
+					// }
 						onCancel();
 						window.location.reload();
-					}
 				}
 			}
 		} else {
-			if (updateTRDetail?.ClientDetail?.ActiveTR <= count) {
+			if (updateTRDetail?.ClientDetail?.NoOfTalents <= count) {
 				let data = {
 					noOfTR: count,
 					hiringRequestId: Number(id?.hrid),
@@ -91,21 +95,24 @@ const UpdateTR = ({
 					onCancel();
 					window.location.reload();
 				}
-			} else if (updateTRDetail?.ClientDetail?.ActiveTR > count) {
+			} else if (updateTRDetail?.ClientDetail?.NoOfTalents > count) {
 				let data = {
 					noOfTR: count,
 					hiringRequestId: Number(id?.hrid),
 					addtionalRemarks: additionalComments,
 					reasonForLossCancelled: reasonForLoss,
-					isFinalSubmit: valueInfo ? Boolean(isGetSubmitted) : false,
+					isFinalSubmit: true,
+					// isFinalSubmit: valueInfo ? Boolean(isGetSubmitted) : false,
 				};
 				const response = await hiringRequestDAO.editTRDAO(data);
 				if (response.responseBody.statusCode === HTTPStatusCode.OK) {
 					setValueInfo(response?.responseBody?.details);
-					if (valueInfo && Boolean(isGetSubmitted)) {
+					// if (valueInfo && Boolean(isGetSubmitted)) {
+					// 	onCancel();
+					// 	window.location.reload();
+					// }
 						onCancel();
 						window.location.reload();
-					}
 				}
 			}
 		}
@@ -113,24 +120,41 @@ const UpdateTR = ({
 	};
 
 	useEffect(() => {
-		if (updateTRDetail?.ClientDetail?.ActiveTR > count || valueInfo) {
+		// if (updateTRDetail?.ClientDetail?.ActiveTR > count || valueInfo) {
+		// 	if (updateTRDetail?.ClientDetail?.Availability === 'Part Time') {
+		// 		setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR * 2);
+		// 		setCount(updateTRDetail?.ClientDetail?.ActiveTR * 2);
+		// 	} else {
+		// 		setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR);
+		// 		setCount(updateTRDetail?.ClientDetail?.ActiveTR);
+		// 	}
+		// } else if (updateTRDetail?.ClientDetail?.ActiveTR <= count) {
+		// 	if (updateTRDetail?.ClientDetail?.Availability === 'Part Time') {
+		// 		setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR * 2);
+		// 		setCount(updateTRDetail?.ClientDetail?.ActiveTR * 2);
+		// 	} else {
+		// 		setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR);
+		// 		setCount(updateTRDetail?.ClientDetail?.ActiveTR);
+		// 	}
+		// }
+		if (updateTRDetail?.ClientDetail?.NoOfTalents > count || valueInfo) {
 			if (updateTRDetail?.ClientDetail?.Availability === 'Part Time') {
-				setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR * 2);
-				setCount(updateTRDetail?.ClientDetail?.ActiveTR * 2);
+				setValue('currentTR', updateTRDetail?.ClientDetail?.NoOfTalents * 2);
+				setCount(updateTRDetail?.ClientDetail?.NoOfTalents * 2);
 			} else {
-				setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR);
-				setCount(updateTRDetail?.ClientDetail?.ActiveTR);
+				setValue('currentTR', updateTRDetail?.ClientDetail?.NoOfTalents);
+				setCount(updateTRDetail?.ClientDetail?.NoOfTalents);
 			}
-		} else if (updateTRDetail?.ClientDetail?.ActiveTR <= count) {
+		} else if (updateTRDetail?.ClientDetail?.NoOfTalents <= count) {
 			if (updateTRDetail?.ClientDetail?.Availability === 'Part Time') {
-				setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR * 2);
-				setCount(updateTRDetail?.ClientDetail?.ActiveTR * 2);
+				setValue('currentTR', updateTRDetail?.ClientDetail?.NoOfTalents * 2);
+				setCount(updateTRDetail?.ClientDetail?.NoOfTalents * 2);
 			} else {
-				setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR);
-				setCount(updateTRDetail?.ClientDetail?.ActiveTR);
+				setValue('currentTR', updateTRDetail?.ClientDetail?.NoOfTalents);
+				setCount(updateTRDetail?.ClientDetail?.NoOfTalents);
 			}
 		}
-	}, [updateTRDetail?.ClientDetail?.ActiveTR]);
+	}, [updateTRDetail?.ClientDetail?.NoOfTalents]);
 
 	const increment = () => {
 		let val = count + 1
@@ -156,27 +180,46 @@ const UpdateTR = ({
 
 	const handleLabel = ()=>{
 
-		if(updateTRDetail?.ClientDetail?.Availability === 'Part Time'){
-			if(updateTRDetail?.ClientDetail?.ActiveTR * 2 === count  
+		// if(updateTRDetail?.ClientDetail?.Availability === 'Part Time'){
+		// 	if(updateTRDetail?.ClientDetail?.ActiveTR * 2 === count  
+		// 		|| count === 0 ){
+		// 			return	''
+		// 		}
+		// 	if(updateTRDetail?.ClientDetail?.ActiveTR * 2 < count){
+		// 		return 'Increase'
+		// 	}
+		// 	return 'Decrease'
+		// }else{
+		// 	if(updateTRDetail?.ClientDetail?.ActiveTR === count){
+		// 		return	''
+		// 	}
+		// 	if(updateTRDetail?.ClientDetail?.ActiveTR < count){
+		// 		return 'Increase'
+		// 	}
+		// 	return 'Decrease'
+		// }
+
+			if(updateTRDetail?.ClientDetail?.Availability === 'Part Time'){
+			if(updateTRDetail?.ClientDetail?.NoOfTalents * 2 === count  
 				|| count === 0 ){
 					return	''
 				}
-			if(updateTRDetail?.ClientDetail?.ActiveTR * 2 < count){
+			if(updateTRDetail?.ClientDetail?.NoOfTalents * 2 < count){
 				return 'Increase'
 			}
 			return 'Decrease'
 		}else{
-			if(updateTRDetail?.ClientDetail?.ActiveTR === count){
+			if(updateTRDetail?.ClientDetail?.NoOfTalents === count){
 				return	''
 			}
-			if(updateTRDetail?.ClientDetail?.ActiveTR < count){
+			if(updateTRDetail?.ClientDetail?.NoOfTalents < count){
 				return 'Increase'
 			}
 			return 'Decrease'
 		}
 		
 	}
-
+console.log('updateTRDetail', updateTRDetail);
 	return (
 		<div className={updateTRStyle.engagementModalContainer}>		
 			<div className={updateTRStyle.updateTRTitle}>
@@ -188,6 +231,10 @@ const UpdateTR = ({
 					) : (
 						<span>{updateTRDetail?.ClientDetail?.ActiveTR}</span>
 					)}
+
+					| Total TR:{' '}
+					
+						<span>{updateTRDetail?.ClientDetail?.NoOfTalents}</span>
 				</p>
 			</div>
 
@@ -236,7 +283,7 @@ const UpdateTR = ({
 						</div>
 					)}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time'
-						? (updateTRDetail?.ClientDetail?.ActiveTR * 2 <= count ||
+						? (updateTRDetail?.ClientDetail?.NoOfTalents * 2 <= count ||
 								isNaN(count) ||
 								valueInfo) && (
 								<div className={updateTRStyle.row}>
@@ -249,17 +296,17 @@ const UpdateTR = ({
 											name="additionalComments"
 											type={InputType.TEXT}
 											placeholder="Enter Additional Comments"
-											validationSchema={{
-												validate: (value) => {
-													if (!value) {
-														return 'Please enter the additional comments.';
-													}
-												},
-											}}
+											// validationSchema={{
+											// 	validate: (value) => {
+											// 		if (!value) {
+											// 			return 'Please enter the additional comments.';
+											// 		}
+											// 	},
+											// }}
 											rows={'4'}
-											required
+											// required
 											// required={
-											//     updateTRDetail?.ClientDetail?.ActiveTR <= count
+											//     updateTRDetail?.ClientDetail?.NoOfTalents <= count
 											//         ? true
 											//         : false
 											// }
@@ -268,7 +315,7 @@ const UpdateTR = ({
 									</div>
 								</div>
 						  )
-						: (updateTRDetail?.ClientDetail?.ActiveTR <= count ||
+						: (updateTRDetail?.ClientDetail?.NoOfTalents <= count ||
 								isNaN(count) ||
 								valueInfo) && (
 								<div className={updateTRStyle.row}>
@@ -281,21 +328,21 @@ const UpdateTR = ({
 											name="additionalComments"
 											type={InputType.TEXT}
 											placeholder="Enter Additional Comments"
-											validationSchema={{
-												validate: (value) => {
-													if (!value) {
-														return 'Please enter the additional comments.';
-													}
-												},
-											}}
+											// validationSchema={{
+											// 	validate: (value) => {
+											// 		if (!value) {
+											// 			return 'Please enter the additional comments.';
+											// 		}
+											// 	},
+											// }}
 											rows={'4'}
-											required
+											// required
 										/>
 									</div>
 								</div>
 						  )}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time'
-						? updateTRDetail?.ClientDetail?.ActiveTR * 2 > count &&
+						? updateTRDetail?.ClientDetail?.NoOfTalents * 2 > count &&
 						  !valueInfo && (
 								<div className={updateTRStyle.row}>
 									<div className={updateTRStyle.colMd12}>
@@ -320,7 +367,7 @@ const UpdateTR = ({
 									</div>
 								</div>
 						  )
-						: updateTRDetail?.ClientDetail?.ActiveTR > count &&
+						: updateTRDetail?.ClientDetail?.NoOfTalents > count &&
 						  !valueInfo && (
 								<div className={updateTRStyle.row}>
 									<div className={updateTRStyle.colMd12}>
@@ -351,7 +398,7 @@ const UpdateTR = ({
 							onClick={() => {
 								onCancel();
 								// window.location.reload();
-								setCount(updateTRDetail?.ClientDetail?.ActiveTR);
+								setCount(updateTRDetail?.ClientDetail?.NoOfTalents);
 								setValue('additionalComments', '');
 								setValue('reasonForLoss', '');
 							}}
@@ -360,7 +407,7 @@ const UpdateTR = ({
 						</button>
 
 						{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
-							updateTRDetail?.ClientDetail?.ActiveTR * 2 === count  
+							updateTRDetail?.ClientDetail?.NoOfTalents * 2 === count  
 							// || count === 0 
 							 ? (
 								<button
@@ -370,13 +417,13 @@ const UpdateTR = ({
 									onClick={handleSubmit(onSubmit)}>
 									Submit
 								</button>
-							) : updateTRDetail?.ClientDetail?.ActiveTR * 2 < count ? (
+							) : updateTRDetail?.ClientDetail?.NoOfTalents * 2 < count ? (
 								<button
 									type="submit"
 									className={updateTRStyle.btnPrimary}
 									onClick={handleSubmit(onSubmit)}
 									// disabled={
-									//     updateTRDetail?.ClientDetail?.ActiveTR * 2 === count
+									//     updateTRDetail?.ClientDetail?.NoOfTalents * 2 === count
 									//         ? true
 									//         : false
 									// }
@@ -391,7 +438,7 @@ const UpdateTR = ({
 									Decrease TR
 								</button>
 							)
-						) : updateTRDetail?.ClientDetail?.ActiveTR === count 
+						) : updateTRDetail?.ClientDetail?.NoOfTalents === count 
 						// ||  count === 0 
 						 ? (
 							<button
@@ -401,13 +448,13 @@ const UpdateTR = ({
 								onClick={handleSubmit(onSubmit)}>
 								Submit
 							</button>
-						) : updateTRDetail?.ClientDetail?.ActiveTR < count ? (
+						) : updateTRDetail?.ClientDetail?.NoOfTalents < count ? (
 							<button
 								type="submit"
 								className={updateTRStyle.btnPrimary}
 								onClick={handleSubmit(onSubmit)}
 								// disabled={
-								//     updateTRDetail?.ClientDetail?.ActiveTR === count ? true : false
+								//     updateTRDetail?.ClientDetail?.NoOfTalents === count ? true : false
 								// }
 							>
 								Increase TR
