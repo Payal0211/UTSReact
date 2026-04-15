@@ -47,6 +47,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
   const [endDate, setEndDate] = useState(today);
   const [colTextVal,setColTextVal] = useState('')
   const [isCarryForwardPipelineClicked, setIsCarryForwardPipelineClicked] = useState(false);
+  const [isPipelineClicked, setIsPipelineClicked] = useState(false);
   const [revenueColumn, setRevenueColumn] = useState(false);
 
   const [pageIndex, setPageIndex] = useState(1);
@@ -159,6 +160,70 @@ export default function RecruiterDashboardMultiMonthsReport() {
     ];
       }
 
+      if(isPipelineClicked){
+         return [
+      {
+        title: "Created Date" ,
+        dataIndex: "actionDate",
+        key: "actionDate",
+         width: "150px",
+        render:(text)=>{
+          return text
+        }
+      },  {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+         width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+         width: "170px",
+        render:(text,value)=>{
+           return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+           
+        }
+      },
+       {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        width: "200px",
+      },  
+    {
+        title: "HR Pipeline",
+        dataIndex: "hrPipeline",
+        key: "hrPipeline",
+             width: "170px",
+      },{
+        title: "HR Pipeline Status",
+        dataIndex: "carryFwd_HRStatus",
+        key: "carryFwd_HRStatus",
+             width: "170px",
+         render: (_, param) => {
+            return All_Hiring_Request_Utils.GETHRSTATUS(
+              param?.carryFwd_HRStatusCode,
+              param?.carryFwd_HRStatus
+            );}
+      },
+    {
+        title: "HR Status",
+        dataIndex: "hrStatus",
+        key: "hrStatus",
+        width: "200px",
+         render: (_, param) => {
+            return All_Hiring_Request_Utils.GETHRSTATUS(
+              param?.hrStatusCode ,
+              param?.hrStatus
+            );}
+      } 
+    
+     
+    ];
+      }
+
       if(isCarryForwardPipelineClicked){
 
     return [
@@ -192,22 +257,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         key: "hrTitle",
         width: "200px",
       },  
-    {
-        title: "CarryFwd Pipeline",
-        dataIndex: "hrPipeline",
-        key: "hrPipeline",
-             width: "170px",
-      },{
-        title: "CarryFwd Status",
-        dataIndex: "carryFwd_HRStatus",
-        key: "carryFwd_HRStatus",
-             width: "170px",
-         render: (_, param) => {
-            return All_Hiring_Request_Utils.GETHRSTATUS(
-              param?.carryFwd_HRStatusCode,
-              param?.carryFwd_HRStatus
-            );}
-      },
+   
     {
         title: "HR Status",
         dataIndex: "hrStatus",
@@ -518,6 +568,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 getTalentProfilesDetailsfromTable(result, 'T_TCF');
                 setColTextVal(result.total_TotalCarryForwardPipeline)
                 setIsCarryForwardPipelineClicked(true);
+                setIsPipelineClicked(true);
               }}
             >
               {result.total_TotalCarryForwardPipeline ? result.total_TotalCarryForwardPipeline : ''}
@@ -536,6 +587,8 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 getTalentProfilesDetailsfromTable(result, 'TCF');
                 setColTextVal(text)
                 setIsCarryForwardPipelineClicked(true);
+                setIsCarryForwardPipelineClicked(true);
+                setIsPipelineClicked(true)
                 // setTalentToMove(result);
                 // setProfileStatusID(2);
                 // setHRTalentListFourCount([]);
@@ -1689,6 +1742,7 @@ const getExportData = (data) => {
                         setShowTalentProfiles(false);
                          setIsCarryForwardPipelineClicked(false);
                           setRevenueColumn(false)
+                          setIsPipelineClicked(false)
                         setHRTalentListFourCount([]);
                         setFilteredTalentList([]);
                       }}
@@ -1793,6 +1847,7 @@ const getExportData = (data) => {
                               setShowTalentProfiles(false);
                               setIsCarryForwardPipelineClicked(false);
                               setRevenueColumn(false)
+                              setIsPipelineClicked(false)
                               setHRTalentListFourCount([]);
                               setFilteredTalentList([]);
                             }}

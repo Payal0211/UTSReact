@@ -17,10 +17,13 @@ import UTSRoutes from 'constants/routes';
 import moment from 'moment';
 import TalentdetailsTable from './talentdetailsTable';
 import TotalAchievementTable from './totalAchievementTable';
+import TalentdetailsFTETable from './talentdetailsFTETable';
+import FTECountTable from './fteCountTable';
 const { Option } = Select;
 function NewTADashboard() {
 const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
+    const [fteDataLoading, setFteDataLoading] = useState(false)
     const [selectedHead, setSelectedHead] = useState('');
     const [userData, setUserData] = useState({});
     const [activeTable, setActiveTable] = useState('Dashboard')
@@ -28,6 +31,7 @@ const navigate = useNavigate()
     const [filtersList, setFiltersList] = useState({});
     const [filteredTagLength, setFilteredTagLength] = useState(0);
     const [talentWiseReport,setTalentWiseReport] = useState([])
+    const [fteCountsData, setFteCountsData] = useState([])
     const [quarterlySummeryReport, setQuarterlySummeryReport] = useState([])
      const date = new Date();
      const [startDate, setStartDate] = useState(date);
@@ -76,7 +80,7 @@ const navigate = useNavigate()
 
       const getTalentWiseReport = async ()=>{
 let date = new Date()
-        let query = `?month=${moment(date).month()}&year=${moment(date).year()}`
+        let query = `?month=${moment(date).month() +1}&year=${moment(date).year()}`
 
         const result =  await TaDashboardDAO.getTalentWiseReportContractDAO(query);
         setIsLoading(false);
@@ -97,7 +101,7 @@ let date = new Date()
 
     const  getQuarterlySummeryReport = async () => {
         let date = new Date()
-        let query = `?poduserid=${selectedHead}&month=${moment(date).month()}&year=${moment(date).year()}`
+        let query = `?poduserid=${selectedHead}&month=${moment(date).month() + 1}&year=${moment(date).year()}`
         const result =  await TaDashboardDAO.getQuarterlySummeryReportContractDAO(query );
         console.log('result', result)
          if (result.statusCode === HTTPStatusCode.OK) {
@@ -115,13 +119,45 @@ let date = new Date()
         }
     }
 
-      useEffect(() => {
-        selectedHead &&  getQuarterlySummeryReport()
-        }, [selectedHead]);
+    const getFTEReports = async () => {
+         let date = new Date()
+        let query = `?Month=${moment(date).month() + 1}&Year=${moment(date).year()}&PODID=${selectedHead}`
+
+        setFteDataLoading(true)
+        const result =  await TaDashboardDAO.getFTECountReportContractDAO(query);
+        const totalRevenueResult = await TaDashboardDAO.getTotalRevenuePerTAUserDAO(query);
+        setFteDataLoading(false)
+
+
+        if(result.statusCode === HTTPStatusCode.OK) {
+            setFteCountsData(result && result?.responseBody);
+        }else{
+            setFteCountsData([])
+        }
+
+            if (totalRevenueResult.statusCode === HTTPStatusCode.OK) {
+                setTalentWiseReport(totalRevenueResult?.responseBody)
+            }else{
+                setTalentWiseReport([])
+            }
+
+    }
+
+    useEffect(() => {
+        if(activeTab === 'Full-Time'){
+            selectedHead && getFTEReports()
+        }
+
+        if(activeTab === 'Contract'){
+             selectedHead &&  getQuarterlySummeryReport()
+        }
+         getTalentWiseReport()
+    }, [selectedHead,activeTab]);
+
+ 
 
         useEffect(() => {
-          getFilters();
-          getTalentWiseReport()
+          getFilters();      
         }, []);
 
       useEffect(() => {
@@ -176,7 +212,10 @@ let date = new Date()
                         >Contract</button>
 
                     </div>
-                <div className={stylesOBj.filterContainer}>
+
+
+                {activeTab === 'Contract' && <>
+                 <div className={stylesOBj.filterContainer}>
 
                <TalentdetailsTable isLoading={isLoading} talentWiseReport={talentWiseReport}/>
                 </div>
@@ -185,6 +224,18 @@ let date = new Date()
                     <h2 style={{fontWeight:'bold'}}>Total Achievement (Closure Month)</h2>
                     <TotalAchievementTable quarterlySummeryReport={quarterlySummeryReport} />
                   </div>
+                </>}    
+
+                {activeTab === 'Full-Time' && <>
+                  <div className={stylesOBj.filterContainer}>
+                    <FTECountTable isLoading={fteDataLoading} countData={fteCountsData} />
+                  </div>
+                <div className={stylesOBj.filterContainer}>
+
+               <TalentdetailsFTETable isLoading={fteDataLoading} talentWiseReport={talentWiseReport}/>
+                </div>
+                </>}
+               
 
                 <div className={stylesOBj.filterContainer}>
                     <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
