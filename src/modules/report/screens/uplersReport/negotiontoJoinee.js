@@ -60,7 +60,9 @@ export default function NegotiontoJoinee({
 
   const [showResponse, setShowResponse] = useState(false);
   const [responseData, setResponseData] = useState({});
+  const [openTRDetails, setOpenTRDetails] = useState([]);
   const [round, setRound] = useState("Selection");
+  const [trNo,setTrNo] = useState(null)
   const [trVal, setTRval] = useState('')
   const [roundDate, setRoundDate] = useState("");
   const [loadingResponse, setLoadingResponse] = useState(false);
@@ -1462,10 +1464,20 @@ export default function NegotiontoJoinee({
   };
 
 
-  const AddResponse = (data) => {
+  const AddResponse = async (data) => {
     setShowResponse(true);
     setResponseData(data);
-    setTRval(data.noofTR)
+    // setTRval(data.noofTR)
+    setTRval(1)
+setLoadingResponse(true);
+    const result = await TaDashboardDAO.getOpenTRDetailsDAO(data.hiringRequest_ID)
+setLoadingResponse(false);
+   
+      if (result.statusCode === HTTPStatusCode.OK) {
+        setOpenTRDetails(result.responseBody);
+      }else{
+        setOpenTRDetails([]);
+      }
   };
 
   const getTalentProfilesDetailsfromTable = async (
@@ -2297,10 +2309,10 @@ export default function NegotiontoJoinee({
   const saveResponse = async () => {
     setResponseSubmit(true);
 
-    if (round === "" || roundDate === "") {
+    if (round === "" || roundDate === "" || trNo === null) {
       message.error(
         `Please Select ${round === "" ? "Round" : ""} ${round === "" && roundDate === "" ? "And" : ""
-        } ${roundDate === "" ? "Date" : ""}`
+        } ${roundDate === "" ? "Date" : ""} ${trNo === null ? "TR No" : ""}`
       );
       return;
     }
@@ -2318,6 +2330,7 @@ export default function NegotiontoJoinee({
       Comments: "",
       ActiveTR: trVal,
       LoggedInUserID: userData?.UserId,
+      TRNumber:trNo 
     };
     setLoadingResponse(true);
     const result = await ReportDAO.insertPotentialClosureResponseRequestDAO(PL);
@@ -2338,6 +2351,7 @@ export default function NegotiontoJoinee({
       setRoundDate("");
       setRound("Selection");
       setTRval('')
+       setTrNo(null);
       setResponseSubmit(false);
       getReportPtoNData()
     } else {
@@ -2716,6 +2730,7 @@ export default function NegotiontoJoinee({
           setRoundDate("");
           setRound("Selection");
           setTRval('')
+           setTrNo(null);
           setResponseSubmit(false);
         }}
       >
@@ -2729,6 +2744,37 @@ export default function NegotiontoJoinee({
           <Skeleton active />
         ) : (
           <>
+           <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "8px",
+                marginLeft: "10px",
+                marginRight: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label>TR NO.</label>
+             <Select
+                value={trNo}
+                onChange={
+                  (newValue) => {
+                    setTrNo(newValue);
+                  }
+                  // handleChange(newValue, record, index, dataIndex)
+                }
+                defaultValue="Selection"
+                style={{ width: "250px" }}
+                size="middle"
+                placeholder="Select TR No."
+              >
+                {openTRDetails?.map((tr) => (
+                  <Option key={tr.trNumber} value={tr.trNumber}>{tr.trNumber}</Option>
+                ))}
+             
+              </Select>
+            </div>
             <div
               style={{
                 display: "flex",
@@ -2749,6 +2795,7 @@ export default function NegotiontoJoinee({
                   }
                   // handleChange(newValue, record, index, dataIndex)
                 }
+                disabled={true}
                 placeholder="TR"
                 style={{ width: "250px", height: '54px', padding: '10px 0', borderRadius: '8px' }}
                 size="middle" />
@@ -2840,6 +2887,7 @@ export default function NegotiontoJoinee({
               setResponseData({});
               setRoundDate("");
               setTRval('')
+              setTrNo(null);
               setRound("Selection");
               setResponseSubmit(false);
             }}

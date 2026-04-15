@@ -68,6 +68,38 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getQuarterlySummeryReportContractRequest');
 		}
 	},
+	getFTECountReportContractRequest: async function (query) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_FTE_COUNT_REPORT + `${query}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getFTECountReportContractRequest');
+		}
+	},
+	getTotalRevenuePerTAUserRequest: async function (query) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TOTAL_REVENUE_PR_TA_USER + `${query}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getTotalRevenuePerTAUserRequest');
+		}
+	},
     getAllTAListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -167,6 +199,22 @@ export const TaDashboardAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'TaDashboardAPI.getHRTalentDetailsRequest');
+		}
+	},
+	   getOpenTRDetailsRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			TaDashboardURL.GET_OPEN_TR_DETAILS + `?HrID=${pl}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getOpenTRDetailsRequest');
 		}
 	},
 	getImmediateTalentDetailsRequest: async function (pl) {

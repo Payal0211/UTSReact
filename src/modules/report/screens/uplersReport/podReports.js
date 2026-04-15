@@ -1311,10 +1311,10 @@ const getExportData = () => {
                   if (record.stage === "Goal") {
                     return uplersStyle.heighliteRow;
                   }
-                  if (record.stage === "Joining") {
+                  if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
                     return uplersStyle.heighliteGreen;
                   }
-                  if (record.stage === "Selections/Closures") {
+                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
                   if (record.stage === "Lost (Pipeline)") {
@@ -1361,10 +1361,10 @@ const getExportData = () => {
                   if (record.stage === "Goal") {
                     return uplersStyle.heighliteRow;
                   }
-                  if (record.stage === "Joining") {
+                if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
                     return uplersStyle.heighliteGreen;
                   }
-                  if (record.stage === "Selections/Closures") {
+                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
                   if (record.stage === "Lost (Pipeline)") {
@@ -1408,10 +1408,10 @@ const getExportData = () => {
                   if (record.stage === "Goal") {
                     return uplersStyle.heighliteRow;
                   }
-                  if (record.stage === "Joining") {
+                 if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
                     return uplersStyle.heighliteGreen;
                   }
-                  if (record.stage === "Selections/Closures") {
+                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
                   if (record.stage === "Lost (Pipeline)") {
@@ -1500,10 +1500,10 @@ const getExportData = () => {
                   if (record.stage === "Goal") {
                     return uplersStyle.heighliteRow;
                   }
-                  if (record.stage === "Joining") {
+                 if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
                     return uplersStyle.heighliteGreen;
                   }
-                  if (record.stage === "Selections/Closures") {
+                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
                   if (record.stage === "Lost (Pipeline)") {
@@ -1547,10 +1547,10 @@ const getExportData = () => {
                   if (record.stage === "Goal") {
                     return uplersStyle.heighliteRow;
                   }
-                  if (record.stage === "Joining") {
+                  if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
                     return uplersStyle.heighliteGreen;
                   }
-                  if (record.stage === "Selections/Closures") {
+                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
                   if (record.stage === "Lost (Pipeline)") {
@@ -1594,10 +1594,10 @@ const getExportData = () => {
                   if (record.stage === "Goal") {
                     return uplersStyle.heighliteRow;
                   }
-                  if (record.stage === "Joining") {
+                  if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
                     return uplersStyle.heighliteGreen;
                   }
-                  if (record.stage === "Selections/Closures") {
+                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
                   if (record.stage === "Lost (Pipeline)") {
