@@ -842,7 +842,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_AS');
+                getTalentProfilesDetailsfromTable(result, 'T_AR');
                 setColTextVal(result.total_AssesmentRejected)
                  setIsCarryForwardPipelineClicked(false);
               }}
@@ -859,7 +859,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'AS');
+                getTalentProfilesDetailsfromTable(result,'AR');
               setColTextVal(text)
                setIsCarryForwardPipelineClicked(false);
               }}
@@ -1194,7 +1194,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_NSC');
+                getTalentProfilesDetailsfromTable(result, 'T_NS');
                 setColTextVal(result.total_NegotiationStart)
                  setIsCarryForwardPipelineClicked(false);
               }}
@@ -1211,7 +1211,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'NSC');
+                getTalentProfilesDetailsfromTable(result,'NS');
              setColTextVal(text)
               setIsCarryForwardPipelineClicked(false);
               }}
@@ -1368,7 +1368,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result, 'T_OST');
+                getTalentProfilesDetailsfromTable(result, 'T_OS');
                 setColTextVal(result.total_OfferSignedDirectPlacement)
                  setIsCarryForwardPipelineClicked(false);
               }}
@@ -1385,7 +1385,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getTalentProfilesDetailsfromTable(result,'OST');
+                getTalentProfilesDetailsfromTable(result,'OS');
              setColTextVal(text)
               setIsCarryForwardPipelineClicked(false);
               }}

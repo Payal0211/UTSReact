@@ -2583,7 +2583,7 @@ setLoadingResponse(false);
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
                 rowClassName={(record) => {
-                  if (record.stage === "PROJECTION") {
+                  if (record.stage === "PROJECTION" || record.stage === 'Total Projection' ) {
                     return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
                   }
                   if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
@@ -2598,7 +2598,7 @@ setLoadingResponse(false);
                    if (record.stage === "Dropouts" || record.stage === "Backout") {
                   return uplersStyle.heighliteRed;
                 }
-                  if (record.stage === "Lost" ) {
+                  if (record.stage === "Lost (Post Joining Backout)" ) {
                   return uplersStyle.heighliteRedLight;
                 }
                   if (record.stage === "Total Active Pipeline") {
@@ -2635,7 +2635,7 @@ setLoadingResponse(false);
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
                 rowClassName={(record) => {
-                  if (record.stage === "PROJECTION") {
+                  if (record.stage === "PROJECTION" || record.stage === 'Total Projection' ) {
                     return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
                   }
                   if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
@@ -2647,10 +2647,10 @@ setLoadingResponse(false);
                   if (record.stage === "Selections/Closures") {
                     return uplersStyle.heighliteOrange;
                   }
-                    if (record.stage === "Dropouts" || record.stage === "Backout") {
+                   if (record.stage === "Dropouts" || record.stage === "Backout") {
                   return uplersStyle.heighliteRed;
                 }
-                  if (record.stage === "Lost" ) {
+                  if (record.stage === "Lost (Post Joining Backout)" ) {
                   return uplersStyle.heighliteRedLight;
                 }
                   if (record.stage === "Total Active Pipeline") {
@@ -2685,27 +2685,27 @@ setLoadingResponse(false);
               size="middle"
               scroll={{ x: "max-content", y: "1vh" }}
               rowClassName={(record) => {
-                if (record.stage === "PROJECTION") {
-                  return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
-                }
-                if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
-                  return uplersStyle.boldText;
-                }
-                if (record.stage === "Joined" || record.stage === "Offer Signed") {
-                  return uplersStyle.heighliteGreen;
-                }
-                if (record.stage === "Selections/Closures") {
-                  return uplersStyle.heighliteOrange;
-                }
-                if (record.stage === "Dropouts" || record.stage === "Backout") {
+                 if (record.stage === "PROJECTION" || record.stage === 'Total Projection' ) {
+                    return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
+                  }
+                  if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
+                    return uplersStyle.boldText;
+                  }
+                  if (record.stage === "Joined" || record.stage === "Offer Signed") {
+                    return uplersStyle.heighliteGreen;
+                  }
+                  if (record.stage === "Selections/Closures") {
+                    return uplersStyle.heighliteOrange;
+                  }
+                   if (record.stage === "Dropouts" || record.stage === "Backout") {
                   return uplersStyle.heighliteRed;
                 }
-                  if (record.stage === "Lost" ) {
+                  if (record.stage === "Lost (Post Joining Backout)" ) {
                   return uplersStyle.heighliteRedLight;
                 }
-                if (record.stage === "Total Active Pipeline") {
-                  return uplersStyle.heighlitePurple;
-                }
+                  if (record.stage === "Total Active Pipeline") {
+                    return uplersStyle.heighlitePurple;
+                  }
               }}
             />
           </>
