@@ -258,6 +258,8 @@ export class ReportType {
 	static GET_MONTH_STARTING_SUMMARY_REPORT = 'PODwiseMonthStartingPlanningvsJoineeSummary'
 	static GET_NEGO_PLANNING_SUMMARY_REPORT = 'OrionPOD_AMwise_Summary'
 	static GET_FREEZE_SUMMARY_REPORT = 'PODwiseWeekWiseFreezeCTA'
+	static GET_FREEZE_SUMMARYMONTHLY_PLANNING_REPORT = 'GetMonthlyFreezePlanningData'
+	static SET_FREEZE_MONTHLY_PLANNING_REPORT = 'InsertMonthlyPlanningFreezeData'
 	static GET_NEGOTIATION_SUMMARY_REPORT = 'PODNegotiationToJoiningFunnelSummary'
 	static GET_NEGOTIATION_SUMMARY_MULTI_MONTH_REPORT = 'PODNegotiationToJoiningFunnelSummaryForMutipleMonths'
 	static GET_PLANING_TO_NEGOTIATION_MULTI_MONTH_POPUP_REPORT = 'PODNegotiationToJoiningFunnelSummaryForMutipleMonths_Popup'
