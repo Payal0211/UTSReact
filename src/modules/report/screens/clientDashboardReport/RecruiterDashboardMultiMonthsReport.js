@@ -198,7 +198,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         key: "hrPipeline",
              width: "170px",
       },{
-        title: "HR Pipeline Status",
+        title: "Carry FWD Status",
         dataIndex: "carryFwd_HRStatus",
         key: "carryFwd_HRStatus",
              width: "170px",
@@ -314,7 +314,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
         title: "Slot/Remark",
         dataIndex: "slotOrRemarkDetails",
         key: "slotOrRemarkDetails",
-         width: "250px",
+         width: "350px",
+         render: (text, result) => {
+          return <div  dangerouslySetInnerHTML={{__html: text?.replace(/\n/g, "<br/>")}}></div>
+         }
       }
 
     
@@ -914,6 +917,47 @@ export default function RecruiterDashboardMultiMonthsReport() {
             text ? text : ''
           );
         },
+      },
+       {
+        title: <>Profile to <br/> R1 Ratio</>,
+        dataIndex: "profileToR1Ratio",
+        key: "profileToR1Ratio",
+        align: "center",
+        width: "100px",
+       render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+            //   style={{
+            //     fontWeight: "bold",
+            //     textDecoration: "underline",
+            //     cursor: "pointer",
+            //   }}
+            //   onClick={() => {
+            //     getTalentProfilesDetailsfromTable(result, 'T_PR1');
+            //   }}
+            >
+              {result.total_profileToR1Ratio ? result.total_profileToR1Ratio : ''}
+            </p>
+          }
+          return +text > 0 ? (
+            <p
+            //   style={{
+            //     color: "blue",
+            //     fontWeight: "bold",
+            //     textDecoration: "underline",
+            //     cursor: "pointer",
+            //   }}
+            //   onClick={() => {
+            //     getTalentProfilesDetailsfromTable(result,'PR1');
+             
+            //   }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        } 
       },
        {
         title: <>R1 Interview <br/> Rejected</>,

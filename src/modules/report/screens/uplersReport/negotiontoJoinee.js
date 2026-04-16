@@ -57,7 +57,8 @@ export default function NegotiontoJoinee({
   const [groupList, setGroupList] = useState([{
     pod: '', amLead: '', amLeadAmount: '', am: '', amAmount: '', taLead: '', taLeadAmount: '', ta: '', taAmount: '', currency: ''
   }])
-
+  const [showFreeze,setShowFreeze] = useState(false);
+  const [isMonthFreezeAllowed, setIsMonthFreezeAllowed] = useState(true);
   const [showResponse, setShowResponse] = useState(false);
   const [responseData, setResponseData] = useState({});
   const [openTRDetails, setOpenTRDetails] = useState([]);
@@ -1276,6 +1277,47 @@ export default function NegotiontoJoinee({
 
 
   ];
+
+   const saveFreezeInfo = async()=>{
+          let pl = {
+              podid: selectedHead,
+              month: moment(monthDate).format("M"),
+              year: moment(monthDate).format("YYYY"),
+          }
+          const result = await ReportDAO.setFreezeMonthleyPlanningReportDAO(pl);
+  
+          setShowFreeze(false);
+          if(result.statusCode === HTTPStatusCode.OK){
+            setIsMonthFreezeAllowed(false)
+          }else{
+            setIsMonthFreezeAllowed(true)
+          }
+  
+         }
+
+         const getFreezeOption = async()=>{
+           let pl = {
+            //  hrmodel: hrModal,
+          pod_id: selectedHead,
+          month: moment(monthDate).format("M"),
+          year: moment(monthDate).format("YYYY"),
+          // isFreeze:true,
+          // currentDate:moment(monthDate).format("YYYY-MM-DD"),
+          }
+          const result = await ReportDAO.getFreezeMonthleyPlanningReportDAO(pl);
+  
+          setShowFreeze(false);
+          if(result.statusCode === HTTPStatusCode.OK){
+            setIsMonthFreezeAllowed(result?.responseBody[0]?.isFreeze ===0 ? false : true )
+          }else{
+            setIsMonthFreezeAllowed(true)
+          }
+  
+         }
+
+         useEffect(()=>{
+          getFreezeOption()
+         },[])
 
   const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
     return (
@@ -2714,6 +2756,47 @@ setLoadingResponse(false);
     </div>}
 
 
+  {showFreeze && (
+        <Modal
+          transitionName=""
+          width="500px"
+          centered
+          footer={null}
+          open={showFreeze}
+          className="engagementModalStyle"
+          onCancel={() => {
+           
+            setShowFreeze(false);
+          }}
+        >
+          <div style={{ padding: "35px 15px 10px 15px" }}>
+            <h3>Are you sure you what to freeze the data for Month Starting Planning  ?</h3>
+          </div>
+         
+
+        
+          <div style={{ padding: "10px" }}>
+             <button
+              className={uplersStyle.btn}
+              // disabled={isEditNewTask}
+              onClick={() => {
+               saveFreezeInfo()
+              }}
+            >
+              Yes
+            </button>
+            <button
+              className={uplersStyle.btnCancle}
+              // disabled={isEditNewTask}
+              onClick={() => {
+                setShowFreeze(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
 
 
     {showResponse && (
@@ -3445,7 +3528,8 @@ setLoadingResponse(false);
             <TableSkeleton />
           ) : (
             <>
-              <p
+            <div style={{ display: 'flex' }}>
+                  <p
                 style={{
                   fontWeight: "bold",
                   fontSize: "20px",
@@ -3454,6 +3538,10 @@ setLoadingResponse(false);
               >
                 Month Starting Planning Data
               </p>
+              <button style={{marginBottom: '10px', height:'50px'}}
+               className={uplersStyle.FreezeButton} disabled={isMonthFreezeAllowed} onClick={()=>setShowFreeze(true)}> Freeze</button>
+            </div>
+          
               <Table
                 scroll={{ x: "1600px", y: "100vh" }}
                 id="List"
@@ -4080,6 +4168,7 @@ setLoadingResponse(false);
           )}
         </div>
       </div>
+
 
     </div>}
   </>
