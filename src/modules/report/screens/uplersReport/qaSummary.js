@@ -476,7 +476,7 @@ export default function QASummary({impHooks}) {
               rowKey={(record, index) => index}
               pagination={false}
               rowClassName={(record) => {
-                if (record.stage === "PROJECTION") {
+                if (record.stage === "PROJECTION" || record.stage === 'Total PROJECTION') {
                   return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
                 }
                 if (
@@ -500,6 +500,9 @@ export default function QASummary({impHooks}) {
                 ) {
                   return uplersStyle.heighliteRed;
                 }
+                  if (record.stage === "Lost (Post Joining Backout)" ) {
+                                  return uplersStyle.heighliteRedLight;
+                                }
                 if (record.stage === "Total Active Pipeline") {
                   return uplersStyle.heighlitePurple;
                 }
@@ -534,7 +537,7 @@ export default function QASummary({impHooks}) {
               rowKey={(record, index) => index}
               pagination={false}
               rowClassName={(record) => {
-                if (record.stage === "PROJECTION") {
+                if (record.stage === "PROJECTION" || record.stage === 'Total PROJECTION') {
                   return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
                 }
                 if (
@@ -558,6 +561,9 @@ export default function QASummary({impHooks}) {
                 ) {
                   return uplersStyle.heighliteRed;
                 }
+                  if (record.stage === "Lost (Post Joining Backout)" ) {
+                                  return uplersStyle.heighliteRedLight;
+                                }
                 if (record.stage === "Total Active Pipeline") {
                   return uplersStyle.heighlitePurple;
                 }
@@ -591,7 +597,7 @@ export default function QASummary({impHooks}) {
               rowKey={(record, index) => index}
               pagination={false}
               rowClassName={(record) => {
-                if (record.stage === "PROJECTION") {
+                if (record.stage === "PROJECTION" || record.stage === 'Total PROJECTION') {
                   return `${uplersStyle.heighliteRow} ${uplersStyle.boldText}`;
                 }
                 if (
@@ -614,6 +620,9 @@ export default function QASummary({impHooks}) {
                   record.stage === "Dropouts"
                 ) {
                   return uplersStyle.heighliteRed;
+                }
+                  if (record.stage === "Lost (Post Joining Backout)" ) {
+                  return uplersStyle.heighliteRedLight;
                 }
                 if (record.stage === "Total Active Pipeline") {
                   return uplersStyle.heighlitePurple;
