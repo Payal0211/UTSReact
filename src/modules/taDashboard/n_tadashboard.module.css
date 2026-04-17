@@ -474,6 +474,166 @@ body {
 }
 
 /* ===================== */
+/* Company cell (FT Dashboard) */
+/* ===================== */
+.company-cell {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 200px;
+}
+
+.company-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #4C4E64DE;
+    letter-spacing: 0.3px;
+}
+
+.diamond-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.diamond-icon {
+    width: 35px;
+    height: auto;
+    display: block;
+}
+
+.diamond-active {
+    mix-blend-mode: multiply;
+}
+.diamond-inactive { --diamond-state: inactive; }
+
+.diamond-toggle::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-size: 11px;
+    white-space: nowrap;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 50;
+}
+
+.diamond-toggle::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #1a1a1a;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 50;
+}
+
+.diamond-toggle:hover::after,
+.diamond-toggle:hover::before {
+    opacity: 1;
+}
+
+.plus-task-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    transition: opacity 0.2s;
+}
+
+.plus-task-btn:hover {
+    opacity: 0.75;
+}
+
+.plus-task-btn svg {
+    width: 26px;
+    height: 26px;
+    display: block;
+}
+
+.plus-task-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-size: 11px;
+    white-space: nowrap;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 50;
+}
+
+.plus-task-btn::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #1a1a1a;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 50;
+}
+
+.plus-task-btn:hover::after,
+.plus-task-btn:hover::before {
+    opacity: 1;
+}
+
+/* ===================== */
+/* Action edit button    */
+/* ===================== */
+.action-edit-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.action-edit-btn:hover {
+    background-color: #F5F5F0;
+}
+
+/* ===================== */
 /* HR Title / ID cell    */
 /* ===================== */
 .hr-title-cell {
