@@ -437,7 +437,7 @@ export default function NegotiontoJoinee({
       width: '200px',
     },
     {
-      title: showTalentCol?.stage === 'Lost' ? "Last Working Day" : "Joining Date",
+      title: showTalentCol?.stage_ID === "D_Lost" ? "Lost Date" : "Joining Date",
       dataIndex: "joiningdateStr",
       key: "joiningdateStr",
     },
@@ -1317,7 +1317,7 @@ export default function NegotiontoJoinee({
 
          useEffect(()=>{
           getFreezeOption()
-         },[])
+         },[selectedHead, monthDate])
 
   const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
     return (

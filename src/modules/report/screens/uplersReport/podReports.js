@@ -1317,7 +1317,7 @@ const getExportData = () => {
                   if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
-                  if (record.stage === "Lost (Pipeline)") {
+                  if (record.stage === "Lost (Pipeline)" || record.stage === "Lost (Post Joining Backout)") {
                     return uplersStyle.heighliteRed;
                   }
                   if (record.stage === "Total Active Pipeline") {
@@ -1367,7 +1367,7 @@ const getExportData = () => {
                   if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
-                  if (record.stage === "Lost (Pipeline)") {
+                  if (record.stage === "Lost (Pipeline)" || record.stage === "Lost (Post Joining Backout)") {
                     return uplersStyle.heighliteRed;
                   }
                   if (record.stage === "Total Active Pipeline") {
@@ -1414,7 +1414,7 @@ const getExportData = () => {
                   if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
                     return uplersStyle.heighliteOrange;
                   }
-                  if (record.stage === "Lost (Pipeline)") {
+                  if (record.stage === "Lost (Pipeline)" || record.stage === "Lost (Post Joining Backout)") {
                     return uplersStyle.heighliteRed;
                   }
                   if (record.stage === "Total Active Pipeline") {
@@ -1496,23 +1496,7 @@ const getExportData = () => {
                 pagination={false}
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
-                rowClassName={(record) => {
-                  if (record.stage === "Goal") {
-                    return uplersStyle.heighliteRow;
-                  }
-                 if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
-                    return uplersStyle.heighliteGreen;
-                  }
-                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
-                    return uplersStyle.heighliteOrange;
-                  }
-                  if (record.stage === "Lost (Pipeline)") {
-                    return uplersStyle.heighliteRed;
-                  }
-                  if (record.stage === "Total Active Pipeline") {
-                    return uplersStyle.heighlitePurple;
-                  }
-                }}
+                
               />
             </>
           )}
@@ -1543,23 +1527,7 @@ const getExportData = () => {
                 pagination={false}
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
-                rowClassName={(record) => {
-                  if (record.stage === "Goal") {
-                    return uplersStyle.heighliteRow;
-                  }
-                  if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
-                    return uplersStyle.heighliteGreen;
-                  }
-                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
-                    return uplersStyle.heighliteOrange;
-                  }
-                  if (record.stage === "Lost (Pipeline)") {
-                    return uplersStyle.heighliteRed;
-                  }
-                  if (record.stage === "Total Active Pipeline") {
-                    return uplersStyle.heighlitePurple;
-                  }
-                }}
+               
               />
             </>
           )}
@@ -1590,23 +1558,7 @@ const getExportData = () => {
                 pagination={false}
                 size="middle"
                 scroll={{ x: "max-content", y: "1vh" }}
-                rowClassName={(record) => {
-                  if (record.stage === "Goal") {
-                    return uplersStyle.heighliteRow;
-                  }
-                  if (record.stage === "Joining" || record.stage === 'Negotiation Start') {
-                    return uplersStyle.heighliteGreen;
-                  }
-                  if (record.stage === "Selections/Closures" || record.stage === "Offer Signed") {
-                    return uplersStyle.heighliteOrange;
-                  }
-                  if (record.stage === "Lost (Pipeline)") {
-                    return uplersStyle.heighliteRed;
-                  }
-                  if (record.stage === "Total Active Pipeline") {
-                    return uplersStyle.heighlitePurple;
-                  }
-                }}
+               
               />
             </>
           )}
