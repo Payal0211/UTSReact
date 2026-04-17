@@ -1317,7 +1317,7 @@ export default function NegotiontoJoinee({
 
          useEffect(()=>{
           getFreezeOption()
-         },[])
+         },[selectedHead, monthDate])
 
   const renderDDSelect = (value, record, index, dataIndex, handleChange) => {
     return (
