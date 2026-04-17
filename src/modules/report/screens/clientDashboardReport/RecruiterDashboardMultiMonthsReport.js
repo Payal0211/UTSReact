@@ -1817,68 +1817,118 @@ export default function RecruiterDashboardMultiMonthsReport() {
       setEndDate(today);  
       setDateTypeFilter(0);
   }
-const exportColumns = [
-  { header: "TA", key: "recruiter" },
-  { header: "Revenue Goal", key: "revenueGoal" },
-  { header: "Current Month Pipeline", key: "currentMonthPipeline" },
-  { header: "Total Carry Forward Pipeline", key: "totalCarryForwardPipeline" },
-  { header: "Total Pipeline in Month", key: "totalPipelineInMonth" },
-  { header: "Multiplier of Goal", key: "multiplierOfGoal" },
-  { header: "Profiles Shared", key: "numberProfilesShared" },
-  { header: "R1 Interview Completed", key: "r1InterviewCompleted" },
-  { header: "R2 Interview Completed", key: "r2InterviewCompleted" },
-  { header: "R3 Interview Completed", key: "r3InterviewCompleted" },
-  { header: "Profile to R1 Ratio", key: "profileToR1Ratio" },
-  { header: "Talents Rejected in Interview", key: "talentsRejectedInInterview" },
-  { header: "Offer Dropout / Backout", key: "offerDropoutBackout" },
-  { header: "R1 to Selected (I2S %)", key: "interviewToSelectedPercent" },
-  { header: "Offer Signed Revenue", key: "offerSignedRevenue" },
-  { header: "Joined Talents", key: "joinedTalentsInMonth" },
-  { header: "Joining Revenue", key: "joiningRevenue" },
-  { header: "Goal vs Achieved %", key: "goalVsAchievedPercent" },
-  { header: "Pipeline to Joining %", key: "totalPipelineToJoiningPercent" }
-];
-const getExportData = (data) => {
+// const exportColumns = [
+//   { header: "TA", key: "recruiter" },
+//   { header: "Revenue Goal", key: "revenueGoal" },
+//   { header: "Current Month Pipeline", key: "currentMonthPipeline" },
+//   { header: "Total Carry Forward Pipeline", key: "totalCarryForwardPipeline" },
+//   { header: "Total Pipeline in Month", key: "totalPipelineInMonth" },
+//   { header: "Multiplier of Goal", key: "multiplierOfGoal" },
+//   { header: "Profiles Shared", key: "numberProfilesShared" },
+//   { header: "R1 Interview Completed", key: "r1InterviewCompleted" },
+//   { header: "R2 Interview Completed", key: "r2InterviewCompleted" },
+//   { header: "R3 Interview Completed", key: "r3InterviewCompleted" },
+//   { header: "Profile to R1 Ratio", key: "profileToR1Ratio" },
+//   { header: "Talents Rejected in Interview", key: "talentsRejectedInInterview" },
+//   { header: "Offer Dropout / Backout", key: "offerDropoutBackout" },
+//   { header: "R1 to Selected (I2S %)", key: "interviewToSelectedPercent" },
+//   { header: "Offer Signed Revenue", key: "offerSignedRevenue" },
+//   { header: "Joined Talents", key: "joinedTalentsInMonth" },
+//   { header: "Joining Revenue", key: "joiningRevenue" },
+//   { header: "Goal vs Achieved %", key: "goalVsAchievedPercent" },
+//   { header: "Pipeline to Joining %", key: "totalPipelineToJoiningPercent" }
+// ];
+// const getExportData = (data) => {
+//   return data.map((row) => {
+//     const isTotal = row.recruiter === "Total";
+
+//     return {
+//       recruiter: isTotal ? "" : row.recruiter,
+
+//       revenueGoal: isTotal ? row.total_RevenueGoal : row.revenueGoal,
+//       currentMonthPipeline: isTotal ? row.total_CurrentMonthPipeline : row.currentMonthPipeline,
+//       totalCarryForwardPipeline: isTotal ? row.total_TotalCarryForwardPipeline : row.totalCarryForwardPipeline,
+//       totalPipelineInMonth: isTotal ? row.total_TotalPipelineInMonth : row.totalPipelineInMonth,
+//       multiplierOfGoal: isTotal ? row.total_multiplierOfGoal : row.multiplierOfGoal,
+//       numberProfilesShared: isTotal ? row.total_NumberProfilesShared : row.numberProfilesShared,
+//       r1InterviewCompleted: isTotal ? row.total_R1InterviewCompleted : row.r1InterviewCompleted,
+//       r2InterviewCompleted: isTotal ? row.total_R2InterviewCompleted : row.r2InterviewCompleted,
+//       r3InterviewCompleted: isTotal ? row.total_R3InterviewCompleted : row.r3InterviewCompleted,
+//       profileToR1Ratio: isTotal ? row.total_profileToR1Ratio : row.profileToR1Ratio,
+//       talentsRejectedInInterview: isTotal ? row.total_TalentsRejectedInInterview : row.talentsRejectedInInterview,
+//       offerDropoutBackout: isTotal ? row.total_OfferDropoutBackout : row.offerDropoutBackout,
+//       interviewToSelectedPercent: isTotal ? row.total_interviewToSelectedPercent : row.interviewToSelectedPercent,
+//       offerSignedRevenue: isTotal ? row.total_OfferSignedRevenue : row.offerSignedRevenue,
+//       joinedTalentsInMonth: isTotal ? row.total_JoinedTalentsInMonth : row.joinedTalentsInMonth,
+//       joiningRevenue: isTotal ? row.total_JoiningRevenue : row.joiningRevenue,
+//       goalVsAchievedPercent: isTotal ? row.total_goalVsAchievedPercent : row.goalVsAchievedPercent,
+//       totalPipelineToJoiningPercent: isTotal ? row.total_totalPipelineToJoiningPercent : row.totalPipelineToJoiningPercent,
+//     };
+//   });
+// };
+
+const totalKeyMap = {
+  totalPipelineToJoiningPercent: "total_totalPipelineToJoiningPercent",
+};
+
+const getExportData = (data, columns) => {
   return data.map((row) => {
     const isTotal = row.recruiter === "Total";
+    const exportRow = {};
 
-    return {
-      recruiter: isTotal ? "" : row.recruiter,
+    columns.forEach((col) => {
+      const key = col.dataIndex;
+      if (!key) return;
 
-      revenueGoal: isTotal ? row.total_RevenueGoal : row.revenueGoal,
-      currentMonthPipeline: isTotal ? row.total_CurrentMonthPipeline : row.currentMonthPipeline,
-      totalCarryForwardPipeline: isTotal ? row.total_TotalCarryForwardPipeline : row.totalCarryForwardPipeline,
-      totalPipelineInMonth: isTotal ? row.total_TotalPipelineInMonth : row.totalPipelineInMonth,
-      multiplierOfGoal: isTotal ? row.total_multiplierOfGoal : row.multiplierOfGoal,
-      numberProfilesShared: isTotal ? row.total_NumberProfilesShared : row.numberProfilesShared,
-      r1InterviewCompleted: isTotal ? row.total_R1InterviewCompleted : row.r1InterviewCompleted,
-      r2InterviewCompleted: isTotal ? row.total_R2InterviewCompleted : row.r2InterviewCompleted,
-      r3InterviewCompleted: isTotal ? row.total_R3InterviewCompleted : row.r3InterviewCompleted,
-      profileToR1Ratio: isTotal ? row.total_profileToR1Ratio : row.profileToR1Ratio,
-      talentsRejectedInInterview: isTotal ? row.total_TalentsRejectedInInterview : row.talentsRejectedInInterview,
-      offerDropoutBackout: isTotal ? row.total_OfferDropoutBackout : row.offerDropoutBackout,
-      interviewToSelectedPercent: isTotal ? row.total_interviewToSelectedPercent : row.interviewToSelectedPercent,
-      offerSignedRevenue: isTotal ? row.total_OfferSignedRevenue : row.offerSignedRevenue,
-      joinedTalentsInMonth: isTotal ? row.total_JoinedTalentsInMonth : row.joinedTalentsInMonth,
-      joiningRevenue: isTotal ? row.total_JoiningRevenue : row.joiningRevenue,
-      goalVsAchievedPercent: isTotal ? row.total_goalVsAchievedPercent : row.goalVsAchievedPercent,
-      totalPipelineToJoiningPercent: isTotal ? row.total_totalPipelineToJoiningPercent : row.totalPipelineToJoiningPercent,
-    };
+      // Handle TA column
+      if (key === "recruiter") {
+        exportRow[key] = isTotal ? "" : row[key];
+        return;
+      }
+
+      // Generate total key
+      const totalKey =
+        totalKeyMap[key] ||
+        "total_" + key.charAt(0).toUpperCase() + key.slice(1);
+
+      exportRow[key] = isTotal
+        ? row[totalKey] ?? ""
+        : row[key] ?? "";
+    });
+
+    return exportRow;
   });
 };
 
+const getColumnTitle = (title) => {
+  if (typeof title === "string") return title;
+
+  if (Array.isArray(title?.props?.children)) {
+    return title.props.children
+      .map((child) => (typeof child === "string" ? child : " "))
+      .join("")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  return "";
+};
+
   const handleExport = (apiData) => {
- const exportData = getExportData(clientData);
+  const exportData = getExportData(clientData, tableColumnsMemo);
 
-  const headers = exportColumns.map(col => col.header);
+ const formattedData = exportData.map((row) => {
+    const obj = {};
 
-  const rows = exportData.map(row =>
-    exportColumns.map(col => row[col.key] ?? "")
-  );
+    tableColumnsMemo.forEach((col) => {
+      const header = getColumnTitle(col.title);
+      obj[header] = row[col.dataIndex] ?? "";
+    });
 
-  const finalData = [headers, ...rows]; // ✅ add headers row
+    return obj;
+  });
 
-      downloadToExcel(finalData,'Recruiter_Dashboard_Monthly_Report')  
+      downloadToExcel(formattedData,'Recruiter_Dashboard_Monthly_Report')  
   }
 
   return (
