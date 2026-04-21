@@ -1,13 +1,14 @@
 import React from 'react'
-import stylesOBj from './n_tadashboard.module.css'
+import taStylesNew from "./n_tadashboardNew.module.css";
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 
 function TalentdetailsFTETable({ isLoading, talentWiseReport }) {
+    console.log("talentWiseReport", talentWiseReport)
   return (
-      <div className={`${stylesOBj["table-container"]}`}>
+      <div className={`${taStylesNew["table-container"]}`} style={{ marginTop: '10px' }}>
 
                         {isLoading ? <TableSkeleton /> :
-                            <table className={`${stylesOBj["data-table"]}`}>
+                            <table className={`${taStylesNew["data-table"]}`}>
                                 <thead>
                                     <tr>
                                         <th>TA</th>
@@ -42,26 +43,47 @@ function TalentdetailsFTETable({ isLoading, talentWiseReport }) {
                                         </td>
                                     </tr> : talentWiseReport?.map((data, index)=>{
                                         return <tr key={index}>
-                                          <td>{data.ta}</td>
+                                          {/* TA */}
+                                          <td>{data.taName}</td>
+                                          {/* REVENUE GOAL */}
                                           <td>{data.revenueGoal}</td>
-                                          <td>{data.totalCarryForwardPipeline}</td>
-                                          <td>{data.currentMonthPipeline}</td>
+                                          {/* TOTAL CARRY FORWARD PIPELINE */}
+                                          <td>{data.total_CarryFwdPreOnboardPipelineStr}</td>
+                                          {/* CUR. MONTH PIPELINE (INR) */}
+                                          <td>{data.total_CurrentMonthActualPipelineStr}</td>
+                                          {/* TOTAL PIPELINE IN A MONTH TO PLAY */}
                                           <td>{data.totalPipelineInAMonthToPlay}</td>
+                                          {/* MULTIPLIER OF GOAL */}
                                           <td>{data.multiplierOfGoal}</td>
+                                          {/* NUMBER PROFILES SHARED */}
                                           <td>{data.numberProfilesShared}</td>
+                                          {/* NO. OF R1 INTERVIEW COMPLETED (CURRENT MONTH) */}
                                           <td>{data.noOfR1InterviewCompletedCurrentMonth}</td>
+                                          {/* NO. OF R2 INTERVIEW COMPLETED (CURRENT MONTH) */}
                                           <td>{data.noOfR2InterviewCompletedCurrentMonth}</td>
+                                          {/* NO. OF R3 INTERVIEW COMPLETED (CURRENT MONTH) */}
                                           <td>{data.noOfR3InterviewCompletedCurrentMonth}</td>
+                                          {/* PROFILE TO R1 RATIO */}
                                           <td>{data.profileToR1Ratio}</td>
+                                          {/* NO. OF TALENTS REJECTED IN INTERVIEW */}
                                           <td>{data.noOfTalentsRejectedInInterview}</td>
+                                          {/* NO. OF OFFERS */}
                                           <td>{data.noOfOffers}</td>
+                                          {/* OFFER DROPOUT / BACKOUT */}
                                           <td>{data.offerDropoutBackout}</td>
+                                          {/* INTERVIEW DONE TO SELECTED (I2S %) */}
                                           <td>{data.interviewDoneToSelectedI2S}</td>
+                                          {/* NUMBER OF OFFER SIGNED (DIRECT PLACEMENT) */}
                                           <td>{data.numberOfOfferSignedDirectPlacement}</td>
+                                          {/* OFFER SIGNED REVENUE */}
                                           <td>{data.offerSignedRevenue}</td>
+                                          {/* # OF JOINED TALENTS IN THE MONTH */}
                                           <td>{data.numberOfJoinedTalentsInTheMonth}</td>
+                                          {/* JOINING REVENUE */}
                                           <td>{data.joiningRevenue}</td>
+                                          {/* GOAL VS ACHIVED */}
                                           <td>{data.goalVsAchived}</td>
+                                          {/* TOTAL PIPELINE TO JOINING % */}
                                           <td>{data.totalPipelineToJoiningPercentage}</td>
                                         </tr>
                                     })}

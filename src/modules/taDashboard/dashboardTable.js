@@ -1,6 +1,7 @@
 import React , { useState,useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import stylesOBj from './n_tadashboard.module.css'
+import taStylesNew from "./n_tadashboardNew.module.css";
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { HTTPStatusCode } from "constants/network";
@@ -72,10 +73,10 @@ function DashboardTableComp({searchText, tableFilteredState , selectedHead}) {
         }, [searchText, tableFilteredState, selectedHead]);
 
   return (
-    <div className={`${stylesOBj["table-container"]}`} style={{marginTop:'20px'}}>
+    <div className={`${taStylesNew["table-container"]}`} style={{marginTop:'20px'}}>
 
                         {isLoading ? <TableSkeleton /> :
-                            <table className={`${stylesOBj["data-table"]}`}>
+                            <table className={`${taStylesNew["data-table"]}`}>
                                 <thead>
                                     <tr>
                                         <th >TA Name</th>

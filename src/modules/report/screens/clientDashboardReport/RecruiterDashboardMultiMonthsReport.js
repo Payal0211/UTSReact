@@ -257,7 +257,12 @@ export default function RecruiterDashboardMultiMonthsReport() {
         key: "hrTitle",
         width: "200px",
       },  
-   
+    {
+        title: "HR Pipeline",
+        dataIndex: "hrPipeline",
+        key: "hrPipeline",
+             width: "170px",
+      },
     {
         title: "HR Status",
         dataIndex: "hrStatus",
@@ -554,7 +559,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
       },
       
   {
-        title: <>Carry Forward <br/> Pipeline</>,
+        title: <>Carry Forward <br/>Active Pipeline</>,
         dataIndex: "totalCarryForwardPipeline",
         key: "totalCarryForwardPipeline",
         align: "center",
