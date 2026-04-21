@@ -1,13 +1,14 @@
 import React from 'react'
 import stylesOBj from './n_tadashboard.module.css'
+import taStylesNew from "./n_tadashboardNew.module.css";
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 
 function FTECountTable({ isLoading, countData }) {
   return (
-       <div className={`${stylesOBj["table-container"]}`}>
+       <div className={`${taStylesNew["table-container"]}`}>
 
                         {isLoading ? <TableSkeleton /> :
-                            <table className={`${stylesOBj["data-table"]}`}>
+                            <table className={`${taStylesNew["data-table"]}`}>
                                 <thead>
                                     <tr>
                                         <th >CARRY FWD <br/> PIPELINE (INR)</th>

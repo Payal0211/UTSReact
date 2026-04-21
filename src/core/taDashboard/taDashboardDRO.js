@@ -52,6 +52,29 @@ export const TaDashboardDAO = {
             return errorDebug(error, 'TaDashboardDAO.getAllMasterContractDAO');
         }
     },
+    getAllMasterFTEDAO:async function (type) {
+        try {
+            const taResult = await TaDashboardAPI.getAllMasterFTERequest(type);
+            if (taResult) {
+                const statusCode = taResult['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = taResult.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult.details,
+                    };
+                } else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    let deletedResponse =
+                        UserSessionManagementController.deleteAllSession();
+                    if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'TaDashboardDAO.getAllMasterFTEDAO');
+        }
+    },
     getTalentWiseReportContractDAO: async function (query) {
         try {
             const taResult = await TaDashboardAPI.getTalentWiseReportContractRequest(query);

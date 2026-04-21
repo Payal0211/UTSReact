@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import stylesOBj from './n_tadashboard.module.css'
+import taStylesNew from "./n_tadashboardNew.module.css";
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import moment from 'moment'
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
@@ -35,10 +36,10 @@ function GoalTableComp({selectedHead,startDate,tableFilteredState}) {
          }
        }, [selectedHead, startDate, tableFilteredState]);
   return (
-      <div className={`${stylesOBj["table-container"]}`} style={{marginTop:'20px'}}>
+      <div className={`${taStylesNew["table-container"]}`} style={{marginTop:'20px'}}>
 
                         {goalLoading ? <TableSkeleton /> :
-                            <table className={`${stylesOBj["data-table"]}`}>
+                            <table className={`${taStylesNew["data-table"]}`}>
                                 <thead>
                                     <tr>
                                         <th >TA</th>
