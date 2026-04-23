@@ -1,13 +1,20 @@
 import React , { useState,useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import stylesOBj from './n_tadashboard.module.css'
+import taStyles from "./tadashboard.module.css";
 import taStylesNew from "./n_tadashboardNew.module.css";
+import {
+    Select, InputNumber,
+    Tooltip, Table, Checkbox, message,  Skeleton, Modal
+} from "antd";
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { HTTPStatusCode } from "constants/network";
 import UTSRoutes from 'constants/routes';
 
-function DashboardTableComp({searchText, tableFilteredState , selectedHead}) {
+const { Option } = Select;
+
+function DashboardTableComp({searchText, tableFilteredState , selectedHead,filtersList}) {
     const navigate = useNavigate()
     const [TaListData, setTaListData] = useState([]);
     const [isLoading,setIsLoading] = useState(false)
@@ -72,6 +79,150 @@ function DashboardTableComp({searchText, tableFilteredState , selectedHead}) {
           }
         }, [searchText, tableFilteredState, selectedHead]);
 
+
+         const updateTARowValue = async (value, key, params, index, targetValue) => {
+                let pl = {
+                    tA_UserID: params.tA_UserID,
+                    company_ID: params.company_ID,
+                    hiringRequest_ID: params.hiringRequest_ID,
+                    task_Priority: params.task_Priority,
+                    no_of_InterviewRounds: params.no_of_InterviewRounds,
+                    role_TypeID: params.role_TypeID,
+                    task_StatusID: params.task_StatusID,
+                    activeTR: params.activeTR,
+                    talent_AnnualCTC_Budget_INRValue: params.talent_AnnualCTC_Budget_INRValue,
+                    modelType: params.modelType,
+                    tA_HR_StatusID: params.tA_HR_StatusID,
+                    tA_Head_UserID: `${selectedHead}`,
+                };
+
+                let npl = {
+
+                }
+        
+                if (key === "role_TypeID") {
+                    pl[key] = value?.id;
+                    setTaListData((prev) => {
+                        let newDS = [...prev];
+                        newDS[index] = {
+                            ...newDS[index],
+                            [key]: value?.id,
+                            role_Type: value?.data,
+                        };
+                        return newDS;
+                    });
+                } else if (key === "task_StatusID") {
+                    pl[key] = value?.id;
+                    setTaListData((prev) => {
+                        let newDS = [...prev];
+                        let nob = {
+                            ...newDS[index],
+                            [key]: value?.id,
+                            taskStatus: value?.data,
+                        };
+                        newDS[index] = nob;
+                        return newDS;
+                    });
+                } else if (key === "tA_HR_StatusID") {
+                    pl[key] = value?.id;
+                    setTaListData((prev) => {
+                        let newDS = [...prev];
+                        newDS[index] = {
+                            ...newDS[index],
+                            [key]: value?.id,
+                            tA_HR_Status: value?.data,
+                        };
+                        return newDS;
+                    });
+                } else {
+                    pl[key] = value;
+                    setTaListData((prev) => {
+                        let newDS = [...prev];
+                        newDS[index] = { ...newDS[index], [key]: value };
+                        return newDS;
+                    });
+                }
+                let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+            };
+
+          const PriorityComp = ({ text, result, index }) => {
+        const [value, setValue] = useState(text ?? "");
+
+        return (
+            <div className={taStyles.tableSelectField}>
+                <Select
+                    defaultValue={value}
+                    onChange={(val) => {
+                        setValue(val);
+                        updateTARowValue(val, "task_Priority", result, index);
+                    }}
+                >
+                    {filtersList?.priority?.map((v) => (
+                        <Option value={v.text}>{v.text}</Option>
+                    ))}
+                </Select>
+            </div>
+        );
+    };
+
+    const NDBExistingComp = ({ text, result, index }) => {
+        const [value, setValue] = useState(text ?? "");   
+      
+        return (
+            <div className={taStyles.tableSelectField}>
+                <Select
+                    defaultValue={value}
+                    onChange={(val) => {
+                        setValue(val);
+                        updateTARowValue(val, "businessType", result, index);
+                    }}
+                >
+                    {/* {filtersList?.priority?.map((v) => (
+                        <Option value={v.text}>{v.text}</Option>
+                    ))} */}
+                     <Option value={'NBD'}>{'NBD'}</Option>
+                      <Option value={"Existing"}>{"Existing"}</Option>
+                </Select>
+            </div>
+        );
+      }
+
+          const ContractDPComp = ({ text, result, index }) => {
+              const [value, setValue] = useState(text ?? "");
+              return (
+                  <div className={taStyles.tableSelectField}>
+                      <Select
+                          defaultValue={value}
+                          onChange={(val) => {
+                              setValue(val);
+                              updateTARowValue(val, "modelType", result, index);
+                          }}
+                      >
+                          {filtersList?.ModelType?.map((v) => (
+                              <Option value={v.text}>{v.text}</Option>
+                          ))}
+                      </Select>
+                  </div>
+              );
+          };
+
+              const FeesPreComp = ({ text, result, index }) => {
+                  const [value, setValue] = useState(text ?? "");
+          
+                  return (
+                      <InputNumber
+                          value={value}
+                          onChange={(v) => {
+                              setValue(v);
+                          }}
+                          onBlur={() =>
+                              updateTARowValue(value, "uplersFeesPer", result, index)
+                          }
+                      />
+                  );
+              };
+
+
   return (
     <div className={`${taStylesNew["table-container"]}`} style={{marginTop:'20px'}}>
 
@@ -115,7 +266,8 @@ function DashboardTableComp({searchText, tableFilteredState , selectedHead}) {
                                         {/* COMPANY Name */}
                                         <td>{data.companyName}</td>
                                         {/* HR TITLE / ID */}
-                                        <td>  <>
+                                        <td>  
+                                          {/* <>
                                                     {data.hrTitle} /{" "}
                                                     <p
                                                       style={{
@@ -134,21 +286,43 @@ function DashboardTableComp({searchText, tableFilteredState , selectedHead}) {
                                                     >
                                                       {data.hrNumber}
                                                     </p>
-                                                  </></td>
+                                                  </> */}
+                                                    <div className={taStylesNew["hr-title-cell"]}>
+                                                                <span
+                                                                    className={taStylesNew["hr-status-box"]}
+                                                                    style={{ background: data?.hrColorCode }}
+                                                                >
+                                                                    <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span>
+                                                                </span>
+                                                                <div className={taStylesNew["hr-title-text"]}>
+                                                                    <span>{data.hrTitle}</span>
+                                                                    <span className={taStylesNew["hr-id-chip"]}    style={{
+                                                     
+                                                        cursor: "pointer",
+                                                      }} onClick={() => {
+                                                        window.open(
+                                                          UTSRoutes.ALLHIRINGREQUESTROUTE +
+                                                          `/${data.hiringRequest_ID}`,
+                                                          "_blank"
+                                                        );
+                                                      }}>{data.hrNumber}</span>
+                                                                </div>
+                                                            </div>
+                                                  </td>
                                         {/* PRIORITY */}
-                                        <td>{data.task_Priority}</td>
+                                        <td><PriorityComp text={data.task_Priority} result={data} index={ind} /></td>
                                         {/* INTERVIEW ROUNDS */}
                                         <td>{data.no_of_InterviewRounds}</td>
                                         {/* AM */}
                                         <td>{data.am}</td>
                                         {/* NBD/EXISTING */}
-                                        <td>{data.businessType}</td>
+                                        <td> <NDBExistingComp text={data.businessType} result={data} index={ind} /></td>
                                          {/* PRICING MODEL */}
                                          <td>{data.pricingModel}</td>
                                         {/* TALENT PAY RATE */}
                                         <td>{data.talent_AnnualCTC_Budget_INRValueStr}</td>
                                           {/* NR % */}
-                                          <td>{data.uplersFeesPer}</td>
+                                          <td><FeesPreComp text={data.uplersFeesPer} result={data} index={ind} /></td>
                                         {/* NR (USD) */}
                                         <td>{data.revenue_On10PerCTCStr}</td>
                                         {/* BILL RATE */}
@@ -156,7 +330,7 @@ function DashboardTableComp({searchText, tableFilteredState , selectedHead}) {
                                          {/* ACTIVE TRS */}
                                          <td>{data.activeTR}</td>
                                         {/* CONTRACTOR/EOR */}
-                                        <td>{data.modelType}</td>
+                                        <td><ContractDPComp text={data.modelType} result={data} index={ind} /></td>
                                         {/* TASK FOR AM'S */}
                                         <td>{data.amTask}</td>
                                          {/* TASK FOR TR'S */}
