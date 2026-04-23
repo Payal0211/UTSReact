@@ -74,10 +74,10 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
   }, [tableFilteredState, selectedHead, searchText, navigate]);
 
   useEffect(() => {
-    if (selectedHead.length !== 0) {
+    if (selectedHead.length !== 0 && filtersList?.HeadUsers.map(it=> it.id).includes(selectedHead)) {
       getListData();
     }
-  }, [searchText, tableFilteredState, selectedHead]);
+  }, [searchText, tableFilteredState, selectedHead,filtersList]);
 
 
   const updateTARowValue = async (value, key, params, index, targetValue) => {
