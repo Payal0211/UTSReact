@@ -6,7 +6,7 @@ import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import {
     Select, InputNumber,
-    Tooltip, Table, Checkbox, message,  Skeleton, Modal
+    Tooltip, Table, Checkbox, message, Skeleton, Modal
 } from "antd";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -138,22 +138,22 @@ function NewTADashboard() {
     const [showConfirmRemove, setShowConfirmRemove] = useState(false);
     const [editedCommentData, setEditedCommentData] = useState({});
     const [searchTerm, setSearchTerm] = useState("");
-const [moveToAssessment, setMoveToAssessment] = useState(false);
- const {
-    register: remarkregiter,
-    handleSubmit: remarkSubmit,
-    resetField: resetRemarkField,
-    clearErrors: clearRemarkError,
-    formState: { errors: remarkError },
-  } = useForm();
-  const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
+    const [moveToAssessment, setMoveToAssessment] = useState(false);
+    const {
+        register: remarkregiter,
+        handleSubmit: remarkSubmit,
+        resetField: resetRemarkField,
+        clearErrors: clearRemarkError,
+        formState: { errors: remarkError },
+    } = useForm();
+    const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
     const [newTaskError, setNewTaskError] = useState(false);
     const [isAddingNewTask, setAddingNewTask] = useState(false);
 
-     const [newTAHRvalue, setNewTAHRValue] = useState("");
-      const [newTRAllData, setTRAllData] = useState({});
- const [allTAUsersList, setAllTAUsersList] = useState([]);
-   const [isEditNewTask, setEditNewTask] = useState(false);
+    const [newTAHRvalue, setNewTAHRValue] = useState("");
+    const [newTRAllData, setTRAllData] = useState({});
+    const [allTAUsersList, setAllTAUsersList] = useState([]);
+    const [isEditNewTask, setEditNewTask] = useState(false);
 
     useEffect(() => {
         const getUserResult = async () => {
@@ -163,16 +163,16 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
         getUserResult();
     }, []);
 
-     const getAllTAUsersList = async () => {
+    const getAllTAUsersList = async () => {
         let req = await TaDashboardDAO.geAllTAUSERSRequestDAO();
         if (req.statusCode === HTTPStatusCode.OK) {
-          setAllTAUsersList(req.responseBody);
+            setAllTAUsersList(req.responseBody);
         }
-      };
-    
-      useEffect(() => {
+    };
+
+    useEffect(() => {
         getAllTAUsersList();
-      }, []);
+    }, []);
 
     const getFilters = async () => {
         setIsLoading(true);
@@ -274,12 +274,12 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                 tableFilteredState.filterFields_OnBoard.taUserIDs
             );
         }
-    }, [searchText, tableFilteredState, selectedHead, activeTab,startDate]);
+    }, [searchText, tableFilteredState, selectedHead, activeTab, startDate]);
 
     const getTalentWiseReport = async () => {
         let date = new Date()
         let query = `?month=${moment(date).month() + 1}&year=${moment(date).year()}`
-
+        setIsLoading(true)
         const result = await TaDashboardDAO.getTalentWiseReportContractDAO(query);
         setIsLoading(false);
         if (result.statusCode === HTTPStatusCode.OK) {
@@ -823,16 +823,16 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
         );
     };
 
-      const handleSearchInput = (value) => {
-    setSearchTerm(value);
-    const filteredData = hrTalentList.filter(
-      (talent) =>
-        talent.talent.toLowerCase().includes(value.toLowerCase()) ||
-        (talent.email &&
-          talent.email.toLowerCase().includes(value.toLowerCase()))
-    );
-    setFilteredTalentList(filteredData);
-  };
+    const handleSearchInput = (value) => {
+        setSearchTerm(value);
+        const filteredData = hrTalentList.filter(
+            (talent) =>
+                talent.talent.toLowerCase().includes(value.toLowerCase()) ||
+                (talent.email &&
+                    talent.email.toLowerCase().includes(value.toLowerCase()))
+        );
+        setFilteredTalentList(filteredData);
+    };
 
     const getCompanySuggestionHandler = async (userValue, searchtext) => {
         const payload = {
@@ -940,174 +940,174 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
         let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
     };
 
-    const PSComp =  ({text, result}) => {
-            if (result?.hrTitle === "TOTAL") return text;
-            const today = new Date();
-            const selected = new Date(startDate);
-    
-            // Clear time for comparison
-            today.setHours(0, 0, 0, 0);
-            selected.setHours(0, 0, 0, 0);
-    
-            const isPastDate = selected < today;
-            if (isPastDate) return text;
-            return (
-              <Tooltip title={"Edit Target"}>
+    const PSComp = ({ text, result }) => {
+        if (result?.hrTitle === "TOTAL") return text;
+        const today = new Date();
+        const selected = new Date(startDate);
+
+        // Clear time for comparison
+        today.setHours(0, 0, 0, 0);
+        selected.setHours(0, 0, 0, 0);
+
+        const isPastDate = selected < today;
+        if (isPastDate) return text;
+        return (
+            <Tooltip title={"Edit Target"}>
                 <p
-                  style={{
-                    color: "green",
+                    style={{
+                        color: "green",
+                        fontWeight: "bold",
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                    }}
+                    onClick={() => {
+                        setShowProfileTarget(true);
+                        setStartTargetDate(startDate);
+                        setProfileTargetDetails({
+                            ...result,
+                            id: result?.taskID,
+                            tA_UserID: result?.taUserID,
+                            fromGoalsTable: true,
+                        });
+                    }}
+                >
+                    {text}
+                </p>
+            </Tooltip>)
+    }
+
+    const PSAchieveComp = ({ text, result }) => {
+        if (result?.hrTitle === "TOTAL") return text;
+        return +text > 0 ? (
+            <p
+                style={{
+                    color: "blue",
                     fontWeight: "bold",
                     textDecoration: "underline",
                     cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    setShowProfileTarget(true);
-                    setStartTargetDate(startDate);
-                    setProfileTargetDetails({
-                      ...result,
-                      id: result?.taskID,
-                      tA_UserID: result?.taUserID,
-                      fromGoalsTable: true,
-                    });
-                  }}
-                >
-                  {text}
-                </p>
-              </Tooltip>)
-    }
-
-    const PSAchieveComp = ({text, result}) => {
-         if (result?.hrTitle === "TOTAL") return text;
-        return +text > 0 ? (
-          <p
-            style={{
-              color: "blue",
-              fontWeight: "bold",
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              getTalentProfilesDetailsfromGoalsTable(
-                {
-                  ...result,
-                  hiringRequest_ID: result.hiringRequestID,
-                  companyName: result.company,
-                  taName: result.ta,
-                  hrNumber: result.hrTitle,
-                  isFromGoal: true,
-                },
-                2
-              );
-              setProfileStatusID(2);
-              setHRTalentListFourCount([]);
-            }}
-          >
-            {text}
-          </p>
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromGoalsTable(
+                        {
+                            ...result,
+                            hiringRequest_ID: result.hiringRequestID,
+                            companyName: result.company,
+                            taName: result.ta,
+                            hrNumber: result.hrTitle,
+                            isFromGoal: true,
+                        },
+                        2
+                    );
+                    setProfileStatusID(2);
+                    setHRTalentListFourCount([]);
+                }}
+            >
+                {text}
+            </p>
         ) : (
-          ""
+            ""
         );
     }
 
     const IDTComp = ({ text, result }) => {
         if (result?.hrTitle === "TOTAL") return text;
         return +text > 0 ? (
-          <p
-            style={{
-              color: "blue",
-              fontWeight: "bold",
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              getTalentProfilesDetailsfromGoalsTable(
-                {
-                  ...result,
-                  hiringRequest_ID: result.hiringRequestID,
-                  companyName: result.company,
-                  taName: result.ta,
-                  hrNumber: result.hrTitle,
-                  isFromGoal: true,
-                },
-                3
-              );
-              setProfileStatusID(3);
-              setHRTalentListFourCount([]);
-            }}
-          >
-            {text}
-          </p>
+            <p
+                style={{
+                    color: "blue",
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromGoalsTable(
+                        {
+                            ...result,
+                            hiringRequest_ID: result.hiringRequestID,
+                            companyName: result.company,
+                            taName: result.ta,
+                            hrNumber: result.hrTitle,
+                            isFromGoal: true,
+                        },
+                        3
+                    );
+                    setProfileStatusID(3);
+                    setHRTalentListFourCount([]);
+                }}
+            >
+                {text}
+            </p>
         ) : (
-          ""
+            ""
         );
     }
 
     const ProfileColumns = [
         {
-          title: "Submission Date",
-          dataIndex: "profileSubmittedDate",
-          key: "profileSubmittedDate",
+            title: "Submission Date",
+            dataIndex: "profileSubmittedDate",
+            key: "profileSubmittedDate",
         },
         {
-          title: "Talent",
-          dataIndex: "talent",
-          key: "talent",
+            title: "Talent",
+            dataIndex: "talent",
+            key: "talent",
         },
         {
-          title: "Status",
-          dataIndex: "talentStatus",
-          key: "talentStatus",
-          render: (_, item) => (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              {All_Hiring_Request_Utils.GETTALENTSTATUS(
-                parseInt(item?.talentStatusColor),
-                item?.talentStatus
-              )}
-    
-              {(item?.statusID === 2 || item?.statusID === 3) && (
-                <IconContext.Provider
-                  value={{
-                    color: "#FFDA30",
-                    style: { width: "16px", height: "16px", cursor: "pointer" },
-                  }}
+            title: "Status",
+            dataIndex: "talentStatus",
+            key: "talentStatus",
+            render: (_, item) => (
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                    }}
                 >
-                  <Tooltip title="Move to Assessment" placement="top">
-                    <span
-                      // style={{
-                      //   background: 'red'
-                      // }}
-                      onClick={() => {
-                        setMoveToAssessment(true);
-                        setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
-                      }}
-                      style={{ padding: "0" }}
-                    >
-                      {" "}
-                      <BsClipboard2CheckFill />
-                    </span>{" "}
-                  </Tooltip>
-                </IconContext.Provider>
-              )}
-            </div>
-          ),
+                    {All_Hiring_Request_Utils.GETTALENTSTATUS(
+                        parseInt(item?.talentStatusColor),
+                        item?.talentStatus
+                    )}
+
+                    {(item?.statusID === 2 || item?.statusID === 3) && (
+                        <IconContext.Provider
+                            value={{
+                                color: "#FFDA30",
+                                style: { width: "16px", height: "16px", cursor: "pointer" },
+                            }}
+                        >
+                            <Tooltip title="Move to Assessment" placement="top">
+                                <span
+                                    // style={{
+                                    //   background: 'red'
+                                    // }}
+                                    onClick={() => {
+                                        setMoveToAssessment(true);
+                                        setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
+                                    }}
+                                    style={{ padding: "0" }}
+                                >
+                                    {" "}
+                                    <BsClipboard2CheckFill />
+                                </span>{" "}
+                            </Tooltip>
+                        </IconContext.Provider>
+                    )}
+                </div>
+            ),
         },
         {
-          title: "Interview Detail",
-          dataIndex: "talentStatusDetail",
-          key: "talentStatusDetail",
+            title: "Interview Detail",
+            dataIndex: "talentStatusDetail",
+            key: "talentStatusDetail",
         },
         {
-          title: "Submitted By",
-          dataIndex: "profileSubmittedBy",
-          key: "profileSubmittedBy",
+            title: "Submitted By",
+            dataIndex: "profileSubmittedBy",
+            key: "profileSubmittedBy",
         },
-      ];
+    ];
 
     const setDiamondCompany = async (row, index) => {
         let payload = {
@@ -1145,86 +1145,86 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
         }
     };
 
-     const saveNewTask = async () => {
+    const saveNewTask = async () => {
         if (newTAUservalue === "") {
-          setNewTaskError(true);
-          return;
+            setNewTaskError(true);
+            return;
         }
-    
+
         if (selectedCompanyID === "") {
-          setNewTaskError(true);
-          return;
+            setNewTaskError(true);
+            return;
         }
-    
+
         if (newTAHRvalue === "") {
-          setNewTaskError(true);
-          return;
+            setNewTaskError(true);
+            return;
         }
-    
+
         if (newTRAllData.activeHR <= 0 || newTRAllData.activeHR > 20 || isNaN(newTRAllData.activeHR)) {
-          setNewTaskError(true);
-          return;
+            setNewTaskError(true);
+            return;
         }
-    
+
         let pl = {
-          tA_UserID: newTAUservalue,
-          company_ID: selectedCompanyID,
-          hiringRequest_ID: newTAHRvalue,
-          task_Priority: null,
-          no_of_InterviewRounds: null,
-          role_TypeID: null,
-          task_StatusID: null,
-          activeTR: newTRAllData?.activeHR,
-          talent_AnnualCTC_Budget_INRValue: newTRAllData?.totalAnnualBudgetInINR,
-          modelType: newTRAllData?.modelType,
-          revenue_On10PerCTC: newTRAllData?.revenue10Percent,
-          totalRevenue_NoofTalent: newTRAllData?.totalRevenueOppurtunity,
-          noOfProfile_TalentsTillDate: newTRAllData?.noOfProfilesSharedTillDate,
-          tA_HR_StatusID: 2,
-          tA_Head_UserID: `${newTAHeadUservalue}`,
+            tA_UserID: newTAUservalue,
+            company_ID: selectedCompanyID,
+            hiringRequest_ID: newTAHRvalue,
+            task_Priority: null,
+            no_of_InterviewRounds: null,
+            role_TypeID: null,
+            task_StatusID: null,
+            activeTR: newTRAllData?.activeHR,
+            talent_AnnualCTC_Budget_INRValue: newTRAllData?.totalAnnualBudgetInINR,
+            modelType: newTRAllData?.modelType,
+            revenue_On10PerCTC: newTRAllData?.revenue10Percent,
+            totalRevenue_NoofTalent: newTRAllData?.totalRevenueOppurtunity,
+            noOfProfile_TalentsTillDate: newTRAllData?.noOfProfilesSharedTillDate,
+            tA_HR_StatusID: 2,
+            tA_Head_UserID: `${newTAHeadUservalue}`,
         };
         // console.log("pl", pl,newTRAllData);
         setAddingNewTask(true);
         let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
         setAddingNewTask(false);
-    
-        if (updateresult.statusCode === HTTPStatusCode.OK) {
-          setNewTAUserValue("");
-          setselectedCompanyID("");
-          setNewTAHRValue("");
-          setCompanyNameSuggestion([]);
-          setTRAllData({});
-          setNewTaskError(false);
-          setIsAddNewRow(false);
-          getListData();
-        } else {
-          message.error("Something went wrong");
-        }
-      };
-    
 
-     const saveRemark = async (d) => {
+        if (updateresult.statusCode === HTTPStatusCode.OK) {
+            setNewTAUserValue("");
+            setselectedCompanyID("");
+            setNewTAHRValue("");
+            setCompanyNameSuggestion([]);
+            setTRAllData({});
+            setNewTaskError(false);
+            setIsAddNewRow(false);
+            getListData();
+        } else {
+            message.error("Something went wrong");
+        }
+    };
+
+
+    const saveRemark = async (d) => {
         let pl = {
-          HiringRequestId: talentToMove?.hiringRequest_ID,
-          CtpId: talentToMove?.ctpID,
-          TalentId: talentToMove?.tA_UserID,
-          Remark: d.remark,
+            HiringRequestId: talentToMove?.hiringRequest_ID,
+            CtpId: talentToMove?.ctpID,
+            TalentId: talentToMove?.tA_UserID,
+            Remark: d.remark,
         };
-    
+
         setSaveRemarkLoading(true);
         const result = await InterviewDAO.updateTalentAssessmentDAO(pl);
         setSaveRemarkLoading(false);
         if (result.statusCode === HTTPStatusCode.OK) {
-          setMoveToAssessment(false);
-          resetRemarkField("remark");
-          clearRemarkError("remark");
-          getTalentProfilesDetailsfromTable(talentToMove, profileStatusID);
-          // callAPI(hrId)
-          // getHrUserData(hrId)
+            setMoveToAssessment(false);
+            resetRemarkField("remark");
+            clearRemarkError("remark");
+            getTalentProfilesDetailsfromTable(talentToMove, profileStatusID);
+            // callAPI(hrId)
+            // getHrUserData(hrId)
         } else {
-          message.error("Something went wrong");
+            message.error("Something went wrong");
         }
-      };
+    };
 
     const getTalentProfilesDetailsfromTable = async (
         result,
@@ -1343,173 +1343,173 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
 
     };
 
-      const isSelectableDateModal = (date) => {
-    const today = new Date();
-    const targetDateStr = date.toDateString();
-    const dayOfWeek = today.getDay();
+    const isSelectableDateModal = (date) => {
+        const today = new Date();
+        const targetDateStr = date.toDateString();
+        const dayOfWeek = today.getDay();
 
-    if (dayOfWeek === 5) {
-      const validDates = [0, 1, 2, 3].map((offset) => {
-        const d = new Date(today);
-        d.setDate(today.getDate() + offset);
-        return d.toDateString();
-      });
-      return validDates.includes(targetDateStr);
-    } else {
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      return [today.toDateString(), tomorrow.toDateString()].includes(
-        targetDateStr
-      );
-    }
-  };
-
-   const saveEditTask = async () => {
-      let pl = {
-        id: editTATaskData?.id,
-        tA_UserID: editTATaskData?.tA_UserID,
-        company_ID: editTATaskData?.company_ID,
-        hiringRequest_ID: editTATaskData?.hiringRequest_ID,
-        task_Priority: editTATaskData?.task_Priority,
-        no_of_InterviewRounds: editTATaskData?.no_of_InterviewRounds,
-        role_TypeID: editTATaskData?.role_TypeID,
-        task_StatusID: editTATaskData?.task_StatusID,
-        activeTR: editTATaskData?.activeTR,
-        talent_AnnualCTC_Budget_INRValue:
-          editTATaskData?.talent_AnnualCTC_Budget_INRValue,
-        modelType: editTATaskData?.modelType,
-        revenue_On10PerCTC: editTATaskData?.revenue_On10PerCTC,
-        totalRevenue_NoofTalent: editTATaskData?.totalRevenue_NoofTalent,
-        noOfProfile_TalentsTillDate: editTATaskData?.noOfProfile_TalentsTillDate,
-        tA_HR_StatusID: editTATaskData?.tA_HR_StatusID,
-        tA_Head_UserID: `${newTAHeadUservalue}`,
-      };
-      setEditNewTask(true);
-      let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
-      setEditNewTask(false);
-  
-      if (updateresult.statusCode === HTTPStatusCode.OK) {
-        setShowEditTATask(false);
-        getListData();
-      } else {
-        message.error("Something went wrong");
-      }
+        if (dayOfWeek === 5) {
+            const validDates = [0, 1, 2, 3].map((offset) => {
+                const d = new Date(today);
+                d.setDate(today.getDate() + offset);
+                return d.toDateString();
+            });
+            return validDates.includes(targetDateStr);
+        } else {
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            return [today.toDateString(), tomorrow.toDateString()].includes(
+                targetDateStr
+            );
+        }
     };
 
-     const removeTask = async (id) => {
+    const saveEditTask = async () => {
+        let pl = {
+            id: editTATaskData?.id,
+            tA_UserID: editTATaskData?.tA_UserID,
+            company_ID: editTATaskData?.company_ID,
+            hiringRequest_ID: editTATaskData?.hiringRequest_ID,
+            task_Priority: editTATaskData?.task_Priority,
+            no_of_InterviewRounds: editTATaskData?.no_of_InterviewRounds,
+            role_TypeID: editTATaskData?.role_TypeID,
+            task_StatusID: editTATaskData?.task_StatusID,
+            activeTR: editTATaskData?.activeTR,
+            talent_AnnualCTC_Budget_INRValue:
+                editTATaskData?.talent_AnnualCTC_Budget_INRValue,
+            modelType: editTATaskData?.modelType,
+            revenue_On10PerCTC: editTATaskData?.revenue_On10PerCTC,
+            totalRevenue_NoofTalent: editTATaskData?.totalRevenue_NoofTalent,
+            noOfProfile_TalentsTillDate: editTATaskData?.noOfProfile_TalentsTillDate,
+            tA_HR_StatusID: editTATaskData?.tA_HR_StatusID,
+            tA_Head_UserID: `${newTAHeadUservalue}`,
+        };
+        setEditNewTask(true);
+        let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+        setEditNewTask(false);
+
+        if (updateresult.statusCode === HTTPStatusCode.OK) {
+            setShowEditTATask(false);
+            getListData();
+        } else {
+            message.error("Something went wrong");
+        }
+    };
+
+    const removeTask = async (id) => {
         setLoadingTalentProfile(true);
         const result = await TaDashboardDAO.removeTaskDAO(id);
         setLoadingTalentProfile(false);
         if (result.statusCode === HTTPStatusCode.OK) {
-          setShowConfirmRemove(false);
-          getListData();
+            setShowConfirmRemove(false);
+            getListData();
         } else {
-          message.error("Something went wrong!");
+            message.error("Something went wrong!");
         }
-      };
+    };
 
-        const HRTextCol = ({ hrText, title, row }) => {
-    let formatted = hrText?.replace(/\(([^)]+)\)/g, (_, name) => `( <div style="color:rgb(179, 76, 1);font-weight: 600" >${name.trim()}</div> )`)
+    const HRTextCol = ({ hrText, title, row }) => {
+        let formatted = hrText?.replace(/\(([^)]+)\)/g, (_, name) => `( <div style="color:rgb(179, 76, 1);font-weight: 600" >${name.trim()}</div> )`)
 
-    if (title === 'Achieve Pipeline (INR)' || title === 'PreOnboarding Pipeline (INR)') {
-      return <div dangerouslySetInnerHTML={{ __html: formatted }} style={{ textDecoration: "underline", cursor: 'pointer' }} onClick={() => window.open(`/allhiringrequest/${row.hiringRequest_ID}`, '_blank', 'noopener,noreferrer')} ></div>
+        if (title === 'Achieve Pipeline (INR)' || title === 'PreOnboarding Pipeline (INR)') {
+            return <div dangerouslySetInnerHTML={{ __html: formatted }} style={{ textDecoration: "underline", cursor: 'pointer' }} onClick={() => window.open(`/allhiringrequest/${row.hiringRequest_ID}`, '_blank', 'noopener,noreferrer')} ></div>
+        }
+
+        return <a
+            href={`/allhiringrequest/${row.hiringRequest_ID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+        >
+            {hrText}
+        </a>
     }
 
-    return <a
-      href={`/allhiringrequest/${row.hiringRequest_ID}`}
-      style={{ textDecoration: "underline" }}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {hrText}
-    </a>
-  }
-    
-      const saveComment = async (note) => {
+    const saveComment = async (note) => {
         let pl = {
-          task_ID: commentData?.id,
-          comments: note,
-          CommentID: editedCommentData?.id ?? 0
+            task_ID: commentData?.id,
+            comments: note,
+            CommentID: editedCommentData?.id ?? 0
         };
         setIsCommentLoading(true);
         const res = await TaDashboardDAO.insertTaskCommentRequestDAO(pl);
         setIsCommentLoading(false);
         if (res.statusCode === HTTPStatusCode.OK) {
-           setEditedCommentData({})
-          setALLCommentsList(res.responseBody);
-          setTaListData((prev) => {
-            let oldComments = prev[commentData?.index]?.latestNotes;
-            if (oldComments !== null) {
-              let newItem = `<li>${note}</li>`;
-              let newDS = [...prev];
-              newDS[commentData?.index] = {
-                ...newDS[commentData?.index],
-                latestNotes: oldComments.replace("<ul>", `<ul>${newItem}`),
-              };
-              return newDS;
-            } else {
-              let newDS = [...prev];
-              let newItem = `<ul><li>${note}</li></ul>`;
-              newDS[commentData?.index] = {
-                ...newDS[commentData?.index],
-                latestNotes: newItem,
-              };
-              return newDS;
-            }
-          });
+            setEditedCommentData({})
+            setALLCommentsList(res.responseBody);
+            setTaListData((prev) => {
+                let oldComments = prev[commentData?.index]?.latestNotes;
+                if (oldComments !== null) {
+                    let newItem = `<li>${note}</li>`;
+                    let newDS = [...prev];
+                    newDS[commentData?.index] = {
+                        ...newDS[commentData?.index],
+                        latestNotes: oldComments.replace("<ul>", `<ul>${newItem}`),
+                    };
+                    return newDS;
+                } else {
+                    let newDS = [...prev];
+                    let newItem = `<ul><li>${note}</li></ul>`;
+                    newDS[commentData?.index] = {
+                        ...newDS[commentData?.index],
+                        latestNotes: newItem,
+                    };
+                    return newDS;
+                }
+            });
         }
-      };
+    };
 
-      const handleProfileShearedTarget = async () => {
-          let pl = {
+    const handleProfileShearedTarget = async () => {
+        let pl = {
             task_ID: profileTargetDetails?.id,
             tA_Head_UserID: selectedHead,
             tA_UserID: profileTargetDetails?.tA_UserID,
             target_StageID: 1,
             target_Number: targetValue,
             target_Date: moment(startTargetDate).format("YYYY-MM-DD"), // today's date
-          };
-          setLoadingTalentProfile(true);
-          let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
-          setLoadingTalentProfile(false);
-          if (result.statusCode === HTTPStatusCode.OK) {
+        };
+        setLoadingTalentProfile(true);
+        let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
+        setLoadingTalentProfile(false);
+        if (result.statusCode === HTTPStatusCode.OK) {
             setShowProfileTarget(false);
             setGoalList(result.responseBody);
             let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
             updateTARowValue(
-              valobj,
-              "task_StatusID",
-              profileTargetDetails,
-              profileTargetDetails?.index,
-              targetValue
+                valobj,
+                "task_StatusID",
+                profileTargetDetails,
+                profileTargetDetails?.index,
+                targetValue
             );
             setTargetValue(5);
             setStartTargetDate(new Date());
             setProfileTargetDetails({});
-          } else {
+        } else {
             message.error("Something went wrong!");
-          }
-        };
+        }
+    };
 
-         const getTalentProfilesDetails = async (result, statusID, stageID) => {
-            setShowTalentProfiles(true);
-            setInfoforProfile(result);
-            let pl = {
-              hrID: result?.hiringRequest_ID,
-              statusID: statusID,
-              stageID: statusID === 0 ? null : stageID ? stageID : 0,
-            };
-            setLoadingTalentProfile(true);
-            const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
-            setLoadingTalentProfile(false);
-            if (hrResult.statusCode === HTTPStatusCode.OK) {
-              setHRTalentList(hrResult.responseBody);
-              setFilteredTalentList(hrResult.responseBody);
-            } else {
-              setHRTalentList([]);
-              setFilteredTalentList([]);
-            }
-          };
+    const getTalentProfilesDetails = async (result, statusID, stageID) => {
+        setShowTalentProfiles(true);
+        setInfoforProfile(result);
+        let pl = {
+            hrID: result?.hiringRequest_ID,
+            statusID: statusID,
+            stageID: statusID === 0 ? null : stageID ? stageID : 0,
+        };
+        setLoadingTalentProfile(true);
+        const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+        setLoadingTalentProfile(false);
+        if (hrResult.statusCode === HTTPStatusCode.OK) {
+            setHRTalentList(hrResult.responseBody);
+            setFilteredTalentList(hrResult.responseBody);
+        } else {
+            setHRTalentList([]);
+            setFilteredTalentList([]);
+        }
+    };
 
 
     return (
@@ -1593,8 +1593,8 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                                 <button
                                     className={stylesOBj.btnPrimary}
                                     onClick={() => {
-                                          setIsAddNewRow(true);
-                                          setNewTAHeadUserValue(selectedHead);
+                                        setIsAddNewRow(true);
+                                        setNewTAHeadUserValue(selectedHead);
                                     }}
                                 >
                                     Add New Task
@@ -1616,7 +1616,7 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                                     placeholderText="Select Date"
                                     selected={startDate}
                                     onChange={date => setStartDate(date)}
-                                    // startDate={startDate}
+                                // startDate={startDate}
                                 // endDate={endDate}
                                 // selectsRange
                                 />
@@ -1699,7 +1699,10 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
 
                         </div>
 
-                        {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment} />}
+                        {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
+                            hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny }}
+                            userData={userData}
+                        />}
                         {activeTable === 'Goal' && <GoalTableComp selectedHead={selectedHead} startDate={startDate} tableFilteredState={tableFilteredState} />}
                     </>}
 
@@ -1708,7 +1711,7 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                         <FTECountTable isLoading={fteDataLoading} countData={fteCountsData} />
 
 
-                        <TalentdetailsFTETable isLoading={fteDataLoading} talentWiseReport={talentWiseReport}  showDetails={showDetails}  />
+                        <TalentdetailsFTETable isLoading={fteDataLoading} talentWiseReport={talentWiseReport} showDetails={showDetails} />
 
 
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
@@ -1727,7 +1730,7 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
 
                         </div>
 
-                            { activeFTETable === 'Dashboard' && (
+                            {activeFTETable === 'Dashboard' && (
                                 <button
                                     className={stylesOBj.btnPrimary}
                                     onClick={() => {
@@ -1753,8 +1756,8 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                                     className={stylesOBj.dateFilter}
                                     placeholderText="Select Date"
                                     selected={startDate}
-                                     onChange={date => setStartDate(date)}
-                                    // startDate={startDate}
+                                    onChange={date => setStartDate(date)}
+                                // startDate={startDate}
                                 // endDate={endDate}
                                 // selectsRange
                                 />
@@ -1869,10 +1872,10 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                                     </thead>
                                     <tbody>
                                         {TaListData?.length === 0 ? <tr>
-                                        <td colSpan={21} style={{ textAlign: "center", padding: "20px" }}>
-                                            No data available
-                                        </td>
-                                    </tr> : TaListData.map((row, i) => (
+                                            <td colSpan={21} style={{ textAlign: "center", padding: "20px" }}>
+                                                No data available
+                                            </td>
+                                        </tr> : TaListData.map((row, i) => (
                                             <tr key={i}>
                                                 <td>{row.taName}</td>
                                                 <td>
@@ -1882,12 +1885,12 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                                                         <button
                                                             className={taStylesNew["diamond-toggle"]}
                                                             data-tooltip={userData?.UserId === 2 ||
-                                                                    userData?.UserId === 333 ||
-                                                                    userData?.UserId === 190 || userData?.UserId === 96  ? (row?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
+                                                                userData?.UserId === 333 ||
+                                                                userData?.UserId === 190 || userData?.UserId === 96 ? (row?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
                                                             onClick={() => {
                                                                 if (userData?.UserId === 2 ||
                                                                     userData?.UserId === 333 ||
-                                                                    userData?.UserId === 190 || userData?.UserId === 96 ) {
+                                                                    userData?.UserId === 190 || userData?.UserId === 96) {
                                                                     if (row?.companyCategory === "Diamond") {
                                                                         setShowDiamondRemark(true);
                                                                         setCompanyIdForRemark({ ...row, index: i });
@@ -2210,1236 +2213,1239 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                     </Suspense>
                 )}
 
-   {showDiamondRemark && (
-        <Modal
-          transitionName=""
-          width="1000px"
-          centered
-          footer={null}
-          open={showDiamondRemark}
-          className="engagementModalStyle"
-          onCancel={() => {
-            setShowDiamondRemark(false);
-            resetField("diamondCategoryRemoveRemark");
-            clearErrors("diamondCategoryRemoveRemark");
-          }}
-        >
-          <div style={{ padding: "35px 15px 10px 15px" }}>
-            <h3>Add Remark</h3>
-          </div>
-
-          <div style={{ padding: "10px 20px" }}>
-            {remDiamondLoading ? (
-              <Skeleton active />
-            ) : (
-              <HRInputField
-                isTextArea={true}
-                register={register}
-                errors={errors}
-                label="Remark"
-                name="diamondCategoryRemoveRemark"
-                type={InputType.TEXT}
-                placeholder="Enter Remark"
-                validationSchema={{
-                  required: "please enter remark",
-                }}
-                required
-              />
-            )}
-          </div>
-
-          <div style={{ padding: "10px 20px" }}>
-            <button
-              className={taStyles.btnPrimary}
-              onClick={handleSubmit(handleRemoveDiamond)}
-              disabled={remDiamondLoading}
-            >
-              Save
-            </button>
-            <button
-              className={taStyles.btnCancle}
-              disabled={remDiamondLoading}
-              onClick={() => {
-                setShowDiamondRemark(false);
-                resetField("diamondCategoryRemoveRemark");
-                clearErrors("diamondCategoryRemoveRemark");
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </Modal>
-      )}
-
-      {showConfirmRemove && (
-              <Modal
-                transitionName=""
-                width="650px"
-                centered
-                footer={null}
-                open={showConfirmRemove}
-                // className={allEngagementStyles.engagementModalContainer}
-                className="engagementModalStyle"
-                // onOk={() => setVersantModal(false)}
-                onCancel={() => {
-                  setShowConfirmRemove(false);
-                }}
-              >
-                <>
-                  <div style={{ padding: "35px 15px 10px 15px" }}>
-                    {loadingTalentProfile ? (
-                      <div>
-                        <Skeleton active />
-                      </div>
-                    ) : (
-                      <h3>
-                        Are you sure you want to Remove{" "}
-                        <strong>{profileInfo?.taName}</strong> for{" "}
-                        {profileInfo?.hrNumber} in {profileInfo?.companyName}
-                      </h3>
-                    )}
-                  </div>
-      
-                  <div
-                    style={{
-                      padding: "10px",
-                      display: "flex",
-                      justifyContent: "end",
-                    }}
-                  >
-                    <button
-                      className={taStyles.btnPrimary}
-                      disabled={loadingTalentProfile}
-                      onClick={() => {
-                        removeTask(profileInfo?.id);
-                      }}
-                    >
-                      Yes Remove
-                    </button>
-                    <button
-                      className={taStyles.btnCancle}
-                      disabled={loadingTalentProfile}
-                      onClick={() => {
-                        setShowConfirmRemove(false);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </>
-              </Modal>
-            )}
-      
-            {showProfileTarget && (
-              <Modal
-                transitionName=""
-                width="400px"
-                centered
-                footer={null}
-                open={showProfileTarget}
-                // className={allEngagementStyles.engagementModalContainer}
-                className="engagementModalStyle"
-                // onOk={() => setVersantModal(false)}
-                onCancel={() => {
-                  setShowProfileTarget(false);
-                  setTargetValue(5);
-                  setStartTargetDate(new Date());
-                }}
-              >
-                <>
-                  <div style={{ padding: "35px 15px 10px 15px" }}>
-                    <h3>Profiles Shared Target</h3>
-                  </div>
-      
-                  <div
-                    // className={taStyles.row}
-                    style={{
-                      // display: "flex",
-                      // alignItems: "center",
-                      padding: "0 10px 15px",
-                    }}
-                  >
-                    {loadingTalentProfile ? (
-                      <Skeleton active />
-                    ) : (
-                      <>
-                        <div className={taStyles.row}>
-                          <div className={taStyles.colMd6}>
-                            <div
-                              className={taStyles.calendarFilterSet}
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "self-start",
-                              }}
-                            >
-                              <div className={taStyles.label}>Date</div>
-                              <div className={taStyles.calendarFilter}>
-                                <CalenderSVG
-                                  style={{ height: "16px", marginRight: "16px" }}
-                                />
-                                <DatePicker
-                                  style={{ backgroundColor: "red" }}
-                                  onKeyDown={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                  }}
-                                  className={taStyles.dateFilter}
-                                  placeholderText="Start date"
-                                  selected={startTargetDate}
-                                  onChange={(date) => setStartTargetDate(date)}
-                                  dateFormat="dd-MM-yyyy"
-                                  filterDate={isSelectableDateModal}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className={taStyles.row} style={{ marginTop: "10px" }}>
-                          <div className={taStyles.colMd6}>
-                            <div
-                              className={taStyles.calendarFilterSet}
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "self-start",
-                              }}
-                            >
-                              <div className={taStyles.label}>Target</div>
-                              <InputNumber
-                                value={targetValue}
-                                onChange={(v) => {
-                                  setTargetValue(v);
-                                }}
-                                min={0}
-                                max={9}
-                                maxLength={1}
-                                placeholder="Enter target"
-                                style={{
-                                  height: "44px",
-                                  padding: "8px",
-                                  borderRadius: "8px",
-                                  width: "115px",
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div className={taStyles.colMd6}>
-                            <div
-                              style={{
-                                padding: "10px",
-                                display: "flex",
-                                justifyContent: "end",
-                                marginTop: "18px",
-                              }}
-                            >
-                              <button
-                                className={taStyles.btnPrimary}
-                                // disabled={ }
-                                onClick={() => {
-                                  handleProfileShearedTarget();
-                                }}
-                              >
-                                Proceed
-                              </button>
-                              <button
-                                className={taStyles.btnCancle}
-                                onClick={() => {
-                                  setShowProfileTarget(false);
-                                  setTargetValue(5);
-                                  setStartTargetDate(new Date());
-                                }}
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </>
-              </Modal>
-            )}
-      
-            {showTalentProfiles && (
-              <Modal
-                transitionName=""
-                width="1000px"
-                centered
-                footer={null}
-                open={showTalentProfiles}
-                // className={allEngagementStyles.engagementModalContainer}
-                className="engagementModalStyle"
-                // onOk={() => setVersantModal(false)}
-                onCancel={() => {
-                  setSearchTerm("");
-                  setShowTalentProfiles(false);
-                  setHRTalentListFourCount([]);
-                }}
-              >
-                <>
-                  <div
-                    style={{
-                      padding: "45px 15px 10px 15px",
-                      display: "flex",
-                      gap: "10px",
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <h3>
-                      Profiles for <strong>{profileInfo?.hrNumber}</strong>
-                    </h3>
-      
-                    <p style={{ marginBottom: "0.5em" }}>
-                      Company : <strong>{profileInfo?.companyName}</strong>
-                    </p>
-      
-                    <p style={{ marginBottom: "0.5em" }}>
-                      TA : <strong>{profileInfo?.taName}</strong>
-                    </p>
-      
-                    <input
-                      type="text"
-                      placeholder="Search talent..."
-                      value={searchTerm}
-                      onChange={(e) => handleSearchInput(e.target.value)} // Create this function
-                      style={{
-                        padding: "6px 10px",
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        marginLeft: "auto",
-                        marginRight: "20px",
-                        minWidth: "260px",
-                      }}
-                    />
-                  </div>
-      
-                  <div
-                    style={{
-                      padding: "10px 15px",
-                      display: "flex",
-                      gap: "10px",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div
-                      className={taStyles.filterType}
-                      key={"Total Talents"}
-                      onClick={() => {
-                        getTalentProfilesDetails(profileInfo, 0);
-                        setProfileStatusID(0);
-                      }}
-                      style={{
-                        borderBottom:
-                          profileStatusID === 0 ? "6px solid #FFDA30" : "",
-                      }}
-                    >
-                      {/* <img src={FeedBack} alt="rocket" /> */}
-                      <h2>
-                        Total Talents :{" "}
-                        <span>
-                          {hrTalentListFourCount[0]?.totalTalents
-                            ? hrTalentListFourCount[0]?.totalTalents
-                            : 0}
-                        </span>
-                      </h2>
-                    </div>
-                    <div
-                      className={taStyles.filterType}
-                      key={"Profile shared"}
-                      onClick={() => {
-                        getTalentProfilesDetails(profileInfo, 2);
-                        setProfileStatusID(2);
-                      }}
-                      style={{
-                        borderBottom:
-                          profileStatusID === 2 ? "6px solid #FFDA30" : "",
-                      }}
-                    >
-                      {/* <img src={FeedBack} alt="rocket" /> */}
-                      <h2>
-                        Profile shared :{" "}
-                        <span>
-                          {hrTalentListFourCount[0]?.profileSharedCount
-                            ? hrTalentListFourCount[0]?.profileSharedCount
-                            : 0}
-                        </span>
-                      </h2>
-                    </div>
-                    <div
-                      className={taStyles.filterType}
-                      key={"In Assessment"}
-                      onClick={() => {
-                        getTalentProfilesDetails(profileInfo, 11);
-                        setProfileStatusID(11);
-                      }}
-                      style={{
-                        borderBottom:
-                          profileStatusID === 11 ? "6px solid #FFDA30" : "",
-                      }}
-                    >
-                      <h2>
-                        In Assessment :{" "}
-                        <span>
-                          {hrTalentListFourCount[0]?.assessmentCount
-                            ? hrTalentListFourCount[0]?.assessmentCount
-                            : 0}
-                        </span>
-                      </h2>
-                    </div>
-                    <div
-                      className={taStyles.filterType}
-                      key={"In Interview"}
-                      onClick={() => {
-                        getTalentProfilesDetails(profileInfo, 3);
-                        setProfileStatusID(3);
-                      }}
-                      style={{
-                        borderBottom:
-                          profileStatusID === 3 ? "6px solid #FFDA30" : "",
-                      }}
-                    >
-                      <h2>
-                        In Interview :{" "}
-                        <span>
-                          {hrTalentListFourCount[0]?.inInterviewCount
-                            ? hrTalentListFourCount[0]?.inInterviewCount
-                            : 0}
-                        </span>
-                      </h2>
-                    </div>
-                    <div
-                      className={taStyles.filterType}
-                      key={"Offered"}
-                      onClick={() => {
-                        getTalentProfilesDetails(profileInfo, 4);
-                        setProfileStatusID(4);
-                      }}
-                      style={{
-                        borderBottom:
-                          profileStatusID === 4 ? "6px solid #FFDA30" : "",
-                      }}
-                    >
-                      <h2>
-                        Offered :{" "}
-                        <span>
-                          {hrTalentListFourCount[0]?.offeredCount
-                            ? hrTalentListFourCount[0]?.offeredCount
-                            : 0}
-                        </span>
-                      </h2>
-                    </div>
-                    <div
-                      className={taStyles.filterType}
-                      key={"Hired"}
-                      onClick={() => {
-                        getTalentProfilesDetails(profileInfo, 10);
-                        setProfileStatusID(10);
-                      }}
-                      style={{
-                        borderBottom:
-                          profileStatusID === 10 ? "6px solid #FFDA30" : "",
-                      }}
-                    >
-                      <h2>
-                        Hired :{" "}
-                        <span>
-                          {hrTalentListFourCount[0]?.hiredCount
-                            ? hrTalentListFourCount[0]?.hiredCount
-                            : 0}
-                        </span>
-                      </h2>
-                    </div>
-                    <div
-                      className={taStyles.filterType}
-                      key={"Rejected, screening"}
-                      onClick={() => {
-                        getTalentProfilesDetails(profileInfo, 7, 1);
-                        setProfileStatusID(71);
-                      }}
-                      style={{
-                        borderBottom:
-                          profileStatusID === 71 ? "6px solid #FFDA30" : "",
-                      }}
-                    >
-                      <h2>
-                        Screen Reject :{" "}
-                        <span>
-                          {hrTalentListFourCount[0]?.screeningRejectCount
-                            ? hrTalentListFourCount[0]?.screeningRejectCount
-                            : 0}
-                        </span>
-                      </h2>
-                    </div>
-                    <div
-                      className={taStyles.filterType}
-                      key={"Rejected, Interview"}
-                      onClick={() => {
-                        getTalentProfilesDetails(profileInfo, 7, 2);
-                        setProfileStatusID(72);
-                      }}
-                      style={{
-                        borderBottom:
-                          profileStatusID === 72 ? "6px solid #FFDA30" : "",
-                      }}
-                    >
-                      {/* <img src={FeedBack} alt="rocket" /> */}
-                      <h2>
-                        Interview Reject :{" "}
-                        <span>
-                          {hrTalentListFourCount[0]?.interviewRejectCount
-                            ? hrTalentListFourCount[0]?.interviewRejectCount
-                            : 0}
-                        </span>
-                      </h2>
-                    </div>
-                  </div>
-      
-                  {loadingTalentProfile ? (
-                    <div>
-                      <Skeleton active />
-                    </div>
-                  ) : (
-                    <div style={{ margin: "5px 10px" }}>
-                      <Table
-                        dataSource={filteredTalentList}
-                        columns={ProfileColumns}
-                        // bordered
-                        pagination={false}
-                      />
-                    </div>
-                  )}
-      
-                  {moveToAssessment && (
+                {showDiamondRemark && (
                     <Modal
-                      width="992px"
-                      centered
-                      footer={null}
-                      open={moveToAssessment}
-                      className="commonModalWrap"
-                      // onOk={() => setVersantModal(false)}
-                      onCancel={() => {
-                        setMoveToAssessment(false);
-                        resetRemarkField("remark");
-                        clearRemarkError("remark");
-                      }}
-                    >
-                      <MoveToAssessment
+                        transitionName=""
+                        width="1000px"
+                        centered
+                        footer={null}
+                        open={showDiamondRemark}
+                        className="engagementModalStyle"
                         onCancel={() => {
-                          setMoveToAssessment(false);
-                          resetRemarkField("remark");
-                          clearRemarkError("remark");
+                            setShowDiamondRemark(false);
+                            resetField("diamondCategoryRemoveRemark");
+                            clearErrors("diamondCategoryRemoveRemark");
                         }}
-                        register={remarkregiter}
-                        handleSubmit={remarkSubmit}
-                        resetField={resetRemarkField}
-                        errors={remarkError}
-                        saveRemark={saveRemark}
-                        saveRemarkLoading={saveRemarkLoading}
-                      />
-                    </Modal>
-                  )}
-      
-                  <div style={{ padding: "10px 0" }}>
-                    <button
-                      className={taStyles.btnCancle}
-                      disabled={isAddingNewTask}
-                      onClick={() => {
-                        setSearchTerm("");
-                        setShowTalentProfiles(false);
-                        setHRTalentListFourCount([]);
-                      }}
                     >
-                      Cancel
-                    </button>
-                  </div>
-                </>
-              </Modal>
-            )}
-      
-            {isAddNewRow && (
-              <Modal
-                transitionName=""
-                width="930px"
-                centered
-                footer={null}
-                open={isAddNewRow}
-                className="engagementModalStyle"
-                onCancel={() => {
-                  setNewTAUserValue("");
-                  setselectedCompanyID("");
-                  setCompanyNameSuggestion([]);
-                  setNewTAHRValue("");
-                  setTRAllData({});
-                  setNewTaskError(false);
-                  setIsAddNewRow(false);
-                }}
-              >
-                <div style={{ padding: "35px 15px 10px 15px" }}>
-                  <h3>Add New Task</h3>
-                </div>
-                <div style={{ padding: "10px 15px" }}>
-                  {isAddingNewTask ? (
-                    <Skeleton active />
-                  ) : (
-                    <>
-                      <div className={taStyles.row}>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup}>
-                            <label>
-                              Select Head <span className={taStyles.reqField}>*</span>
-                            </label>
-                            <Select
-                              id="selectedValue"
-                              placeholder="Select TA"
-                              value={newTAHeadUservalue}
-                              showSearch={true}
-                              onChange={(value, option) => {
-                                setNewTAHeadUserValue(value);
-                              }}
-                              options={filtersList?.HeadUsers?.map((v) => ({
-                                label: v.data,
-                                value: v.id,
-                              }))}
-                              optionFilterProp="label"
-                            />
-                          </div>
+                        <div style={{ padding: "35px 15px 10px 15px" }}>
+                            <h3>Add Remark</h3>
                         </div>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup}>
-                            <label>
-                              Select TA <span className={taStyles.reqField}>*</span>
-                            </label>
-                            <Select
-                              id="selectedValue"
-                              placeholder="Select TA"
-                              value={newTAUservalue}
-                              showSearch={true}
-                              onChange={(value, option) => {
-                                setNewTAUserValue(value);
-                                getCompanySuggestionHandler(value);
-                                setCompanyNameSuggestion([]);
-                                setselectedCompanyID("");
-                                setNewTAHRValue("");
-                                setTRAllData({});
-                              }}
-                              options={allTAUsersList?.map((v) => ({
-                                label: v.data,
-                                value: v.id,
-                              }))}
-                              optionFilterProp="label"
-                            />
-      
-                            {newTaskError && newTAUservalue === "" && (
-                              <p className={taStyles.error}>please select TA</p>
+
+                        <div style={{ padding: "10px 20px" }}>
+                            {remDiamondLoading ? (
+                                <Skeleton active />
+                            ) : (
+                                <HRInputField
+                                    isTextArea={true}
+                                    register={register}
+                                    errors={errors}
+                                    label="Remark"
+                                    name="diamondCategoryRemoveRemark"
+                                    type={InputType.TEXT}
+                                    placeholder="Enter Remark"
+                                    validationSchema={{
+                                        required: "please enter remark",
+                                    }}
+                                    required
+                                />
                             )}
-                          </div>
                         </div>
-                      </div>
-      
-                      <div className={taStyles.row}>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup}>
-                            <label>
-                              Select Company{" "}
-                              <span className={taStyles.reqField}>*</span>
-                            </label>
-      
-                            <Select
-                              id="selectedValue"
-                              placeholder="Select Company"
-                              disabled={newTAUservalue === ""}
-                              value={selectedCompanyID}
-                              showSearch={true}
-                              onChange={(value, option) => {
-                                let comObj = getCompanyNameSuggestion.find(
-                                  (i) => i.value === value
-                                );
-                                setselectedCompanyID(comObj?.id);
-                                getHRLISTForComapny(comObj?.id);
-                                setNewTAHRValue("");
-                                setTRAllData({});
-                              }}
-                              options={getCompanyNameSuggestion}
-                              optionFilterProp="label"
-                            />
-      
-                            {newTaskError && selectedCompanyID === "" && (
-                              <p className={taStyles.error}>please select company</p>
+
+                        <div style={{ padding: "10px 20px" }}>
+                            <button
+                                className={taStyles.btnPrimary}
+                                onClick={handleSubmit(handleRemoveDiamond)}
+                                disabled={remDiamondLoading}
+                            >
+                                Save
+                            </button>
+                            <button
+                                className={taStyles.btnCancle}
+                                disabled={remDiamondLoading}
+                                onClick={() => {
+                                    setShowDiamondRemark(false);
+                                    resetField("diamondCategoryRemoveRemark");
+                                    clearErrors("diamondCategoryRemoveRemark");
+                                }}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </Modal>
+                )}
+
+                {showConfirmRemove && (
+                    <Modal
+                        transitionName=""
+                        width="650px"
+                        centered
+                        footer={null}
+                        open={showConfirmRemove}
+                        // className={allEngagementStyles.engagementModalContainer}
+                        className="engagementModalStyle"
+                        // onOk={() => setVersantModal(false)}
+                        onCancel={() => {
+                            setShowConfirmRemove(false);
+                        }}
+                    >
+                        <>
+                            <div style={{ padding: "35px 15px 10px 15px" }}>
+                                {loadingTalentProfile ? (
+                                    <div>
+                                        <Skeleton active />
+                                    </div>
+                                ) : (
+                                    <h3>
+                                        Are you sure you want to Remove{" "}
+                                        <strong>{profileInfo?.taName}</strong> for{" "}
+                                        {profileInfo?.hrNumber} in {profileInfo?.companyName}
+                                    </h3>
+                                )}
+                            </div>
+
+                            <div
+                                style={{
+                                    padding: "10px",
+                                    display: "flex",
+                                    justifyContent: "end",
+                                }}
+                            >
+                                <button
+                                    className={taStyles.btnPrimary}
+                                    disabled={loadingTalentProfile}
+                                    onClick={() => {
+                                        removeTask(profileInfo?.id);
+                                    }}
+                                >
+                                    Yes Remove
+                                </button>
+                                <button
+                                    className={taStyles.btnCancle}
+                                    disabled={loadingTalentProfile}
+                                    onClick={() => {
+                                        setShowConfirmRemove(false);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </>
+                    </Modal>
+                )}
+
+                {showProfileTarget && (
+                    <Modal
+                        transitionName=""
+                        width="400px"
+                        centered
+                        footer={null}
+                        open={showProfileTarget}
+                        // className={allEngagementStyles.engagementModalContainer}
+                        className="engagementModalStyle"
+                        // onOk={() => setVersantModal(false)}
+                        onCancel={() => {
+                            setShowProfileTarget(false);
+                            setTargetValue(5);
+                            setStartTargetDate(new Date());
+                        }}
+                    >
+                        <>
+                            <div style={{ padding: "35px 15px 10px 15px" }}>
+                                <h3>Profiles Shared Target</h3>
+                            </div>
+
+                            <div
+                                // className={taStyles.row}
+                                style={{
+                                    // display: "flex",
+                                    // alignItems: "center",
+                                    padding: "0 10px 15px",
+                                }}
+                            >
+                                {loadingTalentProfile ? (
+                                    <Skeleton active />
+                                ) : (
+                                    <>
+                                        <div className={taStyles.row}>
+                                            <div className={taStyles.colMd6}>
+                                                <div
+                                                    className={taStyles.calendarFilterSet}
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "self-start",
+                                                    }}
+                                                >
+                                                    <div className={taStyles.label}>Date</div>
+                                                    <div className={taStyles.calendarFilter}>
+                                                        <CalenderSVG
+                                                            style={{ height: "16px", marginRight: "16px" }}
+                                                        />
+                                                        <DatePicker
+                                                            style={{ backgroundColor: "red" }}
+                                                            onKeyDown={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                            }}
+                                                            className={taStyles.dateFilter}
+                                                            placeholderText="Start date"
+                                                            selected={startTargetDate}
+                                                            onChange={(date) => setStartTargetDate(date)}
+                                                            dateFormat="dd-MM-yyyy"
+                                                            filterDate={isSelectableDateModal}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className={taStyles.row} style={{ marginTop: "10px" }}>
+                                            <div className={taStyles.colMd6}>
+                                                <div
+                                                    className={taStyles.calendarFilterSet}
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "self-start",
+                                                    }}
+                                                >
+                                                    <div className={taStyles.label}>Target</div>
+                                                    <InputNumber
+                                                        value={targetValue}
+                                                        onChange={(v) => {
+                                                            setTargetValue(v);
+                                                        }}
+                                                        min={0}
+                                                        max={9}
+                                                        maxLength={1}
+                                                        placeholder="Enter target"
+                                                        style={{
+                                                            height: "44px",
+                                                            padding: "8px",
+                                                            borderRadius: "8px",
+                                                            width: "115px",
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className={taStyles.colMd6}>
+                                                <div
+                                                    style={{
+                                                        padding: "10px",
+                                                        display: "flex",
+                                                        justifyContent: "end",
+                                                        marginTop: "18px",
+                                                    }}
+                                                >
+                                                    <button
+                                                        className={taStyles.btnPrimary}
+                                                        // disabled={ }
+                                                        onClick={() => {
+                                                            handleProfileShearedTarget();
+                                                        }}
+                                                    >
+                                                        Proceed
+                                                    </button>
+                                                    <button
+                                                        className={taStyles.btnCancle}
+                                                        onClick={() => {
+                                                            setShowProfileTarget(false);
+                                                            setTargetValue(5);
+                                                            setStartTargetDate(new Date());
+                                                        }}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </>
+                    </Modal>
+                )}
+
+                {showTalentProfiles && (
+                    <Modal
+                        transitionName=""
+                        width="1000px"
+                        centered
+                        footer={null}
+                        open={showTalentProfiles}
+                        // className={allEngagementStyles.engagementModalContainer}
+                        className="engagementModalStyle"
+                        // onOk={() => setVersantModal(false)}
+                        onCancel={() => {
+                            setSearchTerm("");
+                            setShowTalentProfiles(false);
+                            setHRTalentListFourCount([]);
+                        }}
+                    >
+                        <>
+                            <div
+                                style={{
+                                    padding: "45px 15px 10px 15px",
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                }}
+                            >
+                                <h3>
+                                    Profiles for <strong>{profileInfo?.hrNumber}</strong>
+                                </h3>
+
+                                <p style={{ marginBottom: "0.5em" }}>
+                                    Company : <strong>{profileInfo?.companyName}</strong>
+                                </p>
+
+                                <p style={{ marginBottom: "0.5em" }}>
+                                    TA : <strong>{profileInfo?.taName}</strong>
+                                </p>
+
+                                <input
+                                    type="text"
+                                    placeholder="Search talent..."
+                                    value={searchTerm}
+                                    onChange={(e) => handleSearchInput(e.target.value)} // Create this function
+                                    style={{
+                                        padding: "6px 10px",
+                                        border: "1px solid #ccc",
+                                        borderRadius: "4px",
+                                        marginLeft: "auto",
+                                        marginRight: "20px",
+                                        minWidth: "260px",
+                                    }}
+                                />
+                            </div>
+
+                            <div
+                                style={{
+                                    padding: "10px 15px",
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <div
+                                    className={taStyles.filterType}
+                                    key={"Total Talents"}
+                                    onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 0);
+                                        setProfileStatusID(0);
+                                    }}
+                                    style={{
+                                        borderBottom:
+                                            profileStatusID === 0 ? "6px solid #FFDA30" : "",
+                                    }}
+                                >
+                                    {/* <img src={FeedBack} alt="rocket" /> */}
+                                    <h2>
+                                        Total Talents :{" "}
+                                        <span>
+                                            {hrTalentListFourCount[0]?.totalTalents
+                                                ? hrTalentListFourCount[0]?.totalTalents
+                                                : 0}
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div
+                                    className={taStyles.filterType}
+                                    key={"Profile shared"}
+                                    onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 2);
+                                        setProfileStatusID(2);
+                                    }}
+                                    style={{
+                                        borderBottom:
+                                            profileStatusID === 2 ? "6px solid #FFDA30" : "",
+                                    }}
+                                >
+                                    {/* <img src={FeedBack} alt="rocket" /> */}
+                                    <h2>
+                                        Profile shared :{" "}
+                                        <span>
+                                            {hrTalentListFourCount[0]?.profileSharedCount
+                                                ? hrTalentListFourCount[0]?.profileSharedCount
+                                                : 0}
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div
+                                    className={taStyles.filterType}
+                                    key={"In Assessment"}
+                                    onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 11);
+                                        setProfileStatusID(11);
+                                    }}
+                                    style={{
+                                        borderBottom:
+                                            profileStatusID === 11 ? "6px solid #FFDA30" : "",
+                                    }}
+                                >
+                                    <h2>
+                                        In Assessment :{" "}
+                                        <span>
+                                            {hrTalentListFourCount[0]?.assessmentCount
+                                                ? hrTalentListFourCount[0]?.assessmentCount
+                                                : 0}
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div
+                                    className={taStyles.filterType}
+                                    key={"In Interview"}
+                                    onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 3);
+                                        setProfileStatusID(3);
+                                    }}
+                                    style={{
+                                        borderBottom:
+                                            profileStatusID === 3 ? "6px solid #FFDA30" : "",
+                                    }}
+                                >
+                                    <h2>
+                                        In Interview :{" "}
+                                        <span>
+                                            {hrTalentListFourCount[0]?.inInterviewCount
+                                                ? hrTalentListFourCount[0]?.inInterviewCount
+                                                : 0}
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div
+                                    className={taStyles.filterType}
+                                    key={"Offered"}
+                                    onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 4);
+                                        setProfileStatusID(4);
+                                    }}
+                                    style={{
+                                        borderBottom:
+                                            profileStatusID === 4 ? "6px solid #FFDA30" : "",
+                                    }}
+                                >
+                                    <h2>
+                                        Offered :{" "}
+                                        <span>
+                                            {hrTalentListFourCount[0]?.offeredCount
+                                                ? hrTalentListFourCount[0]?.offeredCount
+                                                : 0}
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div
+                                    className={taStyles.filterType}
+                                    key={"Hired"}
+                                    onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 10);
+                                        setProfileStatusID(10);
+                                    }}
+                                    style={{
+                                        borderBottom:
+                                            profileStatusID === 10 ? "6px solid #FFDA30" : "",
+                                    }}
+                                >
+                                    <h2>
+                                        Hired :{" "}
+                                        <span>
+                                            {hrTalentListFourCount[0]?.hiredCount
+                                                ? hrTalentListFourCount[0]?.hiredCount
+                                                : 0}
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div
+                                    className={taStyles.filterType}
+                                    key={"Rejected, screening"}
+                                    onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 7, 1);
+                                        setProfileStatusID(71);
+                                    }}
+                                    style={{
+                                        borderBottom:
+                                            profileStatusID === 71 ? "6px solid #FFDA30" : "",
+                                    }}
+                                >
+                                    <h2>
+                                        Screen Reject :{" "}
+                                        <span>
+                                            {hrTalentListFourCount[0]?.screeningRejectCount
+                                                ? hrTalentListFourCount[0]?.screeningRejectCount
+                                                : 0}
+                                        </span>
+                                    </h2>
+                                </div>
+                                <div
+                                    className={taStyles.filterType}
+                                    key={"Rejected, Interview"}
+                                    onClick={() => {
+                                        getTalentProfilesDetails(profileInfo, 7, 2);
+                                        setProfileStatusID(72);
+                                    }}
+                                    style={{
+                                        borderBottom:
+                                            profileStatusID === 72 ? "6px solid #FFDA30" : "",
+                                    }}
+                                >
+                                    {/* <img src={FeedBack} alt="rocket" /> */}
+                                    <h2>
+                                        Interview Reject :{" "}
+                                        <span>
+                                            {hrTalentListFourCount[0]?.interviewRejectCount
+                                                ? hrTalentListFourCount[0]?.interviewRejectCount
+                                                : 0}
+                                        </span>
+                                    </h2>
+                                </div>
+                            </div>
+
+                            {loadingTalentProfile ? (
+                                <div>
+                                    <Skeleton active />
+                                </div>
+                            ) : (
+                                <div style={{ margin: "5px 10px" }}>
+                                    <Table
+                                        dataSource={filteredTalentList}
+                                        columns={ProfileColumns}
+                                        // bordered
+                                        pagination={false}
+                                    />
+                                </div>
                             )}
-                          </div>
-                        </div>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup}>
-                            <label>
-                              Select HR <span className={taStyles.reqField}>*</span>
-                            </label>
-                            <Select
-                              disabled={selectedCompanyID === ""}
-                              id="selectedValue"
-                              placeholder="Select HR"
-                              value={newTAHRvalue}
-                              showSearch={true}
-                              onChange={(value, option) => {
-                                setNewTAHRValue(value);
-                                setTRAllData(option);
-                              }}
-                              options={hrListSuggestion.map((v) => ({
-                                ...v,
-                                label: v.value,
-                                value: v.id,
-                              }))}
-                              optionFilterProp="label"
-                            />
-                            {newTaskError && newTAHRvalue === "" && (
-                              <p className={taStyles.error}>please select HR</p>
+
+                            {moveToAssessment && (
+                                <Modal
+                                    width="992px"
+                                    centered
+                                    footer={null}
+                                    open={moveToAssessment}
+                                    className="commonModalWrap"
+                                    // onOk={() => setVersantModal(false)}
+                                    onCancel={() => {
+                                        setMoveToAssessment(false);
+                                        resetRemarkField("remark");
+                                        clearRemarkError("remark");
+                                    }}
+                                >
+                                    <MoveToAssessment
+                                        onCancel={() => {
+                                            setMoveToAssessment(false);
+                                            resetRemarkField("remark");
+                                            clearRemarkError("remark");
+                                        }}
+                                        register={remarkregiter}
+                                        handleSubmit={remarkSubmit}
+                                        resetField={resetRemarkField}
+                                        errors={remarkError}
+                                        saveRemark={saveRemark}
+                                        saveRemarkLoading={saveRemarkLoading}
+                                    />
+                                </Modal>
                             )}
-                          </div>
+
+                            <div style={{ padding: "10px 0" }}>
+                                <button
+                                    className={taStyles.btnCancle}
+                                    disabled={isAddingNewTask}
+                                    onClick={() => {
+                                        setSearchTerm("");
+                                        setShowTalentProfiles(false);
+                                        setHRTalentListFourCount([]);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </>
+                    </Modal>
+                )}
+
+                {isAddNewRow && (
+                    <Modal
+                        transitionName=""
+                        width="930px"
+                        centered
+                        footer={null}
+                        open={isAddNewRow}
+                        className="engagementModalStyle"
+                        onCancel={() => {
+                            setNewTAUserValue("");
+                            setselectedCompanyID("");
+                            setCompanyNameSuggestion([]);
+                            setNewTAHRValue("");
+                            setTRAllData({});
+                            setNewTaskError(false);
+                            setIsAddNewRow(false);
+                        }}
+                    >
+                        <div style={{ padding: "35px 15px 10px 15px" }}>
+                            <h3>Add New Task</h3>
                         </div>
-                      </div>
-      
-                      {Object.keys(newTRAllData).length > 0 && <div className={taStyles.row}>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <label>
-                              Active TR {" "}
-                              <span className={taStyles.reqField}>*</span>
-                            </label>
-      
-                            <InputNumber size="large" value={newTRAllData.activeHR} min={1} max={20} onChange={(value) => { setTRAllData(prev => ({ ...prev, activeHR: parseInt(value) })) }} />
-      
-      
-                          </div>
-                          {newTaskError && (newTRAllData.activeHR <= 0 || newTRAllData.activeHR > 20 || isNaN(newTRAllData.activeHR)) && (
-                            <p className={taStyles.error} style={{ marginTop: '5px' }}>Please enter a value from 1 to 20 </p>
-                          )}
-                        </div>
-                      </div>}
-      
-      
-                      <div className={taStyles.HRINFOCOntainer}>
-                        {Object.keys(newTRAllData).length > 0 && (
-                          <>
-                            {/* <div>
+                        <div style={{ padding: "10px 15px" }}>
+                            {isAddingNewTask ? (
+                                <Skeleton active />
+                            ) : (
+                                <>
+                                    <div className={taStyles.row}>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup}>
+                                                <label>
+                                                    Select Head <span className={taStyles.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select TA"
+                                                    value={newTAHeadUservalue}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        setNewTAHeadUserValue(value);
+                                                    }}
+                                                    options={activeTab === "Full-Time" ? fteFiltersList?.HeadUsers?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    })) : filtersList?.HeadUsers?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup}>
+                                                <label>
+                                                    Select TA <span className={taStyles.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select TA"
+                                                    value={newTAUservalue}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        setNewTAUserValue(value);
+                                                        getCompanySuggestionHandler(value);
+                                                        setCompanyNameSuggestion([]);
+                                                        setselectedCompanyID("");
+                                                        setNewTAHRValue("");
+                                                        setTRAllData({});
+                                                    }}
+                                                    options={allTAUsersList?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+
+                                                {newTaskError && newTAUservalue === "" && (
+                                                    <p className={taStyles.error}>please select TA</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className={taStyles.row}>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup}>
+                                                <label>
+                                                    Select Company{" "}
+                                                    <span className={taStyles.reqField}>*</span>
+                                                </label>
+
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select Company"
+                                                    disabled={newTAUservalue === ""}
+                                                    value={selectedCompanyID}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        let comObj = getCompanyNameSuggestion.find(
+                                                            (i) => i.value === value
+                                                        );
+                                                        setselectedCompanyID(comObj?.id);
+                                                        getHRLISTForComapny(comObj?.id);
+                                                        setNewTAHRValue("");
+                                                        setTRAllData({});
+                                                    }}
+                                                    options={getCompanyNameSuggestion}
+                                                    optionFilterProp="label"
+                                                />
+
+                                                {newTaskError && selectedCompanyID === "" && (
+                                                    <p className={taStyles.error}>please select company</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup}>
+                                                <label>
+                                                    Select HR <span className={taStyles.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    disabled={selectedCompanyID === ""}
+                                                    id="selectedValue"
+                                                    placeholder="Select HR"
+                                                    value={newTAHRvalue}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        setNewTAHRValue(value);
+                                                        setTRAllData(option);
+                                                    }}
+                                                    options={hrListSuggestion.map((v) => ({
+                                                        ...v,
+                                                        label: v.value,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+                                                {newTaskError && newTAHRvalue === "" && (
+                                                    <p className={taStyles.error}>please select HR</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {Object.keys(newTRAllData).length > 0 && <div className={taStyles.row}>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                <label>
+                                                    Active TR {" "}
+                                                    <span className={taStyles.reqField}>*</span>
+                                                </label>
+
+                                                <InputNumber size="large" value={newTRAllData.activeHR} min={1} max={20} onChange={(value) => { setTRAllData(prev => ({ ...prev, activeHR: parseInt(value) })) }} />
+
+
+                                            </div>
+                                            {newTaskError && (newTRAllData.activeHR <= 0 || newTRAllData.activeHR > 20 || isNaN(newTRAllData.activeHR)) && (
+                                                <p className={taStyles.error} style={{ marginTop: '5px' }}>Please enter a value from 1 to 20 </p>
+                                            )}
+                                        </div>
+                                    </div>}
+
+
+                                    <div className={taStyles.HRINFOCOntainer}>
+                                        {Object.keys(newTRAllData).length > 0 && (
+                                            <>
+                                                {/* <div>
                               <span>Active TR : </span>
                               {newTRAllData.activeHR}
                             </div> */}
-                            <div>
-                              <span>HR Created Date : </span>
-                              {moment(newTRAllData.hrCreatedDate).format(
-                                "DD-MMM-YYYY"
-                              )}
-                            </div>
-                            <div>
-                              <span>Talent Budget : </span>
-                              {newTRAllData.totalAnnualBudgetInINR}
-                            </div>
-                            <div>
-                              <span>DP /Contract : </span>
-                              {newTRAllData.modelType}
-                            </div>
-                            <div>
-                              <span>Revenue Opportunity : </span>
-                              {newTRAllData.revenue10Percent}
-                            </div>
-                            <div>
-                              <span>Sales : </span>
-                              {newTRAllData.salesUser}
-                            </div>
-                            <div>
-                              <span>
-                                Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
-                              </span>
-                              {newTRAllData.totalRevenueOppurtunity}
-                            </div>
-                            <div>
-                              <span>Open Since {">"} 1 Month (Yes/no) : </span>
-                              {newTRAllData.hrOpenSinceOneMonths}
-                            </div>
-                            <div>
-                              <span>
-                                No. of Active/Submitted Profiles till Date :{" "}
-                              </span>
-                              {newTRAllData.noOfProfilesSharedTillDate}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </>
-                  )}
-      
-                  <div style={{ margin: "10px 0" }}>
-                    <button
-                      className={taStyles.btnPrimary}
-                      disabled={isAddingNewTask}
-                      onClick={() => {
-                        saveNewTask();
-                      }}
-                    >
-                      Save
-                    </button>
-                    <button
-                      className={taStyles.btnCancle}
-                      disabled={isAddingNewTask}
-                      onClick={() => {
-                        setNewTAUserValue("");
-                        setselectedCompanyID("");
-                        setNewTAHRValue("");
-                        setTRAllData({});
-                        setCompanyNameSuggestion([]);
-                        setNewTaskError(false);
-                        setIsAddNewRow(false);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </Modal>
-            )}
-      
-            {showEditTATask && (
-              <Modal
-                transitionName=""
-                width="930px"
-                centered
-                footer={null}
-                open={showEditTATask}
-                className="engagementModalStyle"
-                onCancel={() => {
-                  setShowEditTATask(false);
-                }}
-              >
-                <div style={{ padding: "35px 15px 10px 15px" }}>
-                  <h3>Edit TA</h3>
-                </div>
-                <div style={{ padding: "10px 15px" }}>
-                  {isEditNewTask ? (
-                    <Skeleton active />
-                  ) : (
-                    <>
-                      <div className={taStyles.row}>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup}>
-                            <label>
-                              Select Head <span className={taStyles.reqField}>*</span>
-                            </label>
-                            <Select
-                              id="selectedValue"
-                              placeholder="Select TA"
-                              value={newTAHeadUservalue}
-                              showSearch={true}
-                              onChange={(value, option) => {
-                                setNewTAHeadUserValue(value);
-                              }}
-                              options={filtersList?.HeadUsers?.map((v) => ({
-                                label: v.data,
-                                value: v.id,
-                              }))}
-                              optionFilterProp="label"
-                            />
-                          </div>
-                        </div>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup}>
-                            <label>
-                              Select TA <span className={taStyles.reqField}>*</span>
-                            </label>
-                            <Select
-                              id="selectedValue"
-                              placeholder="Select TA"
-                              value={editTATaskData?.tA_UserID}
-                              showSearch={true}
-                              onChange={(value, option) => {
-                                setEditTATaskData((prev) => ({
-                                  ...prev,
-                                  tA_UserID: value,
-                                }));
-                              }}
-                              options={filtersList?.Users?.map((v) => ({
-                                label: v.data,
-                                value: v.id,
-                              }))}
-                              optionFilterProp="label"
-                            />
-      
-                            {newTaskError && newTAUservalue === "" && (
-                              <p className={taStyles.error}>please select TA</p>
+                                                <div>
+                                                    <span>HR Created Date : </span>
+                                                    {moment(newTRAllData.hrCreatedDate).format(
+                                                        "DD-MMM-YYYY"
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <span>Talent Budget : </span>
+                                                    {newTRAllData.totalAnnualBudgetInINR}
+                                                </div>
+                                                <div>
+                                                    <span>DP /Contract : </span>
+                                                    {newTRAllData.modelType}
+                                                </div>
+                                                <div>
+                                                    <span>Revenue Opportunity : </span>
+                                                    {newTRAllData.revenue10Percent}
+                                                </div>
+                                                <div>
+                                                    <span>Sales : </span>
+                                                    {newTRAllData.salesUser}
+                                                </div>
+                                                <div>
+                                                    <span>
+                                                        Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
+                                                    </span>
+                                                    {newTRAllData.totalRevenueOppurtunity}
+                                                </div>
+                                                <div>
+                                                    <span>Open Since {">"} 1 Month (Yes/no) : </span>
+                                                    {newTRAllData.hrOpenSinceOneMonths}
+                                                </div>
+                                                <div>
+                                                    <span>
+                                                        No. of Active/Submitted Profiles till Date :{" "}
+                                                    </span>
+                                                    {newTRAllData.noOfProfilesSharedTillDate}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </>
                             )}
-                          </div>
-                        </div>
-                      </div>
-      
-                      <div className={taStyles.row}>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup}>
-                            <label>
-                              Select company{" "}
-                              <span className={taStyles.reqField}>*</span>
-                            </label>
-      
-                            <Select
-                              id="selectedValue"
-                              placeholder="Select Company"
-                              disabled={true}
-                              value={editTATaskData?.company_ID}
-                              showSearch={true}
-                              onChange={(value, option) => { }}
-                              options={getCompanyNameSuggestion}
-                              optionFilterProp="label"
-                            />
-                          </div>
-                        </div>
-                        <div className={taStyles.colMd6}>
-                          <div className={taStyles.formGroup}>
-                            <label>
-                              Select HR <span className={taStyles.reqField}>*</span>
-                            </label>
-                            <Select
-                              disabled={true}
-                              id="selectedValue"
-                              placeholder="Select HR"
-                              // style={{marginLeft:'10px',width:'270px'}}
-                              // mode="multiple"
-                              value={editTATaskData?.hiringRequest_ID}
-                              showSearch={true}
-                              onChange={(value, option) => {
-                                // setNewTAHRValue(value);
-                                // setTRAllData(option);
-                              }}
-                              options={hrListSuggestion.map((v) => ({
-                                ...v,
-                                label: v.value,
-                                value: v.id,
-                              }))}
-                              optionFilterProp="label"
-                            />
-                          </div>
-                        </div>
-                      </div>
-      
-                      <div className={taStyles.HRINFOCOntainer}>
-                        {Object.keys(editTATaskData).length > 0 && (
-                          <>
-                            <div>
-                              <span>Active TR : </span>
-                              {editTATaskData.activeTR}
-                            </div>
-                            <div>
-                              <span>HR Created Date : </span>
-                              {moment(editTATaskData.hrCreatedDate).format(
-                                "DD-MMM-YYYY"
-                              )}
-                            </div>
-                            <div>
-                              <span>Talent Budget  : </span>
-                              {editTATaskData.talent_AnnualCTC_Budget_INRValue}
-                            </div>
-                            <div>
-                              <span>DP /Contract : </span>
-                              {editTATaskData.modelType}
-                            </div>
-                            <div>
-                              <span>Revenue Opportunity : </span>
-                              {editTATaskData.revenue_On10PerCTC}
-                            </div>
-                            <div>
-                              <span>Sales : </span>
-                              {editTATaskData.salesName}
-                            </div>
-                            <div>
-                              <span>
-                                Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
-                              </span>
-                              {editTATaskData.totalRevenue_NoofTalent}
-                            </div>
-                            <div>
-                              <span>Open Since {">"} 1 Month (Yes/no) : </span>
-                              {editTATaskData.hrOpenSinceOneMonths}
-                            </div>
-                            <div>
-                              <span>
-                                No. of Active/Submitted Profiles till Date :{" "}
-                              </span>
-                              {editTATaskData.noOfProfile_TalentsTillDate}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </>
-                  )}
-      
-                  <div style={{ margin: "10px 0" }}>
-                    <button
-                      className={taStyles.btnPrimary}
-                      disabled={isEditNewTask}
-                      onClick={() => {
-                        saveEditTask();
-                      }}
-                    >
-                      Save
-                    </button>
-                    <button
-                      className={taStyles.btnCancle}
-                      disabled={isEditNewTask}
-                      onClick={() => {
-                        setShowEditTATask(false);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </Modal>
-            )}
-      
-            {showComment && (
-              <Modal
-                transitionName=""
-                width="1000px"
-                centered
-                footer={null}
-                open={showComment}
-                className="engagementModalStyle"
-                onCancel={() => {
-                  setShowComment(false);
-                  setEditedCommentData({})
-                  setALLCommentsList([]);
-                  setCommentData({});
-                }}
-              >
-                <div style={{ padding: "35px 15px 10px 15px" }}>
-                  <h3>Add Comment</h3>
-                </div>
-                <Suspense>
-                  <div
-                    style={{
-                      position: "relative",
-                      marginBottom: "10px",
-                      padding: "0 20px",
-                      paddingRight: "30px",
-                    }}
-                  >
-                    <Editor
-                      hrID={""}
-                      saveNote={(note) => saveComment(note)}
-                      //  saveNote={(note) => console.log(note)}
-                      isUsedForComment={true}
-                      editedText={editedCommentData?.comments}
-                    />
-                  </div>
-                </Suspense>
-      
-                {allCommentList.length > 0 ? (
-                  <div style={{ padding: "12px 20px" }}>
-                    {isCommentLoading && (
-                      <div>
-                        Adding Comment ...{" "}
-                        <img src={spinGif} alt="loadgif" width={16} />{" "}
-                      </div>
-                    )}
-                    <ul style={{marginLeft:'10px', listStyleType:'none'}}>
-                      {allCommentList.map((item) => (
-                        <> <li
-                          key={item.comments} 
-                         style={{ marginBottom: "10px" }}
-                        > <div style={{display:'flex'}}>
-                           <EditSVG
-                    width={22}
-                    height={22}
-                    style={{marginRight:'10px',cursor:'pointer'}}
-                    onClick={() => setEditedCommentData(item)}
-                  />  
-                          <div dangerouslySetInnerHTML={{ __html: item.comments }}></div>  
-                          </div></li>
-                       
-                        </>
-                       
-                      ))}
-                    </ul>
-                  </div>
-                ) : (
-                  <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
-                    {isCommentLoading ? (
-                      <div>
-                        Loading Comments...{" "}
-                        <img src={spinGif} alt="loadgif" width={16} />{" "}
-                      </div>
-                    ) : (
-                      "No Comments yet"
-                    )}
-                  </h3>
-                )}
-                <div style={{ padding: "10px" }}>
-                  <button
-                    className={taStyles.btnCancle}
-                    disabled={isEditNewTask}
-                    onClick={() => {
-                      setShowComment(false);
-                      setEditedCommentData({})
-                      setALLCommentsList([]);
-                      setCommentData({});
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
-              </Modal>
-            )}
 
-            {isShowDetails?.isBoolean && (
+                            <div style={{ margin: "10px 0" }}>
+                                <button
+                                    className={taStyles.btnPrimary}
+                                    disabled={isAddingNewTask}
+                                    onClick={() => {
+                                        saveNewTask();
+                                    }}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    className={taStyles.btnCancle}
+                                    disabled={isAddingNewTask}
+                                    onClick={() => {
+                                        setNewTAUserValue("");
+                                        setselectedCompanyID("");
+                                        setNewTAHRValue("");
+                                        setTRAllData({});
+                                        setCompanyNameSuggestion([]);
+                                        setNewTaskError(false);
+                                        setIsAddNewRow(false);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
+                {showEditTATask && (
                     <Modal
-                      width="1000px"
-                      centered
-                      footer={null}
-                      open={isShowDetails?.isBoolean}
-                      className="engagementModalStyle"
-                      onCancel={() => {
-                        setIsShowDetails({
-                          isBoolean: false,
-                          title: "",
-                          value: "",
-                          isTotal: false,
-                          TAName: "",
-                        });
-                        setAllShowDetails([]);
-                      }}
+                        transitionName=""
+                        width="930px"
+                        centered
+                        footer={null}
+                        open={showEditTATask}
+                        className="engagementModalStyle"
+                        onCancel={() => {
+                            setShowEditTATask(false);
+                        }}
                     >
-                      <div style={{ padding: "20px 15px" }}>
-                        <h3>
-                          <b>
-                            {isShowDetails?.TAName && !isShowDetails?.isTotal
-                              ? isShowDetails?.TAName + " - "
-                              : ""}
-                            {isShowDetails?.title}{" "}
-                            {isShowDetails?.value ? " - " + isShowDetails?.value : ""}
-                          </b>
-                        </h3>
-                      </div>
-            
-                      {allShowDetails.length > 0 ? (
-                        <div style={{ padding: "0 20px 20px 20px", overflowX: "auto" }}>
-                          <table
-                            style={{
-                              width: "100%",
-                              borderCollapse: "collapse",
-                              fontSize: 14,
-                              textAlign: "left",
-                            }}
-                          >
-                            <thead>
-                              <tr style={{ backgroundColor: "#f0f0f0" }}>
-                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                  Action Date
-                                </th>
-                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                  Company Name
-                                </th>
-                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                  HR Number
-                                </th>
-                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                  HR Title
-                                </th>
-                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                  Pipeline
-                                </th>
-                                {isCarryFwdStatus && PipelineTupeId === 8 && (
-                                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                    Pre Onboarding Pipeline (INR)
-                                  </th>
-                                )}
-                                {isCarryFwdStatus && (
-                                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                    Carry Forward Status
-                                  </th>
-                                )}
-                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                  HR Status
-                                </th>
-                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                                  Sales Person
-                                </th>
-                              </tr>
-                            </thead>
-            
-                            <tbody>
-                              {allShowDetails.map((detail, index) => (
-                                <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
-                                  <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                                    {detail.actionDateStr}
-                                  </td>
-                                  <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                                    {detail.companyName}
-                                  </td>
-                                  <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                                    {/* {detail.hrNumber} */}
-                                    <HRTextCol hrText={detail.hrNumber} title={isShowDetails?.title} row={detail} />
-                                  </td>
-                                  <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                                    {detail.hrTitle}
-                                  </td>
-                                  <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                                    {detail.pipelineStr}
-                                  </td>
-                                  {isCarryFwdStatus && PipelineTupeId === 8 && (
-                                    <td
-                                      style={{ padding: "8px", border: "1px solid #ddd" }}
-                                    >
-                                      {detail.preOnboardingPipelineStr}
-                                    </td>
-                                  )}
-                                  {isCarryFwdStatus && (
-                                    <th
-                                      style={{ padding: "10px", border: "1px solid #ddd" }}
-                                    >
-                                      {All_Hiring_Request_Utils.GETHRSTATUS(
-                                        Number(detail.carryFwd_HRStatusCode),
-                                        detail.carryFwd_HRStatus
-                                      )}
-                                    </th>
-                                  )}
-                                  <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                                    {All_Hiring_Request_Utils.GETHRSTATUS(
-                                      Number(detail.hrStatusCode),
-                                      detail.hrStatus
-                                    )}
-                                  </td>
-                                  <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                                    {detail.salesPerson}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                        <div style={{ padding: "35px 15px 10px 15px" }}>
+                            <h3>Edit TA</h3>
                         </div>
-                      ) : (
-                        <div style={{ padding: "20px" }}>
-                          <p>No details available.</p>
+                        <div style={{ padding: "10px 15px" }}>
+                            {isEditNewTask ? (
+                                <Skeleton active />
+                            ) : (
+                                <>
+                                    <div className={taStyles.row}>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup}>
+                                                <label>
+                                                    Select Head <span className={taStyles.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select TA"
+                                                    value={newTAHeadUservalue}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        setNewTAHeadUserValue(value);
+                                                    }}
+                                                    options={filtersList?.HeadUsers?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup}>
+                                                <label>
+                                                    Select TA <span className={taStyles.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select TA"
+                                                    value={editTATaskData?.tA_UserID}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        setEditTATaskData((prev) => ({
+                                                            ...prev,
+                                                            tA_UserID: value,
+                                                        }));
+                                                    }}
+                                                    options={filtersList?.Users?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+
+                                                {newTaskError && newTAUservalue === "" && (
+                                                    <p className={taStyles.error}>please select TA</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className={taStyles.row}>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup}>
+                                                <label>
+                                                    Select company{" "}
+                                                    <span className={taStyles.reqField}>*</span>
+                                                </label>
+
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select Company"
+                                                    disabled={true}
+                                                    value={editTATaskData?.company_ID}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => { }}
+                                                    options={getCompanyNameSuggestion}
+                                                    optionFilterProp="label"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={taStyles.colMd6}>
+                                            <div className={taStyles.formGroup}>
+                                                <label>
+                                                    Select HR <span className={taStyles.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    disabled={true}
+                                                    id="selectedValue"
+                                                    placeholder="Select HR"
+                                                    // style={{marginLeft:'10px',width:'270px'}}
+                                                    // mode="multiple"
+                                                    value={editTATaskData?.hiringRequest_ID}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        // setNewTAHRValue(value);
+                                                        // setTRAllData(option);
+                                                    }}
+                                                    options={hrListSuggestion.map((v) => ({
+                                                        ...v,
+                                                        label: v.value,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className={taStyles.HRINFOCOntainer}>
+                                        {Object.keys(editTATaskData).length > 0 && (
+                                            <>
+                                                <div>
+                                                    <span>Active TR : </span>
+                                                    {editTATaskData.activeTR}
+                                                </div>
+                                                <div>
+                                                    <span>HR Created Date : </span>
+                                                    {moment(editTATaskData.hrCreatedDate).format(
+                                                        "DD-MMM-YYYY"
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <span>Talent Budget  : </span>
+                                                    {editTATaskData.talent_AnnualCTC_Budget_INRValue}
+                                                </div>
+                                                <div>
+                                                    <span>DP /Contract : </span>
+                                                    {editTATaskData.modelType}
+                                                </div>
+                                                <div>
+                                                    <span>Revenue Opportunity : </span>
+                                                    {editTATaskData.revenue_On10PerCTC}
+                                                </div>
+                                                <div>
+                                                    <span>Sales : </span>
+                                                    {editTATaskData.salesName}
+                                                </div>
+                                                <div>
+                                                    <span>
+                                                        Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
+                                                    </span>
+                                                    {editTATaskData.totalRevenue_NoofTalent}
+                                                </div>
+                                                <div>
+                                                    <span>Open Since {">"} 1 Month (Yes/no) : </span>
+                                                    {editTATaskData.hrOpenSinceOneMonths}
+                                                </div>
+                                                <div>
+                                                    <span>
+                                                        No. of Active/Submitted Profiles till Date :{" "}
+                                                    </span>
+                                                    {editTATaskData.noOfProfile_TalentsTillDate}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </>
+                            )}
+
+                            <div style={{ margin: "10px 0" }}>
+                                <button
+                                    className={taStyles.btnPrimary}
+                                    disabled={isEditNewTask}
+                                    onClick={() => {
+                                        saveEditTask();
+                                    }}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    className={taStyles.btnCancle}
+                                    disabled={isEditNewTask}
+                                    onClick={() => {
+                                        setShowEditTATask(false);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
-                      )}
-            
-                      <div style={{ padding: "10px", textAlign: "right" }}>
-                        <button
-                          className={taStyles.btnCancle}
-                          onClick={() => {
+                    </Modal>
+                )}
+
+                {showComment && (
+                    <Modal
+                        transitionName=""
+                        width="1000px"
+                        centered
+                        footer={null}
+                        open={showComment}
+                        className="engagementModalStyle"
+                        onCancel={() => {
+                            setShowComment(false);
+                            setEditedCommentData({})
+                            setALLCommentsList([]);
+                            setCommentData({});
+                        }}
+                    >
+                        <div style={{ padding: "35px 15px 10px 15px" }}>
+                            <h3>Add Comment</h3>
+                        </div>
+                        <Suspense>
+                            <div
+                                style={{
+                                    position: "relative",
+                                    marginBottom: "10px",
+                                    padding: "0 20px",
+                                    paddingRight: "30px",
+                                }}
+                            >
+                                <Editor
+                                    hrID={""}
+                                    saveNote={(note) => saveComment(note)}
+                                    //  saveNote={(note) => console.log(note)}
+                                    isUsedForComment={true}
+                                    editedText={editedCommentData?.comments}
+                                />
+                            </div>
+                        </Suspense>
+
+                        {allCommentList.length > 0 ? (
+                            <div style={{ padding: "12px 20px" }}>
+                                {isCommentLoading && (
+                                    <div>
+                                        Adding Comment ...{" "}
+                                        <img src={spinGif} alt="loadgif" width={16} />{" "}
+                                    </div>
+                                )}
+                                <ul style={{ marginLeft: '10px', listStyleType: 'none' }}>
+                                    {allCommentList.map((item) => (
+                                        <> <li
+                                            key={item.comments}
+                                            style={{ marginBottom: "10px" }}
+                                        > <div style={{ display: 'flex' }}>
+                                                <EditSVG
+                                                    width={22}
+                                                    height={22}
+                                                    style={{ marginRight: '10px', cursor: 'pointer' }}
+                                                    onClick={() => setEditedCommentData(item)}
+                                                />
+                                                <div dangerouslySetInnerHTML={{ __html: item.comments }}></div>
+                                            </div></li>
+
+                                        </>
+
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : (
+                            <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+                                {isCommentLoading ? (
+                                    <div>
+                                        Loading Comments...{" "}
+                                        <img src={spinGif} alt="loadgif" width={16} />{" "}
+                                    </div>
+                                ) : (
+                                    "No Comments yet"
+                                )}
+                            </h3>
+                        )}
+                        <div style={{ padding: "10px" }}>
+                            <button
+                                className={taStyles.btnCancle}
+                                disabled={isEditNewTask}
+                                onClick={() => {
+                                    setShowComment(false);
+                                    setEditedCommentData({})
+                                    setALLCommentsList([]);
+                                    setCommentData({});
+                                }}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </Modal>
+                )}
+
+                {isShowDetails?.isBoolean && (
+                    <Modal
+                        width="1000px"
+                        centered
+                        footer={null}
+                        open={isShowDetails?.isBoolean}
+                        className="engagementModalStyle"
+                        onCancel={() => {
                             setIsShowDetails({
-                              isBoolean: false,
-                              title: "",
-                              value: "",
-                              isTotal: false,
-                              TAName: "",
+                                isBoolean: false,
+                                title: "",
+                                value: "",
+                                isTotal: false,
+                                TAName: "",
                             });
                             setAllShowDetails([]);
-                          }}
-                        >
-                          Close
-                        </button>
-                      </div>
+                        }}
+                    >
+                        <div style={{ padding: "20px 15px" }}>
+                            <h3>
+                                <b>
+                                    {isShowDetails?.TAName && !isShowDetails?.isTotal
+                                        ? isShowDetails?.TAName + " - "
+                                        : ""}
+                                    {isShowDetails?.title}{" "}
+                                    {isShowDetails?.value ? " - " + isShowDetails?.value : ""}
+                                </b>
+                            </h3>
+                        </div>
+
+                        {allShowDetails.length > 0 ? (
+                            <div style={{ padding: "0 20px 20px 20px", overflowX: "auto" }}>
+                                <table
+                                    style={{
+                                        width: "100%",
+                                        borderCollapse: "collapse",
+                                        fontSize: 14,
+                                        textAlign: "left",
+                                    }}
+                                >
+                                    <thead>
+                                        <tr style={{ backgroundColor: "#f0f0f0" }}>
+                                            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                Action Date
+                                            </th>
+                                            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                Company Name
+                                            </th>
+                                            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                HR Number
+                                            </th>
+                                            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                HR Title
+                                            </th>
+                                            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                Pipeline
+                                            </th>
+                                            {isCarryFwdStatus && PipelineTupeId === 8 && (
+                                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                    Pre Onboarding Pipeline (INR)
+                                                </th>
+                                            )}
+                                            {isCarryFwdStatus && (
+                                                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                    Carry Forward Status
+                                                </th>
+                                            )}
+                                            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                HR Status
+                                            </th>
+                                            <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                                                Sales Person
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {allShowDetails.map((detail, index) => (
+                                            <tr key={index} style={{ borderBottom: "1px solid #ddd" }}>
+                                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                                                    {detail.actionDateStr}
+                                                </td>
+                                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                                                    {detail.companyName}
+                                                </td>
+                                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                                                    {/* {detail.hrNumber} */}
+                                                    <HRTextCol hrText={detail.hrNumber} title={isShowDetails?.title} row={detail} />
+                                                </td>
+                                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                                                    {detail.hrTitle}
+                                                </td>
+                                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                                                    {detail.pipelineStr}
+                                                </td>
+                                                {isCarryFwdStatus && PipelineTupeId === 8 && (
+                                                    <td
+                                                        style={{ padding: "8px", border: "1px solid #ddd" }}
+                                                    >
+                                                        {detail.preOnboardingPipelineStr}
+                                                    </td>
+                                                )}
+                                                {isCarryFwdStatus && (
+                                                    <th
+                                                        style={{ padding: "10px", border: "1px solid #ddd" }}
+                                                    >
+                                                        {All_Hiring_Request_Utils.GETHRSTATUS(
+                                                            Number(detail.carryFwd_HRStatusCode),
+                                                            detail.carryFwd_HRStatus
+                                                        )}
+                                                    </th>
+                                                )}
+                                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                                                    {All_Hiring_Request_Utils.GETHRSTATUS(
+                                                        Number(detail.hrStatusCode),
+                                                        detail.hrStatus
+                                                    )}
+                                                </td>
+                                                <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                                                    {detail.salesPerson}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <div style={{ padding: "20px" }}>
+                                <p>No details available.</p>
+                            </div>
+                        )}
+
+                        <div style={{ padding: "10px", textAlign: "right" }}>
+                            <button
+                                className={taStyles.btnCancle}
+                                onClick={() => {
+                                    setIsShowDetails({
+                                        isBoolean: false,
+                                        title: "",
+                                        value: "",
+                                        isTotal: false,
+                                        TAName: "",
+                                    });
+                                    setAllShowDetails([]);
+                                }}
+                            >
+                                Close
+                            </button>
+                        </div>
                     </Modal>
-                  )}
+                )}
 
 
             </main>
