@@ -1579,7 +1579,7 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                                 onClick={() => {
                                     setActiveTable('Dashboard')
                                 }}
-                            >Dashboard</button>
+                            >Fastrack</button>
                             <button
                                 className={`${stylesOBj["toggle-btn"]} ${activeTable === 'Goal' ? stylesOBj["toggle-btn-active"] : ''}`}
                                 onClick={() => {
@@ -1699,7 +1699,7 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
 
                         </div>
 
-                        {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} />}
+                        {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList}/>}
                         {activeTable === 'Goal' && <GoalTableComp selectedHead={selectedHead} startDate={startDate} tableFilteredState={tableFilteredState} />}
                     </>}
 
@@ -1708,7 +1708,7 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                         <FTECountTable isLoading={fteDataLoading} countData={fteCountsData} />
 
 
-                        <TalentdetailsFTETable isLoading={fteDataLoading} talentWiseReport={talentWiseReport} />
+                        <TalentdetailsFTETable isLoading={fteDataLoading} talentWiseReport={talentWiseReport}  showDetails={showDetails}  />
 
 
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
@@ -1717,7 +1717,7 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                                 onClick={() => {
                                     setActiveFTETable('Dashboard')
                                 }}
-                            >Dashboard</button>
+                            >Fastrack</button>
                             <button
                                 className={`${stylesOBj["toggle-btn"]} ${activeFTETable === 'Goal' ? stylesOBj["toggle-btn-active"] : ''}`}
                                 onClick={() => {
@@ -1868,7 +1868,11 @@ const [moveToAssessment, setMoveToAssessment] = useState(false);
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {TaListData.map((row, i) => (
+                                        {TaListData?.length === 0 ? <tr>
+                                        <td colSpan={21} style={{ textAlign: "center", padding: "20px" }}>
+                                            No data available
+                                        </td>
+                                    </tr> : TaListData.map((row, i) => (
                                             <tr key={i}>
                                                 <td>{row.taName}</td>
                                                 <td>
