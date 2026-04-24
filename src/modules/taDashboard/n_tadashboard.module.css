@@ -16,16 +16,20 @@
     width: calc(100% - 68px);
     position: relative;
     z-index: 1;
-    margin-bottom: 80px;
+    /* margin-bottom: 80px; */
 }
 
 
 .filterContainer{
     border-radius: 10px;
-    margin: 24px 10px;
+    margin: 15px 10px;
     background-color: var(--background-color-light);
     width: 100%;
-    padding: 20px;
+    padding: 10px;
+}
+
+.filterContainer [class*="ant-select-selector"]{
+    height: 50px !important
 }
 
 
