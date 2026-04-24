@@ -1847,8 +1847,8 @@ function NewTADashboard() {
                                 <table className={taStylesNew["data-table"]}>
                                     <thead>
                                         <tr>
-                                            <th>TA NAME</th>
-                                            <th>COMPANY NAME</th>
+                                            <th>TA</th>
+                                            <th>COMPANY</th>
                                             <th>HR TITLE / ID</th>
                                             <th>PRIORITY</th>
                                             <th>STATUS</th>
@@ -1856,7 +1856,7 @@ function NewTADashboard() {
                                             <th>CONTRACT / FT</th>
                                             <th>TALENT BUDGET</th>
                                             <th>UPLERS<br />FEES %</th>
-                                            <th>UPLOADS FEES</th>
+                                            <th>UPLERS FEES</th>
                                             <th>ACTIVE TR'S</th>
                                             <th>TOTAL REVENUE<br />OPPORTUNITY</th>
                                             <th>ACTIVE PROFILES<br />TILL DATE</th>
@@ -1989,7 +1989,8 @@ function NewTADashboard() {
                                                         </div> */}
                                                 </td>
                                                 <td>
-                                                    <ContractDPComp text={row?.modelType} result={row} index={i} />
+                                                    {row?.modelType}
+                                                    {/* <ContractDPComp text={row?.modelType} result={row} index={i} /> */}
                                                     {/* <div className={taStylesNew["inline-select-wrap"]}>
                                                             <select className={taStylesNew["inline-select"]} defaultValue={row.contractFt}>
                                                                 <option>DP</option>

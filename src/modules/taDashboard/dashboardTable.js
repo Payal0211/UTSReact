@@ -231,8 +231,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         <table className={`${taStylesNew["data-table"]}`}>
           <thead>
             <tr>
-              <th >TA Name</th>
-              <th>COMPANY Name</th>
+              <th >TA</th>
+              <th>COMPANY</th>
               <th>HR TITLE / ID</th>
               <th>PRIORITY</th>
               <th>INTERVIEW <br /> ROUNDS</th>

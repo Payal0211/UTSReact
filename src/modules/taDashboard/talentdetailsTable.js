@@ -10,12 +10,12 @@ function TalentdetailsTable({isLoading,talentWiseReport}) {
                             <table className={`${taStylesNew["data-table"]}`}>
                                 <thead>
                                     <tr>
-                                        <th style={{ minWidth: '160px' }}>RECRUITER NAME</th>
+                                        <th style={{ minWidth: '160px' }}>RECRUITER</th>
                                         <th>TL</th>
-                                        <th>TALENT NAME</th>
-                                        <th>COMPANY NAME</th>
+                                        <th>TALENT</th>
+                                        <th>COMPANY</th>
                                         <th>HR ID</th>
-                                        <th>POSITION NAME</th>
+                                        <th>POSITION</th>
                                         <th>NBD/EXISTING</th>
                                         <th>SOW SIGNED DATE</th>
                                         <th>JOINING DATE</th>
