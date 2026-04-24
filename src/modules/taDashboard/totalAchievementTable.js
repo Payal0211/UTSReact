@@ -10,7 +10,7 @@ function TotalAchievementTable({isLoading,quarterlySummeryReport}) {
                             <table className={`${taStylesNew["data-table"]}`}>
                                 <thead>
                                     <tr>
-                                        <th style={{ minWidth: '160px' }}>RECRUITER NAME</th>
+                                        <th style={{ minWidth: '160px' }}>RECRUITER</th>
                                         <th>{quarterlySummeryReport.length > 0 ? quarterlySummeryReport[0].month3Name : ''}</th>
                                         <th>{quarterlySummeryReport.length > 0 ? `${quarterlySummeryReport[0].month3Name.split("'")[0]} %` : ''}</th>
                                         <th>{quarterlySummeryReport.length > 0 ? quarterlySummeryReport[0].month2Name : ''}</th>

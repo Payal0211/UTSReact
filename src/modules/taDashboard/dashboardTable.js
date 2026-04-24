@@ -244,12 +244,11 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
               <th>NR (USD)</th>
               <th>BILL RATE</th>
               <th>ACTIVE TRS</th>
-              <th>CONTRACTOR/EOR</th>
-              <th>TASK FOR AM'S</th>
-              <th>TASK FOR TR'S</th>
+              <th>CONTRACTOR/EOR</th>         
               <th>ACTIVE <br /> PROFILES</th>
               <th>LATEST COMMUNICATION AND UPDATES</th>
-
+  <th>TASK FOR AM'S</th>
+              <th>TASK FOR TR'S</th>
             </tr>
           </thead>
           {/* <TABLEBODYComponent apiData={apiData} /> */}
@@ -335,13 +334,17 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 {/* AM */}
                 <td>{data.am}</td>
                 {/* NBD/EXISTING */}
-                <td> <NDBExistingComp text={data.businessType} result={data} index={ind} /></td>
+                <td> {data.businessType}
+                  {/* <NDBExistingComp text={data.businessType} result={data} index={ind} /> */}
+                  </td>
                 {/* PRICING MODEL */}
                 <td>{data.pricingModel}</td>
                 {/* TALENT PAY RATE */}
                 <td>{data.talent_AnnualCTC_Budget_INRValueStr}</td>
                 {/* NR % */}
-                <td><FeesPreComp text={data.uplersFeesPer} result={data} index={ind} /></td>
+                <td>{data.uplersFeesPer}
+                  {/* <FeesPreComp text={data.uplersFeesPer} result={data} index={ind} /> */}
+                </td>
                 {/* NR (USD) */}
                 <td>{data.revenue_On10PerCTCStr}</td>
                 {/* BILL RATE */}
@@ -349,11 +352,10 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 {/* ACTIVE TRS */}
                 <td>{data.activeTR}</td>
                 {/* CONTRACTOR/EOR */}
-                <td><ContractDPComp text={data.modelType} result={data} index={ind} /></td>
-                {/* TASK FOR AM'S */}
-                <td>{data.amTask}</td>
-                {/* TASK FOR TR'S */}
-                <td>{data.taTask}</td>
+                <td>{data.modelType}
+                  {/* <ContractDPComp text={data.modelType} result={data} index={ind} /> */}
+                  </td>
+               
                 {/* ACTIVE PROFILES */}
                 <td>{data.noOfProfile_TalentsTillDate}</td>
                 {/* LATEST COMMUNICATION AND UPDATES */}
@@ -369,6 +371,11 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                   </> : <button className={taStylesNew["cell-add-btn"]} onClick={() => {
                     AddComment(data, ind);
                   }} >Add</button>}</td>
+
+                   {/* TASK FOR AM'S */}
+                <td>{data.amTask}</td>
+                {/* TASK FOR TR'S */}
+                <td>{data.taTask}</td>
               </tr>
             })}
           </tbody> </table>}
