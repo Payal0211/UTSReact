@@ -266,7 +266,7 @@ function NewTADashboard() {
     }, [tableFilteredState, selectedHead, searchText, navigate]);
 
     useEffect(() => {
-        if (selectedHead.length !== 0 && activeTab === 'Full-Time') {
+        if (selectedHead.length !== 0 && activeTab === 'Full-Time' && fteFiltersList?.HeadUsers.map(it => it.id).includes(selectedHead)) {
             getListData();
             getGoalsDetails(
                 startDate,
@@ -358,13 +358,13 @@ function NewTADashboard() {
     useEffect(() => { getDailyReports() }, [])
 
     useEffect(() => {
-        if (activeTab === 'Full-Time') {
+        if (activeTab === 'Full-Time' && fteFiltersList?.HeadUsers?.map(it => it.id).includes(selectedHead)) {
             selectedHead && getFTEReports()
         }
     }, [selectedHead, activeTab]);
 
     useEffect(() => {
-        if (activeTab === 'Contract') {
+        if (activeTab === 'Contract' && filtersList?.HeadUsers?.map(it => it.id).includes(selectedHead)) {
             selectedHead && getQuarterlySummeryReport()
             getTalentWiseReport()
         }
@@ -1529,10 +1529,7 @@ function NewTADashboard() {
                     )}
                 </div>
 
-
-
-                <div className={stylesOBj.filterContainer}>
-
+                <div className={stylesOBj.filterContainer} style={{ display: 'flex', alignItems: 'center' }}>
                     <div className={stylesOBj["toggle-group"]} style={{ width: '210px', margin: '10px' }}>
                         <button
                             className={`${stylesOBj["toggle-btn"]}  ${activeTab === 'Full-Time' ? stylesOBj["toggle-btn-active"] : ''}`}
@@ -1552,7 +1549,7 @@ function NewTADashboard() {
                     <Select
                         id="selectedValue"
                         placeholder="Select TA"
-                        style={{ marginLeft: "10px", width: "270px", marginBottom: '10px' }}
+                        style={{ marginLeft: "10px", width: "270px" }}
                         // mode="multiple"
                         value={selectedHead}
                         showSearch={true}
@@ -1568,11 +1565,24 @@ function NewTADashboard() {
                         }))}
                         optionFilterProp="label"
                     />
-                    {activeTab === 'Contract' && <>
-                        <TalentdetailsTable isLoading={isLoading} talentWiseReport={talentWiseReport} />
+                </div>
 
+
+
+
+
+                {activeTab === 'Contract' && <>
+                    <div className={stylesOBj.filterContainer}>
+                        <TalentdetailsTable isLoading={isLoading} talentWiseReport={talentWiseReport} /></div>
+
+
+                    <div className={stylesOBj.filterContainer}>
                         <h2 style={{ fontWeight: 'bold', marginTop: '20px' }}>Total Achievement (Closure Month)</h2>
                         <TotalAchievementTable quarterlySummeryReport={quarterlySummeryReport} />
+
+                    </div>
+
+                    <div className={stylesOBj.filterContainer}>
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
                             <button
                                 className={`${stylesOBj["toggle-btn"]}  ${activeTable === 'Dashboard' ? stylesOBj["toggle-btn-active"] : ''}`}
@@ -1605,7 +1615,7 @@ function NewTADashboard() {
                         <div style={{ display: 'flex', gap: '10px' }}>
 
 
-                            {activeTable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} >
+                            {activeTable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
                                 <DatePicker
                                     style={{ backgroundColor: "red" }}
                                     onKeyDown={(e) => {
@@ -1642,7 +1652,7 @@ function NewTADashboard() {
                             </div>}
 
                             {activeTable === 'Dashboard' && <>
-                                <button className={stylesOBj["filter-btn"]} onClick={() => { }}>
+                                <button className={stylesOBj["filter-btn"]} style={{ marginLeft: 'auto', marginRight: '10px' }} onClick={toggleHRFilter}>
                                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                         <img src="images/filter-ic.svg" alt="Filter" />
                                         <span>Add Filters</span>
@@ -1652,7 +1662,7 @@ function NewTADashboard() {
                                         {filteredTagLength > 0 && (
                                             <Tooltip title="Reset Filters">
                                                 <span style={{ color: 'red', fontWeight: 'bold', cursor: 'pointer' }}
-                                                    onClick={(e) => { e.stopPropagation(); }}>
+                                                    onClick={(e) => { e.stopPropagation(); clearFilters() }}>
                                                     X
                                                 </span>
                                             </Tooltip>
@@ -1660,7 +1670,7 @@ function NewTADashboard() {
                                     </div>
                                 </button>
 
-                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
+                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginRight: '10px' }}>
                                     <input
                                         ref={searchInputRef}
                                         type="text"
@@ -1704,16 +1714,21 @@ function NewTADashboard() {
                             userData={userData}
                         />}
                         {activeTable === 'Goal' && <GoalTableComp selectedHead={selectedHead} startDate={startDate} tableFilteredState={tableFilteredState} />}
-                    </>}
+                    </div>
+                </>}
 
-                    {activeTab === 'Full-Time' && <>
+                {activeTab === 'Full-Time' && <>
+                    <div className={stylesOBj.filterContainer}>
+
 
                         <FTECountTable isLoading={fteDataLoading} countData={fteCountsData} />
 
 
                         <TalentdetailsFTETable isLoading={fteDataLoading} talentWiseReport={talentWiseReport} showDetails={showDetails} />
+                    </div>
 
 
+                    <div className={stylesOBj.filterContainer}>
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
                             <button
                                 className={`${stylesOBj["toggle-btn"]}  ${activeFTETable === 'Dashboard' ? stylesOBj["toggle-btn-active"] : ''}`}
@@ -1746,7 +1761,7 @@ function NewTADashboard() {
                         <div style={{ display: 'flex', gap: '10px' }}>
 
 
-                            {activeFTETable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} >
+                            {activeFTETable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
                                 <DatePicker
                                     style={{ backgroundColor: "red" }}
                                     onKeyDown={(e) => {
@@ -1783,7 +1798,7 @@ function NewTADashboard() {
                             </div>}
 
                             {activeFTETable === 'Dashboard' && <>
-                                <button className={stylesOBj["filter-btn"]} onClick={toggleHRFilter}>
+                                <button className={stylesOBj["filter-btn"]} onClick={toggleHRFilter} style={{ marginLeft: 'auto', marginRight: '10px' }}>
                                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                         <img src="images/filter-ic.svg" alt="Filter" />
                                         <span>Add Filters</span>
@@ -1801,7 +1816,7 @@ function NewTADashboard() {
                                     </div>
                                 </button>
 
-                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
+                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginRight: '10px' }}>
                                     <input
                                         ref={searchInputRef}
                                         type="text"
@@ -1879,46 +1894,49 @@ function NewTADashboard() {
                                             <tr key={i}>
                                                 <td>{row.taName}</td>
                                                 <td>
-                                                    <div className={taStylesNew["company-cell"]}>
+                                                    <div className={taStylesNew["company-cell"]} style={{ display: 'contents' }}>
                                                         <span className={taStylesNew["company-name"]}>{row.companyName}</span>
-
-                                                        <button
-                                                            className={taStylesNew["diamond-toggle"]}
-                                                            data-tooltip={userData?.UserId === 2 ||
-                                                                userData?.UserId === 333 ||
-                                                                userData?.UserId === 190 || userData?.UserId === 96 ? (row?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
-                                                            onClick={() => {
-                                                                if (userData?.UserId === 2 ||
+                                                        <div style={{ display: 'flex' }}>
+                                                            <button
+                                                                className={taStylesNew["diamond-toggle"]}
+                                                                data-tooltip={userData?.UserId === 2 ||
                                                                     userData?.UserId === 333 ||
-                                                                    userData?.UserId === 190 || userData?.UserId === 96) {
-                                                                    if (row?.companyCategory === "Diamond") {
-                                                                        setShowDiamondRemark(true);
-                                                                        setCompanyIdForRemark({ ...row, index: i });
-                                                                    } else {
-                                                                        setDiamondCompany(row, i)
+                                                                    userData?.UserId === 190 || userData?.UserId === 96 ? (row?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
+                                                                onClick={() => {
+                                                                    if (userData?.UserId === 2 ||
+                                                                        userData?.UserId === 333 ||
+                                                                        userData?.UserId === 190 || userData?.UserId === 96) {
+                                                                        if (row?.companyCategory === "Diamond") {
+                                                                            setShowDiamondRemark(true);
+                                                                            setCompanyIdForRemark({ ...row, index: i });
+                                                                        } else {
+                                                                            setDiamondCompany(row, i)
+                                                                        }
                                                                     }
-                                                                }
 
-                                                            }}
-                                                        >
-                                                            {row?.companyCategory === "Diamond"
-                                                                ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
-                                                                : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
-                                                        </button>
-                                                        {userData?.showTADashboardDropdowns && <button className={taStylesNew["plus-task-btn"]} data-tooltip={`Add task for TA ${row.taName} in ${row.companyName}`}
-                                                            onClick={() => {
-                                                                setIsAddNewRow(true);
-                                                                setNewTAUserValue(row.tA_UserID);
-                                                                setNewTAHeadUserValue(selectedHead);
-                                                                getCompanySuggestionHandler(row.tA_UserID);
-                                                                setselectedCompanyID(row?.company_ID);
-                                                                getHRLISTForComapny(row?.company_ID);
-                                                            }}
-                                                        >
-                                                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M13 0C10.4288 0 7.91543 0.762437 5.77759 2.1909C3.63975 3.61935 1.97351 5.64968 0.989572 8.02512C0.0056327 10.4006 -0.251811 13.0144 0.249797 15.5362C0.751405 18.0579 1.98953 20.3743 3.80762 22.1924C5.6257 24.0105 7.94208 25.2486 10.4638 25.7502C12.9856 26.2518 15.5995 25.9944 17.9749 25.0104C20.3503 24.0265 22.3807 22.3603 23.8091 20.2224C25.2376 18.0846 26 15.5712 26 13C25.9957 9.55351 24.6247 6.2494 22.1876 3.81236C19.7506 1.37532 16.4465 0.00430006 13 0ZM18 14H14V18C14 18.2652 13.8946 18.5196 13.7071 18.7071C13.5196 18.8946 13.2652 19 13 19C12.7348 19 12.4804 18.8946 12.2929 18.7071C12.1054 18.5196 12 18.2652 12 18V14H8.00001C7.73479 14 7.48044 13.8946 7.2929 13.7071C7.10536 13.5196 7.00001 13.2652 7.00001 13C7.00001 12.7348 7.10536 12.4804 7.2929 12.2929C7.48044 12.1054 7.73479 12 8.00001 12H12V8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8V12H18C18.2652 12 18.5196 12.1054 18.7071 12.2929C18.8946 12.4804 19 12.7348 19 13C19 13.2652 18.8946 13.5196 18.7071 13.7071C18.5196 13.8946 18.2652 14 18 14Z" fill="#8A8A8A" />
-                                                            </svg>
-                                                        </button>}
+                                                                }}
+                                                            >
+                                                                {row?.companyCategory === "Diamond"
+                                                                    ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
+                                                                    : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
+                                                            </button>
+                                                            {userData?.showTADashboardDropdowns && <button className={taStylesNew["plus-task-btn"]} data-tooltip={`Add task for TA ${row.taName} in ${row.companyName}`}
+                                                                onClick={() => {
+                                                                    setIsAddNewRow(true);
+                                                                    setNewTAUserValue(row.tA_UserID);
+                                                                    setNewTAHeadUserValue(selectedHead);
+                                                                    getCompanySuggestionHandler(row.tA_UserID);
+                                                                    setselectedCompanyID(row?.company_ID);
+                                                                    getHRLISTForComapny(row?.company_ID);
+                                                                }}
+                                                            >
+                                                                <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M13 0C10.4288 0 7.91543 0.762437 5.77759 2.1909C3.63975 3.61935 1.97351 5.64968 0.989572 8.02512C0.0056327 10.4006 -0.251811 13.0144 0.249797 15.5362C0.751405 18.0579 1.98953 20.3743 3.80762 22.1924C5.6257 24.0105 7.94208 25.2486 10.4638 25.7502C12.9856 26.2518 15.5995 25.9944 17.9749 25.0104C20.3503 24.0265 22.3807 22.3603 23.8091 20.2224C25.2376 18.0846 26 15.5712 26 13C25.9957 9.55351 24.6247 6.2494 22.1876 3.81236C19.7506 1.37532 16.4465 0.00430006 13 0ZM18 14H14V18C14 18.2652 13.8946 18.5196 13.7071 18.7071C13.5196 18.8946 13.2652 19 13 19C12.7348 19 12.4804 18.8946 12.2929 18.7071C12.1054 18.5196 12 18.2652 12 18V14H8.00001C7.73479 14 7.48044 13.8946 7.2929 13.7071C7.10536 13.5196 7.00001 13.2652 7.00001 13C7.00001 12.7348 7.10536 12.4804 7.2929 12.2929C7.48044 12.1054 7.73479 12 8.00001 12H12V8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8V12H18C18.2652 12 18.5196 12.1054 18.7071 12.2929C18.8946 12.4804 19 12.7348 19 13C19 13.2652 18.8946 13.5196 18.7071 13.7071C18.5196 13.8946 18.2652 14 18 14Z" fill="#8A8A8A" />
+                                                                </svg>
+                                                            </button>}
+
+                                                        </div>
+
 
                                                     </div>
                                                 </td>
@@ -2081,7 +2099,9 @@ function NewTADashboard() {
                                                         </div> */}
                                                 </td>
                                                 <td>{row.salesName}</td>
-                                                <td>{row.hrCreatedDate}</td>
+                                                <td>{moment(row.hrCreatedDate).format(
+                                                    "DD-MMM-YYYY"
+                                                )}</td>
                                                 <td>{row.hrOpenSinceOneMonths}</td>
                                                 <td>
                                                     <div>
@@ -2188,9 +2208,9 @@ function NewTADashboard() {
                         }
 
                         </>}
+                    </div>
+                </>}
 
-                    </>}
-                </div>
 
 
                 {isAllowFilters && (
@@ -3041,7 +3061,10 @@ function NewTADashboard() {
                                                     onChange={(value, option) => {
                                                         setNewTAHeadUserValue(value);
                                                     }}
-                                                    options={filtersList?.HeadUsers?.map((v) => ({
+                                                    options={activeTab === 'Full-Time' ? fteFiltersList?.HeadUsers?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    })) : filtersList?.HeadUsers?.map((v) => ({
                                                         label: v.data,
                                                         value: v.id,
                                                     }))}
