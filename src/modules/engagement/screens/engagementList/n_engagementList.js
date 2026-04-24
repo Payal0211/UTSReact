@@ -445,7 +445,7 @@ setDebounceSearch('');
             { key: "engagementId", label: "ENG. ID" },
             { key: "hrId", label: "HR#" },
             { key: "engagementCount", label: 'ENG. COUNT' },
-            { key: "type", label: "TYPE" },
+            { key: "engContractType ", label: "ENGAGEMENT  TYPE" },
             { key: "company", label: "COMPANY NAME" },
             { key: "clientName", label: "CLIENT NAME" },
             { key: "clientEmail", label: "CLIENT EMAIL" },
@@ -475,7 +475,7 @@ setDebounceSearch('');
                 engagementId: engParts[0] || "",
                 hrId: engParts[1] || "",
                 engagementCount: data?.engagementCount || "",
-                type: data?.typeOfHR || "",
+                engContractType: data?.engContractType || "",
                 company: data?.company || "",
 
                 clientName: clientParts[0] || "",
@@ -1441,7 +1441,7 @@ setDebounceSearch('');
                                 <th rowSpan={2} style={{ minWidth: '80px' }}>SHORTCUTS</th>
                                 <th rowSpan={2} style={{ minWidth: '160px' }}>ENG. ID / HR#</th>
                                 <th rowSpan={2} style={{ minWidth: '80px' }}>ENG. COUNT</th>
-                                <th rowSpan={2}>TYPE</th>
+                                <th rowSpan={2}>ENGAGEMENT TYPE</th>
                                 <th rowSpan={2} style={{ minWidth: '160px' }}>COMPANY NAME</th>
                                 <th rowSpan={2} style={{ minWidth: '130px' }}>CLIENT</th>
                                 <th rowSpan={2} style={{ minWidth: '130px' }}>TALENT</th>
@@ -1526,7 +1526,7 @@ setDebounceSearch('');
                                             {/* ENG. COUNT */}
                                             <td>{data?.engagementCount}</td>
                                             {/* TYPE */}
-                                            <td>{data?.typeOfHR}</td>
+                                            <td>{data?.engContractType }</td>
                                             {/* COMPANY NAME */}
                                             <td style={{ whiteSpace: 'normal', maxWidth: '220px' }}>{data?.company}</td>
                                             {/* CLIENT - with tooltip */}
