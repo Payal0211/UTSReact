@@ -3088,7 +3088,7 @@ function NewTADashboard() {
                                                             tA_UserID: value,
                                                         }));
                                                     }}
-                                                    options={filtersList?.Users?.map((v) => ({
+                                                    options={fteFiltersList?.Users?.map((v) => ({
                                                         label: v.data,
                                                         value: v.id,
                                                     }))}
