@@ -1652,7 +1652,7 @@ function NewTADashboard() {
                             </div>}
 
                             {activeTable === 'Dashboard' && <>
-                                <button className={stylesOBj["filter-btn"]} style={{ marginLeft: 'auto', marginRight: '10px' }} onClick={toggleHRFilter}>
+                                {/* <button className={stylesOBj["filter-btn"]} style={{ marginLeft: 'auto', marginRight: '10px' }} onClick={toggleHRFilter}>
                                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                         <img src="images/filter-ic.svg" alt="Filter" />
                                         <span>Add Filters</span>
@@ -1668,9 +1668,9 @@ function NewTADashboard() {
                                             </Tooltip>
                                         )}
                                     </div>
-                                </button>
+                                </button> */}
 
-                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginRight: '10px' }}>
+                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px' }}>
                                     <input
                                         ref={searchInputRef}
                                         type="text"
@@ -1710,8 +1710,8 @@ function NewTADashboard() {
                         </div>
 
                         {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
-                            hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny }}
-                            userData={userData}
+                            hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget ,TaskStatusComp}}
+                            userData={userData} startDate={startDate}
                         />}
                         {activeTable === 'Goal' && <GoalTableComp selectedHead={selectedHead} startDate={startDate} tableFilteredState={tableFilteredState} />}
                     </div>
@@ -1798,7 +1798,7 @@ function NewTADashboard() {
                             </div>}
 
                             {activeFTETable === 'Dashboard' && <>
-                                <button className={stylesOBj["filter-btn"]} onClick={toggleHRFilter} style={{ marginLeft: 'auto', marginRight: '10px' }}>
+                                {/* <button className={stylesOBj["filter-btn"]} onClick={toggleHRFilter} style={{ marginLeft: 'auto', marginRight: '10px' }}>
                                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                         <img src="images/filter-ic.svg" alt="Filter" />
                                         <span>Add Filters</span>
@@ -1814,9 +1814,9 @@ function NewTADashboard() {
                                             </Tooltip>
                                         )}
                                     </div>
-                                </button>
+                                </button> */}
 
-                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginRight: '10px' }}>
+                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px' }}>
                                     <input
                                         ref={searchInputRef}
                                         type="text"
