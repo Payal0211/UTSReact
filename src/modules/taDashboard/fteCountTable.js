@@ -17,11 +17,11 @@ function FTECountTable({ isLoading, countData }) {
                                         <th>ACHIEVED PIPELINE (INR)</th>
                                         <th>LOST PIPELINE (INR)</th>
                                         <th>TOTAL ACTIVE PIPELINE (INR)</th>
-                                           <th>TODAY TOTAL PROFILE <br/> SHEARED TARGET</th>
-                                        <th>TODAY TOTAL PROFILE <br/> SHEARED ACHIEVED</th>
+                                           <th>TODAY TOTAL PROFILE <br/> SHARED TARGET</th>
+                                        <th>TODAY TOTAL PROFILE <br/> SHARED ACHIEVED</th>
                                         <th>TODAY TOTAL L1 <br/> ROUND SCHEDULED</th>
-                                        <th>YESTERDAY TOTAL PROFILE <br/> SHEARED TARGET</th>
-                                         <th>YESTERDAY TOTAL PROFILE <br/> SHEARED ACHIEVED</th>
+                                        <th>YESTERDAY TOTAL PROFILE <br/> SHARED TARGET</th>
+                                         <th>YESTERDAY TOTAL PROFILE <br/> SHARED ACHIEVED</th>
                                           <th>YESTERDAY TOTAL L1 <br/> ROUND SCHEDULED</th>
                                        
                                     </tr>
@@ -53,19 +53,19 @@ function FTECountTable({ isLoading, countData }) {
                                           {/* TOTAL ACTIVE PIPELINE (INR) */}
                                           <td>{data.totalActivePipeLineStr}</td>
                                           
-                                          {/* TODAY TOTAL PROFILE SHEARED TARGET */}
+                                          {/* TODAY TOTAL PROFILE SHARED TARGET */}
                                           <td>{data.today_ProfilesharedTarget}</td>
                                           
-                                          {/* TODAY TOTAL PROFILE SHEARED ACHIEVED */}
+                                          {/* TODAY TOTAL PROFILE SHARED ACHIEVED */}
                                           <td>{data.today_ProfilesharedAchieved}</td>
                                           
                                           {/* TODAY TOTAL L1 ROUND SCHEDULED */}
                                           <td>{data.today_L1Round}</td>
                                           
-                                          {/* YESTERDAY TOTAL PROFILE SHEARED TARGET */}
+                                          {/* YESTERDAY TOTAL PROFILE SHARED TARGET */}
                                           <td>{data.yesterday_ProfilesharedTarget}</td>
                                           
-                                          {/* YESTERDAY TOTAL PROFILE SHEARED ACHIEVED */}
+                                          {/* YESTERDAY TOTAL PROFILE SHARED ACHIEVED */}
                                           <td>{data.yesterday_ProfilesharedAchieved}</td>
                                           
                                           {/* YESTERDAY TOTAL L1 ROUND SCHEDULED */}
