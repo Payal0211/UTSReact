@@ -14,9 +14,9 @@ import UTSRoutes from 'constants/routes';
 
 const { Option } = Select;
 
-function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filtersList, AddComment, hooks,userData }) {
+function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filtersList, AddComment, hooks,userData ,startDate}) {
   const navigate = useNavigate()
-  const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny } = hooks;
+  const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny,setProfileTargetDetails,setStartTargetDate,setShowProfileTarget ,TaskStatusComp} = hooks;
   const [TaListData, setTaListData] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
 
@@ -207,6 +207,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     );
   };
 
+ 
+
   const FeesPreComp = ({ text, result, index }) => {
     const [value, setValue] = useState(text ?? "");
 
@@ -235,6 +237,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
               <th>COMPANY</th>
               <th>HR TITLE / ID</th>
               <th>PRIORITY</th>
+              <th>STATUS</th>
+              <th>PROFILES SHARED TARGET<br />/ ACHIEVED / L1 ROUND</th>
               <th>INTERVIEW <br /> ROUNDS</th>
               <th>AM</th>
               <th>NBD/EXISTING</th>
@@ -329,6 +333,47 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 </td>
                 {/* PRIORITY */}
                 <td><PriorityComp text={data.task_Priority} result={data} index={ind} /></td>
+                    <td>
+                                                    <TaskStatusComp text={data.taskStatus} result={data} index={ind} />
+                                                    {/* <div className={taStylesNew["inline-select-wrap"]}>
+                                                        
+                                                            <select className={taStylesNew["inline-select"]} defaultValue={data.status}>
+                                                                <option>Fasttrack</option>
+                                                                <option>Slow</option>
+                                                                <option>Medium</option>
+                                                                <option>Pause</option>
+                                                                <option>Covered</option>
+                                                            </select>
+                                                        </div> */}
+                                                </td>
+                                                <td>
+                                                    <div style={{ display: "flex" }}>
+                                                        {data.task_StatusID === 1 ? (
+                                                            <p
+                                                                style={{
+                                                                    color: "blue",
+                                                                    fontWeight: "bold",
+                                                                    textDecoration: "underline",
+                                                                    cursor: "pointer",
+                                                                }}
+                                                                onClick={() => {
+                                                                    setShowProfileTarget(true);
+                                                                    setStartTargetDate(startDate);
+                                                                    setProfileTargetDetails({ ...data, index: ind });
+                                                                }}
+                                                            >
+                                                                {data?.profile_Shared_Target ?? 0}
+                                                            </p>
+                                                        ) : (
+                                                            data?.profile_Shared_Target ?? 0
+                                                        )}{" "}
+                                                        / {data.profile_Shared_Achieved ?? "NA"} /{" "}
+                                                        {data.interview_Scheduled_Target ?? "NA"}
+                                                    </div>
+                                                    {/* <div className={taStylesNew["cell-input-wrap"]}>
+                                                            <input type="text" className={taStylesNew["cell-input"]} defaultValue={row.profilesShared} readOnly />
+                                                        </div> */}
+                                                </td>
                 {/* INTERVIEW ROUNDS */}
                 <td>{data.no_of_InterviewRounds}</td>
                 {/* AM */}
