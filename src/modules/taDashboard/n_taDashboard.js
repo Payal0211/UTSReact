@@ -1710,7 +1710,9 @@ function NewTADashboard() {
                         </div>
 
                         {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
-                            hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget ,TaskStatusComp}}
+                            hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget, editTAforTask,handleRemoveTask ,TaskStatusComp,
+                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount
+                            }}
                             userData={userData} startDate={startDate}
                         />}
                         {activeTable === 'Goal' && <GoalTableComp selectedHead={selectedHead} startDate={startDate} tableFilteredState={tableFilteredState} />}
@@ -3091,7 +3093,10 @@ function NewTADashboard() {
                                                             tA_UserID: value,
                                                         }));
                                                     }}
-                                                    options={fteFiltersList?.Users?.map((v) => ({
+                                                    options={activeTab === 'Full-Time' ? fteFiltersList?.Users?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    })) : filtersList?.Users?.map((v) => ({
                                                         label: v.data,
                                                         value: v.id,
                                                     }))}
