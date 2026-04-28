@@ -11,15 +11,35 @@ import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { HTTPStatusCode } from "constants/network";
 import UTSRoutes from 'constants/routes';
+import { IconContext } from "react-icons";
+import { IoIosRemoveCircle } from "react-icons/io";
+import { GrEdit } from "react-icons/gr";
+import { InputType } from "constants/application";
+import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
+import { allCompanyRequestDAO } from "core/company/companyDAO";
+import { useForm } from "react-hook-form";
 
 const { Option } = Select;
 
 function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filtersList, AddComment, hooks,userData ,startDate}) {
   const navigate = useNavigate()
-  const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny,setProfileTargetDetails,setStartTargetDate,setShowProfileTarget ,TaskStatusComp} = hooks;
+  const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny,setProfileTargetDetails,setStartTargetDate,setShowProfileTarget ,TaskStatusComp,
+    editTAforTask,handleRemoveTask, getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount
+  } = hooks;
   const [TaListData, setTaListData] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
-
+   const [showDiamondRemark, setShowDiamondRemark] = useState(false);
+      const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
+    const [remDiamondLoading, setRemDiamondLoading] = useState(false);
+     const {
+            watch,
+            register,
+            setError,
+            handleSubmit,
+            resetField,
+            clearErrors,
+            formState: { errors },
+        } = useForm();
   function groupByRowSpan(data, groupField) {
     const grouped = {};
 
@@ -225,6 +245,41 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     );
   };
 
+      const setDiamondCompany = async (row, index) => {
+          let payload = {
+              basicDetails: {
+                  companyID: row.company_ID,
+                  companyCategory: "Diamond",
+              },
+              // IsUpdateFromPreviewPage: true,
+          };
+          updateTARowValue("Diamond", "companyCategory", row, index);
+          let res = await allCompanyRequestDAO.updateCompanyCategoryDAO(payload);
+      };
+
+         const handleRemoveDiamond = async (d) => {
+              let payload = {
+                  CompanyID: companyIdForRemark.company_ID,
+                  DiamondCategoryRemoveRemark: d.diamondCategoryRemoveRemark,
+              };
+              setRemDiamondLoading(true);
+              let res = await allCompanyRequestDAO.removeCompanyCategoryDAO(payload);
+              setRemDiamondLoading(false);
+              console.log("response", res);
+              if (res.statusCode === 200) {
+                  updateTARowValue(
+                      "None",
+                      "companyCategory",
+                      companyIdForRemark,
+                      companyIdForRemark.index
+                  );
+                  setShowDiamondRemark(false);
+                  resetField("diamondCategoryRemoveRemark");
+                  clearErrors("diamondCategoryRemoveRemark");
+              } else {
+                  message.error("Something Went Wrong!");
+              }
+          };
 
   return (
     <div className={`${taStylesNew["table-container"]}`} style={{ marginTop: '20px' }}>
@@ -253,6 +308,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
               <th>LATEST COMMUNICATION AND UPDATES</th>
   <th>TASK FOR AM'S</th>
               <th>TASK FOR TR'S</th>
+               <th>ACTION</th>
             </tr>
           </thead>
           {/* <TABLEBODYComponent apiData={apiData} /> */}
@@ -268,25 +324,53 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 {/* TA Name */}
                 <td>{data.taName}</td>
                 {/* COMPANY Name */}
-                <td>  <div className={taStylesNew["company-cell"]}>
-                  {data.companyName}   
-                   {userData?.showTADashboardDropdowns && <button className={taStylesNew["plus-task-btn"]} data-tooltip={`Add task for TA ${data.taName} in ${data.companyName}`}
-                                                                            onClick={() => {
-                                                                                setIsAddNewRow(true);
-                                                                                setNewTAUserValue(data.tA_UserID);
-                                                                                setNewTAHeadUserValue(selectedHead);
-                                                                                getCompanySuggestionHandler(data.tA_UserID);
-                                                                                setselectedCompanyID(data?.company_ID);
-                                                                                getHRLISTForComapny(data?.company_ID);
-                                                                            }}
-                                                                        >
-                                                                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                <path d="M13 0C10.4288 0 7.91543 0.762437 5.77759 2.1909C3.63975 3.61935 1.97351 5.64968 0.989572 8.02512C0.0056327 10.4006 -0.251811 13.0144 0.249797 15.5362C0.751405 18.0579 1.98953 20.3743 3.80762 22.1924C5.6257 24.0105 7.94208 25.2486 10.4638 25.7502C12.9856 26.2518 15.5995 25.9944 17.9749 25.0104C20.3503 24.0265 22.3807 22.3603 23.8091 20.2224C25.2376 18.0846 26 15.5712 26 13C25.9957 9.55351 24.6247 6.2494 22.1876 3.81236C19.7506 1.37532 16.4465 0.00430006 13 0ZM18 14H14V18C14 18.2652 13.8946 18.5196 13.7071 18.7071C13.5196 18.8946 13.2652 19 13 19C12.7348 19 12.4804 18.8946 12.2929 18.7071C12.1054 18.5196 12 18.2652 12 18V14H8.00001C7.73479 14 7.48044 13.8946 7.2929 13.7071C7.10536 13.5196 7.00001 13.2652 7.00001 13C7.00001 12.7348 7.10536 12.4804 7.2929 12.2929C7.48044 12.1054 7.73479 12 8.00001 12H12V8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8V12H18C18.2652 12 18.5196 12.1054 18.7071 12.2929C18.8946 12.4804 19 12.7348 19 13C19 13.2652 18.8946 13.5196 18.7071 13.7071C18.5196 13.8946 18.2652 14 18 14Z" fill="#8A8A8A" />
-                                                                            </svg>
-                                                                        </button>}
-                </div>
-              
-                    </td>
+          <td>
+                                                    <div className={taStylesNew["company-cell"]} style={{ display: 'contents' }}>
+                                                        <span className={taStylesNew["company-name"]}>{data.companyName}</span>
+                                                        <div style={{ display: 'flex' }}>
+                                                            <button
+                                                                className={taStylesNew["diamond-toggle"]}
+                                                                data-tooltip={userData?.UserId === 2 ||
+                                                                    userData?.UserId === 333 ||
+                                                                    userData?.UserId === 190 || userData?.UserId === 96 ? (data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
+                                                                onClick={() => {
+                                                                    if (userData?.UserId === 2 ||
+                                                                        userData?.UserId === 333 ||
+                                                                        userData?.UserId === 190 || userData?.UserId === 96) {
+                                                                        if (data?.companyCategory === "Diamond") {
+                                                                            setShowDiamondRemark(true);
+                                                                            setCompanyIdForRemark({ ...data, index: ind });
+                                                                        } else {
+                                                                            setDiamondCompany(data, ind)
+                                                                        }
+                                                                    }
+
+                                                                }}
+                                                            >
+                                                                {data?.companyCategory === "Diamond"
+                                                                    ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
+                                                                    : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
+                                                            </button>
+                                                            {userData?.showTADashboardDropdowns && <button className={taStylesNew["plus-task-btn"]} data-tooltip={`Add task for TA ${data.taName} in ${data.companyName}`}
+                                                                onClick={() => {
+                                                                    setIsAddNewRow(true);
+                                                                    setNewTAUserValue(data.tA_UserID);
+                                                                    setNewTAHeadUserValue(selectedHead);
+                                                                    getCompanySuggestionHandler(data.tA_UserID);
+                                                                    setselectedCompanyID(data?.company_ID);
+                                                                    getHRLISTForComapny(data?.company_ID);
+                                                                }}
+                                                            >
+                                                                <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M13 0C10.4288 0 7.91543 0.762437 5.77759 2.1909C3.63975 3.61935 1.97351 5.64968 0.989572 8.02512C0.0056327 10.4006 -0.251811 13.0144 0.249797 15.5362C0.751405 18.0579 1.98953 20.3743 3.80762 22.1924C5.6257 24.0105 7.94208 25.2486 10.4638 25.7502C12.9856 26.2518 15.5995 25.9944 17.9749 25.0104C20.3503 24.0265 22.3807 22.3603 23.8091 20.2224C25.2376 18.0846 26 15.5712 26 13C25.9957 9.55351 24.6247 6.2494 22.1876 3.81236C19.7506 1.37532 16.4465 0.00430006 13 0ZM18 14H14V18C14 18.2652 13.8946 18.5196 13.7071 18.7071C13.5196 18.8946 13.2652 19 13 19C12.7348 19 12.4804 18.8946 12.2929 18.7071C12.1054 18.5196 12 18.2652 12 18V14H8.00001C7.73479 14 7.48044 13.8946 7.2929 13.7071C7.10536 13.5196 7.00001 13.2652 7.00001 13C7.00001 12.7348 7.10536 12.4804 7.2929 12.2929C7.48044 12.1054 7.73479 12 8.00001 12H12V8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8V12H18C18.2652 12 18.5196 12.1054 18.7071 12.2929C18.8946 12.4804 19 12.7348 19 13C19 13.2652 18.8946 13.5196 18.7071 13.7071C18.5196 13.8946 18.2652 14 18 14Z" fill="#8A8A8A" />
+                                                                </svg>
+                                                            </button>}
+
+                                                        </div>
+
+
+                                                    </div>
+                                                </td>
                 {/* HR TITLE / ID */}
                 <td>
                   {/* <>
@@ -402,7 +486,28 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                   </td>
                
                 {/* ACTIVE PROFILES */}
-                <td>{data.noOfProfile_TalentsTillDate}</td>
+                <td>
+                   {+data?.noOfProfile_TalentsTillDate > 0 ? (
+                                                        <p
+                                                            style={{
+                                                                color: "blue",
+                                                                fontWeight: "bold",
+                                                                textDecoration: "underline",
+                                                                cursor: "pointer",
+                                                            }}
+                                                            onClick={() => {
+                                                                getTalentProfilesDetailsfromTable(data, 0);
+                                                                setTalentToMove(data);
+                                                                setProfileStatusID(0);
+                                                                setHRTalentListFourCount([]);
+                                                            }}
+                                                        >
+                                                            {data?.noOfProfile_TalentsTillDate}
+                                                        </p>
+                                                    ) : (
+                                                        data?.noOfProfile_TalentsTillDate
+                                                    )}
+                </td>
                 {/* LATEST COMMUNICATION AND UPDATES */}
                 <td><div dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
                   {data?.latestNotes ? <>
@@ -421,9 +526,127 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 <td>{data.amTask}</td>
                 {/* TASK FOR TR'S */}
                 <td>{data.taTask}</td>
+                  <td>
+                                                    <div>
+                                                        <IconContext.Provider
+                                                            value={{
+                                                                color: "#FFDA30",
+                                                                style: { width: "19px", height: "19px", cursor: "pointer" },
+                                                            }}
+                                                        >
+                                                            {" "}
+                                                            <Tooltip title="Edit" placement="top">
+                                                                <span
+                                                                    onClick={() => {
+                                                                        editTAforTask(data);
+                                                                    }}
+                                                                    style={{ padding: "0" }}
+                                                                >
+                                                                    {" "}
+                                                                    <GrEdit />
+                                                                </span>{" "}
+                                                            </Tooltip>
+                                                        </IconContext.Provider>
+
+                                                        {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65 || userData.UserId === 49 || userData.UserId === 176 || userData.UserId === 443 || userData.UserId === 436 || userData.UserId === 302) && <IconContext.Provider
+                                                            value={{
+                                                                color: "red",
+                                                                style: {
+                                                                    width: "19px",
+                                                                    height: "19px",
+                                                                    marginLeft: "10px",
+                                                                    cursor: "pointer",
+                                                                },
+                                                            }}
+                                                        >
+                                                            <Tooltip title="Remove" placement="top">
+                                                                <span
+                                                                    // style={{
+                                                                    //   background: 'red'
+                                                                    // }}
+                                                                    onClick={() => {
+                                                                        handleRemoveTask(data);
+                                                                    }}
+                                                                    style={{ padding: "0" }}
+                                                                >
+                                                                    {" "}
+                                                                    <IoIosRemoveCircle />
+                                                                </span>{" "}
+                                                            </Tooltip>
+                                                        </IconContext.Provider>}
+
+
+                                                    </div>
+                                                    {/* <button className={taStylesNew["action-edit-btn"]} title="Edit">
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04Z" fill="#4C4E64DE"/>
+                                                            </svg>
+                                                        </button> */}
+                                                </td>
               </tr>
             })}
           </tbody> </table>}
+
+       {showDiamondRemark && (
+                              <Modal
+                                  transitionName=""
+                                  width="1000px"
+                                  centered
+                                  footer={null}
+                                  open={showDiamondRemark}
+                                  className="engagementModalStyle"
+                                  onCancel={() => {
+                                      setShowDiamondRemark(false);
+                                      resetField("diamondCategoryRemoveRemark");
+                                      clearErrors("diamondCategoryRemoveRemark");
+                                  }}
+                              >
+                                  <div style={{ padding: "35px 15px 10px 15px" }}>
+                                      <h3>Add Remark</h3>
+                                  </div>
+          
+                                  <div style={{ padding: "10px 20px" }}>
+                                      {remDiamondLoading ? (
+                                          <Skeleton active />
+                                      ) : (
+                                          <HRInputField
+                                              isTextArea={true}
+                                              register={register}
+                                              errors={errors}
+                                              label="Remark"
+                                              name="diamondCategoryRemoveRemark"
+                                              type={InputType.TEXT}
+                                              placeholder="Enter Remark"
+                                              validationSchema={{
+                                                  required: "please enter remark",
+                                              }}
+                                              required
+                                          />
+                                      )}
+                                  </div>
+          
+                                  <div style={{ padding: "10px 20px" }}>
+                                      <button
+                                          className={taStyles.btnPrimary}
+                                          onClick={handleSubmit(handleRemoveDiamond)}
+                                          disabled={remDiamondLoading}
+                                      >
+                                          Save
+                                      </button>
+                                      <button
+                                          className={taStyles.btnCancle}
+                                          disabled={remDiamondLoading}
+                                          onClick={() => {
+                                              setShowDiamondRemark(false);
+                                              resetField("diamondCategoryRemoveRemark");
+                                              clearErrors("diamondCategoryRemoveRemark");
+                                          }}
+                                      >
+                                          Close
+                                      </button>
+                                  </div>
+                              </Modal>
+                          )}    
     </div>
   )
 }
