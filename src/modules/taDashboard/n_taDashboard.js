@@ -1710,7 +1710,9 @@ function NewTADashboard() {
                         </div>
 
                         {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
-                            hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget ,TaskStatusComp}}
+                            hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget, editTAforTask,handleRemoveTask ,TaskStatusComp,
+                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount
+                            }}
                             userData={userData} startDate={startDate}
                         />}
                         {activeTable === 'Goal' && <GoalTableComp selectedHead={selectedHead} startDate={startDate} tableFilteredState={tableFilteredState} />}
@@ -2069,7 +2071,8 @@ function NewTADashboard() {
                                                         )} */}
                                                 </td>
                                                 <td>
-                                                    <InboundOutboundComp text={row?.role_Type} result={row} index={i} />
+                                                    {row?.role_Type}
+                                                    {/* <InboundOutboundComp text={row?.role_Type} result={row} index={i} /> */}
                                                     {/* <div className={taStylesNew["inline-select-wrap"]}>
                                                             <select className={taStylesNew["inline-select"]} defaultValue={row.inboundOutbound}>
                                                                 <option>DP</option>
@@ -2079,13 +2082,15 @@ function NewTADashboard() {
                                                         </div> */}
                                                 </td>
                                                 <td>
-                                                    <InterviewRoundComp text={row?.no_of_InterviewRounds} result={row} index={i} />
+                                                    {row?.no_of_InterviewRounds}
+                                                    {/* <InterviewRoundComp text={row?.no_of_InterviewRounds} result={row} index={i} /> */}
                                                     {/* <div className={taStylesNew["cell-input-wrap"]}>
                                                             <input type="text" className={taStylesNew["cell-input"]} defaultValue={row.interviewRounds} />
                                                         </div> */}
                                                 </td>
                                                 <td>
-                                                    <HRStatusComp text={row?.tA_HR_Status} result={row} index={i} />
+                                                    {row?.tA_HR_Status}
+                                                    {/* <HRStatusComp text={row?.tA_HR_Status} result={row} index={i} /> */}
                                                     {/* <div className={taStylesNew["inline-select-wrap"]}>
                                                             <select className={taStylesNew["inline-select"]} defaultValue={row.hrStatus}>
                                                                 <option>Info pending</option>
@@ -3088,7 +3093,10 @@ function NewTADashboard() {
                                                             tA_UserID: value,
                                                         }));
                                                     }}
-                                                    options={fteFiltersList?.Users?.map((v) => ({
+                                                    options={activeTab === 'Full-Time' ? fteFiltersList?.Users?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    })) : filtersList?.Users?.map((v) => ({
                                                         label: v.data,
                                                         value: v.id,
                                                     }))}

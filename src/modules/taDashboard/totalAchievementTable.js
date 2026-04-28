@@ -37,19 +37,19 @@ function TotalAchievementTable({isLoading,quarterlySummeryReport}) {
                                             {/* m3 */}
                                             <td>{data.month3RevenueStr}</td>
                                             {/* m3 % */}
-                                            <td>{data.month3Per}</td>
+                                            <td>{data.month3Per > 0 ? `${data.month3Per}%` : ''}</td>
                                             {/* m2 */}
                                             <td>{data.month2RevenueStr}</td>
                                             {/* m2 % */}
-                                            <td>{data.month2Per}</td>
+                                            <td>{data.month2Per > 0 ? `${data.month2Per}%` : ''}</td>
                                             {/* m1 */}
                                             <td>{data.month1RevenueStr}</td>
                                             {/* m1 % */}
-                                            <td>{data.month1Per}</td>
+                                            <td>{data.month1Per > 0 ? `${data.month1Per}%` : ''}</td>
                                             {/* grand total */}
                                             <td>{data.recruiterWiseGrandTotalStr}</td>
                                             {/* grand total % */}
-                                            <td style={{backgroundColor:data.color}}>{data.recruiterWiseGrandTotalPercent}</td>
+                                            <td style={{backgroundColor:data.color}}>{data.recruiterWiseGrandTotalPercent > 0 ? `${data.recruiterWiseGrandTotalPercent}%` : ''}</td>
                                             {/* average */}
                                             <td>{data.averageRevenueStr}</td>
                                           
@@ -65,19 +65,19 @@ function TotalAchievementTable({isLoading,quarterlySummeryReport}) {
                                             {/* m3 */}
                                             <td>{quarterlySummeryReport[0]?.month3WiseGrandTotalStr}</td>
                                             {/* m3 % */}
-                                            <td>{quarterlySummeryReport[0]?.month3WiseGrandTotalPercent}</td>
+                                            <td>{quarterlySummeryReport[0]?.month3WiseGrandTotalPercent > 0 ? `${quarterlySummeryReport[0]?.month3WiseGrandTotalPercent}%` : ''}</td>
                                             {/* m2 */}
                                             <td>{quarterlySummeryReport[0]?.month2WiseGrandTotalStr}</td>
                                             {/* m2 % */}
-                                            <td>{quarterlySummeryReport[0]?.month2WiseGrandTotalPercent}</td>
+                                            <td>{quarterlySummeryReport[0]?.month2WiseGrandTotalPercent > 0 ? `${quarterlySummeryReport[0]?.month2WiseGrandTotalPercent}%` : ''}</td>
                                             {/* m1 */}
                                             <td>{quarterlySummeryReport[0]?.month1WiseGrandTotalStr}</td>
                                             {/* m1 % */}
-                                            <td>{quarterlySummeryReport[0]?.month1WiseGrandTotalPercent}</td>
+                                            <td>{quarterlySummeryReport[0]?.month1WiseGrandTotalPercent > 0 ? `${quarterlySummeryReport[0]?.month1WiseGrandTotalPercent}%` : ''}</td>
                                             {/* grand total */}
                                             <td>{quarterlySummeryReport[0]?.totalRecruiterWiseGrandTotalStr}</td>
                                             {/* grand total % */}
-                                            <td>{quarterlySummeryReport[0]?.totalRecruiterWiseGrandTotalPercent}</td>
+                                            <td>{quarterlySummeryReport[0]?.totalRecruiterWiseGrandTotalPercent > 0 ? `${quarterlySummeryReport[0]?.totalRecruiterWiseGrandTotalPercent}%` : ''}</td>
                                             {/* average */}
                                             <td>{quarterlySummeryReport[0]?.recruiterGrandTotalAverageStr}</td>
                                           
