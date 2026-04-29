@@ -502,7 +502,7 @@ body {
 }
 
 .diamond-icon {
-    width: 35px;
+    width: 24px;
     height: auto;
     display: block;
 }
@@ -569,8 +569,8 @@ body {
 }
 
 .plus-task-btn svg {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 20px;
     display: block;
 }
 
