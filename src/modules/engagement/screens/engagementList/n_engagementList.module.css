@@ -271,6 +271,7 @@
     background: #FFFFFF;
     border-radius: 14px;
     padding: 20px;
+    overflow: auto;
 }
 
 .stats-section {

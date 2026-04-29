@@ -262,6 +262,8 @@ function NewEngagementList() {
                 searchYear: +moment(startDate).format("YYYY"),
                 AmberFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "AF" ? 1 : 0,
                 RedFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "RF" ? 1 : 0,
+                TalentAmberFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "TAF" ? 1 : 0,
+                TalentRedFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "TRF" ? 1 : 0,
             },
         };
         getOnBoardListData(payload);
@@ -318,6 +320,9 @@ function NewEngagementList() {
                 searchMonth: +moment(startDate).format("M"),
                 searchYear: +moment(startDate).format("YYYY"),
                 AmberFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "AF" ? 1 : 0,
+                RedFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "RF" ? 1 : 0,
+                TalentAmberFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "TAF" ? 1 : 0,
+                TalentRedFeedback: tableFilteredState.filterFields_OnBoard?.SummaryFilterOption === "TRF" ? 1 : 0,
             },
         };
         getOnBoardListData(payload);
@@ -1380,9 +1385,9 @@ setDebounceSearch('');
                     </div>}
 
 
-                    {/* FEEDBACK: row1=2cols, row2=1col */}
+                    {/* Client FEEDBACK: row1=2cols, row2=1col */}
                     <div className={engagementStyles["stats-section"]}>
-                        <div className={engagementStyles["stats-section-header"]}>FEEDBACK</div>
+                        <div className={engagementStyles["stats-section-header"]}>CLIENT FEEDBACK</div>
                         <div className={engagementStyles["stats-grid-feedback"]}>
                             <div className={getCellClass('fb-amber')} onClick={() => {
                                 handleCellClick('fb-amber')
@@ -1431,6 +1436,58 @@ setDebounceSearch('');
                             </div>
                         </div>
                     </div>
+
+                     {/*Talent FEEDBACK: row1=2cols, row2=1col */}
+                    <div className={engagementStyles["stats-section"]}>
+                        <div className={engagementStyles["stats-section-header"]}>TALENT FEEDBACK</div>
+                        <div className={engagementStyles["stats-grid-feedback"]}>
+                            <div className={getCellClass('tfb-amber')} onClick={() => {
+                                handleCellClick('tfb-amber')
+                                setTableFilteredState((prev) => ({
+                                    ...prev,
+                                    filterFields_OnBoard: {
+                                        ...prev.filterFields_OnBoard,
+                                        SummaryFilterOption: "TAF",
+                                    },
+                                }))
+                            }}>
+                                <span className={`${engagementStyles["stats-number"]} ${engagementStyles["stats-number-amber"]}`}>  {onBoardListData[0]?.totalTalentsAmberFeedbackCount
+                                    ? onBoardListData[0]?.totalTalentsAmberFeedbackCount
+                                    : 0}</span>
+                                <span className={engagementStyles["stats-label"]}>AMBER</span>
+                            </div>
+                            <div className={getCellClass('tfb-red')} onClick={() => {
+                                handleCellClick('tfb-red')
+                                setTableFilteredState((prev) => ({
+                                    ...prev,
+                                    filterFields_OnBoard: {
+                                        ...prev.filterFields_OnBoard,
+                                        SummaryFilterOption: "TRF",
+                                    },
+                                }))
+                            }}>
+                                <span className={`${engagementStyles["stats-number"]} ${engagementStyles["stats-number-red"]}`}>  {onBoardListData[0]?.totalTalentsRedFeedbackCount
+                                    ? onBoardListData[0]?.totalTalentsRedFeedbackCount
+                                    : 0}</span>
+                                <span className={engagementStyles["stats-label"]}>RED</span>
+                            </div>
+                            <div className={getCellClass('tfb-received')} onClick={() => {
+                                handleCellClick('tfb-received')
+                                setTableFilteredState((prev) => ({
+                                    ...prev,
+                                    filterFields_OnBoard: {
+                                        ...prev.filterFields_OnBoard,
+                                        SummaryFilterOption: "TFR",
+                                    },
+                                }))
+                            }}>
+                                <span className={engagementStyles["stats-number"]}>    {onBoardListData[0]?.s_TotalTalentsFeedbackReceived
+                                    ? onBoardListData[0]?.s_TotalTalentsFeedbackReceived
+                                    : 0}</span>
+                                <span className={engagementStyles["stats-label"]}>FEEDBACK RECEIVED</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* ===== Data Table ===== */}
@@ -1450,8 +1507,10 @@ setDebounceSearch('');
                                 <th rowSpan={2} style={{ minWidth: '100px' }}>JOINING DATE</th>
                                 <th rowSpan={2} style={{ minWidth: '160px' }}>JOB TITLE</th>
                                 <th rowSpan={2} style={{ minWidth: '90px' }}>LWD</th>
-                                <th rowSpan={2} style={{ minWidth: '100px' }}>FEEDBACK STATUS</th>
+                                <th rowSpan={2} style={{ minWidth: '100px' }}>CLIENT FEEDBACK STATUS</th>
                                 <th rowSpan={2} style={{ minWidth: '130px' }}>CLIENT FEEDBACK<br />LAST FEEDBACK DATE</th>
+                                <th rowSpan={2} style={{ minWidth: '100px' }}>TALENT FEEDBACK STATUS</th>
+                                <th rowSpan={2} style={{ minWidth: '130px' }}>TALENT FEEDBACK<br />LAST FEEDBACK DATE</th>
                                 <th rowSpan={2} style={{ minWidth: '110px' }}>BR/FT</th>
                                 <th rowSpan={2} style={{ minWidth: '110px' }}>PR</th>
                                 <th rowSpan={2} style={{ minWidth: '60px' }}>FEE %</th>
@@ -1578,7 +1637,7 @@ setDebounceSearch('');
                                             {/* LWD */}
                                             <td> {data?.lastWorkingDate ? data?.lastWorkingDate : "NA"}
                                                 <br />- {data?.contractEndDate}</td>
-                                            {/* FEEDBACK STATUS */}
+                                            {/*CLIENT FEEDBACK STATUS */}
                                             <td>
 
                                                 <div className={engagementStyles["feedback-status-wrapper"]}>
@@ -1633,6 +1692,18 @@ setDebounceSearch('');
                                                     >{data?.lastFeedbackDate ? "View/Add" : 'Add'}</span>
                                                     {data?.lastFeedbackDate && <span className={engagementStyles["feedback-date"]}>{data.lastFeedbackDate}</span>}
                                                 </div>
+                                            </td>
+                                            {/*TALENT FEEDBACK STATUS */}
+                                            <td>
+                                                <div className={engagementStyles["feedback-status-wrapper"]}>
+                                                    {data.talentFeedbackstr?.split('->').map((color, i) => (
+                                                        <span key={i} className={`${engagementStyles["feedback-dot"]} ${getFeedbackDotClass(color.trim())}`} />
+                                                    ))}
+                                                </div>
+                                            </td>
+                                             {/*TALENT FEEDBACK LAST FEEDBACK DATE */}
+                                            <td>
+                                                {data?.talentLastFeedbackDate}                      
                                             </td>
                                             {/* BR/FT */}
                                             <td>{data?.payout_BillRate}</td>

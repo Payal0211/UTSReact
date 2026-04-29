@@ -42,7 +42,7 @@ function FTECountTable({ isLoading, countData }) {
                                           <td>{data.carryFwdHoldPipelineStr}</td>
                                           
                                           {/* ADDED HR (NEW) */}
-                                          <td>{data.activeHRPipeLine}</td>
+                                          <td>{data.activeHRPipeLineStr}</td>
                                           
                                           {/* ACHIEVED PIPELINE (INR) */}
                                           <td>{data.achievedHRPipeLineStr}</td>
