@@ -153,7 +153,10 @@ console.log(getHRdetails)
                         <div className={`${styles["preview-section"]}`}>
                             <h3 className={`${styles["preview-section-title"]}`}>Variable & equity</h3>
                             <div className={`${styles["preview-pills"]}`}>
-                                {getHRdetails?.compensationOption?.split(getHRdetails?.stringSeparator)?.map(v=>(<span className={`${styles["preview-pill"]}`}>{v}</span>))}
+                                {/* {getHRdetails?.compensationOption?.split(getHRdetails?.stringSeparator)?.map(v=>(<span className={`${styles["preview-pill"]}`}>{v}</span>))} */}
+
+                                {getHRdetails?.variableEquityDetails?.map(v=>(<><span className={`${styles["preview-pill"]}`}>{v?.compensationOption} : <strong>{v?.amount}</strong></span>
+                                </>))}
                                 {/* <span className={`${styles["preview-pill"]}`}>Performance bonus</span>
                                 <span className={`${styles["preview-pill"]}`}>Stock options (ESOPS/ESPPs)</span>
                                 <span className={`${styles["preview-pill"]}`}>Signing bonus</span> */}

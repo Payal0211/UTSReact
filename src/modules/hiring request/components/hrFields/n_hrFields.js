@@ -211,6 +211,8 @@ function NewHRFields() {
     const inputRef = useRef(null);
     const [name, setName] = useState("");
     const [userData, setUserData] = useState({});
+    const [variableArr,setVariableArr] = useState([{id:0,variable:'', value:''}])
+
     useEffect(() => {
         const getUserResult = async () => {
             let userData = UserSessionManagementController.getUserSession();
@@ -373,6 +375,12 @@ function NewHRFields() {
             }))
             setIsHaveJD(0)
             setParseType("Text_Parsing");
+
+            let valriableArray = data?.variableEquityDetails?.map((item, ind)=>(
+                {id: ind , variable:item?.compensationOption, value:item?.amount}
+            ))
+
+            setVariableArr(valriableArray)
 
         }
     };
@@ -995,7 +1003,7 @@ function NewHRFields() {
 
     const createHRHandler = async (pl, isDraft) => {
         setIsSavedLoading(true)
-        const result = await hiringRequestDAO.createNEWHRDAO(pl)
+        const result = await hiringRequestDAO.createNEWHRWVADAO(pl)
         setIsSavedLoading(false)
         // console.log('result,result', result)
 
@@ -1199,6 +1207,10 @@ function NewHRFields() {
 
         const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
         const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));
+        const VariableEquityDetails = variableArr.map(itm=>({
+            "CompensationOptions": itm?.variable,
+            "Amount": itm?.value,
+        }))
 
         let formPayload = {
             "en_Id": getHRDetails?.en_Id ? getHRDetails?.en_Id : "",
@@ -1317,6 +1329,7 @@ function NewHRFields() {
             "showHRPOCDetailsToTalents": null,
             "hrpocUserDetails": [],
             "jobTypeId": workingMode.find(v => v.value === roleReqFormFields?.modeOfWorking)?.id,
+            "VariableEquityDetails": VariableEquityDetails
         }
 
 
@@ -2689,10 +2702,80 @@ function NewHRFields() {
                                     <div className={`${styles["cols"]} ${styles['col-lg-12']}`}>
                                         <div className={`${styles["form-group"]}  ${styles["multiselect"]}`}>
                                             <label className={`${styles["form-label"]}`}>Variable & equity (optional)</label>
-                                            <input type="hidden" name="variable-equity" id="variable-equity-input" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {variableArr.map((item, index) => {
+                                    return   <div className={`${styles["row"]}`} key={index + item.id}>
+                                    <div className={`${styles["cols"]} ${styles['col-lg-4']}`}>
+                                        <div className={`${styles["form-group"]}`}>
                                             <Select
                                                 showSearch
-                                                mode="tags"
+                                                
+                                                style={{ width: '100%' }}
+                                                placeholder=""
+                                                options={compensationOptions.map(item => ({ id: item, value: item }))}
+                                                onChange={options => {
+                                                    // setMustHaveSkills(options)
+                                                    // setBudgetFormFields(prev => ({ ...prev, compensationOptions: options }))
+                                                    setVariableArr(prev => {
+                                                        let newArr = [...prev];
+                                                        newArr[index].variable = options;
+                                                        return newArr;
+                                                    })
+                                                }}
+                                                value={item.variable}
+                                            />
+                                             
+                               
+                                        </div>
+                                    </div>
+
+                                      <div className={`${styles["cols"]} ${styles['col-lg-4']}`}>
+                                        <div className={`${styles["form-group"]}  ${styles["multiselect"]}`}>
+                                             <input type="number" className={`${styles["form-input"]}`} placeholder="Amount/Percentage" required
+                                                value={item.value} onChange={e => {
+                                                    // setRoleReqFormFields(prev => ({ ...prev, minExp: e.target.value }))
+                                                     setVariableArr(prev => {
+                                                        let newArr = [...prev];
+                                                        newArr[index].value = e.target.value;
+                                                        return newArr;
+                                                    })
+                                                }}
+                                            />
+                               
+                                        </div>
+                                    </div>
+
+{index > 0 &&  <div className={`${styles["cols"]} ${styles['col-lg-4']}`}>
+                                     <button type="button" className={`${styles["btn-remove-client-last"]}`} id="removeLastClient" title="Remove last client"
+                                                    onClick={e => {
+                                                        setVariableArr(prev => {
+                                                            let newArr = [...prev];
+                                                            newArr.splice(index, 1);
+                                                            return newArr;
+                                                        })
+                                                    }}>
+                                                    <span className={`${styles["btn-remove-icon"]}`} aria-hidden="true">
+                                                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M16.0675 15.1829C16.1256 15.241 16.1717 15.3099 16.2031 15.3858C16.2345 15.4617 16.2507 15.543 16.2507 15.6251C16.2507 15.7072 16.2345 15.7885 16.2031 15.8644C16.1717 15.9403 16.1256 16.0092 16.0675 16.0673C16.0095 16.1254 15.9405 16.1714 15.8647 16.2028C15.7888 16.2343 15.7075 16.2505 15.6253 16.2505C15.5432 16.2505 15.4619 16.2343 15.386 16.2028C15.3102 16.1714 15.2412 16.1254 15.1832 16.0673L10.0003 10.8837L4.81753 16.0673C4.70026 16.1846 4.5412 16.2505 4.37535 16.2505C4.2095 16.2505 4.05044 16.1846 3.93316 16.0673C3.81588 15.95 3.75 15.791 3.75 15.6251C3.75 15.4593 3.81588 15.3002 3.93316 15.1829L9.11675 10.0001L3.93316 4.81729C3.81588 4.70002 3.75 4.54096 3.75 4.3751C3.75 4.20925 3.81588 4.05019 3.93316 3.93292C4.05044 3.81564 4.2095 3.74976 4.37535 3.74976C4.5412 3.74976 4.70026 3.81564 4.81753 3.93292L10.0003 9.11651L15.1832 3.93292C15.3004 3.81564 15.4595 3.74976 15.6253 3.74976C15.7912 3.74976 15.9503 3.81564 16.0675 3.93292C16.1848 4.05019 16.2507 4.20925 16.2507 4.3751C16.2507 4.54096 16.1848 4.70002 16.0675 4.81729L10.8839 10.0001L16.0675 15.1829Z" fill="#4C4E64" fill-opacity="0.87" />
+                                                      </svg>
+                                                    </span> REMOVE
+                                                  </button>
+
+                                                  </div>}
+
+                                </div>
+
+                                })}
+
+                                 {/* <div className={`${styles["row"]}`}>
+                                    <div className={`${styles["cols"]} ${styles['col-lg-4']}`}>
+                                        <div className={`${styles["form-group"]}`}>
+                                            <Select
+                                                showSearch
+                                                
                                                 style={{ width: '100%' }}
                                                 placeholder=""
                                                 options={compensationOptions.map(item => ({ id: item, value: item }))}
@@ -2702,31 +2785,44 @@ function NewHRFields() {
                                                 }}
                                                 value={budgetFormFields?.compensationOptions}
                                             />
-
-                                            {/* <div className={`${styles["pill-container"]} ${styles["pill-container-variable-equity"]}`}>
-                                                {compensationOptions.map((item, index) => {
-                                                    return <button type="button" className={`${styles["pill"]}  ${budgetFormFields?.compensationOptions.includes(item) ? styles["pill-selected"] : ''}`}
-                                                        onClick={() => {
-                                                            if (budgetFormFields?.compensationOptions.includes(item)) {
-                                                                setBudgetFormFields(prev => ({ ...prev, compensationOptions: prev.compensationOptions.filter(i => i !== item) }))
-                                                            } else {
-                                                                setBudgetFormFields(prev => ({ ...prev, compensationOptions: [...prev.compensationOptions, item] }))
-                                                            }
-
-                                                        }}
-                                                    >
-                                                        <span>{item}</span>
-                                                        <span className={`${budgetFormFields?.compensationOptions.includes(item) ? styles["pill-close"] : styles["pill-add"]}`}></span>
-                                                    </button>
-                                                })}
-
-
-                                            </div> */}
+                                             
+                               
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className={`${styles["row"]}`}>
+                                      <div className={`${styles["cols"]} ${styles['col-lg-4']}`}>
+                                        <div className={`${styles["form-group"]}  ${styles["multiselect"]}`}>
+                                             <input type="number" className={`${styles["form-input"]}`} placeholder="Amount/Percentage" required
+                                                value={''} onChange={e => {
+                                                    // setRoleReqFormFields(prev => ({ ...prev, minExp: e.target.value }))
+                                                }}
+                                            />
+                               
+                                        </div>
+                                    </div>
+                                </div> */}
+
+                                 <div className={`${styles["row"]}`}>
+                                      <div className={`${styles["cols"]} ${styles['col-lg-4']}`} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+
+<button type="button" className={`${styles["btn-add-another"]}`} id="addAnotherClient"
+                            onClick={e => {
+                                let id = variableArr.length ? variableArr[variableArr.length - 1].id + 1 : 1;
+                                setVariableArr(prev => ([...prev, {id:id, variable: '', value: '' }]))
+                            }}>
+                            <span className={`${styles["btn-add-icon"]}`}>
+                              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 7.5C15 7.66576 14.9342 7.82473 14.8169 7.94194C14.6997 8.05915 14.5408 8.125 14.375 8.125H8.125V14.375C8.125 14.5408 8.05915 14.6997 7.94194 14.8169C7.82473 14.9342 7.66576 15 7.5 15C7.33424 15 7.17527 14.9342 7.05806 14.8169C6.94085 14.6997 6.875 14.5408 6.875 14.375V8.125H0.625C0.45924 8.125 0.300269 8.05915 0.183058 7.94194C0.0658481 7.82473 0 7.66576 0 7.5C0 7.33424 0.0658481 7.17527 0.183058 7.05806C0.300269 6.94085 0.45924 6.875 0.625 6.875H6.875V0.625C6.875 0.45924 6.94085 0.300269 7.05806 0.183058C7.17527 0.0658481 7.33424 0 7.5 0C7.66576 0 7.82473 0.0658481 7.94194 0.183058C8.05915 0.300269 8.125 0.45924 8.125 0.625V6.875H14.375C14.5408 6.875 14.6997 6.94085 14.8169 7.05806C14.9342 7.17527 15 7.33424 15 7.5Z" fill="white" />
+                              </svg>
+                            </span>
+                            <span>ADD VARIABLE</span>
+                          </button>
+
+                         
+                                      </div>                                    
+                                 </div>
+
+                                <div className={`${styles["row"]}`} style={{paddingTop: '10px'}}>
                                     <div className={`${styles["cols"]} ${styles['col-lg-12']}`}>
                                         <div className={`${styles["form-group"]} ${styles['checkbox-group']}`}>
                                             <label className={`${styles["checkbox-label"]}`}>

@@ -366,6 +366,35 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.createNEWHRDAO');
 		}
 	},
+	createNEWHRWVADAO: async function (hrData) {
+		try {
+			const createHRResult = await HiringRequestAPI.createNEWHiringWithVariableEquityRequest(hrData);
+			if (createHRResult) {
+				const statusCode = createHRResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = createHRResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return createHRResult;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return createHRResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.createNEWHRWVADAO');
+		}
+	},
 	createDirectHRDAO: async function (hrData) {
 		try {
 			const createHRResult = await HiringRequestAPI.createDirectHiringRequest(hrData);
