@@ -212,6 +212,7 @@ function NewHRFields() {
     const [name, setName] = useState("");
     const [userData, setUserData] = useState({});
     const [variableArr,setVariableArr] = useState([{id:0,variable:'', value:''}])
+    const [removedVariableArr,setRemovedVariableArr] = useState([])
 
     useEffect(() => {
         const getUserResult = async () => {
@@ -379,7 +380,6 @@ function NewHRFields() {
             let valriableArray = data?.variableEquityDetails?.map((item, ind)=>(
                 {id: ind , variable:item?.compensationOption, value:item?.amount}
             ))
-
             setVariableArr(valriableArray)
 
         }
@@ -1003,7 +1003,7 @@ function NewHRFields() {
 
     const createHRHandler = async (pl, isDraft) => {
         setIsSavedLoading(true)
-        const result = await hiringRequestDAO.createNEWHRWVADAO(pl)
+        const result = await hiringRequestDAO.createNEWHRDAO(pl)
         setIsSavedLoading(false)
         // console.log('result,result', result)
 
@@ -1207,10 +1207,19 @@ function NewHRFields() {
 
         const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
         const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));
-        const VariableEquityDetails = variableArr.map(itm=>({
+        let VariableEquityDetails = variableArr.map(itm=>({
             "CompensationOptions": itm?.variable,
             "Amount": itm?.value,
+            "EquityActionType": 'I' 
         }))
+
+        if(+hrid !== '0' && removedVariableArr.length > 0){
+            VariableEquityDetails = [...VariableEquityDetails, ...removedVariableArr.map(itm=>({
+                "CompensationOptions": itm?.variable,
+                "Amount": itm?.value,
+                "EquityActionType": 'R' 
+            }))]
+        }
 
         let formPayload = {
             "en_Id": getHRDetails?.en_Id ? getHRDetails?.en_Id : "",
@@ -2751,6 +2760,7 @@ function NewHRFields() {
 {index > 0 &&  <div className={`${styles["cols"]} ${styles['col-lg-4']}`}>
                                      <button type="button" className={`${styles["btn-remove-client-last"]}`} id="removeLastClient" title="Remove last client"
                                                     onClick={e => {
+                                                        setRemovedVariableArr(prev => [...prev, item]);
                                                         setVariableArr(prev => {
                                                             let newArr = [...prev];
                                                             newArr.splice(index, 1);
