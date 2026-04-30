@@ -373,7 +373,7 @@ export const navigateToComponent = {
 			<AMDashboard />
 		</Suspense>
 	),
-	[UTSRoutes.TADASHBOARD]: (
+	[NewPagesRouts.TADASHBOARD]: (
 		<Suspense>
 			<TADashboard />
 		</Suspense>
