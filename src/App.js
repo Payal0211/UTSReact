@@ -163,8 +163,8 @@ function App() {
 
 <Route
 							exact
-							key={NewPagesRouts.TADASHBOARD}
-							path={NewPagesRouts.TADASHBOARD}
+							key={UTSRoutes.TADASHBOARD}
+							path={UTSRoutes.TADASHBOARD}
 							element={<NewTADashboard/>}
 						/>
 					</Route>
