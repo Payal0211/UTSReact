@@ -2715,7 +2715,7 @@ function NewHRFields() {
                                     </div>
                                 </div>
 
-                                {variableArr.map((item, index) => {
+                                {variableArr?.map((item, index) => {
                                     return   <div className={`${styles["row"]}`} key={index + item.id}>
                                     <div className={`${styles["cols"]} ${styles['col-lg-4']}`}>
                                         <div className={`${styles["form-group"]}`}>
