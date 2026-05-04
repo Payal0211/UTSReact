@@ -1207,19 +1207,18 @@ function NewHRFields() {
         }
 
 
-
         const selectedLabels = allCities?.filter(item => NearByCitesValues?.includes(item.value))?.map(item => item.label);
         const nonNumericValues = NearByCitesValues?.filter(value => typeof value === 'string' && !selectedLabels.includes(value));
         let VariableEquityDetails = variableArr.map(itm=>({
             "CompensationOptions": itm?.variable,
-            "Amount": itm?.value,
+            "Amount": itm?.value !== '' ? +itm?.value : 0,
             "EquityActionType": 'I' 
         }))
 
         if(+hrid !== '0' && removedVariableArr.length > 0){
             VariableEquityDetails = [...VariableEquityDetails, ...removedVariableArr.map(itm=>({
                 "CompensationOptions": itm?.variable,
-                "Amount": itm?.value,
+                "Amount": itm?.value !== '' ? +itm?.value : 0,
                 "EquityActionType": 'R' 
             }))]
         }
