@@ -377,10 +377,13 @@ function NewHRFields() {
             setIsHaveJD(0)
             setParseType("Text_Parsing");
 
-            let valriableArray = data?.variableEquityDetails?.map((item, ind)=>(
+            if(data?.variableEquityDetails){
+                let valriableArray = data?.variableEquityDetails?.map((item, ind)=>(
                 {id: ind , variable:item?.compensationOption, value:item?.amount}
             ))
             setVariableArr(valriableArray)
+            }
+            
 
         }
     };
@@ -2715,7 +2718,7 @@ function NewHRFields() {
                                     </div>
                                 </div>
 
-                                {variableArr.map((item, index) => {
+                                {variableArr?.map((item, index) => {
                                     return   <div className={`${styles["row"]}`} key={index + item.id}>
                                     <div className={`${styles["cols"]} ${styles['col-lg-4']}`}>
                                         <div className={`${styles["form-group"]}`}>
@@ -2727,7 +2730,7 @@ function NewHRFields() {
                                                 options={compensationOptions.map(item => ({ id: item, value: item }))}
                                                 onChange={options => {
                                                     // setMustHaveSkills(options)
-                                                    // setBudgetFormFields(prev => ({ ...prev, compensationOptions: options }))
+                                                    // setBudgetFormFields(prev => ({ ...prev, compensationOptions: options }))                                              
                                                     setVariableArr(prev => {
                                                         let newArr = [...prev];
                                                         newArr[index].variable = options;
