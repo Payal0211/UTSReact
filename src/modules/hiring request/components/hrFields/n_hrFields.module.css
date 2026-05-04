@@ -935,6 +935,82 @@ color: #FF0000;
     color: #FFFFFF;
 }
 
+
+/* Client details bottom row: ADD ANOTHER NAME + REMOVE side by side */
+.client-details-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-remove-client-last {
+    padding: 7px 22px;
+    background-color: #FFFFFFDE;
+    color: #4C4E64DE;
+    border: 1px solid #4C4E64DE;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    min-height: 50px;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    font-family: 'Montserrat', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-remove-client-last:hover:not(:disabled) {
+    background-color: #F8F8F8;
+    border-color: #4C4E6460;
+    color: #000000;
+}
+
+.btn-remove-client-last:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.btn-remove-client-last .btn-remove-icon {
+    line-height: 0;
+}
+
+.btn-remove-client-last .btn-remove-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: #4C4E64DE;
+}
+
+/* Add another name button */
+.btn-add-another {
+    padding: 7px 22px;
+    background-color: #9C9C9CDE;
+    color: #FFFFFF;
+    border: 0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    cursor: pointer;
+    min-height: 50px;
+    transition: background-color 0.2s;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+.btn-add-another:hover {
+    background-color: #000000;
+}
+
+
 .mt-2 {
     margin-top: 12px;
 }

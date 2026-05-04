@@ -26,6 +26,7 @@ export const MasterConfig = {
 				dataIndex: 'id',
 				key: 'id',
 				align: 'left',
+				width:'100px',
 				render: (data, param) => {
 					return (
 						<a href="javascript:void(0);" onClick={() => {
@@ -38,16 +39,18 @@ export const MasterConfig = {
 				},
 			},
 			{
-				title: 'Currency Code',
+				title: <> Currency <br/>Code </>,
 				dataIndex: 'currencyCode',
 				key: 'currencyCode',
 				align: 'left',
+				width:'100px',
 			},
 			{
-				title: 'Currency Sign',
+				title:<>Currency <br/> Sign</>,
 				dataIndex: 'currencySign',
 				key: 'currencySign',
 				align: 'left',
+				width:'100px',
 			},
 			{
 				title: 'Any Currency to INR',
@@ -66,6 +69,28 @@ export const MasterConfig = {
 				dataIndex: 'usD_BaseValue',
 				key: 'usD_BaseValue',
 				align: 'left',
+			},
+				{
+				title: <div >Any Currency to <br/>USD (Multiply)</div>,
+				dataIndex: 'usD_BaseValue',
+				key: 'usD_BaseValue',
+				align: 'left',
+			},
+			{
+				title: <div >Any Currency to <br/>USD (Multiply)</div>,
+				dataIndex: 'usD_BaseValue',
+				key: 'usD_BaseValue',
+				align: 'left',
+			},
+			{
+				title: "Last Updated Date",
+				dataIndex: 'lastUpdatedDate',
+				key: 'lastUpdatedDate',
+				align: 'left',
+				render: (data) => {
+					console.log(data, 'date');
+					return data ? new Date(data).toLocaleDateString() : 'NA'
+				}
 			},
 		];
 	},

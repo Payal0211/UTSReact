@@ -447,6 +447,7 @@ export class HiringRequestsAPI {
 	static ASSIGNED_POC_FOR_UNASSIGNED_HRS = 'AssinedPOCforUnAssignedHRs';
 	static CREATE_HR = 'Create';
 	static CREATE_NEW_HR = 'CreateNewHR'
+	static CREATE_NEW_HR_WITH_ADV = 'CreateNewHRWithVariableEquity'
 	static CREATE_DEBRIEFING = 'Debriefing'
 	static CHECK_CLIENT_EMAIL = 'CheckClientEmail';
 	static SEARCHING_HIRING_REQUEST_DETAIL = 'SearchHiringRequestDetail';

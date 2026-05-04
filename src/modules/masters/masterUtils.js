@@ -15,6 +15,7 @@ export const MasterUtils = {
 			exchangeRate: item?.exchangeRate,
 			usD_ExchangeRate: item?.usD_ExchangeRate,
 			usD_BaseValue: item?.usD_BaseValue,
+			lastUpdatedDate: item?.lastUpdatedDate,
 		}));
 	},
 };
