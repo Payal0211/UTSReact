@@ -10,8 +10,8 @@ function TalentdetailsTable({isLoading,talentWiseReport}) {
                             <table className={`${taStylesNew["data-table"]}`}>
                                 <thead>
                                     <tr>
-                                        <th style={{ minWidth: '160px' }}>RECRUITER</th>
-                                        <th>TL</th>
+                                        
+                                        <th>RECRUITER</th>
                                         <th>TALENT</th>
                                         <th>COMPANY</th>
                                         <th>HR ID</th>
@@ -42,9 +42,8 @@ function TalentdetailsTable({isLoading,talentWiseReport}) {
                                         </td>
                                     </tr> : talentWiseReport.map((data, index)=>{
                                         return <tr>
-                                            {/* RECRUITER NAME */}
-                                            <td>{data.amAssignmentUser}</td>
-                                            {/* TL */}
+                                           
+                                            {/* RECRUITER */}
                                             <td>{data.taUser}</td>
                                             {/* TALENT NAME */}
                                             <td>{data.talentName}</td>

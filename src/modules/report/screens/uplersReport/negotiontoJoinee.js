@@ -1517,6 +1517,9 @@ setLoadingResponse(false);
    
       if (result.statusCode === HTTPStatusCode.OK) {
         setOpenTRDetails(result.responseBody);
+        if(result.responseBody.length > 0){
+           setTrNo(result.responseBody[0].trNumber)
+        }
       }else{
         setOpenTRDetails([]);
       }
@@ -1802,8 +1805,7 @@ setLoadingResponse(false);
     {
       title: (
         <div style={{ textAlign: "center" }}>
-          Client Response <br />
-          needed By
+          Anticipated Selection 
         </div>
       ),
       dataIndex: "clientResponseneededBy",
@@ -1969,8 +1971,13 @@ setLoadingResponse(false);
       //   "talent_Backup",
       //   handleFieldChange
       // ),
-      filters: [{ text: 'Yes', value: 'Yes' }, { text: 'No', value: 'No' }],
-      onFilter: (value, record) => record.talent_Backup.indexOf(value) === 0,
+      filters: [{ text: 'Yes', value: 'Yes' }, { text: 'No', value: 'No' }, { text: 'Blank', value: '' }],
+      onFilter: (value, record) => {
+        if (value === '') {
+          return !record.talent_Backup || record.talent_Backup.toString().trim() === '';
+        }
+        return record.talent_Backup?.toString().indexOf(value) === 0;
+      },
       filterMultiple: false,
       filterIcon: (filtered) => (
         <FilterFilled
