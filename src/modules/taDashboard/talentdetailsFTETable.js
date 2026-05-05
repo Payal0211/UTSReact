@@ -43,9 +43,9 @@ function TalentdetailsFTETable({ isLoading, talentWiseReport, showDetails }) {
                                 <td>{data.goalRevenueStr}</td>
                                 {/* CARRY FORWARD PIPELINE (INR) Hold Pipeline */}
                                 <td>
-                                    {/* <div
-                                        className={taStyles.todayText}
-                                        style={{ background: "lightyellow", cursor: "pointer" }}
+                                    <div
+                                        
+                                        style={{ cursor: "pointer" , textDecoration: "underline" }}
                                         onClick={() =>
                                             showDetails(
                                                 8,
@@ -56,123 +56,123 @@ function TalentdetailsFTETable({ isLoading, talentWiseReport, showDetails }) {
                                         }
                                     >
                                         {data.carryFwdHoldPipelineStr}
-                                    </div> */}
+                                    </div>
 
-                                    {data.carryFwdHoldPipelineStr}
+                                    {/* {data.carryFwdHoldPipelineStr} */}
                                 </td>
                                 {/* CARRY FORWARD PIPELINE (INR) Pre-Onboarding */}
                                 <td>
-                                    {/* <div
-                                        className={taStyles.todayText}
-                                        style={{ background: "#babaf5", cursor: "pointer" }}
+                                    <div
+                                        // className={taStyles.todayText}
+                                        style={{  cursor: "pointer" , textDecoration: "underline" }}
                                         onClick={() =>
                                             showDetails(7, data, "CARRY FORWARD PIPELINE (INR) Pre-Onboarding", data.carryFwdPreOnboardPipelineStr)
                                         }
                                     >
                                         {data.carryFwdPreOnboardPipelineStr}
-                                    </div> */}
-                                    {data.carryFwdPreOnboardPipelineStr}
+                                    </div>
+                                    {/* {data.carryFwdPreOnboardPipelineStr} */}
                                 </td>
                                 {/* CARRY FORWARD PIPELINE (INR) Active */}
                                 <td>
-                                    {/* <div
-                                        className={taStyles.todayText}
-                                        style={{ background: "#babaf5", cursor: "pointer" }}
+                                    <div
+                                        
+                                        style={{ textDecoration: "underline", cursor: "pointer" }}
                                         onClick={() =>
                                             showDetails(7, data, "CARRY FORWARD PIPELINE (INR) Active", data.carryFwdActivePipelineStr)
                                         }
                                     >
                                         {data.carryFwdActivePipelineStr}
-                                    </div> */}
-                                    {data.carryFwdActivePipelineStr}
+                                    </div>
+                                    {/* {data.carryFwdActivePipelineStr} */}
                                 </td>
                                 {/* Total Carry Fwd Pipeline (INR) */}
                                 <td>
-                                    {/* <div
-                                        className={taStyles.todayText}
-                                        style={{ background: "#babaf5", cursor: "pointer" }}
+                                    <div
+                                        // className={taStyles.todayText}
+                                        style={{ textDecoration: "underline", cursor: "pointer" }}
                                         onClick={() =>
                                             showDetails(7, data, " Total Carry Fwd Pipeline (INR)", data.totalCarryFwdStr)
                                         }
                                     >
                                         {data.totalCarryFwdStr}
-                                    </div> */}
-                                    {data.totalCarryFwdStr}
+                                    </div>
+                                    {/* {data.totalCarryFwdStr} */}
                                 </td>
                                 {/* Assigned Pipeline (INR) */}
                                 <td>
-                                    {/* <div
-                                        style={{ cursor: "pointer" }}
+                                    <div
+                                        style={{ cursor: "pointer", textDecoration: "underline" }}
                                         onClick={() =>
                                             showDetails(0, data, "Assigned Pipeline (INR)", data?.actualPipelineStr)
                                         }
                                     >
                                         {data?.actualPipelineStr}
-                                    </div> */}
-                                    {data?.actualPipelineStr}
+                                    </div>
+                                    {/* {data?.actualPipelineStr} */}
                                 </td>
                                 {/* Total Pipeline (INR) */}
                                 <td>
-                                    {/* <div
-                                        className={taStyles.today1Text}
-                                        style={{ cursor: "pointer" }}
+                                    <div
+                                       
+                                        style={{ cursor: "pointer", textDecoration: "underline" }}
                                         onClick={() =>
                                             showDetails(10, data, "Total Pipeline (INR)", data.totalPipelineStr)
                                         }
                                     >
                                         {data.totalPipelineStr}
-                                    </div> */}
-                                     {data.totalPipelineStr}
+                                    </div>
+                                     {/* {data.totalPipelineStr} */}
                                 </td>
                                 {/* Multiplier of Goal */}
                                 <td>{data.multiplierOfGoal}</td>
                                 {/* Achieve Pipeline (INR) */}
                                 <td>
-                                    {/* <div
-                                        className={taStyles.todayText}
-                                        style={{ cursor: "pointer" }}
+                                    <div
+                                        // className={taStyles.todayText}
+                                        style={{ cursor: "pointer" , textDecoration: "underline" }}
                                         onClick={() =>
                                             showDetails(3, data, "Achieve Pipeline (INR)", data.achievedPipelineStr)
                                         }
                                     >
                                         {data.achievedPipelineStr}
-                                    </div> */}
-                                     {data.achievedPipelineStr}
+                                    </div>
+                                     {/* {data.achievedPipelineStr} */}
                                 </td>
                                 {/* Lost Pipeline (INR) */}
                                 <td>
-                                    {/* <div
-                                        className={taStyles.todayText}
-                                        style={{ background: "lightsalmon", cursor: "pointer" }}
+                                    <div
+                                        // className={taStyles.todayText}
+                                        style={{ textDecoration: "underline", cursor: "pointer" }}
                                         onClick={() => showDetails(4, data, "Lost Pipeline (INR)", data.lostPipelineStr)}
                                     >
                                         {data.lostPipelineStr}
-                                    </div> */}
-                                     {data.lostPipelineStr}
+                                    </div>
+                                     {/* {data.lostPipelineStr} */}
                                 </td>
                                 {/* Hold Pipeline (INR) */}
                                 <td>
-                                    {/* <div
-                                        className={taStyles.todayText}
-                                        style={{ background: "lightyellow", cursor: "pointer" }}
+                                    <div
+                                        // className={taStyles.todayText}
+                                        style={{ textDecoration: "underline", cursor: "pointer" }}
                                         onClick={() => showDetails(5, data, "Hold Pipeline (INR)", data.holdPipelineStr)}
                                     >
                                         {data.holdPipelineStr}
-                                    </div> */}
-                                    {data.holdPipelineStr}
+                                    </div>
+                                    {/* {data.holdPipelineStr} */}
                                 </td>
                                 {/* PreOnboarding Pipeline (INR) */}
                                 <td>
-                                     {/* <div
-                                    className={taStyles.todayText}
-                                    style={{ background: "lightpink", cursor: "pointer" }}
+                                     <div
+                                    // className={taStyles.todayText}
+                                    style={{ textDecoration: "underline", cursor: "pointer" }}
                                     onClick={() =>
                                         showDetails(6, data, "PreOnboarding Pipeline (INR)", data.preOnboardingPipelineStr)
                                     }
                                 >
                                     {data.preOnboardingPipelineStr}
-                                </div> */}
-                                  {data.preOnboardingPipelineStr}
+                                </div>
+                                  {/* {data.preOnboardingPipelineStr} */}
                                 </td>
                             </tr>
                         })}
