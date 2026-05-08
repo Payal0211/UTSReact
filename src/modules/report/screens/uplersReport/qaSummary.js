@@ -104,7 +104,7 @@ export default function QASummary({impHooks}) {
       className: `${uplersStyle.headerCommonConfig}`,
         render: (v, rec) => {
           return v ? (
-            rec.stage === "Goal" || rec.stage.includes("%") ? (
+            rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
               v
             ) : (
               <span
@@ -487,7 +487,7 @@ export default function QASummary({impHooks}) {
                 }
                 if (
                   record.stage === "Joined" ||
-                  record.stage === "Offer Signed"
+                  record.stage === "Offer Signed" || record.stage === "Actual Joined (After Lost)"
                 ) {
                   return uplersStyle.heighliteGreen;
                 }
@@ -548,7 +548,7 @@ export default function QASummary({impHooks}) {
                 }
                 if (
                   record.stage === "Joined" ||
-                  record.stage === "Offer Signed"
+                  record.stage === "Offer Signed" || record.stage === "Actual Joined (After Lost)"
                 ) {
                   return uplersStyle.heighliteGreen;
                 }
@@ -608,7 +608,7 @@ export default function QASummary({impHooks}) {
                 }
                 if (
                   record.stage === "Joined" ||
-                  record.stage === "Offer Signed"
+                  record.stage === "Offer Signed" ||  record.stage === "Actual Joined (After Lost)"
                 ) {
                   return uplersStyle.heighliteGreen;
                 }

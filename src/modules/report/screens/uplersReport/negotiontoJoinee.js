@@ -1018,7 +1018,7 @@ export default function NegotiontoJoinee({
 
               <div style={{ marginLeft: "auto" }}>
                 {v ? (
-                  rec.stage === "Goal" || rec.stage.includes("%") ? (
+                  rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
                     v
                   ) : (
                     <span
@@ -2638,7 +2638,7 @@ setLoadingResponse(false);
                   if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
                     return uplersStyle.boldText;
                   }
-                  if (record.stage === "Joined" || record.stage === "Offer Signed") {
+                  if (record.stage === "Joined" || record.stage === "Offer Signed" || record.stage === "Actual Joined (After Lost)") {
                     return uplersStyle.heighliteGreen;
                   }
                   if (record.stage === "Selections/Closures") {
@@ -2690,7 +2690,7 @@ setLoadingResponse(false);
                   if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
                     return uplersStyle.boldText;
                   }
-                  if (record.stage === "Joined" || record.stage === "Offer Signed") {
+                  if (record.stage === "Joined" || record.stage === "Offer Signed" || record.stage === "Actual Joined (After Lost)") {
                     return uplersStyle.heighliteGreen;
                   }
                   if (record.stage === "Selections/Closures") {
@@ -2740,7 +2740,7 @@ setLoadingResponse(false);
                   if (record.stage === "Target Pending" || record.stage === 'Negotiation Gap') {
                     return uplersStyle.boldText;
                   }
-                  if (record.stage === "Joined" || record.stage === "Offer Signed") {
+                  if (record.stage === "Joined" || record.stage === "Offer Signed" || record.stage === "Actual Joined (After Lost)") {
                     return uplersStyle.heighliteGreen;
                   }
                   if (record.stage === "Selections/Closures") {
