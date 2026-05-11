@@ -173,7 +173,7 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.TADASHBOARDREPORT} className={`${stylesOBj['nav-subitem']}`}>TA Dashboard</Link></li>
+                            <li><Link to={UTSRoutes.TADASHBOARD} className={`${stylesOBj['nav-subitem']}`}>TA Dashboard</Link></li>
                             <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter Dashboard</Link></li>
                             <li><Link to={UTSRoutes.DAILYSNAPSHOT} className={`${stylesOBj['nav-subitem']}`}>Daily Snapshot</Link></li>
                             <li><Link to={UTSRoutes.RECRUITERREPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter</Link></li>

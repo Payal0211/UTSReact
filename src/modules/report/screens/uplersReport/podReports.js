@@ -1627,6 +1627,16 @@ const getExportData = () => {
                         Created Date
                       </th>
 
+                      {showTalentCol?.stage === 'Added HR (New)' &&   <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              background: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                           TR Updated Date
+                          </th> }
+
                       {showTalentCol?.category !== "CF" &&
                         showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' &&(
                           <th
@@ -1844,6 +1854,16 @@ const getExportData = () => {
                         >
                           {detail.hrCreatedDateStr}
                         </td>
+
+                         {showTalentCol?.stage === 'Added HR (New)' &&  <td
+                              style={{
+                                padding: "8px",
+                                border: "1px solid #ddd",
+                              }}
+                            >
+                              {detail.actionDateStr}
+                            </td> }
+                            
                         {showTalentCol?.category !== "CF" &&
                           showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && (
                             <td
