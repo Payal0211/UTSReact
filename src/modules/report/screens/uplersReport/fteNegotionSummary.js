@@ -192,7 +192,7 @@ export default function FTENegotiationSummary({ impHooks }) {
             >
               <div style={{ marginLeft: "auto" }}>
                 {v ? (
-                  rec.stage === "Goal" || rec.stage.includes("%") ? (
+                  rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
                     v
                   ) : (
                     <span
@@ -225,7 +225,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
         return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
+          rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
             v
           ) : (
             <span
@@ -252,7 +252,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
         return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
+          rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
             v
           ) : (
             <span
@@ -281,7 +281,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
         return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
+          rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)"  ? (
             v
           ) : (
             <span
@@ -310,7 +310,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
         return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
+          rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
             v
           ) : (
             <span
@@ -339,7 +339,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
         return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
+          rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
             v
           ) : (
             <span
@@ -368,7 +368,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
         return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
+          rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
             v
           ) : (
             <span
@@ -397,7 +397,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
         return v
-          ? rec.stage === "Goal" || rec.stage.includes("%")
+          ? rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)"
             ? v
             : v
           : // <span
@@ -428,7 +428,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       className: `${uplersStyle.headerCommonConfig}`,
       render: (v, rec) => {
         return v ? (
-          rec.stage === "Goal" || rec.stage.includes("%") ? (
+          rec.stage === "Goal" || rec.stage.includes("%") || rec.stage === "Actual Joined (After Lost)" ? (
             v
           ) : (
             <span
@@ -709,7 +709,7 @@ export default function FTENegotiationSummary({ impHooks }) {
                 }
                 if (
                   record.stage === "Joined" ||
-                  record.stage === "Offer Signed"
+                  record.stage === "Offer Signed" || record.stage === 'Actual Joined (After Lost)'
                 ) {
                   return uplersStyle.heighliteGreen;
                 }
@@ -718,7 +718,7 @@ export default function FTENegotiationSummary({ impHooks }) {
                 }
                 if (
                   record.stage === "Dropouts" ||
-                  record.stage === "Dropouts"
+                  record.stage === "Dropouts" || record.stage === "Lost (Post Joining Backout)" || record.stage === "Backout"
                 ) {
                   return uplersStyle.heighliteRed;
                 }
