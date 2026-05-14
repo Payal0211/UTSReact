@@ -1345,6 +1345,41 @@ font-weight: bold;
 
 /* Preview Editor css start */
 
+.ant-table-thead > tr > th.blue-header {
+  background: #1890ff !important;
+  color: white !important;
+}
+
+.ant-table-thead > tr > th.blue-total-header {
+  background: #0f4fb5 !important;
+  color: white !important;
+}
+
+.ant-table-thead > tr > th.green-header {
+  background: #52c41a !important;
+  color: white !important;
+}
+
+.ant-table-thead > tr > th.green-total-header {
+  background: #389e0d !important;
+  color: white !important;
+}
+
+.ant-table-thead > tr > th.purple-header {
+  background: #722ed1 !important;
+  color: white !important;
+}
+
+.ant-table-thead > tr > th.purple-total-header {
+  background: #531dab !important;
+  color: white !important;
+}
+
+.ant-table-thead > tr > th.black-header {
+  background: #101828 !important;
+  color: white !important;
+}
+
 .jobDescrition h3{
   font-size: 14px;
   margin-bottom: 4px;

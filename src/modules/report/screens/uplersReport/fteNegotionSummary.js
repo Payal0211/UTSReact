@@ -493,7 +493,7 @@ export default function FTENegotiationSummary({ impHooks }) {
       width: "200px",
     },
     {
-      title: "Joining Date",
+      title: showTalentCol?.stage_ID === "D_Lost" ? "Lost Date" : "Joining Date" ,
       dataIndex: "joiningdateStr",
       key: "joiningdateStr",
     },

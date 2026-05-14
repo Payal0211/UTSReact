@@ -23,6 +23,11 @@ const TADashboard = React.lazy(() =>
 	import('modules/taDashboard/taDashboard'),
 );
 
+const WeeklyWCGR = React.lazy(() =>
+	import('modules/WeeklyWCGR/weeklyWCGR'),
+);
+
+
 const RecruiterReport = React.lazy(() =>
 	import('modules/report/screens/recruiterReport/recruiterReport'),
 );
@@ -334,6 +339,7 @@ export default class UTSRoutes {
 	static IMMEDIATEJOINER = '/immediateJoiner'
 	static TALENT_DOCUMENTS = '/talentDocument'
 	static TALENT_NOTES = '/talentNotes';
+	static Weekly_WCGR = '/weeklyWCGR';
 	static RECRUITER_DASHBOARD_REPORT = '/RevenueDashboardReport';
 	static RECRUITER_DASHBOARD_MULTI_MONTH_REPORT = '/RevenueDashboardMonthsReport';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
@@ -626,6 +632,11 @@ export const navigateToComponent = {
 	[UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT]:(
 		<Suspense>
 			<ClientPortalrackingReport />
+		</Suspense>
+	),
+	[UTSRoutes.Weekly_WCGR]:(
+		<Suspense>
+			<WeeklyWCGR />
 		</Suspense>
 	),
 [UTSRoutes.DASHBOARD]:(

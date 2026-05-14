@@ -308,6 +308,34 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.teamDemandFunnelSummaryRequestDAOs');
 		}
 	},
+	getJoiningRevenueDataDAO: async function (reportData) {
+		try {
+			const teamDemandSummary = await ReportAPI.getJoiningRevenueDataRequest(
+				reportData
+			);
+			if (teamDemandSummary) {
+				const statusCode = teamDemandSummary['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = teamDemandSummary?.responseBody?.details;
+					console.log(tempResult, '--tempResult', teamDemandSummary);
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return teamDemandSummary;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return teamDemandSummary;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.getJoiningRevenueDataDAOs');
+		}
+	},
 	teamDemandFunnelHRDetailsRequestDAO: async function (reportData) {
 		try {
 			const teamDemandHRDetailsResponse =
