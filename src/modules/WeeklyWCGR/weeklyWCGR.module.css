@@ -1,0 +1,573 @@
+.hiringRequestContainer {
+    padding: 24px 40px;
+}
+
+.filterContainer{
+    border-radius: 10px;
+    margin: 24px auto;
+    background-color: var(--background-color-light);
+}
+
+.filterSets{
+    /* width: 96%; */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 24px;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;    
+}
+
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+.filterSetsInner [class*="ant-select"]  {
+    /* width:200px */
+}
+
+.filterSetsInner [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 12px 10px;
+    height: 46px !important;
+    min-height: 44px;
+    overflow: scroll;
+    /* width:200px */
+}
+
+.tableSelectField  [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 5px 10px !important;
+    height: 30px !important;
+}
+
+.filterRight{
+  display: flex;
+  justify-content: flex-end;
+  gap:24px;
+  align-items: center ; 
+  flex-wrap: wrap;
+}
+
+.filterRight [class*='ant-select-selector']  {
+    height: 45px !important;
+    padding: 12px 16px !important;
+}
+
+.searchFilterSet{
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    width: 250px;
+    height: 44px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.searchInput{
+    cursor: pointer;
+    width: 84%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+.calendarFilterSet{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.calendarFilter{
+  width:250px ;
+  height: 44px;
+  border-radius: 8px;
+  padding: 2px 10px;
+  border: 1px solid var(--background-color-metal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.calendarFilter [class*="react-datepicker-popper"]{
+  right: 0 !important;
+  left: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  margin: 40px 0 30px;
+  min-width: 220px;
+  z-index: 4;
+}
+
+.calendarFilter {
+  display: flex;
+  align-items: center;
+}
+.calendarFilter
+[class*="react-datepicker-popper"]
+> div
+> [class*="react-datepicker"] {
+margin-left: 0;
+min-width: 100%;
+}
+.calendarFilter
+[class*="react-datepicker-popper"]
+[class*="react-datepicker__navigation"]:before {
+top: 14px;
+}
+.calendarFilter
+[class*="react-datepicker-popper"]
+[class*="react-datepicker__day-names"] {
+margin-top: 5px;
+}
+.calendarFilter
+[class*="react-datepicker__month-container"]
+[class*="react-datepicker__month"] {
+margin-bottom: 10px;
+}
+.dateFilter {
+  background-color: white;  
+  border: none;
+  padding: 5px 10px;      
+  border-radius: 4px;     
+}
+
+.heighliteRow{
+    background-color: rgb(209 219 250);
+}
+
+.heighliteGreen {
+    background-color: #daf5da;
+}
+
+.heighliteOrange {
+    background-color: rgb(247 247 177);
+}
+.heighliteRed {
+    background-color: rgb(242 214 214);
+}
+.heighliteRedLight {
+    background-color: rgb(255, 237, 237);
+}
+.heighlitePurple {
+    background-color: #e7d1e7;
+}
+.heighliteDarkRed {
+    background-color: rgb(255 124 124);
+}
+.heighliteGray {
+    background-color: rgb(218, 218, 218) ;
+}
+.boldText td{
+  font-weight: bold;
+}
+
+.chipCardContainer{
+    display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+      padding: 0px 24px 12px;
+}
+
+.cardcontainer {
+  display: flex;
+  flex-wrap: wrap;
+  /* gap: 20px; */
+  padding: 10px;
+  background-color: #f9f9fb;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  border: 1px solid #d1d1d1;
+}
+
+.FreezeButton{
+        background: #FFDA30;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left: auto;
+}
+
+.FreezeButton:disabled{
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.summeryContainer{
+    display: flex;
+    gap: 5px;
+    margin: 20px 0;
+    width: 100%;
+    overflow-x: scroll;
+    padding-bottom: 15px;
+}
+
+.recruitername {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+
+.stagetable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 12px;
+  background-color: #fff;
+}
+
+
+.stagetable thead {
+  background-color: #f0f2f5;
+}
+
+.stagetable th,
+.stagetable td {
+  border: 1px solid #e0e0e0;
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 14px;
+  max-width: 80px;
+}
+
+/* Alternate row colors for body */
+.stagetable tbody tr:nth-child(odd) {
+  /* background-color: lightblue; */
+   background-color: #f0f2f5;
+}
+
+.stagetable tbody tr:nth-child(even) {
+  /* background-color: lightcyan; */
+  background-color: #f9fafb;
+}
+
+.filterType {
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content:center;
+    align-items: center;
+    display: inline-flex;
+    cursor: pointer;
+    /* flex: 1; */
+}
+
+.filterType h2 {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 20px;
+    color: #232323;
+    margin-bottom: 0px;
+}
+
+.filterType span {
+    font-weight: 600;
+}
+
+.overwriteTableColor{
+  background-color: rgb(233, 233, 233) !important;
+}
+
+.overwriteTableColor tr th{
+   background-color: rgb(233, 233, 233) !important;
+   border-radius: 0px !important;
+   text-align: center;
+}
+
+.filterType {
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    padding: 10px 16px;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content:center;
+    align-items: center;
+    display: inline-flex;
+    /* flex: 1; */
+}
+
+.filterType h2 {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #232323;
+    margin-bottom: 0px;
+}
+
+.filterType span {
+    font-weight: 600;
+}
+.filterType img{
+    max-width: 24px;
+    margin-right: 8px;
+}
+.summaryTooltip {
+    border-radius: 50%;
+    background: var(--color-sunlight);
+    width: 20px;
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+.btn {
+    background: #FFDA30;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left: 10px;
+}
+
+.btnCancle {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left: 10px;
+}
+
+.AccordianText{
+    font-weight: bold;
+    margin: 0;
+        font-size: 20px;
+}
+
+.btnPrimary {
+    background: #FFDA30;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    padding: 7px 10px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+    margin-right: 50px;
+}
+
+.btnPrimary:hover {
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+}
+
+.black-header {
+  background: #101828 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.blue-group-header {
+  background: #1890ff !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.blue-total-header {
+  background: #0f4fb5 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.green-group-header {
+  background: #52c41a !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.green-total-header {
+  background: #389e0d !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.purple-group-header {
+  background: #722ed1 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.purple-total-header {
+  background: #531dab !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.QuarterlyCol {
+background-color: #c8dff7;
+ font-weight: bold;
+ /* font-size: 15px; */
+}
+
+.totalCol{
+background-color: #d8e6f5;
+ font-weight: bold;
+  /* font-size: 15px; */
+}
+
+.boldRow td{
+  font-weight: bold;
+}
+
+/* IMPORTANT */
+.ant-table-thead > tr > th.black-header,
+.ant-table-thead > tr > th.blue-group-header,
+.ant-table-thead > tr > th.blue-total-header,
+.ant-table-thead > tr > th.green-group-header,
+.ant-table-thead > tr > th.green-total-header,
+.ant-table-thead > tr > th.purple-group-header,
+.ant-table-thead > tr > th.purple-total-header {
+  color: #fff !important;
+}
+
+.chipCard{
+    background: #f0f4ff;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #333;
+}
+
+.customTableContainer  [class*='ant-table-thead'] tr th{
+ background-color: rgb(218, 218, 218) !important;
+}
+
+.monthSelector [class*='ant-select-selector'] {
+ padding : 8px 10px !important
+}
+
+.monthSelector [class*='ant-select-selection-overflow']{
+    height: 40px !important
+}
+
+
+.calendarFilterYear {
+  width: 120px !important
+}
+
+.calendarFilterYear .dateFilter{
+      width: 60px !important;
+}
+
+
+.monthPicker {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+}
+
+
+.monthGrid {
+  display: flex;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.monthBox {
+padding: 8px 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid var(--background-color-metal);
+    background: ghostwhite;
+    font-weight: 600;
+}
+
+.monthBox:hover {
+  background-color: #edf4ff;
+}
+
+.monthBox.selected {
+  background-color: #ffd400;
+  font-weight: 600;
+  border-bottom: 3px solid;
+}
+
+/* Header Colors for Month Columns */
+.monthHeaderBlue {
+  background-color: #1890ff !important;
+}
+
+.monthHeaderBlue :global(.ant-table-cell-head-content),
+.monthHeaderBlue :global(.ant-table-cell) {
+  background-color: #1890ff !important;
+  color: white !important;
+}
+
+.monthHeaderGreen {
+  background-color: #52c41a !important;
+}
+
+.monthHeaderGreen :global(.ant-table-cell-head-content),
+.monthHeaderGreen :global(.ant-table-cell) {
+  background-color: #52c41a !important;
+  color: white !important;
+}
+
+.monthHeaderPurple {
+  background-color: #722ed1 !important;
+}
+
+.monthHeaderPurple :global(.ant-table-cell-head-content),
+.monthHeaderPurple :global(.ant-table-cell) {
+  background-color: #722ed1 !important;
+  color: white !important;
+}
+
+.headerCellDark {
+  background-color: #101828 !important;
+  color: white !important;
+}
+
+.totalHeaderCell {
+  background-color: rgba(255,255,255,0.12);
+  color: white !important;
+  font-weight: 600;
+  padding: 8px 0;
+  text-align: center;
+}
+

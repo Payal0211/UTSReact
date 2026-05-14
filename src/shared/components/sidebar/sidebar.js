@@ -317,7 +317,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible =  true
 		return isVisible		
 	}
-	 if(title === 'Hiring Request' || title === "MasterReports" || title === 'PODDashboardReport' || title ==='AllFTEDASHBOARD' ||
+	 if(title === 'Hiring Request' || title === "MasterReports" || title === 'PODDashboardReport' || title ==='AllFTEDASHBOARD' || title === "WeeklyWCGR" ||
 	  title === 'Users'  ||
 	   title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
 	 title === 'Engagement' || title === 'Reports' ||
@@ -458,6 +458,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isActive: false,
 					navigateTo: UTSRoutes.ALL_FTE_DASHBOARD_REPORT,
 					isVisible: isAccess(usertypeID, 'AllFTEDASHBOARD'),
+					isChildren : false					
+				}),
+				   new SideBarModels({
+					id: 'WeeklyWCGR',
+					title: 'Weekly WCGR',
+					isActive: false,
+					navigateTo: UTSRoutes.Weekly_WCGR,
+					isVisible: isAccess(usertypeID, 'WeeklyWCGR'),
 					isChildren : false					
 				}),
 			]

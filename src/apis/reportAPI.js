@@ -183,6 +183,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.teamDemandFunnelSummaryRequest');
 		}
 	},
+	getJoiningRevenueDataRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			'UTSReports/' +
+			'Get_WeeklyCGR_JoiningRevenue' +
+			reportData;
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getJoiningRevenueDataRequest');
+		}
+	},
 	teamDemandFunnelFilters: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
