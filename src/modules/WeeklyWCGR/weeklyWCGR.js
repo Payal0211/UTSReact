@@ -649,10 +649,10 @@ const getTableColumns = () => {
               loading={isLoading}
               pagination={false}
              
-    // scroll={{
-    //   x: "max-content",
-    //   y: "calc(100vh - 300px)",
-    // }}
+    scroll={{
+      x: "max-content",
+      y: "calc(100vh - 300px)",
+    }}
               size="small"
               bordered
               rowClassName={(record) => {
