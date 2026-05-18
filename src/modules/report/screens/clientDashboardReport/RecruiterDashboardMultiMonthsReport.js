@@ -1724,7 +1724,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
              "pod_id": selectedHead ?? null
       };
     setLoading(true)
-    let query=`?monthStr=${payload.month}&yearStr=${payload.year}&search=${payload.searchText}&pod_id=${payload.pod_id}`
+    let query=`?monthStr=${payload.month}&yearStr=${payload.year}&search=${payload.searchText}&pod_id=${payload.pod_id}&fromDate=${payload.fromDate}&toDate=${payload.toDate}`
     const apiResult = await ReportDAO.getRecruiterDashboardMonthlyReportDAO(query);
     setLoading(false)
     if (apiResult?.statusCode === 200) {        
@@ -2032,12 +2032,14 @@ const getColumnTitle = (title) => {
                 </div>
 
               <div style={{display:'flex',justifyContent:'center',alignItems:"center"}}>
-                {/* <div style={{display:"flex",justifyContent:'center',marginRight:"10px"}}>
+                <div className={clientDashboardStyles.dateTypeFilter} style={{display:"flex",justifyContent:'center',marginRight:"10px"}}>
                   <Select
                     id="selectedValue"
                     placeholder="Select"
+
                     value={dateTypeFilter}                    
-                    style={{width:"180px",height:"48px"}}
+                    style={{width:"180px",height:"44px"
+                    }}
                     onChange={(value, option) => {
                       setDateTypeFilter(value);
                       setStartDate(firstDayOfMonth);
@@ -2048,7 +2050,7 @@ const getColumnTitle = (title) => {
                       {value: 0,label: 'By Month'},{value: 1,label: 'With Date Range'}]}
                     optionFilterProp="value"
                   />
-                </div> */}
+                </div>
                 {dateTypeFilter === 0 && (
                   <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}> 
                     <div>
