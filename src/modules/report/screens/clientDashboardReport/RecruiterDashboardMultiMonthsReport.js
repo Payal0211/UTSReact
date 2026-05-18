@@ -43,8 +43,8 @@ export default function RecruiterDashboardMultiMonthsReport() {
   firstDayOfMonth.setDate(1);
   
   const [monthDate, setMonthDate] = useState(today);  
-  const [startDate, setStartDate] = useState(firstDayOfMonth);
-  const [endDate, setEndDate] = useState(today);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [colTextVal,setColTextVal] = useState('')
   const [isCarryForwardPipelineClicked, setIsCarryForwardPipelineClicked] = useState(false);
   const [isPipelineClicked, setIsPipelineClicked] = useState(false);
@@ -1716,8 +1716,8 @@ export default function RecruiterDashboardMultiMonthsReport() {
         "searchText": openTicketSearchText,
         "month": +moment(monthDate).format("M") ,
         "year":  +moment(monthDate).format("YYYY") ,
-        "fromDate":  startDate.toLocaleDateString("en-US"),
-        "toDate":  endDate.toLocaleDateString("en-US") ,
+        "fromDate": startDate ? startDate.toLocaleDateString("en-US") : '',
+        "toDate":  endDate ? endDate.toLocaleDateString("en-US") : '',
         // "pageIndex": pageIndex,
         // "pageSize": pageSize,
         "taUserIDs":tableFilteredState?.filterFields_OnBoard?.taUserIDs   ??'',
@@ -1817,9 +1817,9 @@ export default function RecruiterDashboardMultiMonthsReport() {
       //  setSelectedHead("");
       setopenTicketSearchText("");
       setopenTicketDebounceText("");  
-      setStartDate(firstDayOfMonth);
+      setStartDate();
       setMonthDate(today)
-      setEndDate(today);  
+      setEndDate();  
       setDateTypeFilter(0);
   }
 // const exportColumns = [
@@ -2075,7 +2075,7 @@ const getColumnTitle = (title) => {
                   </div>
                 {/* )} */}
                 {/* {dateTypeFilter === 1 && ( */}
-                  <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}>
+                  <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px', marginLeft:'10px'}}>
                     <div>Date</div>
                     <div className={ClientReportStyle.calendarFilter}>                       
                     <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
