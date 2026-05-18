@@ -638,29 +638,26 @@ const getTableColumns = () => {
           </div>
         </div>
 
-        <div style={{ marginTop: "20px", overflow: "auto" }}>
+        <div className={uplersStyle.tableWrapper}>
           {isLoading ? (
             <Skeleton active />
           ) : (
             <Table
-        
               columns={getTableColumns()}
               dataSource={tableData}
               loading={isLoading}
               pagination={false}
-             
-    scroll={{
-      x: "max-content",
-      y: "calc(100vh - 300px)",
-    }}
+              scroll={{
+                x: "max-content",
+                y: "calc(100vh - 280px) !important",
+              }}
               size="small"
               bordered
               rowClassName={(record) => {
-                  if (record.stage === "Joining Goal" || record.stage === "Net Joining Achieved") {
-                    return uplersStyle.boldRow;
-                  }
-                 
-                }}
+                if (record.stage === "Joining Goal" || record.stage === "Net Joining Achieved") {
+                  return uplersStyle.boldRow;
+                }
+              }}
             />
           )}
         </div>
