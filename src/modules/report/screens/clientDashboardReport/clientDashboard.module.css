@@ -396,6 +396,11 @@
     gap: 16px;
 }
 
+.dateTypeFilter [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 10px !important;
+    height: 44px !important;
+}
+
 .addFilter{
     cursor: pointer;
     border-radius: 8px;

@@ -43,8 +43,8 @@ export default function RecruiterDashboardMultiMonthsReport() {
   firstDayOfMonth.setDate(1);
   
   const [monthDate, setMonthDate] = useState(today);  
-  const [startDate, setStartDate] = useState(firstDayOfMonth);
-  const [endDate, setEndDate] = useState(today);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [colTextVal,setColTextVal] = useState('')
   const [isCarryForwardPipelineClicked, setIsCarryForwardPipelineClicked] = useState(false);
   const [isPipelineClicked, setIsPipelineClicked] = useState(false);
@@ -1714,17 +1714,17 @@ export default function RecruiterDashboardMultiMonthsReport() {
   const getClientDashboardReport = async () => {
     let payload = {
         "searchText": openTicketSearchText,
-        "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
-        "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
-        "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? startDate.toLocaleDateString("en-US"): '',
-        "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? endDate.toLocaleDateString("en-US"): '' ,
+        "month": +moment(monthDate).format("M") ,
+        "year":  +moment(monthDate).format("YYYY") ,
+        "fromDate": startDate ? startDate.toLocaleDateString("en-US") : '',
+        "toDate":  endDate ? endDate.toLocaleDateString("en-US") : '',
         // "pageIndex": pageIndex,
         // "pageSize": pageSize,
         "taUserIDs":tableFilteredState?.filterFields_OnBoard?.taUserIDs   ??'',
              "pod_id": selectedHead ?? null
       };
     setLoading(true)
-    let query=`?monthStr=${payload.month}&yearStr=${payload.year}&search=${payload.searchText}&pod_id=${payload.pod_id}`
+    let query=`?monthStr=${payload.month}&yearStr=${payload.year}&search=${payload.searchText}&pod_id=${payload.pod_id}&fromDate=${payload.fromDate}&toDate=${payload.toDate}`
     const apiResult = await ReportDAO.getRecruiterDashboardMonthlyReportDAO(query);
     setLoading(false)
     if (apiResult?.statusCode === 200) {        
@@ -1817,9 +1817,9 @@ export default function RecruiterDashboardMultiMonthsReport() {
       //  setSelectedHead("");
       setopenTicketSearchText("");
       setopenTicketDebounceText("");  
-      setStartDate(firstDayOfMonth);
+      setStartDate();
       setMonthDate(today)
-      setEndDate(today);  
+      setEndDate();  
       setDateTypeFilter(0);
   }
 // const exportColumns = [
@@ -2032,12 +2032,14 @@ const getColumnTitle = (title) => {
                 </div>
 
               <div style={{display:'flex',justifyContent:'center',alignItems:"center"}}>
-                {/* <div style={{display:"flex",justifyContent:'center',marginRight:"10px"}}>
+                {/* <div className={clientDashboardStyles.dateTypeFilter} style={{display:"flex",justifyContent:'center',marginRight:"10px"}}>
                   <Select
                     id="selectedValue"
                     placeholder="Select"
+
                     value={dateTypeFilter}                    
-                    style={{width:"180px",height:"48px"}}
+                    style={{width:"180px",height:"44px"
+                    }}
                     onChange={(value, option) => {
                       setDateTypeFilter(value);
                       setStartDate(firstDayOfMonth);
@@ -2049,7 +2051,7 @@ const getColumnTitle = (title) => {
                     optionFilterProp="value"
                   />
                 </div> */}
-                {dateTypeFilter === 0 && (
+                {/* {dateTypeFilter === 0 && ( */}
                   <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}> 
                     <div>
                       Month-Year
@@ -2071,9 +2073,9 @@ const getColumnTitle = (title) => {
                             />
                     </div>
                   </div>
-                )}
-                {dateTypeFilter === 1 && (
-                  <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}>
+                {/* )} */}
+                {/* {dateTypeFilter === 1 && ( */}
+                  <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px', marginLeft:'10px'}}>
                     <div>Date</div>
                     <div className={ClientReportStyle.calendarFilter}>                       
                     <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
@@ -2094,7 +2096,7 @@ const getColumnTitle = (title) => {
                     />
                   </div>
                   </div>
-                )}                
+                {/* )}                 */}
               
                 {/* <div className={clientDashboardStyles.priorityFilterSet}>                
                   <div className={clientDashboardStyles.label}>
