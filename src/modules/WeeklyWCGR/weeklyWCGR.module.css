@@ -558,6 +558,28 @@ padding: 8px 10px;
   color: white !important;
 }
 
+.tableWrapper {
+  height: calc(100vh - 260px) !important;
+  overflow: hidden !important;
+  display: block !important;
+  margin-top: 20px;
+}
+
+.tableWrapper :global(.ant-table) {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.tableWrapper :global(.ant-table-container) {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.tableWrapper :global(.ant-table-body) {
+  max-height: calc(100vh - 340px) !important;
+  overflow-y: auto !important;
+}
+
 .headerCellDark {
   background-color: #101828 !important;
   color: white !important;
