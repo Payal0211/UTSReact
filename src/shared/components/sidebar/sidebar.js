@@ -452,14 +452,6 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'PODDashboardReport'),
 					isChildren : false					
 				}),
-                new SideBarModels({
-					id: 'AllFTEDASHBOARD',
-					title: 'Multi-Month POD Dashboard',
-					isActive: false,
-					navigateTo: UTSRoutes.ALL_FTE_DASHBOARD_REPORT,
-					isVisible: isAccess(usertypeID, 'AllFTEDASHBOARD'),
-					isChildren : false					
-				}),
 				   new SideBarModels({
 					id: 'WeeklyWCGR',
 					title: 'Weekly WCGR',
@@ -468,6 +460,15 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'WeeklyWCGR'),
 					isChildren : false					
 				}),
+                new SideBarModels({
+					id: 'AllFTEDASHBOARD',
+					title: 'Multi-Month POD Dashboard',
+					isActive: false,
+					navigateTo: UTSRoutes.ALL_FTE_DASHBOARD_REPORT,
+					isVisible: isAccess(usertypeID, 'AllFTEDASHBOARD'),
+					isChildren : false					
+				}),
+				
 			]
 		}),
 		
