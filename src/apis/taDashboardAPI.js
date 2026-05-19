@@ -319,7 +319,7 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.REPORT +
-			ReportsAPI.GET_HR_TALENTS_WISE_MM_DESHBOARD + `?monthStr=${pl?.month}&yearStr=${pl?.year}&tAUserID=${pl?.tAUserID}&optiontype=${pl?.optiontype}&podID=${pl?.podID}`
+			ReportsAPI.GET_HR_TALENTS_WISE_MM_DESHBOARD + `?monthStr=${pl?.month}&yearStr=${pl?.year}&tAUserID=${pl?.tAUserID}&optiontype=${pl?.optiontype}&podID=${pl?.podID}&fromDate=${pl.fromDate}&toDate=${pl.toDate}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

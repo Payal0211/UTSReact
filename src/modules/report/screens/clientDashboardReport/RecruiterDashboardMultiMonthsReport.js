@@ -343,10 +343,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
       tAUserID:result.taUserID,
       optiontype:optiontype,
       podID: selectedHead,
-       "month":dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("M") : 0,
-        "year": dateTypeFilter === 2 ? 0 : dateTypeFilter === 0 ? +moment(monthDate).format("YYYY") : 0,
-        "fromDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? startDate.toLocaleDateString("en-US"): '',
-        "toDate": dateTypeFilter === 2 ? '' : dateTypeFilter === 1 ? endDate.toLocaleDateString("en-US"): '' ,
+       "month": +moment(monthDate).format("M") ,
+        "year":  +moment(monthDate).format("YYYY") ,
+         "fromDate": startDate ? startDate.toLocaleDateString("en-US") : '',
+        "toDate":  endDate ? endDate.toLocaleDateString("en-US") : '',
     };
     setLoadingTalentProfile(true);
     const hrResult = await TaDashboardDAO.getHRTalentsWiseRecruiterMultimonthDashboardDAO(pl);
