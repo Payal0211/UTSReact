@@ -117,6 +117,43 @@ function WeeklyWCGR() {
       
         }, []);
 
+      const addSectionHeaders = (data) => {
+  let previousSection = "";
+
+  return data.flatMap((item, index) => {
+    const rows = [];
+
+    // skip first metric row if needed
+    if (
+      item.stage_Title &&
+      item.stage_Title !== previousSection
+    ) {
+      rows.push({
+        key: `section_${index}`,
+        isSection: true,
+        sectionTitle: item.stage_Title,
+        color:
+          item.stage_Title.includes("JOINING") || item.stage_Title.includes("NEW CUSTOMER FUNNEL") ? "#c05a00"
+            : item.stage_Title.includes("SELECTION")  ? "#2952d1"
+             : item.stage_Title.includes("CUSTOMER EXPERIENCE")  ? "#15803D"
+             : item.stage_Title.includes("PIPELINE REVIEW")  ? "#BE123C"
+              : item.stage_Title.includes("CUSTOMER OVERVIEW")  ? "#6D28D9"
+               : item.stage_Title.includes("TOP CLIENTS")  ? "#0F766E"
+            : "#666666",
+      });
+
+      previousSection = item.stage_Title;
+    }
+
+    rows.push({
+      ...item,
+      key: item.stage_ID,
+    });
+
+    return rows;
+  });
+};
+
     const getJoiningRevenueData = async () => {
       setIsLoadingTable(true);
        let query = `?podId=${selectedHead}&Month=${moment(monthDate).format("M")}&Year=${selectedYear}`;
@@ -126,17 +163,19 @@ function WeeklyWCGR() {
 console.log("Joining Revenue Data: ", result);
         if(result.statusCode === HTTPStatusCode.OK){
           setHeaderDataCol(result?.responseBody[0]);
-        let tempData = result?.responseBody
-        tempData.shift();
-          setTableData([
-            {
-              key: "joining_header",
-              isSection: true,
-              sectionTitle: "JOINING · Revenue",
-              color: "#c05a00",
-            },
-            ...tempData,
-          ]);
+        let tempData = addSectionHeaders(result?.responseBody);
+         tempData.shift();
+        setTableData(tempData);
+        // tempData.shift();
+        //   setTableData([
+        //     {
+        //       key: "joining_header",
+        //       isSection: true,
+        //       sectionTitle: "JOINING · Revenue",
+        //       color: "#c05a00",
+        //     },
+        //     ...tempData,
+        //   ]);
         } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
           // setLoading(false);
           return navigate(UTSRoutes.LOGINROUTE);
