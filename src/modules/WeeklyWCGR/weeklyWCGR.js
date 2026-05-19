@@ -386,6 +386,24 @@ const getTableColumns = () => {
     return text;
   },
         },
+            {
+          title: "W5",
+          dataIndex: 'startMonth_W5Str',
+          key: "m1_w5",
+          width: 100,
+          align: "center",
+           render: (text, record) => {
+    if (record.isSection) {
+      return {
+        props: {
+          colSpan: 0,
+        },
+      };
+    }
+
+    return text;
+  },
+        },
       ],
     },
 
@@ -489,6 +507,24 @@ const getTableColumns = () => {
   },
 
         },
+          {
+          title: "W5",
+          dataIndex: 'midMonth_W5Str',
+          key: "m2_w5",
+          width: 100,
+          align: "center",
+           render: (text, record) => {
+    if (record.isSection) {
+      return {
+        props: {
+          colSpan: 0,
+        },
+      };
+    }
+
+    return text;
+  },
+        },
       ],
     },
 
@@ -578,6 +614,24 @@ const getTableColumns = () => {
           title: "W4",
           dataIndex: 'endMonth_W4Str',
           key: "m3_w4",
+          width: 100,
+          align: "center",
+           render: (text, record) => {
+    if (record.isSection) {
+      return {
+        props: {
+          colSpan: 0,
+        },
+      };
+    }
+
+    return text;
+  },
+        },
+          {
+          title: "W5",
+          dataIndex: 'endMonth_W5Str',
+          key: "m3_w5",
           width: 100,
           align: "center",
            render: (text, record) => {
