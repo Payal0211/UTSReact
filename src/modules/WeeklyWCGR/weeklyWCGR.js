@@ -26,6 +26,9 @@ import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { useNavigate } from "react-router-dom";
 import UTSRoutes from "constants/routes";
 import { IoMdAddCircle } from "react-icons/io";
+import { ImPushpin } from "react-icons/im";
+import { CiCircleInfo } from "react-icons/ci";
+import { GrNotes } from "react-icons/gr";
 import { IconContext } from "react-icons";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
@@ -260,7 +263,9 @@ function WeeklyWCGR() {
   };
 
   const AddNoteComp = ({ text, record, keyPar, month }) => {
-    return record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" ? text : <div
+    return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" || 
+      record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS")
+    ) ? text : <div
       style={{
         display: "flex",
         alignItems: "center",
@@ -272,10 +277,10 @@ function WeeklyWCGR() {
       {text}
       <IconContext.Provider
         value={{
-          color: "green",
+          // color: "green",
           style: {
-            width: "18px",
-            height: "18px",
+            width: "10px",
+            height: "10px",
             marginLeft: "5px",
             cursor: "pointer",
           },
@@ -295,7 +300,7 @@ function WeeklyWCGR() {
             }}
           >
             {" "}
-            <IoMdAddCircle />
+            <CiCircleInfo />
           </span>{" "}
         </Tooltip>
       </IconContext.Provider>
@@ -878,7 +883,7 @@ function WeeklyWCGR() {
             bordered
             rowClassName={(record) => {
               if (record.stage_ID === "JAllG" || record.stage_ID === "JAllNetAchieved" || record.stage_ID === "SG" ||
-                record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio"
+                record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio" || record.stage_ID === "O2S" 
               ) {
                 return uplersStyle.boldRow;
               }
