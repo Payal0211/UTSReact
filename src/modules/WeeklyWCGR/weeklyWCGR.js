@@ -260,7 +260,7 @@ function WeeklyWCGR() {
   };
 
   const AddNoteComp = ({ text, record, keyPar, month }) => {
-    return <div
+    return record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" ? text : <div
       style={{
         display: "flex",
         alignItems: "center",
@@ -537,7 +537,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text;
+              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} /> : "";
             },
           },
           {
