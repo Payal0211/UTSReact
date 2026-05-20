@@ -867,13 +867,13 @@ function WeeklyWCGR() {
       </div>
 
       <div className={uplersStyle.tableWrapper}>
-        {isLoading ? (
+        {isLoading || isLoadingTable ? (
           <Skeleton active />
         ) : (
           <Table
             columns={getTableColumns()}
             dataSource={tableData}
-            loading={isLoading}
+            loading={isLoadingTable}
             pagination={false}
             scroll={{
               x: "max-content",
