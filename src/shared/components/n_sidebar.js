@@ -136,7 +136,7 @@ export default function N_sidebar() {
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
                             <li><Link to={UTSRoutes.POD_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>POD Dashboard</Link></li>
-                            <li><Link to={UTSRoutes.Weekly_WCGR} className={`${stylesOBj['nav-subitem']}`}>Weekly WCGR</Link></li>
+                            <li><Link to={UTSRoutes.Weekly_WCGR} className={`${stylesOBj['nav-subitem']}`}>WCGR</Link></li>
                             <li><Link to={UTSRoutes.ALL_FTE_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Multi-month POD Dashboard</Link></li>
                         </ul>
                     </div>
