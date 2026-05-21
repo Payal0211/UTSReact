@@ -325,6 +325,7 @@ function WeeklyWCGR() {
     console.log("Result of saving needed pipeline: ", result);
     if (result.statusCode === HTTPStatusCode.OK) {
       setEditTalentOfferedCTCModal(false)
+      setofferedCTCDetails({})
 setTableData(prev => {
         let temp = [...prev];
         temp[commentData.index] = {...temp[commentData.index], [commentData.key]: offeredCTCDeails.symbol ? `${offeredCTCDeails.symbol}${offeredCTCDeails.CTC.toLocaleString()}` : offeredCTCDeails.CTC.toLocaleString() };
@@ -357,10 +358,13 @@ setTableData(prev => {
 
   const AddNoteComp = ({ text, record, keyPar, month, index }) => {
     const isPastMonth = month < moment().format("M");
-    // const isPastWeek = month === moment().format("M") && keyPar.includes("W") && parseInt(keyPar.split("_")[1].slice(0, 2)) < moment().startOf('month').week();
-    const weekNO = keyPar.split("_")[1].slice(0, 2);
-    // console.log("Checking if past month: ", month, isPastMonth, moment(month), moment().format("M"));
-    // console.log("Checking if past week: ", month, keyPar, weekNO, moment().startOf('month').week(), isPastWeek);
+       const currentMonth = parseInt(moment().format("M"), 10);
+    const selectedMonth = parseInt(month, 10);
+  
+    const weekMatch = keyPar.match(/W(\d+)/);
+    const selectedWeek = weekMatch ? parseInt(weekMatch[1], 10) : null;
+    const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
+    const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
     return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" ||
       record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS")
@@ -375,13 +379,14 @@ setTableData(prev => {
 
       {text}
 
-      {record.stage_Title.includes("PIPELINE REVIEW")  ? (record.stage_ID === "NewNeededPipeleine" || record.stage_ID === "ExistingNeededPipeleine") && !isPastMonth  ? <IconContext.Provider
+      {record.stage_Title.includes("PIPELINE REVIEW")  ? (record.stage_ID === "NewNeededPipeleine" || record.stage_ID === "ExistingNeededPipeleine") && !isPastMonth && !isPastOrCurrentWeek  ?
+      <div style={{  marginLeft: "auto",}}>  <IconContext.Provider 
         value={{
           // color: "green",
           style: {
             width: "10px",
             height: "10px",
-            marginLeft: "5px",
+          
             cursor: "pointer",
           },
         }}
@@ -400,13 +405,14 @@ setTableData(prev => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+                marginLeft: "auto",
             }}
           >
             {" "}
             <MdModeEditOutline />
           </span>{" "}
         </Tooltip>
-      </IconContext.Provider> : "" :
+      </IconContext.Provider> </div>: "" : text ? 
         <IconContext.Provider
           value={{
             // color: "green",
@@ -435,7 +441,7 @@ setTableData(prev => {
               <CiCircleInfo />
             </span>{" "}
           </Tooltip>
-        </IconContext.Provider>
+        </IconContext.Provider> :''
       }
 
     </div>
@@ -556,7 +562,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} index={index} /> : "";
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} index={index} /> ;
             },
           },
           {
@@ -574,7 +580,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W1Str"} month={record?.startMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"startMonth_W1Str"} month={record?.startMonth} index={index} /> ;
             },
           },
           {
@@ -592,7 +598,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W2Str"} month={record?.startMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"startMonth_W2Str"} month={record?.startMonth} index={index} /> ;
             },
           },
           {
@@ -610,7 +616,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W3Str"} month={record?.startMonth} index={index} /> : "";
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W3Str"} month={record?.startMonth} index={index} /> ;
             },
           },
           {
@@ -628,7 +634,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W4Str"} month={record?.startMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"startMonth_W4Str"} month={record?.startMonth} index={index} /> ;
             },
           },
           {
@@ -646,7 +652,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W5Str"} month={record?.startMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"startMonth_W5Str"} month={record?.startMonth} index={index} />;
             },
           },
         ],
@@ -676,7 +682,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} index={index} /> ;
             },
           },
           {
@@ -694,7 +700,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W1Str"} month={record?.midMonth} index={index} /> : "";
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W1Str"} month={record?.midMonth} index={index} /> ;
             },
           },
           {
@@ -712,7 +718,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W2Str"} month={record?.midMonth} index={index} /> : "";
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W2Str"} month={record?.midMonth} index={index} /> ;
             },
           },
           {
@@ -730,7 +736,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W3Str"} month={record?.midMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"midMonth_W3Str"} month={record?.midMonth} index={index} /> ;
             },
           },
           {
@@ -748,7 +754,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W4Str"} month={record?.midMonth} index={index} /> : "";
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W4Str"} month={record?.midMonth} index={index} /> ;
             },
 
           },
@@ -767,7 +773,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W5Str"} month={record?.midMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"midMonth_W5Str"} month={record?.midMonth} index={index} /> ;
             },
           },
         ],
@@ -797,7 +803,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} index={index} /> ;
             },
 
           },
@@ -816,7 +822,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W1Str"} month={record?.endMonth} index={index} /> : "";
+              return<AddNoteComp text={text} record={record} keyPar={"endMonth_W1Str"} month={record?.endMonth} index={index} /> ;
             },
           },
           {
@@ -834,7 +840,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W2Str"} month={record?.endMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_W2Str"} month={record?.endMonth} index={index} /> ;
             },
           },
           {
@@ -852,7 +858,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W3Str"} month={record?.endMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_W3Str"} month={record?.endMonth} index={index} /> ;
             },
           },
           {
@@ -870,7 +876,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W4Str"} month={record?.endMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_W4Str"} month={record?.endMonth} index={index} /> ;
             },
           },
           {
@@ -888,7 +894,7 @@ setTableData(prev => {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W5Str"} month={record?.endMonth} index={index} /> : "";
+              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_W5Str"} month={record?.endMonth} index={index} /> ;
             },
           },
         ],
@@ -1125,7 +1131,7 @@ setTableData(prev => {
           open={editTalentOfferedCTCModal}
           className="editStartDateModal"
 
-          onCancel={() => setEditTalentOfferedCTCModal(false)}
+          onCancel={() => {setEditTalentOfferedCTCModal(false); setofferedCTCDetails({});}}
         >
           <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexDirection: 'column' }}>
             <label className={uplersStyle.formLabel}>Pipeline Needed</label>
