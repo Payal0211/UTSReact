@@ -432,6 +432,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.insertRecruiterCommentRequest');
 		}
 	},
+	saveNeededPipelineRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.UTS_REPORT +
+			TaDashboardURL.INSERT_NEEDED_ANTICIPATED_PIPELINE
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.saveNeededPipelineRequest');
+		}
+	},
     getALLCommentsRequest: async function (id) {
 		let httpService = new HttpServices();
 		httpService.URL =

@@ -454,7 +454,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 				}),
 				   new SideBarModels({
 					id: 'WeeklyWCGR',
-					title: 'Weekly WCGR',
+					title: 'WCGR',
 					isActive: false,
 					navigateTo: UTSRoutes.Weekly_WCGR,
 					isVisible: isAccess(usertypeID, 'WeeklyWCGR'),
