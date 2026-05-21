@@ -56,6 +56,7 @@ export class SubDomain {
 	static EMAIL_TRACKING = 'AWSSESTrackingDetails/'
 	static DIRECT_HR = 'DirectHR/'
 	static LEAVE_REQUEST = 'LeaveRequests/'
+	static UTS_REPORT = 'UTSReports/'
 	static SPACE = "space"
 	static TALENT_DOCUMENT = 'TalentDocument/'
 	static MEMBER = "member"
@@ -91,6 +92,7 @@ export class TaDashboardURL {
 	static GET_TOTAL_REVENUE_PR_TA_USER = 'GetTotalRevenuePerTAUserPODWise'
 	static GET_ALL_REVENUE_COMMENTS = 'GetSectionwiseRevenueReportComments'
 	static INSERT_REVENUE_COMMENT = 'InsertRevenueReportComment'
+	static INSERT_NEEDED_ANTICIPATED_PIPELINE = "InsertNeededAnticipatedPipeline"
 	static GET_ALL_GOAL_COMMENT = 'GetPotentialListComments'
 	static INSERT_GOAL_COMMENT ='InsertPotentialListComment'
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'

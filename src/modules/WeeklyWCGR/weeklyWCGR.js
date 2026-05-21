@@ -28,6 +28,7 @@ import UTSRoutes from "constants/routes";
 import { IoMdAddCircle } from "react-icons/io";
 import { ImPushpin } from "react-icons/im";
 import { CiCircleInfo } from "react-icons/ci";
+import { MdModeEditOutline } from "react-icons/md";
 import { GrNotes } from "react-icons/gr";
 import { IconContext } from "react-icons";
 import Editor from "modules/hiring request/components/textEditor/editor";
@@ -52,6 +53,10 @@ function WeeklyWCGR() {
   const [commentData, setCommentData] = useState({});
   const [allCommentList, setALLCommentsList] = useState([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
+  const [editTalentOfferedCTCModal, setEditTalentOfferedCTCModal] = useState(false)
+  const [offeredCTCDeails, setofferedCTCDetails] = useState({})
+  const [ctcPerUpdating, setCTCPERUPDATING] = useState(false)
+
 
   const [userData, setUserData] = useState({});
   useEffect(() => {
@@ -262,8 +267,102 @@ function WeeklyWCGR() {
     }
   };
 
-  const AddNoteComp = ({ text, record, keyPar, month }) => {
-    return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" || 
+  const saveNeededPipeline = async () => {
+
+    if(+offeredCTCDeails.CTC <= 0 || isNaN(+offeredCTCDeails.CTC)){
+      message.error("Please enter a valid amount");
+       return
+    }
+
+    const isExisting = commentData.stage_ID.includes("Existing") ? true : false;
+    const isNew = commentData.stage_ID.includes("New") ? true : false;
+    const isTotal = commentData.key.includes("MonthlyTotal") ? true : false;
+    const weekNO = commentData.key.split("_")[1].slice(0, 2);
+
+    let pl = {
+      POD_ID: commentData.poD_ID,
+      New_Quarter: 0,
+      New_Month: 0,
+      New_Month_W1: 0,
+      New_Month_W2: 0,
+      New_Month_W3: 0,
+      New_Month_W4: 0,
+      New_Month_W5: 0,
+      Existing_Quarter: 0,
+      Existing_Month: 0,
+      Existing_Month_W1: 0,
+      Existing_Month_W2: 0,
+      Existing_Month_W3: 0,
+      Existing_Month_W4: 0,
+      Existing_Month_W5: 0,
+      Month: commentData.month,
+      Year: commentData.wcgrYear,
+      LoggedInUserID: userData?.UserId
+    };
+
+    if (isNew) {
+      if (isTotal) {
+        pl[`New_Month`] = +offeredCTCDeails.CTC;
+      } else {
+        pl[`New_Month_${weekNO}`] = +offeredCTCDeails.CTC;
+      }
+
+    }
+    if (isExisting) {
+      if (isTotal) {
+        pl[`Existing_Month`] = +offeredCTCDeails.CTC;
+      } else {
+        pl[`Existing_Month_${weekNO}`] = +offeredCTCDeails.CTC;
+      }
+
+    }
+
+    console.log("Payload to save needed pipeline: ", pl, commentData);
+    setCTCPERUPDATING(true)
+    const result = await TaDashboardDAO.saveNeededPipelineDAO(pl);
+    setCTCPERUPDATING(false)
+
+    console.log("Result of saving needed pipeline: ", result);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setEditTalentOfferedCTCModal(false)
+setTableData(prev => {
+        let temp = [...prev];
+        temp[commentData.index] = {...temp[commentData.index], [commentData.key]: offeredCTCDeails.symbol ? `${offeredCTCDeails.symbol}${offeredCTCDeails.CTC.toLocaleString()}` : offeredCTCDeails.CTC.toLocaleString() };
+        return temp;
+
+})
+
+    } else {
+      message.error("Failed to save needed pipeline data");
+    }
+  }
+
+  function parsePrice(text) {
+    const regex =
+      /(?<symbol>[\p{Sc}])?\s*(?<amount>\d{1,3}(?:,\d{2,3})*(?:\.\d+)?)\s*(?<code>[A-Z]{3})?/u;
+
+    const match = text.match(regex);
+
+    if (!match || !match.groups) return null;
+
+    return {
+      symbol: match.groups.symbol || null,
+      amount: parseFloat(
+        match.groups.amount.replace(/,/g, "")
+      ),
+      code: match.groups.code || null,
+    };
+
+  }
+
+  const AddNoteComp = ({ text, record, keyPar, month, index }) => {
+    const isPastMonth = month < moment().format("M");
+    // const isPastWeek = month === moment().format("M") && keyPar.includes("W") && parseInt(keyPar.split("_")[1].slice(0, 2)) < moment().startOf('month').week();
+    const weekNO = keyPar.split("_")[1].slice(0, 2);
+    // console.log("Checking if past month: ", month, isPastMonth, moment(month), moment().format("M"));
+    // console.log("Checking if past week: ", month, keyPar, weekNO, moment().startOf('month').week(), isPastWeek);
+
+    return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" ||
       record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS")
     ) ? text : <div
       style={{
@@ -275,7 +374,8 @@ function WeeklyWCGR() {
 
 
       {text}
-      <IconContext.Provider
+
+      {record.stage_Title.includes("PIPELINE REVIEW")  ? (record.stage_ID === "NewNeededPipeleine" || record.stage_ID === "ExistingNeededPipeleine") && !isPastMonth  ? <IconContext.Provider
         value={{
           // color: "green",
           style: {
@@ -287,10 +387,13 @@ function WeeklyWCGR() {
         }}
       >
         {" "}
-        <Tooltip title={`Add/View Comment`} placement="top">
+        <Tooltip title={`Edit`} placement="top">
           <span
             onClick={() => {
-              AddComment(record, keyPar, month);
+              setEditTalentOfferedCTCModal(true)
+              let ctc = parsePrice(text)
+              setCommentData({ ...record, hR_Model: "", key: keyPar, month: month, index: index });
+              setofferedCTCDetails({ CTC: ctc.amount, ...ctc })
             }}
             // className={taStyles.feedbackLabel}
             style={{
@@ -300,10 +403,41 @@ function WeeklyWCGR() {
             }}
           >
             {" "}
-            <CiCircleInfo />
+            <MdModeEditOutline />
           </span>{" "}
         </Tooltip>
-      </IconContext.Provider>
+      </IconContext.Provider> : "" :
+        <IconContext.Provider
+          value={{
+            // color: "green",
+            style: {
+              width: "10px",
+              height: "10px",
+              marginLeft: "5px",
+              cursor: "pointer",
+            },
+          }}
+        >
+          {" "}
+          <Tooltip title={`Add/View Comment`} placement="top">
+            <span
+              onClick={() => {
+                AddComment(record, keyPar, month);
+              }}
+              // className={taStyles.feedbackLabel}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {" "}
+              <CiCircleInfo />
+            </span>{" "}
+          </Tooltip>
+        </IconContext.Provider>
+      }
+
     </div>
   }
 
@@ -413,7 +547,7 @@ function WeeklyWCGR() {
             width: 100,
             align: "center",
             className: `black-header ${uplersStyle.totalCol}`,
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -422,7 +556,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} index={index} /> : "";
             },
           },
           {
@@ -431,7 +565,7 @@ function WeeklyWCGR() {
             key: "m1_w1",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -440,7 +574,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W1Str"} month={record?.startMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W1Str"} month={record?.startMonth} index={index} /> : "";
             },
           },
           {
@@ -449,7 +583,7 @@ function WeeklyWCGR() {
             key: "m1_w2",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -458,7 +592,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W2Str"} month={record?.startMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W2Str"} month={record?.startMonth} index={index} /> : "";
             },
           },
           {
@@ -467,7 +601,7 @@ function WeeklyWCGR() {
             key: "m1_w3",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -476,7 +610,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W3Str"} month={record?.startMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W3Str"} month={record?.startMonth} index={index} /> : "";
             },
           },
           {
@@ -485,7 +619,7 @@ function WeeklyWCGR() {
             key: "m1_w4",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -494,7 +628,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W4Str"} month={record?.startMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W4Str"} month={record?.startMonth} index={index} /> : "";
             },
           },
           {
@@ -503,7 +637,7 @@ function WeeklyWCGR() {
             key: "m1_w5",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -512,7 +646,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W5Str"} month={record?.startMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"startMonth_W5Str"} month={record?.startMonth} index={index} /> : "";
             },
           },
         ],
@@ -533,7 +667,7 @@ function WeeklyWCGR() {
             width: 100,
             align: "center",
             className: `black-header ${uplersStyle.totalCol}`,
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -542,7 +676,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} index={index} /> : "";
             },
           },
           {
@@ -551,7 +685,7 @@ function WeeklyWCGR() {
             key: "m2_w1",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -560,7 +694,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W1Str"} month={record?.midMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W1Str"} month={record?.midMonth} index={index} /> : "";
             },
           },
           {
@@ -569,7 +703,7 @@ function WeeklyWCGR() {
             key: "m2_w2",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -578,7 +712,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W2Str"} month={record?.midMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W2Str"} month={record?.midMonth} index={index} /> : "";
             },
           },
           {
@@ -587,7 +721,7 @@ function WeeklyWCGR() {
             key: "m2_w3",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -596,7 +730,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W3Str"} month={record?.midMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W3Str"} month={record?.midMonth} index={index} /> : "";
             },
           },
           {
@@ -605,7 +739,7 @@ function WeeklyWCGR() {
             key: "m2_w4",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -614,7 +748,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W4Str"} month={record?.midMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W4Str"} month={record?.midMonth} index={index} /> : "";
             },
 
           },
@@ -624,7 +758,7 @@ function WeeklyWCGR() {
             key: "m2_w5",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -633,7 +767,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W5Str"} month={record?.midMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"midMonth_W5Str"} month={record?.midMonth} index={index} /> : "";
             },
           },
         ],
@@ -654,7 +788,7 @@ function WeeklyWCGR() {
             width: 100,
             align: "center",
             className: `black-header ${uplersStyle.totalCol}`,
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -663,7 +797,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} index={index} /> : "";
             },
 
           },
@@ -673,7 +807,7 @@ function WeeklyWCGR() {
             key: "m3_w1",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -682,7 +816,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W1Str"} month={record?.endMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W1Str"} month={record?.endMonth} index={index} /> : "";
             },
           },
           {
@@ -691,7 +825,7 @@ function WeeklyWCGR() {
             key: "m3_w2",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -700,7 +834,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W2Str"} month={record?.endMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W2Str"} month={record?.endMonth} index={index} /> : "";
             },
           },
           {
@@ -709,7 +843,7 @@ function WeeklyWCGR() {
             key: "m3_w3",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -718,7 +852,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W3Str"} month={record?.endMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W3Str"} month={record?.endMonth} index={index} /> : "";
             },
           },
           {
@@ -727,7 +861,7 @@ function WeeklyWCGR() {
             key: "m3_w4",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -736,7 +870,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W4Str"} month={record?.endMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W4Str"} month={record?.endMonth} index={index} /> : "";
             },
           },
           {
@@ -745,7 +879,7 @@ function WeeklyWCGR() {
             key: "m3_w5",
             width: 100,
             align: "center",
-            render: (text, record) => {
+            render: (text, record, index) => {
               if (record.isSection) {
                 return {
                   props: {
@@ -754,7 +888,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W5Str"} month={record?.endMonth} /> : "";
+              return text ? <AddNoteComp text={text} record={record} keyPar={"endMonth_W5Str"} month={record?.endMonth} index={index} /> : "";
             },
           },
         ],
@@ -787,6 +921,8 @@ function WeeklyWCGR() {
       width: '200px'
     },
   ]
+
+
 
 
   return (
@@ -867,13 +1003,13 @@ function WeeklyWCGR() {
       </div>
 
       <div className={uplersStyle.tableWrapper}>
-        {isLoading ? (
+        {isLoading || isLoadingTable ? (
           <Skeleton active />
         ) : (
           <Table
             columns={getTableColumns()}
             dataSource={tableData}
-            loading={isLoading}
+            loading={isLoadingTable}
             pagination={false}
             scroll={{
               x: "max-content",
@@ -883,7 +1019,7 @@ function WeeklyWCGR() {
             bordered
             rowClassName={(record) => {
               if (record.stage_ID === "JAllG" || record.stage_ID === "JAllNetAchieved" || record.stage_ID === "SG" ||
-                record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio" || record.stage_ID === "O2S" 
+                record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio" || record.stage_ID === "O2S"
               ) {
                 return uplersStyle.boldRow;
               }
@@ -978,6 +1114,38 @@ function WeeklyWCGR() {
               Close
             </button>
           </div>
+        </Modal>
+      )}
+
+      {editTalentOfferedCTCModal && (
+        <Modal
+          width={300}
+          centered
+          footer={false}
+          open={editTalentOfferedCTCModal}
+          className="editStartDateModal"
+
+          onCancel={() => setEditTalentOfferedCTCModal(false)}
+        >
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexDirection: 'column' }}>
+            <label className={uplersStyle.formLabel}>Pipeline Needed</label>
+            <div >
+              {ctcPerUpdating ? <Skeleton active /> : <>{offeredCTCDeails?.symbol} <InputNumber style={{ width: '80%' }} value={offeredCTCDeails.CTC} onChange={val => setofferedCTCDetails(prev => ({ ...prev, CTC: val }))} /> {offeredCTCDeails?.code}</>}
+
+            </div>
+
+
+            {(!offeredCTCDeails?.CTC || offeredCTCDeails?.CTC <= 0) && <span style={{ color: 'red' }}>Please enter valid amount</span>}
+            <button
+              type="button"
+              className={uplersStyle.btnPrimary}
+              onClick={() => { saveNeededPipeline() }}
+              disabled={ctcPerUpdating}
+            >
+              SAVE
+            </button>
+          </div>
+
         </Modal>
       )}
     </div>
