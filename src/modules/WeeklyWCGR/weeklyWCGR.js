@@ -325,6 +325,7 @@ function WeeklyWCGR() {
     console.log("Result of saving needed pipeline: ", result);
     if (result.statusCode === HTTPStatusCode.OK) {
       setEditTalentOfferedCTCModal(false)
+      setofferedCTCDetails({})
 setTableData(prev => {
         let temp = [...prev];
         temp[commentData.index] = {...temp[commentData.index], [commentData.key]: offeredCTCDeails.symbol ? `${offeredCTCDeails.symbol}${offeredCTCDeails.CTC.toLocaleString()}` : offeredCTCDeails.CTC.toLocaleString() };
@@ -1130,7 +1131,7 @@ setTableData(prev => {
           open={editTalentOfferedCTCModal}
           className="editStartDateModal"
 
-          onCancel={() => setEditTalentOfferedCTCModal(false)}
+          onCancel={() => {setEditTalentOfferedCTCModal(false); setofferedCTCDetails({});}}
         >
           <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexDirection: 'column' }}>
             <label className={uplersStyle.formLabel}>Pipeline Needed</label>
