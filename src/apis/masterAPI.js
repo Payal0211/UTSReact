@@ -127,6 +127,20 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getCurrencyRequest');
 		}
 	},
+	updateReferenceDetailsRequest: async function (pl) {
+		let httpService = new HttpServices(pl);
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + MastersAPI.UPDATE_REFERENCE_DETAILS;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = pl;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.updateReferenceDetailsRequest');
+		}
+	},
 	getContractDurationRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

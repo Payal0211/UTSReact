@@ -340,6 +340,7 @@ export class MastersAPI {
 	static GET_BUDET_INFORMATION = 'GetBudgetInformation';
 	static GET_START_END_TIME = 'GetStartEndTime';
 	static GET_TALENT_TIME_ZONE = 'GetTalentTimeZone';
+	static UPDATE_REFERENCE_DETAILS = 'AddSalesRef';
 	static GET_HOW_SOON = 'GetHowSoon';
 	static GET_TIME_ZONE = 'GetTimeZone';
 	static GET_TIME_ZONE_PREFERENCE = 'GetTimeZonePreference';

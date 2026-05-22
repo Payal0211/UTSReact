@@ -145,6 +145,7 @@ function PreviewHRModal({
   const [timeZone, setTimeZone] = useState([]);
   const [startEndTime, setStartEndTime] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingReference, setIsLoadingReference] = useState(false);
   const [isAddMonth, setIsAddMonth] = useState(false);
 
   const[isEditUserInfo,setIsEditUserInfo] = useState(false);
@@ -223,6 +224,8 @@ function PreviewHRModal({
     isEdit:null
   });
 
+  const [refrenceDetails,setReferenceDetails] = useState({type:null,name:"",email:"",comment:""})
+
   const [transparentEngType,setTransparentEngType] = useState([])
   // const dispatch = useDispatch();
 
@@ -267,6 +270,15 @@ function PreviewHRModal({
     setPerkDetails(allData?.CompanyDetails?.perkDetails ? allData?.CompanyDetails?.perkDetails : []);
     setYouTubeDetails(allData?.CompanyDetails?.youTubeDetails ? allData?.CompanyDetails?.youTubeDetails : []);
     setEngagementDetails(allData?.CompanyDetails?.engagementDetails ? allData?.CompanyDetails?.engagementDetails : {})
+
+    if(allData?.SalesHRRefDetails){
+      setReferenceDetails({
+        type: allData?.SalesHRRefDetails?.referenceBy,
+        name: allData?.SalesHRRefDetails?.referenceGivenName,
+        email: allData?.SalesHRRefDetails?.referenceGivenEmailID,
+        comment: allData?.SalesHRRefDetails?.referenceRemark
+      })
+    }
 
   }, [allData]);
   const toolbarOptions = [
@@ -1369,6 +1381,43 @@ getSkillList();
     // }
   };
 
+  const updateReferenceDetails = async () =>{
+    const validationErrors = {};
+
+    if (!refrenceDetails?.type) {
+      validationErrors.type = "Please select type";
+    }
+
+    if (isEmptyOrWhitespace(refrenceDetails?.name)) {
+      validationErrors.name = "Please enter name";
+    }
+
+    if (isEmptyOrWhitespace(refrenceDetails?.comment)) {
+      validationErrors.comment = "Please enter comment";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setError(validationErrors);
+      return;
+    }
+
+    setError({});
+
+    let pl = {
+      "hiringRequest_ID": hrIdforPreview,
+      "referenceBy": refrenceDetails?.type,
+      "referenceGivenName": refrenceDetails?.name,
+      "referenceGivenEmailID": refrenceDetails?.email,
+      "referenceRemarks": refrenceDetails?.comment
+    }
+    setIsLoadingReference(true)
+    let res = await MasterDAO.updateReferenceDetailsDAO(pl);
+    setIsLoadingReference(false)
+    if(res?.statusCode === 200){
+      message.success("Reference details updated successfully")
+    }
+  }
+
   const getCurrencyList = async () => {
 
     let currencyresult = await MasterDAO.getCurrencyRequestDAO();
@@ -1997,6 +2046,7 @@ async function onHandleBlurImage(content, field) {
         onOk={() => setViewPosition(false)}
         onCancel={() => {
           setisEditLocation(false);
+          setReferenceDetails({type:null,name:"",email:"",comment:""});
           if(isAnyFieldUpdate && !isSaveAllChanges){
             confirm({
               title: 'Please save your changes before leaving this page to avoid losing any unsaved data.',
@@ -3930,7 +3980,110 @@ async function onHandleBlurImage(content, field) {
                      
                     </div>
                   </div>
-                </div>}              
+                </div>}       
+
+                <div className="formFields">
+                  <div className="formFields-box">
+                    <div className="formFields-box-inner">
+                      <h2 className="formFields-box-title">References received from clients/talent </h2>
+                      <div className="vitalInformationContent">
+  <div className="row formFields">
+            <div className="col-12">
+              <div className="form-group mb-0">
+                <label>Type <span className='error'>*</span></label>
+                <Select
+                  options={[ "AM", "TA", "Client", "Talent", "Other" ].map(item => ({ value: item, label: item }))}
+                  name="foundedYear"
+                  placeholder="Select year"
+                  value={refrenceDetails?.type}
+                  onChange={(e) => {
+                    setReferenceDetails({...refrenceDetails, type: e});
+                    setError((prev) => ({ ...prev, type: undefined }));
+                  }}
+                />
+                {error?.type && <span className='error'>{error.type}</span>}
+
+              </div>
+            </div>
+          </div>
+
+            <div className="row formFields">
+                   <div className="col-md-6">
+                    <div className="form-group mb-0"><label>
+                 Name <span className='error'>*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Please enter name"
+                  className="form-control"
+                  value={refrenceDetails?.name}
+                  onChange={(e) => {
+                    setReferenceDetails(prev=>({...prev, name: e.target.value}))
+                    setError((prev) => ({ ...prev, name: undefined }));
+                  }}
+                />
+                {error?.name && <span className='error'>{error.name}</span>}
+                      </div>
+                
+                {/* {(editExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
+                  </div>
+
+                    <div className="col-md-6">
+                      <div className="form-group mb-0">
+ <label>
+                 Email 
+                </label>
+                <input
+                  type="text"
+                  placeholder="Please enter email"
+                  className="form-control"
+                  value={refrenceDetails?.email}
+                  onChange={(e) => {
+                    setReferenceDetails(prev=>({...prev, email: e.target.value}))
+                  }}
+                />
+                        </div>
+               
+                {/* {(editExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
+                  </div>
+                  </div>
+
+
+ <div className="row formFields">
+                   <div className="col-12">
+                    <div className="form-group mb-0"><label>
+                Comment <span className='error'>*</span>
+                </label>
+                <textarea
+                  type="text"
+                  rows={4}
+                  placeholder="Please enter comment"
+                  className="form-control"
+                  value={refrenceDetails?.comment}
+                  onChange={(e) => {
+                    setReferenceDetails(prev=>({...prev, comment: e.target.value}))
+                    setError((prev) => ({ ...prev, comment: undefined }));
+                  }}
+                />
+                {error?.comment && <span className='error'>{error.comment}</span>}
+                      </div>
+                
+                {/* {(editExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
+                  </div></div>
+                  
+                <div className="buttonEditGroup">
+                  {/* <button type="button" class="btnPrimary blank" onClick={() => { setisCompanyFoundedOpen(false); setCompanyFoundedValue('') }}> Cancel </button> */}
+                  {isLoadingReference ? <Spin size="large" /> :  <button type="button" class="btnPrimary" onClick={() => updateReferenceDetails()}> SAVE </button>}
+                 
+                </div>
+                        
+                      </div>
+                    </div>
+
+                    
+                  </div>
+                </div>
+
                 <div class="previewHRAction">
                   <button
                     type="button"
@@ -3963,6 +4116,7 @@ async function onHandleBlurImage(content, field) {
                       }else{
                         setViewPosition(false);
                         setError({});
+                        setReferenceDetails({type:null,name:"",email:"",comment:""})
                         setisEditRolesAndRes(false)
                         setisEditRequirenments(false)
                         setisEditSkills(false)
