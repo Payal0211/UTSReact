@@ -252,6 +252,31 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getCurrencyRequestDAO');
 		}
 	},
+	updateReferenceDetailsDAO: async function (pl) {
+		try {
+			const currencyResult = await MasterAPI.updateReferenceDetailsRequest(pl);
+			if (currencyResult) {
+				const statusCode = currencyResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = currencyResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return currencyResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return currencyResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.updateReferenceDetailsDAO');
+		}
+	}, 
 	getContractDurationRequestDAO: async function () {
 		try {
 			const contractResult = await MasterAPI.getContractDurationRequest();
