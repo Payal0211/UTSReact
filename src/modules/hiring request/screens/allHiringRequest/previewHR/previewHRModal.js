@@ -3994,7 +3994,7 @@ async function onHandleBlurImage(content, field) {
                 <Select
                   options={[ "AM", "TA", "Client", "Talent", "Other" ].map(item => ({ value: item, label: item }))}
                   name="foundedYear"
-                  placeholder="Select year"
+                  placeholder="Please Select "
                   value={refrenceDetails?.type}
                   onChange={(e) => {
                     setReferenceDetails({...refrenceDetails, type: e});
