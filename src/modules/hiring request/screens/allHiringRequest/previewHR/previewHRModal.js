@@ -271,12 +271,13 @@ function PreviewHRModal({
     setYouTubeDetails(allData?.CompanyDetails?.youTubeDetails ? allData?.CompanyDetails?.youTubeDetails : []);
     setEngagementDetails(allData?.CompanyDetails?.engagementDetails ? allData?.CompanyDetails?.engagementDetails : {})
 
-    if(allData?.SalesHRRefDetails){
+    if(allData?.SalesHRRefDetails?.length > 0){
+      let data = allData?.SalesHRRefDetails[0]
       setReferenceDetails({
-        type: allData?.SalesHRRefDetails?.referenceBy,
-        name: allData?.SalesHRRefDetails?.referenceGivenName,
-        email: allData?.SalesHRRefDetails?.referenceGivenEmailID,
-        comment: allData?.SalesHRRefDetails?.referenceRemark
+        type: data?.referenceBy,
+        name: data?.referenceGivenName,
+        email: data?.referenceGivenEmailID,
+        comment: data?.referenceRemarks
       })
     }
 

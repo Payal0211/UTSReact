@@ -437,7 +437,7 @@ export default function NegotiontoJoinee({
       width: '200px',
     },
     {
-      title: showTalentCol?.stage_ID === "D_Lost" ? "Lost Date" : "Joining Date",
+      title:(showTalentCol?.stage_ID === "D_Lost" || showTalentCol?.stage_ID === "CN_Lost") ? "Lost Date" : (showTalentCol?.stage_ID === "D_Drop" || showTalentCol?.stage_ID === "CN_Drop") ? "Dropout Date" : (showTalentCol?.stage_ID === "D_Backout" ||  showTalentCol?.stage_ID === "CN_Backout") ? "Backout Date" :"Joining Date" ,
       dataIndex: "joiningdateStr",
       key: "joiningdateStr",
     },
