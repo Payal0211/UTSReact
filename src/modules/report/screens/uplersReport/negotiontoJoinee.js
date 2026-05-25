@@ -1983,6 +1983,13 @@ setLoadingResponse(false);
         <FilterFilled
           style={{ color: filtered ? "#1890ff" : "black" }}
         />)
+    }, {
+      title: <div style={{ textAlign: "center" }}>Anticipated <br/>Joining Date</div>,
+      dataIndex: "anticipated_JoiningDate",
+      key: "anticipated_JoiningDate",
+      width: 150,
+      // fixed: "left",
+      className: uplersStyle.headerCell,
     },
     {
       title: <div>Comments</div>,
