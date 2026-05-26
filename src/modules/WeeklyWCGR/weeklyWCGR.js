@@ -29,13 +29,16 @@ import UTSRoutes from "constants/routes";
 import { IoMdAddCircle } from "react-icons/io";
 import Diamond from "assets/svg/diamond.svg";
 import { ImPushpin } from "react-icons/im";
+import { PiArrowsSplitBold } from "react-icons/pi";
 import { CiCircleInfo } from "react-icons/ci";
 import { MdModeEditOutline } from "react-icons/md";
 import { GrNotes } from "react-icons/gr";
 import { IconContext } from "react-icons";
+import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import spinGif from "assets/gif/RefreshLoader.gif";
+import SplitHR from "modules/hiring request/screens/allHiringRequest/splitHR";
 
 const { Title, Text } = Typography;
 
@@ -58,11 +61,23 @@ function WeeklyWCGR() {
   const [editTalentOfferedCTCModal, setEditTalentOfferedCTCModal] = useState(false)
   const [offeredCTCDeails, setofferedCTCDetails] = useState({})
   const [ctcPerUpdating, setCTCPERUPDATING] = useState(false)
-    const [showChReport, setShowCHReport] = useState(false)
-const [listAchievedData, setListAchievedData] = useState([]);
+  const [showChReport, setShowCHReport] = useState(false)
+  const [listAchievedData, setListAchievedData] = useState([]);
   const [achievedLoading, setAchievedLoading] = useState(false);
   const [showTalentCol, setShowTalentCol] = useState({});
   const [achievedTotal, setAchievedTotal] = useState("");
+
+  const [DFListData, setDFListData] = useState([]);
+  const [DFFilterListData, setDFFilterListData] = useState([]);
+  const [showDFReport, setShowDFReport] = useState(false);
+  const [openSplitHR, setSplitHR] = useState(false);
+  const [getHRnumber, setHRNumber] = useState({ hrNumber: '', isHybrid: false });
+  const [getHRID, setHRID] = useState("");
+  const [isSplitLoading, setIsSplitLoading] = useState(false);
+  const [groupList, setGroupList] = useState([{
+    pod: '', amLead: '', amLeadAmount: '', am: '', amAmount: '', taLead: '', taLeadAmount: '', ta: '', taAmount: '', currency: ''
+  }])
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [userData, setUserData] = useState({});
   useEffect(() => {
@@ -275,9 +290,9 @@ const [listAchievedData, setListAchievedData] = useState([]);
 
   const saveNeededPipeline = async () => {
 
-    if(+offeredCTCDeails.CTC <= 0 || isNaN(+offeredCTCDeails.CTC)){
+    if (+offeredCTCDeails.CTC <= 0 || isNaN(+offeredCTCDeails.CTC)) {
       message.error("Please enter a valid amount");
-       return
+      return
     }
 
     const isExisting = commentData.stage_ID.includes("Existing") ? true : false;
@@ -332,12 +347,12 @@ const [listAchievedData, setListAchievedData] = useState([]);
     if (result.statusCode === HTTPStatusCode.OK) {
       setEditTalentOfferedCTCModal(false)
       setofferedCTCDetails({})
-setTableData(prev => {
+      setTableData(prev => {
         let temp = [...prev];
-        temp[commentData.index] = {...temp[commentData.index], [commentData.key]: offeredCTCDeails.symbol ? `${offeredCTCDeails.symbol}${offeredCTCDeails.CTC.toLocaleString()}` : offeredCTCDeails.CTC.toLocaleString() };
+        temp[commentData.index] = { ...temp[commentData.index], [commentData.key]: offeredCTCDeails.symbol ? `${offeredCTCDeails.symbol}${offeredCTCDeails.CTC.toLocaleString()}` : offeredCTCDeails.CTC.toLocaleString() };
         return temp;
 
-})
+      })
 
     } else {
       message.error("Failed to save needed pipeline data");
@@ -362,69 +377,414 @@ setTableData(prev => {
 
   }
 
-    const getHRChealthWiseReport = async (row, v, week, month) => {
-      try {
-        setShowCHReport(true);
-  
-        const pl = {
-          hrmodel: hrModal,
-          pod_id: selectedHead,
-          month: month,
-          year: row.wcgrYear,
-          stageID: row.stage_ID,
-          cat: "CH",
-          week: week ? week : "",
-          multiplePODIds:  ''
-        };
-        setShowTalentCol(row);
-        setAchievedTotal(v);
-        setAchievedLoading(true);
-        const result = await ReportDAO.getPOCPopupReportDAO(pl);
-        setAchievedLoading(false);
-        if (result.statusCode === 200) {
-          setListAchievedData(result.responseBody);
-        } else {
-          setListAchievedData([]);
-        }
-      } catch (err) {
-        console.log(err);
+  const getHRChealthWiseReport = async (row, v, week, month) => {
+    try {
+      setShowCHReport(true);
+
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        cat: "CH",
+        week: week ? week : "",
+        multiplePODIds: ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPOCPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
         setListAchievedData([]);
       }
-    };
-  
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
 
-  const AddNoteComp = ({ text, record, keyPar, month, index ,week}) => {
+  const modifyResponseforPOD = async (data) => {
+    let categories = []
+    let modData = []
+
+    data.forEach(item => {
+      if (!categories.includes(item.category)) {
+        categories.push(item.category)
+      }
+    })
+    categories.forEach(async cat => {
+      let cats = data.filter(item => item.category === cat)
+      let podObj = {
+        pod: '', amLead: '', amLeadAmount: '', am: '', amAmount: '', taLead: '', taLeadAmount: '', ta: '', taAmount: '', currency: ''
+      }
+
+      podObj.pod = cats[0]?.poD_ID
+      podObj.currency = cats[0]?.currencyCode
+      cats.forEach(itm => {
+        switch (itm.roW_Value) {
+          case 'AM Lead': {
+            podObj.amLead = (itm.userID !== 0) ? itm.userID : ''
+            podObj.amLeadAmount = itm.revenue
+            break
+          }
+          case 'AM': {
+            podObj.am = (itm.userID !== 0) ? itm.userID : ''
+            podObj.amAmount = itm.revenue
+            break
+          }
+          case 'TA Lead': {
+            podObj.taLead = (itm.userID !== 0) ? itm.userID : ''
+            podObj.taLeadAmount = itm.revenue
+            break
+          }
+          case 'TA': {
+            podObj.ta = (itm.userID !== 0) ? itm.userID : ''
+            podObj.taAmount = itm.revenue
+            break
+          }
+          default: break
+        }
+      })
+      modData.push(podObj)
+
+    })
+
+
+    return modData
+  }
+
+  const getPODList = async (getHRID) => {
+    setIsSplitLoading(true);
+    let pl = { hrNo: getHRID, podid: 0 }
+    let filterResult = await ReportDAO.getAllPODUsersGroupDAO(pl);
+    setIsSplitLoading(false);
+    if (filterResult.statusCode === HTTPStatusCode.OK) {
+      //   console.log('filterResult',filterResult?.responseBody)
+      let modData = await modifyResponseforPOD(filterResult?.responseBody)
+
+      //   let datawithList = await adduserListToEachPOD(modData)
+      //   console.log('set g list',modData,datawithList)
+      setGroupList(modData)
+    } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+      // setLoading(false); 
+      return navigate(UTSRoutes.LOGINROUTE);
+    } else if (
+      filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+    ) {
+      // setLoading(false);
+      return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+    } else {
+      setGroupList([{
+        pod: '', amLead: '', amLeadAmount: '', am: '', amAmount: '', taLead: '', taLeadAmount: '', ta: '', taAmount: '', currency: ''
+      }])
+      return "NO DATA FOUND";
+    }
+  };
+
+  const DFColumns = [
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      width: "150px",
+      render: (text, record) =>
+        record?.companyCategory === "Diamond" ? (
+          <>
+            <span>{text}</span>
+            &nbsp;
+            <img
+              src={Diamond}
+              alt="info"
+              style={{ width: "16px", height: "16px" }}
+            />
+          </>
+        ) : (
+          text
+        ),
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      width: "170px",
+      render: (text, value) => {
+        return (
+          <a
+            href={`/allhiringrequest/${value.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        ); // Replace `/client/${text}` with the appropriate link you need
+      },
+    },
+    {
+      title: "Position",
+      dataIndex: "position",
+      key: "position",
+      width: '200px',
+    },
+    {
+      title: (showTalentCol?.stage_ID === "D_Lost" || showTalentCol?.stage_ID === "CN_Lost") ? "Lost Date" : (showTalentCol?.stage_ID === "D_Drop" || showTalentCol?.stage_ID === "CN_Drop") ? "Dropout Date" : (showTalentCol?.stage_ID === "D_Backout" || showTalentCol?.stage_ID === "CN_Backout") ? "Backout Date" : "Joining Date",
+      dataIndex: "joiningdateStr",
+      key: "joiningdateStr",
+    },
+    {
+      title: "Talent",
+      dataIndex: "talent",
+      key: "talent",
+    },
+    {
+      title: "Talent Status",
+      dataIndex: "talentStatus",
+      key: "talentStatus",
+      width: '150px',
+      render: (_, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          param?.hrStatusCode,
+          param?.talentStatus
+        ),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}> Billing %</div>,
+      dataIndex: "uplersFeesPer",
+      key: "uplersFeesPer",
+      width: '100px',
+      align: "center",
+      className: uplersStyle.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Billing Value
+        </div>
+      ),
+      dataIndex: hrModal === 'DP' ? 'uplersFees_INRStr' : "uplersFees_USDStr",
+      key: hrModal === 'DP' ? 'uplersFees_INRStr' : "uplersFees_USDStr",
+      width: '150px',
+      align: "right",
+      className: uplersStyle.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {pODList?.find(item => item.dd_value === selectedHead)?.dd_text} Revenue
+        </div>
+      ),
+      dataIndex: "podValueStr",
+      key: "podValueStr",
+      width: '150px',
+      align: "right",
+      className: uplersStyle.headerCell,
+      render: (v, row) => {
+        return <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'space-between' }}>
+          <Tooltip placement="bottom" title={"Split HR"}>
+            <a href="javascript:void(0);" style={{ display: 'inline-flex' }}>
+              <PiArrowsSplitBold
+                style={{ width: "17px", height: "17px", fill: '#232323' }}
+                onClick={() => {
+                  setSplitHR(true);
+                  setHRID(row?.hiringRequestID);
+                  setHRNumber({ hrNumber: row?.hR_Number });
+                  getPODList(row?.hiringRequestID)
+                }}
+              />
+            </a>
+          </Tooltip>
+          {v ? v : ''} </div>
+      }
+    },
+
+    {
+      title: <div style={{ textAlign: "center" }}>HR Modal</div>,
+      dataIndex: "hR_Model",
+      key: "hR_Model",
+
+      className: uplersStyle.headerCell,
+      width: "180px",
+      align: "center",
+    },
+
+    // {
+    //   title: "Status",
+    //   dataIndex: "talentStatus",
+    //   key: "talentStatus",
+    //   render: (_, item) => (
+    //     <div
+    //       style={{
+    //         display: "flex",
+    //         alignItems: "center",
+    //         justifyContent: "space-between",
+    //       }}
+    //     >
+    //       {All_Hiring_Request_Utils.GETTALENTSTATUS(
+    //         parseInt(item?.talentStatusColor),
+    //         item?.talentStatus
+    //       )}
+
+    //       {(item?.statusID === 2 || item?.statusID === 3) && (
+    //         <IconContext.Provider
+    //           value={{
+    //             color: "#FFDA30",
+    //             style: { width: "16px", height: "16px", cursor: "pointer" },
+    //           }}
+    //         >
+    //           <Tooltip title="Move to Assessment" placement="top">
+    //             <span
+    //               onClick={() => {
+    //                 setMoveToAssessment(true);
+    //                 setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
+    //               }}
+    //               style={{ padding: "0" }}
+    //             >
+    //               {" "}
+    //               <BsClipboard2CheckFill />
+    //             </span>{" "}
+    //           </Tooltip>
+    //         </IconContext.Provider>
+    //       )}
+
+    //     </div>
+    //   ),
+    // },
+  ];
+
+  const handleSummerySearchInput = (value) => {
+    setSearchTerm(value);
+    const filteredData = DFListData.filter(
+      (talent) =>
+        talent.talent.toLowerCase().includes(value.toLowerCase()) ||
+        (talent.email &&
+          talent.email.toLowerCase().includes(value.toLowerCase()))
+    );
+    setDFFilterListData(filteredData);
+  };
+
+  const getDFDetails = async (row, v, week, month) => {
+    try {
+      setShowDFReport(true);
+
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stage_ID: row.stage_ID,
+        weekno: week ? week : "",
+        hr_businesstype: row.hR_Type,
+        isNextMonth: row?.isNM === 'Yes' ? row?.isNM : ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getNegotiationPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setDFListData(result.responseBody);
+        setDFFilterListData(result.responseBody);
+      } else {
+        setDFListData([]);
+        setDFFilterListData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setDFListData([]);
+      setDFFilterListData([]);
+    }
+  }
+
+
+  const AddNoteComp = ({ text, record, keyPar, month, index, week }) => {
     const isPastMonth = month < moment().format("M");
-       const currentMonth = parseInt(moment().format("M"), 10);
+    const currentMonth = parseInt(moment().format("M"), 10);
     const selectedMonth = parseInt(month, 10);
-  
+
     const weekMatch = keyPar.match(/W(\d+)/);
     const selectedWeek = weekMatch ? parseInt(weekMatch[1], 10) : null;
     const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
     const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
-    if( record?.stage_Title === "CUSTOMER OVERVIEW"){
-      
-         return     <div >
-                {text ? (
-                  record.stage === "Goal" || record.stage.includes("%") ? (
-                    text
-                  ) : (
-                    <span
-                      onClick={() => {
-                        getHRChealthWiseReport(record, text,week, month)
-
-                      }}
-                      style={{ cursor: "pointer", color: "#1890ff" }}
-                    >
-                      {text}
-                    </span>
-                  )
-                ) : (
-                  ""
-                )}
-              </div>
+    if (record?.stage_Title === "JOINING  ·  Revenue" || record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue") {
+      if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop" || record.stage_ID === "J4") {
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getDFDetails(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+              <IconContext.Provider
+                value={{
+                  // color: "green",
+                  style: {
+                    width: "10px",
+                    height: "10px",
+                    marginLeft: "5px",
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                {" "}
+                <Tooltip title={`Add/View Comment`} placement="top">
+                  <span
+                    onClick={() => {
+                      AddComment(record, keyPar, month);
+                    }}
+                    // className={taStyles.feedbackLabel}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {" "}
+                    <CiCircleInfo />
+                  </span>{" "}
+                </Tooltip>
+              </IconContext.Provider>
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
       }
+    }
+    if (record?.stage_Title === "CUSTOMER OVERVIEW") {
+
+      return <div >
+        {text ?
+          <span
+            onClick={() => {
+              getHRChealthWiseReport(record, text, week, month)
+
+            }}
+            style={{ cursor: "pointer", color: "#1890ff" }}
+          >
+            {text}
+          </span>
+
+          : (
+            ""
+          )}
+      </div>
+    }
 
     return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" ||
       record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS")
@@ -439,40 +799,40 @@ setTableData(prev => {
 
       {text}
 
-      {record.stage_Title.includes("PIPELINE REVIEW")  ? (record.stage_ID === "NewNeededPipeleine" || record.stage_ID === "ExistingNeededPipeleine") && !isPastMonth && !isPastOrCurrentWeek  ?
-      <div style={{  marginLeft: "auto",}}>  <IconContext.Provider 
-        value={{
-          // color: "green",
-          style: {
-            width: "10px",
-            height: "10px",
-          
-            cursor: "pointer",
-          },
-        }}
-      >
-        {" "}
-        <Tooltip title={`Edit`} placement="top">
-          <span
-            onClick={() => {
-              setEditTalentOfferedCTCModal(true)
-              let ctc = parsePrice(text)
-              setCommentData({ ...record, hR_Model: "", key: keyPar, month: month, index: index });
-              setofferedCTCDetails({ CTC: ctc.amount, ...ctc })
-            }}
-            // className={taStyles.feedbackLabel}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+      {record.stage_Title.includes("PIPELINE REVIEW") ? (record.stage_ID === "NewNeededPipeleine" || record.stage_ID === "ExistingNeededPipeleine") && !isPastMonth && !isPastOrCurrentWeek ?
+        <div style={{ marginLeft: "auto", }}>  <IconContext.Provider
+          value={{
+            // color: "green",
+            style: {
+              width: "10px",
+              height: "10px",
+
+              cursor: "pointer",
+            },
+          }}
+        >
+          {" "}
+          <Tooltip title={`Edit`} placement="top">
+            <span
+              onClick={() => {
+                setEditTalentOfferedCTCModal(true)
+                let ctc = parsePrice(text)
+                setCommentData({ ...record, hR_Model: "", key: keyPar, month: month, index: index });
+                setofferedCTCDetails({ CTC: ctc.amount, ...ctc })
+              }}
+              // className={taStyles.feedbackLabel}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 marginLeft: "auto",
-            }}
-          >
-            {" "}
-            <MdModeEditOutline />
-          </span>{" "}
-        </Tooltip>
-      </IconContext.Provider> </div>: "" : text ? 
+              }}
+            >
+              {" "}
+              <MdModeEditOutline />
+            </span>{" "}
+          </Tooltip>
+        </IconContext.Provider> </div> : "" : text ?
         <IconContext.Provider
           value={{
             // color: "green",
@@ -501,7 +861,7 @@ setTableData(prev => {
               <CiCircleInfo />
             </span>{" "}
           </Tooltip>
-        </IconContext.Provider> :''
+        </IconContext.Provider> : ''
       }
 
     </div>
@@ -622,7 +982,7 @@ setTableData(prev => {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} index={index} />;
             },
           },
           {
@@ -640,7 +1000,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"startMonth_W1Str"} month={record?.startMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W1Str"} month={record?.startMonth} index={index} week={"W1"} />;
             },
           },
           {
@@ -658,7 +1018,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"startMonth_W2Str"} month={record?.startMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W2Str"} month={record?.startMonth} index={index} week={"W2"} />;
             },
           },
           {
@@ -676,7 +1036,7 @@ setTableData(prev => {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W3Str"} month={record?.startMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W3Str"} month={record?.startMonth} index={index} week={"W3"} />;
             },
           },
           {
@@ -694,7 +1054,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"startMonth_W4Str"} month={record?.startMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W4Str"} month={record?.startMonth} index={index} week={"W4"} />;
             },
           },
           {
@@ -712,7 +1072,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"startMonth_W5Str"} month={record?.startMonth} index={index} />;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W5Str"} month={record?.startMonth} index={index} week={"W5"} />;
             },
           },
         ],
@@ -742,7 +1102,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} index={index} />;
             },
           },
           {
@@ -760,7 +1120,7 @@ setTableData(prev => {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W1Str"} month={record?.midMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W1Str"} month={record?.midMonth} index={index} week={"W1"} />;
             },
           },
           {
@@ -778,7 +1138,7 @@ setTableData(prev => {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W2Str"} month={record?.midMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W2Str"} month={record?.midMonth} index={index} week={"W2"} />;
             },
           },
           {
@@ -796,7 +1156,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"midMonth_W3Str"} month={record?.midMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W3Str"} month={record?.midMonth} index={index} week={"W3"} />;
             },
           },
           {
@@ -814,7 +1174,7 @@ setTableData(prev => {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W4Str"} month={record?.midMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W4Str"} month={record?.midMonth} index={index} week={"W4"} />;
             },
 
           },
@@ -833,7 +1193,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"midMonth_W5Str"} month={record?.midMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W5Str"} month={record?.midMonth} index={index} week={"W5"} />;
             },
           },
         ],
@@ -863,7 +1223,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} index={index} />;
             },
 
           },
@@ -882,7 +1242,7 @@ setTableData(prev => {
                 };
               }
 
-              return<AddNoteComp text={text} record={record} keyPar={"endMonth_W1Str"} month={record?.endMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W1Str"} month={record?.endMonth} index={index} week={"W1"} />;
             },
           },
           {
@@ -900,7 +1260,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_W2Str"} month={record?.endMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W2Str"} month={record?.endMonth} index={index} week={"W2"} />;
             },
           },
           {
@@ -918,7 +1278,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_W3Str"} month={record?.endMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W3Str"} month={record?.endMonth} index={index} week={"W3"} />;
             },
           },
           {
@@ -936,7 +1296,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_W4Str"} month={record?.endMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W4Str"} month={record?.endMonth} index={index} week={"W4"} />;
             },
           },
           {
@@ -954,7 +1314,7 @@ setTableData(prev => {
                 };
               }
 
-              return  <AddNoteComp text={text} record={record} keyPar={"endMonth_W5Str"} month={record?.endMonth} index={index} /> ;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W5Str"} month={record?.endMonth} index={index} week={"W5"} />;
             },
           },
         ],
@@ -1191,7 +1551,7 @@ setTableData(prev => {
           open={editTalentOfferedCTCModal}
           className="editStartDateModal"
 
-          onCancel={() => {setEditTalentOfferedCTCModal(false); setofferedCTCDetails({});}}
+          onCancel={() => { setEditTalentOfferedCTCModal(false); setofferedCTCDetails({}); }}
         >
           <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexDirection: 'column' }}>
             <label className={uplersStyle.formLabel}>Pipeline Needed</label>
@@ -1216,249 +1576,391 @@ setTableData(prev => {
       )}
 
       {/* Customer overview */}
-         {showChReport && (
-              <Modal
-                width="1200px"
-                centered
-                footer={null}
-                open={showChReport}
-                className="engagementModalStyle"
-                onCancel={() => {
-                  setShowCHReport(false);
-                }}
-              >
-                <div style={{ padding: "20px 15px", display: 'flex', justifyContent: 'space-between' }}>
-                  <h3>
-                    <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
-                  </h3>
-      
-                  {/* 
+      {showChReport && (
+        <Modal
+          width="1200px"
+          centered
+          footer={null}
+          open={showChReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowCHReport(false);
+          }}
+        >
+          <div style={{ padding: "20px 15px", display: 'flex', justifyContent: 'space-between' }}>
+            <h3>
+              <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+            </h3>
+
+            {/* 
                     <button
                         className={uplersStyle.btnPrimary}
                         onClick={() => handleExport(listAchievedData)}
                       >
                         Export
                       </button> */}
-                </div>
-      
-                {achievedLoading ? (
-                  <TableSkeleton />
-                ) : listAchievedData.length > 0 ? (
-                  <>
-                    <div
-                      style={{
-                        padding: "0 20px 20px 20px",
-                        overflowX: "auto",
-                        maxHeight: "500px",
-                      }}
-                    >
-                      <table
+          </div>
+
+          {achievedLoading ? (
+            <TableSkeleton />
+          ) : listAchievedData.length > 0 ? (
+            <>
+              <div
+                style={{
+                  padding: "0 20px 20px 20px",
+                  overflowX: "auto",
+                  maxHeight: "500px",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 14,
+                    textAlign: "left",
+                  }}
+                >
+                  <thead
+                    className={uplersStyle.overwriteTableColor}
+                    style={{ position: "sticky", top: "0" }}
+                  >
+                    <tr style={{ backgroundColor: "#f0f0f0" }}>
+                      <th
                         style={{
-                          width: "100%",
-                          borderCollapse: "collapse",
-                          fontSize: 14,
-                          textAlign: "left",
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
                         }}
                       >
-                        <thead
-                          className={uplersStyle.overwriteTableColor}
-                          style={{ position: "sticky", top: "0" }}
+                        {showTalentCol?.stage_ID === 'CompanyJobCount'
+                          ? "Added Date" : "Created Date"
+                        }
+
+                      </th>
+
+
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Company
+                      </th>
+
+
+
+
+                      {showTalentCol?.stage_ID === 'CompanyJobCount'
+                        && <>
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            URL
+                          </th>
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Jobs Count
+                          </th>
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              backgroundColor: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            Is Reachout
+                          </th>
+                        </>
+
+                      }
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Sales Person
+                      </th>
+
+                      {/*  */}
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Lead Type
+                      </th>
+
+
+                    </tr>
+                  </thead>
+
+                  <tbody style={{ maxHeight: "500px" }}>
+                    {listAchievedData.map((detail, index) => (
+                      <tr
+                        key={index}
+                        style={{ borderBottom: "1px solid #ddd" }}
+                      >
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          <tr style={{ backgroundColor: "#f0f0f0" }}>
-                            <th
-                              style={{
-                                padding: "10px",
-                                border: "1px solid #ddd",
-                                background: "rgb(233, 233, 233) !important",
-                              }}
+                          {detail.hrCreatedDateStr}
+                        </td>
+
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          <a
+                            href={`/viewCompanyDetails/${detail.company_ID}`}
+                            style={{ textDecoration: "underline" }}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {detail.company}{" "}
+                          </a>
+                          {detail.company_Category === "Diamond" && (
+                            <img
+                              src={Diamond}
+                              alt="info"
+                              style={{ width: "16px", height: "16px" }}
+                            />
+                          )}
+                        </td>
+
+
+
+
+                        {showTalentCol?.stage_ID === 'CompanyJobCount'
+                          && <>
+                            <td
+                              style={{ padding: "8px", border: "1px solid #ddd" }}
                             >
-                              {showTalentCol?.stage_ID === 'CompanyJobCount'
-                                ? "Added Date" : "Created Date"
-                              }
-      
-                            </th>
-      
-      
-      
-                            <th
-                              style={{
-                                padding: "10px",
-                                border: "1px solid #ddd",
-                                backgroundColor: "rgb(233, 233, 233) !important",
-                              }}
-                            >
-                              Company
-                            </th>
-        
-      
-                         
-      
-                            {showTalentCol?.stage_ID === 'CompanyJobCount'
-                              && <>
-                               <th
-                              style={{
-                                padding: "10px",
-                                border: "1px solid #ddd",
-                                backgroundColor: "rgb(233, 233, 233) !important",
-                              }}
-                            >
-                               URL
-                            </th>
-                                <th
-                                  style={{
-                                    padding: "10px",
-                                    border: "1px solid #ddd",
-                                    backgroundColor: "rgb(233, 233, 233) !important",
-                                  }}
-                                >
-                                  Jobs Count
-                                </th>
-                                <th
-                                  style={{
-                                    padding: "10px",
-                                    border: "1px solid #ddd",
-                                    backgroundColor: "rgb(233, 233, 233) !important",
-                                  }}
-                                >
-                                  Is Reachout
-                                </th>
-                              </>
-      
-                            }
-         <th
-                              style={{
-                                padding: "10px",
-                                border: "1px solid #ddd",
-                                backgroundColor: "rgb(233, 233, 233) !important",
-                              }}
-                            >
-                              Sales Person
-                            </th>
-      
-                            {/*  */}
-                            <th
-                              style={{
-                                padding: "10px",
-                                border: "1px solid #ddd",
-                                backgroundColor: "rgb(233, 233, 233) !important",
-                              }}
-                            >
-                              Lead Type
-                            </th>
-      
-      
-                          </tr>
-                        </thead>
-      
-                        <tbody style={{ maxHeight: "500px" }}>
-                          {listAchievedData.map((detail, index) => (
-                            <tr
-                              key={index}
-                              style={{ borderBottom: "1px solid #ddd" }}
-                            >
-                              <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
+                              <a
+                                href={`${detail.hrTitle}`}
+                                style={{ textDecoration: "underline" }}
+                                target="_blank"
+                                rel="noreferrer"
                               >
-                                {detail.hrCreatedDateStr}
-                              </td>
-      
-      
-                              <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
-                              >
-                                <a
-                                  href={`/viewCompanyDetails/${detail.company_ID}`}
-                                  style={{ textDecoration: "underline" }}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  {detail.company}{" "}
-                                </a>
-                                {detail.company_Category === "Diamond" && (
-                                  <img
-                                    src={Diamond}
-                                    alt="info"
-                                    style={{ width: "16px", height: "16px" }}
-                                  />
-                                )}
-                              </td>
-      
-      
-      
-                             
-                              {showTalentCol?.stage_ID === 'CompanyJobCount'
-                                && <>
-                                <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
-                              >
-                                <a
-                                  href={`${detail.hrTitle}`}
-                                  style={{ textDecoration: "underline" }}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  {detail.hrTitle}{" "}
-                                </a>
-                              </td>
-                                  <td
-                                    style={{ padding: "8px", border: "1px solid #ddd" }}
-                                  >
-                                    {detail.clientBusinessType}
-      
-                                  </td>
-                                  <td
-                                    style={{ padding: "8px", border: "1px solid #ddd" }}
-                                  >
-                                    {/* <RenderReachoutDD value={detail.talentPayStr} record={detail} index={index} dataIndex={'talentPayStr'} /> */}
-      
-                                  </td>
-                                </>
-                              }
-                               <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
-                              >
-                                {detail.salesPerson}
-                              </td>
-      
-                              <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
-                              >
-                                {detail.lead_Type}
-                              </td>
-      
-      
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </>
-                ) : (
-                  <div
-                    style={{
-                      padding: "10px",
-                      display: "flex",
-                      justifyContent: "center",
-                      fontSize: "20px",
-                      fontWeight: 500,
-                    }}
-                  >
-                    <p>No details available.</p>
-                  </div>
-                )}
-      
-                <div style={{ padding: "10px", textAlign: "right" }}>
-                  <button
-                    className={uplersStyle.btnCancle}
-                    onClick={() => {
-                      setShowCHReport(false);
-                    }}
-                  >
-                    Close
-                  </button>
+                                {detail.hrTitle}{" "}
+                              </a>
+                            </td>
+                            <td
+                              style={{ padding: "8px", border: "1px solid #ddd" }}
+                            >
+                              {detail.clientBusinessType}
+
+                            </td>
+                            <td
+                              style={{ padding: "8px", border: "1px solid #ddd" }}
+                            >
+                              {/* <RenderReachoutDD value={detail.talentPayStr} record={detail} index={index} dataIndex={'talentPayStr'} /> */}
+
+                            </td>
+                          </>
+                        }
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.salesPerson}
+                        </td>
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.lead_Type}
+                        </td>
+
+
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <div
+              style={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "20px",
+                fontWeight: 500,
+              }}
+            >
+              <p>No details available.</p>
+            </div>
+          )}
+
+          <div style={{ padding: "10px", textAlign: "right" }}>
+            <button
+              className={uplersStyle.btnCancle}
+              onClick={() => {
+                setShowCHReport(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {showDFReport && (
+        <Modal
+          transitionName=""
+          width="1050px"
+          centered
+          footer={null}
+          open={showDFReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setSearchTerm("");
+            setShowDFReport(false);
+            setDFFilterListData([]);
+            setDFListData([]);
+          }}
+        >
+          {false ? (
+            <div
+              style={{
+                display: "flex",
+                height: "350px",
+                justifyContent: "center",
+              }}
+            >
+              <Spin size="large" />
+            </div>
+          ) : (
+            <>
+              <div
+                style={{
+                  padding: "45px 15px 10px 15px",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <h3>
+                  <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+                </h3>
+                {/* <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
+                                                      TA : <strong>add</strong>
+                                                    </p> */}
+
+                <input
+                  type="text"
+                  placeholder="Search talent..."
+                  value={searchTerm}
+                  onChange={(e) => handleSummerySearchInput(e.target.value)}
+                  style={{
+                    padding: "6px 10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    marginLeft: "auto",
+                    marginRight: "20px",
+                    minWidth: "260px",
+                  }}
+                />
+              </div>
+
+              {achievedLoading ? (
+                <div>
+                  <Skeleton active />
                 </div>
+              ) : (
+                <div style={{ margin: "5px 10px" }}>
+                  <Table
+                    dataSource={DFFilterListData}
+                    columns={DFColumns}
+                    pagination={false}
+                    scroll={{ x: "1600px", y: "480px" }}
+                  />
+                </div>
+              )}
+
+              <Modal
+                width={"700px"}
+                centered
+                footer={false}
+                open={openSplitHR}
+                className="cloneHRConfWrap"
+                onCancel={() => setSplitHR(false)}
+              // zIndex={99999999}
+              >
+                <SplitHR
+                  onCancel={() => { setSplitHR(false); setHRID('') }}
+                  getHRID={getHRID}
+                  getHRnumber={getHRnumber.hrNumber}
+                  isHRHybrid={getHRnumber.isHybrid}
+                  companyID={getHRnumber.companyID}
+                  impHooks={{ groupList, setGroupList, isSplitLoading, setIsSplitLoading }}
+                />
               </Modal>
-            )}
+
+              {/* {moveToAssessment && (
+                                                    <Modal
+                                                      width="992px"
+                                                      centered
+                                                      footer={null}
+                                                      open={moveToAssessment}
+                                                      className="commonModalWrap"
+                                                      // onOk={() => setVersantModal(false)}
+                                                      onCancel={() => {
+                                                        setMoveToAssessment(false);
+                                                        resetRemarkField("remark");
+                                                        clearRemarkError("remark");
+                                                      }}
+                                                    >
+                                                      <MoveToAssessment
+                                                        onCancel={() => {
+                                                          setMoveToAssessment(false);
+                                                          resetRemarkField("remark");
+                                                          clearRemarkError("remark");
+                                                        }}
+                                                        register={remarkregiter}
+                                                        handleSubmit={remarkSubmit}
+                                                        resetField={resetRemarkField}
+                                                        errors={remarkError}
+                                                        saveRemark={saveRemark}
+                                                        saveRemarkLoading={saveRemarkLoading}
+                                                      />
+                                                    </Modal>
+                                                  )} */}
+
+              <div style={{ padding: "10px 0" }}>
+                <button
+                  className={uplersStyle.btnCancle}
+                  // disabled={isAddingNewTask}
+                  onClick={() => {
+                    setSearchTerm("");
+                    setShowDFReport(false);
+                    setDFFilterListData([]);
+                    setDFListData([]);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </Modal>
+      )}
     </div>
   )
 }
