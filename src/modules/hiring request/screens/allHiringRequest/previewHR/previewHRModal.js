@@ -225,6 +225,7 @@ function PreviewHRModal({
   });
 
   const [refrenceDetails,setReferenceDetails] = useState({type:null,name:"",email:"",comment:""})
+  const [isEditReference,setisEditReferences] = useState(false);
 
   const [transparentEngType,setTransparentEngType] = useState([])
   // const dispatch = useDispatch();
@@ -1415,6 +1416,7 @@ getSkillList();
     let res = await MasterDAO.updateReferenceDetailsDAO(pl);
     setIsLoadingReference(false)
     if(res?.statusCode === 200){
+      setisEditReferences(false)
       message.success("Reference details updated successfully")
     }
   }
@@ -3986,9 +3988,15 @@ async function onHandleBlurImage(content, field) {
                 <div className="formFields">
                   <div className="formFields-box">
                     <div className="formFields-box-inner">
-                      <h2 className="formFields-box-title">References received from clients/talent </h2>
+                      <h2 className="formFields-box-title">References received from clients/talent  {!isEditReference &&<span className="editNewIcon" onClick={() => {
+                            setisEditReferences(true);
+                           
+                          }} ><img src={EditnewIcon} height="25px"  /></span>}  </h2>
                       <div className="vitalInformationContent">
-  <div className="row formFields">
+
+                        {isEditReference ? <>
+                        
+                          <div className="row formFields">
             <div className="col-12">
               <div className="form-group mb-0">
                 <label>Type <span className='error'>*</span></label>
@@ -4056,8 +4064,8 @@ async function onHandleBlurImage(content, field) {
                 Comment <span className='error'>*</span>
                 </label>
                 <textarea
-                  type="text"
                   rows={4}
+                  style={{ minHeight: "120px" }}
                   placeholder="Please enter comment"
                   className="form-control"
                   value={refrenceDetails?.comment}
@@ -4073,10 +4081,43 @@ async function onHandleBlurImage(content, field) {
                   </div></div>
                   
                 <div className="buttonEditGroup">
-                  {/* <button type="button" class="btnPrimary blank" onClick={() => { setisCompanyFoundedOpen(false); setCompanyFoundedValue('') }}> Cancel </button> */}
+                  <button type="button" class="btnPrimary blank" onClick={() => { setisEditReferences(false); }}> Cancel </button>
                   {isLoadingReference ? <Spin size="large" /> :  <button type="button" class="btnPrimary" onClick={() => updateReferenceDetails()}> SAVE </button>}
                  
-                </div>
+                </div> </> :
+                        <>
+                          <div className="funding-rounds">
+                                  <ul>
+                                    <li style={{minWidth:"150px"}}>
+                                      <span>Type</span>
+                                      <p>{refrenceDetails?.type ? refrenceDetails?.type : "NA"}</p>
+                                    </li>
+
+                                    <li style={{minWidth:"150px"}}>
+                                      <span>Name</span>
+                                      <p>{refrenceDetails?.name ? refrenceDetails?.name : "NA"}</p>
+                                    </li>
+
+                                    <li style={{minWidth:"150px"}}>
+                                      <span>Email</span>
+                                     
+                                        <p>{refrenceDetails?.email ? refrenceDetails?.email : "NA"}</p>
+                                    
+                                    </li>
+                                  </ul>
+                                </div>
+                                <div>
+                                  <span style={{
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                    color: "#232323",
+                                    marginBottom: "10px"
+                                  }}>Comment</span>                                 
+                                  <div className="jobDescrition" dangerouslySetInnerHTML={{ __html: refrenceDetails?.comment ? refrenceDetails?.comment : "NA" }} />
+                                </div>
+                        </>
+                        }
+
                         
                       </div>
                     </div>
