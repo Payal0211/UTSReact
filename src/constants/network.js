@@ -244,6 +244,8 @@ export class ReportType {
 	static GET_POD_REVENUE_LIST = 'AllPODsRevenueSummary'
 	static GET_POD_SAVE_SPLIT_LIST = 'SaveSplitHRwithPODs'
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
+	static GET_REFERENCE_DETAILS_LIST = "Get_HRRefCountDetails_Popup"
+	static GET_ANTICIPATED_DETAILS_LIST = 'Get_WCGRAnticipatedHRDetails_Popup'
 	static UPDATE_REACHOUT_STATUS = 'UpdateScrapReachoutStatus'
 	static GET_HR_COUNT_SUMMARY_LIST = 'PODDashboardHRCountSummary'
 	static GET_HR_COUNT_SUMMARY_POPUP_LIST = 'PODDashboardHRCountSummary_PopupDetails'
