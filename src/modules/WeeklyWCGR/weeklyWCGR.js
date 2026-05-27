@@ -71,6 +71,8 @@ function WeeklyWCGR() {
   const [DFListData, setDFListData] = useState([]);
   const [DFFilterListData, setDFFilterListData] = useState([]);
   const [showDFReport, setShowDFReport] = useState(false);
+  const [showReferenceReport, setShowReferenceReport] = useState(false);
+  const [showAnticipatedReport, setShowAnticipatedReport] = useState(false);
   const [openSplitHR, setSplitHR] = useState(false);
   const [getHRnumber, setHRNumber] = useState({ hrNumber: '', isHybrid: false });
   const [getHRID, setHRID] = useState("");
@@ -207,10 +209,10 @@ function WeeklyWCGR() {
   const getExportData = () => {
     return listAchievedData.map((detail) => {
       let row = {};
-  
+
       // Created Date
       row["Created Date"] = detail.hrCreatedDateStr;
-  
+
       // Action / Joining / Offer Date
       if (
         showTalentCol?.category !== "CF" &&
@@ -220,19 +222,19 @@ function WeeklyWCGR() {
       ) {
         let label =
           showTalentCol?.stage === "Joining" ||
-          showTalentCol?.stage === "Selections/Closures" ||
-          showTalentCol?.stage === "Joined"
+            showTalentCol?.stage === "Selections/Closures" ||
+            showTalentCol?.stage === "Joined"
             ? `${showTalentCol?.stage} Date`
             : showTalentCol?.stage === "Preonboarding"
-            ? "Offer Date"
-            : "Action Date";
-  
+              ? "Offer Date"
+              : "Action Date";
+
         row[label] = detail.actionDateStr;
       }
-  
+
       // Company
       row["Company"] = detail.company;
-  
+
       // HR Section
       const showHRSection =
         showTalentCol?.category !== "CF" &&
@@ -240,16 +242,16 @@ function WeeklyWCGR() {
           showTalentCol?.category === "CH" &&
           showTalentCol?.stage !== "Customers with Active HRs"
         );
-  
+
       if (showHRSection) {
         row["HR Number"] = detail.hR_Number;
         row["HR Title"] = detail.hrTitle;
-  
+
         // Not Accepted → Reason
         if (showTalentCol?.stage === "Not Accepted HRs") {
           row["Reason"] = detail.talent;
         }
-  
+
         // TR (hidden for some stages)
         if (
           !["Selections/Closures", "Joined", "Preonboarding"].includes(
@@ -258,7 +260,7 @@ function WeeklyWCGR() {
         ) {
           row["TR"] = detail.tr;
         }
-  
+
         // Revenue / Pipeline
         row[
           ["Joining", "Joined", "Selections/Closures"].includes(
@@ -267,7 +269,7 @@ function WeeklyWCGR() {
             ? "Revenue"
             : "1TR Pipeline"
         ] = detail.hrPipelineStr;
-  
+
         // Total Pipeline
         if (
           !["Joining", "Joined", "Selections/Closures"].includes(
@@ -276,22 +278,22 @@ function WeeklyWCGR() {
         ) {
           row["Total Pipeline"] = detail.total_HRPipelineStr;
         }
-  
+
         row["Uplers Fees %"] = detail.uplersFeesPer;
         row["Talent Pay"] = detail.talentPayStr;
       }
-  
+
       // Sales Person
       row["Sales Person"] = detail.salesPerson;
-  
+
       // Carry Fwd Status (top section)
       if (showTalentCol?.stage === "HRs (Carry Fwd)") {
-        row["Carry Fwd Status"] =detail.carryFwd_HRStatus
+        row["Carry Fwd Status"] = detail.carryFwd_HRStatus
       }
-  
+
       // Lead Type
       row["Lead Type"] = detail.lead_Type;
-  
+
       // Bottom Section (Talent / Carry Forward / HR Status)
       if (showHRSection) {
         // Talent column (only for Joined / Closures)
@@ -305,7 +307,7 @@ function WeeklyWCGR() {
               : "Talent"
           ] = detail.talent;
         }
-  
+
         // Carry Forward Status (bottom)
         if (
           !["Joined", "Selections/Closures", "Added HR (New)", "Preonboarding"].includes(
@@ -313,23 +315,23 @@ function WeeklyWCGR() {
           )
         ) {
           row["Carry Forward Status"] = detail.carryFwd_HRStatus
-           
+
         }
-  
+
         // HR Status
         row["HR Status"] = detail.hrStatus
-          
+
       }
-  
+
       return row;
     });
   };
-  
-  
-    const handleExport = (apiData) => {
-      let DataToExport = getExportData()
-      downloadToExcel(DataToExport, `POD ${showTalentCol?.stage} Report`);
-    };
+
+
+  const handleExport = (apiData) => {
+    let DataToExport = getExportData()
+    downloadToExcel(DataToExport, `POD ${showTalentCol?.stage} Report`);
+  };
 
   const getJoiningRevenueData = async () => {
     setIsLoadingTable(true);
@@ -614,6 +616,98 @@ function WeeklyWCGR() {
     }
   };
 
+  const AnticipatedColumns = [
+    {
+      title: "Anticipated Date",
+      dataIndex: "anticipatedDateStr",
+      key: "anticipatedDateStr",
+      // width: "150px",
+
+    },
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      // width: "150px",
+      render: (text, record) => {
+        return <>
+          <a
+            href={`/viewCompanyDetails/${record.company_ID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}{" "}
+          </a>
+          {record?.company_Category === "Diamond" && (
+            <>
+
+              &nbsp;
+              <img
+                src={Diamond}
+                alt="info"
+                style={{ width: "16px", height: "16px" }}
+              />
+            </>
+          )}
+        </>
+
+      }
+
+    },
+    {
+      title: "HR Title",
+      dataIndex: "hrTitle",
+      key: "hrTitle",
+      // width: "150px",
+
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      // width: "150px",
+      render: (text, value) => {
+        return (
+          <a
+            href={`/allhiringrequest/${value.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        );
+      }
+    },
+    {
+      title: "Lead Type",
+      dataIndex: "lead_Type",
+      key: "lead_Type",
+      // width: "150px",
+
+    },
+    {
+      title: "HR Status",
+      dataIndex: "hrStatus",
+      key: "hrStatus",
+      // width: "150px",
+      render: (text, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          param?.hrStatusCode,
+          text
+        ),
+    },
+    {
+      title: "Uplers Fees",
+      dataIndex: "uplersFeesStr",
+      key: "uplersFeesStr",
+      // width: "150px",
+
+    },
+
+  ]
+
   const DFColumns = [
     {
       title: "Company",
@@ -784,36 +878,36 @@ function WeeklyWCGR() {
     // },
   ];
 
-  
-    const getHRTalentWiseReport = async (row, v, week, month) => {
-      try {
-        setShowAchievedReport(true);
-  
-        const pl = {
-          hrmodel: hrModal,
-          pod_id:  selectedHead,
-          month: month,
-          year: row.wcgrYear,
-          stageID: row.stage_ID,
-          cat: "ALL",
-          week: week ? week : "",
-          multiplePODIds:  ''
-        };
-        setShowTalentCol(row);
-        setAchievedTotal(v);
-        setAchievedLoading(true);
-        const result = await ReportDAO.getPOCPopupReportDAO(pl);
-        setAchievedLoading(false);
-        if (result.statusCode === 200) {
-          setListAchievedData(result.responseBody);
-        } else {
-          setListAchievedData([]);
-        }
-      } catch (err) {
-        console.log(err);
+
+  const getHRTalentWiseReport = async (row, v, week, month) => {
+    try {
+      setShowAchievedReport(true);
+
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        cat: "ALL",
+        week: week ? week : "",
+        multiplePODIds: ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPOCPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
         setListAchievedData([]);
       }
-    };
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
 
   const handleSummerySearchInput = (value) => {
     setSearchTerm(value);
@@ -859,6 +953,60 @@ function WeeklyWCGR() {
     }
   }
 
+  const getHRReferenceCount = async (row, v, week, month) => {
+    try {
+      setShowReferenceReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getReferencePopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
+
+  const getAnticipatedDetails = async (row, v, week, month) => {
+    try {
+      setShowAnticipatedReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getAnticipatedPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
+
 
   const AddNoteComp = ({ text, record, keyPar, month, index, week }) => {
     const isPastMonth = month < moment().format("M");
@@ -871,7 +1019,7 @@ function WeeklyWCGR() {
     const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
     if (record?.stage_Title === "JOINING  ·  Revenue" || record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue") {
-      if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop" ) {
+      if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop") {
         return <div >
           {text ? (
             <div
@@ -925,10 +1073,8 @@ function WeeklyWCGR() {
             )}
         </div>
       }
-    }
 
- if (record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue" && record.stage_ID === "J4") {
-     
+      if (record.stage_ID === "JAllAnticipated") {
         return <div >
           {text ? (
             <div
@@ -940,7 +1086,7 @@ function WeeklyWCGR() {
             >
               <span
                 onClick={() => {
-                  getHRTalentWiseReport(record, text, week, month);
+                  getAnticipatedDetails(record, text, week, month);
                 }}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
@@ -981,7 +1127,119 @@ function WeeklyWCGR() {
               ""
             )}
         </div>
-      
+      }
+    }
+
+    if (record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue" && record.stage_ID === "J4") {
+
+      return <div >
+        {text ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              onClick={() => {
+                getHRTalentWiseReport(record, text, week, month);
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+            <IconContext.Provider
+              value={{
+                // color: "green",
+                style: {
+                  width: "10px",
+                  height: "10px",
+                  marginLeft: "5px",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              {" "}
+              <Tooltip title={`Add/View Comment`} placement="top">
+                <span
+                  onClick={() => {
+                    AddComment(record, keyPar, month);
+                  }}
+                  // className={taStyles.feedbackLabel}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {" "}
+                  <CiCircleInfo />
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
+          </div>
+        )
+          : (
+            ""
+          )}
+      </div>
+
+    }
+
+    if (record?.stage_Title === "CUSTOMER EXPERIENCE" && (record.stage_ID === "refclientortalent")) {
+      return <div >
+        {text ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              onClick={() => {
+                getHRReferenceCount(record, text, week, month);
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+            <IconContext.Provider
+              value={{
+                // color: "green",
+                style: {
+                  width: "10px",
+                  height: "10px",
+                  marginLeft: "5px",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              {" "}
+              <Tooltip title={`Add/View Comment`} placement="top">
+                <span
+                  onClick={() => {
+                    AddComment(record, keyPar, month);
+                  }}
+                  // className={taStyles.feedbackLabel}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {" "}
+                  <CiCircleInfo />
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
+          </div>
+        )
+          : (
+            ""
+          )}
+      </div>
     }
 
     if (record?.stage_Title === "CUSTOMER OVERVIEW") {
@@ -2131,36 +2389,6 @@ function WeeklyWCGR() {
                 />
               </Modal>
 
-              {/* {moveToAssessment && (
-                                                    <Modal
-                                                      width="992px"
-                                                      centered
-                                                      footer={null}
-                                                      open={moveToAssessment}
-                                                      className="commonModalWrap"
-                                                      // onOk={() => setVersantModal(false)}
-                                                      onCancel={() => {
-                                                        setMoveToAssessment(false);
-                                                        resetRemarkField("remark");
-                                                        clearRemarkError("remark");
-                                                      }}
-                                                    >
-                                                      <MoveToAssessment
-                                                        onCancel={() => {
-                                                          setMoveToAssessment(false);
-                                                          resetRemarkField("remark");
-                                                          clearRemarkError("remark");
-                                                        }}
-                                                        register={remarkregiter}
-                                                        handleSubmit={remarkSubmit}
-                                                        resetField={resetRemarkField}
-                                                        errors={remarkError}
-                                                        saveRemark={saveRemark}
-                                                        saveRemarkLoading={saveRemarkLoading}
-                                                      />
-                                                    </Modal>
-                                                  )} */}
-
               <div style={{ padding: "10px 0" }}>
                 <button
                   className={uplersStyle.btnCancle}
@@ -2180,223 +2408,302 @@ function WeeklyWCGR() {
         </Modal>
       )}
 
-        {showAchievedReport && (
-              <Modal
-                width="1200px"
-                centered
-                footer={null}
-                open={showAchievedReport}
-                className="engagementModalStyle"
-                onCancel={() => {
-                  setShowAchievedReport(false);
+      {showAnticipatedReport && (
+        <Modal
+          transitionName=""
+          width="1050px"
+          centered
+          footer={null}
+          open={showAnticipatedReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setSearchTerm("");
+            setShowAnticipatedReport(false);
+            setDFFilterListData([]);
+            setDFListData([]);
+          }}
+        >
+          {false ? (
+            <div
+              style={{
+                display: "flex",
+                height: "350px",
+                justifyContent: "center",
+              }}
+            >
+              <Spin size="large" />
+            </div>
+          ) : (
+            <>
+              <div
+                style={{
+                  padding: "45px 15px 10px 15px",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
                 }}
               >
-                <div style={{ padding: "20px 15px", display: 'flex', justifyContent: 'space-between' }}>
-                  <h3>
-                    <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
-                  </h3>
-      
-                  
-                    <button
-                        className={uplersStyle.btnPrimary}
-                        onClick={() => handleExport(listAchievedData)}
-                      >
-                        Export
-                      </button>
+                <h3>
+                  <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+                </h3>
+
+
+
+              </div>
+
+              {achievedLoading ? (
+                <div>
+                  <Skeleton active />
                 </div>
-      
-                {achievedLoading ? (
-                  <TableSkeleton />
-                ) : listAchievedData.length > 0 ? (
-                  <>
-                    <div
-                      style={{
-                        padding: "0 20px 20px 20px",
-                        overflowX: "auto",
-                        maxHeight: "500px",
-                      }}
-                    >
-                      <table
+              ) : (
+                <div style={{ margin: "5px 10px" }}>
+                  <Table
+                    dataSource={listAchievedData}
+                    columns={AnticipatedColumns}
+                    pagination={false}
+                    scroll={{ x: "1600px", y: "480px" }}
+                  />
+                </div>
+              )}
+
+
+              <div style={{ padding: "10px 0" }}>
+                <button
+                  className={uplersStyle.btnCancle}
+                  // disabled={isAddingNewTask}
+                  onClick={() => {
+                    setSearchTerm("");
+                    setShowAnticipatedReport(false);
+                    setDFFilterListData([]);
+                    setDFListData([]);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </Modal>
+      )}
+
+      {showAchievedReport && (
+        <Modal
+          width="1200px"
+          centered
+          footer={null}
+          open={showAchievedReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowAchievedReport(false);
+          }}
+        >
+          <div style={{ padding: "20px 15px", display: 'flex', justifyContent: 'space-between' }}>
+            <h3>
+              <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+            </h3>
+
+
+            <button
+              className={uplersStyle.btnPrimary}
+              onClick={() => handleExport(listAchievedData)}
+            >
+              Export
+            </button>
+          </div>
+
+          {achievedLoading ? (
+            <TableSkeleton />
+          ) : listAchievedData.length > 0 ? (
+            <>
+              <div
+                style={{
+                  padding: "0 20px 20px 20px",
+                  overflowX: "auto",
+                  maxHeight: "500px",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 14,
+                    textAlign: "left",
+                  }}
+                >
+                  <thead
+                    className={uplersStyle.overwriteTableColor}
+                    style={{ position: "sticky", top: "0" }}
+                  >
+                    <tr style={{ backgroundColor: "#f0f0f0" }}>
+                      <th
                         style={{
-                          width: "100%",
-                          borderCollapse: "collapse",
-                          fontSize: 14,
-                          textAlign: "left",
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
                         }}
                       >
-                        <thead
-                          className={uplersStyle.overwriteTableColor}
-                          style={{ position: "sticky", top: "0" }}
-                        >
-                          <tr style={{ backgroundColor: "#f0f0f0" }}>
+                        {/* {showTalentCol?.stage === "New Clients"
+                                ? "Created Date"
+                                : "Company Created Date"} */}
+                        Created Date
+                      </th>
+
+                      {showTalentCol?.stage === 'Added HR (New)' && <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        TR Updated Date
+                      </th>}
+
+                      {showTalentCol?.category !== "CF" &&
+                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && (
+                          <th
+                            style={{
+                              padding: "10px",
+                              border: "1px solid #ddd",
+                              background: "rgb(233, 233, 233) !important",
+                            }}
+                          >
+                            {showTalentCol?.stage === "Joining" ||
+                              showTalentCol?.stage === "Selections/Closures" || showTalentCol?.stage === 'Joined'
+                              ? showTalentCol?.stage
+                              : showTalentCol?.stage === "Preonboarding" ? "Offer" : "Action"}{" "}
+                            Date
+                          </th>
+                        )}
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Company
+                      </th>
+                      {showTalentCol?.category !== "CF" &&
+                        (showTalentCol?.category === "CH" &&
+                          showTalentCol?.stage !== "Customers with Active HRs"
+                          ? false
+                          : true) && (
+                          <>
                             <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
-                                background: "rgb(233, 233, 233) !important",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
                               }}
                             >
-                              {/* {showTalentCol?.stage === "New Clients"
-                                ? "Created Date"
-                                : "Company Created Date"} */}
-                              Created Date
+                              HR Number
                             </th>
-      
-                            {showTalentCol?.stage === 'Added HR (New)' &&   <th
-                                  style={{
-                                    padding: "10px",
-                                    border: "1px solid #ddd",
-                                    background: "rgb(233, 233, 233) !important",
-                                  }}
-                                >
-                                 TR Updated Date
-                                </th> }
-      
-                            {showTalentCol?.category !== "CF" &&
-                              showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' &&(
+                            <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              HR Title
+                            </th>
+                            {showTalentCol?.stage === "Not Accepted HRs" && <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              Reason
+                            </th>}
+                            {(showTalentCol?.stage !== 'Selections/Closures' && showTalentCol?.stage !== 'Joined' && showTalentCol?.stage !== 'Preonboarding') && <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              TR
+                            </th>}
+                            <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              {showTalentCol?.stage === "Joining" || showTalentCol?.stage === "Joined" ||
+                                showTalentCol?.stage === "Selections/Closures"
+                                ? "Revenue"
+                                : " 1TR Pipeline"}
+                            </th>
+                            {showTalentCol?.stage !== "Joining" && showTalentCol?.stage !== "Joined" &&
+                              showTalentCol?.stage !==
+                              "Selections/Closures" && (
                                 <th
                                   style={{
                                     padding: "10px",
                                     border: "1px solid #ddd",
-                                    background: "rgb(233, 233, 233) !important",
+                                    backgroundColor:
+                                      "rgb(233, 233, 233) !important",
                                   }}
                                 >
-                                  {showTalentCol?.stage === "Joining" ||
-                                    showTalentCol?.stage === "Selections/Closures" || showTalentCol?.stage === 'Joined'
-                                    ? showTalentCol?.stage
-                                    : showTalentCol?.stage === "Preonboarding" ? "Offer" :  "Action"}{" "}
-                                  Date
+                                  Total Pipeline
                                 </th>
                               )}
-      
+
                             <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
-                                backgroundColor: "rgb(233, 233, 233) !important",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
                               }}
                             >
-                              Company
+                              Uplers Fees %
                             </th>
-                            {showTalentCol?.category !== "CF" &&
-                              (showTalentCol?.category === "CH" &&
-                                showTalentCol?.stage !== "Customers with Active HRs"
-                                ? false
-                                : true) && (
-                                <>
-                                  <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    HR Number
-                                  </th>
-                                  <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    HR Title
-                                  </th>
-                                  {showTalentCol?.stage === "Not Accepted HRs" && <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    Reason
-                                  </th>}
-                                 {(showTalentCol?.stage !== 'Selections/Closures' && showTalentCol?.stage !== 'Joined' && showTalentCol?.stage !== 'Preonboarding') && <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    TR
-                                  </th>} 
-                                  <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    {showTalentCol?.stage === "Joining" || showTalentCol?.stage === "Joined" ||
-                                      showTalentCol?.stage === "Selections/Closures"
-                                      ? "Revenue"
-                                      : " 1TR Pipeline"}
-                                  </th>
-                                  {showTalentCol?.stage !== "Joining" && showTalentCol?.stage !== "Joined"  &&
-                                    showTalentCol?.stage !==
-                                    "Selections/Closures" && (
-                                      <th
-                                        style={{
-                                          padding: "10px",
-                                          border: "1px solid #ddd",
-                                          backgroundColor:
-                                            "rgb(233, 233, 233) !important",
-                                        }}
-                                      >
-                                        Total Pipeline
-                                      </th>
-                                    )}
-      
-                                  <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    Uplers Fees %
-                                  </th>
-                                  <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    Talent Pay
-                                  </th>
-                                </>
-                              )}
-      
                             <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
-                                backgroundColor: "rgb(233, 233, 233) !important",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
                               }}
                             >
-                              Sales Person
+                              Talent Pay
                             </th>
-                            {showTalentCol?.stage === "HRs (Carry Fwd)" && (
-                              <th
-                                style={{
-                                  padding: "10px",
-                                  border: "1px solid #ddd",
-                                  backgroundColor: "rgb(233, 233, 233) !important",
-                                }}
-                              >
-                                Carry Fwd Status
-                              </th>
-                            )}
-      
-                            {/* <th
+                          </>
+                        )}
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Sales Person
+                      </th>
+                      {showTalentCol?.stage === "HRs (Carry Fwd)" && (
+                        <th
+                          style={{
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "rgb(233, 233, 233) !important",
+                          }}
+                        >
+                          Carry Fwd Status
+                        </th>
+                      )}
+
+                      {/* <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -2405,302 +2712,547 @@ function WeeklyWCGR() {
                             >
                               Client Business Type
                             </th> */}
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        Lead Type
+                      </th>
+
+                      {showTalentCol?.category !== "CF" &&
+                        (showTalentCol?.category === "CH" &&
+                          showTalentCol?.stage !== "Customers with Active HRs"
+                          ? false
+                          : true) && (
+                          <>
+                            {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
+                            </th>}
+
+                            {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') && <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              Carry Forward Status
+                            </th>}
+
                             <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
-                                backgroundColor: "rgb(233, 233, 233) !important",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
                               }}
                             >
-                              Lead Type
+                              HR Status
                             </th>
-      
-                            {showTalentCol?.category !== "CF" &&
-                              (showTalentCol?.category === "CH" &&
-                                showTalentCol?.stage !== "Customers with Active HRs"
-                                ? false
-                                : true) && (
-                                <>
-                                  {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
-                                  </th>}
-      
-                                 {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') &&<th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    Carry Forward Status
-                                  </th>} 
-      
-                                  <th
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #ddd",
-                                      backgroundColor:
-                                        "rgb(233, 233, 233) !important",
-                                    }}
-                                  >
-                                    HR Status
-                                  </th>
-                                </>
-                              )}
-                          </tr>
-                        </thead>
-      
-                        <tbody style={{ maxHeight: "500px" }}>
-                          {listAchievedData.map((detail, index) => (
-                            <tr
-                              key={index}
-                              style={{ borderBottom: "1px solid #ddd" }}
+                          </>
+                        )}
+                    </tr>
+                  </thead>
+
+                  <tbody style={{ maxHeight: "500px" }}>
+                    {listAchievedData.map((detail, index) => (
+                      <tr
+                        key={index}
+                        style={{ borderBottom: "1px solid #ddd" }}
+                      >
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.hrCreatedDateStr}
+                        </td>
+
+                        {showTalentCol?.stage === 'Added HR (New)' && <td
+                          style={{
+                            padding: "8px",
+                            border: "1px solid #ddd",
+                          }}
+                        >
+                          {detail.actionDateStr}
+                        </td>}
+
+                        {showTalentCol?.category !== "CF" &&
+                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && (
+                            <td
+                              style={{
+                                padding: "8px",
+                                border: "1px solid #ddd",
+                              }}
                             >
+                              {detail.actionDateStr}
+                            </td>
+                          )}
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          <a
+                            href={`/viewCompanyDetails/${detail.company_ID}`}
+                            style={{ textDecoration: "underline" }}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {detail.company}{" "}
+                          </a>
+                          {detail.company_Category === "Diamond" && (
+                            <img
+                              src={Diamond}
+                              alt="info"
+                              style={{ width: "16px", height: "16px" }}
+                            />
+                          )}
+                        </td>
+                        {showTalentCol?.category !== "CF" &&
+                          (showTalentCol?.category === "CH" &&
+                            showTalentCol?.stage !== "Customers with Active HRs"
+                            ? false
+                            : true) && (
+                            <>
                               <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
                               >
-                                {detail.hrCreatedDateStr}
-                              </td>
-      
-                               {showTalentCol?.stage === 'Added HR (New)' &&  <td
-                                    style={{
-                                      padding: "8px",
-                                      border: "1px solid #ddd",
-                                    }}
+                                {detail.hiringRequestID > 0 ? (
+                                  <a
+                                    href={`/allhiringrequest/${detail.hiringRequestID}`}
+                                    style={{ textDecoration: "underline" }}
+                                    target="_blank"
+                                    rel="noreferrer"
                                   >
-                                    {detail.actionDateStr}
-                                  </td> }
-                                  
-                              {showTalentCol?.category !== "CF" &&
-                                showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && (
+                                    {detail.hR_Number}
+                                  </a>
+                                ) : (
+                                  detail.hR_Number
+                                )}
+                              </td>
+                              <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {detail.hrTitle}
+                              </td>
+                              {showTalentCol?.stage === "Not Accepted HRs" && <td
+                                style={{
+                                  minWidth: '300px',
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {detail.talent}
+                              </td>}
+                              {(showTalentCol?.stage !== 'Selections/Closures' && showTalentCol?.stage !== 'Joined' && showTalentCol?.stage !== 'Preonboarding') && <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {detail.tr}
+                              </td>}
+                              <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {detail.hrPipelineStr}
+                              </td>
+                              {showTalentCol?.stage !== "Joining" && showTalentCol?.stage !== "Joined" &&
+                                showTalentCol?.stage !==
+                                "Selections/Closures" && (
                                   <td
                                     style={{
                                       padding: "8px",
                                       border: "1px solid #ddd",
                                     }}
                                   >
-                                    {detail.actionDateStr}
+                                    {detail.total_HRPipelineStr}
                                   </td>
                                 )}
-      
                               <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
                               >
-                                <a
-                                  href={`/viewCompanyDetails/${detail.company_ID}`}
-                                  style={{ textDecoration: "underline" }}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  {detail.company}{" "}
-                                </a>
-                                {detail.company_Category === "Diamond" && (
-                                  <img
-                                    src={Diamond}
-                                    alt="info"
-                                    style={{ width: "16px", height: "16px" }}
-                                  />
-                                )}
+                                {detail.uplersFeesPer}
                               </td>
-                              {showTalentCol?.category !== "CF" &&
-                                (showTalentCol?.category === "CH" &&
-                                  showTalentCol?.stage !== "Customers with Active HRs"
-                                  ? false
-                                  : true) && (
-                                  <>
-                                    <td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {detail.hiringRequestID > 0 ? (
-                                        <a
-                                          href={`/allhiringrequest/${detail.hiringRequestID}`}
-                                          style={{ textDecoration: "underline" }}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          {detail.hR_Number}
-                                        </a>
-                                      ) : (
-                                        detail.hR_Number
-                                      )}
-                                    </td>
-                                    <td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {detail.hrTitle}
-                                    </td>
-                                    {showTalentCol?.stage === "Not Accepted HRs" && <td
-                                      style={{
-                                        minWidth: '300px',
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {detail.talent}
-                                    </td>}
-                                   {(showTalentCol?.stage !== 'Selections/Closures' && showTalentCol?.stage !== 'Joined' && showTalentCol?.stage !== 'Preonboarding') && <td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {detail.tr}
-                                    </td>} 
-                                    <td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {detail.hrPipelineStr}
-                                    </td>
-                                    {showTalentCol?.stage !== "Joining" && showTalentCol?.stage !== "Joined" &&
-                                      showTalentCol?.stage !==
-                                      "Selections/Closures" && (
-                                        <td
-                                          style={{
-                                            padding: "8px",
-                                            border: "1px solid #ddd",
-                                          }}
-                                        >
-                                          {detail.total_HRPipelineStr}
-                                        </td>
-                                      )}
-                                    <td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {detail.uplersFeesPer}
-                                    </td>
-                                    <td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {detail.talentPayStr}
-                                    </td>
-                                  </>
-                                )}
-      
                               <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
                               >
-                                {detail.salesPerson}
+                                {detail.talentPayStr}
                               </td>
-                              {showTalentCol?.stage === "HRs (Carry Fwd)" && (
-                                <td
-                                  style={{ padding: "8px", border: "1px solid #ddd" }}
-                                >
-                                  {All_Hiring_Request_Utils.GETHRSTATUS(
-                                    Number(detail.carryFwd_HRStatusCode),
-                                    detail.carryFwd_HRStatus
-                                  )}
-                                </td>
-                              )}
-      
-                              {/* <td
+                            </>
+                          )}
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.salesPerson}
+                        </td>
+                        {showTalentCol?.stage === "HRs (Carry Fwd)" && (
+                          <td
+                            style={{ padding: "8px", border: "1px solid #ddd" }}
+                          >
+                            {All_Hiring_Request_Utils.GETHRSTATUS(
+                              Number(detail.carryFwd_HRStatusCode),
+                              detail.carryFwd_HRStatus
+                            )}
+                          </td>
+                        )}
+
+                        {/* <td
                                 style={{ padding: "8px", border: "1px solid #ddd" }}
                               >
                                 {detail.clientBusinessType}
                               </td> */}
-                              <td
-                                style={{ padding: "8px", border: "1px solid #ddd" }}
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.lead_Type}
+                        </td>
+
+                        {showTalentCol?.category !== "CF" &&
+                          (showTalentCol?.category === "CH" &&
+                            showTalentCol?.stage !== "Customers with Active HRs"
+                            ? false
+                            : true) && (
+                            <>
+                              {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                  minWidth: showTalentCol?.stage === "Lost (Pipeline)" ? '250px' : '',
+                                  // whiteSpace: "normal",    // ✅ allow wrapping
+                                  // wordBreak: "break-word",
+                                }}
                               >
-                                {detail.lead_Type}
-                              </td>
-      
-                              {showTalentCol?.category !== "CF" &&
-                                (showTalentCol?.category === "CH" &&
-                                  showTalentCol?.stage !== "Customers with Active HRs"
-                                  ? false
-                                  : true) && (
-                                  <>
-                                    {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                        minWidth: showTalentCol?.stage === "Lost (Pipeline)" ? '250px' : '',
-                                        // whiteSpace: "normal",    // ✅ allow wrapping
-                                        // wordBreak: "break-word",
-                                      }}
-                                    >
-                                      {detail.talent}
-                                    </td>}
-      
-                                    {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures'|| showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') &&<td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {All_Hiring_Request_Utils.GETHRSTATUS(
-                                        Number(detail.carryFwd_HRStatusCode),
-                                        detail.carryFwd_HRStatus 
-                                      )}
-                                    </td>} 
-      
-                                    <td
-                                      style={{
-                                        padding: "8px",
-                                        border: "1px solid #ddd",
-                                      }}
-                                    >
-                                      {All_Hiring_Request_Utils.GETHRSTATUS(
-                                        Number(detail.hrStatusCode),
-                                        detail.hrStatus
-                                      )}
-                                    </td>
-                                  </>
+                                {detail.talent}
+                              </td>}
+
+                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') && <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {All_Hiring_Request_Utils.GETHRSTATUS(
+                                  Number(detail.carryFwd_HRStatusCode),
+                                  detail.carryFwd_HRStatus
                                 )}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </>
-                ) : (
-                  <div
-                    style={{
-                      padding: "10px",
-                      display: "flex",
-                      justifyContent: "center",
-                      fontSize: "20px",
-                      fontWeight: 500,
-                    }}
+                              </td>}
+
+                              <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                }}
+                              >
+                                {All_Hiring_Request_Utils.GETHRSTATUS(
+                                  Number(detail.hrStatusCode),
+                                  detail.hrStatus
+                                )}
+                              </td>
+                            </>
+                          )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <div
+              style={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "20px",
+                fontWeight: 500,
+              }}
+            >
+              <p>No details available.</p>
+            </div>
+          )}
+
+          <div style={{ padding: "10px", textAlign: "right" }}>
+            <button
+              className={uplersStyle.btnCancle}
+              onClick={() => {
+                setShowAchievedReport(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {showReferenceReport && (
+        <Modal
+          width="1200px"
+          centered
+          footer={null}
+          open={showReferenceReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setShowReferenceReport(false);
+          }}
+        >
+          <div style={{ padding: "20px 15px", display: 'flex', justifyContent: 'space-between' }}>
+            <h3>
+              {/* <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b> */}
+              <b>Delight Reference</b> <b> : ({achievedTotal})</b>
+            </h3>
+
+
+
+          </div>
+
+          {achievedLoading ? (
+            <TableSkeleton />
+          ) : listAchievedData.length > 0 ? (
+            <>
+              <div
+                style={{
+                  padding: "0 20px 20px 20px",
+                  overflowX: "auto",
+                  maxHeight: "500px",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 14,
+                    textAlign: "left",
+                  }}
+                >
+                  <thead
+                    className={uplersStyle.overwriteTableColor}
+                    style={{ position: "sticky", top: "0" }}
                   >
-                    <p>No details available.</p>
-                  </div>
-                )}
-      
-                <div style={{ padding: "10px", textAlign: "right" }}>
-                  <button
-                    className={uplersStyle.btnCancle}
-                    onClick={() => {
-                      setShowAchievedReport(false);
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
-              </Modal>
-            )}
+                    <tr style={{ backgroundColor: "#f0f0f0" }}>
+
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+
+                        Reference Date
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+
+                        Company
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+
+                        HR Number
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+
+                        HR Title
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+
+                        Ref. By
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+
+                        Name
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+
+                        Email ID
+                      </th>
+                      <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+
+                        Remarks
+                      </th>
+
+                    </tr>
+                  </thead>
+
+                  <tbody style={{ maxHeight: "500px" }}>
+                    {listAchievedData.map((detail, index) => (
+                      <tr
+                        key={index}
+                        style={{ borderBottom: "1px solid #ddd" }}
+                      >
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.refCreatedDate}
+                        </td>
+
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          <a
+                            href={`/viewCompanyDetails/${detail.company_ID}`}
+                            style={{ textDecoration: "underline" }}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {detail.companyName}{" "}
+                          </a>
+                          {detail.companyCategory === "Diamond" && (
+                            <img
+                              src={Diamond}
+                              alt="info"
+                              style={{ width: "16px", height: "16px" }}
+                            />
+                          )}
+                        </td>
+                        <td
+                          style={{
+                            padding: "8px",
+                            border: "1px solid #ddd",
+                          }}
+                        >
+                          {detail.hiringRequestID > 0 ? (
+                            <a
+                              href={`/allhiringrequest/${detail.hiringRequestID}`}
+                              style={{ textDecoration: "underline" }}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {detail.hrNumber}
+                            </a>
+                          ) : (
+                            detail.hrNumber
+                          )}
+                        </td>
+                        <td
+                          style={{
+                            padding: "8px",
+                            border: "1px solid #ddd",
+                          }}
+                        >
+                          {detail.hrTitle}
+                        </td>
+
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.referenceBy}
+                        </td>
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.referenceGivenName}
+                        </td>
+                        <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.referenceGivenEmailID}
+                        </td>
+                        <td
+                          style={{ minWidth: "350px", padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.referenceRemarks}
+                        </td>
+
+
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <div
+              style={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "20px",
+                fontWeight: 500,
+              }}
+            >
+              <p>No details available.</p>
+            </div>
+          )}
+
+          <div style={{ padding: "10px", textAlign: "right" }}>
+            <button
+              className={uplersStyle.btnCancle}
+              onClick={() => {
+                setShowReferenceReport(false);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   )
 }
