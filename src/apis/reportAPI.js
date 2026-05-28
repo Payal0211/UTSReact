@@ -1144,6 +1144,24 @@ getPOChrSummaryPopupReportAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getNegotiationPopupReportAPI');
 		}
 	},
+	getTalentDetailsReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.UTS_REPORT +
+			ReportType.GET_TALENT_POPUP_DETAILS_LIST + `?pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}
+			&stage_id=${payload?.stageID}&week_No=${payload?.week}&multiple_PODIds=${payload?.multiplePODIds?? ''}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getTalentDetailsReportAPI');
+		}
+	},
 	getNegotiationMultimonthPopupReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

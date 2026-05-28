@@ -253,6 +253,7 @@ export class ReportType {
 	static GET_FTE_PLANNING_SUMMARY_REPORT = 'AllFTEPODsGoalPlanningSummary'
 	static GET_POC_DF_DETAILS_LIST = 'PODDashboard_DeliveryFunnelDetails'
 	static GET_NEGOTIATION_POPUP_DETAILS_LIST = 'PODNegotiationToJoiningFunnelSummary_Popup'
+	static GET_TALENT_POPUP_DETAILS_LIST = 'Get_WCGRHRTalentDetails_Popup'
 	static GET_FTE_POPUP_DETAILS_LIST = 'AllFTEPODsNegotiationToJoiningFunnelSummary_Popup'
 	static GET_POD_DASHBOARD_MULTIPLE_MONTH_POUP = 'PODDashboardForMutipleMonths_PopupDetails'
 	static GET_POD_DASHBOARD_MULTIPLE_MONTH_DF_POUP = 'PODDashboardForMutipleMonthsDeliveryFunnelDetails'

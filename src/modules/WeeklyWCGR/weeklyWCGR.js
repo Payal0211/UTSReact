@@ -82,6 +82,7 @@ function WeeklyWCGR() {
   }])
   const [searchTerm, setSearchTerm] = useState("");
   const [showAchievedReport, setShowAchievedReport] = useState(false);
+  const [showTalentReport, setShowTalentReport] = useState(false);
 
   const [userData, setUserData] = useState({});
   useEffect(() => {
@@ -518,7 +519,7 @@ function WeeklyWCGR() {
         month: month,
         year: row.wcgrYear,
         stageID: row.stage_ID,
-        cat: "CH",
+        cat: row.category ? row.category : "CH",
         week: week ? week : "",
         multiplePODIds: ''
       };
@@ -655,7 +656,7 @@ function WeeklyWCGR() {
       }
 
     },
-     {
+    {
       title: "HR #",
       dataIndex: "hR_Number",
       key: "hR_Number",
@@ -680,14 +681,14 @@ function WeeklyWCGR() {
       // width: "150px",
 
     },
-   {
+    {
       title: "Uplers Fees",
       dataIndex: "uplersFeesStr",
       key: "uplersFeesStr",
       // width: "150px",
 
     },
-   
+
     {
       title: "HR Status",
       dataIndex: "hrStatus",
@@ -699,7 +700,7 @@ function WeeklyWCGR() {
           text
         ),
     },
-     {
+    {
       title: "Lead Type",
       dataIndex: "lead_Type",
       key: "lead_Type",
@@ -890,7 +891,7 @@ function WeeklyWCGR() {
         month: month,
         year: row.wcgrYear,
         stageID: row.stage_ID,
-        cat: "ALL",
+        cat: row?.category ? row?.category : "ALL",
         week: week ? week : "",
         multiplePODIds: ''
       };
@@ -919,6 +920,17 @@ function WeeklyWCGR() {
           talent.email.toLowerCase().includes(value.toLowerCase()))
     );
     setDFFilterListData(filteredData);
+  };
+
+  const handleTalentSearchInput = (value) => {
+    setSearchTerm(value);
+    const filteredData = listAchievedData.filter(
+      (talent) =>
+        talent.talent.toLowerCase().includes(value.toLowerCase()) ||
+        (talent.email &&
+          talent.email.toLowerCase().includes(value.toLowerCase()))
+    );
+    setListAchievedData(filteredData);
   };
 
   const getDFDetails = async (row, v, week, month) => {
@@ -953,6 +965,34 @@ function WeeklyWCGR() {
       setDFFilterListData([]);
     }
   }
+
+  const getHRTalentDetails = async (row, v, week, month) => {
+    try {
+      setShowTalentReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+        multiplePODIds: ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getTalentDetailsReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
 
   const getHRReferenceCount = async (row, v, week, month) => {
     try {
@@ -1008,66 +1048,66 @@ function WeeklyWCGR() {
     }
   };
 
-  const getFunnelSummaryDetailsPopup  = async (row, v,  week, month) => {
-      try {
-        // setShowSummaryReport(true);
-        setShowCHReport(true);
-        const pl = {
-          hrmodel: hrModal,
-          pod_id: selectedHead,
-          month: month,
-          year: row?.wcgrYear,
-          stageID: row.stage_ID,
-          cat: row.category,
-          multiplePODIds:  ''
-        };
-        setShowTalentCol(row);
-        setAchievedTotal(v);
-        setAchievedLoading(true);
-        const result = await ReportDAO.getPOChrSummaryPopupReportDAO(pl);
-        setAchievedLoading(false);
-        if (result.statusCode === 200) {
-          setListAchievedData(result.responseBody);
-        } else {
-          setListAchievedData([]);
-        }
-      } catch (err) {
-        console.log(err);
+  const getFunnelSummaryDetailsPopup = async (row, v, week, month) => {
+    try {
+      // setShowSummaryReport(true);
+      setShowCHReport(true);
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: month,
+        year: row?.wcgrYear,
+        stageID: row.stage_ID,
+        cat: row.category,
+        multiplePODIds: ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPOChrSummaryPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
         setListAchievedData([]);
       }
-
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
     }
 
+  }
+
   const AddCommentIcon = ({ record, keyPar, month }) => {
-    return    <IconContext.Provider
-              value={{
-                // color: "green",
-                style: {
-                  width: "10px",
-                  height: "10px",
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              {" "}
-              <Tooltip title={`Add/View Comment`} placement="top">
-                <span
-                  onClick={() => {
-                    AddComment(record, keyPar, month);
-                  }}
-                  // className={taStyles.feedbackLabel}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {" "}
-                  <CiCircleInfo />
-                </span>{" "}
-              </Tooltip>
-            </IconContext.Provider>
+    return <IconContext.Provider
+      value={{
+        // color: "green",
+        style: {
+          width: "10px",
+          height: "10px",
+          marginLeft: "5px",
+          cursor: "pointer",
+        },
+      }}
+    >
+      {" "}
+      <Tooltip title={`Add/View Comment`} placement="top">
+        <span
+          onClick={() => {
+            AddComment(record, keyPar, month);
+          }}
+          // className={taStyles.feedbackLabel}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {" "}
+          <CiCircleInfo />
+        </span>{" "}
+      </Tooltip>
+    </IconContext.Provider>
   }
 
 
@@ -1127,7 +1167,7 @@ function WeeklyWCGR() {
               >
                 {text}
               </span>
-               <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
             </div>
           )
             : (
@@ -1166,31 +1206,61 @@ function WeeklyWCGR() {
 
     }
 
-    if (record?.stage_Title === "CUSTOMER EXPERIENCE" && (record.stage_ID === "refclientortalent")) {
-      return <div >
-        {text ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <span
-              onClick={() => {
-                getHRReferenceCount(record, text, week, month);
+    if (record?.stage_Title === "CUSTOMER EXPERIENCE") {
+      if (record.stage_ID === "refclientortalent") {
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
-              style={{ cursor: "pointer", color: "#1890ff" }}
             >
-              {text}
-            </span>
-          <AddCommentIcon record={record} keyPar={keyPar} month={month} />
-          </div>
-        )
-          : (
-            ""
-          )}
-      </div>
+              <span
+                onClick={() => {
+                  getHRReferenceCount(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+
+      if (record.stage_ID === "R1" || record.stage_ID === "Hired") {
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getHRTalentDetails(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+
     }
 
     if (record?.stage_Title === "CUSTOMER OVERVIEW") {
@@ -1213,33 +1283,52 @@ function WeeklyWCGR() {
       </div>
     }
 
-    if(record?.stage_Title === 'NEW CUSTOMER FUNNEL' && week === undefined) {
-      if(record.stage_ID === "NHR" ||record.stage_ID === "J"){
-return <div >
-        {text ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+    if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning" && (record.stage_ID === "CF")) {
+      return <div >
+        {text ?
+          <span
+            onClick={() => {
+              getHRTalentWiseReport(record, text, week, month)
+
             }}
+            style={{ cursor: "pointer", color: "#1890ff" }}
           >
-            <span
-              onClick={() => {
-                 getFunnelSummaryDetailsPopup(record, text, week, month);
-              }}
-              style={{ cursor: "pointer", color: "#1890ff" }}
-            >
-              {text}
-            </span>
-           
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
-          </div>
-        )
+            {text}
+          </span>
+
           : (
             ""
           )}
       </div>
+    }
+
+    if (record?.stage_Title === 'NEW CUSTOMER FUNNEL' && week === undefined) {
+      if (record.stage_ID === "NHR" || record.stage_ID === "J") {
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getFunnelSummaryDetailsPopup(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
       }
     }
 
@@ -1781,6 +1870,61 @@ return <div >
     columnCount = countLeafColumns(columns);
     return columns;
   };
+
+  const ProfileColumns = () => {
+
+    return [
+      {
+        title: "Action Date",
+        dataIndex: "actionDate",
+        key: "actionDate",
+        width: "150px",
+        render: (text) => {
+          return text
+        }
+      }, {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+        width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+        width: "170px",
+        render: (text, value) => {
+          return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+        }
+      },
+      {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        width: "200px",
+      },
+      {
+        title: "Talent",
+        dataIndex: "talent",
+        key: "talent",
+        width: "100px",
+      },
+      {
+        title: "Slot/Remark",
+        dataIndex: "slotDetail",
+        key: "slotDetail",
+        width: "350px",
+        render: (text, result) => {
+          return <div dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+        }
+      }
+
+
+
+    ];
+
+  }
 
   const commentColumn = [
     {
@@ -3231,6 +3375,103 @@ return <div >
               Close
             </button>
           </div>
+        </Modal>
+      )}
+
+      {showTalentReport && (
+        <Modal
+          transitionName=""
+          width="1020px"
+          centered
+          footer={null}
+          open={showTalentReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setSearchTerm('')
+            setShowTalentReport(false);
+            //  setIsCarryForwardPipelineClicked(false);
+            //   setRevenueColumn(false)
+            //   setIsPipelineClicked(false)
+            // setHRTalentListFourCount([]);
+            // setFilteredTalentList([]);
+          }}
+        >
+          {achievedLoading ?
+            <div style={{ display: "flex", height: "350px", justifyContent: 'center' }}>
+              <Spin size="large" />
+            </div> :
+            <>
+              <div
+                style={{
+                  padding: "45px 15px 10px 15px",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                {console.log('profileInfo', showTalentCol)}
+                <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+
+                {/* <input
+                                  type="text"
+                                  placeholder="Search talent..."
+                                  value={searchTerm}
+                                  onChange={(e) => handleTalentSearchInput(e.target.value)}
+                                  style={{
+                                      padding: "6px 10px",
+                                      border: "1px solid #ccc",
+                                      borderRadius: "4px",
+                                      marginLeft: "auto", 
+                                      marginRight:"20px",
+                                      minWidth: "260px",
+                                  }}
+                                /> */}
+
+                {/* <button
+                          className={uplersStyle.btnPrimary}
+                          style={{height:'35px',padding:'5px 10px'}}
+                          onClick={() =>handleTalentExport(listAchievedData)}
+                        >
+                          Export
+                        </button> */}
+              </div>
+
+
+              {achievedLoading ? (
+                <div>
+                  <Skeleton active />
+                </div>
+              ) : (
+                <div style={{ margin: "5px 10px" }}>
+                  <Table
+                    dataSource={listAchievedData}
+                    columns={ProfileColumns()}
+                    pagination={false}
+                    scroll={{ y: "480px" }}
+                  />
+                </div>
+              )}
+
+
+
+              <div style={{ padding: "10px 0" }}>
+                <button
+                  className={uplersStyle.btnCancle}
+                  onClick={() => {
+                    setSearchTerm('')
+                    setShowTalentReport(false);
+                    // setIsCarryForwardPipelineClicked(false);
+                    // setRevenueColumn(false)
+                    // setIsPipelineClicked(false)
+                    // setHRTalentListFourCount([]);
+                    // setFilteredTalentList([]);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>}
         </Modal>
       )}
     </div>
