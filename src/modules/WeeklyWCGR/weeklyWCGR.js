@@ -621,7 +621,7 @@ function WeeklyWCGR() {
       title: "Anticipated Date",
       dataIndex: "anticipatedDateStr",
       key: "anticipatedDateStr",
-      // width: "150px",
+      width: "180px",
 
     },
     {
@@ -655,18 +655,11 @@ function WeeklyWCGR() {
       }
 
     },
-    {
-      title: "HR Title",
-      dataIndex: "hrTitle",
-      key: "hrTitle",
-      // width: "150px",
-
-    },
-    {
+     {
       title: "HR #",
       dataIndex: "hR_Number",
       key: "hR_Number",
-      // width: "150px",
+      width: "180px",
       render: (text, value) => {
         return (
           <a
@@ -681,12 +674,20 @@ function WeeklyWCGR() {
       }
     },
     {
-      title: "Lead Type",
-      dataIndex: "lead_Type",
-      key: "lead_Type",
+      title: "HR Title",
+      dataIndex: "hrTitle",
+      key: "hrTitle",
       // width: "150px",
 
     },
+   {
+      title: "Uplers Fees",
+      dataIndex: "uplersFeesStr",
+      key: "uplersFeesStr",
+      // width: "150px",
+
+    },
+   
     {
       title: "HR Status",
       dataIndex: "hrStatus",
@@ -698,10 +699,10 @@ function WeeklyWCGR() {
           text
         ),
     },
-    {
-      title: "Uplers Fees",
-      dataIndex: "uplersFeesStr",
-      key: "uplersFeesStr",
+     {
+      title: "Lead Type",
+      dataIndex: "lead_Type",
+      key: "lead_Type",
       // width: "150px",
 
     },
@@ -1007,6 +1008,68 @@ function WeeklyWCGR() {
     }
   };
 
+  const getFunnelSummaryDetailsPopup  = async (row, v,  week, month) => {
+      try {
+        // setShowSummaryReport(true);
+        setShowCHReport(true);
+        const pl = {
+          hrmodel: hrModal,
+          pod_id: selectedHead,
+          month: month,
+          year: row?.wcgrYear,
+          stageID: row.stage_ID,
+          cat: row.category,
+          multiplePODIds:  ''
+        };
+        setShowTalentCol(row);
+        setAchievedTotal(v);
+        setAchievedLoading(true);
+        const result = await ReportDAO.getPOChrSummaryPopupReportDAO(pl);
+        setAchievedLoading(false);
+        if (result.statusCode === 200) {
+          setListAchievedData(result.responseBody);
+        } else {
+          setListAchievedData([]);
+        }
+      } catch (err) {
+        console.log(err);
+        setListAchievedData([]);
+      }
+
+    }
+
+  const AddCommentIcon = ({ record, keyPar, month }) => {
+    return    <IconContext.Provider
+              value={{
+                // color: "green",
+                style: {
+                  width: "10px",
+                  height: "10px",
+                  marginLeft: "5px",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              {" "}
+              <Tooltip title={`Add/View Comment`} placement="top">
+                <span
+                  onClick={() => {
+                    AddComment(record, keyPar, month);
+                  }}
+                  // className={taStyles.feedbackLabel}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {" "}
+                  <CiCircleInfo />
+                </span>{" "}
+              </Tooltip>
+            </IconContext.Provider>
+  }
+
 
   const AddNoteComp = ({ text, record, keyPar, month, index, week }) => {
     const isPastMonth = month < moment().format("M");
@@ -1037,35 +1100,7 @@ function WeeklyWCGR() {
               >
                 {text}
               </span>
-              <IconContext.Provider
-                value={{
-                  // color: "green",
-                  style: {
-                    width: "10px",
-                    height: "10px",
-                    marginLeft: "5px",
-                    cursor: "pointer",
-                  },
-                }}
-              >
-                {" "}
-                <Tooltip title={`Add/View Comment`} placement="top">
-                  <span
-                    onClick={() => {
-                      AddComment(record, keyPar, month);
-                    }}
-                    // className={taStyles.feedbackLabel}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {" "}
-                    <CiCircleInfo />
-                  </span>{" "}
-                </Tooltip>
-              </IconContext.Provider>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
             </div>
           )
             : (
@@ -1074,7 +1109,7 @@ function WeeklyWCGR() {
         </div>
       }
 
-      if (record.stage_ID === "JAllAnticipated") {
+      if (record.stage_ID === "JAllAnticipated" || record.stage_ID === "SAnticipated") {
         return <div >
           {text ? (
             <div
@@ -1092,35 +1127,7 @@ function WeeklyWCGR() {
               >
                 {text}
               </span>
-              <IconContext.Provider
-                value={{
-                  // color: "green",
-                  style: {
-                    width: "10px",
-                    height: "10px",
-                    marginLeft: "5px",
-                    cursor: "pointer",
-                  },
-                }}
-              >
-                {" "}
-                <Tooltip title={`Add/View Comment`} placement="top">
-                  <span
-                    onClick={() => {
-                      AddComment(record, keyPar, month);
-                    }}
-                    // className={taStyles.feedbackLabel}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {" "}
-                    <CiCircleInfo />
-                  </span>{" "}
-                </Tooltip>
-              </IconContext.Provider>
+               <AddCommentIcon record={record} keyPar={keyPar} month={month} />
             </div>
           )
             : (
@@ -1149,35 +1156,7 @@ function WeeklyWCGR() {
             >
               {text}
             </span>
-            <IconContext.Provider
-              value={{
-                // color: "green",
-                style: {
-                  width: "10px",
-                  height: "10px",
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              {" "}
-              <Tooltip title={`Add/View Comment`} placement="top">
-                <span
-                  onClick={() => {
-                    AddComment(record, keyPar, month);
-                  }}
-                  // className={taStyles.feedbackLabel}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {" "}
-                  <CiCircleInfo />
-                </span>{" "}
-              </Tooltip>
-            </IconContext.Provider>
+            <AddCommentIcon record={record} keyPar={keyPar} month={month} />
           </div>
         )
           : (
@@ -1205,35 +1184,7 @@ function WeeklyWCGR() {
             >
               {text}
             </span>
-            <IconContext.Provider
-              value={{
-                // color: "green",
-                style: {
-                  width: "10px",
-                  height: "10px",
-                  marginLeft: "5px",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              {" "}
-              <Tooltip title={`Add/View Comment`} placement="top">
-                <span
-                  onClick={() => {
-                    AddComment(record, keyPar, month);
-                  }}
-                  // className={taStyles.feedbackLabel}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {" "}
-                  <CiCircleInfo />
-                </span>{" "}
-              </Tooltip>
-            </IconContext.Provider>
+          <AddCommentIcon record={record} keyPar={keyPar} month={month} />
           </div>
         )
           : (
@@ -1260,6 +1211,36 @@ function WeeklyWCGR() {
             ""
           )}
       </div>
+    }
+
+    if(record?.stage_Title === 'NEW CUSTOMER FUNNEL' && week === undefined) {
+      if(record.stage_ID === "NHR" ||record.stage_ID === "J"){
+return <div >
+        {text ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              onClick={() => {
+                 getFunnelSummaryDetailsPopup(record, text, week, month);
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+           
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+          </div>
+        )
+          : (
+            ""
+          )}
+      </div>
+      }
     }
 
     return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" ||
@@ -3022,8 +3003,7 @@ function WeeklyWCGR() {
         >
           <div style={{ padding: "20px 15px", display: 'flex', justifyContent: 'space-between' }}>
             <h3>
-              {/* <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b> */}
-              <b>Delight Reference</b> <b> : ({achievedTotal})</b>
+              <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
             </h3>
 
 
