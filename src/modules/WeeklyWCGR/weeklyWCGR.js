@@ -621,7 +621,7 @@ function WeeklyWCGR() {
       title: "Anticipated Date",
       dataIndex: "anticipatedDateStr",
       key: "anticipatedDateStr",
-      // width: "150px",
+      width: "180px",
 
     },
     {
@@ -655,18 +655,11 @@ function WeeklyWCGR() {
       }
 
     },
-    {
-      title: "HR Title",
-      dataIndex: "hrTitle",
-      key: "hrTitle",
-      // width: "150px",
-
-    },
-    {
+     {
       title: "HR #",
       dataIndex: "hR_Number",
       key: "hR_Number",
-      // width: "150px",
+      width: "180px",
       render: (text, value) => {
         return (
           <a
@@ -681,12 +674,20 @@ function WeeklyWCGR() {
       }
     },
     {
-      title: "Lead Type",
-      dataIndex: "lead_Type",
-      key: "lead_Type",
+      title: "HR Title",
+      dataIndex: "hrTitle",
+      key: "hrTitle",
       // width: "150px",
 
     },
+   {
+      title: "Uplers Fees",
+      dataIndex: "uplersFeesStr",
+      key: "uplersFeesStr",
+      // width: "150px",
+
+    },
+   
     {
       title: "HR Status",
       dataIndex: "hrStatus",
@@ -698,10 +699,10 @@ function WeeklyWCGR() {
           text
         ),
     },
-    {
-      title: "Uplers Fees",
-      dataIndex: "uplersFeesStr",
-      key: "uplersFeesStr",
+     {
+      title: "Lead Type",
+      dataIndex: "lead_Type",
+      key: "lead_Type",
       // width: "150px",
 
     },
@@ -1074,7 +1075,7 @@ function WeeklyWCGR() {
         </div>
       }
 
-      if (record.stage_ID === "JAllAnticipated") {
+      if (record.stage_ID === "JAllAnticipated" || record.stage_ID === "SAnticipated") {
         return <div >
           {text ? (
             <div
