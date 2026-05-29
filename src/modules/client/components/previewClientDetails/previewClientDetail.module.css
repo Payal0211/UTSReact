@@ -24,6 +24,40 @@
     padding: 0 9px;
 }
 
+/* helper form/grid classes used by the modal component */
+.formGroup {
+    margin-bottom: 16px;
+}
+.mb0 {
+    margin-bottom: 0;
+}
+.formControl {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #cecccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.error {
+    color: #E03A3A;
+    font-size: 12px;
+    display: block;
+    margin-top: 6px;
+}
+.btnPrimary {
+    color: #232323;
+    background: #FFDA30;
+    border: 0;
+    padding: 0 25px;
+    font-weight: 700;
+    border-radius: 27px;
+    min-height: 40px;
+    cursor: pointer;
+}
+.btnPrimary:hover{background:#232323;color:#fff}
+.blank{background:transparent;padding:0}
+
 
 .formFields {
     margin-top: 20px;

@@ -17,6 +17,7 @@ import {
   Tooltip,
   Upload,
   message,
+  Spin,
 } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as DeleteNewIcon } from "assets/svg/delete-icon.svg";
@@ -50,7 +51,7 @@ import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 import { v4 as uuidv4 } from 'uuid';
 import { encrypt } from 'modules/EncryptionDecryption/encryptiondescryption.js'; 
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import { sanitizeLinks } from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
+import { sanitizeLinks ,isEmptyOrWhitespace} from "modules/hiring request/screens/allHiringRequest/previewHR/services/commonUsedVar";
 
 function PreviewClientModal({
   isPreviewModal,
@@ -179,7 +180,10 @@ function PreviewClientModal({
 
   const [countryCodeData,setCountryCodeData] = useState("in");
   const [key, setKey] = useState(0);
-
+const [refrenceDetails,setReferenceDetails] = useState({type:null,name:"",email:"",comment:""})
+  const [isEditReference,setisEditReferences] = useState(false);
+const [error, setRefError] = useState({});
+  const [isLoadingReference, setIsLoadingReference] = useState(false);
 
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -265,6 +269,16 @@ function PreviewClientModal({
       //   NetworkInfo.DOMAIN +
       //   "Media/CompanyLogo/" + data?.basicDetails?.companyLogo)
       setBase64Image(data?.basicDetails?.companyLogo)
+
+      if(data?.companyDelightDetails){
+         let refdata = data?.companyDelightDetails
+      setReferenceDetails({
+        type: refdata?.referenceBy,
+        name: refdata?.referenceGivenName,
+        email: refdata?.referenceGivenEmailID,
+        comment: refdata?.referenceRemarks
+      })
+      }
     }
     setIsLoading(false);
   };
@@ -1392,6 +1406,45 @@ const subCategoryOptions = [
     }
   }
 
+   const updateReferenceDetails = async () =>{
+      const validationErrors = {};
+  
+      if (!refrenceDetails?.type) {
+        validationErrors.type = "Please select type";
+      }
+  
+      if (isEmptyOrWhitespace(refrenceDetails?.name)) {
+        validationErrors.name = "Please enter name";
+      }
+  
+      if (isEmptyOrWhitespace(refrenceDetails?.comment)) {
+        validationErrors.comment = "Please enter comment";
+      }
+  
+      if (Object.keys(validationErrors).length > 0) {
+        setRefError(validationErrors);
+        return;
+      }
+  
+      setRefError({});
+  
+      let pl = {
+        "company_ID": getcompanyID,
+        "referenceBy": refrenceDetails?.type,
+        "referenceGivenName": refrenceDetails?.name,
+        "referenceGivenEmailID": refrenceDetails?.email,
+        "referenceRemarks": refrenceDetails?.comment
+      }
+      setIsLoadingReference(true)
+      let res = await MasterDAO.updateReferenceDetailsDAO(pl);
+      setIsLoadingReference(false)
+      if(res?.statusCode === 200){
+        setisEditReferences(false)
+        message.success("Reference details updated successfully")
+      }
+    }
+  
+
   return (
     <>
 
@@ -1409,6 +1462,8 @@ const subCategoryOptions = [
           setEditClient(false);
           setAddNewClient(false);
           setEditPOC(false);
+           setReferenceDetails({type:null,name:"",email:"",comment:""});
+                    setError({});
         }}
         width={1080}
         footer={false}
@@ -3543,6 +3598,147 @@ const subCategoryOptions = [
                 </div>
               </div>
             </div>
+
+            <div className={previewClientStyle.formFields}>
+                  <div className={previewClientStyle.formFieldsbox}>
+                    <div className={`${previewClientStyle.formFieldsboxinner} ${previewClientStyle.formSalesPersonFields}`}>
+                      <h2 className="formFields-box-title">Customer Delight  {!isEditReference &&<span  className={previewClientStyle.editNewIcon} onClick={() => {
+                            setisEditReferences(true);
+                           
+                          }} >  <EditNewIcon /></span>}  </h2>
+                      <div className="vitalInformationContent">
+
+                        {isEditReference ? <>
+                        
+                          <div className={`${previewClientStyle.row} ${previewClientStyle.formFields}`}>
+            <div className={previewClientStyle.colMd12}>
+              <div className={`${previewClientStyle.formGroup} ${previewClientStyle.mb0}`}>
+                <label>Type <span className='error'>*</span></label>
+                <Select
+                  options={[ "AM", "TA", "Client", "Talent", "Other" ].map(item => ({ value: item, label: item }))}
+                  name="foundedYear"
+                  placeholder="Please Select "
+                  value={refrenceDetails?.type}
+                  onChange={(e) => {
+                    setReferenceDetails({...refrenceDetails, type: e});
+                    setError((prev) => ({ ...prev, type: undefined }));
+                  }}
+                />
+                {error?.type && <span className='error'>{error.type}</span>}
+
+              </div>
+            </div>
+          </div>
+
+            <div className={`${previewClientStyle.row} ${previewClientStyle.formFields}`}>
+                     <div className={previewClientStyle.colMd6}>
+                      <div className={`${previewClientStyle.formGroup} ${previewClientStyle.mb0}`}><label>
+                 Name <span className='error'>*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Please enter name"
+                  className={previewClientStyle.formControl}
+                  value={refrenceDetails?.name}
+                  onChange={(e) => {
+                    setReferenceDetails(prev=>({...prev, name: e.target.value}))
+                    setError((prev) => ({ ...prev, name: undefined }));
+                  }}
+                />
+                {error?.name && <span className='error'>{error.name}</span>}
+                      </div>
+                
+                {/* {(editExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
+                  </div>
+
+                    <div className={previewClientStyle.colMd6}>
+                      <div className={`${previewClientStyle.formGroup} ${previewClientStyle.mb0}`}>
+ <label>
+                 Email 
+                </label>
+                <input
+                  type="text"
+                  placeholder="Please enter email"
+                  className={previewClientStyle.formControl}
+                  value={refrenceDetails?.email}
+                  onChange={(e) => {
+                    setReferenceDetails(prev=>({...prev, email: e.target.value}))
+                  }}
+                />
+                        </div>
+               
+                {/* {(editExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
+                  </div>
+                  </div>
+
+
+ <div className={`${previewClientStyle.row} ${previewClientStyle.formFields}`}>
+                   <div className={previewClientStyle.colMd12}>
+                    <div className={`${previewClientStyle.formGroup} ${previewClientStyle.mb0}`}><label>
+                Comment <span className='error'>*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  style={{ minHeight: "120px" }}
+                  placeholder="Please enter comment"
+                  className={previewClientStyle.formControl}
+                  value={refrenceDetails?.comment}
+                  onChange={(e) => {
+                    setReferenceDetails(prev=>({...prev, comment: e.target.value}))
+                    setError((prev) => ({ ...prev, comment: undefined }));
+                  }}
+                />
+                {error?.comment && <span className='error'>{error.comment}</span>}
+                      </div>
+                
+                {/* {(editExp === '' && !isFreshersAllowed) ? <><span className='error'>Please Enter experience</span><br /></> : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) && <><span className='error'>Please Enter atlest {isFreshersAllowed ? 0 : 1}</span><br /></>} */}
+                  </div></div>
+                  
+                <div className={previewClientStyle.buttonEditGroup}>
+                  <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => { setisEditReferences(false); }}> Cancel </button>
+                  {isLoadingReference ? <Spin size="large" /> :  <button type="button" className={previewClientStyle.btnPrimary} onClick={() => updateReferenceDetails()}> SAVE </button>}
+                 
+                </div> </> :
+                        <>
+                          <div className="funding-rounds">
+                                  <ul>
+                                    <li style={{minWidth:"150px"}}>
+                                      <span>Type</span>
+                                      <p>{refrenceDetails?.type ? refrenceDetails?.type : "NA"}</p>
+                                    </li>
+
+                                    <li style={{minWidth:"150px"}}>
+                                      <span>Name</span>
+                                      <p>{refrenceDetails?.name ? refrenceDetails?.name : "NA"}</p>
+                                    </li>
+
+                                    <li style={{minWidth:"150px"}}>
+                                      <span>Email</span>
+                                     
+                                        <p>{refrenceDetails?.email ? refrenceDetails?.email : "NA"}</p>
+                                    
+                                    </li>
+                                  </ul>
+                                </div>
+                                <div>
+                                  <span style={{
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                    color: "#232323",
+                                    marginBottom: "10px"
+                                  }}>Comment</span>                                 
+                                  <div className="jobDescrition" dangerouslySetInnerHTML={{ __html: refrenceDetails?.comment ? refrenceDetails?.comment : "NA" }} />
+                                </div>
+                        </>
+                        }
+
+                        
+                      </div>
+                    </div>
+
+                    
+                  </div>
+                </div>
           </div>
         </div>
       </Modal>
