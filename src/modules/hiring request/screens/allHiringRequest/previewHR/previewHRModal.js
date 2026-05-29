@@ -272,8 +272,8 @@ function PreviewHRModal({
     setYouTubeDetails(allData?.CompanyDetails?.youTubeDetails ? allData?.CompanyDetails?.youTubeDetails : []);
     setEngagementDetails(allData?.CompanyDetails?.engagementDetails ? allData?.CompanyDetails?.engagementDetails : {})
 
-    if(allData?.SalesHRRefDetails?.length > 0){
-      let data = allData?.SalesHRRefDetails[0]
+    if(allData?.SalesHRRefDetails !== null){
+      let data = allData?.SalesHRRefDetails
       setReferenceDetails({
         type: data?.referenceBy,
         name: data?.referenceGivenName,
