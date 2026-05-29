@@ -1283,7 +1283,9 @@ function WeeklyWCGR() {
       </div>
     }
 
-    if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning" && (record.stage_ID === "CF")) {
+    if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning" && (record.stage_ID === "CF" ||
+      record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L"  || record.stage_ID === "TA"
+    )) {
       return <div >
         {text ?
           <span
@@ -1332,8 +1334,8 @@ function WeeklyWCGR() {
       }
     }
 
-    return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "JAllAA" ||
-      record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS")
+    return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "SG" || record?.stage_ID === "JAllAA" ||
+      record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS") || text.includes("%")
     ) ? text : <div
       style={{
         display: "flex",
@@ -1880,7 +1882,7 @@ function WeeklyWCGR() {
         key: "actionDate",
         width: "150px",
         render: (text) => {
-          return text
+          return moment(text).format("DD/MM/YYYY");
         }
       }, {
         title: "Company",
