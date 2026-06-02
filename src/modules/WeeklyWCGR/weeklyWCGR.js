@@ -1284,7 +1284,7 @@ function WeeklyWCGR() {
     }
 
     if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning" && (record.stage_ID === "CF" ||
-      record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L"  || record.stage_ID === "TA"
+      record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L" || record.stage_ID === "TA"
     )) {
       return <div >
         {text ?
@@ -2052,6 +2052,22 @@ function WeeklyWCGR() {
               ) {
                 return uplersStyle.boldRow;
               }
+
+
+              if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
+                let type = record.stage.split("-")[1].trim()
+                if (type === "All") {
+                  return uplersStyle.heighliteRow
+                }
+                if (type === "New") {
+                  return uplersStyle.heighliteGreen;
+                }
+                if (type === "Existing") {
+                  return uplersStyle.heighlitePurple;
+                }
+                return uplersStyle.boldRow;
+              }
+
             }}
           />
         )}
