@@ -1207,7 +1207,7 @@ function WeeklyWCGR() {
     }
 
     if (record?.stage_Title === "CUSTOMER EXPERIENCE") {
-      if (record.stage_ID === "refclientortalent") {
+      if (record.stage_ID === "refclientortalent" || record.stage_ID === "CustDelight") {
         return <div >
           {text ? (
             <div
