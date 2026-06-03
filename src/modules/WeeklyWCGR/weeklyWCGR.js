@@ -2056,15 +2056,15 @@ function WeeklyWCGR() {
 
               if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
                 let type = record.stage.split("-")[1].trim()
-                if (type === "All") {
-                  return uplersStyle.heighliteRow
-                }
+                // if (type === "All") {
+                //   return uplersStyle.heighliteRow
+                // }
                 if (type === "New") {
-                  return uplersStyle.heighliteGreen;
+                  return uplersStyle.heighliteCream;
                 }
-                if (type === "Existing") {
-                  return uplersStyle.heighlitePurple;
-                }
+                // if (type === "Existing") {
+                //   return uplersStyle.heighlitePurple;
+                // }
                 return uplersStyle.boldRow;
               }
 
