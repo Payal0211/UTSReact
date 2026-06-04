@@ -27,6 +27,10 @@ const WeeklyWCGR = React.lazy(() =>
 	import('modules/WeeklyWCGR/weeklyWCGR'),
 );
 
+const MOMOverview = React.lazy(() =>
+	import('modules/WeeklyWCGR/MOMOverview'),
+)
+
 
 const RecruiterReport = React.lazy(() =>
 	import('modules/report/screens/recruiterReport/recruiterReport'),
@@ -340,6 +344,8 @@ export default class UTSRoutes {
 	static TALENT_DOCUMENTS = '/talentDocument'
 	static TALENT_NOTES = '/talentNotes';
 	static Weekly_WCGR = '/weeklyWCGR';
+	static MOM_OVERVIEW = '/MOMOverview';
+	static QOQ_OVERVIEW = '/QOQOverview';
 	static RECRUITER_DASHBOARD_REPORT = '/RevenueDashboardReport';
 	static RECRUITER_DASHBOARD_MULTI_MONTH_REPORT = '/RevenueDashboardMonthsReport';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
@@ -637,6 +643,16 @@ export const navigateToComponent = {
 	[UTSRoutes.Weekly_WCGR]:(
 		<Suspense>
 			<WeeklyWCGR />
+		</Suspense>
+	),
+	[UTSRoutes.MOM_OVERVIEW]:(
+		<Suspense>
+			<MOMOverview />
+		</Suspense>
+	),
+	[UTSRoutes.QOQ_OVERVIEW]:(
+		<Suspense>
+			<MOMOverview />
 		</Suspense>
 	),
 [UTSRoutes.DASHBOARD]:(
