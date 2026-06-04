@@ -1207,7 +1207,7 @@ function WeeklyWCGR() {
     }
 
     if (record?.stage_Title === "CUSTOMER EXPERIENCE") {
-      if (record.stage_ID === "refclientortalent") {
+      if (record.stage_ID === "refclientortalent" || record.stage_ID === "CustDelight") {
         return <div >
           {text ? (
             <div
@@ -2056,15 +2056,15 @@ function WeeklyWCGR() {
 
               if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
                 let type = record.stage.split("-")[1].trim()
-                if (type === "All") {
-                  return uplersStyle.heighliteRow
-                }
+                // if (type === "All") {
+                //   return uplersStyle.heighliteRow
+                // }
                 if (type === "New") {
-                  return uplersStyle.heighliteGreen;
+                  return uplersStyle.heighliteCream;
                 }
-                if (type === "Existing") {
-                  return uplersStyle.heighlitePurple;
-                }
+                // if (type === "Existing") {
+                //   return uplersStyle.heighlitePurple;
+                // }
                 return uplersStyle.boldRow;
               }
 
