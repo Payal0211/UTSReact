@@ -317,8 +317,8 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		isVisible =  true
 		return isVisible		
 	}
-	 if(title === 'Hiring Request' || title === "MasterReports" || title === 'PODDashboardReport' || title ==='AllFTEDASHBOARD' || title === "WeeklyWCGR" ||
-	  title === 'Users'  ||
+	 if(title === 'Hiring Request' || title === "MasterReports" || title === 'PODDashboardReport' || title ==='AllFTEDASHBOARD' || title === "WeeklyWCGR" || title === "MOMOverview" ||
+	  title === 'Users'  || title === 'QOQOverview' ||
 	   title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
 	 title === 'Engagement' || title === 'Reports' ||
 	 title === 'Demand Funnel' ||
@@ -460,6 +460,22 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'WeeklyWCGR'),
 					isChildren : false					
 				}),
+				   new SideBarModels({
+					id: 'MOMOverview',
+					title: 'MOM Overview',
+					isActive: false,
+					navigateTo: UTSRoutes.MOM_OVERVIEW,
+					isVisible: isAccess(usertypeID, 'MOMOverview'),
+					isChildren : false					
+				}),
+				// 	   new SideBarModels({
+				// 	id: 'QOQOverview',
+				// 	title: 'QOQ Overview',
+				// 	isActive: false,
+				// 	navigateTo: UTSRoutes.QOQ_OVERVIEW,
+				// 	isVisible: isAccess(usertypeID, 'QOQOverview'),
+				// 	isChildren : false					
+				// }),
                 new SideBarModels({
 					id: 'AllFTEDASHBOARD',
 					title: 'Multi-Month POD Dashboard',
