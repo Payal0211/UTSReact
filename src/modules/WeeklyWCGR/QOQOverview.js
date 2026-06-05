@@ -38,7 +38,7 @@ import spinGif from "assets/gif/RefreshLoader.gif";
 const { Title, Text } = Typography;
 
 
-function MOMOverview() {
+function QOQOverview() {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingTable, setIsLoadingTable] = useState(false);
@@ -167,13 +167,13 @@ function MOMOverview() {
         });
     };
 
-    const getMOMReportData = async () => {
+    const getQOQReportData = async () => {
         setIsLoadingTable(true);
         // let query = `?podId=${selectedHead}&Month=${moment(monthDate).format("M")}&Year=${selectedYear}`;
         let query = `?Month=${moment(monthDate).format("M")}&Year=${selectedYear}`;
-        const result = await ReportDAO.getMOMReportDataDAO(query);
+        const result = await ReportDAO.getQOQReportDataDAO(query);
         setIsLoadingTable(false);
-        console.log("MOM Report Data: ", result);
+        console.log("QOQ Report Data: ", result);
         if (result.statusCode === HTTPStatusCode.OK) {
             setHeaderDataCol(result?.responseBody[0]);
             let tempData = addSectionHeaders(result?.responseBody);
@@ -204,7 +204,7 @@ function MOMOverview() {
     }
 
     useEffect(() => {
-        getMOMReportData();
+        getQOQReportData();
     }, [monthDate]);
 
 
@@ -239,9 +239,9 @@ function MOMOverview() {
         // const currentMonth = moment(monthDate).format("MMMM").toUpperCase();
         // const nextMonth = moment(monthDate).add(1, "month").format("MMMM").toUpperCase();
         // const thirdMonth = moment(monthDate).add(2, "month").format("MMMM").toUpperCase();
-        const currentMonth = headerDataCol?.startMonth_Name;
-        const nextMonth = headerDataCol?.midMonth_Name;
-        const thirdMonth = headerDataCol?.endMonth_Name;
+        const currentMonth = headerDataCol?.q1Str;
+        const nextMonth = headerDataCol?.q2Str;
+        const thirdMonth = headerDataCol?.q3Str;
 
         const columns = [
             {
@@ -290,30 +290,30 @@ function MOMOverview() {
             //   fixed: "left",
             //   className: "black-header",
             // },
-            {
-                // title: "QUARTERLY",
-                title: headerDataCol?.stage_ID,
-                dataIndex: "quarterlyTotalStr",
-                key: "quarterlyTotalStr",
-                width: 120,
-                fixed: "left",
-                align: "center",
-                className: `black-header ${uplersStyle.QuarterlyCol}`,
-                onHeaderCell: () => ({
-                    className: "black-header",
-                }),
-                render: (text, record) => {
-                    if (record.isSection) {
-                        return {
-                            props: {
-                                colSpan: 0,
-                            },
-                        };
-                    }
+            // {
+            //     // title: "QUARTERLY",
+            //     title: headerDataCol?.stage_ID,
+            //     dataIndex: "quarterlyTotalStr",
+            //     key: "quarterlyTotalStr",
+            //     width: 120,
+            //     fixed: "left",
+            //     align: "center",
+            //     className: `black-header ${uplersStyle.QuarterlyCol}`,
+            //     onHeaderCell: () => ({
+            //         className: "black-header",
+            //     }),
+            //     render: (text, record) => {
+            //         if (record.isSection) {
+            //             return {
+            //                 props: {
+            //                     colSpan: 0,
+            //                 },
+            //             };
+            //         }
 
-                    return text;
-                },
-            },
+            //         return text;
+            //     },
+            // },
 
             // MONTH 1
             {
@@ -324,7 +324,7 @@ function MOMOverview() {
                 }),
                 children: [
                     {
-                        title: "FT BU",
+                        title: "Total",
                         dataIndex: 'startMonth_MonthlyTotalStr',
                         key: "m1_total",
                         width: 100,
@@ -344,7 +344,7 @@ function MOMOverview() {
                     },
                     {
                         title: "NASA",
-                        dataIndex: 'startMonth_NASA',
+                        dataIndex: 'q1_NASAStr',
                         key: "m1_w1",
                         width: 100,
                         align: "center",
@@ -357,12 +357,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_NASA"} month={record?.startMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q1_NASAStr"} month={record?.startMonth} index={index} />;
                         },
                     },
                     {
                         title: "Phoenix",
-                        dataIndex: 'startMonth_Phoenix',
+                        dataIndex: 'q1_PhoenixStr',
                         key: "m1_w2",
                         width: 100,
                         align: "center",
@@ -375,12 +375,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_Phoenix"} month={record?.startMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q1_PhoenixStr"} month={record?.startMonth} index={index} />;
                         },
                     },
                     {
                         title: "Meteroid",
-                        dataIndex: 'startMonth_METEOROID',
+                        dataIndex: 'q1_METEOROIDStr',
                         key: "m1_w3",
                         width: 100,
                         align: "center",
@@ -393,12 +393,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_METEOROID"} month={record?.startMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q1_METEOROIDStr"} month={record?.startMonth} index={index} />;
                         },
                     },
                     {
                         title: "India",
-                        dataIndex: 'startMonth_Shivam',
+                        dataIndex: 'q1_ShivamStr',
                         key: "m1_w4",
                         width: 100,
                         align: "center",
@@ -411,12 +411,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_Shivam"} month={record?.startMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q1_ShivamStr"} month={record?.startMonth} index={index} />;
                         },
                     },
                     {
                         title: "Nova",
-                        dataIndex: 'startMonth_NOVA',
+                        dataIndex: 'q1_NOVAStr',
                         key: "m1_w5",
                         width: 100,
                         align: "center",
@@ -429,7 +429,7 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_NOVA"} month={record?.startMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q1_NOVAStr"} month={record?.startMonth} index={index} />;
                         },
                     },
                 ],
@@ -444,7 +444,7 @@ function MOMOverview() {
                 }),
                 children: [
                     {
-                        title: "FT BU",
+                        title: "Total",
                         dataIndex: 'midMonth_MonthlyTotalStr',
                         key: "m2_total",
                         width: 100,
@@ -464,7 +464,7 @@ function MOMOverview() {
                     },
                     {
                         title: "NASA",
-                        dataIndex: 'midMonth_NASA',
+                        dataIndex: 'q2_NASAStr',
                         key: "m2_w1",
                         width: 100,
                         align: "center",
@@ -477,12 +477,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_NASA"} month={record?.midMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q2_NASAStr"} month={record?.midMonth} index={index} />;
                         },
                     },
                     {
                         title: "Phenix",
-                        dataIndex: 'midMonth_Phoenix',
+                        dataIndex: 'q2_PhoenixStr',
                         key: "m2_w2",
                         width: 100,
                         align: "center",
@@ -495,12 +495,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_Phoenix"} month={record?.midMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q2_PhoenixStr"} month={record?.midMonth} index={index} />;
                         },
                     },
                     {
                         title: "Meteroid",
-                        dataIndex: 'midMonth_METEOROID',
+                        dataIndex: 'q2_METEOROIDStr',
                         key: "m2_w3",
                         width: 100,
                         align: "center",
@@ -513,12 +513,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_METEOROID"} month={record?.midMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q2_METEOROIDStr"} month={record?.midMonth} index={index} />;
                         },
                     },
                     {
                         title: "India",
-                        dataIndex: 'midMonth_Shivam',
+                        dataIndex: 'q2_ShivamStr',
                         key: "m2_w4",
                         width: 100,
                         align: "center",
@@ -531,13 +531,13 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_Shivam"} month={record?.midMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q2_ShivamStr"} month={record?.midMonth} index={index} />;
                         },
 
                     },
                     {
                         title: "Nova",
-                        dataIndex: 'midMonth_NOVA',
+                        dataIndex: 'q2_NOVAStr',
                         key: "m2_w5",
                         width: 100,
                         align: "center",
@@ -550,7 +550,7 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_NOVA"} month={record?.midMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q2_NOVAStr"} month={record?.midMonth} index={index} />;
                         },
                     },
                 ],
@@ -565,7 +565,7 @@ function MOMOverview() {
                 }),
                 children: [
                     {
-                        title: "FT BU",
+                        title: "Total",
                         dataIndex: 'endMonth_MonthlyTotalStr',
                         key: "m3_total",
                         width: 100,
@@ -586,7 +586,7 @@ function MOMOverview() {
                     },
                     {
                         title: "NASA",
-                        dataIndex: 'endMonth_NASA',
+                        dataIndex: 'q3_NASAStr',
                         key: "m3_w1",
                         width: 100,
                         align: "center",
@@ -599,12 +599,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_NASA"} month={record?.endMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q3_NASAStr"} month={record?.endMonth} index={index} />;
                         },
                     },
                     {
                         title: "Phenix",
-                        dataIndex: 'endMonth_Phoenix',
+                        dataIndex: 'q3_PhoenixStr',
                         key: "m3_w2",
                         width: 100,
                         align: "center",
@@ -617,12 +617,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_Phoenix"} month={record?.endMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q3_PhoenixStr"} month={record?.endMonth} index={index} />;
                         },
                     },
                     {
                         title: "Meteroid",
-                        dataIndex: 'endMonth_METEOROID',
+                        dataIndex: 'q3_METEOROIDStr',
                         key: "m3_w3",
                         width: 100,
                         align: "center",
@@ -635,12 +635,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_METEOROID"} month={record?.endMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q3_METEOROIDStr"} month={record?.endMonth} index={index} />;
                         },
                     },
                     {
                         title: "India",
-                        dataIndex: 'endMonth_Shivam',
+                        dataIndex: 'q3_ShivamStr',
                         key: "m3_w4",
                         width: 100,
                         align: "center",
@@ -653,12 +653,12 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_Shivam"} month={record?.endMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q3_ShivamStr"} month={record?.endMonth} index={index} />;
                         },
                     },
                     {
                         title: "Nova",
-                        dataIndex: 'endMonth_NOVA',
+                        dataIndex: 'q3_NOVAStr',
                         key: "m3_w5",
                         width: 100,
                         align: "center",
@@ -671,7 +671,7 @@ function MOMOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_NOVA"} month={record?.endMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q3_NOVAStr"} month={record?.endMonth} index={index} />;
                         },
                     },
                 ],
@@ -688,7 +688,7 @@ function MOMOverview() {
                 <div className={uplersStyle.filterSets}>
                     <div className={uplersStyle.filterSetsInner}>
                         <Title level={4} style={{ margin: 0 }}>
-                            FTE BU  ·  Month-on-Month Overview
+                            FTE BU  ·  QOQ Overview
                             {/* {`${monthDate?.toLocaleString("default", {
                   month: "long",
                 })} ${selectedYear}`} */}
@@ -770,4 +770,4 @@ function MOMOverview() {
     )
 }
 
-export default MOMOverview
+export default QOQOverview

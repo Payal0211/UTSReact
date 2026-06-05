@@ -31,6 +31,10 @@ const MOMOverview = React.lazy(() =>
 	import('modules/WeeklyWCGR/MOMOverview'),
 )
 
+const QOQOverview = React.lazy(() =>
+	import('modules/WeeklyWCGR/QOQOverview'),
+)
+
 
 const RecruiterReport = React.lazy(() =>
 	import('modules/report/screens/recruiterReport/recruiterReport'),
@@ -652,7 +656,7 @@ export const navigateToComponent = {
 	),
 	[UTSRoutes.QOQ_OVERVIEW]:(
 		<Suspense>
-			<MOMOverview />
+			<QOQOverview />
 		</Suspense>
 	),
 [UTSRoutes.DASHBOARD]:(
