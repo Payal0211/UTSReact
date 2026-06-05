@@ -460,7 +460,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'WeeklyWCGR'),
 					isChildren : false					
 				}),
-				   new SideBarModels({
+				new SideBarModels({
 					id: 'MOMOverview',
 					title: 'MOM Overview',
 					isActive: false,
@@ -468,14 +468,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'MOMOverview'),
 					isChildren : false					
 				}),
-				// 	   new SideBarModels({
-				// 	id: 'QOQOverview',
-				// 	title: 'QOQ Overview',
-				// 	isActive: false,
-				// 	navigateTo: UTSRoutes.QOQ_OVERVIEW,
-				// 	isVisible: isAccess(usertypeID, 'QOQOverview'),
-				// 	isChildren : false					
-				// }),
+				new SideBarModels({
+					id: 'QOQOverview',
+					title: 'QOQ Overview',
+					isActive: false,
+					navigateTo: UTSRoutes.QOQ_OVERVIEW,
+					isVisible: isAccess(usertypeID, 'QOQOverview'),
+					isChildren : false					
+				}),
                 new SideBarModels({
 					id: 'AllFTEDASHBOARD',
 					title: 'Multi-Month POD Dashboard',
