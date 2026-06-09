@@ -200,6 +200,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getJoiningRevenueDataRequest');
 		}
 	},
+	getALLPODJoiningRevenueDataRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			'UTSReports/' +
+			'Get_AllFTEPODs_WeeklyCGR_JoiningRevenue' +
+			reportData;
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getJoiningRevenueDataRequest');
+		}
+	},
 	getMOMReportDataRequest: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -1039,6 +1056,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.getReferencePopupReportAPI');
+		}
+	},
+	revenueWCGRCommentReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.UTS_REPORT +
+			ReportType.GET_All_POD_Commits__LIST +
+`?Uplers_BusinessType=${payload?.hR_BusinessType}&podId=${payload?.stage_ID}&Month=${payload?.month}&Year=${payload?.year}&userCategory=${payload?.userCategory}&HRModel=WeekComments`
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.revenueWCGRCommentReportAPI');
 		}
 	},
 	getAnticipatedPopupReportAPI:async function (payload) {
