@@ -51,7 +51,7 @@ function WeeklyWCGR() {
   const selectedYear = monthDate.getFullYear();
   const [hrModal, setHRModal] = useState('DP');
   const [pODList, setPODList] = useState([]);
-  const [pODUsersList, setPODUsersList] = useState([]);
+
   const [selectedHead, setSelectedHead] = useState('');
   const [tableData, setTableData] = useState([]);
   const [headerDataCol, setHeaderDataCol] = useState({});
@@ -93,32 +93,7 @@ function WeeklyWCGR() {
     getUserResult();
   }, []);
 
-  const getGroupUsers = async (ID) => {
-    setIsLoading(true);
-
-    let pl = {
-      id: ID,
-      month: moment(monthDate).format("MM"),
-      year: selectedYear,
-    }
-
-    let filterResult = await ReportDAO.getAllPODGroupUsersDAO(pl);
-    setIsLoading(false);
-    if (filterResult.statusCode === HTTPStatusCode.OK) {
-      setPODUsersList(filterResult && filterResult?.responseBody);
-    } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-      // setLoading(false);
-      return navigate(UTSRoutes.LOGINROUTE);
-    } else if (
-      filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-    ) {
-      // setLoading(false);
-      return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-    } else {
-      return "NO DATA FOUND";
-    }
-  };
-
+ 
   // useEffect(() => {
   //   // set modal to contract for stanley 
   //   if(userData?.EmployeeID ==="UP1831"){
@@ -144,10 +119,10 @@ function WeeklyWCGR() {
 
       setSelectedHead(prev => {
         if (prev === '') {
-          getGroupUsers(filterResult?.responseBody[0]?.dd_value);
+          // getGroupUsers(filterResult?.responseBody[0]?.dd_value);
           return filterResult?.responseBody[0]?.dd_value
         } else {
-          getGroupUsers(prev);
+          // getGroupUsers(prev);
           return prev
         }
 
@@ -370,6 +345,43 @@ function WeeklyWCGR() {
 
   }
 
+   const getALLPODJoiningRevenueData = async () => {
+    setIsLoadingTable(true);
+         setSelectedHead(null);
+    let query = `?podId=${0}&Month=${moment(monthDate).format("M")}&Year=${selectedYear}`;
+
+    const result = await ReportDAO.getALLPODJoiningRevenueDataDAO(query);
+    setIsLoadingTable(false);
+    console.log("Joining Revenue Data: ", result);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setHeaderDataCol(result?.responseBody[0]);
+      let tempData = addSectionHeaders(result?.responseBody);
+      tempData.shift();
+      setTableData(tempData);
+      // tempData.shift();
+      //   setTableData([
+      //     {
+      //       key: "joining_header",
+      //       isSection: true,
+      //       sectionTitle: "JOINING · Revenue",
+      //       color: "#c05a00",
+      //     },
+      //     ...tempData,
+      //   ]);
+    } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+      // setLoading(false);
+      return navigate(UTSRoutes.LOGINROUTE);
+    } else if (
+      result?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+    ) {
+      return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+    } else {
+      message.error("Failed to fetch data");
+    }
+
+
+  }
+
   useEffect(() => {
     if (selectedHead) {
       getJoiningRevenueData();
@@ -395,8 +407,33 @@ function WeeklyWCGR() {
     }
   };
 
+  const getAllPODComments = async (d, key, month) => {
+    setIsCommentLoading(true);
+    const pl = {
+      month: month,
+      year: d.wcgrYear,
+      userCategory: d[key],
+      hR_Model: d.stage_ID,
+      stage_ID: d.poD_ID,
+      hR_BusinessType: "POD",
+      
+    };
+    const result = await ReportDAO.revenueWCGRCommentReportDAO(pl);
+    setIsCommentLoading(false);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setALLCommentsList(result.responseBody);
+    } else {
+      setALLCommentsList([]);
+    }
+  };
+
   const AddComment = (data, key, month, index) => {
-    getAllComments(data, key, month);
+    if(data?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
+     getAllPODComments(data, key, month)
+    }else{
+     getAllComments(data, key, month);
+    }
+   
     setShowComment(true);
     setCommentData({ ...data, hR_Model: "", key: key, month: month });
   };
@@ -1967,6 +2004,15 @@ function WeeklyWCGR() {
             </Title>
           </div>
           <div className={uplersStyle.filterRight}>
+
+              
+                    <button
+                    style={{ marginRight: "0" }}
+                        className={uplersStyle.btnPrimary}
+                        onClick={() => {getALLPODJoiningRevenueData()}}
+                      >
+                       All FTE PODs
+                      </button>
             <Radio.Group
               onChange={(e) => {
                 setHRModal(e.target.value);
@@ -1975,11 +2021,11 @@ function WeeklyWCGR() {
                     (i) => i.dd_text === "Orion"
                   )?.dd_value;
                   setSelectedHead(val);
-                  getGroupUsers(val);
+                 
                 } else {
                   let val = pODList[0]?.dd_value;
                   setSelectedHead(val);
-                  getGroupUsers(val);
+                 
                 }
 
                 //  setEngagementType(e.target.value);
@@ -1998,7 +2044,6 @@ function WeeklyWCGR() {
               showSearch={true}
               onChange={(value, option) => {
                 setSelectedHead(value);
-                getGroupUsers(value);
               }}
               options={pODList?.map((v) => ({
                 label: v.dd_text,
