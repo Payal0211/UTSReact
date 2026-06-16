@@ -170,13 +170,13 @@ function QOQOverview() {
     const getQOQReportData = async () => {
         setIsLoadingTable(true);
         // let query = `?podId=${selectedHead}&Month=${moment(monthDate).format("M")}&Year=${selectedYear}`;
-        let query = `?Month=${moment(monthDate).format("M")}&Year=${selectedYear}`;
+        let query = `?Year=${selectedYear}`;
         const result = await ReportDAO.getQOQReportDataDAO(query);
         setIsLoadingTable(false);
         console.log("QOQ Report Data: ", result);
         if (result.statusCode === HTTPStatusCode.OK) {
             setHeaderDataCol(result?.responseBody[0]);
-            let tempData = addSectionHeaders(result?.responseBody);
+            let tempData = addSectionHeaders(result?.responseBody) || [];
             tempData.shift();
             setTableData(tempData);
             // tempData.shift();
@@ -242,6 +242,7 @@ function QOQOverview() {
         const currentMonth = headerDataCol?.q1Str;
         const nextMonth = headerDataCol?.q2Str;
         const thirdMonth = headerDataCol?.q3Str;
+        const fourthMonth = headerDataCol?.q4Str;
 
         const columns = [
             {
@@ -325,7 +326,7 @@ function QOQOverview() {
                 children: [
                     {
                         title: "Total",
-                        dataIndex: 'startMonth_MonthlyTotalStr',
+                        dataIndex: 'q1Str',
                         key: "m1_total",
                         width: 100,
                         align: "center",
@@ -339,7 +340,7 @@ function QOQOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q1Str"} month={record?.startMonth} index={index} />;
                         },
                     },
                     {
@@ -676,6 +677,127 @@ function QOQOverview() {
                     },
                 ],
             },
+
+             // MONTH 4
+            {
+                title: fourthMonth,
+                className: "purple-total-header",
+                onHeaderCell: () => ({
+                    className: "blue-total-header",
+                }),
+                children: [
+                    {
+                        title: "Total",
+                        dataIndex: 'q4Str',
+                        key: "m3_total",
+                        width: 100,
+                        align: "center",
+                        className: `black-header ${uplersStyle.totalCol}`,
+                        render: (text, record, index) => {
+                            if (record.isSection) {
+                                return {
+                                    props: {
+                                        colSpan: 0,
+                                    },
+                                };
+                            }
+
+                            return <AddNoteComp text={text} record={record} keyPar={"q4Str"} month={record?.endMonth} index={index} />;
+                        },
+
+                    },
+                    {
+                        title: "NASA",
+                        dataIndex: 'q4_NASAStr',
+                        key: "m4_w1",
+                        width: 100,
+                        align: "center",
+                        render: (text, record, index) => {
+                            if (record.isSection) {
+                                return {
+                                    props: {
+                                        colSpan: 0,
+                                    },
+                                };
+                            }
+
+                            return <AddNoteComp text={text} record={record} keyPar={"q4_NASAStr"} month={record?.endMonth} index={index} />;
+                        },
+                    },
+                    {
+                        title: "Phenix",
+                        dataIndex: 'q4_PhoenixStr',
+                        key: "m4_w2",
+                        width: 100,
+                        align: "center",
+                        render: (text, record, index) => {
+                            if (record.isSection) {
+                                return {
+                                    props: {
+                                        colSpan: 0,
+                                    },
+                                };
+                            }
+
+                            return <AddNoteComp text={text} record={record} keyPar={"q4_PhoenixStr"} month={record?.endMonth} index={index} />;
+                        },
+                    },
+                    {
+                        title: "Meteroid",
+                        dataIndex: 'q4_METEOROIDStr',
+                        key: "m4_w3",
+                        width: 100,
+                        align: "center",
+                        render: (text, record, index) => {
+                            if (record.isSection) {
+                                return {
+                                    props: {
+                                        colSpan: 0,
+                                    },
+                                };
+                            }
+
+                            return <AddNoteComp text={text} record={record} keyPar={"q4_METEOROIDStr"} month={record?.endMonth} index={index} />;
+                        },
+                    },
+                    {
+                        title: "India",
+                        dataIndex: 'q4_ShivamStr',
+                        key: "m4_w4",
+                        width: 100,
+                        align: "center",
+                        render: (text, record, index) => {
+                            if (record.isSection) {
+                                return {
+                                    props: {
+                                        colSpan: 0,
+                                    },
+                                };
+                            }
+
+                            return <AddNoteComp text={text} record={record} keyPar={"q4_ShivamStr"} month={record?.endMonth} index={index} />;
+                        },
+                    },
+                    {
+                        title: "Nova",
+                        dataIndex: 'q4_NOVAStr',
+                        key: "m4_w5",
+                        width: 100,
+                        align: "center",
+                        render: (text, record, index) => {
+                            if (record.isSection) {
+                                return {
+                                    props: {
+                                        colSpan: 0,
+                                    },
+                                };
+                            }
+
+                            return <AddNoteComp text={text} record={record} keyPar={"q4_NOVAStr"} month={record?.endMonth} index={index} />;
+                        },
+                    },
+                ],
+            },
         ];
 
         columnCount = countLeafColumns(columns);
@@ -719,17 +841,17 @@ function QOQOverview() {
                         </Radio.Group>
                        
                         <div className={uplersStyle.calendarFilterSet}>
-                            <div className={uplersStyle.label}>Month-Year</div>
+                            <div className={uplersStyle.label}>Year</div>
                             <div className={uplersStyle.calendarFilter}>
                                 <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
                                 <DatePicker
                                     onKeyDown={(e) => e.preventDefault()}
                                     className={uplersStyle.dateFilter}
-                                    placeholderText="Month - Year"
+                                    placeholderText="Year"
                                     selected={monthDate}
                                     onChange={(date) => setMonthDate(date)}
-                                    dateFormat="MM-yyyy"
-                                    showMonthYearPicker
+                                    dateFormat="yyyy"
+                                    showYearPicker
                                 />
                             </div>
                         </div>
@@ -745,7 +867,7 @@ function QOQOverview() {
                 ) : (
                     <Table
                         columns={getTableColumns()}
-                        dataSource={tableData}
+                        dataSource={tableData.filter((item) => item.stage !== "METRIC")}
                         loading={isLoadingTable}
                         pagination={false}
                         scroll={{
