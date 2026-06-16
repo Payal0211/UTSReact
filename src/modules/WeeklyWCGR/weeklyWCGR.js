@@ -53,6 +53,7 @@ function WeeklyWCGR() {
   const [pODList, setPODList] = useState([]);
 
   const [selectedHead, setSelectedHead] = useState('');
+  const [isAllPODData,  setISALLPODData] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [headerDataCol, setHeaderDataCol] = useState({});
   const [showComment, setShowComment] = useState(false);
@@ -348,6 +349,7 @@ function WeeklyWCGR() {
    const getALLPODJoiningRevenueData = async () => {
     setIsLoadingTable(true);
          setSelectedHead(null);
+         setISALLPODData(true);
     let query = `?podId=${0}&Month=${moment(monthDate).format("M")}&Year=${selectedYear}`;
 
     const result = await ReportDAO.getALLPODJoiningRevenueDataDAO(query);
@@ -558,7 +560,7 @@ function WeeklyWCGR() {
         stageID: row.stage_ID,
         cat: row.category ? row.category : "CH",
         week: week ? week : "",
-        multiplePODIds: ''
+        multiplePODIds:  isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -930,7 +932,7 @@ function WeeklyWCGR() {
         stageID: row.stage_ID,
         cat: row?.category ? row?.category : "ALL",
         week: week ? week : "",
-        multiplePODIds: ''
+        multiplePODIds:  isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1013,7 +1015,7 @@ function WeeklyWCGR() {
         year: row.wcgrYear,
         stageID: row.stage_ID,
         week: week ? week : "",
-        multiplePODIds: ''
+        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') :   ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1096,7 +1098,7 @@ function WeeklyWCGR() {
         year: row?.wcgrYear,
         stageID: row.stage_ID,
         cat: row.category,
-        multiplePODIds: ''
+        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1157,6 +1159,50 @@ function WeeklyWCGR() {
     const selectedWeek = weekMatch ? parseInt(weekMatch[1], 10) : null;
     const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
     const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
+
+    if(isAllPODData){
+      return text
+    }
+
+     if(record?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
+     if (text) {
+          return (
+            <>
+              <div dangerouslySetInnerHTML={{ __html: text }}></div>
+              <p
+                style={{
+                  color: "blue",
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  marginTop: "5px",
+                }}
+                onClick={() => {
+                   AddComment(record, keyPar, month);
+                }}
+              >
+                View All
+              </p>
+            </>
+          );
+        } else {
+          return (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                AddComment(record, keyPar, month);
+              }}
+            >
+              Add
+            </p>
+          );
+        }
+     }
 
     if (record?.stage_Title === "JOINING  ·  Revenue" || record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue") {
       if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop") {
@@ -2044,6 +2090,7 @@ function WeeklyWCGR() {
               showSearch={true}
               onChange={(value, option) => {
                 setSelectedHead(value);
+                  setISALLPODData(false);
               }}
               options={pODList?.map((v) => ({
                 label: v.dd_text,
