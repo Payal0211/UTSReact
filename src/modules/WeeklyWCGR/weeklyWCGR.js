@@ -414,7 +414,7 @@ function WeeklyWCGR() {
     const pl = {
       month: month,
       year: d.wcgrYear,
-      userCategory: d[key],
+      userCategory: key,
       hR_Model: d.stage_ID,
       stage_ID: d.poD_ID,
       hR_BusinessType: "POD",
@@ -1290,7 +1290,7 @@ function WeeklyWCGR() {
     }
 
     if (record?.stage_Title === "CUSTOMER EXPERIENCE") {
-      if (record.stage_ID === "refclientortalent" || record.stage_ID === "CustDelight") {
+      if (record.stage_ID === "refclientortalent" ) {
         return <div >
           {text ? (
             <div
@@ -1344,9 +1344,36 @@ function WeeklyWCGR() {
         </div>
       }
 
+      if(record?.stage_ID === "AvgtimeHire" || record?.stage_ID === "refclientortalent" || record?.stage_ID === "CustDelight"){
+          return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getHRReferenceCount(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+          
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+
     }
 
-    if (record?.stage_Title === "CUSTOMER OVERVIEW") {
+    if (record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title === "NEW CUSTOMER FUNNEL") {
 
       return <div >
         {text ?
@@ -1418,7 +1445,7 @@ function WeeklyWCGR() {
     }
 
     return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "SG" || record?.stage_ID === "JAllAA" ||
-      record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS") || text.includes("%")
+      record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS") || text.includes("%") 
     ) ? text : <div
       style={{
         display: "flex",
@@ -1528,6 +1555,7 @@ function WeeklyWCGR() {
         onHeaderCell: () => ({
           className: "black-header",
         }),
+        align: "left",
         render: (text, record) => {
           if (record.isSection) {
             return {
@@ -1573,6 +1601,7 @@ function WeeklyWCGR() {
         fixed: "left",
         align: "center",
         className: `black-header ${uplersStyle.QuarterlyCol}`,
+         align: "left",
         onHeaderCell: () => ({
           className: "black-header",
         }),
@@ -1602,7 +1631,7 @@ function WeeklyWCGR() {
             dataIndex: 'startMonth_MonthlyTotalStr',
             key: "m1_total",
             width: 100,
-            align: "center",
+            align: "Left",
             className: `black-header ${uplersStyle.totalCol}`,
             render: (text, record, index) => {
               if (record.isSection) {
@@ -1621,7 +1650,7 @@ function WeeklyWCGR() {
             dataIndex: 'startMonth_W1Str',
             key: "m1_w1",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1639,7 +1668,7 @@ function WeeklyWCGR() {
             dataIndex: 'startMonth_W2Str',
             key: "m1_w2",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1657,7 +1686,7 @@ function WeeklyWCGR() {
             dataIndex: 'startMonth_W3Str',
             key: "m1_w3",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1675,7 +1704,7 @@ function WeeklyWCGR() {
             dataIndex: 'startMonth_W4Str',
             key: "m1_w4",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1693,7 +1722,7 @@ function WeeklyWCGR() {
             dataIndex: 'startMonth_W5Str',
             key: "m1_w5",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1722,7 +1751,7 @@ function WeeklyWCGR() {
             dataIndex: 'midMonth_MonthlyTotalStr',
             key: "m2_total",
             width: 100,
-            align: "center",
+            align: "Left",
             className: `black-header ${uplersStyle.totalCol}`,
             render: (text, record, index) => {
               if (record.isSection) {
@@ -1741,7 +1770,7 @@ function WeeklyWCGR() {
             dataIndex: 'midMonth_W1Str',
             key: "m2_w1",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1759,7 +1788,7 @@ function WeeklyWCGR() {
             dataIndex: 'midMonth_W2Str',
             key: "m2_w2",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1777,7 +1806,7 @@ function WeeklyWCGR() {
             dataIndex: 'midMonth_W3Str',
             key: "m2_w3",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1795,7 +1824,7 @@ function WeeklyWCGR() {
             dataIndex: 'midMonth_W4Str',
             key: "m2_w4",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1814,7 +1843,7 @@ function WeeklyWCGR() {
             dataIndex: 'midMonth_W5Str',
             key: "m2_w5",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1843,7 +1872,7 @@ function WeeklyWCGR() {
             dataIndex: 'endMonth_MonthlyTotalStr',
             key: "m3_total",
             width: 100,
-            align: "center",
+            align: "Left",
             className: `black-header ${uplersStyle.totalCol}`,
             render: (text, record, index) => {
               if (record.isSection) {
@@ -1863,7 +1892,7 @@ function WeeklyWCGR() {
             dataIndex: 'endMonth_W1Str',
             key: "m3_w1",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1881,7 +1910,7 @@ function WeeklyWCGR() {
             dataIndex: 'endMonth_W2Str',
             key: "m3_w2",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1899,7 +1928,7 @@ function WeeklyWCGR() {
             dataIndex: 'endMonth_W3Str',
             key: "m3_w3",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1917,7 +1946,7 @@ function WeeklyWCGR() {
             dataIndex: 'endMonth_W4Str',
             key: "m3_w4",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1935,7 +1964,7 @@ function WeeklyWCGR() {
             dataIndex: 'endMonth_W5Str',
             key: "m3_w5",
             width: 100,
-            align: "center",
+            align: "Left",
             render: (text, record, index) => {
               if (record.isSection) {
                 return {
@@ -1956,8 +1985,7 @@ function WeeklyWCGR() {
     return columns;
   };
 
-  const ProfileColumns = () => {
-
+  const ProfileColumns = () => {  
     return [
       {
         title: "Action Date",
@@ -2126,7 +2154,7 @@ function WeeklyWCGR() {
       <div className={uplersStyle.tableWrapper}>
         {isLoading || isLoadingTable ? (
           <Skeleton active />
-        ) : (
+        ) : ( <>
           <Table
             columns={getTableColumns()}
             dataSource={tableData}
@@ -2162,6 +2190,7 @@ function WeeklyWCGR() {
 
             }}
           />
+          </>
         )}
       </div>
 
@@ -3309,7 +3338,9 @@ function WeeklyWCGR() {
 
                         Company
                       </th>
-                      <th
+
+                      {showTalentCol?.stage_ID !== "CustDelight" && <>
+                       <th
                         style={{
                           padding: "10px",
                           border: "1px solid #ddd",
@@ -3329,6 +3360,8 @@ function WeeklyWCGR() {
 
                         HR Title
                       </th>
+                      </>}
+                     
                       <th
                         style={{
                           padding: "10px",
@@ -3405,7 +3438,8 @@ function WeeklyWCGR() {
                             />
                           )}
                         </td>
-                        <td
+                      {showTalentCol?.stage_ID !== "CustDelight" && <>
+                      <td
                           style={{
                             padding: "8px",
                             border: "1px solid #ddd",
@@ -3432,6 +3466,7 @@ function WeeklyWCGR() {
                         >
                           {detail.hrTitle}
                         </td>
+                      </>}  
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
@@ -3520,7 +3555,6 @@ function WeeklyWCGR() {
                   flexWrap: "wrap",
                 }}
               >
-                {console.log('profileInfo', showTalentCol)}
                 <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
 
                 {/* <input
@@ -3556,7 +3590,7 @@ function WeeklyWCGR() {
                 <div style={{ margin: "5px 10px" }}>
                   <Table
                     dataSource={listAchievedData}
-                    columns={ProfileColumns()}
+                    columns={ProfileColumns(showTalentCol?.stage_ID)}
                     pagination={false}
                     scroll={{ y: "480px" }}
                   />
