@@ -282,15 +282,14 @@ function QOQOverview() {
                 },
             },
 
-            // {
-            //   title: "CADENCE",
-            //   dataIndex: "cadence",
-            //   key: "cadence",
-            //   width: 100,
-            //   align: "center",
-            //   fixed: "left",
-            //   className: "black-header",
-            // },
+            {
+              title: "Year Total",
+              dataIndex: "yearlyTotalStr",
+              key: "yearlyTotalStr",        
+              align: "center",
+              fixed: "left",
+              className: "black-header",
+            },
             // {
             //     // title: "QUARTERLY",
             //     title: headerDataCol?.stage_ID,
@@ -446,7 +445,7 @@ function QOQOverview() {
                 children: [
                     {
                         title: "Total",
-                        dataIndex: 'midMonth_MonthlyTotalStr',
+                        dataIndex: 'q2Str',
                         key: "m2_total",
                         width: 100,
                         align: "center",
@@ -460,7 +459,7 @@ function QOQOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q2Str"} month={record?.midMonth} index={index} />;
                         },
                     },
                     {
@@ -567,7 +566,7 @@ function QOQOverview() {
                 children: [
                     {
                         title: "Total",
-                        dataIndex: 'endMonth_MonthlyTotalStr',
+                        dataIndex: 'q3Str',
                         key: "m3_total",
                         width: 100,
                         align: "center",
@@ -581,7 +580,7 @@ function QOQOverview() {
                                 };
                             }
 
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} index={index} />;
+                            return <AddNoteComp text={text} record={record} keyPar={"q3Str"} month={record?.endMonth} index={index} />;
                         },
 
                     },
