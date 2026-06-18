@@ -196,7 +196,10 @@ export default function UplersReport() {
        }
 
          useEffect(()=>{
-                 getFreezeInfo()
+          if(selectedHead){
+             getFreezeInfo()
+          }
+                
               },[monthDate,hrModal,selectedHead])
 
   const getPODRevenue  = async () => {
@@ -272,7 +275,10 @@ export default function UplersReport() {
        };
      
        useEffect(() => {
-         getQASummarytData();
+        if(selectedHead){
+          getQASummarytData();
+        }
+         
        }, [monthDate, hrModal,selectedHead]);
 
   const convertDataSource = (data) => {

@@ -165,6 +165,9 @@ margin-bottom: 10px;
 .heighliteGray {
     background-color: rgb(218, 218, 218) ;
 }
+.OBRow{
+    background-color: #c7c2c2;
+}
 .boldText td{
   font-weight: bold;
 }

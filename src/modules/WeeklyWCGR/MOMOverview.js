@@ -243,6 +243,23 @@ function MOMOverview() {
         const nextMonth = headerDataCol?.midMonth_Name;
         const thirdMonth = headerDataCol?.endMonth_Name;
 
+        
+        const cellClassName=(record, stageTitle, stageID)=>{
+        
+              if(record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning"){
+        
+                 if(record.stage.split("-")[0].trim() === "Opening Balance"){
+               return uplersStyle.OBRow
+              }
+        
+                if(record.stage.split("-")[1].trim() === "New"){
+                  return uplersStyle.heighliteCream
+                }
+               
+              }
+              return ""
+        }
+
         const columns = [
             {
                 title: "METRIC",
@@ -254,6 +271,10 @@ function MOMOverview() {
                 onHeaderCell: () => ({
                     className: "black-header",
                 }),
+                  onCell: (record) => ({
+                    className:cellClassName(record)
+                    
+                    }),
                 render: (text, record) => {
                     if (record.isSection) {
                         return {
@@ -759,6 +780,20 @@ function MOMOverview() {
                                 record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio" || record.stage_ID === "O2S"
                             ) {
                                 return uplersStyle.boldRow;
+                            }
+
+                             if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
+                                            let type = record.stage.split("-")[1].trim()
+                                           
+                            
+                            if(record.stage.split("-")[0].trim() === "Opening Balance"){
+                                return uplersStyle.OBRow
+                            }
+                            if (type === "New") {
+                                return uplersStyle.heighliteCream;
+                            }
+                            
+                            return uplersStyle.boldRow;
                             }
                         }}
                     />
