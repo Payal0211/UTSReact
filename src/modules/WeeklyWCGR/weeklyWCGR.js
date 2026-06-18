@@ -437,7 +437,7 @@ function WeeklyWCGR() {
     }
    
     setShowComment(true);
-    setCommentData({ ...data, hR_Model: "", key: key, month: month });
+    setCommentData({ ...data, hR_Model: "", key: key, month: month  , index: index});
   };
 
   const saveComment = async (note) => {
@@ -451,11 +451,17 @@ function WeeklyWCGR() {
       loggedInUserID: userData?.UserId,
       comments: note,
     };
+
     setIsCommentLoading(true);
     const res = await TaDashboardDAO.insertRecruiterCommentRequestDAO(pl);
     setIsCommentLoading(false);
     if (res.statusCode === HTTPStatusCode.OK) {
       setALLCommentsList(res.responseBody);
+      setTableData(prev => {
+        let temp = [...prev];
+        temp[commentData.index] = { ...temp[commentData.index], [commentData.key]: note };
+        return temp;
+      })
     }
   };
 
@@ -1117,7 +1123,7 @@ function WeeklyWCGR() {
 
   }
 
-  const AddCommentIcon = ({ record, keyPar, month }) => {
+  const AddCommentIcon = ({ record, keyPar, month , index }) => {
     return <IconContext.Provider
       value={{
         // color: "green",
@@ -1133,7 +1139,7 @@ function WeeklyWCGR() {
       <Tooltip title={`Add/View Comment`} placement="top">
         <span
           onClick={() => {
-            AddComment(record, keyPar, month);
+            AddComment(record, keyPar, month, index);
           }}
           // className={taStyles.feedbackLabel}
           style={{
@@ -1178,7 +1184,7 @@ function WeeklyWCGR() {
                   marginTop: "5px",
                 }}
                 onClick={() => {
-                   AddComment(record, keyPar, month);
+                   AddComment(record, keyPar, month, index);
                 }}
               >
                 View All
@@ -1195,7 +1201,7 @@ function WeeklyWCGR() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                AddComment(record, keyPar, month);
+                AddComment(record, keyPar, month , index);
               }}
             >
               Add
@@ -1544,6 +1550,22 @@ function WeeklyWCGR() {
     const nextMonth = headerDataCol?.midMonth_Name;
     const thirdMonth = headerDataCol?.endMonth_Name;
 
+    const cellClassName=(record, stageTitle, stageID)=>{
+
+      if(record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning"){
+
+         if(record.stage.split("-")[0].trim() === "Opening Balance"){
+       return uplersStyle.OBRow
+      }
+
+        if(record.stage.split("-")[1].trim() === "New"){
+          return uplersStyle.heighliteCream
+        }
+       
+      }
+      return ""
+    }
+
     const columns = [
       {
         title: "METRIC",
@@ -1551,9 +1573,13 @@ function WeeklyWCGR() {
         key: "stage",
         width: 200,
         fixed: "left",
-        className: "black-header",
+        // className: "black-header",
         onHeaderCell: () => ({
           className: "black-header",
+        }),
+        onCell: (record) => ({
+          className:cellClassName(record)
+        
         }),
         align: "left",
         render: (text, record) => {
@@ -1563,7 +1589,7 @@ function WeeklyWCGR() {
                 <div
                   style={{
                     background: record.color,
-                    color: "#fff",
+                    color:  "#fff",
                     fontWeight: 700,
                     padding: "10px 16px",
                     fontSize: "18px",
@@ -1578,6 +1604,7 @@ function WeeklyWCGR() {
               },
             };
           }
+
 
           return text;
         },
@@ -2179,6 +2206,10 @@ function WeeklyWCGR() {
                 // if (type === "All") {
                 //   return uplersStyle.heighliteRow
                 // }
+
+                if(record.stage.split("-")[0].trim() === "Opening Balance"){
+                  return uplersStyle.OBRow
+                }
                 if (type === "New") {
                   return uplersStyle.heighliteCream;
                 }

@@ -99,10 +99,10 @@ function QOQOverview() {
         }
     };
 
-    useEffect(() => {
-        getHeads();
+    // useEffect(() => {
+    //     getHeads();
 
-    }, []);
+    // }, []);
 
     const getGroupUsers = async (ID) => {
         setIsLoading(true);
@@ -218,12 +218,12 @@ function QOQOverview() {
         const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
         const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
-        return text 
+        return text
 
-        
+
     }
 
-   
+
 
     const getTableColumns = () => {
         const countLeafColumns = (columns) =>
@@ -244,6 +244,23 @@ function QOQOverview() {
         const thirdMonth = headerDataCol?.q3Str;
         const fourthMonth = headerDataCol?.q4Str;
 
+
+        const cellClassName = (record, stageTitle, stageID) => {
+
+            if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
+
+                if (record.stage.split("-")[0].trim() === "Opening Balance") {
+                    return uplersStyle.OBRow
+                }
+
+                if (record.stage.split("-")[1].trim() === "New") {
+                    return uplersStyle.heighliteCream
+                }
+
+            }
+            return ""
+        }
+
         const columns = [
             {
                 title: "METRIC",
@@ -254,6 +271,10 @@ function QOQOverview() {
                 className: "black-header",
                 onHeaderCell: () => ({
                     className: "black-header",
+                }),
+                onCell: (record) => ({
+                    className: cellClassName(record)
+
                 }),
                 render: (text, record) => {
                     if (record.isSection) {
@@ -283,12 +304,13 @@ function QOQOverview() {
             },
 
             {
-              title: "Year Total",
-              dataIndex: "yearlyTotalStr",
-              key: "yearlyTotalStr",        
-              align: "center",
-              fixed: "left",
-              className: "black-header",
+                title: "Year Total",
+                dataIndex: "yearlyTotalStr",
+                key: "yearlyTotalStr",
+                align: "center",
+                fixed: "left",
+                 className: `black-header ${uplersStyle.QuarterlyCol}`,
+                
             },
             // {
             //     // title: "QUARTERLY",
@@ -677,7 +699,7 @@ function QOQOverview() {
                 ],
             },
 
-             // MONTH 4
+            // MONTH 4
             {
                 title: fourthMonth,
                 className: "purple-total-header",
@@ -838,7 +860,7 @@ function QOQOverview() {
                             <Radio value={"DP"}>FTE</Radio>
                             {/* <Radio value={"Contract"}>Contract</Radio> */}
                         </Radio.Group>
-                       
+
                         <div className={uplersStyle.calendarFilterSet}>
                             <div className={uplersStyle.label}>Year</div>
                             <div className={uplersStyle.calendarFilter}>
@@ -881,10 +903,24 @@ function QOQOverview() {
                             ) {
                                 return uplersStyle.boldRow;
                             }
+
+                            if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
+                                let type = record.stage.split("-")[1].trim()
+
+
+                                if (record.stage.split("-")[0].trim() === "Opening Balance") {
+                                    return uplersStyle.OBRow
+                                }
+                                if (type === "New") {
+                                    return uplersStyle.heighliteCream;
+                                }
+
+                                return uplersStyle.boldRow;
+                            }
                         }}
                     />
                 )}
-      
+
             </div>
         </div>
 

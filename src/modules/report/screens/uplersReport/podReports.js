@@ -189,7 +189,10 @@ export default function PodReports({
   }
 
   useEffect(() => {
-    GetHRCountSummary()
+    if(selectedHead){
+      GetHRCountSummary()
+    }
+    
   }, [selectedHead, monthDate, hrModal, dashboardTabTitle])
 
 
