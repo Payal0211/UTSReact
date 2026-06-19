@@ -1238,7 +1238,7 @@ function WeeklyWCGR() {
         </div>
       }
 
-      if (record.stage_ID === "JAllAnticipated" || record.stage_ID === "SAnticipated") {
+      if (record.stage_ID === "JAllAnticipated" || record.stage_ID === "SAnticipated" || record.stage_ID === "JFreezeAnticipated") {
         return <div >
           {text ? (
             <div
