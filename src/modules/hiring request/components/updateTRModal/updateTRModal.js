@@ -223,7 +223,7 @@ console.log('updateTRDetail', updateTRDetail);
 	return (
 		<div className={updateTRStyle.engagementModalContainer}>		
 			<div className={updateTRStyle.updateTRTitle}>
-				<h2>Increase / Decrease TR(s)</h2>
+				<h2>Decrease TR(s)</h2>
 				<p>
 					{updateTRDetail?.ClientDetail?.HR_Number} | Active TR:{' '}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
@@ -257,6 +257,7 @@ console.log('updateTRDetail', updateTRDetail);
 									<HRInputField
 										register={register}
 										errors={errors}
+										disabled={true}
 										validationSchema={{
 											required: 'Please enter TR',
 										}}
@@ -273,11 +274,11 @@ console.log('updateTRDetail', updateTRDetail);
 										required
 										// disabled={true}
 									/>
-									<button
+									{/* <button
 										className={updateTRStyle.plusButton}
 										onClick={increment}>
 										<PlusSVG />
-									</button>
+									</button> */}
 								</div>
 							</div>
 						</div>
