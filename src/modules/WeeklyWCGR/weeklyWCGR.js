@@ -74,6 +74,7 @@ function WeeklyWCGR() {
   const [showDFReport, setShowDFReport] = useState(false);
   const [showReferenceReport, setShowReferenceReport] = useState(false);
   const [showAnticipatedReport, setShowAnticipatedReport] = useState(false);
+  const [showJConfirmationReport, setShowJConfirmationReport] = useState(false);
   const [openSplitHR, setSplitHR] = useState(false);
   const [getHRnumber, setHRNumber] = useState({ hrNumber: '', isHybrid: false });
   const [getHRID, setHRID] = useState("");
@@ -662,6 +663,140 @@ function WeeklyWCGR() {
     }
   };
 
+  const JConfirmationColumns = [
+     {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      width: "150px",
+      render: (text, record) =>
+        record?.companyCategory === "Diamond" ? (
+          <>
+            <a
+            href={`/viewCompanyDetails/${record.companyId}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}{" "}
+          </a>
+            &nbsp;
+            <img
+              src={Diamond}
+              alt="info"
+              style={{ width: "16px", height: "16px" }}
+            />
+          </>
+        ) : (
+          text
+        ),
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      width: "170px",
+      render: (text, value) => {
+        return (
+          <a
+            href={`/allhiringrequest/${value.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        ); // Replace `/client/${text}` with the appropriate link you need
+      },
+    },
+    {
+      title: "Position",
+      dataIndex: "position",
+      key: "position",
+      width: '200px',
+    },
+    {
+      title: "Joining Date",
+      dataIndex: "joiningDate",
+      key: "joiningDate",
+    },
+    {
+      title: "Talent",
+      dataIndex: "talent",
+      key: "talent",
+    },
+    {
+      title: "Talent Status",
+      dataIndex: "talentStatus",
+      key: "talentStatus",
+      width: '150px',
+      // render: (_, param) =>
+      //   All_Hiring_Request_Utils.GETHRSTATUS(
+      //     param?.hrStatusCode,
+      //     param?.talentStatus
+      //   ),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}> Billing %</div>,
+      dataIndex: "billing",
+      key: "billing",
+      width: '100px',
+      align: "center",
+      className: uplersStyle.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Billing Value
+        </div>
+      ),
+      dataIndex: "billingValue",
+      key: "billingValue",
+      width: '150px',
+      align: "center",
+      className: uplersStyle.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {pODList?.find(item => item.dd_value === selectedHead)?.dd_text} Revenue
+        </div>
+      ),
+      dataIndex: "revenue",
+      key: "revenue",
+      width: '150px',
+      align: "center",
+      className: uplersStyle.headerCell,
+      render: (v, row) => {
+        return <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'space-between' }}>
+          <Tooltip placement="bottom" title={"Split HR"}>
+            <a href="javascript:void(0);" style={{ display: 'inline-flex' }}>
+              <PiArrowsSplitBold
+                style={{ width: "17px", height: "17px", fill: '#232323' }}
+                onClick={() => {
+                  setSplitHR(true);
+                  setHRID(row?.hiringRequestID);
+                  setHRNumber({ hrNumber: row?.hR_Number });
+                  getPODList(row?.hiringRequestID)
+                }}
+              />
+            </a>
+          </Tooltip>
+          {v ? v : ''} </div>
+      }
+    },
+
+    {
+      title: <div style={{ textAlign: "center" }}>HR Modal</div>,
+      dataIndex: "hR_Model",
+      key: "hR_Model",
+
+      className: uplersStyle.headerCell,
+      width: "180px",
+      align: "center",
+    },
+  ]
+
   const AnticipatedColumns = [
     {
       title: "Anticipated Date",
@@ -1093,6 +1228,33 @@ function WeeklyWCGR() {
     }
   };
 
+  const getJConfirmedDetails = async(row, v, week, month ) =>{
+    try {
+      setShowJConfirmationReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getJConfirmationPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  }
+
   const getFunnelSummaryDetailsPopup = async (row, v, week, month) => {
     try {
       // setShowSummaryReport(true);
@@ -1251,6 +1413,33 @@ function WeeklyWCGR() {
               <span
                 onClick={() => {
                   getAnticipatedDetails(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+
+      if(record.stage_ID === "JConfirmed"){
+        return  <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getJConfirmedDetails(record, text, week, month);
                 }}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
@@ -2770,6 +2959,85 @@ function WeeklyWCGR() {
                   onClick={() => {
                     setSearchTerm("");
                     setShowAnticipatedReport(false);
+                    setDFFilterListData([]);
+                    setDFListData([]);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </Modal>
+      )}
+
+            {showJConfirmationReport && (
+        <Modal
+          transitionName=""
+          width="1050px"
+          centered
+          footer={null}
+          open={showJConfirmationReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setSearchTerm("");
+            setShowJConfirmationReport(false);
+            setDFFilterListData([]);
+            setDFListData([]);
+          }}
+        >
+          {false ? (
+            <div
+              style={{
+                display: "flex",
+                height: "350px",
+                justifyContent: "center",
+              }}
+            >
+              <Spin size="large" />
+            </div>
+          ) : (
+            <>
+              <div
+                style={{
+                  padding: "45px 15px 10px 15px",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <h3>
+                  <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+                </h3>
+
+
+
+              </div>
+
+              {achievedLoading ? (
+                <div>
+                  <Skeleton active />
+                </div>
+              ) : (
+                <div style={{ margin: "5px 10px" }}>
+                  <Table
+                    dataSource={listAchievedData}
+                    columns={JConfirmationColumns}
+                    pagination={false}
+                    scroll={{ x: "1600px", y: "480px" }}
+                  />
+                </div>
+              )}
+
+
+              <div style={{ padding: "10px 0" }}>
+                <button
+                  className={uplersStyle.btnCancle}
+                  // disabled={isAddingNewTask}
+                  onClick={() => {
+                    setSearchTerm("");
+                    setShowJConfirmationReport(false);
                     setDFFilterListData([]);
                     setDFListData([]);
                   }}
