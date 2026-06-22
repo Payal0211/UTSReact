@@ -1092,6 +1092,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getAnticipatedPopupReportAPI');
 		}
 	},
+	getJConfirmationPopupReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.UTS_REPORT +
+			ReportType.GET_J_CONFIRMATION_DETAILS_LIST + `?&podId=${payload?.pod_id}&Month=${payload?.month}&Year=${payload?.year}&week_No=${payload?.week}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getJConfirmationPopupReportAPI');
+		}
+	},
 	updateReachoutStatusAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
