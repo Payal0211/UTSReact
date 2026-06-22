@@ -246,6 +246,7 @@ export class ReportType {
 	static GET_POC_DETAILS_LIST = 'PODDashboard_PopupDetails'
 	static GET_REFERENCE_DETAILS_LIST = "Get_HRRefCountDetails_Popup"
 	static GET_ANTICIPATED_DETAILS_LIST = 'Get_WCGRAnticipatedHRDetails_Popup'
+	static GET_J_CONFIRMATION_DETAILS_LIST = 'Get_WCGR_JConfimed_Report'
 	static UPDATE_REACHOUT_STATUS = 'UpdateScrapReachoutStatus'
 	static GET_HR_COUNT_SUMMARY_LIST = 'PODDashboardHRCountSummary'
 	static GET_HR_COUNT_SUMMARY_POPUP_LIST = 'PODDashboardHRCountSummary_PopupDetails'
