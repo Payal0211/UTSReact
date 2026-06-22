@@ -688,7 +688,14 @@ function WeeklyWCGR() {
             />
           </>
         ) : (
-          text
+           <a
+            href={`/viewCompanyDetails/${record.companyId}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}{" "}
+          </a>
         ),
     },
     {
