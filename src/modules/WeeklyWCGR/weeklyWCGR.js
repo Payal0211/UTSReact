@@ -31,6 +31,7 @@ import Diamond from "assets/svg/diamond.svg";
 import { ImPushpin } from "react-icons/im";
 import { PiArrowsSplitBold } from "react-icons/pi";
 import { CiCircleInfo } from "react-icons/ci";
+import { BiSolidComment } from "react-icons/bi";
 import { MdModeEditOutline } from "react-icons/md";
 import { GrNotes } from "react-icons/gr";
 import { IconContext } from "react-icons";
@@ -430,7 +431,7 @@ function WeeklyWCGR() {
     }
   };
 
-  const AddComment = (data, key, month, index) => {
+  const AddComment = (data, key, month, index,commentKey) => {
     if(data?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
      getAllPODComments(data, key, month)
     }else{
@@ -438,7 +439,7 @@ function WeeklyWCGR() {
     }
    
     setShowComment(true);
-    setCommentData({ ...data, hR_Model: "", key: key, month: month  , index: index});
+    setCommentData({ ...data, hR_Model: "", key: key, month: month  , index: index, commentKey: commentKey });
   };
 
   const saveComment = async (note) => {
@@ -458,11 +459,21 @@ function WeeklyWCGR() {
     setIsCommentLoading(false);
     if (res.statusCode === HTTPStatusCode.OK) {
       setALLCommentsList(res.responseBody);
-      setTableData(prev => {
+
+      if(commentData?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
+ setTableData(prev => {
         let temp = [...prev];
-        temp[commentData.index] = { ...temp[commentData.index], [commentData.key]: note };
+        temp[commentData.index] = { ...temp[commentData.index], [commentData.key]: note ,[commentData.commentKey]: note };
         return temp;
       })
+      }else{
+         setTableData(prev => {
+        let temp = [...prev];
+        temp[commentData.index] = { ...temp[commentData.index], [commentData.commentKey]: note };
+        return temp;
+      })
+      }
+     
     }
   };
 
@@ -1292,10 +1303,11 @@ function WeeklyWCGR() {
 
   }
 
-  const AddCommentIcon = ({ record, keyPar, month , index }) => {
+  const AddCommentIcon = ({ record, keyPar, month , index, commentKey }) => {
+    
     return <IconContext.Provider
       value={{
-        // color: "green",
+        color:record[commentKey].length > 0 ? "green" : "gray",
         style: {
           width: "10px",
           height: "10px",
@@ -1305,10 +1317,10 @@ function WeeklyWCGR() {
       }}
     >
       {" "}
-      <Tooltip title={`Add/View Comment`} placement="top">
+      <Tooltip title={record[commentKey].length > 0 ? record[commentKey] : `Add/View Comment`} placement="top">
         <span
           onClick={() => {
-            AddComment(record, keyPar, month, index);
+            AddComment(record, keyPar, month, index,commentKey);
           }}
           // className={taStyles.feedbackLabel}
           style={{
@@ -1318,14 +1330,19 @@ function WeeklyWCGR() {
           }}
         >
           {" "}
-          <CiCircleInfo />
+         {record[commentKey].length > 0 ? <BiSolidComment /> :  <CiCircleInfo />}  
+         {/* */}
         </span>{" "}
       </Tooltip>
     </IconContext.Provider>
   }
 
+  const getPopupForAllPODSDetails = async (row, v, week, month) => {
 
-  const AddNoteComp = ({ text, record, keyPar, month, index, week }) => {
+  }
+
+
+  const AddNoteComp = ({ text, record, keyPar, month, index, week, commentKey }) => {
     const isPastMonth = month < moment().format("M");
     const currentMonth = parseInt(moment().format("M"), 10);
     const selectedMonth = parseInt(month, 10);
@@ -1336,7 +1353,22 @@ function WeeklyWCGR() {
     const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
     if(isAllPODData){
-      return text
+      return <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getPopupForAllPODSDetails(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+            </div>
     }
 
      if(record?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
@@ -1353,7 +1385,7 @@ function WeeklyWCGR() {
                   marginTop: "5px",
                 }}
                 onClick={() => {
-                   AddComment(record, keyPar, month, index);
+                   AddComment(record, keyPar, month, index,commentKey);
                 }}
               >
                 View All
@@ -1370,7 +1402,7 @@ function WeeklyWCGR() {
                 cursor: "pointer",
               }}
               onClick={() => {
-                AddComment(record, keyPar, month , index);
+                AddComment(record, keyPar, month , index,commentKey);
               }}
             >
               Add
@@ -1398,7 +1430,7 @@ function WeeklyWCGR() {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+              <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
             </div>
           )
             : (
@@ -1425,7 +1457,7 @@ function WeeklyWCGR() {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+              <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
             </div>
           )
             : (
@@ -1452,7 +1484,7 @@ function WeeklyWCGR() {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index}/>
             </div>
           )
             : (
@@ -1481,7 +1513,7 @@ function WeeklyWCGR() {
             >
               {text}
             </span>
-            <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+            <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
           </div>
         )
           : (
@@ -1510,7 +1542,7 @@ function WeeklyWCGR() {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+              <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
             </div>
           )
             : (
@@ -1537,7 +1569,7 @@ function WeeklyWCGR() {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
+              <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
             </div>
           )
             : (
@@ -1574,6 +1606,37 @@ function WeeklyWCGR() {
       }
 
     }
+     if (record?.stage_Title === "NEW CUSTOMER FUNNEL" ) {
+      if (record.stage_ID === "NHR" || record.stage_ID === "J") {
+       
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getFunnelSummaryDetailsPopup(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index}/>
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+    }
+
 
     if (record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title === "NEW CUSTOMER FUNNEL") {
 
@@ -1595,15 +1658,16 @@ function WeeklyWCGR() {
       </div>
     }
 
-    if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning" && (record.stage_ID === "CF" ||
+    if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning" ) {
+      if(record.stage_ID === "CF" ||
       record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L" || record.stage_ID === "TA"
-    )) {
-      return <div >
+    ){
+       
+ return <div >
         {text ?
           <span
             onClick={() => {
               getHRTalentWiseReport(record, text, week, month)
-
             }}
             style={{ cursor: "pointer", color: "#1890ff" }}
           >
@@ -1615,37 +1679,10 @@ function WeeklyWCGR() {
           )}
       </div>
     }
-
-    if (record?.stage_Title === 'NEW CUSTOMER FUNNEL' && week === undefined) {
-      if (record.stage_ID === "NHR" || record.stage_ID === "J") {
-        return <div >
-          {text ? (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <span
-                onClick={() => {
-                  getFunnelSummaryDetailsPopup(record, text, week, month);
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {text}
-              </span>
-
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} />
-            </div>
-          )
-            : (
-              ""
-            )}
-        </div>
-      }
+     
     }
 
+   
     return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "SG" || record?.stage_ID === "JAllAA" ||
       record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS") || text.includes("%") 
     ) ? text : <div
@@ -1708,7 +1745,7 @@ function WeeklyWCGR() {
           <Tooltip title={`Add/View Comment`} placement="top">
             <span
               onClick={() => {
-                AddComment(record, keyPar, month);
+                AddComment(record, keyPar, month,index,commentKey);
               }}
               // className={taStyles.feedbackLabel}
               style={{
@@ -1865,7 +1902,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} index={index} />;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} commentKey={"startMonth_MonthlyTotalC"} month={record?.startMonth} index={index} />;
             },
           },
           {
@@ -1883,7 +1920,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W1Str"} month={record?.startMonth} index={index} week={"W1"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W1Str"} commentKey={"startMonth_W1C"} month={record?.startMonth} index={index} week={"W1"} />;
             },
           },
           {
@@ -1901,7 +1938,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W2Str"} month={record?.startMonth} index={index} week={"W2"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W2Str"} commentKey={"startMonth_W2C"} month={record?.startMonth} index={index} week={"W2"} />;
             },
           },
           {
@@ -1919,7 +1956,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W3Str"} month={record?.startMonth} index={index} week={"W3"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W3Str"} commentKey={"startMonth_W3C"} month={record?.startMonth} index={index} week={"W3"} />;
             },
           },
           {
@@ -1937,7 +1974,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W4Str"} month={record?.startMonth} index={index} week={"W4"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W4Str"} commentKey={"startMonth_W4C"} month={record?.startMonth} index={index} week={"W4"} />;
             },
           },
           {
@@ -1955,7 +1992,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W5Str"} month={record?.startMonth} index={index} week={"W5"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"startMonth_W5Str"} commentKey={"startMonth_W5C"} month={record?.startMonth} index={index} week={"W5"} />;
             },
           },
         ],
@@ -1985,7 +2022,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} index={index} />;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} commentKey={"midMonth_MonthlyTotalC"} month={record?.midMonth} index={index} />;
             },
           },
           {
@@ -2003,7 +2040,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W1Str"} month={record?.midMonth} index={index} week={"W1"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W1Str"} commentKey={"midMonth_W1C"} month={record?.midMonth} index={index} week={"W1"} />;
             },
           },
           {
@@ -2021,7 +2058,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W2Str"} month={record?.midMonth} index={index} week={"W2"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W2Str"} commentKey={"midMonth_W2C"} month={record?.midMonth} index={index} week={"W2"} />;
             },
           },
           {
@@ -2039,7 +2076,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W3Str"} month={record?.midMonth} index={index} week={"W3"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W3Str"} commentKey={"midMonth_W3C"} month={record?.midMonth} index={index} week={"W3"} />;
             },
           },
           {
@@ -2057,7 +2094,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W4Str"} month={record?.midMonth} index={index} week={"W4"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W4Str"} commentKey={"midMonth_W4C"} month={record?.midMonth} index={index} week={"W4"} />;
             },
 
           },
@@ -2076,7 +2113,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W5Str"} month={record?.midMonth} index={index} week={"W5"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"midMonth_W5Str"} commentKey={"midMonth_W5C"} month={record?.midMonth} index={index} week={"W5"} />;
             },
           },
         ],
@@ -2106,7 +2143,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} index={index} />;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} commentKey={"endMonth_MonthlyTotalC"} month={record?.endMonth} index={index} />;
             },
 
           },
@@ -2125,7 +2162,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W1Str"} month={record?.endMonth} index={index} week={"W1"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W1Str"} commentKey={"endMonth_W1C"} month={record?.endMonth} index={index} week={"W1"} />;
             },
           },
           {
@@ -2143,7 +2180,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W2Str"} month={record?.endMonth} index={index} week={"W2"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W2Str"} commentKey={"endMonth_W2C"} month={record?.endMonth} index={index} week={"W2"} />;
             },
           },
           {
@@ -2161,7 +2198,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W3Str"} month={record?.endMonth} index={index} week={"W3"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W3Str"} commentKey={"endMonth_W3C"} month={record?.endMonth} index={index} week={"W3"} />;
             },
           },
           {
@@ -2179,7 +2216,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W4Str"} month={record?.endMonth} index={index} week={"W4"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W4Str"} commentKey={"endMonth_W4C"} month={record?.endMonth} index={index} week={"W4"} />;
             },
           },
           {
@@ -2197,7 +2234,7 @@ function WeeklyWCGR() {
                 };
               }
 
-              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W5Str"} month={record?.endMonth} index={index} week={"W5"} />;
+              return <AddNoteComp text={text} record={record} keyPar={"endMonth_W5Str"} commentKey={"endMonth_W5C"} month={record?.endMonth} index={index} week={"W5"} />;
             },
           },
         ],
