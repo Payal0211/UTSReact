@@ -47,7 +47,7 @@ function MOMOverview() {
     const [hrModal, setHRModal] = useState('DP');
     const [pODList, setPODList] = useState([]);
     const [pODUsersList, setPODUsersList] = useState([]);
-    const [selectedHead, setSelectedHead] = useState('');
+    const [selectedHead, setSelectedHead] = useState([]);
     const [tableData, setTableData] = useState([]);
     const [headerDataCol, setHeaderDataCol] = useState({});
     const [showComment, setShowComment] = useState(false);
@@ -76,16 +76,11 @@ function MOMOverview() {
         if (filterResult.statusCode === HTTPStatusCode.OK) {
             setPODList(filterResult && filterResult?.responseBody);
 
-            setSelectedHead(prev => {
-                if (prev === '') {
-                    getGroupUsers(filterResult?.responseBody[0]?.dd_value);
-                    return filterResult?.responseBody[0]?.dd_value
-                } else {
-                    getGroupUsers(prev);
-                    return prev
-                }
+            const defaultHeads = (filterResult?.responseBody || [])
+                .filter(item => hrModal === "DP" ? item.dd_value !== 5 : item.dd_value === 5)
+                .map(item => String(item.dd_value));
+            setSelectedHead(defaultHeads);
 
-            });
         } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
             // setLoading(false);
             return navigate(UTSRoutes.LOGINROUTE);
@@ -104,31 +99,6 @@ function MOMOverview() {
 
     }, []);
 
-    const getGroupUsers = async (ID) => {
-        setIsLoading(true);
-
-        let pl = {
-            id: ID,
-            month: moment(monthDate).format("MM"),
-            year: selectedYear,
-        }
-
-        let filterResult = await ReportDAO.getAllPODGroupUsersDAO(pl);
-        setIsLoading(false);
-        if (filterResult.statusCode === HTTPStatusCode.OK) {
-            setPODUsersList(filterResult && filterResult?.responseBody);
-        } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-            // setLoading(false);
-            return navigate(UTSRoutes.LOGINROUTE);
-        } else if (
-            filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-        ) {
-            // setLoading(false);
-            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-        } else {
-            return "NO DATA FOUND";
-        }
-    };
 
     const addSectionHeaders = (data) => {
         let previousSection = "";
@@ -243,7 +213,127 @@ function MOMOverview() {
         const nextMonth = headerDataCol?.midMonth_Name;
         const thirdMonth = headerDataCol?.endMonth_Name;
 
-        
+        const selectedHeadOptions = pODList?.filter((item) => selectedHead?.includes(String(item.dd_value))) || [];
+        const headDataIndexMap = {
+            NASA: "NASA",
+            Phoenix: "Phoenix",
+            METEOROID: "METEOROID",
+            India: "Shivam",
+            Shivam: "Shivam",
+            NOVA: "NOVA",
+            Orion: "Orion",
+        };
+
+        const getHeadDataKey = (headText) => {
+            if (!headText) return headText;
+            return headDataIndexMap[headText] || headText.replace(/\s+/g, "");
+        };
+
+        const parseNumber = (value) => {
+            if (value === undefined || value === null || value === "") return 0;
+            if (typeof value === "number") return value;
+            const numeric = String(value).replace(/[^0-9.-]/g, "");
+            return numeric === "" ? 0 : parseFloat(numeric);
+        };
+
+        const formatAggregate = (value, sampleValue) => {
+            if (sampleValue && typeof sampleValue === "string" && /₹/.test(sampleValue)) {
+                return `₹${Math.round(value).toLocaleString("en-IN")}`;
+            }
+            if (sampleValue && typeof sampleValue === "string" && /%/.test(sampleValue)) {
+                return `${value}%`;
+            }
+            return value;
+        };
+
+        const isSkipTotalStage = (record) => {
+            return record?.stage_Title === "TOP CLIENTS  ·  Pipeline & Joining Snapshot";
+        };
+
+        const getMonthFTBUValue = (record, monthPrefix) => {
+            if (isSkipTotalStage(record)) {
+                return null;
+            }
+
+            const values = selectedHeadOptions.map((head) => {
+                const dataKey = getHeadDataKey(head.dd_text);
+                return record?.[`${monthPrefix}_${dataKey}`];
+            });
+
+            const isPercentRow = values.some(
+                (value) => typeof value === "string" && value.includes("%")
+            );
+
+            if (isPercentRow) {
+                return null;
+            }
+
+            return values.reduce((sum, value) => sum + parseNumber(value), 0);
+        };
+
+        const getQuarterlyFTBUValue = (record) => {
+            if (isSkipTotalStage(record)) {
+                return null;
+            }
+            const monthlyValues = ["startMonth", "midMonth", "endMonth"].map((monthPrefix) => getMonthFTBUValue(record, monthPrefix));
+            if (monthlyValues.some((value) => value === null)) {
+                return null;
+            }
+            return monthlyValues.reduce((sum, value) => sum + value, 0);
+        };
+
+        const createMonthColumns = (monthPrefix) => {
+            const monthCols = [
+                {
+                    title: "FT BU",
+                    dataIndex: `${monthPrefix}_MonthlyTotalStr`,
+                    key: `${monthPrefix}_total`,
+                    width: 100,
+                    align: "center",
+                    className: `black-header ${uplersStyle.totalCol}`,
+                    render: (text, record, index) => {
+                        if (record.isSection) {
+                            return {
+                                props: {
+                                    colSpan: 0,
+                                },
+                            };
+                        }
+
+                        const totalValue = getMonthFTBUValue(record, monthPrefix);
+                        if (totalValue === null) {
+                            return <AddNoteComp text={text} record={record} keyPar={`${monthPrefix}_MonthlyTotalStr`} month={record?.[monthPrefix]} index={index} />;
+                        }
+                        const formatted = formatAggregate(totalValue, text);
+                        return <AddNoteComp text={formatted} record={record} keyPar={`${monthPrefix}_MonthlyTotalStr`} month={record?.[monthPrefix]} index={index} />;
+                    },
+                },
+            ];
+
+            selectedHeadOptions.forEach((head) => {
+                const dataKey = getHeadDataKey(head.dd_text);
+                monthCols.push({
+                    title: head.dd_text,
+                    dataIndex: `${monthPrefix}_${dataKey}`,
+                    key: `${monthPrefix}_${dataKey}`,
+                    width: 100,
+                    align: "center",
+                    render: (text, record, index) => {
+                        if (record.isSection) {
+                            return {
+                                props: {
+                                    colSpan: 0,
+                                },
+                            };
+                        }
+
+                        return <AddNoteComp text={text} record={record} keyPar={`${monthPrefix}_${dataKey}`} month={record?.[monthPrefix]} index={index} />;
+                    },
+                });
+            });
+            return monthCols;
+        };
+
         const cellClassName=(record, stageTitle, stageID)=>{
         
               if(record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning"){
@@ -332,7 +422,12 @@ function MOMOverview() {
                         };
                     }
 
-                    return text;
+                    const totalValue = getQuarterlyFTBUValue(record);
+                    if (totalValue === null) {
+                        return text;
+                    }
+                    const formatted = formatAggregate(totalValue, text);
+                    return formatted;
                 },
             },
 
@@ -343,117 +438,7 @@ function MOMOverview() {
                 onHeaderCell: () => ({
                     className: "blue-total-header",
                 }),
-                children: [
-                    {
-                        title: "FT BU",
-                        dataIndex: 'startMonth_MonthlyTotalStr',
-                        key: "m1_total",
-                        width: 100,
-                        align: "center",
-                        className: `black-header ${uplersStyle.totalCol}`,
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_MonthlyTotalStr"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "NASA",
-                        dataIndex: 'startMonth_NASA',
-                        key: "m1_w1",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_NASA"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Phoenix",
-                        dataIndex: 'startMonth_Phoenix',
-                        key: "m1_w2",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_Phoenix"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Meteroid",
-                        dataIndex: 'startMonth_METEOROID',
-                        key: "m1_w3",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_METEOROID"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "India",
-                        dataIndex: 'startMonth_Shivam',
-                        key: "m1_w4",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_Shivam"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Nova",
-                        dataIndex: 'startMonth_NOVA',
-                        key: "m1_w5",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"startMonth_NOVA"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                ],
+                children: createMonthColumns('startMonth'),
             },
 
             // MONTH 2
@@ -463,118 +448,7 @@ function MOMOverview() {
                 onHeaderCell: () => ({
                     className: "blue-total-header",
                 }),
-                children: [
-                    {
-                        title: "FT BU",
-                        dataIndex: 'midMonth_MonthlyTotalStr',
-                        key: "m2_total",
-                        width: 100,
-                        align: "center",
-                        className: `black-header ${uplersStyle.totalCol}`,
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_MonthlyTotalStr"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "NASA",
-                        dataIndex: 'midMonth_NASA',
-                        key: "m2_w1",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_NASA"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Phenix",
-                        dataIndex: 'midMonth_Phoenix',
-                        key: "m2_w2",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_Phoenix"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Meteroid",
-                        dataIndex: 'midMonth_METEOROID',
-                        key: "m2_w3",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_METEOROID"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "India",
-                        dataIndex: 'midMonth_Shivam',
-                        key: "m2_w4",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_Shivam"} month={record?.midMonth} index={index} />;
-                        },
-
-                    },
-                    {
-                        title: "Nova",
-                        dataIndex: 'midMonth_NOVA',
-                        key: "m2_w5",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"midMonth_NOVA"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                ],
+                children: createMonthColumns('midMonth'),
             },
 
             // MONTH 3
@@ -584,118 +458,7 @@ function MOMOverview() {
                 onHeaderCell: () => ({
                     className: "blue-total-header",
                 }),
-                children: [
-                    {
-                        title: "FT BU",
-                        dataIndex: 'endMonth_MonthlyTotalStr',
-                        key: "m3_total",
-                        width: 100,
-                        align: "center",
-                        className: `black-header ${uplersStyle.totalCol}`,
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_MonthlyTotalStr"} month={record?.endMonth} index={index} />;
-                        },
-
-                    },
-                    {
-                        title: "NASA",
-                        dataIndex: 'endMonth_NASA',
-                        key: "m3_w1",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_NASA"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Phenix",
-                        dataIndex: 'endMonth_Phoenix',
-                        key: "m3_w2",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_Phoenix"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Meteroid",
-                        dataIndex: 'endMonth_METEOROID',
-                        key: "m3_w3",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_METEOROID"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "India",
-                        dataIndex: 'endMonth_Shivam',
-                        key: "m3_w4",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_Shivam"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Nova",
-                        dataIndex: 'endMonth_NOVA',
-                        key: "m3_w5",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"endMonth_NOVA"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                ],
+                children: createMonthColumns('endMonth'),
             },
         ];
 
@@ -718,18 +481,12 @@ function MOMOverview() {
                     <div className={uplersStyle.filterRight}>
                         <Radio.Group
                             onChange={(e) => {
-                                setHRModal(e.target.value);
-                                if (e.target.value === "Contract") {
-                                    let val = pODList.find(
-                                        (i) => i.dd_text === "Orion"
-                                    )?.dd_value;
-                                    setSelectedHead(val);
-                                    getGroupUsers(val);
-                                } else {
-                                    let val = pODList[0]?.dd_value;
-                                    setSelectedHead(val);
-                                    getGroupUsers(val);
-                                }
+                                        const newHRModal = e.target.value;
+                                setHRModal(newHRModal);
+                                const allowedHeads = (pODList || []).filter(item =>
+                                    newHRModal === "DP" ? item.dd_value !== 5 : item.dd_value === 5
+                                ).map(item => String(item.dd_value));
+                                setSelectedHead(allowedHeads);
 
                                 //  setEngagementType(e.target.value);
                             }}
@@ -738,7 +495,28 @@ function MOMOverview() {
                             <Radio value={"DP"}>FTE</Radio>
                             {/* <Radio value={"Contract"}>Contract</Radio> */}
                         </Radio.Group>
-                       
+                        <Select
+                                     id="selectedValue"
+                                     placeholder="Select Head"
+                                     style={{ width: "270px" }}
+                                     mode="multiple"
+                                     value={selectedHead}
+                                     showSearch={true}
+                                     onChange={(value) => {
+                                       setSelectedHead(value || []);
+                                     }}
+                                     options={pODList?.map((v) => ({
+                                       label: v.dd_text,
+                                       value: String(v.dd_value),
+                                     })).filter(item => {
+                                       if (hrModal === "DP") {
+                                         return item.value !== "5"
+                                       } else {
+                                         return item.value === "5"
+                                       }
+                                     })}
+                                     optionFilterProp="label"
+                                   />
                         <div className={uplersStyle.calendarFilterSet}>
                             <div className={uplersStyle.label}>Month-Year</div>
                             <div className={uplersStyle.calendarFilter}>

@@ -47,7 +47,8 @@ function QOQOverview() {
     const [hrModal, setHRModal] = useState('DP');
     const [pODList, setPODList] = useState([]);
     const [pODUsersList, setPODUsersList] = useState([]);
-    const [selectedHead, setSelectedHead] = useState('');
+    const [selectedHead, setSelectedHead] = useState([]);
+    const [selectedQuarters, setSelectedQuarters] = useState(["Q1", "Q2", "Q3", "Q4"]);
     const [tableData, setTableData] = useState([]);
     const [headerDataCol, setHeaderDataCol] = useState({});
     const [showComment, setShowComment] = useState(false);
@@ -68,6 +69,10 @@ function QOQOverview() {
         getUserResult();
     }, []);
 
+    useEffect(() => {
+        getHeads();
+    }, []);
+
     const getHeads = async () => {
         setIsLoading(true);
 
@@ -76,16 +81,10 @@ function QOQOverview() {
         if (filterResult.statusCode === HTTPStatusCode.OK) {
             setPODList(filterResult && filterResult?.responseBody);
 
-            setSelectedHead(prev => {
-                if (prev === '') {
-                    getGroupUsers(filterResult?.responseBody[0]?.dd_value);
-                    return filterResult?.responseBody[0]?.dd_value
-                } else {
-                    getGroupUsers(prev);
-                    return prev
-                }
-
-            });
+            const defaultHeads = (filterResult?.responseBody || [])
+                .filter(item => hrModal === "DP" ? item.dd_value !== 5 : item.dd_value === 5)
+                .map(item => String(item.dd_value));
+            setSelectedHead(defaultHeads);
         } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
             // setLoading(false);
             return navigate(UTSRoutes.LOGINROUTE);
@@ -261,6 +260,130 @@ function QOQOverview() {
             return ""
         }
 
+        const selectedHeadOptions = pODList?.filter((item) => selectedHead?.includes(String(item.dd_value))) || [];
+        const headDataIndexMap = {
+            NASA: "NASA",
+            Phoenix: "Phoenix",
+            METEOROID: "METEOROID",
+            India: "Shivam",
+            Shivam: "Shivam",
+            NOVA: "NOVA",
+            Orion: "Orion",
+        };
+
+        const getHeadDataKey = (headText) => {
+            if (!headText) return headText;
+            return headDataIndexMap[headText] || headText.replace(/\s+/g, "");
+        };
+
+        const parseNumber = (value) => {
+            if (value === undefined || value === null || value === "") return 0;
+            if (typeof value === "number") return value;
+            const numeric = String(value).replace(/[^0-9.-]/g, "");
+            return numeric === "" ? 0 : parseFloat(numeric);
+        };
+
+        const formatAggregate = (value, sampleValue) => {
+            if (sampleValue && typeof sampleValue === "string" && /₹/.test(sampleValue)) {
+                return `₹${Math.round(value).toLocaleString("en-IN")}`;
+            }
+            if (sampleValue && typeof sampleValue === "string" && /%/.test(sampleValue)) {
+                return `${value}%`;
+            }
+            return value;
+        };
+
+        const getQuarterFTBUValue = (record, quarterPrefix) => {
+            const values = selectedHeadOptions.map((head) => {
+                const dataKey = getHeadDataKey(head.dd_text);
+                return record?.[`${quarterPrefix}_${dataKey}Str`];
+            });
+
+            const isPercentRow = values.some(
+                (value) => typeof value === "string" && value.includes("%")
+            );
+
+            if (isPercentRow) {
+                return null;
+            }
+
+            return values.reduce((sum, value) => sum + parseNumber(value), 0);
+        };
+
+      
+
+        const createQuarterColumns = (quarterPrefix) => {
+            const quarterColumns = [
+                {
+                    title: "Total",
+                    dataIndex: `${quarterPrefix}Str`,
+                    key: `${quarterPrefix}_total`,
+                    width: 100,
+                    align: "center",
+                    className: `black-header ${uplersStyle.totalCol}`,
+                    render: (text, record, index) => {
+                        if (record.isSection) {
+                            return {
+                                props: {
+                                    colSpan: 0,
+                                },
+                            };
+                        }
+                        const totalValue = getQuarterFTBUValue(record, quarterPrefix);
+                        if (totalValue === null) {
+                            return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
+                        }
+                        const formatted = formatAggregate(totalValue, text);
+                        return <AddNoteComp text={formatted} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
+                    },
+                },
+            ];
+
+            selectedHeadOptions.forEach((head) => {
+                const dataKey = getHeadDataKey(head.dd_text);
+                quarterColumns.push({
+                    title: head.dd_text,
+                    dataIndex: `${quarterPrefix}_${dataKey}Str`,
+                    key: `${quarterPrefix}_${dataKey}`,
+                    width: 100,
+                    align: "center",
+                    render: (text, record, index) => {
+                        if (record.isSection) {
+                            return {
+                                props: {
+                                    colSpan: 0,
+                                },
+                            };
+                        }
+                        return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}_${dataKey}Str`} month={record?.startMonth} index={index} />;
+                    },
+                });
+            });
+
+            return quarterColumns;
+        };
+
+        const quarterConfig = {
+            Q1: { prefix: "q1", title: currentMonth, headerClass: "blue-total-header" },
+            Q2: { prefix: "q2", title: nextMonth, headerClass: "green-total-header" },
+            Q3: { prefix: "q3", title: thirdMonth, headerClass: "purple-total-header" },
+            Q4: { prefix: "q4", title: fourthMonth, headerClass: "purple-total-header" },
+        };
+
+        const getYearTotalValue = (record) => {
+            const values = selectedQuarters
+                .map((quarterKey) => {
+                    const quarter = quarterConfig[quarterKey];
+                    return quarter ? getQuarterFTBUValue(record, quarter.prefix) : null;
+                })
+                .filter((value) => value !== null);
+
+            if (!values.length) {
+                return null;
+            }
+            return values.reduce((sum, value) => sum + value, 0);
+        };
+
         const columns = [
             {
                 title: "METRIC",
@@ -274,7 +397,6 @@ function QOQOverview() {
                 }),
                 onCell: (record) => ({
                     className: cellClassName(record)
-
                 }),
                 render: (text, record) => {
                     if (record.isSection) {
@@ -292,534 +414,54 @@ function QOQOverview() {
                                     ▌ {record.sectionTitle}
                                 </div>
                             ),
-
                             props: {
                                 colSpan: columnCount,
                             },
                         };
                     }
-
                     return text;
                 },
             },
-
             {
                 title: "Year Total",
                 dataIndex: "yearlyTotalStr",
                 key: "yearlyTotalStr",
+                width: 120,
                 align: "center",
                 fixed: "left",
-                 className: `black-header ${uplersStyle.QuarterlyCol}`,
-                
-            },
-            // {
-            //     // title: "QUARTERLY",
-            //     title: headerDataCol?.stage_ID,
-            //     dataIndex: "quarterlyTotalStr",
-            //     key: "quarterlyTotalStr",
-            //     width: 120,
-            //     fixed: "left",
-            //     align: "center",
-            //     className: `black-header ${uplersStyle.QuarterlyCol}`,
-            //     onHeaderCell: () => ({
-            //         className: "black-header",
-            //     }),
-            //     render: (text, record) => {
-            //         if (record.isSection) {
-            //             return {
-            //                 props: {
-            //                     colSpan: 0,
-            //                 },
-            //             };
-            //         }
-
-            //         return text;
-            //     },
-            // },
-
-            // MONTH 1
-            {
-                title: currentMonth,
-                className: "blue-total-header",
+                className: `black-header ${uplersStyle.QuarterlyCol}`,
                 onHeaderCell: () => ({
-                    className: "blue-total-header",
+                    className: "black-header",
                 }),
-                children: [
-                    {
-                        title: "Total",
-                        dataIndex: 'q1Str',
-                        key: "m1_total",
-                        width: 100,
-                        align: "center",
-                        className: `black-header ${uplersStyle.totalCol}`,
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q1Str"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "NASA",
-                        dataIndex: 'q1_NASAStr',
-                        key: "m1_w1",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q1_NASAStr"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Phoenix",
-                        dataIndex: 'q1_PhoenixStr',
-                        key: "m1_w2",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q1_PhoenixStr"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Meteroid",
-                        dataIndex: 'q1_METEOROIDStr',
-                        key: "m1_w3",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q1_METEOROIDStr"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "India",
-                        dataIndex: 'q1_ShivamStr',
-                        key: "m1_w4",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q1_ShivamStr"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Nova",
-                        dataIndex: 'q1_NOVAStr',
-                        key: "m1_w5",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q1_NOVAStr"} month={record?.startMonth} index={index} />;
-                        },
-                    },
-                ],
-            },
-
-            // MONTH 2
-            {
-                title: nextMonth,
-                className: "green-total-header",
-                onHeaderCell: () => ({
-                    className: "blue-total-header",
-                }),
-                children: [
-                    {
-                        title: "Total",
-                        dataIndex: 'q2Str',
-                        key: "m2_total",
-                        width: 100,
-                        align: "center",
-                        className: `black-header ${uplersStyle.totalCol}`,
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q2Str"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "NASA",
-                        dataIndex: 'q2_NASAStr',
-                        key: "m2_w1",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q2_NASAStr"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Phenix",
-                        dataIndex: 'q2_PhoenixStr',
-                        key: "m2_w2",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q2_PhoenixStr"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Meteroid",
-                        dataIndex: 'q2_METEOROIDStr',
-                        key: "m2_w3",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q2_METEOROIDStr"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "India",
-                        dataIndex: 'q2_ShivamStr',
-                        key: "m2_w4",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q2_ShivamStr"} month={record?.midMonth} index={index} />;
-                        },
-
-                    },
-                    {
-                        title: "Nova",
-                        dataIndex: 'q2_NOVAStr',
-                        key: "m2_w5",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q2_NOVAStr"} month={record?.midMonth} index={index} />;
-                        },
-                    },
-                ],
-            },
-
-            // MONTH 3
-            {
-                title: thirdMonth,
-                className: "purple-total-header",
-                onHeaderCell: () => ({
-                    className: "blue-total-header",
-                }),
-                children: [
-                    {
-                        title: "Total",
-                        dataIndex: 'q3Str',
-                        key: "m3_total",
-                        width: 100,
-                        align: "center",
-                        className: `black-header ${uplersStyle.totalCol}`,
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q3Str"} month={record?.endMonth} index={index} />;
-                        },
-
-                    },
-                    {
-                        title: "NASA",
-                        dataIndex: 'q3_NASAStr',
-                        key: "m3_w1",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q3_NASAStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Phenix",
-                        dataIndex: 'q3_PhoenixStr',
-                        key: "m3_w2",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q3_PhoenixStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Meteroid",
-                        dataIndex: 'q3_METEOROIDStr',
-                        key: "m3_w3",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q3_METEOROIDStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "India",
-                        dataIndex: 'q3_ShivamStr',
-                        key: "m3_w4",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q3_ShivamStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Nova",
-                        dataIndex: 'q3_NOVAStr',
-                        key: "m3_w5",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q3_NOVAStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                ],
-            },
-
-            // MONTH 4
-            {
-                title: fourthMonth,
-                className: "purple-total-header",
-                onHeaderCell: () => ({
-                    className: "blue-total-header",
-                }),
-                children: [
-                    {
-                        title: "Total",
-                        dataIndex: 'q4Str',
-                        key: "m3_total",
-                        width: 100,
-                        align: "center",
-                        className: `black-header ${uplersStyle.totalCol}`,
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q4Str"} month={record?.endMonth} index={index} />;
-                        },
-
-                    },
-                    {
-                        title: "NASA",
-                        dataIndex: 'q4_NASAStr',
-                        key: "m4_w1",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q4_NASAStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Phenix",
-                        dataIndex: 'q4_PhoenixStr',
-                        key: "m4_w2",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q4_PhoenixStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Meteroid",
-                        dataIndex: 'q4_METEOROIDStr',
-                        key: "m4_w3",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q4_METEOROIDStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "India",
-                        dataIndex: 'q4_ShivamStr',
-                        key: "m4_w4",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q4_ShivamStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                    {
-                        title: "Nova",
-                        dataIndex: 'q4_NOVAStr',
-                        key: "m4_w5",
-                        width: 100,
-                        align: "center",
-                        render: (text, record, index) => {
-                            if (record.isSection) {
-                                return {
-                                    props: {
-                                        colSpan: 0,
-                                    },
-                                };
-                            }
-
-                            return <AddNoteComp text={text} record={record} keyPar={"q4_NOVAStr"} month={record?.endMonth} index={index} />;
-                        },
-                    },
-                ],
+                render: (text, record, index) => {
+                    if (record.isSection) {
+                        return {
+                            props: {
+                                colSpan: 0,
+                            },
+                        };
+                    }
+                    const totalValue = getYearTotalValue(record);
+                    if (totalValue === null) {
+                        return <AddNoteComp text={text} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
+                    }
+                    const formatted = formatAggregate(totalValue, text);
+                    return <AddNoteComp text={formatted} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
+                },
             },
         ];
+
+        selectedQuarters.forEach((quarterKey) => {
+            const quarter = quarterConfig[quarterKey];
+            if (quarter) {
+                columns.push({
+                    title: quarter.title,
+                    className: quarter.headerClass,
+                    onHeaderCell: () => ({ className: quarter.headerClass }),
+                    children: createQuarterColumns(quarter.prefix),
+                });
+            }
+        });
 
         columnCount = countLeafColumns(columns);
         return columns;
@@ -840,26 +482,49 @@ function QOQOverview() {
                     <div className={uplersStyle.filterRight}>
                         <Radio.Group
                             onChange={(e) => {
-                                setHRModal(e.target.value);
-                                if (e.target.value === "Contract") {
-                                    let val = pODList.find(
-                                        (i) => i.dd_text === "Orion"
-                                    )?.dd_value;
-                                    setSelectedHead(val);
-                                    getGroupUsers(val);
-                                } else {
-                                    let val = pODList[0]?.dd_value;
-                                    setSelectedHead(val);
-                                    getGroupUsers(val);
-                                }
-
-                                //  setEngagementType(e.target.value);
+                                const newHRModal = e.target.value;
+                                setHRModal(newHRModal);
+                                const allowedHeads = (pODList || []).filter(item =>
+                                    newHRModal === "DP" ? item.dd_value !== 5 : item.dd_value === 5
+                                ).map(item => String(item.dd_value));
+                                setSelectedHead(allowedHeads);
                             }}
                             value={hrModal}
                         >
                             <Radio value={"DP"}>FTE</Radio>
                             {/* <Radio value={"Contract"}>Contract</Radio> */}
                         </Radio.Group>
+                        <Select
+                            placeholder="Select Head"
+                            style={{ width: 220, marginLeft: 16, marginRight: 16 }}
+                            mode="multiple"
+                            value={selectedHead}
+                            showSearch
+                            onChange={(value) => setSelectedHead(value || [])}
+                            options={(pODList || []).map((v) => ({
+                                label: v.dd_text,
+                                value: String(v.dd_value),
+                            })).filter(item => {
+                                if (hrModal === "DP") {
+                                    return item.value !== "5";
+                                }
+                                return item.value === "5";
+                            })}
+                            optionFilterProp="label"
+                        />
+                        <Select
+                            placeholder="Select Quarter"
+                            style={{ width: 220, marginRight: 16 }}
+                            mode="multiple"
+                            value={selectedQuarters}
+                            onChange={(value) => setSelectedQuarters(value || [])}
+                            options={[
+                                { label: "Jan-Mar (Q1)", value: "Q1" },
+                                { label: "Apr-Jun (Q2)", value: "Q2" },
+                                { label: "Jul-Sep (Q3)", value: "Q3" },
+                                { label: "Oct-Dec (Q4)", value: "Q4" },
+                            ]}
+                        />
 
                         <div className={uplersStyle.calendarFilterSet}>
                             <div className={uplersStyle.label}>Year</div>
