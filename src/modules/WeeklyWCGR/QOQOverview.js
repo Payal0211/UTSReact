@@ -283,11 +283,13 @@ function QOQOverview() {
             return numeric === "" ? 0 : parseFloat(numeric);
         };
 
+        const isPercentText = (value) => typeof value === "string" && value.includes("%");
+
         const formatAggregate = (value, sampleValue) => {
             if (sampleValue && typeof sampleValue === "string" && /₹/.test(sampleValue)) {
                 return `₹${Math.round(value).toLocaleString("en-IN")}`;
             }
-            if (sampleValue && typeof sampleValue === "string" && /%/.test(sampleValue)) {
+            if (isPercentText(sampleValue)) {
                 return `${value}%`;
             }
             return value;
@@ -299,10 +301,7 @@ function QOQOverview() {
                 return record?.[`${quarterPrefix}_${dataKey}Str`];
             });
 
-            const isPercentRow = values.some(
-                (value) => typeof value === "string" && value.includes("%")
-            );
-
+            const isPercentRow = values.some(isPercentText);
             if (isPercentRow) {
                 return null;
             }
@@ -328,6 +327,9 @@ function QOQOverview() {
                                     colSpan: 0,
                                 },
                             };
+                        }
+                        if (isPercentText(text)) {
+                            return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
                         }
                         const totalValue = getQuarterFTBUValue(record, quarterPrefix);
                         if (totalValue === null) {
@@ -440,6 +442,9 @@ function QOQOverview() {
                                 colSpan: 0,
                             },
                         };
+                    }
+                    if (isPercentText(text)) {
+                        return <AddNoteComp text={text} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
                     }
                     const totalValue = getYearTotalValue(record);
                     if (totalValue === null) {
