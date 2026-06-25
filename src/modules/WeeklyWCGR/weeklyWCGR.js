@@ -1338,8 +1338,31 @@ function WeeklyWCGR() {
   }
 
   const getPopupForAllPODSDetails = async (row, v, week, month) => {
+    try {
+          setShowAnticipatedReport(true);
 
-  }
+          const pl = {
+            pod_id: selectedHead,
+            month: month,
+            year: row.wcgrYear,
+            stageID: row.stage_ID,
+            week: week ? week : "",
+          };
+          setShowTalentCol(row);
+          setAchievedTotal(v);
+          setAchievedLoading(true);
+          const result = await ReportDAO.getPopupForAllPODSDetailsDAO(pl);
+          setAchievedLoading(false);
+          if (result.statusCode === 200) {
+            setListAchievedData(result.responseBody);
+          } else {
+            setListAchievedData([]);
+          }
+        } catch (err) {
+          console.log(err);
+          setListAchievedData([]);
+        }
+      }
 
 
   const AddNoteComp = ({ text, record, keyPar, month, index, week, commentKey }) => {
@@ -1353,7 +1376,8 @@ function WeeklyWCGR() {
     const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
     if(isAllPODData){
-      return <div
+      if(record.stage_ID ===  "JFreezeAnticipated" || record.stage_ID === "SFreezeAnticipated"){
+         return <div
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -1369,6 +1393,9 @@ function WeeklyWCGR() {
                 {text}
               </span>
             </div>
+      }
+      return text
+     
     }
 
      if(record?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
@@ -1659,8 +1686,11 @@ function WeeklyWCGR() {
     }
 
     if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning" ) {
+      if(record.stage_ID === "TA"){
+        return text
+      }
       if(record.stage_ID === "CF" ||
-      record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L" || record.stage_ID === "TA"
+      record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L"
     ){
        
  return <div >
@@ -2440,6 +2470,9 @@ function WeeklyWCGR() {
                 //   return uplersStyle.heighliteRow
                 // }
 
+                if(record.stage === "Total Active Pipeline - New"){
+                  return `${uplersStyle.heighliteCream} ${uplersStyle.boldRow}`
+                  }
                 if(record.stage.split("-")[0].trim() === "Opening Balance"){
                   return uplersStyle.OBRow
                 }

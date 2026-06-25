@@ -498,7 +498,7 @@ function MOMOverview() {
                         <Select
                                      id="selectedValue"
                                      placeholder="Select Head"
-                                     style={{ width: "270px" }}
+                                     style={{ width: "500px" }}
                                      mode="multiple"
                                      value={selectedHead}
                                      showSearch={true}
@@ -563,7 +563,9 @@ function MOMOverview() {
                              if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
                                             let type = record.stage.split("-")[1].trim()
                                            
-                            
+                            if(record.stage === "Total Active Pipeline - New"){
+                                              return `${uplersStyle.heighliteCream} ${uplersStyle.boldRow}`
+                                              }
                             if(record.stage.split("-")[0].trim() === "Opening Balance"){
                                 return uplersStyle.OBRow
                             }
