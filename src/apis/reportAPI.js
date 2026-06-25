@@ -1092,6 +1092,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getAnticipatedPopupReportAPI');
 		}
 	},
+	getPopupForAllPODSDetailsAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.UTS_REPORT +
+			ReportType.GET_ALLPODS_POPUP_DETAILS_LIST + `?Month=${payload?.month}&Year=${payload?.year}&stage_Id=${payload?.stageID}&week_No=${payload?.week}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getPopupForAllPODSDetailsAPI');
+		}
+	},
 	getJConfirmationPopupReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
