@@ -735,7 +735,7 @@ function WeeklyWCGR() {
     },
     {
       title: "Joining Date",
-      dataIndex: "joiningDate",
+      dataIndex: isAllPODData ? "dateStr" :"joiningDate",
       key: "joiningDate",
     },
     {
@@ -955,8 +955,8 @@ function WeeklyWCGR() {
     },
     {
       title: (showTalentCol?.stage_ID === "D_Lost" || showTalentCol?.stage_ID === "CN_Lost") ? "Lost Date" : (showTalentCol?.stage_ID === "D_Drop" || showTalentCol?.stage_ID === "CN_Drop") ? "Dropout Date" : (showTalentCol?.stage_ID === "D_Backout" || showTalentCol?.stage_ID === "CN_Backout") ? "Backout Date" : "Joining Date",
-      dataIndex: "joiningdateStr",
-      key: "joiningdateStr",
+      dataIndex:isAllPODData ? "dateStr": "joiningdateStr",
+      key: isAllPODData ? "dateStr":"joiningdateStr",
     },
     {
       title: "Talent",
@@ -976,7 +976,7 @@ function WeeklyWCGR() {
     },
     {
       title: <div style={{ textAlign: "center" }}> Billing %</div>,
-      dataIndex: "uplersFeesPer",
+      dataIndex: isAllPODData? "billing" : "uplersFeesPer",
       key: "uplersFeesPer",
       width: '100px',
       align: "center",
@@ -988,7 +988,7 @@ function WeeklyWCGR() {
           Billing Value
         </div>
       ),
-      dataIndex: hrModal === 'DP' ? 'uplersFees_INRStr' : "uplersFees_USDStr",
+      dataIndex: isAllPODData ? "billingValue" : hrModal === 'DP' ? 'uplersFees_INRStr' : "uplersFees_USDStr",
       key: hrModal === 'DP' ? 'uplersFees_INRStr' : "uplersFees_USDStr",
       width: '150px',
       align: "right",
@@ -1000,8 +1000,8 @@ function WeeklyWCGR() {
           {pODList?.find(item => item.dd_value === selectedHead)?.dd_text} Revenue
         </div>
       ),
-      dataIndex: "podValueStr",
-      key: "podValueStr",
+      dataIndex: isAllPODData ? "revenue ":"podValueStr",
+      key:isAllPODData ? "revenue ":  "podValueStr",
       width: '150px',
       align: "right",
       className: uplersStyle.headerCell,
@@ -1020,13 +1020,13 @@ function WeeklyWCGR() {
               />
             </a>
           </Tooltip>
-          {v ? v : ''} </div>
+          {isAllPODData ? row.revenue : v ? v : ''} </div>
       }
     },
 
     {
       title: <div style={{ textAlign: "center" }}>HR Modal</div>,
-      dataIndex: "hR_Model",
+      dataIndex:isAllPODData ? "hrModel" : "hR_Model",
       key: "hR_Model",
 
       className: uplersStyle.headerCell,
@@ -1307,7 +1307,7 @@ function WeeklyWCGR() {
     
     return <IconContext.Provider
       value={{
-        color:record[commentKey].length > 0 ? "green" : "gray",
+        color:record[commentKey]?.length > 0 ? "green" : "gray",
         style: {
           width: "10px",
           height: "10px",
@@ -1317,7 +1317,7 @@ function WeeklyWCGR() {
       }}
     >
       {" "}
-      <Tooltip title={record[commentKey].length > 0 ? record[commentKey] : `Add/View Comment`} placement="top">
+      <Tooltip title={record[commentKey]?.length > 0 ? record[commentKey] : `Add/View Comment`} placement="top">
         <span
           onClick={() => {
             AddComment(record, keyPar, month, index,commentKey);
@@ -1330,7 +1330,7 @@ function WeeklyWCGR() {
           }}
         >
           {" "}
-         {record[commentKey].length > 0 ? <BiSolidComment /> :  <CiCircleInfo />}  
+         {record[commentKey]?.length > 0 ? <BiSolidComment /> :  <CiCircleInfo />}  
          {/* */}
         </span>{" "}
       </Tooltip>
@@ -1364,6 +1364,65 @@ function WeeklyWCGR() {
         }
       }
 
+const getJConfirmedDetailsAllFTE = async (row, v, week, month) => {
+   try {
+      setShowJConfirmationReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPopupForAllPODSDetailsDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+}
+
+const getDFDetailsAllPOD = async (row, v, week, month) => {
+   try {
+      setShowDFReport(true);
+
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+       stageID: row.stage_ID,
+        week: week ? week : "",
+        hr_businesstype: row.hR_Type,
+        isNextMonth: row?.isNM === 'Yes' ? row?.isNM : ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPopupForAllPODSDetailsDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setDFListData(result.responseBody);
+        setDFFilterListData(result.responseBody);
+      } else {
+        setDFListData([]);
+        setDFFilterListData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setDFListData([]);
+      setDFFilterListData([]);
+    }
+}
 
   const AddNoteComp = ({ text, record, keyPar, month, index, week, commentKey }) => {
     const isPastMonth = month < moment().format("M");
@@ -1375,8 +1434,12 @@ function WeeklyWCGR() {
     const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
     const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
+    if(record.stage_Title === "NEW CUSTOMER FUNNEL" && week !== undefined){
+      return text
+    }
+
     if(isAllPODData){
-      if(record.stage_ID ===  "JFreezeAnticipated" || record.stage_ID === "SFreezeAnticipated"){
+      if(record.stage_ID ===  "JFreezeAnticipated" || record.stage_ID === "SFreezeAnticipated" || record.stage_ID === "JAllAnticipated" || record.stage_ID === "SAnticipated"){
          return <div
               style={{
                 display: "flex",
@@ -1394,6 +1457,60 @@ function WeeklyWCGR() {
               </span>
             </div>
       }
+
+      if(record.stage_ID === "JConfirmed"){
+        return  <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                   getJConfirmedDetailsAllFTE(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+              
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+
+       if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop") {
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getDFDetailsAllPOD(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+    
       return text
      
     }
@@ -1821,11 +1938,22 @@ function WeeklyWCGR() {
        return uplersStyle.OBRow
       }
 
+        
+      
+
         if(record.stage.split("-")[1].trim() === "New"){
           return uplersStyle.heighliteCream
         }
        
       }
+
+       if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+                    return uplersStyle.heighliteGreen;
+                  }
+
+        if(record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out" ) {
+                    return uplersStyle.heighliteRed;
+                  }         
       return ""
     }
 
@@ -2457,12 +2585,21 @@ function WeeklyWCGR() {
             size="small"
             bordered
             rowClassName={(record) => {
+
+                if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved" ) {
+                    return uplersStyle.heighliteGreen;
+                  }
+
+        if(record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out" ) {
+                    return uplersStyle.heighliteRed;
+                  }
               if (record.stage_ID === "JAllG" || record.stage_ID === "JAllNetAchieved" || record.stage_ID === "SG" ||
                 record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio" || record.stage_ID === "O2S"
               ) {
                 return uplersStyle.boldRow;
               }
 
+               
 
               if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
                 let type = record.stage.split("-")[1].trim()

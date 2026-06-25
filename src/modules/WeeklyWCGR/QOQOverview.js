@@ -501,7 +501,7 @@ function QOQOverview() {
                         </Radio.Group>
                         <Select
                             placeholder="Select Head"
-                            style={{ width: 220, marginLeft: 16, marginRight: 16 }}
+                            style={{ width: 300, marginLeft: 16, marginRight: 16 }}
                             mode="multiple"
                             value={selectedHead}
                             showSearch
@@ -519,7 +519,7 @@ function QOQOverview() {
                         />
                         <Select
                             placeholder="Select Quarter"
-                            style={{ width: 220, marginRight: 16 }}
+                            style={{ width: 300, marginRight: 16 }}
                             mode="multiple"
                             value={selectedQuarters}
                             onChange={(value) => setSelectedQuarters(value || [])}

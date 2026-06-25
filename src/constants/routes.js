@@ -346,6 +346,7 @@ export default class UTSRoutes {
 	static REVENUE_REPORT = "/revenueReport";
 	static IMMEDIATEJOINER = '/immediateJoiner'
 	static TALENT_DOCUMENTS = '/talentDocument'
+	static TASCRUMSTRUCTURE = '/taScrumStructure'
 	static TALENT_NOTES = '/talentNotes';
 	static Weekly_WCGR = '/weeklyWCGR';
 	static MOM_OVERVIEW = '/MOMOverview';
@@ -394,6 +395,7 @@ export const navigateToComponent = {
 			<TADashboard />
 		</Suspense>
 	),
+
 	// [UTSRoutes.ALLHIRINGREQUESTROUTE]: (
 	// 	<Suspense>
 	// 		<AllHiringRequest />

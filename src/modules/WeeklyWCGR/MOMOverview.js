@@ -498,7 +498,7 @@ function MOMOverview() {
                         <Select
                                      id="selectedValue"
                                      placeholder="Select Head"
-                                     style={{ width: "270px" }}
+                                     style={{ width: "500px" }}
                                      mode="multiple"
                                      value={selectedHead}
                                      showSearch={true}

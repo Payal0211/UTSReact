@@ -186,6 +186,8 @@ export default function N_sidebar() {
                             <li><Link to={UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE} className={`${stylesOBj['nav-subitem']}`}>Interview reschedule</Link></li>
                             <li><Link to={UTSRoutes.AVERAGE_SLA} className={`${stylesOBj['nav-subitem']}`}>Average SLA</Link></li>
                             <li><Link to={UTSRoutes.CLIENT_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Client Dashboard</Link></li>
+                            <li><Link to={UTSRoutes.TASCRUMSTRUCTURE} className={`${stylesOBj['nav-subitem']}`}>TA Scrum Structure</Link></li>
+                          
                         </ul>
                     </div>
                     {/* <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('OM Report') ? stylesOBj['expanded'] : ''}`}>
