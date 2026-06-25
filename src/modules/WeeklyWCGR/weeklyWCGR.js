@@ -1364,7 +1364,6 @@ function WeeklyWCGR() {
         }
       }
 
-
 const getJConfirmedDetailsAllFTE = async (row, v, week, month) => {
    try {
       setShowJConfirmationReport(true);
