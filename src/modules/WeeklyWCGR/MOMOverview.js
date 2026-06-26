@@ -34,6 +34,7 @@ import { IconContext } from "react-icons";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import spinGif from "assets/gif/RefreshLoader.gif";
+import * as XLSX from "xlsx";
 
 const { Title, Text } = Typography;
 
@@ -474,6 +475,122 @@ function MOMOverview() {
         return columns;
     };
 
+       const exportData = () => {
+        const columns = getTableColumns();
+    
+        // Flatten columns
+        const flatColumns = [];
+    
+        columns.forEach((col) => {
+            if (col.children?.length) {
+                col.children.forEach((child) => {
+                    flatColumns.push({
+                        parent: col.title,
+                        title: child.title,
+                        dataIndex: child.dataIndex,
+                    });
+                });
+            } else {
+                flatColumns.push({
+                    parent: "",
+                    title: col.title,
+                    dataIndex: col.dataIndex,
+                });
+            }
+        });
+    
+        const headerRow1 = [];
+        const headerRow2 = [];
+        const merges = [];
+    
+        let c = 0;
+    
+        while (c < flatColumns.length) {
+            const column = flatColumns[c];
+    
+            // Normal column (Metric, Year Total)
+            if (!column.parent) {
+                headerRow1.push(column.title);
+                headerRow2.push("");
+    
+                merges.push({
+                    s: { r: 0, c },
+                    e: { r: 1, c },
+                });
+    
+                c++;
+                continue;
+            }
+    
+            // Grouped column (Quarter)
+            const parent = column.parent;
+            const start = c;
+    
+            while (
+                c < flatColumns.length &&
+                flatColumns[c].parent === parent
+            ) {
+                headerRow2.push(flatColumns[c].title);
+                c++;
+            }
+    
+            const span = c - start;
+    
+            headerRow1.push(parent);
+    
+            for (let i = 1; i < span; i++) {
+                headerRow1.push("");
+            }
+    
+            merges.push({
+                s: { r: 0, c: start },
+                e: { r: 0, c: c - 1 },
+            });
+        }
+    
+        const excelData = [headerRow1, headerRow2];
+    
+        tableData
+            .filter((row) => row.stage !== "METRIC")
+            .forEach((row) => {
+                if (row.isSection) {
+                    excelData.push([row.sectionTitle]);
+    
+                    merges.push({
+                        s: {
+                            r: excelData.length - 1,
+                            c: 0,
+                        },
+                        e: {
+                            r: excelData.length - 1,
+                            c: flatColumns.length - 1,
+                        },
+                    });
+    
+                    return;
+                }
+    
+                excelData.push(
+                    flatColumns.map((column) => row[column.dataIndex] ?? "")
+                );
+            });
+    
+        const ws = XLSX.utils.aoa_to_sheet(excelData);
+    
+        ws["!merges"] = merges;
+    
+        // Optional column widths
+        ws["!cols"] = flatColumns.map((col, i) => ({
+            wch: i === 0 ? 35 : 18,
+        }));
+    
+        const wb = XLSX.utils.book_new();
+    
+        XLSX.utils.book_append_sheet(wb, ws, "MOM Overview");
+    
+        XLSX.writeFile(wb, `MOM_Overview_${selectedYear}.xlsx`);
+    };
+
     return (
         <div className={uplersStyle.hiringRequestContainer}>
             <div className={uplersStyle.filterContainer}>
@@ -500,7 +617,7 @@ function MOMOverview() {
                             }}
                             value={hrModal}
                         >
-                            <Radio value={"DP"}>FTE</Radio>
+                            {/* <Radio value={"DP"}>FTE</Radio> */}
                             {/* <Radio value={"Contract"}>Contract</Radio> */}
                         </Radio.Group>
                         <Select
@@ -526,7 +643,7 @@ function MOMOverview() {
                                      optionFilterProp="label"
                                    />
                         <div className={uplersStyle.calendarFilterSet}>
-                            <div className={uplersStyle.label}>Month-Year</div>
+                            {/* <div className={uplersStyle.label}>Month-Year</div> */}
                             <div className={uplersStyle.calendarFilter}>
                                 <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
                                 <DatePicker
@@ -540,6 +657,13 @@ function MOMOverview() {
                                 />
                             </div>
                         </div>
+
+                         <button
+                                      className={uplersStyle.btnPrimary}
+                                      onClick={() => exportData()}
+                                    >
+                                      Export
+                                    </button>
                     </div>
                 </div>
 

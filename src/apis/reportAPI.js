@@ -1041,6 +1041,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getPOCPopupReportAPI');
 		}
 	},
+	getAllPOCPopupReportAPI:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.UTS_REPORT+
+			ReportType.GET_ALL_POC_PIPELINE_REVIEW_POPUP_DETAILS_LIST + `?hrmodel=${payload?.hrmodel}&Month=${payload?.month}&Year=${payload?.year}&Stage_Id=${payload?.stageID}&weekno=${payload?.week}&Category=${payload?.cat}&multiple_PODIds=${payload?.multiplePODIds}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getALLPOCPopupReportAPI');
+		}
+	},
 	getReferencePopupReportAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
