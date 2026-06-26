@@ -1339,7 +1339,12 @@ function WeeklyWCGR() {
 
   const getPopupForAllPODSDetails = async (row, v, week, month) => {
     try {
-      setShowAnticipatedReport(true);
+      if(row.stage_ID === "J4"){
+        setShowAchievedReport(true);    
+      }else{
+          setShowAnticipatedReport(true);
+      }
+    
 
       const pl = {
         pod_id: selectedHead,
@@ -1482,6 +1487,64 @@ function WeeklyWCGR() {
       setListAchievedData([]);
     }
   };
+
+   const getFunnelSummaryDetailsALLPopup = async (row, v, week, month) => {
+    try {
+      // setShowSummaryReport(true);
+      setShowCHReport(true);
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: month,
+        year: row?.wcgrYear,
+        stageID: row.stage_ID,
+        cat: row.category,
+        multiplePODIds: isAllPODData ? "1,2,3,4,6" : ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getALLPOChrSummaryPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+
+  }
+
+  const getHRReferenceALLPODCount = async (row, v, week, month) => {
+     try {
+      setShowReferenceReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+        multiplePODIds: isAllPODData ? "1,2,3,4,6" : ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getReferenceALLPODPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  }
 
   const AddNoteComp = ({ text, record, keyPar, month, index, week, commentKey }) => {
     const isPastMonth = month < moment().format("M");
@@ -1669,6 +1732,62 @@ function WeeklyWCGR() {
       }
 
     }
+
+     if (record?.stage_Title === "NEW CUSTOMER FUNNEL") {
+      if (record.stage_ID === "NHR" || record.stage_ID === "J") {
+
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getFunnelSummaryDetailsALLPopup(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+    }
+
+     if ( record?.stage_ID === "CustDelight") {
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getHRReferenceALLPODCount(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
 
       return text
 
@@ -3018,6 +3137,15 @@ function WeeklyWCGR() {
                         </>
 
                       }
+                      {isAllPODData &&  <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        POD
+                      </th>}
                       <th
                         style={{
                           padding: "10px",
@@ -3107,6 +3235,11 @@ function WeeklyWCGR() {
                             </td>
                           </>
                         }
+                        {isAllPODData && <td
+                          style={{ padding: "8px", border: "1px solid #ddd" }}
+                        >
+                          {detail.podName}
+                        </td>}
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
@@ -3710,7 +3843,7 @@ function WeeklyWCGR() {
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {detail.hrCreatedDateStr}
+                          {showTalentCol.stage_ID === "J4"  ?  detail.createdDateStr : detail.hrCreatedDateStr}
                         </td>
 
                         {showTalentCol?.stage === 'Added HR (New)' && <td
@@ -4034,6 +4167,16 @@ function WeeklyWCGR() {
                         </th>
                       </>}
 
+                      {isAllPODData &&   <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          background: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        POD
+                      </th>}
+
                       <th
                         style={{
                           padding: "10px",
@@ -4139,7 +4282,13 @@ function WeeklyWCGR() {
                             {detail.hrTitle}
                           </td>
                         </>}
-
+                        {isAllPODData && (
+                          <td
+                            style={{ padding: "8px", border: "1px solid #ddd" }}
+                          >
+                            {detail.podName}
+                          </td>
+                        )}
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
