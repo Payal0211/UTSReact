@@ -991,7 +991,7 @@ export default function New_all_hiring_request() {
                                                                 <img src="images/preview-hr-ic.svg" alt="Preview HR" className={`${stylesOBj["shortcut-icon"]}`} />
                                                             </a>
 
-                                                            {(data?.reopenHR === 0 && data?.isDisplayReopenOrCloseIcon === true) ?
+                                                            {/* {(data?.reopenHR === 0 && data?.isDisplayReopenOrCloseIcon === true) ?
 
                                                                 <a href="javascript:void(0)" onClick={() => {
                                                                     setCloseHRDetail({ ...data, HR_Id: data?.HRID });
@@ -1018,13 +1018,14 @@ export default function New_all_hiring_request() {
 
 
                                                                 }} className={`${stylesOBj["shortcut-icon-wrapper"]}`} data-tooltip={data?.companyModel === 'Pay Per Credit' ? "Re-post HR" : "Reopen HR"}>
-                                                                    {/* <img src="images/close-hr-ic.svg" alt="open HR" className={`${stylesOBj["shortcut-icon"]}`} /> */}
+                                                                    {/* <img src="images/close-hr-ic.svg" alt="open HR" className={`${stylesOBj["shortcut-icon"]}`} /> 
+                                                                  
                                                                     <ReopenHR
                                                                         style={{ fontSize: "16px", width: "20px" }}
 
                                                                     />
                                                                 </a> : ''
-                                                            }
+                                                            } */}
 
                                                             <a href="javascript:void(0)" onClick={() => {
                                                                 setCloneHR(true);

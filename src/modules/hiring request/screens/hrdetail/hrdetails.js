@@ -538,7 +538,7 @@ const togglePriority = useCallback(
                 </Modal>
               )}
 
-              {apiData?.dynamicCTA?.ReopenHR?.IsEnabled && (
+              {/* {apiData?.dynamicCTA?.ReopenHR?.IsEnabled && (
                 <div
                   className={HRDetailStyle.hiringRequestPriority}
                   onClick={() => {
@@ -557,7 +557,7 @@ const togglePriority = useCallback(
                     />
                   </Tooltip>
                 </div>
-              )}
+              )} */}
 
               {reopenHrModal && (
                 <Modal

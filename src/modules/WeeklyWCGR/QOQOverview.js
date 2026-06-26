@@ -257,6 +257,14 @@ function QOQOverview() {
                 }
 
             }
+
+            if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+               return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+            }
+
+            if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
+                return uplersStyle.heighliteRed;
+            }
             return ""
         }
 
@@ -283,6 +291,10 @@ function QOQOverview() {
             return numeric === "" ? 0 : parseFloat(numeric);
         };
 
+        const isSkipTotalStage = (record) => {
+            return record?.stage_Title === "TOP CLIENTS  ·  Pipeline & Joining Snapshot";
+        };
+
         const isPercentText = (value) => typeof value === "string" && value.includes("%");
 
         const formatAggregate = (value, sampleValue) => {
@@ -296,6 +308,9 @@ function QOQOverview() {
         };
 
         const getQuarterFTBUValue = (record, quarterPrefix) => {
+               if (isSkipTotalStage(record)) {
+                return null;
+            }
             const values = selectedHeadOptions.map((head) => {
                 const dataKey = getHeadDataKey(head.dd_text);
                 return record?.[`${quarterPrefix}_${dataKey}Str`];
@@ -309,7 +324,7 @@ function QOQOverview() {
             return values.reduce((sum, value) => sum + parseNumber(value), 0);
         };
 
-      
+
 
         const createQuarterColumns = (quarterPrefix) => {
             const quarterColumns = [
@@ -484,8 +499,10 @@ function QOQOverview() {
                 })} ${selectedYear}`} */}
                         </Title>
                     </div>
-                    <div className={uplersStyle.filterRight}>
-                        <Radio.Group
+                    <div className={`${uplersStyle.filterRight} ${uplersStyle.filterRightMod}`}>
+                        <div>
+                             <div style={{display:"flex",alignItems:"center",justifyContent:'space-between', marginBottom:'5px'}}>
+                               <Radio.Group
                             onChange={(e) => {
                                 const newHRModal = e.target.value;
                                 setHRModal(newHRModal);
@@ -500,8 +517,8 @@ function QOQOverview() {
                             {/* <Radio value={"Contract"}>Contract</Radio> */}
                         </Radio.Group>
                         <Select
-                            placeholder="Select Head"
-                            style={{ width: 300, marginLeft: 16, marginRight: 16 }}
+                            placeholder="Select POD's"
+                            style={{ width: 600, marginLeft: 16, marginRight: 16 }}
                             mode="multiple"
                             value={selectedHead}
                             showSearch
@@ -517,9 +534,20 @@ function QOQOverview() {
                             })}
                             optionFilterProp="label"
                         />
-                        <Select
+                        </div>
+                        <div  style={{display:"flex",alignItems:"center",justifyContent:'space-between'}}>
+                            <Radio.Group
+                            onChange={(e) => {
+                             
+                            }}
+                            value={'Quarter'}
+                        >
+                            <Radio value={"Quarter"}>Quarter</Radio>
+                            {/* <Radio value={"Contract"}>Contract</Radio> */}
+                        </Radio.Group>
+ <Select
                             placeholder="Select Quarter"
-                            style={{ width: 300, marginRight: 16 }}
+                            style={{ width: 600, marginRight: 16 }}
                             mode="multiple"
                             value={selectedQuarters}
                             onChange={(value) => setSelectedQuarters(value || [])}
@@ -530,6 +558,11 @@ function QOQOverview() {
                                 { label: "Oct-Dec (Q4)", value: "Q4" },
                             ]}
                         />
+                            </div>
+                        </div>
+                       
+                     
+                       
 
                         <div className={uplersStyle.calendarFilterSet}>
                             <div className={uplersStyle.label}>Year</div>
@@ -568,6 +601,14 @@ function QOQOverview() {
                         size="small"
                         bordered
                         rowClassName={(record) => {
+                            if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+                               return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+                            }
+
+                            if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
+                                return uplersStyle.heighliteRed;
+                            }
+
                             if (record.stage_ID === "JAllG" || record.stage_ID === "JAllNetAchieved" || record.stage_ID === "SG" ||
                                 record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio" || record.stage_ID === "O2S"
                             ) {
