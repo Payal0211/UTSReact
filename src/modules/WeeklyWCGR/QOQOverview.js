@@ -34,6 +34,7 @@ import { IconContext } from "react-icons";
 import Editor from "modules/hiring request/components/textEditor/editor";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import spinGif from "assets/gif/RefreshLoader.gif";
+import * as XLSX from "xlsx";
 
 const { Title, Text } = Typography;
 
@@ -259,7 +260,7 @@ function QOQOverview() {
             }
 
             if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
-               return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+                return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
             }
 
             if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
@@ -308,7 +309,7 @@ function QOQOverview() {
         };
 
         const getQuarterFTBUValue = (record, quarterPrefix) => {
-               if (isSkipTotalStage(record)) {
+            if (isSkipTotalStage(record)) {
                 return null;
             }
             const values = selectedHeadOptions.map((head) => {
@@ -487,6 +488,124 @@ function QOQOverview() {
         return columns;
     };
 
+
+    const exportData = () => {
+        const columns = getTableColumns();
+
+        // Flatten columns
+        const flatColumns = [];
+
+        columns.forEach((col) => {
+            if (col.children?.length) {
+                col.children.forEach((child) => {
+                    flatColumns.push({
+                        parent: col.title,
+                        title: child.title,
+                        dataIndex: child.dataIndex,
+                    });
+                });
+            } else {
+                flatColumns.push({
+                    parent: "",
+                    title: col.title,
+                    dataIndex: col.dataIndex,
+                });
+            }
+        });
+
+        const headerRow1 = [];
+        const headerRow2 = [];
+        const merges = [];
+
+        let c = 0;
+
+        while (c < flatColumns.length) {
+            const column = flatColumns[c];
+
+            // Normal column (Metric, Year Total)
+            if (!column.parent) {
+                headerRow1.push(column.title);
+                headerRow2.push("");
+
+                merges.push({
+                    s: { r: 0, c },
+                    e: { r: 1, c },
+                });
+
+                c++;
+                continue;
+            }
+
+            // Grouped column (Quarter)
+            const parent = column.parent;
+            const start = c;
+
+            while (
+                c < flatColumns.length &&
+                flatColumns[c].parent === parent
+            ) {
+                headerRow2.push(flatColumns[c].title);
+                c++;
+            }
+
+            const span = c - start;
+
+            headerRow1.push(parent);
+
+            for (let i = 1; i < span; i++) {
+                headerRow1.push("");
+            }
+
+            merges.push({
+                s: { r: 0, c: start },
+                e: { r: 0, c: c - 1 },
+            });
+        }
+
+        const excelData = [headerRow1, headerRow2];
+
+        tableData
+            .filter((row) => row.stage !== "METRIC")
+            .forEach((row) => {
+                if (row.isSection) {
+                    excelData.push([row.sectionTitle]);
+
+                    merges.push({
+                        s: {
+                            r: excelData.length - 1,
+                            c: 0,
+                        },
+                        e: {
+                            r: excelData.length - 1,
+                            c: flatColumns.length - 1,
+                        },
+                    });
+
+                    return;
+                }
+
+                excelData.push(
+                    flatColumns.map((column) => row[column.dataIndex] ?? "")
+                );
+            });
+
+        const ws = XLSX.utils.aoa_to_sheet(excelData);
+
+        ws["!merges"] = merges;
+
+        // Optional column widths
+        ws["!cols"] = flatColumns.map((col, i) => ({
+            wch: i === 0 ? 35 : 18,
+        }));
+
+        const wb = XLSX.utils.book_new();
+
+        XLSX.utils.book_append_sheet(wb, ws, "QOQ Overview");
+
+        XLSX.writeFile(wb, `QOQ_Overview_${selectedYear}.xlsx`);
+    };
+
+
     return (
         <div className={uplersStyle.hiringRequestContainer}>
             <div className={uplersStyle.filterContainer}>
@@ -501,84 +620,96 @@ function QOQOverview() {
                     </div>
                     <div className={`${uplersStyle.filterRight} ${uplersStyle.filterRightMod}`}>
                         <div>
-                             <div style={{display:"flex",alignItems:"center",justifyContent:'space-between', marginBottom:'5px'}}>
-                               <Radio.Group
-                            onChange={(e) => {
-                                const newHRModal = e.target.value;
-                                setHRModal(newHRModal);
-                                const allowedHeads = (pODList || []).filter(item =>
-                                    newHRModal === "DP" ? item.dd_value !== 5 : item.dd_value === 5
-                                ).map(item => String(item.dd_value));
-                                setSelectedHead(allowedHeads);
-                            }}
-                            value={hrModal}
-                        >
-                            <Radio value={"DP"}>FTE</Radio>
-                            {/* <Radio value={"Contract"}>Contract</Radio> */}
-                        </Radio.Group>
-                        <Select
-                            placeholder="Select POD's"
-                            style={{ width: 600, marginLeft: 16, marginRight: 16 }}
-                            mode="multiple"
-                            value={selectedHead}
-                            showSearch
-                            onChange={(value) => setSelectedHead(value || [])}
-                            options={(pODList || []).map((v) => ({
-                                label: v.dd_text,
-                                value: String(v.dd_value),
-                            })).filter(item => {
-                                if (hrModal === "DP") {
-                                    return item.value !== "5";
-                                }
-                                return item.value === "5";
-                            })}
-                            optionFilterProp="label"
-                        />
-                        </div>
-                        <div  style={{display:"flex",alignItems:"center",justifyContent:'space-between'}}>
-                            <Radio.Group
-                            onChange={(e) => {
-                             
-                            }}
-                            value={'Quarter'}
-                        >
-                            <Radio value={"Quarter"}>Quarter</Radio>
-                            {/* <Radio value={"Contract"}>Contract</Radio> */}
-                        </Radio.Group>
- <Select
-                            placeholder="Select Quarter"
-                            style={{ width: 600, marginRight: 16 }}
-                            mode="multiple"
-                            value={selectedQuarters}
-                            onChange={(value) => setSelectedQuarters(value || [])}
-                            options={[
-                                { label: "Jan-Mar (Q1)", value: "Q1" },
-                                { label: "Apr-Jun (Q2)", value: "Q2" },
-                                { label: "Jul-Sep (Q3)", value: "Q3" },
-                                { label: "Oct-Dec (Q4)", value: "Q4" },
-                            ]}
-                        />
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', marginBottom: '5px' }}>
+                                <Radio.Group
+                                    onChange={(e) => {
+                                        const newHRModal = e.target.value;
+                                        setHRModal(newHRModal);
+                                        const allowedHeads = (pODList || []).filter(item =>
+                                            newHRModal === "DP" ? item.dd_value !== 5 : item.dd_value === 5
+                                        ).map(item => String(item.dd_value));
+                                        setSelectedHead(allowedHeads);
+                                    }}
+                                    value={hrModal}
+                                >
+                                    <Radio value={"DP"}>FTE</Radio>
+                                    {/* <Radio value={"Contract"}>Contract</Radio> */}
+                                </Radio.Group>
+                                <Select
+                                    placeholder="Select POD's"
+                                    style={{ width: 600, marginLeft: 16, marginRight: 16 }}
+                                    mode="multiple"
+                                    value={selectedHead}
+                                    showSearch
+                                    onChange={(value) => setSelectedHead(value || [])}
+                                    options={(pODList || []).map((v) => ({
+                                        label: v.dd_text,
+                                        value: String(v.dd_value),
+                                    })).filter(item => {
+                                        if (hrModal === "DP") {
+                                            return item.value !== "5";
+                                        }
+                                        return item.value === "5";
+                                    })}
+                                    optionFilterProp="label"
+                                />
                             </div>
-                        </div>
-                       
-                     
-                       
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
+                                <Radio.Group
+                                    onChange={(e) => {
 
-                        <div className={uplersStyle.calendarFilterSet}>
-                            <div className={uplersStyle.label}>Year</div>
-                            <div className={uplersStyle.calendarFilter}>
-                                <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
-                                <DatePicker
-                                    onKeyDown={(e) => e.preventDefault()}
-                                    className={uplersStyle.dateFilter}
-                                    placeholderText="Year"
-                                    selected={monthDate}
-                                    onChange={(date) => setMonthDate(date)}
-                                    dateFormat="yyyy"
-                                    showYearPicker
+                                    }}
+                                    value={'Quarter'}
+                                >
+                                    <Radio value={"Quarter"}>Quarter</Radio>
+                                    {/* <Radio value={"Contract"}>Contract</Radio> */}
+                                </Radio.Group>
+                                <Select
+                                    placeholder="Select Quarter"
+                                    style={{ width: 600, marginRight: 16 }}
+                                    mode="multiple"
+                                    value={selectedQuarters}
+                                    onChange={(value) => setSelectedQuarters(value || [])}
+                                    options={[
+                                        { label: "Jan-Mar (Q1)", value: "Q1" },
+                                        { label: "Apr-Jun (Q2)", value: "Q2" },
+                                        { label: "Jul-Sep (Q3)", value: "Q3" },
+                                        { label: "Oct-Dec (Q4)", value: "Q4" },
+                                    ]}
                                 />
                             </div>
                         </div>
+
+
+
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', flexDirection: 'column' }}>
+                            <button style={{ margin: '0 0 10px auto' }}
+                                className={uplersStyle.btnPrimary}
+                                onClick={() => { exportData() }}
+                            >
+                                Export
+                            </button>
+
+                            <div className={uplersStyle.calendarFilterSet}>
+                                <div className={uplersStyle.label}>Year</div>
+                                <div className={uplersStyle.calendarFilter}>
+                                    <CalenderSVG style={{ height: "16px", marginRight: "8px" }} />
+                                    <DatePicker
+                                        onKeyDown={(e) => e.preventDefault()}
+                                        className={uplersStyle.dateFilter}
+                                        placeholderText="Year"
+                                        selected={monthDate}
+                                        onChange={(date) => setMonthDate(date)}
+                                        dateFormat="yyyy"
+                                        showYearPicker
+                                    />
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
                     </div>
                 </div>
 
@@ -602,7 +733,7 @@ function QOQOverview() {
                         bordered
                         rowClassName={(record) => {
                             if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
-                               return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+                                return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
                             }
 
                             if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {

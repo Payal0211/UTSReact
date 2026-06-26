@@ -578,7 +578,7 @@ function WeeklyWCGR() {
         stageID: row.stage_ID,
         cat: row.category ? row.category : "CH",
         week: week ? week : "",
-        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
+        multiplePODIds: isAllPODData ? "1,2,3,4,6" : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1091,7 +1091,7 @@ function WeeklyWCGR() {
         stageID: row.stage_ID,
         cat: row?.category ? row?.category : "ALL",
         week: week ? week : "",
-        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
+        multiplePODIds: isAllPODData ? "1,2,3,4,6" : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1174,7 +1174,7 @@ function WeeklyWCGR() {
         year: row.wcgrYear,
         stageID: row.stage_ID,
         week: week ? week : "",
-        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
+        multiplePODIds: isAllPODData ? "1,2,3,4,6" : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1284,7 +1284,7 @@ function WeeklyWCGR() {
         year: row?.wcgrYear,
         stageID: row.stage_ID,
         cat: row.category,
-        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
+        multiplePODIds: isAllPODData ? "1,2,3,4,6" : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1435,12 +1435,42 @@ function WeeklyWCGR() {
         year: row.wcgrYear,
         stageID: row.stage_ID,
         week: week ? week : "",
-        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
+        multiplePODIds:  isAllPODData ? "1,2,3,4,6" : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
       setAchievedLoading(true);
       const result = await ReportDAO.getPopupForAllPODSDetailsDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
+
+  const getHRTalentWiseReportALLPOD  = async (row, v, week, month) => {
+    try {
+      setShowAchievedReport(true);
+
+      const pl = {
+        hrmodel: hrModal,
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        cat: row?.category ? row?.category : "ALL",
+        week: week ? week : "",
+        multiplePODIds: isAllPODData ? "1,2,3,4,6" : ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getALLPOCPopupReportDAO(pl);
       setAchievedLoading(false);
       if (result.statusCode === 200) {
         setListAchievedData(result.responseBody);
@@ -1612,6 +1642,33 @@ function WeeklyWCGR() {
             )}
         </div>
       }
+
+        if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
+      if (record.stage_ID === "TA") {
+        return text
+      }
+      if (record.stage_ID === "CF" ||
+        record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L"
+      ) {
+
+        return <div >
+          {text ?
+            <span
+              onClick={() => {
+                getHRTalentWiseReportALLPOD(record, text, week, month)
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+
+            : (
+              ""
+            )}
+        </div>
+      }
+
+    }
 
       return text
 
