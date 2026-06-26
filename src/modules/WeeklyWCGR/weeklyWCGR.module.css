@@ -24,10 +24,6 @@
     display: flex;
     align-items: center;
 }
-.filterSetsInner [class*="ant-select"]  {
-    /* width:200px */
-}
-
 .filterSetsInner [class*="ant-select"] [class*="ant-select-selector"] {
     padding: 12px 10px;
     height: 46px !important;
@@ -52,6 +48,12 @@
 .filterRight [class*='ant-select-selector']  {
     height: 45px !important;
     padding: 12px 16px !important;
+}
+
+.filterRightMod [class*='ant-select-selector']  {
+    overflow-y: hidden;
+    height: 45px !important;
+    padding: 0 16px !important;
 }
 
 .searchFilterSet{
@@ -82,7 +84,7 @@
 
 
 .calendarFilter{
-  width:250px ;
+  width:150px ;
   height: 44px;
   border-radius: 8px;
   padding: 2px 10px;
@@ -100,6 +102,9 @@
   margin: 40px 0 30px;
   min-width: 220px;
   z-index: 4;
+}
+.calendarFilter [class*="react-datepicker__input-container"] input{
+  max-width: 100px;
 }
 
 .calendarFilter {
@@ -178,6 +183,51 @@ margin-bottom: 10px;
   gap: 6px;
   width: 100%;
       padding: 0px 24px 12px;
+}
+
+.headChipsWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    align-items: center;
+}
+
+.filterChipsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 680px;
+}
+
+.headChip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 16px;
+    border: 1px solid #d1d5db;
+    background-color: #f8fafc;
+    color: #101828;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.headChip:hover {
+    background-color: rgba(255, 218, 48, 0.2);
+}
+
+.headChipActive {
+    border-color: var(--color-sunlight);
+    background-color: var(--color-sunlight);
+    color: #101828;
+}
+
+.headChipActive:hover {
+    background-color: var(--color-sunlight);
 }
 
 .cardcontainer {
