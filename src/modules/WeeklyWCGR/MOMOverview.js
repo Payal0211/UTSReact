@@ -188,12 +188,12 @@ function MOMOverview() {
         const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
         const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
-        return text 
+        return text
 
-        
+
     }
 
-   
+
 
     const getTableColumns = () => {
         const countLeafColumns = (columns) =>
@@ -334,20 +334,28 @@ function MOMOverview() {
             return monthCols;
         };
 
-        const cellClassName=(record, stageTitle, stageID)=>{
-        
-              if(record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning"){
-        
-                 if(record.stage.split("-")[0].trim() === "Opening Balance"){
-               return uplersStyle.OBRow
-              }
-        
-                if(record.stage.split("-")[1].trim() === "New"){
-                  return uplersStyle.heighliteCream
+        const cellClassName = (record, stageTitle, stageID) => {
+
+            if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
+
+                if (record.stage.split("-")[0].trim() === "Opening Balance") {
+                    return uplersStyle.OBRow
                 }
-               
-              }
-              return ""
+
+                if (record.stage.split("-")[1].trim() === "New") {
+                    return uplersStyle.heighliteCream
+                }
+
+            }
+
+            if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+              return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+            }
+
+            if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
+                return uplersStyle.heighliteRed;
+            }
+            return ""
         }
 
         const columns = [
@@ -361,10 +369,10 @@ function MOMOverview() {
                 onHeaderCell: () => ({
                     className: "black-header",
                 }),
-                  onCell: (record) => ({
-                    className:cellClassName(record)
-                    
-                    }),
+                onCell: (record) => ({
+                    className: cellClassName(record)
+
+                }),
                 render: (text, record) => {
                     if (record.isSection) {
                         return {
@@ -478,10 +486,10 @@ function MOMOverview() {
                 })} ${selectedYear}`} */}
                         </Title>
                     </div>
-                    <div className={uplersStyle.filterRight}>
+                    <div className={`${uplersStyle.filterRight} ${uplersStyle.filterRightMod}`}>
                         <Radio.Group
                             onChange={(e) => {
-                                        const newHRModal = e.target.value;
+                                const newHRModal = e.target.value;
                                 setHRModal(newHRModal);
                                 const allowedHeads = (pODList || []).filter(item =>
                                     newHRModal === "DP" ? item.dd_value !== 5 : item.dd_value === 5
@@ -497,8 +505,8 @@ function MOMOverview() {
                         </Radio.Group>
                         <Select
                                      id="selectedValue"
-                                     placeholder="Select Head"
-                                     style={{ width: "500px" }}
+                                     placeholder="Select POD's"
+                                     style={{ width: "600px" }}
                                      mode="multiple"
                                      value={selectedHead}
                                      showSearch={true}
@@ -554,31 +562,38 @@ function MOMOverview() {
                         size="small"
                         bordered
                         rowClassName={(record) => {
+                            if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+                               return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+                            }
+
+                            if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
+                                return uplersStyle.heighliteRed;
+                            }
                             if (record.stage_ID === "JAllG" || record.stage_ID === "JAllNetAchieved" || record.stage_ID === "SG" ||
                                 record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio" || record.stage_ID === "O2S"
                             ) {
                                 return uplersStyle.boldRow;
                             }
 
-                             if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
-                                            let type = record.stage.split("-")[1].trim()
-                                           
-                            if(record.stage === "Total Active Pipeline - New"){
-                                              return `${uplersStyle.heighliteCream} ${uplersStyle.boldRow}`
-                                              }
-                            if(record.stage.split("-")[0].trim() === "Opening Balance"){
-                                return uplersStyle.OBRow
-                            }
-                            if (type === "New") {
-                                return uplersStyle.heighliteCream;
-                            }
-                            
-                            return uplersStyle.boldRow;
+                            if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
+                                let type = record.stage.split("-")[1].trim()
+
+                                if (record.stage === "Total Active Pipeline - New") {
+                                    return `${uplersStyle.heighliteCream} ${uplersStyle.boldRow}`
+                                }
+                                if (record.stage.split("-")[0].trim() === "Opening Balance") {
+                                    return uplersStyle.OBRow
+                                }
+                                if (type === "New") {
+                                    return uplersStyle.heighliteCream;
+                                }
+
+                                return uplersStyle.boldRow;
                             }
                         }}
                     />
                 )}
-      
+
             </div>
         </div>
 

@@ -476,14 +476,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'QOQOverview'),
 					isChildren : false					
 				}),
-                new SideBarModels({
-					id: 'AllFTEDASHBOARD',
-					title: 'Multi-Month POD Dashboard',
-					isActive: false,
-					navigateTo: UTSRoutes.ALL_FTE_DASHBOARD_REPORT,
-					isVisible: isAccess(usertypeID, 'AllFTEDASHBOARD'),
-					isChildren : false					
-				}),
+                // new SideBarModels({
+				// 	id: 'AllFTEDASHBOARD',
+				// 	title: 'Multi-Month POD Dashboard',
+				// 	isActive: false,
+				// 	navigateTo: UTSRoutes.ALL_FTE_DASHBOARD_REPORT,
+				// 	isVisible: isAccess(usertypeID, 'AllFTEDASHBOARD'),
+				// 	isChildren : false					
+				// }),
 				
 			]
 		}),

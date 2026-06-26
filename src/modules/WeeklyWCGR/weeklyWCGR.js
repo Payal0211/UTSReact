@@ -54,7 +54,7 @@ function WeeklyWCGR() {
   const [pODList, setPODList] = useState([]);
 
   const [selectedHead, setSelectedHead] = useState('');
-  const [isAllPODData,  setISALLPODData] = useState(false);
+  const [isAllPODData, setISALLPODData] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [headerDataCol, setHeaderDataCol] = useState({});
   const [showComment, setShowComment] = useState(false);
@@ -96,7 +96,7 @@ function WeeklyWCGR() {
     getUserResult();
   }, []);
 
- 
+
   // useEffect(() => {
   //   // set modal to contract for stanley 
   //   if(userData?.EmployeeID ==="UP1831"){
@@ -348,10 +348,10 @@ function WeeklyWCGR() {
 
   }
 
-   const getALLPODJoiningRevenueData = async () => {
+  const getALLPODJoiningRevenueData = async () => {
     setIsLoadingTable(true);
-         setSelectedHead(null);
-         setISALLPODData(true);
+    setSelectedHead(null);
+    setISALLPODData(true);
     let query = `?podId=${0}&Month=${moment(monthDate).format("M")}&Year=${selectedYear}`;
 
     const result = await ReportDAO.getALLPODJoiningRevenueDataDAO(query);
@@ -420,7 +420,7 @@ function WeeklyWCGR() {
       hR_Model: d.stage_ID,
       stage_ID: d.poD_ID,
       hR_BusinessType: "POD",
-      
+
     };
     const result = await ReportDAO.revenueWCGRCommentReportDAO(pl);
     setIsCommentLoading(false);
@@ -431,15 +431,15 @@ function WeeklyWCGR() {
     }
   };
 
-  const AddComment = (data, key, month, index,commentKey) => {
-    if(data?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
-     getAllPODComments(data, key, month)
-    }else{
-     getAllComments(data, key, month);
+  const AddComment = (data, key, month, index, commentKey) => {
+    if (data?.stage_Title === "WEEKLY COMMENTS & ACTIONS") {
+      getAllPODComments(data, key, month)
+    } else {
+      getAllComments(data, key, month);
     }
-   
+
     setShowComment(true);
-    setCommentData({ ...data, hR_Model: "", key: key, month: month  , index: index, commentKey: commentKey });
+    setCommentData({ ...data, hR_Model: "", key: key, month: month, index: index, commentKey: commentKey });
   };
 
   const saveComment = async (note) => {
@@ -460,20 +460,20 @@ function WeeklyWCGR() {
     if (res.statusCode === HTTPStatusCode.OK) {
       setALLCommentsList(res.responseBody);
 
-      if(commentData?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
- setTableData(prev => {
-        let temp = [...prev];
-        temp[commentData.index] = { ...temp[commentData.index], [commentData.key]: note ,[commentData.commentKey]: note };
-        return temp;
-      })
-      }else{
-         setTableData(prev => {
-        let temp = [...prev];
-        temp[commentData.index] = { ...temp[commentData.index], [commentData.commentKey]: note };
-        return temp;
-      })
+      if (commentData?.stage_Title === "WEEKLY COMMENTS & ACTIONS") {
+        setTableData(prev => {
+          let temp = [...prev];
+          temp[commentData.index] = { ...temp[commentData.index], [commentData.key]: note, [commentData.commentKey]: note };
+          return temp;
+        })
+      } else {
+        setTableData(prev => {
+          let temp = [...prev];
+          temp[commentData.index] = { ...temp[commentData.index], [commentData.commentKey]: note };
+          return temp;
+        })
       }
-     
+
     }
   };
 
@@ -578,7 +578,7 @@ function WeeklyWCGR() {
         stageID: row.stage_ID,
         cat: row.category ? row.category : "CH",
         week: week ? week : "",
-        multiplePODIds:  isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
+        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -675,7 +675,7 @@ function WeeklyWCGR() {
   };
 
   const JConfirmationColumns = [
-     {
+    {
       title: "Company",
       dataIndex: "company",
       key: "company",
@@ -684,13 +684,13 @@ function WeeklyWCGR() {
         record?.companyCategory === "Diamond" ? (
           <>
             <a
-            href={`/viewCompanyDetails/${record.companyId}`}
-            style={{ textDecoration: "underline" }}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {text}{" "}
-          </a>
+              href={`/viewCompanyDetails/${record.companyId}`}
+              style={{ textDecoration: "underline" }}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {text}{" "}
+            </a>
             &nbsp;
             <img
               src={Diamond}
@@ -699,7 +699,7 @@ function WeeklyWCGR() {
             />
           </>
         ) : (
-           <a
+          <a
             href={`/viewCompanyDetails/${record.companyId}`}
             style={{ textDecoration: "underline" }}
             target="_blank"
@@ -735,7 +735,7 @@ function WeeklyWCGR() {
     },
     {
       title: "Joining Date",
-      dataIndex: isAllPODData ? "dateStr" :"joiningDate",
+      dataIndex: isAllPODData ? "dateStr" : "joiningDate",
       key: "joiningDate",
     },
     {
@@ -806,7 +806,7 @@ function WeeklyWCGR() {
 
     {
       title: <div style={{ textAlign: "center" }}>HR Modal</div>,
-      dataIndex: "hR_Model",
+      dataIndex: isAllPODData ? "hrModel" : "hR_Model",
       key: "hR_Model",
 
       className: uplersStyle.headerCell,
@@ -955,8 +955,8 @@ function WeeklyWCGR() {
     },
     {
       title: (showTalentCol?.stage_ID === "D_Lost" || showTalentCol?.stage_ID === "CN_Lost") ? "Lost Date" : (showTalentCol?.stage_ID === "D_Drop" || showTalentCol?.stage_ID === "CN_Drop") ? "Dropout Date" : (showTalentCol?.stage_ID === "D_Backout" || showTalentCol?.stage_ID === "CN_Backout") ? "Backout Date" : "Joining Date",
-      dataIndex:isAllPODData ? "dateStr": "joiningdateStr",
-      key: isAllPODData ? "dateStr":"joiningdateStr",
+      dataIndex: isAllPODData ? "dateStr" : "joiningdateStr",
+      key: isAllPODData ? "dateStr" : "joiningdateStr",
     },
     {
       title: "Talent",
@@ -976,7 +976,7 @@ function WeeklyWCGR() {
     },
     {
       title: <div style={{ textAlign: "center" }}> Billing %</div>,
-      dataIndex: isAllPODData? "billing" : "uplersFeesPer",
+      dataIndex: isAllPODData ? "billing" : "uplersFeesPer",
       key: "uplersFeesPer",
       width: '100px',
       align: "center",
@@ -1000,8 +1000,8 @@ function WeeklyWCGR() {
           {pODList?.find(item => item.dd_value === selectedHead)?.dd_text} Revenue
         </div>
       ),
-      dataIndex: isAllPODData ? "revenue ":"podValueStr",
-      key:isAllPODData ? "revenue ":  "podValueStr",
+      dataIndex: isAllPODData ? "revenue " : "podValueStr",
+      key: isAllPODData ? "revenue " : "podValueStr",
       width: '150px',
       align: "right",
       className: uplersStyle.headerCell,
@@ -1026,7 +1026,7 @@ function WeeklyWCGR() {
 
     {
       title: <div style={{ textAlign: "center" }}>HR Modal</div>,
-      dataIndex:isAllPODData ? "hrModel" : "hR_Model",
+      dataIndex: isAllPODData ? "hrModel" : "hR_Model",
       key: "hR_Model",
 
       className: uplersStyle.headerCell,
@@ -1091,7 +1091,7 @@ function WeeklyWCGR() {
         stageID: row.stage_ID,
         cat: row?.category ? row?.category : "ALL",
         week: week ? week : "",
-        multiplePODIds:  isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
+        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1174,7 +1174,7 @@ function WeeklyWCGR() {
         year: row.wcgrYear,
         stageID: row.stage_ID,
         week: week ? week : "",
-        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') :   ''
+        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
       };
       setShowTalentCol(row);
       setAchievedTotal(v);
@@ -1246,7 +1246,7 @@ function WeeklyWCGR() {
     }
   };
 
-  const getJConfirmedDetails = async(row, v, week, month ) =>{
+  const getJConfirmedDetails = async (row, v, week, month) => {
     try {
       setShowJConfirmationReport(true);
 
@@ -1303,11 +1303,11 @@ function WeeklyWCGR() {
 
   }
 
-  const AddCommentIcon = ({ record, keyPar, month , index, commentKey }) => {
-    
+  const AddCommentIcon = ({ record, keyPar, month, index, commentKey }) => {
+
     return <IconContext.Provider
       value={{
-        color:record[commentKey]?.length > 0 ? "green" : "gray",
+        color: record[commentKey]?.length > 0 ? "green" : "gray",
         style: {
           width: "10px",
           height: "10px",
@@ -1320,7 +1320,7 @@ function WeeklyWCGR() {
       <Tooltip title={record[commentKey]?.length > 0 ? record[commentKey] : `Add/View Comment`} placement="top">
         <span
           onClick={() => {
-            AddComment(record, keyPar, month, index,commentKey);
+            AddComment(record, keyPar, month, index, commentKey);
           }}
           // className={taStyles.feedbackLabel}
           style={{
@@ -1330,8 +1330,8 @@ function WeeklyWCGR() {
           }}
         >
           {" "}
-         {record[commentKey]?.length > 0 ? <BiSolidComment /> :  <CiCircleInfo />}  
-         {/* */}
+          {record[commentKey]?.length > 0 ? <BiSolidComment /> : <CiCircleInfo />}
+          {/* */}
         </span>{" "}
       </Tooltip>
     </IconContext.Provider>
@@ -1339,33 +1339,34 @@ function WeeklyWCGR() {
 
   const getPopupForAllPODSDetails = async (row, v, week, month) => {
     try {
-          setShowAnticipatedReport(true);
+      setShowAnticipatedReport(true);
 
-          const pl = {
-            pod_id: selectedHead,
-            month: month,
-            year: row.wcgrYear,
-            stageID: row.stage_ID,
-            week: week ? week : "",
-          };
-          setShowTalentCol(row);
-          setAchievedTotal(v);
-          setAchievedLoading(true);
-          const result = await ReportDAO.getPopupForAllPODSDetailsDAO(pl);
-          setAchievedLoading(false);
-          if (result.statusCode === 200) {
-            setListAchievedData(result.responseBody);
-          } else {
-            setListAchievedData([]);
-          }
-        } catch (err) {
-          console.log(err);
-          setListAchievedData([]);
-        }
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPopupForAllPODSDetailsDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
       }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  }
 
-const getJConfirmedDetailsAllFTE = async (row, v, week, month) => {
-   try {
+
+  const getJConfirmedDetailsAllFTE = async (row, v, week, month) => {
+    try {
       setShowJConfirmationReport(true);
 
       const pl = {
@@ -1389,10 +1390,10 @@ const getJConfirmedDetailsAllFTE = async (row, v, week, month) => {
       console.log(err);
       setListAchievedData([]);
     }
-}
+  }
 
-const getDFDetailsAllPOD = async (row, v, week, month) => {
-   try {
+  const getDFDetailsAllPOD = async (row, v, week, month) => {
+    try {
       setShowDFReport(true);
 
       const pl = {
@@ -1400,7 +1401,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
         pod_id: selectedHead,
         month: month,
         year: row.wcgrYear,
-       stageID: row.stage_ID,
+        stageID: row.stage_ID,
         week: week ? week : "",
         hr_businesstype: row.hR_Type,
         isNextMonth: row?.isNM === 'Yes' ? row?.isNM : ''
@@ -1422,7 +1423,35 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
       setDFListData([]);
       setDFFilterListData([]);
     }
-}
+  }
+
+   const getHRTalentDetailsAllPODS = async (row, v, week, month) => {
+    try {
+      setShowTalentReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+        multiplePODIds: isAllPODData ? pODList?.map((v) => v.dd_value).join(',') : ''
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPopupForAllPODSDetailsDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
 
   const AddNoteComp = ({ text, record, keyPar, month, index, week, commentKey }) => {
     const isPastMonth = month < moment().format("M");
@@ -1434,32 +1463,32 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
     const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
     const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
-    if(record.stage_Title === "NEW CUSTOMER FUNNEL" && week !== undefined){
+    if (record.stage_Title === "NEW CUSTOMER FUNNEL" && week !== undefined) {
       return text
     }
 
-    if(isAllPODData){
-      if(record.stage_ID ===  "JFreezeAnticipated" || record.stage_ID === "SFreezeAnticipated" || record.stage_ID === "JAllAnticipated" || record.stage_ID === "SAnticipated"){
-         return <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <span
-                onClick={() => {
-                  getPopupForAllPODSDetails(record, text, week, month);
-                }}
-                style={{ cursor: "pointer", color: "#1890ff" }}
-              >
-                {text}
-              </span>
-            </div>
+    if (isAllPODData) {
+      if (record.stage_ID === "JFreezeAnticipated" || record.stage_ID === "SFreezeAnticipated" || record.stage_ID === "JAllAnticipated" || record.stage_ID === "SAnticipated") {
+        return <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span
+            onClick={() => {
+              getPopupForAllPODSDetails(record, text, week, month);
+            }}
+            style={{ cursor: "pointer", color: "#1890ff" }}
+          >
+            {text}
+          </span>
+        </div>
       }
 
-      if(record.stage_ID === "JConfirmed"){
-        return  <div >
+      if (record.stage_ID === "JConfirmed") {
+        return <div >
           {text ? (
             <div
               style={{
@@ -1470,13 +1499,13 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
             >
               <span
                 onClick={() => {
-                   getJConfirmedDetailsAllFTE(record, text, week, month);
+                  getJConfirmedDetailsAllFTE(record, text, week, month);
                 }}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
                 {text}
               </span>
-              
+
             </div>
           )
             : (
@@ -1485,7 +1514,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
         </div>
       }
 
-       if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop") {
+      if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop" || record.stage_ID === "D_Backout") {
         return <div >
           {text ? (
             <div
@@ -1510,50 +1539,123 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
             )}
         </div>
       }
-    
+
+      if(record.stage_ID === "J4") {
+       return <div >
+        {text ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              onClick={() => {
+                getPopupForAllPODSDetails(record, text, week, month);
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+          </div>
+        )
+          : (
+            ""
+          )}
+      </div>
+      }
+
+        if (record.stage_ID === "R1" || record.stage_ID === "Hired") {
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getHRTalentDetailsAllPODS(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+             
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+
+      if (record?.stage_Title === "CUSTOMER OVERVIEW") {
+
+        return <div >
+          {text ?
+            <span
+              onClick={() => {
+                getHRChealthWiseReport(record, text, week, month)
+
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+
+            : (
+              ""
+            )}
+        </div>
+      }
+
       return text
-     
+
     }
 
-     if(record?.stage_Title==="WEEKLY COMMENTS & ACTIONS"){
-     if (text) {
-          return (
-            <>
-              <div dangerouslySetInnerHTML={{ __html: text }}></div>
-              <p
-                style={{
-                  color: "blue",
-                  fontWeight: "bold",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                  marginTop: "5px",
-                }}
-                onClick={() => {
-                   AddComment(record, keyPar, month, index,commentKey);
-                }}
-              >
-                View All
-              </p>
-            </>
-          );
-        } else {
-          return (
+    if (record?.stage_Title === "WEEKLY COMMENTS & ACTIONS") {
+      if (text) {
+        return (
+          <>
+            <div dangerouslySetInnerHTML={{ __html: text }}></div>
             <p
               style={{
                 color: "blue",
                 fontWeight: "bold",
                 textDecoration: "underline",
                 cursor: "pointer",
+                marginTop: "5px",
               }}
               onClick={() => {
-                AddComment(record, keyPar, month , index,commentKey);
+                AddComment(record, keyPar, month, index, commentKey);
               }}
             >
-              Add
+              View All
             </p>
-          );
-        }
-     }
+          </>
+        );
+      } else {
+        return (
+          <p
+            style={{
+              color: "blue",
+              fontWeight: "bold",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              AddComment(record, keyPar, month, index, commentKey);
+            }}
+          >
+            Add
+          </p>
+        );
+      }
+    }
 
     if (record?.stage_Title === "JOINING  ·  Revenue" || record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue") {
       if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop") {
@@ -1574,7 +1676,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index} />
             </div>
           )
             : (
@@ -1601,7 +1703,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index} />
             </div>
           )
             : (
@@ -1610,8 +1712,8 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
         </div>
       }
 
-      if(record.stage_ID === "JConfirmed"){
-        return  <div >
+      if (record.stage_ID === "JConfirmed") {
+        return <div >
           {text ? (
             <div
               style={{
@@ -1628,7 +1730,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index}/>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index} />
             </div>
           )
             : (
@@ -1657,7 +1759,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
             >
               {text}
             </span>
-            <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
+            <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index} />
           </div>
         )
           : (
@@ -1668,7 +1770,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
     }
 
     if (record?.stage_Title === "CUSTOMER EXPERIENCE") {
-      if (record.stage_ID === "refclientortalent" ) {
+      if (record.stage_ID === "refclientortalent") {
         return <div >
           {text ? (
             <div
@@ -1686,7 +1788,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index} />
             </div>
           )
             : (
@@ -1713,7 +1815,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
               >
                 {text}
               </span>
-              <AddCommentIcon record={record} keyPar={keyPar} month={month}  commentKey={commentKey} index={index}/>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index} />
             </div>
           )
             : (
@@ -1722,8 +1824,8 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
         </div>
       }
 
-      if(record?.stage_ID === "AvgtimeHire" || record?.stage_ID === "refclientortalent" || record?.stage_ID === "CustDelight"){
-          return <div >
+      if (record?.stage_ID === "AvgtimeHire" || record?.stage_ID === "refclientortalent" || record?.stage_ID === "CustDelight") {
+        return <div >
           {text ? (
             <div
               style={{
@@ -1740,7 +1842,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
               >
                 {text}
               </span>
-          
+
             </div>
           )
             : (
@@ -1750,9 +1852,9 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
       }
 
     }
-     if (record?.stage_Title === "NEW CUSTOMER FUNNEL" ) {
+    if (record?.stage_Title === "NEW CUSTOMER FUNNEL") {
       if (record.stage_ID === "NHR" || record.stage_ID === "J") {
-       
+
         return <div >
           {text ? (
             <div
@@ -1771,7 +1873,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
                 {text}
               </span>
 
-              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index}/>
+              <AddCommentIcon record={record} keyPar={keyPar} month={month} commentKey={commentKey} index={index} />
             </div>
           )
             : (
@@ -1802,36 +1904,36 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
       </div>
     }
 
-    if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning" ) {
-      if(record.stage_ID === "TA"){
+    if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
+      if (record.stage_ID === "TA") {
         return text
       }
-      if(record.stage_ID === "CF" ||
-      record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L"
-    ){
-       
- return <div >
-        {text ?
-          <span
-            onClick={() => {
-              getHRTalentWiseReport(record, text, week, month)
-            }}
-            style={{ cursor: "pointer", color: "#1890ff" }}
-          >
-            {text}
-          </span>
+      if (record.stage_ID === "CF" ||
+        record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L"
+      ) {
 
-          : (
-            ""
-          )}
-      </div>
-    }
-     
+        return <div >
+          {text ?
+            <span
+              onClick={() => {
+                getHRTalentWiseReport(record, text, week, month)
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+
+            : (
+              ""
+            )}
+        </div>
+      }
+
     }
 
-   
+
     return (record?.stage_ID === "JAllG" || record?.stage_ID === "JAllGA" || record?.stage_ID === "SG" || record?.stage_ID === "JAllAA" ||
-      record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS") || text.includes("%") 
+      record?.stage_Title === "CUSTOMER OVERVIEW" || record?.stage_Title?.includes("TOP CLIENTS") || text.includes("%")
     ) ? text : <div
       style={{
         display: "flex",
@@ -1892,7 +1994,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
           <Tooltip title={`Add/View Comment`} placement="top">
             <span
               onClick={() => {
-                AddComment(record, keyPar, month,index,commentKey);
+                AddComment(record, keyPar, month, index, commentKey);
               }}
               // className={taStyles.feedbackLabel}
               style={{
@@ -1930,30 +2032,30 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
     const nextMonth = headerDataCol?.midMonth_Name;
     const thirdMonth = headerDataCol?.endMonth_Name;
 
-    const cellClassName=(record, stageTitle, stageID)=>{
+    const cellClassName = (record, stageTitle, stageID) => {
 
-      if(record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning"){
+      if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
 
-         if(record.stage.split("-")[0].trim() === "Opening Balance"){
-       return uplersStyle.OBRow
-      }
+        if (record.stage.split("-")[0].trim() === "Opening Balance") {
+          return uplersStyle.OBRow
+        }
 
-        
-      
 
-        if(record.stage.split("-")[1].trim() === "New"){
+
+
+        if (record.stage.split("-")[1].trim() === "New") {
           return uplersStyle.heighliteCream
         }
-       
+
       }
 
-       if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
-                    return uplersStyle.heighliteGreen;
-                  }
+      if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+        return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+      }
 
-        if(record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out" ) {
-                    return uplersStyle.heighliteRed;
-                  }         
+      if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
+        return uplersStyle.heighliteRed;
+      }
       return ""
     }
 
@@ -1969,8 +2071,8 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
           className: "black-header",
         }),
         onCell: (record) => ({
-          className:cellClassName(record)
-        
+          className: cellClassName(record)
+
         }),
         align: "left",
         render: (text, record) => {
@@ -1980,7 +2082,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
                 <div
                   style={{
                     background: record.color,
-                    color:  "#fff",
+                    color: "#fff",
                     fontWeight: 700,
                     padding: "10px 16px",
                     fontSize: "18px",
@@ -2019,7 +2121,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
         fixed: "left",
         align: "center",
         className: `black-header ${uplersStyle.QuarterlyCol}`,
-         align: "left",
+        align: "left",
         onHeaderCell: () => ({
           className: "black-header",
         }),
@@ -2403,7 +2505,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
     return columns;
   };
 
-  const ProfileColumns = () => {  
+  const ProfileColumns = () => {
     return [
       {
         title: "Action Date",
@@ -2497,14 +2599,14 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
           </div>
           <div className={uplersStyle.filterRight}>
 
-              
-                    <button
-                    style={{ marginRight: "0" }}
-                        className={uplersStyle.btnPrimary}
-                        onClick={() => {getALLPODJoiningRevenueData()}}
-                      >
-                       All FTE PODs
-                      </button>
+
+            <button
+              style={{ marginRight: "0" }}
+              className={uplersStyle.btnPrimary}
+              onClick={() => { getALLPODJoiningRevenueData() }}
+            >
+              All FTE PODs
+            </button>
             <Radio.Group
               onChange={(e) => {
                 setHRModal(e.target.value);
@@ -2513,11 +2615,11 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
                     (i) => i.dd_text === "Orion"
                   )?.dd_value;
                   setSelectedHead(val);
-                 
+
                 } else {
                   let val = pODList[0]?.dd_value;
                   setSelectedHead(val);
-                 
+
                 }
 
                 //  setEngagementType(e.target.value);
@@ -2529,14 +2631,14 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
             </Radio.Group>
             <Select
               id="selectedValue"
-              placeholder="Select Head"
+              placeholder="Select POD"
               style={{ width: "270px" }}
               // mode="multiple"
               value={selectedHead}
               showSearch={true}
               onChange={(value, option) => {
                 setSelectedHead(value);
-                  setISALLPODData(false);
+                setISALLPODData(false);
               }}
               options={pODList?.map((v) => ({
                 label: v.dd_text,
@@ -2572,7 +2674,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
       <div className={uplersStyle.tableWrapper}>
         {isLoading || isLoadingTable ? (
           <Skeleton active />
-        ) : ( <>
+        ) : (<>
           <Table
             columns={getTableColumns()}
             dataSource={tableData}
@@ -2586,20 +2688,20 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
             bordered
             rowClassName={(record) => {
 
-                if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved" ) {
-                    return uplersStyle.heighliteGreen;
-                  }
+              if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+                return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+              }
 
-        if(record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out" ) {
-                    return uplersStyle.heighliteRed;
-                  }
+              if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
+                return uplersStyle.heighliteRed;
+              }
               if (record.stage_ID === "JAllG" || record.stage_ID === "JAllNetAchieved" || record.stage_ID === "SG" ||
                 record.stage_ID === "SNetAchieved" || record.stage_ID === "SJRatio" || record.stage_ID === "O2S"
               ) {
                 return uplersStyle.boldRow;
               }
 
-               
+
 
               if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
                 let type = record.stage.split("-")[1].trim()
@@ -2607,10 +2709,10 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
                 //   return uplersStyle.heighliteRow
                 // }
 
-                if(record.stage === "Total Active Pipeline - New"){
+                if (record.stage === "Total Active Pipeline - New") {
                   return `${uplersStyle.heighliteCream} ${uplersStyle.boldRow}`
-                  }
-                if(record.stage.split("-")[0].trim() === "Opening Balance"){
+                }
+                if (record.stage.split("-")[0].trim() === "Opening Balance") {
                   return uplersStyle.OBRow
                 }
                 if (type === "New") {
@@ -2624,7 +2726,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
 
             }}
           />
-          </>
+        </>
         )}
       </div>
 
@@ -3185,7 +3287,7 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
         </Modal>
       )}
 
-            {showJConfirmationReport && (
+      {showJConfirmationReport && (
         <Modal
           transitionName=""
           width="1050px"
@@ -3853,28 +3955,28 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
                       </th>
 
                       {showTalentCol?.stage_ID !== "CustDelight" && <>
-                       <th
-                        style={{
-                          padding: "10px",
-                          border: "1px solid #ddd",
-                          background: "rgb(233, 233, 233) !important",
-                        }}
-                      >
+                        <th
+                          style={{
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            background: "rgb(233, 233, 233) !important",
+                          }}
+                        >
 
-                        HR Number
-                      </th>
-                      <th
-                        style={{
-                          padding: "10px",
-                          border: "1px solid #ddd",
-                          background: "rgb(233, 233, 233) !important",
-                        }}
-                      >
+                          HR Number
+                        </th>
+                        <th
+                          style={{
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            background: "rgb(233, 233, 233) !important",
+                          }}
+                        >
 
-                        HR Title
-                      </th>
+                          HR Title
+                        </th>
                       </>}
-                     
+
                       <th
                         style={{
                           padding: "10px",
@@ -3951,35 +4053,35 @@ const getDFDetailsAllPOD = async (row, v, week, month) => {
                             />
                           )}
                         </td>
-                      {showTalentCol?.stage_ID !== "CustDelight" && <>
-                      <td
-                          style={{
-                            padding: "8px",
-                            border: "1px solid #ddd",
-                          }}
-                        >
-                          {detail.hiringRequestID > 0 ? (
-                            <a
-                              href={`/allhiringrequest/${detail.hiringRequestID}`}
-                              style={{ textDecoration: "underline" }}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {detail.hrNumber}
-                            </a>
-                          ) : (
-                            detail.hrNumber
-                          )}
-                        </td>
-                        <td
-                          style={{
-                            padding: "8px",
-                            border: "1px solid #ddd",
-                          }}
-                        >
-                          {detail.hrTitle}
-                        </td>
-                      </>}  
+                        {showTalentCol?.stage_ID !== "CustDelight" && <>
+                          <td
+                            style={{
+                              padding: "8px",
+                              border: "1px solid #ddd",
+                            }}
+                          >
+                            {detail.hiringRequestID > 0 ? (
+                              <a
+                                href={`/allhiringrequest/${detail.hiringRequestID}`}
+                                style={{ textDecoration: "underline" }}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {detail.hrNumber}
+                              </a>
+                            ) : (
+                              detail.hrNumber
+                            )}
+                          </td>
+                          <td
+                            style={{
+                              padding: "8px",
+                              border: "1px solid #ddd",
+                            }}
+                          >
+                            {detail.hrTitle}
+                          </td>
+                        </>}
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}

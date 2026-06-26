@@ -139,7 +139,7 @@ export default function N_sidebar() {
                             <li><Link to={UTSRoutes.Weekly_WCGR} className={`${stylesOBj['nav-subitem']}`}>WCGR</Link></li>
                               <li><Link to={UTSRoutes.MOM_OVERVIEW} className={`${stylesOBj['nav-subitem']}`}>MOM Overview</Link></li>
                               <li><Link to={UTSRoutes.QOQ_OVERVIEW} className={`${stylesOBj['nav-subitem']}`}>QOQ Overview</Link></li>
-                            <li><Link to={UTSRoutes.ALL_FTE_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Multi-month POD Dashboard</Link></li>
+                            {/* <li><Link to={UTSRoutes.ALL_FTE_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Multi-month POD Dashboard</Link></li> */}
                         </ul>
                     </div>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('OM Report') ? stylesOBj['expanded'] : ''}`}>
