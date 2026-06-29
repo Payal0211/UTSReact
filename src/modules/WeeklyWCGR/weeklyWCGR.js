@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect, Suspense, useMemo } from 'react'
 import uplersStyle from "./weeklyWCGR.module.css"
 import {
   Select,
@@ -674,7 +674,156 @@ function WeeklyWCGR() {
     }
   };
 
-  const JConfirmationColumns = [
+  const JConfirmationColumns = useMemo(()=>{
+    if(isAllPODData){
+        return  [
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      width: "150px",
+      render: (text, record) =>
+        record?.companyCategory === "Diamond" ? (
+          <>
+            <a
+              href={`/viewCompanyDetails/${record.companyId}`}
+              style={{ textDecoration: "underline" }}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {text}{" "}
+            </a>
+            &nbsp;
+            <img
+              src={Diamond}
+              alt="info"
+              style={{ width: "16px", height: "16px" }}
+            />
+          </>
+        ) : (
+          <a
+            href={`/viewCompanyDetails/${record.companyId}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}{" "}
+          </a>
+        ),
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      width: "170px",
+      render: (text, value) => {
+        return (
+          <a
+            href={`/allhiringrequest/${value.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        ); // Replace `/client/${text}` with the appropriate link you need
+      },
+    },
+      {
+      title: "POD Name",
+      dataIndex: "podName",
+      key: "podName",
+      width: '150px',
+    },
+    {
+      title: "Position",
+      dataIndex: "position",
+      key: "position",
+      width: '200px',
+    },
+    {
+      title: "Joining Date",
+      dataIndex: isAllPODData ? "dateStr" : "joiningDate",
+      key: "joiningDate",
+    },
+    {
+      title: "Talent",
+      dataIndex: "talent",
+      key: "talent",
+    },
+    {
+      title: "Talent Status",
+      dataIndex: "talentStatus",
+      key: "talentStatus",
+      width: '150px',
+      // render: (_, param) =>
+      //   All_Hiring_Request_Utils.GETHRSTATUS(
+      //     param?.hrStatusCode,
+      //     param?.talentStatus
+      //   ),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}> Billing %</div>,
+      dataIndex: "billing",
+      key: "billing",
+      width: '100px',
+      align: "center",
+      className: uplersStyle.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Billing Value
+        </div>
+      ),
+      dataIndex: "billingValue",
+      key: "billingValue",
+      width: '150px',
+      align: "center",
+      className: uplersStyle.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {pODList?.find(item => item.dd_value === selectedHead)?.dd_text} Revenue
+        </div>
+      ),
+      dataIndex: "revenue",
+      key: "revenue",
+      width: '150px',
+      align: "center",
+      className: uplersStyle.headerCell,
+      render: (v, row) => {
+        return <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'space-between' }}>
+          <Tooltip placement="bottom" title={"Split HR"}>
+            <a href="javascript:void(0);" style={{ display: 'inline-flex' }}>
+              <PiArrowsSplitBold
+                style={{ width: "17px", height: "17px", fill: '#232323' }}
+                onClick={() => {
+                  setSplitHR(true);
+                  setHRID(row?.hiringRequestID);
+                  setHRNumber({ hrNumber: row?.hR_Number });
+                  getPODList(row?.hiringRequestID)
+                }}
+              />
+            </a>
+          </Tooltip>
+          {v ? v : ''} </div>
+      }
+    },
+
+    {
+      title: <div style={{ textAlign: "center" }}>HR Modal</div>,
+      dataIndex: isAllPODData ? "hrModel" : "hR_Model",
+      key: "hR_Model",
+
+      className: uplersStyle.headerCell,
+      width: "180px",
+      align: "center",
+    },
+  ]
+    }
+    return  [
     {
       title: "Company",
       dataIndex: "company",
@@ -814,8 +963,112 @@ function WeeklyWCGR() {
       align: "center",
     },
   ]
+  },[isAllPODData])
 
-  const AnticipatedColumns = [
+  const AnticipatedColumns = useMemo(()=> {
+    if(isAllPODData){
+        return  [
+    {
+      title: "Anticipated Date",
+      dataIndex: "anticipatedDateStr",
+      key: "anticipatedDateStr",
+      width: "180px",
+
+    },
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      // width: "150px",
+      render: (text, record) => {
+        return <>
+          <a
+            href={`/viewCompanyDetails/${record.company_ID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}{" "}
+          </a>
+          {record?.company_Category === "Diamond" && (
+            <>
+
+              &nbsp;
+              <img
+                src={Diamond}
+                alt="info"
+                style={{ width: "16px", height: "16px" }}
+              />
+            </>
+          )}
+        </>
+
+      }
+
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      width: "180px",
+      render: (text, value) => {
+        return (
+          <a
+            href={`/allhiringrequest/${value.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        );
+      }
+    },
+     {
+      title: "POD Name",
+      dataIndex: "podName",
+      key: "podName",
+      width: "150px",
+
+    },
+    {
+      title: "HR Title",
+      dataIndex: "hrTitle",
+      key: "hrTitle",
+      // width: "150px",
+
+    },
+    {
+      title: "Uplers Fees",
+      dataIndex: "uplersFeesStr",
+      key: "uplersFeesStr",
+      // width: "150px",
+
+    },
+
+    {
+      title: "HR Status",
+      dataIndex: "hrStatus",
+      key: "hrStatus",
+      // width: "150px",
+      render: (text, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          param?.hrStatusCode,
+          text
+        ),
+    },
+    {
+      title: "Lead Type",
+      dataIndex: "lead_Type",
+      key: "lead_Type",
+      // width: "150px",
+
+    },
+
+  ]
+    }
+    
+    return  [
     {
       title: "Anticipated Date",
       dataIndex: "anticipatedDateStr",
@@ -907,8 +1160,145 @@ function WeeklyWCGR() {
     },
 
   ]
+  },[isAllPODData])
 
-  const DFColumns = [
+  const DFColumns = useMemo(()=>{
+
+    if(isAllPODData){
+      return [
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      width: "150px",
+      render: (text, record) =>
+        record?.companyCategory === "Diamond" ? (
+          <>
+            <span>{text}</span>
+            &nbsp;
+            <img
+              src={Diamond}
+              alt="info"
+              style={{ width: "16px", height: "16px" }}
+            />
+          </>
+        ) : (
+          text
+        ),
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      width: "170px",
+      render: (text, value) => {
+        return (
+          <a
+            href={`/allhiringrequest/${value.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        ); // Replace `/client/${text}` with the appropriate link you need
+      },
+    },
+      {
+      title: "POD Name",
+      dataIndex: "podName",
+      key: "podName",
+      width: '200px',
+    },
+    {
+      title: "Position",
+      dataIndex: "position",
+      key: "position",
+      width: '200px',
+    },
+    {
+      title: (showTalentCol?.stage_ID === "D_Lost" || showTalentCol?.stage_ID === "CN_Lost") ? "Lost Date" : (showTalentCol?.stage_ID === "D_Drop" || showTalentCol?.stage_ID === "CN_Drop") ? "Dropout Date" : (showTalentCol?.stage_ID === "D_Backout" || showTalentCol?.stage_ID === "CN_Backout") ? "Backout Date" : "Joining Date",
+      dataIndex: isAllPODData ? "dateStr" : "joiningdateStr",
+      key: isAllPODData ? "dateStr" : "joiningdateStr",
+    },
+    {
+      title: "Talent",
+      dataIndex: "talent",
+      key: "talent",
+    },
+    {
+      title: "Talent Status",
+      dataIndex: "talentStatus",
+      key: "talentStatus",
+      width: '150px',
+      render: (_, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          param?.hrStatusCode,
+          param?.talentStatus
+        ),
+    },
+    {
+      title: <div style={{ textAlign: "center" }}> Billing %</div>,
+      dataIndex: isAllPODData ? "billing" : "uplersFeesPer",
+      key: "uplersFeesPer",
+      width: '100px',
+      align: "center",
+      className: uplersStyle.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          Billing Value
+        </div>
+      ),
+      dataIndex: isAllPODData ? "billingValue" : hrModal === 'DP' ? 'uplersFees_INRStr' : "uplersFees_USDStr",
+      key: hrModal === 'DP' ? 'uplersFees_INRStr' : "uplersFees_USDStr",
+      width: '150px',
+      align: "right",
+      className: uplersStyle.headerCell,
+    },
+    {
+      title: (
+        <div style={{ textAlign: "center" }}>
+          {pODList?.find(item => item.dd_value === selectedHead)?.dd_text} Revenue
+        </div>
+      ),
+      dataIndex: isAllPODData ? "revenue " : "podValueStr",
+      key: isAllPODData ? "revenue " : "podValueStr",
+      width: '150px',
+      align: "right",
+      className: uplersStyle.headerCell,
+      render: (v, row) => {
+        return <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'space-between' }}>
+          <Tooltip placement="bottom" title={"Split HR"}>
+            <a href="javascript:void(0);" style={{ display: 'inline-flex' }}>
+              <PiArrowsSplitBold
+                style={{ width: "17px", height: "17px", fill: '#232323' }}
+                onClick={() => {
+                  setSplitHR(true);
+                  setHRID(row?.hiringRequestID);
+                  setHRNumber({ hrNumber: row?.hR_Number });
+                  getPODList(row?.hiringRequestID)
+                }}
+              />
+            </a>
+          </Tooltip>
+          {isAllPODData ? row.revenue : v ? v : ''} </div>
+      }
+    },
+
+    {
+      title: <div style={{ textAlign: "center" }}>HR Modal</div>,
+      dataIndex: isAllPODData ? "hrModel" : "hR_Model",
+      key: "hR_Model",
+
+      className: uplersStyle.headerCell,
+      width: "180px",
+      align: "center",
+    },
+  ];
+    }
+    return [
     {
       title: "Company",
       dataIndex: "company",
@@ -1033,50 +1423,8 @@ function WeeklyWCGR() {
       width: "180px",
       align: "center",
     },
-
-    // {
-    //   title: "Status",
-    //   dataIndex: "talentStatus",
-    //   key: "talentStatus",
-    //   render: (_, item) => (
-    //     <div
-    //       style={{
-    //         display: "flex",
-    //         alignItems: "center",
-    //         justifyContent: "space-between",
-    //       }}
-    //     >
-    //       {All_Hiring_Request_Utils.GETTALENTSTATUS(
-    //         parseInt(item?.talentStatusColor),
-    //         item?.talentStatus
-    //       )}
-
-    //       {(item?.statusID === 2 || item?.statusID === 3) && (
-    //         <IconContext.Provider
-    //           value={{
-    //             color: "#FFDA30",
-    //             style: { width: "16px", height: "16px", cursor: "pointer" },
-    //           }}
-    //         >
-    //           <Tooltip title="Move to Assessment" placement="top">
-    //             <span
-    //               onClick={() => {
-    //                 setMoveToAssessment(true);
-    //                 setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
-    //               }}
-    //               style={{ padding: "0" }}
-    //             >
-    //               {" "}
-    //               <BsClipboard2CheckFill />
-    //             </span>{" "}
-    //           </Tooltip>
-    //         </IconContext.Provider>
-    //       )}
-
-    //     </div>
-    //   ),
-    // },
   ];
+  },[isAllPODData]) 
 
 
   const getHRTalentWiseReport = async (row, v, week, month) => {
@@ -2682,6 +3030,65 @@ function WeeklyWCGR() {
   };
 
   const ProfileColumns = () => {
+    if(isAllPODData){
+        return [
+      {
+        title: "Action Date",
+        dataIndex: "actionDate",
+        key: "actionDate",
+        width: "150px",
+        render: (text) => {
+          return moment(text).format("DD/MM/YYYY");
+        }
+      }, {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+        width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+        width: "170px",
+        render: (text, value) => {
+          return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+        }
+      },
+      {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        width: "200px",
+      },
+         {
+        title: "POD Name",
+        dataIndex: "podName",
+        key: "podName",
+        width: "200px",
+      },
+      {
+        title: "Talent",
+        dataIndex: "talent",
+        key: "talent",
+        width: "100px",
+      },
+      {
+        title: "Slot/Remark",
+        dataIndex: "slotDetail",
+        key: "slotDetail",
+        width: "350px",
+        render: (text, result) => {
+          return <div dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+        }
+      }
+
+
+
+    ];
+
+    }
     return [
       {
         title: "Action Date",
@@ -3144,7 +3551,7 @@ function WeeklyWCGR() {
                           backgroundColor: "rgb(233, 233, 233) !important",
                         }}
                       >
-                        POD
+                        POD Name
                       </th>}
                       <th
                         style={{
@@ -3644,6 +4051,15 @@ function WeeklyWCGR() {
                             Date
                           </th>
                         )}
+                        {isAllPODData &&  <th
+                        style={{
+                          padding: "10px",
+                          border: "1px solid #ddd",
+                          backgroundColor: "rgb(233, 233, 233) !important",
+                        }}
+                      >
+                        POD Name
+                      </th>}
 
                       <th
                         style={{
@@ -3866,6 +4282,15 @@ function WeeklyWCGR() {
                               {detail.actionDateStr}
                             </td>
                           )}
+
+                          {isAllPODData &&  <td
+                              style={{
+                                padding: "8px",
+                                border: "1px solid #ddd",
+                              }}
+                            >
+                              {detail.podName}
+                            </td>}
 
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
@@ -4174,7 +4599,7 @@ function WeeklyWCGR() {
                           background: "rgb(233, 233, 233) !important",
                         }}
                       >
-                        POD
+                        POD Name
                       </th>}
 
                       <th
