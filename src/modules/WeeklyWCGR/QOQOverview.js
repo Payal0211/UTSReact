@@ -218,6 +218,11 @@ function QOQOverview() {
         const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
         const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
+        if(record.stage_Title === "TOP CLIENTS  ·  Pipeline & Joining Snapshot"){
+            let [company , value] = text.split("-")
+            return  text? <div>{company} - <strong>{value}</strong></div> : ""
+        }
+
         return text
 
 
@@ -344,15 +349,16 @@ function QOQOverview() {
                                 },
                             };
                         }
-                        if (isPercentText(text)) {
-                            return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
-                        }
-                        const totalValue = getQuarterFTBUValue(record, quarterPrefix);
-                        if (totalValue === null) {
-                            return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
-                        }
-                        const formatted = formatAggregate(totalValue, text);
-                        return <AddNoteComp text={formatted} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
+                        return text
+                        // if (isPercentText(text)) {
+                        //     return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
+                        // }
+                        // const totalValue = getQuarterFTBUValue(record, quarterPrefix);
+                        // if (totalValue === null) {
+                        //     return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
+                        // }
+                        // const formatted = formatAggregate(totalValue, text);
+                        // return <AddNoteComp text={formatted} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
                     },
                 },
             ];
@@ -459,15 +465,16 @@ function QOQOverview() {
                             },
                         };
                     }
-                    if (isPercentText(text)) {
-                        return <AddNoteComp text={text} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
-                    }
-                    const totalValue = getYearTotalValue(record);
-                    if (totalValue === null) {
-                        return <AddNoteComp text={text} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
-                    }
-                    const formatted = formatAggregate(totalValue, text);
-                    return <AddNoteComp text={formatted} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
+                    return text
+                    // if (isPercentText(text)) {
+                    //     return <AddNoteComp text={text} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
+                    // }
+                    // const totalValue = getYearTotalValue(record);
+                    // if (totalValue === null) {
+                    //     return <AddNoteComp text={text} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
+                    // }
+                    // const formatted = formatAggregate(totalValue, text);
+                    // return <AddNoteComp text={formatted} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
                 },
             },
         ];

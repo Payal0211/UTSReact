@@ -189,6 +189,11 @@ function MOMOverview() {
         const currentWeekOfMonth = moment().diff(moment().startOf("month"), "weeks") + 1;
         const isPastOrCurrentWeek = selectedMonth === currentMonth && selectedWeek !== null && selectedWeek <= currentWeekOfMonth;
 
+        if(record.stage_Title === "TOP CLIENTS  ·  Pipeline & Joining Snapshot"){
+            let [company , value] = text.split("-")
+            return  text? <div>{company} - <strong>{value}</strong></div> : ""
+        }
+
         return text
 
 
@@ -300,13 +305,13 @@ function MOMOverview() {
                                 },
                             };
                         }
-
-                        const totalValue = getMonthFTBUValue(record, monthPrefix);
-                        if (totalValue === null) {
-                            return <AddNoteComp text={text} record={record} keyPar={`${monthPrefix}_MonthlyTotalStr`} month={record?.[monthPrefix]} index={index} />;
-                        }
-                        const formatted = formatAggregate(totalValue, text);
-                        return <AddNoteComp text={formatted} record={record} keyPar={`${monthPrefix}_MonthlyTotalStr`} month={record?.[monthPrefix]} index={index} />;
+                    return text
+                        // const totalValue = getMonthFTBUValue(record, monthPrefix);
+                        // if (totalValue === null) {
+                        //     return <AddNoteComp text={text} record={record} keyPar={`${monthPrefix}_MonthlyTotalStr`} month={record?.[monthPrefix]} index={index} />;
+                        // }
+                        // const formatted = formatAggregate(totalValue, text);
+                        // return <AddNoteComp text={formatted} record={record} keyPar={`${monthPrefix}_MonthlyTotalStr`} month={record?.[monthPrefix]} index={index} />;
                     },
                 },
             ];
@@ -430,13 +435,13 @@ function MOMOverview() {
                             },
                         };
                     }
-
-                    const totalValue = getQuarterlyFTBUValue(record);
-                    if (totalValue === null) {
-                        return text;
-                    }
-                    const formatted = formatAggregate(totalValue, text);
-                    return formatted;
+return text
+                    // const totalValue = getQuarterlyFTBUValue(record);
+                    // if (totalValue === null) {
+                    //     return text;
+                    // }
+                    // const formatted = formatAggregate(totalValue, text);
+                    // return formatted;
                 },
             },
 
