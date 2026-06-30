@@ -258,17 +258,23 @@ function QOQOverview() {
                     return uplersStyle.OBRow
                 }
 
+                if (record?.stage_ID === "NJ12" || record?.stage_ID === "J12"  ) {
+                 return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
+                }
+                if (record?.stage_ID === "J12_Lost_New" || record?.stage_ID === "J12_Lost_Existing") {
+                    return uplersStyle.heighliteRed;
+                }
                 if (record.stage.split("-")[1].trim() === "New") {
                     return uplersStyle.heighliteCream
                 }
 
             }
 
-            if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+            if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved" ) {
                 return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
             }
 
-            if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
+            if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out" ) {
                 return uplersStyle.heighliteRed;
             }
             return ""
@@ -739,11 +745,12 @@ function QOQOverview() {
                         size="small"
                         bordered
                         rowClassName={(record) => {
-                            if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved") {
+                            if (record.stage === "Joining Achieved" || record.stage === 'Selection Achieved' || record.stage === "Net Joining Achieved" || record.stage === "Net Selection Achieved" || record?.stage_ID === "NJ12" || 
+                                record?.stage_ID === "J12" ) {
                                 return `${uplersStyle.heighliteGreen} ${uplersStyle.boldRow}`;
                             }
 
-                            if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out") {
+                            if (record.stage === "Post Joining Backout" || record.stage === 'Dropout' || record.stage === "Back-out" || record?.stage_ID === "J12_Lost_New" || record?.stage_ID === "J12_Lost_Existing" ) {
                                 return uplersStyle.heighliteRed;
                             }
 
