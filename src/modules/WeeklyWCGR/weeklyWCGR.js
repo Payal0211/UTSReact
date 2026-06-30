@@ -386,6 +386,12 @@ function WeeklyWCGR() {
 
   }
 
+   useEffect(() => {
+    if (isAllPODData) {
+      getALLPODJoiningRevenueData();
+    }
+  }, [ monthDate]);
+
   useEffect(() => {
     if (selectedHead) {
       getJoiningRevenueData();
