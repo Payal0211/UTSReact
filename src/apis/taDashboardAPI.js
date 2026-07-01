@@ -133,6 +133,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getAllTAListRequest');
 		}
 	},
+	getAllScrumTaskListRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_TASK_DETAILS
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getAllScrumTaskListRequest');
+		}
+	},
 	getAllTATaskListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
