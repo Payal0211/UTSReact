@@ -568,6 +568,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					navigateTo: UTSRoutes.CLIENT_DASHBOARD_REPORT,
 					isVisible: isAccess(usertypeID, 'ClientDashboard'),
 					isChildren : false					
+				}),
+					new SideBarModels({
+					id: 'TAScrumStructure',
+					title: 'TA Scrum Structure',
+					isActive: false,
+					navigateTo: UTSRoutes.TASCRUMSTRUCTURE,
+					isVisible: isAccess(usertypeID, 'ClientDashboard'),
+					isChildren : false					
 				})
 			]
 		}),
