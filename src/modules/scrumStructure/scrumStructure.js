@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useCallback, useEffect, useRef, Suspense } from 'react'
 import stylesOBj from './scrumStructure.module.css'
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import {
@@ -23,6 +23,9 @@ import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { useForm } from "react-hook-form";
 import { InputType } from "constants/application";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
+import Editor from 'modules/hiring request/components/textEditor/editor';
+import { ReactComponent as EditSVG } from "assets/svg/editnewIcon.svg";
+import spinGif from "assets/gif/RefreshLoader.gif";
 const { Option } = Select;
 
 
@@ -32,8 +35,9 @@ function ScrumStructure() {
     const [filtersList, setFiltersList] = useState({});
     const [TaListData, setTaListData] = useState([]);
     const [selectedHead, setSelectedHead] = useState('');
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [draggedRow, setDraggedRow] = React.useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [draggedRow, setDraggedRow] = useState(null);
+    const [draggedRowData, setDraggedRowData] = useState({})
     const [tableFilteredState, setTableFilteredState] = useState({
         filterFields_OnBoard: {
             taUserIDs: null,
@@ -69,7 +73,7 @@ function ScrumStructure() {
     const [newTRAllData, setTRAllData] = useState({});
     const [allTAUsersList, setAllTAUsersList] = useState([]);
     const [isEditNewTask, setEditNewTask] = useState(false);
-
+    const [editedCommentData, setEditedCommentData] = useState({});
 
     const {
         register: remarkregiter,
@@ -83,6 +87,10 @@ function ScrumStructure() {
     const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
     const [remDiamondLoading, setRemDiamondLoading] = useState(false);
 
+    const [showComment, setShowComment] = useState(false);
+    const [commentData, setCommentData] = useState({});
+    const [allCommentList, setALLCommentsList] = useState([]);
+    const [isCommentLoading, setIsCommentLoading] = useState(false);
 
     const [searchText, setSearchText] = useState('');
     const searchInputRef = useRef(null);
@@ -113,14 +121,26 @@ function ScrumStructure() {
         getUserResult();
     }, []);
 
+
+    const getAllTAUsersList = async () => {
+        let req = await TaDashboardDAO.geAllTAUSERSRequestDAO();
+        if (req.statusCode === HTTPStatusCode.OK) {
+            setAllTAUsersList(req.responseBody);
+        }
+    };
+
+    useEffect(() => {
+        getAllTAUsersList();
+    }, []);
+
     const getListData = useCallback(async () => {
         let pl = {
-            taUserIDs: tableFilteredState?.filterFields_OnBoard?.taUserIDs,
-            roleTypeIDs: tableFilteredState?.filterFields_OnBoard?.roleTypeIDs,
-            hrStatusIDs: tableFilteredState?.filterFields_OnBoard?.hrStatusIDs,
-            taskStatusIDs: tableFilteredState?.filterFields_OnBoard?.taskStatusIDs,
-            modelType: tableFilteredState?.filterFields_OnBoard?.modelType,
-            priority: tableFilteredState?.filterFields_OnBoard?.priority,
+            // taUserIDs: tableFilteredState?.filterFields_OnBoard?.taUserIDs,
+            // roleTypeIDs: tableFilteredState?.filterFields_OnBoard?.roleTypeIDs,
+            // hrStatusIDs: tableFilteredState?.filterFields_OnBoard?.hrStatusIDs,
+            // taskStatusIDs: tableFilteredState?.filterFields_OnBoard?.taskStatusIDs,
+            // modelType: tableFilteredState?.filterFields_OnBoard?.modelType,
+            // priority: tableFilteredState?.filterFields_OnBoard?.priority,
             searchText: searchText,
             taHeadUserIDs: `${selectedHead}`,
         };
@@ -155,17 +175,37 @@ function ScrumStructure() {
 
 
 
-    const handleDragStart = (e, index) => {
+    const handleDragStart = (e, index, record) => {
         setDraggedRow(index);
+        setDraggedRowData(record)
         e.dataTransfer.effectAllowed = 'move';
     };
 
-    const handleDragOver = (e, index) => {
+    const handleDragOver = (e, index, record) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
     };
 
-    const handleDrop = (e, dropIndex) => {
+    const updateORER = async (dropIndex, record) => {
+        let pl = {
+            ID: draggedRowData?.id,
+            TAHeadUserIDs: selectedHead,
+            DisplayOrder: record?.displayOrder
+        }
+
+
+        const result = await TaDashboardDAO.updateScrumTaskListRequestDAO(pl);
+
+        if (result.statusCode === HTTPStatusCode.OK) {
+            message.success("Row order updated")
+            setTaListData(result?.responseBody);
+        } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+            message.error("Something went wrong!")
+        }
+
+    }
+
+    const handleDrop = (e, dropIndex, record) => {
         e.preventDefault();
         if (draggedRow === null || draggedRow === dropIndex) return;
 
@@ -174,6 +214,7 @@ function ScrumStructure() {
         newData.splice(draggedRow, 1);
         newData.splice(dropIndex, 0, draggedItem);
         setTaListData(newData);
+        updateORER(dropIndex, record)
         setDraggedRow(null);
     };
 
@@ -181,17 +222,42 @@ function ScrumStructure() {
         setDraggedRow(null);
     };
 
-    const moveRowUp = (index) => {
+    const updateORERUPDOWN = async (pl) => {
+
+        const result = await TaDashboardDAO.updateScrumTaskListRequestDAO(pl);
+
+        if (result.statusCode === HTTPStatusCode.OK) {
+            message.success("Row order updated")
+            setTaListData(result?.responseBody);
+        } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+            message.error("Something went wrong!")
+        }
+
+    }
+
+    const moveRowUp = (index, record) => {
         if (index === 0) return;
-        const newData = [...TaListData];
-        [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];
+        const newData = [...TaListData]; 
+        let pl = {
+            ID: record?.id,
+            TAHeadUserIDs: selectedHead,
+            DisplayOrder: newData[index - 1]?.displayOrder
+        }
+         updateORERUPDOWN(pl)
+        [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];    
         setTaListData(newData);
     };
 
-    const moveRowDown = (index) => {
+    const moveRowDown = (index, record) => {
         if (index === TaListData.length - 1) return;
-        const newData = [...TaListData];
-        [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+        const newData = [...TaListData]; 
+        let pl = {
+            ID: record?.id,
+            TAHeadUserIDs: selectedHead,
+            DisplayOrder: newData[index + 1]?.displayOrder
+        }
+        updateORERUPDOWN(pl)
+        [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];  
         setTaListData(newData);
     };
 
@@ -468,6 +534,41 @@ function ScrumStructure() {
     };
 
 
+    const saveComment = async (note) => {
+        let pl = {
+            task_ID: commentData?.id,
+            comments: note,
+            CommentID: editedCommentData?.id ?? 0
+        };
+        setIsCommentLoading(true);
+        const res = await TaDashboardDAO.insertTaskCommentRequestDAO(pl);
+        setIsCommentLoading(false);
+        if (res.statusCode === HTTPStatusCode.OK) {
+            setEditedCommentData({})
+            setALLCommentsList(res.responseBody);
+            setTaListData((prev) => {
+                let oldComments = prev[commentData?.index]?.latestNotes;
+                if (oldComments !== null) {
+                    let newItem = `<li>${note}</li>`;
+                    let newDS = [...prev];
+                    newDS[commentData?.index] = {
+                        ...newDS[commentData?.index],
+                        latestNotes: oldComments.replace("<ul>", `<ul>${newItem}`),
+                    };
+                    return newDS;
+                } else {
+                    let newDS = [...prev];
+                    let newItem = `<ul><li>${note}</li></ul>`;
+                    newDS[commentData?.index] = {
+                        ...newDS[commentData?.index],
+                        latestNotes: newItem,
+                    };
+                    return newDS;
+                }
+            });
+        }
+    };
+
     const saveRemark = async (d) => {
         let pl = {
             HiringRequestId: talentToMove?.hiringRequest_ID,
@@ -499,6 +600,7 @@ function ScrumStructure() {
             <div className={stylesOBj.tableSelectField}>
                 <Select
                     defaultValue={value}
+                    size='small'
                     style={{ color: colorCode }}
                     onChange={async (val) => {
                         if (value === "Fasttrack" && val !== "Fasttrack") {
@@ -543,6 +645,8 @@ function ScrumStructure() {
             </div>
         );
     };
+
+
 
     const ProfileColumns = [
         {
@@ -623,6 +727,24 @@ function ScrumStructure() {
         setFilteredTalentList(filteredData);
     };
 
+    const getAllComments = async (id) => {
+        setIsCommentLoading(true);
+        const result = await TaDashboardDAO.getALLCommentsDAO(id);
+        setIsCommentLoading(false);
+        if (result.statusCode === HTTPStatusCode.OK) {
+            setALLCommentsList(result.responseBody);
+        } else {
+            setALLCommentsList([]);
+        }
+    };
+
+
+    const AddComment = (data, index) => {
+        getAllComments(data.id);
+        setShowComment(true);
+        setCommentData({ ...data, index });
+    };
+
     const getTableColumns = () => [
         {
             title: "Action",
@@ -642,9 +764,9 @@ function ScrumStructure() {
                     {/* Drag Handle */}
                     <div
                         draggable
-                        onDragStart={(e) => handleDragStart(e, index)}
-                        onDragOver={(e) => handleDragOver(e, index)}
-                        onDrop={(e) => handleDrop(e, index)}
+                        onDragStart={(e) => handleDragStart(e, index, record)}
+                        onDragOver={(e) => handleDragOver(e, index, record)}
+                        onDrop={(e) => handleDrop(e, index, record)}
                         onDragEnd={handleDragEnd}
                         style={{
                             cursor: "grab",
@@ -658,7 +780,7 @@ function ScrumStructure() {
                     </div>
 
                     <button
-                        onClick={() => moveRowUp(index)}
+                        onClick={() => moveRowUp(index, record)}
                         disabled={index === 0}
                         style={{
                             background: "none",
@@ -671,7 +793,7 @@ function ScrumStructure() {
                     </button>
 
                     <button
-                        onClick={() => moveRowDown(index)}
+                        onClick={() => moveRowDown(index, record)}
                         disabled={index === TaListData.length - 1}
                         style={{
                             background: "none",
@@ -691,15 +813,28 @@ function ScrumStructure() {
                 </div>
             ),
         },
-
+        //   {
+        //     title: "DO",
+        //     dataIndex: "displayOrder",
+        //     key: "displayOrder",
+        //     width: 150,
+        //       fixed: "left",
+        // },
         {
-            title: "Company Name",
+            title: "TA",
+            dataIndex: "taName",
+            key: "taName",
+            width: 150,
+            fixed: "left",
+        },
+        {
+            title: "Company",
             dataIndex: "companyName",
             key: "companyName",
-            width: 220,
+            width: 150,
             fixed: "left",
             render: (text, row, i) => {
-                return <div className={stylesOBj["company-cell"]}  style={{justifyContent: 'space-between'}}>
+                return <div className={stylesOBj["company-cell"]} style={{ display: 'contents' }}>
                     <span className={stylesOBj["company-name"]}>{row.companyName}</span>
                     <div style={{ display: 'flex' }}>
                         <button
@@ -765,12 +900,7 @@ function ScrumStructure() {
             width: 220,
         },
 
-        {
-            title: <>Hiring Manager<br /> AS POC (Y/N)</>,
-            dataIndex: "hiringManagerPOC",
-            key: "hiringManagerPOC",
-            width: 180,
-        },
+
 
         //   {
         //     title: "Category",
@@ -783,14 +913,14 @@ function ScrumStructure() {
             title: <># Interview <br />Rounds</>,
             dataIndex: "no_of_InterviewRounds",
             key: "no_of_InterviewRounds",
-            width: 150,
+            width: 120,
         },
 
         {
             title: <>Inbound <br />/ Outbound</>,
             dataIndex: "role_Type",
             key: "role_Type",
-            width: 160,
+            width: 140,
         },
 
         {
@@ -806,68 +936,49 @@ function ScrumStructure() {
                 />
             ),
         },
-
+        {
+            title: <>Profile Shared Target<br />
+                / ACHIEVED / L1 ROUND</>,
+            dataIndex: "profile_Shared_Target",
+            key: "profile_Shared_Target",
+            width: 200,
+            render: (text, row, i) => {
+                return <div style={{ display: "flex" }}>
+                    {row.task_StatusID === 1 ? (
+                        <p
+                            style={{
+                                color: "blue",
+                                fontWeight: "bold",
+                                textDecoration: "underline",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => {
+                                setShowProfileTarget(true);
+                                setStartTargetDate(startDate);
+                                setProfileTargetDetails({ ...row, index: i });
+                            }}
+                        >
+                            {row?.profile_Shared_Target ?? 0}
+                        </p>
+                    ) : (
+                        row?.profile_Shared_Target ?? 0
+                    )}{" "}
+                    / {row.profile_Shared_Achieved ?? "NA"} /{" "}
+                    {row.interview_Scheduled_Target ?? "NA"}
+                </div>
+            }
+        },
         {
             title: "Active TRs",
             dataIndex: "activeTR",
             key: "activeTR",
             width: 100,
         },
-
         {
-            title: "TA",
-            dataIndex: "salesName",
-            key: "salesName",
-            width: 150,
-        },
-
-        {
-            title: <>Talent Annual <br /> CTC Budget (INR)</>,
-            dataIndex: "talent_AnnualCTC_Budget_INRstring",
-            key: "talent_AnnualCTC_Budget_INRstring",
-            width: 150,
-        },
-
-        {
-            title: <>Revenue <br/> Opportunity (%)</>,
-            dataIndex: "revenue_On10PerCTC",
-            key: "revenue_On10PerCTC",
-            width: 150,
-        },
-
-        {
-            title: <>Total Revenue <br /> Opportunity</>,
-            dataIndex: "totalRevenue_NoofTalent",
-            key: "totalRevenue_NoofTalent",
-            width: 150,
-        },
-
-        {
-            title: "HR Status",
-            dataIndex: "tA_HR_Status",
-            key: "tA_HR_Status",
-            width: 120,
-        },
-
-        {
-            title: "HR Created Date",
-            dataIndex: "hrCreatedDate",
-            key: "hrCreatedDate",
-            width: 150,
-        },
-
-        {
-            title: <>No Of Days <br /> HR Is Open</>,
-            dataIndex: "noDaysHROpen",
-            key: "noDaysHROpen",
-            width: 170,
-        },
-
-        {
-            title: <>No Of Active <br />/ Submitted Profiles </>,
+            title: <>  No of Active <br /> Profile Till Date  </>,
             dataIndex: "noOfProfile_TalentsTillDate",
             key: "noOfProfile_TalentsTillDate",
-            width: 220,
+            width: 150,
             render: (text, row, i) => {
                 return +row?.noOfProfile_TalentsTillDate > 0 ? (
                     <p
@@ -892,11 +1003,73 @@ function ScrumStructure() {
             }
         },
 
+
+        {
+            title: <>Talent Annual <br /> CTC Budget (INR)</>,
+            dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
+            key: "talent_AnnualCTC_Budget_INRValueStr",
+            width: 150,
+        },
+
+        {
+            title: <>Revenue <br /> Opportunity (%)</>,
+            dataIndex: "uplersFeesPer",
+            key: "uplersFeesPer",
+            width: 150,
+        },
+
+        {
+            title: <>Total Revenue <br /> Opportunity</>,
+            dataIndex: "totalRevenue_NoofTalentStr",
+            key: "totalRevenue_NoofTalentStr",
+            width: 150,
+        },
+
+        {
+            title: "HR Status",
+            dataIndex: "tA_HR_Status",
+            key: "tA_HR_Status",
+            width: 120,
+        },
+
+        {
+            title: "HR Created Date",
+            dataIndex: "hrCreatedDate",
+            key: "hrCreatedDate",
+            width: 150,
+            render: (text) => {
+                return text ? moment(text).format("DD/MM/YYYY") : ""
+            }
+        },
+
+        {
+            title: <>No Of Days <br /> HR Is Open</>,
+            dataIndex: "days",
+            key: "days",
+            width: 170,
+        },
+
+
+
         {
             title: <>Latest Communication <br /> & Updates</>,
-            dataIndex: "latestCommunicationUpdates",
-            key: "latestCommunicationUpdates",
+            dataIndex: "latestNotes",
+            key: "latestNotes",
             width: 250,
+            render: (text, row, i) => {
+
+                return <>{row?.latestNotes ? <>
+                    <div dangerouslySetInnerHTML={{ __html: row.latestNotes }}></div>
+                    <div className={stylesOBj["view-edit"]}>
+
+                        <button onClick={() => {
+                            AddComment(row, i);
+                        }}>Edit</button>
+                    </div>
+                </> : <button className={stylesOBj["cell-add-btn"]} onClick={() => {
+                    AddComment(row, i);
+                }} >Add</button>}</>
+            }
         },
 
         {
@@ -906,12 +1079,12 @@ function ScrumStructure() {
             width: 170,
         },
 
-        {
-            title: "No Of Notes",
-            dataIndex: "noOfNotes",
-            key: "noOfNotes",
-            width: 120,
-        },
+        // {
+        //     title: "No Of Notes",
+        //     dataIndex: "noOfNotes",
+        //     key: "noOfNotes",
+        //     width: 120,
+        // },
 
         {
             title: <>Submission Target <br />On Given Date</>,
@@ -921,24 +1094,24 @@ function ScrumStructure() {
         },
 
         {
-            title: <>Submission Target <br />Achieved</>,
+            title: <>Submission  Target <br />Achieved</>,
             dataIndex: "interview_Scheduled_Target",
             key: "interview_Scheduled_Target",
-            width: 200,
+            width: 150,
         },
 
         {
             title: <>Total No Of <br /> Submissions</>,
             dataIndex: "totalNoOfSubmission",
             key: "totalNoOfSubmission",
-            width: 180,
+            width: 150,
         },
 
         {
-            title: "Screen Reject",
+            title: <>Screen <br /> Reject</>,
             dataIndex: "screenReject",
             key: "screenReject",
-            width: 120,
+            width: 80,
         },
 
         {
@@ -966,14 +1139,14 @@ function ScrumStructure() {
             title: <>Total No Of<br /> Interview Rejects</>,
             dataIndex: "totalNoOfInterviewReject",
             key: "totalNoOfInterviewReject",
-            width: 220,
+            width: 150,
         },
 
         {
-            title: "Weekly Selection Planned",
+            title: <>Weekly <br />Selection Planned</>,
             dataIndex: "weeklySelectionPlan",
             key: "weeklySelectionPlan",
-            width: 180,
+            width: 150,
         },
 
         {
@@ -981,14 +1154,15 @@ function ScrumStructure() {
             dataIndex: "joiningDate",
             key: "joiningDate",
             width: 150,
+
+        },
+        {
+            title: <>Hiring Manager<br /> AS POC (Y/N)</>,
+            dataIndex: "hmAsPOC",
+            key: "hmAsPOC",
+            width: 150,
         },
 
-        {
-            title: "Touch Base Notes",
-            dataIndex: "touchBaseNotes",
-            key: "touchBaseNotes",
-            width: 250,
-        },
     ];
 
     const isSelectableDateModal = (date) => {
@@ -1047,10 +1221,27 @@ function ScrumStructure() {
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
-                <div style={{ display: 'flex', marginTop: '10px', paddingRight: '15px', justifyContent: 'center' }}>
-                    <h1 style={{ marginBottom: '0', marginLeft: '16px', paddingLeft: '8px', fontSize: '24px' }}>TA Scrum Structure</h1>
+                <h1 style={{ marginBottom: '0', marginLeft: '16px', paddingLeft: '8px', fontSize: '24px' }}>TA Scrum Structure</h1>
+                <div className={`${stylesOBj["filterContainer"]}`} style={{ display: 'flex', paddingRight: '15px', }}>
 
 
+                    <Select
+                        id="selectedValue"
+                        placeholder="Select TA"
+                        size="middle"
+                        style={{ marginLeft: "10px", width: "270px" }}
+                        // mode="multiple"
+                        value={selectedHead}
+                        showSearch={true}
+                        onChange={(value, option) => {
+                            setSelectedHead(value);
+                        }}
+                        options={filtersList?.HeadUsers?.map((v) => ({
+                            label: v.data,
+                            value: v.id,
+                        }))}
+                        optionFilterProp="label"
+                    />
 
                     <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
                         <input
@@ -1088,22 +1279,18 @@ function ScrumStructure() {
                             />
                         </Tooltip>
                     </div>
-                    <Select
-                        id="selectedValue"
-                        placeholder="Select TA"
-                        style={{ marginLeft: "10px", width: "270px" }}
-                        // mode="multiple"
-                        value={selectedHead}
-                        showSearch={true}
-                        onChange={(value, option) => {
-                            setSelectedHead(value);
+
+                    <button
+                        className={stylesOBj.btnPrimary}
+                        style={{height:'54px'}}
+                        onClick={() => {
+                            setIsAddNewRow(true);
+                            setNewTAHeadUserValue(selectedHead);
                         }}
-                        options={filtersList?.HeadUsers?.map((v) => ({
-                            label: v.data,
-                            value: v.id,
-                        }))}
-                        optionFilterProp="label"
-                    />
+                    >
+                        Add New Task
+                    </button>
+
                 </div>
 
                 <div className={`${stylesOBj["table-container"]}`} style={{ margin: '16px' }}>
@@ -1851,6 +2038,101 @@ function ScrumStructure() {
                                     Cancel
                                 </button>
                             </div>
+                        </div>
+                    </Modal>
+                )}
+
+
+                {showComment && (
+                    <Modal
+                        transitionName=""
+                        width="1000px"
+                        centered
+                        footer={null}
+                        open={showComment}
+                        className="engagementModalStyle"
+                        onCancel={() => {
+                            setShowComment(false);
+                            setEditedCommentData({})
+                            setALLCommentsList([]);
+                            setCommentData({});
+                        }}
+                    >
+                        <div style={{ padding: "35px 15px 10px 15px" }}>
+                            <h3>Add Comment</h3>
+                        </div>
+                        <Suspense>
+                            <div
+                                style={{
+                                    position: "relative",
+                                    marginBottom: "10px",
+                                    padding: "0 20px",
+                                    paddingRight: "30px",
+                                }}
+                            >
+                                <Editor
+                                    hrID={""}
+                                    saveNote={(note) => saveComment(note)}
+                                    //  saveNote={(note) => console.log(note)}
+                                    isUsedForComment={true}
+                                    editedText={editedCommentData?.comments}
+                                />
+                            </div>
+                        </Suspense>
+
+                        {allCommentList.length > 0 ? (
+                            <div style={{ padding: "12px 20px" }}>
+                                {isCommentLoading && (
+                                    <div>
+                                        Adding Comment ...{" "}
+                                        <img src={spinGif} alt="loadgif" width={16} />{" "}
+                                    </div>
+                                )}
+                                <ul style={{ marginLeft: '10px', listStyleType: 'none' }}>
+                                    {allCommentList.map((item) => (
+                                        <> <li
+                                            key={item.comments}
+                                            style={{ marginBottom: "10px" }}
+                                        > <div style={{ display: 'flex' }}>
+                                                <EditSVG
+                                                    width={22}
+                                                    height={22}
+                                                    style={{ marginRight: '10px', cursor: 'pointer' }}
+                                                    onClick={() => setEditedCommentData(item)}
+                                                />
+                                                <div dangerouslySetInnerHTML={{ __html: item.comments }}></div>
+                                            </div></li>
+
+                                        </>
+
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : (
+                            <h3 style={{ marginBottom: "10px", padding: "0 20px" }}>
+                                {isCommentLoading ? (
+                                    <div>
+                                        Loading Comments...{" "}
+                                        <img src={spinGif} alt="loadgif" width={16} />{" "}
+                                    </div>
+                                ) : (
+                                    "No Comments yet"
+                                )}
+                            </h3>
+                        )}
+                        <div style={{ padding: "10px" }}>
+                            <button
+                                className={stylesOBj.btnCancle}
+                                disabled={isEditNewTask}
+                                onClick={() => {
+                                    setShowComment(false);
+                                    setEditedCommentData({})
+                                    setALLCommentsList([]);
+                                    setCommentData({});
+                                }}
+                            >
+                                Close
+                            </button>
                         </div>
                     </Modal>
                 )}
