@@ -97,6 +97,7 @@ export class TaDashboardURL {
 	static GET_ALL_GOAL_COMMENT = 'GetPotentialListComments'
 	static INSERT_GOAL_COMMENT ='InsertPotentialListComment'
 	static GET_SCRUM_TASK_DETAILS = "GetTANewScrumTaskDetailsListing"
+	static UPDATE_SCRUM_TASK_LIST = "UpdateTADashboardDragAndDrop"
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
 	static GET_TA_WISE_PIPELINE_DETAILS= 'GetTAWiseHRPipelineDetails'
 	static GET_TA_WISE_CONTRACT_PIPELINE_DETAILS = 'GetTAWiseHRPipelineDetails_Contract'
