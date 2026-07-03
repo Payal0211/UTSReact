@@ -130,6 +130,32 @@ function ScrumStructure2() {
         getUserResult();
     }, []);
 
+    const GRID_ROW_HEIGHT = 46;
+const GRID_HEADER_HEIGHT = 44;
+const GRID_MIN_HEIGHT = 320;
+const GRID_BOTTOM_PADDING = 24;
+
+const gridWrapperRef = useRef(null);
+const [availableHeight, setAvailableHeight] = useState(600);
+
+useEffect(() => {
+    const recomputeAvailableHeight = () => {
+        if (!gridWrapperRef.current) return;
+        const top = gridWrapperRef.current.getBoundingClientRect().top;
+        const available = window.innerHeight - top - GRID_BOTTOM_PADDING;
+        setAvailableHeight(Math.max(available, GRID_MIN_HEIGHT));
+    };
+
+    recomputeAvailableHeight();
+    window.addEventListener('resize', recomputeAvailableHeight);
+    return () => window.removeEventListener('resize', recomputeAvailableHeight);
+}, [TaListData.length]);
+
+const gridHeightPx = Math.min(
+    TaListData.length * GRID_ROW_HEIGHT + GRID_HEADER_HEIGHT + 2,
+    availableHeight
+);
+
 
     const getAllTAUsersList = async () => {
         let req = await TaDashboardDAO.geAllTAUSERSRequestDAO();
@@ -261,7 +287,8 @@ function ScrumStructure2() {
 
     }
 
-        const canMoveUp = (index,TaListData) => {
+        const canMoveUp = (record) => {
+let index = getRowIndex(record);
         if (index === 0) return false;
 
         return (
@@ -270,7 +297,8 @@ function ScrumStructure2() {
         );
     };
 
-    const canMoveDown = (index,TaListData) => {
+    const canMoveDown = (record) => {
+        let index = getRowIndex(record);
         if (index === TaListData.length - 1) return false;
 
         return (
@@ -280,32 +308,34 @@ function ScrumStructure2() {
     };
 
     const moveRowUp = (index, record) => {
-        if (!canMoveUp(index,TaListData)) return;
-        if (index === 0) return;
+         const i = getRowIndex(record);
+        if (!canMoveUp(record)) return;
+        if (i === 0) return;
         const newData = [...TaListData];
       
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
-            DisplayOrder: TaListData[index - 1]?.displayOrder
+            DisplayOrder: TaListData[i - 1]?.displayOrder
         }
         updateORERUPDOWN(pl)
-  [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];
+  [newData[i - 1], newData[i]] = [newData[i], newData[i - 1]];
         setTaListData(groupByRowSpan(newData, "taName"));
     };
-
+console.log("td",TaListData)
     const moveRowDown = (index, record) => {
-      if (!canMoveDown(index,TaListData)) return;
-        if (index === TaListData.length - 1) return;
+         const i = getRowIndex(record);
+      if (!canMoveDown(record)) return;
+        if (i === TaListData.length - 1) return;
         const newData = [...TaListData];
        
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
-            DisplayOrder: TaListData[index + 1]?.displayOrder
+            DisplayOrder: TaListData[i + 1]?.displayOrder
         }
         updateORERUPDOWN(pl)
- [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+ [newData[i], newData[i + 1]] = [newData[i + 1], newData[i]];
         setTaListData(groupByRowSpan(newData, "taName"));
     };
 
@@ -339,7 +369,7 @@ const autoGroupColumnDef = {
     headerName: "TA",
     minWidth: 220,
     cellRendererParams: {
-        suppressCount: true,
+        suppressCount: false,
     },
 };
 
@@ -715,6 +745,36 @@ const autoGroupColumnDef = {
         },
     ];
 
+    const DragButtonComp = ({data}) =>{
+        let i = TaListData.findIndex((r) => r.id === data.id);
+        return <>
+          <button
+                    onClick={() => moveRowUp(i, data)}
+                    disabled={!canMoveUp(data)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                cursor: canMoveUp(data) ? "pointer" : "not-allowed",
+                                color: canMoveUp(data) ? "#666" : "#ccc",
+                            }}
+                >
+                    ▲
+                </button>
+                <button
+                    onClick={() => moveRowDown(i, data)}
+                   disabled={!canMoveDown(data)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                cursor: canMoveDown(data) ? "pointer" : "not-allowed",
+
+                                color: canMoveDown(data) ? "#666" : "#ccc",
+                            }}
+                >
+                    ▼
+                </button></>
+    }
+
 
     const handleSearchInput = (value) => {
         setSearchTerm(value);
@@ -791,6 +851,7 @@ const autoGroupColumnDef = {
         setProfileStatusID,
         setHRTalentListFourCount,
         AddComment,
+        DragButtonComp,
     };
 
     // Excel-style single-cell copy (Ctrl+C / Cmd+C). True multi-cell range copy needs
@@ -935,7 +996,11 @@ const autoGroupColumnDef = {
 
                 </div>
 
-                <div className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}>
+                 <div
+    ref={gridWrapperRef}
+     className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+     style={{ height: gridHeightPx }}
+ >
 
                     {isLoading ? <TableSkeleton /> :
 
@@ -952,6 +1017,7 @@ const autoGroupColumnDef = {
                             rowHeight={46}
                             onCellKeyDown={handleGridKeyDown}
                             groupDisplayType="singleColumn"
+                            // domLayout="autoHeight"
                             groupDefaultExpanded={-1}
                              autoGroupColumnDef={autoGroupColumnDef}
                         />
