@@ -22,7 +22,7 @@ export function ProfileSharedTargetCell(props) {
             ) : (
                 data?.profile_Shared_Target ?? 0
             )}{' '}
-            / {data.profile_Shared_Achieved ?? 'NA'} / {data.interview_Scheduled_Target ?? 'NA'}
+            {/* / {data.profile_Shared_Achieved ?? 'NA'} / {data.interview_Scheduled_Target ?? 'NA'} */}
         </div>
     );
 }

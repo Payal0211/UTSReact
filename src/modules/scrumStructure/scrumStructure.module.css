@@ -32,6 +32,10 @@ body {
     background-color: #F9F6ED;
 }
 
+.tableSelectField [class*="ant-select-selector"] {
+    font-size: 12px;
+}
+
 /* ===================== */
 /* Card container        */
 /* ===================== */
@@ -475,7 +479,7 @@ body {
 }
 
 .cell-add-btn {
-    padding: 6px 18px;
+    padding: 0 8px;
     background-color: #F1F1F1;
     color: #4C4E64DE;
     border: none;
