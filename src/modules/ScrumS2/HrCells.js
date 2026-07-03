@@ -10,6 +10,8 @@ export function HrIdCell(props) {
         userData,
         moveRowUp,
         moveRowDown,
+        canMoveDown,
+        canMoveUp,
         getRowIndex,
         setDiamondCompany,
         setShowDiamondRemark,
@@ -23,42 +25,39 @@ export function HrIdCell(props) {
     } = props.context;
 
        const i = getRowIndex(data);
-    const isDiamond = data?.companyCategory === 'Diamond';
-    const isAllowedToToggleDiamond =
-        userData?.UserId === 2 ||
-        userData?.UserId === 333 ||
-        userData?.UserId === 190 ||
-        userData?.UserId === 96;
+
+
+  
     return (<>
-     {/* <div style={{ display: 'flex',  }}>
+     <div style={{ display: 'flex',  }}>
                 <button
                     onClick={() => moveRowUp(i, data)}
-                    disabled={i === 0}
-                    style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: i === 0 ? 'not-allowed' : 'pointer',
-                        color: i === 0 ? '#ccc' : '#666',
-                    }}
+                    disabled={!canMoveUp(i,taListData)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                cursor: canMoveUp(i,taListData) ? "pointer" : "not-allowed",
+                                color: canMoveUp(i,taListData) ? "#666" : "#ccc",
+                            }}
                 >
                     ▲
                 </button>
                 <button
                     onClick={() => moveRowDown(i, data)}
-                    disabled={i === taListData.length - 1}
-                    style={{
-                        background: 'none',
-                        border: 'none',
-                        cursor: i === taListData.length - 1 ? 'not-allowed' : 'pointer',
-                        color: i === taListData.length - 1 ? '#ccc' : '#666',
-                    }}
+                   disabled={!canMoveDown(i,taListData)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                cursor: canMoveDown(i,taListData) ? "pointer" : "not-allowed",
+
+                                color: canMoveDown(i,taListData) ? "#666" : "#ccc",
+                            }}
                 >
                     ▼
                 </button>
-            
-            </div> */}
-     <a
+               <a
             href={`/allhiringrequest/${data?.hiringRequest_ID}`}
+            style={{marginLeft:'5px'}}
             target="_blank"
             rel="noreferrer"
             className={stylesOBj['hr-id']}
@@ -67,6 +66,8 @@ export function HrIdCell(props) {
             {value}
         </a>
      
+            </div>
+  
     </>
       
     );

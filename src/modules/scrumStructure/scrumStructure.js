@@ -260,7 +260,7 @@ function ScrumStructure() {
     }
 
     const moveRowUp = (index, record) => {
-        if (!canMoveDown(index)) return;
+        if (!canMoveUp(index)) return;
         if (index === 0) return;
         const newData = [...TaListData];
         [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];
