@@ -16,6 +16,7 @@ import NewAddCompany from 'modules/company/screens/addCompany/n_addCompany';
 import NewEngagementList from 'modules/engagement/screens/engagementList/n_engagementList';
 import NewTADashboard from 'modules/taDashboard/n_taDashboard';
 import ScrumStructure from 'modules/scrumStructure/scrumStructure';
+import ScrumStructure2 from 'modules/ScrumS2/ScrumStructure';
 // import TempScrumStructure from 'modules/scrumStructure/sctemp';
 
 const Login = React.lazy(() =>
@@ -174,14 +175,14 @@ function App() {
 							exact
 							key={UTSRoutes.TASCRUMSTRUCTURE}
 							path={UTSRoutes.TASCRUMSTRUCTURE}
-							element={<ScrumStructure />}
+							element={ <ScrumStructure2 />}
 						/>
-							{/* <Route
+							<Route
 							exact
 							key={UTSRoutes.TASCRUMSTRUCTURE + "temp"}
 							path={UTSRoutes.TASCRUMSTRUCTURE + "temp"}
-							element={<TempScrumStructure />}
-						/> */}
+							element={<ScrumStructure />}
+						/>
 
 					</Route>
 
