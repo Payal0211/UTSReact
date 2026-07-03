@@ -224,7 +224,7 @@ function ScrumStructure2() {
 
         if (result.statusCode === HTTPStatusCode.OK) {
             message.success("Row order updated")
-            setTaListData(result?.responseBody);
+             setTaListData(groupByRowSpan(result.responseBody, "taName"));
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             message.error("Something went wrong!")
         }
@@ -254,37 +254,59 @@ function ScrumStructure2() {
 
         if (result.statusCode === HTTPStatusCode.OK) {
             message.success("Row order updated")
-            setTaListData(result?.responseBody);
+             setTaListData(groupByRowSpan(result.responseBody, "taName"));
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             message.error("Something went wrong!")
         }
 
     }
 
+        const canMoveUp = (index,TaListData) => {
+        if (index === 0) return false;
+
+        return (
+            TaListData[index].tA_UserID ===
+            TaListData[index - 1].tA_UserID
+        );
+    };
+
+    const canMoveDown = (index,TaListData) => {
+        if (index === TaListData.length - 1) return false;
+
+        return (
+            TaListData[index].tA_UserID ===
+            TaListData[index + 1].tA_UserID
+        );
+    };
+
     const moveRowUp = (index, record) => {
+        if (!canMoveUp(index,TaListData)) return;
         if (index === 0) return;
-        const newData = [...TaListData]; 
+        const newData = [...TaListData];
+      
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
-            DisplayOrder: newData[index - 1]?.displayOrder
+            DisplayOrder: TaListData[index - 1]?.displayOrder
         }
-         updateORERUPDOWN(pl)
-        [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];    
-        setTaListData(newData);
+        updateORERUPDOWN(pl)
+  [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];
+        setTaListData(groupByRowSpan(newData, "taName"));
     };
 
     const moveRowDown = (index, record) => {
+      if (!canMoveDown(index,TaListData)) return;
         if (index === TaListData.length - 1) return;
-        const newData = [...TaListData]; 
+        const newData = [...TaListData];
+       
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
-            DisplayOrder: newData[index + 1]?.displayOrder
+            DisplayOrder: TaListData[index + 1]?.displayOrder
         }
         updateORERUPDOWN(pl)
-        [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];  
-        setTaListData(newData);
+ [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+        setTaListData(groupByRowSpan(newData, "taName"));
     };
 
     const getFilters = async () => {
@@ -747,6 +769,8 @@ const autoGroupColumnDef = {
         updateTARowValue,
         moveRowUp,
         moveRowDown,
+        canMoveDown,
+        canMoveUp,
         setDiamondCompany,
         setShowDiamondRemark,
         setCompanyIdForRemark,

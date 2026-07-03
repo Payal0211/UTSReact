@@ -52,13 +52,39 @@ export const getScrumGridColumns = () => [
         headerName: 'HR Title',
         field: 'hrTitle',
         width: 200,
+         pinned: 'left',
         cellRenderer: HrTitleCell,
         tooltipField: 'hrTitle',
     },
+   
     {
+        headerName: 'Status',
+        field: 'taskStatus',
+        width: 150,
+             pinned: 'left',
+        cellRenderer: TaskStatusCell,
+    },
+    {
+        headerName: 'Submission Target On Given Date',
+        field: 'profile_Shared_Target',
+        width: 150,
+        cellRenderer: ProfileSharedTargetCell,
+    },
+     {
+        headerName: 'Submission Target Achieved',
+        field: 'interview_Scheduled_Target',
+        width: 150,
+        // cellRenderer: ProfileSharedTargetCell,
+    },
+    {
+        headerName: 'Active TRs',
+        field: 'activeTR',
+        width: 100,
+    },
+     {
         headerName: '# Interview Rounds',
         field: 'no_of_InterviewRounds',
-        width: 100,
+        width: 120,
     },
     {
         headerName: 'Inbound / Outbound',
@@ -66,26 +92,9 @@ export const getScrumGridColumns = () => [
         width: 140,
     },
     {
-        headerName: 'Status',
-        field: 'taskStatus',
-        width: 150,
-        cellRenderer: TaskStatusCell,
-    },
-    {
-        headerName: 'Profile Shared Target / ACHIEVED / L1 ROUND',
-        field: 'profile_Shared_Target',
-        width: 220,
-        cellRenderer: ProfileSharedTargetCell,
-    },
-    {
-        headerName: 'Active TRs',
-        field: 'activeTR',
-        width: 100,
-    },
-    {
         headerName: 'No of Active Profile Till Date',
         field: 'noOfProfile_TalentsTillDate',
-        width: 170,
+        width: 150,
         cellRenderer: ActiveProfileCountCell,
     },
     {
@@ -94,7 +103,7 @@ export const getScrumGridColumns = () => [
         width: 170,
     },
     {
-        headerName: 'Revenue (%)',
+        headerName: 'Revenue %',
         field: 'uplersFeesPer',
         width: 150,
     },
@@ -102,6 +111,13 @@ export const getScrumGridColumns = () => [
         headerName: 'Total Revenue Opportunity',
         field: 'totalRevenue_NoofTalentStr',
         width: 170,
+    },
+        {
+        headerName: 'Latest Updates',
+        field: 'latestNotes',
+        width: 250,
+        sortable: false,
+        cellRenderer: LatestNotesCell,
     },
     {
         headerName: 'HR Status',
@@ -120,28 +136,22 @@ export const getScrumGridColumns = () => [
         field: 'days',
         width: 170,
     },
-    {
-        headerName: 'Latest Communication & Updates',
-        field: 'latestNotes',
-        width: 250,
-        sortable: false,
-        cellRenderer: LatestNotesCell,
-    },
-    {
-        headerName: 'No Of Calls On Given Day',
-        field: 'noOfCallsGivenDay',
-        width: 170,
-    },
-    {
-        headerName: 'Submission Target On Given Date',
-        field: 'submissionTargetOnGivenDate',
-        width: 220,
-    },
-    {
-        headerName: 'Submission Target Achieved',
-        field: 'interview_Scheduled_Target',
-        width: 170,
-    },
+
+    // {
+    //     headerName: 'No Of Calls On Given Day',
+    //     field: 'noOfCallsGivenDay',
+    //     width: 170,
+    // },
+    // {
+    //     headerName: 'Submission Target On Given Date',
+    //     field: 'submissionTargetOnGivenDate',
+    //     width: 220,
+    // },
+    // {
+    //     headerName: 'Submission Target Achieved',
+    //     field: 'interview_Scheduled_Target',
+    //     width: 170,
+    // },
     {
         headerName: 'Total No Of Submissions',
         field: 'totalNoOfSubmission',
@@ -173,7 +183,7 @@ export const getScrumGridColumns = () => [
     {
         headerName: 'Hiring Manager AS POC (Y/N)',
         field: 'hmAsPOC',
-        width: 170,
+        width: 100,
         sortable: false,
         cellRenderer: YesNoCell,
         cellRendererParams: { objKey: 'hmAsPOC' },
