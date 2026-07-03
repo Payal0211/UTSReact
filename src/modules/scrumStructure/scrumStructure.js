@@ -601,7 +601,7 @@ function ScrumStructure() {
                 <Select
                     defaultValue={value}
                     size='small'
-                    style={{ color: colorCode }}
+                    style={{ color: colorCode , width:'130px'}}
                     onChange={async (val) => {
                         if (value === "Fasttrack" && val !== "Fasttrack") {
                             let pl = {
@@ -745,6 +745,27 @@ function ScrumStructure() {
         setCommentData({ ...data, index });
     };
 
+    const YesNOComp  = ({ text, result, index, objKey }) => {
+            const [value, setValue] = useState(text ?? "");
+    
+            return (
+                <div className={stylesOBj.tableSelectField}>
+                    <Select
+                        defaultValue={value}
+                        size='small'
+                        onChange={(val) => {
+                            setValue(val);
+                            updateTARowValue(val, objKey, result, index);
+                        }}
+                    >
+                        {[{text:"Yes", value:"Y"},{text:"No", value:"N"}].map((v) => (
+                            <Option value={v.value}>{v.text}</Option>
+                        ))}
+                    </Select>
+                </div>
+            );
+        };
+
     const getTableColumns = () => [
         {
             title: "Action",
@@ -762,7 +783,7 @@ function ScrumStructure() {
                     }}
                 >
                     {/* Drag Handle */}
-                    <div
+                    {/* <div
                         draggable
                         onDragStart={(e) => handleDragStart(e, index, record)}
                         onDragOver={(e) => handleDragOver(e, index, record)}
@@ -777,7 +798,7 @@ function ScrumStructure() {
                         title="Drag to move"
                     >
                         ⋮⋮
-                    </div>
+                    </div> */}
 
                     <button
                         onClick={() => moveRowUp(index, record)}
@@ -897,7 +918,12 @@ function ScrumStructure() {
             title: "HR Title",
             dataIndex: "hrTitle",
             key: "hrTitle",
-            width: 220,
+            width: 200,
+            render:(text,row)=>{
+                return text.length > 20 ? <Tooltip title={text} >
+                    {`${text.slice(0, 20)}...`}
+                </Tooltip> : text
+            }
         },
 
 
@@ -913,7 +939,7 @@ function ScrumStructure() {
             title: <># Interview <br />Rounds</>,
             dataIndex: "no_of_InterviewRounds",
             key: "no_of_InterviewRounds",
-            width: 120,
+            width: 100,
         },
 
         {
@@ -927,7 +953,7 @@ function ScrumStructure() {
             title: "Status",
             dataIndex: "taskStatus",
             key: "taskStatus",
-            width: 180,
+            width: 150,
             render: (text, record, index) => (
                 <TaskStatusComp
                     text={text}
@@ -1012,7 +1038,7 @@ function ScrumStructure() {
         },
 
         {
-            title: <>Revenue <br /> Opportunity (%)</>,
+            title: <>Revenue (%)</>,
             dataIndex: "uplersFeesPer",
             key: "uplersFeesPer",
             width: 150,
@@ -1030,6 +1056,12 @@ function ScrumStructure() {
             dataIndex: "tA_HR_Status",
             key: "tA_HR_Status",
             width: 120,
+            render:(text,row)=>{
+                return   All_Hiring_Request_Utils.GETHRSTATUS(
+                                        row?.tA_HR_StatusID,
+                                        row?.tA_HR_Status
+                                    )
+            }
         },
 
         {
@@ -1059,13 +1091,13 @@ function ScrumStructure() {
             render: (text, row, i) => {
 
                 return <>{row?.latestNotes ? <>
-                    <div dangerouslySetInnerHTML={{ __html: row.latestNotes }}></div>
-                    <div className={stylesOBj["view-edit"]}>
+                    {/* <div dangerouslySetInnerHTML={{ __html: row.latestNotes }}></div> */}
+                    {/* <div className={stylesOBj["view-edit"]}> */}
 
-                        <button onClick={() => {
+                        <button  className={stylesOBj["cell-add-btn"]} onClick={() => {
                             AddComment(row, i);
-                        }}>Edit</button>
-                    </div>
+                        }}>View / Edit</button>
+                    {/* </div> */}
                 </> : <button className={stylesOBj["cell-add-btn"]} onClick={() => {
                     AddComment(row, i);
                 }} >Add</button>}</>
@@ -1161,6 +1193,9 @@ function ScrumStructure() {
             dataIndex: "hmAsPOC",
             key: "hmAsPOC",
             width: 150,
+            render:(text,row, index)=>{
+                return <YesNOComp objKey={"hmAsPOC"}  index={index} result={row} text={text}/>
+            }
         },
 
     ];
@@ -1221,8 +1256,10 @@ function ScrumStructure() {
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
-                <h1 style={{ marginBottom: '0', marginLeft: '16px', paddingLeft: '8px', fontSize: '24px' }}>TA Scrum Structure</h1>
-                <div className={`${stylesOBj["filterContainer"]}`} style={{ display: 'flex', paddingRight: '15px', }}>
+                {/* <h1 style={{ marginBottom: '0', marginLeft: '16px', paddingLeft: '8px', fontSize: '24px' }}>TA Scrum Structure</h1> */}
+                <div
+                //  className={`${stylesOBj["filterContainer"]}`}
+                  style={{ display: 'flex', paddingRight: '15px',margin:'15px 10px' }}>
 
 
                     <Select
@@ -1243,7 +1280,7 @@ function ScrumStructure() {
                         optionFilterProp="label"
                     />
 
-                    <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
+                    <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: '10px', marginRight: '10px' }}>
                         <input
                             ref={searchInputRef}
                             type="text"
@@ -1282,7 +1319,7 @@ function ScrumStructure() {
 
                     <button
                         className={stylesOBj.btnPrimary}
-                        style={{height:'54px'}}
+                        style={{height:'54px', marginLeft: 'auto',}}
                         onClick={() => {
                             setIsAddNewRow(true);
                             setNewTAHeadUserValue(selectedHead);
