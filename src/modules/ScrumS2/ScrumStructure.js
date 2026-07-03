@@ -1,6 +1,11 @@
-import React, { useState, useCallback, useEffect, useRef, Suspense } from 'react'
-import stylesOBj from './scrumStructure.module.css'
+import React, { useState, useCallback, useEffect, useRef, useMemo, Suspense } from 'react'
+import stylesOBj from '../scrumStructure/scrumStructure.module.css'
+import gridStyles from './scrumGrid.module.css'
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
+import { AgGridReact } from 'ag-grid-react'
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
+import { scrumGridTheme } from './gridTheme'
+import { getScrumGridColumns, scrumDefaultColDef } from './scrumGridColumns'
 import {
     Select, InputNumber,
     Tooltip, Table, Checkbox, message, Skeleton, Modal
@@ -28,9 +33,13 @@ import { ReactComponent as EditSVG } from "assets/svg/editnewIcon.svg";
 import spinGif from "assets/gif/RefreshLoader.gif";
 const { Option } = Select;
 
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 
-function ScrumStructure() {
+
+
+
+function ScrumStructure2() {
     const navigate = useNavigate()
     const [filtersList, setFiltersList] = useState({});
     const [TaListData, setTaListData] = useState([]);
@@ -133,29 +142,22 @@ function ScrumStructure() {
         getAllTAUsersList();
     }, []);
 
-    function groupByRowSpan(data, groupField) {
-        const grouped = {};
+ function groupByRowSpan(data, groupField) {
+  const grouped = {};
+  data.forEach((item) => {
+    const key = item[groupField];
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(item);
+  });
 
-        // Step 1: Group by the field (e.g., 'ta')
-        data.forEach((item) => {
-            const key = item[groupField];
-            if (!grouped[key]) grouped[key] = [];
-            grouped[key].push(item);
-        });
-
-        // Step 2: Add rowSpan metadata
-        const finalData = [];
-        Object.entries(grouped).forEach(([key, rows]) => {
-            rows.forEach((row, index) => {
-                finalData.push({
-                    ...row,
-                    rowSpan: index === 0 ? rows.length : 0,
-                });
-            });
-        });
-
-        return finalData;
-    }
+  const finalData = [];
+  Object.entries(grouped).forEach(([, rows]) => {
+    rows.forEach((row, index) => {
+      finalData.push({ ...row, rowSpan: index === 0 ? rows.length : 0 });
+    });
+  });
+  return finalData;
+}
 
     const getListData = useCallback(async () => {
         let pl = {
@@ -174,7 +176,7 @@ function ScrumStructure() {
 
         if (result.statusCode === HTTPStatusCode.OK) {
             // setTaListData(result.responseBody);
-            setTaListData(groupByRowSpan(result.responseBody, "taName"));
+             setTaListData(groupByRowSpan(result.responseBody, "taName"));
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             setTaListData([]);
         } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -222,7 +224,7 @@ function ScrumStructure() {
 
         if (result.statusCode === HTTPStatusCode.OK) {
             message.success("Row order updated")
-            setTaListData(groupByRowSpan(result.responseBody, "taName"));
+            setTaListData(result?.responseBody);
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             message.error("Something went wrong!")
         }
@@ -237,7 +239,7 @@ function ScrumStructure() {
         const draggedItem = newData[draggedRow];
         newData.splice(draggedRow, 1);
         newData.splice(dropIndex, 0, draggedItem);
-        setTaListData(groupByRowSpan(newData, "taName"));
+        setTaListData(newData);
         updateORER(dropIndex, record)
         setDraggedRow(null);
     };
@@ -252,7 +254,7 @@ function ScrumStructure() {
 
         if (result.statusCode === HTTPStatusCode.OK) {
             message.success("Row order updated")
-            setTaListData(groupByRowSpan(result.responseBody, "taName"));
+            setTaListData(result?.responseBody);
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             message.error("Something went wrong!")
         }
@@ -260,33 +262,29 @@ function ScrumStructure() {
     }
 
     const moveRowUp = (index, record) => {
-        if (!canMoveDown(index)) return;
         if (index === 0) return;
-        const newData = [...TaListData];
-        [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];
+        const newData = [...TaListData]; 
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
-            DisplayOrder: TaListData[index - 1]?.displayOrder
+            DisplayOrder: newData[index - 1]?.displayOrder
         }
-        updateORERUPDOWN(pl)
-
-        setTaListData(groupByRowSpan(newData, "taName"));
+         updateORERUPDOWN(pl)
+        [newData[index - 1], newData[index]] = [newData[index], newData[index - 1]];    
+        setTaListData(newData);
     };
 
     const moveRowDown = (index, record) => {
-        if (!canMoveDown(index)) return;
         if (index === TaListData.length - 1) return;
-        const newData = [...TaListData];
-        [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];
+        const newData = [...TaListData]; 
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
-            DisplayOrder: TaListData[index + 1]?.displayOrder
+            DisplayOrder: newData[index + 1]?.displayOrder
         }
         updateORERUPDOWN(pl)
-
-        setTaListData(groupByRowSpan(newData, "taName"));
+        [newData[index], newData[index + 1]] = [newData[index + 1], newData[index]];  
+        setTaListData(newData);
     };
 
     const getFilters = async () => {
@@ -314,6 +312,14 @@ function ScrumStructure() {
 
 
     }, [filtersList?.HeadUsers, , userData]);
+
+const autoGroupColumnDef = {
+    headerName: "TA",
+    minWidth: 220,
+    cellRendererParams: {
+        suppressCount: true,
+    },
+};
 
     const handleRemoveDiamond = async (d) => {
         let payload = {
@@ -620,62 +626,6 @@ function ScrumStructure() {
         }
     };
 
-    const TaskStatusComp = ({ text, result, index }) => {
-        const [value, setValue] = useState(text ?? "");
-        const colorCode =
-            filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
-        return (
-            <div className={stylesOBj.tableSelectField}>
-                <Select
-                    defaultValue={value}
-                    size='small'
-                    style={{ color: colorCode, width: '130px' }}
-                    onChange={async (val) => {
-                        if (value === "Fasttrack" && val !== "Fasttrack") {
-                            let pl = {
-                                task_ID: result?.id,
-                                tA_Head_UserID: selectedHead,
-                                tA_UserID: result?.tA_UserID,
-                                target_StageID: 1,
-                                target_Number: targetValue,
-                                target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
-                                IsStatusChangedToSlow: true,
-                            };
-                            setLoadingTalentProfile(true);
-                            let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
-                                pl
-                            );
-                            setLoadingTalentProfile(false);
-                            if (response.statusCode === HTTPStatusCode.OK) {
-                                setGoalList(response.responseBody);
-                                setTargetValue(5);
-                                setStartTargetDate(new Date());
-                            }
-                        }
-                        setValue(val);
-                        let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
-                        if (val === "Fasttrack") {
-                            setShowProfileTarget(true);
-                            setStartTargetDate(startDate);
-                            setProfileTargetDetails({ ...result, index: index });
-                            return;
-                        }
-
-                        updateTARowValue(valobj, "task_StatusID", result, index);
-                    }}
-                >
-                    {filtersList?.TaskStatus?.map((v) => (
-                        <Option style={{ color: v.colorCode }} value={v.data}>
-                            {v.data}
-                        </Option>
-                    ))}
-                </Select>
-            </div>
-        );
-    };
-
-
-
     const ProfileColumns = [
         {
             title: "Submission Date",
@@ -773,521 +723,63 @@ function ScrumStructure() {
         setCommentData({ ...data, index });
     };
 
-    const YesNOComp = ({ text, result, index, objKey }) => {
-        const [value, setValue] = useState(text ?? "");
+    // ---- ag-Grid column model & shared context ----------------------------------
+    // Static column config (renderers live in ./scrumGridColumns + ./cellRenderers/*)
+    const gridColumns = useMemo(() => getScrumGridColumns(), []);
 
-        return (
-            <div className={stylesOBj.tableSelectField}>
-                <Select
-                    defaultValue={value}
-                    size='small'
-                    onChange={(val) => {
-                        setValue(val);
-                        updateTARowValue(val, objKey, result, index);
-                    }}
-                >
-                    {[{ text: "Yes", value: "Y" }, { text: "No", value: "N" }].map((v) => (
-                        <Option value={v.value}>{v.text}</Option>
-                    ))}
-                </Select>
-            </div>
-        );
+    // Rows keep their original array index available to renderers via id lookup,
+    // since ag-Grid's own row index can change once sorting/filtering is used.
+    const getRowIndex = useCallback(
+        (row) => TaListData.findIndex((r) => r.id === row.id),
+        [TaListData]
+    );
+
+    // Everything the cell renderers used to reach via closure now travels through
+    // ag-Grid's `context` prop, rebuilt on every render so it always has fresh state.
+    const gridContext = {
+        taListData: TaListData,
+        filtersList,
+        selectedHead,
+        userData,
+        targetValue,
+        startDate,
+        getRowIndex,
+        updateTARowValue,
+        moveRowUp,
+        moveRowDown,
+        setDiamondCompany,
+        setShowDiamondRemark,
+        setCompanyIdForRemark,
+        setIsAddNewRow,
+        setNewTAUserValue,
+        setNewTAHeadUserValue,
+        getCompanySuggestionHandler,
+        setselectedCompanyID,
+        getHRLISTForComapny,
+        setShowProfileTarget,
+        setStartTargetDate,
+        setProfileTargetDetails,
+        setGoalList,
+        setTargetValue,
+        setLoadingTalentProfile,
+        getTalentProfilesDetailsfromTable,
+        setTalentToMove,
+        setProfileStatusID,
+        setHRTalentListFourCount,
+        AddComment,
     };
 
-    const canMoveUp = (index) => {
-        if (index === 0) return false;
-
-        return (
-            TaListData[index].tA_UserID ===
-            TaListData[index - 1].tA_UserID
-        );
-    };
-
-    const canMoveDown = (index) => {
-        if (index === TaListData.length - 1) return false;
-
-        return (
-            TaListData[index].tA_UserID ===
-            TaListData[index + 1].tA_UserID
-        );
-    };
-
-    const getTableColumns = () => [
-        // {
-        //     title: "Action",
-        //     key: "action",
-        //     dataIndex: "action",
-        //     width: 100,
-        //     fixed: "left",
-        //     render: (_, record, index) => (
-        //         <div
-        //             style={{
-        //                 display: "flex",
-        //                 alignItems: "center",
-        //                 //   justifyContent: "center",
-        //                 gap: 8,
-        //             }}
-        //         >
-        //             {/* Drag Handle */}
-        //             {/* <div
-        //                 draggable
-        //                 onDragStart={(e) => handleDragStart(e, index, record)}
-        //                 onDragOver={(e) => handleDragOver(e, index, record)}
-        //                 onDrop={(e) => handleDrop(e, index, record)}
-        //                 onDragEnd={handleDragEnd}
-        //                 style={{
-        //                     cursor: "grab",
-        //                     fontSize: 18,
-        //                     color: "#999",
-        //                     userSelect: "none",
-        //                 }}
-        //                 title="Drag to move"
-        //             >
-        //                 ⋮⋮
-        //             </div> */}
-
-        //             <button
-        //                 onClick={() => moveRowUp(index, record)}
-        //                 disabled={index === 0}
-        //                 style={{
-        //                     background: "none",
-        //                     border: "none",
-        //                     cursor: index === 0 ? "not-allowed" : "pointer",
-        //                     color: index === 0 ? "#ccc" : "#666",
-        //                 }}
-        //             >
-        //                 ▲
-        //             </button>
-
-        //             <button
-        //                 onClick={() => moveRowDown(index, record)}
-        //                 disabled={index === TaListData.length - 1}
-        //                 style={{
-        //                     background: "none",
-        //                     border: "none",
-        //                     cursor:
-        //                         index === TaListData.length - 1
-        //                             ? "not-allowed"
-        //                             : "pointer",
-        //                     color:
-        //                         index === TaListData.length - 1
-        //                             ? "#ccc"
-        //                             : "#666",
-        //                 }}
-        //             >
-        //                 ▼
-        //             </button>
-        //         </div>
-        //     ),
-        // },
-        //   {
-        //     title: "DO",
-        //     dataIndex: "displayOrder",
-        //     key: "displayOrder",
-        //     width: 150,
-        //       fixed: "left",
-        // },
-        {
-            title: "TA",
-            dataIndex: "taName",
-            key: "taName",
-            width: 150,
-            fixed: "left",
-            render: (value, row, index) => {
-                return {
-                    children: (
-                        <div style={{ verticalAlign: "top" }}>
-                            {value}
-                            <br />{" "}
-                        </div>
-                    ),
-                    props: {
-                        rowSpan: row.rowSpan,
-                        style: { verticalAlign: "top" }, // This aligns the merged cell content to the top
-                    },
-                };
-            },
-        },
-        {
-            title: "Company",
-            dataIndex: "companyName",
-            key: "companyName",
-            width: 150,
-            fixed: "left",
-            render: (text, row, i) => {
-                return <div className={stylesOBj["company-cell"]} style={{ display: 'flex' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <button
-                            onClick={() => moveRowUp(i, row)}
-                            disabled={!canMoveUp(i)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: canMoveUp(i) ? "pointer" : "not-allowed",
-                                color: canMoveUp(i) ? "#666" : "#ccc",
-                            }}
-                        >
-                            ▲
-                        </button>
-
-                        <button
-                            onClick={() => moveRowDown(i, row)}
-                            disabled={!canMoveDown(i)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: canMoveDown(i) ? "pointer" : "not-allowed",
-
-                                color: canMoveDown(i) ? "#666" : "#ccc",
-                            }}
-                        >
-                            ▼
-                        </button>
-                    </div>
-
-                    <span className={stylesOBj["company-name"]}>{row.companyName}</span>
-                    <div style={{ display: 'flex' }}>
-                        <button
-                            className={stylesOBj["diamond-toggle"]}
-                            data-tooltip={userData?.UserId === 2 ||
-                                userData?.UserId === 333 ||
-                                userData?.UserId === 190 || userData?.UserId === 96 ? (row?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
-                            onClick={() => {
-                                if (userData?.UserId === 2 ||
-                                    userData?.UserId === 333 ||
-                                    userData?.UserId === 190 || userData?.UserId === 96) {
-                                    if (row?.companyCategory === "Diamond") {
-                                        setShowDiamondRemark(true);
-                                        setCompanyIdForRemark({ ...row, index: i });
-                                    } else {
-                                        setDiamondCompany(row, i)
-                                    }
-                                }
-
-                            }}
-                        >
-                            {row?.companyCategory === "Diamond"
-                                ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${stylesOBj["diamond-icon"]} ${stylesOBj["diamond-active"]}`} />
-                                : <img src="images/diamond-ic.svg" alt="Diamond" className={`${stylesOBj["diamond-icon"]} ${stylesOBj["diamond-inactive"]}`} />}
-                        </button>
-                        {userData?.showTADashboardDropdowns && <button className={stylesOBj["plus-task-btn"]} data-tooltip={`Add task for TA ${row.taName} in ${row.companyName}`}
-                            onClick={() => {
-                                setIsAddNewRow(true);
-                                setNewTAUserValue(row.tA_UserID);
-                                setNewTAHeadUserValue(selectedHead);
-                                getCompanySuggestionHandler(row.tA_UserID);
-                                setselectedCompanyID(row?.company_ID);
-                                getHRLISTForComapny(row?.company_ID);
-                            }}
-                        >
-                            <svg width="20" height="20" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M13 0C10.4288 0 7.91543 0.762437 5.77759 2.1909C3.63975 3.61935 1.97351 5.64968 0.989572 8.02512C0.0056327 10.4006 -0.251811 13.0144 0.249797 15.5362C0.751405 18.0579 1.98953 20.3743 3.80762 22.1924C5.6257 24.0105 7.94208 25.2486 10.4638 25.7502C12.9856 26.2518 15.5995 25.9944 17.9749 25.0104C20.3503 24.0265 22.3807 22.3603 23.8091 20.2224C25.2376 18.0846 26 15.5712 26 13C25.9957 9.55351 24.6247 6.2494 22.1876 3.81236C19.7506 1.37532 16.4465 0.00430006 13 0ZM18 14H14V18C14 18.2652 13.8946 18.5196 13.7071 18.7071C13.5196 18.8946 13.2652 19 13 19C12.7348 19 12.4804 18.8946 12.2929 18.7071C12.1054 18.5196 12 18.2652 12 18V14H8.00001C7.73479 14 7.48044 13.8946 7.2929 13.7071C7.10536 13.5196 7.00001 13.2652 7.00001 13C7.00001 12.7348 7.10536 12.4804 7.2929 12.2929C7.48044 12.1054 7.73479 12 8.00001 12H12V8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8V12H18C18.2652 12 18.5196 12.1054 18.7071 12.2929C18.8946 12.4804 19 12.7348 19 13C19 13.2652 18.8946 13.5196 18.7071 13.7071C18.5196 13.8946 18.2652 14 18 14Z" fill="#8A8A8A" />
-                            </svg>
-                        </button>}
-
-                    </div>
-
-
-                </div>
-            }
-        },
-
-        {
-            title: "HR ID",
-            dataIndex: "hrNumber",
-            key: "hrNumber",
-            width: 120,
-            fixed: "left",
-            render: (text, row, i) => {
-                return <a href={`/allhiringrequest/${row?.hiringRequest_ID}`} target="_blank" className={`${stylesOBj["hr-id"]}`}>{text}</a>
-            }
-        },
-
-        {
-            title: "HR Title",
-            dataIndex: "hrTitle",
-            key: "hrTitle",
-            width: 200,
-            render: (text, row) => {
-                return text.length > 20 ? <Tooltip title={text} >
-                    {`${text.slice(0, 20)}...`}
-                </Tooltip> : text
-            }
-        },
-
-
-
-        //   {
-        //     title: "Category",
-        //     dataIndex: "category",
-        //     key: "category",
-        //     width: 120,
-        //   },
-
-        {
-            title: <># Interview <br />Rounds</>,
-            dataIndex: "no_of_InterviewRounds",
-            key: "no_of_InterviewRounds",
-            width: 100,
-        },
-
-        {
-            title: <>Inbound <br />/ Outbound</>,
-            dataIndex: "role_Type",
-            key: "role_Type",
-            width: 140,
-        },
-
-        {
-            title: "Status",
-            dataIndex: "taskStatus",
-            key: "taskStatus",
-            width: 150,
-            render: (text, record, index) => (
-                <TaskStatusComp
-                    text={text}
-                    result={record}
-                    index={index}
-                />
-            ),
-        },
-        {
-            title: <>Profile Shared Target<br />
-                / ACHIEVED / L1 ROUND</>,
-            dataIndex: "profile_Shared_Target",
-            key: "profile_Shared_Target",
-            width: 200,
-            render: (text, row, i) => {
-                return <div style={{ display: "flex" }}>
-                    {row.task_StatusID === 1 ? (
-                        <p
-                            style={{
-                                color: "blue",
-                                fontWeight: "bold",
-                                textDecoration: "underline",
-                                cursor: "pointer",
-                            }}
-                            onClick={() => {
-                                setShowProfileTarget(true);
-                                setStartTargetDate(startDate);
-                                setProfileTargetDetails({ ...row, index: i });
-                            }}
-                        >
-                            {row?.profile_Shared_Target ?? 0}
-                        </p>
-                    ) : (
-                        row?.profile_Shared_Target ?? 0
-                    )}{" "}
-                    / {row.profile_Shared_Achieved ?? "NA"} /{" "}
-                    {row.interview_Scheduled_Target ?? "NA"}
-                </div>
-            }
-        },
-        {
-            title: "Active TRs",
-            dataIndex: "activeTR",
-            key: "activeTR",
-            width: 100,
-        },
-        {
-            title: <>  No of Active <br /> Profile Till Date  </>,
-            dataIndex: "noOfProfile_TalentsTillDate",
-            key: "noOfProfile_TalentsTillDate",
-            width: 150,
-            render: (text, row, i) => {
-                return +row?.noOfProfile_TalentsTillDate > 0 ? (
-                    <p
-                        style={{
-                            color: "blue",
-                            fontWeight: "bold",
-                            textDecoration: "underline",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => {
-                            getTalentProfilesDetailsfromTable(row, 0);
-                            setTalentToMove(row);
-                            setProfileStatusID(0);
-                            setHRTalentListFourCount([]);
-                        }}
-                    >
-                        {row?.noOfProfile_TalentsTillDate}
-                    </p>
-                ) : (
-                    row?.noOfProfile_TalentsTillDate
-                )
-            }
-        },
-
-
-        {
-            title: <>Talent Annual <br /> CTC Budget (INR)</>,
-            dataIndex: "talent_AnnualCTC_Budget_INRValueStr",
-            key: "talent_AnnualCTC_Budget_INRValueStr",
-            width: 150,
-        },
-
-        {
-            title: <>Revenue (%)</>,
-            dataIndex: "uplersFeesPer",
-            key: "uplersFeesPer",
-            width: 150,
-        },
-
-        {
-            title: <>Total Revenue <br /> Opportunity</>,
-            dataIndex: "totalRevenue_NoofTalentStr",
-            key: "totalRevenue_NoofTalentStr",
-            width: 150,
-        },
-
-        {
-            title: "HR Status",
-            dataIndex: "tA_HR_Status",
-            key: "tA_HR_Status",
-            width: 120,
-            render: (text, row) => {
-                return All_Hiring_Request_Utils.GETHRSTATUS(
-                    row?.tA_HR_StatusID,
-                    row?.tA_HR_Status
-                )
-            }
-        },
-
-        {
-            title: "HR Created Date",
-            dataIndex: "hrCreatedDate",
-            key: "hrCreatedDate",
-            width: 150,
-            render: (text) => {
-                return text ? moment(text).format("DD/MM/YYYY") : ""
-            }
-        },
-
-        {
-            title: <>No Of Days <br /> HR Is Open</>,
-            dataIndex: "days",
-            key: "days",
-            width: 170,
-        },
-
-
-
-        {
-            title: <>Latest Communication <br /> & Updates</>,
-            dataIndex: "latestNotes",
-            key: "latestNotes",
-            width: 250,
-            render: (text, row, i) => {
-
-                return <>{row?.latestNotes ? <>
-                    {/* <div dangerouslySetInnerHTML={{ __html: row.latestNotes }}></div> */}
-                    {/* <div className={stylesOBj["view-edit"]}> */}
-
-                    <button className={stylesOBj["cell-add-btn"]} onClick={() => {
-                        AddComment(row, i);
-                    }}>View / Edit</button>
-                    {/* </div> */}
-                </> : <button className={stylesOBj["cell-add-btn"]} onClick={() => {
-                    AddComment(row, i);
-                }} >Add</button>}</>
-            }
-        },
-
-        {
-            title: <>No Of Calls <br />On Given Day</>,
-            dataIndex: "noOfCallsGivenDay",
-            key: "noOfCallsGivenDay",
-            width: 170,
-        },
-
-        // {
-        //     title: "No Of Notes",
-        //     dataIndex: "noOfNotes",
-        //     key: "noOfNotes",
-        //     width: 120,
-        // },
-
-        {
-            title: <>Submission Target <br />On Given Date</>,
-            dataIndex: "submissionTargetOnGivenDate",
-            key: "submissionTargetOnGivenDate",
-            width: 220,
-        },
-
-        {
-            title: <>Submission  Target <br />Achieved</>,
-            dataIndex: "interview_Scheduled_Target",
-            key: "interview_Scheduled_Target",
-            width: 150,
-        },
-
-        {
-            title: <>Total No Of <br /> Submissions</>,
-            dataIndex: "totalNoOfSubmission",
-            key: "totalNoOfSubmission",
-            width: 150,
-        },
-
-        {
-            title: <>Screen <br /> Reject</>,
-            dataIndex: "screenReject",
-            key: "screenReject",
-            width: 80,
-        },
-
-        {
-            title: "R1",
-            dataIndex: "r1",
-            key: "r1",
-            width: 80,
-        },
-
-        {
-            title: "R2",
-            dataIndex: "r2",
-            key: "r2",
-            width: 80,
-        },
-
-        {
-            title: "R3",
-            dataIndex: "r3",
-            key: "r3",
-            width: 80,
-        },
-
-        {
-            title: <>Total No Of<br /> Interview Rejects</>,
-            dataIndex: "totalNoOfInterviewReject",
-            key: "totalNoOfInterviewReject",
-            width: 150,
-        },
-
-        {
-            title: <>Weekly <br />Selection Planned</>,
-            dataIndex: "weeklySelectionPlan",
-            key: "weeklySelectionPlan",
-            width: 150,
-        },
-
-        {
-            title: "Joining Date",
-            dataIndex: "joiningDate",
-            key: "joiningDate",
-            width: 150,
-
-        },
-        {
-            title: <>Hiring Manager<br /> AS POC (Y/N)</>,
-            dataIndex: "hmAsPOC",
-            key: "hmAsPOC",
-            width: 150,
-            render: (text, row, index) => {
-                return <YesNOComp objKey={"hmAsPOC"} index={index} result={row} text={text} />
-            }
-        },
-
-    ];
+    // Excel-style single-cell copy (Ctrl+C / Cmd+C). True multi-cell range copy needs
+    // ag-Grid Enterprise's Clipboard module; this covers the common single-cell case
+    // without pulling in a paid dependency.
+    const handleGridKeyDown = useCallback((params) => {
+        const isCopy = (params.event.ctrlKey || params.event.metaKey) && params.event.key === 'c';
+        if (!isCopy) return;
+        const cellValue = params.api.getCellValue({ rowNode: params.node, colKey: params.column });
+        if (cellValue !== undefined && cellValue !== null && navigator.clipboard) {
+            navigator.clipboard.writeText(String(cellValue)).catch(() => {});
+        }
+    }, []);
 
     const isSelectableDateModal = (date) => {
         const today = new Date();
@@ -1347,8 +839,8 @@ function ScrumStructure() {
             <main className={`${stylesOBj["main-content"]}`}>
                 {/* <h1 style={{ marginBottom: '0', marginLeft: '16px', paddingLeft: '8px', fontSize: '24px' }}>TA Scrum Structure</h1> */}
                 <div
-                    //  className={`${stylesOBj["filterContainer"]}`}
-                    style={{ display: 'flex', paddingRight: '15px', margin: '15px 10px' }}>
+                //  className={`${stylesOBj["filterContainer"]}`}
+                  style={{ display: 'flex', paddingRight: '15px',margin:'15px 10px' }}>
 
 
                     <Select
@@ -1408,7 +900,7 @@ function ScrumStructure() {
 
                     <button
                         className={stylesOBj.btnPrimary}
-                        style={{ height: '54px', marginLeft: 'auto', }}
+                        style={{height:'54px', marginLeft: 'auto',}}
                         onClick={() => {
                             setIsAddNewRow(true);
                             setNewTAHeadUserValue(selectedHead);
@@ -1419,16 +911,25 @@ function ScrumStructure() {
 
                 </div>
 
-                <div className={`${stylesOBj["table-container"]}`} style={{ margin: '16px' }}>
+                <div className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}>
 
                     {isLoading ? <TableSkeleton /> :
 
-                        <Table
-                            rowKey="hrid"
-                            columns={getTableColumns()}
-                            dataSource={TaListData}
-                            pagination={false}
-                            scroll={{ x: "max-content", y: 600 }}
+                        <AgGridReact
+                            theme={scrumGridTheme}
+                            rowData={TaListData}
+                            columnDefs={gridColumns}
+                            defaultColDef={scrumDefaultColDef}
+                            context={gridContext}
+                            getRowId={(params) => String(params.data.id)}
+                            suppressRowTransform={true}
+                            animateRows={false}
+                            headerHeight={44}
+                            rowHeight={46}
+                            onCellKeyDown={handleGridKeyDown}
+                            groupDisplayType="singleColumn"
+                            groupDefaultExpanded={-1}
+                             autoGroupColumnDef={autoGroupColumnDef}
                         />
                     }
 
@@ -2269,4 +1770,4 @@ function ScrumStructure() {
     )
 }
 
-export default ScrumStructure
+export default ScrumStructure2
