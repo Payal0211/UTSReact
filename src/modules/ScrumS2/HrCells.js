@@ -22,39 +22,21 @@ export function HrIdCell(props) {
         getCompanySuggestionHandler,
         setselectedCompanyID,
         getHRLISTForComapny,
+        DragButtonComp
     } = props.context;
 
        const i = getRowIndex(data);
 
-
-  
+console.log(value,i ,taListData.findIndex((r) => r.id === data.id), )
+  console.log(
+    data.companyName,
+    "index:", i,
+    "actual:",
+    taListData.findIndex(x => x.id === data.id)
+);
     return (<>
      <div style={{ display: 'flex',  }}>
-                <button
-                    onClick={() => moveRowUp(i, data)}
-                    disabled={!canMoveUp(i,taListData)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: canMoveUp(i,taListData) ? "pointer" : "not-allowed",
-                                color: canMoveUp(i,taListData) ? "#666" : "#ccc",
-                            }}
-                >
-                    ▲
-                </button>
-                <button
-                    onClick={() => moveRowDown(i, data)}
-                   disabled={!canMoveDown(i,taListData)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: canMoveDown(i,taListData) ? "pointer" : "not-allowed",
-
-                                color: canMoveDown(i,taListData) ? "#666" : "#ccc",
-                            }}
-                >
-                    ▼
-                </button>
+              {/* <DragButtonComp data={data} /> */}
                <a
             href={`/allhiringrequest/${data?.hiringRequest_ID}`}
             style={{marginLeft:'5px'}}
