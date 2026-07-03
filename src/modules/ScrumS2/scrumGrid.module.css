@@ -1,0 +1,24 @@
+/* Add these rules into scrumStructure.module.css (or import as a separate module) */
+
+.grid-wrapper {
+    margin: 16px;
+    height: 640px;
+    width: 100%;
+}
+
+/* Keeps text top-aligned inside spanned TA cells, matching the old rowSpan look */
+.ag-cell-top-align {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 10px;
+}
+
+/* Ensures every cell shows a right-hand gridline even where the theme's columnBorder
+   param doesn't reach (some renderer wrapper divs swallow the border otherwise). */
+.ag-cell-excel-border {
+    border-right: 1px solid #e3e7eb;
+}
+
+.tableSelectField :global(.ant-select) {
+    width: 100%;
+}
