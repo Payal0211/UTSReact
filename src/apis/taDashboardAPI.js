@@ -201,6 +201,40 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.updateTAListRequest');
 		}
 	},
+	updateHMPOCRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.UPDATE_HM_POC
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.updateHMPOCRequest');
+		}
+	},
+	updateCommentRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.UPDATE_COMMENT_REQUEST
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.updateCommentRequest');
+		}
+	},
     getTACompanyListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
