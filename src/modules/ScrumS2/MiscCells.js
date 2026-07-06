@@ -13,14 +13,15 @@ export function LatestNotesCell(props) {
     const i = getRowIndex(data);
 
     return (
-        <button
-            className={stylesOBj['cell-add-btn']}
-            onClick={(e) => {
-                e.stopPropagation();
-                AddComment(data, i);
-            }}
-        >
-            {data?.latestNotes ? 'View / Edit' : 'Add'}
-        </button>
+        <div style={{lineHeight:'20px'}}>{data?.latestNotes?.length > 50 ? `${data?.latestNotes?.slice(0,50)}...`: data.latestNotes}</div>
+        // <button
+        //     className={stylesOBj['cell-add-btn']}
+        //     onClick={(e) => {
+        //         e.stopPropagation();
+        //         AddComment(data, i);
+        //     }}
+        // >
+        //     {data?.latestNotes ? 'View / Edit' : 'Add'}
+        // </button>
     );
 }

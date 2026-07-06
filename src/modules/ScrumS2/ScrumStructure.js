@@ -5,7 +5,6 @@ import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { AgGridReact } from 'ag-grid-react'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
 import { scrumGridTheme } from './gridTheme'
-import { getScrumGridColumns, scrumDefaultColDef } from './scrumGridColumns'
 import {
     Select, InputNumber,
     Tooltip, Table, Checkbox, message, Skeleton, Modal
@@ -31,7 +30,14 @@ import HRInputField from "modules/hiring request/components/hrInputFields/hrInpu
 import Editor from 'modules/hiring request/components/textEditor/editor';
 import { ReactComponent as EditSVG } from "assets/svg/editnewIcon.svg";
 import spinGif from "assets/gif/RefreshLoader.gif";
+import CompanyCell from './CompanyCell';
+import TaskStatusCell from './TaskStatusCell';
+import { ProfileSharedTargetCell, ActiveProfileCountCell } from './ProfileCells';
+import { HrStatusCell, LatestNotesCell } from './MiscCells';
+import YesNoCell from './YesNoCell';
 const { Option } = Select;
+
+
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -131,30 +137,30 @@ function ScrumStructure2() {
     }, []);
 
     const GRID_ROW_HEIGHT = 46;
-const GRID_HEADER_HEIGHT = 44;
-const GRID_MIN_HEIGHT = 320;
-const GRID_BOTTOM_PADDING = 24;
+    const GRID_HEADER_HEIGHT = 44;
+    const GRID_MIN_HEIGHT = 320;
+    const GRID_BOTTOM_PADDING = 24;
 
-const gridWrapperRef = useRef(null);
-const [availableHeight, setAvailableHeight] = useState(600);
+    const gridWrapperRef = useRef(null);
+    const [availableHeight, setAvailableHeight] = useState(600);
 
-useEffect(() => {
-    const recomputeAvailableHeight = () => {
-        if (!gridWrapperRef.current) return;
-        const top = gridWrapperRef.current.getBoundingClientRect().top;
-        const available = window.innerHeight - top - GRID_BOTTOM_PADDING;
-        setAvailableHeight(Math.max(available, GRID_MIN_HEIGHT));
-    };
+    useEffect(() => {
+        const recomputeAvailableHeight = () => {
+            if (!gridWrapperRef.current) return;
+            const top = gridWrapperRef.current.getBoundingClientRect().top;
+            const available = window.innerHeight - top - GRID_BOTTOM_PADDING;
+            setAvailableHeight(Math.max(available, GRID_MIN_HEIGHT));
+        };
 
-    recomputeAvailableHeight();
-    window.addEventListener('resize', recomputeAvailableHeight);
-    return () => window.removeEventListener('resize', recomputeAvailableHeight);
-}, [TaListData.length]);
+        recomputeAvailableHeight();
+        window.addEventListener('resize', recomputeAvailableHeight);
+        return () => window.removeEventListener('resize', recomputeAvailableHeight);
+    }, [TaListData.length]);
 
-const gridHeightPx = Math.min(
-    TaListData.length * GRID_ROW_HEIGHT + GRID_HEADER_HEIGHT + 2,
-    availableHeight
-);
+    const gridHeightPx = Math.min(
+        TaListData.length * GRID_ROW_HEIGHT + GRID_HEADER_HEIGHT + 2,
+        availableHeight
+    );
 
 
     const getAllTAUsersList = async () => {
@@ -168,22 +174,22 @@ const gridHeightPx = Math.min(
         getAllTAUsersList();
     }, []);
 
- function groupByRowSpan(data, groupField) {
-  const grouped = {};
-  data.forEach((item) => {
-    const key = item[groupField];
-    if (!grouped[key]) grouped[key] = [];
-    grouped[key].push(item);
-  });
+    function groupByRowSpan(data, groupField) {
+        const grouped = {};
+        data.forEach((item) => {
+            const key = item[groupField];
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push(item);
+        });
 
-  const finalData = [];
-  Object.entries(grouped).forEach(([, rows]) => {
-    rows.forEach((row, index) => {
-      finalData.push({ ...row, rowSpan: index === 0 ? rows.length : 0 });
-    });
-  });
-  return finalData;
-}
+        const finalData = [];
+        Object.entries(grouped).forEach(([, rows]) => {
+            rows.forEach((row, index) => {
+                finalData.push({ ...row, rowSpan: index === 0 ? rows.length : 0 });
+            });
+        });
+        return finalData;
+    }
 
     const getListData = useCallback(async () => {
         let pl = {
@@ -194,7 +200,7 @@ const gridHeightPx = Math.min(
             // modelType: tableFilteredState?.filterFields_OnBoard?.modelType,
             // priority: tableFilteredState?.filterFields_OnBoard?.priority,
             searchText: searchText,
-            taHeadUserIDs: `${selectedHead}`,
+            taHeadUserID: +selectedHead,
         };
         setIsLoading(true);
         const result = await TaDashboardDAO.getAllScrumTaskListRequestDAO(pl);
@@ -202,7 +208,7 @@ const gridHeightPx = Math.min(
 
         if (result.statusCode === HTTPStatusCode.OK) {
             // setTaListData(result.responseBody);
-             setTaListData(groupByRowSpan(result.responseBody, "taName"));
+            setTaListData(groupByRowSpan(result.responseBody, "taName"));
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             setTaListData([]);
         } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -250,7 +256,7 @@ const gridHeightPx = Math.min(
 
         if (result.statusCode === HTTPStatusCode.OK) {
             message.success("Row order updated")
-             setTaListData(groupByRowSpan(result.responseBody, "taName"));
+            setTaListData(groupByRowSpan(result.responseBody, "taName"));
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             message.error("Something went wrong!")
         }
@@ -280,15 +286,15 @@ const gridHeightPx = Math.min(
 
         if (result.statusCode === HTTPStatusCode.OK) {
             message.success("Row order updated")
-             setTaListData(groupByRowSpan(result.responseBody, "taName"));
+            setTaListData(groupByRowSpan(result.responseBody, "taName"));
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             message.error("Something went wrong!")
         }
 
     }
 
-        const canMoveUp = (record) => {
-let index = getRowIndex(record);
+    const canMoveUp = (record) => {
+        let index = getRowIndex(record);
         if (index === 0) return false;
 
         return (
@@ -308,34 +314,37 @@ let index = getRowIndex(record);
     };
 
     const moveRowUp = (index, record) => {
-         const i = getRowIndex(record);
+        const i = getRowIndex(record);
+
         if (!canMoveUp(record)) return;
         if (i === 0) return;
         const newData = [...TaListData];
-      
+        [newData[i - 1], newData[i]] = [newData[i], newData[i - 1]];
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
             DisplayOrder: TaListData[i - 1]?.displayOrder
         }
         updateORERUPDOWN(pl)
-  [newData[i - 1], newData[i]] = [newData[i], newData[i - 1]];
+
         setTaListData(groupByRowSpan(newData, "taName"));
     };
-console.log("td",TaListData)
+
     const moveRowDown = (index, record) => {
-         const i = getRowIndex(record);
-      if (!canMoveDown(record)) return;
+        const i = getRowIndex(record);
+
+        if (!canMoveDown(record)) return;
         if (i === TaListData.length - 1) return;
         const newData = [...TaListData];
-       
+        [newData[i], newData[i + 1]] = [newData[i + 1], newData[i]];
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
             DisplayOrder: TaListData[i + 1]?.displayOrder
         }
+        console.log("down", index, i, record, pl)
         updateORERUPDOWN(pl)
- [newData[i], newData[i + 1]] = [newData[i + 1], newData[i]];
+
         setTaListData(groupByRowSpan(newData, "taName"));
     };
 
@@ -365,13 +374,13 @@ console.log("td",TaListData)
 
     }, [filtersList?.HeadUsers, , userData]);
 
-const autoGroupColumnDef = {
-    headerName: "TA",
-    minWidth: 220,
-    cellRendererParams: {
-        suppressCount: false,
-    },
-};
+    const autoGroupColumnDef = {
+        headerName: "TA",
+        minWidth: 220,
+        cellRendererParams: {
+            suppressCount: false,
+        },
+    };
 
     const handleRemoveDiamond = async (d) => {
         let payload = {
@@ -408,6 +417,19 @@ const autoGroupColumnDef = {
         updateTARowValue("Diamond", "companyCategory", row, index);
         let res = await allCompanyRequestDAO.updateCompanyCategoryDAO(payload);
     };
+
+    const updateHMPOC = async (params, val) => {
+        let pl = {
+            TA_Head_UserID: selectedHead,
+            TaskID: params.id,
+            HMAsPOC: val === 'Y' ? true : false
+        }
+
+        let updateresult = await TaDashboardDAO.updateHMPOCRequestDAO(pl);
+
+
+
+    }
 
     const updateTARowValue = async (value, key, params, index, targetValue) => {
         let pl = {
@@ -467,7 +489,13 @@ const autoGroupColumnDef = {
                 return newDS;
             });
         }
-        let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+
+        if (key === "hmAsPOC") {
+            updateHMPOC(params, value);
+        } else {
+            let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+        }
+
     };
 
     const getCompanySuggestionHandler = async (userValue, searchtext) => {
@@ -745,36 +773,6 @@ const autoGroupColumnDef = {
         },
     ];
 
-    const DragButtonComp = ({data}) =>{
-        let i = TaListData.findIndex((r) => r.id === data.id);
-        return <>
-          <button
-                    onClick={() => moveRowUp(i, data)}
-                    disabled={!canMoveUp(data)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: canMoveUp(data) ? "pointer" : "not-allowed",
-                                color: canMoveUp(data) ? "#666" : "#ccc",
-                            }}
-                >
-                    ▲
-                </button>
-                <button
-                    onClick={() => moveRowDown(i, data)}
-                   disabled={!canMoveDown(data)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: canMoveDown(data) ? "pointer" : "not-allowed",
-
-                                color: canMoveDown(data) ? "#666" : "#ccc",
-                            }}
-                >
-                    ▼
-                </button></>
-    }
-
 
     const handleSearchInput = (value) => {
         setSearchTerm(value);
@@ -798,6 +796,10 @@ const autoGroupColumnDef = {
         }
     };
 
+    const updateNotes = async (pl) => {
+        let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
+    }
+
 
     const AddComment = (data, index) => {
         getAllComments(data.id);
@@ -806,8 +808,309 @@ const autoGroupColumnDef = {
     };
 
     // ---- ag-Grid column model & shared context ----------------------------------
+
+    function HrTitleCell(props) {
+        const { value } = props;
+        if (!value) return null;
+        if (value.length <= 20) return <span>{value}</span>;
+        return (
+            <Tooltip title={value}>
+                <span>{`${value.slice(0, 20)}...`}</span>
+            </Tooltip>
+        );
+    }
+
+
+    const getScrumGridColumns = () => [
+        {
+            headerName: 'TA',
+            field: 'taName',
+            width: 150,
+            pinned: 'left',
+            sortable: false,
+            rowSpan: (params) => params.data?.rowSpan || 1, //[cite: 1]
+            valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
+            // 👇 UPDATE THIS CELLSTYLE OBJECT
+            cellStyle: {
+                alignItems: 'flex-start',
+                paddingTop: 10,
+                background: 'var(--ag-background-color, #fff)', //[cite: 1]
+
+                // Adds a thick, clean border at the bottom of each TA group block
+                borderBottom: '2px solid #e2e8f0',
+                // Ensures the vertical line on the right remains clear
+                borderRight: '1px solid #e2e8f0'
+            },
+        },
+        {
+            headerName: 'Company',
+            field: 'companyName',
+            width: 220,
+            pinned: 'left',
+            cellRenderer: CompanyCell,
+            sortable: false,
+        },
+        {
+            headerName: 'HR ID',
+            field: 'hrNumber',
+            width: 180,
+            pinned: 'left',
+            cellRenderer: (props) => {
+                const { value, data } = props;
+
+                const i = getRowIndex(data);
+
+
+                return (<>
+                    <div style={{ display: 'flex', }}>
+                        <button
+                            onClick={() => moveRowUp(i, data)}
+                            disabled={!canMoveUp(data)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                cursor: canMoveUp(data) ? "pointer" : "not-allowed",
+                                color: canMoveUp(data) ? "#666" : "#ccc",
+                            }}
+                        >
+                            ▲
+                        </button>
+                        <button
+                            onClick={() => moveRowDown(i, data)}
+                            disabled={!canMoveDown(data)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                marginLeft: '5px',
+                                cursor: canMoveDown(data) ? "pointer" : "not-allowed",
+
+                                color: canMoveDown(data) ? "#666" : "#ccc",
+                            }}
+                        >
+                            ▼
+                        </button>
+                        <a
+                            href={`/allhiringrequest/${data?.hiringRequest_ID}`}
+                            style={{ marginLeft: '5px' }}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={stylesOBj['hr-id']}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {value}
+                        </a>
+
+                    </div>
+
+                </>
+
+                );
+            },
+        },
+        {
+            headerName: 'HR Title',
+            field: 'hrTitle',
+            width: 200,
+            pinned: 'left',
+            cellRenderer: HrTitleCell,
+            tooltipField: 'hrTitle',
+        },
+
+        {
+            headerName: 'Status',
+            field: 'taskStatus',
+            width: 150,
+            pinned: 'left',
+            cellRenderer: TaskStatusCell,
+        },
+        {
+            headerName: 'Submission Target On Given Date',
+            field: 'profile_Shared_Target',
+            width: 150,
+            cellStyle: { textAlign: 'center' },
+            cellRenderer: ProfileSharedTargetCell,
+        },
+        {
+            headerName: 'Submission Target Achieved',
+            field: 'interview_Scheduled_Target',
+            cellStyle: { textAlign: 'center' },
+            width: 150,
+            // cellRenderer: ProfileSharedTargetCell,
+        },
+        {
+            headerName: 'Active TRs',
+            field: 'activeTR',
+            cellStyle: { textAlign: 'center' },
+            width: 100,
+        },
+        {
+            headerName: '# Interview Rounds',
+            field: 'no_of_InterviewRounds',
+            cellStyle: { textAlign: 'center' },
+            width: 120,
+        },
+        {
+            headerName: 'Inbound / Outbound',
+            field: 'role_Type',
+            width: 140,
+        },
+        {
+            headerName: 'No of Active Profile Till Date',
+            field: 'noOfProfile_TalentsTillDate',
+            width: 150,
+            cellRenderer: ActiveProfileCountCell,
+        },
+        {
+            headerName: 'Talent Annual CTC Budget (INR)',
+            field: 'talent_AnnualCTC_Budget_INRValueStr',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+        },
+        {
+            headerName: 'Revenue %',
+            field: 'uplersFeesPer',
+            cellStyle: { textAlign: 'center' },
+            width: 150,
+        },
+        {
+            headerName: 'Total Revenue Opportunity',
+            field: 'totalRevenue_NoofTalentStr',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+        },
+        {
+            headerName: 'Latest Updates',
+            field: 'latestNotes',
+            width: 250,
+            sortable: false,
+            editable: true,
+            wrapText: true,    // Allows text to break to next line visually
+            autoHeight: true,  // Automatically grows the row height[cite: 1]
+
+            // 👇 ADD THESE TWO CONFIGURATIONS
+            // cellEditor: 'agTextCellEditor', 
+            cellEditor: 'agLargeTextCellEditor',
+            cellEditorParams: {
+                //   maxLength: 60, // Optional: restricts max length
+                cols: 30,       // Optional: width of the dropdown box
+                rows: 3,        // Optional: height of the dropdown box
+            },
+            suppressKeyboardEvent: (params) => {
+                const isEnterKey = params.event.key === 'Enter';
+                const isEditing = params.editing;
+                //   console.log("is edit",params)
+                if (isEditing && isEnterKey) {
+                    // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
+                    return true;
+                }
+                return false;
+            },
+            onCellValueChanged: (params) => {
+                // console.log("Updated:", params.newValue);
+                // console.log("Row:", params.data);
+
+                let pl = {
+                    TA_Head_UserID: selectedHead,
+                    TaskID: params.data.id,
+                    Comments: params.newValue
+                }
+
+                updateNotes(pl)
+            },
+
+            cellRenderer: LatestNotesCell,
+        },
+        {
+            headerName: 'HR Status',
+            field: 'tA_HR_Status',
+            width: 130,
+            cellRenderer: HrStatusCell,
+        },
+        {
+            headerName: 'HR Created Date',
+            field: 'hrCreatedDate',
+            width: 150,
+            valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
+        },
+        {
+            headerName: 'No Of Days HR Is Open',
+            field: 'days',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+        },
+
+        // {
+        //     headerName: 'No Of Calls On Given Day',
+        //     field: 'noOfCallsGivenDay',
+        //     width: 170,
+        // },
+        // {
+        //     headerName: 'Submission Target On Given Date',
+        //     field: 'submissionTargetOnGivenDate',
+        //     width: 220,
+        // },
+        // {
+        //     headerName: 'Submission Target Achieved',
+        //     field: 'interview_Scheduled_Target',
+        //     width: 170,
+        // },
+        {
+            headerName: 'Total No Of Submissions',
+            field: 'totalNoOfSubmission',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+        },
+        {
+            headerName: 'Screen Reject',
+            field: 'screenReject',
+            cellStyle: { textAlign: 'center' },
+            width: 90,
+        },
+        { headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' } },
+        { headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' } },
+        { headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' } },
+        {
+            headerName: 'Total No Of Interview Rejects',
+            field: 'totalNoOfInterviewReject',
+            width: 170,
+            cellStyle: { textAlign: 'center' },
+        },
+        {
+            headerName: 'Weekly Selection Planned',
+            field: 'weeklySelectionPlan',
+            width: 170,
+            cellStyle: { textAlign: 'center' },
+        },
+        {
+            headerName: 'Joining Date',
+            field: 'joiningDate',
+            width: 150,
+        },
+        {
+            headerName: 'Hiring Manager AS POC (Y/N)',
+            field: 'hmAsPOC',
+            width: 100,
+            sortable: false,
+            cellRenderer: YesNoCell,
+            cellRendererParams: { objKey: 'hmAsPOC' },
+        },
+    ];
+
+    /**
+     * Sensible Excel-like defaults applied to every column unless overridden above.
+     */
+    const scrumDefaultColDef = {
+        resizable: true,
+        sortable: true,
+        filter: true,
+        suppressMovable: false, // lets users drag-reorder columns, like Excel column drag
+        wrapHeaderText: true,
+        autoHeaderHeight: true,
+        cellClass: 'ag-cell-excel-border',
+    };
+
     // Static column config (renderers live in ./scrumGridColumns + ./cellRenderers/*)
-    const gridColumns = useMemo(() => getScrumGridColumns(), []);
+    const gridColumns = useMemo(() => getScrumGridColumns(), [TaListData]);
 
     // Rows keep their original array index available to renderers via id lookup,
     // since ag-Grid's own row index can change once sorting/filtering is used.
@@ -851,7 +1154,6 @@ const autoGroupColumnDef = {
         setProfileStatusID,
         setHRTalentListFourCount,
         AddComment,
-        DragButtonComp,
     };
 
     // Excel-style single-cell copy (Ctrl+C / Cmd+C). True multi-cell range copy needs
@@ -862,7 +1164,7 @@ const autoGroupColumnDef = {
         if (!isCopy) return;
         const cellValue = params.api.getCellValue({ rowNode: params.node, colKey: params.column });
         if (cellValue !== undefined && cellValue !== null && navigator.clipboard) {
-            navigator.clipboard.writeText(String(cellValue)).catch(() => {});
+            navigator.clipboard.writeText(String(cellValue)).catch(() => { });
         }
     }, []);
 
@@ -924,8 +1226,8 @@ const autoGroupColumnDef = {
             <main className={`${stylesOBj["main-content"]}`}>
                 {/* <h1 style={{ marginBottom: '0', marginLeft: '16px', paddingLeft: '8px', fontSize: '24px' }}>TA Scrum Structure</h1> */}
                 <div
-                //  className={`${stylesOBj["filterContainer"]}`}
-                  style={{ display: 'flex', paddingRight: '15px',margin:'15px 10px' }}>
+                    //  className={`${stylesOBj["filterContainer"]}`}
+                    style={{ display: 'flex', paddingRight: '15px', margin: '15px 10px' }}>
 
 
                     <Select
@@ -985,7 +1287,7 @@ const autoGroupColumnDef = {
 
                     <button
                         className={stylesOBj.btnPrimary}
-                        style={{height:'54px', marginLeft: 'auto',}}
+                        style={{ height: '54px', marginLeft: 'auto', }}
                         onClick={() => {
                             setIsAddNewRow(true);
                             setNewTAHeadUserValue(selectedHead);
@@ -996,11 +1298,11 @@ const autoGroupColumnDef = {
 
                 </div>
 
-                 <div
-    ref={gridWrapperRef}
-     className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
-     style={{ height: gridHeightPx }}
- >
+                <div
+                    ref={gridWrapperRef}
+                    className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+                    style={{ height: gridHeightPx }}
+                >
 
                     {isLoading ? <TableSkeleton /> :
 
@@ -1019,7 +1321,7 @@ const autoGroupColumnDef = {
                             groupDisplayType="singleColumn"
                             // domLayout="autoHeight"
                             groupDefaultExpanded={-1}
-                             autoGroupColumnDef={autoGroupColumnDef}
+                            autoGroupColumnDef={autoGroupColumnDef}
                         />
                     }
 
