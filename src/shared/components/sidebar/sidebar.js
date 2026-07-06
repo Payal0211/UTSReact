@@ -379,6 +379,16 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			isVisible: isAccess(usertypeID,'TA Dashboard')
 		}),
 		new SideBarModels({
+					id: 'TAScrumStructure',
+					title: 'TA Scrum Structure',
+					isActive: false,
+					icon: TalentDocIcon , 
+					navigateTo: UTSRoutes.TASCRUMSTRUCTURE,
+					isVisible: isAccess(usertypeID, 'ClientDashboard'),
+					branch: [],
+					isChildren : false					
+				}),
+		new SideBarModels({
 			id: 'UTS_all_hiring_request',
 			title: 'Hiring Request',
 			isActive: false,
@@ -569,14 +579,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'ClientDashboard'),
 					isChildren : false					
 				}),
-					new SideBarModels({
-					id: 'TAScrumStructure',
-					title: 'TA Scrum Structure',
-					isActive: false,
-					navigateTo: UTSRoutes.TASCRUMSTRUCTURE,
-					isVisible: isAccess(usertypeID, 'ClientDashboard'),
-					isChildren : false					
-				})
+				// 	new SideBarModels({
+				// 	id: 'TAScrumStructure',
+				// 	title: 'TA Scrum Structure',
+				// 	isActive: false,
+				// 	navigateTo: UTSRoutes.TASCRUMSTRUCTURE,
+				// 	isVisible: isAccess(usertypeID, 'ClientDashboard'),
+				// 	isChildren : false					
+				// })
 			]
 		}),
 
