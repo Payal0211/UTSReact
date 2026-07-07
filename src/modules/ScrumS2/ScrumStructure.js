@@ -989,8 +989,14 @@ function ScrumStructure2() {
             pinned: 'left',
             cellRenderer: TaskStatusCell,
         },
+           {
+            headerName: "Today's Submission Target",
+            field: 'noOfCallsGivenDay',
+            cellStyle: { textAlign: 'center' },
+            width: 150,
+        },
         {
-            headerName: 'Submission Target On Given Date',
+            headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
             cellStyle: { textAlign: 'center' },
@@ -1113,11 +1119,7 @@ function ScrumStructure2() {
             width: 170,
         },
 
-        // {
-        //     headerName: 'No Of Calls On Given Day',
-        //     field: 'noOfCallsGivenDay',
-        //     width: 170,
-        // },
+     
         // {
         //     headerName: 'Submission Target On Given Date',
         //     field: 'submissionTargetOnGivenDate',
