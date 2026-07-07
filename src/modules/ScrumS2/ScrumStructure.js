@@ -1004,7 +1004,7 @@ function ScrumStructure2() {
         },
         {
             headerName: 'Submission Target Achieved',
-            field: 'interview_Scheduled_Target',
+            field: 'profile_Shared_Achieved',
             cellStyle: { textAlign: 'center' },
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
