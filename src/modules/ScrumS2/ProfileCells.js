@@ -7,7 +7,7 @@ export function ProfileSharedTargetCell(props) {
     const i = getRowIndex(data);
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', justifyContent:'center' }}>
             {data.task_StatusID === 1 ? (
                 <p
                     style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0 }}
@@ -43,7 +43,7 @@ export function ActiveProfileCountCell(props) {
 
     return (
         <p
-            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0 }}
+            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0 , textAlign:"center"}}
             onClick={() => {
                 getTalentProfilesDetailsfromTable(data, 0);
                 setTalentToMove(data);
