@@ -34,6 +34,8 @@ import CompanyCell from './CompanyCell';
 import TaskStatusCell from './TaskStatusCell';
 import { ProfileSharedTargetCell, ActiveProfileCountCell } from './ProfileCells';
 import { HrStatusCell, LatestNotesCell } from './MiscCells';
+import { IoIosRemoveCircle } from "react-icons/io";
+import { GrEdit } from "react-icons/gr";
 import YesNoCell from './YesNoCell';
 const { Option } = Select;
 
@@ -127,6 +129,10 @@ function ScrumStructure2() {
         formState: { errors },
     } = useForm();
     const [newTaskError, setNewTaskError] = useState(false);
+
+     const [showEditTATask, setShowEditTATask] = useState(false);
+      const [editTATaskData, setEditTATaskData] = useState();
+      const [showConfirmRemove, setShowConfirmRemove] = useState(false);
 
     useEffect(() => {
         const getUserResult = async () => {
@@ -525,7 +531,7 @@ function ScrumStructure2() {
     const getHRLISTForComapny = async (id) => {
         const pl = {
             companyID: id,
-            tAHeadID: newTAHeadUservalue
+            tAHeadID: newTAHeadUservalue ? newTAHeadUservalue : selectedHead
         };
         let response = await TaDashboardDAO.getHRlistFromCompanyDAO(pl);
         if (response?.statusCode === HTTPStatusCode.OK) {
@@ -649,6 +655,64 @@ function ScrumStructure2() {
         }
     };
 
+     const editTAforTask = (task) => {
+    setShowEditTATask(true);
+    getCompanySuggestionHandler(task.tA_UserID);
+    getHRLISTForComapny(task.company_ID);
+    setNewTAHeadUserValue(selectedHead);
+    setEditTATaskData(task);
+  };
+
+
+    const handleRemoveTask = (result) => {
+    setShowConfirmRemove(true);
+    setInfoforProfile(result);
+  };
+
+    const saveEditTask = async () => {
+      let pl = {
+        id: editTATaskData?.id,
+        tA_UserID: editTATaskData?.tA_UserID,
+        company_ID: editTATaskData?.company_ID,
+        hiringRequest_ID: editTATaskData?.hiringRequest_ID,
+        task_Priority: editTATaskData?.task_Priority,
+        no_of_InterviewRounds: editTATaskData?.no_of_InterviewRounds,
+        role_TypeID: editTATaskData?.role_TypeID,
+        task_StatusID: editTATaskData?.task_StatusID,
+        activeTR: editTATaskData?.activeTR,
+        talent_AnnualCTC_Budget_INRValue:
+          editTATaskData?.talent_AnnualCTC_Budget_INRValue,
+        modelType: editTATaskData?.modelType,
+        revenue_On10PerCTC: editTATaskData?.revenue_On10PerCTC,
+        totalRevenue_NoofTalent: editTATaskData?.totalRevenue_NoofTalent,
+        noOfProfile_TalentsTillDate: editTATaskData?.noOfProfile_TalentsTillDate,
+        tA_HR_StatusID: editTATaskData?.tA_HR_StatusID,
+        tA_Head_UserID: `${newTAHeadUservalue}`,
+      };
+      setEditNewTask(true);
+      let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+      setEditNewTask(false);
+  
+      if (updateresult.statusCode === HTTPStatusCode.OK) {
+        setShowEditTATask(false);
+        getListData();
+      } else {
+        message.error("Something went wrong");
+      }
+    };
+
+      const removeTask = async (id) => {
+        setLoadingTalentProfile(true);
+        const result = await TaDashboardDAO.removeTaskDAO(id);
+        setLoadingTalentProfile(false);
+        if (result.statusCode === HTTPStatusCode.OK) {
+          setShowConfirmRemove(false);
+          getListData();
+        } else {
+          message.error("Something went wrong!");
+        }
+      };
+    
 
     const saveComment = async (note) => {
         let pl = {
@@ -925,8 +989,14 @@ function ScrumStructure2() {
             pinned: 'left',
             cellRenderer: TaskStatusCell,
         },
+           {
+            headerName: "Today's Submission Target",
+            field: 'noOfCallsGivenDay',
+            cellStyle: { textAlign: 'center' },
+            width: 150,
+        },
         {
-            headerName: 'Submission Target On Given Date',
+            headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
             cellStyle: { textAlign: 'center' },
@@ -1049,11 +1119,7 @@ function ScrumStructure2() {
             width: 170,
         },
 
-        // {
-        //     headerName: 'No Of Calls On Given Day',
-        //     field: 'noOfCallsGivenDay',
-        //     width: 170,
-        // },
+     
         // {
         //     headerName: 'Submission Target On Given Date',
         //     field: 'submissionTargetOnGivenDate',
@@ -1098,6 +1164,67 @@ function ScrumStructure2() {
             sortable: false,
             cellRenderer: YesNoCell,
             cellRendererParams: { objKey: 'hmAsPOC' },
+        },
+           {
+            headerName: 'Action',
+            field: '',
+            width: 100,
+            sortable: false,
+            cellRenderer: ({value,data})=>{
+                  return (
+                            <div>
+                              <IconContext.Provider
+                                value={{
+                                  color: "#FFDA30",
+                                  style: { width: "19px", height: "19px", cursor: "pointer" },
+                                }}
+                              >
+                                {" "}
+                                <Tooltip title="Edit" placement="top">
+                                  <span
+                                    onClick={() => {
+                                      editTAforTask(data);
+                                    }}
+                                    style={{ padding: "0" }}
+                                  >
+                                    {" "}
+                                    <GrEdit />
+                                  </span>{" "}
+                                </Tooltip>
+                              </IconContext.Provider>
+                
+                              {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65 || userData.UserId === 49 || userData.UserId === 176 || userData.UserId === 443 || userData.UserId === 436 || userData.UserId === 302) && <IconContext.Provider
+                                value={{
+                                  color: "red",
+                                  style: {
+                                    width: "19px",
+                                    height: "19px",
+                                    marginLeft: "10px",
+                                    cursor: "pointer",
+                                  },
+                                }}
+                              >
+                                <Tooltip title="Remove" placement="top">
+                                  <span
+                                    // style={{
+                                    //   background: 'red'
+                                    // }}
+                                    onClick={() => {
+                                      handleRemoveTask(data);
+                                    }}
+                                    style={{ padding: "0" }}
+                                  >
+                                    {" "}
+                                    <IoIosRemoveCircle />
+                                  </span>{" "}
+                                </Tooltip>
+                              </IconContext.Provider>}
+                
+                
+                            </div>
+                          );
+            },
+          
         },
     ];
 
@@ -2162,6 +2289,259 @@ function ScrumStructure2() {
                     </Modal>
                 )}
 
+                 {showEditTATask && (
+                        <Modal
+                          transitionName=""
+                          width="930px"
+                          centered
+                          footer={null}
+                          open={showEditTATask}
+                          className="engagementModalStyle"
+                          onCancel={() => {
+                            setShowEditTATask(false);
+                          }}
+                        >
+                          <div style={{ padding: "35px 15px 10px 15px" }}>
+                            <h3>Edit TA</h3>
+                          </div>
+                          <div style={{ padding: "10px 15px" }}>
+                            {isEditNewTask ? (
+                              <Skeleton active />
+                            ) : (
+                              <>
+                                <div className={stylesOBj.row}>
+                                  <div className={stylesOBj.colMd6}>
+                                    <div className={stylesOBj.formGroup}>
+                                      <label>
+                                        Select Head <span className={stylesOBj.reqField}>*</span>
+                                      </label>
+                                      <Select
+                                        id="selectedValue"
+                                        placeholder="Select TA"
+                                        value={newTAHeadUservalue}
+                                        showSearch={true}
+                                        onChange={(value, option) => {
+                                          setNewTAHeadUserValue(value);
+                                        }}
+                                        options={filtersList?.HeadUsers?.map((v) => ({
+                                          label: v.data,
+                                          value: v.id,
+                                        }))}
+                                        optionFilterProp="label"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className={stylesOBj.colMd6}>
+                                    <div className={stylesOBj.formGroup}>
+                                      <label>
+                                        Select TA <span className={stylesOBj.reqField}>*</span>
+                                      </label>
+                                      <Select
+                                        id="selectedValue"
+                                        placeholder="Select TA"
+                                        value={editTATaskData?.tA_UserID}
+                                        showSearch={true}
+                                        onChange={(value, option) => {
+                                          setEditTATaskData((prev) => ({
+                                            ...prev,
+                                            tA_UserID: value,
+                                          }));
+                                        }}
+                                        options={filtersList?.Users?.map((v) => ({
+                                          label: v.data,
+                                          value: v.id,
+                                        }))}
+                                        optionFilterProp="label"
+                                      />
+                
+                                      {newTaskError && newTAUservalue === "" && (
+                                        <p className={stylesOBj.error}>please select TA</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                
+                                <div className={stylesOBj.row}>
+                                  <div className={stylesOBj.colMd6}>
+                                    <div className={stylesOBj.formGroup}>
+                                      <label>
+                                        Select company{" "}
+                                        <span className={stylesOBj.reqField}>*</span>
+                                      </label>
+                
+                                      <Select
+                                        id="selectedValue"
+                                        placeholder="Select Company"
+                                        disabled={true}
+                                        value={editTATaskData?.company_ID}
+                                        showSearch={true}
+                                        onChange={(value, option) => { }}
+                                        options={getCompanyNameSuggestion}
+                                        optionFilterProp="label"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className={stylesOBj.colMd6}>
+                                    <div className={stylesOBj.formGroup}>
+                                      <label>
+                                        Select HR <span className={stylesOBj.reqField}>*</span>
+                                      </label>
+                                      <Select
+                                        disabled={true}
+                                        id="selectedValue"
+                                        placeholder="Select HR"
+                                        // style={{marginLeft:'10px',width:'270px'}}
+                                        // mode="multiple"
+                                        value={editTATaskData?.hiringRequest_ID}
+                                        showSearch={true}
+                                        onChange={(value, option) => {
+                                          // setNewTAHRValue(value);
+                                          // setTRAllData(option);
+                                        }}
+                                        options={hrListSuggestion.map((v) => ({
+                                          ...v,
+                                          label: v.value,
+                                          value: v.id,
+                                        }))}
+                                        optionFilterProp="label"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                
+                                <div className={stylesOBj.HRINFOCOntainer}>
+                                  {Object.keys(editTATaskData).length > 0 && (
+                                    <>
+                                      <div>
+                                        <span>Active TR : </span>
+                                        {editTATaskData.activeTR}
+                                      </div>
+                                      <div>
+                                        <span>HR Created Date : </span>
+                                        {moment(editTATaskData.hrCreatedDate).format(
+                                          "DD-MMM-YYYY"
+                                        )}
+                                      </div>
+                                      <div>
+                                        <span>Talent Budget  : </span>
+                                        {editTATaskData.talent_AnnualCTC_Budget_INRValue}
+                                      </div>
+                                      <div>
+                                        <span>DP /Contract : </span>
+                                        {editTATaskData.modelType}
+                                      </div>
+                                      <div>
+                                        <span>Revenue Opportunity : </span>
+                                        {editTATaskData.revenue_On10PerCTC}
+                                      </div>
+                                      <div>
+                                        <span>Sales : </span>
+                                        {editTATaskData.salesName}
+                                      </div>
+                                      <div>
+                                        <span>
+                                          Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
+                                        </span>
+                                        {editTATaskData.totalRevenue_NoofTalent}
+                                      </div>
+                                      <div>
+                                        <span>Open Since {">"} 1 Month (Yes/no) : </span>
+                                        {editTATaskData.hrOpenSinceOneMonths}
+                                      </div>
+                                      <div>
+                                        <span>
+                                          No. of Active/Submitted Profiles till Date :{" "}
+                                        </span>
+                                        {editTATaskData.noOfProfile_TalentsTillDate}
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              </>
+                            )}
+                
+                            <div style={{ margin: "10px 0" }}>
+                              <button
+                                className={stylesOBj.btnPrimary}
+                                disabled={isEditNewTask}
+                                onClick={() => {
+                                  saveEditTask();
+                                }}
+                              >
+                                Save
+                              </button>
+                              <button
+                                className={stylesOBj.btnCancle}
+                                disabled={isEditNewTask}
+                                onClick={() => {
+                                  setShowEditTATask(false);
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </Modal>
+                      )}
+
+   {showConfirmRemove && (
+        <Modal
+          transitionName=""
+          width="650px"
+          centered
+          footer={null}
+          open={showConfirmRemove}
+          // className={allEngagementStyles.engagementModalContainer}
+          className="engagementModalStyle"
+          // onOk={() => setVersantModal(false)}
+          onCancel={() => {
+            setShowConfirmRemove(false);
+          }}
+        >
+          <>
+            <div style={{ padding: "35px 15px 10px 15px" }}>
+              {loadingTalentProfile ? (
+                <div>
+                  <Skeleton active />
+                </div>
+              ) : (
+                <h3>
+                  Are you sure you want to Remove{" "}
+                  <strong>{profileInfo?.taName}</strong> for{" "}
+                  {profileInfo?.hrNumber} in {profileInfo?.companyName}
+                </h3>
+              )}
+            </div>
+
+            <div
+              style={{
+                padding: "10px",
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              <button
+                className={stylesOBj.btnPrimary}
+                disabled={loadingTalentProfile}
+                onClick={() => {
+                  removeTask(profileInfo?.id);
+                }}
+              >
+                Yes Remove
+              </button>
+              <button
+                className={stylesOBj.btnCancle}
+                disabled={loadingTalentProfile}
+                onClick={() => {
+                  setShowConfirmRemove(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        </Modal>
+      )}
 
             </main>
         </div>
