@@ -144,6 +144,8 @@ function ScrumStructure2() {
     const gridWrapperRef = useRef(null);
     const [availableHeight, setAvailableHeight] = useState(600);
 
+    const popupParent = useMemo(() => document.body, []);
+
     useEffect(() => {
         const recomputeAvailableHeight = () => {
             if (!gridWrapperRef.current) return;
@@ -943,6 +945,18 @@ function ScrumStructure2() {
             cellStyle: { textAlign: 'center' },
             width: 100,
         },
+          {
+            headerName: 'No of Active Profile Till Date',
+            field: 'noOfProfile_TalentsTillDate',
+            width: 150,
+            cellRenderer: ActiveProfileCountCell,
+        },
+            {
+            headerName: 'Total No Of Submissions',
+            field: 'totalNoOfSubmission',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+        },
         {
             headerName: '# Interview Rounds',
             field: 'no_of_InterviewRounds',
@@ -954,12 +968,7 @@ function ScrumStructure2() {
             field: 'role_Type',
             width: 140,
         },
-        {
-            headerName: 'No of Active Profile Till Date',
-            field: 'noOfProfile_TalentsTillDate',
-            width: 150,
-            cellRenderer: ActiveProfileCountCell,
-        },
+      
         {
             headerName: 'Talent Annual CTC Budget (INR)',
             field: 'talent_AnnualCTC_Budget_INRValueStr',
@@ -986,14 +995,15 @@ function ScrumStructure2() {
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
             autoHeight: true,  // Automatically grows the row height[cite: 1]
-
+            cellEditorPopup: true,
+            cellEditorPopupPosition: 'under', // opens below the cell instead of overlapping upward into the header
             // 👇 ADD THESE TWO CONFIGURATIONS
             // cellEditor: 'agTextCellEditor', 
             cellEditor: 'agLargeTextCellEditor',
             cellEditorParams: {
-                //   maxLength: 60, // Optional: restricts max length
-                cols: 30,       // Optional: width of the dropdown box
-                rows: 3,        // Optional: height of the dropdown box
+                  maxLength: 1000, // Optional: restricts max length
+                // cols: 30,       // Optional: width of the dropdown box
+                // rows: 3,        // Optional: height of the dropdown box
             },
             suppressKeyboardEvent: (params) => {
                 const isEnterKey = params.event.key === 'Enter';
@@ -1054,12 +1064,7 @@ function ScrumStructure2() {
         //     field: 'interview_Scheduled_Target',
         //     width: 170,
         // },
-        {
-            headerName: 'Total No Of Submissions',
-            field: 'totalNoOfSubmission',
-            cellStyle: { textAlign: 'center' },
-            width: 170,
-        },
+    
         {
             headerName: 'Screen Reject',
             field: 'screenReject',
@@ -1322,6 +1327,7 @@ function ScrumStructure2() {
                             // domLayout="autoHeight"
                             groupDefaultExpanded={-1}
                             autoGroupColumnDef={autoGroupColumnDef}
+                            popupParent={popupParent}
                         />
                     }
 
