@@ -144,6 +144,8 @@ function ScrumStructure2() {
     const gridWrapperRef = useRef(null);
     const [availableHeight, setAvailableHeight] = useState(600);
 
+    const popupParent = useMemo(() => document.body, []);
+
     useEffect(() => {
         const recomputeAvailableHeight = () => {
             if (!gridWrapperRef.current) return;
@@ -986,14 +988,15 @@ function ScrumStructure2() {
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
             autoHeight: true,  // Automatically grows the row height[cite: 1]
-
+            cellEditorPopup: true,
+            cellEditorPopupPosition: 'under', // opens below the cell instead of overlapping upward into the header
             // 👇 ADD THESE TWO CONFIGURATIONS
             // cellEditor: 'agTextCellEditor', 
             cellEditor: 'agLargeTextCellEditor',
             cellEditorParams: {
-                //   maxLength: 60, // Optional: restricts max length
-                cols: 30,       // Optional: width of the dropdown box
-                rows: 3,        // Optional: height of the dropdown box
+                  maxLength: 1000, // Optional: restricts max length
+                // cols: 30,       // Optional: width of the dropdown box
+                // rows: 3,        // Optional: height of the dropdown box
             },
             suppressKeyboardEvent: (params) => {
                 const isEnterKey = params.event.key === 'Enter';
@@ -1322,6 +1325,7 @@ function ScrumStructure2() {
                             // domLayout="autoHeight"
                             groupDefaultExpanded={-1}
                             autoGroupColumnDef={autoGroupColumnDef}
+                            popupParent={popupParent}
                         />
                     }
 
