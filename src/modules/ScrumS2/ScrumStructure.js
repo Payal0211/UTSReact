@@ -945,6 +945,18 @@ function ScrumStructure2() {
             cellStyle: { textAlign: 'center' },
             width: 100,
         },
+          {
+            headerName: 'No of Active Profile Till Date',
+            field: 'noOfProfile_TalentsTillDate',
+            width: 150,
+            cellRenderer: ActiveProfileCountCell,
+        },
+            {
+            headerName: 'Total No Of Submissions',
+            field: 'totalNoOfSubmission',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+        },
         {
             headerName: '# Interview Rounds',
             field: 'no_of_InterviewRounds',
@@ -956,12 +968,7 @@ function ScrumStructure2() {
             field: 'role_Type',
             width: 140,
         },
-        {
-            headerName: 'No of Active Profile Till Date',
-            field: 'noOfProfile_TalentsTillDate',
-            width: 150,
-            cellRenderer: ActiveProfileCountCell,
-        },
+      
         {
             headerName: 'Talent Annual CTC Budget (INR)',
             field: 'talent_AnnualCTC_Budget_INRValueStr',
@@ -1057,12 +1064,7 @@ function ScrumStructure2() {
         //     field: 'interview_Scheduled_Target',
         //     width: 170,
         // },
-        {
-            headerName: 'Total No Of Submissions',
-            field: 'totalNoOfSubmission',
-            cellStyle: { textAlign: 'center' },
-            width: 170,
-        },
+    
         {
             headerName: 'Screen Reject',
             field: 'screenReject',
