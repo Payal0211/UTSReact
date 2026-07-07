@@ -62,15 +62,20 @@ function CompanyCell(props) {
           
 
             <div style={{ display: 'flex' }}>
-                <button
-                    className={stylesOBj['diamond-toggle']}
-                    data-tooltip={
-                        isAllowedToToggleDiamond
+                <Tooltip title={ isAllowedToToggleDiamond
                             ? isDiamond
                                 ? 'Remove Diamond'
                                 : 'Add Diamond'
-                            : 'Not allowed'
-                    }
+                            : 'Not allowed'}>
+                    <button
+                    className={stylesOBj['diamond-toggle']}
+                    // data-tooltip={
+                    //     isAllowedToToggleDiamond
+                    //         ? isDiamond
+                    //             ? 'Remove Diamond'
+                    //             : 'Add Diamond'
+                    //         : 'Not allowed'
+                    // }
                     onClick={() => {
                         if (!isAllowedToToggleDiamond) return;
                         if (isDiamond) {
@@ -95,11 +100,14 @@ function CompanyCell(props) {
                         />
                     )}
                 </button>
+                </Tooltip>
+                
 
                 {userData?.showTADashboardDropdowns && (
-                    <button
+                    <Tooltip title={`Add task for TA ${data.taName} in ${data.companyName}`}>
+                           <button
                         className={stylesOBj['plus-task-btn']}
-                        data-tooltip={`Add task for TA ${data.taName} in ${data.companyName}`}
+                        // data-tooltip={`Add task for TA ${data.taName} in ${data.companyName}`}
                         onClick={() => {
                             setIsAddNewRow(true);
                             setNewTAUserValue(data.tA_UserID);
@@ -116,6 +124,8 @@ function CompanyCell(props) {
                             />
                         </svg>
                     </button>
+                    </Tooltip>
+                 
                 )}
             </div> 
 
