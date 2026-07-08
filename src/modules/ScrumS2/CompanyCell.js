@@ -1,5 +1,5 @@
 import React from 'react';
-import stylesOBj from '../scrumStructure//scrumStructure.module.css';
+import stylesOBj from './scrumStructure.module.css';
 import { Tooltip } from 'antd';
 
 function CompanyCell(props) {

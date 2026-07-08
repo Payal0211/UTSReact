@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef, useMemo, Suspense } from 'react'
-import stylesOBj from '../scrumStructure/scrumStructure.module.css'
+import stylesOBj from './scrumStructure.module.css'
 import gridStyles from './scrumGrid.module.css'
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { AgGridReact } from 'ag-grid-react'
@@ -170,10 +170,7 @@ function ScrumStructure2() {
         return () => window.removeEventListener('resize', recomputeAvailableHeight);
     }, [TaListData.length]);
 
-    const gridHeightPx = Math.min(
-        TaListData.length * GRID_ROW_HEIGHT + GRID_HEADER_HEIGHT + 2,
-        availableHeight
-    );
+    const gridHeightPx = availableHeight
 
 
     const getAllTAUsersList = async () => {
@@ -1456,6 +1453,24 @@ console.log(result)
         }
     }, []);
 
+    const handleCellEditingStarted = useCallback((params) => {
+    // Only applies to the large-text popup editors
+    if (params.column.getColId() === 'latestNotes' || params.column.getColId() === 'touchBasedNotes') {
+        // Wait a tick for AG Grid to actually mount the popup + textarea
+        setTimeout(() => {
+            const textarea = document.querySelector(
+                '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
+            );
+            if (textarea) {
+                // Reset cursor to the start so it doesn't auto-scroll to bottom
+                textarea.setSelectionRange(0, 0);
+                textarea.scrollTop = 0;
+                textarea.focus();
+            }
+        }, 0);
+    }
+}, []);
+
     const isSelectableDateModal = (date) => {
         const today = new Date();
         const targetDateStr = date.toDateString();
@@ -1606,8 +1621,9 @@ console.log(result)
                             headerHeight={44}
                             rowHeight={46}
                             onCellKeyDown={handleGridKeyDown}
+                            onCellEditingStarted={handleCellEditingStarted} 
                             groupDisplayType="singleColumn"
-                            // domLayout="autoHeight"
+                          
                             groupDefaultExpanded={-1}
                             autoGroupColumnDef={autoGroupColumnDef}
                             popupParent={popupParent}

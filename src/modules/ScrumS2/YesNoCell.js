@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Select } from 'antd';
-import stylesOBj from '../scrumStructure/scrumStructure.module.css';
+import stylesOBj from './scrumStructure.module.css';
 
 const { Option } = Select;
 
