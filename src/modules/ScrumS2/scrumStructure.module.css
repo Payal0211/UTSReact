@@ -1,7 +1,7 @@
 
 body {
-    overflow: auto;
-    height: auto;
+     overflow: hidden;   /* was: overflow: auto; */
+    height: 100%;  
 }
 
 .dashboard-container {
@@ -21,8 +21,7 @@ body {
     width: calc(100% - 68px);
     position: relative;
     z-index: 1;
-    height: auto;
-    min-height: 100vh;
+    height: 100vh;    
 }
 
 .content-wrapper {

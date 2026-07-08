@@ -2,8 +2,17 @@
 
 .grid-wrapper {
     margin: 16px;
-    height: auto;
+    /* height: auto; */
     width: 100%;
+   overflow-y: hidden;  
+    overflow-x: auto;
+
+}
+
+
+.grid-wrapper :global(.ag-header) {
+    z-index: 3;   /* no position property here — don't touch positioning */
+    background-color: #fff;
 }
 
 .grid-wrapper [class*="ag-header-cell-label"]{
