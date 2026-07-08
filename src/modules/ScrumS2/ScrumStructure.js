@@ -118,6 +118,11 @@ function ScrumStructure2() {
     const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
     const [selectedCompanyID, setselectedCompanyID] = useState("");
     const [hrListSuggestion, setHRListSuggestion] = useState([]);
+
+    const [scrumPopupData ,setScrumPopupData] = useState([])
+    const[scrumPopupLoading,setScrumPopupLoading] = useState(false)
+    const [showScrumPopup,setShowScrumPopup] = useState(false)
+    const [scrumPopupType,setScrumPopupType] = useState('')
     const [userData, setUserData] = useState({});
     const {
         watch,
@@ -772,6 +777,53 @@ function ScrumStructure2() {
         }
     };
 
+    const ScPopoupComp = ({value,data,type}) => {
+        return  <p
+            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0 , textAlign:"center"}}
+            onClick={() => {
+                getScrumPOPUPInfo(data, type)
+            }}
+        >
+            {value}
+        </p> 
+    }
+
+    const ScrumPopupColumns = ()=>{
+
+        if(scrumPopupType === "TotalSubmission"){
+            return  [
+        {
+            title: "Date",
+            dataIndex: "actionDate",
+            key: "actionDate",
+        },
+        {
+            title: "Talent",
+            dataIndex: "talent",
+            key: "talent",
+        },
+    ]
+        }
+
+        return  [
+        {
+            title: "Date",
+            dataIndex: "actionDate",
+            key: "actionDate",
+        },
+        {
+            title: "Talent",
+            dataIndex: "talent",
+            key: "talent",
+        },
+         {
+            title: scrumPopupType === "ScreenReject" || scrumPopupType === "TotalReject"  ? " Reacted Reason" : "Slot Details",
+            dataIndex: "slotDetail",
+            key: "slotDetail",
+        },
+    ]
+    }
+
     const ProfileColumns = [
         {
             title: "Submission Date",
@@ -839,6 +891,21 @@ function ScrumStructure2() {
         },
     ];
 
+    const getScrumPOPUPInfo = async (data,type)=>{
+        let Query = `?TaskID=${data.id}&OptionType=${type}`
+setShowScrumPopup(true)
+setScrumPopupType(type)
+setScrumPopupLoading(true)
+        let result = await TaDashboardDAO.getScrumPOPUPInfoDAO(Query)
+setScrumPopupLoading(false)
+console.log(result)
+        if(result.statusCode === HTTPStatusCode.OK){
+            setScrumPopupData(result.responseBody)
+        }else{
+             setScrumPopupData([])
+        }
+    }
+
 
     const handleSearchInput = (value) => {
         setSearchTerm(value);
@@ -866,6 +933,10 @@ function ScrumStructure2() {
         let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
     }
 
+
+    const updateTouchNotes = async (pl)=>{
+         let updateresult = await TaDashboardDAO.updateTouchCommentRequestDAO(pl);
+    }
 
     const AddComment = (data, index) => {
         getAllComments(data.id);
@@ -991,20 +1062,23 @@ function ScrumStructure2() {
         },
            {
             headerName: "Today's Submission Target",
-            field: 'noOfCallsGivenDay',
+            field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
+              cellRenderer: ProfileSharedTargetCell,
+                 cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
         },
         {
             headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
             cellStyle: { textAlign: 'center' },
-            cellRenderer: ProfileSharedTargetCell,
+          
         },
         {
-            headerName: 'Submission Target Achieved',
+            headerName: "Yesterday's Target Achieved",
             field: 'profile_Shared_Achieved',
+            cellStyle: { textAlign: 'center' },
             cellStyle: { textAlign: 'center' },
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
@@ -1019,6 +1093,7 @@ function ScrumStructure2() {
             headerName: 'No of Active Profile Till Date',
             field: 'noOfProfile_TalentsTillDate',
             width: 150,
+              cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
             {
@@ -1026,12 +1101,18 @@ function ScrumStructure2() {
             field: 'totalNoOfSubmission',
             cellStyle: { textAlign: 'center' },
             width: 170,
+             cellRenderer: ({value,data})=>{
+                return value ? <ScPopoupComp value={value} data={data} type={"TotalSubmission"} /> : ''
+             }
         },
         {
             headerName: '# Interview Rounds',
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 120,
+            cellRenderer: ({value,data})=>{
+                return value ? value : ''
+             }
         },
         {
             headerName: 'Inbound / Outbound',
@@ -1044,18 +1125,27 @@ function ScrumStructure2() {
             field: 'talent_AnnualCTC_Budget_INRValueStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
+            cellRenderer: ({value,data})=>{
+                return value ? value : ''
+             }
         },
         {
             headerName: 'Revenue %',
             field: 'uplersFeesPer',
             cellStyle: { textAlign: 'center' },
             width: 150,
+            cellRenderer: ({value,data})=>{
+                return value ? value : ''
+             }
         },
         {
             headerName: 'Total Revenue Opportunity',
             field: 'totalRevenue_NoofTalentStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
+            cellRenderer: ({value,data})=>{
+                return value ? value : ''
+             }
         },
         {
             headerName: 'Latest Updates',
@@ -1109,6 +1199,7 @@ function ScrumStructure2() {
         {
             headerName: 'HR Created Date',
             field: 'hrCreatedDate',
+             cellStyle: { textAlign: 'center' },
             width: 150,
             valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
         },
@@ -1117,6 +1208,9 @@ function ScrumStructure2() {
             field: 'days',
             cellStyle: { textAlign: 'center' },
             width: 170,
+            cellRenderer: ({value,data})=>{
+                return value ? value : ''
+             }
         },
 
      
@@ -1136,26 +1230,87 @@ function ScrumStructure2() {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
+            cellRenderer: ({value,data})=>{
+                return value ? <ScPopoupComp value={value} data={data} type={"ScreenReject"} />: ''
+             }
         },
-        { headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' } },
-        { headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' } },
-        { headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' } },
+        { headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
+    cellRenderer: ({value,data})=>{
+                return value ? <ScPopoupComp value={value} data={data} type={"R1"} /> : ''
+             } },
+        { headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
+    cellRenderer: ({value,data})=>{
+                return value ? <ScPopoupComp value={value} data={data} type={"R2"} /> : ''
+             } },
+        { headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
+    cellRenderer: ({value,data})=>{
+                return value ? <ScPopoupComp value={value} data={data} type={"R3"} /> : ''
+             } },
         {
             headerName: 'Total No Of Interview Rejects',
             field: 'totalNoOfInterviewReject',
             width: 170,
             cellStyle: { textAlign: 'center' },
+            cellRenderer: ({value,data})=>{
+                return value ? <ScPopoupComp value={value} data={data} type={"TotalReject"} /> : ''
+             }
         },
         {
             headerName: 'Weekly Selection Planned',
-            field: 'weeklySelectionPlan',
+            field: 'WeeklySelectionPlanStr',
             width: 170,
             cellStyle: { textAlign: 'center' },
+            cellRenderer: ({value,data})=>{
+                return value ? value : ''
+             }
         },
         {
             headerName: 'Joining Date',
             field: 'joiningDate',
+            cellStyle: { textAlign: 'center' },
             width: 150,
+        },
+          {
+            headerName: 'Touch Based Notes',
+            field: 'touchBasedNotes',
+            width: 250,
+            sortable: false,
+            editable: true,
+            wrapText: true,    // Allows text to break to next line visually
+            autoHeight: true,  // Automatically grows the row height[cite: 1]
+            cellEditorPopup: true,
+            cellEditorPopupPosition: 'under', // opens below the cell instead of overlapping upward into the header
+        
+            cellEditor: 'agLargeTextCellEditor',
+            cellEditorParams: {
+                  maxLength: 1000, // Optional: restricts max length
+                // cols: 30,       // Optional: width of the dropdown box
+                // rows: 3,        // Optional: height of the dropdown box
+            },
+            suppressKeyboardEvent: (params) => {
+                const isEnterKey = params.event.key === 'Enter';
+                const isEditing = params.editing;
+                //   console.log("is edit",params)
+                if (isEditing && isEnterKey) {
+                    // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
+                    return true;
+                }
+                return false;
+            },
+            onCellValueChanged: (params) => {
+                // console.log("Updated:", params.newValue);
+                // console.log("Row:", params.data);
+
+                let pl = {
+                    TA_Head_UserID: selectedHead,
+                    TaskID: params.data.id,
+                    Comments: params.newValue
+                }
+
+                updateTouchNotes(pl)
+            },
+
+            cellRenderer: LatestNotesCell,
         },
         {
             headerName: 'Hiring Manager AS POC (Y/N)',
@@ -1239,6 +1394,7 @@ function ScrumStructure2() {
         wrapHeaderText: true,
         autoHeaderHeight: true,
         cellClass: 'ag-cell-excel-border',
+        headerClass:`${gridStyles["ag-header-center"]}` ,
     };
 
     // Static column config (renderers live in ./scrumGridColumns + ./cellRenderers/*)
@@ -1840,6 +1996,10 @@ function ScrumStructure2() {
                                         columns={ProfileColumns}
                                         // bordered
                                         pagination={false}
+                                        scroll={{
+        y: 600, 
+       
+    }}
                                     />
                                 </div>
                             )}
@@ -2542,6 +2702,60 @@ function ScrumStructure2() {
           </>
         </Modal>
       )}
+
+        {showScrumPopup && (
+                    <Modal
+                        transitionName=""
+                        width="1000px"
+                        centered
+                        footer={null}
+                        open={showScrumPopup}
+                        // className={allEngagementStyles.engagementModalContainer}
+                        className="engagementModalStyle"
+                        // onOk={() => setVersantModal(false)}
+                        onCancel={() => {
+                            setShowScrumPopup(false);
+                            setScrumPopupData([]);
+                        }}
+                    >
+                        <>
+
+                            {scrumPopupLoading ? (
+                                <div>
+                                    <Skeleton active />
+                                </div>
+                            ) : (
+                                <div style={{ margin: "5px 10px" }}>
+                                    <Table
+                                        dataSource={scrumPopupData}
+                                        columns={ScrumPopupColumns()}
+                                        // bordered
+                                        pagination={false}
+                                        scroll={{
+        y: 500,
+     
+    }}
+                                    />
+                                </div>
+                            )}
+
+                           
+
+                            <div style={{ padding: "10px 0" }}>
+                                <button
+                                    className={stylesOBj.btnCancle}                           
+                                    onClick={() => {
+                                        setSearchTerm("");
+                                        setShowTalentProfiles(false);
+                                        setHRTalentListFourCount([]);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </>
+                    </Modal>
+                )}
 
             </main>
         </div>

@@ -79,6 +79,7 @@ export class TaDashboardURL {
 	static UPDATE_TA_TASK = 'InsertOrUpdateTATasks'
 	static GET_TA_COMPANY_List = 'GetTACompanyList'
 	static UPDATE_COMMENT_REQUEST = "AddTANewScrumLatestUpdate"
+	static UPDATE_TOUCH_COMMENT_REQUEST = "AddTouchBaseNotesForTalent"
 	static UPDATE_HM_POC = 'UpdateHMAsPOC'
 	static GET_HR_LIST_COMPANY = 'GetTAHRListCompanyWise'
 	static GET_HR_TALENT_DETAILS = 'GetHRRelatedTalentDetails'
@@ -90,6 +91,7 @@ export class TaDashboardURL {
 	static ALL_TA_USERS = 'GetAllTAUsers'
 	static INSERT_TASK_COMMENT = 'InsertTaskComment'
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'
+	static GET_SCRUM_POPUP_INFO = 'GetSrumpopupInfoBasedOnTaskID'
 	static REMOVE_TASK ='InactiveTATask'
 	static GET_FTE_COUNT_REPORT = 'GetDailyActiveHRPipelineAndTotalTargetPODWise'
 	static GET_TOTAL_REVENUE_PR_TA_USER = 'GetTotalRevenuePerTAUserPODWise'

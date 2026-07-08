@@ -4,16 +4,16 @@ import stylesOBj from '../scrumStructure/scrumStructure.module.css';
 
 export function HrStatusCell(props) {
     const { data } = props;
-    return <>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status)}</>;
+    return <div style={{display:'flex',justifyContent:'center'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status)}</div>;
 }
 
 export function LatestNotesCell(props) {
-    const { data } = props;
+    const { value,data } = props;
     const { AddComment, getRowIndex } = props.context;
     const i = getRowIndex(data);
 
     return (
-        <div style={{lineHeight:'20px'}}>{data?.latestNotes?.length > 50 ? `${data?.latestNotes?.slice(0,50)}...`: data.latestNotes}</div>
+        <div style={{lineHeight:'20px'}}>{value?.length > 50 ? `${value?.slice(0,50)}...`: value}</div>
         // <button
         //     className={stylesOBj['cell-add-btn']}
         //     onClick={(e) => {

@@ -6,6 +6,11 @@
     width: 100%;
 }
 
+.grid-wrapper [class*="ag-header-cell-label"]{
+    text-align: center;
+    justify-content: center;
+}
+
 /* Keeps text top-aligned inside spanned TA cells, matching the old rowSpan look */
 .ag-cell-top-align {
     display: flex;
@@ -21,4 +26,15 @@
 
 .tableSelectField :global(.ant-select) {
     width: 100%;
+}
+
+
+.ag-header-center .ag-header-cell-label {
+    justify-content: space-between;
+}
+
+.ag-header-center .ag-header-cell-comp-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
 }
