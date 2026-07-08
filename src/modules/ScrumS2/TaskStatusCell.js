@@ -3,7 +3,7 @@ import { Select } from 'antd';
 import moment from 'moment';
 import { HTTPStatusCode } from 'constants/network';
 import { TaDashboardDAO } from 'core/taDashboard/taDashboardDRO';
-import stylesOBj from '../scrumStructure/scrumStructure.module.css';
+import stylesOBj from './scrumStructure.module.css';
 
 const { Option } = Select;
 

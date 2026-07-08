@@ -1,6 +1,6 @@
 import React from 'react';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
-import stylesOBj from '../scrumStructure/scrumStructure.module.css';
+import stylesOBj from './scrumStructure.module.css';
 
 export function HrStatusCell(props) {
     const { data } = props;
