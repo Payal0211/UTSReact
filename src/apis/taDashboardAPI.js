@@ -235,6 +235,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.updateCommentRequest');
 		}
 	},
+	updateTouchCommentRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.UPDATE_TOUCH_COMMENT_REQUEST
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.updateTouchCommentRequest');
+		}
+	},
     getTACompanyListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -531,6 +548,22 @@ export const TaDashboardAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'TaDashboardAPI.getALLCommentsRequest');
+		}
+	},
+	getScrumPOPUPInfoRequest: async function (query) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_POPUP_INFO + query
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getScrumPOPUPInfoRequest');
 		}
 	},
 	getALLRevenueCommentsRequest: async function (pl) {

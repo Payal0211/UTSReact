@@ -34,6 +34,11 @@ body {
 
 .tableSelectField [class*="ant-select-selector"] {
     font-size: 12px;
+    text-align: center;
+}
+
+.tableSelectField [class*="ant-select-item-option-content"]{
+    text-align: center;
 }
 
 /* ===================== */
