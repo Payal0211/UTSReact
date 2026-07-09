@@ -1359,7 +1359,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
       },
      
       {
-        title: <>Offer  Dropout/ <br/> Backout</>,
+        title: <>Dropout</>,
         dataIndex: "offerDropoutBackout",
         key: "offerDropoutBackout",
         align: "center",
@@ -1403,7 +1403,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         },
       },
        {
-        title: <>Offer Signed <br/> Talent</>,
+        title: <>Hired Count</>,
         dataIndex: "offerSignedDirectPlacement",
         key: "offerSignedDirectPlacement",
         align: "center",
@@ -1488,7 +1488,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         },
       },
       {
-        title: <>Offer Signed <br/> Revenue</>,
+        title: <>Hired Revenue</>,
         dataIndex: "offerSignedRevenue",
         key: "offerSignedRevenue",
         align: "center",
@@ -1521,6 +1521,52 @@ export default function RecruiterDashboardMultiMonthsReport() {
               }}
               onClick={() => {
                 getTalentProfilesDetailsfromTable(result,'OSR');
+            setColTextVal(text)
+             setIsCarryForwardPipelineClicked(false);
+              setRevenueColumn(true)
+              }}
+            >
+              {text ? text : ''}
+            </p>
+          ) : (
+            text ? text : ''
+          );
+        },
+      },
+        {
+        title: <>Backout</>,
+        dataIndex: "backout",
+        key: "backout",
+        align: "center",
+       width: "120px",
+       render: (text, result) => {
+           if (result.recruiter === 'Total') {
+            return <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_BO');
+                setColTextVal(result.total_Backout)
+                 setIsCarryForwardPipelineClicked(false);
+                 setRevenueColumn(true)
+              }}
+            >
+              {result.total_Backout ? result.total_Backout : ''}
+            </p>
+          }
+          return +text !== 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result,'BO');
             setColTextVal(text)
              setIsCarryForwardPipelineClicked(false);
               setRevenueColumn(true)

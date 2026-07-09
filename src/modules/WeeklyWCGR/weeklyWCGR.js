@@ -73,6 +73,7 @@ function WeeklyWCGR() {
   const [DFListData, setDFListData] = useState([]);
   const [DFFilterListData, setDFFilterListData] = useState([]);
   const [showDFReport, setShowDFReport] = useState(false);
+  const [showDemandFunnelReport,setShowDemandFunnelReport] = useState(false);
   const [showReferenceReport, setShowReferenceReport] = useState(false);
   const [showAnticipatedReport, setShowAnticipatedReport] = useState(false);
   const [showJConfirmationReport, setShowJConfirmationReport] = useState(false);
@@ -1463,6 +1464,37 @@ function WeeklyWCGR() {
     }
   };
 
+  const getDemandFunnelDetailsAllPOD = async (row, v, week,month) => {
+    try {
+      setShowDemandFunnelReport(true);
+
+      const pl = {
+        hrmodel: "DP",
+        pod_id: selectedHead,
+        month: month,
+        year: moment(monthDate).format("YYYY"),
+        optiontype: row.stage_ID,
+        weekno: week ? week : "",
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getPOCDFPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setDFListData(result.responseBody);
+        setDFFilterListData(result.responseBody);
+      } else {
+        setDFListData([]);
+        setDFFilterListData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setDFListData([]);
+      setDFFilterListData([]);
+    }
+  };
+
   const handleSummerySearchInput = (value) => {
     setSearchTerm(value);
     const filteredData = DFListData.filter(
@@ -1899,6 +1931,109 @@ function WeeklyWCGR() {
       setListAchievedData([]);
     }
   }
+
+  const DemandFunnelColumns = [
+    {
+      title: "Action Date",
+      dataIndex: "actionDate",
+      key: "actionDate",
+      width: "150px",
+      render: (text) => {
+        return text;
+      },
+    },
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      width: "150px",
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      width: "170px",
+      render: (text, value) => {
+        return (
+          <a
+            href={`/allhiringrequest/${value.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        ); // Replace `/client/${text}` with the appropriate link you need
+      },
+    },
+    {
+      title: "HR Title",
+      dataIndex: "hrTitle",
+      key: "hrTitle",
+    },
+    {
+      title: "Talent",
+      dataIndex: "talent",
+      key: "talent",
+    },
+    {
+      title: "TA",
+      dataIndex: "ta",
+      key: "ta",
+    },
+    {
+      title: "Sales Person",
+      dataIndex: "salesperson",
+      key: "salesperson",
+    },
+    {
+      title: "Slot/Remark",
+      dataIndex: "slotOrRemarkDetails",
+      key: "slotOrRemarkDetails",
+    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "talentStatus",
+    //   key: "talentStatus",
+    //   render: (_, item) => (
+    //     <div
+    //       style={{
+    //         display: "flex",
+    //         alignItems: "center",
+    //         justifyContent: "space-between",
+    //       }}
+    //     >
+    //       {All_Hiring_Request_Utils.GETTALENTSTATUS(
+    //         parseInt(item?.talentStatusColor),
+    //         item?.talentStatus
+    //       )}
+
+    //       {(item?.statusID === 2 || item?.statusID === 3) && (
+    //         <IconContext.Provider
+    //           value={{
+    //             color: "#FFDA30",
+    //             style: { width: "16px", height: "16px", cursor: "pointer" },
+    //           }}
+    //         >
+    //           <Tooltip title="Move to Assessment" placement="top">
+    //             <span
+    //               onClick={() => {
+    //                 setMoveToAssessment(true);
+    //                 setTalentToMove((prev) => ({ ...prev, ctpID: item.ctpid }));
+    //               }}
+    //               style={{ padding: "0" }}
+    //             >
+    //               {" "}
+    //               <BsClipboard2CheckFill />
+    //             </span>{" "}
+    //           </Tooltip>
+    //         </IconContext.Provider>
+    //       )}
+
+    //     </div>
+    //   ),
+    // },
+  ];
 
   const AddNoteComp = ({ text, record, keyPar, month, index, week, commentKey }) => {
     const isPastMonth = month < moment().format("M");
@@ -2459,6 +2594,32 @@ function WeeklyWCGR() {
         </div>
       }
 
+    }
+
+    if(record?.stage_Title === "DELIVERY FUNNEL"){
+      return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getDemandFunnelDetailsAllPOD(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
     }
 
 
@@ -3703,6 +3864,97 @@ function WeeklyWCGR() {
           </div>
         </Modal>
       )}
+
+      {showDemandFunnelReport &&  <Modal
+          transitionName=""
+          width="1050px"
+          centered
+          footer={null}
+          open={showDemandFunnelReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setSearchTerm("");
+            setShowDemandFunnelReport(false);
+            setDFFilterListData([]);
+            setDFListData([]);
+          }}
+        >
+          {false ? (
+            <div
+              style={{
+                display: "flex",
+                height: "350px",
+                justifyContent: "center",
+              }}
+            >
+              <Spin size="large" />
+            </div>
+          ) : (
+            <>
+              <div
+                style={{
+                  padding: "45px 15px 10px 15px",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <h3>
+                  <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+                </h3>
+                {/* <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
+                                                      TA : <strong>add</strong>
+                                                    </p> */}
+
+                <input
+                  type="text"
+                  placeholder="Search talent..."
+                  value={searchTerm}
+                  onChange={(e) => handleSummerySearchInput(e.target.value)}
+                  style={{
+                    padding: "6px 10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    marginLeft: "auto",
+                    marginRight: "20px",
+                    minWidth: "260px",
+                  }}
+                />
+              </div>
+
+              {achievedLoading ? (
+                <div>
+                  <Skeleton active />
+                </div>
+              ) : (
+                <div style={{ margin: "5px 10px" }}>
+                  <Table
+                    dataSource={DFFilterListData}
+                    columns={DemandFunnelColumns}
+                    pagination={false}
+                    scroll={{ x: "1600px", y: "480px" }}
+                  />
+                </div>
+              )}
+
+              <div style={{ padding: "10px 0" }}>
+                <button
+                  className={uplersStyle.btnCancle}
+                  // disabled={isAddingNewTask}
+                  onClick={() => {
+                    setSearchTerm("");
+                    setShowDemandFunnelReport(false);
+                    setDFFilterListData([]);
+                    setDFListData([]);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </Modal> }
 
       {showDFReport && (
         <Modal
