@@ -4,8 +4,8 @@
     margin: 16px;
     /* height: auto; */
     width: 100%;
-   overflow-y: hidden;  
-    overflow-x: auto;
+    overflow-y: hidden !important;
+    overflow-x: auto !important;
 
 }
 
