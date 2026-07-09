@@ -31,9 +31,8 @@ import Editor from 'modules/hiring request/components/textEditor/editor';
 import { ReactComponent as EditSVG } from "assets/svg/editnewIcon.svg";
 import spinGif from "assets/gif/RefreshLoader.gif";
 import CompanyCell from './CompanyCell';
-import TaskStatusCell from './TaskStatusCell';
 import { ProfileSharedTargetCell, ActiveProfileCountCell } from './ProfileCells';
-import { HrStatusCell, LatestNotesCell } from './MiscCells';
+import { HrStatusCell, LatestNotesCell,LatestTouchCell } from './MiscCells';
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import YesNoCell from './YesNoCell';
@@ -635,6 +634,59 @@ function ScrumStructure2() {
         }
     };
 
+      const TaskStatusComp = ({ text, result }) => {
+                const index = getRowIndex(result);
+            const [value, setValue] = useState(text ?? "");
+            const colorCode = filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
+            return (
+                <div className={stylesOBj.tableSelectField}>
+                    <Select
+                        value={value}
+                        size="small"
+                        style={{ color: colorCode }}
+                        onChange={async (val) => {
+                            if (value === "Fasttrack" && val !== "Fasttrack") {
+                                let pl = {
+                                    task_ID: result?.id,
+                                    tA_Head_UserID: selectedHead,
+                                    tA_UserID: result?.tA_UserID,
+                                    target_StageID: 1,
+                                    target_Number: targetValue,
+                                    target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
+                                    IsStatusChangedToSlow: true,
+                                };
+                                setLoadingTalentProfile(true);
+                                let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
+                                    pl
+                                );
+                                setLoadingTalentProfile(false);
+                                if (response.statusCode === HTTPStatusCode.OK) {
+                                    setGoalList(response.responseBody);
+                                    setTargetValue(5);
+                                    setStartTargetDate(new Date());
+                                }
+                            }
+                           
+                            if (val === "Fasttrack") {
+                                setShowProfileTarget(true);
+                                setStartTargetDate(startDate);
+                                setProfileTargetDetails({ ...result, index: index });
+                                return;
+                            }
+                            setValue(val);
+                            let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
+                            updateTARowValue(valobj, "task_StatusID", result, index);
+                        }}
+                    >
+                        {filtersList?.TaskStatus?.map((v) => (
+                            <Option style={{ color: v.colorCode }} value={v.data}>
+                                {v.data}
+                            </Option>
+                        ))}
+                    </Select>
+                </div>
+            );
+        };
 
 
     const getTalentProfilesDetails = async (result, statusID, stageID) => {
@@ -979,7 +1031,7 @@ console.log(result)
         {
             headerName: 'Company',
             field: 'companyName',
-            width: 220,
+            width: 200,
             pinned: 'left',
             cellRenderer: CompanyCell,
             sortable: false,
@@ -1055,54 +1107,11 @@ console.log(result)
             field: 'taskStatus',
             width: 150,
             pinned: 'left',
-            cellRenderer: TaskStatusCell,
+            cellRenderer: ({value,data})=>{
+return <TaskStatusComp text={value} result={data} />
+            } ,
         },
-           {
-            headerName: "Today's Submission Target",
-            field: 'todayProfile_Shared_Target',
-            cellStyle: { textAlign: 'center' },
-            width: 150,
-              cellRenderer: ProfileSharedTargetCell,
-                 cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
-        },
-        {
-            headerName: "Yesterday's Submission Target",
-            field: 'profile_Shared_Target',
-            width: 150,
-            cellStyle: { textAlign: 'center' },
-          
-        },
-        {
-            headerName: "Yesterday's Target Achieved",
-            field: 'profile_Shared_Achieved',
-            cellStyle: { textAlign: 'center' },
-            cellStyle: { textAlign: 'center' },
-            width: 150,
-            // cellRenderer: ProfileSharedTargetCell,
-        },
-        {
-            headerName: 'Active TRs',
-            field: 'activeTR',
-            cellStyle: { textAlign: 'center' },
-            width: 100,
-        },
-          {
-            headerName: 'No of Active Profile Till Date',
-            field: 'noOfProfile_TalentsTillDate',
-            width: 150,
-              cellStyle: { textAlign: 'center' },
-            cellRenderer: ActiveProfileCountCell,
-        },
-            {
-            headerName: 'Total No Of Submissions',
-            field: 'totalNoOfSubmission',
-            cellStyle: { textAlign: 'center' },
-            width: 170,
-             cellRenderer: ({value,data})=>{
-                return value ? <ScPopoupComp value={value} data={data} type={"TotalSubmission"} /> : ''
-             }
-        },
-        {
+         {
             headerName: '# Interview Rounds',
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
@@ -1111,11 +1120,36 @@ console.log(result)
                 return value ? value : ''
              }
         },
+               
         {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
             width: 140,
         },
+
+        {
+            headerName: 'HR Created Date',
+            field: 'hrCreatedDate',
+             cellStyle: { textAlign: 'center' },
+            width: 150,
+            valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
+        },
+                 {
+            headerName: 'HR Status',
+            field: 'tA_HR_Status',
+            width: 130,
+            cellRenderer: HrStatusCell,
+        },
+           {
+            headerName: 'Active TRs',
+            field: 'activeTR',
+            cellStyle: { textAlign: 'center' },
+            width: 100,
+        },
+  
+     
+   
+
       
         {
             headerName: 'Talent Annual CTC Budget (INR)',
@@ -1130,7 +1164,7 @@ console.log(result)
             headerName: 'Revenue %',
             field: 'uplersFeesPer',
             cellStyle: { textAlign: 'center' },
-            width: 150,
+            width: 100,
             cellRenderer: ({value,data})=>{
                 return value ? value : ''
              }
@@ -1143,6 +1177,22 @@ console.log(result)
             cellRenderer: ({value,data})=>{
                 return value ? value : ''
              }
+        },
+          {
+            headerName: 'No Of Days HR Is Open',
+            field: 'days',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+            cellRenderer: ({value,data})=>{
+                return value ? value : ''
+             }
+        },
+          {
+            headerName: 'No of Active Profile Till Date',
+            field: 'noOfProfile_TalentsTillDate',
+            width: 150,
+              cellStyle: { textAlign: 'center' },
+            cellRenderer: ActiveProfileCountCell,
         },
         {
             headerName: 'Latest Updates',
@@ -1187,26 +1237,15 @@ console.log(result)
 
             cellRenderer: LatestNotesCell,
         },
-        {
-            headerName: 'HR Status',
-            field: 'tA_HR_Status',
-            width: 130,
-            cellRenderer: HrStatusCell,
-        },
-        {
-            headerName: 'HR Created Date',
-            field: 'hrCreatedDate',
-             cellStyle: { textAlign: 'center' },
-            width: 150,
-            valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
-        },
-        {
-            headerName: 'No Of Days HR Is Open',
-            field: 'days',
+       
+           
+            {
+            headerName: 'Total No Of Submissions',
+            field: 'totalNoOfSubmission',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            cellRenderer: ({value,data})=>{
-                return value ? value : ''
+             cellRenderer: ({value,data})=>{
+                return value ? <ScPopoupComp value={value} data={data} type={"TotalSubmission"} /> : ''
              }
         },
 
@@ -1231,6 +1270,15 @@ console.log(result)
                 return value ? <ScPopoupComp value={value} data={data} type={"ScreenReject"} />: ''
              }
         },
+          {
+            headerName: 'Total No Of Interview Rejects',
+            field: 'totalNoOfInterviewReject',
+            width: 170,
+            cellStyle: { textAlign: 'center' },
+            cellRenderer: ({value,data})=>{
+                return value ? <ScPopoupComp value={value} data={data} type={"TotalReject"} /> : ''
+             }
+        },
         { headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
     cellRenderer: ({value,data})=>{
                 return value ? <ScPopoupComp value={value} data={data} type={"R1"} /> : ''
@@ -1243,14 +1291,27 @@ console.log(result)
     cellRenderer: ({value,data})=>{
                 return value ? <ScPopoupComp value={value} data={data} type={"R3"} /> : ''
              } },
-        {
-            headerName: 'Total No Of Interview Rejects',
-            field: 'totalNoOfInterviewReject',
-            width: 170,
+               {
+            headerName: "Today's Submission Target",
+            field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
-            cellRenderer: ({value,data})=>{
-                return value ? <ScPopoupComp value={value} data={data} type={"TotalReject"} /> : ''
-             }
+            width: 150,
+              cellRenderer: ProfileSharedTargetCell,
+                 cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
+        },
+        {
+            headerName: "Yesterday's Submission Target",
+            field: 'profile_Shared_Target',
+            width: 150,
+            cellStyle: { textAlign: 'center' },
+          
+        },
+        {
+            headerName: "Yesterday's Target Achieved",
+            field: 'profile_Shared_Achieved',
+            cellStyle: { textAlign: 'center' },
+            width: 150,
+            // cellRenderer: ProfileSharedTargetCell,
         },
         {
             headerName: 'Weekly Selection Planned',
@@ -1307,7 +1368,7 @@ console.log(result)
                 updateTouchNotes(pl)
             },
 
-            cellRenderer: LatestNotesCell,
+            cellRenderer: LatestTouchCell,
         },
         {
             headerName: 'Hiring Manager AS POC (Y/N)',
