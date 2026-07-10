@@ -32,15 +32,18 @@ export function LatestTouchCell (props){
     const i = getRowIndex(data);
 
     return (
-        <div style={{lineHeight:'20px'}}>{value?.length > 50 ? `${value?.slice(0,50)}...`: value}</div>
-        // <button
-        //     className={stylesOBj['cell-add-btn']}
-        //     onClick={(e) => {
-        //         e.stopPropagation();
-        //         AddComment(data, i);
-        //     }}
-        // >
-        //     {data?.latestNotes ? 'View / Edit' : 'Add'}
-        // </button>
+        <div style={{lineHeight:'20px'}}>{data?.touchBasedNotesTopRow?.length > 50 ? `${data?.touchBasedNotesTopRow?.slice(0,50)}...`: data?.touchBasedNotesTopRow}</div>
+     
+    );
+}
+
+export function SubmissionSheetCell (props){
+    const { value,data } = props;
+    const { AddComment, getRowIndex } = props.context;
+    const i = getRowIndex(data);
+
+    return (
+        <div style={{lineHeight:'20px'}}><a target="__blank" href={value}>{value?.length > 50 ? `${value?.slice(0,50)}...`: value}</a> </div>
+   
     );
 }

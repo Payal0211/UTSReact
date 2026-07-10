@@ -252,6 +252,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.updateTouchCommentRequest');
 		}
 	},
+	updateSubmissionSheetRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.UPDATE_SUBMISSION_SHEET_REQUEST
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.updateSubmissionSheetRequest');
+		}
+	},
     getTACompanyListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

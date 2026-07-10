@@ -79,6 +79,7 @@ export class TaDashboardURL {
 	static GET_TA_COMPANY_List = 'GetTACompanyList'
 	static UPDATE_COMMENT_REQUEST = "AddTANewScrumLatestUpdate"
 	static UPDATE_TOUCH_COMMENT_REQUEST = "AddTouchBaseNotesForTalent"
+	static UPDATE_SUBMISSION_SHEET_REQUEST= "AddSubmissionSheetsForTalent"
 	static UPDATE_HM_POC = 'UpdateHMAsPOC'
 	static GET_HR_LIST_COMPANY = 'GetTAHRListCompanyWise'
 	static GET_HR_TALENT_DETAILS = 'GetHRRelatedTalentDetails'
