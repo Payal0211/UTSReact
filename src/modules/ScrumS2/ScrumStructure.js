@@ -1339,11 +1339,18 @@ function ScrumStructure2() {
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
         },
+         {
+            headerName: "Interview Scheduled Target",
+            field: 'interview_Scheduled_Target ',
+            cellStyle: { textAlign: 'center' },
+            width: 150,
+            // cellRenderer: ProfileSharedTargetCell,
+        },
         {
             headerName: 'Weekly Selection Planned',
-            field: 'WeeklySelectionPlanStr',
+            field: 'weeklySelectionPlanStr',
             width: 170,
-            cellStyle: { textAlign: 'center' },
+            cellStyle: { textAlign: 'left' },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
