@@ -32,7 +32,7 @@ import { ReactComponent as EditSVG } from "assets/svg/editnewIcon.svg";
 import spinGif from "assets/gif/RefreshLoader.gif";
 import CompanyCell from './CompanyCell';
 import { ProfileSharedTargetCell, ActiveProfileCountCell } from './ProfileCells';
-import { HrStatusCell, LatestNotesCell,LatestTouchCell } from './MiscCells';
+import { HrStatusCell, LatestNotesCell, LatestTouchCell, SubmissionSheetCell } from './MiscCells';
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import YesNoCell from './YesNoCell';
@@ -118,10 +118,10 @@ function ScrumStructure2() {
     const [selectedCompanyID, setselectedCompanyID] = useState("");
     const [hrListSuggestion, setHRListSuggestion] = useState([]);
 
-    const [scrumPopupData ,setScrumPopupData] = useState([])
-    const[scrumPopupLoading,setScrumPopupLoading] = useState(false)
-    const [showScrumPopup,setShowScrumPopup] = useState(false)
-    const [scrumPopupType,setScrumPopupType] = useState('')
+    const [scrumPopupData, setScrumPopupData] = useState([])
+    const [scrumPopupLoading, setScrumPopupLoading] = useState(false)
+    const [showScrumPopup, setShowScrumPopup] = useState(false)
+    const [scrumPopupType, setScrumPopupType] = useState('')
     const [userData, setUserData] = useState({});
     const {
         watch,
@@ -134,9 +134,9 @@ function ScrumStructure2() {
     } = useForm();
     const [newTaskError, setNewTaskError] = useState(false);
 
-     const [showEditTATask, setShowEditTATask] = useState(false);
-      const [editTATaskData, setEditTATaskData] = useState();
-      const [showConfirmRemove, setShowConfirmRemove] = useState(false);
+    const [showEditTATask, setShowEditTATask] = useState(false);
+    const [editTATaskData, setEditTATaskData] = useState();
+    const [showConfirmRemove, setShowConfirmRemove] = useState(false);
 
     useEffect(() => {
         const getUserResult = async () => {
@@ -634,59 +634,59 @@ function ScrumStructure2() {
         }
     };
 
-      const TaskStatusComp = ({ text, result }) => {
-                const index = getRowIndex(result);
-            const [value, setValue] = useState(text ?? "");
-            const colorCode = filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
-            return (
-                <div className={stylesOBj.tableSelectField}>
-                    <Select
-                        value={value}
-                        size="small"
-                        style={{ color: colorCode }}
-                        onChange={async (val) => {
-                            if (value === "Fasttrack" && val !== "Fasttrack") {
-                                let pl = {
-                                    task_ID: result?.id,
-                                    tA_Head_UserID: selectedHead,
-                                    tA_UserID: result?.tA_UserID,
-                                    target_StageID: 1,
-                                    target_Number: targetValue,
-                                    target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
-                                    IsStatusChangedToSlow: true,
-                                };
-                                setLoadingTalentProfile(true);
-                                let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
-                                    pl
-                                );
-                                setLoadingTalentProfile(false);
-                                if (response.statusCode === HTTPStatusCode.OK) {
-                                    setGoalList(response.responseBody);
-                                    setTargetValue(5);
-                                    setStartTargetDate(new Date());
-                                }
+    const TaskStatusComp = ({ text, result }) => {
+        const index = getRowIndex(result);
+        const [value, setValue] = useState(text ?? "");
+        const colorCode = filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
+        return (
+            <div className={stylesOBj.tableSelectField}>
+                <Select
+                    value={value}
+                    size="small"
+                    style={{ color: colorCode }}
+                    onChange={async (val) => {
+                        if (value === "Fasttrack" && val !== "Fasttrack") {
+                            let pl = {
+                                task_ID: result?.id,
+                                tA_Head_UserID: selectedHead,
+                                tA_UserID: result?.tA_UserID,
+                                target_StageID: 1,
+                                target_Number: targetValue,
+                                target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
+                                IsStatusChangedToSlow: true,
+                            };
+                            setLoadingTalentProfile(true);
+                            let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
+                                pl
+                            );
+                            setLoadingTalentProfile(false);
+                            if (response.statusCode === HTTPStatusCode.OK) {
+                                setGoalList(response.responseBody);
+                                setTargetValue(5);
+                                setStartTargetDate(new Date());
                             }
-                           
-                            if (val === "Fasttrack") {
-                                setShowProfileTarget(true);
-                                setStartTargetDate(startDate);
-                                setProfileTargetDetails({ ...result, index: index });
-                                return;
-                            }
-                            setValue(val);
-                            let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
-                            updateTARowValue(valobj, "task_StatusID", result, index);
-                        }}
-                    >
-                        {filtersList?.TaskStatus?.map((v) => (
-                            <Option style={{ color: v.colorCode }} value={v.data}>
-                                {v.data}
-                            </Option>
-                        ))}
-                    </Select>
-                </div>
-            );
-        };
+                        }
+
+                        if (val === "Fasttrack") {
+                            setShowProfileTarget(true);
+                            setStartTargetDate(startDate);
+                            setProfileTargetDetails({ ...result, index: index });
+                            return;
+                        }
+                        setValue(val);
+                        let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
+                        updateTARowValue(valobj, "task_StatusID", result, index);
+                    }}
+                >
+                    {filtersList?.TaskStatus?.map((v) => (
+                        <Option style={{ color: v.colorCode }} value={v.data}>
+                            {v.data}
+                        </Option>
+                    ))}
+                </Select>
+            </div>
+        );
+    };
 
 
     const getTalentProfilesDetails = async (result, statusID, stageID) => {
@@ -709,64 +709,64 @@ function ScrumStructure2() {
         }
     };
 
-     const editTAforTask = (task) => {
-    setShowEditTATask(true);
-    getCompanySuggestionHandler(task.tA_UserID);
-    getHRLISTForComapny(task.company_ID);
-    setNewTAHeadUserValue(selectedHead);
-    setEditTATaskData(task);
-  };
+    const editTAforTask = (task) => {
+        setShowEditTATask(true);
+        getCompanySuggestionHandler(task.tA_UserID);
+        getHRLISTForComapny(task.company_ID);
+        setNewTAHeadUserValue(selectedHead);
+        setEditTATaskData(task);
+    };
 
 
     const handleRemoveTask = (result) => {
-    setShowConfirmRemove(true);
-    setInfoforProfile(result);
-  };
-
-    const saveEditTask = async () => {
-      let pl = {
-        id: editTATaskData?.id,
-        tA_UserID: editTATaskData?.tA_UserID,
-        company_ID: editTATaskData?.company_ID,
-        hiringRequest_ID: editTATaskData?.hiringRequest_ID,
-        task_Priority: editTATaskData?.task_Priority,
-        no_of_InterviewRounds: editTATaskData?.no_of_InterviewRounds,
-        role_TypeID: editTATaskData?.role_TypeID,
-        task_StatusID: editTATaskData?.task_StatusID,
-        activeTR: editTATaskData?.activeTR,
-        talent_AnnualCTC_Budget_INRValue:
-          editTATaskData?.talent_AnnualCTC_Budget_INRValue,
-        modelType: editTATaskData?.modelType,
-        revenue_On10PerCTC: editTATaskData?.revenue_On10PerCTC,
-        totalRevenue_NoofTalent: editTATaskData?.totalRevenue_NoofTalent,
-        noOfProfile_TalentsTillDate: editTATaskData?.noOfProfile_TalentsTillDate,
-        tA_HR_StatusID: editTATaskData?.tA_HR_StatusID,
-        tA_Head_UserID: `${newTAHeadUservalue}`,
-      };
-      setEditNewTask(true);
-      let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
-      setEditNewTask(false);
-  
-      if (updateresult.statusCode === HTTPStatusCode.OK) {
-        setShowEditTATask(false);
-        getListData();
-      } else {
-        message.error("Something went wrong");
-      }
+        setShowConfirmRemove(true);
+        setInfoforProfile(result);
     };
 
-      const removeTask = async (id) => {
+    const saveEditTask = async () => {
+        let pl = {
+            id: editTATaskData?.id,
+            tA_UserID: editTATaskData?.tA_UserID,
+            company_ID: editTATaskData?.company_ID,
+            hiringRequest_ID: editTATaskData?.hiringRequest_ID,
+            task_Priority: editTATaskData?.task_Priority,
+            no_of_InterviewRounds: editTATaskData?.no_of_InterviewRounds,
+            role_TypeID: editTATaskData?.role_TypeID,
+            task_StatusID: editTATaskData?.task_StatusID,
+            activeTR: editTATaskData?.activeTR,
+            talent_AnnualCTC_Budget_INRValue:
+                editTATaskData?.talent_AnnualCTC_Budget_INRValue,
+            modelType: editTATaskData?.modelType,
+            revenue_On10PerCTC: editTATaskData?.revenue_On10PerCTC,
+            totalRevenue_NoofTalent: editTATaskData?.totalRevenue_NoofTalent,
+            noOfProfile_TalentsTillDate: editTATaskData?.noOfProfile_TalentsTillDate,
+            tA_HR_StatusID: editTATaskData?.tA_HR_StatusID,
+            tA_Head_UserID: `${newTAHeadUservalue}`,
+        };
+        setEditNewTask(true);
+        let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
+        setEditNewTask(false);
+
+        if (updateresult.statusCode === HTTPStatusCode.OK) {
+            setShowEditTATask(false);
+            getListData();
+        } else {
+            message.error("Something went wrong");
+        }
+    };
+
+    const removeTask = async (id) => {
         setLoadingTalentProfile(true);
         const result = await TaDashboardDAO.removeTaskDAO(id);
         setLoadingTalentProfile(false);
         if (result.statusCode === HTTPStatusCode.OK) {
-          setShowConfirmRemove(false);
-          getListData();
+            setShowConfirmRemove(false);
+            getListData();
         } else {
-          message.error("Something went wrong!");
+            message.error("Something went wrong!");
         }
-      };
-    
+    };
+
 
     const saveComment = async (note) => {
         let pl = {
@@ -826,51 +826,51 @@ function ScrumStructure2() {
         }
     };
 
-    const ScPopoupComp = ({value,data,type}) => {
-        return  <p
-            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0 , textAlign:"center"}}
+    const ScPopoupComp = ({ value, data, type }) => {
+        return <p
+            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
             onClick={() => {
                 getScrumPOPUPInfo(data, type)
             }}
         >
             {value}
-        </p> 
+        </p>
     }
 
-    const ScrumPopupColumns = ()=>{
+    const ScrumPopupColumns = () => {
 
-        if(scrumPopupType === "TotalSubmission"){
-            return  [
-        {
-            title: "Date",
-            dataIndex: "actionDate",
-            key: "actionDate",
-        },
-        {
-            title: "Talent",
-            dataIndex: "talent",
-            key: "talent",
-        },
-    ]
+        if (scrumPopupType === "TotalSubmission") {
+            return [
+                {
+                    title: "Date",
+                    dataIndex: "actionDate",
+                    key: "actionDate",
+                },
+                {
+                    title: "Talent",
+                    dataIndex: "talent",
+                    key: "talent",
+                },
+            ]
         }
 
-        return  [
-        {
-            title: "Date",
-            dataIndex: "actionDate",
-            key: "actionDate",
-        },
-        {
-            title: "Talent",
-            dataIndex: "talent",
-            key: "talent",
-        },
-         {
-            title: scrumPopupType === "ScreenReject" || scrumPopupType === "TotalReject"  ? " Reacted Reason" : "Slot Details",
-            dataIndex: "slotDetail",
-            key: "slotDetail",
-        },
-    ]
+        return [
+            {
+                title: "Date",
+                dataIndex: "actionDate",
+                key: "actionDate",
+            },
+            {
+                title: "Talent",
+                dataIndex: "talent",
+                key: "talent",
+            },
+            {
+                title: scrumPopupType === "ScreenReject" || scrumPopupType === "TotalReject" ? " Reacted Reason" : "Slot Details",
+                dataIndex: "slotDetail",
+                key: "slotDetail",
+            },
+        ]
     }
 
     const ProfileColumns = [
@@ -940,18 +940,19 @@ function ScrumStructure2() {
         },
     ];
 
-    const getScrumPOPUPInfo = async (data,type)=>{
+    const getScrumPOPUPInfo = async (data, type) => {
         let Query = `?TaskID=${data.id}&OptionType=${type}`
-setShowScrumPopup(true)
-setScrumPopupType(type)
-setScrumPopupLoading(true)
+        setShowScrumPopup(true)
+        setScrumPopupType(type)
+         setInfoforProfile(data);
+        setScrumPopupLoading(true)
         let result = await TaDashboardDAO.getScrumPOPUPInfoDAO(Query)
-setScrumPopupLoading(false)
-console.log(result)
-        if(result.statusCode === HTTPStatusCode.OK){
+        setScrumPopupLoading(false)
+        console.log(result)
+        if (result.statusCode === HTTPStatusCode.OK) {
             setScrumPopupData(result.responseBody)
-        }else{
-             setScrumPopupData([])
+        } else {
+            setScrumPopupData([])
         }
     }
 
@@ -967,6 +968,10 @@ console.log(result)
         setFilteredTalentList(filteredData);
     };
 
+    const handleSCRUMSearchInput = (value)=>{
+
+    }
+
     const getAllComments = async (id) => {
         setIsCommentLoading(true);
         const result = await TaDashboardDAO.getALLCommentsDAO(id);
@@ -978,13 +983,28 @@ console.log(result)
         }
     };
 
-    const updateNotes = async (pl) => {
+    const updateNotes = async (pl,index) => {
+         setTaListData(prev=> {
+            let tempD = [...prev]
+            tempD[index] = {...tempD[index] , latestNotesTopRow: pl.Comments}
+            return tempD
+        })
         let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
     }
 
 
-    const updateTouchNotes = async (pl)=>{
-         let updateresult = await TaDashboardDAO.updateTouchCommentRequestDAO(pl);
+    const updateTouchNotes = async (pl,index) => {
+        setTaListData(prev=> {
+            let tempD = [...prev]
+            tempD[index] = {...tempD[index] , touchBasedNotesTopRow: pl.Comments}
+            return tempD
+        })
+        let updateresult = await TaDashboardDAO.updateTouchCommentRequestDAO(pl);
+    }
+
+    const updateSubmissionSheetNotes =  async(pl,index) => {
+     
+        let updateresult = await TaDashboardDAO.updateSubmissionSheetDAO(pl);
     }
 
     const AddComment = (data, index) => {
@@ -1107,20 +1127,20 @@ console.log(result)
             field: 'taskStatus',
             width: 150,
             pinned: 'left',
-            cellRenderer: ({value,data})=>{
-return <TaskStatusComp text={value} result={data} />
-            } ,
+            cellRenderer: ({ value, data }) => {
+                return <TaskStatusComp text={value} result={data} />
+            },
         },
-         {
+        {
             headerName: '# Interview Rounds',
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 120,
-            cellRenderer: ({value,data})=>{
+            cellRenderer: ({ value, data }) => {
                 return value ? value : ''
-             }
+            }
         },
-               
+
         {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
@@ -1130,68 +1150,68 @@ return <TaskStatusComp text={value} result={data} />
         {
             headerName: 'HR Created Date',
             field: 'hrCreatedDate',
-             cellStyle: { textAlign: 'center' },
+            cellStyle: { textAlign: 'center' },
             width: 150,
             valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
         },
-                 {
+        {
             headerName: 'HR Status',
             field: 'tA_HR_Status',
             width: 130,
             cellRenderer: HrStatusCell,
         },
-           {
+        {
             headerName: 'Active TRs',
             field: 'activeTR',
             cellStyle: { textAlign: 'center' },
             width: 100,
         },
-  
-     
-   
 
-      
+
+
+
+
         {
             headerName: 'Talent Annual CTC Budget (INR)',
             field: 'talent_AnnualCTC_Budget_INRValueStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            cellRenderer: ({value,data})=>{
+            cellRenderer: ({ value, data }) => {
                 return value ? value : ''
-             }
+            }
         },
         {
             headerName: 'Revenue %',
             field: 'uplersFeesPer',
             cellStyle: { textAlign: 'center' },
             width: 100,
-            cellRenderer: ({value,data})=>{
+            cellRenderer: ({ value, data }) => {
                 return value ? value : ''
-             }
+            }
         },
         {
             headerName: 'Total Revenue Opportunity',
             field: 'totalRevenue_NoofTalentStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            cellRenderer: ({value,data})=>{
+            cellRenderer: ({ value, data }) => {
                 return value ? value : ''
-             }
+            }
         },
-          {
+        {
             headerName: 'No Of Days HR Is Open',
             field: 'days',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            cellRenderer: ({value,data})=>{
+            cellRenderer: ({ value, data }) => {
                 return value ? value : ''
-             }
+            }
         },
-          {
+        {
             headerName: 'No of Active Profile Till Date',
             field: 'noOfProfile_TalentsTillDate',
             width: 150,
-              cellStyle: { textAlign: 'center' },
+            cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
         {
@@ -1208,7 +1228,7 @@ return <TaskStatusComp text={value} result={data} />
             // cellEditor: 'agTextCellEditor', 
             cellEditor: 'agLargeTextCellEditor',
             cellEditorParams: {
-                  maxLength: 1000, // Optional: restricts max length
+                maxLength: 1000, // Optional: restricts max length
                 // cols: 30,       // Optional: width of the dropdown box
                 // rows: 3,        // Optional: height of the dropdown box
             },
@@ -1237,19 +1257,19 @@ return <TaskStatusComp text={value} result={data} />
 
             cellRenderer: LatestNotesCell,
         },
-       
-           
-            {
+
+
+        {
             headerName: 'Total No Of Submissions',
             field: 'totalNoOfSubmission',
             cellStyle: { textAlign: 'center' },
             width: 170,
-             cellRenderer: ({value,data})=>{
+            cellRenderer: ({ value, data }) => {
                 return value ? <ScPopoupComp value={value} data={data} type={"TotalSubmission"} /> : ''
-             }
+            }
         },
 
-     
+
         // {
         //     headerName: 'Submission Target On Given Date',
         //     field: 'submissionTargetOnGivenDate',
@@ -1260,51 +1280,57 @@ return <TaskStatusComp text={value} result={data} />
         //     field: 'interview_Scheduled_Target',
         //     width: 170,
         // },
-    
+
         {
             headerName: 'Screen Reject',
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
-            cellRenderer: ({value,data})=>{
-                return value ? <ScPopoupComp value={value} data={data} type={"ScreenReject"} />: ''
-             }
+            cellRenderer: ({ value, data }) => {
+                return value ? <ScPopoupComp value={value} data={data} type={"ScreenReject"} /> : ''
+            }
         },
-          {
+        {
             headerName: 'Total No Of Interview Rejects',
             field: 'totalNoOfInterviewReject',
             width: 170,
             cellStyle: { textAlign: 'center' },
-            cellRenderer: ({value,data})=>{
+            cellRenderer: ({ value, data }) => {
                 return value ? <ScPopoupComp value={value} data={data} type={"TotalReject"} /> : ''
-             }
+            }
         },
-        { headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
-    cellRenderer: ({value,data})=>{
+        {
+            headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
+            cellRenderer: ({ value, data }) => {
                 return value ? <ScPopoupComp value={value} data={data} type={"R1"} /> : ''
-             } },
-        { headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
-    cellRenderer: ({value,data})=>{
+            }
+        },
+        {
+            headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
+            cellRenderer: ({ value, data }) => {
                 return value ? <ScPopoupComp value={value} data={data} type={"R2"} /> : ''
-             } },
-        { headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
-    cellRenderer: ({value,data})=>{
+            }
+        },
+        {
+            headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
+            cellRenderer: ({ value, data }) => {
                 return value ? <ScPopoupComp value={value} data={data} type={"R3"} /> : ''
-             } },
-               {
+            }
+        },
+        {
             headerName: "Today's Submission Target",
             field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
-              cellRenderer: ProfileSharedTargetCell,
-                 cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
+            cellRenderer: ProfileSharedTargetCell,
+            cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
         },
         {
             headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
             cellStyle: { textAlign: 'center' },
-          
+
         },
         {
             headerName: "Yesterday's Target Achieved",
@@ -1318,9 +1344,9 @@ return <TaskStatusComp text={value} result={data} />
             field: 'WeeklySelectionPlanStr',
             width: 170,
             cellStyle: { textAlign: 'center' },
-            cellRenderer: ({value,data})=>{
+            cellRenderer: ({ value, data }) => {
                 return value ? value : ''
-             }
+            }
         },
         {
             headerName: 'Joining Date',
@@ -1328,7 +1354,7 @@ return <TaskStatusComp text={value} result={data} />
             cellStyle: { textAlign: 'center' },
             width: 150,
         },
-          {
+        {
             headerName: 'Touch Based Notes',
             field: 'touchBasedNotes',
             width: 250,
@@ -1338,10 +1364,10 @@ return <TaskStatusComp text={value} result={data} />
             autoHeight: true,  // Automatically grows the row height[cite: 1]
             cellEditorPopup: true,
             cellEditorPopupPosition: 'under', // opens below the cell instead of overlapping upward into the header
-        
+
             cellEditor: 'agLargeTextCellEditor',
             cellEditorParams: {
-                  maxLength: 1000, // Optional: restricts max length
+                maxLength: 1000, // Optional: restricts max length
                 // cols: 30,       // Optional: width of the dropdown box
                 // rows: 3,        // Optional: height of the dropdown box
             },
@@ -1358,17 +1384,59 @@ return <TaskStatusComp text={value} result={data} />
             onCellValueChanged: (params) => {
                 // console.log("Updated:", params.newValue);
                 // console.log("Row:", params.data);
-
+                let index = getRowIndex(params.data)
                 let pl = {
                     TA_Head_UserID: selectedHead,
                     TaskID: params.data.id,
                     Comments: params.newValue
                 }
 
-                updateTouchNotes(pl)
+                updateTouchNotes(pl,index)
             },
 
             cellRenderer: LatestTouchCell,
+        },
+           {
+            headerName: 'Submission Sheet',
+            field: 'submissionSheet',
+            width: 200,
+            sortable: false,
+            editable: true,
+            wrapText: true,    // Allows text to break to next line visually
+            autoHeight: true,  // Automatically grows the row height[cite: 1]
+            cellEditorPopup: true,
+            cellEditorPopupPosition: 'under', // opens below the cell instead of overlapping upward into the header
+
+            cellEditor: 'agTextCellEditor',
+            cellEditorParams: {
+                maxLength: 500, // Optional: restricts max length
+                // cols: 30,       // Optional: width of the dropdown box
+                // rows: 3,        // Optional: height of the dropdown box
+            },
+            suppressKeyboardEvent: (params) => {
+                const isEnterKey = params.event.key === 'Enter';
+                const isEditing = params.editing;
+                //   console.log("is edit",params)
+                if (isEditing && isEnterKey) {
+                    // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
+                    return true;
+                }
+                return false;
+            },
+            onCellValueChanged: (params) => {
+                // console.log("Updated:", params.newValue);
+                // console.log("Row:", params.data);
+                let index = getRowIndex(params.data)
+                let pl = {
+                    tA_Head_UserID: selectedHead,
+                    taskID: params.data.id,
+                    comments: params.newValue
+                }
+
+                updateSubmissionSheetNotes(pl,index)
+            },
+
+            cellRenderer: SubmissionSheetCell,
         },
         {
             headerName: 'Hiring Manager AS POC (Y/N)',
@@ -1378,66 +1446,66 @@ return <TaskStatusComp text={value} result={data} />
             cellRenderer: YesNoCell,
             cellRendererParams: { objKey: 'hmAsPOC' },
         },
-           {
+        {
             headerName: 'Action',
             field: '',
             width: 100,
             sortable: false,
-            cellRenderer: ({value,data})=>{
-                  return (
-                            <div>
-                              <IconContext.Provider
-                                value={{
-                                  color: "#FFDA30",
-                                  style: { width: "19px", height: "19px", cursor: "pointer" },
-                                }}
-                              >
-                                {" "}
-                                <Tooltip title="Edit" placement="top">
-                                  <span
+            cellRenderer: ({ value, data }) => {
+                return (
+                    <div>
+                        <IconContext.Provider
+                            value={{
+                                color: "#FFDA30",
+                                style: { width: "19px", height: "19px", cursor: "pointer" },
+                            }}
+                        >
+                            {" "}
+                            <Tooltip title="Edit" placement="top">
+                                <span
                                     onClick={() => {
-                                      editTAforTask(data);
+                                        editTAforTask(data);
                                     }}
                                     style={{ padding: "0" }}
-                                  >
+                                >
                                     {" "}
                                     <GrEdit />
-                                  </span>{" "}
-                                </Tooltip>
-                              </IconContext.Provider>
-                
-                              {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65 || userData.UserId === 49 || userData.UserId === 176 || userData.UserId === 443 || userData.UserId === 436 || userData.UserId === 302) && <IconContext.Provider
-                                value={{
-                                  color: "red",
-                                  style: {
+                                </span>{" "}
+                            </Tooltip>
+                        </IconContext.Provider>
+
+                        {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65 || userData.UserId === 49 || userData.UserId === 176 || userData.UserId === 443 || userData.UserId === 436 || userData.UserId === 302) && <IconContext.Provider
+                            value={{
+                                color: "red",
+                                style: {
                                     width: "19px",
                                     height: "19px",
                                     marginLeft: "10px",
                                     cursor: "pointer",
-                                  },
-                                }}
-                              >
-                                <Tooltip title="Remove" placement="top">
-                                  <span
+                                },
+                            }}
+                        >
+                            <Tooltip title="Remove" placement="top">
+                                <span
                                     // style={{
                                     //   background: 'red'
                                     // }}
                                     onClick={() => {
-                                      handleRemoveTask(data);
+                                        handleRemoveTask(data);
                                     }}
                                     style={{ padding: "0" }}
-                                  >
+                                >
                                     {" "}
                                     <IoIosRemoveCircle />
-                                  </span>{" "}
-                                </Tooltip>
-                              </IconContext.Provider>}
-                
-                
-                            </div>
-                          );
+                                </span>{" "}
+                            </Tooltip>
+                        </IconContext.Provider>}
+
+
+                    </div>
+                );
             },
-          
+
         },
     ];
 
@@ -1452,7 +1520,7 @@ return <TaskStatusComp text={value} result={data} />
         wrapHeaderText: true,
         autoHeaderHeight: true,
         cellClass: 'ag-cell-excel-border',
-        headerClass:`${gridStyles["ag-header-center"]}` ,
+        headerClass: `${gridStyles["ag-header-center"]}`,
     };
 
     // Static column config (renderers live in ./scrumGridColumns + ./cellRenderers/*)
@@ -1515,22 +1583,22 @@ return <TaskStatusComp text={value} result={data} />
     }, []);
 
     const handleCellEditingStarted = useCallback((params) => {
-    // Only applies to the large-text popup editors
-    if (params.column.getColId() === 'latestNotes' || params.column.getColId() === 'touchBasedNotes') {
-        // Wait a tick for AG Grid to actually mount the popup + textarea
-        setTimeout(() => {
-            const textarea = document.querySelector(
-                '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
-            );
-            if (textarea) {
-                // Reset cursor to the start so it doesn't auto-scroll to bottom
-                textarea.setSelectionRange(0, 0);
-                textarea.scrollTop = 0;
-                textarea.focus();
-            }
-        }, 0);
-    }
-}, []);
+        // Only applies to the large-text popup editors
+        if (params.column.getColId() === 'latestNotes' || params.column.getColId() === 'touchBasedNotes') {
+            // Wait a tick for AG Grid to actually mount the popup + textarea
+            setTimeout(() => {
+                const textarea = document.querySelector(
+                    '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
+                );
+                if (textarea) {
+                    // Reset cursor to the start so it doesn't auto-scroll to bottom
+                    textarea.setSelectionRange(0, 0);
+                    textarea.scrollTop = 0;
+                    textarea.focus();
+                }
+            }, 0);
+        }
+    }, []);
 
     const isSelectableDateModal = (date) => {
         const today = new Date();
@@ -1682,9 +1750,9 @@ return <TaskStatusComp text={value} result={data} />
                             headerHeight={44}
                             rowHeight={46}
                             onCellKeyDown={handleGridKeyDown}
-                            onCellEditingStarted={handleCellEditingStarted} 
+                            onCellEditingStarted={handleCellEditingStarted}
                             groupDisplayType="singleColumn"
-                          
+
                             groupDefaultExpanded={-1}
                             autoGroupColumnDef={autoGroupColumnDef}
                             popupParent={popupParent}
@@ -2074,9 +2142,9 @@ return <TaskStatusComp text={value} result={data} />
                                         // bordered
                                         pagination={false}
                                         scroll={{
-        y: 600, 
-       
-    }}
+                                            y: 600,
+
+                                        }}
                                     />
                                 </div>
                             )}
@@ -2526,261 +2594,261 @@ return <TaskStatusComp text={value} result={data} />
                     </Modal>
                 )}
 
-                 {showEditTATask && (
-                        <Modal
-                          transitionName=""
-                          width="930px"
-                          centered
-                          footer={null}
-                          open={showEditTATask}
-                          className="engagementModalStyle"
-                          onCancel={() => {
+                {showEditTATask && (
+                    <Modal
+                        transitionName=""
+                        width="930px"
+                        centered
+                        footer={null}
+                        open={showEditTATask}
+                        className="engagementModalStyle"
+                        onCancel={() => {
                             setShowEditTATask(false);
-                          }}
-                        >
-                          <div style={{ padding: "35px 15px 10px 15px" }}>
+                        }}
+                    >
+                        <div style={{ padding: "35px 15px 10px 15px" }}>
                             <h3>Edit TA</h3>
-                          </div>
-                          <div style={{ padding: "10px 15px" }}>
+                        </div>
+                        <div style={{ padding: "10px 15px" }}>
                             {isEditNewTask ? (
-                              <Skeleton active />
+                                <Skeleton active />
                             ) : (
-                              <>
-                                <div className={stylesOBj.row}>
-                                  <div className={stylesOBj.colMd6}>
-                                    <div className={stylesOBj.formGroup}>
-                                      <label>
-                                        Select Head <span className={stylesOBj.reqField}>*</span>
-                                      </label>
-                                      <Select
-                                        id="selectedValue"
-                                        placeholder="Select TA"
-                                        value={newTAHeadUservalue}
-                                        showSearch={true}
-                                        onChange={(value, option) => {
-                                          setNewTAHeadUserValue(value);
-                                        }}
-                                        options={filtersList?.HeadUsers?.map((v) => ({
-                                          label: v.data,
-                                          value: v.id,
-                                        }))}
-                                        optionFilterProp="label"
-                                      />
+                                <>
+                                    <div className={stylesOBj.row}>
+                                        <div className={stylesOBj.colMd6}>
+                                            <div className={stylesOBj.formGroup}>
+                                                <label>
+                                                    Select Head <span className={stylesOBj.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select TA"
+                                                    value={newTAHeadUservalue}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        setNewTAHeadUserValue(value);
+                                                    }}
+                                                    options={filtersList?.HeadUsers?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={stylesOBj.colMd6}>
+                                            <div className={stylesOBj.formGroup}>
+                                                <label>
+                                                    Select TA <span className={stylesOBj.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select TA"
+                                                    value={editTATaskData?.tA_UserID}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        setEditTATaskData((prev) => ({
+                                                            ...prev,
+                                                            tA_UserID: value,
+                                                        }));
+                                                    }}
+                                                    options={filtersList?.Users?.map((v) => ({
+                                                        label: v.data,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+
+                                                {newTaskError && newTAUservalue === "" && (
+                                                    <p className={stylesOBj.error}>please select TA</p>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
-                                  <div className={stylesOBj.colMd6}>
-                                    <div className={stylesOBj.formGroup}>
-                                      <label>
-                                        Select TA <span className={stylesOBj.reqField}>*</span>
-                                      </label>
-                                      <Select
-                                        id="selectedValue"
-                                        placeholder="Select TA"
-                                        value={editTATaskData?.tA_UserID}
-                                        showSearch={true}
-                                        onChange={(value, option) => {
-                                          setEditTATaskData((prev) => ({
-                                            ...prev,
-                                            tA_UserID: value,
-                                          }));
-                                        }}
-                                        options={filtersList?.Users?.map((v) => ({
-                                          label: v.data,
-                                          value: v.id,
-                                        }))}
-                                        optionFilterProp="label"
-                                      />
-                
-                                      {newTaskError && newTAUservalue === "" && (
-                                        <p className={stylesOBj.error}>please select TA</p>
-                                      )}
+
+                                    <div className={stylesOBj.row}>
+                                        <div className={stylesOBj.colMd6}>
+                                            <div className={stylesOBj.formGroup}>
+                                                <label>
+                                                    Select company{" "}
+                                                    <span className={stylesOBj.reqField}>*</span>
+                                                </label>
+
+                                                <Select
+                                                    id="selectedValue"
+                                                    placeholder="Select Company"
+                                                    disabled={true}
+                                                    value={editTATaskData?.company_ID}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => { }}
+                                                    options={getCompanyNameSuggestion}
+                                                    optionFilterProp="label"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={stylesOBj.colMd6}>
+                                            <div className={stylesOBj.formGroup}>
+                                                <label>
+                                                    Select HR <span className={stylesOBj.reqField}>*</span>
+                                                </label>
+                                                <Select
+                                                    disabled={true}
+                                                    id="selectedValue"
+                                                    placeholder="Select HR"
+                                                    // style={{marginLeft:'10px',width:'270px'}}
+                                                    // mode="multiple"
+                                                    value={editTATaskData?.hiringRequest_ID}
+                                                    showSearch={true}
+                                                    onChange={(value, option) => {
+                                                        // setNewTAHRValue(value);
+                                                        // setTRAllData(option);
+                                                    }}
+                                                    options={hrListSuggestion.map((v) => ({
+                                                        ...v,
+                                                        label: v.value,
+                                                        value: v.id,
+                                                    }))}
+                                                    optionFilterProp="label"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
-                                </div>
-                
-                                <div className={stylesOBj.row}>
-                                  <div className={stylesOBj.colMd6}>
-                                    <div className={stylesOBj.formGroup}>
-                                      <label>
-                                        Select company{" "}
-                                        <span className={stylesOBj.reqField}>*</span>
-                                      </label>
-                
-                                      <Select
-                                        id="selectedValue"
-                                        placeholder="Select Company"
-                                        disabled={true}
-                                        value={editTATaskData?.company_ID}
-                                        showSearch={true}
-                                        onChange={(value, option) => { }}
-                                        options={getCompanyNameSuggestion}
-                                        optionFilterProp="label"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className={stylesOBj.colMd6}>
-                                    <div className={stylesOBj.formGroup}>
-                                      <label>
-                                        Select HR <span className={stylesOBj.reqField}>*</span>
-                                      </label>
-                                      <Select
-                                        disabled={true}
-                                        id="selectedValue"
-                                        placeholder="Select HR"
-                                        // style={{marginLeft:'10px',width:'270px'}}
-                                        // mode="multiple"
-                                        value={editTATaskData?.hiringRequest_ID}
-                                        showSearch={true}
-                                        onChange={(value, option) => {
-                                          // setNewTAHRValue(value);
-                                          // setTRAllData(option);
-                                        }}
-                                        options={hrListSuggestion.map((v) => ({
-                                          ...v,
-                                          label: v.value,
-                                          value: v.id,
-                                        }))}
-                                        optionFilterProp="label"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                
-                                <div className={stylesOBj.HRINFOCOntainer}>
-                                  {Object.keys(editTATaskData).length > 0 && (
-                                    <>
-                                      <div>
-                                        <span>Active TR : </span>
-                                        {editTATaskData.activeTR}
-                                      </div>
-                                      <div>
-                                        <span>HR Created Date : </span>
-                                        {moment(editTATaskData.hrCreatedDate).format(
-                                          "DD-MMM-YYYY"
+
+                                    <div className={stylesOBj.HRINFOCOntainer}>
+                                        {Object.keys(editTATaskData).length > 0 && (
+                                            <>
+                                                <div>
+                                                    <span>Active TR : </span>
+                                                    {editTATaskData.activeTR}
+                                                </div>
+                                                <div>
+                                                    <span>HR Created Date : </span>
+                                                    {moment(editTATaskData.hrCreatedDate).format(
+                                                        "DD-MMM-YYYY"
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <span>Talent Budget  : </span>
+                                                    {editTATaskData.talent_AnnualCTC_Budget_INRValue}
+                                                </div>
+                                                <div>
+                                                    <span>DP /Contract : </span>
+                                                    {editTATaskData.modelType}
+                                                </div>
+                                                <div>
+                                                    <span>Revenue Opportunity : </span>
+                                                    {editTATaskData.revenue_On10PerCTC}
+                                                </div>
+                                                <div>
+                                                    <span>Sales : </span>
+                                                    {editTATaskData.salesName}
+                                                </div>
+                                                <div>
+                                                    <span>
+                                                        Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
+                                                    </span>
+                                                    {editTATaskData.totalRevenue_NoofTalent}
+                                                </div>
+                                                <div>
+                                                    <span>Open Since {">"} 1 Month (Yes/no) : </span>
+                                                    {editTATaskData.hrOpenSinceOneMonths}
+                                                </div>
+                                                <div>
+                                                    <span>
+                                                        No. of Active/Submitted Profiles till Date :{" "}
+                                                    </span>
+                                                    {editTATaskData.noOfProfile_TalentsTillDate}
+                                                </div>
+                                            </>
                                         )}
-                                      </div>
-                                      <div>
-                                        <span>Talent Budget  : </span>
-                                        {editTATaskData.talent_AnnualCTC_Budget_INRValue}
-                                      </div>
-                                      <div>
-                                        <span>DP /Contract : </span>
-                                        {editTATaskData.modelType}
-                                      </div>
-                                      <div>
-                                        <span>Revenue Opportunity : </span>
-                                        {editTATaskData.revenue_On10PerCTC}
-                                      </div>
-                                      <div>
-                                        <span>Sales : </span>
-                                        {editTATaskData.salesName}
-                                      </div>
-                                      <div>
-                                        <span>
-                                          Total Revenue Opportunity (NO. of TR x Talent budget) :{" "}
-                                        </span>
-                                        {editTATaskData.totalRevenue_NoofTalent}
-                                      </div>
-                                      <div>
-                                        <span>Open Since {">"} 1 Month (Yes/no) : </span>
-                                        {editTATaskData.hrOpenSinceOneMonths}
-                                      </div>
-                                      <div>
-                                        <span>
-                                          No. of Active/Submitted Profiles till Date :{" "}
-                                        </span>
-                                        {editTATaskData.noOfProfile_TalentsTillDate}
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              </>
+                                    </div>
+                                </>
                             )}
-                
+
                             <div style={{ margin: "10px 0" }}>
-                              <button
-                                className={stylesOBj.btnPrimary}
-                                disabled={isEditNewTask}
-                                onClick={() => {
-                                  saveEditTask();
-                                }}
-                              >
-                                Save
-                              </button>
-                              <button
-                                className={stylesOBj.btnCancle}
-                                disabled={isEditNewTask}
-                                onClick={() => {
-                                  setShowEditTATask(false);
-                                }}
-                              >
-                                Cancel
-                              </button>
+                                <button
+                                    className={stylesOBj.btnPrimary}
+                                    disabled={isEditNewTask}
+                                    onClick={() => {
+                                        saveEditTask();
+                                    }}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    className={stylesOBj.btnCancle}
+                                    disabled={isEditNewTask}
+                                    onClick={() => {
+                                        setShowEditTATask(false);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
                             </div>
-                          </div>
-                        </Modal>
-                      )}
+                        </div>
+                    </Modal>
+                )}
 
-   {showConfirmRemove && (
-        <Modal
-          transitionName=""
-          width="650px"
-          centered
-          footer={null}
-          open={showConfirmRemove}
-          // className={allEngagementStyles.engagementModalContainer}
-          className="engagementModalStyle"
-          // onOk={() => setVersantModal(false)}
-          onCancel={() => {
-            setShowConfirmRemove(false);
-          }}
-        >
-          <>
-            <div style={{ padding: "35px 15px 10px 15px" }}>
-              {loadingTalentProfile ? (
-                <div>
-                  <Skeleton active />
-                </div>
-              ) : (
-                <h3>
-                  Are you sure you want to Remove{" "}
-                  <strong>{profileInfo?.taName}</strong> for{" "}
-                  {profileInfo?.hrNumber} in {profileInfo?.companyName}
-                </h3>
-              )}
-            </div>
+                {showConfirmRemove && (
+                    <Modal
+                        transitionName=""
+                        width="650px"
+                        centered
+                        footer={null}
+                        open={showConfirmRemove}
+                        // className={allEngagementStyles.engagementModalContainer}
+                        className="engagementModalStyle"
+                        // onOk={() => setVersantModal(false)}
+                        onCancel={() => {
+                            setShowConfirmRemove(false);
+                        }}
+                    >
+                        <>
+                            <div style={{ padding: "35px 15px 10px 15px" }}>
+                                {loadingTalentProfile ? (
+                                    <div>
+                                        <Skeleton active />
+                                    </div>
+                                ) : (
+                                    <h3>
+                                        Are you sure you want to Remove{" "}
+                                        <strong>{profileInfo?.taName}</strong> for{" "}
+                                        {profileInfo?.hrNumber} in {profileInfo?.companyName}
+                                    </h3>
+                                )}
+                            </div>
 
-            <div
-              style={{
-                padding: "10px",
-                display: "flex",
-                justifyContent: "end",
-              }}
-            >
-              <button
-                className={stylesOBj.btnPrimary}
-                disabled={loadingTalentProfile}
-                onClick={() => {
-                  removeTask(profileInfo?.id);
-                }}
-              >
-                Yes Remove
-              </button>
-              <button
-                className={stylesOBj.btnCancle}
-                disabled={loadingTalentProfile}
-                onClick={() => {
-                  setShowConfirmRemove(false);
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </>
-        </Modal>
-      )}
+                            <div
+                                style={{
+                                    padding: "10px",
+                                    display: "flex",
+                                    justifyContent: "end",
+                                }}
+                            >
+                                <button
+                                    className={stylesOBj.btnPrimary}
+                                    disabled={loadingTalentProfile}
+                                    onClick={() => {
+                                        removeTask(profileInfo?.id);
+                                    }}
+                                >
+                                    Yes Remove
+                                </button>
+                                <button
+                                    className={stylesOBj.btnCancle}
+                                    disabled={loadingTalentProfile}
+                                    onClick={() => {
+                                        setShowConfirmRemove(false);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </>
+                    </Modal>
+                )}
 
-        {showScrumPopup && (
+                {showScrumPopup && (
                     <Modal
                         transitionName=""
                         width="1000px"
@@ -2792,44 +2860,86 @@ return <TaskStatusComp text={value} result={data} />
                         // onOk={() => setVersantModal(false)}
                         onCancel={() => {
                             setShowScrumPopup(false);
+                            setSearchTerm("");
                             setScrumPopupData([]);
                         }}
                     >
                         <>
+                            <div
+                                style={{
+                                    padding: "15px 15px 10px 15px",
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                }}
+                            >
+                                <h3>
+                                    <strong>{profileInfo?.hrNumber}</strong>
+                                </h3>
 
+                                <p style={{ marginBottom: "0.5em" }}>
+                                    Company : <strong>{profileInfo?.companyName}</strong>
+                                </p>
+
+                                <p style={{ marginBottom: "0.5em" }}>
+                                    TA : <strong>{profileInfo?.taName}</strong>
+                                </p>
+
+                                <input
+                                    type="text"
+                                    placeholder="Search talent..."
+                                    value={searchTerm}
+                                    onChange={(e) =>   setSearchTerm(e.target.value)} // Create this function
+                                    style={{
+                                        padding: "6px 10px",
+                                        border: "1px solid #ccc",
+                                        borderRadius: "4px",
+                                        marginLeft: "auto",
+                                        marginRight: "20px",
+                                        minWidth: "260px",
+                                    }}
+                                />
+                            </div>
                             {scrumPopupLoading ? (
                                 <div>
                                     <Skeleton active />
                                 </div>
                             ) : (
-                                <div style={{ margin: "5px 10px" }}>
+                                <div style={{ margin: "5px 10px" , paddingBottom:'10px'}}>
                                     <Table
-                                        dataSource={scrumPopupData}
+                                        dataSource={searchTerm? scrumPopupData.filter(
+            (talent) =>
+                talent.talent.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (talent.email &&
+                    talent.email.toLowerCase().includes(searchTerm.toLowerCase()))
+        ) : scrumPopupData}
                                         columns={ScrumPopupColumns()}
                                         // bordered
                                         pagination={false}
                                         scroll={{
-        y: 500,
-     
-    }}
+                                            y: 500,
+
+                                        }}
                                     />
                                 </div>
                             )}
 
-                           
 
-                            <div style={{ padding: "10px 0" }}>
+
+                            {/* <div style={{ padding: "10px 0" }}>
                                 <button
                                     className={stylesOBj.btnCancle}                           
                                     onClick={() => {
                                         setSearchTerm("");
-                                        setShowTalentProfiles(false);
-                                        setHRTalentListFourCount([]);
+                                          setSearchTerm("");
+                                         setShowScrumPopup(false);
+                            setScrumPopupData([]);
                                     }}
                                 >
                                     Cancel
                                 </button>
-                            </div>
+                            </div> */}
                         </>
                     </Modal>
                 )}

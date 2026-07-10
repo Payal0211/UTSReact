@@ -20,6 +20,10 @@
     justify-content: center;
 }
 
+.grid-wrapper [class*="ag-grid-pinned-left-cells"]{
+    z-index: 1 !important;
+}
+
 /* Keeps text top-aligned inside spanned TA cells, matching the old rowSpan look */
 .ag-cell-top-align {
     display: flex;
