@@ -866,7 +866,7 @@ function ScrumStructure2() {
                 key: "talent",
             },
             {
-                title: scrumPopupType === "ScreenReject" || scrumPopupType === "TotalReject" ? " Reacted Reason" : "Slot Details",
+                title: scrumPopupType === "ScreenReject" || scrumPopupType === "TotalReject" ? " Rejected Reason" : "Slot Details",
                 dataIndex: "slotDetail",
                 key: "slotDetail",
             },
@@ -956,6 +956,31 @@ function ScrumStructure2() {
         }
     }
 
+      const getTalentProfilesDetailsfromGoalsTable = async (
+            result,
+            statusID,
+            stageID
+        ) => {
+            setShowTalentProfiles(true);
+            setInfoforProfile(result);
+            let pl = {
+                hrID: result?.hiringRequest_ID,
+                statusID: statusID,
+                stageID: statusID === 0 ? null : stageID ? stageID : 0,
+                targetDate: moment().subtract(1, "day").format("YYYY-MM-DD"),
+            };
+            setLoadingTalentProfile(true);
+            const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+            setLoadingTalentProfile(false);
+            if (hrResult.statusCode === HTTPStatusCode.OK) {
+                setHRTalentList(hrResult.responseBody);
+                setFilteredTalentList(hrResult.responseBody);
+                setHRTalentListFourCount(hrResult.responseBody);
+            } else {
+                setHRTalentList([]);
+                setFilteredTalentList([]);
+            }
+        };
 
     const handleSearchInput = (value) => {
         setSearchTerm(value);
@@ -1338,13 +1363,32 @@ function ScrumStructure2() {
             cellStyle: { textAlign: 'center' },
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
+             cellRenderer:({value,data})=>{
+                 return <p
+            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
+            onClick={() => {
+                getTalentProfilesDetailsfromGoalsTable(data,2)
+            }}
+        >
+            {value}
+        </p>}
         },
          {
-            headerName: "Interview Scheduled Target",
+            headerName: "Yesterday's Interview Count" ,
             field: 'interview_Scheduled_Target ',
             cellStyle: { textAlign: 'center' },
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
+            cellRenderer:({value,data})=>{
+                 return <p
+            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
+            onClick={() => {
+                getTalentProfilesDetailsfromGoalsTable(data,2)
+            }}
+        >
+            {value}
+        </p>
+            }
         },
         {
             headerName: 'Weekly Selection Planned',
@@ -1406,7 +1450,7 @@ function ScrumStructure2() {
            {
             headerName: 'Submission Sheet',
             field: 'submissionSheet',
-            width: 200,
+            width: 250,
             sortable: false,
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
