@@ -2597,6 +2597,9 @@ function WeeklyWCGR() {
     }
 
     if(record?.stage_Title === "DELIVERY FUNNEL"){
+      if(record.stage_ID === "AvgDuration"  || record.stage_ID === "UCompletedcall" || record.stage_ID ===   "ULeadcall"){
+        return text
+      }
       return <div >
           {text ? (
             <div
