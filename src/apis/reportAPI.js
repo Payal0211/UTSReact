@@ -1143,6 +1143,23 @@ getALLPotentialClosuresCommentsAPI:async function (payload) {
 			return errorDebug(error, 'ReportAPI.getAnticipatedPopupReportAPI');
 		}
 	},
+	getWCGRCallsDetailPopupRequest:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.UTS_REPORT +
+			ReportType.GET_WCGR_CALLES_DETAILS_POPUP + `?&pod_id=${payload?.pod_id}&month=${payload?.month}&year=${payload?.year}&stage_id=${payload?.stageID}&week_No=${payload?.week}`
+
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getWCGRCallsDetailPopupRequest');
+		}
+	},
 	getPopupForAllPODSDetailsAPI:async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
