@@ -1632,6 +1632,33 @@ function WeeklyWCGR() {
     }
   };
 
+ const getWCGRCallsPOPupDetails  = async (row, v, week, month) => {
+    try {
+      setShowAnticipatedReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getWCGRCallsDetailPopupRequestDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
+
   const getJConfirmedDetails = async (row, v, week, month) => {
     try {
       setShowJConfirmationReport(true);
@@ -2598,7 +2625,30 @@ function WeeklyWCGR() {
 
     if(record?.stage_Title === "DELIVERY FUNNEL"){
       if(record.stage_ID === "AvgDuration"  || record.stage_ID === "UCompletedcall" || record.stage_ID ===   "ULeadcall"){
-        return text
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getWCGRCallsPOPupDetails(record, text, week, month)
+                  // getDemandFunnelDetailsAllPOD(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
       }
       return <div >
           {text ? (
@@ -2611,7 +2661,8 @@ function WeeklyWCGR() {
             >
               <span
                 onClick={() => {
-                  getDemandFunnelDetailsAllPOD(record, text, week, month);
+                  getAnticipatedDetails(record, text, week, month)
+                  // getDemandFunnelDetailsAllPOD(record, text, week, month);
                 }}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
