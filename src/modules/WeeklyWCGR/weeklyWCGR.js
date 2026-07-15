@@ -76,6 +76,7 @@ function WeeklyWCGR() {
   const [showDemandFunnelReport,setShowDemandFunnelReport] = useState(false);
   const [showReferenceReport, setShowReferenceReport] = useState(false);
   const [showAnticipatedReport, setShowAnticipatedReport] = useState(false);
+  const [wcgrCallsReport,setWCGRCallsReport] = useState(false)
   const [showJConfirmationReport, setShowJConfirmationReport] = useState(false);
   const [openSplitHR, setSplitHR] = useState(false);
   const [getHRnumber, setHRNumber] = useState({ hrNumber: '', isHybrid: false });
@@ -972,6 +973,27 @@ function WeeklyWCGR() {
   ]
   },[isAllPODData])
 
+
+  const WCGRCallColumns = [
+      {
+      title: "Call Date",
+      dataIndex: "callDate",
+      key: "callDate",
+      // width:'200px'
+    },
+    {
+      title: "TA",
+      dataIndex: "taName",
+      key: "taName",
+    },
+    {
+      title: "Call",
+      dataIndex: "uniqueCall",
+      key: "uniqueCall",
+      //  width:'200px'
+    },
+  ]
+
   const AnticipatedColumns = useMemo(()=> {
     if(isAllPODData){
         return  [
@@ -1620,6 +1642,33 @@ function WeeklyWCGR() {
       setAchievedTotal(v);
       setAchievedLoading(true);
       const result = await ReportDAO.getAnticipatedPopupReportDAO(pl);
+      setAchievedLoading(false);
+      if (result.statusCode === 200) {
+        setListAchievedData(result.responseBody);
+      } else {
+        setListAchievedData([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setListAchievedData([]);
+    }
+  };
+
+ const getWCGRCallsPOPupDetails  = async (row, v, week, month) => {
+    try {
+      setWCGRCallsReport(true);
+
+      const pl = {
+        pod_id: selectedHead,
+        month: month,
+        year: row.wcgrYear,
+        stageID: row.stage_ID,
+        week: week ? week : "",
+      };
+      setShowTalentCol(row);
+      setAchievedTotal(v);
+      setAchievedLoading(true);
+      const result = await ReportDAO.getWCGRCallsDetailPopupRequestDAO(pl);
       setAchievedLoading(false);
       if (result.statusCode === 200) {
         setListAchievedData(result.responseBody);
@@ -2598,7 +2647,30 @@ function WeeklyWCGR() {
 
     if(record?.stage_Title === "DELIVERY FUNNEL"){
       if(record.stage_ID === "AvgDuration"  || record.stage_ID === "UCompletedcall" || record.stage_ID ===   "ULeadcall"){
-        return text
+        return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  getWCGRCallsPOPupDetails(record, text, week, month)
+                  // getDemandFunnelDetailsAllPOD(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text} 
+              </span>
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
       }
       return <div >
           {text ? (
@@ -2611,7 +2683,8 @@ function WeeklyWCGR() {
             >
               <span
                 onClick={() => {
-                  getDemandFunnelDetailsAllPOD(record, text, week, month);
+                  getAnticipatedDetails(record, text, week, month)
+                  // getDemandFunnelDetailsAllPOD(record, text, week, month);
                 }}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
@@ -4070,6 +4143,72 @@ function WeeklyWCGR() {
           )}
         </Modal>
       )}
+
+      {wcgrCallsReport &&  <Modal
+          transitionName=""
+          width="1050px"
+          centered
+          footer={null}
+          open={wcgrCallsReport}
+          className="engagementModalStyle"
+          onCancel={() => {
+            setSearchTerm("");
+            setWCGRCallsReport(false);
+            setDFFilterListData([]);
+            setDFListData([]);
+          }}
+        >
+ <>
+              <div
+                style={{
+                  padding: "45px 15px 10px 15px",
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <h3>
+                  <b>{showTalentCol?.stage}</b> <b> : {achievedTotal}</b>
+                </h3>
+
+
+
+              </div>
+
+              {achievedLoading ? (
+                <div>
+                  <Skeleton active />
+                </div>
+              ) : (
+                <div style={{ margin: "5px 10px" }}>
+                  <Table
+                    dataSource={listAchievedData}
+                    columns={WCGRCallColumns}
+                    pagination={false}
+                    scroll={{  y: "480px" }}
+                  />
+                </div>
+              )}
+
+
+              <div style={{ padding: "10px 0" }}>
+                <button
+                  className={uplersStyle.btnCancle}
+                  // disabled={isAddingNewTask}
+                  onClick={() => {
+                    setSearchTerm("");
+            setWCGRCallsReport(false);
+            setDFFilterListData([]);
+            setDFListData([]);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+
+        </Modal> }
 
       {showAnticipatedReport && (
         <Modal
