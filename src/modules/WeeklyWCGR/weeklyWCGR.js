@@ -2672,7 +2672,9 @@ function WeeklyWCGR() {
             )}
         </div>
       }
-      return <div >
+
+      if(record?.stage_ID ===  "TH"){
+         return <div >
           {text ? (
             <div
               style={{
@@ -2685,6 +2687,31 @@ function WeeklyWCGR() {
                 onClick={() => {
                   getAnticipatedDetails(record, text, week, month)
                   // getDemandFunnelDetailsAllPOD(record, text, week, month);
+                }}
+                style={{ cursor: "pointer", color: "#1890ff" }}
+              >
+                {text}
+              </span>
+            </div>
+          )
+            : (
+              ""
+            )}
+        </div>
+      }
+      return <div >
+          {text ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                onClick={() => {
+                  // getAnticipatedDetails(record, text, week, month)
+                  getDemandFunnelDetailsAllPOD(record, text, week, month);
                 }}
                 style={{ cursor: "pointer", color: "#1890ff" }}
               >
