@@ -1582,7 +1582,7 @@ function NewTADashboard() {
 
                     </div>
 
-                    <div className={stylesOBj.filterContainer}>
+                    <div className={stylesOBj.filterContainer} style={{marginBottom:"80px"}}>
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
                             <button
                                 className={`${stylesOBj["toggle-btn"]}  ${activeTable === 'Dashboard' ? stylesOBj["toggle-btn-active"] : ''}`}
@@ -1730,7 +1730,7 @@ function NewTADashboard() {
                     </div>
 
 
-                    <div className={stylesOBj.filterContainer}>
+                    <div className={stylesOBj.filterContainer} style={{marginBottom:"80px"}}>
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
                             <button
                                 className={`${stylesOBj["toggle-btn"]}  ${activeFTETable === 'Dashboard' ? stylesOBj["toggle-btn-active"] : ''}`}

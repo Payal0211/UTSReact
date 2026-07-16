@@ -4,6 +4,12 @@ import { Tooltip } from 'antd';
 
 function CompanyCell(props) {
     const {value, data } = props;
+
+      if (props.node.rowPinned === "bottom") {
+        return "";
+        // or return <b>Total</b>;
+    }
+
     const {
         taListData,
         selectedHead,

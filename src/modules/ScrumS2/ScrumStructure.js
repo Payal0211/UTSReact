@@ -1051,27 +1051,242 @@ function ScrumStructure2() {
         );
     }
 
+    const sumFields = [
+    "todayProfile_Shared_Target",
+    "profile_Shared_Target",
+    "profile_Shared_Achieved",
+    "interview_Scheduled_Target"
+];
+
+const getTotalRow = (rows, columnDefs) => {
+    const total = {
+        taName: "Total",
+    };
+
+    columnDefs.forEach((col) => {
+        const field = col.field;
+
+        if (!field || field === "taName") return;
+        if(!sumFields.includes(field)) return
+        let sum = 0;
+        let hasNumericValue = false;
+
+        rows.forEach((row) => {
+            const value = row[field];
+
+            if (typeof value === "number") {
+                sum += value;
+                hasNumericValue = true;
+            } else if (
+                typeof value === "string" &&
+                value.trim() !== "" &&
+                !isNaN(value)
+            ) {
+                sum += Number(value);
+                hasNumericValue = true;
+            }
+        });
+
+        if (hasNumericValue) {
+            total[field] = sum;
+        }
+    });
+
+    return total;
+};
+
+
+// const getTAGroups = () => {
+//     const groups = [];
+
+//     let start = 0;
+
+//     while (start < TaListData.length) {
+
+//         const taId = TaListData[start].tA_UserID;
+
+//         let end = start;
+
+//         while (
+//             end + 1 < TaListData.length &&
+//             TaListData[end + 1].tA_UserID === taId
+//         ) {
+//             end++;
+//         }
+
+//         groups.push({
+//             taId,
+//             start,
+//             end
+//         });
+
+//         start = end + 1;
+//     }
+
+//     return groups;
+// };
+
+const getTAGroups = (rows) => {
+    const groups = [];
+    let start = 0;
+
+    while (start < rows.length) {
+        const taId = rows[start].tA_UserID;
+        let end = start;
+
+        while (
+            end + 1 < rows.length &&
+            rows[end + 1].tA_UserID === taId
+        ) {
+            end++;
+        }
+
+        groups.push({
+            taId,
+            start,
+            end
+        });
+
+        start = end + 1;
+    }
+
+    return groups;
+};
+
+const moveTAGroupUp = (row) => {
+
+    const groups = getTAGroups(TaListData);
+
+    const index = groups.findIndex(g => g.taId === row.tA_UserID);
+
+    if (index <= 0) return;
+
+    const prev = groups[index - 1];
+    const current = groups[index];
+
+    const copy = [...TaListData];
+
+    const prevRows = copy.slice(prev.start, prev.end + 1);
+    const currentRows = copy.slice(current.start, current.end + 1);
+
+    copy.splice(
+        prev.start,
+        prevRows.length + currentRows.length,
+        ...currentRows,
+        ...prevRows
+    );
+
+    setTaListData(copy);
+};
+
+const moveTAGroupDown = (row) => {
+
+    const groups = getTAGroups(TaListData);
+
+    const index = groups.findIndex(g => g.taId === row.tA_UserID);
+
+    if (index === groups.length - 1) return;
+
+    const current = groups[index];
+    const next = groups[index + 1];
+
+    const copy = [...TaListData];
+
+    const currentRows = copy.slice(current.start, current.end + 1);
+    const nextRows = copy.slice(next.start, next.end + 1);
+
+    copy.splice(
+        current.start,
+        currentRows.length + nextRows.length,
+        ...nextRows,
+        ...currentRows
+    );
+
+    setTaListData(copy);
+};
+
+const canMoveTAGroupUp = (row) => {
+    const groups = getTAGroups(TaListData);
+
+    const groupIndex = groups.findIndex(
+        g => g.taId === row.tA_UserID
+    );
+
+    return groupIndex > 0;
+};
+
+const canMoveTAGroupDown = (row) => {
+    const groups = getTAGroups(TaListData);
+
+    const groupIndex = groups.findIndex(
+        g => g.taId === row.tA_UserID
+    );
+
+    return groupIndex < groups.length - 1;
+};
+
 
     const getScrumGridColumns = () => [
         {
             headerName: 'TA',
             field: 'taName',
-            width: 150,
+            width: 180,
             pinned: 'left',
             sortable: false,
-            rowSpan: (params) => params.data?.rowSpan || 1, //[cite: 1]
+            rowSpan: (params) => params.data?.rowSpan || 1, 
             valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
             // 👇 UPDATE THIS CELLSTYLE OBJECT
             cellStyle: {
                 alignItems: 'flex-start',
                 paddingTop: 10,
-                background: 'var(--ag-background-color, #fff)', //[cite: 1]
+                background: 'var(--ag-background-color, #fff)', 
 
                 // Adds a thick, clean border at the bottom of each TA group block
                 borderBottom: '2px solid #e2e8f0',
                 // Ensures the vertical line on the right remains clear
                 borderRight: '1px solid #e2e8f0'
             },
+             cellRenderer: (params) => {
+        if (params.node.rowPinned) {
+            return <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}><strong>Total</strong></div>;
+        }
+       if (params.data.rowSpan <= 0) return "";
+
+       return (
+            <div style={{display:"flex", alignItems:"flex-start"}}>
+                <div style={{display:"flex"}}>
+                    <button
+                        onClick={() => moveTAGroupUp(params.data)}
+                        disabled={!canMoveTAGroupUp(params.data)}
+                         style={{
+                                background: "none",
+                                border: "none",
+                                 cursor: canMoveTAGroupUp(params.data) ? "pointer" : "not-allowed",
+                                color: canMoveTAGroupUp(params.data) ? "#666" : "#ccc",
+                            }}
+                    >
+                        ▲
+                    </button>
+
+                    <button
+                        onClick={() => moveTAGroupDown(params.data)}
+                        disabled={!canMoveTAGroupDown(params.data)}
+                         style={{
+                                background: "none",
+                                border: "none",
+                                    marginLeft: '5px',
+                               cursor: canMoveTAGroupDown(params.data) ? "pointer" : "not-allowed",
+                                color: canMoveTAGroupDown(params.data) ? "#666" : "#ccc",
+                            }}
+                    >
+                        ▼
+                    </button>
+                </div>
+
+                <span style={{ marginLeft: '5px',}}>{params.value}</span>
+            </div>
+        );
+    }
         },
         {
             headerName: 'Company',
@@ -1089,6 +1304,9 @@ function ScrumStructure2() {
             cellRenderer: (props) => {
                 const { value, data } = props;
 
+         if (props.node.rowPinned) {
+        return "";
+            }
                 const i = getRowIndex(data);
 
 
@@ -1152,7 +1370,11 @@ function ScrumStructure2() {
             field: 'taskStatus',
             width: 150,
             pinned: 'left',
-            cellRenderer: ({ value, data }) => {
+            cellRenderer: (props) => {
+                const { value, data } = props
+                  if (props.node.rowPinned) {
+        return "";
+            }
                 return <TaskStatusComp text={value} result={data} />
             },
         },
@@ -1170,6 +1392,7 @@ function ScrumStructure2() {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
             width: 140,
+             cellStyle: { textAlign: 'center' },
         },
 
         {
@@ -1289,7 +1512,11 @@ function ScrumStructure2() {
             field: 'totalNoOfSubmission',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            cellRenderer: ({ value, data }) => {
+            cellRenderer: (props) => {
+                  const { value, data } = props
+                 if (props.node.rowPinned) {
+        return value;
+            }
                 return value ? <ScPopoupComp value={value} data={data} type={"TotalSubmission"} /> : ''
             }
         },
@@ -1311,7 +1538,11 @@ function ScrumStructure2() {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
-            cellRenderer: ({ value, data }) => {
+            cellRenderer: (props) => {
+                 const { value, data } = props
+                 if (props.node.rowPinned) {
+        return value;
+            }
                 return value ? <ScPopoupComp value={value} data={data} type={"ScreenReject"} /> : ''
             }
         },
@@ -1320,25 +1551,41 @@ function ScrumStructure2() {
             field: 'totalNoOfInterviewReject',
             width: 170,
             cellStyle: { textAlign: 'center' },
-            cellRenderer: ({ value, data }) => {
+            cellRenderer: (props) => {
+                 const { value, data } = props
+                 if (props.node.rowPinned) {
+        return value;
+            }
                 return value ? <ScPopoupComp value={value} data={data} type={"TotalReject"} /> : ''
             }
         },
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
-            cellRenderer: ({ value, data }) => {
+            cellRenderer: (props) => {
+                 const { value, data } = props
+                 if (props.node.rowPinned) {
+        return value;
+            }
                 return value ? <ScPopoupComp value={value} data={data} type={"R1"} /> : ''
             }
         },
         {
             headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
-            cellRenderer: ({ value, data }) => {
+            cellRenderer: (props) => {
+                 const { value, data } = props
+                 if (props.node.rowPinned) {
+        return value;
+            }
                 return value ? <ScPopoupComp value={value} data={data} type={"R2"} /> : ''
             }
         },
         {
             headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
-            cellRenderer: ({ value, data }) => {
+            cellRenderer: (props) => {
+                 const { value, data } = props
+                 if (props.node.rowPinned) {
+        return value;
+            }
                 return value ? <ScPopoupComp value={value} data={data} type={"R3"} /> : ''
             }
         },
@@ -1363,7 +1610,11 @@ function ScrumStructure2() {
             cellStyle: { textAlign: 'center' },
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
-             cellRenderer:({value,data})=>{
+             cellRenderer:(props)=>{
+                 const { value, data } = props
+                 if (props.node.rowPinned) {
+        return value;
+            }
                  return <p
             style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
             onClick={() => {
@@ -1374,12 +1625,16 @@ function ScrumStructure2() {
         </p>}
         },
          {
-            headerName: "Yesterday's Interview Count" ,
-            field: 'interview_Scheduled_Target ',
+            headerName: "Today's Interview Schedule" ,
+            field: 'interview_Scheduled_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
-            cellRenderer:({value,data})=>{
+            cellRenderer:(props)=>{
+                 const { value, data } = props
+                 if (props.node.rowPinned) {
+        return value;
+            }
                  return <p
             style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
             onClick={() => {
@@ -1502,7 +1757,11 @@ function ScrumStructure2() {
             field: '',
             width: 100,
             sortable: false,
-            cellRenderer: ({ value, data }) => {
+            cellRenderer: (props) => {
+               const { value, data } = props
+                 if (props.node.rowPinned) {
+        return "";
+            }
                 return (
                     <div>
                         <IconContext.Provider
@@ -1559,6 +1818,11 @@ function ScrumStructure2() {
 
         },
     ];
+
+
+    const pinnedBottomRowData = useMemo(() => {
+    return [getTotalRow(TaListData, getScrumGridColumns())];
+}, [TaListData]);
 
     /**
      * Sensible Excel-like defaults applied to every column unless overridden above.
@@ -1807,6 +2071,7 @@ function ScrumStructure2() {
                             groupDefaultExpanded={-1}
                             autoGroupColumnDef={autoGroupColumnDef}
                             popupParent={popupParent}
+                            pinnedBottomRowData={pinnedBottomRowData}
                         />
                     }
 

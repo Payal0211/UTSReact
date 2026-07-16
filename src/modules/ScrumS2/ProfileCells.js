@@ -4,6 +4,10 @@ export function ProfileSharedTargetCell(props) {
     const {value, data ,objKey } = props;
     const { setShowProfileTarget, setStartTargetDate, setProfileTargetDetails, startDate, getRowIndex } =
         props.context;
+
+          if (props.node.rowPinned) {
+        return value;
+            }
     const i = getRowIndex(data);
 
     return (
@@ -29,6 +33,10 @@ export function ProfileSharedTargetCell(props) {
 
 export function ActiveProfileCountCell(props) {
     const {value , data } = props;
+
+      if (props.node.rowPinned) {
+        return value;
+            }
     const {
         getRowIndex,
         getTalentProfilesDetailsfromTable,
