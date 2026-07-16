@@ -18,6 +18,9 @@ function YesNoCell(props) {
     const { updateTARowValue, getRowIndex } = props.context;
     const [localValue, setLocalValue] = useState(value ?? '');
 
+      if (props.node.rowPinned) {
+        return "";
+            }
     return (
         <div className={stylesOBj.tableSelectField} onClick={(e) => e.stopPropagation()}>
             <Select
