@@ -3,7 +3,7 @@ import stylesOBj from './scrumStructure.module.css'
 import gridStyles from './scrumGrid.module.css'
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { AgGridReact } from 'ag-grid-react'
-import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
+import { ModuleRegistry, AllCommunityModule, DataTypeService } from 'ag-grid-community'
 import { scrumGridTheme } from './gridTheme'
 import {
     Select, InputNumber,
@@ -976,17 +976,27 @@ const onGridReady = (params) => {
     }
 
     const getTalentProfilesDetailsfromGoalsTable = async (
-        result,
+      {  result,
         statusID,
-        stageID
+        stageID, isToday}
     ) => {
         setShowTalentProfiles(true);
         setInfoforProfile(result);
+          let targetDate 
+
+          if(isToday){
+            targetDate = moment().format("YYYY-MM-DD")
+          }else{
+            targetDate =  moment().day() === 1
+            ? moment().subtract(3, "days").format("YYYY-MM-DD")
+            : moment().subtract(1, "day").format("YYYY-MM-DD");
+          }
+       
         let pl = {
             hrID: result?.hiringRequest_ID,
             statusID: statusID,
             stageID: statusID === 0 ? null : stageID ? stageID : 0,
-            targetDate: moment().subtract(1, "day").format("YYYY-MM-DD"),
+            targetDate: targetDate,
         };
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
@@ -1561,7 +1571,7 @@ const onGridReady = (params) => {
             // cellEditor: 'agTextCellEditor', 
             cellEditor: 'agLargeTextCellEditor',
             cellEditorParams: {
-                maxLength: 1000, // Optional: restricts max length
+                maxLength: 50000, // Optional: restricts max length
                 // cols: 30,       // Optional: width of the dropdown box
                 // rows: 3,        // Optional: height of the dropdown box
             },
@@ -1703,7 +1713,10 @@ const onGridReady = (params) => {
                 return <p
                     style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
                     onClick={() => {
-                        getTalentProfilesDetailsfromGoalsTable(data, 2)
+                        getTalentProfilesDetailsfromGoalsTable({  result:data,
+        statusID:2,
+        stageID:'',
+    isToday:false})
                     }}
                 >
                     {value}
@@ -1724,7 +1737,10 @@ const onGridReady = (params) => {
                 return <p
                     style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
                     onClick={() => {
-                        getTalentProfilesDetailsfromGoalsTable(data, 2)
+                        getTalentProfilesDetailsfromGoalsTable({  result:data,
+        statusID:2,
+        stageID:'',
+    isToday:true})
                     }}
                 >
                     {value}
