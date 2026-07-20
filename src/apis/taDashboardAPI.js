@@ -167,6 +167,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.updateScrumTaskListRequest');
 		}
 	},
+	updateScrumTaskListGroupOrderRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.UPDATE_SCRUM_GROUP_ORDER_LIST 
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.updateScrumTaskListGroupOrderRequest');
+		}
+	},
 	getAllTATaskListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
