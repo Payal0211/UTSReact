@@ -2776,6 +2776,7 @@ function WeeklyWCGR() {
         <IconContext.Provider
           value={{
             // color: "green",
+             color: record[commentKey]?.length > 0 ? "green" : "gray",
             style: {
               width: "10px",
               height: "10px",
@@ -2785,7 +2786,7 @@ function WeeklyWCGR() {
           }}
         >
           {" "}
-          <Tooltip title={`Add/View Comment`} placement="top">
+          <Tooltip title={record[commentKey]?.length > 0 ? record[commentKey] : `Add/View Comment`} placement="top">
             <span
               onClick={() => {
                 AddComment(record, keyPar, month, index, commentKey);
@@ -2798,7 +2799,7 @@ function WeeklyWCGR() {
               }}
             >
               {" "}
-              <CiCircleInfo />
+               {record[commentKey]?.length > 0 ? <BiSolidComment /> : <CiCircleInfo />}
             </span>{" "}
           </Tooltip>
         </IconContext.Provider> : ''

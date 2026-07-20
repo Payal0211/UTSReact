@@ -90,7 +90,7 @@ function ScrumStructure2() {
     const [allTAUsersList, setAllTAUsersList] = useState([]);
     const [isEditNewTask, setEditNewTask] = useState(false);
     const [editedCommentData, setEditedCommentData] = useState({});
-
+    const [hasFilter, setHasFilter] = useState(false);
     const {
         register: remarkregiter,
         handleSubmit: remarkSubmit,
@@ -145,6 +145,12 @@ function ScrumStructure2() {
         };
         getUserResult();
     }, []);
+
+    const gridApiRef = useRef(null);
+
+const onGridReady = (params) => {
+    gridApiRef.current = params.api;
+};
 
     const GRID_ROW_HEIGHT = 46;
     const GRID_HEADER_HEIGHT = 44;
@@ -302,6 +308,18 @@ function ScrumStructure2() {
 
     }
 
+    const updateGroupORERUPDOWN = async (pl) => {
+        
+        const result = await TaDashboardDAO.updateScrumTaskListGroupOrderRequestDAO(pl);
+        if (result.statusCode === HTTPStatusCode.OK) {
+            message.success("Group order updated")
+            setTaListData(groupByRowSpan(result.responseBody, "taName"));
+        } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+            message.error("Something went wrong!")
+        }
+
+    }
+
     const canMoveUp = (record) => {
         let index = getRowIndex(record);
         if (index === 0) return false;
@@ -339,6 +357,8 @@ function ScrumStructure2() {
         setTaListData(groupByRowSpan(newData, "taName"));
     };
 
+    
+
     const moveRowDown = (index, record) => {
         const i = getRowIndex(record);
 
@@ -351,7 +371,6 @@ function ScrumStructure2() {
             TAHeadUserIDs: selectedHead,
             DisplayOrder: TaListData[i + 1]?.displayOrder
         }
-        console.log("down", index, i, record, pl)
         updateORERUPDOWN(pl)
 
         setTaListData(groupByRowSpan(newData, "taName"));
@@ -399,7 +418,7 @@ function ScrumStructure2() {
         setRemDiamondLoading(true);
         let res = await allCompanyRequestDAO.removeCompanyCategoryDAO(payload);
         setRemDiamondLoading(false);
-        console.log("response", res);
+     
         if (res.statusCode === 200) {
             updateTARowValue(
                 "None",
@@ -944,11 +963,11 @@ function ScrumStructure2() {
         let Query = `?TaskID=${data.id}&OptionType=${type}`
         setShowScrumPopup(true)
         setScrumPopupType(type)
-         setInfoforProfile(data);
+        setInfoforProfile(data);
         setScrumPopupLoading(true)
         let result = await TaDashboardDAO.getScrumPOPUPInfoDAO(Query)
         setScrumPopupLoading(false)
-        console.log(result)
+
         if (result.statusCode === HTTPStatusCode.OK) {
             setScrumPopupData(result.responseBody)
         } else {
@@ -956,31 +975,31 @@ function ScrumStructure2() {
         }
     }
 
-      const getTalentProfilesDetailsfromGoalsTable = async (
-            result,
-            statusID,
-            stageID
-        ) => {
-            setShowTalentProfiles(true);
-            setInfoforProfile(result);
-            let pl = {
-                hrID: result?.hiringRequest_ID,
-                statusID: statusID,
-                stageID: statusID === 0 ? null : stageID ? stageID : 0,
-                targetDate: moment().subtract(1, "day").format("YYYY-MM-DD"),
-            };
-            setLoadingTalentProfile(true);
-            const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
-            setLoadingTalentProfile(false);
-            if (hrResult.statusCode === HTTPStatusCode.OK) {
-                setHRTalentList(hrResult.responseBody);
-                setFilteredTalentList(hrResult.responseBody);
-                setHRTalentListFourCount(hrResult.responseBody);
-            } else {
-                setHRTalentList([]);
-                setFilteredTalentList([]);
-            }
+    const getTalentProfilesDetailsfromGoalsTable = async (
+        result,
+        statusID,
+        stageID
+    ) => {
+        setShowTalentProfiles(true);
+        setInfoforProfile(result);
+        let pl = {
+            hrID: result?.hiringRequest_ID,
+            statusID: statusID,
+            stageID: statusID === 0 ? null : stageID ? stageID : 0,
+            targetDate: moment().subtract(1, "day").format("YYYY-MM-DD"),
         };
+        setLoadingTalentProfile(true);
+        const hrResult = await TaDashboardDAO.getHRTalentDetailsRequestDAO(pl);
+        setLoadingTalentProfile(false);
+        if (hrResult.statusCode === HTTPStatusCode.OK) {
+            setHRTalentList(hrResult.responseBody);
+            setFilteredTalentList(hrResult.responseBody);
+            setHRTalentListFourCount(hrResult.responseBody);
+        } else {
+            setHRTalentList([]);
+            setFilteredTalentList([]);
+        }
+    };
 
     const handleSearchInput = (value) => {
         setSearchTerm(value);
@@ -993,7 +1012,7 @@ function ScrumStructure2() {
         setFilteredTalentList(filteredData);
     };
 
-    const handleSCRUMSearchInput = (value)=>{
+    const handleSCRUMSearchInput = (value) => {
 
     }
 
@@ -1008,27 +1027,27 @@ function ScrumStructure2() {
         }
     };
 
-    const updateNotes = async (pl,index) => {
-         setTaListData(prev=> {
+    const updateNotes = async (pl, index) => {
+        setTaListData(prev => {
             let tempD = [...prev]
-            tempD[index] = {...tempD[index] , latestNotesTopRow: pl.Comments}
+            tempD[index] = { ...tempD[index], latestNotesTopRow: pl.Comments, latestNotes: pl.Comments }
             return tempD
         })
         let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
     }
 
 
-    const updateTouchNotes = async (pl,index) => {
-        setTaListData(prev=> {
+    const updateTouchNotes = async (pl, index) => {
+        setTaListData(prev => {
             let tempD = [...prev]
-            tempD[index] = {...tempD[index] , touchBasedNotesTopRow: pl.Comments}
+            tempD[index] = { ...tempD[index], touchBasedNotesTopRow: pl.Comments, touchBasedNotes: pl.Comments }
             return tempD
         })
         let updateresult = await TaDashboardDAO.updateTouchCommentRequestDAO(pl);
     }
 
-    const updateSubmissionSheetNotes =  async(pl,index) => {
-     
+    const updateSubmissionSheetNotes = async (pl, index) => {
+
         let updateresult = await TaDashboardDAO.updateSubmissionSheetDAO(pl);
     }
 
@@ -1052,178 +1071,199 @@ function ScrumStructure2() {
     }
 
     const sumFields = [
-    "todayProfile_Shared_Target",
-    "profile_Shared_Target",
-    "profile_Shared_Achieved",
-    "interview_Scheduled_Target"
-];
+        "todayProfile_Shared_Target",
+        "profile_Shared_Target",
+        "profile_Shared_Achieved",
+        "interview_Scheduled_Target"
+    ];
 
-const getTotalRow = (rows, columnDefs) => {
-    const total = {
-        taName: "Total",
-    };
+    const getTotalRow = (rows, columnDefs) => {
+        const total = {
+            taName: "Total",
+        };
 
-    columnDefs.forEach((col) => {
-        const field = col.field;
+        columnDefs.forEach((col) => {
+            const field = col.field;
 
-        if (!field || field === "taName") return;
-        if(!sumFields.includes(field)) return
-        let sum = 0;
-        let hasNumericValue = false;
+            if (!field || field === "taName") return;
+            if (!sumFields.includes(field)) return
+            let sum = 0;
+            let hasNumericValue = false;
 
-        rows.forEach((row) => {
-            const value = row[field];
+            rows.forEach((row) => {
+                const value = row[field];
 
-            if (typeof value === "number") {
-                sum += value;
-                hasNumericValue = true;
-            } else if (
-                typeof value === "string" &&
-                value.trim() !== "" &&
-                !isNaN(value)
-            ) {
-                sum += Number(value);
-                hasNumericValue = true;
+                if (typeof value === "number") {
+                    sum += value;
+                    hasNumericValue = true;
+                } else if (
+                    typeof value === "string" &&
+                    value.trim() !== "" &&
+                    !isNaN(value)
+                ) {
+                    sum += Number(value);
+                    hasNumericValue = true;
+                }
+            });
+
+            if (hasNumericValue) {
+                total[field] = sum;
             }
         });
 
-        if (hasNumericValue) {
-            total[field] = sum;
+        return total;
+    };
+
+
+    // const getTAGroups = () => {
+    //     const groups = [];
+
+    //     let start = 0;
+
+    //     while (start < TaListData.length) {
+
+    //         const taId = TaListData[start].tA_UserID;
+
+    //         let end = start;
+
+    //         while (
+    //             end + 1 < TaListData.length &&
+    //             TaListData[end + 1].tA_UserID === taId
+    //         ) {
+    //             end++;
+    //         }
+
+    //         groups.push({
+    //             taId,
+    //             start,
+    //             end
+    //         });
+
+    //         start = end + 1;
+    //     }
+
+    //     return groups;
+    // };
+
+    const getTAGroups = (rows) => {
+        const groups = [];
+        let start = 0;
+
+        while (start < rows.length) {
+            const taId = rows[start].tA_UserID;
+            let end = start;
+
+            while (
+                end + 1 < rows.length &&
+                rows[end + 1].tA_UserID === taId
+            ) {
+                end++;
+            }
+
+            groups.push({
+                taId,
+                start,
+                end
+            });
+
+            start = end + 1;
         }
-    });
 
-    return total;
-};
+        return groups;
+    };
 
+    const moveTAGroupUp = (row) => {
 
-// const getTAGroups = () => {
-//     const groups = [];
+        const groups = getTAGroups(TaListData);
 
-//     let start = 0;
+        const index = groups.findIndex(g => g.taId === row.tA_UserID);
 
-//     while (start < TaListData.length) {
+        if (index <= 0) return;
 
-//         const taId = TaListData[start].tA_UserID;
+        const prev = groups[index - 1];
+        const current = groups[index];
 
-//         let end = start;
+        const copy = [...TaListData];
 
-//         while (
-//             end + 1 < TaListData.length &&
-//             TaListData[end + 1].tA_UserID === taId
-//         ) {
-//             end++;
-//         }
+        const prevRows = copy.slice(prev.start, prev.end + 1);
+        const currentRows = copy.slice(current.start, current.end + 1);
 
-//         groups.push({
-//             taId,
-//             start,
-//             end
-//         });
+        copy.splice(
+            prev.start,
+            prevRows.length + currentRows.length,
+            ...currentRows,
+            ...prevRows
+        );
 
-//         start = end + 1;
-//     }
-
-//     return groups;
-// };
-
-const getTAGroups = (rows) => {
-    const groups = [];
-    let start = 0;
-
-    while (start < rows.length) {
-        const taId = rows[start].tA_UserID;
-        let end = start;
-
-        while (
-            end + 1 < rows.length &&
-            rows[end + 1].tA_UserID === taId
-        ) {
-            end++;
+        let pl = {
+            // ID: row?.id,
+            TAUserID: row.tA_UserID,
+            TAHeadUserIDs: selectedHead,
+            TA_ScrumOrder: TaListData.find(i => i.tA_UserID === prev.taId)?.tA_ScrumOrder
+            // DisplayOrder: TaListData[i + 1]?.displayOrder
         }
 
-        groups.push({
-            taId,
-            start,
-            end
-        });
+        updateGroupORERUPDOWN(pl)
 
-        start = end + 1;
-    }
+        setTaListData(copy);
 
-    return groups;
-};
+    };
 
-const moveTAGroupUp = (row) => {
+    const moveTAGroupDown = (row) => {
 
-    const groups = getTAGroups(TaListData);
+        const groups = getTAGroups(TaListData);
 
-    const index = groups.findIndex(g => g.taId === row.tA_UserID);
+        const index = groups.findIndex(g => g.taId === row.tA_UserID);
 
-    if (index <= 0) return;
+        if (index === groups.length - 1) return;
 
-    const prev = groups[index - 1];
-    const current = groups[index];
+        const current = groups[index];
+        const next = groups[index + 1];
 
-    const copy = [...TaListData];
+        const copy = [...TaListData];
 
-    const prevRows = copy.slice(prev.start, prev.end + 1);
-    const currentRows = copy.slice(current.start, current.end + 1);
+        const currentRows = copy.slice(current.start, current.end + 1);
+        const nextRows = copy.slice(next.start, next.end + 1);
 
-    copy.splice(
-        prev.start,
-        prevRows.length + currentRows.length,
-        ...currentRows,
-        ...prevRows
-    );
+        copy.splice(
+            current.start,
+            currentRows.length + nextRows.length,
+            ...nextRows,
+            ...currentRows
+        );
 
-    setTaListData(copy);
-};
+        let pl = {
+            // ID: row?.id,
+            TAUserID: row.tA_UserID,
+            TAHeadUserIDs: selectedHead,
+            TA_ScrumOrder: TaListData.find(i => i.tA_UserID === next.taId)?.tA_ScrumOrder
+            // DisplayOrder: TaListData[i + 1]?.displayOrder
+        }
 
-const moveTAGroupDown = (row) => {
+        updateGroupORERUPDOWN(pl)
 
-    const groups = getTAGroups(TaListData);
+        setTaListData(copy);
+    };
 
-    const index = groups.findIndex(g => g.taId === row.tA_UserID);
+    const canMoveTAGroupUp = (row) => {
+        const groups = getTAGroups(TaListData);
 
-    if (index === groups.length - 1) return;
+        const groupIndex = groups.findIndex(
+            g => g.taId === row.tA_UserID
+        );
 
-    const current = groups[index];
-    const next = groups[index + 1];
+        return groupIndex > 0;
+    };
 
-    const copy = [...TaListData];
+    const canMoveTAGroupDown = (row) => {
+        const groups = getTAGroups(TaListData);
 
-    const currentRows = copy.slice(current.start, current.end + 1);
-    const nextRows = copy.slice(next.start, next.end + 1);
+        const groupIndex = groups.findIndex(
+            g => g.taId === row.tA_UserID
+        );
 
-    copy.splice(
-        current.start,
-        currentRows.length + nextRows.length,
-        ...nextRows,
-        ...currentRows
-    );
-
-    setTaListData(copy);
-};
-
-const canMoveTAGroupUp = (row) => {
-    const groups = getTAGroups(TaListData);
-
-    const groupIndex = groups.findIndex(
-        g => g.taId === row.tA_UserID
-    );
-
-    return groupIndex > 0;
-};
-
-const canMoveTAGroupDown = (row) => {
-    const groups = getTAGroups(TaListData);
-
-    const groupIndex = groups.findIndex(
-        g => g.taId === row.tA_UserID
-    );
-
-    return groupIndex < groups.length - 1;
-};
+        return groupIndex < groups.length - 1;
+    };
 
 
     const getScrumGridColumns = () => [
@@ -1233,60 +1273,103 @@ const canMoveTAGroupDown = (row) => {
             width: 180,
             pinned: 'left',
             sortable: false,
-            rowSpan: (params) => params.data?.rowSpan || 1, 
-            valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
-            // 👇 UPDATE THIS CELLSTYLE OBJECT
-            cellStyle: {
-                alignItems: 'flex-start',
-                paddingTop: 10,
-                background: 'var(--ag-background-color, #fff)', 
+            // rowSpan: (params) => params.data?.rowSpan || 1, 
+            rowSpan: (params) => {
 
-                // Adds a thick, clean border at the bottom of each TA group block
-                borderBottom: '2px solid #e2e8f0',
-                // Ensures the vertical line on the right remains clear
-                borderRight: '1px solid #e2e8f0'
+                if (params.api.isAnyFilterPresent()) {
+                    return 1;
+                }
+
+                const api = params.api;
+                const rowIndex = params.node.rowIndex;
+
+                const current = params.data.tA_UserID;
+
+                const prev = api.getDisplayedRowAtIndex(rowIndex - 1)?.data?.tA_UserID;
+
+                if (prev === current) {
+                    return 1;
+                }
+
+                let span = 1;
+
+                for (let i = rowIndex + 1; i < api.getDisplayedRowCount(); i++) {
+                    const next = api.getDisplayedRowAtIndex(i)?.data;
+
+                    if (next?.tA_UserID === current) {
+                        span++;
+                    } else {
+                        break;
+                    }
+                }
+
+                return span;
             },
-             cellRenderer: (params) => {
-        if (params.node.rowPinned) {
-            return <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}><strong>Total</strong></div>;
-        }
-       if (params.data.rowSpan <= 0) return "";
+            // valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
+            // cellStyle: {
+            //     alignItems: 'flex-start',
+            //     paddingTop: 10,
+            //     background: 'var(--ag-background-color, #fff)',
 
-       return (
-            <div style={{display:"flex", alignItems:"flex-start"}}>
-                <div style={{display:"flex"}}>
-                    <button
-                        onClick={() => moveTAGroupUp(params.data)}
-                        disabled={!canMoveTAGroupUp(params.data)}
-                         style={{
-                                background: "none",
-                                border: "none",
-                                 cursor: canMoveTAGroupUp(params.data) ? "pointer" : "not-allowed",
-                                color: canMoveTAGroupUp(params.data) ? "#666" : "#ccc",
-                            }}
-                    >
-                        ▲
-                    </button>
+            //     // Adds a thick, clean border at the bottom of each TA group block
+            //     borderBottom: '2px solid #e2e8f0',
+            //     // Ensures the vertical line on the right remains clear
+            //     borderRight: '1px solid #e2e8f0'
+            // },
+            cellRenderer: (params) => {
+                if (params.node.rowPinned) {
+                    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}><strong>Total</strong></div>;
+                }
+                
+                if (params.api.isAnyFilterPresent()) {
+                    const rowIndex = params.node.rowIndex;
 
-                    <button
-                        onClick={() => moveTAGroupDown(params.data)}
-                        disabled={!canMoveTAGroupDown(params.data)}
-                         style={{
-                                background: "none",
-                                border: "none",
+                    const prev = params.api
+                        .getDisplayedRowAtIndex(rowIndex - 1)
+                        ?.data?.tA_UserID;
+
+                    if (prev === params.data.tA_UserID) {
+                        return "";
+                    }
+                }
+
+                 if (params.data.rowSpan <= 0 && !params.api.isAnyFilterPresent()) return "";
+
+                return (
+                    <div style={{ display: "flex", alignItems: "flex-start" }}>
+                        {params.api.isAnyFilterPresent() ? "" : <div style={{ display: "flex" }}>
+                            <button
+                                onClick={() => moveTAGroupUp(params.data)}
+                                disabled={!canMoveTAGroupUp(params.data)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: canMoveTAGroupUp(params.data) ? "pointer" : "not-allowed",
+                                    color: canMoveTAGroupUp(params.data) ? "#666" : "#ccc",
+                                }}
+                            >
+                                ▲
+                            </button>
+
+                            <button
+                                onClick={() => moveTAGroupDown(params.data)}
+                                disabled={!canMoveTAGroupDown(params.data)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
                                     marginLeft: '5px',
-                               cursor: canMoveTAGroupDown(params.data) ? "pointer" : "not-allowed",
-                                color: canMoveTAGroupDown(params.data) ? "#666" : "#ccc",
-                            }}
-                    >
-                        ▼
-                    </button>
-                </div>
+                                    cursor: canMoveTAGroupDown(params.data) ? "pointer" : "not-allowed",
+                                    color: canMoveTAGroupDown(params.data) ? "#666" : "#ccc",
+                                }}
+                            >
+                                ▼
+                            </button>
+                        </div>}
 
-                <span style={{ marginLeft: '5px',}}>{params.value}</span>
-            </div>
-        );
-    }
+                        <span style={{ marginLeft: '5px', }}>{params.value}</span>
+                    </div>
+                );
+            }
         },
         {
             headerName: 'Company',
@@ -1304,15 +1387,16 @@ const canMoveTAGroupDown = (row) => {
             cellRenderer: (props) => {
                 const { value, data } = props;
 
-         if (props.node.rowPinned) {
-        return "";
-            }
+                if (props.node.rowPinned) {
+                    return "";
+                }
                 const i = getRowIndex(data);
 
 
                 return (<>
                     <div style={{ display: 'flex', }}>
-                        <button
+                      {props.api.isAnyFilterPresent() ? "" : <>
+                      <button
                             onClick={() => moveRowUp(i, data)}
                             disabled={!canMoveUp(data)}
                             style={{
@@ -1338,6 +1422,7 @@ const canMoveTAGroupDown = (row) => {
                         >
                             ▼
                         </button>
+                      </>}  
                         <a
                             href={`/allhiringrequest/${data?.hiringRequest_ID}`}
                             style={{ marginLeft: '5px' }}
@@ -1372,9 +1457,9 @@ const canMoveTAGroupDown = (row) => {
             pinned: 'left',
             cellRenderer: (props) => {
                 const { value, data } = props
-                  if (props.node.rowPinned) {
-        return "";
-            }
+                if (props.node.rowPinned) {
+                    return "";
+                }
                 return <TaskStatusComp text={value} result={data} />
             },
         },
@@ -1392,7 +1477,7 @@ const canMoveTAGroupDown = (row) => {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
             width: 140,
-             cellStyle: { textAlign: 'center' },
+            cellStyle: { textAlign: 'center' },
         },
 
         {
@@ -1493,14 +1578,14 @@ const canMoveTAGroupDown = (row) => {
             onCellValueChanged: (params) => {
                 // console.log("Updated:", params.newValue);
                 // console.log("Row:", params.data);
-
+                const index = getRowIndex(params.data);
                 let pl = {
                     TA_Head_UserID: selectedHead,
                     TaskID: params.data.id,
                     Comments: params.newValue
                 }
 
-                updateNotes(pl)
+                updateNotes(pl, index)
             },
 
             cellRenderer: LatestNotesCell,
@@ -1513,10 +1598,10 @@ const canMoveTAGroupDown = (row) => {
             cellStyle: { textAlign: 'center' },
             width: 170,
             cellRenderer: (props) => {
-                  const { value, data } = props
-                 if (props.node.rowPinned) {
-        return value;
-            }
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return value;
+                }
                 return value ? <ScPopoupComp value={value} data={data} type={"TotalSubmission"} /> : ''
             }
         },
@@ -1539,10 +1624,10 @@ const canMoveTAGroupDown = (row) => {
             cellStyle: { textAlign: 'center' },
             width: 90,
             cellRenderer: (props) => {
-                 const { value, data } = props
-                 if (props.node.rowPinned) {
-        return value;
-            }
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return value;
+                }
                 return value ? <ScPopoupComp value={value} data={data} type={"ScreenReject"} /> : ''
             }
         },
@@ -1552,40 +1637,40 @@ const canMoveTAGroupDown = (row) => {
             width: 170,
             cellStyle: { textAlign: 'center' },
             cellRenderer: (props) => {
-                 const { value, data } = props
-                 if (props.node.rowPinned) {
-        return value;
-            }
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return value;
+                }
                 return value ? <ScPopoupComp value={value} data={data} type={"TotalReject"} /> : ''
             }
         },
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
             cellRenderer: (props) => {
-                 const { value, data } = props
-                 if (props.node.rowPinned) {
-        return value;
-            }
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return value;
+                }
                 return value ? <ScPopoupComp value={value} data={data} type={"R1"} /> : ''
             }
         },
         {
             headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
             cellRenderer: (props) => {
-                 const { value, data } = props
-                 if (props.node.rowPinned) {
-        return value;
-            }
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return value;
+                }
                 return value ? <ScPopoupComp value={value} data={data} type={"R2"} /> : ''
             }
         },
         {
             headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
             cellRenderer: (props) => {
-                 const { value, data } = props
-                 if (props.node.rowPinned) {
-        return value;
-            }
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return value;
+                }
                 return value ? <ScPopoupComp value={value} data={data} type={"R3"} /> : ''
             }
         },
@@ -1610,39 +1695,40 @@ const canMoveTAGroupDown = (row) => {
             cellStyle: { textAlign: 'center' },
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
-             cellRenderer:(props)=>{
-                 const { value, data } = props
-                 if (props.node.rowPinned) {
-        return value;
+            cellRenderer: (props) => {
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return value;
+                }
+                return <p
+                    style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
+                    onClick={() => {
+                        getTalentProfilesDetailsfromGoalsTable(data, 2)
+                    }}
+                >
+                    {value}
+                </p>
             }
-                 return <p
-            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
-            onClick={() => {
-                getTalentProfilesDetailsfromGoalsTable(data,2)
-            }}
-        >
-            {value}
-        </p>}
         },
-         {
-            headerName: "Today's Interview Schedule" ,
+        {
+            headerName: "Today's Interview Schedule",
             field: 'interview_Scheduled_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
-            cellRenderer:(props)=>{
-                 const { value, data } = props
-                 if (props.node.rowPinned) {
-        return value;
-            }
-                 return <p
-            style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
-            onClick={() => {
-                getTalentProfilesDetailsfromGoalsTable(data,2)
-            }}
-        >
-            {value}
-        </p>
+            cellRenderer: (props) => {
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return value;
+                }
+                return <p
+                    style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
+                    onClick={() => {
+                        getTalentProfilesDetailsfromGoalsTable(data, 2)
+                    }}
+                >
+                    {value}
+                </p>
             }
         },
         {
@@ -1697,12 +1783,12 @@ const canMoveTAGroupDown = (row) => {
                     Comments: params.newValue
                 }
 
-                updateTouchNotes(pl,index)
+                updateTouchNotes(pl, index)
             },
 
             cellRenderer: LatestTouchCell,
         },
-           {
+        {
             headerName: 'Submission Sheet',
             field: 'submissionSheet',
             width: 250,
@@ -1739,7 +1825,7 @@ const canMoveTAGroupDown = (row) => {
                     comments: params.newValue
                 }
 
-                updateSubmissionSheetNotes(pl,index)
+                updateSubmissionSheetNotes(pl, index)
             },
 
             cellRenderer: SubmissionSheetCell,
@@ -1758,10 +1844,10 @@ const canMoveTAGroupDown = (row) => {
             width: 100,
             sortable: false,
             cellRenderer: (props) => {
-               const { value, data } = props
-                 if (props.node.rowPinned) {
-        return "";
-            }
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return "";
+                }
                 return (
                     <div>
                         <IconContext.Provider
@@ -1820,9 +1906,9 @@ const canMoveTAGroupDown = (row) => {
     ];
 
 
-    const pinnedBottomRowData = useMemo(() => {
-    return [getTotalRow(TaListData, getScrumGridColumns())];
-}, [TaListData]);
+    const pinnedBottomRowData = useMemo((par) => {
+        return [getTotalRow(TaListData, getScrumGridColumns())];
+    }, [TaListData]);
 
     /**
      * Sensible Excel-like defaults applied to every column unless overridden above.
@@ -1968,6 +2054,20 @@ const canMoveTAGroupDown = (row) => {
         }
     };
 
+    const updatePinnedTotalRow = (api) => {
+    const filteredRows = [];
+
+    api.forEachNodeAfterFilterAndSort((node) => {
+        if (!node.rowPinned) {
+            filteredRows.push(node.data);
+        }
+    });
+
+    api.setGridOption("pinnedBottomRowData", [
+        getTotalRow(filteredRows, getScrumGridColumns())
+    ]);
+};
+
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
@@ -2054,6 +2154,8 @@ const canMoveTAGroupDown = (row) => {
                     {isLoading ? <TableSkeleton /> :
 
                         <AgGridReact
+                         onGridReady={onGridReady}
+                         onFirstDataRendered={params=> updatePinnedTotalRow(params.api)}
                             theme={scrumGridTheme}
                             rowData={TaListData}
                             columnDefs={gridColumns}
@@ -2067,11 +2169,31 @@ const canMoveTAGroupDown = (row) => {
                             onCellKeyDown={handleGridKeyDown}
                             onCellEditingStarted={handleCellEditingStarted}
                             groupDisplayType="singleColumn"
+getRowStyle={(params) => {
+        if (params.node.rowPinned) {
+            return {
+                backgroundColor: '#F4F6F8', // Same as your header
+                fontWeight: '700',
+                borderTop: '2px solid #D9DEE3',
+                color: '#1F2937'
+            };
+        }
 
+        return null;
+    }}
                             groupDefaultExpanded={-1}
                             autoGroupColumnDef={autoGroupColumnDef}
                             popupParent={popupParent}
                             pinnedBottomRowData={pinnedBottomRowData}
+                            onSortChanged={(params) => updatePinnedTotalRow(params.api)}
+                            onFilterChanged={(params) => {
+                                 const filtered = params.api.isAnyFilterPresent();
+                                
+                                    setHasFilter(filtered);
+                                     updatePinnedTotalRow(params.api);
+                                    params.api.refreshCells({ force: true });
+                                    params.api.redrawRows();
+                            }}
                         />
                     }
 
@@ -3206,7 +3328,7 @@ const canMoveTAGroupDown = (row) => {
                                     type="text"
                                     placeholder="Search talent..."
                                     value={searchTerm}
-                                    onChange={(e) =>   setSearchTerm(e.target.value)} // Create this function
+                                    onChange={(e) => setSearchTerm(e.target.value)} // Create this function
                                     style={{
                                         padding: "6px 10px",
                                         border: "1px solid #ccc",
@@ -3222,14 +3344,14 @@ const canMoveTAGroupDown = (row) => {
                                     <Skeleton active />
                                 </div>
                             ) : (
-                                <div style={{ margin: "5px 10px" , paddingBottom:'10px'}}>
+                                <div style={{ margin: "5px 10px", paddingBottom: '10px' }}>
                                     <Table
-                                        dataSource={searchTerm? scrumPopupData.filter(
-            (talent) =>
-                talent.talent.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (talent.email &&
-                    talent.email.toLowerCase().includes(searchTerm.toLowerCase()))
-        ) : scrumPopupData}
+                                        dataSource={searchTerm ? scrumPopupData.filter(
+                                            (talent) =>
+                                                talent.talent.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                (talent.email &&
+                                                    talent.email.toLowerCase().includes(searchTerm.toLowerCase()))
+                                        ) : scrumPopupData}
                                         columns={ScrumPopupColumns()}
                                         // bordered
                                         pagination={false}
