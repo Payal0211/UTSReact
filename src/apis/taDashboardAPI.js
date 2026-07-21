@@ -150,6 +150,22 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getAllScrumTaskListRequest');
 		}
 	},
+	getScrumColumOrderRequest: async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_COLUMN_ORDER + `?POD_Id=${id}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getScrumColumOrderRequest');
+		}
+	},
 	updateScrumTaskListRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -173,6 +189,23 @@ export const TaDashboardAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
 			TaDashboardURL.UPDATE_SCRUM_GROUP_ORDER_LIST +`?TAUserID=${payload.TAUserID}&TAHeadUserIDs=${payload.TAHeadUserIDs}&TA_ScrumOrder=${payload?.TA_ScrumOrder}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.updateScrumTaskListGroupOrderRequest');
+		}
+	},
+	updateScrumTaskColumnOrderRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.UPDATE_SCRUM_COLUMN_ORDER +`?POD_Id=${payload.POD_Id}&ColumnName=${payload.ColumnName}&ColumnOrder=${payload?.ColumnOrder}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

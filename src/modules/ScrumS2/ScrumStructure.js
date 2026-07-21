@@ -52,6 +52,7 @@ function ScrumStructure2() {
     const [TaListData, setTaListData] = useState([]);
     const [selectedHead, setSelectedHead] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [columnOrder, setColumnOrder] = useState([])
     const [draggedRow, setDraggedRow] = useState(null);
     const [draggedRowData, setDraggedRowData] = useState({})
     const [tableFilteredState, setTableFilteredState] = useState({
@@ -148,9 +149,9 @@ function ScrumStructure2() {
 
     const gridApiRef = useRef(null);
 
-const onGridReady = (params) => {
-    gridApiRef.current = params.api;
-};
+    const onGridReady = (params) => {
+        gridApiRef.current = params.api;
+    };
 
     const GRID_ROW_HEIGHT = 46;
     const GRID_HEADER_HEIGHT = 44;
@@ -206,6 +207,20 @@ const onGridReady = (params) => {
         return finalData;
     }
 
+    const getCOLUMNOrder = async (id) => {
+        setIsLoading(true);
+        const colOrderResult = await TaDashboardDAO.getScrumColumOrderDAO(selectedHead)
+        setIsLoading(true);
+
+
+        if (colOrderResult?.statusCode === HTTPStatusCode.OK) {
+            setColumnOrder(colOrderResult?.responseBody)
+        } else {
+            setColumnOrder([])
+        }
+
+    }
+
     const getListData = useCallback(async () => {
         let pl = {
             // taUserIDs: tableFilteredState?.filterFields_OnBoard?.taUserIDs,
@@ -219,6 +234,7 @@ const onGridReady = (params) => {
         };
         setIsLoading(true);
         const result = await TaDashboardDAO.getAllScrumTaskListRequestDAO(pl);
+
         setIsLoading(false);
 
         if (result.statusCode === HTTPStatusCode.OK) {
@@ -240,6 +256,7 @@ const onGridReady = (params) => {
     useEffect(() => {
         if (selectedHead) {
             getListData();
+            getCOLUMNOrder(selectedHead)
         }
 
     }, [searchText, tableFilteredState, selectedHead,]);
@@ -309,7 +326,7 @@ const onGridReady = (params) => {
     }
 
     const updateGroupORERUPDOWN = async (pl) => {
-        
+
         const result = await TaDashboardDAO.updateScrumTaskListGroupOrderRequestDAO(pl);
         if (result.statusCode === HTTPStatusCode.OK) {
             message.success("Group order updated")
@@ -357,7 +374,7 @@ const onGridReady = (params) => {
         setTaListData(groupByRowSpan(newData, "taName"));
     };
 
-    
+
 
     const moveRowDown = (index, record) => {
         const i = getRowIndex(record);
@@ -418,7 +435,7 @@ const onGridReady = (params) => {
         setRemDiamondLoading(true);
         let res = await allCompanyRequestDAO.removeCompanyCategoryDAO(payload);
         setRemDiamondLoading(false);
-     
+
         if (res.statusCode === 200) {
             updateTARowValue(
                 "None",
@@ -870,16 +887,16 @@ const onGridReady = (params) => {
                     dataIndex: "talent",
                     key: "talent",
                 },
-                   {
+                {
                     title: "Submited By",
                     dataIndex: "profileSubmittedBy",
                     key: "profileSubmittedBy",
                 },
-                   {
+                {
                     title: "Status",
                     dataIndex: "talentStatus",
                     key: "talentStatus",
-                    render:(text,row)=>{
+                    render: (text, row) => {
                         console.log(row)
                         return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
                     }
@@ -903,15 +920,15 @@ const onGridReady = (params) => {
             //         dataIndex: "profileSubmittedBy",
             //         key: "profileSubmittedBy",
             //     },
-                   {
-                    title: "Status",
-                    dataIndex: "talentStatus",
-                    key: "talentStatus",
-                    render:(text,row)=>{
-                        console.log(row)
-                        return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
-                    }
-                },
+            {
+                title: "Status",
+                dataIndex: "talentStatus",
+                key: "talentStatus",
+                render: (text, row) => {
+                    console.log(row)
+                    return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
+                }
+            },
             {
                 title: scrumPopupType === "ScreenReject" || scrumPopupType === "TotalReject" ? " Rejected Reason" : "Slot Details",
                 dataIndex: "slotDetail",
@@ -1004,22 +1021,22 @@ const onGridReady = (params) => {
     }
 
     const getTalentProfilesDetailsfromGoalsTable = async (
-      {  result,
-        statusID,
-        stageID, isToday}
+        { result,
+            statusID,
+            stageID, isToday }
     ) => {
         setShowTalentProfiles(true);
         setInfoforProfile(result);
-          let targetDate 
+        let targetDate
 
-          if(isToday){
+        if (isToday) {
             targetDate = moment().format("YYYY-MM-DD")
-          }else{
-            targetDate =  moment().day() === 1
-            ? moment().subtract(3, "days").format("YYYY-MM-DD")
-            : moment().subtract(1, "day").format("YYYY-MM-DD");
-          }
-       
+        } else {
+            targetDate = moment().day() === 1
+                ? moment().subtract(3, "days").format("YYYY-MM-DD")
+                : moment().subtract(1, "day").format("YYYY-MM-DD");
+        }
+
         let pl = {
             hrID: result?.hiringRequest_ID,
             statusID: statusID,
@@ -1356,9 +1373,9 @@ const onGridReady = (params) => {
             // },
             cellRenderer: (params) => {
                 if (params.node.rowPinned) {
-                    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}><strong>Total</strong></div>;
+                    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>Total</strong></div>;
                 }
-                
+
                 if (params.api.isAnyFilterPresent()) {
                     const rowIndex = params.node.rowIndex;
 
@@ -1371,7 +1388,7 @@ const onGridReady = (params) => {
                     }
                 }
 
-                 if (params.data.rowSpan <= 0 && !params.api.isAnyFilterPresent()) return "";
+                if (params.data.rowSpan <= 0 && !params.api.isAnyFilterPresent()) return "";
 
                 return (
                     <div style={{ display: "flex", alignItems: "flex-start" }}>
@@ -1433,34 +1450,34 @@ const onGridReady = (params) => {
 
                 return (<>
                     <div style={{ display: 'flex', }}>
-                      {props.api.isAnyFilterPresent() ? "" : <>
-                      <button
-                            onClick={() => moveRowUp(i, data)}
-                            disabled={!canMoveUp(data)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: canMoveUp(data) ? "pointer" : "not-allowed",
-                                color: canMoveUp(data) ? "#666" : "#ccc",
-                            }}
-                        >
-                            ▲
-                        </button>
-                        <button
-                            onClick={() => moveRowDown(i, data)}
-                            disabled={!canMoveDown(data)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                marginLeft: '5px',
-                                cursor: canMoveDown(data) ? "pointer" : "not-allowed",
+                        {props.api.isAnyFilterPresent() ? "" : <>
+                            <button
+                                onClick={() => moveRowUp(i, data)}
+                                disabled={!canMoveUp(data)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: canMoveUp(data) ? "pointer" : "not-allowed",
+                                    color: canMoveUp(data) ? "#666" : "#ccc",
+                                }}
+                            >
+                                ▲
+                            </button>
+                            <button
+                                onClick={() => moveRowDown(i, data)}
+                                disabled={!canMoveDown(data)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    marginLeft: '5px',
+                                    cursor: canMoveDown(data) ? "pointer" : "not-allowed",
 
-                                color: canMoveDown(data) ? "#666" : "#ccc",
-                            }}
-                        >
-                            ▼
-                        </button>
-                      </>}  
+                                    color: canMoveDown(data) ? "#666" : "#ccc",
+                                }}
+                            >
+                                ▼
+                            </button>
+                        </>}
                         <a
                             href={`/allhiringrequest/${data?.hiringRequest_ID}`}
                             style={{ marginLeft: '5px' }}
@@ -1629,7 +1646,6 @@ const onGridReady = (params) => {
             cellRenderer: LatestNotesCell,
         },
 
-
         {
             headerName: 'Total No Of Submissions',
             field: 'totalNoOfSubmission',
@@ -1643,18 +1659,6 @@ const onGridReady = (params) => {
                 return value ? <ScPopoupComp value={value} data={data} type={"TotalSubmission"} /> : ''
             }
         },
-
-
-        // {
-        //     headerName: 'Submission Target On Given Date',
-        //     field: 'submissionTargetOnGivenDate',
-        //     width: 220,
-        // },
-        // {
-        //     headerName: 'Submission Target Achieved',
-        //     field: 'interview_Scheduled_Target',
-        //     width: 170,
-        // },
 
         {
             headerName: 'Screen Reject',
@@ -1712,7 +1716,7 @@ const onGridReady = (params) => {
                 return value ? <ScPopoupComp value={value} data={data} type={"R3"} /> : ''
             }
         },
-     
+
         {
             headerName: "Today's Submission Target",
             field: 'todayProfile_Shared_Target',
@@ -1742,10 +1746,12 @@ const onGridReady = (params) => {
                 return <p
                     style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
                     onClick={() => {
-                        getTalentProfilesDetailsfromGoalsTable({  result:data,
-        statusID:2,
-        stageID:'',
-    isToday:false})
+                        getTalentProfilesDetailsfromGoalsTable({
+                            result: data,
+                            statusID: 2,
+                            stageID: '',
+                            isToday: false
+                        })
                     }}
                 >
                     {value}
@@ -1873,7 +1879,7 @@ const onGridReady = (params) => {
             cellRenderer: YesNoCell,
             cellRendererParams: { objKey: 'hmAsPOC' },
         },
-           {
+        {
             headerName: "Yesterday's No of Calls",
             field: 'noOfCallsGivenDay',
             cellStyle: { textAlign: 'center' },
@@ -1883,7 +1889,7 @@ const onGridReady = (params) => {
         },
         {
             headerName: 'Action',
-            field: '',
+            field: 'Action',
             width: 100,
             sortable: false,
             cellRenderer: (props) => {
@@ -1968,7 +1974,27 @@ const onGridReady = (params) => {
     };
 
     // Static column config (renderers live in ./scrumGridColumns + ./cellRenderers/*)
-    const gridColumns = useMemo(() => getScrumGridColumns(), [TaListData]);
+    const gridColumns = useMemo(() => {
+        if (columnOrder.length) {
+            let newOrderObj = []
+            let originalObj = getScrumGridColumns()
+            let shortorder = columnOrder.sort(
+                (a, b) => a.columnOrder - b.columnOrder
+            );
+
+            shortorder.forEach(i => {
+                
+                let obj = originalObj.find(val => val.field.trim() === i.columnName.trim())
+                newOrderObj.push(obj)
+            })
+
+            return newOrderObj
+        } else {
+            return getScrumGridColumns()
+        }
+
+
+    }, [TaListData, columnOrder]);
 
     // Rows keep their original array index available to renderers via id lookup,
     // since ag-Grid's own row index can change once sorting/filtering is used.
@@ -2098,22 +2124,44 @@ const onGridReady = (params) => {
     };
 
     const updatePinnedTotalRow = (api) => {
-    const filteredRows = [];
+        const filteredRows = [];
 
-    api.forEachNodeAfterFilterAndSort((node) => {
-        if (!node.rowPinned) {
-            filteredRows.push(node.data);
+        api.forEachNodeAfterFilterAndSort((node) => {
+            if (!node.rowPinned) {
+                filteredRows.push(node.data);
+            }
+        });
+
+        api.setGridOption("pinnedBottomRowData", [
+            getTotalRow(filteredRows, getScrumGridColumns())
+        ]);
+    };
+
+    const updateColumnOrder = async (pl) => {
+        const result = await TaDashboardDAO.updateScrumTaskColumnOrderRequestDAO(pl);
+        if (result.statusCode === HTTPStatusCode.OK) {
+            message.success("Column order updated")
+        } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+            message.error("Something went wrong!")
         }
-    });
+    }
 
-    api.setGridOption("pinnedBottomRowData", [
-        getTotalRow(filteredRows, getScrumGridColumns())
-    ]);
-};
+    const onColumnMoved = (params) => {
+        if (!params.finished) return; // Ignore intermediate drag events
 
-const onColumnMoved = (params) => {
-    // console.log(params.api.getColumnState());
-};
+        // console.log("Moved Column:", params.column.getColId());
+        // console.log("New Position:", params.toIndex);
+        // console.log("Source:", params.source);
+        // console.log(params.api.getColumnState());
+
+        let pl = {
+            POD_Id: selectedHead,
+            ColumnName: params.column.getColId(),
+            ColumnOrder: params.toIndex + 1
+        }
+
+        updateColumnOrder(pl)
+    };
 
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
@@ -2201,8 +2249,8 @@ const onColumnMoved = (params) => {
                     {isLoading ? <TableSkeleton /> :
 
                         <AgGridReact
-                         onGridReady={onGridReady}
-                         onFirstDataRendered={params=> updatePinnedTotalRow(params.api)}
+                            onGridReady={onGridReady}
+                            onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
                             theme={scrumGridTheme}
                             rowData={TaListData}
                             columnDefs={gridColumns}
@@ -2216,32 +2264,32 @@ const onColumnMoved = (params) => {
                             onCellKeyDown={handleGridKeyDown}
                             onCellEditingStarted={handleCellEditingStarted}
                             groupDisplayType="singleColumn"
-getRowStyle={(params) => {
-        if (params.node.rowPinned) {
-            return {
-                backgroundColor: '#F4F6F8', // Same as your header
-                fontWeight: '700',
-                borderTop: '2px solid #D9DEE3',
-                color: '#1F2937'
-            };
-        }
+                            getRowStyle={(params) => {
+                                if (params.node.rowPinned) {
+                                    return {
+                                        backgroundColor: '#F4F6F8', // Same as your header
+                                        fontWeight: '700',
+                                        borderTop: '2px solid #D9DEE3',
+                                        color: '#1F2937'
+                                    };
+                                }
 
-        return null;
-    }}
+                                return null;
+                            }}
                             groupDefaultExpanded={-1}
                             autoGroupColumnDef={autoGroupColumnDef}
                             popupParent={popupParent}
                             pinnedBottomRowData={pinnedBottomRowData}
                             onSortChanged={(params) => updatePinnedTotalRow(params.api)}
                             onFilterChanged={(params) => {
-                                 const filtered = params.api.isAnyFilterPresent();
-                                
-                                    setHasFilter(filtered);
-                                     updatePinnedTotalRow(params.api);
-                                    params.api.refreshCells({ force: true });
-                                    params.api.redrawRows();
+                                const filtered = params.api.isAnyFilterPresent();
+
+                                setHasFilter(filtered);
+                                updatePinnedTotalRow(params.api);
+                                params.api.refreshCells({ force: true });
+                                params.api.redrawRows();
                             }}
-                               onColumnMoved={onColumnMoved}
+                            onColumnMoved={onColumnMoved}
                         />
                     }
 

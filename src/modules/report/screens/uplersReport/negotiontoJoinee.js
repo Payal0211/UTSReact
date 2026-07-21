@@ -3437,7 +3437,7 @@ setLoadingResponse(false);
             className={uplersStyle.AccordianText}
             style={{ textDecoration: "none", cursor: 'pointer' }}
           >
-            Planning to Joined Summary{" "}
+            Selection to Joined Summary{" "}
             <ArrowDownSVG
               style={{
                 rotate: showWeeklyReport ? "180deg" : "",
@@ -3463,7 +3463,7 @@ setLoadingResponse(false);
                   paddingLeft: "20px", padding: '10px'
                 }}
               >
-                Weekly Plan vs Progress
+                Weekly Selection Anticipation vs Progress
               </p>
               <Table
                 scroll={{ x: "1600px", y: "100vh" }}
@@ -3500,7 +3500,7 @@ setLoadingResponse(false);
                   paddingLeft: "20px", padding: '10px'
                 }}
               >
-                Weekly Joining Plan vs Achieved
+                Weekly Joining Anticipation vs Achieved
               </p>
               <Table
                 scroll={{ x: "1600px", y: "100vh" }}
@@ -3550,7 +3550,7 @@ setLoadingResponse(false);
                   paddingLeft: "20px", padding: '10px'
                 }}
               >
-                Month Starting Planning Data
+                Month Starting Selection & Joining Anticipation
               </p>
               <button style={{marginBottom: '10px', height:'50px'}}
                className={uplersStyle.FreezeButton} disabled={isMonthFreezeAllowed} onClick={()=>setShowFreeze(true)}> Freeze</button>
