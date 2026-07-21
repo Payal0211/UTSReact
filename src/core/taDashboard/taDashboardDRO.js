@@ -213,6 +213,29 @@ export const TaDashboardDAO = {
             return errorDebug(error, 'TaDashboardDAO.getAllScrumTaskListRequestDAO');
         }
     },
+    getScrumColumOrderDAO: async function (ID) {
+        try {
+            const taResult = await TaDashboardAPI.getScrumColumOrderRequest(ID);
+            if (taResult) {
+                const statusCode = taResult['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = taResult.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult.details,
+                    };
+                } else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    let deletedResponse =
+                        UserSessionManagementController.deleteAllSession();
+                    if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'TaDashboardDAO.getScrumColumOrderDAO');
+        }
+    },
     updateScrumTaskListRequestDAO: async function (pl) {
         try {
             const taResult = await TaDashboardAPI.updateScrumTaskListRequest(pl);
@@ -257,6 +280,29 @@ export const TaDashboardDAO = {
             }
         } catch (error) {
             return errorDebug(error, 'TaDashboardDAO.updateScrumTaskListGroupOrderRequestDAO');
+        }
+    },
+    updateScrumTaskColumnOrderRequestDAO:  async function (pl) {
+        try {
+            const taResult = await TaDashboardAPI.updateScrumTaskColumnOrderRequest(pl);
+            if (taResult) {
+                const statusCode = taResult['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = taResult.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult.details,
+                    };
+                } else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    let deletedResponse =
+                        UserSessionManagementController.deleteAllSession();
+                    if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'TaDashboardDAO.updateScrumTaskColumnOrderRequestDAO');
         }
     },
     getAllTATaskListRequestDAO: async function (pl) {
