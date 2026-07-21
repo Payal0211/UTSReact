@@ -870,6 +870,20 @@ const onGridReady = (params) => {
                     dataIndex: "talent",
                     key: "talent",
                 },
+                   {
+                    title: "Submited By",
+                    dataIndex: "profileSubmittedBy",
+                    key: "profileSubmittedBy",
+                },
+                   {
+                    title: "Status",
+                    dataIndex: "talentStatus",
+                    key: "talentStatus",
+                    render:(text,row)=>{
+                        console.log(row)
+                        return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
+                    }
+                },
             ]
         }
 
@@ -884,6 +898,20 @@ const onGridReady = (params) => {
                 dataIndex: "talent",
                 key: "talent",
             },
+            //    {
+            //         title: "Submited By",
+            //         dataIndex: "profileSubmittedBy",
+            //         key: "profileSubmittedBy",
+            //     },
+                   {
+                    title: "Status",
+                    dataIndex: "talentStatus",
+                    key: "talentStatus",
+                    render:(text,row)=>{
+                        console.log(row)
+                        return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
+                    }
+                },
             {
                 title: scrumPopupType === "ScreenReject" || scrumPopupType === "TotalReject" ? " Rejected Reason" : "Slot Details",
                 dataIndex: "slotDetail",
@@ -1684,6 +1712,7 @@ const onGridReady = (params) => {
                 return value ? <ScPopoupComp value={value} data={data} type={"R3"} /> : ''
             }
         },
+     
         {
             headerName: "Today's Submission Target",
             field: 'todayProfile_Shared_Target',
@@ -1853,6 +1882,14 @@ const onGridReady = (params) => {
             sortable: false,
             cellRenderer: YesNoCell,
             cellRendererParams: { objKey: 'hmAsPOC' },
+        },
+           {
+            headerName: "Yesterday's No of Calls",
+            field: 'noOfCallsGivenDay',
+            cellStyle: { textAlign: 'center' },
+            width: 150,
+            // cellRenderer: ProfileSharedTargetCell,
+            cellRendererParams: { objKey: 'noOfCallsGivenDay' },
         },
         {
             headerName: 'Action',
