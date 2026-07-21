@@ -1763,17 +1763,7 @@ const onGridReady = (params) => {
                 if (props.node.rowPinned) {
                     return value;
                 }
-                return <p
-                    style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
-                    onClick={() => {
-                        getTalentProfilesDetailsfromGoalsTable({  result:data,
-        statusID:2,
-        stageID:'',
-    isToday:true})
-                    }}
-                >
-                    {value}
-                </p>
+                return value ? <ScPopoupComp value={value} data={data} type={'InterviewScheduledTarget'} /> : ''
             }
         },
         {
@@ -2121,6 +2111,10 @@ const onGridReady = (params) => {
     ]);
 };
 
+const onColumnMoved = (params) => {
+    // console.log(params.api.getColumnState());
+};
+
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
@@ -2247,6 +2241,7 @@ getRowStyle={(params) => {
                                     params.api.refreshCells({ force: true });
                                     params.api.redrawRows();
                             }}
+                               onColumnMoved={onColumnMoved}
                         />
                     }
 
