@@ -36,6 +36,7 @@ import { HrStatusCell, LatestNotesCell, LatestTouchCell, SubmissionSheetCell } f
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import YesNoCell from './YesNoCell';
+import MultiConditionTextFilter from './MultiConditionTextFilter';
 const { Option } = Select;
 
 
@@ -507,6 +508,7 @@ function ScrumStructure2() {
                     ...newDS[index],
                     [key]: value?.id,
                     taskStatus: value?.data,
+                    todayProfile_Shared_Target:targetValue
                 };
                 newDS[index] = nob;
                 return newDS;
@@ -707,7 +709,7 @@ function ScrumStructure2() {
                         }
                         setValue(val);
                         let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
-                        updateTARowValue(valobj, "task_StatusID", result, index);
+                        updateTARowValue(valobj, "task_StatusID", result, index,targetValue);
                     }}
                 >
                     {filtersList?.TaskStatus?.map((v) => (
@@ -1324,6 +1326,8 @@ function ScrumStructure2() {
             width: 180,
             pinned: 'left',
             sortable: false,
+             suppressMovable: true,
+            filter: MultiConditionTextFilter,
             // rowSpan: (params) => params.data?.rowSpan || 1, 
             rowSpan: (params) => {
 
@@ -1429,12 +1433,16 @@ function ScrumStructure2() {
             pinned: 'left',
             cellRenderer: CompanyCell,
             sortable: false,
+             suppressMovable: true,
+             filter: MultiConditionTextFilter,
         },
         {
             headerName: 'HR ID',
             field: 'hrNumber',
             width: 180,
             pinned: 'left',
+             suppressMovable: true,
+             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props;
 
@@ -1497,7 +1505,9 @@ function ScrumStructure2() {
             field: 'hrTitle',
             width: 200,
             pinned: 'left',
+             suppressMovable: true,
             cellRenderer: HrTitleCell,
+             filter: MultiConditionTextFilter,
             tooltipField: 'hrTitle',
         },
 
@@ -1506,6 +1516,8 @@ function ScrumStructure2() {
             field: 'taskStatus',
             width: 150,
             pinned: 'left',
+             suppressMovable: true,
+             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -1519,6 +1531,7 @@ function ScrumStructure2() {
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 120,
+             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -1528,6 +1541,7 @@ function ScrumStructure2() {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
             width: 140,
+             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
 
@@ -1536,12 +1550,14 @@ function ScrumStructure2() {
             field: 'hrCreatedDate',
             cellStyle: { textAlign: 'center' },
             width: 150,
+             filter: MultiConditionTextFilter,
             valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
         },
         {
             headerName: 'HR Status',
             field: 'tA_HR_Status',
             width: 130,
+             filter: MultiConditionTextFilter,
             cellRenderer: HrStatusCell,
         },
         {
@@ -1549,6 +1565,7 @@ function ScrumStructure2() {
             field: 'activeTR',
             cellStyle: { textAlign: 'center' },
             width: 100,
+             filter: MultiConditionTextFilter,
         },
 
 
@@ -1560,6 +1577,7 @@ function ScrumStructure2() {
             field: 'talent_AnnualCTC_Budget_INRValueStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
+             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -1569,6 +1587,7 @@ function ScrumStructure2() {
             field: 'uplersFeesPer',
             cellStyle: { textAlign: 'center' },
             width: 100,
+             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -1578,6 +1597,7 @@ function ScrumStructure2() {
             field: 'totalRevenue_NoofTalentStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
+             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -1587,6 +1607,7 @@ function ScrumStructure2() {
             field: 'days',
             cellStyle: { textAlign: 'center' },
             width: 170,
+             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -1595,6 +1616,7 @@ function ScrumStructure2() {
             headerName: 'No of Active Profile Till Date',
             field: 'noOfProfile_TalentsTillDate',
             width: 150,
+             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
@@ -1602,6 +1624,7 @@ function ScrumStructure2() {
             headerName: 'Latest Updates',
             field: 'latestNotes',
             width: 250,
+             filter: MultiConditionTextFilter,
             sortable: false,
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
@@ -1647,6 +1670,7 @@ function ScrumStructure2() {
             field: 'totalNoOfSubmission',
             cellStyle: { textAlign: 'center' },
             width: 170,
+             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -1661,6 +1685,7 @@ function ScrumStructure2() {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
+             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -1673,6 +1698,7 @@ function ScrumStructure2() {
             headerName: 'Total No Of Interview Rejects',
             field: 'totalNoOfInterviewReject',
             width: 170,
+             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -1684,6 +1710,7 @@ function ScrumStructure2() {
         },
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
+             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -1694,6 +1721,7 @@ function ScrumStructure2() {
         },
         {
             headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
+             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -1704,6 +1732,7 @@ function ScrumStructure2() {
         },
         {
             headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
+             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -1718,6 +1747,7 @@ function ScrumStructure2() {
             field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
+             filter: MultiConditionTextFilter,
             cellRenderer: ProfileSharedTargetCell,
             cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
         },
@@ -1725,6 +1755,7 @@ function ScrumStructure2() {
             headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
+             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
 
         },
@@ -1733,6 +1764,7 @@ function ScrumStructure2() {
             field: 'profile_Shared_Achieved',
             cellStyle: { textAlign: 'center' },
             width: 150,
+             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -1759,6 +1791,7 @@ function ScrumStructure2() {
             field: 'interview_Scheduled_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
+             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -1772,6 +1805,7 @@ function ScrumStructure2() {
             headerName: 'Weekly Selection Planned',
             field: 'weeklySelectionPlanStr',
             width: 170,
+             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'left' },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -1782,11 +1816,13 @@ function ScrumStructure2() {
             field: 'joiningDate',
             cellStyle: { textAlign: 'center' },
             width: 150,
+             filter: MultiConditionTextFilter,
         },
         {
             headerName: 'Touch Based Notes',
             field: 'touchBasedNotes',
             width: 250,
+             filter: MultiConditionTextFilter,
             sortable: false,
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
@@ -1829,6 +1865,7 @@ function ScrumStructure2() {
             headerName: 'Submission Sheet',
             field: 'submissionSheet',
             width: 250,
+             filter: MultiConditionTextFilter,
             sortable: false,
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
@@ -1872,6 +1909,7 @@ function ScrumStructure2() {
             field: 'hmAsPOC',
             width: 100,
             sortable: false,
+             filter: MultiConditionTextFilter,
             cellRenderer: YesNoCell,
             cellRendererParams: { objKey: 'hmAsPOC' },
         },
@@ -1879,6 +1917,7 @@ function ScrumStructure2() {
             headerName: "Yesterday's No of Calls",
             field: 'noOfCallsGivenDay',
             cellStyle: { textAlign: 'center' },
+             filter: MultiConditionTextFilter,
             width: 150,
             // cellRenderer: ProfileSharedTargetCell,
             cellRendererParams: { objKey: 'noOfCallsGivenDay' },
@@ -1887,7 +1926,9 @@ function ScrumStructure2() {
             headerName: 'Action',
             field: 'Action',
             width: 100,
+             filter: MultiConditionTextFilter,
             sortable: false,
+            suppressMovable: true,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
