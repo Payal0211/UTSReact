@@ -507,7 +507,7 @@ function ScrumStructure2() {
                     ...newDS[index],
                     [key]: value?.id,
                     taskStatus: value?.data,
-                    todayProfile_Shared_Target:targetValue
+                    todayProfile_Shared_Target:targetValue ? targetValue : newDS[index].todayProfile_Shared_Target
                 };
                 newDS[index] = nob;
                 return newDS;
@@ -678,27 +678,27 @@ function ScrumStructure2() {
                     size="small"
                     style={{ color: colorCode }}
                     onChange={async (val) => {
-                        if (value === "Fasttrack" && val !== "Fasttrack") {
-                            let pl = {
-                                task_ID: result?.id,
-                                tA_Head_UserID: selectedHead,
-                                tA_UserID: result?.tA_UserID,
-                                target_StageID: 1,
-                                target_Number: targetValue,
-                                target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
-                                IsStatusChangedToSlow: true,
-                            };
-                            setLoadingTalentProfile(true);
-                            let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
-                                pl
-                            );
-                            setLoadingTalentProfile(false);
-                            if (response.statusCode === HTTPStatusCode.OK) {
-                                setGoalList(response.responseBody);
-                                setTargetValue(5);
-                                setStartTargetDate(new Date());
-                            }
-                        }
+                        // if (value === "Fasttrack" && val !== "Fasttrack") {
+                        //     let pl = {
+                        //         task_ID: result?.id,
+                        //         tA_Head_UserID: selectedHead,
+                        //         tA_UserID: result?.tA_UserID,
+                        //         target_StageID: 1,
+                        //         target_Number: targetValue,
+                        //         target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
+                        //         IsStatusChangedToSlow: true,
+                        //     };
+                        //     setLoadingTalentProfile(true);
+                        //     let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
+                        //         pl
+                        //     );
+                        //     setLoadingTalentProfile(false);
+                        //     if (response.statusCode === HTTPStatusCode.OK) {
+                        //         setGoalList(response.responseBody);
+                        //         setTargetValue(5);
+                        //         setStartTargetDate(new Date());
+                        //     }
+                        // }
 
                         if (val === "Fasttrack") {
                             setShowProfileTarget(true);
@@ -708,7 +708,9 @@ function ScrumStructure2() {
                         }
                         setValue(val);
                         let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
-                        updateTARowValue(valobj, "task_StatusID", result, index,targetValue);
+                        updateTARowValue(valobj, "task_StatusID", result, index);
+                        setTargetValue(5);
+                        setStartTargetDate(new Date());
                     }}
                 >
                     {filtersList?.TaskStatus?.map((v) => (
