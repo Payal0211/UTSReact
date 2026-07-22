@@ -162,7 +162,6 @@ function ScrumStructure2() {
     const gridWrapperRef = useRef(null);
     const [availableHeight, setAvailableHeight] = useState(600);
 
-    const popupParent = useMemo(() => document.body, []);
 
     useEffect(() => {
         const recomputeAvailableHeight = () => {
@@ -1110,7 +1109,7 @@ function ScrumStructure2() {
         setCommentData({ ...data, index });
     };
 
-    function computeAlerts(data) {
+ function computeAlerts(data) {
     const alerts = [];
 
     const days = data?.days ?? 0;
@@ -1118,6 +1117,7 @@ function ScrumStructure2() {
         alerts.push({
             key: 'stale',
             label: `HR open ${days} days`,
+            icon: '⏱',
             chip: `${days}d`,
             severity: 'critical',
         });
@@ -1128,7 +1128,8 @@ function ScrumStructure2() {
         alerts.push({
             key: 'lowProfiles',
             label: `Only ${activeProfiles} active profile${activeProfiles === 1 ? '' : 's'}`,
-            chip: 'LOW',
+            icon: '👤',
+            chip: `${activeProfiles}`,
             severity: 'warning',
         });
     }
@@ -1138,7 +1139,8 @@ function ScrumStructure2() {
         alerts.push({
             key: 'screenBurst',
             label: `${screenRejects} screen rejections — review sourcing`,
-            chip: `SR ${screenRejects}`,
+            icon: '✂',
+            chip: `${screenRejects}`,
             severity: 'warning',
         });
     }
@@ -1148,7 +1150,8 @@ function ScrumStructure2() {
         alerts.push({
             key: 'interviewBurst',
             label: `${interviewRejects} interview rejections — review fit`,
-            chip: `IR ${interviewRejects}`,
+            icon: '✕',
+            chip: `${interviewRejects}`,
             severity: 'warning',
         });
     }
@@ -1157,7 +1160,8 @@ function ScrumStructure2() {
         alerts.push({
             key: 'interviewCeiling',
             label: `${interviewRejects} interview rejections — escalate`,
-            chip: `IR ${interviewRejects}!`,
+            icon: '⚠',
+            chip: `${interviewRejects}`,
             severity: 'critical',
         });
     }
@@ -1168,20 +1172,93 @@ function ScrumStructure2() {
         alerts.push({
             key: 'targetMiss',
             label: `Missed target: ${achieved}/${target} shared`,
-            chip: 'TARGET',
+            icon: '◔',
+            chip: `${achieved}/${target}`,
             severity: 'warning',
         });
     }
 
-    return alerts;
+    // Show critical alerts first
+    return alerts.sort((a, b) => (a.severity === 'critical' ? -1 : 1) - (b.severity === 'critical' ? -1 : 1));
 }
 
  const SEVERITY_COLORS = {
-    critical: { bg: '#FDECEC', text: '#D93025', border: '#F5B7B1' },
-    warning: { bg: '#FFF6E0', text: '#B7791F', border: '#F5D98B' },
+    critical: { bg: '#FDECEC', text: '#D93025', border: '#F6C6C2' },
+    warning:  { bg: '#FFF6E0', text: '#B7791F', border: '#F5DFA3' },
 };
 
-    function AlertChip({ alert }) {
+//     function computeAlerts(data) {
+//     const alerts = [];
+
+//     const days = data?.days ?? 0;
+//     if (days >= 30) {
+//         alerts.push({
+//             key: 'stale',
+//             label: `HR open ${days} days`,
+//             chip: `${days}d`,
+//             severity: 'critical',
+//         });
+//     }
+
+//     const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+//     if (activeProfiles < 3) {
+//         alerts.push({
+//             key: 'lowProfiles',
+//             label: `Only ${activeProfiles} active profile${activeProfiles === 1 ? '' : 's'}`,
+//             chip: 'LOW',
+//             severity: 'warning',
+//         });
+//     }
+
+//     const screenRejects = data?.screenReject ?? 0;
+//     if (screenRejects > 0 && screenRejects % 3 === 0) {
+//         alerts.push({
+//             key: 'screenBurst',
+//             label: `${screenRejects} screen rejections — review sourcing`,
+//             chip: `SR ${screenRejects}`,
+//             severity: 'warning',
+//         });
+//     }
+
+//     const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
+//     if (interviewRejects > 0 && interviewRejects % 3 === 0 && interviewRejects <= 10) {
+//         alerts.push({
+//             key: 'interviewBurst',
+//             label: `${interviewRejects} interview rejections — review fit`,
+//             chip: `IR ${interviewRejects}`,
+//             severity: 'warning',
+//         });
+//     }
+
+//     if (interviewRejects > 10) {
+//         alerts.push({
+//             key: 'interviewCeiling',
+//             label: `${interviewRejects} interview rejections — escalate`,
+//             chip: `IR ${interviewRejects}!`,
+//             severity: 'critical',
+//         });
+//     }
+
+//     const target = data?.profile_Shared_Target ?? 0;
+//     const achieved = data?.profile_Shared_Achieved ?? 0;
+//     if (target > 0 && achieved < target) {
+//         alerts.push({
+//             key: 'targetMiss',
+//             label: `Missed target: ${achieved}/${target} shared`,
+//             chip: 'TARGET',
+//             severity: 'warning',
+//         });
+//     }
+
+//     return alerts;
+// }
+
+//  const SEVERITY_COLORS = {
+//     critical: { bg: '#FDECEC', text: '#D93025', border: '#F5B7B1' },
+//     warning: { bg: '#FFF6E0', text: '#B7791F', border: '#F5D98B' },
+// };
+
+function AlertChip({ alert }) {
     const colors = SEVERITY_COLORS[alert.severity];
     return (
         <Tooltip title={alert.label}>
@@ -1189,59 +1266,166 @@ function ScrumStructure2() {
                 style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    fontSize: 10,
-                    fontWeight: 700,
+                    gap: 3,
+                    fontSize: 10.5,
+                    fontWeight: 600,
                     lineHeight: 1,
-                    padding: '3px 6px',
+                    padding: '3px 7px',
                     borderRadius: 999,
                     backgroundColor: colors.bg,
                     color: colors.text,
                     border: `1px solid ${colors.border}`,
                     whiteSpace: 'nowrap',
+                    flexShrink: 0,   // already had this — keeps chip from squishing/wrapping text mid-word
                     cursor: 'default',
+                    maxHeight: 22, 
                 }}
             >
-                {alert.severity === 'critical' && (
-                    <span style={{ marginRight: 3 }}>●</span>
-                )}
+                <span style={{ fontSize: 10 }}>{alert.icon}</span>
                 {alert.chip}
             </span>
         </Tooltip>
     );
 }
 
-    // ---- ag-Grid column model & shared context ----------------------------------
+function HrTitleCell({ value, data }) {
+    if (!value) return null;
 
-    function HrTitleCell(props) {
-        const { value ,data} = props;
-        const alerts = computeAlerts(data);
-        if (!value) return null;
+    const alerts = computeAlerts(data);
+    const MAX_VISIBLE = 3;
+    const visibleAlerts = alerts.slice(0, MAX_VISIBLE);
+    const overflowCount = alerts.length - visibleAlerts.length;
 
-        if (value.length <= 20) return <span>{value}</span>;
-        return (<div  style={{
+    return (
+        <div
+            style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 4,
-                padding: '6px 0',
+                justifyContent: 'center',
+                gap: 5,
                 height: '100%',
-                justifyContent: 'center',   // vertically centers when a row has no chips
-                overflow: 'hidden',    
-                lineHeight:'10px'      // clips instead of pushing row height
-            }}>
-         <Tooltip title={value}>
-                <span>{`${value.slice(0, 20)}...`}</span>
+                width: '100%',
+                minWidth: 0,
+                overflow: 'hidden',
+            }}
+        >
+            <Tooltip title={value}>
+                <span
+                    style={{
+                        display: 'block',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        fontWeight: 500,
+                        lineHeight: "10px"
+                    }}
+                >
+                    {value}
+                </span>
             </Tooltip>
-              {alerts.length > 0 && (
-                <div style={{ display: 'flex', overflow: 'scroll', gap: 4 }}>
-                    {alerts.map((a) => (
+
+            {alerts.length > 0 && (
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        overflow: 'hidden',
+                        minWidth: 0,
+                        width: '100%',
+                    }}
+                >
+                    {visibleAlerts.map((a) => (
                         <AlertChip key={a.key} alert={a} />
                     ))}
+                    {overflowCount > 0 && (
+                        <Tooltip title={alerts.slice(MAX_VISIBLE).map(a => a.label).join(' • ')}>
+                            <span
+                                style={{
+                                    fontSize: 10.5,
+                                    fontWeight: 600,
+                                    color: '#888',
+                                    padding: '3px 6px',
+                                    borderRadius: 999,
+                                    backgroundColor: '#F0F0F0',
+                                    flexShrink: 0,
+                                    cursor: 'default',
+                                    display:"flex",
+                                    alignItems:'center',
+                                    maxHeight:'16px'
+                                }}
+                            >
+                                +{overflowCount}
+                            </span>
+                        </Tooltip>
+                    )}
                 </div>
             )}
         </div>
+    );
+}
+
+//     function AlertChip({ alert }) {
+//     const colors = SEVERITY_COLORS[alert.severity];
+//     return (
+//         <Tooltip title={alert.label}>
+//             <span
+//                 style={{
+//                     display: 'inline-flex',
+//                     alignItems: 'center',
+//                     fontSize: 10,
+//                     fontWeight: 700,
+//                     lineHeight: 1,
+//                     padding: '3px 6px',
+//                     borderRadius: 999,
+//                     backgroundColor: colors.bg,
+//                     color: colors.text,
+//                     border: `1px solid ${colors.border}`,
+//                     whiteSpace: 'nowrap',
+//                     cursor: 'default',
+//                 }}
+//             >
+//                 {alert.severity === 'critical' && (
+//                     <span style={{ marginRight: 3 }}>●</span>
+//                 )}
+//                 {alert.chip}
+//             </span>
+//         </Tooltip>
+//     );
+// }
+
+//     // ---- ag-Grid column model & shared context ----------------------------------
+
+//     function HrTitleCell(props) {
+//         const { value ,data} = props;
+//         const alerts = computeAlerts(data);
+//         if (!value) return null;
+
+//         if (value.length <= 20) return <span>{value}</span>;
+//         return (<div  style={{
+//                 display: 'flex',
+//                 flexDirection: 'column',
+//                 gap: 4,
+//                 padding: '6px 0',
+//                 height: '100%',
+//                 justifyContent: 'center',   // vertically centers when a row has no chips
+//                 overflow: 'hidden',    
+//                 lineHeight:'10px'      // clips instead of pushing row height
+//             }}>
+//          <Tooltip title={value}>
+//                 <span>{`${value.slice(0, 20)}...`}</span>
+//             </Tooltip>
+//               {alerts.length > 0 && (
+//                 <div style={{ display: 'flex', overflow: 'scroll', gap: 4 }}>
+//                     {alerts.map((a) => (
+//                         <AlertChip key={a.key} alert={a} />
+//                     ))}
+//                 </div>
+//             )}
+//         </div>
            
-        );
-    }
+//         );
+//     }
 
     const sumFields = [
         "todayProfile_Shared_Target",
@@ -1751,7 +1935,7 @@ function ScrumStructure2() {
             wrapText: true,    // Allows text to break to next line visually
             autoHeight: true,  // Automatically grows the row height[cite: 1]
             cellEditorPopup: true,
-            cellEditorPopupPosition: 'under', // opens below the cell instead of overlapping upward into the header
+            // cellEditorPopupPosition: 'under', 
             // 👇 ADD THESE TWO CONFIGURATIONS
             // cellEditor: 'agTextCellEditor', 
             cellEditor: 'agLargeTextCellEditor',
@@ -1992,7 +2176,7 @@ function ScrumStructure2() {
             wrapText: true,    // Allows text to break to next line visually
             autoHeight: true,  // Automatically grows the row height[cite: 1]
             cellEditorPopup: true,
-            cellEditorPopupPosition: 'under', // opens below the cell instead of overlapping upward into the header
+            // cellEditorPopupPosition: 'under',
 
             cellEditor: 'agTextCellEditor',
             cellEditorParams: {
@@ -2111,6 +2295,27 @@ function ScrumStructure2() {
 
         },
     ];
+
+    const handlePostProcessPopup = useCallback((params) => {
+    if (params.type !== 'popupCellEditor') return;
+
+    const { ePopup, column, eventSource } = params;
+    if (!column || (column.getColId() !== 'latestNotes' && column.getColId() !== 'touchBasedNotes')) {
+        return;
+    }
+
+    const cellRect = eventSource?.getBoundingClientRect();
+    if (!cellRect) return;
+
+    const popupHeight = ePopup.offsetHeight;
+    const GAP = 4;
+    const desiredTop = cellRect.top - popupHeight - GAP;
+
+    ePopup.style.position = 'fixed';
+    ePopup.style.left = `${cellRect.left}px`;
+    // Clamp so it never renders above the viewport top (min 8px margin)
+    ePopup.style.top = `${Math.max(desiredTop, 8)}px`;
+}, []);
 
 
     const pinnedBottomRowData = useMemo((par) => {
@@ -2418,14 +2623,15 @@ function ScrumStructure2() {
                             suppressRowTransform={true}
                             animateRows={false}
                             headerHeight={44}
-                            rowHeight={46}
+                            rowHeight={58}
                             onCellKeyDown={handleGridKeyDown}
                             onCellEditingStarted={handleCellEditingStarted}
+                            postProcessPopup={handlePostProcessPopup}
                             groupDisplayType="singleColumn"
                             getRowStyle={(params) => {
                                 if (params.node.rowPinned) {
                                     return {
-                                        backgroundColor: '#F4F6F8', // Same as your header
+                                        backgroundColor: '#F4F6F8', 
                                         fontWeight: '700',
                                         borderTop: '2px solid #D9DEE3',
                                         color: '#1F2937'
@@ -2436,7 +2642,6 @@ function ScrumStructure2() {
                             }}
                             groupDefaultExpanded={-1}
                             autoGroupColumnDef={autoGroupColumnDef}
-                            popupParent={popupParent}
                             pinnedBottomRowData={pinnedBottomRowData}
                             onSortChanged={(params) => updatePinnedTotalRow(params.api)}
                             onFilterChanged={(params) => {
@@ -2448,6 +2653,7 @@ function ScrumStructure2() {
                                 params.api.redrawRows();
                             }}
                             onColumnMoved={onColumnMoved}
+                            
                         />
                     }
 
