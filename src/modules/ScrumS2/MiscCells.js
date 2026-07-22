@@ -17,7 +17,7 @@ import {
 const { Text } = Typography;
 export function HrStatusCell(props) {
     const { data } = props;
-    return <div style={{display:'flex',justifyContent:'center'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status)}</div>;
+    return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status)}</div>;
 }
 
 export function LatestNotesCell(props) {
