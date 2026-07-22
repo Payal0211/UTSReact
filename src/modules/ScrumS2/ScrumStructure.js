@@ -1110,16 +1110,136 @@ function ScrumStructure2() {
         setCommentData({ ...data, index });
     };
 
+    function computeAlerts(data) {
+    const alerts = [];
+
+    const days = data?.days ?? 0;
+    if (days >= 30) {
+        alerts.push({
+            key: 'stale',
+            label: `HR open ${days} days`,
+            chip: `${days}d`,
+            severity: 'critical',
+        });
+    }
+
+    const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+    if (activeProfiles < 3) {
+        alerts.push({
+            key: 'lowProfiles',
+            label: `Only ${activeProfiles} active profile${activeProfiles === 1 ? '' : 's'}`,
+            chip: 'LOW',
+            severity: 'warning',
+        });
+    }
+
+    const screenRejects = data?.screenReject ?? 0;
+    if (screenRejects > 0 && screenRejects % 3 === 0) {
+        alerts.push({
+            key: 'screenBurst',
+            label: `${screenRejects} screen rejections — review sourcing`,
+            chip: `SR ${screenRejects}`,
+            severity: 'warning',
+        });
+    }
+
+    const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
+    if (interviewRejects > 0 && interviewRejects % 3 === 0 && interviewRejects <= 10) {
+        alerts.push({
+            key: 'interviewBurst',
+            label: `${interviewRejects} interview rejections — review fit`,
+            chip: `IR ${interviewRejects}`,
+            severity: 'warning',
+        });
+    }
+
+    if (interviewRejects > 10) {
+        alerts.push({
+            key: 'interviewCeiling',
+            label: `${interviewRejects} interview rejections — escalate`,
+            chip: `IR ${interviewRejects}!`,
+            severity: 'critical',
+        });
+    }
+
+    const target = data?.profile_Shared_Target ?? 0;
+    const achieved = data?.profile_Shared_Achieved ?? 0;
+    if (target > 0 && achieved < target) {
+        alerts.push({
+            key: 'targetMiss',
+            label: `Missed target: ${achieved}/${target} shared`,
+            chip: 'TARGET',
+            severity: 'warning',
+        });
+    }
+
+    return alerts;
+}
+
+ const SEVERITY_COLORS = {
+    critical: { bg: '#FDECEC', text: '#D93025', border: '#F5B7B1' },
+    warning: { bg: '#FFF6E0', text: '#B7791F', border: '#F5D98B' },
+};
+
+    function AlertChip({ alert }) {
+    const colors = SEVERITY_COLORS[alert.severity];
+    return (
+        <Tooltip title={alert.label}>
+            <span
+                style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    padding: '3px 6px',
+                    borderRadius: 999,
+                    backgroundColor: colors.bg,
+                    color: colors.text,
+                    border: `1px solid ${colors.border}`,
+                    whiteSpace: 'nowrap',
+                    cursor: 'default',
+                }}
+            >
+                {alert.severity === 'critical' && (
+                    <span style={{ marginRight: 3 }}>●</span>
+                )}
+                {alert.chip}
+            </span>
+        </Tooltip>
+    );
+}
+
     // ---- ag-Grid column model & shared context ----------------------------------
 
     function HrTitleCell(props) {
-        const { value } = props;
+        const { value ,data} = props;
+        const alerts = computeAlerts(data);
         if (!value) return null;
+
         if (value.length <= 20) return <span>{value}</span>;
-        return (
-            <Tooltip title={value}>
+        return (<div  style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+                padding: '6px 0',
+                height: '100%',
+                justifyContent: 'center',   // vertically centers when a row has no chips
+                overflow: 'hidden',    
+                lineHeight:'10px'      // clips instead of pushing row height
+            }}>
+         <Tooltip title={value}>
                 <span>{`${value.slice(0, 20)}...`}</span>
             </Tooltip>
+              {alerts.length > 0 && (
+                <div style={{ display: 'flex', overflow: 'scroll', gap: 4 }}>
+                    {alerts.map((a) => (
+                        <AlertChip key={a.key} alert={a} />
+                    ))}
+                </div>
+            )}
+        </div>
+           
         );
     }
 
@@ -1508,7 +1628,8 @@ function ScrumStructure2() {
              suppressMovable: true,
             cellRenderer: HrTitleCell,
              filter: MultiConditionTextFilter,
-            tooltipField: 'hrTitle',
+            // tooltipField: 'hrTitle',
+   
         },
 
         {
