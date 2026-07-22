@@ -207,12 +207,8 @@ function ScrumStructure2() {
         return finalData;
     }
 
-    const getCOLUMNOrder = async (id) => {
-        setIsLoading(true);
+    const getCOLUMNOrder = async (id) => { 
         const colOrderResult = await TaDashboardDAO.getScrumColumOrderDAO(selectedHead)
-        setIsLoading(true);
-
-
         if (colOrderResult?.statusCode === HTTPStatusCode.OK) {
             setColumnOrder(colOrderResult?.responseBody)
         } else {
@@ -2190,7 +2186,7 @@ function ScrumStructure2() {
                         optionFilterProp="label"
                     />
 
-                    <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: '10px', marginRight: '10px' }}>
+                    {/* <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: '10px', marginRight: '10px' }}>
                         <input
                             ref={searchInputRef}
                             type="text"
@@ -2225,7 +2221,7 @@ function ScrumStructure2() {
                                 style={{ cursor: 'pointer' }}
                             />
                         </Tooltip>
-                    </div>
+                    </div> */}
 
                     <button
                         className={stylesOBj.btnPrimary}
