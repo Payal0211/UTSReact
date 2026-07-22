@@ -13,6 +13,13 @@
 .grid-wrapper :global(.ag-header) {
     z-index: 3;   /* no position property here — don't touch positioning */
     background-color: #fff;
+     overflow: hidden !important;
+}
+
+.grid-wrapper :global(.ag-cell[col-id="hrTitle"]) {
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .grid-wrapper [class*="ag-header-cell-label"]{
