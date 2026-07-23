@@ -507,7 +507,7 @@ function ScrumStructure2() {
                     ...newDS[index],
                     [key]: value?.id,
                     taskStatus: value?.data,
-                    todayProfile_Shared_Target:targetValue ? targetValue : newDS[index].todayProfile_Shared_Target
+                    todayProfile_Shared_Target:targetValue !== undefined ? targetValue : newDS[index].todayProfile_Shared_Target
                 };
                 newDS[index] = nob;
                 return newDS;
@@ -2135,8 +2135,6 @@ function HrTitleCell({ value, data }) {
             wrapText: true,    // Allows text to break to next line visually
             autoHeight: true,  // Automatically grows the row height[cite: 1]
             cellEditorPopup: true,
-            cellEditorPopupPosition: 'under', // opens below the cell instead of overlapping upward into the header
-
             cellEditor: 'agLargeTextCellEditor',
             cellEditorParams: {
                 maxLength: 1000, // Optional: restricts max length
@@ -2169,7 +2167,7 @@ function HrTitleCell({ value, data }) {
             cellRenderer: LatestTouchCell,
         },
         {
-            headerName: 'Submission Sheet',
+            headerName: 'Submission URL',
             field: 'submissionSheet',
             width: 250,
              filter: MultiConditionTextFilter,
@@ -2179,8 +2177,8 @@ function HrTitleCell({ value, data }) {
             autoHeight: true,  // Automatically grows the row height[cite: 1]
             cellEditorPopup: true,
             // cellEditorPopupPosition: 'under',
-
-            cellEditor: 'agTextCellEditor',
+            cellEditor: 'agLargeTextCellEditor',
+            // cellEditor: 'agTextCellEditor',
             cellEditorParams: {
                 maxLength: 500, // Optional: restricts max length
                 // cols: 30,       // Optional: width of the dropdown box
@@ -2226,8 +2224,24 @@ function HrTitleCell({ value, data }) {
             cellStyle: { textAlign: 'center' },
              filter: MultiConditionTextFilter,
             width: 150,
-            // cellRenderer: ProfileSharedTargetCell,
             cellRendererParams: { objKey: 'noOfCallsGivenDay' },
+            cellRenderer:(params)=>{
+                 if (params.api.isAnyFilterPresent()) {
+                    const rowIndex = params.node.rowIndex;
+
+                    const prev = params.api
+                        .getDisplayedRowAtIndex(rowIndex - 1)
+                        ?.data?.tA_UserID;
+
+                    if (prev === params.data.tA_UserID) {
+                        return "";
+                    }
+                }
+
+                if (params.data.rowSpan <= 0 && !params.api.isAnyFilterPresent()) return "";
+
+                return params.value
+            }
         },
         {
             headerName: 'Action',
