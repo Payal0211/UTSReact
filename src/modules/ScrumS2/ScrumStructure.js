@@ -874,34 +874,34 @@ function ScrumStructure2() {
 
     const ScrumPopupColumns = () => {
 
-        if (scrumPopupType === "TotalSubmission") {
-            return [
-                {
-                    title: "Date",
-                    dataIndex: "actionDate",
-                    key: "actionDate",
-                },
-                {
-                    title: "Talent",
-                    dataIndex: "talent",
-                    key: "talent",
-                },
-                {
-                    title: "Submited By",
-                    dataIndex: "profileSubmittedBy",
-                    key: "profileSubmittedBy",
-                },
-                {
-                    title: "Status",
-                    dataIndex: "talentStatus",
-                    key: "talentStatus",
-                    render: (text, row) => {
-                        console.log(row)
-                        return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
-                    }
-                },
-            ]
-        }
+        // if (scrumPopupType === "TotalSubmission") {
+        //     return [
+        //         {
+        //             title: "Date",
+        //             dataIndex: "actionDate",
+        //             key: "actionDate",
+        //         },
+        //         {
+        //             title: "Talent",
+        //             dataIndex: "talent",
+        //             key: "talent",
+        //         },
+        //         {
+        //             title: "Submited By",
+        //             dataIndex: "profileSubmittedBy",
+        //             key: "profileSubmittedBy",
+        //         },
+        //         {
+        //             title: "Status",
+        //             dataIndex: "talentStatus",
+        //             key: "talentStatus",
+        //             render: (text, row) => {
+        //                 console.log(row)
+        //                 return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
+        //             }
+        //         },
+        //     ]
+        // }
 
         return [
             {
