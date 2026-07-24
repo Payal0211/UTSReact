@@ -1104,7 +1104,7 @@ function ScrumStructure2() {
     const updateSubmissionSheetNotes = async (pl, index) => {
 
         let updateresult = await TaDashboardDAO.updateSubmissionSheetDAO(pl);
-        if(updateresult.statusCode === HTTPStatusCode.Ok){
+        if(updateresult.statusCode === HTTPStatusCode.OK){
              setTaListData((prev) => {
                 let newDS = [...prev];
                 newDS[index] = {
