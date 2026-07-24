@@ -689,7 +689,7 @@ function WeeklyWCGR() {
       title: "Company",
       dataIndex: "company",
       key: "company",
-      width: "150px",
+      width: "200px",
       render: (text, record) =>
         record?.companyCategory === "Diamond" ? (
           <>
@@ -753,11 +753,13 @@ function WeeklyWCGR() {
       title: "Joining Date",
       dataIndex: isAllPODData ? "dateStr" : "joiningDate",
       key: "joiningDate",
+      width: '200px',
     },
     {
       title: "Talent",
       dataIndex: "talent",
       key: "talent",
+      width: '200px',
     },
     {
       title: "Talent Status",
@@ -1249,11 +1251,14 @@ function WeeklyWCGR() {
       title: (showTalentCol?.stage_ID === "D_Lost" || showTalentCol?.stage_ID === "CN_Lost") ? "Lost Date" : (showTalentCol?.stage_ID === "D_Drop" || showTalentCol?.stage_ID === "CN_Drop") ? "Dropout Date" : (showTalentCol?.stage_ID === "D_Backout" || showTalentCol?.stage_ID === "CN_Backout") ? "Backout Date" : "Joining Date",
       dataIndex: isAllPODData ? "dateStr" : "joiningdateStr",
       key: isAllPODData ? "dateStr" : "joiningdateStr",
+      width: '200px',
+
     },
     {
       title: "Talent",
       dataIndex: "talent",
       key: "talent",
+      width: '200px',
     },
     {
       title: "Talent Status",
