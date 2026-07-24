@@ -24,7 +24,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import PreviewHRModal from "./previewHR/previewHRModal";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
-import { Modal, message, Radio, Skeleton, Spin, Tooltip } from "antd";
+import { Modal, message, Radio, Skeleton, Spin, Tooltip,Tag } from "antd";
+import { StarOutlined, SyncOutlined, CheckCircleOutlined } from '@ant-design/icons'
 import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
 import CloseHRModal from "../../components/closeHRModal/closeHRModal";
 import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
@@ -49,7 +50,8 @@ let defaaultFilterState = {
     sortorder: "desc",
     searchText: "",
     IsDirectHR: false,
-    hrTypeIds: ''
+    hrTypeIds: '',
+    S_BusinessType:''
 }
 
 
@@ -464,9 +466,11 @@ export default function New_all_hiring_request() {
             // ATS
             return { color: 'rgb(179, 76, 1)', background: 'rgb(249, 231, 218)' }
         }
+    //     color: #9211f1;
+    // background: #b998e3;
         if (doneBy === 3) {
             // Sales portal
-            return { color: 'rgb(23, 98, 10)', background: 'rgb(230, 247, 219)' }
+            return { color: '#9211f1', background: '#d0bfe7' }
         }
         if (doneBy === 4) {
             // client portal
@@ -730,6 +734,22 @@ export default function New_all_hiring_request() {
 
 
 
+const CLIENT_STATUS_CONFIG = {
+  New: { color: 'blue', icon: <StarOutlined /> },
+  'Repeat NBD': { color: 'orange', icon: <SyncOutlined /> },
+  Existing: { color: 'green', icon: <CheckCircleOutlined /> },
+};
+
+const ClientStatusTag = ({ status }) => {
+  const config = CLIENT_STATUS_CONFIG[status] || {};
+  return (
+    <Tag color={config.color} icon={config.icon}>
+      {status}
+    </Tag>
+  );
+};
+
+
     useEffect(() => {
         if (search.trim() === "") return
         setTableFilteredState(prev => ({
@@ -956,8 +976,8 @@ export default function New_all_hiring_request() {
                                         <th style={{ minWidth: '160px' }}>SHORTCUTS</th>
                                         <th>CREATED DATE</th>
                                         <th>HR ID</th>
-                                        <th>COMPANY</th>
                                         <th>POSITION</th>
+                                        <th>COMPANY</th>                                     
                                         <th>CATEGORY</th>
                                         <th>TR</th>
                                         {/* <th>HR TYPE</th> */}
@@ -1050,6 +1070,7 @@ export default function New_all_hiring_request() {
                                                     <td>{data?.Date}</td>
                                                     {/* HR ID */}
                                                     <td>
+                                                       
                                                         <a href={`/allhiringrequest/${data?.key}`} target="_blank" className={`${stylesOBj["hr-id"]}`}>{data?.HR_ID}</a>
                                                         {data?.hrPostedFromPlatform && <p style={{
                                                             color: getColorCode(data?.appActionDoneBy)?.color,
@@ -1061,10 +1082,23 @@ export default function New_all_hiring_request() {
                                                         }} >({data?.hrPostedFromPlatform})</p>}
                                                         {/* <span className={`${stylesOBj[]}`}"hr-id-status hr-status-open">via Workspace</span> */}
                                                     </td>
-                                                    {/* COMPANY */}
-                                                    <td style={{ width: '500px', whiteSpace: 'normal' }}>{data?.Company}</td>
+                                                   
                                                     {/* POSITION */}
-                                                    <td style={{ width: '700px', whiteSpace: 'normal' }}>{data?.Position}</td>
+                                                    <td style={{ width: '700px', whiteSpace: 'normal' }}>   
+                                                        <div style={{display:'flex',flexDirection:'column'}}>
+{data?.businessType ?<ClientStatusTag status={data?.businessType} /> : ""}
+                                                        {data?.Position}
+                                                        </div>
+                                                        
+                                                        </td> 
+                                                    {/* COMPANY */}
+                                                    <td style={{ width: '500px', whiteSpace: 'normal'}}>
+                                                        <div style={{ display:'flex',flexDirection:'column' }}>
+                                                            {/* <Tooltip title={data?.Company}>
+                                                             {data?.Company?.length > 20 ? `${data?.Company?.slice(0,20)}...` :data?.Company}</Tooltip> */}
+                                                      {data?.Company}
+                                                        </div>
+                                                       </td>
                                                     {/* CATEGORY */}
                                                     <td>
                                                         <div className={`${stylesOBj["category-cell-wrapper"]}`} style={{ width: '100px' }}>
@@ -1115,11 +1149,43 @@ export default function New_all_hiring_request() {
                                                     {/* POD */}
                                                     <td>{data?.poDs}</td>
                                                     {/* OPEN SINCE */}
-                                                    <td>{data?.hrAcceptedSince}</td>
+                                                    <td style={{textAlign:'center'}}>{data?.hrAcceptedSince}</td>
                                                      {/* Submission count */}
-                                                    <td>{data?.profiles}</td>
+                                                    <td style={{textAlign:'center'}}>{data?.profiles}</td>
                                                     {/* REJECT REASON */}
-                                                    <td>{data?.pauseHRReason}</td>
+                                                        <td>
+                                                            {data?.pauseHRReason?.length > 100 ? (
+                                                                <Tooltip title={data.pauseHRReason}>
+                                                                    <span
+                                                                        style={{
+                                                                            display: "block",
+                                                                            whiteSpace: "normal",
+                                                                            wordBreak: "break-word",
+                                                                            overflowWrap: "anywhere",
+                                                                            lineHeight: "1.5",
+                                                                            maxWidth: "100%",
+                                                                            minWidth:"300px"
+                                                                        }}
+                                                                    >
+                                                                        {data.pauseHRReason.slice(0, 97)}...
+                                                                    </span>
+                                                                </Tooltip>
+                                                            ) : (
+                                                                <span
+                                                                    style={{
+                                                                        display: "block",
+                                                                        whiteSpace: "normal",
+                                                                        wordBreak: "break-word",
+                                                                        overflowWrap: "anywhere",
+                                                                        lineHeight: "1.5",
+                                                                           maxWidth: "100%",
+                                                                            minWidth:"300px"
+                                                                    }}
+                                                                >
+                                                                    {data.pauseHRReason}
+                                                                </span>
+                                                            )}
+                                                        </td>
                                                 </tr>
                                             })}
                                         </>
