@@ -50,6 +50,7 @@ export const hrUtils = {
 			hR_Category: item?.hR_Category,
 			pauseHRReason:item?.pauseHRReason,
 			profiles: item?.profiles,
+			businessType:item?.businessType
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {

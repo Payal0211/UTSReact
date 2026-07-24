@@ -1128,6 +1128,14 @@ const TalentList = ({
 												: item?.TalentPOCName}
 										</span>
 									</div>
+									<div className={TalentListStyle.availability}>
+										<span>Profile Shared Date :</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{_isNull(item?.ProfileSharedDateTime)
+												? 'NA'
+												: item?.ProfileSharedDateTime}
+										</span>
+									</div>
 									{/* <div className={TalentListStyle.profileSource}>
 										<span>Profile Source:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>

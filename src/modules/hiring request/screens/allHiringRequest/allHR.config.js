@@ -912,6 +912,35 @@ export const allHRConfig = {
         ],
         isSearch: false,
       },
+      {
+        label: "Business Type",
+        name: "S_BusinessType",
+        isSingleSelect:true,
+        child: [
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "New",
+            value: "New",
+          },
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "Repeat NBD",
+            value: "Repeat NBD",
+          },
+           {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "Existing",
+            value: "Existing",
+          },
+        ],
+        isSearch: false,
+      },
         {
         label: "GEO",
         name: "Geos",
