@@ -1114,6 +1114,8 @@ function ScrumStructure2() {
                 };
                 return newDS;
             });
+        } else {
+            message.error("Something went wrong!")
         }
     }
 
