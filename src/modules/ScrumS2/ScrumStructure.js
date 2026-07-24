@@ -37,6 +37,7 @@ import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import YesNoCell from './YesNoCell';
 import MultiConditionTextFilter from './MultiConditionTextFilter';
+
 const { Option } = Select;
 
 
@@ -1103,6 +1104,17 @@ function ScrumStructure2() {
     const updateSubmissionSheetNotes = async (pl, index) => {
 
         let updateresult = await TaDashboardDAO.updateSubmissionSheetDAO(pl);
+        if(updateresult.statusCode === HTTPStatusCode.Ok){
+             setTaListData((prev) => {
+                let newDS = [...prev];
+                newDS[index] = {
+                    ...newDS[index],
+                    submissionSheet: updateresult?.responseBody?.submissionSheet,
+                    submissionSheetFileName: updateresult?.responseBody?.submissionSheetFileName,
+                };
+                return newDS;
+            });
+        }
     }
 
     const AddComment = (data, index) => {
