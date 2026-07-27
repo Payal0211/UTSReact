@@ -36,7 +36,8 @@ import SplitHR from "./splitHR";
 import { ReportDAO } from "core/report/reportDAO";
 import { useForm } from "react-hook-form";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
-
+import { FaTag } from "react-icons/fa6";
+import { IconContext } from "react-icons";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -470,11 +471,11 @@ export default function New_all_hiring_request() {
     // background: #b998e3;
         if (doneBy === 3) {
             // Sales portal
-            return { color: '#9211f1', background: '#d0bfe7' }
+            return { color: '#9211f1', background: 'rgb(229 211 253)' }
         }
         if (doneBy === 4) {
             // client portal
-            return { color: 'rgb(0, 112, 224)', background: 'rgb(232, 242, 253)' }
+            return { color: 'rgb(245 8 183)', background: 'rgb(255 206 242)' }
         }
     }
 
@@ -743,7 +744,7 @@ const CLIENT_STATUS_CONFIG = {
 const ClientStatusTag = ({ status }) => {
   const config = CLIENT_STATUS_CONFIG[status] || {};
   return (
-    <Tag color={config.color} icon={config.icon}>
+    <Tag color={config.color} icon={config.icon} style={{border:'none', borderRadius:'12px'}}>
       {status}
     </Tag>
   );
@@ -1072,21 +1073,44 @@ const ClientStatusTag = ({ status }) => {
                                                     <td>
                                                        
                                                         <a href={`/allhiringrequest/${data?.key}`} target="_blank" className={`${stylesOBj["hr-id"]}`}>{data?.HR_ID}</a>
-                                                        {data?.hrPostedFromPlatform && <p style={{
+                                                        {/* {data?.hrPostedFromPlatform && <p style={{
                                                             color: getColorCode(data?.appActionDoneBy)?.color,
                                                             background: getColorCode(data?.appActionDoneBy)?.background,
                                                             padding: '5px',
                                                             width: 'fit-content',
                                                             borderRadius: '6px',
                                                             marginTop: '2px'
-                                                        }} >({data?.hrPostedFromPlatform})</p>}
+                                                        }} >({data?.hrPostedFromPlatform})</p>} */}
+                                                        <div style={{display:'flex',alignItems:'center'}}>
+                                                            <IconContext.Provider
+                                                                      value={{
+                                                                        // color: "green",
+                                                                         color: getColorCode(data?.appActionDoneBy)?.color,
+                                                                        style: {
+                                                                          width: "18px",
+                                                                          height: "18px",
+                                                                          marginRight: "5px",
+                                                                          cursor: "pointer",
+                                                                        },
+                                                                      }}
+                                                                    >
+                                                                      {" "}
+                                                                      <Tooltip title={data?.hrPostedFromPlatform} placement="top">
+                                                                       <FaTag />
+                                                                      </Tooltip>
+                                                                    </IconContext.Provider>
+                                                             {data?.businessType ?<ClientStatusTag status={data?.businessType} /> : ""}
+                                                             
+
+                                                                   
+                                                        </div>
                                                         {/* <span className={`${stylesOBj[]}`}"hr-id-status hr-status-open">via Workspace</span> */}
                                                     </td>
                                                    
                                                     {/* POSITION */}
                                                     <td style={{ width: '700px', whiteSpace: 'normal' }}>   
                                                         <div style={{display:'flex',flexDirection:'column'}}>
-{data?.businessType ?<ClientStatusTag status={data?.businessType} /> : ""}
+
                                                         {data?.Position}
                                                         </div>
                                                         
