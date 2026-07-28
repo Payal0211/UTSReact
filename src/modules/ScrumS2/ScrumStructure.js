@@ -70,7 +70,7 @@ function ScrumStructure2() {
     });
     const [showProfileTarget, setShowProfileTarget] = useState(false);
     const [profileTargetDetails, setProfileTargetDetails] = useState({});
-    const [targetValue, setTargetValue] = useState(5);
+    const [targetValue, setTargetValue] = useState(3);
     const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
     const [profileStatusID, setProfileStatusID] = useState(0);
     const [goalList, setGoalList] = useState([]);
@@ -679,27 +679,28 @@ function ScrumStructure2() {
                     size="small"
                     style={{ color: colorCode }}
                     onChange={async (val) => {
-                        // if (value === "Fasttrack" && val !== "Fasttrack") {
-                        //     let pl = {
-                        //         task_ID: result?.id,
-                        //         tA_Head_UserID: selectedHead,
-                        //         tA_UserID: result?.tA_UserID,
-                        //         target_StageID: 1,
-                        //         target_Number: targetValue,
-                        //         target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
-                        //         IsStatusChangedToSlow: true,
-                        //     };
-                        //     setLoadingTalentProfile(true);
-                        //     let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
-                        //         pl
-                        //     );
-                        //     setLoadingTalentProfile(false);
-                        //     if (response.statusCode === HTTPStatusCode.OK) {
-                        //         setGoalList(response.responseBody);
-                        //         setTargetValue(5);
-                        //         setStartTargetDate(new Date());
-                        //     }
-                        // }
+                        if (value === "Fasttrack" && val !== "Fasttrack") {
+                            let pl = {
+                                task_ID: result?.id,
+                                tA_Head_UserID: selectedHead,
+                                tA_UserID: result?.tA_UserID,
+                                target_StageID: 1,
+                                target_Number: targetValue,
+                                target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
+                                IsStatusChangedToSlow: true,
+                                task_StatusID: val?.id 
+                            };
+                            setLoadingTalentProfile(true);
+                            let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
+                                pl
+                            );
+                            setLoadingTalentProfile(false);
+                            if (response.statusCode === HTTPStatusCode.OK) {
+                                setGoalList(response.responseBody);
+                                setTargetValue(5);
+                                setStartTargetDate(new Date());
+                            }
+                        }
 
                         if (val === "Fasttrack") {
                             setShowProfileTarget(true);
@@ -710,7 +711,7 @@ function ScrumStructure2() {
                         setValue(val);
                         let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
                         updateTARowValue(valobj, "task_StatusID", result, index);
-                        setTargetValue(5);
+                        setTargetValue(3);
                         setStartTargetDate(new Date());
                     }}
                 >
@@ -2431,7 +2432,6 @@ function HrTitleCell({ value, data }) {
         setProfileStatusID,
         setHRTalentListFourCount,
         AddComment,
-         setTargetValue,
     };
 
     // Excel-style single-cell copy (Ctrl+C / Cmd+C). True multi-cell range copy needs
@@ -2486,7 +2486,8 @@ function HrTitleCell({ value, data }) {
     };
 
 
-    const handleProfileShearedTarget = async () => {
+    const handleProfileShearedTarget = async () => { 
+        let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
         let pl = {
             task_ID: profileTargetDetails?.id,
             tA_Head_UserID: selectedHead,
@@ -2494,6 +2495,7 @@ function HrTitleCell({ value, data }) {
             target_StageID: 1,
             target_Number: targetValue,
             target_Date: moment(startTargetDate).format("YYYY-MM-DD"), // today's date
+            task_StatusID: valobj?.id 
         };
         setLoadingTalentProfile(true);
         let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
@@ -2501,7 +2503,7 @@ function HrTitleCell({ value, data }) {
         if (result.statusCode === HTTPStatusCode.OK) {
             setShowProfileTarget(false);
             setGoalList(result.responseBody);
-            let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
+           
             updateTARowValue(
                 valobj,
                 "task_StatusID",
@@ -2509,7 +2511,7 @@ function HrTitleCell({ value, data }) {
                 profileTargetDetails?.index,
                 targetValue
             );
-            setTargetValue(5);
+            setTargetValue(3);
             setStartTargetDate(new Date());
             setProfileTargetDetails({});
         } else {
@@ -2704,7 +2706,7 @@ function HrTitleCell({ value, data }) {
                         // onOk={() => setVersantModal(false)}
                         onCancel={() => {
                             setShowProfileTarget(false);
-                            setTargetValue(5);
+                            setTargetValue(3);
                             setStartTargetDate(new Date());
                         }}
                     >
@@ -2808,7 +2810,7 @@ function HrTitleCell({ value, data }) {
                                                         className={stylesOBj.btnCancle}
                                                         onClick={() => {
                                                             setShowProfileTarget(false);
-                                                            setTargetValue(5);
+                                                            setTargetValue(3);
                                                             setStartTargetDate(new Date());
                                                         }}
                                                     >
