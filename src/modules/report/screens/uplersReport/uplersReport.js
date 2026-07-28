@@ -36,7 +36,7 @@ import { IconContext } from "react-icons";
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import spinGif from "assets/gif/RefreshLoader.gif";
 import Editor from "modules/hiring request/components/textEditor/editor";
-import { UserSessionManagementController } from "modules/user/services/user_session_services";
+import { UserSessionManagementController, contractUsers } from "modules/user/services/user_session_services";
 import PodReports from "./podReports";
 import NegotiontoJoinee from "./negotiontoJoinee";
 import FTENegotiationSummary from "./fteNegotionSummary";
@@ -393,6 +393,17 @@ export default function UplersReport() {
       setALLCommentsList([]);
     }
   };
+
+     useEffect(()=>{   
+         if(contractUsers.includes(+userData?.UserId) && pODList.length){
+            setHRModal("Contract");
+              let val = pODList.find(
+                    (i) => i.dd_text === "Orion"
+                  )?.dd_value;
+                  setSelectedHead(val);
+                  getGroupUsers(val);
+         }
+    },[pODList])
 
   const AddComment = (data, modal, index) => {
     getAllComments(data, modal);
