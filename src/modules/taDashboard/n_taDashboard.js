@@ -762,6 +762,7 @@ function NewTADashboard() {
                                 target_Number: targetValue,
                                 target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
                                 IsStatusChangedToSlow: true,
+                                task_StatusID: val?.id 
                             };
                             setLoadingTalentProfile(true);
                             let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
@@ -1470,6 +1471,7 @@ function NewTADashboard() {
     };
 
     const handleProfileShearedTarget = async () => {
+        let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
         let pl = {
             task_ID: profileTargetDetails?.id,
             tA_Head_UserID: selectedHead,
@@ -1477,6 +1479,7 @@ function NewTADashboard() {
             target_StageID: 1,
             target_Number: targetValue,
             target_Date: moment(startTargetDate).format("YYYY-MM-DD"), // today's date
+            task_StatusID: valobj?.id 
         };
         setLoadingTalentProfile(true);
         let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
@@ -1484,7 +1487,7 @@ function NewTADashboard() {
         if (result.statusCode === HTTPStatusCode.OK) {
             setShowProfileTarget(false);
             setGoalList(result.responseBody);
-            let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
+            
             updateTARowValue(
                 valobj,
                 "task_StatusID",
