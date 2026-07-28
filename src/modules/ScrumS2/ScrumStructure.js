@@ -2431,6 +2431,7 @@ function HrTitleCell({ value, data }) {
         setProfileStatusID,
         setHRTalentListFourCount,
         AddComment,
+         setTargetValue,
     };
 
     // Excel-style single-cell copy (Ctrl+C / Cmd+C). True multi-cell range copy needs
@@ -2576,7 +2577,7 @@ function HrTitleCell({ value, data }) {
                         onChange={(value, option) => {
                             setSelectedHead(value);
                         }}
-                        options={filtersList?.HeadUsers?.map((v) => ({
+                        options={filtersList?.HeadUsers?.filter(i=>i.id !== 302)?.map((v) => ({
                             label: v.data,
                             value: v.id,
                         }))}

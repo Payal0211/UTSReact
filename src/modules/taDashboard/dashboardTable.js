@@ -307,7 +307,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
               <th>ACTIVE <br /> PROFILES</th>
               <th>LATEST COMMUNICATION AND UPDATES</th>
   <th>TASK FOR AM'S</th>
-              <th>TASK FOR TR'S</th>
+              {/* <th>TASK FOR TR'S</th> */}
                <th>ACTION</th>
             </tr>
           </thead>
@@ -509,9 +509,9 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                                                     )}
                 </td>
                 {/* LATEST COMMUNICATION AND UPDATES */}
-                <td><div dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
+                <td>
                   {data?.latestNotes ? <>
-                    <div dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
+                    <div   className={taStylesNew["latest-update"]}  dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
                     <div className={taStylesNew["view-edit"]}>
 
                       <button onClick={() => {
@@ -525,7 +525,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                    {/* TASK FOR AM'S */}
                 <td>{data.amTask}</td>
                 {/* TASK FOR TR'S */}
-                <td>{data.taTask}</td>
+                {/* <td>{data.taTask}</td> */}
                   <td>
                                                     <div>
                                                         <IconContext.Provider

@@ -2,7 +2,7 @@ import React from 'react';
 
 export function ProfileSharedTargetCell(props) {
     const {value, data ,objKey } = props;
-    const { setShowProfileTarget, setStartTargetDate, setProfileTargetDetails, startDate, getRowIndex } =
+    const { setShowProfileTarget, setStartTargetDate, setProfileTargetDetails, startDate, getRowIndex, setTargetValue } =
         props.context;
 
           if (props.node.rowPinned) {
@@ -16,6 +16,7 @@ export function ProfileSharedTargetCell(props) {
                 <p
                     style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0 }}
                     onClick={() => {
+                         setTargetValue(value)
                         setShowProfileTarget(true);
                         setStartTargetDate(startDate);
                         setProfileTargetDetails({ ...data, index: i });

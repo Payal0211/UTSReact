@@ -598,6 +598,22 @@ const CompanyProfileCard = ({
                   </Link>
                 </span>
               </div>
+               <div className={CompanyProfileCardStyle.TRParked}>
+                <span>ATS Job Link:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  <a
+                    href={`https://platform.uplers.com/app/job-listing/${allApiData?.ClientDetail?.HR_Number}/talents/`}
+                    
+                    // to={"/viewHrDetails"}
+                    // rel="noreferrer"
+                    target="_blank"
+                    // href="#"
+                    style={{ textDecoration: "underline" }}
+                  >
+                    {allApiData?.ClientDetail?.HR_Number}
+                  </a>
+                </span>
+              </div>
             </div>
           </div>
           <Divider

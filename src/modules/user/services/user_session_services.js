@@ -1,6 +1,8 @@
 import { errorDebug } from 'shared/utils/error_debug_utils';
 import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
 
+export const  contractUsers = [176,302,22,152,410,54,230,314,180,467,462,500,501,515]
+
 export const UserSessionManagementController = {
 	/**
 	 * @Function setUserSession()

@@ -3,7 +3,7 @@ import stylesOBj from './n_tadashboard.module.css'
 import taStyles from "./tadashboard.module.css";
 import taStylesNew from "./n_tadashboardNew.module.css";
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
-import { UserSessionManagementController } from "modules/user/services/user_session_services";
+import { UserSessionManagementController, contractUsers } from "modules/user/services/user_session_services";
 import {
     Select, InputNumber,
     Tooltip, Table, Checkbox, message, Skeleton, Modal
@@ -33,6 +33,7 @@ import Diamond from "assets/svg/diamond.svg";
 import PowerIcon from "assets/svg/powerRed.svg";
 import { IconContext } from "react-icons";
 import { useForm } from "react-hook-form";
+import { ReactComponent as ArrowDownSVG } from "assets/svg/arrowDownLight.svg";
 import { IoMdAddCircle } from "react-icons/io";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
@@ -94,6 +95,7 @@ function NewTADashboard() {
     const [modalLoader, setModalLoader] = useState(false);
     const [allShowDetails, setAllShowDetails] = useState([]);
 
+     const [showWeeklyReport, setShowWeeklyReport] = useState(false)
     const [TaListData, setTaListData] = useState([]);
     const [showDiamondRemark, setShowDiamondRemark] = useState(false);
     const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
@@ -162,6 +164,13 @@ function NewTADashboard() {
         };
         getUserResult();
     }, []);
+
+    // set to contract for contract users 
+    useEffect(()=>{   
+         if(contractUsers.includes(+userData?.UserId)){
+            setActiveTab('Contract')
+         }
+    },[])
 
     const getAllTAUsersList = async () => {
         let req = await TaDashboardDAO.geAllTAUSERSRequestDAO();
@@ -1572,7 +1581,30 @@ function NewTADashboard() {
 
 
                 {activeTab === 'Contract' && <>
-                    <div className={stylesOBj.filterContainer}>
+<div className={stylesOBj.filterContainer}>
+      <div className={stylesOBj.filterSets} style={{ paddingLeft: "20px", padding: '10px' }}>
+    
+            <div
+              className={stylesOBj.filterSetsInner}
+              onClick={() => setShowWeeklyReport((prev) => !prev)}
+            >
+              <p
+                className={stylesOBj.AccordianText}
+                style={{ textDecoration: "none", cursor: 'pointer' }}
+              >
+                Total Achievement{" "}
+                <ArrowDownSVG
+                  style={{
+                    rotate: showWeeklyReport ? "180deg" : "",
+                    marginLeft: "10px",
+                  }}
+                />
+              </p>
+            </div>
+          </div>
+
+          {showWeeklyReport && <>
+            <div className={stylesOBj.filterContainer}>
                         <TalentdetailsTable isLoading={isLoading} talentWiseReport={talentWiseReport} /></div>
 
 
@@ -1581,6 +1613,11 @@ function NewTADashboard() {
                         <TotalAchievementTable quarterlySummeryReport={quarterlySummeryReport} />
 
                     </div>
+          </>}
+    
+</div>
+
+                  
 
                     <div className={stylesOBj.filterContainer} style={{marginBottom:"80px"}}>
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
@@ -2050,7 +2087,7 @@ function NewTADashboard() {
                                                 </td>
                                                 <td>
                                                     {row?.latestNotes ? <>
-                                                        <div dangerouslySetInnerHTML={{ __html: row.latestNotes }}></div>
+                                                        <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: row.latestNotes }}></div>
                                                         <div className={taStylesNew["view-edit"]}>
 
                                                             <button onClick={() => {
