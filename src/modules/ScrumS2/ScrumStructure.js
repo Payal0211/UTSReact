@@ -2431,6 +2431,7 @@ function HrTitleCell({ value, data }) {
         setProfileStatusID,
         setHRTalentListFourCount,
         AddComment,
+         setTargetValue,
     };
 
     // Excel-style single-cell copy (Ctrl+C / Cmd+C). True multi-cell range copy needs
