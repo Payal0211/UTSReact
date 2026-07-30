@@ -32,12 +32,13 @@ body {
 }
 
 .tableSelectField [class*="ant-select-selector"] {
-    font-size: 12px;
+    font-size: 10px;
     text-align: center;
 }
 
 .tableSelectField [class*="ant-select-item-option-content"]{
     text-align: center;
+     font-size: 10px;
 }
 
 /* ===================== */
@@ -510,12 +511,12 @@ body {
 .company-cell {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 5px;
     min-width: 200px;
 }
 
 .company-name {
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 500;
     color: #4C4E64DE;
     letter-spacing: 0.3px;
@@ -533,7 +534,7 @@ body {
 }
 
 .diamond-icon {
-    width: 20px;
+    width: 18px;
     height: auto;
     display: block;
 }

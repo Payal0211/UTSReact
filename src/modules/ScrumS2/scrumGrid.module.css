@@ -21,6 +21,10 @@
     justify-content: center;
 }
 
+.grid-wrapper [class*="ag-cell"]{
+    font-size:10px !important
+}
+
 .grid-wrapper [class*="ag-grid-pinned-left-cells"]{
     z-index: 1 !important;
 }
@@ -51,4 +55,8 @@
     flex: 1;
     display: flex;
     justify-content: center;
+}
+
+.ag-header-group-cell-label{
+    font-Size:12px
 }
