@@ -1399,7 +1399,7 @@ function AlertRow({ alert }) {
         // flexDirection: 'column',
         gridTemplateColumns:"auto auto",
         gap: 2,   // was 3
-        padding: '6px 8px',
+        padding: '6px 0',
         width: '100%',
         height: '100%',
         boxSizing: 'border-box',
@@ -1800,7 +1800,7 @@ function HrTitleCell({ value, data }) {
         {
             headerName: 'TA',
             field: 'taName',
-            width: 180,
+            width: 100,
             pinned: 'left',
             sortable: false,
              suppressMovable: true,
@@ -1898,7 +1898,7 @@ function HrTitleCell({ value, data }) {
                             </button>
                         </div>}
 
-                        <span style={{ marginLeft: '5px', }}>{params.value}</span>
+                        <span style={{ marginLeft: '5px', }}><Tooltip title={params.value}>{params.value}</Tooltip> </span>
                     </div>
                 );
             }
@@ -1906,7 +1906,7 @@ function HrTitleCell({ value, data }) {
         {
             headerName: 'Company',
             field: 'companyName',
-            width: 200,
+            width: 150,
             pinned: 'left',
             cellRenderer: CompanyCell,
             sortable: false,
@@ -1916,7 +1916,7 @@ function HrTitleCell({ value, data }) {
         {
             headerName: 'HR ID',
             field: 'hrNumber',
-            width: 180,
+            width: 150,
             pinned: 'left',
              suppressMovable: true,
              filter: MultiConditionTextFilter,
@@ -1980,7 +1980,7 @@ function HrTitleCell({ value, data }) {
         {
             headerName: 'HR Title',
             field: 'hrTitle',
-            width: 200,
+            width: 150,
             pinned: 'left',
              suppressMovable: true,
             cellRenderer: HrTitleCell,
@@ -1991,11 +1991,11 @@ function HrTitleCell({ value, data }) {
         {
             headerName: 'Alerts',
             field: 'hrAlert',
-            width: 220,
+            width: 200,
             pinned: 'left',
-             suppressMovable: true,
+             suppressMovable: true,         
             cellRenderer: HrAlertCell,
-             filter: MultiConditionTextFilter,
+             filter: false,
             // tooltipField: 'hrTitle',
    
         },
@@ -2003,7 +2003,7 @@ function HrTitleCell({ value, data }) {
         {
             headerName: 'Status',
             field: 'taskStatus',
-            width: 150,
+            width: 120,
             pinned: 'left',
              suppressMovable: true,
              filter: MultiConditionTextFilter,
@@ -2016,10 +2016,10 @@ function HrTitleCell({ value, data }) {
             },
         },
         {
-            headerName: '# Interview Rounds',
+            headerName: '# Round',
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
-            width: 120,
+            width: 80,
              filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2029,7 +2029,7 @@ function HrTitleCell({ value, data }) {
         {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
-            width: 140,
+            width: 120,
              filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
@@ -2041,10 +2041,10 @@ function HrTitleCell({ value, data }) {
             cellStyle: { textAlign: 'center' },
         },
         {
-            headerName: 'HR Created Date',
+            headerName: 'Created Dt.',
             field: 'hrCreatedDate',
             cellStyle: { textAlign: 'center' },
-            width: 150,
+            width: 110,
              filter: MultiConditionTextFilter,
             valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
         },
@@ -2098,19 +2098,19 @@ function HrTitleCell({ value, data }) {
             }
         },
         {
-            headerName: 'No Of Days HR Is Open',
+            headerName: '#Open Days',
             field: 'days',
             cellStyle: { textAlign: 'center' },
-            width: 170,
+            width: 80,
              filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
         },
         {
-            headerName: 'No of Active Profile Till Date',
+            headerName: '#Active Profile',
             field: 'noOfProfile_TalentsTillDate',
-            width: 150,
+            width: 80,
              filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
@@ -2161,10 +2161,10 @@ function HrTitleCell({ value, data }) {
         },
 
         {
-            headerName: 'Total No Of Submissions',
+            headerName: '#Submission',
             field: 'totalNoOfSubmission',
             cellStyle: { textAlign: 'center' },
-            width: 170,
+            width: 80,
              filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -2190,9 +2190,9 @@ function HrTitleCell({ value, data }) {
             }
         },
         {
-            headerName: 'Total No Of Interview Rejects',
+            headerName: '#Int. Rejects',
             field: 'totalNoOfInterviewReject',
-            width: 170,
+            width: 80,
              filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
             cellRenderer: (props) => {
@@ -2448,7 +2448,7 @@ function HrTitleCell({ value, data }) {
                         <IconContext.Provider
                             value={{
                                 color: "#FFDA30",
-                                style: { width: "19px", height: "19px", cursor: "pointer" },
+                                style: { width: "14px", height: "14px", cursor: "pointer" },
                             }}
                         >
                             {" "}
@@ -2469,8 +2469,8 @@ function HrTitleCell({ value, data }) {
                             value={{
                                 color: "red",
                                 style: {
-                                    width: "19px",
-                                    height: "19px",
+                                    width: "14px",
+                                    height: "14px",
                                     marginLeft: "10px",
                                     cursor: "pointer",
                                 },
@@ -2834,8 +2834,8 @@ function HrTitleCell({ value, data }) {
                             getRowId={(params) => String(params.data.id)}
                             suppressRowTransform={true}
                             animateRows={false}
-                            headerHeight={44}
-                            rowHeight={58}
+                            headerHeight={38}
+                            rowHeight={34}
                             onCellKeyDown={handleGridKeyDown}
                             onCellEditingStarted={handleCellEditingStarted}
                             postProcessPopup={handlePostProcessPopup}
