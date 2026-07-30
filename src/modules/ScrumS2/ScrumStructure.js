@@ -1126,85 +1126,7 @@ function ScrumStructure2() {
         setCommentData({ ...data, index });
     };
 
- function computeAlerts(data) {
-    const alerts = [];
-
-    const days = data?.days ?? 0;
-    if (days >= 30) {
-        alerts.push({
-            key: 'stale',
-            label: `HR open ${days} days`,
-            icon: '⏱',
-            chip: `${days}d`,
-            severity: 'critical',
-        });
-    }
-
-    const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
-    if (activeProfiles < 3) {
-        alerts.push({
-            key: 'lowProfiles',
-            label: `Only ${activeProfiles} active profile${activeProfiles === 1 ? '' : 's'}`,
-            icon: '👤',
-            chip: `${activeProfiles}`,
-            severity: 'warning',
-        });
-    }
-
-    const screenRejects = data?.screenReject ?? 0;
-    if (screenRejects > 0 && screenRejects % 3 === 0) {
-        alerts.push({
-            key: 'screenBurst',
-            label: `${screenRejects} screen rejections — review sourcing`,
-            icon: '✂',
-            chip: `${screenRejects}`,
-            severity: 'warning',
-        });
-    }
-
-    const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
-    if (interviewRejects > 0 && interviewRejects % 3 === 0 && interviewRejects <= 10) {
-        alerts.push({
-            key: 'interviewBurst',
-            label: `${interviewRejects} interview rejections — review fit`,
-            icon: '✕',
-            chip: `${interviewRejects}`,
-            severity: 'warning',
-        });
-    }
-
-    if (interviewRejects > 10) {
-        alerts.push({
-            key: 'interviewCeiling',
-            label: `${interviewRejects} interview rejections — escalate`,
-            icon: '⚠',
-            chip: `${interviewRejects}`,
-            severity: 'critical',
-        });
-    }
-
-    const target = data?.profile_Shared_Target ?? 0;
-    const achieved = data?.profile_Shared_Achieved ?? 0;
-    if (target > 0 && achieved < target) {
-        alerts.push({
-            key: 'targetMiss',
-            label: `Missed target: ${achieved}/${target} shared`,
-            icon: '◔',
-            chip: `${achieved}/${target}`,
-            severity: 'warning',
-        });
-    }
-
-    // Show critical alerts first
-    return alerts.sort((a, b) => (a.severity === 'critical' ? -1 : 1) - (b.severity === 'critical' ? -1 : 1));
-}
-
- const SEVERITY_COLORS = {
-    critical: { bg: '#FDECEC', text: '#D93025', border: '#F6C6C2' },
-    warning:  { bg: '#FFF6E0', text: '#B7791F', border: '#F5DFA3' },
-};
-
-//     function computeAlerts(data) {
+//  function computeAlerts(data) {
 //     const alerts = [];
 
 //     const days = data?.days ?? 0;
@@ -1212,6 +1134,7 @@ function ScrumStructure2() {
 //         alerts.push({
 //             key: 'stale',
 //             label: `HR open ${days} days`,
+//             icon: '⏱',
 //             chip: `${days}d`,
 //             severity: 'critical',
 //         });
@@ -1222,7 +1145,8 @@ function ScrumStructure2() {
 //         alerts.push({
 //             key: 'lowProfiles',
 //             label: `Only ${activeProfiles} active profile${activeProfiles === 1 ? '' : 's'}`,
-//             chip: 'LOW',
+//             icon: '👤',
+//             chip: `${activeProfiles}`,
 //             severity: 'warning',
 //         });
 //     }
@@ -1232,7 +1156,8 @@ function ScrumStructure2() {
 //         alerts.push({
 //             key: 'screenBurst',
 //             label: `${screenRejects} screen rejections — review sourcing`,
-//             chip: `SR ${screenRejects}`,
+//             icon: '✂',
+//             chip: `${screenRejects}`,
 //             severity: 'warning',
 //         });
 //     }
@@ -1242,7 +1167,8 @@ function ScrumStructure2() {
 //         alerts.push({
 //             key: 'interviewBurst',
 //             label: `${interviewRejects} interview rejections — review fit`,
-//             chip: `IR ${interviewRejects}`,
+//             icon: '✕',
+//             chip: `${interviewRejects}`,
 //             severity: 'warning',
 //         });
 //     }
@@ -1251,7 +1177,8 @@ function ScrumStructure2() {
 //         alerts.push({
 //             key: 'interviewCeiling',
 //             label: `${interviewRejects} interview rejections — escalate`,
-//             chip: `IR ${interviewRejects}!`,
+//             icon: '⚠',
+//             chip: `${interviewRejects}`,
 //             severity: 'critical',
 //         });
 //     }
@@ -1262,18 +1189,237 @@ function ScrumStructure2() {
 //         alerts.push({
 //             key: 'targetMiss',
 //             label: `Missed target: ${achieved}/${target} shared`,
-//             chip: 'TARGET',
+//             icon: '◔',
+//             chip: `${achieved}/${target}`,
 //             severity: 'warning',
 //         });
 //     }
 
-//     return alerts;
+//     // Show critical alerts first
+//     return alerts.sort((a, b) => (a.severity === 'critical' ? -1 : 1) - (b.severity === 'critical' ? -1 : 1));
 // }
 
 //  const SEVERITY_COLORS = {
-//     critical: { bg: '#FDECEC', text: '#D93025', border: '#F5B7B1' },
-//     warning: { bg: '#FFF6E0', text: '#B7791F', border: '#F5D98B' },
+//     critical: { bg: '#FDECEC', text: '#D93025', border: '#F6C6C2' },
+//     warning:  { bg: '#FFF6E0', text: '#B7791F', border: '#F5DFA3' },
 // };
+
+
+// function AlertChip({ alert }) {
+//     const colors = SEVERITY_COLORS[alert.severity];
+//     return (
+//         <Tooltip title={alert.label}>
+//             <span
+//                 style={{
+//                     display: 'inline-flex',
+//                     alignItems: 'center',
+//                     gap: 3,
+//                     fontSize: 10.5,
+//                     fontWeight: 600,
+//                     lineHeight: 1,
+//                     padding: '3px 7px',
+//                     borderRadius: 999,
+//                     backgroundColor: colors.bg,
+//                     color: colors.text,
+//                     border: `1px solid ${colors.border}`,
+//                     whiteSpace: 'nowrap',
+//                     flexShrink: 0,   // already had this — keeps chip from squishing/wrapping text mid-word
+//                     cursor: 'default',
+//                     maxHeight: 22, 
+//                 }}
+//             >
+//                 <span style={{ fontSize: 10 }}>{alert.icon}</span>
+//                 {alert.chip}
+//             </span>
+//         </Tooltip>
+//     );
+// }
+
+function computeAlerts(data) {
+    const alerts = [];
+
+    // ---------- HR open 30+ days ----------
+    const days = data?.days ?? 0;
+    if (days > 30) {
+        alerts.push({
+            key: 'stale',
+            text: `${days} days open`,
+            dot: 'critical',
+        });
+    }
+
+    // ---------- Active profiles below floor ----------
+    const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+    if (activeProfiles < 3) {
+        alerts.push({
+            key: 'lowProfiles',
+            text: `only ${activeProfiles} active`,
+            dot: 'info',
+        });
+    }
+
+    // ---------- Screen-reject batch pattern ----------
+    const screenRejects = data?.screenReject ?? 0;
+    if (screenRejects > 0 && screenRejects % 3 === 0) {
+        const batchNum = screenRejects / 3;
+        alerts.push({
+            key: 'screenBatch',
+            text: `Batch ${batchNum} · screen reject`,
+            dot: 'warning',
+        });
+    }
+
+    // ---------- Interview-reject batch pattern ----------
+    const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
+    if (interviewRejects > 0 && interviewRejects % 3 === 0) {
+        const batchNum = interviewRejects / 3;
+        alerts.push({
+            key: 'interviewBatch',
+            text: `Batch ${batchNum} · interview reject`,
+            dot: 'critical',
+        });
+    }
+
+    // ---------- Hard ceiling: total interview rejections > 10 ----------
+    if (interviewRejects > 10) {
+        alerts.push({
+            key: 'interviewCeiling',
+            text: `${interviewRejects} total int. rejects`,
+            dot: 'critical',
+        });
+    }
+
+    // ---------- Yesterday: new screen rejection ----------
+    const newScreenRejectYesterday = data?.yesterdayNewScreenReject ?? 0;
+    if (newScreenRejectYesterday > 0) {
+        alerts.push({
+            key: 'newScreenRejectYesterday',
+            text: `${newScreenRejectYesterday} new screen reject`,
+            dot: 'info',
+        });
+    }
+
+    // ---------- Yesterday: new interview rejection ----------
+    const newInterviewRejectYesterday = data?.yesterdayNewInterviewReject ?? 0;
+    if (newInterviewRejectYesterday > 0) {
+        alerts.push({
+            key: 'newInterviewRejectYesterday',
+            text: `${newInterviewRejectYesterday} new interview reject`,
+            dot: 'info',
+        });
+    }
+
+    // ---------- Submission target achieved (yes/no + calls/day) ----------
+    const target = data?.profile_Shared_Target ?? 0;
+    const achieved = data?.profile_Shared_Achieved ?? 0;
+    const callsPerDay = data?.callsPerDay ?? 0;
+
+    if (target > 0) {
+        const isAchieved = achieved >= target;
+        alerts.push({
+            key: 'targetStatus',
+            text: isAchieved
+                ? `${achieved}/${target} met`
+                : `${achieved}/${target} · ${callsPerDay} calls`,
+            dot: isAchieved ? 'success' : 'critical',
+            prefixIcon: isAchieved ? '✓' : '✗',
+        });
+    }
+
+    const severityOrder = { critical: 0, warning: 1, info: 2, success: 3 };
+    return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
+}
+
+ const DOT_COLORS = {
+    critical: '#E64545',
+    warning: '#F2A93B',
+    info: '#4A8FE7',
+    success: '#2FAE60',
+};
+
+ const CHIP_BG = {
+    critical: '#FDECEC',
+    warning: '#FFF3E0',
+    info: '#EAF2FE',
+    success: '#E8F7EE',
+};
+
+function AlertRow({ alert }) {
+    return (
+        <Tooltip title={alert.label ?? alert.text}>
+            <div
+                style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 5,
+                    padding: '0 8px',
+                    borderRadius: 999,
+                    backgroundColor: CHIP_BG[alert.dot],
+                    fontSize: 10.5,
+                    fontWeight: 500,
+                    color: '#3a3a3a',
+                    lineHeight: '14px',   // was 16px
+                    height: 16,           // was 22px — this is the main change
+                    boxSizing: 'border-box',
+                    whiteSpace: 'nowrap',
+                    maxWidth: '100px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                }}
+            >
+                {alert.prefixIcon ? (
+                    <span style={{ fontWeight: 700, color: DOT_COLORS[alert.dot], fontSize: 10, flexShrink: 0 }}>
+                        {alert.prefixIcon}
+                    </span>
+                ) : (
+                    <span
+                        style={{
+                            width: 5,
+                            height: 5,
+                            borderRadius: '50%',
+                            backgroundColor: DOT_COLORS[alert.dot],
+                            flexShrink: 0,
+                        }}
+                    />
+                )}
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{alert.text}</span>
+            </div>
+        </Tooltip>
+    );
+}
+
+ function AlertsCell({ data }) {
+    const alerts = computeAlerts(data);
+    if (alerts.length === 0) return null;
+
+    return (
+        <div
+            style={{
+               display: 'grid',
+        // flexDirection: 'column',
+        gridTemplateColumns:"auto auto",
+        gap: 2,   // was 3
+        padding: '6px 8px',
+        width: '100%',
+        height: '100%',
+        boxSizing: 'border-box',
+        overflowY: 'scroll',
+        overflowX: 'hidden',
+            }}
+        >
+            {alerts.map((a) => (
+                <AlertRow key={a.key} alert={a} />
+            ))}
+        </div>
+    );
+}
+
+ const SEVERITY_COLORS = {
+    critical: { bg: '#FDECEC', text: '#D93025', border: '#F6C6C2' },
+    warning:  { bg: '#FFF6E0', text: '#B7791F', border: '#F5DFA3' },
+    info:     { bg: '#E8F0FE', text: '#1A56C4', border: '#C6D9F7' },
+    success:  { bg: '#E6F4EA', text: '#1E8E3E', border: '#BFE3CB' },
+};
 
 function AlertChip({ alert }) {
     const colors = SEVERITY_COLORS[alert.severity];
@@ -1293,9 +1439,8 @@ function AlertChip({ alert }) {
                     color: colors.text,
                     border: `1px solid ${colors.border}`,
                     whiteSpace: 'nowrap',
-                    flexShrink: 0,   // already had this — keeps chip from squishing/wrapping text mid-word
+                    flexShrink: 0,
                     cursor: 'default',
-                    maxHeight: 22, 
                 }}
             >
                 <span style={{ fontSize: 10 }}>{alert.icon}</span>
@@ -1305,13 +1450,24 @@ function AlertChip({ alert }) {
     );
 }
 
+function HrAlertCell(props) {
+    const { value, data } = props
+     if (props.node.rowPinned) {
+                    return "";
+                }
+
+  return <AlertsCell data={data} />
+
+
+}
+
 function HrTitleCell({ value, data }) {
     if (!value) return null;
 
-    const alerts = computeAlerts(data);
-    const MAX_VISIBLE = 3;
-    const visibleAlerts = alerts.slice(0, MAX_VISIBLE);
-    const overflowCount = alerts.length - visibleAlerts.length;
+    // const alerts = computeAlerts(data);
+    // const MAX_VISIBLE = 3;
+    // const visibleAlerts = alerts.slice(0, MAX_VISIBLE);
+    // const overflowCount = alerts.length - visibleAlerts.length;
 
     return (
         <div
@@ -1341,7 +1497,7 @@ function HrTitleCell({ value, data }) {
                 </span>
             </Tooltip>
 
-            {alerts.length > 0 && (
+            {/* {alerts.length > 0 && (
                 <div
                     style={{
                         display: 'flex',
@@ -1377,7 +1533,7 @@ function HrTitleCell({ value, data }) {
                         </Tooltip>
                     )}
                 </div>
-            )}
+            )} */}
         </div>
     );
 }
@@ -1832,6 +1988,17 @@ function HrTitleCell({ value, data }) {
             // tooltipField: 'hrTitle',
    
         },
+        {
+            headerName: 'Alerts',
+            field: 'hrAlert',
+            width: 220,
+            pinned: 'left',
+             suppressMovable: true,
+            cellRenderer: HrAlertCell,
+             filter: MultiConditionTextFilter,
+            // tooltipField: 'hrTitle',
+   
+        },
 
         {
             headerName: 'Status',
@@ -1866,7 +2033,13 @@ function HrTitleCell({ value, data }) {
              filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
-
+  {
+            headerName: 'Business Type',
+            field: 'businessType',
+            width: 140,
+             filter: MultiConditionTextFilter,
+            cellStyle: { textAlign: 'center' },
+        },
         {
             headerName: 'HR Created Date',
             field: 'hrCreatedDate',
@@ -2379,6 +2552,12 @@ function HrTitleCell({ value, data }) {
             shortorder.forEach(i => {
                 
                 let obj = originalObj.find(val => val.field.trim() === i.columnName.trim())
+                // if( i.columnName.trim() ==="hrTitle"){
+                //       newOrderObj.push(obj)
+                //       newOrderObj.push(originalObj.find(val => val.field.trim() === 'hrAlert'))
+                // }else{
+                //     newOrderObj.push(obj)
+                // }
                 newOrderObj.push(obj)
             })
 
