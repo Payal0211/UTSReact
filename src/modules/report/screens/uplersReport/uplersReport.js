@@ -403,7 +403,7 @@ export default function UplersReport() {
                   setSelectedHead(val);
                   getGroupUsers(val);
          }
-    },[pODList])
+    },[pODList,userData])
 
   const AddComment = (data, modal, index) => {
     getAllComments(data, modal);

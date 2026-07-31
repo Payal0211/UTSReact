@@ -512,6 +512,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           {/* <TABLEBODYComponent apiData={apiData} /> */}
 
           <tbody>
+           
             {TaListData.length === 0 ? <tr>
               <td colSpan={19} style={{ textAlign: "center", padding: "20px" }}>
                 No data available
@@ -520,11 +521,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
               return <tr>
                 {/* TA Name */}
-                <td>{data.taName}</td>
+                <td style={{borderBottom:data.rowSpan === 0 ? "none": '',
+                  borderTop:data.rowSpan > 0 ? "1px solid #4C4E641F" : ''
+                }}>{data.rowSpan > 0 ? data.taName : ''}</td>
                 {/* COMPANY Name */}
                 <td>
                   <div className={taStylesNew["company-cell"]} style={{ display: 'contents' }}>
-                    <span className={taStylesNew["company-name"]}>{data.companyName}</span>
+                    <Tooltip title={data.companyName}><span className={taStylesNew["company-name"]}>{data.companyName.length > 20 ? `${data.companyName.slice(0,18)}...` : data.companyName }</span></Tooltip>
+                    
                     <div style={{ display: 'flex' }}>
                       <button
                         className={taStylesNew["diamond-toggle"]}

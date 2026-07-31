@@ -170,7 +170,7 @@ function NewTADashboard() {
          if(contractUsers.includes(+userData?.UserId)){
             setActiveTab('Contract')
          }
-    },[])
+    },[userData])
 
     const getAllTAUsersList = async () => {
         let req = await TaDashboardDAO.geAllTAUSERSRequestDAO();
@@ -1639,23 +1639,7 @@ function NewTADashboard() {
 
                         </div>
 
-                            {userData?.showTADashboardDropdowns && activeTable === 'Dashboard' && (
-                                <button
-                                    className={stylesOBj.btnPrimary}
-                                    onClick={() => {
-                                        setIsAddNewRow(true);
-                                        setNewTAHeadUserValue(selectedHead);
-                                    }}
-                                >
-                                    Add New Task
-                                </button>
-                            )}
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '10px' }}>
-
-
-                            {activeTable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
+                           {activeTable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
                                 <DatePicker
                                     style={{ backgroundColor: "red" }}
                                     onKeyDown={(e) => {
@@ -1747,7 +1731,20 @@ function NewTADashboard() {
                                 </div>
                             </>}
 
+                            {userData?.showTADashboardDropdowns && activeTable === 'Dashboard' && (
+                                <button
+                                    className={stylesOBj.btnPrimary}
+                                    onClick={() => {
+                                        setIsAddNewRow(true);
+                                        setNewTAHeadUserValue(selectedHead);
+                                    }}
+                                >
+                                    Add New Task
+                                </button>
+                            )}
                         </div>
+
+                    
 
                         {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
                             hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget, editTAforTask,handleRemoveTask ,TaskStatusComp,
