@@ -5,6 +5,7 @@ import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { InputType } from "constants/application";
 import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin, Radio } from "antd";
 import { ReportDAO } from "core/report/reportDAO";
+import { UserSessionManagementController, contractUsers } from "modules/user/services/user_session_services";
 import { downloadToExcel } from "modules/report/reportUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import ClientReportStyle from "../clientReport/clientReport.module.css";
@@ -83,7 +84,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
   const [isAddingNewTask, setAddingNewTask] = useState(false);
   const [saveRemarkLoading, setSaveRemarkLoading] = useState(false);
   const [moveToAssessment, setMoveToAssessment] = useState(false);
-  
+    const [userData, setUserData] = useState({});
   const {
     register: remarkregiter,
     handleSubmit: remarkSubmit,
@@ -91,6 +92,16 @@ export default function RecruiterDashboardMultiMonthsReport() {
     clearErrors: clearRemarkError,
     formState: { errors: remarkError },
   } = useForm();
+
+  
+      useEffect(() => {
+          const getUserResult = async () => {
+              let userData = UserSessionManagementController.getUserSession();
+              if (userData) setUserData(userData);
+          };
+          getUserResult();
+      }, []);
+  
 
   const onRemoveHRFilters = () => {
     setTimeout(() => {
@@ -1964,6 +1975,17 @@ const getColumnTitle = (title) => {
 
   return "";
 };
+
+ useEffect(()=>{   
+         if(contractUsers.includes(+userData?.UserId) && pODList.length){
+            setHRModal("Contract");
+              let val = pODList.find(
+                    (i) => i.dd_text === "Orion"
+                  )?.dd_value;
+                  setSelectedHead(val);
+         }
+    },[pODList,userData])
+
 
   const handleExport = (apiData) => {
   const exportData = getExportData(clientData, tableColumnsMemo);
