@@ -81,6 +81,7 @@ export class TaDashboardURL {
 	static UPDATE_TOUCH_COMMENT_REQUEST = "AddTouchBaseNotesForTalent"
 	static UPDATE_SUBMISSION_SHEET_REQUEST= "AddSubmissionSheetsForTalent"
 	static UPDATE_HM_POC = 'UpdateHMAsPOC'
+	static UPDATE_CONTRACT_DETAILS = "UpdateContractDetailsbyTaskID"
 	static GET_HR_LIST_COMPANY = 'GetTAHRListCompanyWise'
 	static GET_HR_TALENT_DETAILS = 'GetHRRelatedTalentDetails'
 	static GET_OPEN_TR_DETAILS = 'GetOpenTRDetailsList'
