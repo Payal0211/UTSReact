@@ -2259,11 +2259,10 @@ const getColumnTitle = (title) => {
                             flexWrap: "wrap", 
                           }}
                         >
-                          {console.log('profileInfo',profileInfo)}
-                         
+                                                
             
                           <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
-                            TA : <strong>{profileInfo?.recruiter}</strong> ({colTextVal})
+                            TA : <strong>{profileInfo?.recruiter}({colTextVal})</strong> 
                           </p>
              
                           <input
