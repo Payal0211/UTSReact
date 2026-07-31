@@ -7,7 +7,7 @@ import { ModuleRegistry, AllCommunityModule, DataTypeService } from 'ag-grid-com
 import { scrumGridTheme } from './gridTheme'
 import {
     Select, InputNumber,
-    Tooltip, Table, Checkbox, message, Skeleton, Modal
+    Tooltip, Table, Checkbox, message, Skeleton, Modal, Tabs
 } from "antd";
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { useNavigate } from 'react-router-dom';
@@ -57,6 +57,7 @@ function ScrumStructure2() {
     const [columnOrder, setColumnOrder] = useState([])
     const [draggedRow, setDraggedRow] = useState(null);
     const [draggedRowData, setDraggedRowData] = useState({})
+    const [scrumTabTitle, setScrumTabTitle] = useState('A')
     const [tableFilteredState, setTableFilteredState] = useState({
         filterFields_OnBoard: {
             taUserIDs: null,
@@ -138,7 +139,7 @@ function ScrumStructure2() {
     const [newTaskError, setNewTaskError] = useState(false);
 
     const [showAlertDetailModal, setShowAlertDetailModal] = useState(false);
-const [alertDetailData, setAlertDetailData] = useState({});
+    const [alertDetailData, setAlertDetailData] = useState({});
 
     const [showEditTATask, setShowEditTATask] = useState(false);
     const [editTATaskData, setEditTATaskData] = useState();
@@ -211,7 +212,7 @@ const [alertDetailData, setAlertDetailData] = useState({});
         return finalData;
     }
 
-    const getCOLUMNOrder = async (id) => { 
+    const getCOLUMNOrder = async (id) => {
         const colOrderResult = await TaDashboardDAO.getScrumColumOrderDAO(selectedHead)
         if (colOrderResult?.statusCode === HTTPStatusCode.OK) {
             setColumnOrder(colOrderResult?.responseBody)
@@ -231,6 +232,7 @@ const [alertDetailData, setAlertDetailData] = useState({});
             // priority: tableFilteredState?.filterFields_OnBoard?.priority,
             searchText: searchText,
             taHeadUserID: +selectedHead,
+            tab_Name: scrumTabTitle
         };
         setIsLoading(true);
         const result = await TaDashboardDAO.getAllScrumTaskListRequestDAO(pl);
@@ -251,7 +253,7 @@ const [alertDetailData, setAlertDetailData] = useState({});
         } else {
             return "NO DATA FOUND";
         }
-    }, [tableFilteredState, selectedHead, searchText, navigate]);
+    }, [tableFilteredState, selectedHead, searchText, navigate,scrumTabTitle]);
 
     useEffect(() => {
         if (selectedHead) {
@@ -259,7 +261,7 @@ const [alertDetailData, setAlertDetailData] = useState({});
             getCOLUMNOrder(selectedHead)
         }
 
-    }, [searchText, tableFilteredState, selectedHead,]);
+    }, [searchText, tableFilteredState, selectedHead,scrumTabTitle]);
 
 
 
@@ -511,7 +513,7 @@ const [alertDetailData, setAlertDetailData] = useState({});
                     ...newDS[index],
                     [key]: value?.id,
                     taskStatus: value?.data,
-                    todayProfile_Shared_Target:targetValue !== undefined ? targetValue : newDS[index].todayProfile_Shared_Target
+                    todayProfile_Shared_Target: targetValue !== undefined ? targetValue : newDS[index].todayProfile_Shared_Target
                 };
                 newDS[index] = nob;
                 return newDS;
@@ -691,7 +693,7 @@ const [alertDetailData, setAlertDetailData] = useState({});
                                 target_Number: targetValue,
                                 target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
                                 IsStatusChangedToSlow: true,
-                                task_StatusID: val?.id 
+                                task_StatusID: val?.id
                             };
                             setLoadingTalentProfile(true);
                             let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
@@ -1108,8 +1110,8 @@ const [alertDetailData, setAlertDetailData] = useState({});
     const updateSubmissionSheetNotes = async (pl, index) => {
 
         let updateresult = await TaDashboardDAO.updateSubmissionSheetDAO(pl);
-        if(updateresult.statusCode === HTTPStatusCode.OK){
-             setTaListData((prev) => {
+        if (updateresult.statusCode === HTTPStatusCode.OK) {
+            setTaListData((prev) => {
                 let newDS = [...prev];
                 newDS[index] = {
                     ...newDS[index],
@@ -1129,342 +1131,342 @@ const [alertDetailData, setAlertDetailData] = useState({});
         setCommentData({ ...data, index });
     };
 
-//  function computeAlerts(data) {
-//     const alerts = [];
+    //  function computeAlerts(data) {
+    //     const alerts = [];
 
-//     const days = data?.days ?? 0;
-//     if (days >= 30) {
-//         alerts.push({
-//             key: 'stale',
-//             label: `HR open ${days} days`,
-//             icon: '⏱',
-//             chip: `${days}d`,
-//             severity: 'critical',
-//         });
-//     }
+    //     const days = data?.days ?? 0;
+    //     if (days >= 30) {
+    //         alerts.push({
+    //             key: 'stale',
+    //             label: `HR open ${days} days`,
+    //             icon: '⏱',
+    //             chip: `${days}d`,
+    //             severity: 'critical',
+    //         });
+    //     }
 
-//     const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
-//     if (activeProfiles < 3) {
-//         alerts.push({
-//             key: 'lowProfiles',
-//             label: `Only ${activeProfiles} active profile${activeProfiles === 1 ? '' : 's'}`,
-//             icon: '👤',
-//             chip: `${activeProfiles}`,
-//             severity: 'warning',
-//         });
-//     }
+    //     const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+    //     if (activeProfiles < 3) {
+    //         alerts.push({
+    //             key: 'lowProfiles',
+    //             label: `Only ${activeProfiles} active profile${activeProfiles === 1 ? '' : 's'}`,
+    //             icon: '👤',
+    //             chip: `${activeProfiles}`,
+    //             severity: 'warning',
+    //         });
+    //     }
 
-//     const screenRejects = data?.screenReject ?? 0;
-//     if (screenRejects > 0 && screenRejects % 3 === 0) {
-//         alerts.push({
-//             key: 'screenBurst',
-//             label: `${screenRejects} screen rejections — review sourcing`,
-//             icon: '✂',
-//             chip: `${screenRejects}`,
-//             severity: 'warning',
-//         });
-//     }
+    //     const screenRejects = data?.screenReject ?? 0;
+    //     if (screenRejects > 0 && screenRejects % 3 === 0) {
+    //         alerts.push({
+    //             key: 'screenBurst',
+    //             label: `${screenRejects} screen rejections — review sourcing`,
+    //             icon: '✂',
+    //             chip: `${screenRejects}`,
+    //             severity: 'warning',
+    //         });
+    //     }
 
-//     const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
-//     if (interviewRejects > 0 && interviewRejects % 3 === 0 && interviewRejects <= 10) {
-//         alerts.push({
-//             key: 'interviewBurst',
-//             label: `${interviewRejects} interview rejections — review fit`,
-//             icon: '✕',
-//             chip: `${interviewRejects}`,
-//             severity: 'warning',
-//         });
-//     }
+    //     const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
+    //     if (interviewRejects > 0 && interviewRejects % 3 === 0 && interviewRejects <= 10) {
+    //         alerts.push({
+    //             key: 'interviewBurst',
+    //             label: `${interviewRejects} interview rejections — review fit`,
+    //             icon: '✕',
+    //             chip: `${interviewRejects}`,
+    //             severity: 'warning',
+    //         });
+    //     }
 
-//     if (interviewRejects > 10) {
-//         alerts.push({
-//             key: 'interviewCeiling',
-//             label: `${interviewRejects} interview rejections — escalate`,
-//             icon: '⚠',
-//             chip: `${interviewRejects}`,
-//             severity: 'critical',
-//         });
-//     }
+    //     if (interviewRejects > 10) {
+    //         alerts.push({
+    //             key: 'interviewCeiling',
+    //             label: `${interviewRejects} interview rejections — escalate`,
+    //             icon: '⚠',
+    //             chip: `${interviewRejects}`,
+    //             severity: 'critical',
+    //         });
+    //     }
 
-//     const target = data?.profile_Shared_Target ?? 0;
-//     const achieved = data?.profile_Shared_Achieved ?? 0;
-//     if (target > 0 && achieved < target) {
-//         alerts.push({
-//             key: 'targetMiss',
-//             label: `Missed target: ${achieved}/${target} shared`,
-//             icon: '◔',
-//             chip: `${achieved}/${target}`,
-//             severity: 'warning',
-//         });
-//     }
+    //     const target = data?.profile_Shared_Target ?? 0;
+    //     const achieved = data?.profile_Shared_Achieved ?? 0;
+    //     if (target > 0 && achieved < target) {
+    //         alerts.push({
+    //             key: 'targetMiss',
+    //             label: `Missed target: ${achieved}/${target} shared`,
+    //             icon: '◔',
+    //             chip: `${achieved}/${target}`,
+    //             severity: 'warning',
+    //         });
+    //     }
 
-//     // Show critical alerts first
-//     return alerts.sort((a, b) => (a.severity === 'critical' ? -1 : 1) - (b.severity === 'critical' ? -1 : 1));
-// }
+    //     // Show critical alerts first
+    //     return alerts.sort((a, b) => (a.severity === 'critical' ? -1 : 1) - (b.severity === 'critical' ? -1 : 1));
+    // }
 
-//  const SEVERITY_COLORS = {
-//     critical: { bg: '#FDECEC', text: '#D93025', border: '#F6C6C2' },
-//     warning:  { bg: '#FFF6E0', text: '#B7791F', border: '#F5DFA3' },
-// };
+    //  const SEVERITY_COLORS = {
+    //     critical: { bg: '#FDECEC', text: '#D93025', border: '#F6C6C2' },
+    //     warning:  { bg: '#FFF6E0', text: '#B7791F', border: '#F5DFA3' },
+    // };
 
 
-// function AlertChip({ alert }) {
-//     const colors = SEVERITY_COLORS[alert.severity];
-//     return (
-//         <Tooltip title={alert.label}>
-//             <span
-//                 style={{
-//                     display: 'inline-flex',
-//                     alignItems: 'center',
-//                     gap: 3,
-//                     fontSize: 10.5,
-//                     fontWeight: 600,
-//                     lineHeight: 1,
-//                     padding: '3px 7px',
-//                     borderRadius: 999,
-//                     backgroundColor: colors.bg,
-//                     color: colors.text,
-//                     border: `1px solid ${colors.border}`,
-//                     whiteSpace: 'nowrap',
-//                     flexShrink: 0,   // already had this — keeps chip from squishing/wrapping text mid-word
-//                     cursor: 'default',
-//                     maxHeight: 22, 
-//                 }}
-//             >
-//                 <span style={{ fontSize: 10 }}>{alert.icon}</span>
-//                 {alert.chip}
-//             </span>
-//         </Tooltip>
-//     );
-// }
+    // function AlertChip({ alert }) {
+    //     const colors = SEVERITY_COLORS[alert.severity];
+    //     return (
+    //         <Tooltip title={alert.label}>
+    //             <span
+    //                 style={{
+    //                     display: 'inline-flex',
+    //                     alignItems: 'center',
+    //                     gap: 3,
+    //                     fontSize: 10.5,
+    //                     fontWeight: 600,
+    //                     lineHeight: 1,
+    //                     padding: '3px 7px',
+    //                     borderRadius: 999,
+    //                     backgroundColor: colors.bg,
+    //                     color: colors.text,
+    //                     border: `1px solid ${colors.border}`,
+    //                     whiteSpace: 'nowrap',
+    //                     flexShrink: 0,   // already had this — keeps chip from squishing/wrapping text mid-word
+    //                     cursor: 'default',
+    //                     maxHeight: 22, 
+    //                 }}
+    //             >
+    //                 <span style={{ fontSize: 10 }}>{alert.icon}</span>
+    //                 {alert.chip}
+    //             </span>
+    //         </Tooltip>
+    //     );
+    // }
 
-function computeAlerts(data) {
-    const alerts = [];
+    function computeAlerts(data) {
+        const alerts = [];
 
-    // ---------- HR open 30+ days ----------
-    const days = data?.days ?? 0;
-    if (days > 30) {
-        alerts.push({
-            key: 'stale',
-            text: `${days} days open`,
-            dot: 'critical',
-        });
+        // ---------- HR open 30+ days ----------
+        const days = data?.days ?? 0;
+        if (days > 30) {
+            alerts.push({
+                key: 'stale',
+                text: `${days} days open`,
+                dot: 'critical',
+            });
+        }
+
+        // ---------- Active profiles below floor ----------
+        const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+        if (activeProfiles < 3) {
+            alerts.push({
+                key: 'lowProfiles',
+                text: `only ${activeProfiles} active`,
+                dot: 'info',
+            });
+        }
+
+        // ---------- Screen-reject batch pattern ----------
+        const screenRejects = data?.screenReject ?? 0;
+        if (screenRejects > 0 && screenRejects % 3 === 0) {
+            const batchNum = screenRejects / 3;
+            alerts.push({
+                key: 'screenBatch',
+                text: `Batch ${batchNum} · screen reject`,
+                dot: 'warning',
+            });
+        }
+
+        // ---------- Interview-reject batch pattern ----------
+        const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
+        if (interviewRejects > 0 && interviewRejects % 3 === 0) {
+            const batchNum = interviewRejects / 3;
+            alerts.push({
+                key: 'interviewBatch',
+                text: `Batch ${batchNum} · interview reject`,
+                dot: 'critical',
+            });
+        }
+
+        // ---------- Hard ceiling: total interview rejections > 10 ----------
+        if (interviewRejects > 10) {
+            alerts.push({
+                key: 'interviewCeiling',
+                text: `${interviewRejects} total int. rejects`,
+                dot: 'critical',
+            });
+        }
+
+        // ---------- Yesterday: new screen rejection ----------
+        const newScreenRejectYesterday = data?.yesterdayNewScreenReject ?? 0;
+        if (newScreenRejectYesterday > 0) {
+            alerts.push({
+                key: 'newScreenRejectYesterday',
+                text: `${newScreenRejectYesterday} new screen reject`,
+                dot: 'info',
+            });
+        }
+
+        // ---------- Yesterday: new interview rejection ----------
+        const newInterviewRejectYesterday = data?.yesterdayNewInterviewReject ?? 0;
+        if (newInterviewRejectYesterday > 0) {
+            alerts.push({
+                key: 'newInterviewRejectYesterday',
+                text: `${newInterviewRejectYesterday} new interview reject`,
+                dot: 'info',
+            });
+        }
+
+        // ---------- Submission target achieved (yes/no + calls/day) ----------
+        const target = data?.profile_Shared_Target ?? 0;
+        const achieved = data?.profile_Shared_Achieved ?? 0;
+        const callsPerDay = data?.callsPerDay ?? 0;
+
+        if (target > 0) {
+            const isAchieved = achieved >= target;
+            alerts.push({
+                key: 'targetStatus',
+                text: isAchieved
+                    ? `${achieved}/${target} met`
+                    : `${achieved}/${target} · ${callsPerDay} calls`,
+                dot: isAchieved ? 'success' : 'critical',
+                prefixIcon: isAchieved ? '✓' : '✗',
+            });
+        }
+
+        const severityOrder = { critical: 0, warning: 1, info: 2, success: 3 };
+        return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
     }
 
-    // ---------- Active profiles below floor ----------
-    const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
-    if (activeProfiles < 3) {
-        alerts.push({
-            key: 'lowProfiles',
-            text: `only ${activeProfiles} active`,
-            dot: 'info',
-        });
+    const DOT_COLORS = {
+        critical: '#E64545',
+        warning: '#F2A93B',
+        info: '#4A8FE7',
+        success: '#2FAE60',
+    };
+
+    const CHIP_BG = {
+        critical: '#FDECEC',
+        warning: '#FFF3E0',
+        info: '#EAF2FE',
+        success: '#E8F7EE',
+    };
+
+    function AlertRow({ alert }) {
+        return (
+            <Tooltip title={alert.label ?? alert.text}>
+                <div
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        padding: '0 8px',
+                        borderRadius: 999,
+                        backgroundColor: CHIP_BG[alert.dot],
+                        fontSize: 10.5,
+                        fontWeight: 500,
+                        color: '#3a3a3a',
+                        lineHeight: '14px',   // was 16px
+                        height: 16,           // was 22px — this is the main change
+                        boxSizing: 'border-box',
+                        whiteSpace: 'nowrap',
+                        maxWidth: '100px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }}
+                >
+                    {alert.prefixIcon ? (
+                        <span style={{ fontWeight: 700, color: DOT_COLORS[alert.dot], fontSize: 10, flexShrink: 0 }}>
+                            {alert.prefixIcon}
+                        </span>
+                    ) : (
+                        <span
+                            style={{
+                                width: 5,
+                                height: 5,
+                                borderRadius: '50%',
+                                backgroundColor: DOT_COLORS[alert.dot],
+                                flexShrink: 0,
+                            }}
+                        />
+                    )}
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{alert.text}</span>
+                </div>
+            </Tooltip>
+        );
     }
 
-    // ---------- Screen-reject batch pattern ----------
-    const screenRejects = data?.screenReject ?? 0;
-    if (screenRejects > 0 && screenRejects % 3 === 0) {
-        const batchNum = screenRejects / 3;
-        alerts.push({
-            key: 'screenBatch',
-            text: `Batch ${batchNum} · screen reject`,
-            dot: 'warning',
-        });
-    }
+    function AlertsCell({ data }) {
+        const alerts = computeAlerts(data);
+        if (alerts.length === 0) return null;
 
-    // ---------- Interview-reject batch pattern ----------
-    const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
-    if (interviewRejects > 0 && interviewRejects % 3 === 0) {
-        const batchNum = interviewRejects / 3;
-        alerts.push({
-            key: 'interviewBatch',
-            text: `Batch ${batchNum} · interview reject`,
-            dot: 'critical',
-        });
-    }
-
-    // ---------- Hard ceiling: total interview rejections > 10 ----------
-    if (interviewRejects > 10) {
-        alerts.push({
-            key: 'interviewCeiling',
-            text: `${interviewRejects} total int. rejects`,
-            dot: 'critical',
-        });
-    }
-
-    // ---------- Yesterday: new screen rejection ----------
-    const newScreenRejectYesterday = data?.yesterdayNewScreenReject ?? 0;
-    if (newScreenRejectYesterday > 0) {
-        alerts.push({
-            key: 'newScreenRejectYesterday',
-            text: `${newScreenRejectYesterday} new screen reject`,
-            dot: 'info',
-        });
-    }
-
-    // ---------- Yesterday: new interview rejection ----------
-    const newInterviewRejectYesterday = data?.yesterdayNewInterviewReject ?? 0;
-    if (newInterviewRejectYesterday > 0) {
-        alerts.push({
-            key: 'newInterviewRejectYesterday',
-            text: `${newInterviewRejectYesterday} new interview reject`,
-            dot: 'info',
-        });
-    }
-
-    // ---------- Submission target achieved (yes/no + calls/day) ----------
-    const target = data?.profile_Shared_Target ?? 0;
-    const achieved = data?.profile_Shared_Achieved ?? 0;
-    const callsPerDay = data?.callsPerDay ?? 0;
-
-    if (target > 0) {
-        const isAchieved = achieved >= target;
-        alerts.push({
-            key: 'targetStatus',
-            text: isAchieved
-                ? `${achieved}/${target} met`
-                : `${achieved}/${target} · ${callsPerDay} calls`,
-            dot: isAchieved ? 'success' : 'critical',
-            prefixIcon: isAchieved ? '✓' : '✗',
-        });
-    }
-
-    const severityOrder = { critical: 0, warning: 1, info: 2, success: 3 };
-    return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
-}
-
- const DOT_COLORS = {
-    critical: '#E64545',
-    warning: '#F2A93B',
-    info: '#4A8FE7',
-    success: '#2FAE60',
-};
-
- const CHIP_BG = {
-    critical: '#FDECEC',
-    warning: '#FFF3E0',
-    info: '#EAF2FE',
-    success: '#E8F7EE',
-};
-
-function AlertRow({ alert }) {
-    return (
-        <Tooltip title={alert.label ?? alert.text}>
+        return (
             <div
                 style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 5,
-                    padding: '0 8px',
-                    borderRadius: 999,
-                    backgroundColor: CHIP_BG[alert.dot],
-                    fontSize: 10.5,
-                    fontWeight: 500,
-                    color: '#3a3a3a',
-                    lineHeight: '14px',   // was 16px
-                    height: 16,           // was 22px — this is the main change
+                    display: 'grid',
+                    // flexDirection: 'column',
+                    gridTemplateColumns: "auto auto",
+                    gap: 2,   // was 3
+                    padding: '6px 0',
+                    width: '100%',
+                    height: '100%',
                     boxSizing: 'border-box',
-                    whiteSpace: 'nowrap',
-                    maxWidth: '100px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    overflowY: 'scroll',
+                    overflowX: 'hidden',
                 }}
             >
-                {alert.prefixIcon ? (
-                    <span style={{ fontWeight: 700, color: DOT_COLORS[alert.dot], fontSize: 10, flexShrink: 0 }}>
-                        {alert.prefixIcon}
-                    </span>
-                ) : (
-                    <span
-                        style={{
-                            width: 5,
-                            height: 5,
-                            borderRadius: '50%',
-                            backgroundColor: DOT_COLORS[alert.dot],
-                            flexShrink: 0,
-                        }}
-                    />
-                )}
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{alert.text}</span>
+                {alerts.map((a) => (
+                    <AlertRow key={a.key} alert={a} />
+                ))}
             </div>
-        </Tooltip>
-    );
-}
+        );
+    }
 
- function AlertsCell({ data }) {
-    const alerts = computeAlerts(data);
-    if (alerts.length === 0) return null;
+    const SEVERITY_COLORS = {
+        critical: { bg: '#FDECEC', text: '#D93025', border: '#F6C6C2' },
+        warning: { bg: '#FFF6E0', text: '#B7791F', border: '#F5DFA3' },
+        info: { bg: '#E8F0FE', text: '#1A56C4', border: '#C6D9F7' },
+        success: { bg: '#E6F4EA', text: '#1E8E3E', border: '#BFE3CB' },
+    };
 
-    return (
-        <div
-            style={{
-               display: 'grid',
-        // flexDirection: 'column',
-        gridTemplateColumns:"auto auto",
-        gap: 2,   // was 3
-        padding: '6px 0',
-        width: '100%',
-        height: '100%',
-        boxSizing: 'border-box',
-        overflowY: 'scroll',
-        overflowX: 'hidden',
-            }}
-        >
-            {alerts.map((a) => (
-                <AlertRow key={a.key} alert={a} />
-            ))}
-        </div>
-    );
-}
+    function AlertChip({ alert }) {
+        const colors = SEVERITY_COLORS[alert.severity];
+        return (
+            <Tooltip title={alert.label}>
+                <span
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 3,
+                        fontSize: 10.5,
+                        fontWeight: 600,
+                        lineHeight: 1,
+                        padding: '3px 7px',
+                        borderRadius: 999,
+                        backgroundColor: colors.bg,
+                        color: colors.text,
+                        border: `1px solid ${colors.border}`,
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
+                        cursor: 'default',
+                    }}
+                >
+                    <span style={{ fontSize: 10 }}>{alert.icon}</span>
+                    {alert.chip}
+                </span>
+            </Tooltip>
+        );
+    }
 
- const SEVERITY_COLORS = {
-    critical: { bg: '#FDECEC', text: '#D93025', border: '#F6C6C2' },
-    warning:  { bg: '#FFF6E0', text: '#B7791F', border: '#F5DFA3' },
-    info:     { bg: '#E8F0FE', text: '#1A56C4', border: '#C6D9F7' },
-    success:  { bg: '#E6F4EA', text: '#1E8E3E', border: '#BFE3CB' },
-};
+    const openAlertDetail = useCallback((data) => {
+        setAlertDetailData(data);
+        setShowAlertDetailModal(true);
+    }, []);
 
-function AlertChip({ alert }) {
-    const colors = SEVERITY_COLORS[alert.severity];
-    return (
-        <Tooltip title={alert.label}>
-            <span
-                style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 3,
-                    fontSize: 10.5,
-                    fontWeight: 600,
-                    lineHeight: 1,
-                    padding: '3px 7px',
-                    borderRadius: 999,
-                    backgroundColor: colors.bg,
-                    color: colors.text,
-                    border: `1px solid ${colors.border}`,
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                    cursor: 'default',
-                }}
-            >
-                <span style={{ fontSize: 10 }}>{alert.icon}</span>
-                {alert.chip}
-            </span>
-        </Tooltip>
-    );
-}
+    function HrAlertCell(props) {
+        const { data, context } = props
+        if (props.node.rowPinned) {
+            return "";
+        }
 
-const openAlertDetail = useCallback((data) => {
-    setAlertDetailData(data);
-    setShowAlertDetailModal(true);
-}, []);
-
-function HrAlertCell(props) {
-    const {  data,  context } = props
-     if (props.node.rowPinned) {
-                    return "";
-                }
-
-  return   <div
+        return <div
             onClick={() => context.openAlertDetail(data)}
             style={{ cursor: 'pointer', height: '100%', width: '100%' }}
         >
@@ -1472,45 +1474,45 @@ function HrAlertCell(props) {
         </div>
 
 
-}
+    }
 
-function HrTitleCell({ value, data }) {
-    if (!value) return null;
+    function HrTitleCell({ value, data }) {
+        if (!value) return null;
 
-    // const alerts = computeAlerts(data);
-    // const MAX_VISIBLE = 3;
-    // const visibleAlerts = alerts.slice(0, MAX_VISIBLE);
-    // const overflowCount = alerts.length - visibleAlerts.length;
+        // const alerts = computeAlerts(data);
+        // const MAX_VISIBLE = 3;
+        // const visibleAlerts = alerts.slice(0, MAX_VISIBLE);
+        // const overflowCount = alerts.length - visibleAlerts.length;
 
-    return (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                gap: 5,
-                height: '100%',
-                width: '100%',
-                minWidth: 0,
-                overflow: 'hidden',
-            }}
-        >
-            <Tooltip title={value}>
-                <span
-                    style={{
-                        display: 'block',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        fontWeight: 500,
-                        lineHeight: "10px"
-                    }}
-                >
-                    {value}
-                </span>
-            </Tooltip>
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    gap: 5,
+                    height: '100%',
+                    width: '100%',
+                    minWidth: 0,
+                    overflow: 'hidden',
+                }}
+            >
+                <Tooltip title={value}>
+                    <span
+                        style={{
+                            display: 'block',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            fontWeight: 500,
+                            lineHeight: "10px"
+                        }}
+                    >
+                        {value}
+                    </span>
+                </Tooltip>
 
-            {/* {alerts.length > 0 && (
+                {/* {alerts.length > 0 && (
                 <div
                     style={{
                         display: 'flex',
@@ -1547,71 +1549,71 @@ function HrTitleCell({ value, data }) {
                     )}
                 </div>
             )} */}
-        </div>
-    );
-}
+            </div>
+        );
+    }
 
-//     function AlertChip({ alert }) {
-//     const colors = SEVERITY_COLORS[alert.severity];
-//     return (
-//         <Tooltip title={alert.label}>
-//             <span
-//                 style={{
-//                     display: 'inline-flex',
-//                     alignItems: 'center',
-//                     fontSize: 10,
-//                     fontWeight: 700,
-//                     lineHeight: 1,
-//                     padding: '3px 6px',
-//                     borderRadius: 999,
-//                     backgroundColor: colors.bg,
-//                     color: colors.text,
-//                     border: `1px solid ${colors.border}`,
-//                     whiteSpace: 'nowrap',
-//                     cursor: 'default',
-//                 }}
-//             >
-//                 {alert.severity === 'critical' && (
-//                     <span style={{ marginRight: 3 }}>●</span>
-//                 )}
-//                 {alert.chip}
-//             </span>
-//         </Tooltip>
-//     );
-// }
+    //     function AlertChip({ alert }) {
+    //     const colors = SEVERITY_COLORS[alert.severity];
+    //     return (
+    //         <Tooltip title={alert.label}>
+    //             <span
+    //                 style={{
+    //                     display: 'inline-flex',
+    //                     alignItems: 'center',
+    //                     fontSize: 10,
+    //                     fontWeight: 700,
+    //                     lineHeight: 1,
+    //                     padding: '3px 6px',
+    //                     borderRadius: 999,
+    //                     backgroundColor: colors.bg,
+    //                     color: colors.text,
+    //                     border: `1px solid ${colors.border}`,
+    //                     whiteSpace: 'nowrap',
+    //                     cursor: 'default',
+    //                 }}
+    //             >
+    //                 {alert.severity === 'critical' && (
+    //                     <span style={{ marginRight: 3 }}>●</span>
+    //                 )}
+    //                 {alert.chip}
+    //             </span>
+    //         </Tooltip>
+    //     );
+    // }
 
-//     // ---- ag-Grid column model & shared context ----------------------------------
+    //     // ---- ag-Grid column model & shared context ----------------------------------
 
-//     function HrTitleCell(props) {
-//         const { value ,data} = props;
-//         const alerts = computeAlerts(data);
-//         if (!value) return null;
+    //     function HrTitleCell(props) {
+    //         const { value ,data} = props;
+    //         const alerts = computeAlerts(data);
+    //         if (!value) return null;
 
-//         if (value.length <= 20) return <span>{value}</span>;
-//         return (<div  style={{
-//                 display: 'flex',
-//                 flexDirection: 'column',
-//                 gap: 4,
-//                 padding: '6px 0',
-//                 height: '100%',
-//                 justifyContent: 'center',   // vertically centers when a row has no chips
-//                 overflow: 'hidden',    
-//                 lineHeight:'10px'      // clips instead of pushing row height
-//             }}>
-//          <Tooltip title={value}>
-//                 <span>{`${value.slice(0, 20)}...`}</span>
-//             </Tooltip>
-//               {alerts.length > 0 && (
-//                 <div style={{ display: 'flex', overflow: 'scroll', gap: 4 }}>
-//                     {alerts.map((a) => (
-//                         <AlertChip key={a.key} alert={a} />
-//                     ))}
-//                 </div>
-//             )}
-//         </div>
-           
-//         );
-//     }
+    //         if (value.length <= 20) return <span>{value}</span>;
+    //         return (<div  style={{
+    //                 display: 'flex',
+    //                 flexDirection: 'column',
+    //                 gap: 4,
+    //                 padding: '6px 0',
+    //                 height: '100%',
+    //                 justifyContent: 'center',   // vertically centers when a row has no chips
+    //                 overflow: 'hidden',    
+    //                 lineHeight:'10px'      // clips instead of pushing row height
+    //             }}>
+    //          <Tooltip title={value}>
+    //                 <span>{`${value.slice(0, 20)}...`}</span>
+    //             </Tooltip>
+    //               {alerts.length > 0 && (
+    //                 <div style={{ display: 'flex', overflow: 'scroll', gap: 4 }}>
+    //                     {alerts.map((a) => (
+    //                         <AlertChip key={a.key} alert={a} />
+    //                     ))}
+    //                 </div>
+    //             )}
+    //         </div>
+
+    //         );
+    //     }
 
     const sumFields = [
         "todayProfile_Shared_Target",
@@ -1816,7 +1818,7 @@ function HrTitleCell({ value, data }) {
             width: 100,
             pinned: 'left',
             sortable: false,
-             suppressMovable: true,
+            suppressMovable: true,
             filter: MultiConditionTextFilter,
             // rowSpan: (params) => params.data?.rowSpan || 1, 
             rowSpan: (params) => {
@@ -1923,16 +1925,16 @@ function HrTitleCell({ value, data }) {
             pinned: 'left',
             cellRenderer: CompanyCell,
             sortable: false,
-             suppressMovable: true,
-             filter: MultiConditionTextFilter,
+            suppressMovable: true,
+            filter: MultiConditionTextFilter,
         },
         {
             headerName: 'HR ID',
             field: 'hrNumber',
             width: 150,
             pinned: 'left',
-             suppressMovable: true,
-             filter: MultiConditionTextFilter,
+            suppressMovable: true,
+            filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props;
 
@@ -1995,22 +1997,22 @@ function HrTitleCell({ value, data }) {
             field: 'hrTitle',
             width: 150,
             pinned: 'left',
-             suppressMovable: true,
+            suppressMovable: true,
             cellRenderer: HrTitleCell,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             // tooltipField: 'hrTitle',
-   
+
         },
         {
             headerName: 'Alerts',
             field: 'hrAlert',
             width: 200,
             pinned: 'left',
-             suppressMovable: true,         
+            suppressMovable: true,
             cellRenderer: HrAlertCell,
-             filter: false,
+            filter: false,
             // tooltipField: 'hrTitle',
-   
+
         },
 
         {
@@ -2018,8 +2020,8 @@ function HrTitleCell({ value, data }) {
             field: 'taskStatus',
             width: 120,
             pinned: 'left',
-             suppressMovable: true,
-             filter: MultiConditionTextFilter,
+            suppressMovable: true,
+            filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2033,7 +2035,7 @@ function HrTitleCell({ value, data }) {
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 80,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2043,14 +2045,14 @@ function HrTitleCell({ value, data }) {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
             width: 120,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
-  {
+        {
             headerName: 'Business Type',
             field: 'businessType',
             width: 140,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
         {
@@ -2058,14 +2060,14 @@ function HrTitleCell({ value, data }) {
             field: 'hrCreatedDate',
             cellStyle: { textAlign: 'center' },
             width: 110,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
         },
         {
             headerName: 'HR Status',
             field: 'tA_HR_Status',
             width: 130,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: HrStatusCell,
         },
         {
@@ -2073,7 +2075,7 @@ function HrTitleCell({ value, data }) {
             field: 'activeTR',
             cellStyle: { textAlign: 'center' },
             width: 100,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
         },
 
 
@@ -2085,7 +2087,7 @@ function HrTitleCell({ value, data }) {
             field: 'talent_AnnualCTC_Budget_INRValueStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2095,7 +2097,7 @@ function HrTitleCell({ value, data }) {
             field: 'uplersFeesPer',
             cellStyle: { textAlign: 'center' },
             width: 100,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2105,7 +2107,7 @@ function HrTitleCell({ value, data }) {
             field: 'totalRevenue_NoofTalentStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2115,7 +2117,7 @@ function HrTitleCell({ value, data }) {
             field: 'days',
             cellStyle: { textAlign: 'center' },
             width: 80,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2124,7 +2126,7 @@ function HrTitleCell({ value, data }) {
             headerName: '#Active Profile',
             field: 'noOfProfile_TalentsTillDate',
             width: 80,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
@@ -2132,7 +2134,7 @@ function HrTitleCell({ value, data }) {
             headerName: 'Latest Updates',
             field: 'latestNotes',
             width: 250,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             sortable: false,
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
@@ -2178,7 +2180,7 @@ function HrTitleCell({ value, data }) {
             field: 'totalNoOfSubmission',
             cellStyle: { textAlign: 'center' },
             width: 80,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2193,7 +2195,7 @@ function HrTitleCell({ value, data }) {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2206,7 +2208,7 @@ function HrTitleCell({ value, data }) {
             headerName: '#Int. Rejects',
             field: 'totalNoOfInterviewReject',
             width: 80,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -2218,7 +2220,7 @@ function HrTitleCell({ value, data }) {
         },
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2229,7 +2231,7 @@ function HrTitleCell({ value, data }) {
         },
         {
             headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2240,7 +2242,7 @@ function HrTitleCell({ value, data }) {
         },
         {
             headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2255,7 +2257,7 @@ function HrTitleCell({ value, data }) {
             field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: ProfileSharedTargetCell,
             cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
         },
@@ -2263,7 +2265,7 @@ function HrTitleCell({ value, data }) {
             headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
 
         },
@@ -2272,7 +2274,7 @@ function HrTitleCell({ value, data }) {
             field: 'profile_Shared_Achieved',
             cellStyle: { textAlign: 'center' },
             width: 150,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -2299,7 +2301,7 @@ function HrTitleCell({ value, data }) {
             field: 'interview_Scheduled_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -2313,7 +2315,7 @@ function HrTitleCell({ value, data }) {
             headerName: 'Weekly Selection Planned',
             field: 'weeklySelectionPlanStr',
             width: 170,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'left' },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2324,13 +2326,13 @@ function HrTitleCell({ value, data }) {
             field: 'joiningDate',
             cellStyle: { textAlign: 'center' },
             width: 150,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
         },
         {
             headerName: 'Touch Based Notes',
             field: 'touchBasedNotes',
             width: 250,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             sortable: false,
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
@@ -2371,7 +2373,7 @@ function HrTitleCell({ value, data }) {
             headerName: 'Submission URL',
             field: 'submissionSheet',
             width: 250,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             sortable: false,
             editable: true,
             wrapText: true,    // Allows text to break to next line visually
@@ -2415,7 +2417,7 @@ function HrTitleCell({ value, data }) {
             field: 'hmAsPOC',
             width: 100,
             sortable: false,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             cellRenderer: YesNoCell,
             cellRendererParams: { objKey: 'hmAsPOC' },
         },
@@ -2423,11 +2425,11 @@ function HrTitleCell({ value, data }) {
             headerName: "Yesterday's No of Calls",
             field: 'noOfCallsGivenDay',
             cellStyle: { textAlign: 'center' },
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             width: 150,
             cellRendererParams: { objKey: 'noOfCallsGivenDay' },
-            cellRenderer:(params)=>{
-                 if (params.api.isAnyFilterPresent()) {
+            cellRenderer: (params) => {
+                if (params.api.isAnyFilterPresent()) {
                     const rowIndex = params.node.rowIndex;
 
                     const prev = params.api
@@ -2448,7 +2450,7 @@ function HrTitleCell({ value, data }) {
             headerName: 'Action',
             field: 'Action',
             width: 100,
-             filter: MultiConditionTextFilter,
+            filter: MultiConditionTextFilter,
             sortable: false,
             suppressMovable: true,
             cellRenderer: (props) => {
@@ -2514,25 +2516,25 @@ function HrTitleCell({ value, data }) {
     ];
 
     const handlePostProcessPopup = useCallback((params) => {
-    if (params.type !== 'popupCellEditor') return;
+        if (params.type !== 'popupCellEditor') return;
 
-    const { ePopup, column, eventSource } = params;
-    if (!column || (column.getColId() !== 'latestNotes' && column.getColId() !== 'touchBasedNotes')) {
-        return;
-    }
+        const { ePopup, column, eventSource } = params;
+        if (!column || (column.getColId() !== 'latestNotes' && column.getColId() !== 'touchBasedNotes')) {
+            return;
+        }
 
-    const cellRect = eventSource?.getBoundingClientRect();
-    if (!cellRect) return;
+        const cellRect = eventSource?.getBoundingClientRect();
+        if (!cellRect) return;
 
-    const popupHeight = ePopup.offsetHeight;
-    const GAP = 4;
-    const desiredTop = cellRect.top - popupHeight - GAP;
+        const popupHeight = ePopup.offsetHeight;
+        const GAP = 4;
+        const desiredTop = cellRect.top - popupHeight - GAP;
 
-    ePopup.style.position = 'fixed';
-    ePopup.style.left = `${cellRect.left}px`;
-    // Clamp so it never renders above the viewport top (min 8px margin)
-    ePopup.style.top = `${Math.max(desiredTop, 8)}px`;
-}, []);
+        ePopup.style.position = 'fixed';
+        ePopup.style.left = `${cellRect.left}px`;
+        // Clamp so it never renders above the viewport top (min 8px margin)
+        ePopup.style.top = `${Math.max(desiredTop, 8)}px`;
+    }, []);
 
 
     const pinnedBottomRowData = useMemo((par) => {
@@ -2563,7 +2565,7 @@ function HrTitleCell({ value, data }) {
             );
 
             shortorder.forEach(i => {
-                
+
                 let obj = originalObj.find(val => val.field.trim() === i.columnName.trim())
                 // if( i.columnName.trim() ==="hrTitle"){
                 //       newOrderObj.push(obj)
@@ -2583,119 +2585,119 @@ function HrTitleCell({ value, data }) {
     }, [TaListData, columnOrder]);
 
     function AlertDetailModal({ open, data, onClose }) {
-    if (!data) return null;
+        if (!data) return null;
 
-    const alerts = computeAlerts(data);
-    const daysOpen = data?.days ?? 0;
-    const totalInterviewRejects = data?.totalNoOfInterviewReject ?? 0;
-    const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+        const alerts = computeAlerts(data);
+        const daysOpen = data?.days ?? 0;
+        const totalInterviewRejects = data?.totalNoOfInterviewReject ?? 0;
+        const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
 
-    return (
-        <Modal
-            transitionName=""
-            width="560px"
-            centered
-            footer={null}
-            open={open}
-            className="engagementModalStyle"
-            onCancel={onClose}
-        >
-            <div style={{ padding: '20px 24px 24px' }}>
-                {/* Alert chips row */}
-                {alerts.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
-                        {alerts.map((a) => (
-                            <AlertRow key={a.key} alert={a} />
-                        ))}
+        return (
+            <Modal
+                transitionName=""
+                width="560px"
+                centered
+                footer={null}
+                open={open}
+                className="engagementModalStyle"
+                onCancel={onClose}
+            >
+                <div style={{ padding: '20px 24px 24px' }}>
+                    {/* Alert chips row */}
+                    {alerts.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
+                            {alerts.map((a) => (
+                                <AlertRow key={a.key} alert={a} />
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Title + subtitle */}
+                    <h2 style={{ fontSize: 12, fontWeight: 700, margin: '0 0 6px' }}>
+                        {data.hrTitle}
+                    </h2>
+                    <p style={{ color: '#6b7280', fontSize: 10, margin: '0 0 20px' }}>
+                        {data.companyName} · {data.taName} · {data.hrNumber}
+                    </p>
+
+                    {/* Summary cards */}
+                    <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+                        <SummaryCard label="Days Open" value={daysOpen} color="#D93025" />
+                        <SummaryCard label="Int. Rejects" value={totalInterviewRejects} color="#D93025" />
+                        <SummaryCard label="Active" value={activeProfiles} color="#1E8E3E" />
                     </div>
-                )}
 
-                {/* Title + subtitle */}
-                <h2 style={{ fontSize: 12, fontWeight: 700, margin: '0 0 6px' }}>
-                    {data.hrTitle}
-                </h2>
-                <p style={{ color: '#6b7280', fontSize: 10, margin: '0 0 20px' }}>
-                    {data.companyName} · {data.taName} · {data.hrNumber}
-                </p>
+                    {/* Funnel */}
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: 0.5, marginBottom: 10 }}>
+                        FUNNEL
+                    </div>
+                    <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
+                        <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
+                        <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
+                        <FunnelRow
+                            label="R1 / R2 / R3"
+                            value={`${data?.r1 ?? 0} / ${data?.r2 ?? 0} / ${data?.r3 ?? 0}`}
+                            valueColor="#7C3AED"
+                        />
+                        <FunnelRow
+                            label="Interview Rejects"
+                            value={totalInterviewRejects}
+                            valueColor="#D93025"
+                        />
+                        <FunnelRow
+                            label="Today Target → Achieved"
+                            value={`${data?.todayProfile_Shared_Target ?? 0} → ${data?.profile_Shared_Achieved ?? 0}`}
+                        />
+                        <FunnelRow
+                            label="Calls / Notes"
+                            value={`${data?.noOfCallsGivenDay ?? '—'} / ${data?.latestNotes ? '✓' : '—'}`}
+                        />
+                        <FunnelRow
+                            label="Status / Category"
+                            value={`${data?.taskStatus ?? '—'} · ${data?.companyCategory ?? '—'}`}
+                        />
+                        <FunnelRow label="Joining Date" value={data?.joiningDate ?? '—'} />
+                        <FunnelRow label="Touch Base" value={data?.touchBasedNotes ? '✓' : 'N/A'} isLast />
+                    </div>
+                </div>
+            </Modal>
+        );
+    }
 
-                {/* Summary cards */}
-                <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
-                    <SummaryCard label="Days Open" value={daysOpen} color="#D93025" />
-                    <SummaryCard label="Int. Rejects" value={totalInterviewRejects} color="#D93025" />
-                    <SummaryCard label="Active" value={activeProfiles} color="#1E8E3E" />
-                </div>
-
-                {/* Funnel */}
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: 0.5, marginBottom: 10 }}>
-                    FUNNEL
-                </div>
-                <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
-                    <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
-                    <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
-                    <FunnelRow
-                        label="R1 / R2 / R3"
-                        value={`${data?.r1 ?? 0} / ${data?.r2 ?? 0} / ${data?.r3 ?? 0}`}
-                        valueColor="#7C3AED"
-                    />
-                    <FunnelRow
-                        label="Interview Rejects"
-                        value={totalInterviewRejects}
-                        valueColor="#D93025"
-                    />
-                    <FunnelRow
-                        label="Today Target → Achieved"
-                        value={`${data?.todayProfile_Shared_Target ?? 0} → ${data?.profile_Shared_Achieved ?? 0}`}
-                    />
-                    <FunnelRow
-                        label="Calls / Notes"
-                        value={`${data?.noOfCallsGivenDay ?? '—'} / ${data?.latestNotes ? '✓' : '—'}`}
-                    />
-                    <FunnelRow
-                        label="Status / Category"
-                        value={`${data?.taskStatus ?? '—'} · ${data?.companyCategory ?? '—'}`}
-                    />
-                    <FunnelRow label="Joining Date" value={data?.joiningDate ?? '—'} />
-                    <FunnelRow label="Touch Base" value={data?.touchBasedNotes ? '✓' : 'N/A'} isLast />
-                </div>
+    function SummaryCard({ label, value, color }) {
+        return (
+            <div
+                style={{
+                    flex: 1,
+                    backgroundColor: '#F4F6F8',
+                    borderRadius: 10,
+                    padding: '10px 4px',
+                    textAlign: 'center',
+                }}
+            >
+                <div style={{ fontSize: 14, fontWeight: 700, color }}>{value}</div>
+                <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{label}</div>
             </div>
-        </Modal>
-    );
-}
+        );
+    }
 
-function SummaryCard({ label, value, color }) {
-    return (
-        <div
-            style={{
-                flex: 1,
-                backgroundColor: '#F4F6F8',
-                borderRadius: 10,
-                padding: '10px 4px',
-                textAlign: 'center',
-            }}
-        >
-            <div style={{ fontSize: 14, fontWeight: 700, color }}>{value}</div>
-            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{label}</div>
-        </div>
-    );
-}
-
-function FunnelRow({ label, value, valueColor, isLast }) {
-    return (
-        <div
-            style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '10px 14px',
-                borderBottom: isLast ? 'none' : '1px solid #E3E7EB',
-                fontSize: 10,
-            }}
-        >
-            <span style={{ color: '#6b7280' }}>{label}</span>
-            <span style={{ fontWeight: 600, color: valueColor ?? '#1F2937' }}>{value}</span>
-        </div>
-    );
-}
+    function FunnelRow({ label, value, valueColor, isLast }) {
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 14px',
+                    borderBottom: isLast ? 'none' : '1px solid #E3E7EB',
+                    fontSize: 10,
+                }}
+            >
+                <span style={{ color: '#6b7280' }}>{label}</span>
+                <span style={{ fontWeight: 600, color: valueColor ?? '#1F2937' }}>{value}</span>
+            </div>
+        );
+    }
 
     // Rows keep their original array index available to renderers via id lookup,
     // since ag-Grid's own row index can change once sorting/filtering is used.
@@ -2794,7 +2796,7 @@ function FunnelRow({ label, value, valueColor, isLast }) {
     };
 
 
-    const handleProfileShearedTarget = async () => { 
+    const handleProfileShearedTarget = async () => {
         let valobj = filtersList?.TaskStatus?.find((i) => i.data === "Fasttrack");
         let pl = {
             task_ID: profileTargetDetails?.id,
@@ -2803,7 +2805,7 @@ function FunnelRow({ label, value, valueColor, isLast }) {
             target_StageID: 1,
             target_Number: targetValue,
             target_Date: moment(startTargetDate).format("YYYY-MM-DD"), // today's date
-            task_StatusID: valobj?.id 
+            task_StatusID: valobj?.id
         };
         setLoadingTalentProfile(true);
         let result = await TaDashboardDAO.insertProfileShearedTargetDAO(pl);
@@ -2811,7 +2813,7 @@ function FunnelRow({ label, value, valueColor, isLast }) {
         if (result.statusCode === HTTPStatusCode.OK) {
             setShowProfileTarget(false);
             setGoalList(result.responseBody);
-           
+
             updateTARowValue(
                 valobj,
                 "task_StatusID",
@@ -2867,6 +2869,64 @@ function FunnelRow({ label, value, valueColor, isLast }) {
         updateColumnOrder(pl)
     };
 
+    const TableComp = () => {
+        return <div
+            ref={gridWrapperRef}
+            className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+            style={{ height: gridHeightPx }}
+        >
+
+            {isLoading ? <TableSkeleton /> :
+
+                <AgGridReact
+                    onGridReady={onGridReady}
+                    onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
+                    theme={scrumGridTheme}
+                    rowData={TaListData}
+                    columnDefs={gridColumns}
+                    defaultColDef={scrumDefaultColDef}
+                    context={gridContext}
+                    getRowId={(params) => String(params.data.id)}
+                    suppressRowTransform={true}
+                    animateRows={false}
+                    headerHeight={38}
+                    rowHeight={34}
+                    onCellKeyDown={handleGridKeyDown}
+                    onCellEditingStarted={handleCellEditingStarted}
+                    postProcessPopup={handlePostProcessPopup}
+                    groupDisplayType="singleColumn"
+                    getRowStyle={(params) => {
+                        if (params.node.rowPinned) {
+                            return {
+                                backgroundColor: '#F4F6F8',
+                                fontWeight: '700',
+                                borderTop: '2px solid #D9DEE3',
+                                color: '#1F2937'
+                            };
+                        }
+
+                        return null;
+                    }}
+                    groupDefaultExpanded={-1}
+                    autoGroupColumnDef={autoGroupColumnDef}
+                    pinnedBottomRowData={pinnedBottomRowData}
+                    onSortChanged={(params) => updatePinnedTotalRow(params.api)}
+                    onFilterChanged={(params) => {
+                        const filtered = params.api.isAnyFilterPresent();
+
+                        setHasFilter(filtered);
+                        updatePinnedTotalRow(params.api);
+                        params.api.refreshCells({ force: true });
+                        params.api.redrawRows();
+                    }}
+                    onColumnMoved={onColumnMoved}
+
+                />
+            }
+
+        </div>
+    }
+
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
@@ -2887,7 +2947,7 @@ function FunnelRow({ label, value, valueColor, isLast }) {
                         onChange={(value, option) => {
                             setSelectedHead(value);
                         }}
-                        options={filtersList?.HeadUsers?.filter(i=>i.id !== 302)?.map((v) => ({
+                        options={filtersList?.HeadUsers?.filter(i => i.id !== 302)?.map((v) => ({
                             label: v.data,
                             value: v.id,
                         }))}
@@ -2943,62 +3003,28 @@ function FunnelRow({ label, value, valueColor, isLast }) {
                     </button>
 
                 </div>
+                <Tabs
+                    onChange={(e) => setScrumTabTitle(e)}
+                    defaultActiveKey="A"
+                    activeKey={scrumTabTitle}
+                    animated={true}
+                    tabBarGutter={50}
+                    tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)`, margin: "0 20px" }}
+                    items={[
+                        {
+                            label: "Active",
+                            key: "A",
+                            children: <TableComp />
+                        },
+                        {
+                            label: "Covered",
+                            key: "C",
+                            children: <TableComp />
+                        }
+                    ]}
+                />
 
-                <div
-                    ref={gridWrapperRef}
-                    className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
-                    style={{ height: gridHeightPx }}
-                >
 
-                    {isLoading ? <TableSkeleton /> :
-
-                        <AgGridReact
-                            onGridReady={onGridReady}
-                            onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
-                            theme={scrumGridTheme}
-                            rowData={TaListData}
-                            columnDefs={gridColumns}
-                            defaultColDef={scrumDefaultColDef}
-                            context={gridContext}
-                            getRowId={(params) => String(params.data.id)}
-                            suppressRowTransform={true}
-                            animateRows={false}
-                            headerHeight={38}
-                            rowHeight={34}
-                            onCellKeyDown={handleGridKeyDown}
-                            onCellEditingStarted={handleCellEditingStarted}
-                            postProcessPopup={handlePostProcessPopup}
-                            groupDisplayType="singleColumn"
-                            getRowStyle={(params) => {
-                                if (params.node.rowPinned) {
-                                    return {
-                                        backgroundColor: '#F4F6F8', 
-                                        fontWeight: '700',
-                                        borderTop: '2px solid #D9DEE3',
-                                        color: '#1F2937'
-                                    };
-                                }
-
-                                return null;
-                            }}
-                            groupDefaultExpanded={-1}
-                            autoGroupColumnDef={autoGroupColumnDef}
-                            pinnedBottomRowData={pinnedBottomRowData}
-                            onSortChanged={(params) => updatePinnedTotalRow(params.api)}
-                            onFilterChanged={(params) => {
-                                const filtered = params.api.isAnyFilterPresent();
-
-                                setHasFilter(filtered);
-                                updatePinnedTotalRow(params.api);
-                                params.api.refreshCells({ force: true });
-                                params.api.redrawRows();
-                            }}
-                            onColumnMoved={onColumnMoved}
-                            
-                        />
-                    }
-
-                </div>
 
 
 
@@ -4184,13 +4210,13 @@ function FunnelRow({ label, value, valueColor, isLast }) {
                 )}
 
                 <AlertDetailModal
-    open={showAlertDetailModal}
-    data={alertDetailData}
-    onClose={() => {
-        setShowAlertDetailModal(false);
-        setAlertDetailData({});
-    }}
-/>
+                    open={showAlertDetailModal}
+                    data={alertDetailData}
+                    onClose={() => {
+                        setShowAlertDetailModal(false);
+                        setAlertDetailData({});
+                    }}
+                />
 
             </main>
         </div>
