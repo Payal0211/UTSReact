@@ -251,6 +251,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.updateTAListRequest');
 		}
 	},
+	updateContractDetailsRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.UPDATE_CONTRACT_DETAILS
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.updateContractDetailsRequest');
+		}
+	},
 	updateHMPOCRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

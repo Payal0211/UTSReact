@@ -137,6 +137,9 @@ function ScrumStructure2() {
     } = useForm();
     const [newTaskError, setNewTaskError] = useState(false);
 
+    const [showAlertDetailModal, setShowAlertDetailModal] = useState(false);
+const [alertDetailData, setAlertDetailData] = useState({});
+
     const [showEditTATask, setShowEditTATask] = useState(false);
     const [editTATaskData, setEditTATaskData] = useState();
     const [showConfirmRemove, setShowConfirmRemove] = useState(false);
@@ -1450,13 +1453,23 @@ function AlertChip({ alert }) {
     );
 }
 
+const openAlertDetail = useCallback((data) => {
+    setAlertDetailData(data);
+    setShowAlertDetailModal(true);
+}, []);
+
 function HrAlertCell(props) {
-    const { value, data } = props
+    const {  data,  context } = props
      if (props.node.rowPinned) {
                     return "";
                 }
 
-  return <AlertsCell data={data} />
+  return   <div
+            onClick={() => context.openAlertDetail(data)}
+            style={{ cursor: 'pointer', height: '100%', width: '100%' }}
+        >
+            <AlertsCell data={data} />
+        </div>
 
 
 }
@@ -2569,6 +2582,121 @@ function HrTitleCell({ value, data }) {
 
     }, [TaListData, columnOrder]);
 
+    function AlertDetailModal({ open, data, onClose }) {
+    if (!data) return null;
+
+    const alerts = computeAlerts(data);
+    const daysOpen = data?.days ?? 0;
+    const totalInterviewRejects = data?.totalNoOfInterviewReject ?? 0;
+    const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+
+    return (
+        <Modal
+            transitionName=""
+            width="560px"
+            centered
+            footer={null}
+            open={open}
+            className="engagementModalStyle"
+            onCancel={onClose}
+        >
+            <div style={{ padding: '20px 24px 24px' }}>
+                {/* Alert chips row */}
+                {alerts.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
+                        {alerts.map((a) => (
+                            <AlertRow key={a.key} alert={a} />
+                        ))}
+                    </div>
+                )}
+
+                {/* Title + subtitle */}
+                <h2 style={{ fontSize: 12, fontWeight: 700, margin: '0 0 6px' }}>
+                    {data.hrTitle}
+                </h2>
+                <p style={{ color: '#6b7280', fontSize: 10, margin: '0 0 20px' }}>
+                    {data.companyName} · {data.taName} · {data.hrNumber}
+                </p>
+
+                {/* Summary cards */}
+                <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+                    <SummaryCard label="Days Open" value={daysOpen} color="#D93025" />
+                    <SummaryCard label="Int. Rejects" value={totalInterviewRejects} color="#D93025" />
+                    <SummaryCard label="Active" value={activeProfiles} color="#1E8E3E" />
+                </div>
+
+                {/* Funnel */}
+                <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: 0.5, marginBottom: 10 }}>
+                    FUNNEL
+                </div>
+                <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
+                    <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
+                    <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
+                    <FunnelRow
+                        label="R1 / R2 / R3"
+                        value={`${data?.r1 ?? 0} / ${data?.r2 ?? 0} / ${data?.r3 ?? 0}`}
+                        valueColor="#7C3AED"
+                    />
+                    <FunnelRow
+                        label="Interview Rejects"
+                        value={totalInterviewRejects}
+                        valueColor="#D93025"
+                    />
+                    <FunnelRow
+                        label="Today Target → Achieved"
+                        value={`${data?.todayProfile_Shared_Target ?? 0} → ${data?.profile_Shared_Achieved ?? 0}`}
+                    />
+                    <FunnelRow
+                        label="Calls / Notes"
+                        value={`${data?.noOfCallsGivenDay ?? '—'} / ${data?.latestNotes ? '✓' : '—'}`}
+                    />
+                    <FunnelRow
+                        label="Status / Category"
+                        value={`${data?.taskStatus ?? '—'} · ${data?.companyCategory ?? '—'}`}
+                    />
+                    <FunnelRow label="Joining Date" value={data?.joiningDate ?? '—'} />
+                    <FunnelRow label="Touch Base" value={data?.touchBasedNotes ? '✓' : 'N/A'} isLast />
+                </div>
+            </div>
+        </Modal>
+    );
+}
+
+function SummaryCard({ label, value, color }) {
+    return (
+        <div
+            style={{
+                flex: 1,
+                backgroundColor: '#F4F6F8',
+                borderRadius: 10,
+                padding: '10px 4px',
+                textAlign: 'center',
+            }}
+        >
+            <div style={{ fontSize: 14, fontWeight: 700, color }}>{value}</div>
+            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{label}</div>
+        </div>
+    );
+}
+
+function FunnelRow({ label, value, valueColor, isLast }) {
+    return (
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '10px 14px',
+                borderBottom: isLast ? 'none' : '1px solid #E3E7EB',
+                fontSize: 10,
+            }}
+        >
+            <span style={{ color: '#6b7280' }}>{label}</span>
+            <span style={{ fontWeight: 600, color: valueColor ?? '#1F2937' }}>{value}</span>
+        </div>
+    );
+}
+
     // Rows keep their original array index available to renderers via id lookup,
     // since ag-Grid's own row index can change once sorting/filtering is used.
     const getRowIndex = useCallback(
@@ -2611,6 +2739,7 @@ function HrTitleCell({ value, data }) {
         setProfileStatusID,
         setHRTalentListFourCount,
         AddComment,
+        openAlertDetail,
     };
 
     // Excel-style single-cell copy (Ctrl+C / Cmd+C). True multi-cell range copy needs
@@ -4053,6 +4182,15 @@ function HrTitleCell({ value, data }) {
                         </>
                     </Modal>
                 )}
+
+                <AlertDetailModal
+    open={showAlertDetailModal}
+    data={alertDetailData}
+    onClose={() => {
+        setShowAlertDetailModal(false);
+        setAlertDetailData({});
+    }}
+/>
 
             </main>
         </div>
