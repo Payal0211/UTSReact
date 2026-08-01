@@ -2836,7 +2836,7 @@ function WeeklyWCGR() {
 
       if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
 
-        if (record.stage.split("-")[0].trim() === "Opening Balance") {
+        if (record.stage.split("-")[0]?.trim() === "Opening Balance") {
           return uplersStyle.OBRow
         }
 
@@ -2848,7 +2848,7 @@ function WeeklyWCGR() {
         }
 
 
-        if (record.stage.split("-")[1].trim() === "New") {
+        if (record.stage.split("-")[1]?.trim() === "New") {
           return uplersStyle.heighliteCream
         }
 
@@ -3568,7 +3568,7 @@ function WeeklyWCGR() {
 
 
               if (record.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
-                let type = record.stage.split("-")[1].trim()
+                let type = record.stage.split("-")[1]?.trim()
                 // if (type === "All") {
                 //   return uplersStyle.heighliteRow
                 // }
@@ -3576,7 +3576,8 @@ function WeeklyWCGR() {
                 if (record.stage === "Total Active Pipeline - New") {
                   return `${uplersStyle.heighliteCream} ${uplersStyle.boldRow}`
                 }
-                if (record.stage.split("-")[0].trim() === "Opening Balance") {
+                console.log("record.stage",record.stage)
+                if (record.stage.split("-")[0]?.trim() === "Opening Balance") {
                   return uplersStyle.OBRow
                 }
                 if (type === "New") {
