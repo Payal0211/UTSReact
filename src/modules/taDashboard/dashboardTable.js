@@ -336,7 +336,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           setIsEdit(true);
         }}
       >
-        {formatAmount(role, currencySymbol)}
+        { role ? formatAmount(role, currencySymbol) : "N/A"}
       </div>
     );
   };
