@@ -1615,49 +1615,76 @@ function ScrumStructure2() {
     //         );
     //     }
 
-    const sumFields = [
-        "todayProfile_Shared_Target",
-        "profile_Shared_Target",
-        "profile_Shared_Achieved",
-        "interview_Scheduled_Target"
-    ];
+const sumFields = [
+    "totalRevenue_NoofTalentStr",
+    "todayProfile_Shared_Target",
+    "profile_Shared_Target",
+    "profile_Shared_Achieved",
+    "interview_Scheduled_Target"
+];
 
-    const getTotalRow = (rows, columnDefs) => {
-        const total = {
-            taName: "Total",
-        };
+// Fields that are formatted currency strings (₹ symbol + Indian-style commas)
+// and need parsing before summing, then reformatting after.
+const currencyFields = ["totalRevenue_NoofTalentStr"];
 
-        columnDefs.forEach((col) => {
-            const field = col.field;
+const parseCurrencyString = (value) => {
+    if (value == null || value === "") return null;
+    // Strip everything except digits, decimal point, and minus sign
+    const cleaned = String(value).replace(/[^0-9.-]/g, "");
+    if (cleaned === "" || isNaN(cleaned)) return null;
+    return Number(cleaned);
+};
 
-            if (!field || field === "taName") return;
-            if (!sumFields.includes(field)) return
-            let sum = 0;
-            let hasNumericValue = false;
+const formatAsINRCurrency = (value) => {
+    return "₹" + Number(value).toLocaleString("en-IN", {
+        maximumFractionDigits: 0,
+    });
+};
 
-            rows.forEach((row) => {
-                const value = row[field];
+const getTotalRow = (rows, columnDefs) => {
+    const total = {
+        taName: "Total",
+    };
 
-                if (typeof value === "number") {
-                    sum += value;
-                    hasNumericValue = true;
-                } else if (
-                    typeof value === "string" &&
-                    value.trim() !== "" &&
-                    !isNaN(value)
-                ) {
-                    sum += Number(value);
+    columnDefs.forEach((col) => {
+        const field = col.field;
+
+        if (!field || field === "taName") return;
+        if (!sumFields.includes(field)) return;
+
+        let sum = 0;
+        let hasNumericValue = false;
+        const isCurrencyField = currencyFields.includes(field);
+
+        rows.forEach((row) => {
+            const rawValue = row[field];
+
+            if (isCurrencyField) {
+                const parsed = parseCurrencyString(rawValue);
+                if (parsed !== null) {
+                    sum += parsed;
                     hasNumericValue = true;
                 }
-            });
-
-            if (hasNumericValue) {
-                total[field] = sum;
+            } else if (typeof rawValue === "number") {
+                sum += rawValue;
+                hasNumericValue = true;
+            } else if (
+                typeof rawValue === "string" &&
+                rawValue.trim() !== "" &&
+                !isNaN(rawValue)
+            ) {
+                sum += Number(rawValue);
+                hasNumericValue = true;
             }
         });
 
-        return total;
-    };
+        if (hasNumericValue) {
+            total[field] = isCurrencyField ? formatAsINRCurrency(sum) : sum;
+        }
+    });
+
+    return total;
+};
 
 
     // const getTAGroups = () => {
@@ -2603,14 +2630,7 @@ function ScrumStructure2() {
                 onCancel={onClose}
             >
                 <div style={{ padding: '20px 24px 24px' }}>
-                    {/* Alert chips row */}
-                    {alerts.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
-                            {alerts.map((a) => (
-                                <AlertRow key={a.key} alert={a} />
-                            ))}
-                        </div>
-                    )}
+                 
 
                     {/* Title + subtitle */}
                     <h2 style={{ fontSize: 12, fontWeight: 700, margin: '0 0 6px' }}>
@@ -2631,7 +2651,15 @@ function ScrumStructure2() {
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: 0.5, marginBottom: 10 }}>
                         FUNNEL
                     </div>
-                    <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
+                       {/* Alert chips row */}
+                    {alerts.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
+                            {alerts.map((a) => (
+                                <AlertRow key={a.key} alert={a} />
+                            ))}
+                        </div>
+                    )}
+                    {/* <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
                         <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
                         <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
                         <FunnelRow
@@ -2658,7 +2686,7 @@ function ScrumStructure2() {
                         />
                         <FunnelRow label="Joining Date" value={data?.joiningDate ?? '—'} />
                         <FunnelRow label="Touch Base" value={data?.touchBasedNotes ? '✓' : 'N/A'} isLast />
-                    </div>
+                    </div> */}
                 </div>
             </Modal>
         );
