@@ -154,7 +154,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
         title: "Revenue",
         dataIndex: "hrPipeline",
         key: "hrPipeline",
-          width: "100px",
+          width: "150px",
       } ,
     {
         title: "HR Status",

@@ -253,7 +253,7 @@ function ScrumStructure2() {
         } else {
             return "NO DATA FOUND";
         }
-    }, [tableFilteredState, selectedHead, searchText, navigate,scrumTabTitle]);
+    }, [tableFilteredState, selectedHead, searchText, navigate, scrumTabTitle]);
 
     useEffect(() => {
         if (selectedHead) {
@@ -261,7 +261,7 @@ function ScrumStructure2() {
             getCOLUMNOrder(selectedHead)
         }
 
-    }, [searchText, tableFilteredState, selectedHead,scrumTabTitle]);
+    }, [searchText, tableFilteredState, selectedHead, scrumTabTitle]);
 
 
 
@@ -2869,64 +2869,6 @@ function ScrumStructure2() {
         updateColumnOrder(pl)
     };
 
-    const TableComp = () => {
-        return <div
-            ref={gridWrapperRef}
-            className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
-            style={{ height: gridHeightPx }}
-        >
-
-            {isLoading ? <TableSkeleton /> :
-
-                <AgGridReact
-                    onGridReady={onGridReady}
-                    onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
-                    theme={scrumGridTheme}
-                    rowData={TaListData}
-                    columnDefs={gridColumns}
-                    defaultColDef={scrumDefaultColDef}
-                    context={gridContext}
-                    getRowId={(params) => String(params.data.id)}
-                    suppressRowTransform={true}
-                    animateRows={false}
-                    headerHeight={38}
-                    rowHeight={34}
-                    onCellKeyDown={handleGridKeyDown}
-                    onCellEditingStarted={handleCellEditingStarted}
-                    postProcessPopup={handlePostProcessPopup}
-                    groupDisplayType="singleColumn"
-                    getRowStyle={(params) => {
-                        if (params.node.rowPinned) {
-                            return {
-                                backgroundColor: '#F4F6F8',
-                                fontWeight: '700',
-                                borderTop: '2px solid #D9DEE3',
-                                color: '#1F2937'
-                            };
-                        }
-
-                        return null;
-                    }}
-                    groupDefaultExpanded={-1}
-                    autoGroupColumnDef={autoGroupColumnDef}
-                    pinnedBottomRowData={pinnedBottomRowData}
-                    onSortChanged={(params) => updatePinnedTotalRow(params.api)}
-                    onFilterChanged={(params) => {
-                        const filtered = params.api.isAnyFilterPresent();
-
-                        setHasFilter(filtered);
-                        updatePinnedTotalRow(params.api);
-                        params.api.refreshCells({ force: true });
-                        params.api.redrawRows();
-                    }}
-                    onColumnMoved={onColumnMoved}
-
-                />
-            }
-
-        </div>
-    }
-
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
@@ -3003,28 +2945,103 @@ function ScrumStructure2() {
                     </button>
 
                 </div>
-                <Tabs
-                    onChange={(e) => setScrumTabTitle(e)}
-                    defaultActiveKey="A"
-                    activeKey={scrumTabTitle}
-                    animated={true}
-                    tabBarGutter={50}
-                    tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)`, margin: "0 20px" }}
-                    items={[
-                        {
-                            label: "Active",
-                            key: "A",
-                            children: <TableComp />
-                        },
-                        {
-                            label: "Covered",
-                            key: "C",
-                            children: <TableComp />
-                        }
-                    ]}
-                />
 
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 32,
+                        margin: '0 20px',
+                        borderBottom: '1px solid var(--uplers-border-color)',
+                    }}
+                >
+                    <button
+                        onClick={() => setScrumTabTitle('A')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: scrumTabTitle === 'A' ? 600 : 400,
+                            color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
+                            borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Active
+                    </button>
 
+                    <button
+                        onClick={() => setScrumTabTitle('C')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: scrumTabTitle === 'C' ? 600 : 400,
+                            color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
+                            borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Covered
+                    </button>
+                </div>
+
+                <div
+                    ref={gridWrapperRef}
+                    className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+                    style={{ height: gridHeightPx }}
+                >
+
+                    {isLoading ? <TableSkeleton /> :
+
+                        <AgGridReact
+                            onGridReady={onGridReady}
+                            onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
+                            theme={scrumGridTheme}
+                            rowData={TaListData}
+                            columnDefs={gridColumns}
+                            defaultColDef={scrumDefaultColDef}
+                            context={gridContext}
+                            getRowId={(params) => String(params.data.id)}
+                            suppressRowTransform={true}
+                            animateRows={false}
+                            headerHeight={38}
+                            rowHeight={34}
+                            onCellKeyDown={handleGridKeyDown}
+                            onCellEditingStarted={handleCellEditingStarted}
+                            postProcessPopup={handlePostProcessPopup}
+                            groupDisplayType="singleColumn"
+                            getRowStyle={(params) => {
+                                if (params.node.rowPinned) {
+                                    return {
+                                        backgroundColor: '#F4F6F8',
+                                        fontWeight: '700',
+                                        borderTop: '2px solid #D9DEE3',
+                                        color: '#1F2937'
+                                    };
+                                }
+
+                                return null;
+                            }}
+                            groupDefaultExpanded={-1}
+                            autoGroupColumnDef={autoGroupColumnDef}
+                            pinnedBottomRowData={pinnedBottomRowData}
+                            onSortChanged={(params) => updatePinnedTotalRow(params.api)}
+                            onFilterChanged={(params) => {
+                                const filtered = params.api.isAnyFilterPresent();
+
+                                setHasFilter(filtered);
+                                updatePinnedTotalRow(params.api);
+                                params.api.refreshCells({ force: true });
+                                params.api.redrawRows();
+                            }}
+                            onColumnMoved={onColumnMoved}
+
+                        />
+                    }
+
+                </div>
 
 
 
