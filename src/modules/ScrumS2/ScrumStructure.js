@@ -718,6 +718,9 @@ function ScrumStructure2() {
                         updateTARowValue(valobj, "task_StatusID", result, index);
                         setTargetValue(3);
                         setStartTargetDate(new Date());
+                        if(val === "Covered"){
+                            setScrumTabTitle('C')
+                        }
                     }}
                 >
                     {filtersList?.TaskStatus?.map((v) => (
@@ -1264,26 +1267,37 @@ function ScrumStructure2() {
         }
 
         // ---------- Screen-reject batch pattern ----------
-        const screenRejects = data?.screenReject ?? 0;
-        if (screenRejects > 0 && screenRejects % 3 === 0) {
-            const batchNum = screenRejects / 3;
-            alerts.push({
+        // const screenRejects = data?.screenReject ?? 0;
+        // if (screenRejects > 0 && screenRejects % 3 === 0) {
+        //     const batchNum = screenRejects / 3;
+        //     alerts.push({
+        //         key: 'screenBatch',
+        //         text: `Batch ${batchNum} · screen reject`,
+        //         dot: 'warning',
+        //     });
+        // }
+        const batch = data?.hrAlerts
+        if(batch?.length){
+            batch.forEach(i=> {
+                 alerts.push({
                 key: 'screenBatch',
-                text: `Batch ${batchNum} · screen reject`,
-                dot: 'warning',
-            });
+                text: i.alert,
+                dot: i.color === "Red" ? 'critical' : 'warning',
+            }); 
+            })
+          
         }
 
-        // ---------- Interview-reject batch pattern ----------
+        // // ---------- Interview-reject batch pattern ----------
         const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
-        if (interviewRejects > 0 && interviewRejects % 3 === 0) {
-            const batchNum = interviewRejects / 3;
-            alerts.push({
-                key: 'interviewBatch',
-                text: `Batch ${batchNum} · interview reject`,
-                dot: 'critical',
-            });
-        }
+        // if (interviewRejects > 0 && interviewRejects % 3 === 0) {
+        //     const batchNum = interviewRejects / 3;
+        //     alerts.push({
+        //         key: 'interviewBatch',
+        //         text: `Batch ${batchNum} · interview reject`,
+        //         dot: 'critical',
+        //     });
+        // }
 
         // ---------- Hard ceiling: total interview rejections > 10 ----------
         if (interviewRejects > 10) {
@@ -1325,7 +1339,7 @@ function ScrumStructure2() {
                 key: 'targetStatus',
                 text: isAchieved
                     ? `${achieved}/${target} met`
-                    : `${achieved}/${target} · ${callsPerDay} calls`,
+                    : `${achieved}/${target} · ${callsPerDay} profile submit`,
                 dot: isAchieved ? 'success' : 'critical',
                 prefixIcon: isAchieved ? '✓' : '✗',
             });
@@ -1348,6 +1362,51 @@ function ScrumStructure2() {
         info: '#EAF2FE',
         success: '#E8F7EE',
     };
+
+ function AlertRowBig ({ alert }) {
+        return (
+            <Tooltip title={alert.label ?? alert.text}>
+                <div
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        padding: '10px',
+                        borderRadius: 999,
+                        backgroundColor: CHIP_BG[alert.dot],
+                        fontSize: 12,
+                        fontWeight: 500,
+                        color: '#3a3a3a',
+                        lineHeight: '14px',   // was 16px
+                        height: 16,           // was 22px — this is the main change
+                        boxSizing: 'border-box',
+                        whiteSpace: 'nowrap',
+                        maxWidth: 'fit-content',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }}
+                >
+                    {alert.prefixIcon ? (
+                        <span style={{ fontWeight: 700, color: DOT_COLORS[alert.dot], fontSize: 10, flexShrink: 0 }}>
+                            {alert.prefixIcon}
+                        </span>
+                    ) : (
+                        <span
+                            style={{
+                                width: 5,
+                                height: 5,
+                                borderRadius: '50%',
+                                backgroundColor: DOT_COLORS[alert.dot],
+                                flexShrink: 0,
+                            }}
+                        />
+                    )}
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{alert.text}</span>
+                </div>
+            </Tooltip>
+        );
+    }
+
 
     function AlertRow({ alert }) {
         return (
@@ -2653,13 +2712,14 @@ const getTotalRow = (rows, columnDefs) => {
                     </div>
                        {/* Alert chips row */}
                     {alerts.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
+                        <div style={{ display: 'grid',  gridTemplateColumns: "auto auto auto", gap: 6, marginBottom: 20 }}>
                             {alerts.map((a) => (
-                                <AlertRow key={a.key} alert={a} />
+                                <AlertRowBig key={a.key} alert={a} />
                             ))}
                         </div>
+                        
                     )}
-                    {/* <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
+                   {/*  <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
                         <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
                         <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
                         <FunnelRow
@@ -2685,8 +2745,8 @@ const getTotalRow = (rows, columnDefs) => {
                             value={`${data?.taskStatus ?? '—'} · ${data?.companyCategory ?? '—'}`}
                         />
                         <FunnelRow label="Joining Date" value={data?.joiningDate ?? '—'} />
-                        <FunnelRow label="Touch Base" value={data?.touchBasedNotes ? '✓' : 'N/A'} isLast />
-                    </div> */}
+                        <FunnelRow label="Touch Base" value={data?.touchBasedNotes ? '✓' : 'N/A'} isLast /> 
+                    </div>*/}
                 </div>
             </Modal>
         );
