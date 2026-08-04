@@ -721,6 +721,10 @@ function ScrumStructure2() {
                         if(val === "Covered"){
                             setScrumTabTitle('C')
                         }
+
+                        if(value === "Covered" && val !== "Covered"){
+                            setScrumTabTitle('A')
+                        }
                     }}
                 >
                     {filtersList?.TaskStatus?.map((v) => (
