@@ -2716,7 +2716,7 @@ const getTotalRow = (rows, columnDefs) => {
                     </div>
                        {/* Alert chips row */}
                     {alerts.length > 0 && (
-                        <div style={{ display: 'grid',  gridTemplateColumns: "auto", gap: 6, marginBottom: 20 }}>
+                        <div style={{ display: 'grid',  gridTemplateColumns: "auto auto", gap: 6, marginBottom: 20 }}>
                             {alerts.map((a) => (
                                 <AlertRowBig key={a.key} alert={a} />
                             ))}
