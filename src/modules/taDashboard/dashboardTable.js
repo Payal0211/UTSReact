@@ -483,6 +483,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       headerName: 'Company',
       field: 'companyName',
       width: 220,
+        pinned: 'left',
       autoHeight: true,
       filter: MultiConditionTextFilter,
       cellRenderer: (props) => {
@@ -553,6 +554,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       headerName: 'HR Title / ID',
       field: 'hrTitle',
       width: 220,
+        pinned: 'left',
       filter: MultiConditionTextFilter,
       autoHeight: true,
       cellRenderer: (props) => {
@@ -584,6 +586,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     {
       headerName: 'Priority',
       field: 'task_Priority',
+        pinned: 'left',
       filter: MultiConditionTextFilter,
       width: 130,
       cellRenderer: (props) => {
@@ -595,6 +598,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     {
       headerName: 'Status',
       field: 'taskStatus',
+        pinned: 'left',
       filter: MultiConditionTextFilter,
       width: 140,
       cellRenderer: (props) => {
