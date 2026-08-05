@@ -1,12 +1,15 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import stylesOBj from './n_tadashboard.module.css'
 import taStyles from "./tadashboard.module.css";
 import taStylesNew from "./n_tadashboardNew.module.css";
+import { scrumGridTheme } from '../ScrumS2/gridTheme'
 import {
   Select, InputNumber,
   Tooltip, Table, Checkbox, message, Skeleton, Modal
 } from "antd";
+import { AgGridReact } from 'ag-grid-react'
+import { ModuleRegistry, AllCommunityModule, DataTypeService } from 'ag-grid-community'
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { HTTPStatusCode } from "constants/network";
@@ -18,7 +21,10 @@ import { InputType } from "constants/application";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { useForm } from "react-hook-form";
+import MultiConditionTextFilter from '../ScrumS2/MultiConditionTextFilter';
 
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 const { Option } = Select;
 
 function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filtersList, AddComment, hooks, userData, startDate }) {
@@ -336,7 +342,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           setIsEdit(true);
         }}
       >
-        { role ? formatAmount(role, currencySymbol) : "N/A"}
+        {role ? formatAmount(role, currencySymbol) : "N/A"}
       </div>
     );
   };
@@ -402,7 +408,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
             borderRadius: '6px',
             padding: "2px"
           }}
-           autoFocus
+          autoFocus
           type='number' min={0} max={100} value={role}
           onChange={handleChange}
           onBlur={() => {
@@ -427,6 +433,15 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     }
   }
 
+  const updateNotes = async (pl, index) => {
+    setTaListData(prev => {
+      let tempD = [...prev]
+      tempD[index] = { ...tempD[index], latestNotesTopRow: pl.Comments, latestNotes: pl.Comments }
+      return tempD
+    })
+    let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
+  }
+
   const FeesPreComp = ({ text, result, index }) => {
     const [value, setValue] = useState(text ?? "");
 
@@ -441,6 +456,400 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         }
       />
     );
+  };
+
+  const getRowIndex = useCallback(
+    (row) => TaListData.findIndex((r) => r.id === row.id),
+    [TaListData]
+  );
+
+  const gridColumns = () => [
+    {
+      headerName: 'TA',
+      field: 'taName',
+      width: 140,
+      pinned: 'left',
+      sortable: false,
+      suppressMovable: true,
+      filter: MultiConditionTextFilter,
+      rowSpan: (params) => params.data?.rowSpan || 1,
+      valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
+      cellStyle: (params) => ({
+        borderBottom: params.data?.rowSpan === 0 ? 'none' : '',
+        borderTop: params.data?.rowSpan > 0 ? '1px solid #4C4E641F' : '',
+      }),
+    },
+    {
+      headerName: 'Company',
+      field: 'companyName',
+      width: 220,
+        pinned: 'left',
+      autoHeight: true,
+      filter: MultiConditionTextFilter,
+      cellRenderer: (props) => {
+        const { data, api } = props;
+        const ind = getRowIndex(data);
+        return (
+          <div className={taStylesNew["company-cell"]} style={{ display: 'contents' }}>
+            <Tooltip title={data.companyName}>
+              <span className={taStylesNew["company-name"]}>
+                {data.companyName.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
+              </span>
+            </Tooltip>
+
+            <div style={{ display: 'flex' }}>
+              <Tooltip title={
+                userData?.UserId === 2 || userData?.UserId === 333 || userData?.UserId === 190 || userData?.UserId === 96
+                  ? (data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond")
+                  : "Not allowed"
+              } >
+                <button
+                  className={taStylesNew["diamond-toggle"]}
+
+                  onClick={() => {
+                    if (userData?.UserId === 2 || userData?.UserId === 333 || userData?.UserId === 190 || userData?.UserId === 96) {
+                      if (data?.companyCategory === "Diamond") {
+                        setShowDiamondRemark(true);
+                        setCompanyIdForRemark({ ...data, index: ind });
+                      } else {
+                        setDiamondCompany(data, ind);
+                      }
+                    }
+                  }}
+                >
+                  {data?.companyCategory === "Diamond"
+                    ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
+                    : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
+                </button>
+              </Tooltip>
+
+
+              {userData?.showTADashboardDropdowns && (
+                <Tooltip title={`Add task for TA ${data.taName} in ${data.companyName}`}>
+                  <button
+                    className={taStylesNew["plus-task-btn"]}
+
+                    onClick={() => {
+                      setIsAddNewRow(true);
+                      setNewTAUserValue(data.tA_UserID);
+                      setNewTAHeadUserValue(selectedHead);
+                      getCompanySuggestionHandler(data.tA_UserID);
+                      setselectedCompanyID(data?.company_ID);
+                      getHRLISTForComapny(data?.company_ID);
+                    }}
+                  >
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13 0C10.4288 0 7.91543 0.762437 5.77759 2.1909C3.63975 3.61935 1.97351 5.64968 0.989572 8.02512C0.0056327 10.4006 -0.251811 13.0144 0.249797 15.5362C0.751405 18.0579 1.98953 20.3743 3.80762 22.1924C5.6257 24.0105 7.94208 25.2486 10.4638 25.7502C12.9856 26.2518 15.5995 25.9944 17.9749 25.0104C20.3503 24.0265 22.3807 22.3603 23.8091 20.2224C25.2376 18.0846 26 15.5712 26 13C25.9957 9.55351 24.6247 6.2494 22.1876 3.81236C19.7506 1.37532 16.4465 0.00430006 13 0ZM18 14H14V18C14 18.2652 13.8946 18.5196 13.7071 18.7071C13.5196 18.8946 13.2652 19 13 19C12.7348 19 12.4804 18.8946 12.2929 18.7071C12.1054 18.5196 12 18.2652 12 18V14H8.00001C7.73479 14 7.48044 13.8946 7.2929 13.7071C7.10536 13.5196 7.00001 13.2652 7.00001 13C7.00001 12.7348 7.10536 12.4804 7.2929 12.2929C7.48044 12.1054 7.73479 12 8.00001 12H12V8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8V12H18C18.2652 12 18.5196 12.1054 18.7071 12.2929C18.8946 12.4804 19 12.7348 19 13C19 13.2652 18.8946 13.5196 18.7071 13.7071C18.5196 13.8946 18.2652 14 18 14Z" fill="#8A8A8A" />
+                    </svg>
+                  </button>
+                </Tooltip>
+
+              )}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      headerName: 'HR Title / ID',
+      field: 'hrTitle',
+      width: 220,
+        pinned: 'left',
+      filter: MultiConditionTextFilter,
+      autoHeight: true,
+      cellRenderer: (props) => {
+        const { data } = props;
+        return (
+          <div className={taStylesNew["hr-title-cell"]}>
+              <Tooltip title={data.tA_HR_Status}>
+<span className={taStylesNew["hr-status-box"]} style={{ background: data?.hrColorCode }}>
+            
+              {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
+            </span>
+              </Tooltip>
+            <div className={taStylesNew["hr-title-text"]}>
+              <span>{data.hrTitle}</span>
+              <span
+                className={taStylesNew["hr-id-chip"]}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
+                }}
+              >
+                {data.hrNumber}
+              </span>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      headerName: 'Priority',
+      field: 'task_Priority',
+        pinned: 'left',
+      filter: MultiConditionTextFilter,
+      width: 130,
+      cellRenderer: (props) => {
+        const { value, data } = props;
+        const ind = getRowIndex(data);
+        return <PriorityComp text={value} result={data} index={ind} />;
+      },
+    },
+    {
+      headerName: 'Status',
+      field: 'taskStatus',
+        pinned: 'left',
+      filter: MultiConditionTextFilter,
+      width: 140,
+      cellRenderer: (props) => {
+        const { value, data } = props;
+        const ind = getRowIndex(data);
+        return <TaskStatusComp text={value} result={data} index={ind} />;
+      },
+    },
+    {
+      headerName: 'Profiles Shared Target / Achieved / L1 Round',
+      field: 'profile_Shared_Target',
+      width: 220,
+      filter: MultiConditionTextFilter,
+      cellRenderer: (props) => {
+        const { data, ind } = props;
+        const rowIndex = getRowIndex(data);
+        return (
+          <div style={{ display: "flex" }}>
+            {data.task_StatusID === 1 ? (
+              <p
+                style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
+                onClick={() => {
+                  setShowProfileTarget(true);
+                  setStartTargetDate(startDate);
+                  setProfileTargetDetails({ ...data, index: rowIndex });
+                }}
+              >
+                {data?.profile_Shared_Target ?? 0}
+              </p>
+            ) : (
+              data?.profile_Shared_Target ?? 0
+            )}{" "}
+            / {data.profile_Shared_Achieved ?? "NA"} / {data.interview_Scheduled_Target ?? "NA"}
+          </div>
+        );
+      },
+    },
+    {
+      headerName: 'Interview Rounds',
+      field: 'no_of_InterviewRounds',
+      width: 130,
+      filter: MultiConditionTextFilter,
+      cellStyle: { textAlign: 'center' },
+    },
+    {
+      headerName: 'AM',
+      field: 'am',
+      width: 100,
+      filter: MultiConditionTextFilter,
+    },
+    {
+      headerName: 'NBD/Existing',
+      field: 'businessType',
+      width: 130,
+      cellStyle: { textAlign: 'center' },
+      filter: MultiConditionTextFilter,
+    },
+    {
+      headerName: 'Pricing Model',
+      field: 'pricingModel',
+      width: 140,
+      filter: MultiConditionTextFilter,
+    },
+    {
+      headerName: 'Talent Pay Rate',
+      field: 'talent_AnnualCTC_Budget_INRValueStr',
+      width: 160,
+      filter: MultiConditionTextFilter,
+      cellRenderer: (props) => (
+        <ControlledAmountCell
+          text={props.data.talent_AnnualCTC_Budget_INRValueStr}
+          values={props.data}
+          field={"Talent_AnnualCTC_Budget_INRValue"}
+        />
+      ),
+    },
+    {
+      headerName: 'NR %',
+      field: 'uplersFeesPer',
+      width: 100,
+      filter: MultiConditionTextFilter,
+      cellRenderer: (props) => (
+        <ControlledCellComp text={props.data.uplersFeesPer} values={props.data} />
+      ),
+    },
+    {
+      headerName: 'NR (USD)',
+      field: 'revenue_On10PerCTCStr',
+      width: 140,
+      filter: MultiConditionTextFilter,
+      cellRenderer: (props) => (
+        <ControlledAmountCell
+          text={props.data.revenue_On10PerCTCStr}
+          values={props.data}
+          field={"Revenue_On10PerCTC"}
+        />
+      ),
+    },
+    {
+      headerName: 'Bill Rate',
+      field: 'totalRevenue_NoofTalentStr',
+      width: 140,
+      filter: MultiConditionTextFilter,
+      cellRenderer: (props) => (
+        <ControlledAmountCell
+          text={props.data.totalRevenue_NoofTalentStr}
+          values={props.data}
+          field={"TotalRevenue_NoofTalent"}
+        />
+      ),
+    },
+    {
+      headerName: 'Active TRs',
+      field: 'activeTR',
+      width: 110,
+      filter: MultiConditionTextFilter,
+      cellStyle: { textAlign: 'center' },
+    },
+    {
+      headerName: 'Contractor/EOR',
+      field: 'modelType',
+      width: 140,
+      filter: MultiConditionTextFilter,
+    },
+    {
+      headerName: 'Active Profiles',
+      field: 'noOfProfile_TalentsTillDate',
+      width: 130,
+      filter: MultiConditionTextFilter,
+      cellStyle: { textAlign: 'center' },
+      cellRenderer: (props) => {
+        const { data } = props;
+        return +data?.noOfProfile_TalentsTillDate > 0 ? (
+          <p
+            style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
+            onClick={() => {
+              getTalentProfilesDetailsfromTable(data, 0);
+              setTalentToMove(data);
+              setProfileStatusID(0);
+              setHRTalentListFourCount([]);
+            }}
+          >
+            {data?.noOfProfile_TalentsTillDate}
+          </p>
+        ) : (
+          data?.noOfProfile_TalentsTillDate
+        );
+      },
+    },
+    {
+      headerName: 'Latest Communication and Updates',
+      field: 'latestNotes',
+      width: 280,
+      filter: false,
+      autoHeight: true,
+      editable: true,
+      cellEditorPopup: true,
+
+      cellEditor: 'agLargeTextCellEditor',
+      cellEditorParams: {
+        maxLength: 50000, // Optional: restricts max length
+        // cols: 30,       // Optional: width of the dropdown box
+        // rows: 3,        // Optional: height of the dropdown box
+      },
+      onCellValueChanged: (params) => {
+        // console.log("Updated:", params.newValue);
+        // console.log("Row:", params.data);
+        const index = getRowIndex(params.data);
+        let pl = {
+          TA_Head_UserID: selectedHead,
+          TaskID: params.data.id,
+          Comments: params.newValue
+        }
+
+        updateNotes(pl, index)
+      },
+
+      cellRenderer: (props) => {
+        const { data } = props;
+        const ind = getRowIndex(data);
+        return data?.latestNotes ? (
+          <>
+            <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
+            {/* <div className={taStylesNew["view-edit"]}>
+                        <button onClick={() => AddComment(data, ind)}>Edit</button>
+                    </div> */}
+          </>
+        ) : "";
+      },
+    },
+    {
+      headerName: "Task for AM's",
+      field: 'amTask',
+      width: 160,
+      filter: MultiConditionTextFilter,
+    },
+    {
+      headerName: 'Action',
+      field: 'Action',
+      width: 100,
+      sortable: false,
+      suppressMovable: true,
+      filter: false,
+      cellRenderer: (props) => {
+        const { data } = props;
+        return (
+          <div>
+            <IconContext.Provider
+              value={{ color: "#FFDA30", style: { width: "19px", height: "19px", cursor: "pointer" } }}
+            >
+              <Tooltip title="Edit" placement="top">
+                <span onClick={() => editTAforTask(data)} style={{ padding: "0" }}>
+                  <GrEdit />
+                </span>
+              </Tooltip>
+            </IconContext.Provider>
+
+            {[2, 56, 96, 65, 49, 176, 443, 436, 302].includes(userData.UserId) && (
+              <IconContext.Provider
+                value={{ color: "red", style: { width: "19px", height: "19px", marginLeft: "10px", cursor: "pointer" } }}
+              >
+                <Tooltip title="Remove" placement="top">
+                  <span onClick={() => handleRemoveTask(data)} style={{ padding: "0" }}>
+                    <IoIosRemoveCircle />
+                  </span>
+                </Tooltip>
+              </IconContext.Provider>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+
+  const columnDefs = useMemo(() => gridColumns(), [TaListData]);
+
+  const scrumDefaultColDef = {
+    resizable: true,
+    sortable: true,
+    filter: true,
+    suppressMovable: true, // lets users drag-reorder columns, like Excel column drag
+    wrapHeaderText: true,
+    autoHeaderHeight: true,
+    cellClass: 'ag-cell-excel-border',
+    headerClass: `${taStylesNew["ag-header-center"]}`,
+  };
+  const gridApiRef = useRef(null);
+
+
+  const onGridReady = (params) => {
+    gridApiRef.current = params.api;
   };
 
   const setDiamondCompany = async (row, index) => {
@@ -479,322 +888,27 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     }
   };
 
+
+
   return (
     <div className={`${taStylesNew["table-container"]}`} style={{ marginTop: '20px' }}>
+      {isLoading ? <TableSkeleton /> : <div style={{ height: 500 }} ><AgGridReact
+        //  onGridReady={onGridReady}
+        // onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
+        //  theme={scrumGridTheme}
+        rowData={TaListData}
+        columnDefs={columnDefs}
+        animateRows={false}
+        defaultColDef={scrumDefaultColDef}
+      //   getRowId={(params) => String(params.data.id)}
+      //               suppressRowTransform={true}
+      //               animateRows={false}
+      //               headerHeight={38}
+      // rowHeight={"auto"}
+      /> </div>}
 
-      {isLoading ? <TableSkeleton /> :
-        <table className={`${taStylesNew["data-table"]}`}>
-          <thead>
-            <tr>
-              <th >TA</th>
-              <th>COMPANY</th>
-              <th>HR TITLE / ID</th>
-              <th>PRIORITY</th>
-              <th>STATUS</th>
-              <th>PROFILES SHARED TARGET<br />/ ACHIEVED / L1 ROUND</th>
-              <th>INTERVIEW <br /> ROUNDS</th>
-              <th>AM</th>
-              <th>NBD/EXISTING</th>
-              <th>PRICING MODEL</th>
-              <th>TALENT PAY RATE</th>
-              <th>NR %</th>
-              <th>NR (USD)</th>
-              <th>BILL RATE</th>
-              <th>ACTIVE TRS</th>
-              <th>CONTRACTOR/EOR</th>
-              <th>ACTIVE <br /> PROFILES</th>
-              <th>LATEST COMMUNICATION AND UPDATES</th>
-              <th>TASK FOR AM'S</th>
-              {/* <th>TASK FOR TR'S</th> */}
-              <th>ACTION</th>
-            </tr>
-          </thead>
-          {/* <TABLEBODYComponent apiData={apiData} /> */}
+     
 
-          <tbody>
-           
-            {TaListData.length === 0 ? <tr>
-              <td colSpan={19} style={{ textAlign: "center", padding: "20px" }}>
-                No data available
-              </td>
-            </tr> : TaListData.map((data, ind) => {
-
-              return <tr>
-                {/* TA Name */}
-                <td style={{borderBottom:data.rowSpan === 0 ? "none": '',
-                  borderTop:data.rowSpan > 0 ? "1px solid #4C4E641F" : ''
-                }}>{data.rowSpan > 0 ? data.taName : ''}</td>
-                {/* COMPANY Name */}
-                <td>
-                  <div className={taStylesNew["company-cell"]} style={{ display: 'contents' }}>
-                    <Tooltip title={data.companyName}><span className={taStylesNew["company-name"]}>{data.companyName.length > 20 ? `${data.companyName.slice(0,18)}...` : data.companyName }</span></Tooltip>
-                    
-                    <div style={{ display: 'flex' }}>
-                      <button
-                        className={taStylesNew["diamond-toggle"]}
-                        data-tooltip={userData?.UserId === 2 ||
-                          userData?.UserId === 333 ||
-                          userData?.UserId === 190 || userData?.UserId === 96 ? (data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
-                        onClick={() => {
-                          if (userData?.UserId === 2 ||
-                            userData?.UserId === 333 ||
-                            userData?.UserId === 190 || userData?.UserId === 96) {
-                            if (data?.companyCategory === "Diamond") {
-                              setShowDiamondRemark(true);
-                              setCompanyIdForRemark({ ...data, index: ind });
-                            } else {
-                              setDiamondCompany(data, ind)
-                            }
-                          }
-
-                        }}
-                      >
-                        {data?.companyCategory === "Diamond"
-                          ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
-                          : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
-                      </button>
-                      {userData?.showTADashboardDropdowns && <button className={taStylesNew["plus-task-btn"]} data-tooltip={`Add task for TA ${data.taName} in ${data.companyName}`}
-                        onClick={() => {
-                          setIsAddNewRow(true);
-                          setNewTAUserValue(data.tA_UserID);
-                          setNewTAHeadUserValue(selectedHead);
-                          getCompanySuggestionHandler(data.tA_UserID);
-                          setselectedCompanyID(data?.company_ID);
-                          getHRLISTForComapny(data?.company_ID);
-                        }}
-                      >
-                        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M13 0C10.4288 0 7.91543 0.762437 5.77759 2.1909C3.63975 3.61935 1.97351 5.64968 0.989572 8.02512C0.0056327 10.4006 -0.251811 13.0144 0.249797 15.5362C0.751405 18.0579 1.98953 20.3743 3.80762 22.1924C5.6257 24.0105 7.94208 25.2486 10.4638 25.7502C12.9856 26.2518 15.5995 25.9944 17.9749 25.0104C20.3503 24.0265 22.3807 22.3603 23.8091 20.2224C25.2376 18.0846 26 15.5712 26 13C25.9957 9.55351 24.6247 6.2494 22.1876 3.81236C19.7506 1.37532 16.4465 0.00430006 13 0ZM18 14H14V18C14 18.2652 13.8946 18.5196 13.7071 18.7071C13.5196 18.8946 13.2652 19 13 19C12.7348 19 12.4804 18.8946 12.2929 18.7071C12.1054 18.5196 12 18.2652 12 18V14H8.00001C7.73479 14 7.48044 13.8946 7.2929 13.7071C7.10536 13.5196 7.00001 13.2652 7.00001 13C7.00001 12.7348 7.10536 12.4804 7.2929 12.2929C7.48044 12.1054 7.73479 12 8.00001 12H12V8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8V12H18C18.2652 12 18.5196 12.1054 18.7071 12.2929C18.8946 12.4804 19 12.7348 19 13C19 13.2652 18.8946 13.5196 18.7071 13.7071C18.5196 13.8946 18.2652 14 18 14Z" fill="#8A8A8A" />
-                        </svg>
-                      </button>}
-
-                    </div>
-
-
-                  </div>
-                </td>
-                {/* HR TITLE / ID */}
-                <td>
-                  {/* <>
-                                                    {data.hrTitle} /{" "}
-                                                    <p
-                                                      style={{
-                                                        color: "blue",
-                                                        fontWeight: "bold",
-                                                        textDecoration: "underline",
-                                                        cursor: "pointer",
-                                                      }}
-                                                      onClick={() => {
-                                                        window.open(
-                                                          UTSRoutes.ALLHIRINGREQUESTROUTE +
-                                                          `/${data.hiringRequest_ID}`,
-                                                          "_blank"
-                                                        );
-                                                      }}
-                                                    >
-                                                      {data.hrNumber}
-                                                    </p>
-                                                  </> */}
-                  <div className={taStylesNew["hr-title-cell"]}>
-                    <span
-                      className={taStylesNew["hr-status-box"]}
-                      style={{ background: data?.hrColorCode }}
-                    >
-                      <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span>
-                    </span>
-                    <div className={taStylesNew["hr-title-text"]}>
-                      <span>{data.hrTitle}</span>
-                      <span className={taStylesNew["hr-id-chip"]} style={{
-
-                        cursor: "pointer",
-                      }} onClick={() => {
-                        window.open(
-                          UTSRoutes.ALLHIRINGREQUESTROUTE +
-                          `/${data.hiringRequest_ID}`,
-                          "_blank"
-                        );
-                      }}>{data.hrNumber}</span>
-                    </div>
-                  </div>
-                </td>
-                {/* PRIORITY */}
-                <td><PriorityComp text={data.task_Priority} result={data} index={ind} /></td>
-                <td>
-                  <TaskStatusComp text={data.taskStatus} result={data} index={ind} />
-                  {/* <div className={taStylesNew["inline-select-wrap"]}>
-                                                        
-                                                            <select className={taStylesNew["inline-select"]} defaultValue={data.status}>
-                                                                <option>Fasttrack</option>
-                                                                <option>Slow</option>
-                                                                <option>Medium</option>
-                                                                <option>Pause</option>
-                                                                <option>Covered</option>
-                                                            </select>
-                                                        </div> */}
-                </td>
-                <td>
-                  <div style={{ display: "flex" }}>
-                    {data.task_StatusID === 1 ? (
-                      <p
-                        style={{
-                          color: "blue",
-                          fontWeight: "bold",
-                          textDecoration: "underline",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          setShowProfileTarget(true);
-                          setStartTargetDate(startDate);
-                          setProfileTargetDetails({ ...data, index: ind });
-                        }}
-                      >
-                        {data?.profile_Shared_Target ?? 0}
-                      </p>
-                    ) : (
-                      data?.profile_Shared_Target ?? 0
-                    )}{" "}
-                    / {data.profile_Shared_Achieved ?? "NA"} /{" "}
-                    {data.interview_Scheduled_Target ?? "NA"}
-                  </div>
-                  {/* <div className={taStylesNew["cell-input-wrap"]}>
-                                                            <input type="text" className={taStylesNew["cell-input"]} defaultValue={row.profilesShared} readOnly />
-                                                        </div> */}
-                </td>
-                {/* INTERVIEW ROUNDS */}
-                <td>{data.no_of_InterviewRounds}</td>
-                {/* AM */}
-                <td>{data.am}</td>
-                {/* NBD/EXISTING */}
-                <td> {data.businessType}
-                  {/* <NDBExistingComp text={data.businessType} result={data} index={ind} /> */}
-                </td>
-                {/* PRICING MODEL */}
-                <td>{data.pricingModel}</td>
-                {/* TALENT PAY RATE */}
-                <td>
-                  <ControlledAmountCell text={data.talent_AnnualCTC_Budget_INRValueStr} values={data} field={"Talent_AnnualCTC_Budget_INRValue"} />
-                </td>
-                {/* NR % */}
-                <td>
-                  <ControlledCellComp text={data.uplersFeesPer} values={data} />
-                  {/* <FeesPreComp text={data.uplersFeesPer} result={data} index={ind} /> */}
-                </td>
-                {/* NR (USD) */}
-                <td>
-                  <ControlledAmountCell text={data.revenue_On10PerCTCStr} values={data} field={"Revenue_On10PerCTC"} />
-                </td>
-                {/* BILL RATE */}
-                <td>
-                  <ControlledAmountCell text={data.totalRevenue_NoofTalentStr} values={data} field={"TotalRevenue_NoofTalent"} />
-                </td>
-                {/* ACTIVE TRS */}
-                <td>{data.activeTR}</td>
-                {/* CONTRACTOR/EOR */}
-                <td>{data.modelType}
-                  {/* <ContractDPComp text={data.modelType} result={data} index={ind} /> */}
-                </td>
-
-                {/* ACTIVE PROFILES */}
-                <td>
-                  {+data?.noOfProfile_TalentsTillDate > 0 ? (
-                    <p
-                      style={{
-                        color: "blue",
-                        fontWeight: "bold",
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        getTalentProfilesDetailsfromTable(data, 0);
-                        setTalentToMove(data);
-                        setProfileStatusID(0);
-                        setHRTalentListFourCount([]);
-                      }}
-                    >
-                      {data?.noOfProfile_TalentsTillDate}
-                    </p>
-                  ) : (
-                    data?.noOfProfile_TalentsTillDate
-                  )}
-                </td>
-                {/* LATEST COMMUNICATION AND UPDATES */}
-                <td>
-                  {data?.latestNotes ? <>
-                    <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
-                    <div className={taStylesNew["view-edit"]}>
-
-                      <button onClick={() => {
-                        AddComment(data, ind);
-                      }}>Edit</button>
-                    </div>
-                  </> : <button className={taStylesNew["cell-add-btn"]} onClick={() => {
-                    AddComment(data, ind);
-                  }} >Add</button>}</td>
-
-                {/* TASK FOR AM'S */}
-                <td>{data.amTask}</td>
-                {/* TASK FOR TR'S */}
-                {/* <td>{data.taTask}</td> */}
-                <td>
-                  <div>
-                    <IconContext.Provider
-                      value={{
-                        color: "#FFDA30",
-                        style: { width: "19px", height: "19px", cursor: "pointer" },
-                      }}
-                    >
-                      {" "}
-                      <Tooltip title="Edit" placement="top">
-                        <span
-                          onClick={() => {
-                            editTAforTask(data);
-                          }}
-                          style={{ padding: "0" }}
-                        >
-                          {" "}
-                          <GrEdit />
-                        </span>{" "}
-                      </Tooltip>
-                    </IconContext.Provider>
-
-                    {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65 || userData.UserId === 49 || userData.UserId === 176 || userData.UserId === 443 || userData.UserId === 436 || userData.UserId === 302) && <IconContext.Provider
-                      value={{
-                        color: "red",
-                        style: {
-                          width: "19px",
-                          height: "19px",
-                          marginLeft: "10px",
-                          cursor: "pointer",
-                        },
-                      }}
-                    >
-                      <Tooltip title="Remove" placement="top">
-                        <span
-                          // style={{
-                          //   background: 'red'
-                          // }}
-                          onClick={() => {
-                            handleRemoveTask(data);
-                          }}
-                          style={{ padding: "0" }}
-                        >
-                          {" "}
-                          <IoIosRemoveCircle />
-                        </span>{" "}
-                      </Tooltip>
-                    </IconContext.Provider>}
-
-
-                  </div>
-                  {/* <button className={taStylesNew["action-edit-btn"]} title="Edit">
-                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04Z" fill="#4C4E64DE"/>
-                                                            </svg>
-                                                        </button> */}
-                </td>
-              </tr>
-            })}
-          </tbody> </table>}
 
       {showDiamondRemark && (
         <Modal
