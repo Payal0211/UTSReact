@@ -1430,7 +1430,7 @@ function ScrumStructure2() {
                         height: 16,           // was 22px — this is the main change
                         boxSizing: 'border-box',
                         whiteSpace: 'nowrap',
-                        maxWidth: '100px',
+                        maxWidth: '100%',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                     }}
@@ -2663,6 +2663,7 @@ const getTotalRow = (rows, columnDefs) => {
                 // }else{
                 //     newOrderObj.push(obj)
                 // }
+                obj = {...obj,width:i.columnWidth ? i.columnWidth : obj.width}
                 newOrderObj.push(obj)
             })
 
@@ -2944,6 +2945,15 @@ const getTotalRow = (rows, columnDefs) => {
         }
     }
 
+    const updateColumnWidth= async (pl) => {
+        const result = await TaDashboardDAO.updateScrumTaskColumnWidthRequestDAO(pl);
+        if (result.statusCode === HTTPStatusCode.OK) {
+            // message.success(" updated")
+        } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+            message.error("Something went wrong!")
+        }
+    }
+
     const onColumnMoved = (params) => {
         if (!params.finished) return; // Ignore intermediate drag events
 
@@ -2961,6 +2971,20 @@ const getTotalRow = (rows, columnDefs) => {
         updateColumnOrder(pl)
     };
 
+
+    const onColumnResized = (params) => {
+        // console.log('res',params)
+    if (!params.finished) return;
+
+    let pl = {
+        POD_Id: selectedHead,
+        ColumnName: params.column.getColId(),
+        ColumnWidth: parseInt(params.column.getActualWidth()) ,
+    };
+
+    console.log(pl);
+    updateColumnWidth(pl)
+};
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
@@ -3129,7 +3153,7 @@ const getTotalRow = (rows, columnDefs) => {
                                 params.api.redrawRows();
                             }}
                             onColumnMoved={onColumnMoved}
-
+onColumnResized={onColumnResized}
                         />
                     }
 

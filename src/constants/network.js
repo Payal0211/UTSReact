@@ -107,6 +107,7 @@ export class TaDashboardURL {
 	static UPDATE_SCRUM_GROUP_ORDER_LIST = "UpdateTADashboardDragAndDropTAHeadUserIDWise"
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
 	static UPDATE_SCRUM_COLUMN_ORDER = 'UpdateTANewScrumColumnOrderChange'
+	static UPDATE_SCRUM_COLUMN_WIDTH = 'UpdateTANewScumColumWidthPODWise'
 	static GET_TA_WISE_PIPELINE_DETAILS= 'GetTAWiseHRPipelineDetails'
 	static GET_TA_WISE_CONTRACT_PIPELINE_DETAILS = 'GetTAWiseHRPipelineDetails_Contract'
 	static GET_IMMEDIATE_TALENT_DETAILS = 'GetImmediateJinerDetails'
