@@ -873,8 +873,20 @@ export const allEngagementConfig = {
 			},
 			{
 				label: 'Feedback',
+				name: 'feedbackType',
+				child: filterList?.clientFeedback?.filter(i=> ["Red","Orange",'Green'].includes(i.text)),
+				isSearch: true,
+			},
+			{
+				label: 'Client Feedback',
 				name: 'clientFeedback',
-				child: filterList?.clientFeedback,
+				child: filterList?.clientFeedback?.filter(i=> ["No Feedback > 30 days","No Feedback","No Feedback > 90 days"].includes(i.text)),
+				isSearch: true,
+				
+			},{
+				label: 'Talent Feedback',
+				name: 'talentFeedback',
+				child: filterList?.clientFeedback?.filter(i=> ["No Feedback For Talents"].includes(i.text)),
 				isSearch: true,
 			},
 			{
