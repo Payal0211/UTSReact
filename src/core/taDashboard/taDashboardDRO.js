@@ -305,6 +305,29 @@ export const TaDashboardDAO = {
             return errorDebug(error, 'TaDashboardDAO.updateScrumTaskColumnOrderRequestDAO');
         }
     },
+    updateScrumTaskColumnWidthRequestDAO:  async function (pl) {
+        try {
+            const taResult = await TaDashboardAPI.updateScrumTaskColumnWidthRequest(pl);
+            if (taResult) {
+                const statusCode = taResult['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = taResult.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult.details,
+                    };
+                } else if (statusCode === HTTPStatusCode.NOT_FOUND) return taResult;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return taResult;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    let deletedResponse =
+                        UserSessionManagementController.deleteAllSession();
+                    if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'TaDashboardDAO.updateScrumTaskColumnWidthRequestDAO');
+        }
+    },
     getAllTATaskListRequestDAO: async function (pl) {
         try {
             const taResult = await TaDashboardAPI.getAllTATaskListRequest(pl);
