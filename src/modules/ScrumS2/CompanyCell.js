@@ -135,9 +135,12 @@ function CompanyCell(props) {
                 )}
             </div> 
 
-                    {value.length <= 15 ? <span className={stylesOBj['company-name']}>{data.companyName}</span> :  <Tooltip title={value}>
-                            <span className={stylesOBj['company-name']}>{`${value.slice(0, 15)}...`}</span>
-                        </Tooltip>}
+                    {/* {value.length <= 15 ? <span className={stylesOBj['company-name']}>{data.companyName}</span> : 
+                     <Tooltip title={value}>
+                            <span className={stylesOBj['company-name']}>{`${value.slice(0, 15)}...`}</span> */}
+                                <Tooltip title={value}>
+                            <span className={stylesOBj['company-name']}>{data.companyName}</span>
+                        </Tooltip>
              
         </div>
     );

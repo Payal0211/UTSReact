@@ -68,6 +68,8 @@ function NewEngagementList() {
         pagenumber: 1,
         filterFields_OnBoard: {
             clientFeedback: "",
+            talentFeedback:"",
+            feedbackType:"",
             typeOfHiring: "",
             currentStatus: "",
             tscName: "",

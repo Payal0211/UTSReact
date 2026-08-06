@@ -26,7 +26,8 @@ export function LatestNotesCell(props) {
     const i = getRowIndex(data);
 
     return (
-        <div style={{lineHeight:'20px'}}>{data?.latestNotesTopRow?.length > 50 ? `${data?.latestNotesTopRow?.slice(0,50)}...`: data?.latestNotesTopRow}</div>
+        // <div style={{lineHeight:'20px'}}>{data?.latestNotesTopRow?.length > 50 ? `${data?.latestNotesTopRow?.slice(0,50)}...`: data?.latestNotesTopRow}</div>
+         <div style={{lineHeight:'20px', height:'40px'}} dangerouslySetInnerHTML={{__html:value}}></div>
         // <button
         //     className={stylesOBj['cell-add-btn']}
         //     onClick={(e) => {
