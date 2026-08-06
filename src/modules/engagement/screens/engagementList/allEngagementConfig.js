@@ -880,7 +880,7 @@ export const allEngagementConfig = {
 			{
 				label: 'Client Feedback',
 				name: 'clientFeedback',
-				child: filterList?.clientFeedback?.filter(i=> ["No Feedback > 30 days","No Feedback","No Feedback For Talents < 90 days"].includes(i.text)),
+				child: filterList?.clientFeedback?.filter(i=> ["No Feedback > 30 days","No Feedback","No Feedback > 90 days"].includes(i.text)),
 				isSearch: true,
 				
 			},{
