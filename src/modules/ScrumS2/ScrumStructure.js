@@ -718,11 +718,11 @@ function ScrumStructure2() {
                         updateTARowValue(valobj, "task_StatusID", result, index);
                         setTargetValue(3);
                         setStartTargetDate(new Date());
-                        if(val === "Covered"){
+                        if (val === "Covered") {
                             setScrumTabTitle('C')
                         }
 
-                        if(value === "Covered" && val !== "Covered"){
+                        if (value === "Covered" && val !== "Covered") {
                             setScrumTabTitle('A')
                         }
                     }}
@@ -1257,6 +1257,7 @@ function ScrumStructure2() {
                 key: 'stale',
                 text: `${days} days open`,
                 dot: 'critical',
+                isNew: data?.newTriggerAlert === 'days'
             });
         }
 
@@ -1279,17 +1280,18 @@ function ScrumStructure2() {
         //         text: `Batch ${batchNum} · screen reject`,
         //         dot: 'warning',
         //     });
-        // }
+        // }F
         const batch = data?.hrAlerts
-        if(batch?.length){
-            batch.forEach(i=> {
-                 alerts.push({
-                key: 'screenBatch',
-                text: i.alert,
-                dot: i.color === "Red" ? 'critical' : 'warning',
-            }); 
+        if (batch?.length) {
+            batch.forEach(i => {
+                alerts.push({
+                    key: 'screenBatch',
+                    text: i.alert,
+                    dot: i.color === "Red" ? 'critical' : 'warning',
+                    isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
+                });
             })
-          
+
         }
 
         // // ---------- Interview-reject batch pattern ----------
@@ -1319,6 +1321,7 @@ function ScrumStructure2() {
                 key: 'newScreenRejectYesterday',
                 text: `${newScreenRejectYesterday} new screen reject`,
                 dot: 'info',
+                isNew: data?.newTriggerAlert === 'newScreenRejectYesterday'
             });
         }
 
@@ -1329,6 +1332,7 @@ function ScrumStructure2() {
                 key: 'newInterviewRejectYesterday',
                 text: `${newInterviewRejectYesterday} new interview reject`,
                 dot: 'info',
+                isNew: data?.newTriggerAlert === 'newInterviewRejectYesterday'
             });
         }
 
@@ -1343,9 +1347,10 @@ function ScrumStructure2() {
                 key: 'targetStatus',
                 text: isAchieved
                     ? `${achieved}/${target} met`
-                    : `${achieved}/${target} · ${callsPerDay} profile submit`,
+                    : `${achieved}/${target} · ${callsPerDay} profile submit : ${callsPerDay} calls`,
                 dot: isAchieved ? 'success' : 'critical',
                 prefixIcon: isAchieved ? '✓' : '✗',
+                isNew: data?.newTriggerAlert === 'achieved'
             });
         }
 
@@ -1367,7 +1372,7 @@ function ScrumStructure2() {
         success: '#E8F7EE',
     };
 
- function AlertRowBig ({ alert }) {
+    function AlertRowBig({ alert }) {
         return (
             <Tooltip title={alert.label ?? alert.text}>
                 <div
@@ -1406,6 +1411,7 @@ function ScrumStructure2() {
                         />
                     )}
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{alert.text}</span>
+                    {alert?.isNew && <NewBlinkBadge />}
                 </div>
             </Tooltip>
         );
@@ -1419,7 +1425,7 @@ function ScrumStructure2() {
                     style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: 5,
+                        gap: 10,
                         padding: '0 8px',
                         borderRadius: 999,
                         backgroundColor: CHIP_BG[alert.dot],
@@ -1430,9 +1436,9 @@ function ScrumStructure2() {
                         height: 16,           // was 22px — this is the main change
                         boxSizing: 'border-box',
                         whiteSpace: 'nowrap',
-                        maxWidth: '100%',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
+                        // maxWidth: 'fit-content',
+                        // overflow: 'hidden',
+                        // textOverflow: 'ellipsis',
                     }}
                 >
                     {alert.prefixIcon ? (
@@ -1463,18 +1469,21 @@ function ScrumStructure2() {
         return (
             <div
                 style={{
-                    display: 'grid',
-                    // flexDirection: 'column',
-                    gridTemplateColumns: "auto auto",
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
+                    // gridTemplateColumns: "auto auto",
                     gap: 2,   // was 3
                     padding: '6px 0',
                     width: '100%',
                     height: '100%',
                     boxSizing: 'border-box',
-                    overflowY: 'scroll',
+                    overflowY: 'auto',
                     overflowX: 'hidden',
                 }}
             >
+                {data.newTriggerAlert && <NewBlinkBadge text={data.newTriggerAlert} />}
+
                 {alerts.map((a) => (
                     <AlertRow key={a.key} alert={a} />
                 ))}
@@ -1488,6 +1497,35 @@ function ScrumStructure2() {
         info: { bg: '#E8F0FE', text: '#1A56C4', border: '#C6D9F7' },
         success: { bg: '#E6F4EA', text: '#1E8E3E', border: '#BFE3CB' },
     };
+
+    function NewBlinkBadge({ text }) {
+        return (
+            <>
+                <style>
+                    {`
+                    @keyframes blink-new {
+                        0%, 100% { opacity: 1; }
+                        50% { opacity: 0.2; }
+                    }
+                `}
+                </style>
+                <span
+                    style={{
+                        fontStyle: 'italic',
+                        fontWeight: 600,
+                        color: '#E64545',
+                        marginLeft: 6,
+                        animation: 'blink-new 1.2s ease-in-out infinite',
+                        display: 'flex',
+                        alignItems: 'center',
+                        height: '16px'
+                    }}
+                >
+                    new!
+                </span>
+            </>
+        );
+    }
 
     function AlertChip({ alert }) {
         const colors = SEVERITY_COLORS[alert.severity];
@@ -1678,76 +1716,76 @@ function ScrumStructure2() {
     //         );
     //     }
 
-const sumFields = [
-    "totalRevenue_NoofTalentStr",
-    "todayProfile_Shared_Target",
-    "profile_Shared_Target",
-    "profile_Shared_Achieved",
-    "interview_Scheduled_Target"
-];
+    const sumFields = [
+        "totalRevenue_NoofTalentStr",
+        "todayProfile_Shared_Target",
+        "profile_Shared_Target",
+        "profile_Shared_Achieved",
+        "interview_Scheduled_Target"
+    ];
 
-// Fields that are formatted currency strings (₹ symbol + Indian-style commas)
-// and need parsing before summing, then reformatting after.
-const currencyFields = ["totalRevenue_NoofTalentStr"];
+    // Fields that are formatted currency strings (₹ symbol + Indian-style commas)
+    // and need parsing before summing, then reformatting after.
+    const currencyFields = ["totalRevenue_NoofTalentStr"];
 
-const parseCurrencyString = (value) => {
-    if (value == null || value === "") return null;
-    // Strip everything except digits, decimal point, and minus sign
-    const cleaned = String(value).replace(/[^0-9.-]/g, "");
-    if (cleaned === "" || isNaN(cleaned)) return null;
-    return Number(cleaned);
-};
-
-const formatAsINRCurrency = (value) => {
-    return "₹" + Number(value).toLocaleString("en-IN", {
-        maximumFractionDigits: 0,
-    });
-};
-
-const getTotalRow = (rows, columnDefs) => {
-    const total = {
-        taName: "Total",
+    const parseCurrencyString = (value) => {
+        if (value == null || value === "") return null;
+        // Strip everything except digits, decimal point, and minus sign
+        const cleaned = String(value).replace(/[^0-9.-]/g, "");
+        if (cleaned === "" || isNaN(cleaned)) return null;
+        return Number(cleaned);
     };
 
-    columnDefs.forEach((col) => {
-        const field = col.field;
+    const formatAsINRCurrency = (value) => {
+        return "₹" + Number(value).toLocaleString("en-IN", {
+            maximumFractionDigits: 0,
+        });
+    };
 
-        if (!field || field === "taName") return;
-        if (!sumFields.includes(field)) return;
+    const getTotalRow = (rows, columnDefs) => {
+        const total = {
+            taName: "Total",
+        };
 
-        let sum = 0;
-        let hasNumericValue = false;
-        const isCurrencyField = currencyFields.includes(field);
+        columnDefs.forEach((col) => {
+            const field = col.field;
 
-        rows.forEach((row) => {
-            const rawValue = row[field];
+            if (!field || field === "taName") return;
+            if (!sumFields.includes(field)) return;
 
-            if (isCurrencyField) {
-                const parsed = parseCurrencyString(rawValue);
-                if (parsed !== null) {
-                    sum += parsed;
+            let sum = 0;
+            let hasNumericValue = false;
+            const isCurrencyField = currencyFields.includes(field);
+
+            rows.forEach((row) => {
+                const rawValue = row[field];
+
+                if (isCurrencyField) {
+                    const parsed = parseCurrencyString(rawValue);
+                    if (parsed !== null) {
+                        sum += parsed;
+                        hasNumericValue = true;
+                    }
+                } else if (typeof rawValue === "number") {
+                    sum += rawValue;
+                    hasNumericValue = true;
+                } else if (
+                    typeof rawValue === "string" &&
+                    rawValue.trim() !== "" &&
+                    !isNaN(rawValue)
+                ) {
+                    sum += Number(rawValue);
                     hasNumericValue = true;
                 }
-            } else if (typeof rawValue === "number") {
-                sum += rawValue;
-                hasNumericValue = true;
-            } else if (
-                typeof rawValue === "string" &&
-                rawValue.trim() !== "" &&
-                !isNaN(rawValue)
-            ) {
-                sum += Number(rawValue);
-                hasNumericValue = true;
+            });
+
+            if (hasNumericValue) {
+                total[field] = isCurrencyField ? formatAsINRCurrency(sum) : sum;
             }
         });
 
-        if (hasNumericValue) {
-            total[field] = isCurrencyField ? formatAsINRCurrency(sum) : sum;
-        }
-    });
-
-    return total;
-};
+        return total;
+    };
 
 
     // const getTAGroups = () => {
@@ -2145,13 +2183,29 @@ const getTotalRow = (rows, columnDefs) => {
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
+        // {
+        //     headerName: 'Created Dt.',
+        //     field: 'hrCreatedDate',
+        //     cellStyle: { textAlign: 'center' },
+        //     width: 110,
+        //     filter: MultiConditionTextFilter,
+        //     valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
+        // },
         {
-            headerName: 'Created Dt.',
-            field: 'hrCreatedDate',
+            headerName: 'Month',
+            field: 'hrMonth',
             cellStyle: { textAlign: 'center' },
             width: 110,
             filter: MultiConditionTextFilter,
-            valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
+           
+        },
+        {
+            headerName: 'Year',
+            field: 'hrYear',
+            cellStyle: { textAlign: 'center' },
+            width: 110,
+            filter: MultiConditionTextFilter,
+          
         },
         {
             headerName: 'HR Status',
@@ -2663,8 +2717,11 @@ const getTotalRow = (rows, columnDefs) => {
                 // }else{
                 //     newOrderObj.push(obj)
                 // }
-                obj = {...obj,width:i.columnWidth ? i.columnWidth : obj.width}
-                newOrderObj.push(obj)
+                if (obj?.headerName) {
+                    obj = { ...obj, width: i.columnWidth ? i.columnWidth : obj.width }
+                    newOrderObj.push(obj)
+                }
+
             })
 
             return newOrderObj
@@ -2694,7 +2751,7 @@ const getTotalRow = (rows, columnDefs) => {
                 onCancel={onClose}
             >
                 <div style={{ padding: '20px 24px 24px' }}>
-                 
+
 
                     {/* Title + subtitle */}
                     <h2 style={{ fontSize: 12, fontWeight: 700, margin: '0 0 6px' }}>
@@ -2715,16 +2772,16 @@ const getTotalRow = (rows, columnDefs) => {
                     <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: 0.5, marginBottom: 10 }}>
                         FUNNEL
                     </div>
-                       {/* Alert chips row */}
+                    {/* Alert chips row */}
                     {alerts.length > 0 && (
-                        <div style={{ display: 'grid',  gridTemplateColumns: "auto auto", gap: 6, marginBottom: 20 }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: "auto auto", gap: 6, marginBottom: 20 }}>
                             {alerts.map((a) => (
                                 <AlertRowBig key={a.key} alert={a} />
                             ))}
                         </div>
-                        
+
                     )}
-                   {/*  <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
+                    {/*  <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
                         <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
                         <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
                         <FunnelRow
@@ -2945,7 +3002,7 @@ const getTotalRow = (rows, columnDefs) => {
         }
     }
 
-    const updateColumnWidth= async (pl) => {
+    const updateColumnWidth = async (pl) => {
         const result = await TaDashboardDAO.updateScrumTaskColumnWidthRequestDAO(pl);
         if (result.statusCode === HTTPStatusCode.OK) {
             // message.success(" updated")
@@ -2974,17 +3031,17 @@ const getTotalRow = (rows, columnDefs) => {
 
     const onColumnResized = (params) => {
         // console.log('res',params)
-    if (!params.finished) return;
+        if (!params.finished) return;
 
-    let pl = {
-        POD_Id: selectedHead,
-        ColumnName: params.column.getColId(),
-        ColumnWidth: parseInt(params.column.getActualWidth()) ,
+        let pl = {
+            POD_Id: selectedHead,
+            ColumnName: params.column.getColId(),
+            ColumnWidth: parseInt(params.column.getActualWidth()),
+        };
+
+        console.log(pl);
+        updateColumnWidth(pl)
     };
-
-    console.log(pl);
-    updateColumnWidth(pl)
-};
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
@@ -3153,7 +3210,7 @@ const getTotalRow = (rows, columnDefs) => {
                                 params.api.redrawRows();
                             }}
                             onColumnMoved={onColumnMoved}
-onColumnResized={onColumnResized}
+                            onColumnResized={onColumnResized}
                         />
                     }
 
