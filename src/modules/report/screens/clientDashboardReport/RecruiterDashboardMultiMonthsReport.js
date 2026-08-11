@@ -239,7 +239,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
       if(isCarryForwardPreonbordClicked){
          return [
       {
-        title: "Created Date" ,
+        title: "Action Date" ,
         dataIndex: "actionDate",
         key: "actionDate",
          width: "150px",
