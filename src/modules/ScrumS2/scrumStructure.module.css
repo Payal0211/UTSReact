@@ -32,14 +32,26 @@ body {
 }
 
 .tableSelectField [class*="ant-select-selector"] {
-    font-size: 10px;
+    font-size: 10px !important;
+    text-align: center ;
+}
+
+.tableSelectField [class*="ant-select-item"] {
+    font-size: 10px !important;
+    text-align: center ;
+}
+
+.tableSelectField [class*="ant-select-item-option"]{
     text-align: center;
+     font-size: 10px !important;
 }
 
 .tableSelectField [class*="ant-select-item-option-content"]{
     text-align: center;
-     font-size: 10px;
+     font-size: 10px !important;
 }
+
+
 
 /* ===================== */
 /* Card container        */

@@ -48,6 +48,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
   const [endDate, setEndDate] = useState();
   const [colTextVal,setColTextVal] = useState('')
   const [isCarryForwardPipelineClicked, setIsCarryForwardPipelineClicked] = useState(false);
+  const [isCarryForwardPreonbordClicked, setIsCarryForwardPreonbordClicked] = useState(false);
   const [isPipelineClicked, setIsPipelineClicked] = useState(false);
   const [revenueColumn, setRevenueColumn] = useState(false);
 
@@ -203,6 +204,76 @@ export default function RecruiterDashboardMultiMonthsReport() {
         key: "hrTitle",
         width: "200px",
       },  
+    {
+        title: "HR Pipeline",
+        dataIndex: "hrPipeline",
+        key: "hrPipeline",
+             width: "170px",
+      },{
+        title: "Carry FWD Status",
+        dataIndex: "carryFwd_HRStatus",
+        key: "carryFwd_HRStatus",
+             width: "170px",
+         render: (_, param) => {
+            return All_Hiring_Request_Utils.GETHRSTATUS(
+              param?.carryFwd_HRStatusCode,
+              param?.carryFwd_HRStatus
+            );}
+      },
+    {
+        title: "HR Status",
+        dataIndex: "hrStatus",
+        key: "hrStatus",
+        width: "200px",
+         render: (_, param) => {
+            return All_Hiring_Request_Utils.GETHRSTATUS(
+              param?.hrStatusCode ,
+              param?.hrStatus
+            );}
+      } 
+    
+     
+    ];
+      }
+
+      if(isCarryForwardPreonbordClicked){
+         return [
+      {
+        title: "Created Date" ,
+        dataIndex: "actionDate",
+        key: "actionDate",
+         width: "150px",
+        render:(text)=>{
+          return text
+        }
+      },  {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+         width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+         width: "170px",
+        render:(text,value)=>{
+           return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{textDecoration:'underline'}} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+           
+        }
+      },
+       {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        width: "200px",
+      },  
+       {
+        title: "Talent",
+        dataIndex: "talent",
+        key: "talent",
+         width: "100px",
+      },
     {
         title: "HR Pipeline",
         dataIndex: "hrPipeline",
@@ -620,6 +691,56 @@ export default function RecruiterDashboardMultiMonthsReport() {
           );
         },
       },
+       {
+        title: <>Carry Fwd<br/> PreOnboarding<br/> Pipeline </>,
+        dataIndex: "carryFwdPreonboardingPipeline",
+        key: "carryFwdPreonboardingPipeline",
+        align: "center",
+        width: "150px",
+        render: (text, result) => {
+          if (result.recruiter === 'Total') {
+            return    <p
+              style={{
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'T_CFPreOnboard');
+                setColTextVal(result.total_CarryFwdPreonboardingPipelineValue)
+                setIsCarryForwardPreonbordClicked(true);
+               
+              }}
+            >
+              {result.total_CarryFwdPreonboardingPipelineValue ? result.total_CarryFwdPreonboardingPipelineValue : ''}
+            </p>
+         
+          }
+          return +text !== 0 ? (
+            <p
+              style={{
+                color: "blue",
+                fontWeight: "bold",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(result, 'CFPreOnboard');
+                setColTextVal(text)
+                setIsCarryForwardPreonbordClicked(true);
+               
+                // setTalentToMove(result);
+                // setProfileStatusID(2);
+                // setHRTalentListFourCount([]);
+              }}
+            >
+              {text ? text : '-'}
+            </p>
+          ) : (
+            text ? text : '-'
+          );
+        },
+      },
     
          {
         title: <>Cur. Month <br/> Pipeline  </>,
@@ -735,7 +856,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
                  setIsCarryForwardPipelineClicked(false);
               }}
             >
-              {result.total_multiplierOfGoal ? result.total_multiplierOfGoal : ''}
+              {result.total_multiplierOfGoal ? `${result.total_multiplierOfGoal} %` : ''}
             </p>
           }
           return +text > 0 ? (
@@ -751,10 +872,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
               
             //   }}
             >
-              {text ? text : ''}
+              {text ? `${text} %` : ''}
             </p>
           ) : (
-            text ? text : ''
+            text ? `${text} %` : ''
           );
         },
       },
@@ -2263,6 +2384,7 @@ const getColumnTitle = (title) => {
                          setIsCarryForwardPipelineClicked(false);
                           setRevenueColumn(false)
                           setIsPipelineClicked(false)
+                          setIsCarryForwardPreonbordClicked(false)
                         setHRTalentListFourCount([]);
                         setFilteredTalentList([]);
                       }}
@@ -2284,7 +2406,8 @@ const getColumnTitle = (title) => {
                                                 
             
                           <p style={{ marginBottom: "0.5em" , marginLeft:'5px'}}>
-                            TA : <strong>{profileInfo?.recruiter}({colTextVal})</strong> 
+                            {profileInfo?.recruiter ==="Total" ? <> <strong>{profileInfo?.recruiter} {isCarryForwardPreonbordClicked && " Preonboarding "}({colTextVal})</strong> </> : <> TA : <strong>{profileInfo?.recruiter}({colTextVal})</strong> </>}
+                           
                           </p>
              
                           <input
@@ -2367,6 +2490,7 @@ const getColumnTitle = (title) => {
                               setIsCarryForwardPipelineClicked(false);
                               setRevenueColumn(false)
                               setIsPipelineClicked(false)
+                              setIsCarryForwardPreonbordClicked(false)
                               setHRTalentListFourCount([]);
                               setFilteredTalentList([]);
                             }}

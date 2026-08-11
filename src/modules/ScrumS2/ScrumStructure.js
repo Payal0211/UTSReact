@@ -1513,8 +1513,9 @@ function ScrumStructure2() {
                     style={{
                         fontStyle: 'italic',
                         fontWeight: 600,
-                        color: '#E64545',
+                        color: 'purple',
                         marginLeft: 6,
+                        fontSize:'12px',
                         animation: 'blink-new 1.2s ease-in-out infinite',
                         display: 'flex',
                         alignItems: 'center',
@@ -3180,7 +3181,7 @@ function ScrumStructure2() {
                             suppressRowTransform={true}
                             animateRows={false}
                             headerHeight={38}
-                            rowHeight={34}
+                            rowHeight={25}
                             onCellKeyDown={handleGridKeyDown}
                             onCellEditingStarted={handleCellEditingStarted}
                             postProcessPopup={handlePostProcessPopup}

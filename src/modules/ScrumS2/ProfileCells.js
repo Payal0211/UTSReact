@@ -47,7 +47,7 @@ export function ActiveProfileCountCell(props) {
     } = props.context;
 
 
-    return (value ?
+    return (
         <p
             style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0 , textAlign:"center"}}
             onClick={() => {
@@ -57,7 +57,7 @@ export function ActiveProfileCountCell(props) {
                 setHRTalentListFourCount([]);
             }}
         >
-            {value}
-        </p> : ""
+            {value?? 0}
+        </p> 
     );
 }
