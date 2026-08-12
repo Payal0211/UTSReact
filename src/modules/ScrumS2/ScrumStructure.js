@@ -69,6 +69,8 @@ function ScrumStructure2() {
             searchText: "",
         },
     });
+      const today = new Date();
+      const [monthDate, setMonthDate] = useState(today); 
     const [showProfileTarget, setShowProfileTarget] = useState(false);
     const [profileTargetDetails, setProfileTargetDetails] = useState({});
     const [targetValue, setTargetValue] = useState(3);
@@ -1096,12 +1098,18 @@ function ScrumStructure2() {
     };
 
     const updateNotes = async (pl, index) => {
-        setTaListData(prev => {
+     
+        let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
+
+        if(updateresult.statusCode === HTTPStatusCode.OK){
+
+            let newData = updateresult.responseBody.find(data=> data.id === pl.TaskID)
+               setTaListData(prev => {
             let tempD = [...prev]
-            tempD[index] = { ...tempD[index], latestNotesTopRow: pl.Comments, latestNotes: pl.Comments }
+            tempD[index] = { ...tempD[index], latestNotesTopRow: newData.latestNotesTopRow, latestNotes: newData.latestNotes }
             return tempD
         })
-        let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
+        }
     }
 
 
@@ -1371,6 +1379,106 @@ function ScrumStructure2() {
         info: '#EAF2FE',
         success: '#E8F7EE',
     };
+
+
+    // ---------- Status → chip style mapping ----------
+const STATUS_CHIP_STYLES = {
+    'screening reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+    'screen reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+    'shared': { label: 'shared', icon: '➤', bg: '#EAF2FE', text: '#1A56C4' },
+    'interview': { label: 'interview', icon: '📋', bg: '#FFF6E0', text: '#B7791F' },
+    'submitted': { label: 'submitted', icon: '📋', bg: '#FDECEC', text: '#D93025' },
+    'interview reject': { label: 'interview reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+    'duplicate': { label: 'duplicate', icon: '⊘', bg: '#F0F0F0', text: '#666' },
+    'hold': { label: 'hold', icon: '⏸', bg: '#FFF6E0', text: '#B7791F' },
+};
+
+const getStatusStyle = (statusRaw) => {
+    const key = (statusRaw ?? '').trim().toLowerCase();
+    return STATUS_CHIP_STYLES[key] ?? { label: statusRaw, icon: '•', bg: '#F0F0F0', text: '#666' };
+};
+
+// ---------- Parser: "Name (Status) , Name (Status)" → [{ name, status }] ----------
+function parseHrAlertDetailText(text) {
+    if (!text) return [];
+
+    return text
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter(Boolean)
+        .map((entry) => {
+            const match = entry.match(/^(.+?)\s*\((.+?)\)\s*$/);
+            if (!match) return { name: entry, status: '' };
+            return { name: match[1].trim(), status: match[2].trim() };
+        });
+}
+
+// ---------- Single name+status chip pairing ----------
+function BatchEntry({ entry, isLast }) {
+    const style = getStatusStyle(entry.status);
+
+    return (
+        <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 12, fontWeight: 500, color: '#333' }}>
+                    {entry.name}
+                </span>
+                {entry.status && (
+                    <span
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            fontSize: 10.5,
+                            fontWeight: 600,
+                            padding: '2px 8px',
+                            borderRadius: 999,
+                            backgroundColor: style.bg,
+                            color: style.text,
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        <span style={{ fontSize: 10 }}>{style.icon}</span>
+                        {style.label}
+                    </span>
+                )}
+            </div>
+            {!isLast && <span style={{ color: '#D0D5DB', fontSize: 12 }}>|</span>}
+        </>
+    );
+}
+
+/**
+ * Renders a titled panel of name+status chips parsed from a raw
+ * "Name (Status) , Name (Status)" string — e.g. hrAlertDetailText.
+ *
+ * Usage:
+ *   <HrAlertBatchChips title="First Batch" text={data.hrAlertDetailText} />
+ */
+  function HrAlertBatchChips({ title, text, entries: entriesProp }) {
+      const entries = entriesProp ?? parseHrAlertDetailText(text);
+
+    if (!entries || entries.length === 0) return null;
+
+    return (
+        <div
+            style={{
+                border: '1px solid #E3E7EB',
+                borderRadius: 999,
+                padding: '10px 16px',
+                background: '#fff',
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: 10,
+            }}
+        >
+            {entries.map((entry, i) => (
+                <BatchEntry key={i} entry={entry} isLast={i === entries.length - 1} />
+            ))}
+        </div>
+    );
+}
 
     function AlertRowBig({ alert }) {
         return (
@@ -2781,7 +2889,16 @@ function ScrumStructure2() {
                             ))}
                         </div>
 
+
+
                     )}
+
+                     {data?.hrAlertDetailText && (
+                    <HrAlertBatchChips
+                        title="First Batch"
+                        text={data.hrAlertDetailText}
+                    />
+                )}
                     {/*  <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
                         <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
                         <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
@@ -2907,22 +3024,264 @@ function ScrumStructure2() {
         }
     }, []);
 
+    const measureRenderedWidth = (text, sourceEl) => {
+    const mirror = document.createElement('div');
+    const cs = sourceEl ? window.getComputedStyle(sourceEl) : null;
+
+    mirror.style.position = 'fixed';
+    mirror.style.top = '-9999px';
+    mirror.style.left = '-9999px';
+    mirror.style.visibility = 'hidden';
+    mirror.style.whiteSpace = 'pre';        // no wrapping — measure the true single-line width
+    mirror.style.pointerEvents = 'none';
+
+    if (cs) {
+        mirror.style.font = cs.font;
+        mirror.style.letterSpacing = cs.letterSpacing;
+        mirror.style.fontFeatureSettings = cs.fontFeatureSettings;
+    } else {
+        mirror.style.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    }
+
+    mirror.textContent = text;
+    document.body.appendChild(mirror);
+    const width = mirror.scrollWidth;
+    document.body.removeChild(mirror);
+    return width;
+};
+
     const handleCellEditingStarted = useCallback((params) => {
         // Only applies to the large-text popup editors
-        if (params.column.getColId() === 'latestNotes' || params.column.getColId() === 'touchBasedNotes') {
-            // Wait a tick for AG Grid to actually mount the popup + textarea
-            setTimeout(() => {
-                const textarea = document.querySelector(
-                    '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
-                );
-                if (textarea) {
-                    // Reset cursor to the start so it doesn't auto-scroll to bottom
-                    textarea.setSelectionRange(0, 0);
-                    textarea.scrollTop = 0;
-                    textarea.focus();
-                }
-            }, 0);
+        // if (params.column.getColId() === 'latestNotes' || params.column.getColId() === 'touchBasedNotes') {
+        //     // Wait a tick for AG Grid to actually mount the popup + textarea
+        //     setTimeout(() => {
+        //         const textarea = document.querySelector(
+        //             '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
+        //         );
+        //         if (textarea) {
+        //             // Reset cursor to the start so it doesn't auto-scroll to bottom
+        //             textarea.setSelectionRange(0, 0);
+        //             textarea.scrollTop = 0;
+        //             textarea.focus();
+        //         }
+        //     }, 0);
+        // }
+
+    //     const colId = params.column.getColId();
+    // if (colId !== 'latestNotes' && colId !== 'touchBasedNotes') return;
+
+    // setTimeout(() => {
+    //     const popupEditor = document.querySelector('.ag-popup-editor');
+    //     const textarea = document.querySelector(
+    //         '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
+    //     );
+
+    //     if (!popupEditor || !textarea) {
+    //         console.log('🔴 popup or textarea NOT found', { popupEditor: !!popupEditor, textarea: !!textarea });
+    //         return;
+    //     }
+
+    //     console.log('🟢 popup + textarea FOUND, sizing now');
+
+    //     // Reset cursor to the start (your original behavior)
+    //     textarea.setSelectionRange(0, 0);
+    //     textarea.scrollTop = 0;
+    //     textarea.focus();
+
+    //     // ---- Width calculation based on actual content ----
+    //     const rawValue = params.data?.[colId] ?? '';
+    //     const plainText = String(rawValue).replace(/<[^>]*>/g, '\n');
+    //     const lines = plainText.split('\n');
+
+    //     const widestLineWidth = lines.reduce((max, line) => {
+    //         const w = measureRenderedWidth(line, textarea);
+    //         return w > max ? w : max;
+    //     }, 0);
+
+    //     const MIN_WIDTH = 250;
+    //     const SCREEN_MARGIN = 16;
+    //     const HORIZONTAL_PADDING = 40;
+    //     const contentWidth = widestLineWidth + HORIZONTAL_PADDING;
+    //     const maxPossibleWidth = window.innerWidth - (SCREEN_MARGIN * 2);
+    //     const desiredWidth = Math.max(MIN_WIDTH, Math.min(contentWidth, maxPossibleWidth));
+
+    //     console.log('desiredWidth:', desiredWidth);
+
+    //     // Apply width to the popup and every element between it and the textarea
+    //     popupEditor.style.setProperty('width', `${desiredWidth}px`, 'important');
+    //     popupEditor.style.setProperty('min-width', `${desiredWidth}px`, 'important');
+    //     popupEditor.style.setProperty('max-width',`${maxPossibleWidth}px`, 'important');
+
+    //     let node = textarea.parentElement;
+    //     while (node && node !== popupEditor) {
+    //         node.style.setProperty('width', `${desiredWidth}px`, 'important');
+    //         node.style.setProperty('max-width', 'none', 'important');
+    //         node.style.setProperty('box-sizing', 'border-box', 'important');
+    //         node = node.parentElement;
+    //     }
+
+    //     textarea.removeAttribute('cols'); // kill the HTML cols=60 intrinsic sizing
+    //     textarea.style.setProperty('width', '100%', 'important');
+    //     textarea.style.setProperty('box-sizing', 'border-box', 'important');
+
+    //     // ---- Height ----
+    //     textarea.style.setProperty('height', 'auto', 'important');
+    //     const contentHeight = textarea.scrollHeight;
+    //     const MIN_HEIGHT = 90;
+    //     const MAX_HEIGHT = Math.min(window.innerHeight - 80, 500);
+    //     const desiredHeight = Math.max(MIN_HEIGHT, Math.min(contentHeight + 4, MAX_HEIGHT));
+    //     textarea.style.setProperty('height', `${desiredHeight}px`, 'important');
+
+    //     // ---- Reposition after resizing ----
+    //     const eventSource = document.querySelector(`[col-id="${colId}"].ag-cell-focus`) 
+    //         || document.querySelector(`[col-id="${colId}"]`);
+    //     const cellRect = eventSource?.getBoundingClientRect();
+    //     if (cellRect) {
+    //         popupEditor.style.setProperty('position', 'fixed', 'important');
+    //         let left = cellRect.left;
+    //         if (left + desiredWidth > window.innerWidth - SCREEN_MARGIN) {
+    //             left = Math.max(SCREEN_MARGIN, window.innerWidth - desiredWidth - SCREEN_MARGIN);
+    //         }
+    //         popupEditor.style.setProperty('left', `${left}px`, 'important');
+
+    //         const popupHeight = popupEditor.offsetHeight;
+    //         const top = Math.max(cellRect.top - popupHeight - 4, 8);
+    //         popupEditor.style.setProperty('top', `${top}px`, 'important');
+    //     }
+    // }, 0);
+
+     const colId = params.column.getColId();
+
+    // Only apply this logic to Latest Notes and Touch Based Notes
+    if (colId !== 'latestNotes' && colId !== 'touchBasedNotes') return;
+
+    setTimeout(() => {
+        const popupEditor = document.querySelector('.ag-popup-editor');
+
+        const textarea = document.querySelector(
+            '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
+        );
+
+        if (!popupEditor || !textarea) {
+            console.log('🔴 popup or textarea NOT found', {
+                popupEditor: !!popupEditor,
+                textarea: !!textarea
+            });
+            return;
         }
+
+        // Reset cursor to start
+        textarea.setSelectionRange(0, 0);
+        textarea.scrollTop = 0;
+        textarea.focus();
+
+        // ---- Keep your existing dynamic width logic ----
+        const rawValue = params.data?.[colId] ?? '';
+        const plainText = String(rawValue).replace(/<[^>]*>/g, '\n');
+        const lines = plainText.split('\n');
+
+        const widestLineWidth = lines.reduce((max, line) => {
+            const w = measureRenderedWidth(line, textarea);
+            return w > max ? w : max;
+        }, 0);
+
+        const MIN_WIDTH = 250;
+        const SCREEN_MARGIN = 16;
+        const HORIZONTAL_PADDING = 40;
+
+        const contentWidth = widestLineWidth + HORIZONTAL_PADDING;
+        const maxPossibleWidth = window.innerWidth - (SCREEN_MARGIN * 2);
+
+        const desiredWidth = Math.max(
+            MIN_WIDTH,
+            Math.min(contentWidth, maxPossibleWidth)
+        );
+
+        popupEditor.style.setProperty(
+            'width',
+            `${desiredWidth}px`,
+            'important'
+        );
+
+        popupEditor.style.setProperty(
+            'min-width',
+            `${desiredWidth}px`,
+            'important'
+        );
+
+        popupEditor.style.setProperty(
+            'max-width',
+            `${maxPossibleWidth}px`,
+            'important'
+        );
+
+        let node = textarea.parentElement;
+
+        while (node && node !== popupEditor) {
+            node.style.setProperty(
+                'width',
+                `${desiredWidth}px`,
+                'important'
+            );
+
+            node.style.setProperty(
+                'max-width',
+                'none',
+                'important'
+            );
+
+            node.style.setProperty(
+                'box-sizing',
+                'border-box',
+                'important'
+            );
+
+            node = node.parentElement;
+        }
+
+        textarea.removeAttribute('cols');
+
+        textarea.style.setProperty(
+            'width',
+            '100%',
+            'important'
+        );
+
+        textarea.style.setProperty(
+            'box-sizing',
+            'border-box',
+            'important'
+        );
+
+        // ---- Height ----
+        textarea.style.setProperty(
+            'height',
+            'auto',
+            'important'
+        );
+
+        const contentHeight = textarea.scrollHeight;
+
+        const MIN_HEIGHT = 90;
+        const MAX_HEIGHT = Math.min(
+            window.innerHeight - 80,
+            500
+        );
+
+        const desiredHeight = Math.max(
+            MIN_HEIGHT,
+            Math.min(contentHeight + 4, MAX_HEIGHT)
+        );
+
+        textarea.style.setProperty(
+            'height',
+            `${desiredHeight}px`,
+            'important'
+        );
+
+        // ---- Reposition popup ----
+       
+    }, 0);
     }, []);
 
     const isSelectableDateModal = (date) => {
@@ -3117,7 +3476,27 @@ function ScrumStructure2() {
                     >
                         Add New Task
                     </button>
-
+  {/* <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}> 
+                    <div>
+                      Month-Year
+                    </div>
+                    <div className={stylesOBj.calendarFilter}> 
+                      <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                      <DatePicker
+                              style={{ backgroundColor: "red" }}
+                              onKeyDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              className={stylesOBj.dateFilter}
+                              placeholderText="Month - Year"
+                              selected={monthDate}
+                              onChange={date=>setMonthDate(date)}
+                              dateFormat="MM-yyyy"
+                              showMonthYearPicker
+                            />
+                    </div>
+                  </div> */}
                 </div>
 
                 <div
