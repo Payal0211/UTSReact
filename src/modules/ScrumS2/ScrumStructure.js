@@ -1362,7 +1362,9 @@ const isHistory = useMemo(
                     key: 'screenBatch',
                     text: i.alert,
                     dot: i.color === "Red" ? 'critical' : 'warning',
-                    isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
+                    // isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
+                    isNew: i?.alertDetailText ? true : false,
+                    ...i
                 });
             })
 
@@ -2907,7 +2909,7 @@ function BatchEntry({ entry, isLast }) {
                         {data.hrTitle}
                     </h2>
                     <p style={{ color: '#6b7280', fontSize: 10, margin: '0 0 20px' }}>
-                        {data.companyName} · {data.taName} · {data.hrNumber}
+                      <span>{data.taName} · {data.companyName} ·</span>  {data.hrNumber}
                     </p>
 
                     {/* Summary cards */}
@@ -2924,21 +2926,28 @@ function BatchEntry({ entry, isLast }) {
                     {/* Alert chips row */}
                     {alerts.length > 0 && (
                         <div style={{ display: 'flex', flexDirection:'column', gap: 6, marginBottom: 20 }}>
-                            {alerts.map((a) => (
+                            {alerts.map((a) =>{
+                             return   <>
+                                
                                 <AlertRowBig key={a.key} alert={a} />
-                            ))}
+                            {a.alertDetailText && <HrAlertBatchChips
+                        title="First Batch"
+                        text={a.alertDetailText}
+                    />}
+                                </>
+                            } )}
                         </div>
 
 
 
                     )}
 
-                     {data?.hrAlertDetailText && (
+                     {/* {data?.hrAlertDetailText && (
                     <HrAlertBatchChips
                         title="First Batch"
                         text={data.hrAlertDetailText}
                     />
-                )}
+                )} */}
                     {/*  <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
                         <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
                         <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
@@ -3527,9 +3536,9 @@ function BatchEntry({ entry, isLast }) {
                      {/* <div>
                       Month-Year
                     </div> */}
- {/* <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
-                      <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-                      <DatePicker
+                    <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
+                            <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                            <DatePicker
                               style={{ backgroundColor: "red" }}
                               onKeyDown={(e) => {
                                 e.preventDefault();
@@ -3543,7 +3552,7 @@ function BatchEntry({ entry, isLast }) {
                               maxDate={today}
                               showMonthYearPicker
                             />
-                    </div> */}
+                    </div>
                   </div>
                 </div>
 
