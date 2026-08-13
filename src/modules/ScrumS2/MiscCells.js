@@ -26,7 +26,7 @@ export function LatestNotesCell(props) {
     const i = getRowIndex(data);
 
     return (
-        <div style={{lineHeight:'20px'}}>{data?.latestNotesTopRow}</div>
+        <div style={{lineHeight:'20px', height:'20px'}}>{data?.latestNotesTopRow}</div>
         //  <div style={{lineHeight:'20px', height:'25px'}} dangerouslySetInnerHTML={{__html:value}}></div>
         // <button
         //     className={stylesOBj['cell-add-btn']}
@@ -46,7 +46,7 @@ export function LatestTouchCell (props){
     const i = getRowIndex(data);
 
     return (
-        <div style={{lineHeight:'20px'}}>{data?.touchBasedNotesTopRow?.length > 50 ? `${data?.touchBasedNotesTopRow?.slice(0,50)}...`: data?.touchBasedNotesTopRow}</div>
+        <div style={{lineHeight:'20px', height:'20px'}}>{data?.touchBasedNotesTopRow?.length > 50 ? `${data?.touchBasedNotesTopRow?.slice(0,50)}...`: data?.touchBasedNotesTopRow}</div>
      
     );
 }
@@ -228,7 +228,7 @@ export function SubmissionSheetCell (props){
     // content={<GooglePreview url={value} />}
      content={<PreviewCard url={value} fileName={data.submissionSheetFileName} />}
 >
-    <div style={{lineHeight:'20px'}}>
+    <div style={{lineHeight:'20px', height: '20px'}}>
   <a
         href={value}
         target="_blank"

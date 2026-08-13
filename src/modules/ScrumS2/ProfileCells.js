@@ -2,13 +2,17 @@ import React from 'react';
 
 export function ProfileSharedTargetCell(props) {
     const {value, data ,objKey } = props;
-    const { setShowProfileTarget, setStartTargetDate, setProfileTargetDetails, startDate, getRowIndex, setTargetValue } =
+    const { setShowProfileTarget, setStartTargetDate, setProfileTargetDetails, startDate, getRowIndex, setTargetValue , isHistory} =
         props.context;
 
           if (props.node.rowPinned) {
         return value;
             }
     const i = getRowIndex(data);
+
+      if(isHistory){
+                    return value ?? ""
+                }
 
     return (
         <div style={{ display: 'flex', justifyContent:'center' }}>
@@ -44,8 +48,12 @@ export function ActiveProfileCountCell(props) {
         setTalentToMove,
         setProfileStatusID,
         setHRTalentListFourCount,
+        isHistory
     } = props.context;
 
+      if(isHistory){
+                    return  value
+                }
 
     return (
         <p

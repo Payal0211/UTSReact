@@ -26,6 +26,7 @@ function CompanyCell(props) {
         getCompanySuggestionHandler,
         setselectedCompanyID,
         getHRLISTForComapny,
+        isHistory
     } = props.context;
 
     const i = getRowIndex(data);
@@ -35,6 +36,12 @@ function CompanyCell(props) {
         userData?.UserId === 333 ||
         userData?.UserId === 190 ||
         userData?.UserId === 96;
+
+          if(isHistory){
+                    return  <Tooltip title={value}>
+                            <a href={`/viewCompanyDetails/${data.company_ID}`} target='__blank' className={stylesOBj['company-name']}>{data.companyName}</a>
+                        </Tooltip>
+                }
 
     return (
         <div className={stylesOBj['company-cell']} style={{ display: 'flex' }} onClick={(e) => e.stopPropagation()}>
@@ -139,7 +146,7 @@ function CompanyCell(props) {
                      <Tooltip title={value}>
                             <span className={stylesOBj['company-name']}>{`${value.slice(0, 15)}...`}</span> */}
                                 <Tooltip title={value}>
-                            <span className={stylesOBj['company-name']}>{data.companyName}</span>
+                            <a href={`/viewCompanyDetails/${data.company_ID}`} target='__blank' className={stylesOBj['company-name']}>{data.companyName}</a>
                         </Tooltip>
              
         </div>
