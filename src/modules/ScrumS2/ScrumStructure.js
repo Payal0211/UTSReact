@@ -82,6 +82,10 @@ function ScrumStructure2() {
     const [showTalentProfiles, setShowTalentProfiles] = useState(false);
     const date = new Date();
     const [startDate, setStartDate] = useState(date);
+const isHistory = useMemo(
+    () => moment(monthDate).isBefore(moment(), 'month'),
+    [monthDate]
+);
     const [startTargetDate, setStartTargetDate] = useState(date);
     const [isAddingNewTask, setAddingNewTask] = useState(false);
 
@@ -1289,18 +1293,7 @@ function ScrumStructure2() {
         //         dot: 'warning',
         //     });
         // }F
-        const batch = data?.hrAlerts
-        if (batch?.length) {
-            batch.forEach(i => {
-                alerts.push({
-                    key: 'screenBatch',
-                    text: i.alert,
-                    dot: i.color === "Red" ? 'critical' : 'warning',
-                    isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
-                });
-            })
-
-        }
+      
 
         // // ---------- Interview-reject batch pattern ----------
         const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
@@ -1358,12 +1351,26 @@ function ScrumStructure2() {
                     : `${achieved}/${target} · ${callsPerDay} profile submit : ${callsPerDay} calls`,
                 dot: isAchieved ? 'success' : 'critical',
                 prefixIcon: isAchieved ? '✓' : '✗',
-                isNew: data?.newTriggerAlert === 'achieved'
+                // isNew: data?.newTriggerAlert === 'achieved'
             });
         }
 
+          const batch = data?.hrAlerts
+        if (batch?.length) {
+            batch.forEach(i => {
+                alerts.push({
+                    key: 'screenBatch',
+                    text: i.alert,
+                    dot: i.color === "Red" ? 'critical' : 'warning',
+                    isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
+                });
+            })
+
+        }
+
         const severityOrder = { critical: 0, warning: 1, info: 2, success: 3 };
-        return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
+        // return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
+        return alerts
     }
 
     const DOT_COLORS = {
@@ -1470,7 +1477,7 @@ function BatchEntry({ entry, isLast }) {
                 display: 'flex',
                 flexWrap: 'wrap',
                 alignItems: 'center',
-                gap: 10,
+                gap: 5,
             }}
         >
             {entries.map((entry, i) => (
@@ -1487,7 +1494,7 @@ function BatchEntry({ entry, isLast }) {
                     style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: 5,
+                        gap: 2,
                         padding: '10px',
                         borderRadius: 999,
                         backgroundColor: CHIP_BG[alert.dot],
@@ -2101,6 +2108,8 @@ function BatchEntry({ entry, isLast }) {
             //     borderRight: '1px solid #e2e8f0'
             // },
             cellRenderer: (params) => {
+
+              
                 if (params.node.rowPinned) {
                     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>Total</strong></div>;
                 }
@@ -2118,6 +2127,10 @@ function BatchEntry({ entry, isLast }) {
                 }
 
                 if (params.data.rowSpan <= 0 && !params.api.isAnyFilterPresent()) return "";
+
+                  if(isHistory){
+                    return params.value
+                }
 
                 return (
                     <div style={{ display: "flex", alignItems: "flex-start" }}>
@@ -2179,7 +2192,18 @@ function BatchEntry({ entry, isLast }) {
                     return "";
                 }
                 const i = getRowIndex(data);
-
+  if(isHistory){
+                    return  <a
+                            href={`/allhiringrequest/${data?.hiringRequest_ID}`}
+                            style={{ marginLeft: '5px' }}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={stylesOBj['hr-id']}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {value}
+                        </a>
+                }
 
                 return (<>
                     <div style={{ display: 'flex', }}>
@@ -2264,6 +2288,9 @@ function BatchEntry({ entry, isLast }) {
                 if (props.node.rowPinned) {
                     return "";
                 }
+                  if(isHistory){
+                    return value
+                }
                 return <TaskStatusComp text={value} result={data} />
             },
         },
@@ -2301,21 +2328,21 @@ function BatchEntry({ entry, isLast }) {
         //     valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
         // },
         {
-            headerName: 'Month',
+            headerName: 'Date',
             field: 'hrMonth',
             cellStyle: { textAlign: 'center' },
             width: 110,
             filter: MultiConditionTextFilter,
            
         },
-        {
-            headerName: 'Year',
-            field: 'hrYear',
-            cellStyle: { textAlign: 'center' },
-            width: 110,
-            filter: MultiConditionTextFilter,
+        // {
+        //     headerName: 'Year',
+        //     field: 'hrYear',
+        //     cellStyle: { textAlign: 'center' },
+        //     width: 110,
+        //     filter: MultiConditionTextFilter,
           
-        },
+        // },
         {
             headerName: 'HR Status',
             field: 'tA_HR_Status',
@@ -2768,6 +2795,8 @@ function BatchEntry({ entry, isLast }) {
         },
     ];
 
+  
+
     const handlePostProcessPopup = useCallback((params) => {
         if (params.type !== 'popupCellEditor') return;
 
@@ -2798,6 +2827,17 @@ function BatchEntry({ entry, isLast }) {
      * Sensible Excel-like defaults applied to every column unless overridden above.
      */
     const scrumDefaultColDef = {
+        resizable: true,
+        sortable: true,
+        filter: true,
+        suppressMovable: false, // lets users drag-reorder columns, like Excel column drag
+        wrapHeaderText: true,
+        autoHeaderHeight: true,
+        cellClass: 'ag-cell-excel-border',
+        headerClass: `${gridStyles["ag-header-center"]}`,
+    };
+
+    const scrumHistoryDefaultColDef = {
         resizable: true,
         sortable: true,
         filter: true,
@@ -2852,7 +2892,7 @@ function BatchEntry({ entry, isLast }) {
         return (
             <Modal
                 transitionName=""
-                width="560px"
+                width="700px"
                 centered
                 footer={null}
                 open={open}
@@ -2883,7 +2923,7 @@ function BatchEntry({ entry, isLast }) {
                     </div>
                     {/* Alert chips row */}
                     {alerts.length > 0 && (
-                        <div style={{ display: 'grid', gridTemplateColumns: "auto auto", gap: 6, marginBottom: 20 }}>
+                        <div style={{ display: 'flex', flexDirection:'column', gap: 6, marginBottom: 20 }}>
                             {alerts.map((a) => (
                                 <AlertRowBig key={a.key} alert={a} />
                             ))}
@@ -2941,6 +2981,10 @@ function BatchEntry({ entry, isLast }) {
                     borderRadius: 10,
                     padding: '10px 4px',
                     textAlign: 'center',
+                    display:'flex',
+                    alignItems:'center',
+                    justifyContent:'center',
+                    gap:'5px'
                 }}
             >
                 <div style={{ fontSize: 14, fontWeight: 700, color }}>{value}</div>
@@ -3010,6 +3054,7 @@ function BatchEntry({ entry, isLast }) {
         setHRTalentListFourCount,
         AddComment,
         openAlertDetail,
+        isHistory
     };
 
     // Excel-style single-cell copy (Ctrl+C / Cmd+C). True multi-cell range copy needs
@@ -3465,22 +3510,24 @@ function BatchEntry({ entry, isLast }) {
                             />
                         </Tooltip>
                     </div> */}
+                      <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px', marginLeft: 'auto',}}> 
+                  
+                   
 
                     <button
                         className={stylesOBj.btnPrimary}
-                        style={{ height: '54px', marginLeft: 'auto', }}
+                        style={{ height: '54px' }}
                         onClick={() => {
                             setIsAddNewRow(true);
                             setNewTAHeadUserValue(selectedHead);
                         }}
                     >
                         Add New Task
-                    </button>
-  {/* <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px'}}> 
-                    <div>
+                    </button> 
+                     {/* <div>
                       Month-Year
-                    </div>
-                    <div className={stylesOBj.calendarFilter}> 
+                    </div> */}
+ {/* <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
                       <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                       <DatePicker
                               style={{ backgroundColor: "red" }}
@@ -3493,13 +3540,71 @@ function BatchEntry({ entry, isLast }) {
                               selected={monthDate}
                               onChange={date=>setMonthDate(date)}
                               dateFormat="MM-yyyy"
+                              maxDate={today}
                               showMonthYearPicker
                             />
-                    </div>
-                  </div> */}
+                    </div> */}
+                  </div>
                 </div>
 
-                <div
+                {isHistory ? <>
+                  <div
+                    ref={gridWrapperRef}
+                    className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+                    style={{ height: gridHeightPx }}
+                >
+
+                    {isLoading ? <TableSkeleton /> :
+
+                        <AgGridReact
+                            onGridReady={onGridReady}
+                            onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
+                            theme={scrumGridTheme}
+                            rowData={TaListData}
+                            columnDefs={getScrumGridColumns()}
+                            defaultColDef={scrumHistoryDefaultColDef}
+                            context={gridContext}
+                            getRowId={(params) => String(params.data.id)}
+                            suppressRowTransform={true}
+                            animateRows={false}
+                            headerHeight={38}
+                            rowHeight={25}
+                            onCellKeyDown={handleGridKeyDown}
+                            onCellEditingStarted={handleCellEditingStarted}
+                            postProcessPopup={handlePostProcessPopup}
+                            groupDisplayType="singleColumn"
+                            getRowStyle={(params) => {
+                                if (params.node.rowPinned) {
+                                    return {
+                                        backgroundColor: '#F4F6F8',
+                                        fontWeight: '700',
+                                        borderTop: '2px solid #D9DEE3',
+                                        color: '#1F2937'
+                                    };
+                                }
+
+                                return null;
+                            }}
+                            groupDefaultExpanded={-1}
+                            autoGroupColumnDef={autoGroupColumnDef}
+                            pinnedBottomRowData={pinnedBottomRowData}
+                            onSortChanged={(params) => updatePinnedTotalRow(params.api)}
+                            onFilterChanged={(params) => {
+                                const filtered = params.api.isAnyFilterPresent();
+
+                                setHasFilter(filtered);
+                                updatePinnedTotalRow(params.api);
+                                params.api.refreshCells({ force: true });
+                                params.api.redrawRows();
+                            }}
+                            onColumnMoved={onColumnMoved}
+                            onColumnResized={onColumnResized}
+                        />
+                    }
+
+                </div>
+                </> : <>
+                 <div
                     style={{
                         display: 'flex',
                         gap: 32,
@@ -3595,6 +3700,9 @@ function BatchEntry({ entry, isLast }) {
                     }
 
                 </div>
+                </>}
+
+               
 
 
 
