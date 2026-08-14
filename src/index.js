@@ -8,7 +8,7 @@ import { ClearBrowserCacheBoundary } from 'react-clear-browser-cache';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-	<ClearBrowserCacheBoundary auto={true} fallback='' duration={300000} clearCacheAndReload = {true}>
+	<ClearBrowserCacheBoundary auto={true} fallback='' duration={300000} clearCacheAndReload={true}>
 		<BrowserRouter>
 			<App />
 		</BrowserRouter>

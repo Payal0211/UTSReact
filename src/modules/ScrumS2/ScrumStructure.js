@@ -1280,6 +1280,7 @@ const isHistory = useMemo(
                 key: 'lowProfiles',
                 text: `only ${activeProfiles} active`,
                 dot: 'info',
+                isNew: activeProfiles < 3
             });
         }
 
@@ -1394,8 +1395,8 @@ const isHistory = useMemo(
 const STATUS_CHIP_STYLES = {
     'screening reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
     'screen reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
-    'shared': { label: 'shared', icon: '➤', bg: '#EAF2FE', text: '#1A56C4' },
-    'interview': { label: 'interview', icon: '📋', bg: '#FFF6E0', text: '#B7791F' },
+    'profile shared': { label: 'profile shared', icon: '➤', bg: '#EAF2FE', text: '#1A56C4' },
+    'in interview': { label: 'in interview', icon: '📋', bg: '#FFF6E0', text: '#B7791F' },
     'submitted': { label: 'submitted', icon: '📋', bg: '#FDECEC', text: '#D93025' },
     'interview reject': { label: 'interview reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
     'duplicate': { label: 'duplicate', icon: '⊘', bg: '#F0F0F0', text: '#666' },
@@ -1480,6 +1481,7 @@ function BatchEntry({ entry, isLast }) {
                 flexWrap: 'wrap',
                 alignItems: 'center',
                 gap: 5,
+                width:'fit-content'
             }}
         >
             {entries.map((entry, i) => (
@@ -2894,7 +2896,8 @@ function BatchEntry({ entry, isLast }) {
         return (
             <Modal
                 transitionName=""
-                width="700px"
+                width="fit-content"
+                style={{minWidth:'450px'}}
                 centered
                 footer={null}
                 open={open}
@@ -3427,6 +3430,7 @@ function BatchEntry({ entry, isLast }) {
 
     const onColumnMoved = (params) => {
         if (!params.finished) return; // Ignore intermediate drag events
+        if(params.toIndex + 1 < 7) return
 
         // console.log("Moved Column:", params.column.getColId());
         // console.log("New Position:", params.toIndex);
