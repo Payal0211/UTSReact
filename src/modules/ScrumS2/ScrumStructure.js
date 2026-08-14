@@ -1364,7 +1364,7 @@ const isHistory = useMemo(
                     text: i.alert,
                     dot: i.color === "Red" ? 'critical' : 'warning',
                     // isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
-                    isNew: i?.alertDetailText ? true : false,
+                    isNew: i?.alertTrigger ? true : false,
                     ...i
                 });
             })
