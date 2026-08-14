@@ -60,7 +60,7 @@ export const getGoogleFileId = (url) => {
     ];
 
     for (const p of patterns) {
-        const match = url.match(p);
+        const match = url?.match(p);
         if (match) return match[1];
     }
 
@@ -77,7 +77,7 @@ export const getPreviewUrl = (url) => {
 
 export const getDomain = (url) => {
     try {
-        return new URL(url).hostname;
+        return new URL(url)?.hostname;
     } catch {
         return "";
     }
@@ -215,7 +215,7 @@ export function SubmissionSheetCell (props){
     const { AddComment, getRowIndex } = props.context;
     const i = getRowIndex(data);
 
-    return (
+    return ( value ?
         // <div style={{lineHeight:'20px'}}><a target="__blank" href={value}>{value?.length > 50 ? `${value?.slice(0,50)}...`: value}</a> </div>
    <Popover
       placement="leftTop"
@@ -226,7 +226,7 @@ export function SubmissionSheetCell (props){
     trigger="hover"
     mouseEnterDelay={0.4}
     // content={<GooglePreview url={value} />}
-     content={<PreviewCard url={value} fileName={data.submissionSheetFileName} />}
+     content={ <PreviewCard url={value} fileName={data.submissionSheetFileName} />}
 >
     <div style={{lineHeight:'20px', height: '20px'}}>
   <a
@@ -239,6 +239,6 @@ export function SubmissionSheetCell (props){
     </a>
     </div>
   
-</Popover>
+</Popover> : ''
     );
 }
