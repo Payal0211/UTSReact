@@ -375,7 +375,8 @@ const isHistory = useMemo(
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
-            DisplayOrder: TaListData[i - 1]?.displayOrder
+            DisplayOrder: TaListData[i - 1]?.displayOrder,
+            tab_Name: scrumTabTitle
         }
         updateORERUPDOWN(pl)
 
@@ -394,7 +395,8 @@ const isHistory = useMemo(
         let pl = {
             ID: record?.id,
             TAHeadUserIDs: selectedHead,
-            DisplayOrder: TaListData[i + 1]?.displayOrder
+            DisplayOrder: TaListData[i + 1]?.displayOrder,
+            tab_Name: scrumTabTitle
         }
         updateORERUPDOWN(pl)
 
@@ -944,7 +946,7 @@ const isHistory = useMemo(
                 dataIndex: "talentStatus",
                 key: "talentStatus",
                 render: (text, row) => {
-                    console.log(row)
+        
                     return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
                 }
             },
@@ -1501,7 +1503,7 @@ function BatchEntry({ entry, isLast }) {
                         gap: 2,
                         padding: '10px',
                         borderRadius: 999,
-                        backgroundColor: CHIP_BG[alert.dot],
+                        backgroundColor: alert.color ? alert.color : CHIP_BG[alert.dot],
                         fontSize: 12,
                         fontWeight: 500,
                         color: '#3a3a3a',
@@ -1547,7 +1549,7 @@ function BatchEntry({ entry, isLast }) {
                         gap: 10,
                         padding: '0 8px',
                         borderRadius: 999,
-                        backgroundColor: CHIP_BG[alert.dot],
+                        backgroundColor: alert.color ? alert.color : CHIP_BG[alert.dot],
                         fontSize: 10.5,
                         fontWeight: 500,
                         color: '#3a3a3a',
@@ -1992,7 +1994,8 @@ function BatchEntry({ entry, isLast }) {
             // ID: row?.id,
             TAUserID: row.tA_UserID,
             TAHeadUserIDs: selectedHead,
-            TA_ScrumOrder: TaListData.find(i => i.tA_UserID === prev.taId)?.tA_ScrumOrder
+            TA_ScrumOrder: TaListData.find(i => i.tA_UserID === prev.taId)?.tA_ScrumOrder,
+            tab_Name: scrumTabTitle
             // DisplayOrder: TaListData[i + 1]?.displayOrder
         }
 
@@ -2029,7 +2032,8 @@ function BatchEntry({ entry, isLast }) {
             // ID: row?.id,
             TAUserID: row.tA_UserID,
             TAHeadUserIDs: selectedHead,
-            TA_ScrumOrder: TaListData.find(i => i.tA_UserID === next.taId)?.tA_ScrumOrder
+            TA_ScrumOrder: TaListData.find(i => i.tA_UserID === next.taId)?.tA_ScrumOrder,
+            tab_Name: scrumTabTitle
             // DisplayOrder: TaListData[i + 1]?.displayOrder
         }
 
@@ -2138,7 +2142,7 @@ function BatchEntry({ entry, isLast }) {
 
                 return (
                     <div style={{ display: "flex", alignItems: "flex-start" }}>
-                        {params.api.isAnyFilterPresent() ? "" : <div style={{ display: "flex" }}>
+                        {(params.api.isAnyFilterPresent() || scrumTabTitle === "C") ? "" : <div style={{ display: "flex" }}>
                             <button
                                 onClick={() => moveTAGroupUp(params.data)}
                                 disabled={!canMoveTAGroupUp(params.data)}
@@ -2211,7 +2215,7 @@ function BatchEntry({ entry, isLast }) {
 
                 return (<>
                     <div style={{ display: 'flex', }}>
-                        {props.api.isAnyFilterPresent() ? "" : <>
+                        {(props.api.isAnyFilterPresent() || scrumTabTitle === "C") ? "" : <>
                             <button
                                 onClick={() => moveRowUp(i, data)}
                                 disabled={!canMoveUp(data)}
@@ -3423,6 +3427,7 @@ function BatchEntry({ entry, isLast }) {
         const result = await TaDashboardDAO.updateScrumTaskColumnWidthRequestDAO(pl);
         if (result.statusCode === HTTPStatusCode.OK) {
             // message.success(" updated")
+            setColumnOrder(result.responseBody)
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             message.error("Something went wrong!")
         }
@@ -3457,7 +3462,7 @@ function BatchEntry({ entry, isLast }) {
             ColumnWidth: parseInt(params.column.getActualWidth()),
         };
 
-        console.log(pl);
+        // console.log(pl);
         updateColumnWidth(pl)
     };
     return (

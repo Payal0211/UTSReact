@@ -171,7 +171,7 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.UPDATE_SCRUM_TASK_LIST + `?ID=${payload?.ID}&TAHeadUserIDs=${payload?.TAHeadUserIDs}&DisplayOrder=${payload?.DisplayOrder}`
+			TaDashboardURL.UPDATE_SCRUM_TASK_LIST + `?ID=${payload?.ID}&TAHeadUserIDs=${payload?.TAHeadUserIDs}&DisplayOrder=${payload?.DisplayOrder}&tab_Name=${payload?.tab_Name}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -188,7 +188,7 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.UPDATE_SCRUM_GROUP_ORDER_LIST +`?TAUserID=${payload.TAUserID}&TAHeadUserIDs=${payload.TAHeadUserIDs}&TA_ScrumOrder=${payload?.TA_ScrumOrder}`
+			TaDashboardURL.UPDATE_SCRUM_GROUP_ORDER_LIST +`?TAUserID=${payload.TAUserID}&TAHeadUserIDs=${payload.TAHeadUserIDs}&TA_ScrumOrder=${payload?.TA_ScrumOrder}&tab_Name=${payload?.tab_Name}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -205,7 +205,7 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.UPDATE_SCRUM_COLUMN_ORDER +`?POD_Id=${payload.POD_Id}&ColumnName=${payload.ColumnName}&ColumnOrder=${payload?.ColumnOrder}`
+			TaDashboardURL.UPDATE_SCRUM_COLUMN_ORDER +`?POD_Id=${payload.POD_Id}&ColumnName=${payload.ColumnName}&ColumnOrder=${payload?.ColumnOrder}&tab_Name=${payload?.tab_Name}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
