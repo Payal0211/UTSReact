@@ -1271,7 +1271,7 @@ const isHistory = useMemo(
                 key: 'stale',
                 text: `${days} days open`,
                 dot: 'critical',
-                isNew: data?.newTriggerAlert === 'days'
+                // isNew: data?.newTriggerAlert === 'days'
             });
         }
 
@@ -1282,7 +1282,7 @@ const isHistory = useMemo(
                 key: 'lowProfiles',
                 text: `only ${activeProfiles} active`,
                 dot: 'info',
-                isNew: activeProfiles < 3
+                // isNew: activeProfiles < 3
             });
         }
 
@@ -1366,7 +1366,7 @@ const isHistory = useMemo(
                     text: i.alert,
                     dot: i.color === "Red" ? 'critical' : 'warning',
                     // isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
-                    isNew: i?.alertTrigger ? true : false,
+                    // isNew: i?.alertTrigger ? true : false,
                     ...i
                 });
             })
@@ -1690,7 +1690,7 @@ function BatchEntry({ entry, isLast }) {
         }
 
         return <div
-            onClick={() => context.openAlertDetail(data)}
+            onClick={() => openAlertDetail(data)}
             style={{ cursor: 'pointer', height: '100%', width: '100%' }}
         >
             <AlertsCell data={data} />
