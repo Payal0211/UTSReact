@@ -1464,7 +1464,7 @@ function BatchEntry({ entry, isLast }) {
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: 4,
-                            fontSize: 10.5,
+                            fontSize: 8,
                             fontWeight: 600,
                             padding: '2px 8px',
                             borderRadius: 999,
@@ -1527,7 +1527,7 @@ function BatchEntry({ entry, isLast }) {
                         padding: '10px',
                         borderRadius: 999,
                         backgroundColor: alert.color ? alert.color : CHIP_BG[alert.dot],
-                        fontSize: 12,
+                        fontSize: 10,
                         fontWeight: 500,
                         color: '#3a3a3a',
                         lineHeight: '14px',   // was 16px
@@ -2944,10 +2944,10 @@ function BatchEntry({ entry, isLast }) {
 
 
                     {/* Title + subtitle */}
-                    <h2 style={{ fontSize: 12, fontWeight: 700, margin: '0 0 6px' }}>
+                    <h2 style={{ fontSize: 10, fontWeight: 700, margin: '0 0 6px' }}>
                         {data.hrTitle}
                     </h2>
-                    <p style={{ color: '#6b7280', fontSize: 10, margin: '0 0 20px' }}>
+                    <p style={{ color: '#6b7280', fontSize: 8, margin: '0 0 20px' }}>
                       <span>{data.taName} · {data.companyName} ·</span>  {data.hrNumber}
                     </p>
 
@@ -2959,7 +2959,7 @@ function BatchEntry({ entry, isLast }) {
                     </div>
 
                     {/* Funnel */}
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', letterSpacing: 0.5, marginBottom: 10 }}>
+                    <div style={{ fontSize: 8, fontWeight: 700, color: '#6b7280', letterSpacing: 0.5, marginBottom: 10 }}>
                         FUNNEL
                     </div>
                     {/* Alert chips row */}
@@ -3035,8 +3035,8 @@ function BatchEntry({ entry, isLast }) {
                     gap:'5px'
                 }}
             >
-                <div style={{ fontSize: 14, fontWeight: 700, color }}>{value}</div>
-                <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{label}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color }}>{value}</div>
+                <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>{label}</div>
             </div>
         );
     }
