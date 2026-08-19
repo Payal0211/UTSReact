@@ -150,6 +150,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.getAllScrumTaskListRequest');
 		}
 	},
+	getAllScrumHistoryListRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_HISTORY_DETAILS +`?Year=${payload?.Year}&Month=${payload?.Month}&TAHeadUserID=${payload?.TAHeadUserID}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+        // httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getAllScrumHistoryListRequest');
+		}
+	},
 	getScrumColumOrderRequest: async function (id) {
 		let httpService = new HttpServices();
 		httpService.URL =
