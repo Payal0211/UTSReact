@@ -2345,6 +2345,7 @@ function BatchEntry({ entry, isLast }) {
             width: 120,
             pinned: 'left',
             suppressMovable: true,
+            filterParams: { type: 'status', list:filtersList?.TaskStatus},
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
