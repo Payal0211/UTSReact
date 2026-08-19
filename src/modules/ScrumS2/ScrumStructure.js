@@ -1389,7 +1389,30 @@ const isHistory = useMemo(
                     text: i.alert,
                     dot: i.color === "Red" ? 'critical' : 'warning',
                     // isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
-                    isNew: i?.alertTrigger ? true : false,
+                    isNew: i?.alertTrigger !== "$" ? true : false,
+                    ...i
+                });
+            })
+
+        }
+
+        const severityOrder = { critical: 0, warning: 1, info: 2, success: 3 };
+        // return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
+        return alerts
+    }
+      function computePoPUPAlerts(data) {
+        const alerts = [];
+
+   
+          const batch = data?.hrAlerts
+        if (batch?.length) {
+            batch.forEach(i => {
+                alerts.push({
+                    key: 'screenBatch',
+                    text: i.alert,
+                    dot: i.color === "Red" ? 'critical' : 'warning',
+                    // isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
+                    isNew: i?.alertTrigger !== "$" ? true : false,
                     ...i
                 });
             })
@@ -2339,6 +2362,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 80,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2407,6 +2431,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'talent_AnnualCTC_Budget_INRValueStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2417,6 +2442,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'uplersFeesPer',
             cellStyle: { textAlign: 'center' },
             width: 100,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2427,6 +2453,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'totalRevenue_NoofTalentStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2437,6 +2464,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'days',
             cellStyle: { textAlign: 'center' },
             width: 80,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2447,6 +2475,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'noOfProfile_TalentsTillDate',
             width: 80,
             filter: MultiConditionTextFilter,
+            filterParams: { type: 'number'},
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
@@ -2501,6 +2530,7 @@ function BatchEntry({ entry, isLast }) {
             cellStyle: { textAlign: 'center' },
             width: 80,
             filter: MultiConditionTextFilter,
+            filterParams: { type: 'number'},
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2515,6 +2545,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -2530,6 +2561,7 @@ function BatchEntry({ entry, isLast }) {
             width: 80,
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
+            filterParams: { type: 'number'},
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2541,6 +2573,7 @@ function BatchEntry({ entry, isLast }) {
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
+            filterParams: { type: 'number'},
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2552,6 +2585,7 @@ function BatchEntry({ entry, isLast }) {
         {
             headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
+            filterParams: { type: 'number'},
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2563,6 +2597,7 @@ function BatchEntry({ entry, isLast }) {
         {
             headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
+            filterParams: { type: 'number'},
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2577,6 +2612,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             cellRenderer: ProfileSharedTargetCell,
             cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
@@ -2585,6 +2621,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
 
@@ -2594,6 +2631,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'profile_Shared_Achieved',
             cellStyle: { textAlign: 'center' },
             width: 150,
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
             cellRenderer: (props) => {
@@ -2623,6 +2661,7 @@ function BatchEntry({ entry, isLast }) {
             width: 150,
             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
+            filterParams: { type: 'number'},
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -2745,6 +2784,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: "Yesterday's No of Calls",
             field: 'noOfCallsGivenDay',
             cellStyle: { textAlign: 'center' },
+            filterParams: { type: 'number'},
             filter: MultiConditionTextFilter,
             width: 150,
             cellRendererParams: { objKey: 'noOfCallsGivenDay' },
@@ -2924,7 +2964,7 @@ function BatchEntry({ entry, isLast }) {
     function AlertDetailModal({ open, data, onClose }) {
         if (!data) return null;
 
-        const alerts = computeAlerts(data);
+        const alerts = computePoPUPAlerts(data);
         const daysOpen = data?.days ?? 0;
         const totalInterviewRejects = data?.totalNoOfInterviewReject ?? 0;
         const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
@@ -2969,7 +3009,7 @@ function BatchEntry({ entry, isLast }) {
                              return   <>
                                 
                                 <AlertRowBig key={a.key} alert={a} />
-                            {a.alertDetailText && <HrAlertBatchChips
+                            {(a.alertDetailText && a.alertDetailText !=="$" ) && <HrAlertBatchChips
                         title="First Batch"
                         text={a.alertDetailText}
                     />}

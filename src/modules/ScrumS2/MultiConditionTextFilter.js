@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useGridFilter } from 'ag-grid-react';
 
-const OPERATORS = [
+// ---------- Operator sets ----------
+const TEXT_OPERATORS = [
     { value: 'contains', label: 'Contains' },
     { value: 'notContains', label: 'Not contains' },
     { value: 'equals', label: 'Equals' },
@@ -12,9 +13,40 @@ const OPERATORS = [
     { value: 'notBlank', label: 'Not blank' },
 ];
 
-const newCondition = (joiner) => ({ operator: 'contains', value: '', joiner });
+const NUMBER_OPERATORS = [
+    { value: 'equals', label: 'Equals' },
+    { value: 'notEqual', label: 'Not equal' },
+    { value: 'greaterThan', label: 'Greater than' },
+    { value: 'greaterThanOrEqual', label: 'Greater than or equal' },
+    { value: 'lessThan', label: 'Less than' },
+    { value: 'lessThanOrEqual', label: 'Less than or equal' },
+    { value: 'inRange', label: 'In range' },
+    { value: 'blank', label: 'Blank' },
+    { value: 'notBlank', label: 'Not blank' },
+];
 
-function evaluate(cellValue, condition) {
+const NO_VALUE_OPERATORS = ['blank', 'notBlank'];
+
+// A column is treated as numeric when its colDef declares:
+//   filterParams: { type: 'number' }
+const isNumericColumn = (colDef) => colDef?.filterParams?.type === 'number';
+
+const newCondition = (joiner, numeric) =>
+    numeric
+        ? { operator: 'equals', value: '', valueTo: '', joiner }
+        : { operator: 'contains', value: '', joiner };
+
+// Strips currency symbols / commas / etc so fields like "₹1,20,000" or
+// formatted strings still compare correctly as numbers.
+function parseNumeric(raw) {
+    if (raw === null || raw === undefined || raw === '') return null;
+    if (typeof raw === 'number') return raw;
+    const cleaned = String(raw).replace(/[^0-9.-]/g, '');
+    if (cleaned === '' || isNaN(cleaned)) return null;
+    return Number(cleaned);
+}
+
+function evaluateText(cellValue, condition) {
     const cell = (cellValue ?? '').toString().toLowerCase();
     const val = (condition.value ?? '').toString().toLowerCase();
 
@@ -31,12 +63,56 @@ function evaluate(cellValue, condition) {
     }
 }
 
-const isConditionUsable = (c) =>
-    c.operator === 'blank' || c.operator === 'notBlank' || (c.value ?? '') !== '';
+function evaluateNumber(cellValue, condition) {
+    if (condition.operator === 'blank') {
+        return cellValue === null || cellValue === undefined || cellValue === '';
+    }
+    if (condition.operator === 'notBlank') {
+        return !(cellValue === null || cellValue === undefined || cellValue === '');
+    }
+
+    const cellNum = parseNumeric(cellValue);
+    const val = parseFloat(condition.value);
+    if (cellNum === null || isNaN(val)) return false;
+
+    switch (condition.operator) {
+        case 'equals': return cellNum === val;
+        case 'notEqual': return cellNum !== val;
+        case 'greaterThan': return cellNum > val;
+        case 'greaterThanOrEqual': return cellNum >= val;
+        case 'lessThan': return cellNum < val;
+        case 'lessThanOrEqual': return cellNum <= val;
+        case 'inRange': {
+            const valTo = parseFloat(condition.valueTo);
+            if (isNaN(valTo)) return cellNum >= val;
+            const lo = Math.min(val, valTo);
+            const hi = Math.max(val, valTo);
+            return cellNum >= lo && cellNum <= hi;
+        }
+        default: return true;
+    }
+}
+
+const isConditionUsable = (c, numeric) => {
+    if (NO_VALUE_OPERATORS.includes(c.operator)) return true;
+    if (numeric && c.operator === 'inRange') {
+        return (c.value ?? '') !== '' || (c.valueTo ?? '') !== '';
+    }
+    return (c.value ?? '') !== '';
+};
 
 export default function MultiConditionTextFilter({ model, onModelChange, colDef, valueGetter }) {
+//     console.log("FILTER COLUMN:", colDef?.field);
+// console.log("FILTER PARAMS:", colDef?.filterParams);
+// console.log("NUMERIC:", colDef?.filterParams?.type);
+
+const numeric = isNumericColumn(colDef);
+   
+    const OPERATORS = numeric ? NUMBER_OPERATORS : TEXT_OPERATORS;
+    const evaluate = numeric ? evaluateNumber : evaluateText;
+
     const [conditions, setConditions] = useState(
-        model?.conditions ?? [newCondition(null), newCondition('AND')]
+        model?.conditions ?? [newCondition(null, numeric), newCondition('AND', numeric)]
     );
 
     // --- Required filter lifecycle methods, registered via the hook ---
@@ -45,7 +121,7 @@ export default function MultiConditionTextFilter({ model, onModelChange, colDef,
             const field = colDef.field;
             const cellValue = valueGetter ? valueGetter(params) : params.data[field];
 
-            const active = conditions.filter(isConditionUsable);
+            const active = conditions.filter((c) => isConditionUsable(c, numeric));
             if (active.length === 0) return true;
 
             let result = evaluate(cellValue, active[0]);
@@ -55,12 +131,12 @@ export default function MultiConditionTextFilter({ model, onModelChange, colDef,
             }
             return result;
         },
-        [conditions, colDef, valueGetter]
+        [conditions, colDef, valueGetter, numeric, evaluate]
     );
 
     const isFilterActive = useCallback(
-        () => conditions.some(isConditionUsable),
-        [conditions]
+        () => conditions.some((c) => isConditionUsable(c, numeric)),
+        [conditions, numeric]
     );
 
     useGridFilter({ doesFilterPass, isFilterActive });
@@ -68,7 +144,7 @@ export default function MultiConditionTextFilter({ model, onModelChange, colDef,
     // Whenever conditions change, tell AG Grid the model changed —
     // this is the replacement for the old filterChangedCallback().
     useEffect(() => {
-        const active = conditions.some(isConditionUsable);
+        const active = conditions.some((c) => isConditionUsable(c, numeric));
         onModelChange(active ? { conditions } : null);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [conditions]);
@@ -82,10 +158,10 @@ export default function MultiConditionTextFilter({ model, onModelChange, colDef,
     };
 
     const resetConditions = () => {
-    setConditions([newCondition(null), newCondition('AND')]);
-};
+        setConditions([newCondition(null, numeric), newCondition('AND', numeric)]);
+    };
 
-    const addCondition = () => setConditions((prev) => [...prev, newCondition('AND')]);
+    const addCondition = () => setConditions((prev) => [...prev, newCondition('AND', numeric)]);
     const removeCondition = (index) => setConditions((prev) => prev.filter((_, i) => i !== index));
 
     return (
@@ -135,19 +211,48 @@ export default function MultiConditionTextFilter({ model, onModelChange, colDef,
                         )}
                     </div>
 
-                    {cond.operator !== 'blank' && cond.operator !== 'notBlank' && (
-                        <input
-                            type="text"
-                            value={cond.value}
-                            placeholder="Filter value..."
-                            onChange={(e) => updateCondition(i, 'value', e.target.value)}
-                            style={{ width: '100%', padding: '6px 8px', marginTop: 6, borderRadius: 6, border: '1px solid #ddd', boxSizing: 'border-box' }}
-                        />
+                    {!NO_VALUE_OPERATORS.includes(cond.operator) && (
+                        numeric ? (
+                            cond.operator === 'inRange' ? (
+                                <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                                    <input
+                                        type="number"
+                                        value={cond.value}
+                                        placeholder="From..."
+                                        onChange={(e) => updateCondition(i, 'value', e.target.value)}
+                                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #ddd', boxSizing: 'border-box' }}
+                                    />
+                                    <input
+                                        type="number"
+                                        value={cond.valueTo}
+                                        placeholder="To..."
+                                        onChange={(e) => updateCondition(i, 'valueTo', e.target.value)}
+                                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #ddd', boxSizing: 'border-box' }}
+                                    />
+                                </div>
+                            ) : (
+                                <input
+                                    type="number"
+                                    value={cond.value}
+                                    placeholder="Filter value..."
+                                    onChange={(e) => updateCondition(i, 'value', e.target.value)}
+                                    style={{ width: '100%', padding: '6px 8px', marginTop: 6, borderRadius: 6, border: '1px solid #ddd', boxSizing: 'border-box' }}
+                                />
+                            )
+                        ) : (
+                            <input
+                                type="text"
+                                value={cond.value}
+                                placeholder="Filter value..."
+                                onChange={(e) => updateCondition(i, 'value', e.target.value)}
+                                style={{ width: '100%', padding: '6px 8px', marginTop: 6, borderRadius: 6, border: '1px solid #ddd', boxSizing: 'border-box' }}
+                            />
+                        )
                     )}
                 </div>
             ))}
 
-           <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button
                     onClick={addCondition}
                     style={{
@@ -178,7 +283,7 @@ export default function MultiConditionTextFilter({ model, onModelChange, colDef,
                     Reset
                 </button>
             </div>
-       
+
         </div>
     );
 }
