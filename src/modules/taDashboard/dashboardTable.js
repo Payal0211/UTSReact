@@ -901,7 +901,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         animateRows={false}
         defaultColDef={scrumDefaultColDef}
       //   getRowId={(params) => String(params.data.id)}
-      //               suppressRowTransform={true}
+        suppressScrollOnNewData={true}
+        suppressRowTransform={true}
       //               animateRows={false}
       //               headerHeight={38}
       // rowHeight={"auto"}

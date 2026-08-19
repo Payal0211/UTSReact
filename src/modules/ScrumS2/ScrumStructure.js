@@ -1299,15 +1299,15 @@ const isHistory = useMemo(
         }
 
         // ---------- Active profiles below floor ----------
-        const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
-        if (activeProfiles < 3) {
-            alerts.push({
-                key: 'lowProfiles',
-                text: `only ${activeProfiles} active`,
-                dot: 'info',
-                // isNew: activeProfiles < 3
-            });
-        }
+        // const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+        // if (activeProfiles < 3) {
+        //     alerts.push({
+        //         key: 'lowProfiles',
+        //         text: `only ${activeProfiles} active`,
+        //         dot: 'info',
+        //         // isNew: activeProfiles < 3
+        //     });
+        // }
 
         // ---------- Screen-reject batch pattern ----------
         // const screenRejects = data?.screenReject ?? 0;
