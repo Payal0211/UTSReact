@@ -52,7 +52,9 @@ function ScrumStructure2() {
     const navigate = useNavigate()
     const [filtersList, setFiltersList] = useState({});
     const [TaListData, setTaListData] = useState([]);
-    const [selectedHead, setSelectedHead] = useState('');
+      let presistHeaddata = localStorage.getItem('scrumSelectedHead')
+ 
+    const [selectedHead, setSelectedHead] = useState(presistHeaddata ? +presistHeaddata :'');
     const [isLoading, setIsLoading] = useState(false);
     const [columnOrder, setColumnOrder] = useState([])
     const [draggedRow, setDraggedRow] = useState(null);
@@ -240,8 +242,19 @@ const isHistory = useMemo(
             taHeadUserID: +selectedHead,
             tab_Name: scrumTabTitle
         };
+
+        let pl2 = {
+            Year: moment(monthDate).format('YYYY'),
+            Month:moment(monthDate).format('M'),
+            TAHeadUserID:+selectedHead
+        }
         setIsLoading(true);
-        const result = await TaDashboardDAO.getAllScrumTaskListRequestDAO(pl);
+        let result 
+        if(isHistory){
+            result = await TaDashboardDAO.getAllScrumHistoryListRequestDAO(pl2);
+        }else{
+            result = await TaDashboardDAO.getAllScrumTaskListRequestDAO(pl);
+        }
 
         setIsLoading(false);
 
@@ -257,9 +270,11 @@ const isHistory = useMemo(
             // setLoading(false);
             return navigate(UTSRoutes.SOMETHINGWENTWRONG);
         } else {
+            setTaListData([]);
             return "NO DATA FOUND";
+              
         }
-    }, [tableFilteredState, selectedHead, searchText, navigate, scrumTabTitle]);
+    }, [tableFilteredState, selectedHead, searchText, navigate, scrumTabTitle,isHistory, monthDate]);
 
     useEffect(() => {
         if (selectedHead) {
@@ -267,7 +282,7 @@ const isHistory = useMemo(
             getCOLUMNOrder(selectedHead)
         }
 
-    }, [searchText, tableFilteredState, selectedHead, scrumTabTitle]);
+    }, [searchText, tableFilteredState, selectedHead, scrumTabTitle,monthDate]);
 
 
 
@@ -420,7 +435,7 @@ const isHistory = useMemo(
 
     useEffect(() => {
 
-        if (filtersList?.HeadUsers?.length) {
+        if (filtersList?.HeadUsers?.length && selectedHead === "") {
             setSelectedHead(filtersList?.HeadUsers[0]?.id);
         }
 
@@ -428,6 +443,14 @@ const isHistory = useMemo(
 
 
     }, [filtersList?.HeadUsers, , userData]);
+
+    useEffect(()=>{
+        if(selectedHead){
+            console.log('ssdas',selectedHead)
+           localStorage.setItem('scrumSelectedHead', selectedHead) 
+        }
+         
+    },[selectedHead])
 
     const autoGroupColumnDef = {
         headerName: "TA",
@@ -1366,7 +1389,7 @@ const isHistory = useMemo(
                     text: i.alert,
                     dot: i.color === "Red" ? 'critical' : 'warning',
                     // isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
-                    // isNew: i?.alertTrigger ? true : false,
+                    isNew: i?.alertTrigger ? true : false,
                     ...i
                 });
             })
@@ -1869,6 +1892,15 @@ function BatchEntry({ entry, isLast }) {
             taName: "Total",
         };
 
+          const uniqueRows = Array.from(
+        new Map(
+            rows.map(row => [
+                row.hrNumber, // HR ID field
+                row
+            ])
+        ).values()
+    );
+
         columnDefs.forEach((col) => {
             const field = col.field;
 
@@ -1879,7 +1911,7 @@ function BatchEntry({ entry, isLast }) {
             let hasNumericValue = false;
             const isCurrencyField = currencyFields.includes(field);
 
-            rows.forEach((row) => {
+            uniqueRows.forEach((row) => {
                 const rawValue = row[field];
 
                 if (isCurrencyField) {

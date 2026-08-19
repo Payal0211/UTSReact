@@ -102,6 +102,7 @@ export class TaDashboardURL {
 	static GET_ALL_GOAL_COMMENT = 'GetPotentialListComments'
 	static INSERT_GOAL_COMMENT ='InsertPotentialListComment'
 	static GET_SCRUM_TASK_DETAILS = "GetTANewScrumTaskDetailsListing"
+	static GET_SCRUM_HISTORY_DETAILS = "getTANewScrumHistoryBasedonTAHeadUserID"
 	static GET_SCRUM_COLUMN_ORDER = 'GetColumnOrderPODWise'
 	static UPDATE_SCRUM_TASK_LIST = "UpdateTADashboardDragAndDrop"
 	static UPDATE_SCRUM_GROUP_ORDER_LIST = "UpdateTADashboardDragAndDropTAHeadUserIDWise"
