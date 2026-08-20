@@ -424,6 +424,12 @@ body {
     font-family: inherit;
 }
 
+
+
+.grid-wrapper [class*="ag-grid-pinned-left-cells"]{
+    z-index: 1 !important;
+}
+
 .inline-select-wrap::after {
     content: '';
     position: absolute;

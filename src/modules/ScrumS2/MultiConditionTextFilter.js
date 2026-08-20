@@ -307,96 +307,239 @@ export default function MultiConditionTextFilter({
     // FILTER PASS
     // =========================================================
 
+    // const doesFilterPass = useCallback(
+    //     (params) => {
+    //         // =================================================
+    //         // STATUS CHECKBOX FILTER
+    //         // =================================================
+
+    //         if (isStatusFilter) {
+    //             // No selected status means no filter
+    //             if (
+    //                 selectedStatuses.length === 0
+    //             ) {
+    //                 return true;
+    //             }
+
+    //             const field =
+    //                 colDef.field;
+
+    //             const cellValue =
+    //                 valueGetter
+    //                     ? valueGetter(params)
+    //                     : params.data?.[field];
+
+    //             return selectedStatuses.includes(
+    //                 cellValue
+    //             );
+    //         }
+
+    //         // =================================================
+    //         // NORMAL FILTER
+    //         // =================================================
+
+    //         const field =
+    //             colDef.field;
+
+    //         const cellValue =
+    //             valueGetter
+    //                 ? valueGetter(params)
+    //                 : params.data?.[field];
+
+    //         const active =
+    //             conditions.filter(
+    //                 (condition) =>
+    //                     isConditionUsable(
+    //                         condition,
+    //                         numeric
+    //                     )
+    //             );
+
+    //         if (
+    //             active.length === 0
+    //         ) {
+    //             return true;
+    //         }
+
+    //         let result = evaluate(
+    //             cellValue,
+    //             active[0]
+    //         );
+
+    //         for (
+    //             let i = 1;
+    //             i < active.length;
+    //             i++
+    //         ) {
+    //             const pass =
+    //                 evaluate(
+    //                     cellValue,
+    //                     active[i]
+    //                 );
+
+    //             result =
+    //                 active[i].joiner ===
+    //                 'OR'
+    //                     ? result || pass
+    //                     : result && pass;
+    //         }
+
+    //         return result;
+    //     },
+    //     [
+    //         isStatusFilter,
+    //         selectedStatuses,
+    //         conditions,
+    //         colDef,
+    //         valueGetter,
+    //         numeric,
+    //         evaluate,
+    //     ]
+    // );
+
+
     const doesFilterPass = useCallback(
-        (params) => {
-            // =================================================
-            // STATUS CHECKBOX FILTER
-            // =================================================
+  (params) => {
+    // =========================================================
+    // STATUS CHECKBOX FILTER
+    // =========================================================
 
-            if (isStatusFilter) {
-                // No selected status means no filter
-                if (
-                    selectedStatuses.length === 0
-                ) {
-                    return true;
-                }
+    if (isStatusFilter) {
+      if (selectedStatuses.length === 0) {
+        return true;
+      }
 
-                const field =
-                    colDef.field;
+      const field = colDef.field;
 
-                const cellValue =
-                    valueGetter
-                        ? valueGetter(params)
-                        : params.data?.[field];
+      const cellValue = valueGetter
+        ? valueGetter(params)
+        : params.data?.[field];
 
-                return selectedStatuses.includes(
-                    cellValue
-                );
-            }
+      return selectedStatuses.includes(cellValue);
+    }
 
-            // =================================================
-            // NORMAL FILTER
-            // =================================================
+    // =========================================================
+    // NORMAL FILTER
+    // =========================================================
 
-            const field =
-                colDef.field;
+    /*
+     * If multiple fields are configured:
+     *
+     * filterParams: {
+     *   fields: ['field1', 'field2', 'field3']
+     * }
+     *
+     * then each condition is checked against ALL fields.
+     */
 
-            const cellValue =
-                valueGetter
-                    ? valueGetter(params)
-                    : params.data?.[field];
+    const filterFields =
+      colDef?.filterParams?.fields?.length
+        ? colDef.filterParams.fields
+        : [colDef.field];
 
-            const active =
-                conditions.filter(
-                    (condition) =>
-                        isConditionUsable(
-                            condition,
-                            numeric
-                        )
-                );
-
-            if (
-                active.length === 0
-            ) {
-                return true;
-            }
-
-            let result = evaluate(
-                cellValue,
-                active[0]
-            );
-
-            for (
-                let i = 1;
-                i < active.length;
-                i++
-            ) {
-                const pass =
-                    evaluate(
-                        cellValue,
-                        active[i]
-                    );
-
-                result =
-                    active[i].joiner ===
-                    'OR'
-                        ? result || pass
-                        : result && pass;
-            }
-
-            return result;
-        },
-        [
-            isStatusFilter,
-            selectedStatuses,
-            conditions,
-            colDef,
-            valueGetter,
-            numeric,
-            evaluate,
-        ]
+    const active = conditions.filter((condition) =>
+      isConditionUsable(condition, numeric)
     );
 
+    // No active filter
+    if (active.length === 0) {
+      return true;
+    }
+
+    // =========================================================
+    // Get values for all configured fields
+    // =========================================================
+
+    const cellValues = filterFields.map((field) => {
+      if (
+        valueGetter &&
+        filterFields.length === 1
+      ) {
+        return valueGetter(params);
+      }
+
+      return params.data?.[field];
+    });
+
+    // =========================================================
+    // Check one condition against all fields
+    // =========================================================
+
+    const evaluateCondition = (condition) => {
+      /*
+       * For multiple fields:
+       *
+       * condition passes if ANY field satisfies it.
+       *
+       * Example:
+       *
+       * Target = 10
+       * Achieved = 5
+       * L1 = 8
+       *
+       * Greater than 7
+       *
+       * Target       -> true
+       * Achieved     -> false
+       * L1           -> true
+       *
+       * Result = true
+       */
+
+      if (condition.operator === 'blank') {
+        return cellValues.every(
+          (value) =>
+            value === null ||
+            value === undefined ||
+            value === ''
+        );
+      }
+
+      if (condition.operator === 'notBlank') {
+        return cellValues.some(
+          (value) =>
+            value !== null &&
+            value !== undefined &&
+            value !== ''
+        );
+      }
+
+      return cellValues.some((value) =>
+        evaluate(value, condition)
+      );
+    };
+
+    // =========================================================
+    // Evaluate first condition
+    // =========================================================
+
+    let result = evaluateCondition(active[0]);
+
+    // =========================================================
+    // Evaluate remaining conditions
+    // =========================================================
+
+    for (let i = 1; i < active.length; i++) {
+      const pass = evaluateCondition(active[i]);
+
+      result =
+        active[i].joiner === 'OR'
+          ? result || pass
+          : result && pass;
+    }
+
+    return result;
+  },
+  [
+    isStatusFilter,
+    selectedStatuses,
+    conditions,
+    colDef,
+    valueGetter,
+    numeric,
+    evaluate,
+  ]
+);
     // =========================================================
     // IS FILTER ACTIVE
     // =========================================================
