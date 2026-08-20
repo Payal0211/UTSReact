@@ -446,7 +446,7 @@ const isHistory = useMemo(
 
     useEffect(()=>{
         if(selectedHead){
-            console.log('ssdas',selectedHead)
+      
            localStorage.setItem('scrumSelectedHead', selectedHead) 
         }
          
@@ -3490,6 +3490,7 @@ function BatchEntry({ entry, isLast }) {
     const updateColumnOrder = async (pl) => {
         const result = await TaDashboardDAO.updateScrumTaskColumnOrderRequestDAO(pl);
         if (result.statusCode === HTTPStatusCode.OK) {
+            setColumnOrder(result.responseBody)
             message.success("Column order updated")
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             message.error("Something went wrong!")
