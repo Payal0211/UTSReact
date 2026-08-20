@@ -98,7 +98,13 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     setIsLoading(false);
 
     if (result.statusCode === HTTPStatusCode.OK) {
-      setTaListData(groupByRowSpan(result.responseBody, "taName"));
+        const normalized = (result.responseBody || []).map((row) => ({
+      ...row,
+      profile_Shared_Target: row.profile_Shared_Target ?? 0,
+      profile_Shared_Achieved: row.profile_Shared_Achieved ?? 0,
+      interview_Scheduled_Target: row.interview_Scheduled_Target ?? 0,
+    }));
+      setTaListData(groupByRowSpan(normalized, "taName"));
     } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
       setTaListData([]);
     } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
