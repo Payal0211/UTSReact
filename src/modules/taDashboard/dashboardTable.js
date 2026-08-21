@@ -879,7 +879,7 @@ cellRender:LatestNotesCell
               </Tooltip>
             </IconContext.Provider>
 
-            {[2, 56, 96, 65, 49, 176, 443, 436, 302].includes(userData.UserId) && (
+            {/* {[2, 56, 96, 65, 49, 176, 443, 436, 302].includes(userData.UserId) &&  ( )} */}
               <IconContext.Provider
                 value={{ color: "red", style: { width: "19px", height: "19px", marginLeft: "10px", cursor: "pointer" } }}
               >
@@ -889,7 +889,7 @@ cellRender:LatestNotesCell
                   </span>
                 </Tooltip>
               </IconContext.Provider>
-            )}
+          
           </div>
         );
       },
