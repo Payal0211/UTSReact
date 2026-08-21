@@ -785,7 +785,7 @@ export default function MultiConditionTextFilter({
             <div
                 style={{
                     padding: 12,
-                    width: 300,
+                    width: 250,
                     boxSizing:
                         'border-box',
                     display: 'flex',
@@ -833,7 +833,7 @@ export default function MultiConditionTextFilter({
                                     ? 'default'
                                     : 'pointer',
                             padding: 0,
-                            fontSize: 14,
+                            fontSize: 12,
                         }}
                     >
                         Select all{' '}
@@ -857,7 +857,7 @@ export default function MultiConditionTextFilter({
                             cursor:
                                 'pointer',
                             padding: 0,
-                            fontSize: 14,
+                            fontSize: 12,
                         }}
                     >
                         Clear
@@ -890,7 +890,7 @@ export default function MultiConditionTextFilter({
                         outline: 'none',
                         boxSizing:
                             'border-box',
-                        fontSize: 14,
+                        fontSize: 12,
                     }}
                 />
 
@@ -934,7 +934,7 @@ export default function MultiConditionTextFilter({
                                         gap: 10,
                                         cursor:
                                             'pointer',
-                                        fontSize: 15,
+                                        fontSize: 10,
                                     }}
                                 >
                                     <input
@@ -948,8 +948,8 @@ export default function MultiConditionTextFilter({
                                             )
                                         }
                                         style={{
-                                            width: 16,
-                                            height: 16,
+                                            width: 10,
+                                            height: 10,
                                             cursor:
                                                 'pointer',
                                             margin: 0,

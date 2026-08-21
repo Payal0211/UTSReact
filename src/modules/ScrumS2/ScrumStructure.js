@@ -560,7 +560,13 @@ const isHistory = useMemo(
                 };
                 return newDS;
             });
-        } else {
+        }else if (key === "companyCategory") {
+      pl[key] = value?.id;
+     setTaListData((prev) => {
+        let newDS = [...prev];
+        newDS[index] = { ...newDS[index], [key]: value };
+        return newDS;
+      })} else {
             pl[key] = value;
             setTaListData((prev) => {
                 let newDS = [...prev];
@@ -750,12 +756,23 @@ const isHistory = useMemo(
                         setTargetValue(3);
                         setStartTargetDate(new Date());
                         if (val === "Covered") {
-                            setScrumTabTitle('C')
+                          return  setScrumTabTitle('C')
+                        } 
+                        if (val === "Pause") {
+                          return  setScrumTabTitle('P')
                         }
+                        return setScrumTabTitle('A')
+                        // if (value === "Covered" && val !== "Covered") {
+                        //     val === 'Pause' &&  setScrumTabTitle('P')
+                        //     val !== 'Covered' &&  setScrumTabTitle('A')
+                        // }
 
-                        if (value === "Covered" && val !== "Covered") {
-                            setScrumTabTitle('A')
-                        }
+                       
+
+                        // if (value === "Pause" && val !== "Pause") {
+                        //     val === 'Covered' &&  setScrumTabTitle('C') 
+                        //     val !== 'Pause' &&  setScrumTabTitle('C')   
+                        // }
                     }}
                 >
                     {filtersList?.TaskStatus?.map((v) => (
@@ -2126,6 +2143,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             sortable: false,
             suppressMovable: true,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.taName)))?.map(v=>({data:v})) },
             filter: MultiConditionTextFilter,
             // rowSpan: (params) => params.data?.rowSpan || 1, 
             rowSpan: (params) => {
@@ -2197,7 +2215,7 @@ function BatchEntry({ entry, isLast }) {
 
                 return (
                     <div style={{ display: "flex", alignItems: "flex-start" }}>
-                        {(params.api.isAnyFilterPresent() || scrumTabTitle === "C") ? "" : <div style={{ display: "flex" }}>
+                        {(params.api.isAnyFilterPresent() || scrumTabTitle !== "A") ? "" : <div style={{ display: "flex" }}>
                             <button
                                 onClick={() => moveTAGroupUp(params.data)}
                                 disabled={!canMoveTAGroupUp(params.data)}
@@ -2270,7 +2288,7 @@ function BatchEntry({ entry, isLast }) {
 
                 return (<>
                     <div style={{ display: 'flex', }}>
-                        {(props.api.isAnyFilterPresent() || scrumTabTitle === "C") ? "" : <>
+                        {(props.api.isAnyFilterPresent() || scrumTabTitle !== "A") ? "" : <>
                             <button
                                 onClick={() => moveRowUp(i, data)}
                                 disabled={!canMoveUp(data)}
@@ -2381,6 +2399,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: 'Business Type',
             field: 'businessType',
             width: 140,
+            filterParams: { type: 'status', list:[{data:"Existing"},{data:"New"}]},
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
@@ -3734,6 +3753,21 @@ function BatchEntry({ entry, isLast }) {
                         }}
                     >
                         Covered
+                    </button>
+                    <button
+                        onClick={() => setScrumTabTitle('P')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: scrumTabTitle === 'P' ? 600 : 400,
+                            color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
+                            borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Pause
                     </button>
                 </div>
 
