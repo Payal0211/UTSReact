@@ -148,45 +148,52 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
     if (key === "role_TypeID") {
       pl[key] = value?.id;
-      setTaListData((prev) => {
-        let newDS = [...prev];
-        newDS[index] = {
-          ...newDS[index],
-          [key]: value?.id,
-          role_Type: value?.data,
-        };
-        return newDS;
-      });
+      // setTaListData((prev) => {
+      //   let newDS = [...prev];
+      //   newDS[index] = {
+      //     ...newDS[index],
+      //     [key]: value?.id,
+      //     role_Type: value?.data,
+      //   };
+      //   return newDS;
+      // });
     } else if (key === "task_StatusID") {
       pl[key] = value?.id;
-      setTaListData((prev) => {
-        let newDS = [...prev];
-        let nob = {
-          ...newDS[index],
-          [key]: value?.id,
-          taskStatus: value?.data,
-        };
-        newDS[index] = nob;
-        return newDS;
-      });
+      // setTaListData((prev) => {
+      //   let newDS = [...prev];
+      //   let nob = {
+      //     ...newDS[index],
+      //     [key]: value?.id,
+      //     taskStatus: value?.data,
+      //   };
+      //   newDS[index] = nob;
+      //   return newDS;
+      // });
     } else if (key === "tA_HR_StatusID") {
       pl[key] = value?.id;
-      setTaListData((prev) => {
-        let newDS = [...prev];
-        newDS[index] = {
-          ...newDS[index],
-          [key]: value?.id,
-          tA_HR_Status: value?.data,
-        };
-        return newDS;
-      });
-    } else {
-      pl[key] = value;
-      setTaListData((prev) => {
+      // setTaListData((prev) => {
+      //   let newDS = [...prev];
+      //   newDS[index] = {
+      //     ...newDS[index],
+      //     [key]: value?.id,
+      //     tA_HR_Status: value?.data,
+      //   };
+      //   return newDS;
+      // });
+    }else if (key === "companyCategory") {
+      pl[key] = value?.id;
+     setTaListData((prev) => {
         let newDS = [...prev];
         newDS[index] = { ...newDS[index], [key]: value };
         return newDS;
       });
+    } else {
+      pl[key] = value;
+      // setTaListData((prev) => {
+      //   let newDS = [...prev];
+      //   newDS[index] = { ...newDS[index], [key]: value };
+      //   return newDS;
+      // });
     }
     let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
   };
@@ -453,11 +460,11 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
   }
 
   const updateNotes = async (pl, index) => {
-    setTaListData(prev => {
-      let tempD = [...prev]
-      tempD[index] = { ...tempD[index], latestNotesTopRow: pl.Comments, latestNotes: pl.Comments }
-      return tempD
-    })
+    // setTaListData(prev => {
+    //   let tempD = [...prev]
+    //   tempD[index] = { ...tempD[index], latestNotesTopRow: pl.Comments, latestNotes: pl.Comments }
+    //   return tempD
+    // })
     let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
   }
 
@@ -490,6 +497,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       pinned: 'left',
       sortable: false,
       suppressMovable: true,
+       filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.taName)))?.map(v=>({data:v})) },
       filter: MultiConditionTextFilter,
       rowSpan: (params) => params.data?.rowSpan || 1,
       valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
@@ -607,8 +615,9 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     {
       headerName: 'Priority',
       field: 'task_Priority',
-        pinned: 'left',
-         suppressMovable: TextTrackCueList,
+      pinned: 'left',
+      suppressMovable: true,
+       filterParams: { type: 'status', list:filtersList?.priority?.map(i=>({...i,data:i.text}))},
       filter: MultiConditionTextFilter,
       width: 130,
       cellRenderer: (props) => {
@@ -622,6 +631,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       field: 'taskStatus',
         pinned: 'left',
          suppressMovable: true,
+          filterParams: { type: 'status', list:filtersList?.TaskStatus},
       filter: MultiConditionTextFilter,
       width: 140,
       cellRenderer: (props) => {
@@ -687,6 +697,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       headerName: 'NBD/Existing',
       field: 'businessType',
       width: 130,
+      filterParams: { type: 'status', list:[{data:"Existing"},{data:"NBD"}]},
       cellStyle: { textAlign: 'center' },
       filter: MultiConditionTextFilter,
     },
@@ -694,6 +705,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       headerName: 'Pricing Model',
       field: 'pricingModel',
       width: 140,
+       filterParams: { type: 'status', list:[{data:"Transparent"},{data:"Non Transparent"}]},
       filter: MultiConditionTextFilter,
     },
     {
