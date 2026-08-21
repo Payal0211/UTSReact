@@ -2860,7 +2860,8 @@ function BatchEntry({ entry, isLast }) {
                             </Tooltip>
                         </IconContext.Provider>
 
-                        {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65 || userData.UserId === 49 || userData.UserId === 176 || userData.UserId === 443 || userData.UserId === 436 || userData.UserId === 302) && <IconContext.Provider
+                        {/* {(userData.UserId === 2 || userData.UserId === 56 || userData.UserId === 96 || userData.UserId === 65 || userData.UserId === 49 || userData.UserId === 176 || userData.UserId === 443 || userData.UserId === 436 || userData.UserId === 302) &&   } */}
+                        <IconContext.Provider
                             value={{
                                 color: "red",
                                 style: {
@@ -2885,7 +2886,8 @@ function BatchEntry({ entry, isLast }) {
                                     <IoIosRemoveCircle />
                                 </span>{" "}
                             </Tooltip>
-                        </IconContext.Provider>}
+                        </IconContext.Provider>
+                       
 
 
                     </div>
@@ -3638,7 +3640,7 @@ function BatchEntry({ entry, isLast }) {
                      {/* <div>
                       Month-Year
                     </div> */}
-                    {/* <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
+                    <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
                             <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                             <DatePicker
                               style={{ backgroundColor: "red" }}
@@ -3654,7 +3656,7 @@ function BatchEntry({ entry, isLast }) {
                               maxDate={today}
                               showMonthYearPicker
                             />
-                    </div> */}
+                    </div>
                   </div>
                 </div>
 
