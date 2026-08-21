@@ -22,6 +22,7 @@ import HRInputField from "modules/hiring request/components/hrInputFields/hrInpu
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { useForm } from "react-hook-form";
 import MultiConditionTextFilter from '../ScrumS2/MultiConditionTextFilter';
+import {  LatestNotesCell } from '../ScrumS2/MiscCells';
 
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -815,6 +816,16 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         // cols: 30,       // Optional: width of the dropdown box
         // rows: 3,        // Optional: height of the dropdown box
       },
+       suppressKeyboardEvent: (params) => {
+                const isEnterKey = params.event.key === 'Enter';
+                const isEditing = params.editing;
+                //   console.log("is edit",params)
+                if (isEditing && isEnterKey) {
+                    // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
+                    return true;
+                }
+                return false;
+            },
       onCellValueChanged: (params) => {
         // console.log("Updated:", params.newValue);
         // console.log("Row:", params.data);
@@ -827,19 +838,19 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
         updateNotes(pl, index)
       },
-
-      cellRenderer: (props) => {
-        const { data } = props;
-        const ind = getRowIndex(data);
-        return data?.latestNotes ? (
-          <>
-            <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
-            {/* <div className={taStylesNew["view-edit"]}>
-                        <button onClick={() => AddComment(data, ind)}>Edit</button>
-                    </div> */}
-          </>
-        ) : "";
-      },
+cellRender:LatestNotesCell
+      // cellRenderer: (props) => {
+      //   const { data } = props;
+      //   const ind = getRowIndex(data);
+      //   return data?.latestNotes ? (
+      //     <>
+      //       <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
+      //       {/* <div className={taStylesNew["view-edit"]}>
+      //                   <button onClick={() => AddComment(data, ind)}>Edit</button>
+      //               </div> */}
+      //     </>
+      //   ) : "";
+      // },
     },
     {
       headerName: "Task for AM's",
