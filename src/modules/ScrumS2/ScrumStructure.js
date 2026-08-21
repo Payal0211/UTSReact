@@ -3640,7 +3640,7 @@ function BatchEntry({ entry, isLast }) {
                      {/* <div>
                       Month-Year
                     </div> */}
-                    <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
+                    {/* <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
                             <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                             <DatePicker
                               style={{ backgroundColor: "red" }}
@@ -3656,7 +3656,7 @@ function BatchEntry({ entry, isLast }) {
                               maxDate={today}
                               showMonthYearPicker
                             />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
