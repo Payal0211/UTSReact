@@ -1986,7 +1986,24 @@ function WeeklyWCGR() {
     }
   }
 
-  const DemandFunnelColumns = [
+  const DemandFunnelColumns = showTalentCol?.stage === "Total TAs" ?  [
+    {
+      title:  "Date",
+      dataIndex: "actionDate",
+      key: "actionDate",
+      width: "150px",
+      render: (text) => {
+        return text;
+      },
+    },
+    {
+      title: "TA",
+      dataIndex: "ta",
+      key: "ta",
+    },
+    
+ 
+  ] :  [
     {
       title: "Action Date",
       dataIndex: "actionDate",
@@ -4017,7 +4034,7 @@ function WeeklyWCGR() {
                                                       TA : <strong>add</strong>
                                                     </p> */}
 
-                <input
+              {showTalentCol?.stage !== "Total TAs" && <input
                   type="text"
                   placeholder="Search talent..."
                   value={searchTerm}
@@ -4030,7 +4047,7 @@ function WeeklyWCGR() {
                     marginRight: "20px",
                     minWidth: "260px",
                   }}
-                />
+                /> } 
               </div>
 
               {achievedLoading ? (
