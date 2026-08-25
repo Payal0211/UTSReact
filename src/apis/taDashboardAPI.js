@@ -155,7 +155,7 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_SCRUM_HISTORY_DETAILS +`?Year=${payload?.Year}&Month=${payload?.Month}&TAHeadUserID=${payload?.TAHeadUserID}`
+			TaDashboardURL.GET_SCRUM_HISTORY_DETAILS +`?Year=${payload?.Year}&Month=${payload?.Month}&TAHeadUserID=${payload?.TAHeadUserID}&Tab_Name=${payload?.Tab_Name}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

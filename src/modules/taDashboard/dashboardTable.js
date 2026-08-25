@@ -22,8 +22,8 @@ import HRInputField from "modules/hiring request/components/hrInputFields/hrInpu
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { useForm } from "react-hook-form";
 import MultiConditionTextFilter from '../ScrumS2/MultiConditionTextFilter';
-import {  LatestNotesCell } from '../ScrumS2/MiscCells';
-
+import { LatestNotesCell } from '../ScrumS2/MiscCells';
+import gridStyles from '../ScrumS2/scrumGrid.module.css'
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const { Option } = Select;
@@ -38,7 +38,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
   const [showDiamondRemark, setShowDiamondRemark] = useState(false);
   const [companyIdForRemark, setCompanyIdForRemark] = useState(0);
   const [remDiamondLoading, setRemDiamondLoading] = useState(false);
-   const [columnOrder, setColumnOrder] = useState([])
+  const [columnOrder, setColumnOrder] = useState([])
   const {
     watch,
     register,
@@ -73,14 +73,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
   }
 
 
-  
+
   const getCOLUMNOrder = async (id) => {
-      const colOrderResult = await TaDashboardDAO.getScrumColumOrderDAO(selectedHead)
-      if (colOrderResult?.statusCode === HTTPStatusCode.OK) {
-          setColumnOrder(colOrderResult?.responseBody)
-      } else {
-          setColumnOrder([])
-      }
+    const colOrderResult = await TaDashboardDAO.getScrumColumOrderDAO(selectedHead)
+    if (colOrderResult?.statusCode === HTTPStatusCode.OK) {
+      setColumnOrder(colOrderResult?.responseBody)
+    } else {
+      setColumnOrder([])
+    }
   }
 
   const getListData = useCallback(async () => {
@@ -99,12 +99,12 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     setIsLoading(false);
 
     if (result.statusCode === HTTPStatusCode.OK) {
-        const normalized = (result.responseBody || []).map((row) => ({
-      ...row,
-      profile_Shared_Target: row.profile_Shared_Target ?? 0,
-      profile_Shared_Achieved: row.profile_Shared_Achieved ?? 0,
-      interview_Scheduled_Target: row.interview_Scheduled_Target ?? 0,
-    }));
+      const normalized = (result.responseBody || []).map((row) => ({
+        ...row,
+        profile_Shared_Target: row.profile_Shared_Target ?? 0,
+        profile_Shared_Achieved: row.profile_Shared_Achieved ?? 0,
+        interview_Scheduled_Target: row.interview_Scheduled_Target ?? 0,
+      }));
       setTaListData(groupByRowSpan(normalized, "taName"));
     } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
       setTaListData([]);
@@ -181,9 +181,9 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       //   };
       //   return newDS;
       // });
-    }else if (key === "companyCategory") {
+    } else if (key === "companyCategory") {
       pl[key] = value?.id;
-     setTaListData((prev) => {
+      setTaListData((prev) => {
         let newDS = [...prev];
         newDS[index] = { ...newDS[index], [key]: value };
         return newDS;
@@ -206,6 +206,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       <div className={taStyles.tableSelectField}>
         <Select
           defaultValue={value}
+          style={{ fontSize: '12px' }}
           onChange={(val) => {
             setValue(val);
             updateTARowValue(val, "task_Priority", result, index);
@@ -498,7 +499,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       pinned: 'left',
       sortable: false,
       suppressMovable: true,
-       filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.taName)))?.map(v=>({data:v})) },
+      filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
       filter: MultiConditionTextFilter,
       rowSpan: (params) => params.data?.rowSpan || 1,
       valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
@@ -519,12 +520,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         const { data, api } = props;
         const ind = getRowIndex(data);
         return (
-          <div className={taStylesNew["company-cell"]} style={{ display: 'contents' }}>
-            <Tooltip title={data.companyName}>
-              <span className={taStylesNew["company-name"]}>
-                {data.companyName.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
-              </span>
-            </Tooltip>
+          <div className={taStylesNew["company-cell"]} style={{ display: 'flex' }}>
+
 
             <div style={{ display: 'flex' }}>
               <Tooltip title={
@@ -575,6 +572,18 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
               )}
             </div>
+            <Tooltip title={data.companyName}>
+              <span className={taStylesNew["company-name"]} style={{
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                fontWeight: 500,
+                lineHeight: "10px"
+              }}>
+                {data.companyName.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
+              </span>
+            </Tooltip>
           </div>
         );
       },
@@ -591,17 +600,30 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         const { data } = props;
         return (
           <div className={taStylesNew["hr-title-cell"]}>
-              <Tooltip title={data.tA_HR_Status}>
-<span className={taStylesNew["hr-status-box"]} style={{ background: data?.hrColorCode }}>
-            
-              {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
-            </span>
-              </Tooltip>
+            <Tooltip title={data.tA_HR_Status}>
+              <span className={taStylesNew["hr-status-box"]} style={{ background: data?.hrColorCode }}>
+
+                {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
+              </span>
+            </Tooltip>
             <div className={taStylesNew["hr-title-text"]}>
-              <span>{data.hrTitle}</span>
+              <Tooltip title={data.hrTitle}><span style={{
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                fontWeight: 500,
+                lineHeight: "10px"
+              }}>{data.hrTitle}</span></Tooltip>
+
               <span
-                className={taStylesNew["hr-id-chip"]}
-                style={{ cursor: "pointer" }}
+                // className={taStylesNew["hr-id-chip"]}
+                style={{
+                  cursor: "pointer", color: "blue",
+                  /* font-weight: bold; */
+                  textDecoration: " underline",
+                  margin: '0px'
+                }}
                 onClick={() => {
                   window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
                 }}
@@ -618,7 +640,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       field: 'task_Priority',
       pinned: 'left',
       suppressMovable: true,
-       filterParams: { type: 'status', list:filtersList?.priority?.map(i=>({...i,data:i.text}))},
+      filterParams: { type: 'status', list: filtersList?.priority?.map(i => ({ ...i, data: i.text })) },
       filter: MultiConditionTextFilter,
       width: 130,
       cellRenderer: (props) => {
@@ -630,15 +652,15 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     {
       headerName: 'Status',
       field: 'taskStatus',
-        pinned: 'left',
-         suppressMovable: true,
-          filterParams: { type: 'status', list:filtersList?.TaskStatus},
+      pinned: 'left',
+      suppressMovable: true,
+      filterParams: { type: 'status', list: filtersList?.TaskStatus },
       filter: MultiConditionTextFilter,
       width: 140,
       cellRenderer: (props) => {
         const { value, data } = props;
         const ind = getRowIndex(data);
-        return <TaskStatusComp text={value} result={data} index={ind} />;
+        return <TaskStatusComp text={value} result={data} index={ind} style={{ fontSize: '10px' }} />;
       },
     },
     {
@@ -646,16 +668,16 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       field: 'profile_Shared_Target',
       width: 220,
       filter: MultiConditionTextFilter,
-         filterParams: {
-    type: 'number',
+      filterParams: {
+        type: 'number',
 
-    // Filter will check all these fields
-    fields: [
-      'profile_Shared_Target',
-      'profile_Shared_Achieved',
-      'interview_Scheduled_Target',
-    ],
-  },
+        // Filter will check all these fields
+        fields: [
+          'profile_Shared_Target',
+          'profile_Shared_Achieved',
+          'interview_Scheduled_Target',
+        ],
+      },
       cellRenderer: (props) => {
         const { data, ind } = props;
         const rowIndex = getRowIndex(data);
@@ -684,7 +706,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       headerName: 'Interview Rounds',
       field: 'no_of_InterviewRounds',
       width: 130,
-         filterParams: { type: 'number'},
+      filterParams: { type: 'number' },
       filter: MultiConditionTextFilter,
       cellStyle: { textAlign: 'center' },
     },
@@ -698,7 +720,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       headerName: 'NBD/Existing',
       field: 'businessType',
       width: 130,
-      filterParams: { type: 'status', list:[{data:"Existing"},{data:"NBD"}]},
+      filterParams: { type: 'status', list: [{ data: "Existing" }, { data: "NBD" }] },
       cellStyle: { textAlign: 'center' },
       filter: MultiConditionTextFilter,
     },
@@ -706,14 +728,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       headerName: 'Pricing Model',
       field: 'pricingModel',
       width: 140,
-       filterParams: { type: 'status', list:[{data:"Transparent"},{data:"Non Transparent"}]},
+      filterParams: { type: 'status', list: [{ data: "Transparent" }, { data: "Non Transparent" }] },
       filter: MultiConditionTextFilter,
     },
     {
       headerName: 'Talent Pay Rate',
       field: 'talent_AnnualCTC_Budget_INRValueStr',
       width: 160,
-         filterParams: { type: 'number'},
+      filterParams: { type: 'number' },
       filter: MultiConditionTextFilter,
       cellRenderer: (props) => (
         <ControlledAmountCell
@@ -726,7 +748,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     {
       headerName: 'NR %',
       field: 'uplersFeesPer',
-         filterParams: { type: 'number'},
+      filterParams: { type: 'number' },
       width: 100,
       filter: MultiConditionTextFilter,
       cellRenderer: (props) => (
@@ -736,7 +758,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     {
       headerName: 'NR (USD)',
       field: 'revenue_On10PerCTCStr',
-         filterParams: { type: 'number'},
+      filterParams: { type: 'number' },
       width: 140,
       filter: MultiConditionTextFilter,
       cellRenderer: (props) => (
@@ -752,7 +774,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       field: 'totalRevenue_NoofTalentStr',
       width: 140,
       filter: MultiConditionTextFilter,
-         filterParams: { type: 'number'},
+      filterParams: { type: 'number' },
       cellRenderer: (props) => (
         <ControlledAmountCell
           text={props.data.totalRevenue_NoofTalentStr}
@@ -766,7 +788,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       field: 'activeTR',
       width: 110,
       filter: MultiConditionTextFilter,
-      filterParams: { type: 'number'},
+      filterParams: { type: 'number' },
       cellStyle: { textAlign: 'center' },
     },
     {
@@ -779,7 +801,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       headerName: 'Active Profiles',
       field: 'noOfProfile_TalentsTillDate',
       width: 130,
-         filterParams: { type: 'number'},
+      filterParams: { type: 'number' },
       filter: MultiConditionTextFilter,
       cellStyle: { textAlign: 'center' },
       cellRenderer: (props) => {
@@ -816,16 +838,16 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         // cols: 30,       // Optional: width of the dropdown box
         // rows: 3,        // Optional: height of the dropdown box
       },
-       suppressKeyboardEvent: (params) => {
-                const isEnterKey = params.event.key === 'Enter';
-                const isEditing = params.editing;
-                //   console.log("is edit",params)
-                if (isEditing && isEnterKey) {
-                    // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
-                    return true;
-                }
-                return false;
-            },
+      suppressKeyboardEvent: (params) => {
+        const isEnterKey = params.event.key === 'Enter';
+        const isEditing = params.editing;
+        //   console.log("is edit",params)
+        if (isEditing && isEnterKey) {
+          // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
+          return true;
+        }
+        return false;
+      },
       onCellValueChanged: (params) => {
         // console.log("Updated:", params.newValue);
         // console.log("Row:", params.data);
@@ -838,7 +860,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
         updateNotes(pl, index)
       },
-cellRender:LatestNotesCell
+      cellRender: LatestNotesCell
       // cellRenderer: (props) => {
       //   const { data } = props;
       //   const ind = getRowIndex(data);
@@ -880,16 +902,16 @@ cellRender:LatestNotesCell
             </IconContext.Provider>
 
             {/* {[2, 56, 96, 65, 49, 176, 443, 436, 302].includes(userData.UserId) &&  ( )} */}
-              <IconContext.Provider
-                value={{ color: "red", style: { width: "19px", height: "19px", marginLeft: "10px", cursor: "pointer" } }}
-              >
-                <Tooltip title="Remove" placement="top">
-                  <span onClick={() => handleRemoveTask(data)} style={{ padding: "0" }}>
-                    <IoIosRemoveCircle />
-                  </span>
-                </Tooltip>
-              </IconContext.Provider>
-          
+            <IconContext.Provider
+              value={{ color: "red", style: { width: "19px", height: "19px", marginLeft: "10px", cursor: "pointer" } }}
+            >
+              <Tooltip title="Remove" placement="top">
+                <span onClick={() => handleRemoveTask(data)} style={{ padding: "0" }}>
+                  <IoIosRemoveCircle />
+                </span>
+              </Tooltip>
+            </IconContext.Provider>
+
           </div>
         );
       },
@@ -951,86 +973,86 @@ cellRender:LatestNotesCell
     }
   };
 
-    const gridOrderedColumns = useMemo(() => {
-          if (columnOrder.length) {
-              let newOrderObj = []
-              let originalObj =  gridColumns()
-              let shortorder = columnOrder.sort(
-                  (a, b) => a.columnOrder - b.columnOrder
-              );
-  
-              shortorder.forEach(i => {
-  
-                  let obj = originalObj.find(val => val.field.trim() === i.columnName.trim())
-              
-                  if (obj?.headerName) {
-                      obj = { ...obj, width: i.columnWidth ? i.columnWidth : obj.width }
-                      newOrderObj.push(obj)
-                  }
-  
-              })
-  
-              return newOrderObj
-          } else {
-              return  gridColumns()
-          }
-  
-  
-      }, [TaListData, columnOrder]);
+  const gridOrderedColumns = useMemo(() => {
+    if (columnOrder.length) {
+      let newOrderObj = []
+      let originalObj = gridColumns()
+      let shortorder = columnOrder.sort(
+        (a, b) => a.columnOrder - b.columnOrder
+      );
 
-     const updateColumnOrder = async (pl) => {
-          const result = await TaDashboardDAO.updateScrumTaskColumnOrderRequestDAO(pl);
-          if (result.statusCode === HTTPStatusCode.OK) {
-            setColumnOrder(result.responseBody)
-              message.success("Column order updated")
-          } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
-              message.error("Something went wrong!")
-          }
-      }
-  
-      const updateColumnWidth = async (pl) => {
-          const result = await TaDashboardDAO.updateScrumTaskColumnWidthRequestDAO(pl);
-          if (result.statusCode === HTTPStatusCode.OK) {
-              // message.success(" updated")
-              setColumnOrder(result.responseBody)
-          } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
-              message.error("Something went wrong!")
-          }
-      }
+      shortorder.forEach(i => {
 
-     const onColumnMoved = (params) => {
-        if (!params.finished) return; // Ignore intermediate drag events
-        if(params.toIndex + 1 < 6) return
+        let obj = originalObj.find(val => val.field.trim() === i.columnName.trim())
 
-
-        let pl = {
-            POD_Id: selectedHead,
-            ColumnName: params.column.getColId(),
-            ColumnOrder: params.toIndex + 1
+        if (obj?.headerName) {
+          obj = { ...obj, width: i.columnWidth ? i.columnWidth : obj.width }
+          newOrderObj.push(obj)
         }
 
-        updateColumnOrder(pl)
+      })
+
+      return newOrderObj
+    } else {
+      return gridColumns()
+    }
+
+
+  }, [TaListData, columnOrder]);
+
+  const updateColumnOrder = async (pl) => {
+    const result = await TaDashboardDAO.updateScrumTaskColumnOrderRequestDAO(pl);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      setColumnOrder(result.responseBody)
+      message.success("Column order updated")
+    } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+      message.error("Something went wrong!")
+    }
+  }
+
+  const updateColumnWidth = async (pl) => {
+    const result = await TaDashboardDAO.updateScrumTaskColumnWidthRequestDAO(pl);
+    if (result.statusCode === HTTPStatusCode.OK) {
+      // message.success(" updated")
+      setColumnOrder(result.responseBody)
+    } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+      message.error("Something went wrong!")
+    }
+  }
+
+  const onColumnMoved = (params) => {
+    if (!params.finished) return; // Ignore intermediate drag events
+    if (params.toIndex + 1 < 6) return
+
+
+    let pl = {
+      POD_Id: selectedHead,
+      ColumnName: params.column.getColId(),
+      ColumnOrder: params.toIndex + 1
+    }
+
+    updateColumnOrder(pl)
+  };
+
+
+  const onColumnResized = (params) => {
+    // console.log('res',params)
+    if (!params.finished) return;
+
+    let pl = {
+      POD_Id: selectedHead,
+      ColumnName: params.column.getColId(),
+      ColumnWidth: parseInt(params.column.getActualWidth()),
     };
 
-
-    const onColumnResized = (params) => {
-        // console.log('res',params)
-        if (!params.finished) return;
-
-        let pl = {
-            POD_Id: selectedHead,
-            ColumnName: params.column.getColId(),
-            ColumnWidth: parseInt(params.column.getActualWidth()),
-        };
-
-        // console.log(pl);
-        updateColumnWidth(pl)
-    };
+    // console.log(pl);
+    updateColumnWidth(pl)
+  };
 
 
 
   return (
-    <div className={`${taStylesNew["table-container"]} ${taStylesNew["grid-wrapper"]}`} style={{ marginTop: '20px' }}>
+    <div className={`${taStylesNew["table-container"]} ${gridStyles["grid-wrapper"]}`} style={{ marginTop: '20px' }}>
       {isLoading ? <TableSkeleton /> : <div style={{ height: 500 }} ><AgGridReact
         //  onGridReady={onGridReady}
         // onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
@@ -1040,16 +1062,16 @@ cellRender:LatestNotesCell
         columnDefs={gridOrderedColumns}
         // animateRows={false}
         defaultColDef={scrumDefaultColDef}
-      //   getRowId={(params) => String(params.data.id)}
+        //   getRowId={(params) => String(params.data.id)}
         suppressScrollOnNewData={true}
         suppressRowTransform={true}
-      //               headerHeight={38}
-      // rowHeight={"auto"}
-       onColumnMoved={onColumnMoved}
-      onColumnResized={onColumnResized}
+        //               headerHeight={38}
+        // rowHeight={"auto"}
+        onColumnMoved={onColumnMoved}
+        onColumnResized={onColumnResized}
       /> </div>}
 
-     
+
 
 
       {showDiamondRemark && (
