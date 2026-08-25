@@ -743,7 +743,7 @@ function NewTADashboard() {
         );
     };
 
-    const TaskStatusComp = ({ text, result, index }) => {
+    const TaskStatusComp = ({ text, result, index ,style}) => {
         const [value, setValue] = useState(text ?? "");
         const colorCode =
             filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
@@ -751,7 +751,7 @@ function NewTADashboard() {
             <div className={taStyles.tableSelectField}>
                 <Select
                     defaultValue={value}
-                    style={{ color: colorCode }}
+                    style={{ color: colorCode , ...style }}
                     onChange={async (val) => {
                         if (value === "Fasttrack" && val !== "Fasttrack") {
                             let pl = {

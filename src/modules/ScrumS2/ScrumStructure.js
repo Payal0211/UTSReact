@@ -246,7 +246,8 @@ const isHistory = useMemo(
         let pl2 = {
             Year: moment(monthDate).format('YYYY'),
             Month:moment(monthDate).format('M'),
-            TAHeadUserID:+selectedHead
+            TAHeadUserID:+selectedHead,
+            Tab_Name:scrumTabTitle
         }
         setIsLoading(true);
         let result 
@@ -2134,6 +2135,459 @@ function BatchEntry({ entry, isLast }) {
         return groupIndex < groups.length - 1;
     };
 
+      const getScrumGridHistoryColumns = () => [
+        {
+            headerName: 'TA',
+            field: 'taName',
+            width: 100,
+            pinned: 'left',
+            sortable: false,
+            suppressMovable: true,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.taName)))?.map(v=>({data:v})) },
+            filter: MultiConditionTextFilter,
+            // rowSpan: (params) => params.data?.rowSpan || 1, 
+            rowSpan: (params) => {
+
+                if (params.api.isAnyFilterPresent()) {
+                    return 1;
+                }
+
+                const api = params.api;
+                const rowIndex = params.node.rowIndex;
+
+                const current = params.data.tA_UserID;
+
+                const prev = api.getDisplayedRowAtIndex(rowIndex - 1)?.data?.tA_UserID;
+
+                if (prev === current) {
+                    return 1;
+                }
+
+                let span = 1;
+
+                for (let i = rowIndex + 1; i < api.getDisplayedRowCount(); i++) {
+                    const next = api.getDisplayedRowAtIndex(i)?.data;
+
+                    if (next?.tA_UserID === current) {
+                        span++;
+                    } else {
+                        break;
+                    }
+                }
+
+                return span;
+            },
+            // valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
+            // cellStyle: {
+            //     alignItems: 'flex-start',
+            //     paddingTop: 10,
+            //     background: 'var(--ag-background-color, #fff)',
+
+            //     // Adds a thick, clean border at the bottom of each TA group block
+            //     borderBottom: '2px solid #e2e8f0',
+            //     // Ensures the vertical line on the right remains clear
+            //     borderRight: '1px solid #e2e8f0'
+            // },
+            cellRenderer: (params) => {
+
+              
+                if (params.node.rowPinned) {
+                    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>Total</strong></div>;
+                }
+
+                if (params.api.isAnyFilterPresent()) {
+                    const rowIndex = params.node.rowIndex;
+
+                    const prev = params.api
+                        .getDisplayedRowAtIndex(rowIndex - 1)
+                        ?.data?.tA_UserID;
+
+                    if (prev === params.data.tA_UserID) {
+                        return "";
+                    }
+                }
+
+                if (params.data.rowSpan <= 0 && !params.api.isAnyFilterPresent()) return "";
+
+                  if(isHistory){
+                    return params.value
+                }
+
+                return (
+                    <div style={{ display: "flex", alignItems: "flex-start" }}>
+                        {(params.api.isAnyFilterPresent() || scrumTabTitle !== "A") ? "" : <div style={{ display: "flex" }}>
+                            <button
+                                onClick={() => moveTAGroupUp(params.data)}
+                                disabled={!canMoveTAGroupUp(params.data)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: canMoveTAGroupUp(params.data) ? "pointer" : "not-allowed",
+                                    color: canMoveTAGroupUp(params.data) ? "#666" : "#ccc",
+                                }}
+                            >
+                                ▲
+                            </button>
+
+                            <button
+                                onClick={() => moveTAGroupDown(params.data)}
+                                disabled={!canMoveTAGroupDown(params.data)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    marginLeft: '5px',
+                                    cursor: canMoveTAGroupDown(params.data) ? "pointer" : "not-allowed",
+                                    color: canMoveTAGroupDown(params.data) ? "#666" : "#ccc",
+                                }}
+                            >
+                                ▼
+                            </button>
+                        </div>}
+
+                        <span style={{ marginLeft: '5px', }}><Tooltip title={params.value}>{params.value}</Tooltip> </span>
+                    </div>
+                );
+            }
+        },
+        {
+            headerName: 'Company',
+            field: 'companyName',
+            width: 150,
+            pinned: 'left',
+            cellRenderer: CompanyCell,
+            sortable: false,
+            suppressMovable: true,
+            filter: MultiConditionTextFilter,
+        },
+        {
+            headerName: 'HR ID',
+            field: 'hrNumber',
+            width: 150,
+            pinned: 'left',
+            suppressMovable: true,
+            filter: MultiConditionTextFilter,
+            cellRenderer: (props) => {
+                const { value, data } = props;
+
+                if (props.node.rowPinned) {
+                    return "";
+                }
+                const i = getRowIndex(data);
+  if(isHistory){
+                    return  <a
+                            href={`/allhiringrequest/${data?.hiringRequest_ID}`}
+                            style={{ marginLeft: '5px' }}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={stylesOBj['hr-id']}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {value}
+                        </a>
+                }
+
+                return (<>
+                    <div style={{ display: 'flex', }}>
+                        {(props.api.isAnyFilterPresent() || scrumTabTitle !== "A") ? "" : <>
+                            <button
+                                onClick={() => moveRowUp(i, data)}
+                                disabled={!canMoveUp(data)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: canMoveUp(data) ? "pointer" : "not-allowed",
+                                    color: canMoveUp(data) ? "#666" : "#ccc",
+                                }}
+                            >
+                                ▲
+                            </button>
+                            <button
+                                onClick={() => moveRowDown(i, data)}
+                                disabled={!canMoveDown(data)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    marginLeft: '5px',
+                                    cursor: canMoveDown(data) ? "pointer" : "not-allowed",
+
+                                    color: canMoveDown(data) ? "#666" : "#ccc",
+                                }}
+                            >
+                                ▼
+                            </button>
+                        </>}
+                        <a
+                            href={`/allhiringrequest/${data?.hiringRequest_ID}`}
+                            style={{ marginLeft: '5px' }}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={stylesOBj['hr-id']}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {value}
+                        </a>
+
+                    </div>
+
+                </>
+
+                );
+            },
+        },
+        {
+            headerName: 'HR Title',
+            field: 'hrTitle',
+            width: 150,
+            pinned: 'left',
+            suppressMovable: true,
+            cellRenderer: HrTitleCell,
+            filter: MultiConditionTextFilter,
+            // tooltipField: 'hrTitle',
+
+        },
+
+        {
+            headerName: 'Status',
+            field: 'taskStatus',
+            width: 120,
+            pinned: 'left',
+            suppressMovable: true,
+            filterParams: { type: 'status', list:filtersList?.TaskStatus},
+            filter: MultiConditionTextFilter,
+            cellRenderer: (props) => {
+                const { value, data } = props
+                if (props.node.rowPinned) {
+                    return "";
+                }
+                  if(isHistory){
+                    return value
+                }
+                return <TaskStatusComp text={value} result={data} />
+            },
+        },
+        {
+            headerName: '# Round',
+            field: 'no_of_InterviewRounds',
+            cellStyle: { textAlign: 'center' },
+            width: 80,
+            filterParams: { type: 'number'},
+            filter: MultiConditionTextFilter,
+            cellRenderer: ({ value, data }) => {
+                return value ? value : ''
+            }
+        },
+
+        {
+            headerName: 'Inbound / Outbound',
+            field: 'role_Type',
+            width: 120,
+            filter: MultiConditionTextFilter,
+            cellStyle: { textAlign: 'center' },
+        },
+        {
+            headerName: 'Business Type',
+            field: 'businessType',
+            width: 140,
+            filterParams: { type: 'status', list:[{data:"Existing"},{data:"New"}]},
+            filter: MultiConditionTextFilter,
+            cellStyle: { textAlign: 'center' },
+        },
+        // {
+        //     headerName: 'Created Dt.',
+        //     field: 'hrCreatedDate',
+        //     cellStyle: { textAlign: 'center' },
+        //     width: 110,
+        //     filter: MultiConditionTextFilter,
+        //     valueFormatter: (params) => (params.value ? moment(params.value).format('DD/MM/YYYY') : ''),
+        // },
+        {
+            headerName: 'Date',
+            field: 'hrMonth',
+            cellStyle: { textAlign: 'center' },
+            width: 110,
+            filter: MultiConditionTextFilter,
+           
+        },
+        // {
+        //     headerName: 'Year',
+        //     field: 'hrYear',
+        //     cellStyle: { textAlign: 'center' },
+        //     width: 110,
+        //     filter: MultiConditionTextFilter,
+          
+        // },
+        {
+            headerName: 'HR Status',
+            field: 'tA_HR_Status',
+            width: 130,
+            filter: MultiConditionTextFilter,
+            cellRenderer: HrStatusCell,
+        },
+        {
+            headerName: 'Active TRs',
+            field: 'activeTR',
+            cellStyle: { textAlign: 'center' },
+            width: 100,
+            filter: MultiConditionTextFilter,
+        },
+
+
+
+
+
+        {
+            headerName: 'Talent Annual CTC Budget (INR)',
+            field: 'talent_AnnualCTC_Budget_INRValueStr',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+            filterParams: { type: 'number'},
+            filter: MultiConditionTextFilter,
+            cellRenderer: ({ value, data }) => {
+                return value ? value : ''
+            }
+        },
+        {
+            headerName: 'Revenue %',
+            field: 'uplersFeesPer',
+            cellStyle: { textAlign: 'center' },
+            width: 100,
+            filterParams: { type: 'number'},
+            filter: MultiConditionTextFilter,
+            cellRenderer: ({ value, data }) => {
+                return value ? value : ''
+            }
+        },
+        {
+            headerName: 'Total Revenue Opportunity',
+            field: 'totalRevenue_NoofTalentStr',
+            cellStyle: { textAlign: 'center' },
+            width: 170,
+            filterParams: { type: 'number'},
+            filter: MultiConditionTextFilter,
+            cellRenderer: ({ value, data }) => {
+                return value ? value : ''
+            }
+        },
+        {
+            headerName: '#Open Days',
+            field: 'days',
+            cellStyle: { textAlign: 'center' },
+            width: 80,
+            filterParams: { type: 'number'},
+            filter: MultiConditionTextFilter,
+            cellRenderer: ({ value, data }) => {
+                return value ? value : ''
+            }
+        },
+        {
+            headerName: '#Active Profile',
+            field: 'noOfProfile_TalentsTillDate',
+            width: 80,
+            filter: MultiConditionTextFilter,
+            filterParams: { type: 'number'},
+            cellStyle: { textAlign: 'center' },
+            cellRenderer: ActiveProfileCountCell,
+        },
+       
+
+    
+        
+       
+
+        // {
+        //     headerName: 'Joining Date',
+        //     field: 'joiningDate',
+        //     cellStyle: { textAlign: 'center' },
+        //     width: 150,
+        //     filter: MultiConditionTextFilter,
+        // },
+        // {
+        //     headerName: 'Touch Based Notes',
+        //     field: 'touchBasedNotes',
+        //     width: 250,
+        //     filter: MultiConditionTextFilter,
+        //     sortable: false,
+        //     editable: true,
+        //     wrapText: true,    // Allows text to break to next line visually
+        //     autoHeight: true,  // Automatically grows the row height[cite: 1]
+        //     cellEditorPopup: true,
+        //     cellEditor: 'agLargeTextCellEditor',
+        //     cellEditorParams: {
+        //         maxLength: 1000, // Optional: restricts max length
+        //         // cols: 30,       // Optional: width of the dropdown box
+        //         // rows: 3,        // Optional: height of the dropdown box
+        //     },
+        //     suppressKeyboardEvent: (params) => {
+        //         const isEnterKey = params.event.key === 'Enter';
+        //         const isEditing = params.editing;
+        //         //   console.log("is edit",params)
+        //         if (isEditing && isEnterKey) {
+        //             // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
+        //             return true;
+        //         }
+        //         return false;
+        //     },
+        //     onCellValueChanged: (params) => {
+        //         // console.log("Updated:", params.newValue);
+        //         // console.log("Row:", params.data);
+        //         let index = getRowIndex(params.data)
+        //         let pl = {
+        //             TA_Head_UserID: selectedHead,
+        //             TaskID: params.data.id,
+        //             Comments: params.newValue
+        //         }
+
+        //         updateTouchNotes(pl, index)
+        //     },
+
+        //     cellRenderer: LatestTouchCell,
+        // },
+        // {
+        //     headerName: 'Submission URL',
+        //     field: 'submissionSheet',
+        //     width: 250,
+        //     filter: MultiConditionTextFilter,
+        //     sortable: false,
+        //     editable: true,
+        //     wrapText: true,    // Allows text to break to next line visually
+        //     autoHeight: true,  // Automatically grows the row height[cite: 1]
+        //     cellEditorPopup: true,
+        //     // cellEditorPopupPosition: 'under',
+        //     cellEditor: 'agLargeTextCellEditor',
+        //     // cellEditor: 'agTextCellEditor',
+        //     cellEditorParams: {
+        //         maxLength: 500, // Optional: restricts max length
+        //         // cols: 30,       // Optional: width of the dropdown box
+        //         // rows: 3,        // Optional: height of the dropdown box
+        //     },
+        //     suppressKeyboardEvent: (params) => {
+        //         const isEnterKey = params.event.key === 'Enter';
+        //         const isEditing = params.editing;
+        //         //   console.log("is edit",params)
+        //         if (isEditing && isEnterKey) {
+        //             // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
+        //             return true;
+        //         }
+        //         return false;
+        //     },
+        //     onCellValueChanged: (params) => {
+        //         // console.log("Updated:", params.newValue);
+        //         // console.log("Row:", params.data);
+        //         let index = getRowIndex(params.data)
+        //         let pl = {
+        //             tA_Head_UserID: selectedHead,
+        //             taskID: params.data.id,
+        //             comments: params.newValue
+        //         }
+
+        //         updateSubmissionSheetNotes(pl, index)
+        //     },
+
+        //     cellRenderer: SubmissionSheetCell,
+        // },
+
+     
+    ];
 
     const getScrumGridColumns = () => [
         {
@@ -2941,9 +3395,9 @@ function BatchEntry({ entry, isLast }) {
 
     const scrumHistoryDefaultColDef = {
         resizable: true,
-        sortable: true,
+        sortable: false,
         filter: true,
-        suppressMovable: false, // lets users drag-reorder columns, like Excel column drag
+        suppressMovable: true, // lets users drag-reorder columns, like Excel column drag
         wrapHeaderText: true,
         autoHeaderHeight: true,
         cellClass: 'ag-cell-excel-border',
@@ -3640,7 +4094,7 @@ function BatchEntry({ entry, isLast }) {
                      {/* <div>
                       Month-Year
                     </div> */}
-                    {/* <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
+                    <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
                             <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                             <DatePicker
                               style={{ backgroundColor: "red" }}
@@ -3651,16 +4105,88 @@ function BatchEntry({ entry, isLast }) {
                               className={stylesOBj.dateFilter}
                               placeholderText="Month - Year"
                               selected={monthDate}
-                              onChange={date=>setMonthDate(date)}
+                              onChange={date=>{setMonthDate(date)
+                                 setScrumTabTitle('A')
+                              }}
                               dateFormat="MM-yyyy"
                               maxDate={today}
                               showMonthYearPicker
                             />
-                    </div> */}
+                    </div>
                   </div>
                 </div>
 
                 {isHistory ? <>
+                 <div
+                    style={{
+                        display: 'flex',
+                        gap: 32,
+                        margin: '0 20px',
+                        borderBottom: '1px solid var(--uplers-border-color)',
+                    }}
+                >
+                    <button
+                        onClick={() => setScrumTabTitle('A')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: scrumTabTitle === 'A' ? 600 : 400,
+                            color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
+                            borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Active
+                    </button>
+
+                    <button
+                        onClick={() => setScrumTabTitle('C')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: scrumTabTitle === 'C' ? 600 : 400,
+                            color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
+                            borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Covered
+                    </button>
+                    <button
+                        onClick={() => setScrumTabTitle('P')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: scrumTabTitle === 'P' ? 600 : 400,
+                            color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
+                            borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Pause
+                    </button>
+                      <button
+                        onClick={() => setScrumTabTitle('L')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: scrumTabTitle === 'L' ? 600 : 400,
+                            color: scrumTabTitle === 'L' ? '#000' : '#8c8c8c',
+                            borderBottom: scrumTabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                       Lost
+                    </button>
+                </div>
                   <div
                     ref={gridWrapperRef}
                     className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
@@ -3674,10 +4200,10 @@ function BatchEntry({ entry, isLast }) {
                             onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
                             theme={scrumGridTheme}
                             rowData={TaListData}
-                            columnDefs={getScrumGridColumns()}
+                            columnDefs={getScrumGridHistoryColumns()}
                             defaultColDef={scrumHistoryDefaultColDef}
                             context={gridContext}
-                            getRowId={(params) => String(params.data.id)}
+                            getRowId={(params) => String(params.data.task_ID)}
                             suppressRowTransform={true}
                             animateRows={false}
                             headerHeight={38}

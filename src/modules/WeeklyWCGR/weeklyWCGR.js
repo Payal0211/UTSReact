@@ -1993,7 +1993,7 @@ function WeeklyWCGR() {
       key: "actionDate",
       width: "150px",
       render: (text) => {
-        return text;
+        return text ? moment(text).format('DD/MM/YYYY'): ''
       },
     },
     {
@@ -2010,7 +2010,7 @@ function WeeklyWCGR() {
       key: "actionDate",
       width: "150px",
       render: (text) => {
-        return text;
+        return text ? moment(text).format('DD/MM/YYYY'): ''
       },
     },
     {
@@ -2219,7 +2219,7 @@ function WeeklyWCGR() {
       </div>
       }
 
-        if (record.stage_ID === "R1" || record.stage_ID === "Hired") {
+        if (record.stage_ID === "R1" || record.stage_ID === "Hired" || record.stage_ID === "OC" || record.stage_ID ===  "PRC" || record.stage_ID === "R2") {
         return <div >
           {text ? (
             <div
@@ -3361,7 +3361,7 @@ function WeeklyWCGR() {
         width: "200px",
       },
          {
-        title: "POD Name",
+        title: "POD",
         dataIndex: "podName",
         key: "podName",
         width: "200px",
