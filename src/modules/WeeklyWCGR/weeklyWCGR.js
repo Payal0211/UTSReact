@@ -2219,7 +2219,7 @@ function WeeklyWCGR() {
       </div>
       }
 
-        if (record.stage_ID === "R1" || record.stage_ID === "Hired" || record.stage_ID === "OC" || record.stage_ID ===  "PRC" || record.stage_ID === "R2") {
+        if (record.stage_ID === "R1" || record.stage_ID === "Hired" || record.stage_ID === "OC" || record.stage_ID ===  "PRC" || record.stage_ID === "R2" || record.stage_ID === "R3") {
         return <div >
           {text ? (
             <div
