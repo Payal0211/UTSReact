@@ -206,7 +206,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       <div className={taStyles.tableSelectField}>
         <Select
           defaultValue={value}
-          style={{ fontSize: '12px' }}
+          style={{ fontSize: '10px' }}
           onChange={(val) => {
             setValue(val);
             updateTARowValue(val, "task_Priority", result, index);
@@ -502,7 +502,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
       filter: MultiConditionTextFilter,
       rowSpan: (params) => params.data?.rowSpan || 1,
-      valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
+      // valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
       cellStyle: (params) => ({
         borderBottom: params.data?.rowSpan === 0 ? 'none' : '',
         borderTop: params.data?.rowSpan > 0 ? '1px solid #4C4E641F' : '',
@@ -523,7 +523,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           <div className={taStylesNew["company-cell"]} style={{ display: 'flex' }}>
 
 
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', justifyContent:'center' }}>
               <Tooltip title={
                 userData?.UserId === 2 || userData?.UserId === 333 || userData?.UserId === 190 || userData?.UserId === 96
                   ? (data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond")
@@ -579,6 +579,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 fontWeight: 500,
+                fontSize: '10px',
                 lineHeight: "10px"
               }}>
                 {data.companyName.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
@@ -589,8 +590,61 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       },
     },
     {
-      headerName: 'HR Title / ID',
+      headerName: 'HR Title',
       field: 'hrTitle',
+      width: 220,
+      suppressMovable: true,
+      pinned: 'left',
+      filter: MultiConditionTextFilter,
+      autoHeight: true,
+      cellRenderer: (props) => {
+        const { data } = props;
+        return (
+          <div 
+          // className={taStylesNew["hr-title-cell"]}
+          style={{
+            display:'flex',
+            alignItems:'center'
+          }}
+          >
+            <Tooltip title={data.tA_HR_Status}>
+              <span className={taStylesNew["hr-status-box"]} style={{ background: data?.hrColorCode }}>
+
+                {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
+              </span>
+            </Tooltip>
+            <div className={taStylesNew["hr-title-text"]}>
+              <Tooltip title={data.hrTitle}><span style={{
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                fontWeight: 400,
+                // lineHeight: "10px"
+              }}>{data.hrTitle}</span></Tooltip>
+
+              {/* <span 
+                // className={taStylesNew["hr-id-chip"]}*/}
+                {/* style={{
+                  cursor: "pointer", color: "blue",
+                  /* font-weight: bold; */}
+                  {/* textDecoration: " underline",
+                  margin: '0px'
+                }} */}
+                {/* onClick={() => {
+                  window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
+                }}
+              >
+                {data.hrNumber}
+              </span> */}
+            </div>
+          </div>
+        );
+      },
+    },
+      {
+      headerName: 'ID',
+      field: 'hrNumber',
       width: 220,
       suppressMovable: true,
       pinned: 'left',
@@ -612,8 +666,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                fontWeight: 500,
-                lineHeight: "10px"
+                fontWeight: 400,
+                // lineHeight: "10px"
               }}>{data.hrTitle}</span></Tooltip>
 
               <span
@@ -664,7 +718,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       },
     },
     {
-      headerName: 'Profiles Shared Target / Achieved / L1 Round',
+      headerName: 'Profiles Shared Target ',
       field: 'profile_Shared_Target',
       width: 220,
       filter: MultiConditionTextFilter,
@@ -682,7 +736,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         const { data, ind } = props;
         const rowIndex = getRowIndex(data);
         return (
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", justifyContent:'center', alignItems:'center' }}>
             {data.task_StatusID === 1 ? (
               <p
                 style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
@@ -694,10 +748,59 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
               >
                 {data?.profile_Shared_Target ?? 0}
               </p>
-            ) : (
+            ) :""}
+          </div>
+        );
+      },
+    },
+     {
+      headerName: 'Achieved',
+      field: 'profile_Shared_Achieved',
+      width: 220,
+      filter: MultiConditionTextFilter,
+      filterParams: {
+        type: 'number',
+
+        // Filter will check all these fields
+        fields: [
+          'profile_Shared_Target',
+          'profile_Shared_Achieved',
+          'interview_Scheduled_Target',
+        ],
+      },
+      cellRenderer: (props) => {
+        const { data, ind } = props;
+        const rowIndex = getRowIndex(data);
+        return (
+          <div style={{ display: "flex" , justifyContent:'center', alignItems:'center'}}>
+            { (
               data?.profile_Shared_Target ?? 0
-            )}{" "}
-            / {data.profile_Shared_Achieved ?? "NA"} / {data.interview_Scheduled_Target ?? "NA"}
+            )}
+          </div>
+        );
+      },
+    },
+     {
+      headerName: ' L1 Round',
+      field: 'interview_Scheduled_Target',
+      width: 220,
+      filter: MultiConditionTextFilter,
+      filterParams: {
+        type: 'number',
+
+        // Filter will check all these fields
+        fields: [
+          'profile_Shared_Target',
+          'profile_Shared_Achieved',
+          'interview_Scheduled_Target',
+        ],
+      },
+      cellRenderer: (props) => {
+        const { data, ind } = props;
+        const rowIndex = getRowIndex(data);
+        return (
+          <div style={{ display: "flex", justifyContent:'center', alignItems:'center' }}>
+           {data.interview_Scheduled_Target ?? "NA"}
           </div>
         );
       },
