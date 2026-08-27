@@ -2219,7 +2219,9 @@ function WeeklyWCGR() {
       </div>
       }
 
-        if (record.stage_ID === "R1" || record.stage_ID === "Hired" || record.stage_ID === "OC" || record.stage_ID ===  "PRC" || record.stage_ID === "R2" || record.stage_ID === "R3") {
+        if (record.stage_ID === "R1" || record.stage_ID === "Hired" || record.stage_ID === "OC" || record.stage_ID ===  "PRC" || record.stage_ID === "R2" || 
+          record.stage_ID === "R3" || record.stage_ID === "TotalTA" || record.stage_ID === "BC" || record.stage_ID === "JC" || record.stage_ID === "DC") 
+          {
         return <div >
           {text ? (
             <div
@@ -2394,7 +2396,7 @@ function WeeklyWCGR() {
     }
 
     if (record?.stage_Title === "JOINING  ·  Revenue" || record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue") {
-      if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop") {
+      if (record.stage_ID === "D_Joined" || record.stage_ID === "D_Lost" || record.stage_ID === "D_Drop" || record.stage_ID === "D_Backout") {
         return <div >
           {text ? (
             <div

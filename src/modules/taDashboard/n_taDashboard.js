@@ -1623,7 +1623,7 @@ function NewTADashboard() {
                   
 
                     <div className={stylesOBj.filterContainer} style={{marginBottom:"80px"}}>
-                        <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
+                        <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px', height:'25px', minHeight:'25px' }}>
                             <button
                                 className={`${stylesOBj["toggle-btn"]}  ${activeTable === 'Dashboard' ? stylesOBj["toggle-btn-active"] : ''}`}
                                 onClick={() => {
@@ -1641,7 +1641,7 @@ function NewTADashboard() {
 
                            {activeTable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
                                 <DatePicker
-                                    style={{ backgroundColor: "red" }}
+                                    style={{ backgroundColor: "red" , height:'25px' }}
                                     onKeyDown={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
@@ -1694,7 +1694,7 @@ function NewTADashboard() {
                                     </div>
                                 </button> */}
 
-                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px' }}>
+                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px', height:'25px' }}>
                                     <input
                                         ref={searchInputRef}
                                         type="text"
@@ -1710,7 +1710,7 @@ function NewTADashboard() {
                                     />
                                     {searchText.length > 0 && (
                                         <Tooltip title="Clear search">
-                                            <span style={{ position: 'absolute', right: '36px', color: 'red', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}
+                                            <span style={{ position: 'absolute', right: '36px', color: 'red', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
                                                 onClick={() => { setSearchText(''); setDebounceSearch(''); }}>
                                                 X
                                             </span>
@@ -1738,6 +1738,7 @@ function NewTADashboard() {
                                         setIsAddNewRow(true);
                                         setNewTAHeadUserValue(selectedHead);
                                     }}
+                                    style={{height:'25px', padding:'4px 12px'}}
                                 >
                                     Add New Task
                                 </button>

@@ -276,6 +276,11 @@ body {
     border: 1px solid #E0E0E0;
 }
 
+.calendarFilter [class*='react-datepicker__month-container']{
+       width: 220px;
+    font-size: 10px; 
+}
+
 .calendar-icon-right {
     width: 18px;
     height: 18px;
