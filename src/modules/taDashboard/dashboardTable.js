@@ -607,12 +607,12 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
             alignItems:'center'
           }}
           >
-            <Tooltip title={data.tA_HR_Status}>
-              <span className={taStylesNew["hr-status-box"]} style={{ background: data?.hrColorCode }}>
+            {/* <Tooltip title={data.tA_HR_Status}>
+              <span className={taStylesNew["hr-status-box"]}  style={{ background: data?.hrColorCode, marginRight:'5px' }}> */}
 
                 {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
-              </span>
-            </Tooltip>
+              {/* </span>
+            </Tooltip> */}
             <div className={taStylesNew["hr-title-text"]}>
               <Tooltip title={data.hrTitle}><span style={{
                 display: 'block',

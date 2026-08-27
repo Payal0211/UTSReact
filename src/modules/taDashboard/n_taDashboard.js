@@ -1694,7 +1694,7 @@ function NewTADashboard() {
                                     </div>
                                 </button> */}
 
-                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px', height:'25px' }}>
+                                {/* <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px', height:'25px' }}>
                                     <input
                                         ref={searchInputRef}
                                         type="text"
@@ -1728,7 +1728,7 @@ function NewTADashboard() {
                                             style={{ cursor: 'pointer' }}
                                         />
                                     </Tooltip>
-                                </div>
+                                </div> */}
                             </>}
 
                             {userData?.showTADashboardDropdowns && activeTable === 'Dashboard' && (
