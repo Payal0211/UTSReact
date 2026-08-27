@@ -261,7 +261,12 @@ const isHistory = useMemo(
 
         if (result.statusCode === HTTPStatusCode.OK) {
             // setTaListData(result.responseBody);
-            setTaListData(groupByRowSpan(result.responseBody, "taName"));
+             if(isHistory){
+ setTaListData(groupByRowSpan(result.responseBody.map(i=>({...i, tA_HR_StatusID: i.tA_HR_StatusColorCode})), "taName"));
+             }else{
+ setTaListData(groupByRowSpan(result.responseBody, "taName"));
+             }
+           
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             setTaListData([]);
         } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -1907,7 +1912,8 @@ function BatchEntry({ entry, isLast }) {
         "todayProfile_Shared_Target",
         "profile_Shared_Target",
         "profile_Shared_Achieved",
-        "interview_Scheduled_Target"
+        "interview_Scheduled_Target",
+        "noOfCallsGivenDay"
     ];
 
     // Fields that are formatted currency strings (₹ symbol + Indian-style commas)
@@ -2257,6 +2263,7 @@ function BatchEntry({ entry, isLast }) {
             cellRenderer: CompanyCell,
             sortable: false,
             suppressMovable: true,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.companyName)))?.map(v=>({data:v})) },
             filter: MultiConditionTextFilter,
         },
         {
@@ -2266,6 +2273,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             suppressMovable: true,
             filter: MultiConditionTextFilter,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrNumber)))?.map(v=>({data:v})) },
             cellRenderer: (props) => {
                 const { value, data } = props;
 
@@ -2341,6 +2349,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             suppressMovable: true,
             cellRenderer: HrTitleCell,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrTitle)))?.map(v=>({data:v})) },
             filter: MultiConditionTextFilter,
             // tooltipField: 'hrTitle',
 
@@ -2381,6 +2390,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
             width: 120,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.role_Type)))?.map(v=>({data:v})) },
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
@@ -2402,8 +2412,9 @@ function BatchEntry({ entry, isLast }) {
         // },
         {
             headerName: 'Date',
-            field: 'hrMonth',
+            field: 'hrCreatedDateStr',
             cellStyle: { textAlign: 'center' },
+            filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrCreatedDateStr)))?.map(v=>({data:v})) },
             width: 110,
             filter: MultiConditionTextFilter,
            
@@ -2421,6 +2432,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'tA_HR_Status',
             width: 130,
             filter: MultiConditionTextFilter,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.tA_HR_Status)))?.map(v=>({data:v})) },
             cellRenderer: HrStatusCell,
         },
         {
@@ -2431,6 +2443,45 @@ function BatchEntry({ entry, isLast }) {
             filter: MultiConditionTextFilter,
         },
 
+ {
+            headerName: 'Latest Updates',
+            field: 'latestNotes',
+            width: 250,
+            filter: MultiConditionTextFilter,
+            sortable: false,
+            editable: false,
+            wrapText: true,    // Allows text to break to next line visually
+            autoHeight: true,  // Automatically grows the row height[cite: 1]
+            cellEditorPopup: true,
+            // cellEditorPopupPosition: 'under', 
+            // 👇 ADD THESE TWO CONFIGURATIONS
+            // cellEditor: 'agTextCellEditor', 
+       
+        
+
+            cellRenderer: (props)=>{
+                 const { value,data } = props;
+    const { AddComment, getRowIndex } = props.context;
+    const i = getRowIndex(data);
+
+    return (
+        <Tooltip title={value}>
+            <div style={{lineHeight:'20px', height:'20px'}}>{data?.latestNotesTopRow}</div>  
+        </Tooltip>
+      
+        //  <div style={{lineHeight:'20px', height:'25px'}} dangerouslySetInnerHTML={{__html:value}}></div>
+        // <button
+        //     className={stylesOBj['cell-add-btn']}
+        //     onClick={(e) => {
+        //         e.stopPropagation();
+        //         AddComment(data, i);
+        //     }}
+        // >
+        //     {data?.latestNotes ? 'View / Edit' : 'Add'}
+        // </button>
+    );
+            },
+        },
 
 
 
@@ -2709,6 +2760,7 @@ function BatchEntry({ entry, isLast }) {
             width: 150,
             pinned: 'left',
             cellRenderer: CompanyCell,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.companyName)))?.map(v=>({data:v})) },
             sortable: false,
             suppressMovable: true,
             filter: MultiConditionTextFilter,
@@ -2719,6 +2771,7 @@ function BatchEntry({ entry, isLast }) {
             width: 150,
             pinned: 'left',
             suppressMovable: true,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrNumber)))?.map(v=>({data:v})) },
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props;
@@ -2795,6 +2848,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             suppressMovable: true,
             cellRenderer: HrTitleCell,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrTitle)))?.map(v=>({data:v})) },
             filter: MultiConditionTextFilter,
             // tooltipField: 'hrTitle',
 
@@ -2847,6 +2901,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'role_Type',
             width: 120,
             filter: MultiConditionTextFilter,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.role_Type)))?.map(v=>({data:v})) },
             cellStyle: { textAlign: 'center' },
         },
         {
@@ -2869,6 +2924,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: 'Date',
             field: 'hrMonth',
             cellStyle: { textAlign: 'center' },
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrMonth)))?.map(v=>({data:v})) },
             width: 110,
             filter: MultiConditionTextFilter,
            
@@ -2885,6 +2941,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: 'HR Status',
             field: 'tA_HR_Status',
             width: 130,
+             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.tA_HR_Status)))?.map(v=>({data:v})) },
             filter: MultiConditionTextFilter,
             cellRenderer: HrStatusCell,
         },
@@ -4185,6 +4242,21 @@ function BatchEntry({ entry, isLast }) {
                         }}
                     >
                        Lost
+                    </button>
+                      <button
+                        onClick={() => setScrumTabTitle('W')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: scrumTabTitle === 'W' ? 600 : 400,
+                            color: scrumTabTitle === 'W' ? '#000' : '#8c8c8c',
+                            borderBottom: scrumTabTitle === 'W' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                    Won
                     </button>
                 </div>
                   <div
