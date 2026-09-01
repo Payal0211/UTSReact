@@ -353,7 +353,7 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
 
     const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
     if (result?.statusCode !== HTTPStatusCode.OK) {
-        message.error("value updated");
+        message.error(result.responseBody);
         return;
     }
 
@@ -1145,7 +1145,7 @@ const STATUS_CHIP_STYLES = {
 
     const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
     if (result?.statusCode === HTTPStatusCode.OK) {
-      message.success(result.responseBody.message);
+      message.success("value updated");
       onSaved && onSaved(Number(role));
     } else {
       message.error(result.responseBody);
