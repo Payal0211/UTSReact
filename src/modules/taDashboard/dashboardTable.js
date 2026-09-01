@@ -320,50 +320,60 @@ function ProfileSharedTargetCell(props) {
 
     // Recalculate NR(%) and NR(USD) whenever Bill Rate or Talent Pay Rate is edited,
   // persist the recalculated values, then update local state (which regroups TA-wise totals).
-  const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
+const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
+    // Extract the currency symbol from whichever field is being edited,
+    // so it survives the round-trip back into state.
+    const getCurrencySymbol = (value) => {
+        const match = String(value ?? "").match(/^[^\d-]+/);
+        return match ? match[0] : "$";   // fallback to $ if nothing found
+    };
+
+    const billSymbol = getCurrencySymbol(row.totalRevenue_NoofTalentStr);
+    const talentSymbol = getCurrencySymbol(row.talent_AnnualCTC_Budget_INRValueStr);
+    const nrUsdSymbol = getCurrencySymbol(row.revenue_On10PerCTCStr);
+
     const bill = billRate !== undefined
-      ? billRate
-      : (parseFloat(String(row.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")) || 0);
+        ? billRate
+        : (parseFloat(String(row.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")) || 0);
     const talent = talentPayRate !== undefined
-      ? talentPayRate
-      : (parseFloat(String(row.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")) || 0);
+        ? talentPayRate
+        : (parseFloat(String(row.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")) || 0);
 
     const newNRUSD = bill - talent;
-    // NR(%) per row stays exactly as it is — never recomputed from Bill Rate / Talent Pay Rate edits.
     const existingNRPercent = parseFloat(row.uplersFeesPer) || 0;
 
     let pl = {
-      TaskID: row.id,
-      TAHeadUserID: `${selectedHead}`,
-      UplersFeesPer: existingNRPercent,
-      TotalRevenue_NoofTalent: bill,
-      Revenue_On10PerCTC: newNRUSD,
-      Talent_AnnualCTC_Budget_INRValue: talent,
+        TaskID: row.id,
+        TAHeadUserID: `${selectedHead}`,
+        UplersFeesPer: existingNRPercent,
+        TotalRevenue_NoofTalent: bill,
+        Revenue_On10PerCTC: newNRUSD,
+        Talent_AnnualCTC_Budget_INRValue: talent,
     };
 
     const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
     if (result?.statusCode !== HTTPStatusCode.OK) {
-      message.error(result?.responseBody);
-      return;
+        message.error(result.responseBody);
+        return;
     }
 
     setTaListData((prev) => {
-      const flat = prev
-        .filter((r) => !r.isTotalRow)
-        .map((r) =>
-          r.id === row.id
-            ? {
-                ...r,
-                totalRevenue_NoofTalentStr: bill,
-                talent_AnnualCTC_Budget_INRValueStr: talent,
-                revenue_On10PerCTCStr: newNRUSD,
-                // uplersFeesPer intentionally NOT touched — row NR% stays fixed
-              }
-            : r
-        );
-      return groupByRowSpan(flat, "taName");
+        const flat = prev
+            .filter((r) => !r.isTotalRow)
+            .map((r) =>
+                r.id === row.id
+                    ? {
+                        ...r,
+                        // 👇 re-attach the symbol so it survives into the next render
+                        totalRevenue_NoofTalentStr: `${billSymbol}${bill}`,
+                        talent_AnnualCTC_Budget_INRValueStr: `${talentSymbol}${talent}`,
+                        revenue_On10PerCTCStr: `${nrUsdSymbol}${newNRUSD}`,
+                    }
+                    : r
+            );
+        return groupByRowSpan(flat, "taName");
     });
-  };
+};
 
 
   const PriorityComp = ({ text, result, index }) => {
@@ -1135,7 +1145,7 @@ const STATUS_CHIP_STYLES = {
 
     const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
     if (result?.statusCode === HTTPStatusCode.OK) {
-      message.success(result.responseBody.message);
+      message.success("value updated");
       onSaved && onSaved(Number(role));
     } else {
       message.error(result.responseBody);
@@ -1449,6 +1459,9 @@ const STATUS_CHIP_STYLES = {
       }),
       cellRenderer:(props)=>{
         const {data, value} = props
+           if (props.node.rowPinned === "bottom") {
+        return <strong>Total</strong>;
+    }
         if (data?.isTotalRow){
     return null;
   }
