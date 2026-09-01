@@ -1529,7 +1529,7 @@ const STATUS_CHIP_STYLES = {
                       setNewTAHeadUserValue(selectedHead);
                       getCompanySuggestionHandler(data.tA_UserID);
                       setselectedCompanyID(data?.company_ID);
-                      getHRLISTForComapny(data?.company_ID);
+                      getHRLISTForComapny(data?.company_ID, data?.tA_Head_UserID);
                     }}
                   >
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
