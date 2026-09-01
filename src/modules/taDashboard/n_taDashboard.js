@@ -1694,7 +1694,7 @@ function NewTADashboard() {
                                     </div>
                                 </button> */}
 
-                                <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px', height:'25px' }}>
+                                {/* <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px', height:'25px' }}>
                                     <input
                                         ref={searchInputRef}
                                         type="text"
@@ -1728,7 +1728,7 @@ function NewTADashboard() {
                                             style={{ cursor: 'pointer' }}
                                         />
                                     </Tooltip>
-                                </div>
+                                </div> */}
                             </>}
 
                             {userData?.showTADashboardDropdowns && activeTable === 'Dashboard' && (
@@ -1749,7 +1749,7 @@ function NewTADashboard() {
 
                         {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
                             hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget, editTAforTask,handleRemoveTask ,TaskStatusComp,
-                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount
+                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount,startTargetDate,setGoalList,setLoadingTalentProfile,getTalentProfilesDetailsfromGoalsTable
                             }}
                             userData={userData} startDate={startDate}
                         />}
