@@ -1555,9 +1555,9 @@ const STATUS_CHIP_STYLES = {
       cellRenderer: (props) => {
         const { data } = props;
         return (
-          <div className={taStylesNew["hr-title-cell"]}>
+         
            
-            <div className={taStylesNew["hr-title-text"]}>
+          
               <span
                 // className={taStylesNew["hr-id-chip"]}
                 style={{
@@ -1573,8 +1573,8 @@ const STATUS_CHIP_STYLES = {
               >
                 {data.hrNumber}
               </span>
-            </div>
-          </div>
+          
+        
         );
       },
     },
