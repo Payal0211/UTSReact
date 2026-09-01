@@ -866,10 +866,10 @@ function NewTADashboard() {
         }
     };
 
-    const getHRLISTForComapny = async (id) => {
+    const getHRLISTForComapny = async (id, headID) => {
         const pl = {
             companyID: id,
-            tAHeadID: newTAHeadUservalue
+            tAHeadID:  headID ? headID : newTAHeadUservalue
         };
         let response = await TaDashboardDAO.getHRlistFromCompanyDAO(pl);
         if (response?.statusCode === HTTPStatusCode.OK) {
