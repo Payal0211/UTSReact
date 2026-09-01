@@ -4,6 +4,7 @@ import stylesOBj from './n_tadashboard.module.css'
 import taStyles from "./tadashboard.module.css";
 import taStylesNew from "./n_tadashboardNew.module.css";
 import { scrumGridTheme } from '../ScrumS2/gridTheme'
+import moment from 'moment'
 import {
   Select, InputNumber,
   Tooltip, Table, Checkbox, message, Skeleton, Modal
@@ -30,8 +31,8 @@ const { Option } = Select;
 
 function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filtersList, AddComment, hooks, userData, startDate }) {
   const navigate = useNavigate()
-  const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails, setStartTargetDate, setShowProfileTarget, TaskStatusComp,
-    editTAforTask, handleRemoveTask, getTalentProfilesDetailsfromTable, setTalentToMove, setProfileStatusID, setHRTalentListFourCount
+  const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,startTargetDate, setStartTargetDate, setShowProfileTarget, 
+    editTAforTask, handleRemoveTask, getTalentProfilesDetailsfromTable, setTalentToMove, setProfileStatusID, setHRTalentListFourCount,setGoalList,setLoadingTalentProfile,getTalentProfilesDetailsfromGoalsTable
   } = hooks;
   const [TaListData, setTaListData] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
@@ -48,31 +49,148 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     clearErrors,
     formState: { errors },
   } = useForm();
+  const [TabTitle, setTabTitle] = useState('A')
+  const [targetValue, setTargetValue] = useState(5);
+
+  const [showAlertDetailModal, setShowAlertDetailModal] = useState(false);
+  const [alertDetailData, setAlertDetailData] = useState({});
+
+  // function groupByRowSpan(data, groupField) {
+  //   const grouped = {};
+
+  //   // Step 1: Group by the field (e.g., 'ta')
+  //   data.forEach((item) => {
+  //     const key = item[groupField];
+  //     if (!grouped[key]) grouped[key] = [];
+  //     grouped[key].push(item);
+  //   });
+
+  //   // Step 2: Add rowSpan metadata
+  //   const finalData = [];
+  //   Object.entries(grouped).forEach(([key, rows]) => {
+  //     rows.forEach((row, index) => {
+  //       finalData.push({
+  //         ...row,
+  //         rowSpan: index === 0 ? rows.length : 0,
+  //       });
+  //     });
+  //   });
+
+  //   return finalData;
+  // }
+
   function groupByRowSpan(data, groupField) {
-    const grouped = {};
+  const grouped = {};
 
-    // Step 1: Group by the field (e.g., 'ta')
-    data.forEach((item) => {
-      const key = item[groupField];
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(item);
-    });
+  // Group data by TA
+  data.forEach((item) => {
+    const key = item[groupField];
 
-    // Step 2: Add rowSpan metadata
-    const finalData = [];
-    Object.entries(grouped).forEach(([key, rows]) => {
-      rows.forEach((row, index) => {
-        finalData.push({
-          ...row,
-          rowSpan: index === 0 ? rows.length : 0,
-        });
+    if (!grouped[key]) {
+      grouped[key] = [];
+    }
+
+    grouped[key].push(item);
+  });
+
+  const finalData = [];
+
+  Object.entries(grouped).forEach(([key, rows]) => {
+
+    // Add actual rows
+    rows.forEach((row, index) => {
+      finalData.push({
+        ...row,
+        rowSpan: index === 0 ? rows.length : 0,
+        isTotalRow: false,
       });
     });
 
-    return finalData;
-  }
+    // Calculate TA wise totals
+    const totalTalentPayRate = rows.reduce(
+      (sum, row) => sum + parseFloat(
+        String(row.talent_AnnualCTC_Budget_INRValueStr ?? "")
+          .replace(/[^0-9.-]/g, "")
+      ) || 0,
+      0
+    );
+
+    // const totalNR = rows.reduce(
+    //   (sum, row) => sum + parseFloat(row.uplersFeesPer) || 0,
+    //   0
+    // );
+
+    const totalNR = 6000;
+    // NR(USD) total = sum of (Bill Rate - Talent Pay Rate) per row —
+    // the SAME formula used to render each row's NR(USD) cell, so the total
+    // always matches what's actually displayed on screen, not a stale backend field.
+    const totalNRUSD = rows.reduce((sum, row) => {
+      const rowBillRate = parseFloat(
+        String(row.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")
+      ) || 0;
+      const rowTalentPayRate = parseFloat(
+        String(row.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")
+      ) || 0;
+      return sum + (rowBillRate - rowTalentPayRate);
+    }, 0);
+
+    const totalActiveTR = rows.reduce(
+      (sum, row) => sum + (parseFloat(row.activeTR) || 0),
+      0
+    );
+
+    // Bill Rate total = NR(USD) total / NR(%) total, expressed as a percentage
+    const totalBillRate = totalNR ? (totalNRUSD / totalNR)  : 0;
+
+    // Add TA Total Row
+    finalData.push({
+      [groupField]: `${key} Total`,
+      id: `total-${key}`,
+      // talent_AnnualCTC_Budget_INRValueStr: totalTalentPayRate,
+      uplersFeesPer: totalNR,
+      revenue_On10PerCTCStr: totalNRUSD,
+      totalRevenue_NoofTalentStr: totalBillRate,
+      activeTR: totalActiveTR,
+      isTotalRow: true,
+      rowSpan: 1,
+    });
+  });
+
+  return finalData;
+}
+
+function ProfileSharedTargetCell(props) {
+    const {value, data ,objKey } = props;
+    // const { setShowProfileTarget, setStartTargetDate, setProfileTargetDetails, startDate, getRowIndex, setTargetValue , isHistory} =
+    //     props.context;
+
+          if (props.node.rowPinned) {
+        return value;
+            }
+    const i = getRowIndex(data);
 
 
+    return (
+        <div style={{ display: 'flex', justifyContent:'center' }}>
+            {data.task_StatusID === 1 ? (
+                <p
+                    style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0 }}
+                    onClick={() => {
+                         setTargetValue(value)
+                        setShowProfileTarget(true);
+                        setStartTargetDate(startDate);
+                        setProfileTargetDetails({ ...data, index: i });
+                    }}
+                >
+                    {value ?? ""}
+                </p>
+            ) : (
+                value ?? ""
+            )}{' '}
+            {/* / {data.profile_Shared_Achieved ?? 'NA'} / {data.interview_Scheduled_Target ?? 'NA'} */}
+        </div>
+    );
+}
 
   const getCOLUMNOrder = async (id) => {
     const colOrderResult = await TaDashboardDAO.getScrumColumOrderDAO(selectedHead)
@@ -93,6 +211,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       priority: tableFilteredState?.filterFields_OnBoard?.priority,
       searchText: searchText,
       taHeadUserIDs: `${selectedHead}`,
+      tabName: TabTitle
     };
     setIsLoading(true);
     const result = await TaDashboardDAO.getAllTATaskListRequestDAO(pl);
@@ -117,14 +236,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     } else {
       return "NO DATA FOUND";
     }
-  }, [tableFilteredState, selectedHead, searchText, navigate]);
+  }, [tableFilteredState, selectedHead, searchText, navigate,TabTitle]);
 
   useEffect(() => {
     if (selectedHead.length !== 0 && filtersList?.HeadUsers.map(it => it.id).includes(selectedHead)) {
       getListData();
       getCOLUMNOrder()
     }
-  }, [searchText, tableFilteredState, selectedHead, filtersList]);
+  }, [searchText, tableFilteredState, selectedHead, filtersList,TabTitle]);
 
 
   const updateTARowValue = async (value, key, params, index, targetValue) => {
@@ -199,6 +318,54 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     let updateresult = await TaDashboardDAO.updateTAListRequestDAO(pl);
   };
 
+    // Recalculate NR(%) and NR(USD) whenever Bill Rate or Talent Pay Rate is edited,
+  // persist the recalculated values, then update local state (which regroups TA-wise totals).
+  const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
+    const bill = billRate !== undefined
+      ? billRate
+      : (parseFloat(String(row.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")) || 0);
+    const talent = talentPayRate !== undefined
+      ? talentPayRate
+      : (parseFloat(String(row.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")) || 0);
+
+    const newNRUSD = bill - talent;
+    // NR(%) per row stays exactly as it is — never recomputed from Bill Rate / Talent Pay Rate edits.
+    const existingNRPercent = parseFloat(row.uplersFeesPer) || 0;
+
+    let pl = {
+      TaskID: row.id,
+      TAHeadUserID: `${selectedHead}`,
+      UplersFeesPer: existingNRPercent,
+      TotalRevenue_NoofTalent: bill,
+      Revenue_On10PerCTC: newNRUSD,
+      Talent_AnnualCTC_Budget_INRValue: talent,
+    };
+
+    const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
+    if (result?.statusCode !== HTTPStatusCode.OK) {
+      message.error(result?.responseBody);
+      return;
+    }
+
+    setTaListData((prev) => {
+      const flat = prev
+        .filter((r) => !r.isTotalRow)
+        .map((r) =>
+          r.id === row.id
+            ? {
+                ...r,
+                totalRevenue_NoofTalentStr: bill,
+                talent_AnnualCTC_Budget_INRValueStr: talent,
+                revenue_On10PerCTCStr: newNRUSD,
+                // uplersFeesPer intentionally NOT touched — row NR% stays fixed
+              }
+            : r
+        );
+      return groupByRowSpan(flat, "taName");
+    });
+  };
+
+
   const PriorityComp = ({ text, result, index }) => {
     const [value, setValue] = useState(text ?? "");
 
@@ -219,6 +386,337 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       </div>
     );
   };
+
+   const TaskStatusComp = ({ text, result, index ,style}) => {
+          const [value, setValue] = useState(text ?? "");
+          const colorCode =
+              filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
+          return (
+              <div className={taStyles.tableSelectField}>
+                  <Select
+                      defaultValue={value}
+                      style={{ color: colorCode , ...style }}
+                      onChange={async (val) => {
+                          if (value === "Fasttrack" && val !== "Fasttrack") {
+                              let pl = {
+                                  task_ID: result?.id,
+                                  tA_Head_UserID: selectedHead,
+                                  tA_UserID: result?.tA_UserID,
+                                  target_StageID: 1,
+                                  target_Number: targetValue,
+                                  target_Date: moment(startTargetDate).format("YYYY-MM-DD"),
+                                  IsStatusChangedToSlow: true,
+                                  task_StatusID: val?.id 
+                              };
+                              setLoadingTalentProfile(true);
+                              let response = await TaDashboardDAO.insertProfileShearedTargetDAO(
+                                  pl
+                              );
+                              setLoadingTalentProfile(false);
+                              if (response.statusCode === HTTPStatusCode.OK) {
+                                  setGoalList(response.responseBody);
+                                  setTargetValue(5);
+                                  setStartTargetDate(new Date());
+                              }
+                          }
+                          setValue(val);
+                          let valobj = filtersList?.TaskStatus?.find((i) => i.data === val);
+                          if (val === "Fasttrack") {
+                              setShowProfileTarget(true);
+                              setStartTargetDate(startDate);
+                              setProfileTargetDetails({ ...result, index: index });
+                              return;
+                          }
+                        if (val === "Covered") {
+                          return  setTabTitle('C')
+                        } 
+                        if (val === "Pause") {
+                          return  setTabTitle('P')
+                        }
+                        return setTabTitle('A')
+                          updateTARowValue(valobj, "task_StatusID", result, index);
+                      }}
+                  >
+                      {filtersList?.TaskStatus?.map((v) => (
+                          <Option style={{ color: v.colorCode }} value={v.data}>
+                              {v.data}
+                          </Option>
+                      ))}
+                  </Select>
+              </div>
+          );
+      };
+
+         function computePoPUPAlerts(data) {
+        const alerts = [];
+
+   
+          const batch = data?.hrAlerts
+        if (batch?.length) {
+            batch.forEach(i => {
+                alerts.push({
+                    key: 'screenBatch',
+                    text: i.alert,
+                    dot: i.color === "Red" ? 'critical' : 'warning',
+                    // isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
+                    isNew: i?.alertTrigger !== "$" ? true : false,
+                    ...i
+                });
+            })
+
+        }
+
+        const severityOrder = { critical: 0, warning: 1, info: 2, success: 3 };
+        // return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
+        return alerts
+    }
+
+    function parseHrAlertDetailText(text) {
+    if (!text) return [];
+
+    return text
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter(Boolean)
+        .map((entry) => {
+            const match = entry.match(/^(.+?)\s*\((.+?)\)\s*$/);
+            if (!match) return { name: entry, status: '' };
+            return { name: match[1].trim(), status: match[2].trim() };
+        });
+}
+
+const getStatusStyle = (statusRaw) => {
+    const key = (statusRaw ?? '').trim().toLowerCase();
+    return STATUS_CHIP_STYLES[key] ?? { label: statusRaw, icon: '•', bg: '#F0F0F0', text: '#666' };
+};
+
+function BatchEntry({ entry, isLast }) {
+    const style = getStatusStyle(entry.status);
+
+    return (
+        <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 12, fontWeight: 500, color: '#333' }}>
+                    {entry.name}
+                </span>
+                {entry.status && (
+                    <span
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            fontSize: 8,
+                            fontWeight: 600,
+                            padding: '2px 8px',
+                            borderRadius: 999,
+                            backgroundColor: style.bg,
+                            color: style.text,
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        <span style={{ fontSize: 10 }}>{style.icon}</span>
+                        {style.label}
+                    </span>
+                )}
+            </div>
+            {!isLast && <span style={{ color: '#D0D5DB', fontSize: 12 }}>|</span>}
+        </>
+    );
+}
+
+      function SummaryCard({ label, value, color }) {
+        return (
+            <div
+                style={{
+                    flex: 1,
+                    backgroundColor: '#F4F6F8',
+                    borderRadius: 10,
+                    padding: '10px 4px',
+                    textAlign: 'center',
+                    display:'flex',
+                    alignItems:'center',
+                    justifyContent:'center',
+                    gap:'5px'
+                }}
+            >
+                <div style={{ fontSize: 12, fontWeight: 700, color }}>{value}</div>
+                <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>{label}</div>
+            </div>
+        );
+    }
+
+     function HrAlertBatchChips({ title, text, entries: entriesProp }) {
+      const entries = entriesProp ?? parseHrAlertDetailText(text);
+
+    if (!entries || entries.length === 0) return null;
+
+    return (
+        <div
+            style={{
+                border: '1px solid #E3E7EB',
+                borderRadius: 999,
+                padding: '10px 16px',
+                background: '#fff',
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: 5,
+                width:'fit-content'
+            }}
+        >
+            {entries.map((entry, i) => (
+                <BatchEntry key={i} entry={entry} isLast={i === entries.length - 1} />
+            ))}
+        </div>
+    );
+}
+
+
+      function AlertRowBig({ alert }) {
+            return (
+                <Tooltip title={alert.label ?? alert.text}>
+                    <div
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            padding: '10px',
+                            borderRadius: 999,
+                            backgroundColor: alert.color ? alert.color : CHIP_BG[alert.dot],
+                            fontSize: 10,
+                            fontWeight: 500,
+                            color: '#3a3a3a',
+                            lineHeight: '14px',   // was 16px
+                            height: 16,           // was 22px — this is the main change
+                            boxSizing: 'border-box',
+                            whiteSpace: 'nowrap',
+                            maxWidth: 'fit-content',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                        }}
+                    >
+                        {alert.prefixIcon ? (
+                            <span style={{ fontWeight: 700, color: DOT_COLORS[alert.dot], fontSize: 10, flexShrink: 0 }}>
+                                {alert.prefixIcon}
+                            </span>
+                        ) : (
+                            <span
+                                style={{
+                                    width: 5,
+                                    height: 5,
+                                    borderRadius: '50%',
+                                    backgroundColor: DOT_COLORS[alert.dot],
+                                    flexShrink: 0,
+                                }}
+                            />
+                        )}
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{alert.text}</span>
+                        {alert?.isNew && <NewBlinkBadge />}
+                    </div>
+                </Tooltip>
+            );
+        }
+
+
+
+          function AlertDetailModal({ open, data, onClose }) {
+              if (!data) return null;
+      
+              const alerts = computePoPUPAlerts(data);
+              const daysOpen = data?.days ?? 0;
+              const totalInterviewRejects = data?.totalNoOfInterviewReject ?? 0;
+              const activeProfiles = data?.noOfProfile_TalentsTillDate ?? 0;
+      
+              return (
+                  <Modal
+                      transitionName=""
+                      width="fit-content"
+                      style={{minWidth:'450px'}}
+                      centered
+                      footer={null}
+                      open={open}
+                      className="engagementModalStyle"
+                      onCancel={onClose}
+                  >
+                      <div style={{ padding: '20px 24px 24px' }}>
+      
+      
+                          {/* Title + subtitle */}
+                          <h2 style={{ fontSize: 10, fontWeight: 700, margin: '0 0 6px' }}>
+                              {data.hrTitle}
+                          </h2>
+                          <p style={{ color: '#6b7280', fontSize: 8, margin: '0 0 20px' }}>
+                            <span>{data.taName} · {data.companyName} ·</span>  {data.hrNumber}
+                          </p>
+      
+                          {/* Summary cards */}
+                          <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+                              <SummaryCard label="Days Open" value={daysOpen} color="#D93025" />
+                              <SummaryCard label="Int. Rejects" value={totalInterviewRejects} color="#D93025" />
+                              <SummaryCard label="Active" value={activeProfiles} color="#1E8E3E" />
+                          </div>
+      
+                          {/* Funnel */}
+                          <div style={{ fontSize: 8, fontWeight: 700, color: '#6b7280', letterSpacing: 0.5, marginBottom: 10 }}>
+                              FUNNEL
+                          </div>
+                          {/* Alert chips row */}
+                          {alerts.length > 0 && (
+                              <div style={{ display: 'flex', flexDirection:'column', gap: 6, marginBottom: 20 }}>
+                                  {alerts.map((a) =>{
+                                   return   <>
+                                      
+                                      <AlertRowBig key={a.key} alert={a} />
+                                  {(a.alertDetailText && a.alertDetailText !=="$" ) && <HrAlertBatchChips
+                              title="First Batch"
+                              text={a.alertDetailText}
+                          />}
+                                      </>
+                                  } )}
+                              </div>
+      
+      
+      
+                          )}
+      
+                           {/* {data?.hrAlertDetailText && (
+                          <HrAlertBatchChips
+                              title="First Batch"
+                              text={data.hrAlertDetailText}
+                          />
+                      )} */}
+                          {/*  <div style={{ backgroundColor: '#F4F6F8', borderRadius: 10, overflow: 'hidden' }}>
+                              <FunnelRow label="Total Submissions" value={data?.totalNoOfSubmission ?? '—'} />
+                              <FunnelRow label="Screen Reject" value={data?.screenReject ?? '—'} />
+                              <FunnelRow
+                                  label="R1 / R2 / R3"
+                                  value={`${data?.r1 ?? 0} / ${data?.r2 ?? 0} / ${data?.r3 ?? 0}`}
+                                  valueColor="#7C3AED"
+                              />
+                              <FunnelRow
+                                  label="Interview Rejects"
+                                  value={totalInterviewRejects}
+                                  valueColor="#D93025"
+                              />
+                              <FunnelRow
+                                  label="Today Target → Achieved"
+                                  value={`${data?.todayProfile_Shared_Target ?? 0} → ${data?.profile_Shared_Achieved ?? 0}`}
+                              />
+                              <FunnelRow
+                                  label="Calls / Notes"
+                                  value={`${data?.noOfCallsGivenDay ?? '—'} / ${data?.latestNotes ? '✓' : '—'}`}
+                              />
+                              <FunnelRow
+                                  label="Status / Category"
+                                  value={`${data?.taskStatus ?? '—'} · ${data?.companyCategory ?? '—'}`}
+                              />
+                              <FunnelRow label="Joining Date" value={data?.joiningDate ?? '—'} />
+                              <FunnelRow label="Touch Base" value={data?.touchBasedNotes ? '✓' : 'N/A'} isLast /> 
+                          </div>*/}
+                      </div>
+                  </Modal>
+              );
+          }
 
   const NDBExistingComp = ({ text, result, index }) => {
     const [value, setValue] = useState(text ?? "");
@@ -261,119 +759,561 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     );
   };
 
-  const ControlledAmountCell = ({ text, values, field }) => {
-    const [isEdit, setIsEdit] = useState(false);
-
-    const getCurrencySymbol = (value) => {
-      const match = String(value ?? "").match(/^[^\d-]+/);
-      return match ? match[0] : "";
-    };
-
-    const removeFormatting = (value) => {
-      return String(value ?? "").replace(/[^0-9.]/g, "");
-    };
-
-    const formatAmount = (value, symbol) => {
-      if (value === "" || value == null) return "";
-
-      return (
-        symbol +
-        Number(value).toLocaleString("en-US", {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 2,
-        })
-      );
-    };
-
-    const currencySymbol = useMemo(() => getCurrencySymbol(text), [text]);
-
-    const [role, setRole] = useState(removeFormatting(text));
-
-    useEffect(() => {
-      setRole(removeFormatting(text));
-    }, [text]);
-
-    const saveEditRole = async () => {
-      if (role === "") {
-        setIsEdit(false);
-        return;
+      function NewBlinkBadge({ text }) {
+          return (
+              <>
+                  <style>
+                      {`
+                      @keyframes blink-new {
+                          0%, 100% { opacity: 1; }
+                          50% { opacity: 0.2; }
+                      }
+                  `}
+                  </style>
+                  <span
+                      style={{
+                          fontStyle: 'italic',
+                          fontWeight: 600,
+                          color: 'purple',
+                          marginLeft: 6,
+                          fontSize:'12px',
+                          animation: 'blink-new 1.2s ease-in-out infinite',
+                          display: 'flex',
+                          alignItems: 'center',
+                          height: '16px'
+                      }}
+                  >
+                      new!
+                  </span>
+              </>
+          );
       }
 
-      let pl = {
-        TaskID: values.id,
-        TAHeadUserID: `${selectedHead}`,
-        UplersFeesPer: null,
-        TotalRevenue_NoofTalent: null,
-        Revenue_On10PerCTC: null,
-        Talent_AnnualCTC_Budget_INRValue: null,
-      };
-
-      pl[field] = Number(role);
-
-      const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
-      if (result?.statusCode === HTTPStatusCode.OK) {
-        message.success(result.responseBody.message);
-      } else {
-        message.error(result.responseBody);
-      }
-
-      setIsEdit(false);
+        const DOT_COLORS = {
+        critical: '#E64545',
+        warning: '#F2A93B',
+        info: '#4A8FE7',
+        success: '#2FAE60',
     };
 
-    const handleChange = (e) => {
-      let value = e.target.value;
-
-      // Allow only numbers and one decimal point
-      value = value.replace(/[^0-9.]/g, "");
-
-      const parts = value.split(".");
-      if (parts.length > 2) {
-        value = parts[0] + "." + parts.slice(1).join("");
-      }
-
-      setRole(value);
+    const CHIP_BG = {
+        critical: '#FDECEC',
+        warning: '#FFF3E0',
+        info: '#EAF2FE',
+        success: '#E8F7EE',
     };
 
-    if (isEdit) {
-      return (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <input
-            className={taStyles.editRoalField}
-            style={{
-              border: role ? "1px solid #CECCCC" : "1px solid red",
-              width: "100%",
-              textAlign: "center",
-              borderRadius: "6px",
-              padding: "2px",
-            }}
-            type="text"
-            value={role}
-            onChange={handleChange}
-            autoFocus
-            onBlur={() => {
-              if (+role === +removeFormatting(text)) {
-                setIsEdit(false);
-              } else {
-                saveEditRole();
-              }
-            }}
-          />
-        </div>
-      );
+
+    // ---------- Status → chip style mapping ----------
+const STATUS_CHIP_STYLES = {
+    'screening reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+    'screen reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+    'profile shared': { label: 'profile shared', icon: '➤', bg: '#EAF2FE', text: '#1A56C4' },
+    'in interview': { label: 'in interview', icon: '📋', bg: '#FFF6E0', text: '#B7791F' },
+    'submitted': { label: 'submitted', icon: '📋', bg: '#FDECEC', text: '#D93025' },
+    'interview reject': { label: 'interview reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+    'duplicate': { label: 'duplicate', icon: '⊘', bg: '#F0F0F0', text: '#666' },
+    'hold': { label: 'hold', icon: '⏸', bg: '#FFF6E0', text: '#B7791F' },
+};
+
+  
+
+          function computeAlerts(data) {
+        const alerts = [];
+
+        // ---------- HR open 30+ days ----------
+        const days = data?.days ?? 0;
+        if (days > 30) {
+            alerts.push({
+                key: 'stale',
+                text: `${days} days open`,
+                dot: 'critical',
+                // isNew: data?.newTriggerAlert === 'days'
+            });
+        }
+
+
+      
+
+        // // ---------- Interview-reject batch pattern ----------
+        const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
+
+
+        // ---------- Hard ceiling: total interview rejections > 10 ----------
+        if (interviewRejects > 10) {
+            alerts.push({
+                key: 'interviewCeiling',
+                text: `${interviewRejects} total int. rejects`,
+                dot: 'critical',
+            });
+        }
+
+        // ---------- Yesterday: new screen rejection ----------
+        const newScreenRejectYesterday = data?.yesterdayNewScreenReject ?? 0;
+        if (newScreenRejectYesterday > 0) {
+            alerts.push({
+                key: 'newScreenRejectYesterday',
+                text: `${newScreenRejectYesterday} new screen reject`,
+                dot: 'info',
+                isNew: data?.newTriggerAlert === 'newScreenRejectYesterday'
+            });
+        }
+
+        // ---------- Yesterday: new interview rejection ----------
+        const newInterviewRejectYesterday = data?.yesterdayNewInterviewReject ?? 0;
+        if (newInterviewRejectYesterday > 0) {
+            alerts.push({
+                key: 'newInterviewRejectYesterday',
+                text: `${newInterviewRejectYesterday} new interview reject`,
+                dot: 'info',
+                isNew: data?.newTriggerAlert === 'newInterviewRejectYesterday'
+            });
+        }
+
+        // ---------- Submission target achieved (yes/no + calls/day) ----------
+        const target = data?.profile_Shared_Target ?? 0;
+        const achieved = data?.profile_Shared_Achieved ?? 0;
+        const callsPerDay = data?.callsPerDay ?? 0;
+
+        if (target > 0) {
+            const isAchieved = achieved >= target;
+            alerts.push({
+                key: 'targetStatus',
+                text: isAchieved
+                    ? `${achieved}/${target} met`
+                    : `${achieved}/${target} · ${callsPerDay} profile submit : ${callsPerDay} calls`,
+                dot: isAchieved ? 'success' : 'critical',
+                prefixIcon: isAchieved ? '✓' : '✗',
+                // isNew: data?.newTriggerAlert === 'achieved'
+            });
+        }
+
+          const batch = data?.hrAlerts
+        if (batch?.length) {
+            batch.forEach(i => {
+                alerts.push({
+                    key: 'screenBatch',
+                    text: i.alert,
+                    dot: i.color === "Red" ? 'critical' : 'warning',
+                    // isNew: (i?.alertTrigger === "newInterviewRejectYesterday" || i?.alertTrigger === "newScreenRejectYesterday")
+                    isNew: i?.alertTrigger !== "$" ? true : false,
+                    ...i
+                });
+            })
+
+        }
+
+        const severityOrder = { critical: 0, warning: 1, info: 2, success: 3 };
+        // return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
+        return alerts
+    }
+     
+   
+  
+      const openAlertDetail = useCallback((data) => {
+          setAlertDetailData(data);
+          setShowAlertDetailModal(true);
+      }, []);
+
+         function AlertRow({ alert }) {
+              return (
+                  <Tooltip title={alert.label ?? alert.text}>
+                      <div
+                          style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 10,
+                              padding: '0 8px',
+                              borderRadius: 999,
+                              backgroundColor: alert.color ? alert.color : CHIP_BG[alert.dot],
+                              fontSize: 10.5,
+                              fontWeight: 500,
+                              color: '#3a3a3a',
+                              lineHeight: '14px',   // was 16px
+                              height: 16,           // was 22px — this is the main change
+                              boxSizing: 'border-box',
+                              whiteSpace: 'nowrap',
+                              // maxWidth: 'fit-content',
+                              // overflow: 'hidden',
+                              // textOverflow: 'ellipsis',
+                          }}
+                      >
+                          {alert.prefixIcon ? (
+                              <span style={{ fontWeight: 700, color: DOT_COLORS[alert.dot], fontSize: 10, flexShrink: 0 }}>
+                                  {alert.prefixIcon}
+                              </span>
+                          ) : (
+                              <span
+                                  style={{
+                                      width: 5,
+                                      height: 5,
+                                      borderRadius: '50%',
+                                      backgroundColor: DOT_COLORS[alert.dot],
+                                      flexShrink: 0,
+                                  }}
+                              />
+                          )}
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{alert.text}</span>
+                      </div>
+                  </Tooltip>
+              );
+          }
+
+
+     function AlertsCell({ data }) {
+        const alerts = computeAlerts(data);
+        if (alerts.length === 0) return null;
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
+                    // gridTemplateColumns: "auto auto",
+                    gap: 2,   // was 3
+                    padding: '6px 0',
+                    width: '100%',
+                    height: '100%',
+                    boxSizing: 'border-box',
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                }}
+            >
+                {data.newTriggerAlert && <NewBlinkBadge text={data.newTriggerAlert} />}
+
+                {alerts.map((a) => (
+                    <AlertRow key={a.key} alert={a} />
+                ))}
+            </div>
+        );
     }
 
+     const sumFields = [
+        "totalRevenue_NoofTalentStr",
+        "todayProfile_Shared_Target",
+        "profile_Shared_Target",
+        "profile_Shared_Achieved",
+        "interview_Scheduled_Target",
+        "noOfCallsGivenDay"
+    ];
+
+    // Fields that are formatted currency strings (₹ symbol + Indian-style commas)
+    // and need parsing before summing, then reformatting after.
+    const currencyFields = ["totalRevenue_NoofTalentStr"];
+
+    const parseCurrencyString = (value) => {
+        if (value == null || value === "") return null;
+        // Strip everything except digits, decimal point, and minus sign
+        const cleaned = String(value).replace(/[^0-9.-]/g, "");
+        if (cleaned === "" || isNaN(cleaned)) return null;
+        return Number(cleaned);
+    };
+
+    const formatAsINRCurrency = (value) => {
+        return "₹" + Number(value).toLocaleString("en-IN", {
+            maximumFractionDigits: 0,
+        });
+    };
+
+     const getTotalRow = (rows, columnDefs) => {
+        const total = {
+            taName: "Total",
+        };
+
+          const uniqueRows = Array.from(
+        new Map(
+            rows.map(row => [
+                row.hrNumber, // HR ID field
+                row
+            ])
+        ).values()
+    );
+
+        columnDefs.forEach((col) => {
+            const field = col.field;
+
+            if (!field || field === "taName") return;
+            if (!sumFields.includes(field)) return;
+
+            let sum = 0;
+            let hasNumericValue = false;
+            const isCurrencyField = currencyFields.includes(field);
+
+            uniqueRows.forEach((row) => {
+                const rawValue = row[field];
+
+                if (isCurrencyField) {
+                    const parsed = parseCurrencyString(rawValue);
+                    if (parsed !== null) {
+                        sum += parsed;
+                        hasNumericValue = true;
+                    }
+                } else if (typeof rawValue === "number") {
+                    sum += rawValue;
+                    hasNumericValue = true;
+                } else if (
+                    typeof rawValue === "string" &&
+                    rawValue.trim() !== "" &&
+                    !isNaN(rawValue)
+                ) {
+                    sum += Number(rawValue);
+                    hasNumericValue = true;
+                }
+            });
+
+            if (hasNumericValue) {
+                total[field] = isCurrencyField ? formatAsINRCurrency(sum) : sum;
+            }
+        });
+
+        return total;
+    };
+
+   
+  
+    function HrAlertCell(props) {
+        const { data, context } = props
+        if (props.node.rowPinned) {
+            return "";
+        }
+
+        return <div
+            onClick={() => openAlertDetail(data)}
+            style={{ cursor: 'pointer', height: '100%', width: '100%' }}
+        >
+            <AlertsCell data={data} />
+        </div>
+
+
+    }
+
+     const ControlledAmountCell = ({ text, values, field, editable = true, onSaved }) => {
+  const [isEdit, setIsEdit] = useState(false);
+
+  const getCurrencySymbol = (value) => {
+    const match = String(value ?? "").match(/^[^\d-]+/);
+    return match ? match[0] : "";
+  };
+
+  const removeFormatting = (value) => {
+    return String(value ?? "").replace(/[^0-9.-]/g, "");
+  };
+
+  const formatAmount = (value, symbol) => {
+    if (value === "" || value == null) return "";
     return (
-      <div
-        style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-        onDoubleClick={() => {
-          setRole(removeFormatting(role));
-          setIsEdit(true);
-        }}
-      >
-        {role ? formatAmount(role, currencySymbol) : "N/A"}
-      </div>
+      symbol +
+      Number(value).toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })
     );
   };
+
+  const currencySymbol = useMemo(() => getCurrencySymbol(text), [text]);
+  const [role, setRole] = useState(removeFormatting(text));
+
+  useEffect(() => {
+    setRole(removeFormatting(text));
+  }, [text]);
+
+  const saveEditRole = async () => {
+    if (role === "") {
+      setIsEdit(false);
+      return;
+    }
+    let pl = {
+      TaskID: values.id,
+      TAHeadUserID: `${selectedHead}`,
+      UplersFeesPer: null,
+      TotalRevenue_NoofTalent: null,
+      Revenue_On10PerCTC: null,
+      Talent_AnnualCTC_Budget_INRValue: null,
+    };
+    pl[field] = Number(role);
+
+    const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      message.success(result.responseBody.message);
+      onSaved && onSaved(Number(role));
+    } else {
+      message.error(result.responseBody);
+    }
+    setIsEdit(false);
+  };
+
+  const handleChange = (e) => {
+    let value = e.target.value;
+    value = value.replace(/[^0-9.]/g, "");
+    const parts = value.split(".");
+    if (parts.length > 2) {
+      value = parts[0] + "." + parts.slice(1).join("");
+    }
+    setRole(value);
+  };
+
+  if (isEdit) {
+    return (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <input
+          className={taStyles.editRoalField}
+          style={{
+            border: role ? "1px solid #CECCCC" : "1px solid red",
+            width: "100%",
+            textAlign: "center",
+            borderRadius: "6px",
+            padding: "2px",
+          }}
+          type="text"
+          value={role}
+          onChange={handleChange}
+          autoFocus
+          onBlur={() => {
+            if (+role === +removeFormatting(text)) {
+              setIsEdit(false);
+            } else {
+              saveEditRole();
+            }
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        textAlign:'center',
+        justifyContent:'center',
+        cursor: editable ? "pointer" : "default",   // ← visual cue it's locked
+      }}
+      onDoubleClick={() => {
+        if (!editable) return;                       // ← block edit entry
+        setRole(removeFormatting(role));
+        setIsEdit(true);
+      }}
+    >
+      {role ? formatAmount(role, currencySymbol) : ""}
+    </div>
+  );
+};
+
+  // const ControlledAmountCell = ({ text, values, field }) => {
+  //   const [isEdit, setIsEdit] = useState(false);
+
+  //   const getCurrencySymbol = (value) => {
+  //     const match = String(value ?? "").match(/^[^\d-]+/);
+  //     return match ? match[0] : "";
+  //   };
+
+  //   const removeFormatting = (value) => {
+  //     return String(value ?? "").replace(/[^0-9.]/g, "");
+  //   };
+
+  //   const formatAmount = (value, symbol) => {
+  //     if (value === "" || value == null) return "";
+
+  //     return (
+  //       symbol +
+  //       Number(value).toLocaleString("en-US", {
+  //         minimumFractionDigits: 0,
+  //         maximumFractionDigits: 2,
+  //       })
+  //     );
+  //   };
+
+  //   const currencySymbol = useMemo(() => getCurrencySymbol(text), [text]);
+
+  //   const [role, setRole] = useState(removeFormatting(text));
+
+  //   useEffect(() => {
+  //     setRole(removeFormatting(text));
+  //   }, [text]);
+
+  //   const saveEditRole = async () => {
+  //     if (role === "") {
+  //       setIsEdit(false);
+  //       return;
+  //     }
+
+  //     let pl = {
+  //       TaskID: values.id,
+  //       TAHeadUserID: `${selectedHead}`,
+  //       UplersFeesPer: null,
+  //       TotalRevenue_NoofTalent: null,
+  //       Revenue_On10PerCTC: null,
+  //       Talent_AnnualCTC_Budget_INRValue: null,
+  //     };
+
+  //     pl[field] = Number(role);
+
+  //     const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
+  //     if (result?.statusCode === HTTPStatusCode.OK) {
+  //       message.success(result.responseBody.message);
+  //     } else {
+  //       message.error(result.responseBody);
+  //     }
+
+  //     setIsEdit(false);
+  //   };
+
+  //   const handleChange = (e) => {
+  //     let value = e.target.value;
+
+  //     // Allow only numbers and one decimal point
+  //     value = value.replace(/[^0-9.]/g, "");
+
+  //     const parts = value.split(".");
+  //     if (parts.length > 2) {
+  //       value = parts[0] + "." + parts.slice(1).join("");
+  //     }
+
+  //     setRole(value);
+  //   };
+
+  //   if (isEdit) {
+  //     return (
+  //       <div style={{ display: "flex", alignItems: "center" }}>
+  //         <input
+  //           className={taStyles.editRoalField}
+  //           style={{
+  //             border: role ? "1px solid #CECCCC" : "1px solid red",
+  //             width: "100%",
+  //             textAlign: "center",
+  //             borderRadius: "6px",
+  //             padding: "2px",
+  //           }}
+  //           type="text"
+  //           value={role}
+  //           onChange={handleChange}
+  //           autoFocus
+  //           onBlur={() => {
+  //             if (+role === +removeFormatting(text)) {
+  //               setIsEdit(false);
+  //             } else {
+  //               saveEditRole();
+  //             }
+  //           }}
+  //         />
+  //       </div>
+  //     );
+  //   }
+
+  //   return (
+  //     <div
+  //       style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+  //       onDoubleClick={() => {
+  //         setRole(removeFormatting(role));
+  //         setIsEdit(true);
+  //       }}
+  //     >
+  //       {role ? formatAmount(role, currencySymbol) : "N/A"}
+  //     </div>
+  //   );
+  // };
 
   const ControlledCellComp = ({ text, values }) => {
     const [isEdit, setIsEdit] = useState(false)
@@ -454,7 +1394,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       onClick={() => {setIsEdit(false);setRole(text)}} /> */}
       </div>
     } else {
-      return <div style={{ display: 'flex', alignItems: 'center' }} onDoubleClick={() => setIsEdit(true)}>
+      return <div style={{ display: 'flex', alignItems: 'center', justifyContent:'center' }} onDoubleClick={() => setIsEdit(true)}>
 
         {role}
       </div>
@@ -507,6 +1447,13 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         borderBottom: params.data?.rowSpan === 0 ? 'none' : '',
         borderTop: params.data?.rowSpan > 0 ? '1px solid #4C4E641F' : '',
       }),
+      cellRenderer:(props)=>{
+        const {data, value} = props
+        if (data?.isTotalRow){
+    return null;
+  }
+  return value
+      }
     },
     {
       headerName: 'Company',
@@ -519,6 +1466,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       cellRenderer: (props) => {
         const { data, api } = props;
         const ind = getRowIndex(data);
+
+         if (props.node.rowPinned === "bottom") {
+        return "";
+    }
+
+            if (data?.isTotalRow) {
+    return null;
+  }
         return (
           <div className={taStylesNew["company-cell"]} style={{ display: 'flex' }}>
 
@@ -582,9 +1537,43 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 fontSize: '10px',
                 lineHeight: "10px"
               }}>
-                {data.companyName.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
+                {data?.companyName?.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
               </span>
             </Tooltip>
+          </div>
+        );
+      },
+    },
+      {
+      headerName: 'HR ID',
+      field: 'hrNumber',
+      width: 150,
+      suppressMovable: true,
+      pinned: 'left',
+      filter: MultiConditionTextFilter,
+      autoHeight: true,
+      cellRenderer: (props) => {
+        const { data } = props;
+        return (
+          <div className={taStylesNew["hr-title-cell"]}>
+           
+            <div className={taStylesNew["hr-title-text"]}>
+              <span
+                // className={taStylesNew["hr-id-chip"]}
+                style={{
+                  cursor: "pointer", color: "blue",
+                  /* font-weight: bold; */
+                  textDecoration: " underline",
+                  margin: '0px',
+                  fontSize:'10px'
+                }}
+                onClick={() => {
+                  window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
+                }}
+              >
+                {data.hrNumber}
+              </span>
+            </div>
           </div>
         );
       },
@@ -613,12 +1602,13 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                 {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
               {/* </span>
             </Tooltip> */}
-            <div className={taStylesNew["hr-title-text"]}>
+           
               <Tooltip title={data.hrTitle}><span style={{
                 display: 'block',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                fontSize:'10px',
                 fontWeight: 400,
                 // lineHeight: "10px"
               }}>{data.hrTitle}</span></Tooltip>
@@ -637,58 +1627,23 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
               >
                 {data.hrNumber}
               </span> */}
-            </div>
+         
           </div>
         );
       },
     },
-      {
-      headerName: 'ID',
-      field: 'hrNumber',
-      width: 220,
-      suppressMovable: true,
-      pinned: 'left',
-      filter: MultiConditionTextFilter,
-      autoHeight: true,
-      cellRenderer: (props) => {
-        const { data } = props;
-        return (
-          <div className={taStylesNew["hr-title-cell"]}>
-            <Tooltip title={data.tA_HR_Status}>
-              <span className={taStylesNew["hr-status-box"]} style={{ background: data?.hrColorCode }}>
+    
+       {
+            headerName: 'Alerts',
+            field: 'hrAlert',
+            width: 200,
+            pinned: 'left',
+            suppressMovable: true,
+            cellRenderer: HrAlertCell,
+            filter: false,
+            // tooltipField: 'hrTitle',
 
-                {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
-              </span>
-            </Tooltip>
-            <div className={taStylesNew["hr-title-text"]}>
-              <Tooltip title={data.hrTitle}><span style={{
-                display: 'block',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                fontWeight: 400,
-                // lineHeight: "10px"
-              }}>{data.hrTitle}</span></Tooltip>
-
-              <span
-                // className={taStylesNew["hr-id-chip"]}
-                style={{
-                  cursor: "pointer", color: "blue",
-                  /* font-weight: bold; */
-                  textDecoration: " underline",
-                  margin: '0px'
-                }}
-                onClick={() => {
-                  window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
-                }}
-              >
-                {data.hrNumber}
-              </span>
-            </div>
-          </div>
-        );
-      },
-    },
+        },
     {
       headerName: 'Priority',
       field: 'task_Priority',
@@ -696,10 +1651,16 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       suppressMovable: true,
       filterParams: { type: 'status', list: filtersList?.priority?.map(i => ({ ...i, data: i.text })) },
       filter: MultiConditionTextFilter,
-      width: 130,
+      width: 100,
       cellRenderer: (props) => {
         const { value, data } = props;
         const ind = getRowIndex(data);
+         if (props.node.rowPinned === "bottom") {
+        return "";
+    }
+         if (data?.isTotalRow) {
+    return null;
+  }
         return <PriorityComp text={value} result={data} index={ind} />;
       },
     },
@@ -710,17 +1671,25 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       suppressMovable: true,
       filterParams: { type: 'status', list: filtersList?.TaskStatus },
       filter: MultiConditionTextFilter,
-      width: 140,
+      width: 120,
       cellRenderer: (props) => {
         const { value, data } = props;
         const ind = getRowIndex(data);
+
+         if (props.node.rowPinned === "bottom") {
+        return "";
+    }
+         if (data?.isTotalRow) {
+    return null;
+  }
         return <TaskStatusComp text={value} result={data} index={ind} style={{ fontSize: '10px' }} />;
       },
     },
     {
-      headerName: 'Profiles Shared Target ',
+      headerName: "Yesterday's Submission Target",
       field: 'profile_Shared_Target',
-      width: 220,
+      width: 100,
+       cellStyle: { textAlign: 'center' },
       filter: MultiConditionTextFilter,
       filterParams: {
         type: 'number',
@@ -732,56 +1701,30 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           'interview_Scheduled_Target',
         ],
       },
-      cellRenderer: (props) => {
-        const { data, ind } = props;
-        const rowIndex = getRowIndex(data);
-        return (
-          <div style={{ display: "flex", justifyContent:'center', alignItems:'center' }}>
-            {data.task_StatusID === 1 ? (
-              <p
-                style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
-                onClick={() => {
-                  setShowProfileTarget(true);
-                  setStartTargetDate(startDate);
-                  setProfileTargetDetails({ ...data, index: rowIndex });
-                }}
-              >
-                {data?.profile_Shared_Target ?? 0}
-              </p>
-            ) :""}
-          </div>
-        );
-      },
+      // cellRenderer: (props) => {
+      //   const { data, ind } = props;
+      //   const rowIndex = getRowIndex(data);
+      //   return (
+      //     <div style={{ display: "flex", justifyContent:'center', alignItems:'center' }}>
+      //       {data.task_StatusID === 1 ? (
+      //         <p
+      //           style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
+      //           onClick={() => {
+      //             setShowProfileTarget(true);
+      //             setStartTargetDate(startDate);
+      //             setProfileTargetDetails({ ...data, index: rowIndex });
+      //           }}
+      //         >
+      //           {data?.profile_Shared_Target ?? 0}
+      //         </p>
+      //       ) :""}
+      //     </div>
+      //   );
+      // },
     },
+   
      {
-      headerName: 'Achieved',
-      field: 'profile_Shared_Achieved',
-      width: 220,
-      filter: MultiConditionTextFilter,
-      filterParams: {
-        type: 'number',
-
-        // Filter will check all these fields
-        fields: [
-          'profile_Shared_Target',
-          'profile_Shared_Achieved',
-          'interview_Scheduled_Target',
-        ],
-      },
-      cellRenderer: (props) => {
-        const { data, ind } = props;
-        const rowIndex = getRowIndex(data);
-        return (
-          <div style={{ display: "flex" , justifyContent:'center', alignItems:'center'}}>
-            { (
-              data?.profile_Shared_Target ?? 0
-            )}
-          </div>
-        );
-      },
-    },
-     {
-      headerName: ' L1 Round',
+      headerName: "Today's Interview Schedule",
       field: 'interview_Scheduled_Target',
       width: 220,
       filter: MultiConditionTextFilter,
@@ -798,6 +1741,9 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       cellRenderer: (props) => {
         const { data, ind } = props;
         const rowIndex = getRowIndex(data);
+         if (data?.isTotalRow) {
+    return null;
+  }
         return (
           <div style={{ display: "flex", justifyContent:'center', alignItems:'center' }}>
            {data.interview_Scheduled_Target ?? "NA"}
@@ -811,6 +1757,11 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       width: 130,
       filterParams: { type: 'number' },
       filter: MultiConditionTextFilter,
+      cellRenderer: (props) => {
+        const { data, value, ind } = props;
+        if (data?.isTotalRow) return null;
+       return value
+       },
       cellStyle: { textAlign: 'center' },
     },
     {
@@ -845,6 +1796,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           text={props.data.talent_AnnualCTC_Budget_INRValueStr}
           values={props.data}
           field={"Talent_AnnualCTC_Budget_INRValue"}
+           onSaved={(newTalentPayRate) => recalcAndSave(props.data, { talentPayRate: newTalentPayRate })}
         />
       ),
     },
@@ -853,38 +1805,89 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       field: 'uplersFeesPer',
       filterParams: { type: 'number' },
       width: 100,
+        cellStyle: (params) => ({
+        textAlign: 'center',
+        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+    }),
       filter: MultiConditionTextFilter,
-      cellRenderer: (props) => (
-        <ControlledCellComp text={props.data.uplersFeesPer} values={props.data} />
-      ),
+      cellRenderer: (props) => {
+         const { data } = props;
+  if (data?.isTotalRow) {
+    return <strong>{data.uplersFeesPer}</strong>;
+  }
+      return  <ControlledCellComp text={props.data.uplersFeesPer} values={props.data} />
+      },
     },
     {
       headerName: 'NR (USD)',
       field: 'revenue_On10PerCTCStr',
       filterParams: { type: 'number' },
       width: 140,
+          cellStyle: (params) => ({
+        textAlign: 'center',
+        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+    }),
       filter: MultiConditionTextFilter,
-      cellRenderer: (props) => (
-        <ControlledAmountCell
-          text={props.data.revenue_On10PerCTCStr}
-          values={props.data}
-          field={"Revenue_On10PerCTC"}
-        />
-      ),
+       cellRenderer: (props) => {
+        const { data } = props;
+
+        if (data?.isTotalRow) {
+          return (
+            <strong>
+              ${data.revenue_On10PerCTCStr?.toLocaleString("en-US")}
+            </strong>
+          );
+        }
+
+        // NR (USD) = Bill Rate - Talent Pay Rate, per row
+        const billRate = parseFloat(
+          String(data.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")
+        ) || 0;
+        const talentPayRate = parseFloat(
+          String(data.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")
+        ) || 0;
+        const computedNRUSD = billRate - talentPayRate;
+
+        return (
+          <ControlledAmountCell
+            text={computedNRUSD}
+            values={data}
+            field={"Revenue_On10PerCTC"}
+            editable={false}
+          />
+        );
+      },
     },
     {
       headerName: 'Bill Rate',
       field: 'totalRevenue_NoofTalentStr',
       width: 140,
       filter: MultiConditionTextFilter,
+      cellStyle: (params) => ({
+        textAlign: 'center',
+        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),  
+    }),
       filterParams: { type: 'number' },
-      cellRenderer: (props) => (
-        <ControlledAmountCell
-          text={props.data.totalRevenue_NoofTalentStr}
-          values={props.data}
-          field={"TotalRevenue_NoofTalent"}
-        />
-      ),
+      cellRenderer: (props) => {
+        const { data } = props;
+
+        if (data?.isTotalRow) {
+          return (
+            <strong>
+              {Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)}%
+            </strong>
+          );
+        }
+
+        return (
+          <ControlledAmountCell
+            text={data.totalRevenue_NoofTalentStr}
+            values={data}
+            field={"TotalRevenue_NoofTalent"}
+            onSaved={(newBillRate) => recalcAndSave(data, { billRate: newBillRate })}
+          />
+        );
+      }
     },
     {
       headerName: 'Active TRs',
@@ -892,7 +1895,17 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       width: 110,
       filter: MultiConditionTextFilter,
       filterParams: { type: 'number' },
-      cellStyle: { textAlign: 'center' },
+      cellStyle: (params) => ({
+        textAlign: 'center',
+        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),  
+    }),
+       cellRenderer: (props) => {
+    const { data } = props;
+    if (data?.isTotalRow) {
+      return <strong>{data.activeTR}</strong>;
+    }
+    return data.activeTR;
+  },
     },
     {
       headerName: 'Contractor/EOR',
@@ -977,6 +1990,48 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       //   ) : "";
       // },
     },
+          
+            {
+                headerName: "Yesterday's Target Achieved",
+                field: 'profile_Shared_Achieved',
+                cellStyle: { textAlign: 'center' },
+                width: 150,
+                filterParams: { type: 'number'},
+                filter: MultiConditionTextFilter,
+                // cellRenderer: ProfileSharedTargetCell,
+                cellRenderer: (props) => {
+                    const { value, data } = props
+                    if (props.node.rowPinned) {
+                        return value;
+                    }
+                      if (data?.isTotalRow) {
+    return null;
+  }
+                    return <p
+                        style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
+                        onClick={() => {
+                            getTalentProfilesDetailsfromGoalsTable({
+                                result: data,
+                                statusID: 2,
+                                stageID: '',
+                                isToday: false
+                            })
+                        }}
+                    >
+                        {value}
+                    </p>
+                }
+            },
+             {
+      headerName: "Today's Submission Target",
+      field: 'todayProfile_Shared_Target',
+      width: 160,
+      filterParams: { type: 'number'},
+      cellStyle: { textAlign: 'center' },
+      filter: MultiConditionTextFilter,
+      cellRenderer: ProfileSharedTargetCell,
+    },
+           
     {
       headerName: "Task for AM's",
       field: 'amTask',
@@ -1023,9 +2078,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
   const columnDefs = useMemo(() => gridColumns(), [TaListData]);
 
+  const pinnedBottomRowData = useMemo((par) => {
+            return [getTotalRow(TaListData, gridColumns())];
+        }, [TaListData]);
+
+
   const scrumDefaultColDef = {
     resizable: true,
-    sortable: true,
+    sortable:false,
     filter: true,
     suppressMovable: false, // lets users drag-reorder columns, like Excel column drag
     wrapHeaderText: true,
@@ -1095,6 +2155,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
       })
 
+      console.log(columnOrder,shortorder,newOrderObj ,originalObj )
+
       return newOrderObj
     } else {
       return gridColumns()
@@ -1155,13 +2217,70 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
 
   return (
-    <div className={`${taStylesNew["table-container"]} ${gridStyles["grid-wrapper"]}`} style={{ marginTop: '20px' }}>
+    <>
+     <div
+                    style={{
+                        display: 'flex',
+                        gap: 32,
+                        margin: '0 20px',
+                        borderBottom: '1px solid var(--uplers-border-color)',
+                    }}
+                >
+                    <button
+                        onClick={() => setTabTitle('A')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: TabTitle === 'A' ? 600 : 400,
+                            color: TabTitle === 'A' ? '#000' : '#8c8c8c',
+                            borderBottom: TabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Active
+                    </button>
+
+                    <button
+                        onClick={() => setTabTitle('C')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: TabTitle === 'C' ? 600 : 400,
+                            color: TabTitle === 'C' ? '#000' : '#8c8c8c',
+                            borderBottom: TabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Covered
+                    </button>
+                    <button
+                        onClick={() => setTabTitle('P')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: TabTitle === 'P' ? 600 : 400,
+                            color: TabTitle === 'P' ? '#000' : '#8c8c8c',
+                            borderBottom: TabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Pause
+                    </button>
+                </div>
+                 <div className={`${taStylesNew["table-container"]} ${gridStyles["grid-wrapper"]}`} style={{ marginTop: '20px' }}>
       {isLoading ? <TableSkeleton /> : <div style={{ height: 500 }} ><AgGridReact
         //  onGridReady={onGridReady}
         // onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
         //  theme={scrumGridTheme}
         rowData={TaListData}
         // columnDefs={columnDefs}
+       
         columnDefs={gridOrderedColumns}
         // animateRows={false}
         defaultColDef={scrumDefaultColDef}
@@ -1172,6 +2291,19 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         // rowHeight={"auto"}
         onColumnMoved={onColumnMoved}
         onColumnResized={onColumnResized}
+         pinnedBottomRowData={pinnedBottomRowData}
+          getRowStyle={(params) => {
+                                if (params.node.rowPinned) {
+                                    return {
+                                        backgroundColor: '#F4F6F8',
+                                        fontWeight: '700',
+                                        borderTop: '2px solid #D9DEE3',
+                                        color: '#1F2937'
+                                    };
+                                }
+
+                                return null;
+                            }}
       /> </div>}
 
 
@@ -1238,6 +2370,17 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         </Modal>
       )}
     </div>
+
+      <AlertDetailModal
+                    open={showAlertDetailModal}
+                    data={alertDetailData}
+                    onClose={() => {
+                        setShowAlertDetailModal(false);
+                        setAlertDetailData({});
+                    }}
+                />
+    </>
+   
   )
 }
 

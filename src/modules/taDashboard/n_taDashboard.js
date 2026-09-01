@@ -1749,7 +1749,7 @@ function NewTADashboard() {
 
                         {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
                             hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget, editTAforTask,handleRemoveTask ,TaskStatusComp,
-                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount
+                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount,startTargetDate,setGoalList,setLoadingTalentProfile,getTalentProfilesDetailsfromGoalsTable
                             }}
                             userData={userData} startDate={startDate}
                         />}
