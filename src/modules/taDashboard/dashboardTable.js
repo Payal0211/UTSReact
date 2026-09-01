@@ -1344,7 +1344,7 @@ const STATUS_CHIP_STYLES = {
         }
         const result = await TaDashboardDAO.updateContractDetailsRequestDAO(pl);
         if (result?.statusCode === HTTPStatusCode.OK) {
-          message.success(result.responseBody.message)
+          message.success("value updated")
           setIsEdit(false);
         } else {
           message.error(result.responseBody)
