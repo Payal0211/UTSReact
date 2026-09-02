@@ -365,9 +365,12 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
                     ? {
                         ...r,
                         // 👇 re-attach the symbol so it survives into the next render
-                        totalRevenue_NoofTalentStr: `${billSymbol}${bill}`,
-                        talent_AnnualCTC_Budget_INRValueStr: `${talentSymbol}${talent}`,
-                        revenue_On10PerCTCStr: `${nrUsdSymbol}${newNRUSD}`,
+                        // totalRevenue_NoofTalentStr: `${billSymbol}${bill}`,
+                        // talent_AnnualCTC_Budget_INRValueStr: `${talentSymbol}${talent}`,
+                        // revenue_On10PerCTCStr: `${nrUsdSymbol}${newNRUSD}`,
+                         totalRevenue_NoofTalentStr: `${bill}`,
+                        talent_AnnualCTC_Budget_INRValueStr: `${talent}`,
+                        revenue_On10PerCTCStr: `${newNRUSD}`,
                     }
                     : r
             );
@@ -1050,7 +1053,7 @@ const STATUS_CHIP_STYLES = {
             let hasNumericValue = false;
             const isCurrencyField = currencyFields.includes(field);
 
-            uniqueRows.forEach((row) => {
+            uniqueRows.filter(i=> !i.isTotalRow).forEach((row) => {
                 const rawValue = row[field];
 
                 if (isCurrencyField) {
@@ -1073,7 +1076,7 @@ const STATUS_CHIP_STYLES = {
             });
 
             if (hasNumericValue) {
-                total[field] = isCurrencyField ? formatAsINRCurrency(sum) : sum;
+                total[field] = sum;
             }
         });
 
@@ -1660,7 +1663,7 @@ const STATUS_CHIP_STYLES = {
     {
       headerName: 'Priority',
       field: 'task_Priority',
-      pinned: 'left',
+
       suppressMovable: true,
       filterParams: { type: 'status', list: filtersList?.priority?.map(i => ({ ...i, data: i.text })) },
       filter: MultiConditionTextFilter,
@@ -1847,7 +1850,7 @@ const STATUS_CHIP_STYLES = {
         if (data?.isTotalRow) {
           return (
             <strong>
-              ${data.revenue_On10PerCTCStr?.toLocaleString("en-US")}
+              {data.revenue_On10PerCTCStr?.toLocaleString("en-US")}
             </strong>
           );
         }
