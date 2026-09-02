@@ -464,7 +464,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									name="cancelReason"
 									label="Select Cancel Reason"
 									defaultValue="Please Select"
-									options={talentStatus?.Data?.TalentCancelledReason}
+									options={getParentRejectedReasons(talentStatus?.Data?.TalentCancelledReason)}
 									required
 									isError={errors['cancelReason'] && errors['cancelReason']}
 									errorMsg="Please select Cancel Reason."
