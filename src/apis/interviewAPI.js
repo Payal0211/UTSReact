@@ -78,6 +78,27 @@ export const InterviewAPI = {
 			return errorDebug(error, 'InterviewAPI.updateInterviewFeedbackRequest');
 		}
 	},
+	moveRejectToProfileRequest: async (clientFeedbackDetails) => {
+		try {
+			let httpService = new HttpServices();
+			// const miscData =
+			// 	UserSessionManagementController.getUserMiscellaneousData();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.TALENT_STATUS +
+				InterviewsAPI.MOVE_REJECT_TO_PROFILE_SHEARED 
+			
+
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			httpService.dataToSend = clientFeedbackDetails;
+			let response = await httpService.sendPostRequest();
+
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'InterviewAPI.moveRejectToProfileRequest');
+		}
+	},
 	getClientFeedbackRequest: async (clientFeebackDetails) => {
 		try {
 			let httpService = new HttpServices();
