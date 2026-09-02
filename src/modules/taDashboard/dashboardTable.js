@@ -1890,7 +1890,7 @@ const STATUS_CHIP_STYLES = {
         if (data?.isTotalRow) {
           return (
             <strong>
-              {Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)}%
+              {(Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) *100}%
             </strong>
           );
         }
