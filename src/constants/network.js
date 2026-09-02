@@ -572,6 +572,7 @@ export class InterviewsAPI {
 	static CLIENT_CURRENT_DETAILS_FOR_ANOTHER_ROUND =
 		'ClientCurrentDetailsForAnotherRound';
 	static SAVE_ANOTHER_ROUND_FEEDBACK = 'SaveAnotherRoundFeedback';
+	static MOVE_REJECT_TO_PROFILE_SHEARED = 'MoveScreenRejectToProfileShared'
 }
 export class InterviewersAPI {
 	static CHECK_LINKEDIN_URL = 'CheckLinkedinURL';

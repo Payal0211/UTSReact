@@ -154,6 +154,7 @@ export class TalentOnboardStatus {
 	static RELEASE_OFFER_DETAILS = "GotoOnBoard"
 	static VIEW_ENGAGEMENT = 'ViewEngagement'	
 	static MOVE_TO_ANOTHER_ROUND = 'SubmitFeedbackWithAnotherRound'
+	static MOVE_TO_PROFILE_SHARED = "MovetoProfileShare"
 	static MOVE_TO_ASSESSMENT = "Assessment"
 	// static GO_TO_ONBOARD = "GotoOnBoard"
 	// static UPDATE_LEGAL_TALENT_ONBOARD_STATUS =
