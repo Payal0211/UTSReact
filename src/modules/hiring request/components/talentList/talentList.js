@@ -141,6 +141,7 @@ const TalentList = ({
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 	const [editBillRate, setEditBillRate] = useState(false);
 	const [moveToAssessment, setMoveToAssessment] = useState(false)
+	const [moveToProfileSheared,setMoveToProfileSheared] = useState(false)
 	const {
 		register: remarkregiter,
 		handleSubmit: remarkSubmit,
@@ -434,6 +435,32 @@ const TalentList = ({
 		} else {
 			return 'NO DATA FOUND';
 		}
+	}
+
+	const handleMoveRejectToProfile = async (item)=>{
+		let pl = {
+  "hrid": hrId,
+  "hrDetailID": hrId,
+  "talentID": item.TalentID,
+  "talentStatusID": 2,
+  "talentStatus": "Profile Shared",
+  "rejectReasonID": 0,
+  "onHoldReasonID": 0,
+  "cancelReasonID": 0,
+  "otherReason": "",
+  "remark": "",
+  "contactTalentPriorityID": item.ContactPriorityID
+}
+setSaveRemarkLoading(true)
+	 const	response = await   InterviewDAO.moveRejectToProfileRequestDAO(pl);
+setSaveRemarkLoading(false)
+	 if (response?.statusCode === HTTPStatusCode.OK) {
+				callAPI(hrId)
+				getHrUserData(hrId)
+				setMoveToProfileSheared(false)
+			} else {
+				setLoading(false)
+			}
 	}
 
 	const clientFeedbackHandler = useCallback(
@@ -1857,11 +1884,17 @@ const TalentList = ({
 													isDropdown={true}
 													listItem={hrUtils.showTalentCTA(filterTalentCTAs, item.Status)}
 													menuAction={(menuItem) => {
+														console.log(menuItem)
 														switch (menuItem.key) {
 															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
 																setScheduleInterviewModal(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.MOVE_TO_PROFILE_SHARED:{
+																setMoveToProfileSheared(true)
 																setTalentIndex(item?.TalentID);
 																break;
 															}
@@ -2251,6 +2284,33 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
+			{moveToProfileSheared && <Modal
+				width="992px"
+				centered
+				footer={null}
+				open={moveToProfileSheared}
+				className="commonModalWrap"
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => {
+					setMoveToProfileSheared(false)
+				}}>
+				
+{saveRemarkLoading ? <Skeleton active /> : <h1>Are you sure to move this profile to profile sheared ?</h1>}
+				
+					<div className={TalentListStyle.formPanelAction}>
+						<button className={TalentListStyle.btnPrimary} onClick={() => {
+							let item = hrData?.FinalResult?.rows?.find(i => i.TalentID === talentIndex)
+							console.log(item)
+
+
+handleMoveRejectToProfile(item)
+
+						}}>OK</button>
+						<button onClick={() => { setMoveToProfileSheared(false) }}>Cancel</button>
+					</div>
+				
+			</Modal>}
 
 
 			{moveToAssessment && <Modal

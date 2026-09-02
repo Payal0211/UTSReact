@@ -1003,7 +1003,8 @@ const STATUS_CHIP_STYLES = {
     }
 
      const sumFields = [
-        "totalRevenue_NoofTalentStr",
+        // "totalRevenue_NoofTalentStr",
+        "revenue_On10PerCTCStr",
         "todayProfile_Shared_Target",
         "profile_Shared_Target",
         "profile_Shared_Achieved",
@@ -1062,6 +1063,18 @@ const STATUS_CHIP_STYLES = {
                         sum += parsed;
                         hasNumericValue = true;
                     }
+                }else if (field === "revenue_On10PerCTCStr"){
+                    const billRate = parseFloat(
+                      String(row.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")
+                    ) || 0;
+                    const talentPayRate = parseFloat(
+                      String(row.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")
+                    ) || 0;
+                    const computedNRUSD = billRate - talentPayRate;
+                    sum += computedNRUSD  ;
+                    console.log('summm',sum)
+                    hasNumericValue = true;
+
                 } else if (typeof rawValue === "number") {
                     sum += rawValue;
                     hasNumericValue = true;
@@ -1076,6 +1089,7 @@ const STATUS_CHIP_STYLES = {
             });
 
             if (hasNumericValue) {
+              console.log('f sum',sum, field)
                 total[field] = sum;
             }
         });
@@ -1664,26 +1678,7 @@ const STATUS_CHIP_STYLES = {
             // tooltipField: 'hrTitle',
 
         },
-    {
-      headerName: 'Priority',
-      field: 'task_Priority',
-
-      suppressMovable: true,
-      filterParams: { type: 'status', list: filtersList?.priority?.map(i => ({ ...i, data: i.text })) },
-      filter: MultiConditionTextFilter,
-      width: 100,
-      cellRenderer: (props) => {
-        const { value, data } = props;
-        const ind = getRowIndex(data);
-         if (props.node.rowPinned === "bottom") {
-        return "";
-    }
-         if (data?.isTotalRow) {
-    return null;
-  }
-        return <PriorityComp text={value} result={data} index={ind} />;
-      },
-    },
+    
     {
       headerName: 'Status',
       field: 'taskStatus',
@@ -1703,6 +1698,26 @@ const STATUS_CHIP_STYLES = {
     return null;
   }
         return <TaskStatusComp text={value} result={data} index={ind} style={{ fontSize: '10px' }} />;
+      },
+    },
+    {
+      headerName: 'Priority',
+      field: 'task_Priority',
+
+      suppressMovable: true,
+      filterParams: { type: 'status', list: filtersList?.priority?.map(i => ({ ...i, data: i.text })) },
+      filter: MultiConditionTextFilter,
+      width: 100,
+      cellRenderer: (props) => {
+        const { value, data } = props;
+        const ind = getRowIndex(data);
+         if (props.node.rowPinned === "bottom") {
+        return "";
+    }
+         if (data?.isTotalRow) {
+    return null;
+  }
+        return <PriorityComp text={value} result={data} index={ind} />;
       },
     },
     {
@@ -1850,6 +1865,10 @@ const STATUS_CHIP_STYLES = {
       filter: MultiConditionTextFilter,
        cellRenderer: (props) => {
         const { data } = props;
+
+          if (props.node.rowPinned === "bottom") {
+        return data.revenue_On10PerCTCStr;
+    }
 
         if (data?.isTotalRow) {
           return (
@@ -2067,6 +2086,9 @@ const STATUS_CHIP_STYLES = {
       filter: false,
       cellRenderer: (props) => {
         const { data } = props;
+          if (props.node.rowPinned === "bottom") {
+        return "";
+    }
         return (
           <div>
             <IconContext.Provider
