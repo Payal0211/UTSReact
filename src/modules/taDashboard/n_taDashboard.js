@@ -52,7 +52,7 @@ function NewTADashboard() {
     const [userData, setUserData] = useState({});
     const [activeTable, setActiveTable] = useState('Dashboard')
     const [activeFTETable, setActiveFTETable] = useState('Dashboard')
-    const [activeTab, setActiveTab] = useState('Full-Time')
+    const [activeTab, setActiveTab] = useState('Contract')
     const [filtersList, setFiltersList] = useState({});
     const [fteFiltersList, setFTEFiltersList] = useState({});
     const [filteredTagLength, setFilteredTagLength] = useState(0);
