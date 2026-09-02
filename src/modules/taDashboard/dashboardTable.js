@@ -383,7 +383,7 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
     const [value, setValue] = useState(text ?? "");
 
     return (
-      <div className={taStyles.tableSelectField}>
+      <div className={taStylesNew.tableSelectField}>
         <Select
           defaultValue={value}
           style={{ fontSize: '10px' }}
@@ -405,7 +405,7 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
           const colorCode =
               filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
           return (
-              <div className={taStyles.tableSelectField}>
+              <div className={taStylesNew.tableSelectField}>
                   <Select
                       defaultValue={value}
                       style={{ color: colorCode , ...style }}
@@ -1476,7 +1476,7 @@ const STATUS_CHIP_STYLES = {
       field: 'companyName',
       width: 220,
       pinned: 'left',
-      autoHeight: true,
+     
       suppressMovable: true,
       filter: MultiConditionTextFilter,
       cellRenderer: (props) => {
@@ -1491,7 +1491,11 @@ const STATUS_CHIP_STYLES = {
     return null;
   }
         return (
-          <div className={taStylesNew["company-cell"]} style={{ display: 'flex' }}>
+          <div
+          //  className={taStylesNew["company-cell"]}
+            style={{ display: 'flex' ,alignItems: 'center',
+    gap: '5px',
+    height: '100%'}}>
 
 
             <div style={{ display: 'flex', justifyContent:'center' }}>
@@ -1535,7 +1539,7 @@ const STATUS_CHIP_STYLES = {
                       getHRLISTForComapny(data?.company_ID, data?.tA_Head_UserID);
                     }}
                   >
-                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="12" height="12" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M13 0C10.4288 0 7.91543 0.762437 5.77759 2.1909C3.63975 3.61935 1.97351 5.64968 0.989572 8.02512C0.0056327 10.4006 -0.251811 13.0144 0.249797 15.5362C0.751405 18.0579 1.98953 20.3743 3.80762 22.1924C5.6257 24.0105 7.94208 25.2486 10.4638 25.7502C12.9856 26.2518 15.5995 25.9944 17.9749 25.0104C20.3503 24.0265 22.3807 22.3603 23.8091 20.2224C25.2376 18.0846 26 15.5712 26 13C25.9957 9.55351 24.6247 6.2494 22.1876 3.81236C19.7506 1.37532 16.4465 0.00430006 13 0ZM18 14H14V18C14 18.2652 13.8946 18.5196 13.7071 18.7071C13.5196 18.8946 13.2652 19 13 19C12.7348 19 12.4804 18.8946 12.2929 18.7071C12.1054 18.5196 12 18.2652 12 18V14H8.00001C7.73479 14 7.48044 13.8946 7.2929 13.7071C7.10536 13.5196 7.00001 13.2652 7.00001 13C7.00001 12.7348 7.10536 12.4804 7.2929 12.2929C7.48044 12.1054 7.73479 12 8.00001 12H12V8C12 7.73478 12.1054 7.48043 12.2929 7.29289C12.4804 7.10536 12.7348 7 13 7C13.2652 7 13.5196 7.10536 13.7071 7.29289C13.8946 7.48043 14 7.73478 14 8V12H18C18.2652 12 18.5196 12.1054 18.7071 12.2929C18.8946 12.4804 19 12.7348 19 13C19 13.2652 18.8946 13.5196 18.7071 13.7071C18.5196 13.8946 18.2652 14 18 14Z" fill="#8A8A8A" />
                     </svg>
                   </button>
@@ -1787,7 +1791,7 @@ const STATUS_CHIP_STYLES = {
       filter: MultiConditionTextFilter,
     },
     {
-      headerName: 'NBD/Existing',
+      headerName: 'NBD / Existing',
       field: 'businessType',
       width: 130,
       filterParams: { type: 'status', list: [{ data: "Existing" }, { data: "NBD" }] },
@@ -1802,7 +1806,7 @@ const STATUS_CHIP_STYLES = {
       filter: MultiConditionTextFilter,
     },
     {
-      headerName: 'Talent Pay Rate',
+      headerName: 'Talent Pay Rate (USD)',
       field: 'talent_AnnualCTC_Budget_INRValueStr',
       width: 160,
       filterParams: { type: 'number' },
@@ -2066,7 +2070,7 @@ const STATUS_CHIP_STYLES = {
         return (
           <div>
             <IconContext.Provider
-              value={{ color: "#FFDA30", style: { width: "19px", height: "19px", cursor: "pointer" } }}
+              value={{ color: "#FFDA30", style: { width: "14px", height: "14px", cursor: "pointer" } }}
             >
               <Tooltip title="Edit" placement="top">
                 <span onClick={() => editTAforTask(data)} style={{ padding: "0" }}>
@@ -2077,7 +2081,7 @@ const STATUS_CHIP_STYLES = {
 
             {/* {[2, 56, 96, 65, 49, 176, 443, 436, 302].includes(userData.UserId) &&  ( )} */}
             <IconContext.Provider
-              value={{ color: "red", style: { width: "19px", height: "19px", marginLeft: "10px", cursor: "pointer" } }}
+              value={{ color: "red", style: { width: "14px", height: "14px", marginLeft: "10px", cursor: "pointer" } }}
             >
               <Tooltip title="Remove" placement="top">
                 <span onClick={() => handleRemoveTask(data)} style={{ padding: "0" }}>
@@ -2299,6 +2303,8 @@ const STATUS_CHIP_STYLES = {
        
         columnDefs={gridOrderedColumns}
         // animateRows={false}
+         headerHeight={38}
+                            rowHeight={25}
         defaultColDef={scrumDefaultColDef}
         //   getRowId={(params) => String(params.data.id)}
         suppressScrollOnNewData={true}

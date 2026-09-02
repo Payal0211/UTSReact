@@ -508,7 +508,7 @@ body {
 }
 
 .diamond-icon {
-    width: 24px;
+    width: 14px;
     height: auto;
     display: block;
 }
@@ -589,9 +589,14 @@ body {
 }
 
 .plus-task-btn svg {
-    width: 24px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
     display: block;
+}
+
+.tableSelectField  [class*="ant-select"] [class*="ant-select-selector"] {
+       padding: 1px 10px !important;
+    height: 20px !important;
 }
 
 .plus-task-btn::after {
