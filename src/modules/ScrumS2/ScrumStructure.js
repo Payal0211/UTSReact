@@ -52,9 +52,9 @@ function ScrumStructure2() {
     const navigate = useNavigate()
     const [filtersList, setFiltersList] = useState({});
     const [TaListData, setTaListData] = useState([]);
-      let presistHeaddata = localStorage.getItem('scrumSelectedHead')
- 
-    const [selectedHead, setSelectedHead] = useState(presistHeaddata ? +presistHeaddata :'');
+    let presistHeaddata = localStorage.getItem('scrumSelectedHead')
+
+    const [selectedHead, setSelectedHead] = useState(presistHeaddata ? +presistHeaddata : '');
     const [isLoading, setIsLoading] = useState(false);
     const [columnOrder, setColumnOrder] = useState([])
     const [draggedRow, setDraggedRow] = useState(null);
@@ -71,8 +71,8 @@ function ScrumStructure2() {
             searchText: "",
         },
     });
-      const today = new Date();
-      const [monthDate, setMonthDate] = useState(today); 
+    const today = new Date();
+    const [monthDate, setMonthDate] = useState(today);
     const [showProfileTarget, setShowProfileTarget] = useState(false);
     const [profileTargetDetails, setProfileTargetDetails] = useState({});
     const [targetValue, setTargetValue] = useState(3);
@@ -84,10 +84,10 @@ function ScrumStructure2() {
     const [showTalentProfiles, setShowTalentProfiles] = useState(false);
     const date = new Date();
     const [startDate, setStartDate] = useState(date);
-const isHistory = useMemo(
-    () => moment(monthDate).isBefore(moment(), 'month'),
-    [monthDate]
-);
+    const isHistory = useMemo(
+        () => moment(monthDate).isBefore(moment(), 'month'),
+        [monthDate]
+    );
     const [startTargetDate, setStartTargetDate] = useState(date);
     const [isAddingNewTask, setAddingNewTask] = useState(false);
 
@@ -245,15 +245,15 @@ const isHistory = useMemo(
 
         let pl2 = {
             Year: moment(monthDate).format('YYYY'),
-            Month:moment(monthDate).format('M'),
-            TAHeadUserID:+selectedHead,
-            Tab_Name:scrumTabTitle
+            Month: moment(monthDate).format('M'),
+            TAHeadUserID: +selectedHead,
+            Tab_Name: scrumTabTitle
         }
         setIsLoading(true);
-        let result 
-        if(isHistory){
+        let result
+        if (isHistory) {
             result = await TaDashboardDAO.getAllScrumHistoryListRequestDAO(pl2);
-        }else{
+        } else {
             result = await TaDashboardDAO.getAllScrumTaskListRequestDAO(pl);
         }
 
@@ -261,12 +261,12 @@ const isHistory = useMemo(
 
         if (result.statusCode === HTTPStatusCode.OK) {
             // setTaListData(result.responseBody);
-             if(isHistory){
- setTaListData(groupByRowSpan(result.responseBody.map(i=>({...i, tA_HR_StatusID: i.tA_HR_StatusColorCode})), "taName"));
-             }else{
- setTaListData(groupByRowSpan(result.responseBody, "taName"));
-             }
-           
+            if (isHistory) {
+                setTaListData(groupByRowSpan(result.responseBody.map(i => ({ ...i, tA_HR_StatusID: i.tA_HR_StatusColorCode })), "taName"));
+            } else {
+                setTaListData(groupByRowSpan(result.responseBody, "taName"));
+            }
+
         } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
             setTaListData([]);
         } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -278,9 +278,9 @@ const isHistory = useMemo(
         } else {
             setTaListData([]);
             return "NO DATA FOUND";
-              
+
         }
-    }, [tableFilteredState, selectedHead, searchText, navigate, scrumTabTitle,isHistory, monthDate]);
+    }, [tableFilteredState, selectedHead, searchText, navigate, scrumTabTitle, isHistory, monthDate]);
 
     useEffect(() => {
         if (selectedHead) {
@@ -288,7 +288,7 @@ const isHistory = useMemo(
             getCOLUMNOrder(selectedHead)
         }
 
-    }, [searchText, tableFilteredState, selectedHead, scrumTabTitle,monthDate]);
+    }, [searchText, tableFilteredState, selectedHead, scrumTabTitle, monthDate]);
 
 
 
@@ -450,13 +450,13 @@ const isHistory = useMemo(
 
     }, [filtersList?.HeadUsers, , userData]);
 
-    useEffect(()=>{
-        if(selectedHead){
-      
-           localStorage.setItem('scrumSelectedHead', selectedHead) 
+    useEffect(() => {
+        if (selectedHead) {
+
+            localStorage.setItem('scrumSelectedHead', selectedHead)
         }
-         
-    },[selectedHead])
+
+    }, [selectedHead])
 
     const autoGroupColumnDef = {
         headerName: "TA",
@@ -566,13 +566,14 @@ const isHistory = useMemo(
                 };
                 return newDS;
             });
-        }else if (key === "companyCategory") {
-      pl[key] = value?.id;
-     setTaListData((prev) => {
-        let newDS = [...prev];
-        newDS[index] = { ...newDS[index], [key]: value };
-        return newDS;
-      })} else {
+        } else if (key === "companyCategory") {
+            pl[key] = value?.id;
+            setTaListData((prev) => {
+                let newDS = [...prev];
+                newDS[index] = { ...newDS[index], [key]: value };
+                return newDS;
+            })
+        } else {
             pl[key] = value;
             setTaListData((prev) => {
                 let newDS = [...prev];
@@ -762,10 +763,10 @@ const isHistory = useMemo(
                         setTargetValue(3);
                         setStartTargetDate(new Date());
                         if (val === "Covered") {
-                          return  setScrumTabTitle('C')
-                        } 
+                            return setScrumTabTitle('C')
+                        }
                         if (val === "Pause") {
-                          return  setScrumTabTitle('P')
+                            return setScrumTabTitle('P')
                         }
                         return setScrumTabTitle('A')
                         // if (value === "Covered" && val !== "Covered") {
@@ -773,7 +774,7 @@ const isHistory = useMemo(
                         //     val !== 'Covered' &&  setScrumTabTitle('A')
                         // }
 
-                       
+
 
                         // if (value === "Pause" && val !== "Pause") {
                         //     val === 'Covered' &&  setScrumTabTitle('C') 
@@ -992,7 +993,7 @@ const isHistory = useMemo(
                 dataIndex: "talentStatus",
                 key: "talentStatus",
                 render: (text, row) => {
-        
+
                     return All_Hiring_Request_Utils.GETTALENTSTATUS(+row?.talentStatusColor, row?.talentStatus)
                 }
             },
@@ -1150,17 +1151,17 @@ const isHistory = useMemo(
     };
 
     const updateNotes = async (pl, index) => {
-     
+
         let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
 
-        if(updateresult.statusCode === HTTPStatusCode.OK){
+        if (updateresult.statusCode === HTTPStatusCode.OK) {
 
-            let newData = updateresult.responseBody.find(data=> data.id === pl.TaskID)
-               setTaListData(prev => {
-            let tempD = [...prev]
-            tempD[index] = { ...tempD[index], latestNotesTopRow: newData.latestNotesTopRow, latestNotes: newData.latestNotes }
-            return tempD
-        })
+            let newData = updateresult.responseBody.find(data => data.id === pl.TaskID)
+            setTaListData(prev => {
+                let tempD = [...prev]
+                tempD[index] = { ...tempD[index], latestNotesTopRow: newData.latestNotesTopRow, latestNotes: newData.latestNotes }
+                return tempD
+            })
         }
     }
 
@@ -1342,7 +1343,7 @@ const isHistory = useMemo(
         //         dot: 'warning',
         //     });
         // }F
-      
+
 
         // // ---------- Interview-reject batch pattern ----------
         const interviewRejects = data?.totalNoOfInterviewReject ?? 0;
@@ -1404,7 +1405,7 @@ const isHistory = useMemo(
             });
         }
 
-          const batch = data?.hrAlerts
+        const batch = data?.hrAlerts
         if (batch?.length) {
             batch.forEach(i => {
                 alerts.push({
@@ -1423,11 +1424,11 @@ const isHistory = useMemo(
         // return alerts.sort((a, b) => severityOrder[a.dot] - severityOrder[b.dot]);
         return alerts
     }
-      function computePoPUPAlerts(data) {
+    function computePoPUPAlerts(data) {
         const alerts = [];
 
-   
-          const batch = data?.hrAlerts
+
+        const batch = data?.hrAlerts
         if (batch?.length) {
             batch.forEach(i => {
                 alerts.push({
@@ -1463,104 +1464,104 @@ const isHistory = useMemo(
 
 
     // ---------- Status → chip style mapping ----------
-const STATUS_CHIP_STYLES = {
-    'screening reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
-    'screen reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
-    'profile shared': { label: 'profile shared', icon: '➤', bg: '#EAF2FE', text: '#1A56C4' },
-    'in interview': { label: 'in interview', icon: '📋', bg: '#FFF6E0', text: '#B7791F' },
-    'submitted': { label: 'submitted', icon: '📋', bg: '#FDECEC', text: '#D93025' },
-    'interview reject': { label: 'interview reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
-    'duplicate': { label: 'duplicate', icon: '⊘', bg: '#F0F0F0', text: '#666' },
-    'hold': { label: 'hold', icon: '⏸', bg: '#FFF6E0', text: '#B7791F' },
-};
+    const STATUS_CHIP_STYLES = {
+        'screening reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+        'screen reject': { label: 'screen reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+        'profile shared': { label: 'profile shared', icon: '➤', bg: '#EAF2FE', text: '#1A56C4' },
+        'in interview': { label: 'in interview', icon: '📋', bg: '#FFF6E0', text: '#B7791F' },
+        'submitted': { label: 'submitted', icon: '📋', bg: '#FDECEC', text: '#D93025' },
+        'interview reject': { label: 'interview reject', icon: '⊗', bg: '#FDECEC', text: '#D93025' },
+        'duplicate': { label: 'duplicate', icon: '⊘', bg: '#F0F0F0', text: '#666' },
+        'hold': { label: 'hold', icon: '⏸', bg: '#FFF6E0', text: '#B7791F' },
+    };
 
-const getStatusStyle = (statusRaw) => {
-    const key = (statusRaw ?? '').trim().toLowerCase();
-    return STATUS_CHIP_STYLES[key] ?? { label: statusRaw, icon: '•', bg: '#F0F0F0', text: '#666' };
-};
+    const getStatusStyle = (statusRaw) => {
+        const key = (statusRaw ?? '').trim().toLowerCase();
+        return STATUS_CHIP_STYLES[key] ?? { label: statusRaw, icon: '•', bg: '#F0F0F0', text: '#666' };
+    };
 
-// ---------- Parser: "Name (Status) , Name (Status)" → [{ name, status }] ----------
-function parseHrAlertDetailText(text) {
-    if (!text) return [];
+    // ---------- Parser: "Name (Status) , Name (Status)" → [{ name, status }] ----------
+    function parseHrAlertDetailText(text) {
+        if (!text) return [];
 
-    return text
-        .split(',')
-        .map((entry) => entry.trim())
-        .filter(Boolean)
-        .map((entry) => {
-            const match = entry.match(/^(.+?)\s*\((.+?)\)\s*$/);
-            if (!match) return { name: entry, status: '' };
-            return { name: match[1].trim(), status: match[2].trim() };
-        });
-}
+        return text
+            .split(',')
+            .map((entry) => entry.trim())
+            .filter(Boolean)
+            .map((entry) => {
+                const match = entry.match(/^(.+?)\s*\((.+?)\)\s*$/);
+                if (!match) return { name: entry, status: '' };
+                return { name: match[1].trim(), status: match[2].trim() };
+            });
+    }
 
-// ---------- Single name+status chip pairing ----------
-function BatchEntry({ entry, isLast }) {
-    const style = getStatusStyle(entry.status);
+    // ---------- Single name+status chip pairing ----------
+    function BatchEntry({ entry, isLast }) {
+        const style = getStatusStyle(entry.status);
 
-    return (
-        <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 12, fontWeight: 500, color: '#333' }}>
-                    {entry.name}
-                </span>
-                {entry.status && (
-                    <span
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4,
-                            fontSize: 8,
-                            fontWeight: 600,
-                            padding: '2px 8px',
-                            borderRadius: 999,
-                            backgroundColor: style.bg,
-                            color: style.text,
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
-                        <span style={{ fontSize: 10 }}>{style.icon}</span>
-                        {style.label}
+        return (
+            <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: '#333' }}>
+                        {entry.name}
                     </span>
-                )}
+                    {entry.status && (
+                        <span
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 4,
+                                fontSize: 8,
+                                fontWeight: 600,
+                                padding: '2px 8px',
+                                borderRadius: 999,
+                                backgroundColor: style.bg,
+                                color: style.text,
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            <span style={{ fontSize: 10 }}>{style.icon}</span>
+                            {style.label}
+                        </span>
+                    )}
+                </div>
+                {!isLast && <span style={{ color: '#D0D5DB', fontSize: 12 }}>|</span>}
+            </>
+        );
+    }
+
+    /**
+     * Renders a titled panel of name+status chips parsed from a raw
+     * "Name (Status) , Name (Status)" string — e.g. hrAlertDetailText.
+     *
+     * Usage:
+     *   <HrAlertBatchChips title="First Batch" text={data.hrAlertDetailText} />
+     */
+    function HrAlertBatchChips({ title, text, entries: entriesProp }) {
+        const entries = entriesProp ?? parseHrAlertDetailText(text);
+
+        if (!entries || entries.length === 0) return null;
+
+        return (
+            <div
+                style={{
+                    border: '1px solid #E3E7EB',
+                    borderRadius: 999,
+                    padding: '10px 16px',
+                    background: '#fff',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    gap: 5,
+                    width: 'fit-content'
+                }}
+            >
+                {entries.map((entry, i) => (
+                    <BatchEntry key={i} entry={entry} isLast={i === entries.length - 1} />
+                ))}
             </div>
-            {!isLast && <span style={{ color: '#D0D5DB', fontSize: 12 }}>|</span>}
-        </>
-    );
-}
-
-/**
- * Renders a titled panel of name+status chips parsed from a raw
- * "Name (Status) , Name (Status)" string — e.g. hrAlertDetailText.
- *
- * Usage:
- *   <HrAlertBatchChips title="First Batch" text={data.hrAlertDetailText} />
- */
-  function HrAlertBatchChips({ title, text, entries: entriesProp }) {
-      const entries = entriesProp ?? parseHrAlertDetailText(text);
-
-    if (!entries || entries.length === 0) return null;
-
-    return (
-        <div
-            style={{
-                border: '1px solid #E3E7EB',
-                borderRadius: 999,
-                padding: '10px 16px',
-                background: '#fff',
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                gap: 5,
-                width:'fit-content'
-            }}
-        >
-            {entries.map((entry, i) => (
-                <BatchEntry key={i} entry={entry} isLast={i === entries.length - 1} />
-            ))}
-        </div>
-    );
-}
+        );
+    }
 
     function AlertRowBig({ alert }) {
         return (
@@ -1705,7 +1706,7 @@ function BatchEntry({ entry, isLast }) {
                         fontWeight: 600,
                         color: 'purple',
                         marginLeft: 6,
-                        fontSize:'12px',
+                        fontSize: '12px',
                         animation: 'blink-new 1.2s ease-in-out infinite',
                         display: 'flex',
                         alignItems: 'center',
@@ -1939,14 +1940,23 @@ function BatchEntry({ entry, isLast }) {
             taName: "Total",
         };
 
-          const uniqueRows = Array.from(
-        new Map(
-            rows.map(row => [
-                row.hrNumber, // HR ID field
-                row
-            ])
-        ).values()
-    );
+        const uniqueRows = Array.from(
+            new Map(
+                rows.map(row => [
+                    row.hrNumber, // HR ID field
+                    row
+                ])
+            ).values()
+        );
+
+        const uniqueTARows = Array.from(
+            new Map(
+                rows.map(row => [
+                    row.taName, // HR ID field
+                    row
+                ])
+            ).values()
+        );
 
         columnDefs.forEach((col) => {
             const field = col.field;
@@ -1958,27 +1968,44 @@ function BatchEntry({ entry, isLast }) {
             let hasNumericValue = false;
             const isCurrencyField = currencyFields.includes(field);
 
-            uniqueRows.forEach((row) => {
-                const rawValue = row[field];
 
-                if (isCurrencyField) {
-                    const parsed = parseCurrencyString(rawValue);
-                    if (parsed !== null) {
-                        sum += parsed;
+
+            if (field === "noOfCallsGivenDay") {
+                uniqueTARows.forEach((row) => {
+                    const rawValue = row[field];
+
+                    if (typeof rawValue === "number") {
+                        sum += +rawValue;
+                        hasNumericValue = true;
+                    } else {
+                        sum += Number(rawValue);
                         hasNumericValue = true;
                     }
-                } else if (typeof rawValue === "number") {
-                    sum += rawValue;
-                    hasNumericValue = true;
-                } else if (
-                    typeof rawValue === "string" &&
-                    rawValue.trim() !== "" &&
-                    !isNaN(rawValue)
-                ) {
-                    sum += Number(rawValue);
-                    hasNumericValue = true;
-                }
-            });
+
+                });
+            } else {
+                uniqueRows.forEach((row) => {
+                    const rawValue = row[field];
+
+                    if (isCurrencyField) {
+                        const parsed = parseCurrencyString(rawValue);
+                        if (parsed !== null) {
+                            sum += parsed;
+                            hasNumericValue = true;
+                        }
+                    } else if (typeof rawValue === "number") {
+                        sum += rawValue;
+                        hasNumericValue = true;
+                    } else if (
+                        typeof rawValue === "string" &&
+                        rawValue.trim() !== "" &&
+                        !isNaN(rawValue)
+                    ) {
+                        sum += Number(rawValue);
+                        hasNumericValue = true;
+                    }
+                });
+            }
 
             if (hasNumericValue) {
                 total[field] = isCurrencyField ? formatAsINRCurrency(sum) : sum;
@@ -2141,7 +2168,7 @@ function BatchEntry({ entry, isLast }) {
         return groupIndex < groups.length - 1;
     };
 
-      const getScrumGridHistoryColumns = () => [
+    const getScrumGridHistoryColumns = () => [
         {
             headerName: 'TA',
             field: 'taName',
@@ -2149,7 +2176,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             sortable: false,
             suppressMovable: true,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.taName)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             // rowSpan: (params) => params.data?.rowSpan || 1, 
             rowSpan: (params) => {
@@ -2196,7 +2223,7 @@ function BatchEntry({ entry, isLast }) {
             // },
             cellRenderer: (params) => {
 
-              
+
                 if (params.node.rowPinned) {
                     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>Total</strong></div>;
                 }
@@ -2215,7 +2242,7 @@ function BatchEntry({ entry, isLast }) {
 
                 if (params.data.rowSpan <= 0 && !params.api.isAnyFilterPresent()) return "";
 
-                  if(isHistory){
+                if (isHistory) {
                     return params.value
                 }
 
@@ -2263,7 +2290,7 @@ function BatchEntry({ entry, isLast }) {
             cellRenderer: CompanyCell,
             sortable: false,
             suppressMovable: true,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.companyName)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.companyName)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
         },
         {
@@ -2273,7 +2300,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             suppressMovable: true,
             filter: MultiConditionTextFilter,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrNumber)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.hrNumber)))?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props;
 
@@ -2281,17 +2308,17 @@ function BatchEntry({ entry, isLast }) {
                     return "";
                 }
                 const i = getRowIndex(data);
-  if(isHistory){
-                    return  <a
-                            href={`/allhiringrequest/${data?.hiringRequest_ID}`}
-                            style={{ marginLeft: '5px' }}
-                            target="_blank"
-                            rel="noreferrer"
-                            className={stylesOBj['hr-id']}
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {value}
-                        </a>
+                if (isHistory) {
+                    return <a
+                        href={`/allhiringrequest/${data?.hiringRequest_ID}`}
+                        style={{ marginLeft: '5px' }}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={stylesOBj['hr-id']}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {value}
+                    </a>
                 }
 
                 return (<>
@@ -2349,7 +2376,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             suppressMovable: true,
             cellRenderer: HrTitleCell,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrTitle)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.hrTitle)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             // tooltipField: 'hrTitle',
 
@@ -2361,14 +2388,14 @@ function BatchEntry({ entry, isLast }) {
             width: 120,
             pinned: 'left',
             suppressMovable: true,
-            filterParams: { type: 'status', list:filtersList?.TaskStatus},
+            filterParams: { type: 'status', list: filtersList?.TaskStatus },
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
                     return "";
                 }
-                  if(isHistory){
+                if (isHistory) {
                     return value
                 }
                 return <TaskStatusComp text={value} result={data} />
@@ -2379,7 +2406,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 80,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2390,7 +2417,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: 'Inbound / Outbound',
             field: 'role_Type',
             width: 120,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.role_Type)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.role_Type)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
@@ -2398,7 +2425,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: 'Business Type',
             field: 'businessType',
             width: 140,
-            filterParams: { type: 'status', list:[{data:"Existing"},{data:"New"}]},
+            filterParams: { type: 'status', list: [{ data: "Existing" }, { data: "New" }] },
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
@@ -2414,10 +2441,10 @@ function BatchEntry({ entry, isLast }) {
             headerName: 'Date',
             field: 'hrCreatedDateStr',
             cellStyle: { textAlign: 'center' },
-            filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrCreatedDateStr)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.hrCreatedDateStr)))?.map(v => ({ data: v })) },
             width: 110,
             filter: MultiConditionTextFilter,
-           
+
         },
         // {
         //     headerName: 'Year',
@@ -2425,14 +2452,14 @@ function BatchEntry({ entry, isLast }) {
         //     cellStyle: { textAlign: 'center' },
         //     width: 110,
         //     filter: MultiConditionTextFilter,
-          
+
         // },
         {
             headerName: 'HR Status',
             field: 'tA_HR_Status',
             width: 130,
             filter: MultiConditionTextFilter,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.tA_HR_Status)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
             cellRenderer: HrStatusCell,
         },
         {
@@ -2443,7 +2470,7 @@ function BatchEntry({ entry, isLast }) {
             filter: MultiConditionTextFilter,
         },
 
- {
+        {
             headerName: 'Latest Updates',
             field: 'latestNotes',
             width: 250,
@@ -2456,30 +2483,30 @@ function BatchEntry({ entry, isLast }) {
             // cellEditorPopupPosition: 'under', 
             // 👇 ADD THESE TWO CONFIGURATIONS
             // cellEditor: 'agTextCellEditor', 
-       
-        
 
-            cellRenderer: (props)=>{
-                 const { value,data } = props;
-    const { AddComment, getRowIndex } = props.context;
-    const i = getRowIndex(data);
 
-    return (
-        <Tooltip title={value}>
-            <div style={{lineHeight:'20px', height:'20px'}}>{data?.latestNotesTopRow}</div>  
-        </Tooltip>
-      
-        //  <div style={{lineHeight:'20px', height:'25px'}} dangerouslySetInnerHTML={{__html:value}}></div>
-        // <button
-        //     className={stylesOBj['cell-add-btn']}
-        //     onClick={(e) => {
-        //         e.stopPropagation();
-        //         AddComment(data, i);
-        //     }}
-        // >
-        //     {data?.latestNotes ? 'View / Edit' : 'Add'}
-        // </button>
-    );
+
+            cellRenderer: (props) => {
+                const { value, data } = props;
+                const { AddComment, getRowIndex } = props.context;
+                const i = getRowIndex(data);
+
+                return (
+                    <Tooltip title={value}>
+                        <div style={{ lineHeight: '20px', height: '20px' }}>{data?.latestNotesTopRow}</div>
+                    </Tooltip>
+
+                    //  <div style={{lineHeight:'20px', height:'25px'}} dangerouslySetInnerHTML={{__html:value}}></div>
+                    // <button
+                    //     className={stylesOBj['cell-add-btn']}
+                    //     onClick={(e) => {
+                    //         e.stopPropagation();
+                    //         AddComment(data, i);
+                    //     }}
+                    // >
+                    //     {data?.latestNotes ? 'View / Edit' : 'Add'}
+                    // </button>
+                );
             },
         },
 
@@ -2491,7 +2518,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'talent_AnnualCTC_Budget_INRValueStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2502,7 +2529,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'uplersFeesPer',
             cellStyle: { textAlign: 'center' },
             width: 100,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2513,7 +2540,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'totalRevenue_NoofTalentStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2524,7 +2551,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'days',
             cellStyle: { textAlign: 'center' },
             width: 80,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2535,15 +2562,15 @@ function BatchEntry({ entry, isLast }) {
             field: 'noOfProfile_TalentsTillDate',
             width: 80,
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
-       
 
-    
-        
-       
+
+
+
+
 
         // {
         //     headerName: 'Joining Date',
@@ -2637,7 +2664,7 @@ function BatchEntry({ entry, isLast }) {
         //     cellRenderer: SubmissionSheetCell,
         // },
 
-     
+
     ];
 
     const getScrumGridColumns = () => [
@@ -2648,7 +2675,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             sortable: false,
             suppressMovable: true,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.taName)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             // rowSpan: (params) => params.data?.rowSpan || 1, 
             rowSpan: (params) => {
@@ -2695,7 +2722,7 @@ function BatchEntry({ entry, isLast }) {
             // },
             cellRenderer: (params) => {
 
-              
+
                 if (params.node.rowPinned) {
                     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><strong>Total</strong></div>;
                 }
@@ -2714,7 +2741,7 @@ function BatchEntry({ entry, isLast }) {
 
                 if (params.data.rowSpan <= 0 && !params.api.isAnyFilterPresent()) return "";
 
-                  if(isHistory){
+                if (isHistory) {
                     return params.value
                 }
 
@@ -2760,7 +2787,7 @@ function BatchEntry({ entry, isLast }) {
             width: 150,
             pinned: 'left',
             cellRenderer: CompanyCell,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.companyName)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.companyName)))?.map(v => ({ data: v })) },
             sortable: false,
             suppressMovable: true,
             filter: MultiConditionTextFilter,
@@ -2771,7 +2798,7 @@ function BatchEntry({ entry, isLast }) {
             width: 150,
             pinned: 'left',
             suppressMovable: true,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrNumber)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.hrNumber)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props;
@@ -2780,17 +2807,17 @@ function BatchEntry({ entry, isLast }) {
                     return "";
                 }
                 const i = getRowIndex(data);
-  if(isHistory){
-                    return  <a
-                            href={`/allhiringrequest/${data?.hiringRequest_ID}`}
-                            style={{ marginLeft: '5px' }}
-                            target="_blank"
-                            rel="noreferrer"
-                            className={stylesOBj['hr-id']}
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {value}
-                        </a>
+                if (isHistory) {
+                    return <a
+                        href={`/allhiringrequest/${data?.hiringRequest_ID}`}
+                        style={{ marginLeft: '5px' }}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={stylesOBj['hr-id']}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {value}
+                    </a>
                 }
 
                 return (<>
@@ -2848,7 +2875,7 @@ function BatchEntry({ entry, isLast }) {
             pinned: 'left',
             suppressMovable: true,
             cellRenderer: HrTitleCell,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrTitle)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.hrTitle)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             // tooltipField: 'hrTitle',
 
@@ -2871,14 +2898,14 @@ function BatchEntry({ entry, isLast }) {
             width: 120,
             pinned: 'left',
             suppressMovable: true,
-            filterParams: { type: 'status', list:filtersList?.TaskStatus},
+            filterParams: { type: 'status', list: filtersList?.TaskStatus },
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
                     return "";
                 }
-                  if(isHistory){
+                if (isHistory) {
                     return value
                 }
                 return <TaskStatusComp text={value} result={data} />
@@ -2889,7 +2916,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 80,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2901,14 +2928,14 @@ function BatchEntry({ entry, isLast }) {
             field: 'role_Type',
             width: 120,
             filter: MultiConditionTextFilter,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.role_Type)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.role_Type)))?.map(v => ({ data: v })) },
             cellStyle: { textAlign: 'center' },
         },
         {
             headerName: 'Business Type',
             field: 'businessType',
             width: 140,
-            filterParams: { type: 'status', list:[{data:"Existing"},{data:"New"}]},
+            filterParams: { type: 'status', list: [{ data: "Existing" }, { data: "New" }] },
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
         },
@@ -2924,10 +2951,10 @@ function BatchEntry({ entry, isLast }) {
             headerName: 'Date',
             field: 'hrMonth',
             cellStyle: { textAlign: 'center' },
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.hrMonth)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.hrMonth)))?.map(v => ({ data: v })) },
             width: 110,
             filter: MultiConditionTextFilter,
-           
+
         },
         // {
         //     headerName: 'Year',
@@ -2935,13 +2962,13 @@ function BatchEntry({ entry, isLast }) {
         //     cellStyle: { textAlign: 'center' },
         //     width: 110,
         //     filter: MultiConditionTextFilter,
-          
+
         // },
         {
             headerName: 'HR Status',
             field: 'tA_HR_Status',
             width: 130,
-             filterParams: { type: 'status', list:Array.from(new Set(TaListData?.map(i=>i.tA_HR_Status)))?.map(v=>({data:v})) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: HrStatusCell,
         },
@@ -2962,7 +2989,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'talent_AnnualCTC_Budget_INRValueStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2973,7 +3000,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'uplersFeesPer',
             cellStyle: { textAlign: 'center' },
             width: 100,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2984,7 +3011,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'totalRevenue_NoofTalentStr',
             cellStyle: { textAlign: 'center' },
             width: 170,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -2995,7 +3022,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'days',
             cellStyle: { textAlign: 'center' },
             width: 80,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -3006,7 +3033,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'noOfProfile_TalentsTillDate',
             width: 80,
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
@@ -3061,7 +3088,7 @@ function BatchEntry({ entry, isLast }) {
             cellStyle: { textAlign: 'center' },
             width: 80,
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3076,7 +3103,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -3092,7 +3119,7 @@ function BatchEntry({ entry, isLast }) {
             width: 80,
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3104,7 +3131,7 @@ function BatchEntry({ entry, isLast }) {
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3116,7 +3143,7 @@ function BatchEntry({ entry, isLast }) {
         {
             headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3128,7 +3155,7 @@ function BatchEntry({ entry, isLast }) {
         {
             headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3143,7 +3170,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellRenderer: ProfileSharedTargetCell,
             cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
@@ -3152,7 +3179,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
 
@@ -3162,7 +3189,7 @@ function BatchEntry({ entry, isLast }) {
             field: 'profile_Shared_Achieved',
             cellStyle: { textAlign: 'center' },
             width: 150,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
             cellRenderer: (props) => {
@@ -3192,7 +3219,7 @@ function BatchEntry({ entry, isLast }) {
             width: 150,
             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3315,7 +3342,7 @@ function BatchEntry({ entry, isLast }) {
             headerName: "Yesterday's No of Calls",
             field: 'noOfCallsGivenDay',
             cellStyle: { textAlign: 'center' },
-            filterParams: { type: 'number'},
+            filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
             width: 150,
             cellRendererParams: { objKey: 'noOfCallsGivenDay' },
@@ -3398,7 +3425,7 @@ function BatchEntry({ entry, isLast }) {
                                 </span>{" "}
                             </Tooltip>
                         </IconContext.Provider>
-                       
+
 
 
                     </div>
@@ -3408,7 +3435,7 @@ function BatchEntry({ entry, isLast }) {
         },
     ];
 
-  
+
 
     const handlePostProcessPopup = useCallback((params) => {
         if (params.type !== 'popupCellEditor') return;
@@ -3506,7 +3533,7 @@ function BatchEntry({ entry, isLast }) {
             <Modal
                 transitionName=""
                 width="fit-content"
-                style={{minWidth:'450px'}}
+                style={{ minWidth: '450px' }}
                 centered
                 footer={null}
                 open={open}
@@ -3521,7 +3548,7 @@ function BatchEntry({ entry, isLast }) {
                         {data.hrTitle}
                     </h2>
                     <p style={{ color: '#6b7280', fontSize: 8, margin: '0 0 20px' }}>
-                      <span>{data.taName} · {data.companyName} ·</span>  {data.hrNumber}
+                        <span>{data.taName} · {data.companyName} ·</span>  {data.hrNumber}
                     </p>
 
                     {/* Summary cards */}
@@ -3537,24 +3564,24 @@ function BatchEntry({ entry, isLast }) {
                     </div>
                     {/* Alert chips row */}
                     {alerts.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection:'column', gap: 6, marginBottom: 20 }}>
-                            {alerts.map((a) =>{
-                             return   <>
-                                
-                                <AlertRowBig key={a.key} alert={a} />
-                            {(a.alertDetailText && a.alertDetailText !=="$" ) && <HrAlertBatchChips
-                        title="First Batch"
-                        text={a.alertDetailText}
-                    />}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
+                            {alerts.map((a) => {
+                                return <>
+
+                                    <AlertRowBig key={a.key} alert={a} />
+                                    {(a.alertDetailText && a.alertDetailText !== "$") && <HrAlertBatchChips
+                                        title="First Batch"
+                                        text={a.alertDetailText}
+                                    />}
                                 </>
-                            } )}
+                            })}
                         </div>
 
 
 
                     )}
 
-                     {/* {data?.hrAlertDetailText && (
+                    {/* {data?.hrAlertDetailText && (
                     <HrAlertBatchChips
                         title="First Batch"
                         text={data.hrAlertDetailText}
@@ -3602,10 +3629,10 @@ function BatchEntry({ entry, isLast }) {
                     borderRadius: 10,
                     padding: '10px 4px',
                     textAlign: 'center',
-                    display:'flex',
-                    alignItems:'center',
-                    justifyContent:'center',
-                    gap:'5px'
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '5px'
                 }}
             >
                 <div style={{ fontSize: 12, fontWeight: 700, color }}>{value}</div>
@@ -3691,30 +3718,30 @@ function BatchEntry({ entry, isLast }) {
     }, []);
 
     const measureRenderedWidth = (text, sourceEl) => {
-    const mirror = document.createElement('div');
-    const cs = sourceEl ? window.getComputedStyle(sourceEl) : null;
+        const mirror = document.createElement('div');
+        const cs = sourceEl ? window.getComputedStyle(sourceEl) : null;
 
-    mirror.style.position = 'fixed';
-    mirror.style.top = '-9999px';
-    mirror.style.left = '-9999px';
-    mirror.style.visibility = 'hidden';
-    mirror.style.whiteSpace = 'pre';        // no wrapping — measure the true single-line width
-    mirror.style.pointerEvents = 'none';
+        mirror.style.position = 'fixed';
+        mirror.style.top = '-9999px';
+        mirror.style.left = '-9999px';
+        mirror.style.visibility = 'hidden';
+        mirror.style.whiteSpace = 'pre';        // no wrapping — measure the true single-line width
+        mirror.style.pointerEvents = 'none';
 
-    if (cs) {
-        mirror.style.font = cs.font;
-        mirror.style.letterSpacing = cs.letterSpacing;
-        mirror.style.fontFeatureSettings = cs.fontFeatureSettings;
-    } else {
-        mirror.style.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    }
+        if (cs) {
+            mirror.style.font = cs.font;
+            mirror.style.letterSpacing = cs.letterSpacing;
+            mirror.style.fontFeatureSettings = cs.fontFeatureSettings;
+        } else {
+            mirror.style.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        }
 
-    mirror.textContent = text;
-    document.body.appendChild(mirror);
-    const width = mirror.scrollWidth;
-    document.body.removeChild(mirror);
-    return width;
-};
+        mirror.textContent = text;
+        document.body.appendChild(mirror);
+        const width = mirror.scrollWidth;
+        document.body.removeChild(mirror);
+        return width;
+    };
 
     const handleCellEditingStarted = useCallback((params) => {
         // Only applies to the large-text popup editors
@@ -3733,221 +3760,221 @@ function BatchEntry({ entry, isLast }) {
         //     }, 0);
         // }
 
-    //     const colId = params.column.getColId();
-    // if (colId !== 'latestNotes' && colId !== 'touchBasedNotes') return;
+        //     const colId = params.column.getColId();
+        // if (colId !== 'latestNotes' && colId !== 'touchBasedNotes') return;
 
-    // setTimeout(() => {
-    //     const popupEditor = document.querySelector('.ag-popup-editor');
-    //     const textarea = document.querySelector(
-    //         '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
-    //     );
+        // setTimeout(() => {
+        //     const popupEditor = document.querySelector('.ag-popup-editor');
+        //     const textarea = document.querySelector(
+        //         '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
+        //     );
 
-    //     if (!popupEditor || !textarea) {
-    //         console.log('🔴 popup or textarea NOT found', { popupEditor: !!popupEditor, textarea: !!textarea });
-    //         return;
-    //     }
+        //     if (!popupEditor || !textarea) {
+        //         console.log('🔴 popup or textarea NOT found', { popupEditor: !!popupEditor, textarea: !!textarea });
+        //         return;
+        //     }
 
-    //     console.log('🟢 popup + textarea FOUND, sizing now');
+        //     console.log('🟢 popup + textarea FOUND, sizing now');
 
-    //     // Reset cursor to the start (your original behavior)
-    //     textarea.setSelectionRange(0, 0);
-    //     textarea.scrollTop = 0;
-    //     textarea.focus();
+        //     // Reset cursor to the start (your original behavior)
+        //     textarea.setSelectionRange(0, 0);
+        //     textarea.scrollTop = 0;
+        //     textarea.focus();
 
-    //     // ---- Width calculation based on actual content ----
-    //     const rawValue = params.data?.[colId] ?? '';
-    //     const plainText = String(rawValue).replace(/<[^>]*>/g, '\n');
-    //     const lines = plainText.split('\n');
+        //     // ---- Width calculation based on actual content ----
+        //     const rawValue = params.data?.[colId] ?? '';
+        //     const plainText = String(rawValue).replace(/<[^>]*>/g, '\n');
+        //     const lines = plainText.split('\n');
 
-    //     const widestLineWidth = lines.reduce((max, line) => {
-    //         const w = measureRenderedWidth(line, textarea);
-    //         return w > max ? w : max;
-    //     }, 0);
+        //     const widestLineWidth = lines.reduce((max, line) => {
+        //         const w = measureRenderedWidth(line, textarea);
+        //         return w > max ? w : max;
+        //     }, 0);
 
-    //     const MIN_WIDTH = 250;
-    //     const SCREEN_MARGIN = 16;
-    //     const HORIZONTAL_PADDING = 40;
-    //     const contentWidth = widestLineWidth + HORIZONTAL_PADDING;
-    //     const maxPossibleWidth = window.innerWidth - (SCREEN_MARGIN * 2);
-    //     const desiredWidth = Math.max(MIN_WIDTH, Math.min(contentWidth, maxPossibleWidth));
+        //     const MIN_WIDTH = 250;
+        //     const SCREEN_MARGIN = 16;
+        //     const HORIZONTAL_PADDING = 40;
+        //     const contentWidth = widestLineWidth + HORIZONTAL_PADDING;
+        //     const maxPossibleWidth = window.innerWidth - (SCREEN_MARGIN * 2);
+        //     const desiredWidth = Math.max(MIN_WIDTH, Math.min(contentWidth, maxPossibleWidth));
 
-    //     console.log('desiredWidth:', desiredWidth);
+        //     console.log('desiredWidth:', desiredWidth);
 
-    //     // Apply width to the popup and every element between it and the textarea
-    //     popupEditor.style.setProperty('width', `${desiredWidth}px`, 'important');
-    //     popupEditor.style.setProperty('min-width', `${desiredWidth}px`, 'important');
-    //     popupEditor.style.setProperty('max-width',`${maxPossibleWidth}px`, 'important');
+        //     // Apply width to the popup and every element between it and the textarea
+        //     popupEditor.style.setProperty('width', `${desiredWidth}px`, 'important');
+        //     popupEditor.style.setProperty('min-width', `${desiredWidth}px`, 'important');
+        //     popupEditor.style.setProperty('max-width',`${maxPossibleWidth}px`, 'important');
 
-    //     let node = textarea.parentElement;
-    //     while (node && node !== popupEditor) {
-    //         node.style.setProperty('width', `${desiredWidth}px`, 'important');
-    //         node.style.setProperty('max-width', 'none', 'important');
-    //         node.style.setProperty('box-sizing', 'border-box', 'important');
-    //         node = node.parentElement;
-    //     }
+        //     let node = textarea.parentElement;
+        //     while (node && node !== popupEditor) {
+        //         node.style.setProperty('width', `${desiredWidth}px`, 'important');
+        //         node.style.setProperty('max-width', 'none', 'important');
+        //         node.style.setProperty('box-sizing', 'border-box', 'important');
+        //         node = node.parentElement;
+        //     }
 
-    //     textarea.removeAttribute('cols'); // kill the HTML cols=60 intrinsic sizing
-    //     textarea.style.setProperty('width', '100%', 'important');
-    //     textarea.style.setProperty('box-sizing', 'border-box', 'important');
+        //     textarea.removeAttribute('cols'); // kill the HTML cols=60 intrinsic sizing
+        //     textarea.style.setProperty('width', '100%', 'important');
+        //     textarea.style.setProperty('box-sizing', 'border-box', 'important');
 
-    //     // ---- Height ----
-    //     textarea.style.setProperty('height', 'auto', 'important');
-    //     const contentHeight = textarea.scrollHeight;
-    //     const MIN_HEIGHT = 90;
-    //     const MAX_HEIGHT = Math.min(window.innerHeight - 80, 500);
-    //     const desiredHeight = Math.max(MIN_HEIGHT, Math.min(contentHeight + 4, MAX_HEIGHT));
-    //     textarea.style.setProperty('height', `${desiredHeight}px`, 'important');
+        //     // ---- Height ----
+        //     textarea.style.setProperty('height', 'auto', 'important');
+        //     const contentHeight = textarea.scrollHeight;
+        //     const MIN_HEIGHT = 90;
+        //     const MAX_HEIGHT = Math.min(window.innerHeight - 80, 500);
+        //     const desiredHeight = Math.max(MIN_HEIGHT, Math.min(contentHeight + 4, MAX_HEIGHT));
+        //     textarea.style.setProperty('height', `${desiredHeight}px`, 'important');
 
-    //     // ---- Reposition after resizing ----
-    //     const eventSource = document.querySelector(`[col-id="${colId}"].ag-cell-focus`) 
-    //         || document.querySelector(`[col-id="${colId}"]`);
-    //     const cellRect = eventSource?.getBoundingClientRect();
-    //     if (cellRect) {
-    //         popupEditor.style.setProperty('position', 'fixed', 'important');
-    //         let left = cellRect.left;
-    //         if (left + desiredWidth > window.innerWidth - SCREEN_MARGIN) {
-    //             left = Math.max(SCREEN_MARGIN, window.innerWidth - desiredWidth - SCREEN_MARGIN);
-    //         }
-    //         popupEditor.style.setProperty('left', `${left}px`, 'important');
+        //     // ---- Reposition after resizing ----
+        //     const eventSource = document.querySelector(`[col-id="${colId}"].ag-cell-focus`) 
+        //         || document.querySelector(`[col-id="${colId}"]`);
+        //     const cellRect = eventSource?.getBoundingClientRect();
+        //     if (cellRect) {
+        //         popupEditor.style.setProperty('position', 'fixed', 'important');
+        //         let left = cellRect.left;
+        //         if (left + desiredWidth > window.innerWidth - SCREEN_MARGIN) {
+        //             left = Math.max(SCREEN_MARGIN, window.innerWidth - desiredWidth - SCREEN_MARGIN);
+        //         }
+        //         popupEditor.style.setProperty('left', `${left}px`, 'important');
 
-    //         const popupHeight = popupEditor.offsetHeight;
-    //         const top = Math.max(cellRect.top - popupHeight - 4, 8);
-    //         popupEditor.style.setProperty('top', `${top}px`, 'important');
-    //     }
-    // }, 0);
+        //         const popupHeight = popupEditor.offsetHeight;
+        //         const top = Math.max(cellRect.top - popupHeight - 4, 8);
+        //         popupEditor.style.setProperty('top', `${top}px`, 'important');
+        //     }
+        // }, 0);
 
-     const colId = params.column.getColId();
+        const colId = params.column.getColId();
 
-    // Only apply this logic to Latest Notes and Touch Based Notes
-    if (colId !== 'latestNotes' && colId !== 'touchBasedNotes') return;
+        // Only apply this logic to Latest Notes and Touch Based Notes
+        if (colId !== 'latestNotes' && colId !== 'touchBasedNotes') return;
 
-    setTimeout(() => {
-        const popupEditor = document.querySelector('.ag-popup-editor');
+        setTimeout(() => {
+            const popupEditor = document.querySelector('.ag-popup-editor');
 
-        const textarea = document.querySelector(
-            '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
-        );
+            const textarea = document.querySelector(
+                '.ag-popup-editor textarea, .ag-large-textarea-input, .ag-large-textarea textarea'
+            );
 
-        if (!popupEditor || !textarea) {
-            console.log('🔴 popup or textarea NOT found', {
-                popupEditor: !!popupEditor,
-                textarea: !!textarea
-            });
-            return;
-        }
+            if (!popupEditor || !textarea) {
+                console.log('🔴 popup or textarea NOT found', {
+                    popupEditor: !!popupEditor,
+                    textarea: !!textarea
+                });
+                return;
+            }
 
-        // Reset cursor to start
-        textarea.setSelectionRange(0, 0);
-        textarea.scrollTop = 0;
-        textarea.focus();
+            // Reset cursor to start
+            textarea.setSelectionRange(0, 0);
+            textarea.scrollTop = 0;
+            textarea.focus();
 
-        // ---- Keep your existing dynamic width logic ----
-        const rawValue = params.data?.[colId] ?? '';
-        const plainText = String(rawValue).replace(/<[^>]*>/g, '\n');
-        const lines = plainText.split('\n');
+            // ---- Keep your existing dynamic width logic ----
+            const rawValue = params.data?.[colId] ?? '';
+            const plainText = String(rawValue).replace(/<[^>]*>/g, '\n');
+            const lines = plainText.split('\n');
 
-        const widestLineWidth = lines.reduce((max, line) => {
-            const w = measureRenderedWidth(line, textarea);
-            return w > max ? w : max;
-        }, 0);
+            const widestLineWidth = lines.reduce((max, line) => {
+                const w = measureRenderedWidth(line, textarea);
+                return w > max ? w : max;
+            }, 0);
 
-        const MIN_WIDTH = 250;
-        const SCREEN_MARGIN = 16;
-        const HORIZONTAL_PADDING = 40;
+            const MIN_WIDTH = 250;
+            const SCREEN_MARGIN = 16;
+            const HORIZONTAL_PADDING = 40;
 
-        const contentWidth = widestLineWidth + HORIZONTAL_PADDING;
-        const maxPossibleWidth = window.innerWidth - (SCREEN_MARGIN * 2);
+            const contentWidth = widestLineWidth + HORIZONTAL_PADDING;
+            const maxPossibleWidth = window.innerWidth - (SCREEN_MARGIN * 2);
 
-        const desiredWidth = Math.max(
-            MIN_WIDTH,
-            Math.min(contentWidth, maxPossibleWidth)
-        );
+            const desiredWidth = Math.max(
+                MIN_WIDTH,
+                Math.min(contentWidth, maxPossibleWidth)
+            );
 
-        popupEditor.style.setProperty(
-            'width',
-            `${desiredWidth}px`,
-            'important'
-        );
-
-        popupEditor.style.setProperty(
-            'min-width',
-            `${desiredWidth}px`,
-            'important'
-        );
-
-        popupEditor.style.setProperty(
-            'max-width',
-            `${maxPossibleWidth}px`,
-            'important'
-        );
-
-        let node = textarea.parentElement;
-
-        while (node && node !== popupEditor) {
-            node.style.setProperty(
+            popupEditor.style.setProperty(
                 'width',
                 `${desiredWidth}px`,
                 'important'
             );
 
-            node.style.setProperty(
-                'max-width',
-                'none',
+            popupEditor.style.setProperty(
+                'min-width',
+                `${desiredWidth}px`,
                 'important'
             );
 
-            node.style.setProperty(
+            popupEditor.style.setProperty(
+                'max-width',
+                `${maxPossibleWidth}px`,
+                'important'
+            );
+
+            let node = textarea.parentElement;
+
+            while (node && node !== popupEditor) {
+                node.style.setProperty(
+                    'width',
+                    `${desiredWidth}px`,
+                    'important'
+                );
+
+                node.style.setProperty(
+                    'max-width',
+                    'none',
+                    'important'
+                );
+
+                node.style.setProperty(
+                    'box-sizing',
+                    'border-box',
+                    'important'
+                );
+
+                node = node.parentElement;
+            }
+
+            textarea.removeAttribute('cols');
+
+            textarea.style.setProperty(
+                'width',
+                '100%',
+                'important'
+            );
+
+            textarea.style.setProperty(
                 'box-sizing',
                 'border-box',
                 'important'
             );
 
-            node = node.parentElement;
-        }
+            // ---- Height ----
+            textarea.style.setProperty(
+                'height',
+                'auto',
+                'important'
+            );
 
-        textarea.removeAttribute('cols');
+            const contentHeight = textarea.scrollHeight;
 
-        textarea.style.setProperty(
-            'width',
-            '100%',
-            'important'
-        );
+            const MIN_HEIGHT = 90;
+            const MAX_HEIGHT = Math.min(
+                window.innerHeight - 80,
+                500
+            );
 
-        textarea.style.setProperty(
-            'box-sizing',
-            'border-box',
-            'important'
-        );
+            const desiredHeight = Math.max(
+                MIN_HEIGHT,
+                Math.min(contentHeight + 4, MAX_HEIGHT)
+            );
 
-        // ---- Height ----
-        textarea.style.setProperty(
-            'height',
-            'auto',
-            'important'
-        );
+            textarea.style.setProperty(
+                'height',
+                `${desiredHeight}px`,
+                'important'
+            );
 
-        const contentHeight = textarea.scrollHeight;
+            // ---- Reposition popup ----
 
-        const MIN_HEIGHT = 90;
-        const MAX_HEIGHT = Math.min(
-            window.innerHeight - 80,
-            500
-        );
-
-        const desiredHeight = Math.max(
-            MIN_HEIGHT,
-            Math.min(contentHeight + 4, MAX_HEIGHT)
-        );
-
-        textarea.style.setProperty(
-            'height',
-            `${desiredHeight}px`,
-            'important'
-        );
-
-        // ---- Reposition popup ----
-       
-    }, 0);
+        }, 0);
     }, []);
 
     const isSelectableDateModal = (date) => {
@@ -4041,7 +4068,7 @@ function BatchEntry({ entry, isLast }) {
 
     const onColumnMoved = (params) => {
         if (!params.finished) return; // Ignore intermediate drag events
-        if(params.toIndex + 1 < 7) return
+        if (params.toIndex + 1 < 7) return
 
         // console.log("Moved Column:", params.column.getColId());
         // console.log("New Position:", params.toIndex);
@@ -4134,301 +4161,302 @@ function BatchEntry({ entry, isLast }) {
                             />
                         </Tooltip>
                     </div> */}
-                      <div style={{display:'flex',justifyContent:'space-evenly',alignItems:'center',gap:'8px', marginLeft: 'auto',}}> 
-                  
-                   
+                    <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px', marginLeft: 'auto', }}>
 
-                    <button
-                        className={stylesOBj.btnPrimary}
-                        style={{ height: '54px' }}
-                        onClick={() => {
-                            setIsAddNewRow(true);
-                            setNewTAHeadUserValue(selectedHead);
-                        }}
-                    >
-                        Add New Task
-                    </button> 
-                     {/* <div>
+
+
+                        <button
+                            className={stylesOBj.btnPrimary}
+                            style={{ height: '54px' }}
+                            onClick={() => {
+                                setIsAddNewRow(true);
+                                setNewTAHeadUserValue(selectedHead);
+                            }}
+                        >
+                            Add New Task
+                        </button>
+                        {/* <div>
                       Month-Year
                     </div> */}
-                    <div className={stylesOBj.calendarFilter} style={{height:'54px', marginLeft:'10px', width:'160px',minWidth:'160px'}}> 
+                        <div className={stylesOBj.calendarFilter} style={{ height: '54px', marginLeft: '10px', width: '160px', minWidth: '160px' }}>
                             <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                             <DatePicker
-                              style={{ backgroundColor: "red" }}
-                              onKeyDown={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                              }}
-                              className={stylesOBj.dateFilter}
-                              placeholderText="Month - Year"
-                              selected={monthDate}
-                              onChange={date=>{setMonthDate(date)
-                                 setScrumTabTitle('A')
-                              }}
-                              dateFormat="MM-yyyy"
-                              maxDate={today}
-                              showMonthYearPicker
+                                style={{ backgroundColor: "red" }}
+                                onKeyDown={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                }}
+                                className={stylesOBj.dateFilter}
+                                placeholderText="Month - Year"
+                                selected={monthDate}
+                                onChange={date => {
+                                    setMonthDate(date)
+                                    setScrumTabTitle('A')
+                                }}
+                                dateFormat="MM-yyyy"
+                                maxDate={today}
+                                showMonthYearPicker
                             />
+                        </div>
                     </div>
-                  </div>
                 </div>
 
                 {isHistory ? <>
-                 <div
-                    style={{
-                        display: 'flex',
-                        gap: 32,
-                        margin: '0 20px',
-                        borderBottom: '1px solid var(--uplers-border-color)',
-                    }}
-                >
-                    <button
-                        onClick={() => setScrumTabTitle('A')}
+                    <div
                         style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: '8px 0 12px',
-                            fontSize: 15,
-                            fontWeight: scrumTabTitle === 'A' ? 600 : 400,
-                            color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
-                            borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
-                            cursor: 'pointer',
+                            display: 'flex',
+                            gap: 32,
+                            margin: '0 20px',
+                            borderBottom: '1px solid var(--uplers-border-color)',
                         }}
                     >
-                        Active
-                    </button>
-
-                    <button
-                        onClick={() => setScrumTabTitle('C')}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: '8px 0 12px',
-                            fontSize: 15,
-                            fontWeight: scrumTabTitle === 'C' ? 600 : 400,
-                            color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
-                            borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        Covered
-                    </button>
-                    <button
-                        onClick={() => setScrumTabTitle('P')}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: '8px 0 12px',
-                            fontSize: 15,
-                            fontWeight: scrumTabTitle === 'P' ? 600 : 400,
-                            color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
-                            borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        Pause
-                    </button>
-                      <button
-                        onClick={() => setScrumTabTitle('L')}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: '8px 0 12px',
-                            fontSize: 15,
-                            fontWeight: scrumTabTitle === 'L' ? 600 : 400,
-                            color: scrumTabTitle === 'L' ? '#000' : '#8c8c8c',
-                            borderBottom: scrumTabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
-                            cursor: 'pointer',
-                        }}
-                    >
-                       Lost
-                    </button>
-                      <button
-                        onClick={() => setScrumTabTitle('W')}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: '8px 0 12px',
-                            fontSize: 15,
-                            fontWeight: scrumTabTitle === 'W' ? 600 : 400,
-                            color: scrumTabTitle === 'W' ? '#000' : '#8c8c8c',
-                            borderBottom: scrumTabTitle === 'W' ? '2px solid #FFDA30' : '2px solid transparent',
-                            cursor: 'pointer',
-                        }}
-                    >
-                    Won
-                    </button>
-                </div>
-                  <div
-                    ref={gridWrapperRef}
-                    className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
-                    style={{ height: gridHeightPx }}
-                >
-
-                    {isLoading ? <TableSkeleton /> :
-
-                        <AgGridReact
-                            onGridReady={onGridReady}
-                            onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
-                            theme={scrumGridTheme}
-                            rowData={TaListData}
-                            columnDefs={getScrumGridHistoryColumns()}
-                            defaultColDef={scrumHistoryDefaultColDef}
-                            context={gridContext}
-                            getRowId={(params) => String(params.data.task_ID)}
-                            suppressRowTransform={true}
-                            animateRows={false}
-                            headerHeight={38}
-                            rowHeight={25}
-                            onCellKeyDown={handleGridKeyDown}
-                            onCellEditingStarted={handleCellEditingStarted}
-                            postProcessPopup={handlePostProcessPopup}
-                            groupDisplayType="singleColumn"
-                            getRowStyle={(params) => {
-                                if (params.node.rowPinned) {
-                                    return {
-                                        backgroundColor: '#F4F6F8',
-                                        fontWeight: '700',
-                                        borderTop: '2px solid #D9DEE3',
-                                        color: '#1F2937'
-                                    };
-                                }
-
-                                return null;
+                        <button
+                            onClick={() => setScrumTabTitle('A')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'A' ? 600 : 400,
+                                color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
                             }}
-                            groupDefaultExpanded={-1}
-                            autoGroupColumnDef={autoGroupColumnDef}
-                            pinnedBottomRowData={pinnedBottomRowData}
-                            onSortChanged={(params) => updatePinnedTotalRow(params.api)}
-                            onFilterChanged={(params) => {
-                                const filtered = params.api.isAnyFilterPresent();
+                        >
+                            Active
+                        </button>
 
-                                setHasFilter(filtered);
-                                updatePinnedTotalRow(params.api);
-                                params.api.refreshCells({ force: true });
-                                params.api.redrawRows();
+                        <button
+                            onClick={() => setScrumTabTitle('C')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'C' ? 600 : 400,
+                                color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
                             }}
-                            onColumnMoved={onColumnMoved}
-                            onColumnResized={onColumnResized}
-                        />
-                    }
+                        >
+                            Covered
+                        </button>
+                        <button
+                            onClick={() => setScrumTabTitle('P')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'P' ? 600 : 400,
+                                color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Pause
+                        </button>
+                        <button
+                            onClick={() => setScrumTabTitle('L')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'L' ? 600 : 400,
+                                color: scrumTabTitle === 'L' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Lost
+                        </button>
+                        <button
+                            onClick={() => setScrumTabTitle('W')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'W' ? 600 : 400,
+                                color: scrumTabTitle === 'W' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'W' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Won
+                        </button>
+                    </div>
+                    <div
+                        ref={gridWrapperRef}
+                        className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+                        style={{ height: gridHeightPx }}
+                    >
 
-                </div>
+                        {isLoading ? <TableSkeleton /> :
+
+                            <AgGridReact
+                                onGridReady={onGridReady}
+                                onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
+                                theme={scrumGridTheme}
+                                rowData={TaListData}
+                                columnDefs={getScrumGridHistoryColumns()}
+                                defaultColDef={scrumHistoryDefaultColDef}
+                                context={gridContext}
+                                getRowId={(params) => String(params.data.task_ID)}
+                                suppressRowTransform={true}
+                                animateRows={false}
+                                headerHeight={38}
+                                rowHeight={25}
+                                onCellKeyDown={handleGridKeyDown}
+                                onCellEditingStarted={handleCellEditingStarted}
+                                postProcessPopup={handlePostProcessPopup}
+                                groupDisplayType="singleColumn"
+                                getRowStyle={(params) => {
+                                    if (params.node.rowPinned) {
+                                        return {
+                                            backgroundColor: '#F4F6F8',
+                                            fontWeight: '700',
+                                            borderTop: '2px solid #D9DEE3',
+                                            color: '#1F2937'
+                                        };
+                                    }
+
+                                    return null;
+                                }}
+                                groupDefaultExpanded={-1}
+                                autoGroupColumnDef={autoGroupColumnDef}
+                                pinnedBottomRowData={pinnedBottomRowData}
+                                onSortChanged={(params) => updatePinnedTotalRow(params.api)}
+                                onFilterChanged={(params) => {
+                                    const filtered = params.api.isAnyFilterPresent();
+
+                                    setHasFilter(filtered);
+                                    updatePinnedTotalRow(params.api);
+                                    params.api.refreshCells({ force: true });
+                                    params.api.redrawRows();
+                                }}
+                                onColumnMoved={onColumnMoved}
+                                onColumnResized={onColumnResized}
+                            />
+                        }
+
+                    </div>
                 </> : <>
-                 <div
-                    style={{
-                        display: 'flex',
-                        gap: 32,
-                        margin: '0 20px',
-                        borderBottom: '1px solid var(--uplers-border-color)',
-                    }}
-                >
-                    <button
-                        onClick={() => setScrumTabTitle('A')}
+                    <div
                         style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: '8px 0 12px',
-                            fontSize: 15,
-                            fontWeight: scrumTabTitle === 'A' ? 600 : 400,
-                            color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
-                            borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
-                            cursor: 'pointer',
+                            display: 'flex',
+                            gap: 32,
+                            margin: '0 20px',
+                            borderBottom: '1px solid var(--uplers-border-color)',
                         }}
                     >
-                        Active
-                    </button>
-
-                    <button
-                        onClick={() => setScrumTabTitle('C')}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: '8px 0 12px',
-                            fontSize: 15,
-                            fontWeight: scrumTabTitle === 'C' ? 600 : 400,
-                            color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
-                            borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        Covered
-                    </button>
-                    <button
-                        onClick={() => setScrumTabTitle('P')}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: '8px 0 12px',
-                            fontSize: 15,
-                            fontWeight: scrumTabTitle === 'P' ? 600 : 400,
-                            color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
-                            borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        Pause
-                    </button>
-                </div>
-
-                <div
-                    ref={gridWrapperRef}
-                    className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
-                    style={{ height: gridHeightPx }}
-                >
-
-                    {isLoading ? <TableSkeleton /> :
-
-                        <AgGridReact
-                            onGridReady={onGridReady}
-                            onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
-                            theme={scrumGridTheme}
-                            rowData={TaListData}
-                            columnDefs={gridColumns}
-                            defaultColDef={scrumDefaultColDef}
-                            context={gridContext}
-                            getRowId={(params) => String(params.data.id)}
-                            suppressRowTransform={true}
-                            animateRows={false}
-                            headerHeight={38}
-                            rowHeight={25}
-                            onCellKeyDown={handleGridKeyDown}
-                            onCellEditingStarted={handleCellEditingStarted}
-                            postProcessPopup={handlePostProcessPopup}
-                            groupDisplayType="singleColumn"
-                            getRowStyle={(params) => {
-                                if (params.node.rowPinned) {
-                                    return {
-                                        backgroundColor: '#F4F6F8',
-                                        fontWeight: '700',
-                                        borderTop: '2px solid #D9DEE3',
-                                        color: '#1F2937'
-                                    };
-                                }
-
-                                return null;
+                        <button
+                            onClick={() => setScrumTabTitle('A')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'A' ? 600 : 400,
+                                color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
                             }}
-                            groupDefaultExpanded={-1}
-                            autoGroupColumnDef={autoGroupColumnDef}
-                            pinnedBottomRowData={pinnedBottomRowData}
-                            onSortChanged={(params) => updatePinnedTotalRow(params.api)}
-                            onFilterChanged={(params) => {
-                                const filtered = params.api.isAnyFilterPresent();
+                        >
+                            Active
+                        </button>
 
-                                setHasFilter(filtered);
-                                updatePinnedTotalRow(params.api);
-                                params.api.refreshCells({ force: true });
-                                params.api.redrawRows();
+                        <button
+                            onClick={() => setScrumTabTitle('C')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'C' ? 600 : 400,
+                                color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
                             }}
-                            onColumnMoved={onColumnMoved}
-                            onColumnResized={onColumnResized}
-                        />
-                    }
+                        >
+                            Covered
+                        </button>
+                        <button
+                            onClick={() => setScrumTabTitle('P')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'P' ? 600 : 400,
+                                color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Pause
+                        </button>
+                    </div>
 
-                </div>
+                    <div
+                        ref={gridWrapperRef}
+                        className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+                        style={{ height: gridHeightPx }}
+                    >
+
+                        {isLoading ? <TableSkeleton /> :
+
+                            <AgGridReact
+                                onGridReady={onGridReady}
+                                onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
+                                theme={scrumGridTheme}
+                                rowData={TaListData}
+                                columnDefs={gridColumns}
+                                defaultColDef={scrumDefaultColDef}
+                                context={gridContext}
+                                getRowId={(params) => String(params.data.id)}
+                                suppressRowTransform={true}
+                                animateRows={false}
+                                headerHeight={38}
+                                rowHeight={25}
+                                onCellKeyDown={handleGridKeyDown}
+                                onCellEditingStarted={handleCellEditingStarted}
+                                postProcessPopup={handlePostProcessPopup}
+                                groupDisplayType="singleColumn"
+                                getRowStyle={(params) => {
+                                    if (params.node.rowPinned) {
+                                        return {
+                                            backgroundColor: '#F4F6F8',
+                                            fontWeight: '700',
+                                            borderTop: '2px solid #D9DEE3',
+                                            color: '#1F2937'
+                                        };
+                                    }
+
+                                    return null;
+                                }}
+                                groupDefaultExpanded={-1}
+                                autoGroupColumnDef={autoGroupColumnDef}
+                                pinnedBottomRowData={pinnedBottomRowData}
+                                onSortChanged={(params) => updatePinnedTotalRow(params.api)}
+                                onFilterChanged={(params) => {
+                                    const filtered = params.api.isAnyFilterPresent();
+
+                                    setHasFilter(filtered);
+                                    updatePinnedTotalRow(params.api);
+                                    params.api.refreshCells({ force: true });
+                                    params.api.redrawRows();
+                                }}
+                                onColumnMoved={onColumnMoved}
+                                onColumnResized={onColumnResized}
+                            />
+                        }
+
+                    </div>
                 </>}
 
-               
+
 
 
 
