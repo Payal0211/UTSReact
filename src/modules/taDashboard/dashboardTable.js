@@ -79,6 +79,38 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
   //   return finalData;
   // }
 
+
+  const DUPLICATE_COLOR_PALETTE = [
+    'rgb(230, 249, 229)', // green
+    'rgb(255, 236, 210)', // orange
+    'rgb(214, 231, 255)', // blue
+    'rgb(255, 214, 224)', // pink
+    'rgb(230, 220, 255)', // purple
+    'rgb(255, 250, 205)', // yellow
+    'rgb(210, 250, 245)', // teal
+    'rgb(255, 224, 178)', // amber
+];
+
+const duplicateColorMap = useMemo(() => {
+    // Group rows by hrNumber
+    const counts = {};
+    TaListData.forEach((row) => {
+        if (!row?.hrNumber) return;
+        counts[row.hrNumber] = (counts[row.hrNumber] || 0) + 1;
+    });
+
+    // Only hrNumbers that appear more than once get a color
+    const duplicateKeys = Object.keys(counts).filter((key) => counts[key] > 1);
+
+    // Assign each duplicate hrNumber a color, cycling through the palette
+    const map = {};
+    duplicateKeys.forEach((key, index) => {
+        map[key] = DUPLICATE_COLOR_PALETTE[index % DUPLICATE_COLOR_PALETTE.length];
+    });
+
+    return map;
+}, [TaListData]);
+
   function groupByRowSpan(data, groupField) {
   const grouped = {};
 
@@ -386,6 +418,7 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
       <div className={taStylesNew.tableSelectField}>
         <Select
           defaultValue={value}
+          size="small"
           style={{ fontSize: '10px' }}
           onChange={(val) => {
             setValue(val);
@@ -409,6 +442,7 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
                   <Select
                       defaultValue={value}
                       style={{ color: colorCode , ...style }}
+                      size="small"
                       onChange={async (val) => {
                           if (value === "Fasttrack" && val !== "Fasttrack") {
                               let pl = {
@@ -440,14 +474,17 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
                               setProfileTargetDetails({ ...result, index: index });
                               return;
                           }
-                        if (val === "Covered") {
+                           updateTARowValue(valobj, "task_StatusID", result, index);
+                           setTimeout(()=>{
+                             if (val === "Covered") {
                           return  setTabTitle('C')
                         } 
                         if (val === "Pause") {
                           return  setTabTitle('P')
                         }
                         return setTabTitle('A')
-                          updateTARowValue(valobj, "task_StatusID", result, index);
+                           },2000)
+                                               
                       }}
                   >
                       {filtersList?.TaskStatus?.map((v) => (
@@ -1072,7 +1109,7 @@ const STATUS_CHIP_STYLES = {
                     ) || 0;
                     const computedNRUSD = billRate - talentPayRate;
                     sum += computedNRUSD  ;
-                    console.log('summm',sum)
+                  
                     hasNumericValue = true;
 
                 } else if (typeof rawValue === "number") {
@@ -1089,7 +1126,7 @@ const STATUS_CHIP_STYLES = {
             });
 
             if (hasNumericValue) {
-              console.log('f sum',sum, field)
+        
                 total[field] = sum;
             }
         });
@@ -1512,7 +1549,7 @@ const STATUS_CHIP_STYLES = {
     height: '100%'}}>
 
 
-            <div style={{ display: 'flex', justifyContent:'center' }}>
+            <div style={{ display: 'flex', justifyContent:'start',width:'30px' }}>
               <Tooltip title={
                 userData?.UserId === 2 || userData?.UserId === 333 || userData?.UserId === 190 || userData?.UserId === 96
                   ? (data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond")
@@ -1569,7 +1606,8 @@ const STATUS_CHIP_STYLES = {
                 whiteSpace: 'nowrap',
                 fontWeight: 500,
                 fontSize: '10px',
-                lineHeight: "10px"
+                lineHeight: "10px",
+                width:'70%'
               }}>
                 {data?.companyName?.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
               </span>
@@ -1585,6 +1623,12 @@ const STATUS_CHIP_STYLES = {
       suppressMovable: true,
       pinned: 'left',
       filter: MultiConditionTextFilter,
+        cellStyle: (params) => ({
+        textAlign: 'center',
+       ...(duplicateColorMap[params.data?.hrNumber]
+        ? { backgroundColor: duplicateColorMap[params.data?.hrNumber] }
+        : {}),
+    }),
       autoHeight: true,
       cellRenderer: (props) => {
         const { data } = props;
@@ -1787,7 +1831,7 @@ const STATUS_CHIP_STYLES = {
       },
     },
     {
-      headerName: 'Interview Rounds',
+      headerName: '# Rounds',
       field: 'no_of_InterviewRounds',
       width: 130,
       filterParams: { type: 'number' },
@@ -1913,7 +1957,7 @@ const STATUS_CHIP_STYLES = {
         if (data?.isTotalRow) {
           return (
             <strong>
-              {(Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) *100}%
+              {((Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) *100).toFixed(2)}%
             </strong>
           );
         }
@@ -2162,7 +2206,7 @@ const STATUS_CHIP_STYLES = {
     setRemDiamondLoading(true);
     let res = await allCompanyRequestDAO.removeCompanyCategoryDAO(payload);
     setRemDiamondLoading(false);
-    console.log("response", res);
+  
     if (res.statusCode === 200) {
       updateTARowValue(
         "None",
@@ -2197,7 +2241,7 @@ const STATUS_CHIP_STYLES = {
 
       })
 
-      console.log(columnOrder,shortorder,newOrderObj ,originalObj )
+      // console.log(columnOrder,shortorder,newOrderObj ,originalObj )
 
       return newOrderObj
     } else {
