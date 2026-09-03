@@ -1530,18 +1530,7 @@ function NewTADashboard() {
 
             {/* <!-- Main Content Area --> */}
             <main className={`${stylesOBj["main-content"]}`}>
-
-                <div className={stylesOBj.filterContainer} style={{ margin: '10px' }}>
-                    {fteDataLoading ? <TableSkeleton /> : (
-                        <Table
-                            dataSource={dailyActivityTargets}
-                            columns={daiyTargetColumns}
-                            pagination={false}
-                        />
-                    )}
-                </div>
-
-                <div className={stylesOBj.filterContainer} style={{ display: 'flex', alignItems: 'center' }}>
+     <div className={stylesOBj.filterContainer} style={{ display: 'flex', alignItems: 'center' }}>
                     <div className={stylesOBj["toggle-group"]} style={{ width: '210px', margin: '10px' }}>
                         <button
                             className={`${stylesOBj["toggle-btn"]}  ${activeTab === 'Full-Time' ? stylesOBj["toggle-btn-active"] : ''}`}
@@ -1578,6 +1567,9 @@ function NewTADashboard() {
                         optionFilterProp="label"
                     />
                 </div>
+
+
+               
 
 
 
@@ -1638,62 +1630,7 @@ function NewTADashboard() {
 
                             </div>}
 
-                            {activeTable === 'Dashboard' && <>
-                                {/* <button className={stylesOBj["filter-btn"]} style={{ marginLeft: 'auto', marginRight: '10px' }} onClick={toggleHRFilter}>
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                        <img src="images/filter-ic.svg" alt="Filter" />
-                                        <span>Add Filters</span>
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                        <div className={stylesOBj["filterCount"]}>{filteredTagLength}</div>
-                                        {filteredTagLength > 0 && (
-                                            <Tooltip title="Reset Filters">
-                                                <span style={{ color: 'red', fontWeight: 'bold', cursor: 'pointer' }}
-                                                    onClick={(e) => { e.stopPropagation(); clearFilters() }}>
-                                                    X
-                                                </span>
-                                            </Tooltip>
-                                        )}
-                                    </div>
-                                </button> */}
-
-                                {/* <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{marginLeft: 'auto', marginRight: '10px', height:'25px' }}>
-                                    <input
-                                        ref={searchInputRef}
-                                        type="text"
-                                        className={stylesOBj["filter-input"]}
-                                        placeholder="Search"
-                                        value={debounceSearch}
-                                        onKeyDown={e => {
-                                            if (e.key === 'Enter') {
-                                                setSearchText(debounceSearch);
-                                            }
-                                        }}
-                                        onChange={e => setDebounceSearch(e.target.value)}
-                                    />
-                                    {searchText.length > 0 && (
-                                        <Tooltip title="Clear search">
-                                            <span style={{ position: 'absolute', right: '36px', color: 'red', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
-                                                onClick={() => { setSearchText(''); setDebounceSearch(''); }}>
-                                                X
-                                            </span>
-                                        </Tooltip>
-                                    )}
-                                    <Tooltip title="search">
-                                        <img
-                                            src="images/search-ic.svg"
-                                            onClick={() => {
-                                                if (searchInputRef?.current) searchInputRef.current.focus();
-                                                setSearchText(debounceSearch);
-                                            }}
-                                            alt="Search"
-                                            className={stylesOBj["input-icon"]}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                    </Tooltip>
-                                </div> */}
-                            </>}
-
+                           
                             {userData?.showTADashboardDropdowns && activeTable === 'Dashboard' && (
                                 <button
                                     className={stylesOBj.btnPrimary}
@@ -1718,7 +1655,7 @@ function NewTADashboard() {
                         />}
                         {activeTable === 'Goal' && <GoalTableComp selectedHead={selectedHead} startDate={startDate} tableFilteredState={tableFilteredState} />}
                     </div>
-<div className={stylesOBj.filterContainer}  style={{marginBottom:"80px"}}>
+<div className={stylesOBj.filterContainer}  >
       <div className={stylesOBj.filterSets} style={{ paddingLeft: "20px", padding: '10px' }}>
     
             <div
@@ -1760,17 +1697,10 @@ function NewTADashboard() {
                 </>}
 
                 {activeTab === 'Full-Time' && <>
+                   
+
+
                     <div className={stylesOBj.filterContainer}>
-
-
-                        <FTECountTable isLoading={fteDataLoading} countData={fteCountsData} />
-
-
-                        <TalentdetailsFTETable isLoading={fteDataLoading} talentWiseReport={talentWiseReport} showDetails={showDetails} />
-                    </div>
-
-
-                    <div className={stylesOBj.filterContainer} style={{marginBottom:"80px"}}>
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px' }}>
                             <button
                                 className={`${stylesOBj["toggle-btn"]}  ${activeFTETable === 'Dashboard' ? stylesOBj["toggle-btn-active"] : ''}`}
@@ -2254,9 +2184,28 @@ function NewTADashboard() {
 
                         </>}
                     </div>
+
+                     <div className={stylesOBj.filterContainer}>
+
+
+                        <FTECountTable isLoading={fteDataLoading} countData={fteCountsData} />
+
+
+                        <TalentdetailsFTETable isLoading={fteDataLoading} talentWiseReport={talentWiseReport} showDetails={showDetails} />
+                    </div>
                 </>}
 
+ <div className={stylesOBj.filterContainer} style={{ margin: '10px', marginBottom:'80px' }}>
+                    {fteDataLoading ? <TableSkeleton /> : (
+                        <Table
+                            dataSource={dailyActivityTargets}
+                            columns={daiyTargetColumns}
+                            pagination={false}
+                        />
+                    )}
+                </div>
 
+           
 
                 {isAllowFilters && (
                     <Suspense fallback={<div>Loading...</div>}>
