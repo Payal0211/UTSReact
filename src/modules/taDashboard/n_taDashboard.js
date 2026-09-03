@@ -1282,7 +1282,7 @@ function NewTADashboard() {
     const editTAforTask = (task) => {
         setShowEditTATask(true);
         getCompanySuggestionHandler(task.tA_UserID);
-        getHRLISTForComapny(task.company_ID);
+        getHRLISTForComapny(task.company_ID,task.tA_Head_UserID);
         setNewTAHeadUserValue(selectedHead);
         setEditTATaskData(task);
     };
@@ -1400,7 +1400,8 @@ function NewTADashboard() {
 
         if (updateresult.statusCode === HTTPStatusCode.OK) {
             setShowEditTATask(false);
-            getListData();
+             window.location.reload()
+            // getListData();
         } else {
             message.error("Something went wrong");
         }
@@ -1412,7 +1413,8 @@ function NewTADashboard() {
         setLoadingTalentProfile(false);
         if (result.statusCode === HTTPStatusCode.OK) {
             setShowConfirmRemove(false);
-            getListData();
+             window.location.reload()
+            // getListData();
         } else {
             message.error("Something went wrong!");
         }
