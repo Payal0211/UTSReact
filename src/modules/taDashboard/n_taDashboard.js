@@ -1584,45 +1584,8 @@ function NewTADashboard() {
 
 
                 {activeTab === 'Contract' && <>
-<div className={stylesOBj.filterContainer}>
-      <div className={stylesOBj.filterSets} style={{ paddingLeft: "20px", padding: '10px' }}>
-    
-            <div
-              className={stylesOBj.filterSetsInner}
-              onClick={() => setShowWeeklyReport((prev) => !prev)}
-            >
-              <p
-                className={stylesOBj.AccordianText}
-                style={{ textDecoration: "none", cursor: 'pointer' }}
-              >
-                Total Achievement{" "}
-                <ArrowDownSVG
-                  style={{
-                    rotate: showWeeklyReport ? "180deg" : "",
-                    marginLeft: "10px",
-                  }}
-                />
-              </p>
-            </div>
-          </div>
 
-          {showWeeklyReport && <>
-            <div className={stylesOBj.filterContainer}>
-                        <TalentdetailsTable isLoading={isLoading} talentWiseReport={talentWiseReport} /></div>
-
-
-                    <div className={stylesOBj.filterContainer}>
-                        <h2 style={{ fontWeight: 'bold', marginTop: '20px' }}>Total Achievement (Closure Month)</h2>
-                        <TotalAchievementTable quarterlySummeryReport={quarterlySummeryReport} />
-
-                    </div>
-          </>}
-    
-</div>
-
-                  
-
-                    <div className={stylesOBj.filterContainer} style={{marginBottom:"80px"}}>
+                     <div className={stylesOBj.filterContainer} >
                         <div className={stylesOBj.addtaskcontainer}>  <div className={stylesOBj["toggle-group"]} style={{ width: '335px', height:'25px', minHeight:'25px' }}>
                             <button
                                 className={`${stylesOBj["toggle-btn"]}  ${activeTable === 'Dashboard' ? stylesOBj["toggle-btn-active"] : ''}`}
@@ -1639,7 +1602,7 @@ function NewTADashboard() {
 
                         </div>
 
-                           {activeTable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} style={{ marginLeft: 'auto', marginRight: '10px' }}>
+                           {activeTable === 'Goal' && <div className={`${stylesOBj.calendarFilter}`} style={{ marginLeft: 'auto', marginRight: '10px', height:'26px' }}>
                                 <DatePicker
                                     style={{ backgroundColor: "red" , height:'25px' }}
                                     onKeyDown={(e) => {
@@ -1755,6 +1718,45 @@ function NewTADashboard() {
                         />}
                         {activeTable === 'Goal' && <GoalTableComp selectedHead={selectedHead} startDate={startDate} tableFilteredState={tableFilteredState} />}
                     </div>
+<div className={stylesOBj.filterContainer}  style={{marginBottom:"80px"}}>
+      <div className={stylesOBj.filterSets} style={{ paddingLeft: "20px", padding: '10px' }}>
+    
+            <div
+              className={stylesOBj.filterSetsInner}
+              onClick={() => setShowWeeklyReport((prev) => !prev)}
+            >
+              <p
+                className={stylesOBj.AccordianText}
+                style={{ textDecoration: "none", cursor: 'pointer' }}
+              >
+                Total Achievement{" "}
+                <ArrowDownSVG
+                  style={{
+                    rotate: showWeeklyReport ? "180deg" : "",
+                    marginLeft: "10px",
+                  }}
+                />
+              </p>
+            </div>
+          </div>
+
+          {showWeeklyReport && <>
+            <div className={stylesOBj.filterContainer}>
+                        <TalentdetailsTable isLoading={isLoading} talentWiseReport={talentWiseReport} /></div>
+
+
+                    <div className={stylesOBj.filterContainer}>
+                        <h2 style={{ fontWeight: 'bold', marginTop: '20px' }}>Total Achievement (Closure Month)</h2>
+                        <TotalAchievementTable quarterlySummeryReport={quarterlySummeryReport} />
+
+                    </div>
+          </>}
+    
+</div>
+
+                  
+
+               
                 </>}
 
                 {activeTab === 'Full-Time' && <>

@@ -175,6 +175,37 @@ function ScrumStructure2() {
     const gridWrapperRef = useRef(null);
     const [availableHeight, setAvailableHeight] = useState(600);
 
+     const DUPLICATE_COLOR_PALETTE = [
+        'rgb(230, 249, 229)', // green
+        'rgb(255, 236, 210)', // orange
+        'rgb(214, 231, 255)', // blue
+        'rgb(255, 214, 224)', // pink
+        'rgb(230, 220, 255)', // purple
+        'rgb(255, 250, 205)', // yellow
+        'rgb(210, 250, 245)', // teal
+        'rgb(255, 224, 178)', // amber
+    ];
+    
+    const duplicateColorMap = useMemo(() => {
+        // Group rows by hrNumber
+        const counts = {};
+        TaListData.forEach((row) => {
+            if (!row?.hrNumber) return;
+            counts[row.hrNumber] = (counts[row.hrNumber] || 0) + 1;
+        });
+    
+        // Only hrNumbers that appear more than once get a color
+        const duplicateKeys = Object.keys(counts).filter((key) => counts[key] > 1);
+    
+        // Assign each duplicate hrNumber a color, cycling through the palette
+        const map = {};
+        duplicateKeys.forEach((key, index) => {
+            map[key] = DUPLICATE_COLOR_PALETTE[index % DUPLICATE_COLOR_PALETTE.length];
+        });
+    
+        return map;
+    }, [TaListData]);
+
 
     useEffect(() => {
         const recomputeAvailableHeight = () => {
@@ -2299,6 +2330,12 @@ function ScrumStructure2() {
             width: 150,
             pinned: 'left',
             suppressMovable: true,
+             cellStyle: (params) => ({
+                textAlign: 'center',
+                ...(duplicateColorMap[params.data?.hrNumber]
+                ? { backgroundColor: duplicateColorMap[params.data?.hrNumber] }
+                : {}),
+            }),
             filter: MultiConditionTextFilter,
             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.hrNumber)))?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
