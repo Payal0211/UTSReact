@@ -2133,6 +2133,9 @@ const STATUS_CHIP_STYLES = {
           if (props.node.rowPinned === "bottom") {
         return "";
     }
+     if (data?.isTotalRow) {
+        return null;
+      }
         return (
           <div>
             <IconContext.Provider
