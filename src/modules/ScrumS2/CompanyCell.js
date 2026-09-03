@@ -74,7 +74,7 @@ function CompanyCell(props) {
 
           
 
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', width:'40px' }}>
                 <Tooltip title={ isAllowedToToggleDiamond
                             ? isDiamond
                                 ? 'Remove Diamond'
@@ -146,7 +146,7 @@ function CompanyCell(props) {
                      <Tooltip title={value}>
                             <span className={stylesOBj['company-name']}>{`${value.slice(0, 15)}...`}</span> */}
                                 <Tooltip title={value}>
-                            <a href={`/viewCompanyDetails/${data.company_ID}`} target='__blank' className={stylesOBj['company-name']}>{data.companyName}</a>
+                            <a href={`/viewCompanyDetails/${data.company_ID}`} target='__blank' className={stylesOBj['company-name']} style={{width:'70%'}}>{data.companyName}</a>
                         </Tooltip>
              
         </div>
