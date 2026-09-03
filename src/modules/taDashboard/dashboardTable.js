@@ -440,14 +440,17 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
                               setProfileTargetDetails({ ...result, index: index });
                               return;
                           }
-                        if (val === "Covered") {
+                           updateTARowValue(valobj, "task_StatusID", result, index);
+                           setTimeout(()=>{
+                             if (val === "Covered") {
                           return  setTabTitle('C')
                         } 
                         if (val === "Pause") {
                           return  setTabTitle('P')
                         }
                         return setTabTitle('A')
-                          updateTARowValue(valobj, "task_StatusID", result, index);
+                           },2000)
+                                               
                       }}
                   >
                       {filtersList?.TaskStatus?.map((v) => (
@@ -1072,7 +1075,7 @@ const STATUS_CHIP_STYLES = {
                     ) || 0;
                     const computedNRUSD = billRate - talentPayRate;
                     sum += computedNRUSD  ;
-                    console.log('summm',sum)
+                  
                     hasNumericValue = true;
 
                 } else if (typeof rawValue === "number") {
@@ -1089,7 +1092,7 @@ const STATUS_CHIP_STYLES = {
             });
 
             if (hasNumericValue) {
-              console.log('f sum',sum, field)
+        
                 total[field] = sum;
             }
         });
@@ -2162,7 +2165,7 @@ const STATUS_CHIP_STYLES = {
     setRemDiamondLoading(true);
     let res = await allCompanyRequestDAO.removeCompanyCategoryDAO(payload);
     setRemDiamondLoading(false);
-    console.log("response", res);
+  
     if (res.statusCode === 200) {
       updateTARowValue(
         "None",
@@ -2197,7 +2200,7 @@ const STATUS_CHIP_STYLES = {
 
       })
 
-      console.log(columnOrder,shortorder,newOrderObj ,originalObj )
+      // console.log(columnOrder,shortorder,newOrderObj ,originalObj )
 
       return newOrderObj
     } else {
