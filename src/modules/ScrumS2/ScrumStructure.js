@@ -37,6 +37,8 @@ import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import YesNoCell from './YesNoCell';
 import MultiConditionTextFilter from './MultiConditionTextFilter';
+// import OPSDashboard from './OPSDashboard'
+// import OPSDashboard from './OPSDashboard/OPSDashboard'
 
 const { Option } = Select;
 
@@ -59,6 +61,7 @@ function ScrumStructure2() {
     const [columnOrder, setColumnOrder] = useState([])
     const [draggedRow, setDraggedRow] = useState(null);
     const [draggedRowData, setDraggedRowData] = useState({})
+    const [pageTabTitle, setPageTabTitle] = useState('Scrum')
     const [scrumTabTitle, setScrumTabTitle] = useState('A')
     const [tableFilteredState, setTableFilteredState] = useState({
         filterFields_OnBoard: {
@@ -2548,7 +2551,49 @@ function ScrumStructure2() {
         },
 
 
+    {
+            headerName: 'Submission URL',
+            field: 'submissionSheet',
+            width: 250,
+            filter: MultiConditionTextFilter,
+            sortable: false,
+            editable: true,
+            wrapText: true,    // Allows text to break to next line visually
+            autoHeight: true,  // Automatically grows the row height[cite: 1]
+            cellEditorPopup: true,
+            // cellEditorPopupPosition: 'under',
+            cellEditor: 'agLargeTextCellEditor',
+            // cellEditor: 'agTextCellEditor',
+            cellEditorParams: {
+                maxLength: 500, // Optional: restricts max length
+                // cols: 30,       // Optional: width of the dropdown box
+                // rows: 3,        // Optional: height of the dropdown box
+            },
+            suppressKeyboardEvent: (params) => {
+                const isEnterKey = params.event.key === 'Enter';
+                const isEditing = params.editing;
+                //   console.log("is edit",params)
+                if (isEditing && isEnterKey) {
+                    // Return true to tell AG Grid: "Ignore this Enter key, let the textarea handle it"
+                    return true;
+                }
+                return false;
+            },
+            onCellValueChanged: (params) => {
+                // console.log("Updated:", params.newValue);
+                // console.log("Row:", params.data);
+                let index = getRowIndex(params.data)
+                let pl = {
+                    tA_Head_UserID: selectedHead,
+                    taskID: params.data.id,
+                    comments: params.newValue
+                }
 
+                updateSubmissionSheetNotes(pl, index)
+            },
+
+            cellRenderer: SubmissionSheetCell,
+        },
 
         {
             headerName: 'Talent Annual CTC Budget (INR)',
@@ -2953,7 +2998,7 @@ function ScrumStructure2() {
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 80,
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.no_of_InterviewRounds)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -3070,7 +3115,7 @@ function ScrumStructure2() {
             field: 'noOfProfile_TalentsTillDate',
             width: 80,
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number' },
+                       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.noOfProfile_TalentsTillDate)))?.map(v => ({ data: v })) },
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
@@ -3125,7 +3170,7 @@ function ScrumStructure2() {
             cellStyle: { textAlign: 'center' },
             width: 80,
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalNoOfSubmission)))?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3140,7 +3185,7 @@ function ScrumStructure2() {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
-            filterParams: { type: 'number' },
+                        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.screenReject)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -3156,7 +3201,7 @@ function ScrumStructure2() {
             width: 80,
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalNoOfInterviewReject)))?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3168,7 +3213,7 @@ function ScrumStructure2() {
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number' },
+                        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r1)))?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3180,7 +3225,7 @@ function ScrumStructure2() {
         {
             headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r2)))?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3192,7 +3237,7 @@ function ScrumStructure2() {
         {
             headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r3)))?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3207,7 +3252,7 @@ function ScrumStructure2() {
             field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.todayProfile_Shared_Target)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: ProfileSharedTargetCell,
             cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
@@ -3216,7 +3261,7 @@ function ScrumStructure2() {
             headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.profile_Shared_Target)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
 
@@ -3226,7 +3271,7 @@ function ScrumStructure2() {
             field: 'profile_Shared_Achieved',
             cellStyle: { textAlign: 'center' },
             width: 150,
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.profile_Shared_Achieved)))?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
             cellRenderer: (props) => {
@@ -3256,7 +3301,7 @@ function ScrumStructure2() {
             width: 150,
             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
-            filterParams: { type: 'number' },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.interview_Scheduled_Target)))?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -4162,6 +4207,48 @@ function ScrumStructure2() {
                         optionFilterProp="label"
                     />
 
+                    {/* <div
+                        style={{
+                            display: 'flex',
+                            gap: 32,
+                            margin: '0 20px',
+                            borderBottom: '1px solid var(--uplers-border-color)',
+                        }}
+                    >
+                        <button
+                            onClick={() => setPageTabTitle('Scrum')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: pageTabTitle === 'Scrum' ? 600 : 400,
+                                color: pageTabTitle === 'Scrum' ? '#000' : '#8c8c8c',
+                                borderBottom: pageTabTitle === 'Scrum' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                           Scrum
+                        </button>
+
+                        <button
+                            onClick={() => setPageTabTitle('Dashboard')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: pageTabTitle === 'Dashboard' ? 600 : 400,
+                                color: pageTabTitle === 'Dashboard' ? '#000' : '#8c8c8c',
+                                borderBottom: pageTabTitle === 'Dashboard' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Dashboard
+                        </button>
+                        
+                    </div> */}
+
                     {/* <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: '10px', marginRight: '10px' }}>
                         <input
                             ref={searchInputRef}
@@ -4198,7 +4285,7 @@ function ScrumStructure2() {
                             />
                         </Tooltip>
                     </div> */}
-                    <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px', marginLeft: 'auto', }}>
+                    {pageTabTitle === "Scrum" &&   <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px', marginLeft: 'auto', }}>
 
 
 
@@ -4235,10 +4322,12 @@ function ScrumStructure2() {
                                 showMonthYearPicker
                             />
                         </div>
-                    </div>
+                    </div>}
+                  
                 </div>
 
-                {isHistory ? <>
+                {pageTabTitle === "Scrum" &&  <>
+                 {isHistory ? <>
                     <div
                         style={{
                             display: 'flex',
@@ -4492,6 +4581,11 @@ function ScrumStructure2() {
 
                     </div>
                 </>}
+                </>}
+
+               {/* {pageTabTitle === 'Dashboard' && <>
+               <OPSDashboard  selectedHead={selectedHead} />
+               </>} */}
 
 
 
