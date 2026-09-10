@@ -510,7 +510,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					id: 'taDashboardReport',
 					title: 'TA Dashboard',
 					isActive: false,
-					navigateTo: UTSRoutes.TADASHBOARD,
+					navigateTo: UTSRoutes.TADASHBOARD_PG,
 					isVisible: isAccess(usertypeID, 'taDashboardReport'),
 					isChildren : false					
 				}),

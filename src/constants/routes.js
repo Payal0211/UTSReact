@@ -281,6 +281,7 @@ export default class UTSRoutes {
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static AMDASHBOARD = '/amdashboard';
 	static TADASHBOARD = '/tadashboard'
+	static TADASHBOARD_PG = '/tadashboard_pg'
 	static TADASHBOARDREPORT = '/tadashboardReport'
 	static RECRUITERREPORT = '/recruiter'
 	static DAILYSNAPSHOT = '/dailysnapshot'
