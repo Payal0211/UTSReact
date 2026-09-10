@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import stylesOBj from 'modules/hiring request/screens/allHiringRequest/n_all_hiring_request.module.css';
 import { Link, useLocation } from 'react-router-dom';
 import UTSRoutes, { NewPagesRouts } from 'constants/routes';
@@ -32,6 +32,40 @@ export default function N_sidebar() {
             }
         })
     }
+
+    // ---------- active-state helpers ----------
+    const isActive = (path) => switchLocation.pathname === path;
+    const isGroupActive = (routes) => routes.includes(switchLocation.pathname);
+
+    // One array per submenu group, listing every child route it contains.
+    const uplersReportRoutes = [UTSRoutes.POD_DASHBOARD_REPORT, UTSRoutes.Weekly_WCGR, UTSRoutes.MOM_OVERVIEW, UTSRoutes.QOQ_OVERVIEW];
+    const hiringFunnelRoutes = [UTSRoutes.AM_INTERVIEW, UTSRoutes.SCREENING_INTERVIEW_REJECT, UTSRoutes.DAILY_BUSINESS_NUMBERS, UTSRoutes.POTENTIAL_CLOSURES_SHEET, UTSRoutes.COMPANY_CATEGORY];
+    const taReportRoutes = [UTSRoutes.TADASHBOARD_PG, UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT, UTSRoutes.DAILYSNAPSHOT, UTSRoutes.RECRUITERREPORT, UTSRoutes.IMMEDIATEJOINER, UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE, UTSRoutes.AVERAGE_SLA, UTSRoutes.CLIENT_DASHBOARD_REPORT];
+    const talentRoutes = [UTSRoutes.TALENT_REPORT, UTSRoutes.TALENT_BACKOUT_REPORT, UTSRoutes.TALENT_DOCUMENTS, UTSRoutes.TALENT_NOTES];
+    const reportsRoutes = [UTSRoutes.CLIENT_FEEDBACK, UTSRoutes.REVENUE_REPORT, UTSRoutes.Leave, UTSRoutes.CLIENT_REPORT, UTSRoutes.HR_REPORT, UTSRoutes.I2S_REPORT, UTSRoutes.HRLostReoprt, UTSRoutes.SLA_REPORT];
+    const analyticsRoutes = [UTSRoutes.DEMANDFUNNELROUTE, UTSRoutes.SUPPLYFUNNELROUTE, UTSRoutes.TEAMDEMANDFUNNELROUTE, UTSRoutes.CLIENT_HAPPINESS_SURVEY];
+    const trackingReportsRoutes = [UTSRoutes.UTM_TRACKING_REPORT, UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT, UTSRoutes.EMAIL_TRACKING_REOPRT];
+    const mastersRoutes = [UTSRoutes.MASTERTAGOAL, UTSRoutes.MASTERCOUNTRYROUTE, UTSRoutes.MASTERCURRENCYROUTE, UTSRoutes.MASTERROLE, UTSRoutes.MASTERTIMEZONE];
+    const profileRoutes = [UTSRoutes.CHANGE_PASSOWRD];
+
+    // Auto-expand whichever group contains the current route (e.g. on a
+    // direct page load/refresh), so the highlighted group isn't collapsed
+    // with no visible reason for the highlight.
+    useEffect(() => {
+        const groups = {
+            'Uplers Report': uplersReportRoutes,
+            'OM Report': hiringFunnelRoutes,
+            'TA Report': taReportRoutes,
+            'Talent': talentRoutes,
+            'Reports': reportsRoutes,
+            'Analytics': analyticsRoutes,
+            'Tracking Reports': trackingReportsRoutes,
+            'Masters': mastersRoutes,
+            'Profile': profileRoutes,
+        };
+        const activeGroup = Object.entries(groups).find(([, routes]) => routes.includes(switchLocation.pathname));
+        if (activeGroup) setExtendedlist([activeGroup[0]]);
+    }, [switchLocation.pathname]);
 
     return (
 
@@ -137,7 +171,7 @@ export default function N_sidebar() {
                         <span className={stylesOBj["nav-label"]}>Users</span>
                     </Link>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Uplers Report') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Uplers Report')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(uplersReportRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('Uplers Report')}>
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="26" height="24" viewBox="0 0 26 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M22.4354 5.29125C21.3102 4.16899 19.6697 3.73823 18.1354 4.15766L12.5094 5.63888C9.45959 6.44373 1.76123 7.96273 3.17057 11.3975C4.64811 14.9948 9.38001 19.0077 12.9299 20.402C18.2074 22.4727 21.0185 18.7999 22.1891 14.9834C22.2157 14.9041 22.2422 14.821 22.2649 14.7416L22.2725 14.7076L22.2877 14.6471C22.3634 14.3864 22.4279 14.1257 22.4847 13.8612L23.5758 9.56867C23.9925 8.04208 23.5606 6.4135 22.4392 5.29125H22.4354ZM20.0979 8.63911L18.7074 14.0841C18.6052 14.4469 18.2718 14.7189 17.8892 14.7076C17.5065 14.6925 17.1845 14.4053 17.1125 14.0274L16.6503 11.7338C16.62 11.5789 16.548 11.4353 16.4268 11.3182C16.3093 11.1973 16.1615 11.1217 16.01 11.0952L13.7104 10.638C13.5437 10.6078 13.3921 10.5246 13.2785 10.4113C13.1383 10.2715 13.0398 10.0788 13.0322 9.8634C13.017 9.48176 13.2822 9.1379 13.6535 9.04343L19.1015 7.64534C19.3818 7.57355 19.6773 7.6529 19.8819 7.85693C20.0335 8.00808 20.1168 8.2197 20.1168 8.43129C20.1168 8.49552 20.1092 8.56732 20.0941 8.63155L20.0979 8.63911Z" fill="#4C4E64" fill-opacity="0.87" />
                             </svg>
@@ -147,15 +181,15 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.POD_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>POD Dashboard</Link></li>
-                            <li><Link to={UTSRoutes.Weekly_WCGR} className={`${stylesOBj['nav-subitem']}`}>WCGR</Link></li>
-                              <li><Link to={UTSRoutes.MOM_OVERVIEW} className={`${stylesOBj['nav-subitem']}`}>MOM Overview</Link></li>
-                              <li><Link to={UTSRoutes.QOQ_OVERVIEW} className={`${stylesOBj['nav-subitem']}`}>QOQ Overview</Link></li>
+                            <li><Link to={UTSRoutes.POD_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.POD_DASHBOARD_REPORT) ? stylesOBj['active'] : ''}`}>POD Dashboard</Link></li>
+                            <li><Link to={UTSRoutes.Weekly_WCGR} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.Weekly_WCGR) ? stylesOBj['active'] : ''}`}>WCGR</Link></li>
+                              <li><Link to={UTSRoutes.MOM_OVERVIEW} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.MOM_OVERVIEW) ? stylesOBj['active'] : ''}`}>MOM Overview</Link></li>
+                              <li><Link to={UTSRoutes.QOQ_OVERVIEW} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.QOQ_OVERVIEW) ? stylesOBj['active'] : ''}`}>QOQ Overview</Link></li>
                             {/* <li><Link to={UTSRoutes.ALL_FTE_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Multi-month POD Dashboard</Link></li> */}
                         </ul>
                     </div>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('OM Report') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('OM Report')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(hiringFunnelRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('OM Report')}>
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.25 8.67499C2.53832 8.32753 1.25 6.81422 1.25 5C1.25 2.92893 2.92893 1.25 5 1.25C6.81422 1.25 8.32753 2.53832 8.67499 4.25H15.325C15.6725 2.53832 17.1858 1.25 19 1.25C21.0711 1.25 22.75 2.92893 22.75 5C22.75 6.81422 21.4617 8.32753 19.75 8.67499V15.325C21.4617 15.6725 22.75 17.1858 22.75 19C22.75 21.0711 21.0711 22.75 19 22.75C17.1858 22.75 15.6725 21.4617 15.325 19.75H8.67499C8.32753 21.4617 6.81422 22.75 5 22.75C2.92893 22.75 1.25 21.0711 1.25 19C1.25 17.1858 2.53832 15.6725 4.25 15.325L4.25 8.67499ZM2.75 5C2.75 3.75736 3.75736 2.75 5 2.75C6.24264 2.75 7.25 3.75736 7.25 5C7.25 6.24264 6.24264 7.25 5 7.25C3.75736 7.25 2.75 6.24264 2.75 5ZM5.75 15.325L5.75 8.67499C7.21935 8.37673 8.37672 7.21935 8.67499 5.75H15.325C15.6233 7.21935 16.7807 8.37673 18.25 8.67499V15.325C16.7807 15.6233 15.6233 16.7807 15.325 18.25H8.67499C8.37672 16.7807 7.21935 15.6233 5.75 15.325ZM5 16.75C3.75736 16.75 2.75 17.7574 2.75 19C2.75 20.2426 3.75736 21.25 5 21.25C6.24264 21.25 7.25 20.2426 7.25 19C7.25 17.7574 6.24264 16.75 5 16.75ZM21.25 5C21.25 6.24264 20.2426 7.25 19 7.25C17.7574 7.25 16.75 6.24264 16.75 5C16.75 3.75736 17.7574 2.75 19 2.75C20.2426 2.75 21.25 3.75736 21.25 5ZM16.75 19C16.75 17.7574 17.7574 16.75 19 16.75C20.2426 16.75 21.25 17.7574 21.25 19C21.25 20.2426 20.2426 21.25 19 21.25C17.7574 21.25 16.75 20.2426 16.75 19Z" fill="#636578" />
                             </svg>
@@ -165,17 +199,17 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.AM_INTERVIEW} className={`${stylesOBj['nav-subitem']}`}>AM Wise Interview Count</Link></li>
-                            <li><Link to={UTSRoutes.SCREENING_INTERVIEW_REJECT} className={`${stylesOBj['nav-subitem']}`}>Screen & Interview Reject Count</Link></li>
-                            <li><Link to={UTSRoutes.DAILY_BUSINESS_NUMBERS} className={`${stylesOBj['nav-subitem']}`}>Revenue Report</Link></li>
-                            <li><Link to={UTSRoutes.POTENTIAL_CLOSURES_SHEET} className={`${stylesOBj['nav-subitem']}`}>Potential Closures List</Link></li>
-                            <li><Link to={UTSRoutes.COMPANY_CATEGORY} className={`${stylesOBj['nav-subitem']}`}>Company Category</Link></li>
+                            <li><Link to={UTSRoutes.AM_INTERVIEW} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.AM_INTERVIEW) ? stylesOBj['active'] : ''}`}>AM Wise Interview Count</Link></li>
+                            <li><Link to={UTSRoutes.SCREENING_INTERVIEW_REJECT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.SCREENING_INTERVIEW_REJECT) ? stylesOBj['active'] : ''}`}>Screen & Interview Reject Count</Link></li>
+                            <li><Link to={UTSRoutes.DAILY_BUSINESS_NUMBERS} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.DAILY_BUSINESS_NUMBERS) ? stylesOBj['active'] : ''}`}>Revenue Report</Link></li>
+                            <li><Link to={UTSRoutes.POTENTIAL_CLOSURES_SHEET} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.POTENTIAL_CLOSURES_SHEET) ? stylesOBj['active'] : ''}`}>Potential Closures List</Link></li>
+                            <li><Link to={UTSRoutes.COMPANY_CATEGORY} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.COMPANY_CATEGORY) ? stylesOBj['active'] : ''}`}>Company Category</Link></li>
 
 
                         </ul>
                     </div>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('TA Report') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('TA Report')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(taReportRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('TA Report')}>
                             <img src="images/ta-report-ic.svg" alt="TA Report Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 9.24999C9.92893 9.24999 8.25 10.9289 8.25 13C8.25 15.0711 9.92893 16.75 12 16.75C14.0711 16.75 15.75 15.0711 15.75 13C15.75 10.9289 14.0711 9.24999 12 9.24999ZM9.75 13C9.75 11.7573 10.7574 10.75 12 10.75C13.2426 10.75 14.25 11.7573 14.25 13C14.25 14.2426 13.2426 15.25 12 15.25C10.7574 15.25 9.75 14.2426 9.75 13Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -188,16 +222,16 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.TADASHBOARD_PG} className={`${stylesOBj['nav-subitem']}`}>TA Dashboard</Link></li>
-                            <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter Dashboard</Link></li>
-                            <li><Link to={UTSRoutes.DAILYSNAPSHOT} className={`${stylesOBj['nav-subitem']}`}>Daily Snapshot</Link></li>
-                            <li><Link to={UTSRoutes.RECRUITERREPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter</Link></li>
+                            <li><Link to={UTSRoutes.TADASHBOARD_PG} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.TADASHBOARD_PG) ? stylesOBj['active'] : ''}`}>Contract TA Dashboard</Link></li>
+                            <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT) ? stylesOBj['active'] : ''}`}>Recruiter Dashboard</Link></li>
+                            <li><Link to={UTSRoutes.DAILYSNAPSHOT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.DAILYSNAPSHOT) ? stylesOBj['active'] : ''}`}>Daily Snapshot</Link></li>
+                            <li><Link to={UTSRoutes.RECRUITERREPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.RECRUITERREPORT) ? stylesOBj['active'] : ''}`}>Recruiter</Link></li>
                             
                             {/* <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter Multi-Month Dashboard</Link></li> */}
-                            <li><Link to={UTSRoutes.IMMEDIATEJOINER} className={`${stylesOBj['nav-subitem']}`}>Talent Joining</Link></li>
-                            <li><Link to={UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE} className={`${stylesOBj['nav-subitem']}`}>Interview reschedule</Link></li>
-                            <li><Link to={UTSRoutes.AVERAGE_SLA} className={`${stylesOBj['nav-subitem']}`}>Average SLA</Link></li>
-                            <li><Link to={UTSRoutes.CLIENT_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Client Dashboard</Link></li>
+                            <li><Link to={UTSRoutes.IMMEDIATEJOINER} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.IMMEDIATEJOINER) ? stylesOBj['active'] : ''}`}>Talent Joining</Link></li>
+                            <li><Link to={UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE) ? stylesOBj['active'] : ''}`}>Interview reschedule</Link></li>
+                            <li><Link to={UTSRoutes.AVERAGE_SLA} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.AVERAGE_SLA) ? stylesOBj['active'] : ''}`}>Average SLA</Link></li>
+                            <li><Link to={UTSRoutes.CLIENT_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.CLIENT_DASHBOARD_REPORT) ? stylesOBj['active'] : ''}`}>Client Dashboard</Link></li>
                             {/* <li><Link to={UTSRoutes.TASCRUMSTRUCTURE} className={`${stylesOBj['nav-subitem']}  ${switchLocation.pathname === UTSRoutes.TASCRUMSTRUCTURE
                             ? stylesOBj['active']
                             : ''
@@ -222,7 +256,7 @@ export default function N_sidebar() {
                         </ul>
                     </div> */}
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Talent') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Talent')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(talentRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('Talent')}>
                             <img src="images/talent-ic.svg" alt="Talent Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M11.292 3.30809C10.8982 3.82224 10.4538 4.61551 9.80827 5.77355L9.48057 6.36141C9.46082 6.39684 9.44132 6.43194 9.42201 6.4667C9.12127 7.0079 8.86745 7.46469 8.45844 7.77518C8.04503 8.08901 7.54106 8.20227 6.95535 8.3339C6.91771 8.34235 6.87973 8.35089 6.84141 8.35956L6.20506 8.50354C4.94974 8.78757 4.09576 8.98299 3.51082 9.21351C2.94002 9.43845 2.81953 9.62275 2.77361 9.77044C2.72514 9.9263 2.7237 10.1647 3.06494 10.7068C3.41129 11.257 3.99558 11.9432 4.85011 12.9425L5.28393 13.4498C5.30914 13.4793 5.33413 13.5084 5.35886 13.5373C5.76188 14.0074 6.09791 14.3993 6.25205 14.895C6.40526 15.3877 6.35448 15.9054 6.29291 16.5331C6.28913 16.5716 6.28532 16.6105 6.2815 16.6499L6.21591 17.3267C6.08682 18.6589 5.99978 19.5762 6.02922 20.2369C6.05859 20.8965 6.1979 21.0788 6.30865 21.1628C6.40716 21.2376 6.58925 21.3204 7.18248 21.1504C7.78535 20.9777 8.58659 20.6111 9.76202 20.0699L10.3578 19.7956C10.3945 19.7787 10.4309 19.7619 10.4669 19.7452C11.0117 19.4934 11.4843 19.2748 12 19.2748C12.5157 19.2748 12.9883 19.4934 13.5331 19.7452C13.5692 19.7619 13.6055 19.7787 13.6422 19.7956L14.238 20.0699C15.4134 20.6111 16.2147 20.9777 16.8176 21.1504C17.4108 21.3204 17.5929 21.2376 17.6914 21.1628C17.8021 21.0788 17.9414 20.8965 17.9708 20.2369C18.0002 19.5762 17.9132 18.6589 17.7841 17.3267L17.7185 16.6499C17.7147 16.6105 17.7109 16.5716 17.7071 16.5331C17.6456 15.9054 17.5948 15.3877 17.748 14.895C17.9021 14.3993 18.2382 14.0074 18.6412 13.5372C18.6659 13.5084 18.6909 13.4793 18.7161 13.4498L19.1499 12.9425C20.0044 11.9432 20.5887 11.257 20.9351 10.7068C21.2763 10.1647 21.2749 9.9263 21.2264 9.77044C21.1805 9.62275 21.06 9.43845 20.4892 9.21351C19.9043 8.98299 19.0503 8.78757 17.795 8.50354L17.1586 8.35956C17.1203 8.35089 17.0823 8.34235 17.0447 8.33389C16.459 8.20227 15.955 8.08901 15.5416 7.77518C15.1326 7.46469 14.8788 7.0079 14.578 6.4667C14.5587 6.43194 14.5392 6.39684 14.5195 6.36141L14.1918 5.77355C13.5462 4.61551 13.1018 3.82224 12.7081 3.30809C12.3147 2.79443 12.1138 2.75 12 2.75C11.8863 2.75 11.6853 2.79443 11.292 3.30809ZM10.1011 2.3961C10.5777 1.77363 11.1669 1.25 12 1.25C12.8331 1.25 13.4223 1.77363 13.899 2.3961C14.3674 3.00773 14.864 3.89876 15.471 4.98776L15.8296 5.63106C16.2222 6.33523 16.3226 6.48482 16.4486 6.58044C16.5698 6.67247 16.7262 6.7238 17.4896 6.89654L18.1897 7.05492C19.3653 7.32088 20.3338 7.53999 21.0392 7.81796C21.7714 8.10651 22.4121 8.5318 22.6588 9.32502C22.9029 10.1101 22.6285 10.8323 22.2045 11.5059C21.7925 12.1604 21.1344 12.9298 20.3306 13.8698L19.8561 14.4247C19.3391 15.0292 19.2311 15.1772 19.1803 15.3404C19.1286 15.5069 19.1334 15.6992 19.2115 16.5052L19.2831 17.2433C19.4048 18.4994 19.5041 19.5236 19.4693 20.3037C19.434 21.0977 19.2536 21.8601 18.5984 22.3576C17.9308 22.8643 17.1542 22.8072 16.4044 22.5924C15.6774 22.3841 14.7711 21.9667 13.6705 21.46L13.0149 21.1581C12.2975 20.8278 12.1439 20.7748 12 20.7748C11.8561 20.7748 11.7025 20.8278 10.9852 21.1581L10.3295 21.46C9.22898 21.9667 8.32265 22.3841 7.59565 22.5924C6.84587 22.8072 6.0692 22.8643 5.40168 22.3576C4.7464 21.8601 4.56607 21.0977 4.5307 20.3037C4.49595 19.5236 4.59523 18.4993 4.71697 17.2433L4.7885 16.5052C4.8666 15.6992 4.87147 15.5069 4.81971 15.3404C4.76894 15.1772 4.66094 15.0292 4.14393 14.4247L3.66945 13.8698C2.8656 12.9299 2.20753 12.1604 1.79553 11.5059C1.37149 10.8323 1.09714 10.1101 1.34127 9.32502C1.58794 8.5318 2.22867 8.10651 2.96086 7.81796C3.66622 7.53999 4.63474 7.32088 5.81038 7.05492L5.87404 7.04052L6.51039 6.89654C7.27382 6.72381 7.43023 6.67247 7.55148 6.58044C7.67743 6.48482 7.77785 6.33523 8.17039 5.63106L8.52899 4.98775C9.13601 3.89876 9.63268 3.00773 10.1011 2.3961Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -233,14 +267,14 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.TALENT_REPORT} className={`${stylesOBj['nav-subitem']}`}>Deployed/Rejected</Link></li>
-                            <li><Link to={UTSRoutes.TALENT_BACKOUT_REPORT} className={`${stylesOBj['nav-subitem']}`}>Backout</Link></li>
-                            <li><Link to={UTSRoutes.TALENT_DOCUMENTS} className={`${stylesOBj['nav-subitem']}`}>Documents</Link></li>
-                            <li><Link to={UTSRoutes.TALENT_NOTES} className={`${stylesOBj['nav-subitem']}`}>Eng. Notes</Link></li>
+                            <li><Link to={UTSRoutes.TALENT_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.TALENT_REPORT) ? stylesOBj['active'] : ''}`}>Deployed/Rejected</Link></li>
+                            <li><Link to={UTSRoutes.TALENT_BACKOUT_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.TALENT_BACKOUT_REPORT) ? stylesOBj['active'] : ''}`}>Backout</Link></li>
+                            <li><Link to={UTSRoutes.TALENT_DOCUMENTS} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.TALENT_DOCUMENTS) ? stylesOBj['active'] : ''}`}>Documents</Link></li>
+                            <li><Link to={UTSRoutes.TALENT_NOTES} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.TALENT_NOTES) ? stylesOBj['active'] : ''}`}>Eng. Notes</Link></li>
                         </ul>
                     </div>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Reports') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Reports')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(reportsRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('Reports')}>
                             <img src="images/reports-ic.svg" alt="Reports Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.2626 3.26045C7.38219 2.13044 8.33828 1.25 9.5 1.25H14.5C15.6617 1.25 16.6178 2.13044 16.7374 3.26045C17.5005 3.27599 18.1603 3.31546 18.7236 3.41895C19.4816 3.55818 20.1267 3.82342 20.6517 4.34835C21.2536 4.95027 21.5125 5.70814 21.6335 6.60825C21.75 7.47522 21.75 8.57754 21.75 9.94513V16.0549C21.75 17.4225 21.75 18.5248 21.6335 19.3918C21.5125 20.2919 21.2536 21.0497 20.6517 21.6517C20.0497 22.2536 19.2919 22.5125 18.3918 22.6335C17.5248 22.75 16.4225 22.75 15.0549 22.75H8.94513C7.57754 22.75 6.47522 22.75 5.60825 22.6335C4.70814 22.5125 3.95027 22.2536 3.34835 21.6517C2.74643 21.0497 2.48754 20.2919 2.36652 19.3918C2.24996 18.5248 2.24998 17.4225 2.25 16.0549V9.94513C2.24998 8.57754 2.24996 7.47522 2.36652 6.60825C2.48754 5.70814 2.74643 4.95027 3.34835 4.34835C3.87328 3.82342 4.51836 3.55818 5.27635 3.41895C5.83973 3.31546 6.49952 3.27599 7.2626 3.26045ZM8.75 4.00102C8.75 4.00156 8.75 4.0021 8.75 4.00263V4.5C8.75 4.91421 9.08579 5.25 9.5 5.25H14.5C14.9142 5.25 15.25 4.91421 15.25 4.5V4.00263C15.25 4.00209 15.25 4.00156 15.25 4.00103V3.5C15.25 3.08579 14.9142 2.75 14.5 2.75H9.5C9.08579 2.75 8.75 3.08579 8.75 3.5V4.00102ZM16.735 4.76087C16.6058 5.88062 15.6544 6.75 14.5 6.75H9.5C8.34559 6.75 7.39424 5.88062 7.26496 4.76087C6.54678 4.7762 5.99336 4.81234 5.54735 4.89426C4.98054 4.99838 4.65246 5.16556 4.40901 5.40901C4.13225 5.68577 3.9518 6.07435 3.85315 6.80812C3.75159 7.56347 3.75 8.56458 3.75 10V16C3.75 17.4354 3.75159 18.4365 3.85315 19.1919C3.9518 19.9257 4.13225 20.3142 4.40901 20.591C4.68577 20.8678 5.07435 21.0482 5.80812 21.1469C6.56347 21.2484 7.56458 21.25 9 21.25H15C16.4354 21.25 17.4365 21.2484 18.1919 21.1469C18.9257 21.0482 19.3142 20.8678 19.591 20.591C19.8678 20.3142 20.0482 19.9257 20.1469 19.1919C20.2484 18.4365 20.25 17.4354 20.25 16V10C20.25 8.56458 20.2484 7.56347 20.1469 6.80812C20.0482 6.07434 19.8678 5.68577 19.591 5.40901C19.3475 5.16556 19.0195 4.99838 18.4527 4.89426C18.0066 4.81234 17.4532 4.7762 16.735 4.76087ZM6.25 14.5C6.25 14.0858 6.58579 13.75 7 13.75H15C15.4142 13.75 15.75 14.0858 15.75 14.5C15.75 14.9142 15.4142 15.25 15 15.25H7C6.58579 15.25 6.25 14.9142 6.25 14.5ZM6.25 18C6.25 17.5858 6.58579 17.25 7 17.25H12.5C12.9142 17.25 13.25 17.5858 13.25 18C13.25 18.4142 12.9142 18.75 12.5 18.75H7C6.58579 18.75 6.25 18.4142 6.25 18Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -251,18 +285,18 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.CLIENT_FEEDBACK} className={`${stylesOBj['nav-subitem']}`}>Feedback</Link></li>
-                            <li><Link to={UTSRoutes.REVENUE_REPORT} className={`${stylesOBj['nav-subitem']}`}>Revenue</Link></li>
-                            <li><Link to={UTSRoutes.Leave} className={`${stylesOBj['nav-subitem']}`}>Leave</Link></li>
-                            <li><Link to={UTSRoutes.CLIENT_REPORT} className={`${stylesOBj['nav-subitem']}`}>Client</Link></li>
-                            <li><Link to={UTSRoutes.HR_REPORT} className={`${stylesOBj['nav-subitem']}`}>HR</Link></li>
-                            <li><Link to={UTSRoutes.I2S_REPORT} className={`${stylesOBj['nav-subitem']}`}>I2S</Link></li>
-                            <li><Link to={UTSRoutes.HRLostReoprt} className={`${stylesOBj['nav-subitem']}`}>HR Lost</Link></li>
-                            <li><Link to={UTSRoutes.SLA_REPORT} className={`${stylesOBj['nav-subitem']}`}>SLA Report</Link></li>
+                            <li><Link to={UTSRoutes.CLIENT_FEEDBACK} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.CLIENT_FEEDBACK) ? stylesOBj['active'] : ''}`}>Feedback</Link></li>
+                            <li><Link to={UTSRoutes.REVENUE_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.REVENUE_REPORT) ? stylesOBj['active'] : ''}`}>Revenue</Link></li>
+                            <li><Link to={UTSRoutes.Leave} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.Leave) ? stylesOBj['active'] : ''}`}>Leave</Link></li>
+                            <li><Link to={UTSRoutes.CLIENT_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.CLIENT_REPORT) ? stylesOBj['active'] : ''}`}>Client</Link></li>
+                            <li><Link to={UTSRoutes.HR_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.HR_REPORT) ? stylesOBj['active'] : ''}`}>HR</Link></li>
+                            <li><Link to={UTSRoutes.I2S_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.I2S_REPORT) ? stylesOBj['active'] : ''}`}>I2S</Link></li>
+                            <li><Link to={UTSRoutes.HRLostReoprt} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.HRLostReoprt) ? stylesOBj['active'] : ''}`}>HR Lost</Link></li>
+                            <li><Link to={UTSRoutes.SLA_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.SLA_REPORT) ? stylesOBj['active'] : ''}`}>SLA Report</Link></li>
                         </ul>
                     </div>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Analytics') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Analytics')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(analyticsRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('Analytics')}>
                             <img src="images/analytics-ic.svg" alt="Analytics Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M18.9553 1.25C18.5224 1.24995 18.1256 1.24991 17.8028 1.29331C17.4473 1.3411 17.0716 1.45355 16.7626 1.76257C16.4535 2.07159 16.3411 2.44732 16.2933 2.8028C16.2499 3.12561 16.25 3.52244 16.25 3.95525V17.0448C16.25 17.4776 16.2499 17.8744 16.2933 18.1972C16.3411 18.5527 16.4535 18.9284 16.7626 19.2374C17.0716 19.5465 17.4473 19.6589 17.8028 19.7067C18.1256 19.7501 18.5224 19.7501 18.9553 19.75H19.0448C19.4776 19.7501 19.8744 19.7501 20.1972 19.7067C20.5527 19.6589 20.9284 19.5465 21.2374 19.2374C21.5465 18.9284 21.6589 18.5527 21.7067 18.1972C21.7501 17.8744 21.7501 17.4776 21.75 17.0448V3.95526C21.7501 3.52245 21.7501 3.12561 21.7067 2.8028C21.6589 2.44732 21.5465 2.07159 21.2374 1.76257C20.9284 1.45355 20.5527 1.3411 20.1972 1.29331C19.8744 1.24991 19.4776 1.24995 19.0448 1.25H18.9553ZM17.8257 2.82187L17.8232 2.82324L17.8219 2.82568C17.8209 2.82761 17.8192 2.83093 17.8172 2.83597C17.8082 2.85775 17.7929 2.90611 17.7799 3.00267C17.7516 3.21339 17.75 3.5074 17.75 4.00001V17C17.75 17.4926 17.7516 17.7866 17.7799 17.9973C17.7929 18.0939 17.8082 18.1423 17.8172 18.164C17.8192 18.1691 17.8209 18.1724 17.8219 18.1743L17.8232 18.1768L17.8257 18.1781C17.8265 18.1786 17.8276 18.1791 17.8289 18.1797C17.8307 18.1806 17.8331 18.1817 17.836 18.1828C17.8578 18.1918 17.9061 18.2071 18.0027 18.2201C18.2134 18.2484 18.5074 18.25 19 18.25C19.4926 18.25 19.7866 18.2484 19.9973 18.2201C20.0939 18.2071 20.1423 18.1918 20.164 18.1828C20.1691 18.1808 20.1724 18.1792 20.1743 18.1781L20.1768 18.1768L20.1781 18.1743C20.1792 18.1724 20.1808 18.1691 20.1828 18.164C20.1918 18.1423 20.2071 18.0939 20.2201 17.9973C20.2484 17.7866 20.25 17.4926 20.25 17V4.00001C20.25 3.5074 20.2484 3.21339 20.2201 3.00267C20.2071 2.90611 20.1918 2.85775 20.1828 2.83597C20.1808 2.83093 20.1792 2.82761 20.1781 2.82568L20.1768 2.82324L20.1743 2.82187C20.1724 2.82086 20.1691 2.81924 20.164 2.81717C20.1423 2.80821 20.0939 2.79291 19.9973 2.77993C19.7866 2.7516 19.4926 2.75001 19 2.75001C18.5074 2.75001 18.2134 2.7516 18.0027 2.77993C17.9061 2.79291 17.8578 2.80821 17.836 2.81717C17.8309 2.81924 17.8276 2.82086 17.8257 2.82187Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -276,14 +310,14 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.DEMANDFUNNELROUTE} className={`${stylesOBj['nav-subitem']}`}>Demand Funnel</Link></li>
-                            <li><Link to={UTSRoutes.SUPPLYFUNNELROUTE} className={`${stylesOBj['nav-subitem']}`}>Supply Funnel</Link></li>
-                            <li><Link to={UTSRoutes.TEAMDEMANDFUNNELROUTE} className={`${stylesOBj['nav-subitem']}`}>Team Demand Funnel</Link></li>
-                            <li><Link to={UTSRoutes.CLIENT_HAPPINESS_SURVEY} className={`${stylesOBj['nav-subitem']}`}>Client Happiness Survey</Link></li>
+                            <li><Link to={UTSRoutes.DEMANDFUNNELROUTE} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.DEMANDFUNNELROUTE) ? stylesOBj['active'] : ''}`}>Demand Funnel</Link></li>
+                            <li><Link to={UTSRoutes.SUPPLYFUNNELROUTE} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.SUPPLYFUNNELROUTE) ? stylesOBj['active'] : ''}`}>Supply Funnel</Link></li>
+                            <li><Link to={UTSRoutes.TEAMDEMANDFUNNELROUTE} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.TEAMDEMANDFUNNELROUTE) ? stylesOBj['active'] : ''}`}>Team Demand Funnel</Link></li>
+                            <li><Link to={UTSRoutes.CLIENT_HAPPINESS_SURVEY} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.CLIENT_HAPPINESS_SURVEY) ? stylesOBj['active'] : ''}`}>Client Happiness Survey</Link></li>
                         </ul>
                     </div>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Tracking Reports') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Tracking Reports')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(trackingReportsRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('Tracking Reports')}>
                             <img src="images/tracking-reports-ic.svg" alt="Tracking Reports Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 6C2.25 5.58579 2.58579 5.25 3 5.25H20C20.4142 5.25 20.75 5.58579 20.75 6C20.75 6.41421 20.4142 6.75 20 6.75H3C2.58579 6.75 2.25 6.41421 2.25 6ZM20.4613 10.4086C20.7879 10.6634 20.8461 11.1347 20.5914 11.4613L16.6914 16.4613C16.5522 16.6397 16.3399 16.7458 16.1136 16.7499C15.8873 16.754 15.6713 16.6557 15.5257 16.4824L13.4257 13.9824C13.1593 13.6652 13.2004 13.1921 13.5176 12.9257C13.8348 12.6593 14.3079 12.7004 14.5743 13.0176L16.0784 14.8082L19.4086 10.5387C19.6634 10.2121 20.1347 10.1539 20.4613 10.4086ZM2.25 11C2.25 10.5858 2.58579 10.25 3 10.25H10C10.4142 10.25 10.75 10.5858 10.75 11C10.75 11.4142 10.4142 11.75 10 11.75H3C2.58579 11.75 2.25 11.4142 2.25 11ZM2.25 16C2.25 15.5858 2.58579 15.25 3 15.25H10C10.4142 15.25 10.75 15.5858 10.75 16C10.75 16.4142 10.4142 16.75 10 16.75H3C2.58579 16.75 2.25 16.4142 2.25 16Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -294,13 +328,13 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.UTM_TRACKING_REPORT} className={`${stylesOBj['nav-subitem']}`}>UTM</Link></li>
-                            <li><Link to={UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT} className={`${stylesOBj['nav-subitem']}`}>Client</Link></li>
-                            <li><Link to={UTSRoutes.EMAIL_TRACKING_REOPRT} className={`${stylesOBj['nav-subitem']}`}>Email</Link></li>
+                            <li><Link to={UTSRoutes.UTM_TRACKING_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.UTM_TRACKING_REPORT) ? stylesOBj['active'] : ''}`}>UTM</Link></li>
+                            <li><Link to={UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT) ? stylesOBj['active'] : ''}`}>Client</Link></li>
+                            <li><Link to={UTSRoutes.EMAIL_TRACKING_REOPRT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.EMAIL_TRACKING_REOPRT) ? stylesOBj['active'] : ''}`}>Email</Link></li>
                         </ul>
                     </div>
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Masters') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Masters')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(mastersRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('Masters')}>
                             <img src="images/masters-ic.svg" alt="Masters Icon" />
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['fill-icon']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9426 1.25H12.0574C14.3658 1.24999 16.1748 1.24998 17.5863 1.43975C19.031 1.63399 20.1711 2.03933 21.0659 2.93414C21.9607 3.82895 22.366 4.96897 22.5603 6.41371C22.75 7.82519 22.75 9.63423 22.75 11.9426V12.0574C22.75 14.3658 22.75 16.1748 22.5603 17.5863C22.366 19.031 21.9607 20.1711 21.0659 21.0659C20.1711 21.9607 19.031 22.366 17.5863 22.5603C16.1748 22.75 14.3658 22.75 12.0574 22.75H11.9426C9.63423 22.75 7.82519 22.75 6.41371 22.5603C4.96897 22.366 3.82895 21.9607 2.93414 21.0659C2.03933 20.1711 1.63399 19.031 1.43975 17.5863C1.24998 16.1748 1.24999 14.3658 1.25 12.0574V11.9426C1.24999 9.63423 1.24998 7.82519 1.43975 6.41371C1.63399 4.96897 2.03933 3.82895 2.93414 2.93414C3.82895 2.03933 4.96897 1.63399 6.41371 1.43975C7.82519 1.24998 9.63423 1.24999 11.9426 1.25ZM6.61358 2.92637C5.33517 3.09825 4.56445 3.42514 3.9948 3.9948C3.42514 4.56445 3.09825 5.33517 2.92637 6.61358C2.75159 7.91356 2.75 9.62177 2.75 12C2.75 14.3782 2.75159 16.0864 2.92637 17.3864C3.09825 18.6648 3.42514 19.4355 3.9948 20.0052C4.56445 20.5749 5.33517 20.9018 6.61358 21.0736C7.91356 21.2484 9.62177 21.25 12 21.25C14.3782 21.25 16.0864 21.2484 17.3864 21.0736C18.6648 20.9018 19.4355 20.5749 20.0052 20.0052C20.5749 19.4355 20.9018 18.6648 21.0736 17.3864C21.2484 16.0864 21.25 14.3782 21.25 12C21.25 9.62177 21.2484 7.91356 21.0736 6.61358C20.9018 5.33517 20.5749 4.56445 20.0052 3.9948C19.4355 3.42514 18.6648 3.09825 17.3864 2.92637C16.0864 2.75159 14.3782 2.75 12 2.75C9.62177 2.75 7.91356 2.75159 6.61358 2.92637ZM6.5 6.75C6.08579 6.75 5.75 7.08579 5.75 7.5V8.37803C5.98458 8.29512 6.23702 8.25 6.5 8.25H17.5C17.763 8.25 18.0154 8.29512 18.25 8.37803V7.5C18.25 7.08579 17.9142 6.75 17.5 6.75H6.5ZM19.75 7.5C19.75 6.25736 18.7426 5.25 17.5 5.25H6.5C5.25736 5.25 4.25 6.25736 4.25 7.5V14.25H4C3.58579 14.25 3.25 14.5858 3.25 15C3.25 15.4142 3.58579 15.75 4 15.75H6.30147C7.17044 15.75 7.39887 15.7629 7.59386 15.8423C7.6145 15.8507 7.63491 15.8597 7.65508 15.8692C7.84554 15.9589 8.00971 16.1183 8.59805 16.7578L8.63351 16.7963C8.65912 16.8242 8.68439 16.8517 8.70937 16.8789C9.14654 17.3549 9.49191 17.731 9.94463 17.9581C10.0289 18.0004 10.1153 18.0383 10.2035 18.0717C10.6771 18.2511 11.1877 18.2506 11.834 18.2501C11.871 18.25 11.9083 18.25 11.9462 18.25C11.9819 18.25 12.0171 18.25 12.052 18.2501C12.6634 18.2506 13.1464 18.251 13.5987 18.089C13.683 18.0588 13.7658 18.0245 13.8467 17.9863C14.2811 17.781 14.6223 17.4392 15.0543 17.0065C15.0789 16.9818 15.1038 16.9568 15.1291 16.9316L15.3588 16.7019C15.9801 16.0806 16.1524 15.927 16.3501 15.8451C16.5477 15.7633 16.7782 15.75 17.6569 15.75H20C20.4142 15.75 20.75 15.4142 20.75 15C20.75 14.5858 20.4142 14.25 20 14.25H19.75V7.5ZM18.25 10.5C18.25 10.0858 17.9142 9.75 17.5 9.75H6.5C6.08579 9.75 5.75 10.0858 5.75 10.5V11.378C5.98458 11.2951 6.23702 11.25 6.5 11.25H17.5C17.763 11.25 18.0154 11.2951 18.25 11.378V10.5ZM18.25 13.5C18.25 13.0858 17.9142 12.75 17.5 12.75H6.5C6.08579 12.75 5.75 13.0858 5.75 13.5V14.25H6.30147C6.34188 14.25 6.3818 14.25 6.42125 14.2499C7.11178 14.2493 7.65785 14.2488 8.15966 14.4531C8.20508 14.4716 8.24999 14.4913 8.29435 14.5122C8.78452 14.7432 9.15386 15.1454 9.62091 15.654C9.64759 15.6831 9.67459 15.7125 9.70195 15.7422L9.73741 15.7807C10.2877 16.3789 10.4413 16.5291 10.6172 16.6173C10.6555 16.6365 10.6948 16.6538 10.7348 16.6689C10.9189 16.7387 11.1333 16.75 11.9462 16.75C12.7143 16.75 12.9171 16.7398 13.093 16.6768C13.1313 16.6631 13.1689 16.6475 13.2057 16.6301C13.3746 16.5503 13.5252 16.4141 14.0684 15.8709L14.2981 15.6412C14.3269 15.6124 14.3554 15.5839 14.3835 15.5557C14.877 15.0613 15.2676 14.6699 15.776 14.4593C16.2845 14.2487 16.8374 14.2493 17.536 14.2499C17.5758 14.25 17.6161 14.25 17.6569 14.25H18.25V13.5Z" fill="#4C4E64" fill-opacity="0.87" />
@@ -311,16 +345,16 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.MASTERTAGOAL} className={`${stylesOBj['nav-subitem']}`}>TA Goal</Link></li>
-                            <li><Link to={UTSRoutes.MASTERCOUNTRYROUTE} className={`${stylesOBj['nav-subitem']}`}>Country</Link></li>
-                            <li><Link to={UTSRoutes.MASTERCURRENCYROUTE} className={`${stylesOBj['nav-subitem']}`}>Currency</Link></li>
-                            <li><Link to={UTSRoutes.MASTERROLE} className={`${stylesOBj['nav-subitem']}`}>Role</Link></li>
-                            <li><Link to={UTSRoutes.MASTERTIMEZONE} className={`${stylesOBj['nav-subitem']}`}>Timezone</Link></li>
+                            <li><Link to={UTSRoutes.MASTERTAGOAL} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.MASTERTAGOAL) ? stylesOBj['active'] : ''}`}>TA Goal</Link></li>
+                            <li><Link to={UTSRoutes.MASTERCOUNTRYROUTE} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.MASTERCOUNTRYROUTE) ? stylesOBj['active'] : ''}`}>Country</Link></li>
+                            <li><Link to={UTSRoutes.MASTERCURRENCYROUTE} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.MASTERCURRENCYROUTE) ? stylesOBj['active'] : ''}`}>Currency</Link></li>
+                            <li><Link to={UTSRoutes.MASTERROLE} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.MASTERROLE) ? stylesOBj['active'] : ''}`}>Role</Link></li>
+                            <li><Link to={UTSRoutes.MASTERTIMEZONE} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.MASTERTIMEZONE) ? stylesOBj['active'] : ''}`}>Timezone</Link></li>
                         </ul>
                     </div>
 
                     <div className={`${stylesOBj['nav-item-with-submenu']} ${extendedList.includes('Profile') ? stylesOBj['expanded'] : ''}`}>
-                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']}`} onClick={() => toogleExtend('Profile')}>
+                        <a href="javascript:void(0)" className={`${stylesOBj['nav-item']} ${stylesOBj['has-submenu']} ${isGroupActive(profileRoutes) ? stylesOBj['active'] : ''}`} onClick={() => toogleExtend('Profile')}>
                             <svg className={`${stylesOBj['nav-icon']} ${stylesOBj['stroke-icon"']}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="12" cy="6" r="4" stroke="#636578" stroke-width="1.5" />
                                 <ellipse cx="12" cy="17" rx="7" ry="4" stroke="#636578" stroke-width="1.5" />
@@ -332,7 +366,7 @@ export default function N_sidebar() {
                             </svg>
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
-                            <li><Link to={UTSRoutes.CHANGE_PASSOWRD} className={`${stylesOBj['nav-subitem']}`}>Change Password</Link></li>
+                            <li><Link to={UTSRoutes.CHANGE_PASSOWRD} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.CHANGE_PASSOWRD) ? stylesOBj['active'] : ''}`}>Change Password</Link></li>
                         </ul>
                     </div>
                 </div>

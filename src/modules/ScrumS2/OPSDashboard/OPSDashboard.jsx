@@ -30,7 +30,7 @@ const QUAL_WOW_METRICS = [
 const QUAL_LOG_METRICS = [
     { key: 'dropout_RevenueStr', label: 'Dropouts' },
     { key: 'backout_RevenueStr', label: 'Backouts' },
-    { key: 'postJoinBackout', label: 'Post Joining Backouts' },
+    { key: 'lost_RevenueStr', label: 'Post Joining Backouts' },
 ];
 
 const TAB_NAME_MAP = { daily: 'D', weekly: 'W', monthly: 'M', quarterly: 'Q' };
@@ -314,9 +314,9 @@ function OPSDashboard({ selectedHead }) {
                                     </tr>
                                 ) : funnelData.map(row => <tr key={row.key}>
                                     <td className="rowlabel">{row.stage}</td>
-                                    <td className="datacell">{row.goalStr ?? '—'}</td>
-                                    <td className="datacell">{row.achievedValueStr ?? '—'}</td>
-                                    <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '—' : `${row.achievedPer}`}</td>
+                                    <td className="datacell">{row.goalStr ?? ''}</td>
+                                    <td className="datacell">{row.achievedValueStr ?? ''}</td>
+                                    <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                 </tr>)
 
                                 )}
@@ -329,7 +329,7 @@ function OPSDashboard({ selectedHead }) {
                 {/* ---------- 5. Pipeline & Revenue Summary ---------- */}
                 <section className="card">
                     <div className="card-head">
-                        <div className="htitle"><span className="num">5</span>Pipeline &amp; Revenue Summary</div>
+                        <div className="htitle"><span className="num">2</span>Pipeline &amp; Revenue Summary</div>
                         <DateNav
                             date={pipelineDate}
                             period={pipelineDateType}
@@ -365,8 +365,8 @@ function OPSDashboard({ selectedHead }) {
                                         return (
                                             <tr key={row.stage_ID}>
                                                 <td className="rowlabel">{row.stage}</td>
-                                                <td className="datacell">{row.achievedValueStr ?? '—'}</td>
-                                                 <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '—' : `${row.achievedPer}`}</td>
+                                                <td className="datacell">{row.achievedValueStr ?? ''}</td>
+                                                 <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                             </tr>
                                         );
                                     }))}
@@ -380,7 +380,7 @@ function OPSDashboard({ selectedHead }) {
             {/* ---------- 2. Team Performance ---------- */}
             <section className="card">
                 <div className="card-head">
-                    <div className="htitle"><span className="num">2</span>Team Performance</div>
+                    <div className="htitle"><span className="num">3</span>Team Performance</div>
                     <DateNav
                         date={performanceDate}
                         period={performanceDateType}
@@ -397,7 +397,7 @@ function OPSDashboard({ selectedHead }) {
                                 <tr>
                                     <th>TA</th>
                                     {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
-                                    {showTaGoal && <th>Goal Vs Achievement %</th>}
+                                    {/* {showTaGoal && <th>Goal Vs Achievement %</th>} */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -418,13 +418,13 @@ function OPSDashboard({ selectedHead }) {
                                             {TA_COLUMNS.map((c) => (
                                                 <td className="datacell" key={c.key}>{row[c.key] ? row[c.key] : ''}</td>
                                             ))}
-                                            {showTaGoal && (
+                                            {/* {showTaGoal && (
                                                 <td className="datacell goalvs-cell">
                                                     <div className={`goalvs-readout ${statusClass(pct)}`}>
                                                         {row.joined ? `${row.joined} joined` : ''}{pct === null ? '' : ` · ${pct}%`}
                                                     </div>
                                                 </td>
-                                            )}
+                                            )} */}
                                         </tr>
                                     );
                                 }) ) }
@@ -438,7 +438,7 @@ function OPSDashboard({ selectedHead }) {
                 {/* ---------- 3. Customer Experience (WOW Factor) ---------- */}
                 <section className="card">
                     <div className="card-head">
-                        <div className="htitle"><span className="num">3</span>Customer Experience (WOW Factor)</div>
+                        <div className="htitle"><span className="num">4</span>Customer Experience (WOW Factor)</div>
                         <DateNav
                             date={wowDate}
                             period={wowDateType}
@@ -480,13 +480,13 @@ function OPSDashboard({ selectedHead }) {
                                 <tbody>
 
                                     {wowLoading  ? (
-                                        <td colSpan="11">
+                                        <td colSpan="6">
                                          <div className="table-loading">Loading…</div>    
                                         </td>
                            
                         ) : qualWowData?.length === 0 ? (
                                     <tr>
-                                        <td colSpan="11" className="datacell">
+                                        <td colSpan="6" className="datacell">
                                             No data available
                                         </td>
                                     </tr>
@@ -497,11 +497,11 @@ function OPSDashboard({ selectedHead }) {
                                             {QUAL_WOW_METRICS?.map((m) => {
                                                 // const cls = metricStatus(row?.[m.key], row[m.key]);
                                                 return (
-                                                    <td className={`datacell `} key={m.key}>{row?.[m.key] ?? '—'}</td>
+                                                    <td className={`datacell `} key={m.key}>{row?.[m.key] ?? ''}</td>
                                                 );
                                             })}
-                                            <td className="datacell">{row?.tA_RevenueStr ?? '—'}</td>
-                                            <td className="datacell">{row?.companyCategory || '—'}</td>
+                                            <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
+                                            <td className="datacell">{row?.companyCategory || ''}</td>
                                         </tr>
                                     )))}
                                   
@@ -517,7 +517,7 @@ function OPSDashboard({ selectedHead }) {
                 {/* ---------- 4. Customer Experience (Logistics) ---------- */}
                 <section className="card">
                     <div className="card-head">
-                        <div className="htitle"><span className="num">4</span>Customer Experience (Logistics)</div>
+                        <div className="htitle"><span className="num">5</span>Customer Experience (Logistics)</div>
                         <DateNav
                             date={logDate}
                             period={logDateType}
@@ -570,10 +570,10 @@ function OPSDashboard({ selectedHead }) {
                                             {QUAL_LOG_METRICS.map((m) => {
                                                 // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
                                                 return (
-                                                    <td className={`datacell`} key={m.key}>{row?.[m.key] ?? '—'}</td>
+                                                    <td className={`datacell`} key={m.key}>{row?.[m.key] ?? ''}</td>
                                                 );
                                             })}
-                                            <td className="datacell">{row?.tA_RevenueStr ?? '—'}</td>
+                                            <td className="datacell">{row?.total_RevenueStr ?? ''}</td>
                                         </tr>
                                     )))}
                                
