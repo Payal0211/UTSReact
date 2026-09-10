@@ -680,6 +680,24 @@ getPODTableDataRequest: async function (pl) {
 			return errorDebug(error, 'TaDashboardAPI.getLogisticsTableDataRequest');
 		}
 	},
+	getTAPlaygroundTableRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_TA_PLAYGROUND_TABLE_DATA
+			 + `?Month=${pl?.Month}&Year=${pl?.Year}&PODUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		// httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getTAPlaygroundTableRequest');
+		}
+	},
     insertTaskCommentRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =

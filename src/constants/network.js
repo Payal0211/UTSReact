@@ -98,6 +98,7 @@ export class TaDashboardURL {
 	static GET_SCRUM_TA_PERFORMANCE_TABLE_DATA = "Get_NewScrum_PODWisTAPerformance"
 	static GET_SCRUM_WOW_TABLE_DATA = "Get_NewScrum_PODWiseTAWowFactor"
 	static GET_SCRUM_LOGISTICS_TABLE_DATA = "Get_NewScrum_PODWiseTALogistics"
+	static GET_TA_PLAYGROUND_TABLE_DATA = "get_TAPlaygroundReport"
 	static GET_SCRUM_POPUP_INFO = 'GetSrumpopupInfoBasedOnTaskID'
 	static REMOVE_TASK ='InactiveTATask'
 	static GET_FTE_COUNT_REPORT = 'GetDailyActiveHRPipelineAndTotalTargetPODWise'
