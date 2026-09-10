@@ -11,7 +11,10 @@ import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 
 
 const TA_COLUMNS = [
-    { key: 'tA_PipelineStr', label: 'Pipeline Assigned' },
+    { key: 'tA_PipelineStr', label: 'CF Active Pipeline' },
+    { key: 'tA_PreonboardingCarryFwdPipelineStr', label: 'CF Preonboarding Pipeline' },
+    { key: 'tA_ThismonthPipelineStr ', label: 'Assigned Pipeline' },
+    { key: 'tA_TotalPipelineStr', label: 'Total Pipeline' },
     { key: 'profilesShared', label: 'Profile Shipped' },
     { key: 'uniqueCalls', label: 'Unique Calls' },
     { key: 'r1InterviewCompleted', label: 'R1 Completed' },
@@ -20,6 +23,7 @@ const TA_COLUMNS = [
     { key: 'interviewReject', label: 'Interview Rejects' },
     { key: 'selection', label: 'Selection' },
     { key: 'joined', label: 'Joined' },
+    { key: 'joinedRevenueStr', label: 'Joined Revenue' },
 ];
 
 const QUAL_WOW_METRICS = [
@@ -397,7 +401,7 @@ function OPSDashboard({ selectedHead }) {
                                 <tr>
                                     <th>TA</th>
                                     {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
-                                    {/* {showTaGoal && <th>Goal Vs Achievement %</th>} */}
+                                    <th>Goal Vs Achievement %</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -405,7 +409,7 @@ function OPSDashboard({ selectedHead }) {
                         <div className="table-loading">Loading…</div>
                     ) : (taData.length === 0 ? (
                                     <tr>
-                                        <td colSpan="11" className="datacell">
+                                        <td colSpan="15" className="datacell">
                                             No data available
                                         </td>
                                     </tr>
@@ -418,13 +422,13 @@ function OPSDashboard({ selectedHead }) {
                                             {TA_COLUMNS.map((c) => (
                                                 <td className="datacell" key={c.key}>{row[c.key] ? row[c.key] : ''}</td>
                                             ))}
-                                            {/* {showTaGoal && (
+                                            
                                                 <td className="datacell goalvs-cell">
                                                     <div className={`goalvs-readout ${statusClass(pct)}`}>
-                                                        {row.joined ? `${row.joined} joined` : ''}{pct === null ? '' : ` · ${pct}%`}
+                                                        {row.pipelinetoJoinedPerStr ? row.pipelinetoJoinedPerStr : ''}
                                                     </div>
                                                 </td>
-                                            )} */}
+                                           
                                         </tr>
                                     );
                                 }) ) }
