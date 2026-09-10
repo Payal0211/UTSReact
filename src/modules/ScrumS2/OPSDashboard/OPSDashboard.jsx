@@ -329,7 +329,7 @@ function OPSDashboard({ selectedHead }) {
                 {/* ---------- 5. Pipeline & Revenue Summary ---------- */}
                 <section className="card">
                     <div className="card-head">
-                        <div className="htitle"><span className="num">5</span>Pipeline &amp; Revenue Summary</div>
+                        <div className="htitle"><span className="num">2</span>Pipeline &amp; Revenue Summary</div>
                         <DateNav
                             date={pipelineDate}
                             period={pipelineDateType}
@@ -380,7 +380,7 @@ function OPSDashboard({ selectedHead }) {
             {/* ---------- 2. Team Performance ---------- */}
             <section className="card">
                 <div className="card-head">
-                    <div className="htitle"><span className="num">2</span>Team Performance</div>
+                    <div className="htitle"><span className="num">3</span>Team Performance</div>
                     <DateNav
                         date={performanceDate}
                         period={performanceDateType}
@@ -397,7 +397,7 @@ function OPSDashboard({ selectedHead }) {
                                 <tr>
                                     <th>TA</th>
                                     {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
-                                    {showTaGoal && <th>Goal Vs Achievement %</th>}
+                                    {/* {showTaGoal && <th>Goal Vs Achievement %</th>} */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -418,13 +418,13 @@ function OPSDashboard({ selectedHead }) {
                                             {TA_COLUMNS.map((c) => (
                                                 <td className="datacell" key={c.key}>{row[c.key] ? row[c.key] : ''}</td>
                                             ))}
-                                            {showTaGoal && (
+                                            {/* {showTaGoal && (
                                                 <td className="datacell goalvs-cell">
                                                     <div className={`goalvs-readout ${statusClass(pct)}`}>
                                                         {row.joined ? `${row.joined} joined` : ''}{pct === null ? '' : ` · ${pct}%`}
                                                     </div>
                                                 </td>
-                                            )}
+                                            )} */}
                                         </tr>
                                     );
                                 }) ) }
@@ -438,7 +438,7 @@ function OPSDashboard({ selectedHead }) {
                 {/* ---------- 3. Customer Experience (WOW Factor) ---------- */}
                 <section className="card">
                     <div className="card-head">
-                        <div className="htitle"><span className="num">3</span>Customer Experience (WOW Factor)</div>
+                        <div className="htitle"><span className="num">4</span>Customer Experience (WOW Factor)</div>
                         <DateNav
                             date={wowDate}
                             period={wowDateType}
@@ -517,7 +517,7 @@ function OPSDashboard({ selectedHead }) {
                 {/* ---------- 4. Customer Experience (Logistics) ---------- */}
                 <section className="card">
                     <div className="card-head">
-                        <div className="htitle"><span className="num">4</span>Customer Experience (Logistics)</div>
+                        <div className="htitle"><span className="num">5</span>Customer Experience (Logistics)</div>
                         <DateNav
                             date={logDate}
                             period={logDateType}

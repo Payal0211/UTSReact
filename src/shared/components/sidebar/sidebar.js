@@ -508,7 +508,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 			branch:[
 				new SideBarModels({
 					id: 'taDashboardReport',
-					title: 'TA Dashboard',
+					title: 'Contract TA Dashboard',
 					isActive: false,
 					navigateTo: UTSRoutes.TADASHBOARD_PG,
 					isVisible: isAccess(usertypeID, 'taDashboardReport'),
