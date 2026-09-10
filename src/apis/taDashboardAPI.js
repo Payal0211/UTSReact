@@ -600,7 +600,86 @@ export const TaDashboardAPI = {
 		}
 	},
 
-
+getPODTableDataRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_POD_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getPODTableDataRequest');
+		}
+	},
+	getPIPELINETableDataRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_PIPELINE_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getPIPELINETableDataRequest');
+		}
+	},
+	getTAProformanceTableDataRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_TA_PERFORMANCE_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getTAProformanceTableDataRequest');
+		}
+	},
+	getWowTableDataRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_WOW_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getWowTableDataRequest');
+		}
+	},
+	getLogisticsTableDataRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_LOGISTICS_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getLogisticsTableDataRequest');
+		}
+	},
     insertTaskCommentRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =
