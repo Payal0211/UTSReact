@@ -37,8 +37,7 @@ import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import YesNoCell from './YesNoCell';
 import MultiConditionTextFilter from './MultiConditionTextFilter';
-// import OPSDashboard from './OPSDashboard'
-// import OPSDashboard from './OPSDashboard/OPSDashboard'
+import OPSDashboard from './OPSDashboard/OPSDashboard'
 
 const { Option } = Select;
 
@@ -2998,7 +2997,7 @@ function ScrumStructure2() {
             field: 'no_of_InterviewRounds',
             cellStyle: { textAlign: 'center' },
             width: 80,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.no_of_InterviewRounds)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.no_of_InterviewRounds)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
@@ -3115,7 +3114,7 @@ function ScrumStructure2() {
             field: 'noOfProfile_TalentsTillDate',
             width: 80,
             filter: MultiConditionTextFilter,
-                       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.noOfProfile_TalentsTillDate)))?.map(v => ({ data: v })) },
+                       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.noOfProfile_TalentsTillDate)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
@@ -3170,7 +3169,7 @@ function ScrumStructure2() {
             cellStyle: { textAlign: 'center' },
             width: 80,
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalNoOfSubmission)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalNoOfSubmission)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3185,7 +3184,7 @@ function ScrumStructure2() {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
-                        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.screenReject)))?.map(v => ({ data: v })) },
+                        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.screenReject)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -3201,7 +3200,7 @@ function ScrumStructure2() {
             width: 80,
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalNoOfInterviewReject)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalNoOfInterviewReject)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3213,7 +3212,7 @@ function ScrumStructure2() {
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-                        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r1)))?.map(v => ({ data: v })) },
+                        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r1)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3225,7 +3224,7 @@ function ScrumStructure2() {
         {
             headerName: 'R2', field: 'r2', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r2)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r2)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3237,7 +3236,7 @@ function ScrumStructure2() {
         {
             headerName: 'R3', field: 'r3', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r3)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r3)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -3252,7 +3251,7 @@ function ScrumStructure2() {
             field: 'todayProfile_Shared_Target',
             cellStyle: { textAlign: 'center' },
             width: 150,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.todayProfile_Shared_Target)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.todayProfile_Shared_Target)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: ProfileSharedTargetCell,
             cellRendererParams: { objKey: 'todayProfile_Shared_Target' },
@@ -3261,7 +3260,7 @@ function ScrumStructure2() {
             headerName: "Yesterday's Submission Target",
             field: 'profile_Shared_Target',
             width: 150,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.profile_Shared_Target)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.profile_Shared_Target)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellStyle: { textAlign: 'center' },
 
@@ -3271,7 +3270,7 @@ function ScrumStructure2() {
             field: 'profile_Shared_Achieved',
             cellStyle: { textAlign: 'center' },
             width: 150,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.profile_Shared_Achieved)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.profile_Shared_Achieved)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
             cellRenderer: (props) => {
@@ -3301,7 +3300,7 @@ function ScrumStructure2() {
             width: 150,
             filter: MultiConditionTextFilter,
             // cellRenderer: ProfileSharedTargetCell,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.interview_Scheduled_Target)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.interview_Scheduled_Target)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -4207,7 +4206,7 @@ function ScrumStructure2() {
                         optionFilterProp="label"
                     />
 
-                    {/* <div
+                    <div
                         style={{
                             display: 'flex',
                             gap: 32,
@@ -4247,7 +4246,7 @@ function ScrumStructure2() {
                             Dashboard
                         </button>
                         
-                    </div> */}
+                    </div>
 
                     {/* <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: '10px', marginRight: '10px' }}>
                         <input
@@ -4583,9 +4582,9 @@ function ScrumStructure2() {
                 </>}
                 </>}
 
-               {/* {pageTabTitle === 'Dashboard' && <>
+               {pageTabTitle === 'Dashboard' && <>
                <OPSDashboard  selectedHead={selectedHead} />
-               </>} */}
+               </>}
 
 
 

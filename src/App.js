@@ -17,6 +17,7 @@ import NewEngagementList from 'modules/engagement/screens/engagementList/n_engag
 import NewTADashboard from 'modules/taDashboard/n_taDashboard';
 // import ScrumStructure from 'modules/scrumStructure/scrumStructure';
 import ScrumStructure2 from 'modules/ScrumS2/ScrumStructure';
+import TAplayground from 'modules/taDashboard/dashboard/ta_playground';
 // import TempScrumStructure from 'modules/scrumStructure/sctemp';
 
 const Login = React.lazy(() =>
@@ -150,6 +151,14 @@ function App() {
 							element={<New_all_clients_company />}
 						/>
 
+						
+						<Route
+							exact
+							key={UTSRoutes.TADASHBOARD_PG}
+							path={UTSRoutes.TADASHBOARD_PG}
+							element={<TAplayground />} 
+						/>
+
 						<Route
 							exact
 							key={UTSRoutes.ADD_NEW_COMPANY}
@@ -164,20 +173,20 @@ function App() {
 							element={<NewEngagementList />}
 						/>
 
-<Route
+						<Route
 							exact
 							key={UTSRoutes.TADASHBOARD}
 							path={UTSRoutes.TADASHBOARD}
-							element={<NewTADashboard/>}
+							element={<NewTADashboard />}
 						/>
-						
+
 						<Route
 							exact
 							key={UTSRoutes.TASCRUMSTRUCTURE}
 							path={UTSRoutes.TASCRUMSTRUCTURE}
-							element={ <ScrumStructure2 />}
+							element={<ScrumStructure2 />}
 						/>
-							{/* <Route
+						{/* <Route
 							exact
 							key={UTSRoutes.TASCRUMSTRUCTURE + "temp"}
 							path={UTSRoutes.TASCRUMSTRUCTURE + "temp"}

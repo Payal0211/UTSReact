@@ -92,6 +92,11 @@ export class TaDashboardURL {
 	static ALL_TA_USERS = 'GetAllTAUsers'
 	static INSERT_TASK_COMMENT = 'InsertTaskComment'
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'
+	static GET_SCRUM_POD_TABLE_DATA = 'Get_NewScrum_PODWiseProductivity'
+	static GET_SCRUM_PIPELINE_TABLE_DATA = "Get_NewScrum_PODWiseRevenueSummary"
+	static GET_SCRUM_TA_PERFORMANCE_TABLE_DATA = "Get_NewScrum_PODWisTAPerformance"
+	static GET_SCRUM_WOW_TABLE_DATA = "Get_NewScrum_PODWiseTAWowFactor"
+	static GET_SCRUM_LOGISTICS_TABLE_DATA = "Get_NewScrum_PODWiseTALogistics"
 	static GET_SCRUM_POPUP_INFO = 'GetSrumpopupInfoBasedOnTaskID'
 	static REMOVE_TASK ='InactiveTATask'
 	static GET_FTE_COUNT_REPORT = 'GetDailyActiveHRPipelineAndTotalTargetPODWise'
