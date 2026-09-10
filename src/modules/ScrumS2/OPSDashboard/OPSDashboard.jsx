@@ -30,7 +30,7 @@ const QUAL_WOW_METRICS = [
 const QUAL_LOG_METRICS = [
     { key: 'dropout_RevenueStr', label: 'Dropouts' },
     { key: 'backout_RevenueStr', label: 'Backouts' },
-    { key: 'postJoinBackout', label: 'Post Joining Backouts' },
+    { key: 'lost_RevenueStr', label: 'Post Joining Backouts' },
 ];
 
 const TAB_NAME_MAP = { daily: 'D', weekly: 'W', monthly: 'M', quarterly: 'Q' };
@@ -314,9 +314,9 @@ function OPSDashboard({ selectedHead }) {
                                     </tr>
                                 ) : funnelData.map(row => <tr key={row.key}>
                                     <td className="rowlabel">{row.stage}</td>
-                                    <td className="datacell">{row.goalStr ?? '—'}</td>
-                                    <td className="datacell">{row.achievedValueStr ?? '—'}</td>
-                                    <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '—' : `${row.achievedPer}`}</td>
+                                    <td className="datacell">{row.goalStr ?? ''}</td>
+                                    <td className="datacell">{row.achievedValueStr ?? ''}</td>
+                                    <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                 </tr>)
 
                                 )}
@@ -365,8 +365,8 @@ function OPSDashboard({ selectedHead }) {
                                         return (
                                             <tr key={row.stage_ID}>
                                                 <td className="rowlabel">{row.stage}</td>
-                                                <td className="datacell">{row.achievedValueStr ?? '—'}</td>
-                                                 <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '—' : `${row.achievedPer}`}</td>
+                                                <td className="datacell">{row.achievedValueStr ?? ''}</td>
+                                                 <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                             </tr>
                                         );
                                     }))}
@@ -480,13 +480,13 @@ function OPSDashboard({ selectedHead }) {
                                 <tbody>
 
                                     {wowLoading  ? (
-                                        <td colSpan="11">
+                                        <td colSpan="6">
                                          <div className="table-loading">Loading…</div>    
                                         </td>
                            
                         ) : qualWowData?.length === 0 ? (
                                     <tr>
-                                        <td colSpan="11" className="datacell">
+                                        <td colSpan="6" className="datacell">
                                             No data available
                                         </td>
                                     </tr>
@@ -497,11 +497,11 @@ function OPSDashboard({ selectedHead }) {
                                             {QUAL_WOW_METRICS?.map((m) => {
                                                 // const cls = metricStatus(row?.[m.key], row[m.key]);
                                                 return (
-                                                    <td className={`datacell `} key={m.key}>{row?.[m.key] ?? '—'}</td>
+                                                    <td className={`datacell `} key={m.key}>{row?.[m.key] ?? ''}</td>
                                                 );
                                             })}
-                                            <td className="datacell">{row?.tA_RevenueStr ?? '—'}</td>
-                                            <td className="datacell">{row?.companyCategory || '—'}</td>
+                                            <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
+                                            <td className="datacell">{row?.companyCategory || ''}</td>
                                         </tr>
                                     )))}
                                   
@@ -570,10 +570,10 @@ function OPSDashboard({ selectedHead }) {
                                             {QUAL_LOG_METRICS.map((m) => {
                                                 // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
                                                 return (
-                                                    <td className={`datacell`} key={m.key}>{row?.[m.key] ?? '—'}</td>
+                                                    <td className={`datacell`} key={m.key}>{row?.[m.key] ?? ''}</td>
                                                 );
                                             })}
-                                            <td className="datacell">{row?.tA_RevenueStr ?? '—'}</td>
+                                            <td className="datacell">{row?.total_RevenueStr ?? ''}</td>
                                         </tr>
                                     )))}
                                
