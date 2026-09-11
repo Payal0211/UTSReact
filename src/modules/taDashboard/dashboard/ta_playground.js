@@ -354,33 +354,33 @@ function TAplayground() {
                                                             <tr className="goal-row" key={'GT'}>
                                                                 <td className="rowlabel">Grand Total</td>
                                                                 <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'existing')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'existing')}`}
                                                                 </td>
                                                                 <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'existingAll')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'existingAll')}`}
                                                                 </td>
                                                                 <td className="datacell">
                                                                     {calPercentage(getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US'))}
                                                                 </td>
                                                                
                                                                 <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'nbd')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'nbd')}`}
                                                                 </td>
                                                                 <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'nbdAll')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'nbdAll')}`}
                                                                 </td>
                                                                 <td className="datacell">
                                                                     {calPercentage(getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US'))}
                                                                 </td>
 
                                                                  <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'grandTotalExisting')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'grandTotalExisting')}`}
                                                                 </td>
                                                                   <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'grandTotalNBD')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'grandTotalNBD')}`}
                                                                 </td>
                                                                 <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'existingMonthlyAvg')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'existingMonthlyAvg')}`}
                                                                 </td>
                                                               
                                                                 <td className="datacell">
