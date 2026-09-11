@@ -24,6 +24,9 @@ const FUNNEL_ROWS = [
 ];
 
 
+const existingStyle= {background:'#e2fde2'}
+const ndbStyle= {background:'#e2f1fb'}
+
 
 function TAplayground() {
     const [filtersList, setFiltersList] = useState({});
@@ -288,18 +291,18 @@ function TAplayground() {
                                                 </tr>
                                                 <tr>
                                                     <th>WON</th>
-                                                    <th>PlayGround</th>
-                                                    <th>PlayGround %</th>
+                                                    <th>Play Ground</th>
+                                                    <th>Play Ground %</th>
                                                  
                                                     <th>WON</th>
-                                                    <th>PlayGround</th>
-                                                    <th>PlayGround %</th>
+                                                    <th>Play Ground</th>
+                                                    <th>Play Ground %</th>
                                                    
-                                                    <th>Existing</th>
-                                                    <th>NBD</th>
+                                                    <th>WON</th>
+                                                    <th>Play Ground</th>
 
-                                                    <th>Existing</th>
-                                                    <th>NBD</th>
+                                                    <th>WON</th>
+                                                    <th>Play Ground</th>
 
                                                 </tr>
                                             </thead>
@@ -325,24 +328,24 @@ function TAplayground() {
                                                                         <td className="rowlabel">{row.recruiterName}</td>
 
                                                                         {/* Existing sub-columns */}
-                                                                        <td className="datacell">{row?.existing ?? ''}</td>
-                                                                        <td className="datacell">{row?.existingAll ?? ''}</td>
-                                                                        <td className="datacell">{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{row?.existing ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{row?.existingAll ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td> */}
 
                                                                         {/* NBD sub-columns */}
-                                                                        <td className="datacell">{row?.nbd ?? ''}</td>
-                                                                        <td className="datacell">{row?.nbdAll ?? ''}</td>
-                                                                        <td className="datacell">{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{row?.nbd ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{row?.nbdAll ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td> */}
 
                                                                         {/* <td className="datacell">{row?.monthlyAvg}</td>
                         <td className={`pct`}> {row?.grandTotal}</td> */}
 
-                        <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
-                                                                        <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
+                        <td className="datacell">{`$${addNumbers(row?.existing, row?.nbd)}`}</td>
+                                                                        <td className="datacell">{`$${addNumbers(row?.existingAll, row?.nbdAll)}`}</td>
 
                                                                          <td className="datacell">{row?.existingMontlyAvg ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td>
@@ -437,18 +440,19 @@ function TAplayground() {
                                                 </tr>
                                                 <tr>
                                                     <th>WON</th>
-                                                    <th>PlayGround</th>
-                                                    <th>PlayGround %</th>
+                                                    <th>Play Ground</th>
+                                                    <th>Play Ground %</th>
                                                  
                                                     <th>WON</th>
-                                                    <th>PlayGround</th>
-                                                    <th>PlayGround %</th>
+                                                    <th>Play Ground</th>
+                                                    <th>Play Ground %</th>
                                                    
-                                                    <th>Existing</th>
-                                                    <th>NBD</th>
+                                                   
+                                                   <th>WON</th>
+                                                    <th>Play Ground</th>
 
-                                                    <th>Existing</th>
-                                                    <th>NBD</th>
+                                                    <th>WON</th>
+                                                    <th>Play Ground</th>
 
                                                 </tr>
                                             </thead>
@@ -460,7 +464,7 @@ function TAplayground() {
                                                         </td>
                                                     </tr>
                                                 ) :
-                                                    PLCData.map((groupRow, ind) => {
+                                                      PLCData.map((groupRow, ind) => {
                                                         return <>
                                                             <tr>
                                                                 <td colSpan="11" className="datacell" style={{ textAlign: 'start', fontWeight: 'bold' }}>
@@ -474,24 +478,24 @@ function TAplayground() {
                                                                         <td className="rowlabel">{row.recruiterName}</td>
 
                                                                         {/* Existing sub-columns */}
-                                                                        <td className="datacell">{row?.existing ?? ''}</td>
-                                                                        <td className="datacell">{row?.existingAll ?? ''}</td>
-                                                                        <td className="datacell">{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{row?.existing ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{row?.existingAll ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td> */}
 
                                                                         {/* NBD sub-columns */}
-                                                                        <td className="datacell">{row?.nbd ?? ''}</td>
-                                                                        <td className="datacell">{row?.nbdAll ?? ''}</td>
-                                                                        <td className="datacell">{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{row?.nbd ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{row?.nbdAll ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td> */}
 
                                                                         {/* <td className="datacell">{row?.monthlyAvg}</td>
                         <td className={`pct`}> {row?.grandTotal}</td> */}
 
-                        <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
-                                                                        <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
+                        <td className="datacell">{`${addNumbers(row?.existing, row?.nbd)}`}</td>
+                                                                        <td className="datacell">{`${addNumbers(row?.existingAll, row?.nbdAll)}`}</td>
 
                                                                          <td className="datacell">{row?.existingMontlyAvg ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td>
@@ -575,18 +579,18 @@ function TAplayground() {
                                                 </tr>
                                                 <tr>
                                                     <th>WON</th>
-                                                    <th>PlayGround</th>
-                                                    <th>PlayGround %</th>
+                                                    <th>Play Ground</th>
+                                                    <th>Play Ground %</th>
                                                  
                                                     <th>WON</th>
-                                                    <th>PlayGround</th>
-                                                    <th>PlayGround %</th>
+                                                    <th>Play Ground</th>
+                                                    <th>Play Ground %</th>
                                                    
-                                                    <th>Existing</th>
-                                                    <th>NBD</th>
+                                                  <th>WON</th>
+                                                    <th>Play Ground</th>
 
-                                                    <th>Existing</th>
-                                                    <th>NBD</th>
+                                                    <th>WON</th>
+                                                    <th>Play Ground</th>
 
                                                 </tr>
                                             </thead>
@@ -598,7 +602,7 @@ function TAplayground() {
                                                         </td>
                                                     </tr>
                                                 ) :
-                                                    PLPercentageData.map((groupRow, ind) => {
+                                                     PLPercentageData.map((groupRow, ind) => {
                                                         return <>
                                                             <tr>
                                                                 <td colSpan="11" className="datacell" style={{ textAlign: 'start', fontWeight: 'bold' }}>
@@ -612,24 +616,24 @@ function TAplayground() {
                                                                         <td className="rowlabel">{row.recruiterName}</td>
 
                                                                         {/* Existing sub-columns */}
-                                                                        <td className="datacell">{row?.existing ?? ''}</td>
-                                                                        <td className="datacell">{row?.existingAll ?? ''}</td>
-                                                                        <td className="datacell">{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{row?.existing ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{row?.existingAll ?? ''}</td>
+                                                                        <td className="datacell" style={existingStyle}>{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td> */}
 
                                                                         {/* NBD sub-columns */}
-                                                                        <td className="datacell">{row?.nbd ?? ''}</td>
-                                                                        <td className="datacell">{row?.nbdAll ?? ''}</td>
-                                                                        <td className="datacell">{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{row?.nbd ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{row?.nbdAll ?? ''}</td>
+                                                                        <td className="datacell" style={ndbStyle}>{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td> */}
 
                                                                         {/* <td className="datacell">{row?.monthlyAvg}</td>
                         <td className={`pct`}> {row?.grandTotal}</td> */}
 
-                        <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
-                                                                        <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
+                        <td className="datacell">{`${addNumbers(row?.existing, row?.nbd)}`}</td>
+                                                                        <td className="datacell">{`${addNumbers(row?.existingAll, row?.nbdAll)}`}</td>
 
                                                                          <td className="datacell">{row?.existingMontlyAvg ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td>
