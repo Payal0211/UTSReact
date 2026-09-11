@@ -6,6 +6,8 @@ import { periodRange, periodLabel } from './dateNavUtils';
 import { pctOf, statusClass, metricStatus } from './sectionMath';
 import moment from 'moment';
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
+import  TickMark from "assets/svg/assignCurrect.svg";
+import Diamond from "assets/svg/diamond.svg";
 
 // ---------- column/row config ----------
 
@@ -284,8 +286,8 @@ function OPSDashboard({ selectedHead }) {
         <div className="wrap" style={{ overflow: 'scroll', marginBottom: '80px' }}>
             <header>
                 <div className="title-block">
-                    <p className="eyebrow">Talent Operations · NASA POD · Uplers</p>
-                    <h1>Ops Dashboard</h1>
+                    {/* <p className="eyebrow">Talent Operations · NASA POD · Uplers</p>
+                    <h1>Ops Dashboard</h1> */}
                 </div>
             </header>
 
@@ -418,7 +420,7 @@ function OPSDashboard({ selectedHead }) {
                                     const pct = pctOf(row.goal, row.joined);
                                     return (
                                         <tr key={idx}>
-                                            <td className="name-cell datacell">{row.recruiter}</td>
+                                            <td className="rowlabel">{row.recruiter}</td>
                                             {TA_COLUMNS.map((c) => (
                                                 <td className="datacell" key={c.key}>{row[c.key] ? row[c.key] : ''}</td>
                                             ))}
@@ -469,6 +471,7 @@ function OPSDashboard({ selectedHead }) {
                                                 </th>
                                             );
                                         })}
+                                         <th>HR #</th>
                                         <th>Revenue</th>
                                         <th>Client Category</th>
                                     </tr>
@@ -484,28 +487,37 @@ function OPSDashboard({ selectedHead }) {
                                 <tbody>
 
                                     {wowLoading  ? (
-                                        <td colSpan="6">
+                                        <td colSpan="7">
                                          <div className="table-loading">Loading…</div>    
                                         </td>
                            
                         ) : qualWowData?.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="datacell">
+                                        <td colSpan="7" className="datacell">
                                             No data available
                                         </td>
                                     </tr>
                                 ) : (qualWowData?.map(( row, idx ) => (
                                         <tr key={idx} className={row?.recruiter === 'Goal' ? "goal-row" : ""}>
                             
-                                            <td className={`${row?.recruiter === 'Goal' ? "rowlabel" :" name-cell  datacell"}`}>{row?.recruiter}</td>
+                                            <td className={"rowlabel"}>{row?.recruiter}</td>
                                             {QUAL_WOW_METRICS?.map((m) => {
                                                 // const cls = metricStatus(row?.[m.key], row[m.key]);
                                                 return (
-                                                    <td className={`datacell `} key={m.key}>{row?.[m.key] ?? ''}</td>
+                                                    <td className={`datacell `} key={m.key}>{row?.recruiter === 'Goal' ? row?.[m.key] ?? "" : row?.[m.key] === "yes" ? <img
+                             src={TickMark}
+                             alt="info"
+                             style={{ width: "15px", height: "15px" }}
+                           />  : ''}</td>
                                                 );
                                             })}
+                                             <td className="datacell">{row?.hR_Number ?? ''}</td>
                                             <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
-                                            <td className="datacell">{row?.companyCategory || ''}</td>
+                                            <td className="datacell">{row?.companyCategory === "Diamond" ?  <img
+                             src={Diamond}
+                             alt="info"
+                             style={{ width: "15px", height: "15px" }}
+                           /> : ''}</td>
                                         </tr>
                                     )))}
                                   
@@ -544,7 +556,7 @@ function OPSDashboard({ selectedHead }) {
                                                     {m.label}<span className="arrow">{arrow}</span>
                                                 </th>
                                             );
-                                        })}
+                                        })}                                    
                                         <th>Revenue</th>
                                     </tr>
                                 </thead>
@@ -568,15 +580,16 @@ function OPSDashboard({ selectedHead }) {
                                             No data available
                                         </td>
                                     </tr>
-                                ) : (qualLogData.map((row, idx) => (
+                                ) : (qualLogData?.map((row, idx) => (
                                         <tr key={idx}>
-                                            <td className={`${row?.recruiter === 'Goal' ? "rowlabel" : "name-cell datacell"}`}>{row?.recruiter}</td>
+                                            <td className={"rowlabel"}>{row?.recruiter}</td>
                                             {QUAL_LOG_METRICS.map((m) => {
                                                 // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
                                                 return (
                                                     <td className={`datacell`} key={m.key}>{row?.[m.key] ?? ''}</td>
                                                 );
                                             })}
+                                           
                                             <td className="datacell">{row?.total_RevenueStr ?? ''}</td>
                                         </tr>
                                     )))}
