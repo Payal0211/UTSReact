@@ -13,7 +13,7 @@ import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 const TA_COLUMNS = [
     { key: 'tA_PipelineStr', label: 'CF Active Pipeline' },
     { key: 'tA_PreonboardingCarryFwdPipelineStr', label: 'CF Preonboarding Pipeline' },
-    { key: 'tA_ThismonthPipelineStr ', label: 'Assigned Pipeline' },
+    { key: 'tA_ThismonthPipelineStr', label: 'Assigned Pipeline' },
     { key: 'tA_TotalPipelineStr', label: 'Total Pipeline' },
     { key: 'profilesShared', label: 'Profile Shipped' },
     { key: 'uniqueCalls', label: 'Unique Calls' },
@@ -62,7 +62,7 @@ function OPSDashboard({ selectedHead }) {
     // 1. POD PRODUCTIVITY (funnel)
     // ============================================================
     const [podDate, setPODDate] = useState(new Date());
-    const [podDateType, setPODDateType] = useState('daily');
+    const [podDateType, setPODDateType] = useState('monthly');
     const [funnelData, setFunnelData] = useState([]);
     const [funnelLoading, setFunnelLoading] = useState(true);
 
@@ -155,7 +155,7 @@ function OPSDashboard({ selectedHead }) {
     // 2. TEAM PERFORMANCE (ta)
     // ============================================================
     const [performanceDate, setPerformanceDate] = useState(new Date());
-    const [performanceDateType, setPerformanceDateType] = useState('weekly');
+    const [performanceDateType, setPerformanceDateType] = useState('monthly');
     const [taData, setTaData] = useState(null);
     const [taLoading, setTaLoading] = useState(true);
 
@@ -193,7 +193,7 @@ function OPSDashboard({ selectedHead }) {
     // 3. CUSTOMER EXPERIENCE — WOW FACTOR (qualWow)
     // ============================================================
     const [wowDate, setWowDate] = useState(new Date());
-    const [wowDateType, setWowDateType] = useState('weekly');
+    const [wowDateType, setWowDateType] = useState('monthly');
     const [qualWowData, setQualWowData] = useState(null);
     const [wowLoading, setWowLoading] = useState(true);
     const [wowSortCol, setWowSortCol] = useState(null);
@@ -236,7 +236,7 @@ function OPSDashboard({ selectedHead }) {
     // 4. CUSTOMER EXPERIENCE — LOGISTICS (qualLog)
     // ============================================================
     const [logDate, setLogDate] = useState(new Date());
-    const [logDateType, setLogDateType] = useState('daily');
+    const [logDateType, setLogDateType] = useState('monthly');
     const [qualLogData, setQualLogData] = useState(null);
     const [logLoading, setLogLoading] = useState(true);
     const [logSortCol, setLogSortCol] = useState(null);
