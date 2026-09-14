@@ -1206,7 +1206,8 @@ function NewTADashboard() {
             setTRAllData({});
             setNewTaskError(false);
             setIsAddNewRow(false);
-            getListData();
+            window.location.reload()
+            // getListData();
         } else {
             message.error("Something went wrong");
         }

@@ -4,11 +4,12 @@ import DateNav from '../../ScrumS2/OPSDashboard/DateNav';
 import { periodRange, periodLabel } from '../../ScrumS2/OPSDashboard/dateNavUtils';
 import { pctOf, statusClass, metricStatus } from '../../ScrumS2/OPSDashboard/sectionMath';
 import {
-    Select,
+    Select,Modal, Table
 } from "antd";
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { useNavigate } from 'react-router-dom';
 import { HTTPStatusCode } from "constants/network";
+import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import moment from 'moment';
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
@@ -44,11 +45,9 @@ function TAplayground() {
 
 
 
-    const [PLPercentageData, setPLPercentagelData] = useState(null);
-    const [plPercentageLoading, setPLPercentageLoading] = useState(true);
-    const [plPercentageDate, setplPercentageDate] = useState(new Date());
-    const [plPercentageDateType, setplPercentageDateType] = useState('quarterly');
-
+    const [ popUPLoading,setPOPupLoading] = useState(false)
+    const [popUPDAta, setPOPupData] = useState([])
+    const [showPopup,setShowPopup] = useState(false)
 
     const today = new Date();
     const [monthDate, setMonthDate] = useState(today);
@@ -175,33 +174,192 @@ function TAplayground() {
     }, [plCDate, plCDateType, selectedHead, monthDate]);
 
 
-
-    const getPLPercentageTableDate = async (plPercentageDateType, range) => {
-        let pl = {
-            TAHeadUserID: selectedHead,
-            Tab_Name: 'PLPercentage',
-            Month: moment(monthDate).format('MM'),
-            Year: moment(monthDate).format('YYYY'),
-            Tab_Value: getDateRangeValue(plPercentageDateType, range)
-        }
-
-        setPLPercentageLoading(true);
-        let result = await TaDashboardDAO.getTAPlaygroundTableDAO(pl);
-        setPLPercentageLoading(false);
+    const getPOPUP = async (data,businessType,status)=>{
+        setShowPopup(true)
+        let pl = `?POD_Id=5&Month=${moment(monthDate).format('MM')}&Year=${moment(monthDate).format('YYYY')}&TAUserID=${data?.id}&BusinessType=${businessType}&Status=${status}`
+ setPOPupLoading(true);
+        let result = await TaDashboardDAO.getTAPlaygroundTablePOPUPDAO(pl);
+        setPOPupLoading(false);
 
         if (result?.statusCode === 200) {
-            setPLPercentagelData(result.responseBody)
+            setPOPupData(result.responseBody)
         } else {
-            setPLPercentagelData([])
+            setPOPupData([])
         }
+
     }
 
-    useEffect(() => {
-        if (selectedHead) {
-            const range = periodRange(plPercentageDateType, plPercentageDate);
-            getPLPercentageTableDate(plPercentageDateType, range)
-        }
-    }, [plPercentageDate, plPercentageDateType, selectedHead, monthDate]);
+    const popupSellHeadStyle = {fontSize:'12px'}
+    const popupSellStyle= {fontSize:'10px', textAlign:'start', display:'flex'}
+
+    const popupColumns = [ {
+            title:<span style={popupSellHeadStyle}>Date</span>,
+            dataIndex: "hrCreatedDate",
+            key: "hrCreatedDate",
+            align: "center",
+             render:(text,value)=>{
+            return <span style={popupSellStyle}>{moment(text).format('DD/MM/YYYY')}</span>
+           }
+        },
+         
+        {
+            title:<span style={popupSellHeadStyle}>Company</span>,
+            dataIndex: "company",
+            key: "company",
+            align: "center",
+             render:(text,value)=>{
+            return <span style={popupSellStyle}><a href={`/viewCompanyDetails/${value?.company_ID}`} target="_blank" >{text}</a></span>
+           }
+        },
+          {
+            title:<span style={popupSellHeadStyle}>HR #</span>,
+            dataIndex: "hR_Number",
+            key: "hR_Number",
+            align: "center",
+             width:"150px",
+             render:(text,value)=>{
+            return <span style={popupSellStyle}> <a href={`/allhiringrequest/${value?.hrId}`} target="_blank" >{text}</a></span>
+           }
+        },
+        {
+            title:<span style={popupSellHeadStyle}>HR Title</span>,
+            dataIndex: "hrTitle",
+            key: "hrTitle",
+            align: "center",
+             width:"180px",
+           render:(text,value)=>{
+            return <span style={popupSellStyle}>{text}</span>
+           }
+        },
+         {
+            title:<span style={popupSellHeadStyle}>Uplers <br/> Fees</span>,
+            dataIndex: "uplersFees",
+            key: "uplersFees",
+            align: "center",
+            width:"80px",
+             render:(text,value)=>{
+            return <span style={popupSellStyle}>{text}</span>
+           }
+        },
+         {
+            title:<span style={popupSellHeadStyle}>Uplers <br/>Fees %</span>,
+            dataIndex: "uplersFeesPer",
+            key: "uplersFeesPer",
+            align: "center",
+             width:"80px",
+             render:(text,value)=>{
+            return <span style={popupSellStyle}>{text}</span>
+           }
+        },
+       {
+            title:<span style={popupSellHeadStyle}>Sales Person</span>,
+            dataIndex: "salesPersonName",
+            key: "salesPersonName",
+            align: "center",
+             render:(text,value)=>{
+            return <span style={popupSellStyle}>{text}</span>
+           }
+        },
+        {
+            title:<span style={popupSellHeadStyle}>Lead Type</span>,
+            dataIndex: "leadType",
+            key: "leadType",
+            align: "center",
+             width:"100px",
+             render:(text,value)=>{
+            return <span style={popupSellStyle}>{text}</span>
+           }
+        },  
+    ];
+
+    const getGrandTotalRow = () =>{
+        let allRows = []
+
+        PLVData.forEach(group=>{
+            allRows = [...allRows, ...group.recruiter]
+        })
+
+        return <tr className="goal-row" key={'GT'}>
+                                                                <td className="rowlabel">Grand Total</td>
+                                                                <td className="datacell">
+                                                                    {`$${getTotal(allRows, 'existing').toLocaleString('en-US')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {`$${getTotal(allRows, 'existingAll').toLocaleString('en-US')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {/* {calPercentage(getTotal(allRows, 'existing').toLocaleString('en-US'), getTotal(allRows, 'existingAll').toLocaleString('en-US'))} */}
+                                                                </td>
+                                                               
+                                                                <td className="datacell">
+                                                                    {`$${getTotal(allRows, 'nbd').toLocaleString('en-US')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {`$${getTotal(allRows, 'nbdAll').toLocaleString('en-US')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {/* {calPercentage(getTotal(allRows, 'nbd').toLocaleString('en-US'), getTotal(allRows, 'nbdAll').toLocaleString('en-US'))} */}
+                                                                </td>                                                               
+                                                                 <td className="datacell">
+                                                                    {`$${getTotal(allRows.map(i=> ({grandTotalExisting: addNumbers(i?.existing, i?.nbd)})), 'grandTotalExisting').toLocaleString('en-US')}`}
+                                                                </td>
+                                                                  <td className="datacell">
+                                                                    {`$${getTotal(allRows.map(i=> ({grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll)})), 'grandTotalNBD').toLocaleString('en-US')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {`$${getTotal(allRows, 'existingMontlyAvg').toLocaleString('en-US')}`}
+                                                                </td>
+                                                              
+                                                                <td className="datacell">
+                                                                    {`$${getTotal(allRows, 'nbdMonthlyAVG').toLocaleString('en-US')}`}
+                                                                </td>
+                                                            </tr>
+    }
+
+    const getGrandTotalNUM = ()=>{
+
+         let allRows = []
+
+        PLCData.forEach(group=>{
+            allRows = [...allRows, ...group.recruiter]
+        })
+        return       <tr className="goal-row" key={'GT'}>
+                                                                <td className="rowlabel">Grand Total</td>
+                                                                <td className="datacell">
+                                                                    {`${getTotal(allRows, 'existing')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {`${getTotal(allRows, 'existingAll')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {/* {calPercentage(getTotal(allRows, 'existing').toLocaleString('en-US'), getTotal(allRows, 'existingAll').toLocaleString('en-US'))} */}
+                                                                </td>
+                                                               
+                                                                <td className="datacell">
+                                                                    {`${getTotal(allRows, 'nbd')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {`${getTotal(allRows, 'nbdAll')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {/* {calPercentage(getTotal(allRows, 'nbd').toLocaleString('en-US'), getTotal(allRows, 'nbdAll').toLocaleString('en-US'))} */}
+                                                                </td>
+
+                                                                 <td className="datacell">
+                                                                    {`${getTotal(allRows.map(i=> ({grandTotalExisting: addNumbers(i?.existing, i?.nbd)})), 'grandTotalExisting')}`}
+                                                                </td>
+                                                                  <td className="datacell">
+                                                                    {`${getTotal(allRows.map(i=> ({grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll)})), 'grandTotalNBD')}`}
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {`${getTotal(allRows, 'existingMonthlyAvg')}`}
+                                                                </td>
+                                                              
+                                                                <td className="datacell">
+                                                                    {`${getTotal(allRows, 'nbdMonthlyAVG')}`}
+                                                                </td>
+                                                            </tr>
+    }
 
 
 
@@ -284,19 +442,19 @@ function TAplayground() {
                                             <thead>
                                                 <tr>
                                                     <th rowSpan={2}>Recruiter</th>
-                                                    <th colSpan={3}>Existing</th>
-                                                    <th colSpan={3}>NBD</th>
+                                                    <th colSpan={3} className={'existingStyle'}>Existing</th>
+                                                    <th colSpan={3} className={'ndbStyle'}>NBD</th>
                                                     <th colSpan={2}>Grand Total</th>
                                                     <th colSpan={2}>Average</th>
                                                 </tr>
                                                 <tr>
-                                                    <th>WON</th>
-                                                    <th>Play Ground</th>
-                                                    <th>Play Ground %</th>
+                                                    <th className={'existingStyle'}>WON</th>
+                                                    <th className={'existingStyle'}>Play Ground</th>
+                                                    <th className={'existingStyle'}>Play Ground %</th>
                                                  
-                                                    <th>WON</th>
-                                                    <th>Play Ground</th>
-                                                    <th>Play Ground %</th>
+                                                    <th className={'ndbStyle'}>WON</th>
+                                                    <th className={'ndbStyle'}>Play Ground</th>
+                                                    <th className={'ndbStyle'}>Play Ground %</th>
                                                    
                                                     <th>WON</th>
                                                     <th>Play Ground</th>
@@ -328,24 +486,24 @@ function TAplayground() {
                                                                         <td className="rowlabel">{row.recruiterName}</td>
 
                                                                         {/* Existing sub-columns */}
-                                                                        <td className="datacell" style={existingStyle}>{row?.existing ?? ''}</td>
-                                                                        <td className="datacell" style={existingStyle}>{row?.existingAll ?? ''}</td>
-                                                                        <td className="datacell" style={existingStyle}>{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
+                                                                        <td className="datacell existingStyle" ><span className="datacelllink" onClick={()=>{getPOPUP(row,"Existing",'Won')}}>{row?.existing ?? ''}</span></td>
+                                                                        <td className="datacell existingStyle" ><span className="datacelllink" onClick={()=>{getPOPUP(row,"Existing",'All')}}>{row?.existingAll ?? ''}</span></td>
+                                                                        <td className="datacell existingStyle" >{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td> */}
 
                                                                         {/* NBD sub-columns */}
-                                                                        <td className="datacell" style={ndbStyle}>{row?.nbd ?? ''}</td>
-                                                                        <td className="datacell" style={ndbStyle}>{row?.nbdAll ?? ''}</td>
-                                                                        <td className="datacell" style={ndbStyle}>{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
+                                                                        <td className="datacell ndbStyle" ><span className="datacelllink" onClick={()=>{getPOPUP(row,"New",'Won')}}>{row?.nbd ?? ''}</span></td>
+                                                                        <td className="datacell ndbStyle" ><span className="datacelllink" onClick={()=>{getPOPUP(row,"New",'All')}}>{row?.nbdAll ?? ''}</span></td>
+                                                                        <td className="datacell ndbStyle" >{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td> */}
 
                                                                         {/* <td className="datacell">{row?.monthlyAvg}</td>
                         <td className={`pct`}> {row?.grandTotal}</td> */}
 
-                        <td className="datacell">{`$${addNumbers(row?.existing, row?.nbd)}`}</td>
-                                                                        <td className="datacell">{`$${addNumbers(row?.existingAll, row?.nbdAll)}`}</td>
+                        <td className="datacell">{`$${addNumbers(row?.existing, row?.nbd).toLocaleString('en-US')}`}</td>
+                                                                        <td className="datacell">{`$${addNumbers(row?.existingAll, row?.nbdAll).toLocaleString('en-US')}`}</td>
 
                                                                          <td className="datacell">{row?.existingMontlyAvg ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td>
@@ -355,45 +513,49 @@ function TAplayground() {
                                                             })}
 
                                                             <tr className="goal-row" key={'GT'}>
-                                                                <td className="rowlabel">Grand Total</td>
+                                                                <td className="rowlabel">Group Total</td>
                                                                 <td className="datacell">
-                                                                    {`$${getTotal(groupRow?.recruiter, 'existing')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US')}`}
                                                                 </td>
                                                                 <td className="datacell">
-                                                                    {`$${getTotal(groupRow?.recruiter, 'existingAll')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US')}`}
                                                                 </td>
                                                                 <td className="datacell">
                                                                     {calPercentage(getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US'))}
                                                                 </td>
                                                                
                                                                 <td className="datacell">
-                                                                    {`$${getTotal(groupRow?.recruiter, 'nbd')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US')}`}
                                                                 </td>
                                                                 <td className="datacell">
-                                                                    {`$${getTotal(groupRow?.recruiter, 'nbdAll')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US')}`}
                                                                 </td>
                                                                 <td className="datacell">
                                                                     {calPercentage(getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US'))}
-                                                                </td>
-
+                                                                </td>                                                               
                                                                  <td className="datacell">
-                                                                    {`$${getTotal(groupRow?.recruiter, 'grandTotalExisting')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter.map(i=> ({grandTotalExisting: addNumbers(i?.existing, i?.nbd)})), 'grandTotalExisting').toLocaleString('en-US')}`}
                                                                 </td>
                                                                   <td className="datacell">
-                                                                    {`$${getTotal(groupRow?.recruiter, 'grandTotalNBD')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter.map(i=> ({grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll)})), 'grandTotalNBD').toLocaleString('en-US')}`}
                                                                 </td>
                                                                 <td className="datacell">
-                                                                    {`$${getTotal(groupRow?.recruiter, 'existingMonthlyAvg')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'existingMontlyAvg').toLocaleString('en-US')}`}
                                                                 </td>
                                                               
                                                                 <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'nbdMonthlyAVG')}`}
+                                                                    {`$${getTotal(groupRow?.recruiter, 'nbdMonthlyAVG').toLocaleString('en-US')}`}
                                                                 </td>
                                                             </tr>
+
+                                                                   
+
 
                                                         </>
 
                                                     })}
+
+                                                    {getGrandTotalRow()}
 
                                             </tbody>
 
@@ -477,19 +639,18 @@ function TAplayground() {
                                                                     <tr key={row.recruiterName + ind}>
                                                                         <td className="rowlabel">{row.recruiterName}</td>
 
+                                                                      
                                                                         {/* Existing sub-columns */}
-                                                                        <td className="datacell" style={existingStyle}>{row?.existing ?? ''}</td>
-                                                                        <td className="datacell" style={existingStyle}>{row?.existingAll ?? ''}</td>
-                                                                        <td className="datacell" style={existingStyle}>{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
+                                                                        <td className="datacell existingStyle" ><span className="datacelllink" onClick={()=>{getPOPUP(row,"Existing",'Won')}}>{row?.existing ?? ''}</span></td>
+                                                                        <td className="datacell existingStyle" ><span className="datacelllink" onClick={()=>{getPOPUP(row,"Existing",'All')}}>{row?.existingAll ?? ''}</span></td>
+                                                                        <td className="datacell existingStyle" >{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td> */}
 
                                                                         {/* NBD sub-columns */}
-                                                                        <td className="datacell" style={ndbStyle}>{row?.nbd ?? ''}</td>
-                                                                        <td className="datacell" style={ndbStyle}>{row?.nbdAll ?? ''}</td>
-                                                                        <td className="datacell" style={ndbStyle}>{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
-                                                                        {/* <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
-                                                                        <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td> */}
+                                                                        <td className="datacell ndbStyle" ><span className="datacelllink" onClick={()=>{getPOPUP(row,"New",'Won')}}>{row?.nbd ?? ''}</span></td>
+                                                                        <td className="datacell ndbStyle" ><span className="datacelllink" onClick={()=>{getPOPUP(row,"New",'All')}}>{row?.nbdAll ?? ''}</span></td>
+                                                                        <td className="datacell ndbStyle" >{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
 
                                                                         {/* <td className="datacell">{row?.monthlyAvg}</td>
                         <td className={`pct`}> {row?.grandTotal}</td> */}
@@ -505,7 +666,7 @@ function TAplayground() {
                                                             })}
 
                                                             <tr className="goal-row" key={'GT'}>
-                                                                <td className="rowlabel">Grand Total</td>
+                                                                <td className="rowlabel">Group Total</td>
                                                                 <td className="datacell">
                                                                     {`${getTotal(groupRow?.recruiter, 'existing')}`}
                                                                 </td>
@@ -527,10 +688,10 @@ function TAplayground() {
                                                                 </td>
 
                                                                  <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'grandTotalExisting')}`}
+                                                                    {`${getTotal(groupRow?.recruiter.map(i=> ({grandTotalExisting: addNumbers(i?.existing, i?.nbd)})), 'grandTotalExisting')}`}
                                                                 </td>
                                                                   <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'grandTotalNBD')}`}
+                                                                    {`${getTotal(groupRow?.recruiter.map(i=> ({grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll)})), 'grandTotalNBD')}`}
                                                                 </td>
                                                                 <td className="datacell">
                                                                     {`${getTotal(groupRow?.recruiter, 'existingMonthlyAvg')}`}
@@ -544,7 +705,7 @@ function TAplayground() {
                                                         </>
 
                                                     })}
-
+{getGrandTotalNUM()}
                                             </tbody>
 
                                         </table>
@@ -557,139 +718,30 @@ function TAplayground() {
                     </div>
 
 
+{showPopup && <Modal 
+ transitionName=""
+          width="1000px"
+          centered
+          footer={null}
+          open={showPopup}
+          className="engagementModalStyle"
+          onCancel={() => {
+          setShowPopup(false)
+          }}>
+<>
+  {popUPLoading ? <TableSkeleton /> : (
+    <div style={{ margin: '10px', }}><Table
+    scroll={{y:"auto"}}
+                            dataSource={popUPDAta}
+                            columns={popupColumns}
+                            pagination={false}
+                        /></div>
+                        
+                    )}
+</>
+</Modal> }
 
-
-                    <div className="row-pair">
-                        <section className="card">
-                            <div className="card-head">
-                                <div className="htitle"><span className="num">5</span>{PLPercentageData?.[0]?.titleStr}</div>
-                            </div>
-                            <div className="table-wrap">
-                                {plPercentageLoading ? (
-                                    <div className="table-loading">Loading...</div>
-                                ) : (
-                                     <table className="grid">
-                                            <thead>
-                                                <tr>
-                                                    <th rowSpan={2}>Recruiter</th>
-                                                    <th colSpan={3}>Existing</th>
-                                                    <th colSpan={3}>NBD</th>
-                                                    <th colSpan={2}>Grand Total</th>
-                                                    <th colSpan={2}>Average</th>
-                                                </tr>
-                                                <tr>
-                                                    <th>WON</th>
-                                                    <th>Play Ground</th>
-                                                    <th>Play Ground %</th>
-                                                 
-                                                    <th>WON</th>
-                                                    <th>Play Ground</th>
-                                                    <th>Play Ground %</th>
-                                                   
-                                                  <th>WON</th>
-                                                    <th>Play Ground</th>
-
-                                                    <th>WON</th>
-                                                    <th>Play Ground</th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {PLPercentageData?.length === 0 ? (
-                                                    <tr>
-                                                        <td colSpan="11" className="datacell">
-                                                            No data available
-                                                        </td>
-                                                    </tr>
-                                                ) :
-                                                     PLPercentageData.map((groupRow, ind) => {
-                                                        return <>
-                                                            <tr>
-                                                                <td colSpan="11" className="datacell" style={{ textAlign: 'start', fontWeight: 'bold' }}>
-                                                                    {groupRow?.leadName}
-                                                                </td>
-                                                            </tr>
-
-                                                            {groupRow?.recruiter.map((row, ind) => {
-                                                                return (
-                                                                    <tr key={row.recruiterName + ind}>
-                                                                        <td className="rowlabel">{row.recruiterName}</td>
-
-                                                                        {/* Existing sub-columns */}
-                                                                        <td className="datacell" style={existingStyle}>{row?.existing ?? ''}</td>
-                                                                        <td className="datacell" style={existingStyle}>{row?.existingAll ?? ''}</td>
-                                                                        <td className="datacell" style={existingStyle}>{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
-                                                                        {/* <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
-                                                                        <td className="datacell">{row?.existingMontlyAvg ?? ''}</td> */}
-
-                                                                        {/* NBD sub-columns */}
-                                                                        <td className="datacell" style={ndbStyle}>{row?.nbd ?? ''}</td>
-                                                                        <td className="datacell" style={ndbStyle}>{row?.nbdAll ?? ''}</td>
-                                                                        <td className="datacell" style={ndbStyle}>{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
-                                                                        {/* <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
-                                                                        <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td> */}
-
-                                                                        {/* <td className="datacell">{row?.monthlyAvg}</td>
-                        <td className={`pct`}> {row?.grandTotal}</td> */}
-
-                        <td className="datacell">{`${addNumbers(row?.existing, row?.nbd)}`}</td>
-                                                                        <td className="datacell">{`${addNumbers(row?.existingAll, row?.nbdAll)}`}</td>
-
-                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td>
-                                                                        <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td>
-
-                                                                    </tr>
-                                                                );
-                                                            })}
-
-                                                            <tr className="goal-row" key={'GT'}>
-                                                                <td className="rowlabel">Grand Total</td>
-                                                                <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'existing')}`}
-                                                                </td>
-                                                                <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'existingAll')}`}
-                                                                </td>
-                                                                <td className="datacell">
-                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US'))}
-                                                                </td>
-                                                               
-                                                                <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'nbd')}`}
-                                                                </td>
-                                                                <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'nbdAll')}`}
-                                                                </td>
-                                                                <td className="datacell">
-                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US'))}
-                                                                </td>
-
-                                                                 <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'grandTotalExisting')}`}
-                                                                </td>
-                                                                  <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'grandTotalNBD')}`}
-                                                                </td>
-                                                                <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'existingMonthlyAvg')}`}
-                                                                </td>
-                                                              
-                                                                <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'nbdMonthlyAVG')}`}
-                                                                </td>
-                                                            </tr>
-
-                                                        </>
-
-                                                    })}
-
-                                            </tbody>
-
-                                        </table>
-                                )}
-                            </div>
-                        </section>
-                    </div>
+               
 
                 </div>
             </main> </div>
