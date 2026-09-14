@@ -415,7 +415,7 @@ function TAplayground() {
                     <header>
                         <div className="title-block">
                             {/* <p className="eyebrow">Talent Operations · NASA POD · Uplers</p> */}
-                            <h1>TA Dashboard</h1>
+                            {/* <h1>TA Dashboard</h1> */}
                         </div>
                     </header>
 
