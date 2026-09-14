@@ -698,6 +698,24 @@ getPODTableDataRequest: async function (pl) {
 			return errorDebug(error, 'TaDashboardAPI.getTAPlaygroundTableRequest');
 		}
 	},
+	getTAPlaygroundTablePOPUPRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_PLAYGROUNG_POPUP_DATA
+			 + pl
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		// httpService.dataToSend = pl
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getTAPlaygroundTableRequest');
+		}
+	},
     insertTaskCommentRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =
