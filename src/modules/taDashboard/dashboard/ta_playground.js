@@ -233,6 +233,16 @@ function TAplayground() {
             return <span style={popupSellStyle}>{text}</span>
         }
     },
+      {
+        title: <span style={popupSellHeadStyle}>Eng. Type</span>,
+        dataIndex: "modelType",
+        key: "modelType",
+        align: "center",
+        width: "100px",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{text}</span>
+        }
+    },
     {
         title: <span style={popupSellHeadStyle}>Uplers <br /> Fees</span>,
         dataIndex: "uplersFees",
