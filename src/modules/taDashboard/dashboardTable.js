@@ -1892,7 +1892,7 @@ const STATUS_CHIP_STYLES = {
       cellRenderer: (props) => {
          const { data } = props;
   if (data?.isTotalRow) {
-    return <strong>{data.uplersFeesPer}</strong>;
+    return <strong>{data.uplersFeesPer?.toLocaleString('en-US')}</strong>;
   }
       return  <ControlledCellComp text={props.data.uplersFeesPer} values={props.data} />
       },
