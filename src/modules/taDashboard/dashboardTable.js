@@ -1911,7 +1911,7 @@ const STATUS_CHIP_STYLES = {
         const { data } = props;
 
           if (props.node.rowPinned === "bottom") {
-        return data.revenue_On10PerCTCStr;
+        return data.revenue_On10PerCTCStr?.toLocaleString('en-US');
     }
 
         if (data?.isTotalRow) {
