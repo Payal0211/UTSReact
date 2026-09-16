@@ -482,6 +482,9 @@ const recalcAndSave = async (row, { billRate, talentPayRate } = {}) => {
                         if (val === "Pause") {
                           return  setTabTitle('P')
                         }
+                         if (val === "Lost") {
+                          return  setTabTitle('L')
+                        }
                         return setTabTitle('A')
                            },2000)
                                                
@@ -2360,6 +2363,21 @@ const STATUS_CHIP_STYLES = {
                         }}
                     >
                         Pause
+                    </button>
+                       <button
+                        onClick={() => setTabTitle('L')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: '8px 0 12px',
+                            fontSize: 15,
+                            fontWeight: TabTitle === 'L' ? 600 : 400,
+                            color: TabTitle === 'L' ? '#000' : '#8c8c8c',
+                            borderBottom: TabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Lost
                     </button>
                 </div>
                  <div className={`${taStylesNew["table-container"]} ${gridStyles["grid-wrapper"]}`} style={{ marginTop: '20px' }}>
