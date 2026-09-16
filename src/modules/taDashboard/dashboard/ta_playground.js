@@ -14,19 +14,9 @@ import moment from 'moment';
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-const FUNNEL_ROWS = [
-    { key: 'shipment', label: 'Hudda' },
-    { key: 'shipment', label: 'Hudda' },
-    { key: 'shipment', label: 'Hudda' },
-    { key: 'shipment', label: 'Hudda' },
-    { key: 'shipment', label: 'Hudda' },
-
-];
+import { downloadToExcel } from "modules/report/reportUtils";
 
 
-const existingStyle = { background: '#e2fde2' }
-const ndbStyle = { background: '#e2f1fb' }
 
 
 function TAplayground() {
@@ -194,7 +184,10 @@ function TAplayground() {
     const popupSellHeadStyle = { fontSize: '12px' }
     const popupSellStyle = { fontSize: '10px', textAlign: 'start', display: 'flex' }
 
-    const popupColumns = [{
+    const popupColumns = ()=>{
+
+        if(popupRowData?.status === 'Won'){
+            return  [{
         title: <span style={popupSellHeadStyle}>Date</span>,
         dataIndex: "hrCreatedDate",
         key: "hrCreatedDate",
@@ -233,12 +226,12 @@ function TAplayground() {
             return <span style={popupSellStyle}>{text}</span>
         }
     },
-      {
-        title: <span style={popupSellHeadStyle}>Eng. Type</span>,
-        dataIndex: "modelType",
-        key: "modelType",
+    {
+        title: <span style={popupSellHeadStyle}>Talent</span>,
+        dataIndex: "talent",
+        key: "talent",
         align: "center",
-        width: "100px",
+        width: "80px",
         render: (text, value) => {
             return <span style={popupSellStyle}>{text}</span>
         }
@@ -260,7 +253,7 @@ function TAplayground() {
         align: "center",
         width: "80px",
         render: (text, value) => {
-            return <span style={popupSellStyle}>{text}</span>
+            return <span style={popupSellStyle}>{text} %</span>
         }
     },
     {
@@ -268,6 +261,107 @@ function TAplayground() {
         dataIndex: "salesPersonName",
         key: "salesPersonName",
         align: "center",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{text}</span>
+        }
+    },
+        {
+        title: <span style={popupSellHeadStyle}>Eng. Type</span>,
+        dataIndex: "modelType",
+        key: "modelType",
+        align: "center",
+        width: "100px",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{text}</span>
+        }
+    },
+    {
+        title: <span style={popupSellHeadStyle}>Lead Type</span>,
+        dataIndex: "leadType",
+        key: "leadType",
+        align: "center",
+        width: "100px",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{text}</span>
+        }
+    },
+    ];
+        }
+        return    [{
+        title: <span style={popupSellHeadStyle}>Date</span>,
+        dataIndex: "hrCreatedDate",
+        key: "hrCreatedDate",
+        align: "center",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{moment(text).format('DD/MM/YYYY')}</span>
+        }
+    },
+
+    {
+        title: <span style={popupSellHeadStyle}>Company</span>,
+        dataIndex: "company",
+        key: "company",
+        align: "center",
+        render: (text, value) => {
+            return <span style={popupSellStyle}><a href={`/viewCompanyDetails/${value?.company_ID}`} target="_blank" >{text}</a></span>
+        }
+    },
+    {
+        title: <span style={popupSellHeadStyle}>HR #</span>,
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+        align: "center",
+        width: "150px",
+        render: (text, value) => {
+            return <span style={popupSellStyle}> <a href={`/allhiringrequest/${value?.hrId}`} target="_blank" >{text}</a></span>
+        }
+    },
+    {
+        title: <span style={popupSellHeadStyle}>HR Title</span>,
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        align: "center",
+        width: "180px",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{text}</span>
+        }
+    },
+  
+    {
+        title: <span style={popupSellHeadStyle}>Uplers <br /> Fees</span>,
+        dataIndex: "uplersFees",
+        key: "uplersFees",
+        align: "center",
+        width: "80px",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{text ? `$${text?.toLocaleString('en-US')}` : ''}</span>
+        }
+    },
+    {
+        title: <span style={popupSellHeadStyle}>Uplers <br />Fees %</span>,
+        dataIndex: "uplersFeesPer",
+        key: "uplersFeesPer",
+        align: "center",
+        width: "80px",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{text} %</span>
+        }
+    },
+    {
+        title: <span style={popupSellHeadStyle}>Sales Person</span>,
+        dataIndex: "salesPersonName",
+        key: "salesPersonName",
+        align: "center",
+        render: (text, value) => {
+            return <span style={popupSellStyle}>{text}</span>
+        }
+    },
+        {
+        title: <span style={popupSellHeadStyle}>Eng. Type</span>,
+        dataIndex: "modelType",
+        key: "modelType",
+        align: "center",
+        width: "100px",
         render: (text, value) => {
             return <span style={popupSellStyle}>{text}</span>
         }
@@ -284,6 +378,8 @@ function TAplayground() {
     },
     ];
 
+    }
+  
     const getGrandTotalRow = () => {
         let allRows = []
 
@@ -300,7 +396,7 @@ function TAplayground() {
                 {`$${getTotal(allRows, 'existingAll').toLocaleString('en-US')}`}
             </td>
             <td className="datacell">
-                {/* {calPercentage(getTotal(allRows, 'existing').toLocaleString('en-US'), getTotal(allRows, 'existingAll').toLocaleString('en-US'))} */}
+                {calPercentage(getTotal(allRows, 'existing').toLocaleString('en-US'), getTotal(allRows, 'existingAll').toLocaleString('en-US'))} %
             </td>
 
             <td className="datacell">
@@ -310,7 +406,7 @@ function TAplayground() {
                 {`$${getTotal(allRows, 'nbdAll').toLocaleString('en-US')}`}
             </td>
             <td className="datacell">
-                {/* {calPercentage(getTotal(allRows, 'nbd').toLocaleString('en-US'), getTotal(allRows, 'nbdAll').toLocaleString('en-US'))} */}
+                {calPercentage(getTotal(allRows, 'nbd').toLocaleString('en-US'), getTotal(allRows, 'nbdAll').toLocaleString('en-US'))} %
             </td>
             <td className="datacell">
                 {`$${getTotal(allRows.map(i => ({ grandTotalExisting: addNumbers(i?.existing, i?.nbd) })), 'grandTotalExisting').toLocaleString('en-US')}`}
@@ -344,7 +440,7 @@ function TAplayground() {
                 {`${getTotal(allRows, 'existingAll')}`}
             </td>
             <td className="datacell">
-                {/* {calPercentage(getTotal(allRows, 'existing').toLocaleString('en-US'), getTotal(allRows, 'existingAll').toLocaleString('en-US'))} */}
+                {calPercentage(getTotal(allRows, 'existing').toLocaleString('en-US'), getTotal(allRows, 'existingAll').toLocaleString('en-US'))} %
             </td>
 
             <td className="datacell">
@@ -354,7 +450,7 @@ function TAplayground() {
                 {`${getTotal(allRows, 'nbdAll')}`}
             </td>
             <td className="datacell">
-                {/* {calPercentage(getTotal(allRows, 'nbd').toLocaleString('en-US'), getTotal(allRows, 'nbdAll').toLocaleString('en-US'))} */}
+                {calPercentage(getTotal(allRows, 'nbd').toLocaleString('en-US'), getTotal(allRows, 'nbdAll').toLocaleString('en-US'))} %
             </td>
 
             <td className="datacell">
@@ -373,6 +469,43 @@ function TAplayground() {
         </tr>
     }
 
+       const handleExport = (apiData) => {
+          
+    
+            const tableColumns = popupRowData?.status === 'Won'?  [
+    { title: "Date", key: "hrCreatedDate" },
+    { title: "Company", key: "company" },
+    { title: "HR #", key: "hR_Number" },
+    { title: "HR Title", key: "hrTitle" },
+    { title: "Talent", key: "talent" },
+    { title: "Uplers Fees", key: "uplersFees" },
+    { title: "Uplers Fees %", key: "uplersFeesPer" },
+    { title: "Sales Person", key: "salesPersonName" },
+    { title: "Eng. Type", key: "modelType" },
+    { title: "Lead Type", key: "leadType" }
+]: [
+    { title: "Date", key: "hrCreatedDate" },
+    { title: "Company", key: "company" },
+    { title: "HR #", key: "hR_Number" },
+    { title: "HR Title", key: "hrTitle" },
+    { title: "Uplers Fees", key: "uplersFees" },
+    { title: "Uplers Fees %", key: "uplersFeesPer" },
+    { title: "Sales Person", key: "salesPersonName" },
+    { title: "Eng. Type", key: "modelType" },
+    { title: "Lead Type", key: "leadType" }
+]
+    
+            let DataToExport = apiData.map((data) => {
+                let obj = {};
+                tableColumns.map(
+                    (val) =>
+                        val.title !== " " && (obj[`${val.title}`] = data[`${val.key}`])
+                );
+                return obj;
+            });
+            downloadToExcel(DataToExport, `${popupRowData?.recruiterName} : ${popupRowData?.status === "All" ? "Playground" : popupRowData?.status} ${popupRowData?.table} : ${popupRowData?.value}`);
+        };
+
 
 
     return (
@@ -383,7 +516,7 @@ function TAplayground() {
                     //  className={`${stylesOBj["filterContainer"]}`}
                     style={{ display: 'flex', paddingRight: '15px', margin: '15px 10px', marginBottom: '5px' }}>
 
-
+  <h2>TA Dashboard</h2>
                     {/* <Select
                         id="selectedValue"
                         placeholder="Select TA"
@@ -402,7 +535,7 @@ function TAplayground() {
                         optionFilterProp="label"
                     /> */}
 
-                    <div className={stylesOBj.calendarFilter} style={{ height: '35px', marginLeft: 'auto', width: '160px', minWidth: '160px' }}>
+                    <div className={stylesOBj.calendarFilter} style={{ height: '35px', marginLeft: 'auto', width: '130px', minWidth: '130px' }}>
                         <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                         <DatePicker
                             style={{ backgroundColor: "red" }}
@@ -501,14 +634,14 @@ function TAplayground() {
                                                                         {/* Existing sub-columns */}
                                                                         <td className="datacell existingStyle" ><span className="datacelllink" onClick={() => { getPOPUP(row, "Existing", 'Won', row?.existing, "Revenue") }}>{row?.existing ?? ''}</span></td>
                                                                         <td className="datacell existingStyle" ><span className="datacelllink" onClick={() => { getPOPUP(row, "Existing", 'All', row?.existingAll, "Revenue") }}>{row?.existingAll ?? ''}</span></td>
-                                                                        <td className="datacell existingStyle" >{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
+                                                                        <td className="datacell existingStyle" >{calPercentage(row?.existing, row?.existingAll) ? `${calPercentage(row?.existing, row?.existingAll)} %` : ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td> */}
 
                                                                         {/* NBD sub-columns */}
                                                                         <td className="datacell ndbStyle" ><span className="datacelllink" onClick={() => { getPOPUP(row, "New", 'Won', row?.nbd, "Revenue") }}>{row?.nbd ?? ''}</span></td>
                                                                         <td className="datacell ndbStyle" ><span className="datacelllink" onClick={() => { getPOPUP(row, "New", 'All', row?.nbdAll, "Revenue") }}>{row?.nbdAll ?? ''}</span></td>
-                                                                        <td className="datacell ndbStyle" >{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
+                                                                        <td className="datacell ndbStyle" >{calPercentage(row?.nbd, row?.nbdAll) ? `${calPercentage(row?.nbd, row?.nbdAll)} %` : ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalNBD ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td> */}
 
@@ -527,24 +660,24 @@ function TAplayground() {
 
                                                             <tr className="goal-row" key={'GT'}>
                                                                 <td className="rowlabel">Group Total</td>
-                                                                <td className="datacell existingStyle">
+                                                                <td className="datacell ">
                                                                     {`$${getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US')}`}
                                                                 </td>
-                                                                <td className="datacell existingStyle">
+                                                                <td className="datacell ">
                                                                     {`$${getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US')}`}
                                                                 </td>
-                                                                <td className="datacell existingStyle">
-                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US'))}
+                                                                <td className="datacell">
+                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US')) } %
                                                                 </td>
 
-                                                                <td className="datacell ndbStyle">
+                                                                <td className="datacell">
                                                                     {`$${getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US')}`}
                                                                 </td>
-                                                                <td className="datacell ndbStyle">
+                                                                <td className="datacell ">
                                                                     {`$${getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US')}`}
                                                                 </td>
-                                                                <td className="datacell ndbStyle">
-                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US'))}
+                                                                <td className="datacell">
+                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US'))} %
                                                                 </td>
                                                                 <td className="datacell">
                                                                     {`$${getTotal(groupRow?.recruiter.map(i => ({ grandTotalExisting: addNumbers(i?.existing, i?.nbd) })), 'grandTotalExisting').toLocaleString('en-US')}`}
@@ -656,14 +789,14 @@ function TAplayground() {
                                                                         {/* Existing sub-columns */}
                                                                         <td className="datacell existingStyle" ><span className="datacelllink" onClick={() => { getPOPUP(row, "Existing", 'Won', row?.existing, "HRs") }}>{row?.existing ?? ''}</span></td>
                                                                         <td className="datacell existingStyle" ><span className="datacelllink" onClick={() => { getPOPUP(row, "Existing", 'All', row?.existingAll, "HRs") }}>{row?.existingAll ?? ''}</span></td>
-                                                                        <td className="datacell existingStyle" >{calPercentage(row?.existing, row?.existingAll) ?? ''}</td>
+                                                                        <td className="datacell existingStyle" >{calPercentage(row?.existing, row?.existingAll) ? `${calPercentage(row?.existing, row?.existingAll)} %` : ''}</td>
                                                                         {/* <td className="datacell">{row?.grandTotalExisting ?? ''}</td>
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td> */}
 
                                                                         {/* NBD sub-columns */}
                                                                         <td className="datacell ndbStyle" ><span className="datacelllink" onClick={() => { getPOPUP(row, "New", 'Won', row?.nbd, "HRs") }}>{row?.nbd ?? ''}</span></td>
                                                                         <td className="datacell ndbStyle" ><span className="datacelllink" onClick={() => { getPOPUP(row, "New", 'All', row?.nbdAll, "HRs") }}>{row?.nbdAll ?? ''}</span></td>
-                                                                        <td className="datacell ndbStyle" >{calPercentage(row?.nbd, row?.nbdAll) ?? ''}</td>
+                                                                        <td className="datacell ndbStyle" >{calPercentage(row?.nbd, row?.nbdAll) ? `${calPercentage(row?.nbd, row?.nbdAll)} %` : ''}</td>
 
                                                                         {/* <td className="datacell">{row?.monthlyAvg}</td>
                         <td className={`pct`}> {row?.grandTotal}</td> */}
@@ -680,24 +813,24 @@ function TAplayground() {
 
                                                             <tr className="goal-row" key={'GT'}>
                                                                 <td className="rowlabel">Group Total</td>
-                                                                <td className="datacell existingStyle">
+                                                                <td className="datacell">
                                                                     {`${getTotal(groupRow?.recruiter, 'existing')}`}
                                                                 </td>
-                                                                <td className="datacell existingStyle">
+                                                                <td className="datacell">
                                                                     {`${getTotal(groupRow?.recruiter, 'existingAll')}`}
                                                                 </td>
-                                                                <td className="datacell existingStyle">
-                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US'))}
+                                                                <td className="datacell">
+                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'existing').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'existingAll').toLocaleString('en-US'))} %
                                                                 </td>
 
-                                                                <td className="datacell nbdStyle">
+                                                                <td className="datacell">
                                                                     {`${getTotal(groupRow?.recruiter, 'nbd')}`}
                                                                 </td>
-                                                                <td className="datacell nbdStyle">
+                                                                <td className="datacell">
                                                                     {`${getTotal(groupRow?.recruiter, 'nbdAll')}`}
                                                                 </td>
-                                                                <td className="datacell nbdStyle">
-                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US'))}
+                                                                <td className="datacell">
+                                                                    {calPercentage(getTotal(groupRow?.recruiter, 'nbd').toLocaleString('en-US'), getTotal(groupRow?.recruiter, 'nbdAll').toLocaleString('en-US'))} %
                                                                 </td>
 
                                                                 <td className="datacell">
@@ -742,12 +875,16 @@ function TAplayground() {
                             setShowPopup(false)
                         }}>
                         <>
-                            <h4 className="ta-popup-modal-title">{popupRowData?.recruiterName} : {popupRowData?.status === "All" ? "Playground" : popupRowData?.status} {popupRowData?.table} : {popupRowData?.value} </h4>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight:'60px'}}> 
+                             <h4 className="ta-popup-modal-title">{popupRowData?.recruiterName} : {popupRowData?.status === "All" ? "Playground" : popupRowData?.status} {popupRowData?.table} : {popupRowData?.value} </h4>
+                                <button className={'btn-export'} onClick={() => handleExport(popUPDAta)}>Export</button>
+                            </div>
+                          
                             {popUPLoading ? <TableSkeleton /> : (
                                 <div style={{ margin: '10px', }}><Table
-                                    scroll={{ y: "auto" }}
+                                    scroll={{ y: "auto" ,x:'auto'}}
                                     dataSource={popUPDAta}
-                                    columns={popupColumns}
+                                    columns={popupColumns()}
                                     pagination={false}
                                 /></div>
 

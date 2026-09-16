@@ -129,7 +129,7 @@ table.grid th.ndbStyle {background:#e2f1fb !important}
   .legend-note{font-size:9.5px;color:var(--ink-faint);}
 
   tr.goal-row td{background:#F6EEDA;font-weight: bold;}
-    tr.total-row td{background:#F6EEDA;font-weight: bold;}
+    tr.total-row td{background:#faedac;font-weight: bold;}
      tr.total-row td.rowlabel{font-weight:700;color:var(--amber-ink);}
   tr.goal-row td.rowlabel{font-weight:700;color:var(--amber-ink);}
   tr.goal-row input.cell{font-weight:700;color:var(--amber-ink);}
@@ -139,6 +139,23 @@ table.grid th.ndbStyle {background:#e2f1fb !important}
   td.datacell.metric-good{background:#E4F3EF;}
   td.datacell.metric-warn{background:#FBF1DE;}
   td.datacell.metric-bad{background:#FBE7E2;}
+
+  .btn-export {
+    padding: 7px 12px;
+    background-color: #FFDE2D;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+    width: auto;
+    justify-self: start;
+}
 
   footer{text-align:center;font-size:9.5px;color:var(--ink-faint);margin-top:4px;}
   @media (max-width:640px){
