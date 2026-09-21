@@ -498,9 +498,15 @@ function TAplayground() {
             let DataToExport = apiData.map((data) => {
                 let obj = {};
                 tableColumns.map(
-                    (val) =>
-                        val.title !== " " && (obj[`${val.title}`] = data[`${val.key}`])
-                );
+                    (val) =>{
+                        if(val.key === "uplersFeesPer"){
+                            obj[`${val.title}`] = `${data[`${val.key}`]} %`
+                        }
+                         if(val.key === "uplersFees"){
+                            obj[`${val.title}`] = `$${data[`${val.key}`]}`
+                        }
+                       val.title !== " " && (obj[`${val.title}`] = data[`${val.key}`])
+                });
                 return obj;
             });
             downloadToExcel(DataToExport, `${popupRowData?.recruiterName} : ${popupRowData?.status === "All" ? "Playground" : popupRowData?.status} ${popupRowData?.table} : ${popupRowData?.value}`);

@@ -114,6 +114,11 @@ export class TaDashboardURL {
 	static UPDATE_SCRUM_TASK_LIST = "UpdateTADashboardDragAndDrop"
 	static UPDATE_SCRUM_GROUP_ORDER_LIST = "UpdateTADashboardDragAndDropTAHeadUserIDWise"
 	static INSERT_TARGET_DETAILS = 'InsertOrUpdateTADailyTargets'
+	static GET_SCRUM_DASHBOARD_POPUP_TABLE_DATA = 'get_TAScrumDashboardPopup'
+	static GET_SCRUM_DASHBOARD_POPUP_2_TABLE_DATA = 'get_TAScrumDashboardtable2Popup'
+	static GET_SCRUM_DASHBOARD_POPUP_3_TABLE_DATA = 'get_TAScrumDashboardtable3Popup'
+	static GET_SCRUM_DASHBOARD_POPUP_4_TABLE_DATA = 'get_TAScrumDashboardtable4Popup'
+	static GET_SCRUM_DASHBOARD_POPUP_5_TABLE_DATA = 'get_TAScrumDashboardtable5Popup'
 	static UPDATE_SCRUM_COLUMN_ORDER = 'UpdateTANewScrumColumnOrderChange'
 	static UPDATE_SCRUM_COLUMN_WIDTH = 'UpdateTANewScumColumWidthPODWise'
 	static GET_TA_WISE_PIPELINE_DETAILS= 'GetTAWiseHRPipelineDetails'

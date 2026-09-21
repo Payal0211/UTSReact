@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './opsdStyles.css';
 import DateNav from './DateNav';
 // import { OpsDashboardDAO } from 'core/opsDashboard/opsDashboardDAO'; // TODO: adjust import path to match your project structure
@@ -6,9 +6,11 @@ import { periodRange, periodLabel } from './dateNavUtils';
 import { pctOf, statusClass, metricStatus } from './sectionMath';
 import moment from 'moment';
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
-import  TickMark from "assets/svg/assignCurrect.svg";
+import TickMark from "assets/svg/assignCurrect.svg";
+import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin, Radio } from "antd";
 import Diamond from "assets/svg/diamond.svg";
-
+import { HTTPStatusCode } from "constants/network";
+import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
 // ---------- column/row config ----------
 
 
@@ -109,7 +111,7 @@ function OPSDashboard({ selectedHead }) {
 
         const range = periodRange(podDateType, podDate);
         getPODTableDate(podDateType, range)
-       
+
     }, [podDate, podDateType, selectedHead]);
 
     // ============================================================
@@ -147,7 +149,7 @@ function OPSDashboard({ selectedHead }) {
         // OpsDashboardDAO.getPipelineDataDAO(range)
         //     .then((res) => setPipeData(res.responseBody))
         //     .finally(() => setPipeLoading(false));
-    }, [pipelineDate, pipelineDateType,selectedHead]);
+    }, [pipelineDate, pipelineDateType, selectedHead]);
 
     const pipeNum = (key) => parseFloat(pipeData?.[key]?.revenue) || 0;
     const totalPipeline = pipeData ? pipeNum('carryForward') + pipeNum('addedNew') + pipeNum('addedExisting') : 0;
@@ -160,8 +162,19 @@ function OPSDashboard({ selectedHead }) {
     const [performanceDateType, setPerformanceDateType] = useState('monthly');
     const [taData, setTaData] = useState(null);
     const [taLoading, setTaLoading] = useState(true);
+    const [showTalentProfiles, setShowTalentProfiles] = useState(false);
+    const [profileInfo, setInfoforProfile] = useState({});
+    const [loadingTalentProfile, setLoadingTalentProfile] = useState(false);
+    const [hrTalentList, setHRTalentList] = useState([]);
+    const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
+    const [colTextVal, setColTextVal] = useState('')
+    const [isCarryForwardPipelineClicked, setIsCarryForwardPipelineClicked] = useState(false);
+    const [isCarryForwardPreonbordClicked, setIsCarryForwardPreonbordClicked] = useState(false);
+    const [isPipelineClicked, setIsPipelineClicked] = useState(false);
+    const [revenueColumn, setRevenueColumn] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
-     const getTAProformanceTableData = useCallback(async (performanceDateType, range) => {
+    const getTAProformanceTableData = useCallback(async (performanceDateType, range) => {
         let pl = {
             TAHeadUserID: selectedHead,
             Tab_Name: TAB_NAME_MAP[performanceDateType] || performanceDateType,
@@ -179,7 +192,7 @@ function OPSDashboard({ selectedHead }) {
             setTaData([])
         }
 
-    },[performanceDateType, performanceDate, selectedHead]);
+    }, [performanceDateType, performanceDate, selectedHead]);
 
     useEffect(() => {
         const range = periodRange(performanceDateType, performanceDate);
@@ -187,7 +200,7 @@ function OPSDashboard({ selectedHead }) {
         // OpsDashboardDAO.getTeamPerformanceDAO(range)
         //     .then((res) => setTaData(res.responseBody))
         //     .finally(() => setTaLoading(false));
-    }, [performanceDate, performanceDateType,selectedHead]);
+    }, [performanceDate, performanceDateType, selectedHead]);
 
     const showTaGoal = performanceDateType === 'monthly' || performanceDateType === 'quarterly';
 
@@ -201,7 +214,7 @@ function OPSDashboard({ selectedHead }) {
     const [wowSortCol, setWowSortCol] = useState(null);
     const [wowSortDir, setWowSortDir] = useState(1);
 
-     const getWOWTableData = useCallback(async (wowDateType, range) => {
+    const getWOWTableData = useCallback(async (wowDateType, range) => {
         let pl = {
             TAHeadUserID: selectedHead,
             Tab_Name: TAB_NAME_MAP[wowDateType] || wowDateType,
@@ -219,7 +232,7 @@ function OPSDashboard({ selectedHead }) {
             setQualWowData(null)
         }
 
-    },[wowDateType, wowDate, selectedHead]);
+    }, [wowDateType, wowDate, selectedHead]);
 
     useEffect(() => {
         const range = periodRange(wowDateType, wowDate);
@@ -227,7 +240,7 @@ function OPSDashboard({ selectedHead }) {
         // OpsDashboardDAO.getWowExperienceDAO(range)
         //     .then((res) => setQualWowData(res.responseBody))
         //     .finally(() => setWowLoading(false));
-    }, [wowDate, wowDateType,selectedHead]);
+    }, [wowDate, wowDateType, selectedHead]);
 
     const toggleWowSort = (col) => {
         setWowSortDir((prevDir) => (wowSortCol === col ? -prevDir : 1));
@@ -245,7 +258,7 @@ function OPSDashboard({ selectedHead }) {
     const [logSortDir, setLogSortDir] = useState(1);
 
 
-     const getLogisticsTableData = useCallback(async (logDateType, range) => {
+    const getLogisticsTableData = useCallback(async (logDateType, range) => {
         let pl = {
             TAHeadUserID: selectedHead,
             Tab_Name: TAB_NAME_MAP[logDateType] || logDateType,
@@ -263,10 +276,10 @@ function OPSDashboard({ selectedHead }) {
             setQualLogData(null)
         }
 
-    },[logDateType, logDate, selectedHead]);
+    }, [logDateType, logDate, selectedHead]);
 
     useEffect(() => {
-     
+
         const range = periodRange(logDateType, logDate);
         getLogisticsTableData(logDateType, range)
         // OpsDashboardDAO.getLogisticsExperienceDAO(range)
@@ -278,6 +291,655 @@ function OPSDashboard({ selectedHead }) {
         setLogSortDir((prevDir) => (logSortCol === col ? -prevDir : 1));
         setLogSortCol(col);
     };
+
+
+    const popupSellHeadStyle = { fontSize: '12px' }
+    const popupSellStyle = { fontSize: '10px', textAlign: 'start', display: 'flex' }
+
+    const ProfileColumns = () => {
+
+        if (revenueColumn) {
+            return [
+                {
+                    title: <span style={popupSellHeadStyle}>Created Date</span>,
+                    dataIndex: "actionDateStr",
+                    key: "actionDateStr",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Company</span>,
+                    dataIndex: "company",
+                    key: "company",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR #</span>,
+                    dataIndex: "hR_Number",
+                    key: "hR_Number",
+                    width: "170px",
+                    render: (text, value) => {
+                        return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Title</span>,
+                    dataIndex: "hR_Title",
+                    key: "hR_Title",
+                    width: "200px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>Talent</span>,
+                    dataIndex: "talent",
+                    key: "talent",
+                    width: "100px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+
+                {
+                    title: <span style={popupSellHeadStyle}>Revenue</span>,
+                    dataIndex: "hrPipeline",
+                    key: "hrPipeline",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    dataIndex: "hrStatus",
+                    key: "hrStatus",
+                    width: "200px",
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.hrStatusCode,
+                            param?.hrStatus
+                        );
+                    }
+                }
+
+            ];
+        }
+
+        if (isPipelineClicked) {
+            return [
+                {
+                    title: <span style={popupSellHeadStyle}>Created Date</span>,
+                    dataIndex: "actionDateStr",
+                    key: "actionDateStr",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Company</span>,
+                    dataIndex: "company",
+                    key: "company",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR #</span>,
+                    dataIndex: "hR_Number",
+                    key: "hR_Number",
+                    width: "170px",
+                    render: (text, value) => {
+                        return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Title</span>,
+                    dataIndex: "hR_Title",
+                    key: "hR_Title",
+                    width: "200px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Pipeline</span>,
+                    dataIndex: "hR_PipelineStr",
+                    key: "hR_PipelineStr",
+                    width: "170px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
+                    dataIndex: "carryFwd_HRStatus",
+                    key: "carryFwd_HRStatus",
+                    width: "170px",
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.carryFwd_HRStatusCode,
+                            param?.carryFwd_HRStatus
+                        );
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    dataIndex: "hrStatus",
+                    key: "hrStatus",
+                    width: "200px",
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.hrStatusCode,
+                            param?.hrStatus
+                        );
+                    }
+                }
+
+
+            ];
+        }
+
+        if (isCarryForwardPreonbordClicked) {
+            return [
+                {
+                    title: <span style={popupSellHeadStyle}>Action Date</span>,
+                    dataIndex: "actionDateStr",
+                    key: "actionDateStr",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Company</span>,
+                    dataIndex: "company",
+                    key: "company",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR #</span>,
+                    dataIndex: "hR_Number",
+                    key: "hR_Number",
+                    width: "170px",
+                    render: (text, value) => {
+                        return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Title</span>,
+                    dataIndex: "hR_Title",
+                    key: "hR_Title",
+                    width: "200px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>Talent</span>,
+                    dataIndex: "talent",
+                    key: "talent",
+                    width: "100px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Pipeline</span>,
+                    dataIndex: "hR_PipelineStr",
+                    key: "hR_PipelineStr",
+                    width: "170px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
+                    dataIndex: "carryFwd_HRStatus",
+                    key: "carryFwd_HRStatus",
+                    width: "170px",
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.carryFwd_HRStatusCode,
+                            param?.carryFwd_HRStatus
+                        );
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    dataIndex: "hrStatus",
+                    key: "hrStatus",
+                    width: "200px",
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.hrStatusCode,
+                            param?.hrStatus
+                        );
+                    }
+                }
+
+
+            ];
+        }
+
+        if (isCarryForwardPipelineClicked) {
+
+            return [
+                {
+                    title: <span style={popupSellHeadStyle}>Created Date</span>,
+                    dataIndex: "actionDateStr",
+                    key: "actionDateStr",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Company</span>,
+                    dataIndex: "company",
+                    key: "company",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR #</span>,
+                    dataIndex: "hR_Number",
+                    key: "hR_Number",
+                    width: "170px",
+                    render: (text, value) => {
+                        return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Title</span>,
+                    dataIndex: "hR_Title",
+                    key: "hR_Title",
+                    width: "200px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Pipeline</span>,
+                    dataIndex: "hR_PipelineStr",
+                    key: "hR_PipelineStr",
+                    width: "170px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    dataIndex: "hrStatus",
+                    key: "hrStatus",
+                    width: "200px",
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.hrStatusCode,
+                            param?.hrStatus
+                        );
+                    }
+                }
+
+
+            ];
+        }
+        return [
+            {
+                title: <span style={popupSellHeadStyle}>Action Date</span>,
+                dataIndex: "actionDateStr",
+                key: "actionDateStr",
+                width: "150px",
+                render: (text) => {
+                    return <span style={popupSellStyle}>{text}</span>
+                }
+            }, {
+                title: <span style={popupSellHeadStyle}>Company</span>,
+                dataIndex: "company",
+                key: "company",
+                width: "150px",
+                render: (text) => {
+                    return <span style={popupSellStyle}>{text}</span>
+                }
+            },
+            {
+                title: <span style={popupSellHeadStyle}>HR #</span>,
+                dataIndex: "hR_Number",
+                key: "hR_Number",
+                width: "170px",
+                render: (text, value) => {
+                    return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                }
+            },
+            {
+                title: <span style={popupSellHeadStyle}>HR Title</span>,
+                dataIndex: "hR_Title",
+                key: "hR_Title",
+                width: "200px",
+                render: (text) => {
+                    return <span style={popupSellStyle}>{text}</span>
+                }
+            },
+            {
+                title: <span style={popupSellHeadStyle}>Talent</span>,
+                dataIndex: "talent",
+                key: "talent",
+                width: "100px",
+                render: (text) => {
+                    return <span style={popupSellStyle}>{text}</span>
+                }
+            },
+            {
+                title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+                dataIndex: "remarks",
+                key: "remarks",
+                width: "350px",
+                render: (text, result) => {
+                    return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+                }
+            }
+
+
+
+        ];
+
+    }
+
+    const handleSearchInput = (value) => {
+        setSearchTerm(value);
+        const filteredData = hrTalentList.filter((talent) =>
+            talent.talent.toLowerCase().includes(value.toLowerCase()) ||
+            (talent.email && talent.email.toLowerCase().includes(value.toLowerCase()))
+        );
+        setFilteredTalentList(filteredData);
+    };
+
+    const getTalentProfilesDetailsfromTable = async (
+        result,
+        DateType, Date
+    ) => {
+        const range = periodRange(DateType, Date);
+        setShowTalentProfiles(true);
+        setInfoforProfile(result);
+
+
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}`
+
+        setLoadingTalentProfile(true);
+        const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboardDAO(query);
+        setLoadingTalentProfile(false);
+
+        if (hrResult.statusCode === HTTPStatusCode.OK) {
+            setHRTalentList(hrResult.responseBody);
+            setFilteredTalentList(hrResult.responseBody);
+
+        } else {
+            setHRTalentList([]);
+            setFilteredTalentList([]);
+
+        }
+    };
+
+
+    const getTalentProfilesDetailsfromTable2 = async (
+        result,
+        DateType, Date
+    ) => {
+        const range = periodRange(DateType, Date);
+        setShowTalentProfiles(true);
+        setInfoforProfile(result);
+
+
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}`
+
+        setLoadingTalentProfile(true);
+        const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboard2DAO(query);
+        setLoadingTalentProfile(false);
+
+        if (hrResult.statusCode === HTTPStatusCode.OK) {
+            setHRTalentList(hrResult.responseBody);
+            setFilteredTalentList(hrResult.responseBody);
+
+        } else {
+            setHRTalentList([]);
+            setFilteredTalentList([]);
+
+        }
+    };
+
+
+    const getTalentProfilesDetailsfromTable3 = async (
+        result,
+        DateType, Date, stageID
+    ) => {
+        const range = periodRange(DateType, Date);
+        setShowTalentProfiles(true);
+        setInfoforProfile(result);
+
+
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}`
+
+        setLoadingTalentProfile(true);
+        const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboard3DAO(query);
+        setLoadingTalentProfile(false);
+
+        if (hrResult.statusCode === HTTPStatusCode.OK) {
+            setHRTalentList(hrResult.responseBody);
+            setFilteredTalentList(hrResult.responseBody);
+
+        } else {
+            setHRTalentList([]);
+            setFilteredTalentList([]);
+
+        }
+    };
+
+    const RenderTACell = ({ c, row, idx, performanceDateType, performanceDate }) => {
+        if (c.key === 'tA_PipelineStr') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'CFP');
+                    setColTextVal(row.tA_PipelineStr)
+                    setIsCarryForwardPipelineClicked(true);
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'tA_PreonboardingCarryFwdPipelineStr') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'CFPP');
+                    setColTextVal(row.tA_PipelineStr)
+                    setIsCarryForwardPipelineClicked(true);
+                    setIsPipelineClicked(true);
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'tA_TotalPipelineStr') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TP');
+                    setColTextVal(row.tA_PipelineStr)
+                    setIsCarryForwardPipelineClicked(true);
+                    setIsPipelineClicked(true);
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'tA_ThismonthPipelineStr') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TMP');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'tA_TotalPipelineStr') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TP');
+                    setColTextVal(row.tA_PipelineStr)
+                    setIsCarryForwardPipelineClicked(true);
+                    setIsPipelineClicked(true);
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'profilesShared') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'PS');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'r1InterviewCompleted') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R1');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'r2InterviewCompleted') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R2');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'r3InterviewCompleted') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R3');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+
+        if (c.key === 'interviewReject') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'IR');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+
+        if (c.key === 'selection') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'SEL');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+
+        if (c.key === 'joined') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'JOIN');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+
+        if (c.key === 'joinedRevenueStr') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'JR');
+                    setColTextVal(row.tA_PipelineStr)
+
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        return <td className="datacell" key={c.key}>{row[c.key] ? row[c.key] : ''}</td>
+    }
+
+
 
     // ============================================================
     // RENDER
@@ -311,7 +973,12 @@ function OPSDashboard({ selectedHead }) {
                             <thead><tr><th></th><th>Goal</th><th>Achieved</th><th>%</th></tr></thead>
                             <tbody>
                                 {funnelLoading || !funnelData ? (
-                                    <div className="table-loading">Loading…</div>
+                                    <tr>
+                                        <td colSpan="4" className="datacell">
+                                            <div className="table-loading">Loading…</div>
+                                        </td>
+                                    </tr>
+
                                 ) : (funnelData.length === 0 ? (
                                     <tr>
                                         <td colSpan="4" className="datacell">
@@ -321,7 +988,15 @@ function OPSDashboard({ selectedHead }) {
                                 ) : funnelData.map(row => <tr key={row.key}>
                                     <td className="rowlabel">{row.stage}</td>
                                     <td className="datacell">{row.goalStr ?? ''}</td>
-                                    <td className="datacell">{row.achievedValueStr ?? ''}</td>
+                                    <td className="datacell"><span
+                                        style={{
+                                            fontWeight: "bold",
+                                            textDecoration: "underline",
+                                            cursor: "pointer",
+                                        }} onClick={() => {
+                                            getTalentProfilesDetailsfromTable(row, podDateType, podDate);
+                                            setColTextVal(row.achievedValueStr)
+                                        }} >{row.achievedValueStr ?? ''}</span></td>
                                     <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                 </tr>)
 
@@ -358,10 +1033,15 @@ function OPSDashboard({ selectedHead }) {
                             </thead>
                             <tbody>
                                 {pipeLoading ? (
-                                    <div className="table-loading">Loading…</div>
+                                    <tr>
+                                        <td colSpan="3" className="datacell">
+                                            <div className="table-loading">Loading…</div>
+                                        </td>
+                                    </tr>
+
                                 ) : (pipeData.length === 0 ? (
                                     <tr>
-                                        <td colSpan="2" className="datacell">
+                                        <td colSpan="3" className="datacell">
                                             No data available
                                         </td>
                                     </tr>
@@ -371,8 +1051,17 @@ function OPSDashboard({ selectedHead }) {
                                         return (
                                             <tr key={row.stage_ID}>
                                                 <td className="rowlabel">{row.stage}</td>
-                                                <td className="datacell">{row.achievedValueStr ?? ''}</td>
-                                                 <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
+                                                <td className="datacell"><span
+                                                    style={{
+                                                        fontWeight: "bold",
+                                                        textDecoration: "underline",
+                                                        cursor: "pointer",
+                                                    }} onClick={() => {
+                                                        getTalentProfilesDetailsfromTable2(row, pipelineDateType, pipelineDate);
+                                                        setColTextVal(row.achievedValueStr)
+                                                        setIsPipelineClicked(true)
+                                                    }} >{row.achievedValueStr ?? ''}</span></td>
+                                                <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                             </tr>
                                         );
                                     }))}
@@ -397,46 +1086,51 @@ function OPSDashboard({ selectedHead }) {
                     />
                 </div>
                 <div className="table-wrap">
-                  
-                        <table className="grid ta">
-                            <thead>
+
+                    <table className="grid ta">
+                        <thead>
+                            <tr>
+                                <th>TA</th>
+                                {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
+                                <th>Achievement %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {taLoading ? (
                                 <tr>
-                                    <th>TA</th>
-                                    {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
-                                    <th>Goal Vs Achievement %</th>
+                                    <td colSpan="15" className="datacell">
+                                        <div className="table-loading">Loading…</div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                  {taLoading  ? (
-                        <div className="table-loading">Loading…</div>
-                    ) : (taData.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="15" className="datacell">
-                                            No data available
-                                        </td>
-                                    </tr>
-                     ) :
+
+                            ) : (taData.length === 0 ? (
+                                <tr>
+                                    <td colSpan="15" className="datacell">
+                                        No data available
+                                    </td>
+                                </tr>
+                            ) :
                                 taData.map((row, idx) => {
                                     const pct = pctOf(row.goal, row.joined);
                                     return (
                                         <tr key={idx}>
                                             <td className="rowlabel">{row.recruiter}</td>
-                                            {TA_COLUMNS.map((c) => (
-                                                <td className="datacell" key={c.key}>{row[c.key] ? row[c.key] : ''}</td>
+                                            {TA_COLUMNS.map((c) => (<RenderTACell c={c} row={row} idx={idx} performanceDate={performanceDate} performanceDateType={performanceDateType} />
+
                                             ))}
-                                            
-                                                <td className="datacell goalvs-cell">
-                                                    <div className={`goalvs-readout ${statusClass(pct)}`}>
-                                                        {row.pipelinetoJoinedPerStr ? row.pipelinetoJoinedPerStr : ''}
-                                                    </div>
-                                                </td>
-                                           
+
+                                            <td className={`pct ${statusClass(pct)}`}>
+                                                {/* <div className={`goalvs-readout ${statusClass(pct)}`}> */}
+                                                {row.pipelinetoJoinedPerStr ? `${row.pipelinetoJoinedPerStr} %` : ''}
+                                                {/* </div> */}
+                                            </td>
+
                                         </tr>
                                     );
-                                }) ) }
-                            </tbody>
-                        </table>
-                  
+                                }))}
+                        </tbody>
+                    </table>
+
                 </div>
             </section>
 
@@ -455,28 +1149,28 @@ function OPSDashboard({ selectedHead }) {
                         />
                     </div>
                     <div className="table-wrap">
-                        
-                            <table className="grid ta qual-split">
-                                <thead>
-                                    <tr>
-                                        <th>TA</th>
-                                        {QUAL_WOW_METRICS.map((m) => {
-                                            // const arrow = wowSortCol === m.key ? (wowSortDir === 1 ? '▲' : '▼') : '';
-                                            return (
-                                                <th key={m.key} className="sortable" 
-                                                // onClick={() => toggleWowSort(m.key)}
-                                                >
-                                                    {m.label}
-                                                    {/* <span className="arrow">{arrow}</span> */}
-                                                </th>
-                                            );
-                                        })}
-                                         <th>HR #</th>
-                                        <th>Revenue</th>
-                                        <th>Client Category</th>
-                                    </tr>
-                                </thead>
-                                {/* <tr className="goal-row">
+
+                        <table className="grid ta qual-split">
+                            <thead>
+                                <tr>
+                                    <th>TA</th>
+                                    {QUAL_WOW_METRICS.map((m) => {
+                                        // const arrow = wowSortCol === m.key ? (wowSortDir === 1 ? '▲' : '▼') : '';
+                                        return (
+                                            <th key={m.key} className="sortable"
+                                            // onClick={() => toggleWowSort(m.key)}
+                                            >
+                                                {m.label}
+                                                {/* <span className="arrow">{arrow}</span> */}
+                                            </th>
+                                        );
+                                    })}
+                                    <th>HR #</th>
+                                    <th>Revenue</th>
+                                    <th>Client Category</th>
+                                </tr>
+                            </thead>
+                            {/* <tr className="goal-row">
                                     <td className="rowlabel">Goal</td>
                                     {QUAL_WOW_METRICS.map((m) => (
                                         <td className="datacell" key={m.key}>{qualWowData?.[m.key] ?? '—'}</td>
@@ -484,46 +1178,46 @@ function OPSDashboard({ selectedHead }) {
                                     <td className="datacell"></td>
                                     <td className="datacell"></td>
                                 </tr> */}
-                                <tbody>
+                            <tbody>
 
-                                    {wowLoading  ? (
-                                        <td colSpan="7">
-                                         <div className="table-loading">Loading…</div>    
-                                        </td>
-                           
-                        ) : qualWowData?.length === 0 ? (
+                                {wowLoading ? (
+                                    <td colSpan="7">
+                                        <div className="table-loading">Loading…</div>
+                                    </td>
+
+                                ) : qualWowData?.length === 0 ? (
                                     <tr>
                                         <td colSpan="7" className="datacell">
                                             No data available
                                         </td>
                                     </tr>
-                                ) : (qualWowData?.map(( row, idx ) => (
-                                        <tr key={idx} className={row?.recruiter === 'Goal' ? "goal-row" : ""}>
-                            
-                                            <td className={"rowlabel"}>{row?.recruiter}</td>
-                                            {QUAL_WOW_METRICS?.map((m) => {
-                                                // const cls = metricStatus(row?.[m.key], row[m.key]);
-                                                return (
-                                                    <td className={`datacell `} key={m.key}>{row?.recruiter === 'Goal' ? row?.[m.key] ?? "" : row?.[m.key] === "yes" ? <img
-                             src={TickMark}
-                             alt="info"
-                             style={{ width: "15px", height: "15px" }}
-                           />  : ''}</td>
-                                                );
-                                            })}
-                                             <td className="datacell">{row?.hR_Number ?? ''}</td>
-                                            <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
-                                            <td className="datacell">{row?.companyCategory === "Diamond" ?  <img
-                             src={Diamond}
-                             alt="info"
-                             style={{ width: "15px", height: "15px" }}
-                           /> : ''}</td>
-                                        </tr>
-                                    )))}
-                                  
-                                </tbody>
-                            </table>
-                       
+                                ) : (qualWowData?.map((row, idx) => (
+                                    <tr key={idx} className={row?.recruiter === 'Goal' ? "goal-row" : ""}>
+
+                                        <td className={"rowlabel"}>{row?.recruiter}</td>
+                                        {QUAL_WOW_METRICS?.map((m) => {
+                                            // const cls = metricStatus(row?.[m.key], row[m.key]);
+                                            return (
+                                                <td className={`datacell `} key={m.key}>{row?.recruiter === 'Goal' ? row?.[m.key] ?? "" : row?.[m.key] === "yes" ? <img
+                                                    src={TickMark}
+                                                    alt="info"
+                                                    style={{ width: "15px", height: "15px" }}
+                                                /> : ''}</td>
+                                            );
+                                        })}
+                                        <td className="datacell">{row?.hR_Number ?? ''}</td>
+                                        <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
+                                        <td className="datacell">{row?.companyCategory === "Diamond" ? <img
+                                            src={Diamond}
+                                            alt="info"
+                                            style={{ width: "15px", height: "15px" }}
+                                        /> : ''}</td>
+                                    </tr>
+                                )))}
+
+                            </tbody>
+                        </table>
+
                     </div>
                     {/* <div className="row-actions">
                         <span className="legend-note">🟢 met/beat goal · tap a header to sort</span>
@@ -544,59 +1238,59 @@ function OPSDashboard({ selectedHead }) {
                         />
                     </div>
                     <div className="table-wrap">
-                       
-                            <table className="grid ta qual-split">
-                                <thead>
-                                    <tr>
-                                        <th>TA</th>
-                                        {QUAL_LOG_METRICS.map((m) => {
-                                            const arrow = logSortCol === m.key ? (logSortDir === 1 ? '▲' : '▼') : '';
-                                            return (
-                                                <th key={m.key} className="sortable" onClick={() => toggleLogSort(m.key)}>
-                                                    {m.label}<span className="arrow">{arrow}</span>
-                                                </th>
-                                            );
-                                        })}                                    
-                                        <th>Revenue</th>
-                                    </tr>
-                                </thead>
-                                {/* <tr className="goal-row">
+
+                        <table className="grid ta qual-split">
+                            <thead>
+                                <tr>
+                                    <th>TA</th>
+                                    {QUAL_LOG_METRICS.map((m) => {
+                                        const arrow = logSortCol === m.key ? (logSortDir === 1 ? '▲' : '▼') : '';
+                                        return (
+                                            <th key={m.key} className="sortable" onClick={() => toggleLogSort(m.key)}>
+                                                {m.label}<span className="arrow">{arrow}</span>
+                                            </th>
+                                        );
+                                    })}
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            {/* <tr className="goal-row">
                                     <td className="rowlabel">Goal</td>
                                     {QUAL_LOG_METRICS.map((m) => (
                                         <td className="datacell" key={m.key}>{row?.[m.key] ?? '—'}</td>
                                     ))}
                                     <td className="datacell"></td>
                                 </tr> */}
-                                <tbody>
+                            <tbody>
 
-                                     {logLoading  ? (
-                                        <td colSpan="5">
-                                         <div className="table-loading">Loading…</div>   
-                                        </td>
-                            
-                        ) :qualLogData?.length === 0 ? (
+                                {logLoading ? (
+                                    <td colSpan="5">
+                                        <div className="table-loading">Loading…</div>
+                                    </td>
+
+                                ) : qualLogData?.length === 0 ? (
                                     <tr>
                                         <td colSpan="5" className="datacell">
                                             No data available
                                         </td>
                                     </tr>
                                 ) : (qualLogData?.map((row, idx) => (
-                                        <tr key={idx}>
-                                            <td className={"rowlabel"}>{row?.recruiter}</td>
-                                            {QUAL_LOG_METRICS.map((m) => {
-                                                // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
-                                                return (
-                                                    <td className={`datacell`} key={m.key}>{row?.[m.key] ?? ''}</td>
-                                                );
-                                            })}
-                                           
-                                            <td className="datacell">{row?.total_RevenueStr ?? ''}</td>
-                                        </tr>
-                                    )))}
-                               
-                                </tbody>
-                            </table>
-                       
+                                    <tr key={idx}>
+                                        <td className={"rowlabel"}>{row?.recruiter}</td>
+                                        {QUAL_LOG_METRICS.map((m) => {
+                                            // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
+                                            return (
+                                                <td className={`datacell`} key={m.key}>{row?.[m.key] ?? ''}</td>
+                                            );
+                                        })}
+
+                                        <td className="datacell">{row?.total_RevenueStr ?? ''}</td>
+                                    </tr>
+                                )))}
+
+                            </tbody>
+                        </table>
+
                     </div>
                     {/* <div className="row-actions">
                         <span className="legend-note">🟢 met/beat goal · tap a header to sort</span>
@@ -607,6 +1301,138 @@ function OPSDashboard({ selectedHead }) {
             {/* <footer>
                 Use ‹ › to browse previous/next periods · each panel's Daily / Weekly / Monthly / Quarterly view refetches from the server
             </footer> */}
+
+            {showTalentProfiles && (
+                <Modal
+                    transitionName=""
+                    width="1020px"
+                    centered
+                    footer={null}
+                    open={showTalentProfiles}
+                    className="engagementModalStyle"
+                    onCancel={() => {
+                        setSearchTerm('')
+                        setShowTalentProfiles(false);
+                        setIsCarryForwardPipelineClicked(false);
+                        setRevenueColumn(false)
+                        setIsPipelineClicked(false)
+                        setIsCarryForwardPreonbordClicked(false)
+
+                        setFilteredTalentList([]);
+                    }}
+                >
+                    {loadingTalentProfile ?
+                        <div style={{ display: "flex", height: "350px", justifyContent: 'center' }}>
+                            <Spin size="large" />
+                        </div> :
+                        <>
+                            <div
+                                style={{
+                                    padding: "45px 15px 10px 15px",
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                }}
+                            >
+
+
+                                <p style={{ marginBottom: "0.5em", marginLeft: '5px' }}>
+                                    <strong>{(isPipelineClicked || isCarryForwardPipelineClicked)  ? profileInfo?.recruiter : profileInfo?.stage}  ({colTextVal})</strong>
+
+                                </p>
+
+                                <input
+                                    type="text"
+                                    placeholder="Search talent..."
+                                    value={searchTerm}
+                                    onChange={(e) => handleSearchInput(e.target.value)}
+                                    style={{
+                                        padding: "6px 10px",
+                                        border: "1px solid #ccc",
+                                        borderRadius: "4px",
+                                        marginLeft: "auto",
+                                        marginRight: "20px",
+                                        minWidth: "260px",
+                                    }}
+                                />
+
+                                <button
+                                    className={'btn-export'}
+                                    style={{ height: '35px', padding: '5px 10px' }}
+                                // onClick={() =>handleTalentExport(filteredTalentList)}
+                                >
+                                    Export
+                                </button>
+                            </div>
+
+
+                            {loadingTalentProfile ? (
+                                <div>
+                                    <Skeleton active />
+                                </div>
+                            ) : (
+                                <div style={{ margin: "5px 10px" }}>
+                                    <Table
+                                        dataSource={filteredTalentList}
+                                        columns={ProfileColumns()}
+                                        pagination={false}
+                                        scroll={{ y: "480px" }}
+                                    />
+                                </div>
+                            )}
+                            {/*                         
+                                    {moveToAssessment && (
+                                      <Modal
+                                        width="992px"
+                                        centered
+                                        footer={null}
+                                        open={moveToAssessment}
+                                        className="commonModalWrap"
+                                        // onOk={() => setVersantModal(false)}
+                                        onCancel={() => {
+                                          setMoveToAssessment(false);
+                                          resetRemarkField("remark");
+                                          clearRemarkError("remark");
+                                        }}
+                                      >
+                                        <MoveToAssessment
+                                          onCancel={() => {
+                                            setMoveToAssessment(false);
+                                            resetRemarkField("remark");
+                                            clearRemarkError("remark");
+                                          }}
+                                          register={remarkregiter}
+                                          handleSubmit={remarkSubmit}
+                                          resetField={resetRemarkField}
+                                          errors={remarkError}
+                                          saveRemark={saveRemark}
+                                          saveRemarkLoading={saveRemarkLoading}
+                                        />
+                                      </Modal>
+                                    )} */}
+
+                            <div style={{ padding: "10px 0" }}>
+                                <button
+                                    className={'btn-export'}
+                                    style={{ height: '35px', padding: '5px 10px', marginLeft: '10px' }}
+                                    onClick={() => {
+                                        setSearchTerm('')
+                                        setShowTalentProfiles(false);
+                                        setIsCarryForwardPipelineClicked(false);
+                                        setRevenueColumn(false)
+                                        setIsPipelineClicked(false)
+                                        setIsCarryForwardPreonbordClicked(false)
+
+                                        setFilteredTalentList([]);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </>}
+                </Modal>
+            )}
         </div>
     );
 }
