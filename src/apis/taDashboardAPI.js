@@ -616,6 +616,86 @@ getPODTableDataRequest: async function (pl) {
 			return errorDebug(error, 'TaDashboardAPI.getPODTableDataRequest');
 		}
 	},
+	getHRTalentsWiseScrumDashboardRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_DASHBOARD_POPUP_TABLE_DATA + `${pl}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getHRTalentsWiseScrumDashboardRequest');
+		}
+	},
+	getHRTalentsWiseScrumDashboard2Request: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_DASHBOARD_POPUP_2_TABLE_DATA + `${pl}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getHRTalentsWiseScrumDashboardRequest');
+		}
+	},
+	getHRTalentsWiseScrumDashboard3Request: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_DASHBOARD_POPUP_3_TABLE_DATA + `${pl}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getHRTalentsWiseScrumDashboardRequest');
+		}
+	},
+	getHRTalentsWiseScrumDashboard4Request: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_DASHBOARD_POPUP_4_TABLE_DATA + `${pl}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getHRTalentsWiseScrumDashboardRequest');
+		}
+	},
+	getHRTalentsWiseScrumDashboard5Request: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.GET_SCRUM_DASHBOARD_POPUP_5_TABLE_DATA + `${pl}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getHRTalentsWiseScrumDashboardRequest');
+		}
+	},
 	getPIPELINETableDataRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =
