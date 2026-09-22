@@ -32,14 +32,14 @@ const TA_COLUMNS = [
 ];
 
 const QUAL_WOW_METRICS = [
-    { key: 'avgProfileSelectioninDays', label: 'Avg Selection Time (Days)' },
-    { key: 'profiletoSelect', label: 'Profile to Select' },
-    { key: 'interviewtoSelect', label: 'Interview to Select' },
+    { key: 'avgProfileSelectioninDays', label: 'Avg Selection Time (Days)', valKey: 'avgProfileSelection' },
+    { key: 'profiletoSelect', label: 'Profile to Select', valKey: 'prtoSelect' },
+    { key: 'interviewtoSelect', label: 'Interview to Select', valKey: 'inttoSelect' },
 ];
 const QUAL_LOG_METRICS = [
-    { key: 'dropout_RevenueStr', label: 'Dropouts' },
-    { key: 'backout_RevenueStr', label: 'Backouts' },
-    { key: 'lost_RevenueStr', label: 'Post Joining Backouts' },
+    { key: 'dropout_RevenueStr', label: 'Dropouts', stageID: "D" },
+    { key: 'backout_RevenueStr', label: 'Backouts', stageID: "B" },
+    { key: 'lost_RevenueStr', label: 'Post Joining Backouts', stageID: "PJB" },
 ];
 
 const TAB_NAME_MAP = { daily: 'D', weekly: 'W', monthly: 'M', quarterly: 'Q' };
@@ -169,14 +169,15 @@ function OPSDashboard({ selectedHead }) {
     const [hrTalentList, setHRTalentList] = useState([]);
     const [filteredTalentList, setFilteredTalentList] = useState(hrTalentList);
     const [colTextVal, setColTextVal] = useState('')
+    const [colLabelVal, setColLabelVal] = useState('')
     const [isCarryForwardPipelineClicked, setIsCarryForwardPipelineClicked] = useState(false);
     const [isCarryForwardPreonbordClicked, setIsCarryForwardPreonbordClicked] = useState(false);
     const [isPipelineClicked, setIsPipelineClicked] = useState(false);
-    const [isTable1Clicked,setIsTable1Clicked] = useState(false)
-    const [isTable2Clicked,setIsTable2Clicked] = useState(false)
-    const [isTable3Clicked,setIsTable3Clicked] = useState(false)
-    const [isTable4Clicked,setIsTable4Clicked] = useState(false)
-    const [isTable5Clicked,setIsTable5Clicked] = useState(false)
+    const [isTable1Clicked, setIsTable1Clicked] = useState(false)
+    const [isTable2Clicked, setIsTable2Clicked] = useState(false)
+    const [isTable3Clicked, setIsTable3Clicked] = useState(false)
+    const [isTable4Clicked, setIsTable4Clicked] = useState(false)
+    const [isTable5Clicked, setIsTable5Clicked] = useState(false)
     const [revenueColumn, setRevenueColumn] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -303,282 +304,149 @@ function OPSDashboard({ selectedHead }) {
     const popupSellStyle = { fontSize: '10px', textAlign: 'start', display: 'flex' }
 
     const getExcelColumns = () => {
-    const tableColumns = ProfileColumns();
+        const tableColumns = ProfileColumns();
 
-    const getTitle = (title) => {
-        if (typeof title === "string") return title;
+        const getTitle = (title) => {
+            if (typeof title === "string") return title;
 
-        const children = title?.props?.children;
+            const children = title?.props?.children;
 
-        if (Array.isArray(children)) {
-            return children
-                .map(child =>
-                    typeof child === "string"
-                        ? child
-                        : child?.props?.children || ""
-                )
-                .join(" ")
-                .replace(/\s+/g, " ")
-                .trim();
-        }
+            if (Array.isArray(children)) {
+                return children
+                    .map(child =>
+                        typeof child === "string"
+                            ? child
+                            : child?.props?.children || ""
+                    )
+                    .join(" ")
+                    .replace(/\s+/g, " ")
+                    .trim();
+            }
 
-        return children || "";
+            return children || "";
+        };
+
+        return tableColumns
+            .filter(col => col.key && getTitle(col.title).trim() !== "")
+            .map(col => ({
+                title: getTitle(col.title),
+                key: col.key
+            }));
     };
 
-    return tableColumns
-        .filter(col => col.key && getTitle(col.title).trim() !== "")
-        .map(col => ({
-            title: getTitle(col.title),
-            key: col.key
-        }));
-};
+    const handleTalentExport = (apiData) => {
 
-        const handleTalentExport = (apiData) => {
-              
-        
-                const tableColumns = getExcelColumns()
-        
-                let DataToExport = apiData.map((data) => {
-                    let obj = {};
-                    tableColumns.map(
-                        (val) =>{
-                            if(val.key === "uplersFeesPer"){
-                                obj[`${val.title}`] = `${data[`${val.key}`]} %`
-                            }
-                             if(val.key === "uplersFees"){
-                                obj[`${val.title}`] = `$${data[`${val.key}`]}`
-                            }
-                           val.title !== " " && (obj[`${val.title}`] = data[`${val.key}`])
-                    });
-                    return obj;
+
+        const tableColumns = getExcelColumns()
+
+        let DataToExport = apiData.map((data) => {
+            let obj = {};
+            tableColumns.map(
+                (val) => {
+                    if (val.key === "uplersFeesPer") {
+                        obj[`${val.title}`] = `${data[`${val.key}`]} %`
+                    }
+                    if (val.key === "uplersFees") {
+                        obj[`${val.title}`] = `$${data[`${val.key}`]}`
+                    }
+                    val.title !== " " && (obj[`${val.title}`] = data[`${val.key}`])
                 });
-                downloadToExcel(DataToExport, `${(isTable3Clicked)  ? profileInfo?.recruiter : profileInfo?.stage}  (${colTextVal})`);
-            };
-    
-    
+            return obj;
+        });
+        downloadToExcel(DataToExport, `${(isTable3Clicked) ? profileInfo?.recruiter : profileInfo?.stage}  (${colTextVal})`);
+    };
 
-    const CompanyPopupCell = ({text,result})=>{
-        return  <span style={popupSellStyle}>{text}  {result.companyCategory === "Diamond" && <img
-                                            src={Diamond}
-                                            alt="info"
-                                            style={{ width: "15px", height: "15px",marginLeft:'10px' }}
-                                        />}</span>
+
+
+    const CompanyPopupCell = ({ text, result }) => {
+        return <span style={popupSellStyle}>{text}  {result.companyCategory === "Diamond" && <img
+            src={Diamond}
+            alt="info"
+            style={{ width: "15px", height: "15px", marginLeft: '10px' }}
+        />}</span>
     }
+
+    const hasTalentColumn = (columns) => {
+        return columns.some((col) => col.dataIndex === "talent");
+    };
 
     const ProfileColumns = () => {
 
-     
-        if(isTable1Clicked){
- if(profileInfo.stage === "Selection / Preonboarding" || profileInfo.stage === "Joined"){
-             return [
-            {
-                title: <span style={popupSellHeadStyle}>Action Date</span>,
-                dataIndex: "actionDateStr",
-                key: "actionDateStr",
-                width: "150px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            }, {
-                title: <span style={popupSellHeadStyle}>Company</span>,
-                dataIndex: "company",
-                key: "company",
-                width: "150px",
-                render: (text,result) => {
-                    return <CompanyPopupCell text={text} result={result} /> 
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>HR #</span>,
-                dataIndex: "hR_Number",
-                key: "hR_Number",
-                width: "170px",
-                render: (text, value) => {
-                    return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
 
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>HR Title</span>,
-                dataIndex: "hR_Title",
-                key: "hR_Title",
-                width: "200px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>Talent</span>,
-                dataIndex: "talent",
-                key: "talent",
-                width: "100px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-              {
-                title: <span style={popupSellHeadStyle}>Revenue</span>,
-                dataIndex: "revenueStr",
-                key: "revenueStr",
-                width: "100px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
-                dataIndex: "remarks",
-                key: "remarks",
-                width: "350px",
-                render: (text, result) => {
-                    return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
-                }
+        if (isTable1Clicked) {
+            if (profileInfo.stage === "Selection / Preonboarding" || profileInfo.stage === "Joined") {
+                return [
+                    {
+                        title: <span style={popupSellHeadStyle}>Action Date</span>,
+                        dataIndex: "actionDateStr",
+                        key: "actionDateStr",
+                        width: "150px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    }, {
+                        title: <span style={popupSellHeadStyle}>Company</span>,
+                        dataIndex: "company",
+                        key: "company",
+                        width: "150px",
+                        render: (text, result) => {
+                            return <CompanyPopupCell text={text} result={result} />
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR #</span>,
+                        dataIndex: "hR_Number",
+                        key: "hR_Number",
+                        width: "170px",
+                        render: (text, value) => {
+                            return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Title</span>,
+                        dataIndex: "hR_Title",
+                        key: "hR_Title",
+                        width: "200px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>Talent</span>,
+                        dataIndex: "talent",
+                        key: "talent",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>Revenue</span>,
+                        dataIndex: "revenueStr",
+                        key: "revenueStr",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+                        dataIndex: "remarks",
+                        key: "remarks",
+                        width: "350px",
+                        render: (text, result) => {
+                            return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+                        }
+                    }
+
+
+
+                ];
             }
-
-
-
-        ]; 
-        }
-        return [
-            {
-                title: <span style={popupSellHeadStyle}>Action Date</span>,
-                dataIndex: "actionDateStr",
-                key: "actionDateStr",
-                width: "150px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            }, {
-                title: <span style={popupSellHeadStyle}>Company</span>,
-                dataIndex: "company",
-                key: "company",
-                width: "150px",
-                  render: (text,result) => {
-                    return <CompanyPopupCell text={text} result={result} /> 
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>HR #</span>,
-                dataIndex: "hR_Number",
-                key: "hR_Number",
-                width: "170px",
-                render: (text, value) => {
-                    return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
-
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>HR Title</span>,
-                dataIndex: "hR_Title",
-                key: "hR_Title",
-                width: "200px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>Talent</span>,
-                dataIndex: "talent",
-                key: "talent",
-                width: "100px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
-                dataIndex: "remarks",
-                key: "remarks",
-                width: "350px",
-                render: (text, result) => {
-                    return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
-                }
-            }
-
-
-
-        ];
-        }
-
-
-        if(isTable2Clicked){
-
-            
-              return [
-            {
-                title: <span style={popupSellHeadStyle}>Action Date</span>,
-                dataIndex: "actionDateStr",
-                key: "actionDateStr",
-                width: "150px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            }, {
-                title: <span style={popupSellHeadStyle}>Company</span>,
-                dataIndex: "company",
-                key: "company",
-                width: "150px",
-                render: (text,result) => {
-                    return <CompanyPopupCell text={text} result={result} /> 
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>HR #</span>,
-                dataIndex: "hR_Number",
-                key: "hR_Number",
-                width: "170px",
-                render: (text, value) => {
-                    return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
-
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>HR Title</span>,
-                dataIndex: "hR_Title",
-                key: "hR_Title",
-                width: "200px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>Talent</span>,
-                dataIndex: "talent",
-                key: "talent",
-                width: "100px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>{ profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
-                dataIndex:profileInfo.stage === "Joined" ? "hR_PipelineStr" :"revenueStr",
-                key: profileInfo.stage === "Joined" ? "hR_PipelineStr" :"revenueStr",
-                width: "100px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
-                dataIndex: "remarks",
-                key: "remarks",
-                width: "350px",
-                render: (text, result) => {
-                    return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
-                }
-            }
-
-
-
-        ];
-        }
-
-     if(isTable3Clicked){
-          if (isPipelineClicked) {
             return [
                 {
-                    title: <span style={popupSellHeadStyle}>Created Date</span>,
+                    title: <span style={popupSellHeadStyle}>Action Date</span>,
                     dataIndex: "actionDateStr",
                     key: "actionDateStr",
                     width: "150px",
@@ -590,8 +458,8 @@ function OPSDashboard({ selectedHead }) {
                     dataIndex: "company",
                     key: "company",
                     width: "150px",
-                    render: (text) => {
-                        return <span style={popupSellStyle}>{text}</span>
+                    render: (text, result) => {
+                        return <CompanyPopupCell text={text} result={result} />
                     }
                 },
                 {
@@ -600,7 +468,7 @@ function OPSDashboard({ selectedHead }) {
                     key: "hR_Number",
                     width: "170px",
                     render: (text, value) => {
-                        return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+                        return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
 
                     }
                 },
@@ -614,48 +482,98 @@ function OPSDashboard({ selectedHead }) {
                     }
                 },
                 {
-                    title: <span style={popupSellHeadStyle}>HR Pipeline</span>,
-                    dataIndex: "hR_PipelineStr",
-                    key: "hR_PipelineStr",
-                    width: "170px",
+                    title: <span style={popupSellHeadStyle}>Talent</span>,
+                    dataIndex: "talent",
+                    key: "talent",
+                    width: "100px",
                     render: (text) => {
                         return <span style={popupSellStyle}>{text}</span>
                     }
-                }, {
-                    title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
-                    dataIndex: "carryFwd_HRStatus",
-                    key: "carryFwd_HRStatus",
-                    width: "170px",
-                    render: (_, param) => {
-                        return All_Hiring_Request_Utils.GETHRSTATUS(
-                            param?.carryFwd_HRStatusCode,
-                            param?.carryFwd_HRStatus
-                        );
-                    }
                 },
                 {
-                    title: <span style={popupSellHeadStyle}>HR Status</span>,
-                    dataIndex: "hrStatus",
-                    key: "hrStatus",
-                    width: "200px",
-                    render: (_, param) => {
-                        return All_Hiring_Request_Utils.GETHRSTATUS(
-                            param?.hrStatusCode,
-                            param?.hrStatus
-                        );
+                    title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+                    dataIndex: "remarks",
+                    key: "remarks",
+                    width: "350px",
+                    render: (text, result) => {
+                        return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
                     }
                 }
+
 
 
             ];
         }
 
 
-        if (isCarryForwardPipelineClicked) {
+        if (isTable2Clicked) {
+            if (profileInfo.stage === "Joined") {
+                return [
+                    {
+                        title: <span style={popupSellHeadStyle}>Action Date</span>,
+                        dataIndex: "actionDateStr",
+                        key: "actionDateStr",
+                        width: "150px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    }, {
+                        title: <span style={popupSellHeadStyle}>Company</span>,
+                        dataIndex: "company",
+                        key: "company",
+                        width: "150px",
+                        render: (text, result) => {
+                            return <CompanyPopupCell text={text} result={result} />
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR #</span>,
+                        dataIndex: "hR_Number",
+                        key: "hR_Number",
+                        width: "170px",
+                        render: (text, value) => {
+                            return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Title</span>,
+                        dataIndex: "hR_Title",
+                        key: "hR_Title",
+                        width: "200px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>Talent</span>,
+                        dataIndex: "talent",
+                        key: "talent",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>{profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
+                        dataIndex: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
+                        key: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
+                        width: "100px",
+                        render: (text, result) => {
+
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+
+
+
+
+                ];
+            }
 
             return [
                 {
-                    title: <span style={popupSellHeadStyle}>Created Date</span>,
+                    title: <span style={popupSellHeadStyle}>Action Date</span>,
                     dataIndex: "actionDateStr",
                     key: "actionDateStr",
                     width: "150px",
@@ -667,8 +585,8 @@ function OPSDashboard({ selectedHead }) {
                     dataIndex: "company",
                     key: "company",
                     width: "150px",
-                    render: (text) => {
-                        return <span style={popupSellStyle}>{text}</span>
+                    render: (text, result) => {
+                        return <CompanyPopupCell text={text} result={result} />
                     }
                 },
                 {
@@ -677,7 +595,284 @@ function OPSDashboard({ selectedHead }) {
                     key: "hR_Number",
                     width: "170px",
                     render: (text, value) => {
-                        return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+                        return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Title</span>,
+                    dataIndex: "hR_Title",
+                    key: "hR_Title",
+                    width: "200px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+
+                {
+                    title: <span style={popupSellHeadStyle}>{profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
+                    dataIndex: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
+                    key: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
+                    width: "100px",
+                    render: (text, result) => {
+
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                // {
+                //     title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+                //     dataIndex: "remarks",
+                //     key: "remarks",
+                //     width: "350px",
+                //     render: (text, result) => {
+                //         return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+                //     }
+                // }
+
+
+
+            ];
+        }
+
+        if (isTable3Clicked) {
+            if (isPipelineClicked) {
+                return [
+                    {
+                        title: <span style={popupSellHeadStyle}>Created Date</span>,
+                        dataIndex: "actionDateStr",
+                        key: "actionDateStr",
+                        width: "150px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    }, {
+                        title: <span style={popupSellHeadStyle}>Company</span>,
+                        dataIndex: "company",
+                        key: "company",
+                        width: "150px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR #</span>,
+                        dataIndex: "hR_Number",
+                        key: "hR_Number",
+                        width: "170px",
+                        render: (text, value) => {
+                            return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Title</span>,
+                        dataIndex: "hR_Title",
+                        key: "hR_Title",
+                        width: "200px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Pipeline</span>,
+                        dataIndex: "hR_PipelineStr",
+                        key: "hR_PipelineStr",
+                        width: "170px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    //  {
+                    //     title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
+                    //     dataIndex: "carryFwd_HRStatus",
+                    //     key: "carryFwd_HRStatus",
+                    //     width: "170px",
+                    //     render: (_, param) => {
+                    //         return All_Hiring_Request_Utils.GETHRSTATUS(
+                    //             param?.carryFwd_HRStatusCode,
+                    //             param?.carryFwd_HRStatus
+                    //         );
+                    //     }
+                    // },
+                    // {
+                    //     title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    //     dataIndex: "hrStatus",
+                    //     key: "hrStatus",
+                    //     width: "200px",
+                    //     render: (_, param) => {
+                    //         return All_Hiring_Request_Utils.GETHRSTATUS(
+                    //             param?.hrStatusCode,
+                    //             param?.hrStatus
+                    //         );
+                    //     }
+                    // }
+
+
+                ];
+            }
+
+
+            if (isCarryForwardPipelineClicked) {
+
+                return [
+                    {
+                        title: <span style={popupSellHeadStyle}>Created Date</span>,
+                        dataIndex: "actionDateStr",
+                        key: "actionDateStr",
+                        width: "150px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    }, {
+                        title: <span style={popupSellHeadStyle}>Company</span>,
+                        dataIndex: "company",
+                        key: "company",
+                        width: "150px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR #</span>,
+                        dataIndex: "hR_Number",
+                        key: "hR_Number",
+                        width: "170px",
+                        render: (text, value) => {
+                            return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Title</span>,
+                        dataIndex: "hR_Title",
+                        key: "hR_Title",
+                        width: "200px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Pipeline</span>,
+                        dataIndex: "hR_PipelineStr",
+                        key: "hR_PipelineStr",
+                        width: "170px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    // {
+                    //     title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    //     dataIndex: "hrStatus",
+                    //     key: "hrStatus",
+                    //     width: "200px",
+                    //     render: (_, param) => {
+                    //         return All_Hiring_Request_Utils.GETHRSTATUS(
+                    //             param?.hrStatusCode,
+                    //             param?.hrStatus
+                    //         );
+                    //     }
+                    // }
+
+
+                ];
+            }
+
+            // if(){
+            //     return  [
+            //     {
+            //         title: <span style={popupSellHeadStyle}>Action Date</span>,
+            //         dataIndex: "actionDateStr",
+            //         key: "actionDateStr",
+            //         width: "150px",
+            //         render: (text) => {
+            //             return <span style={popupSellStyle}>{text}</span>
+            //         }
+            //     }, {
+            //         title: <span style={popupSellHeadStyle}>Company</span>,
+            //         dataIndex: "company",
+            //         key: "company",
+            //         width: "150px",
+            //           render: (text,result) => {
+            //             return <CompanyPopupCell text={text} result={result} /> 
+            //         }
+            //     },
+            //     {
+            //         title: <span style={popupSellHeadStyle}>HR #</span>,
+            //         dataIndex: "hR_Number",
+            //         key: "hR_Number",
+            //         width: "170px",
+            //         render: (text, value) => {
+            //             return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+            //         }
+            //     },
+            //     {
+            //         title: <span style={popupSellHeadStyle}>HR Title</span>,
+            //         dataIndex: "hR_Title",
+            //         key: "hR_Title",
+            //         width: "200px",
+            //         render: (text) => {
+            //             return <span style={popupSellStyle}>{text}</span>
+            //         }
+            //     },
+            //     {
+            //         title: <span style={popupSellHeadStyle}>Talent</span>,
+            //         dataIndex: "talent",
+            //         key: "talent",
+            //         width: "100px",
+            //         render: (text) => {
+            //             return <span style={popupSellStyle}>{text}</span>
+            //         }
+            //     },
+            //       {
+            //         title: <span style={popupSellHeadStyle}>Revenue</span>,
+            //         dataIndex: "revenueStr",
+            //         key: "revenueStr",
+            //         width: "100px",
+            //         render: (text) => {
+            //             return <span style={popupSellStyle}>{text}</span>
+            //         }
+            //     },
+            //     {
+            //         title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+            //         dataIndex: "remarks",
+            //         key: "remarks",
+            //         width: "350px",
+            //         render: (text, result) => {
+            //             return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+            //         }
+            //     }
+
+
+
+            // ];
+            // }
+
+            return [
+                {
+                    title: <span style={popupSellHeadStyle}>Action Date</span>,
+                    dataIndex: "actionDateStr",
+                    key: "actionDateStr",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Company</span>,
+                    dataIndex: "company",
+                    key: "company",
+                    width: "150px",
+                    render: (text, result) => {
+                        return <CompanyPopupCell text={text} result={result} />
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR #</span>,
+                    dataIndex: "hR_Number",
+                    key: "hR_Number",
+                    width: "170px",
+                    render: (text, value) => {
+                        return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
 
                     }
                 },
@@ -691,93 +886,108 @@ function OPSDashboard({ selectedHead }) {
                     }
                 },
                 {
-                    title: <span style={popupSellHeadStyle}>HR Pipeline</span>,
-                    dataIndex: "hR_PipelineStr",
-                    key: "hR_PipelineStr",
-                    width: "170px",
+                    title: <span style={popupSellHeadStyle}>Talent</span>,
+                    dataIndex: "talent",
+                    key: "talent",
+                    width: "100px",
                     render: (text) => {
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
                 {
-                    title: <span style={popupSellHeadStyle}>HR Status</span>,
-                    dataIndex: "hrStatus",
-                    key: "hrStatus",
-                    width: "200px",
-                    render: (_, param) => {
-                        return All_Hiring_Request_Utils.GETHRSTATUS(
-                            param?.hrStatusCode,
-                            param?.hrStatus
-                        );
+                    title: <span style={popupSellHeadStyle}>Revenue</span>,
+                    dataIndex: "revenueStr",
+                    key: "revenueStr",
+                    width: "100px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+                    dataIndex: "remarks",
+                    key: "remarks",
+                    width: "350px",
+                    render: (text, result) => {
+                        return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
                     }
                 }
+
 
 
             ];
         }
 
-           return [
-            {
-                title: <span style={popupSellHeadStyle}>Action Date</span>,
-                dataIndex: "actionDateStr",
-                key: "actionDateStr",
-                width: "150px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            }, {
-                title: <span style={popupSellHeadStyle}>Company</span>,
-                dataIndex: "company",
-                key: "company",
-                width: "150px",
-                  render: (text,result) => {
-                    return <CompanyPopupCell text={text} result={result} /> 
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>HR #</span>,
-                dataIndex: "hR_Number",
-                key: "hR_Number",
-                width: "170px",
-                render: (text, value) => {
-                    return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+        if (isTable5Clicked) {
+            return [
+                {
+                    title: <span style={popupSellHeadStyle}>Action Date</span>,
+                    dataIndex: "actionDateStr",
+                    key: "actionDateStr",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Company</span>,
+                    dataIndex: "company",
+                    key: "company",
+                    width: "150px",
+                    render: (text, result) => {
+                        return <CompanyPopupCell text={text} result={result} />
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR #</span>,
+                    dataIndex: "hR_Number",
+                    key: "hR_Number",
+                    width: "170px",
+                    render: (text, value) => {
+                        return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
 
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Title</span>,
+                    dataIndex: "hR_Title",
+                    key: "hR_Title",
+                    width: "200px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>Talent</span>,
+                    dataIndex: "talent",
+                    key: "talent",
+                    width: "100px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>Revenue</span>,
+                    dataIndex: "revenueStr",
+                    key: "revenueStr",
+                    width: "100px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+                    dataIndex: "remarks",
+                    key: "remarks",
+                    width: "350px",
+                    render: (text, result) => {
+                        return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+                    }
                 }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>HR Title</span>,
-                dataIndex: "hR_Title",
-                key: "hR_Title",
-                width: "200px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>Talent</span>,
-                dataIndex: "talent",
-                key: "talent",
-                width: "100px",
-                render: (text) => {
-                    return <span style={popupSellStyle}>{text}</span>
-                }
-            },
-            {
-                title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
-                dataIndex: "remarks",
-                key: "remarks",
-                width: "350px",
-                render: (text, result) => {
-                    return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
-                }
-            }
 
 
 
-        ];
-     }
-
-      
+            ];
+        }
 
     }
 
@@ -797,7 +1007,7 @@ function OPSDashboard({ selectedHead }) {
         const range = periodRange(DateType, Date);
         setShowTalentProfiles(true);
         setInfoforProfile(result);
-setIsTable1Clicked(true)
+        setIsTable1Clicked(true)
 
         let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}`
 
@@ -824,7 +1034,7 @@ setIsTable1Clicked(true)
         const range = periodRange(DateType, Date);
         setShowTalentProfiles(true);
         setInfoforProfile(result);
-setIsTable2Clicked(true)
+        setIsTable2Clicked(true)
 
         let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}`
 
@@ -851,7 +1061,7 @@ setIsTable2Clicked(true)
         const range = periodRange(DateType, Date);
         setShowTalentProfiles(true);
         setInfoforProfile(result);
-setIsTable3Clicked(true)
+        setIsTable3Clicked(true)
 
         let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}`
 
@@ -870,6 +1080,48 @@ setIsTable3Clicked(true)
         }
     };
 
+    const getTalentProfilesDetailsfromTable5 = async (
+        result,
+        DateType, Date, stageID
+    ) => {
+        const range = periodRange(DateType, Date);
+        setShowTalentProfiles(true);
+        setInfoforProfile(result);
+        setIsTable5Clicked(true)
+
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}`
+
+        setLoadingTalentProfile(true);
+        const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboard5DAO(query);
+        setLoadingTalentProfile(false);
+
+        if (hrResult.statusCode === HTTPStatusCode.OK) {
+            setHRTalentList(hrResult.responseBody);
+            setFilteredTalentList(hrResult.responseBody);
+
+        } else {
+            setHRTalentList([]);
+            setFilteredTalentList([]);
+
+        }
+    };
+
+    const RenderExpCell = ({ row, m, logDateType, logDate }) => {
+        return (
+            <td className={`datacell`} key={m.key}> <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable5(row, logDateType, logDate, m.stageID);
+                    setColTextVal(row?.[m.key])
+                    setColLabelVal(m.label)
+                }}>{row?.[m.key] ?? ''}</span></td>
+        );
+    }
+
     const RenderTACell = ({ c, row, idx, performanceDateType, performanceDate }) => {
         if (c.key === 'tA_PipelineStr') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
@@ -880,7 +1132,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'CFP');
-                    setColTextVal(row.tA_PipelineStr)
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
 
                 }}>{row[c.key]}</span> : ''}</td>
@@ -895,7 +1148,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'CFPP');
-                    setColTextVal(row.tA_PipelineStr)
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -910,7 +1164,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TP');
-                    setColTextVal(row.tA_PipelineStr)
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -925,8 +1180,10 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TMP');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                    setIsCarryForwardPipelineClicked(true);
+                    setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -939,7 +1196,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TP');
-                    setColTextVal(row.tA_PipelineStr)
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -954,8 +1212,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'PS');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -968,8 +1226,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R1');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -982,8 +1240,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R2');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -996,8 +1254,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R3');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1011,8 +1269,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'IR');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1026,8 +1284,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'SEL');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1041,8 +1299,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'JOIN');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1056,8 +1314,8 @@ setIsTable3Clicked(true)
                 }}
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'JR');
-                    setColTextVal(row.tA_PipelineStr)
-
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1132,7 +1390,7 @@ setIsTable3Clicked(true)
                     </div>
                 </section>
 
-                {/* ---------- 5. Pipeline & Revenue Summary ---------- */}
+                {/* ---------- 2. Pipeline & Revenue Summary ---------- */}
                 <section className="card">
                     <div className="card-head">
                         <div className="htitle"><span className="num">2</span>Pipeline &amp; Revenue Summary</div>
@@ -1184,7 +1442,7 @@ setIsTable3Clicked(true)
                                                     }} onClick={() => {
                                                         getTalentProfilesDetailsfromTable2(row, pipelineDateType, pipelineDate);
                                                         setColTextVal(row.achievedValueStr)
-                                                      
+
                                                     }} >{row.achievedValueStr ?? ''}</span></td>
                                                 <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                             </tr>
@@ -1260,7 +1518,7 @@ setIsTable3Clicked(true)
             </section>
 
             <div className="row-pair">
-                {/* ---------- 3. Customer Experience (WOW Factor) ---------- */}
+                {/* ---------- 4. Customer Experience (WOW Factor) ---------- */}
                 <section className="card">
                     <div className="card-head">
                         <div className="htitle"><span className="num">4</span>Customer Experience (WOW Factor)</div>
@@ -1292,7 +1550,7 @@ setIsTable3Clicked(true)
                                     })}
                                     <th>HR #</th>
                                     <th>Revenue</th>
-                                    <th>Client Category</th>
+                                    <th>Client</th>
                                 </tr>
                             </thead>
                             {/* <tr className="goal-row">
@@ -1323,19 +1581,22 @@ setIsTable3Clicked(true)
                                         {QUAL_WOW_METRICS?.map((m) => {
                                             // const cls = metricStatus(row?.[m.key], row[m.key]);
                                             return (
-                                                <td className={`datacell `} key={m.key}>{row?.recruiter === 'Goal' ? row?.[m.key] ?? "" : row?.[m.key] === "yes" ? <img
-                                                    src={TickMark}
-                                                    alt="info"
-                                                    style={{ width: "15px", height: "15px" }}
-                                                /> : ''}</td>
+                                                <td className={`datacell `} key={m.key}>{row?.recruiter === 'Goal' ? row?.[m.key] ?? "" : <>
+                                                    {row?.[m.valKey] ? row?.[m.valKey] : ""}
+                                                    {row?.[m.key] === "yes" ? <img
+                                                        src={TickMark}
+                                                        alt="info"
+                                                        style={{ width: "15px", height: "15px", marginLeft: '10px' }}
+                                                    /> : ''}
+                                                </>}</td>
                                             );
                                         })}
-                                        <td className="datacell">{row?.hR_Number ?? ''}</td>
+                                        <td className="datacell" >  <a href={`/allhiringrequest/${row.hR_ID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{row?.hR_Number ?? ''}</a>  <br /><span>{row?.hR_Title ?`${(row?.hR_Title)}` : ''}</span></td>
                                         <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
-                                        <td className="datacell">{row?.companyCategory === "Diamond" ? <img
+                                        <td className="datacell">{row?.company} {row?.companyCategory === "Diamond" ? <img
                                             src={Diamond}
                                             alt="info"
-                                            style={{ width: "15px", height: "15px" }}
+                                            style={{ width: "15px", height: "15px", marginLeft: '10px' }}
                                         /> : ''}</td>
                                     </tr>
                                 )))}
@@ -1404,9 +1665,7 @@ setIsTable3Clicked(true)
                                         <td className={"rowlabel"}>{row?.recruiter}</td>
                                         {QUAL_LOG_METRICS.map((m) => {
                                             // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
-                                            return (
-                                                <td className={`datacell`} key={m.key}>{row?.[m.key] ?? ''}</td>
-                                            );
+                                            return <RenderExpCell row={row} m={m} logDateType={logDateType} logDate={logDate} />
                                         })}
 
                                         <td className="datacell">{row?.total_RevenueStr ?? ''}</td>
@@ -1445,7 +1704,9 @@ setIsTable3Clicked(true)
                         setIsTable1Clicked(false)
                         setIsTable2Clicked(false)
                         setIsTable3Clicked(false)
+                        setIsTable5Clicked(false)
                         setIsTable4Clicked(false)
+                        setColLabelVal("")
                         setFilteredTalentList([]);
                     }}
                 >
@@ -1466,11 +1727,11 @@ setIsTable3Clicked(true)
 
 
                                 <p style={{ marginBottom: "0.5em", marginLeft: '5px' }}>
-                                    <strong>{(isTable3Clicked)  ? profileInfo?.recruiter : profileInfo?.stage}  ({colTextVal})</strong>
+                                    <strong>{colLabelVal ? `${colLabelVal},` : ""}  {(isTable3Clicked || isTable5Clicked) ? profileInfo?.recruiter : profileInfo?.stage} ({colTextVal})</strong>
 
                                 </p>
 
-                                <input
+                                {hasTalentColumn(ProfileColumns()) && <input
                                     type="text"
                                     placeholder="Search talent..."
                                     value={searchTerm}
@@ -1484,11 +1745,12 @@ setIsTable3Clicked(true)
                                         minWidth: "260px",
                                     }}
                                 />
+                                }
 
                                 <button
                                     className={'btn-export'}
-                                    style={{ height: '35px', padding: '5px 10px' }}
-                                onClick={() =>handleTalentExport(filteredTalentList)}
+                                    style={{ height: '35px', padding: '5px 10px', marginLeft: hasTalentColumn(ProfileColumns()) ? "" : "auto" }}
+                                    onClick={() => handleTalentExport(filteredTalentList)}
                                 >
                                     Export
                                 </button>
@@ -1555,6 +1817,8 @@ setIsTable3Clicked(true)
                                         setIsTable2Clicked(false)
                                         setIsTable3Clicked(false)
                                         setIsTable4Clicked(false)
+                                        setIsTable5Clicked(false)
+                                        setColLabelVal("")
                                         setFilteredTalentList([]);
                                     }}
                                 >
