@@ -72,6 +72,9 @@
 .quarter-popover-grid button.active{
   background:var(--teal); color:#fff; border-color:var(--teal);
 }
+.quarter-popover-grid button:disabled{
+  color:var(--ink-faint); cursor:not-allowed; background:var(--surface-2);
+}
   table.grid{border-collapse:collapse;width:100%;}
   table.grid th, table.grid td{border:1px solid var(--line);padding:4px 8px;}
   table.grid th{background:var(--surface-2) !important;font-size:10px;font-weight:700;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.02em;text-align:center;white-space:nowrap;}
