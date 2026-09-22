@@ -14,6 +14,16 @@ export function fmtShort(d) {
     return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 }
 
+/** Days in a given year/month (month is 0-indexed). */
+export function daysInMonth(year, month) {
+    return new Date(year, month + 1, 0).getDate();
+}
+
+/** Month-relative week number (1-5) for a date — Math.ceil(dayOfMonth / 7). */
+export function weekOfMonth(date) {
+    return Math.ceil(date.getDate() / 7);
+}
+
 /**
  * yyyy-mm-dd built from the Date's LOCAL components — never use
  * `.toISOString()` for this. toISOString() converts to UTC first, so in any
@@ -36,10 +46,11 @@ export function periodLabel(period, anchor) {
         });
     }
     if (period === 'weekly') {
-        const s = startOfWeek(anchor);
-        const e = new Date(s);
-        e.setDate(s.getDate() + 6);
-        return `${fmtShort(s)} – ${fmtShort(e)} ${e.getFullYear()}`;
+        // Month-relative week (W1-W5), matching the backend's Tab_Value scheme
+        // and the week-picker — NOT the true ISO week, which can spill into
+        // the adjacent month and desync Month/Tab_Value from what was picked.
+        const n = weekOfMonth(anchor);
+        return `Week ${n}, ${anchor.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`;
     }
     if (period === 'monthly') {
         return anchor.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
@@ -66,9 +77,16 @@ export function periodRange(period, anchor) {
     const iso = toLocalISODate; // local-safe — see note above toLocalISODate()
     if (period === 'daily') return { from: iso(anchor), to: iso(anchor) };
     if (period === 'weekly') {
-        const s = startOfWeek(anchor);
-        const e = new Date(s);
-        e.setDate(s.getDate() + 6);
+        // Month-relative week (W1-W5) — always stays within anchor's own
+        // month/year, so Month/Year/Tab_Value sent to the backend always
+        // agree with each other and with whatever the week-picker showed.
+        const year = anchor.getFullYear();
+        const month = anchor.getMonth();
+        const n = weekOfMonth(anchor);
+        const startDay = (n - 1) * 7 + 1;
+        const endDay = Math.min(n * 7, daysInMonth(year, month));
+        const s = new Date(year, month, startDay);
+        const e = new Date(year, month, endDay);
         return { from: iso(s), to: iso(e) };
     }
     if (period === 'monthly') {
