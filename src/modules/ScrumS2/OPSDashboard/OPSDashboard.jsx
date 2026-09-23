@@ -7,10 +7,12 @@ import { pctOf, statusClass, metricStatus } from './sectionMath';
 import moment from 'moment';
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import TickMark from "assets/svg/assignCurrect.svg";
+import  Close  from "assets/svg/close.svg";
 import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin, Radio } from "antd";
 import Diamond from "assets/svg/diamond.svg";
 import { HTTPStatusCode } from "constants/network";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
+import Cross from 'assets/svg/redCross.svg'
 import { downloadToExcel } from "modules/report/reportUtils";
 // ---------- column/row config ----------
 
@@ -1028,18 +1030,7 @@ function OPSDashboard({ selectedHead }) {
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-                {
-                    title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
-                    dataIndex: "remarks",
-                    key: "remarks",
-                    width: "350px",
-                    render: (text, result) => {
-                        return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
-                    }
-                }
-
-
-
+               
             ];
         }
 
@@ -1579,7 +1570,7 @@ function OPSDashboard({ selectedHead }) {
                         <DateNav
                             date={wowDate}
                             period={wowDateType}
-                            periods={['D', 'W', 'M', 'Q']}
+                            periods={[ 'M']}
                             onDateChange={setWowDate}
                             onPeriodChange={setWowDateType}
                             loading={wowLoading}
@@ -1602,8 +1593,8 @@ function OPSDashboard({ selectedHead }) {
                                             </th>
                                         );
                                     })}
-                                    <th>HR #</th>
-                                    <th>Revenue</th>
+                                    <th style={{width:'150px'}}>HR #</th>
+                                    <th style={{width:'80px'}}>Revenue</th>
                                     <th>Client</th>
                                 </tr>
                             </thead>
@@ -1641,7 +1632,11 @@ function OPSDashboard({ selectedHead }) {
                                                         src={TickMark}
                                                         alt="info"
                                                         style={{ width: "15px", height: "15px", marginLeft: '10px' }}
-                                                    /> : ''}
+                                                    /> :   <img
+                                                        src={Cross}
+                                                        alt="info"
+                                                        style={{ width: "15px", height: "15px", marginLeft: '10px' }}
+                                                    /> }
                                                 </>}</td>
                                             );
                                         })}

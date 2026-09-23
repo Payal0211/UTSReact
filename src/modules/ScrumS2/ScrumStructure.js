@@ -60,7 +60,7 @@ function ScrumStructure2() {
     const [columnOrder, setColumnOrder] = useState([])
     const [draggedRow, setDraggedRow] = useState(null);
     const [draggedRowData, setDraggedRowData] = useState({})
-    const [pageTabTitle, setPageTabTitle] = useState('Scrum')
+    const [pageTabTitle, setPageTabTitle] = useState('Dashboard')
     const [scrumTabTitle, setScrumTabTitle] = useState('A')
     const [tableFilteredState, setTableFilteredState] = useState({
         filterFields_OnBoard: {
@@ -4214,23 +4214,7 @@ function ScrumStructure2() {
                             borderBottom: '1px solid var(--uplers-border-color)',
                         }}
                     >
-                        <button
-                            onClick={() => setPageTabTitle('Scrum')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: pageTabTitle === 'Scrum' ? 600 : 400,
-                                color: pageTabTitle === 'Scrum' ? '#000' : '#8c8c8c',
-                                borderBottom: pageTabTitle === 'Scrum' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                           Scrum
-                        </button>
-
-                        <button
+                         <button
                             onClick={() => setPageTabTitle('Dashboard')}
                             style={{
                                 background: 'none',
@@ -4245,7 +4229,21 @@ function ScrumStructure2() {
                         >
                             Dashboard
                         </button>
-                        
+                        <button
+                            onClick={() => setPageTabTitle('Scrum')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: pageTabTitle === 'Scrum' ? 600 : 400,
+                                color: pageTabTitle === 'Scrum' ? '#000' : '#8c8c8c',
+                                borderBottom: pageTabTitle === 'Scrum' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                           Scrum
+                        </button>                      
                     </div>
 
                     {/* <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: '10px', marginRight: '10px' }}>
