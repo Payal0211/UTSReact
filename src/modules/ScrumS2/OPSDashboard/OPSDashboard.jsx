@@ -833,76 +833,124 @@ function OPSDashboard({ selectedHead }) {
                 ];
             }
 
-            // if(){
-            //     return  [
-            //     {
-            //         title: <span style={popupSellHeadStyle}>Action Date</span>,
-            //         dataIndex: "actionDateStr",
-            //         key: "actionDateStr",
-            //         width: "150px",
-            //         render: (text) => {
-            //             return <span style={popupSellStyle}>{text}</span>
-            //         }
-            //     }, {
-            //         title: <span style={popupSellHeadStyle}>Company</span>,
-            //         dataIndex: "company",
-            //         key: "company",
-            //         width: "150px",
-            //           render: (text,result) => {
-            //             return <CompanyPopupCell text={text} result={result} /> 
-            //         }
-            //     },
-            //     {
-            //         title: <span style={popupSellHeadStyle}>HR #</span>,
-            //         dataIndex: "hR_Number",
-            //         key: "hR_Number",
-            //         width: "170px",
-            //         render: (text, value) => {
-            //             return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+            if(colLabelVal === "R1 Completed" || colLabelVal === "R2 Completed" || colLabelVal === "R2 Completed"){
+                return  [
+                {
+                    title: <span style={popupSellHeadStyle}>Action Date</span>,
+                    dataIndex: "actionDateStr",
+                    key: "actionDateStr",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Company</span>,
+                    dataIndex: "company",
+                    key: "company",
+                    width: "150px",
+                      render: (text,result) => {
+                        return <CompanyPopupCell text={text} result={result} /> 
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR #</span>,
+                    dataIndex: "hR_Number",
+                    key: "hR_Number",
+                    width: "170px",
+                    render: (text, value) => {
+                        return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
 
-            //         }
-            //     },
-            //     {
-            //         title: <span style={popupSellHeadStyle}>HR Title</span>,
-            //         dataIndex: "hR_Title",
-            //         key: "hR_Title",
-            //         width: "200px",
-            //         render: (text) => {
-            //             return <span style={popupSellStyle}>{text}</span>
-            //         }
-            //     },
-            //     {
-            //         title: <span style={popupSellHeadStyle}>Talent</span>,
-            //         dataIndex: "talent",
-            //         key: "talent",
-            //         width: "100px",
-            //         render: (text) => {
-            //             return <span style={popupSellStyle}>{text}</span>
-            //         }
-            //     },
-            //       {
-            //         title: <span style={popupSellHeadStyle}>Revenue</span>,
-            //         dataIndex: "revenueStr",
-            //         key: "revenueStr",
-            //         width: "100px",
-            //         render: (text) => {
-            //             return <span style={popupSellStyle}>{text}</span>
-            //         }
-            //     },
-            //     {
-            //         title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
-            //         dataIndex: "remarks",
-            //         key: "remarks",
-            //         width: "350px",
-            //         render: (text, result) => {
-            //             return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
-            //         }
-            //     }
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Title</span>,
+                    dataIndex: "hR_Title",
+                    key: "hR_Title",
+                    width: "200px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>Talent</span>,
+                    dataIndex: "talent",
+                    key: "talent",
+                    width: "100px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                 
+                {
+                    title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+                    dataIndex: "remarks",
+                    key: "remarks",
+                    width: "350px",
+                    render: (text, result) => {
+                        return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+                    }
+                }
 
 
 
-            // ];
-            // }
+            ];
+            }
+
+            
+            if(colLabelVal === "Profile Shipped" || colLabelVal === "Interview Rejects"){
+                return  [
+                {
+                    title: <span style={popupSellHeadStyle}>Action Date</span>,
+                    dataIndex: "actionDateStr",
+                    key: "actionDateStr",
+                    width: "150px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                }, {
+                    title: <span style={popupSellHeadStyle}>Company</span>,
+                    dataIndex: "company",
+                    key: "company",
+                    width: "150px",
+                      render: (text,result) => {
+                        return <CompanyPopupCell text={text} result={result} /> 
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR #</span>,
+                    dataIndex: "hR_Number",
+                    key: "hR_Number",
+                    width: "170px",
+                    render: (text, value) => {
+                        return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Title</span>,
+                    dataIndex: "hR_Title",
+                    key: "hR_Title",
+                    width: "200px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                {
+                    title: <span style={popupSellHeadStyle}>Talent</span>,
+                    dataIndex: "talent",
+                    key: "talent",
+                    width: "100px",
+                    render: (text) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
+                 
+              
+
+
+
+            ];
+            }
 
             return [
                 {
@@ -959,15 +1007,7 @@ function OPSDashboard({ selectedHead }) {
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-                {
-                    title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
-                    dataIndex: "remarks",
-                    key: "remarks",
-                    width: "350px",
-                    render: (text, result) => {
-                        return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
-                    }
-                }
+               
 
 
 
