@@ -40,6 +40,24 @@ export function toLocalISODate(d) {
 
 /** The label shown between the ‹ › arrows, e.g. "Mon, 07 Sept 26" or "Q3 2026". */
 export function periodLabel(period, anchor) {
+    if (period === 'range') {
+        // Defensive fallback — DateNav.jsx computes its own "From – To" label
+        // for Range mode internally and doesn't call this, but any other
+        // caller that passes period='range' straight through (e.g. a table
+        // header rendering periodLabel(dateType, date) directly) would
+        // otherwise hit the same "anchor is {from,to}, not a Date" crash.
+        if (anchor && anchor.from instanceof Date && anchor.to instanceof Date) {
+            const fmt = (d) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            return `${fmt(anchor.from)} – ${fmt(anchor.to)}`;
+        }
+        return 'Select range';
+    }
+
+    // Same one-render mismatch risk as periodRange — normalize defensively.
+    if (!(anchor instanceof Date)) {
+        anchor = (anchor && anchor.from instanceof Date) ? anchor.from : new Date();
+    }
+
     if (period === 'daily') {
         return anchor.toLocaleDateString('en-GB', {
             weekday: 'short', day: '2-digit', month: 'short', year: '2-digit',
@@ -75,6 +93,30 @@ export function shiftAnchor(period, anchor, dir) {
 /** [from, to] ISO-date range a period covers — pass this straight to a backend call. */
 export function periodRange(period, anchor) {
     const iso = toLocalISODate; // local-safe — see note above toLocalISODate()
+
+    if (period === 'range') {
+        // `anchor` is normally { from: Date, to: Date } here — DateNav hands
+        // back that exact shape for Range mode (see date/onDateChange in
+        // DateNav.jsx). Defensive fallback: if anchor is still a plain Date
+        // (e.g. period flipped to 'range' before a range was ever applied),
+        // treat it as a same-day range instead of crashing on anchor.from.
+        if (anchor && anchor.from instanceof Date && anchor.to instanceof Date) {
+            return { from: iso(anchor.from), to: iso(anchor.to) };
+        }
+        return { from: iso(anchor), to: iso(anchor) };
+    }
+
+    // For every other period, `anchor` is supposed to be a plain Date. But
+    // the same kind of one-render mismatch can happen in reverse: switching
+    // AWAY from 'range' can, for a moment, leave anchor as the old {from,to}
+    // object while period has already become 'daily'/'weekly'/etc. DateNav's
+    // click handler now fixes this at the source, but normalizing here too
+    // means periodRange itself can never crash on anchor.getMonth() no
+    // matter what calls it or in what order state updates land.
+    if (!(anchor instanceof Date)) {
+        anchor = (anchor && anchor.from instanceof Date) ? anchor.from : new Date();
+    }
+
     if (period === 'daily') return { from: iso(anchor), to: iso(anchor) };
     if (period === 'weekly') {
         // Month-relative week (W1-W5) — always stays within anchor's own

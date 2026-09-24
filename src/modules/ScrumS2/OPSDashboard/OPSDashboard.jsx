@@ -34,7 +34,7 @@ const TA_COLUMNS = [
 ];
 
 const QUAL_WOW_METRICS = [
-    { key: 'avgProfileSelectioninDays', label: 'Avg Selection Time (Days)', valKey: 'avgProfileSelection' },
+    { key: 'avgProfileSelectioninDays', label: 'Selection in Days', valKey: 'avgProfileSelection' },
     { key: 'profiletoSelect', label: 'Profile to Select', valKey: 'prtoSelect' },
     { key: 'interviewtoSelect', label: 'Interview to Select', valKey: 'inttoSelect' },
 ];
@@ -44,7 +44,7 @@ const QUAL_LOG_METRICS = [
     { key: 'lost_RevenueStr', label: 'Post Joining Backouts', stageID: "PJB" },
 ];
 
-const TAB_NAME_MAP = { daily: 'D', weekly: 'W', monthly: 'M', quarterly: 'Q' };
+const TAB_NAME_MAP = { daily: 'D', weekly: 'W', monthly: 'M', quarterly: 'Q',range:'R' };
 
 // Sorted [{row, idx}] list for a qual table — purely a view convenience,
 // local to this component, never sent back to the server.
@@ -87,7 +87,14 @@ function OPSDashboard({ selectedHead }) {
             return moment(range.from).format('M');
         } else if (dateType === 'quarterly') {
             return `Q${moment(range.from).quarter()}`; // moment's .quarter() returns 1-4 directly
-        }
+        } else if (dateType === 'range') {
+        // No single "bucket" concept applies to an arbitrary custom span —
+        // unlike W1/M9/Q3, there's no short code that captures both ends.
+        // Sending both boundary dates joined with an underscore, e.g.
+        // "2026-09-02_2026-09-24" — ⚠️ confirm this is the format/delimiter
+        // the backend actually expects for Tab_Value when Tab_Name is "R".
+        return `${moment(range.from).format('YYYY-MM-DD')} to ${moment(range.to).format('YYYY-MM-DD')}`;
+    }
     }
 
     const getPODTableDate = async (podDateType, range) => {
@@ -96,7 +103,10 @@ function OPSDashboard({ selectedHead }) {
             Tab_Name: TAB_NAME_MAP[podDateType] || podDateType,
             Month: moment(range.from).format('MM'),
             Year: moment(range.from).format('YYYY'),
-            Tab_Value: getDateRangeValue(podDateType, range)
+            Tab_Value: getDateRangeValue(podDateType, range),
+            fromDate:TAB_NAME_MAP[podDateType] === 'R'? getDateRangeValue(podDateType, range).split('to')[0] :"",
+            toDate:TAB_NAME_MAP[podDateType] === 'R'? getDateRangeValue(podDateType, range).split('to')[1] :""
+
         }
 
         setFunnelLoading(true);
@@ -189,7 +199,10 @@ function OPSDashboard({ selectedHead }) {
             Tab_Name: TAB_NAME_MAP[performanceDateType] || performanceDateType,
             Month: moment(range.from).format('MM'),
             Year: moment(range.from).format('YYYY'),
-            Tab_Value: getDateRangeValue(performanceDateType, range)
+            Tab_Value: getDateRangeValue(performanceDateType, range),
+            fromDate:TAB_NAME_MAP[performanceDateType] === 'R'? getDateRangeValue(performanceDateType, range).split('to')[0] :"",
+            toDate:TAB_NAME_MAP[performanceDateType] === 'R'? getDateRangeValue(performanceDateType, range).split('to')[1] :""
+
         }
 
         setTaLoading(true);
@@ -273,7 +286,9 @@ function OPSDashboard({ selectedHead }) {
             Tab_Name: TAB_NAME_MAP[logDateType] || logDateType,
             Month: moment(range.from).format('MM'),
             Year: moment(range.from).format('YYYY'),
-            Tab_Value: getDateRangeValue(logDateType, range)
+            Tab_Value: getDateRangeValue(logDateType, range),
+              fromDate:TAB_NAME_MAP[logDateType] === 'R'? getDateRangeValue(logDateType, range).split('to')[0] :"",
+            toDate:TAB_NAME_MAP[logDateType] === 'R'? getDateRangeValue(logDateType, range).split('to')[1] :""
         }
 
         setLogLoading(true);
@@ -1191,6 +1206,23 @@ function OPSDashboard({ selectedHead }) {
         }
     };
 
+      const getTotal = (data, field) => {
+        return data.reduce((total, item) => {
+            const value = item[field];
+
+            if (value === null || value === undefined || value === '') {
+                return total;
+            }
+
+            // Handles values like "$3,300"
+            const number = Number(
+                String(value).replace(/[$,₹\s]/g, '')
+            );
+
+            return total + (isNaN(number) ? 0 : number);
+        }, 0);
+    };
+
     const RenderExpCell = ({ row, m, logDateType, logDate }) => {
         return (
             <td className={`datacell`} key={m.key}> <span
@@ -1429,7 +1461,7 @@ function OPSDashboard({ selectedHead }) {
                         <DateNav
                             date={podDate}
                             period={podDateType}
-                            periods={['D', 'W', 'M', 'Q']}
+                            periods={['D', 'W', 'M', 'Q','R']}
                             onDateChange={setPODDate}
                             onPeriodChange={setPODDateType}
                             loading={funnelLoading}
@@ -1547,7 +1579,7 @@ function OPSDashboard({ selectedHead }) {
                     <DateNav
                         date={performanceDate}
                         period={performanceDateType}
-                        periods={['D', 'W', 'M', 'Q']}
+                        periods={['D', 'W', 'M', 'Q','R']}
                         onDateChange={setPerformanceDate}
                         onPeriodChange={setPerformanceDateType}
                         loading={taLoading}
@@ -1699,14 +1731,14 @@ function OPSDashboard({ selectedHead }) {
                     </div> */}
                 </section>
 
-                {/* ---------- 4. Customer Experience (Logistics) ---------- */}
+                {/* ---------- 5. Customer Experience (Logistics) ---------- */}
                 <section className="card">
                     <div className="card-head">
                         <div className="htitle"><span className="num">5</span>Customer Experience (Logistics)</div>
                         <DateNav
                             date={logDate}
                             period={logDateType}
-                            periods={['D', 'W', 'M', 'Q']}
+                            periods={['D', 'W', 'M', 'Q','R']}
                             onDateChange={setLogDate}
                             onPeriodChange={setLogDateType}
                             loading={logLoading}
@@ -1760,6 +1792,18 @@ function OPSDashboard({ selectedHead }) {
                                         <td className="datacell">{row?.total_RevenueStr ?? ''}</td>
                                     </tr>
                                 )))}
+
+                                {qualLogData?.length > 0 &&   <tr key={"totalLogistics"}>
+                                        <td className={"rowlabel"}>Total</td>
+                                        {QUAL_LOG_METRICS.map((m) => {
+                                            // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
+                                            return  <td className="rowlabel datacell">{getTotal(qualLogData, m.key) ?`₹${getTotal(qualLogData, m.key).toLocaleString('en-US')}` : ''}</td> 
+                                            
+                                        })}
+
+                                        <td className="rowlabel datacell">{getTotal(qualLogData, 'total_RevenueStr') ?`₹${getTotal(qualLogData, 'total_RevenueStr').toLocaleString('en-US')}`: ""}</td>
+                                    </tr>}
+                               
 
                             </tbody>
                         </table>

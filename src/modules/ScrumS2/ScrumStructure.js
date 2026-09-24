@@ -801,6 +801,12 @@ function ScrumStructure2() {
                         if (val === "Pause") {
                             return setScrumTabTitle('P')
                         }
+                         if (val === "Lost") {
+                            return setScrumTabTitle('L')
+                        }
+                         if (val === "Covered") {
+                            return setScrumTabTitle('W')
+                        }
                         return setScrumTabTitle('A')
                         // if (value === "Covered" && val !== "Covered") {
                         //     val === 'Pause' &&  setScrumTabTitle('P')
@@ -4519,6 +4525,36 @@ function ScrumStructure2() {
                             }}
                         >
                             Pause
+                        </button>
+                        <button
+                            onClick={() => setScrumTabTitle('L')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'L' ? 600 : 400,
+                                color: scrumTabTitle === 'L' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Lost
+                        </button>
+                        <button
+                            onClick={() => setScrumTabTitle('W')}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '8px 0 12px',
+                                fontSize: 15,
+                                fontWeight: scrumTabTitle === 'W' ? 600 : 400,
+                                color: scrumTabTitle === 'W' ? '#000' : '#8c8c8c',
+                                borderBottom: scrumTabTitle === 'W' ? '2px solid #FFDA30' : '2px solid transparent',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Won
                         </button>
                     </div>
 
