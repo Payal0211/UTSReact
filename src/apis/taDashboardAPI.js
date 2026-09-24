@@ -605,7 +605,7 @@ getPODTableDataRequest: async function (pl) {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_SCRUM_POD_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}`
+			TaDashboardURL.GET_SCRUM_POD_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}&toDate=${pl?.toDate}&fromDate=${pl?.fromDate}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -717,7 +717,7 @@ getPODTableDataRequest: async function (pl) {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_SCRUM_TA_PERFORMANCE_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}`
+			TaDashboardURL.GET_SCRUM_TA_PERFORMANCE_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}&toDate=${pl?.toDate}&fromDate=${pl?.fromDate}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -749,7 +749,7 @@ getPODTableDataRequest: async function (pl) {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.GET_SCRUM_LOGISTICS_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}`
+			TaDashboardURL.GET_SCRUM_LOGISTICS_TABLE_DATA + `?Month=${pl?.Month}&Year=${pl?.Year}&TAHeadUserID=${pl?.TAHeadUserID}&Tab_Name=${pl?.Tab_Name}&Tab_Value=${pl?.Tab_Value}&toDate=${pl?.toDate}&fromDate=${pl?.fromDate}`
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

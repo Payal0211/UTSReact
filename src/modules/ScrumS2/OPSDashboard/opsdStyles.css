@@ -1,4 +1,4 @@
-  :root{
+:root{
     --bg:#F5F6F1; --surface:#FFFFFF; --surface-2:#EEF1EA;
     --ink:#141A17; --ink-dim:#63706A; --ink-faint:#98A49E; --line:#D8DDD2;
     --teal:#0F6B62; --teal-soft:#DCEEEA; --teal-ink:#0B4C46;
@@ -31,6 +31,8 @@
   .date-nav .label{font-size:10.5px;font-weight:600;color:var(--ink);white-space:nowrap;min-width:96px;text-align:center;}
   .date-nav button{border:none;background:transparent;color:var(--ink-dim);cursor:pointer;font-size:12px;width:19px;height:19px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;}
   .date-nav button:hover{background:#fff;color:var(--teal);}
+  .date-nav button:disabled{color:var(--ink-faint);cursor:not-allowed;opacity:.5;}
+  .date-nav button:disabled:hover{background:transparent;color:var(--ink-faint);}
   .cal-btn{font-size:11px !important;}
   .date-picker{position:absolute;bottom:0;left:8px;width:1px;height:1px;opacity:0;border:none;padding:0;pointer-events:none;}
   .today-btn{font-size:9.5px;font-weight:700;color:var(--teal);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0 2px;}
@@ -75,6 +77,82 @@
 .quarter-popover-grid button:disabled{
   color:var(--ink-faint); cursor:not-allowed; background:var(--surface-2);
 }
+
+/* --- Range (R) picker: From/To fields + Apply, inside the same popover shell --- */
+.range-popover{
+  min-width:220px;
+  padding:14px;
+}
+.range-popover-field{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  gap:4px;
+  margin-bottom:10px;
+}
+.range-popover-field label{
+  font-size:10px !important;
+  font-weight:700 !important;
+  color:var(--ink-dim) !important;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  line-height:1.2;
+}
+.range-popover-field input[type="date"]{
+  display:block;
+  width:100% !important;
+  box-sizing:border-box;
+  border:1px solid var(--line) !important;
+  border-radius:8px !important;
+  padding:7px 9px !important;
+  font-size:13px !important;
+  font-family:var(--font-body) !important;
+  color:var(--ink) !important;
+  background:var(--surface) !important;
+  height:auto !important;
+}
+.range-popover-field input[type="date"]:focus{
+  outline:2px solid var(--teal) !important;
+  outline-offset:-1px;
+  border-color:var(--teal) !important;
+}
+/* Tint the native calendar icon to match the teal theme (WebKit/Blink only — degrades gracefully elsewhere) */
+.range-popover-field input[type="date"]::-webkit-calendar-picker-indicator{
+  filter:invert(0.35) sepia(1) saturate(4) hue-rotate(150deg);
+  cursor:pointer;
+}
+.range-popover-error{
+  font-size:10px;
+  color:var(--brick-ink);
+  margin:-4px 0 10px;
+}
+.range-popover-apply{
+  display:block !important;
+  width:100% !important;
+  border:none !important;
+  border-radius:8px !important;
+  padding:8px 0 !important;
+  background:var(--color-sunlight) !important;
+  color:#000 !important;
+  font-weight:700 !important;
+  font-size:12px !important;
+  font-family:var(--font-body) !important;
+  text-decoration:none !important;
+  height: 33px  !important;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:none !important;
+}
+.range-popover-apply:hover{
+  background:var(--teal-ink) !important;
+  color:#fff !important
+}
+.range-popover-apply:focus{
+  outline:2px solid var(--teal-ink);
+  outline-offset:1px;
+    color:#fff !important
+}
+
   table.grid{border-collapse:collapse;width:100%;}
   table.grid th, table.grid td{border:1px solid var(--line);padding:4px 8px;}
   table.grid th{background:var(--surface-2) !important;font-size:10px;font-weight:700;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.02em;text-align:center;white-space:nowrap;}
