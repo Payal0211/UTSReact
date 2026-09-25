@@ -54,14 +54,14 @@ function ScrumStructure2() {
     const [filtersList, setFiltersList] = useState({});
     const [TaListData, setTaListData] = useState([]);
     let presistHeaddata = localStorage.getItem('scrumSelectedHead')
-     let presisTabdata = localStorage.getItem('scrumSelectedTab')
+    let presisTabdata = localStorage.getItem('scrumSelectedTab')
 
     const [selectedHead, setSelectedHead] = useState(presistHeaddata ? +presistHeaddata : '');
     const [isLoading, setIsLoading] = useState(false);
     const [columnOrder, setColumnOrder] = useState([])
     const [draggedRow, setDraggedRow] = useState(null);
     const [draggedRowData, setDraggedRowData] = useState({})
-    const [pageTabTitle, setPageTabTitle] = useState(presisTabdata ? presisTabdata :'Dashboard')
+    const [pageTabTitle, setPageTabTitle] = useState(presisTabdata ? presisTabdata : 'Dashboard')
     const [scrumTabTitle, setScrumTabTitle] = useState('A')
     const [tableFilteredState, setTableFilteredState] = useState({
         filterFields_OnBoard: {
@@ -178,7 +178,7 @@ function ScrumStructure2() {
     const gridWrapperRef = useRef(null);
     const [availableHeight, setAvailableHeight] = useState(600);
 
-     const DUPLICATE_COLOR_PALETTE = [
+    const DUPLICATE_COLOR_PALETTE = [
         'rgb(230, 249, 229)', // green
         'rgb(255, 236, 210)', // orange
         'rgb(214, 231, 255)', // blue
@@ -188,7 +188,7 @@ function ScrumStructure2() {
         'rgb(210, 250, 245)', // teal
         'rgb(255, 224, 178)', // amber
     ];
-    
+
     const duplicateColorMap = useMemo(() => {
         // Group rows by hrNumber
         const counts = {};
@@ -196,16 +196,16 @@ function ScrumStructure2() {
             if (!row?.hrNumber) return;
             counts[row.hrNumber] = (counts[row.hrNumber] || 0) + 1;
         });
-    
+
         // Only hrNumbers that appear more than once get a color
         const duplicateKeys = Object.keys(counts).filter((key) => counts[key] > 1);
-    
+
         // Assign each duplicate hrNumber a color, cycling through the palette
         const map = {};
         duplicateKeys.forEach((key, index) => {
             map[key] = DUPLICATE_COLOR_PALETTE[index % DUPLICATE_COLOR_PALETTE.length];
         });
-    
+
         return map;
     }, [TaListData]);
 
@@ -802,10 +802,10 @@ function ScrumStructure2() {
                         if (val === "Pause") {
                             return setScrumTabTitle('P')
                         }
-                         if (val === "Lost") {
+                        if (val === "Lost") {
                             return setScrumTabTitle('L')
                         }
-                         if (val === "Covered") {
+                        if (val === "Covered") {
                             return setScrumTabTitle('W')
                         }
                         return setScrumTabTitle('A')
@@ -1195,13 +1195,14 @@ function ScrumStructure2() {
         let updateresult = await TaDashboardDAO.updateCommentRequestDAO(pl);
 
         if (updateresult.statusCode === HTTPStatusCode.OK) {
-
-            let newData = updateresult.responseBody.find(data => data.id === pl.TaskID)
-            setTaListData(prev => {
-                let tempD = [...prev]
-                tempD[index] = { ...tempD[index], latestNotesTopRow: newData.latestNotesTopRow, latestNotes: newData.latestNotes }
-                return tempD
-            })
+            if (updateresult.responseBody?.length) {
+                let newData = updateresult.responseBody?.find(data => data.task_ID === pl.TaskID)
+                setTaListData(prev => {
+                    let tempD = [...prev]
+                    tempD[index] = { ...tempD[index], latestNotesTopRow: newData?.latestNotesTopRow, latestNotes: newData?.latestNotes }
+                    return tempD
+                })
+            }
         }
     }
 
@@ -2339,11 +2340,11 @@ function ScrumStructure2() {
             width: 150,
             pinned: 'left',
             suppressMovable: true,
-             cellStyle: (params) => ({
+            cellStyle: (params) => ({
                 textAlign: 'center',
                 ...(duplicateColorMap[params.data?.hrNumber]
-                ? { backgroundColor: duplicateColorMap[params.data?.hrNumber] }
-                : {}),
+                    ? { backgroundColor: duplicateColorMap[params.data?.hrNumber] }
+                    : {}),
             }),
             filter: MultiConditionTextFilter,
             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.hrNumber)))?.map(v => ({ data: v })) },
@@ -2557,7 +2558,7 @@ function ScrumStructure2() {
         },
 
 
-    {
+        {
             headerName: 'Submission URL',
             field: 'submissionSheet',
             width: 250,
@@ -3121,7 +3122,7 @@ function ScrumStructure2() {
             field: 'noOfProfile_TalentsTillDate',
             width: 80,
             filter: MultiConditionTextFilter,
-                       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.noOfProfile_TalentsTillDate)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.noOfProfile_TalentsTillDate)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellStyle: { textAlign: 'center' },
             cellRenderer: ActiveProfileCountCell,
         },
@@ -3191,7 +3192,7 @@ function ScrumStructure2() {
             field: 'screenReject',
             cellStyle: { textAlign: 'center' },
             width: 90,
-                        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.screenReject)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.screenReject)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             filter: MultiConditionTextFilter,
             cellRenderer: (props) => {
                 const { value, data } = props
@@ -3219,7 +3220,7 @@ function ScrumStructure2() {
         {
             headerName: 'R1', field: 'r1', width: 80, cellStyle: { textAlign: 'center' },
             filter: MultiConditionTextFilter,
-                        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r1)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.r1)))?.sort((a, b) => a - b)?.map(v => ({ data: v })) },
             cellRenderer: (props) => {
                 const { value, data } = props
                 if (props.node.rowPinned) {
@@ -4221,8 +4222,8 @@ function ScrumStructure2() {
                             borderBottom: '1px solid var(--uplers-border-color)',
                         }}
                     >
-                         <button
-                            onClick={() => {setPageTabTitle('Dashboard'); localStorage.setItem('scrumSelectedTab','Dashboard') }}
+                        <button
+                            onClick={() => { setPageTabTitle('Dashboard'); localStorage.setItem('scrumSelectedTab', 'Dashboard') }}
                             style={{
                                 background: 'none',
                                 border: 'none',
@@ -4237,7 +4238,7 @@ function ScrumStructure2() {
                             Dashboard
                         </button>
                         <button
-                            onClick={() =>{ setPageTabTitle('Scrum'); localStorage.setItem('scrumSelectedTab','Scrum') }}
+                            onClick={() => { setPageTabTitle('Scrum'); localStorage.setItem('scrumSelectedTab', 'Scrum') }}
                             style={{
                                 background: 'none',
                                 border: 'none',
@@ -4249,8 +4250,8 @@ function ScrumStructure2() {
                                 cursor: 'pointer',
                             }}
                         >
-                           Scrum
-                        </button>                      
+                            Scrum
+                        </button>
                     </div>
 
                     {/* <div className={`${stylesOBj["filter-group"]} ${stylesOBj["search-group"]}`} style={{ marginLeft: '10px', marginRight: '10px' }}>
@@ -4289,7 +4290,7 @@ function ScrumStructure2() {
                             />
                         </Tooltip>
                     </div> */}
-                    {pageTabTitle === "Scrum" &&   <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px', marginLeft: 'auto', }}>
+                    {pageTabTitle === "Scrum" && <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px', marginLeft: 'auto', }}>
 
 
 
@@ -4327,299 +4328,299 @@ function ScrumStructure2() {
                             />
                         </div>
                     </div>}
-                  
+
                 </div>
 
-                {pageTabTitle === "Scrum" &&  <>
-                 {isHistory ? <>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: 32,
-                            margin: '0 20px',
-                            borderBottom: '1px solid var(--uplers-border-color)',
-                        }}
-                    >
-                        <button
-                            onClick={() => setScrumTabTitle('A')}
+                {pageTabTitle === "Scrum" && <>
+                    {isHistory ? <>
+                        <div
                             style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'A' ? 600 : 400,
-                                color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
+                                display: 'flex',
+                                gap: 32,
+                                margin: '0 20px',
+                                borderBottom: '1px solid var(--uplers-border-color)',
                             }}
                         >
-                            Active
-                        </button>
-
-                        <button
-                            onClick={() => setScrumTabTitle('C')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'C' ? 600 : 400,
-                                color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Covered
-                        </button>
-                        <button
-                            onClick={() => setScrumTabTitle('P')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'P' ? 600 : 400,
-                                color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Pause
-                        </button>
-                        <button
-                            onClick={() => setScrumTabTitle('L')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'L' ? 600 : 400,
-                                color: scrumTabTitle === 'L' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Lost
-                        </button>
-                        <button
-                            onClick={() => setScrumTabTitle('W')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'W' ? 600 : 400,
-                                color: scrumTabTitle === 'W' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'W' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Won
-                        </button>
-                    </div>
-                    <div
-                        ref={gridWrapperRef}
-                        className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
-                        style={{ height: gridHeightPx }}
-                    >
-
-                        {isLoading ? <TableSkeleton /> :
-
-                            <AgGridReact
-                                onGridReady={onGridReady}
-                                onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
-                                theme={scrumGridTheme}
-                                rowData={TaListData}
-                                columnDefs={getScrumGridHistoryColumns()}
-                                defaultColDef={scrumHistoryDefaultColDef}
-                                context={gridContext}
-                                getRowId={(params) => String(params.data.task_ID)}
-                                suppressRowTransform={true}
-                                animateRows={false}
-                                headerHeight={38}
-                                rowHeight={25}
-                                onCellKeyDown={handleGridKeyDown}
-                                onCellEditingStarted={handleCellEditingStarted}
-                                postProcessPopup={handlePostProcessPopup}
-                                groupDisplayType="singleColumn"
-                                getRowStyle={(params) => {
-                                    if (params.node.rowPinned) {
-                                        return {
-                                            backgroundColor: '#F4F6F8',
-                                            fontWeight: '700',
-                                            borderTop: '2px solid #D9DEE3',
-                                            color: '#1F2937'
-                                        };
-                                    }
-
-                                    return null;
+                            <button
+                                onClick={() => setScrumTabTitle('A')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'A' ? 600 : 400,
+                                    color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
                                 }}
-                                groupDefaultExpanded={-1}
-                                autoGroupColumnDef={autoGroupColumnDef}
-                                pinnedBottomRowData={pinnedBottomRowData}
-                                onSortChanged={(params) => updatePinnedTotalRow(params.api)}
-                                onFilterChanged={(params) => {
-                                    const filtered = params.api.isAnyFilterPresent();
+                            >
+                                Active
+                            </button>
 
-                                    setHasFilter(filtered);
-                                    updatePinnedTotalRow(params.api);
-                                    params.api.refreshCells({ force: true });
-                                    params.api.redrawRows();
+                            <button
+                                onClick={() => setScrumTabTitle('C')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'C' ? 600 : 400,
+                                    color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
                                 }}
-                                onColumnMoved={onColumnMoved}
-                                onColumnResized={onColumnResized}
-                            />
-                        }
-
-                    </div>
-                </> : <>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: 32,
-                            margin: '0 20px',
-                            borderBottom: '1px solid var(--uplers-border-color)',
-                        }}
-                    >
-                        <button
-                            onClick={() => setScrumTabTitle('A')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'A' ? 600 : 400,
-                                color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Active
-                        </button>
-
-                        <button
-                            onClick={() => setScrumTabTitle('C')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'C' ? 600 : 400,
-                                color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Covered
-                        </button>
-                        <button
-                            onClick={() => setScrumTabTitle('P')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'P' ? 600 : 400,
-                                color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Pause
-                        </button>
-                        <button
-                            onClick={() => setScrumTabTitle('L')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'L' ? 600 : 400,
-                                color: scrumTabTitle === 'L' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Lost
-                        </button>
-                        <button
-                            onClick={() => setScrumTabTitle('W')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 0 12px',
-                                fontSize: 15,
-                                fontWeight: scrumTabTitle === 'W' ? 600 : 400,
-                                color: scrumTabTitle === 'W' ? '#000' : '#8c8c8c',
-                                borderBottom: scrumTabTitle === 'W' ? '2px solid #FFDA30' : '2px solid transparent',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Won
-                        </button>
-                    </div>
-
-                    <div
-                        ref={gridWrapperRef}
-                        className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
-                        style={{ height: gridHeightPx }}
-                    >
-
-                        {isLoading ? <TableSkeleton /> :
-
-                            <AgGridReact
-                                onGridReady={onGridReady}
-                                onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
-                                theme={scrumGridTheme}
-                                rowData={TaListData}
-                                columnDefs={gridColumns}
-                                defaultColDef={scrumDefaultColDef}
-                                context={gridContext}
-                                getRowId={(params) => String(params.data.id)}
-                                suppressRowTransform={true}
-                                animateRows={false}
-                                headerHeight={38}
-                                rowHeight={25}
-                                onCellKeyDown={handleGridKeyDown}
-                                onCellEditingStarted={handleCellEditingStarted}
-                                postProcessPopup={handlePostProcessPopup}
-                                groupDisplayType="singleColumn"
-                                getRowStyle={(params) => {
-                                    if (params.node.rowPinned) {
-                                        return {
-                                            backgroundColor: '#F4F6F8',
-                                            fontWeight: '700',
-                                            borderTop: '2px solid #D9DEE3',
-                                            color: '#1F2937'
-                                        };
-                                    }
-
-                                    return null;
+                            >
+                                Covered
+                            </button>
+                            <button
+                                onClick={() => setScrumTabTitle('P')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'P' ? 600 : 400,
+                                    color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
                                 }}
-                                groupDefaultExpanded={-1}
-                                autoGroupColumnDef={autoGroupColumnDef}
-                                pinnedBottomRowData={pinnedBottomRowData}
-                                onSortChanged={(params) => updatePinnedTotalRow(params.api)}
-                                onFilterChanged={(params) => {
-                                    const filtered = params.api.isAnyFilterPresent();
-
-                                    setHasFilter(filtered);
-                                    updatePinnedTotalRow(params.api);
-                                    params.api.refreshCells({ force: true });
-                                    params.api.redrawRows();
+                            >
+                                Pause
+                            </button>
+                            <button
+                                onClick={() => setScrumTabTitle('L')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'L' ? 600 : 400,
+                                    color: scrumTabTitle === 'L' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
                                 }}
-                                onColumnMoved={onColumnMoved}
-                                onColumnResized={onColumnResized}
-                            />
-                        }
+                            >
+                                Lost
+                            </button>
+                            <button
+                                onClick={() => setScrumTabTitle('W')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'W' ? 600 : 400,
+                                    color: scrumTabTitle === 'W' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'W' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Won
+                            </button>
+                        </div>
+                        <div
+                            ref={gridWrapperRef}
+                            className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+                            style={{ height: gridHeightPx }}
+                        >
 
-                    </div>
+                            {isLoading ? <TableSkeleton /> :
+
+                                <AgGridReact
+                                    onGridReady={onGridReady}
+                                    onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
+                                    theme={scrumGridTheme}
+                                    rowData={TaListData}
+                                    columnDefs={getScrumGridHistoryColumns()}
+                                    defaultColDef={scrumHistoryDefaultColDef}
+                                    context={gridContext}
+                                    getRowId={(params) => String(params.data.task_ID)}
+                                    suppressRowTransform={true}
+                                    animateRows={false}
+                                    headerHeight={38}
+                                    rowHeight={25}
+                                    onCellKeyDown={handleGridKeyDown}
+                                    onCellEditingStarted={handleCellEditingStarted}
+                                    postProcessPopup={handlePostProcessPopup}
+                                    groupDisplayType="singleColumn"
+                                    getRowStyle={(params) => {
+                                        if (params.node.rowPinned) {
+                                            return {
+                                                backgroundColor: '#F4F6F8',
+                                                fontWeight: '700',
+                                                borderTop: '2px solid #D9DEE3',
+                                                color: '#1F2937'
+                                            };
+                                        }
+
+                                        return null;
+                                    }}
+                                    groupDefaultExpanded={-1}
+                                    autoGroupColumnDef={autoGroupColumnDef}
+                                    pinnedBottomRowData={pinnedBottomRowData}
+                                    onSortChanged={(params) => updatePinnedTotalRow(params.api)}
+                                    onFilterChanged={(params) => {
+                                        const filtered = params.api.isAnyFilterPresent();
+
+                                        setHasFilter(filtered);
+                                        updatePinnedTotalRow(params.api);
+                                        params.api.refreshCells({ force: true });
+                                        params.api.redrawRows();
+                                    }}
+                                    onColumnMoved={onColumnMoved}
+                                    onColumnResized={onColumnResized}
+                                />
+                            }
+
+                        </div>
+                    </> : <>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: 32,
+                                margin: '0 20px',
+                                borderBottom: '1px solid var(--uplers-border-color)',
+                            }}
+                        >
+                            <button
+                                onClick={() => setScrumTabTitle('A')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'A' ? 600 : 400,
+                                    color: scrumTabTitle === 'A' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'A' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Active
+                            </button>
+
+                            <button
+                                onClick={() => setScrumTabTitle('C')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'C' ? 600 : 400,
+                                    color: scrumTabTitle === 'C' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'C' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Covered
+                            </button>
+                            <button
+                                onClick={() => setScrumTabTitle('P')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'P' ? 600 : 400,
+                                    color: scrumTabTitle === 'P' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'P' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Pause
+                            </button>
+                            <button
+                                onClick={() => setScrumTabTitle('L')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'L' ? 600 : 400,
+                                    color: scrumTabTitle === 'L' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'L' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Lost
+                            </button>
+                            <button
+                                onClick={() => setScrumTabTitle('W')}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '8px 0 12px',
+                                    fontSize: 15,
+                                    fontWeight: scrumTabTitle === 'W' ? 600 : 400,
+                                    color: scrumTabTitle === 'W' ? '#000' : '#8c8c8c',
+                                    borderBottom: scrumTabTitle === 'W' ? '2px solid #FFDA30' : '2px solid transparent',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Won
+                            </button>
+                        </div>
+
+                        <div
+                            ref={gridWrapperRef}
+                            className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}
+                            style={{ height: gridHeightPx }}
+                        >
+
+                            {isLoading ? <TableSkeleton /> :
+
+                                <AgGridReact
+                                    onGridReady={onGridReady}
+                                    onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
+                                    theme={scrumGridTheme}
+                                    rowData={TaListData}
+                                    columnDefs={gridColumns}
+                                    defaultColDef={scrumDefaultColDef}
+                                    context={gridContext}
+                                    getRowId={(params) => String(params.data.id)}
+                                    suppressRowTransform={true}
+                                    animateRows={false}
+                                    headerHeight={38}
+                                    rowHeight={25}
+                                    onCellKeyDown={handleGridKeyDown}
+                                    onCellEditingStarted={handleCellEditingStarted}
+                                    postProcessPopup={handlePostProcessPopup}
+                                    groupDisplayType="singleColumn"
+                                    getRowStyle={(params) => {
+                                        if (params.node.rowPinned) {
+                                            return {
+                                                backgroundColor: '#F4F6F8',
+                                                fontWeight: '700',
+                                                borderTop: '2px solid #D9DEE3',
+                                                color: '#1F2937'
+                                            };
+                                        }
+
+                                        return null;
+                                    }}
+                                    groupDefaultExpanded={-1}
+                                    autoGroupColumnDef={autoGroupColumnDef}
+                                    pinnedBottomRowData={pinnedBottomRowData}
+                                    onSortChanged={(params) => updatePinnedTotalRow(params.api)}
+                                    onFilterChanged={(params) => {
+                                        const filtered = params.api.isAnyFilterPresent();
+
+                                        setHasFilter(filtered);
+                                        updatePinnedTotalRow(params.api);
+                                        params.api.refreshCells({ force: true });
+                                        params.api.redrawRows();
+                                    }}
+                                    onColumnMoved={onColumnMoved}
+                                    onColumnResized={onColumnResized}
+                                />
+                            }
+
+                        </div>
+                    </>}
                 </>}
-                </>}
 
-               {pageTabTitle === 'Dashboard' && <>
-               <OPSDashboard  selectedHead={selectedHead} />
-               </>}
+                {pageTabTitle === 'Dashboard' && <>
+                    <OPSDashboard selectedHead={selectedHead} />
+                </>}
 
 
 

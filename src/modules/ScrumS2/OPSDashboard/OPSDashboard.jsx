@@ -513,6 +513,7 @@ if(selectedHead){
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
+                    
                     {
                         title: <span style={popupSellHeadStyle}>Revenue</span>,
                         dataIndex: "revenueStr",
@@ -520,6 +521,18 @@ if(selectedHead){
                         width: "100px",
                         render: (text) => {
                             return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                     {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+                      
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
                         }
                     },
                     // {
@@ -638,6 +651,7 @@ if(selectedHead){
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
+                 
                     {
                         title: <span style={popupSellHeadStyle}>{profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
                         dataIndex: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
@@ -649,7 +663,18 @@ if(selectedHead){
                         }
                     },
 
-
+   {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+                       
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
 
 
                 ];
@@ -692,6 +717,7 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
+            
 
                 {
                     title: <span style={popupSellHeadStyle}>{profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
@@ -703,6 +729,17 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
                 // {
                 //     title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
                 //     dataIndex: "remarks",
@@ -752,7 +789,6 @@ if(selectedHead){
                         title: <span style={popupSellHeadStyle}>HR Title</span>,
                         dataIndex: "hR_Title",
                         key: "hR_Title",
-                        width: "200px",
                         render: (text) => {
                             return <span style={popupSellStyle}>{text}</span>
                         }
@@ -1026,6 +1062,7 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
+              
                 {
                     title: <span style={popupSellHeadStyle}>Revenue</span>,
                     dataIndex: "revenueStr",
@@ -1036,7 +1073,18 @@ if(selectedHead){
                     }
                 },
                
-
+  {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+                      
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
 
 
             ];
@@ -1089,6 +1137,7 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
+            
                 {
                     title: <span style={popupSellHeadStyle}>Revenue</span>,
                     dataIndex: "revenueStr",
@@ -1098,7 +1147,18 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-               
+                   {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+                        
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
             ];
         }
 
