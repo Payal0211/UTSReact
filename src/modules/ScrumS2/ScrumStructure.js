@@ -54,13 +54,14 @@ function ScrumStructure2() {
     const [filtersList, setFiltersList] = useState({});
     const [TaListData, setTaListData] = useState([]);
     let presistHeaddata = localStorage.getItem('scrumSelectedHead')
+     let presisTabdata = localStorage.getItem('scrumSelectedTab')
 
     const [selectedHead, setSelectedHead] = useState(presistHeaddata ? +presistHeaddata : '');
     const [isLoading, setIsLoading] = useState(false);
     const [columnOrder, setColumnOrder] = useState([])
     const [draggedRow, setDraggedRow] = useState(null);
     const [draggedRowData, setDraggedRowData] = useState({})
-    const [pageTabTitle, setPageTabTitle] = useState('Dashboard')
+    const [pageTabTitle, setPageTabTitle] = useState(presisTabdata ? presisTabdata :'Dashboard')
     const [scrumTabTitle, setScrumTabTitle] = useState('A')
     const [tableFilteredState, setTableFilteredState] = useState({
         filterFields_OnBoard: {
@@ -4221,7 +4222,7 @@ function ScrumStructure2() {
                         }}
                     >
                          <button
-                            onClick={() => setPageTabTitle('Dashboard')}
+                            onClick={() => {setPageTabTitle('Dashboard'); localStorage.setItem('scrumSelectedTab','Dashboard') }}
                             style={{
                                 background: 'none',
                                 border: 'none',
@@ -4236,7 +4237,7 @@ function ScrumStructure2() {
                             Dashboard
                         </button>
                         <button
-                            onClick={() => setPageTabTitle('Scrum')}
+                            onClick={() =>{ setPageTabTitle('Scrum'); localStorage.setItem('scrumSelectedTab','Scrum') }}
                             style={{
                                 background: 'none',
                                 border: 'none',

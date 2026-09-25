@@ -121,9 +121,11 @@ function OPSDashboard({ selectedHead }) {
     }
 
     useEffect(() => {
-
-        const range = periodRange(podDateType, podDate);
+if(selectedHead){
+     const range = periodRange(podDateType, podDate);
         getPODTableDate(podDateType, range)
+}
+       
 
     }, [podDate, podDateType, selectedHead]);
 
@@ -156,9 +158,11 @@ function OPSDashboard({ selectedHead }) {
     }
 
     useEffect(() => {
-
-        const range = periodRange(pipelineDateType, pipelineDate);
+        if(selectedHead){
+              const range = periodRange(pipelineDateType, pipelineDate);
         getPipelineTableDate(pipelineDateType, range)
+        }
+      
         // OpsDashboardDAO.getPipelineDataDAO(range)
         //     .then((res) => setPipeData(res.responseBody))
         //     .finally(() => setPipeLoading(false));
@@ -217,8 +221,11 @@ function OPSDashboard({ selectedHead }) {
     }, [performanceDateType, performanceDate, selectedHead]);
 
     useEffect(() => {
-        const range = periodRange(performanceDateType, performanceDate);
-        getTAProformanceTableData(performanceDateType, range)
+        if(selectedHead){
+            const range = periodRange(performanceDateType, performanceDate);
+            getTAProformanceTableData(performanceDateType, range) 
+        }
+     
         // OpsDashboardDAO.getTeamPerformanceDAO(range)
         //     .then((res) => setTaData(res.responseBody))
         //     .finally(() => setTaLoading(false));
@@ -257,8 +264,11 @@ function OPSDashboard({ selectedHead }) {
     }, [wowDateType, wowDate, selectedHead]);
 
     useEffect(() => {
-        const range = periodRange(wowDateType, wowDate);
-        getWOWTableData(wowDateType, range)
+        if(selectedHead){
+            const range = periodRange(wowDateType, wowDate);
+            getWOWTableData(wowDateType, range)
+        }
+
         // OpsDashboardDAO.getWowExperienceDAO(range)
         //     .then((res) => setQualWowData(res.responseBody))
         //     .finally(() => setWowLoading(false));
@@ -304,12 +314,15 @@ function OPSDashboard({ selectedHead }) {
 
     useEffect(() => {
 
-        const range = periodRange(logDateType, logDate);
+        if(selectedHead){
+               const range = periodRange(logDateType, logDate);
         getLogisticsTableData(logDateType, range)
+        }
+     
         // OpsDashboardDAO.getLogisticsExperienceDAO(range)
         //     .then((res) => setQualLogData(res.responseBody))
         //     .finally(() => setLogLoading(false));
-    }, [logDate, logDateType]);
+    }, [logDate, logDateType,selectedHead]);
 
     const toggleLogSort = (col) => {
         setLogSortDir((prevDir) => (logSortCol === col ? -prevDir : 1));
